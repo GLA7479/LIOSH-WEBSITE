@@ -56,20 +56,21 @@ export default function Home() {
               <Image src="/images/logo2.png" alt="Liosh Logo Right" width={90} height={90} />
             </motion.div>
           </span>
-          <span className="block text-2xl md:text-3xl lg:text-4xl mt-1 font-semibold bg-gradient-to-r from-yellow-200 to-yellow-400 bg-clip-text text-transparent drop-shadow-md">
-            The Real Shiba Meme Coin
-          </span>
+  <span className="block text-2xl md:text-3xl lg:text-4xl mt-1 font-semibold bg-gradient-to-r from-yellow-200 to-yellow-400 bg-clip-text text-transparent drop-shadow-md">
+  LIO - THE REAL SHIBA INU
+</span>
+
         </motion.h1>
 
         {/* Videos */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-1 w-full max-w-xl items-center">
+        <div className="flex flex-col sm:flex-row gap-6 mt-4 justify-center">
           <motion.video
             autoPlay
             loop
             muted
             playsInline
             onClick={() => setActiveVideo("left")}
-            className="w-full sm:w-60 rounded-xl shadow-lg cursor-pointer"
+            className="w-full sm:w-80 lg:w-96 rounded-xl shadow-lg cursor-pointer"
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
@@ -83,7 +84,7 @@ export default function Home() {
             muted
             playsInline
             onClick={() => setActiveVideo("right")}
-            className="w-full sm:w-60 rounded-xl shadow-lg cursor-pointer"
+            className="w-full sm:w-80 lg:w-96 rounded-xl shadow-lg cursor-pointer"
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
