@@ -56,7 +56,7 @@ export default function Home() {
               <Image src="/images/logo2.png" alt="Liosh Logo Right" width={90} height={90} />
             </motion.div>
           </span>
-  <span className="block text-2xl md:text-3xl lg:text-4xl mt-1 font-semibold bg-gradient-to-r from-yellow-200 to-yellow-400 bg-clip-text text-transparent drop-shadow-md">
+  <span className="block text-2xl md:text-3xl lg:text-3.5xl mt-1 font-semibold bg-gradient-to-r from-yellow-200 to-yellow-400 bg-clip-text text-transparent drop-shadow-md">
   LIO - THE REAL SHIBA INU
 </span>
 
