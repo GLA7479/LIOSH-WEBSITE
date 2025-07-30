@@ -1,5 +1,13 @@
-import '../styles/globals.css'
+import "../styles/globals.css";
+import "../i18n"; // מחברים את ההגדרות
+import { useEffect } from "react";
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
+function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    // קוד שרץ פעם אחת בטעינת האתר
+  }, []);
+
+  return <Component {...pageProps} />;
 }
+
+export default MyApp;
