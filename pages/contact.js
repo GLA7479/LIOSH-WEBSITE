@@ -3,87 +3,66 @@ import { motion } from "framer-motion";
 
 export default function Contact() {
   return (
-    <Layout>
-      <motion.div
-        className="flex flex-col items-center justify-center h-[70vh] px-6 text-center"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 2 }}
+    <Layout page="contact">
+      <motion.main
+        className="relative min-h-screen flex flex-col items-center text-white p-0 m-0 overflow-hidden pt-[114px]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
       >
-        <h1 className="text-4xl md:text-6xl font-bold text-yellow-400 mb-4">
-          Contact Us
-        </h1>
-        <p className="text-lg md:text-2xl max-w-3xl mb-8">
-          Get in touch with us for any inquiries or support. We're here to help.
-        </p>
-        
-        {/* כפתורים יצירת קשר */}
-        <div className="flex flex-col space-y-4 mb-8">
-          <a
-            href="https://www.instagram.com/liotheshiba21/?igsh=NTljMDY4N2EzMWJu#"
-            className="bg-yellow-400 text-black py-2 px-6 rounded-md text-lg hover:bg-yellow-500 transition"
-          >
-            Email Us
-          </a>
-          <a
-            href="https://www.instagram.com/liotheshiba21/?igsh=NTljMDY4N2EzMWJu#"
-            className="bg-yellow-400 text-black py-2 px-6 rounded-md text-lg hover:bg-yellow-500 transition"
-          >
-            Call Us
-          </a>
-          <a
-            href="https://www.instagram.com/liotheshiba21/?igsh=NTljMDY4N2EzMWJu#"
-            className="bg-yellow-400 text-black py-2 px-6 rounded-md text-lg hover:bg-yellow-500 transition"
-          >
-            Contact Us on WhatsApp
-          </a>
-          <a
-            href="https://www.instagram.com/liotheshiba21/?igsh=NTljMDY4N2EzMWJu#"
-            className="bg-yellow-400 text-black py-2 px-6 rounded-md text-lg hover:bg-yellow-500 transition"
-          >
-            Contact Form
-          </a>
-        </div>
+        {/* 🔹 וידאו ברקע */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        >
+          <source src="/videos/contact-bg.mp4" type="video/mp4" />
+        </video>
 
-        {/* כפתורים לרשתות חברתיות */}
-        <div className="flex space-x-6">
-          <a
-            href="https://www.instagram.com/liotheshiba21/?igsh=NTljMDY4N2EzMWJu#"
-            target="_blank" rel="noopener noreferrer"
-            className="bg-blue-500 text-white p-3 rounded-full hover:bg-blue-600 transition"
-          >
-            Twitter
-          </a>
-          <a
-            href="https://www.instagram.com/liotheshiba21/?igsh=NTljMDY4N2EzMWJu#"
-            target="_blank" rel="noopener noreferrer"
-            className="bg-blue-700 text-white p-3 rounded-full hover:bg-blue-800 transition"
-          >
-            Facebook
-          </a>
-          <a
-            href="https://www.instagram.com/liotheshiba21/?igsh=NTljMDY4N2EzMWJu#"
-            target="_blank" rel="noopener noreferrer"
-            className="bg-pink-600 text-white p-3 rounded-full hover:bg-pink-700 transition"
-          >
-            Instagram
-          </a>
-          <a
-            href="https://www.instagram.com/liotheshiba21/?igsh=NTljMDY4N2EzMWJu#"
-            target="_blank" rel="noopener noreferrer"
-            className="bg-[#7289DA] text-white p-3 rounded-full hover:bg-[#5B6EAE] transition"
-          >
-            Discord
-          </a>
-          <a
-            href="https://www.instagram.com/liotheshiba21/?igsh=NTljMDY4N2EzMWJu#"
-            target="_blank" rel="noopener noreferrer"
-            className="bg-[#0088cc] text-white p-3 rounded-full hover:bg-[#0077b5] transition"
-          >
-            Telegram
-          </a>
+        {/* 🔹 שכבת כהות מעל הווידאו */}
+        <div className="absolute inset-0 bg-black/50 z-10"></div>
+
+        {/* 🔹 תוכן העמוד */}
+        <motion.h1
+          className="text-4xl sm:text-5xl font-extrabold mb-6 flex items-center justify-center gap-2 z-20"
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <span>📩</span>
+          <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-500 bg-clip-text text-transparent">
+            Contact Us
+          </span>
+        </motion.h1>
+
+        <p className="text-lg max-w-2xl text-center mb-8 z-20">
+          Have questions about LIOSH Token? Reach out to us through any of the platforms below!
+        </p>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 text-lg font-semibold z-20">
+          {[
+            { text: "📧 Email", color: "bg-yellow-400 hover:bg-yellow-500" },
+            { text: "📷 Instagram", color: "bg-pink-500 hover:bg-pink-600" },
+            { text: "🌐 Facebook", color: "bg-blue-500 hover:bg-blue-600" },
+            { text: "🐦 Twitter", color: "bg-sky-500 hover:bg-sky-600" },
+            { text: "💬 Discord", color: "bg-indigo-500 hover:bg-indigo-600" },
+            { text: "📲 Telegram", color: "bg-green-500 hover:bg-green-600" },
+          ].map((btn, i) => (
+            <a
+              key={i}
+              href="https://www.instagram.com/liotheshiba21"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${btn.color} text-black px-6 py-3 rounded-lg transition`}
+            >
+              {btn.text}
+            </a>
+          ))}
         </div>
-      </motion.div>
+      </motion.main>
     </Layout>
   );
 }
