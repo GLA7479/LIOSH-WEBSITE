@@ -61,11 +61,15 @@ export default function Home() {
           </span>
         </motion.h1>
 
-        <div className="flex gap-4 mt-1">
+        {/* Videos */}
+        <div className="flex flex-col sm:flex-row gap-4 mt-1 w-full max-w-xl items-center">
           <motion.video
-            autoPlay loop muted playsInline
+            autoPlay
+            loop
+            muted
+            playsInline
             onClick={() => setActiveVideo("left")}
-            className="w-60 h-60 rounded-xl shadow-lg cursor-pointer"
+            className="w-full sm:w-60 rounded-xl shadow-lg cursor-pointer"
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
@@ -74,9 +78,12 @@ export default function Home() {
           </motion.video>
 
           <motion.video
-            autoPlay loop muted playsInline
+            autoPlay
+            loop
+            muted
+            playsInline
             onClick={() => setActiveVideo("right")}
-            className="w-60 h-60 rounded-xl shadow-lg cursor-pointer"
+            className="w-full sm:w-60 rounded-xl shadow-lg cursor-pointer"
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
@@ -86,7 +93,7 @@ export default function Home() {
         </div>
 
         <motion.p
-          className="text-base md:text-lg text-gray-300 max-w-2xl mt-1 mb-3"
+          className="text-base md:text-lg text-gray-300 max-w-2xl mt-2 mb-3"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
@@ -116,6 +123,7 @@ export default function Home() {
         </motion.div>
       </section>
 
+      {/* Active Video Popup */}
       {activeVideo && (
         <div
           className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
@@ -126,7 +134,7 @@ export default function Home() {
             loop
             muted
             playsInline
-            className="w-[80%] max-w-3xl rounded-xl shadow-2xl"
+            className="w-[90%] max-w-3xl rounded-xl shadow-2xl"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
           >
@@ -152,7 +160,7 @@ export default function Home() {
             We combine fun, community, and real-world utility to create a token that’s here to stay.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[0.5cm] mt-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-[0.5cm] mt-8">
             {images.map((img, i) => (
               <motion.div
                 key={i}
@@ -174,6 +182,7 @@ export default function Home() {
         </motion.div>
       </section>
 
+      {/* Popup Image */}
       <AnimatePresence>
         {activeImage && (
           <motion.div
