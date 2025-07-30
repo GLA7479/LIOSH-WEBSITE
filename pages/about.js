@@ -5,31 +5,16 @@ import Link from "next/link";
 
 export default function About() {
   return (
-    <Layout page="about">
+    <Layout page="about" video="/videos/about-bg.mp4">
       <motion.main
-        className="relative min-h-screen flex flex-col items-center text-white p-0 m-0 overflow-hidden pt-[114px]"
+        className="relative min-h-screen flex flex-col items-center text-white p-0 m-0 overflow-hidden mt-[64px]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
-        {/* 🔹 וידאו ברקע זהה ל-Contact */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        >
-          <source src="/videos/about-bg.mp4" type="video/mp4" />
-        </video>
-
-        {/* 🔹 שכבת כהות */}
         <div className="absolute inset-0 bg-black/50 z-10"></div>
 
-        {/* 🔹 תוכן הדף */}
         <div className="relative z-20 w-full max-w-6xl p-6 rounded-xl">
-          {/* 🔹 כותרת + תמונה */}
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-12">
             <div className="flex-shrink-0">
               <Image
@@ -64,7 +49,7 @@ export default function About() {
             </div>
           </div>
 
-          {/* 🔹 Mission & Vision */}
+          {/* Mission Section */}
           <section className="mb-12 text-center">
             <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               🌟 Our Mission & Vision
@@ -79,7 +64,7 @@ export default function About() {
             </p>
           </section>
 
-          {/* 🔹 Why Choose LIOSH */}
+          {/* Why Choose Section */}
           <section className="mb-12">
             <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-blue-300 to-cyan-400 bg-clip-text text-transparent">
               🚀 Why Choose LIOSH?
@@ -102,7 +87,7 @@ export default function About() {
             </div>
           </section>
 
-          {/* 🔹 Roadmap */}
+          {/* Roadmap Section */}
           <section>
             <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
               📅 Mini Roadmap

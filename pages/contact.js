@@ -10,7 +10,6 @@ export default function Contact() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
-        {/* 🔹 וידאו ברקע */}
         <video
           autoPlay
           muted
@@ -22,10 +21,8 @@ export default function Contact() {
           <source src="/videos/contact-bg.mp4" type="video/mp4" />
         </video>
 
-        {/* 🔹 שכבת כהות מעל הווידאו */}
         <div className="absolute inset-0 bg-black/50 z-10"></div>
 
-        {/* 🔹 תוכן העמוד */}
         <motion.h1
           className="text-4xl sm:text-5xl font-extrabold mb-6 flex items-center justify-center gap-2 z-20"
           initial={{ y: -20, opacity: 0 }}

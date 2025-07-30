@@ -10,21 +10,20 @@ export default function Layout({ children, video, page }) {
           loop
           muted
           playsInline
+          preload="auto"
           className="absolute inset-0 w-full h-full object-cover -z-10"
           src={video}
         />
       )}
 
-      {/* שכבת כהות עדינה */}
-      <div className="absolute inset-0 bg-black/40 -z-10"></div>
+      {/* שכבת כהות */}
+      {video && <div className="absolute inset-0 bg-black/50 -z-10"></div>}
 
       {/* Header */}
       <Header />
 
-      {/* תוכן העמוד */}
-      <main className={page === "contact" ? "pt-16" : "pt-32"}>
-        {children}
-      </main>
+      {/* התוכן – הרמנו ב־3 ס"מ (הקטנו padding-top) */}
+      <main className="relative z-10 pt-[65px]">{children}</main>
 
       {/* Footer */}
       <footer className="absolute bottom-0 left-0 w-full text-center py-4 bg-black/40 text-sm">
