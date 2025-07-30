@@ -1,20 +1,9 @@
+import Layout from "../components/Layout";
 import { motion } from "framer-motion";
 
 export default function Contact() {
   return (
-    <div className="relative w-full min-h-screen">
-      {/* ווידאו כרקע */}
-      <video
-        className="background-video"
-        autoPlay
-        loop
-        muted
-        playsInline
-        src="/videos/contact-bg.mp4"
-        type="video/mp4"
-      />
-      
-      {/* תוכן הדף */}
+    <Layout video="/videos/contact-bg.mp4"> {/* ווידאו ברקע */}
       <motion.div
         className="flex flex-col items-center justify-center h-[70vh] px-6 text-center"
         initial={{ opacity: 0, y: 50 }}
@@ -28,7 +17,6 @@ export default function Contact() {
           Get in touch with us for any inquiries or support. We're here to help.
         </p>
       </motion.div>
-    </div>
+    </Layout>
   );
 }
-
