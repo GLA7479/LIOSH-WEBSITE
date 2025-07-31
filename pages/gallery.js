@@ -90,9 +90,9 @@ export default function Gallery() {
         )}
 
         {selectedIndex !== null && (
-          <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <motion.div
-              className="relative max-w-3xl max-h-[80vh] p-4 bg-black rounded-lg"
+              className="relative max-w-3xl max-h-[80vh]"
               initial={{ opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
@@ -100,14 +100,14 @@ export default function Gallery() {
               {items[selectedIndex].type === "image" ? (
                 <img
                   src={items[selectedIndex].src}
-                  className="w-[600px] h-[400px] object-contain rounded-lg mx-auto"
+                  className="w-[900px] h-[600px] object-contain rounded-lg mx-auto"
                 />
               ) : (
                 <video
                   src={items[selectedIndex].src}
                   autoPlay
                   controls
-                  className="w-[600px] h-[400px] object-contain rounded-lg mx-auto"
+                  className="w-[900px] h-[600px] object-contain rounded-lg mx-auto"
                 />
               )}
 
@@ -115,17 +115,17 @@ export default function Gallery() {
                 onClick={closeModal}
                 className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
               >
-                ✖ Close
+                ✖
               </button>
               <button
                 onClick={prevItem}
-                className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-700 text-white px-3 py-2 rounded-full hover:bg-gray-500"
+                className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 text-2xl rounded-full hover:bg-red-600"
               >
                 ⬅
               </button>
               <button
                 onClick={nextItem}
-                className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-700 text-white px-3 py-2 rounded-full hover:bg-gray-500"
+                className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 text-2xl rounded-full hover:bg-red-600"
               >
                 ➡
               </button>

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Image from "next/image";
@@ -9,12 +10,11 @@ export default function Header() {
   const { i18n } = useTranslation();
   const [rotate, setRotate] = useState(false);
 
-  // 🔹 סיבוב אוטומטי אקראי
   useEffect(() => {
     const interval = setInterval(() => {
       setRotate(true);
-      setTimeout(() => setRotate(false), 1000); // סיבוב של שנייה
-    }, Math.random() * 8000 + 5000); // בין 5–13 שניות
+      setTimeout(() => setRotate(false), 1000);
+    }, Math.random() * 8000 + 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -45,6 +45,11 @@ export default function Header() {
     { code: "tr", label: "TR" },
   ];
 
+  const colors = [
+    "#FF5733", "#FFC300", "#DAF7A6", "#33FFBD",
+    "#33A1FF", "#9D33FF", "#FF33A8", "#FF8C33"
+  ];
+
   return (
     <header
       className="fixed w-full z-50 text-yellow-400"
@@ -55,16 +60,13 @@ export default function Header() {
       }}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
-        {/* 🔹 לוגו + טקסט */}
         <Link href="/" className="flex items-center gap-3">
           <Image
             src="/images/logo.png"
             alt="LIOSH Logo"
             width={70}
             height={70}
-            className={`rounded-full transition-transform duration-1000 ${
-              rotate ? "rotate-[360deg]" : ""
-            }`}
+            className={`rounded-full transition-transform duration-1000 ${rotate ? "rotate-[360deg]" : ""}`}
             onMouseEnter={() => {
               setRotate(true);
               setTimeout(() => setRotate(false), 1000);
@@ -80,7 +82,6 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* 🔹 כפתור שפה + תפריט */}
         <div className="flex items-center gap-2">
           <select
             onChange={(e) => i18n.changeLanguage(e.target.value)}
@@ -102,7 +103,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* 🔹 תפריט נפתח */}
         {isOpen && (
           <div
             className="fixed right-0 top-20 w-80 flex flex-col items-end py-6 space-y-4 z-50 overflow-hidden"
@@ -120,15 +120,14 @@ export default function Header() {
             </video>
             <div className="absolute inset-0 bg-black bg-opacity-30"></div>
 
-            {menuItems.map((item) => (
+            {menuItems.map((item, index) => (
               <Link
                 key={item.key}
                 href={item.href}
-                className="relative text-xl font-semibold pr-5"
+                className="relative text-lg font-bold pr-5 uppercase"
                 style={{
-                  color: "#fff",
-                  textShadow:
-                    "0 0 6px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.6)",
+                  color: colors[index % colors.length],
+                  textShadow: "0 0 6px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.6)",
                 }}
                 onClick={() => setIsOpen(false)}
               >
@@ -139,5 +138,43 @@ export default function Header() {
         )}
       </div>
     </header>
+  );
+}
+
+
+// הוספת Footer וכפתור צף
+export function FloatingPresaleButton() {
+  return (
+    <a
+      href="/presale"
+      className="fixed bottom-6 right-6 bg-yellow-500 hover:bg-yellow-600 text-black px-5 py-3 rounded-full font-bold shadow-lg transition z-50"
+    >
+      🚀 Join Presale
+    </a>
+  );
+}
+
+export function Footer() {
+  return (
+    <footer className="bg-gray-900 text-gray-300 text-center py-6 mt-10">
+      <p className="text-sm">
+        📧 Contact us:{" "}
+        <a
+          href="mailto:contact@liosh.com"
+          className="text-yellow-400 hover:underline"
+        >
+          contact@liosh.com
+        </a>{" "}
+        | 🌐{" "}
+        <a
+          href="https://liosh.com"
+          className="text-yellow-400 hover:underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          liosh.com
+        </a>
+      </p>
+    </footer>
   );
 }
