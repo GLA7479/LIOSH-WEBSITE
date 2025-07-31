@@ -21,6 +21,7 @@ export default function MleoRunner() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
+    // טעינת תמונות
     const leoSprite = new Image();
     leoSprite.src = "/images/dog-spritesheet.png";
 
@@ -31,7 +32,10 @@ export default function MleoRunner() {
     obstacleImg.src = "/images/obstacle.png";
 
     const bgImg = new Image();
-    bgImg.src = "/images/background.png";
+    bgImg.src = "/images/game.png";
+
+    // הגדלת אלמנטים במובייל
+    const scale = window.innerWidth < 768 ? 1.5 : 1;
 
     let leo, gravity, coins, obstacles, frame = 0, frameCount = 0;
     let bgX = 0;
@@ -39,7 +43,7 @@ export default function MleoRunner() {
     let currentScore = 0;
 
     function initGame() {
-      leo = { x: 50, y: 200, width: 70, height: 70, dy: 0, jumping: false };
+      leo = { x: 50, y: 200, width: 70 * scale, height: 70 * scale, dy: 0, jumping: false };
       gravity = 0.5;
       coins = [];
       obstacles = [];
@@ -109,9 +113,9 @@ export default function MleoRunner() {
       drawObstacles();
 
       if (Math.random() < 0.03)
-        coins.push({ x: canvas.width, y: Math.random() * 120 + 120, size: 38 });
+        coins.push({ x: canvas.width, y: Math.random() * 120 + 120, size: 38 * scale });
       if (Math.random() < 0.012)
-        obstacles.push({ x: canvas.width, y: ground, width: 60, height: 60 });
+        obstacles.push({ x: canvas.width, y: ground, width: 60 * scale, height: 60 * scale });
 
       coins.forEach((c, i) => {
         if (checkCollision(leo, { x: c.x, y: c.y, width: c.size, height: c.size })) {
@@ -151,7 +155,6 @@ export default function MleoRunner() {
     }
 
     function jump() {
-      const canvas = canvasRef.current;
       if (leo && !leo.jumping) {
         leo.dy = -10;
         leo.jumping = true;
@@ -216,7 +219,7 @@ export default function MleoRunner() {
                 const e = new KeyboardEvent("keydown", { code: "Space" });
                 document.dispatchEvent(e);
               }}
-              className="absolute bottom-3 left-1/2 transform -translate-x-1/2 px-6 py-3 bg-yellow-400 text-black font-bold rounded sm:hidden"
+              className="absolute bottom-3 left-1/2 transform -translate-x-1/2 px-8 py-4 bg-yellow-400 text-black font-bold rounded sm:hidden text-lg"
             >
               Jump
             </button>
