@@ -158,6 +158,14 @@ export default function MleoRunner() {
     }
 
     function startGame() {
+      const wrapper = document.getElementById("game-wrapper");
+
+      if (wrapper?.requestFullscreen) {
+        wrapper.requestFullscreen().catch(() => {});
+      } else if (wrapper?.webkitRequestFullscreen) {
+        wrapper.webkitRequestFullscreen();
+      }
+
       initGame();
       running = true;
       update();
@@ -188,10 +196,12 @@ export default function MleoRunner() {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white relative">
-
-        {/* ניקוד - מותאם לנייד/נייח */}
-        <div className="sm:hidden fixed top-3 left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded text-base font-bold z-50">
+      <div
+        id="game-wrapper"
+        className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white relative"
+      >
+        {/* ✅ ניקוד – תמיד מוצג */}
+        <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded text-base sm:text-lg font-bold z-[999]">
           Score: {score} | High Score: {highScore}
         </div>
 
@@ -200,25 +210,24 @@ export default function MleoRunner() {
             ref={canvasRef}
             width={960}
             height={480}
-            className="border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]"
+            className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]"
           />
 
-          {/* ניקוד בנייח (בתוך הקנבס) */}
-          <div className="hidden sm:block absolute top-3 left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded text-base sm:text-lg font-bold">
-            Score: {score} | High Score: {highScore}
-          </div>
-
+          {/* כפתור START */}
           {!gameRunning && !gameOver && (
-            <button
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-5 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
-              onClick={() => setGameRunning(true)}
-            >
-              Start Game
-            </button>
+            <div className="absolute inset-0 flex items-center justify-center z-[999]">
+              <button
+                className="px-5 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
+                onClick={() => setGameRunning(true)}
+              >
+                Start Game
+              </button>
+            </div>
           )}
 
+          {/* מסך GAME OVER */}
           {gameOver && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-[999]">
               <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">GAME OVER</h2>
               <button
                 className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
@@ -230,14 +239,22 @@ export default function MleoRunner() {
           )}
         </div>
 
-        {/* כפתור Jump מחוץ למשחק - מותאם לסיבוב מסך */}
+        {/* ✅ כפתור BACK – תמיד גלוי */}
+        <button
+          onClick={() => window.history.back()}
+          className="fixed top-4 left-4 bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded z-[999]"
+        >
+          ⬅ Back
+        </button>
+
+        {/* ✅ כפתור JUMP – רק בזמן משחק */}
         {gameRunning && (
           <button
             onClick={() => {
               const e = new KeyboardEvent("keydown", { code: "Space" });
               document.dispatchEvent(e);
             }}
-            className="fixed bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-50 landscape:bottom-3 landscape:right-3 landscape:left-auto landscape:translate-x-0 landscape:scale-90"
+            className="fixed bottom-16 left-1/2 transform -translate-x-1/2 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999] landscape:bottom-12 landscape:right-3 landscape:left-auto landscape:translate-x-0 landscape:scale-90"
           >
             Jump
           </button>
