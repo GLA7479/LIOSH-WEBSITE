@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Image from "next/image";
@@ -27,6 +26,7 @@ export default function Header() {
     { key: "gallery", href: "/gallery" },
     { key: "whitepaper", href: "/whitepaper" },
     { key: "contact", href: "/contact" },
+    { key: "game", href: "/mleo-runner" }, // ✅ הוספנו קישור למשחק
   ];
 
   const languages = [
@@ -141,8 +141,6 @@ export default function Header() {
   );
 }
 
-
-// הוספת Footer וכפתור צף
 export function FloatingPresaleButton() {
   return (
     <a
