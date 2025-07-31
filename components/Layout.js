@@ -37,7 +37,7 @@ export default function Layout({ children, video, page }) {
       {/* כפתור פריסייל מוקטן */}
       <a
         href="/presale"
-        className="fixed bottom-4 right-4 bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-full text-sm font-bold shadow-lg transition z-50"
+        className="fixed bottom-4 left-4 bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-full text-sm font-bold shadow-lg transition z-50"
       >
         🚀 Join Presale
       </a>
