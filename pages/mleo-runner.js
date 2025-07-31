@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
 
@@ -189,7 +188,14 @@ export default function MleoRunner() {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white relative">
+
+        {/* ניקוד מחוץ למשחק */}
+        <div className="fixed top-3 left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded text-base sm:text-lg font-bold z-50">
+          Score: {score} | High Score: {highScore}
+        </div>
+
+        {/* קנבס המשחק */}
         <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
           <canvas
             ref={canvasRef}
@@ -197,10 +203,6 @@ export default function MleoRunner() {
             height={480}
             className="border-4 border-yellow-400 rounded-lg w-full h-auto"
           />
-
-          <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded text-base sm:text-lg font-bold">
-            Score: {score} | High Score: {highScore}
-          </div>
 
           {!gameRunning && !gameOver && (
             <button
@@ -222,19 +224,20 @@ export default function MleoRunner() {
               </button>
             </div>
           )}
-
-          {gameRunning && (
-            <button
-              onClick={() => {
-                const e = new KeyboardEvent("keydown", { code: "Space" });
-                document.dispatchEvent(e);
-              }}
-              className="absolute bottom-3 left-1/2 transform -translate-x-1/2 px-6 py-3 bg-yellow-400 text-black font-bold rounded sm:hidden"
-            >
-              Jump
-            </button>
-          )}
         </div>
+
+        {/* כפתור Jump מחוץ למשחק */}
+        {gameRunning && (
+          <button
+            onClick={() => {
+              const e = new KeyboardEvent("keydown", { code: "Space" });
+              document.dispatchEvent(e);
+            }}
+            className="fixed bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-50 landscape:bottom-4 landscape:left-auto landscape:right-4 landscape:translate-x-0"
+          >
+            Jump
+          </button>
+        )}
       </div>
     </Layout>
   );
