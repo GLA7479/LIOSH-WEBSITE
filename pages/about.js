@@ -5,9 +5,21 @@ import Link from "next/link";
 
 export default function About() {
   return (
-    <Layout page="about" video="/videos/about-bg.mp4">
+    <Layout page="about">
+      {/* 🎥 וידאו ברקע */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      >
+        <source src="/videos/about-bg.mp4" type="video/mp4" />
+      </video>
+
       <motion.main
-        className="relative min-h-screen flex flex-col items-center text-white p-0 m-0 overflow-hidden mt-[64px]"
+        className="relative min-h-screen flex flex-col items-center text-white p-0 m-0 overflow-hidden pt-0 mt-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
