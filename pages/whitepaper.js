@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import Layout from "../components/Layout";
+import { motion } from "framer-motion";
 import { useState } from "react";
 
 export default function Whitepaper() {
@@ -30,7 +30,7 @@ export default function Whitepaper() {
       </video>
 
       <motion.main
-        className="relative min-h-screen text-white flex flex-col items-center p-6 pt-[70px] overflow-hidden"
+        className="relative min-h-screen text-white flex flex-col items-center p-6 pt-[40px] overflow-hidden"
         onClick={handleClose}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
