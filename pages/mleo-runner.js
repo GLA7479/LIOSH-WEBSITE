@@ -121,7 +121,7 @@ export default function MleoRunner() {
         obstacles.push({
           x: canvas.width,
           y: ground,
-          width: 60 * scale,
+          width: 60 * scale * 0.75,
           height: 60 * scale,
         });
       }
@@ -200,7 +200,7 @@ export default function MleoRunner() {
             ref={canvasRef}
             width={960}
             height={480}
-            className="border-4 border-yellow-400 rounded-lg w-full h-auto"
+            className="border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]"
           />
 
           {/* ניקוד בנייח (בתוך הקנבס) */}
