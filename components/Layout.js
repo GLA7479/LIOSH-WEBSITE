@@ -1,6 +1,7 @@
+
 import { useEffect, useRef } from "react";
 import Header from "./Header";
-import { Footer, FloatingPresaleButton } from "./Header"; // ✅ נוספו היבוא של הפוטר והכפתור
+import { Footer, FloatingPresaleButton } from "./Header";
 
 export default function Layout({ children, video, page }) {
   const videoRef = useRef(null);
@@ -33,10 +34,14 @@ export default function Layout({ children, video, page }) {
 
       <main className="relative z-10 pt-[65px]">{children}</main>
 
-      {/* ✅ כפתור צף לפריסייל */}
-      <FloatingPresaleButton />
+      {/* כפתור פריסייל מוקטן */}
+      <a
+        href="/presale"
+        className="fixed bottom-4 right-4 bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-full text-sm font-bold shadow-lg transition z-50"
+      >
+        🚀 Join Presale
+      </a>
 
-      {/* ✅ פוטר חדש עם פרטי יצירת קשר */}
       <Footer />
     </div>
   );
