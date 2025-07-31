@@ -40,7 +40,10 @@ export default function MleoRunner() {
     let currentScore = 0;
 
     function initGame() {
-      leo = { x: 50, y: 200, width: 105, height: 105, dy: 0, jumping: false };
+      const isMobile = window.innerWidth < 768;
+      const scale = isMobile ? 1.8 : 1.5;
+
+      leo = { x: 50, y: 200, width: 70 * scale, height: 70 * scale, dy: 0, jumping: false };
       gravity = 0.5;
       coins = [];
       obstacles = [];
@@ -110,9 +113,19 @@ export default function MleoRunner() {
       drawObstacles();
 
       if (Math.random() < 0.03)
-        coins.push({ x: canvas.width, y: Math.random() * 120 + 120, size: 57 });
-      if (Math.random() < 0.012)
-        obstacles.push({ x: canvas.width, y: ground, width: 90, height: 90 });
+        coins.push({ x: canvas.width, y: Math.random() * 120 + 120, size: 38 });
+
+      if (Math.random() < 0.012) {
+        const isMobile = window.innerWidth < 768;
+        const scale = isMobile ? 1.8 : 1.5;
+
+        obstacles.push({
+          x: canvas.width,
+          y: ground,
+          width: 60 * scale,
+          height: 60 * scale,
+        });
+      }
 
       coins.forEach((c, i) => {
         if (checkCollision(leo, { x: c.x, y: c.y, width: c.size, height: c.size })) {
