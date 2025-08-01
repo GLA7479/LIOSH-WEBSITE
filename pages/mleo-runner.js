@@ -13,6 +13,19 @@ export default function MleoRunner() {
   const [playerName, setPlayerName] = useState("");
   const [leaderboard, setLeaderboard] = useState([]);
 
+  // ✅ פונקציית הקפיצה מחוץ ל-useEffect
+  function jump() {
+    if (window.leo && !window.leo.jumping) {
+      if (window.jumpSound) {
+        window.jumpSound.currentTime = 0;
+        window.jumpSound.play().catch(() => {});
+      }
+      window.leo.dy = -10;
+      window.leo.jumping = true;
+    }
+  }
+
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedHighScore = localStorage.getItem("mleoHighScore") || 0;
@@ -89,7 +102,7 @@ bgImg.src = backgrounds[0];
       const scale = isMobile ? 1.8 : 1.5;
 
 leo = { 
-  x: canvas.width / 2 - (150 * scale), 
+  x: canvas.width / 2 - (100 * scale), 
   y: 200, 
   width: 70 * scale, 
   height: 70 * scale, 
