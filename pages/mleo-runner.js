@@ -38,8 +38,15 @@ export default function MleoRunner() {
     const obstacleImg = new window.Image();
     obstacleImg.src = "/images/obstacle.png";
 
-    const bgImg = new window.Image();
-    bgImg.src = "/images/game.png";
+    const backgrounds = [
+  "/images/game-day.png",
+  "/images/game-evening.png",
+  "/images/game-night.png",
+  "/images/game-space.png",
+  "/images/game-park.png",
+];
+let bgImg = new window.Image();
+bgImg.src = backgrounds[0];
 
     // 🎵 יצירת קבצי סאונד רק בדפדפן
     let bgMusic, jumpSound, coinSound, gameOverSound;
@@ -68,6 +75,9 @@ export default function MleoRunner() {
     }
 
     let leo, gravity, coins, obstacles, frame = 0, frameCount = 0;
+    let level = 1;
+    let showLevelUp = false;
+    let levelUpTimer = 0;
     let bgX = 0;
     let running = true;
     let currentScore = 0;
@@ -111,6 +121,14 @@ export default function MleoRunner() {
       if (!running) return;
 
       speedMultiplier = 1 + Math.floor(currentScore / 10) * 0.1;
+
+      if (currentScore >= level * 30) {
+        level++;
+        showLevelUp = true;
+        levelUpTimer = Date.now();
+        const newBgIndex = (level - 1) % backgrounds.length;
+        bgImg.src = backgrounds[newBgIndex];
+      }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -229,6 +247,17 @@ export default function MleoRunner() {
         if (o.x + o.width < 0) obstacles.splice(i, 1);
       });
 
+            if (showLevelUp && Date.now() - levelUpTimer < 2000) {
+        ctx.save();
+        ctx.font = 'bold 48px Arial';
+        ctx.fillStyle = 'yellow';
+        ctx.textAlign = 'center';
+        ctx.fillText('LEVEL ' + level + '!', canvas.width / 2, 100);
+        ctx.restore();
+      } else if (Date.now() - levelUpTimer >= 2000) {
+        showLevelUp = false;
+      }
+
       requestAnimationFrame(update);
     }
 
@@ -344,14 +373,24 @@ export default function MleoRunner() {
         {/* 🎮 מסך המשחק */}
         {!showIntro && (
           <>
-            {!showIntro && (
-              <div
-                className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999]"
-                style={{ top: "80px" }}
-              >
-                Score: {score} | High Score: {highScore}
-              </div>
-            )}
+          {/* ניקוד במסכים רחבים */}
+{!showIntro && (
+  <div
+    className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999] top-4"
+  >
+    Score: {score} | High Score: {highScore}
+  </div>
+)}
+
+{/* ניקוד במסכים רגילים */}
+{!showIntro && (
+  <div
+    className="sm:hidden absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded-md text-base font-bold z-[999] top-2"
+  >
+    {score}
+  </div>
+)}
+
 
             <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
               <canvas ref={canvasRef} width={960} height={480} className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]" />
@@ -373,15 +412,17 @@ export default function MleoRunner() {
 
             {/* ⬆ Jump */}
             {gameRunning && (
-              <button
-                onClick={() => {
-                  const e = new KeyboardEvent("keydown", { code: "Space" });
-                  document.dispatchEvent(e);
-                }}
-                className="fixed bottom-4 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
-              >
-                Jump
-              </button>
+<button
+  onClick={() => {
+    const e = new KeyboardEvent("keydown", { code: "Space" });
+    document.dispatchEvent(e);
+  }}
+  className="fixed bottom-4 right-4 sm:right-4 sm:left-auto sm:transform-none sm:translate-x-0 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]
+             sm:bottom-4 sm:right-4 left-1/2 transform -translate-x-1/2 sm:left-auto"
+>
+  Jump
+</button>
+
             )}
 
             {/* 🚪 Exit */}
