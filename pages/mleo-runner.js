@@ -376,7 +376,7 @@ bgImg.src = backgrounds[0];
           {/* ניקוד במסכים רחבים */}
 {!showIntro && (
   <div
-    className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999] top-4"
+    className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999] top-20"
   >
     Score: {score} | High Score: {highScore}
   </div>
@@ -385,7 +385,7 @@ bgImg.src = backgrounds[0];
 {/* ניקוד במסכים רגילים */}
 {!showIntro && (
   <div
-    className="sm:hidden absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded-md text-base font-bold z-[999] top-2"
+    className="sm:hidden absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded-md text-base font-bold z-[999] top-40"
   >
     {score}
   </div>
@@ -411,19 +411,33 @@ bgImg.src = backgrounds[0];
             </button>
 
             {/* ⬆ Jump */}
-            {gameRunning && (
-<button
-  onClick={() => {
-    const e = new KeyboardEvent("keydown", { code: "Space" });
-    document.dispatchEvent(e);
-  }}
-  className="fixed bottom-4 right-4 sm:right-4 sm:left-auto sm:transform-none sm:translate-x-0 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]
-             sm:bottom-4 sm:right-4 left-1/2 transform -translate-x-1/2 sm:left-auto"
->
-  Jump
-</button>
+{/* כפתור Jump רגיל */}
+{gameRunning && (
+  <button
+    onClick={() => {
+      const e = new KeyboardEvent("keydown", { code: "Space" });
+      document.dispatchEvent(e);
+    }}
+    className="fixed bottom-16 sm:bottom-4 right-4 sm:right-4 sm:left-auto sm:transform-none sm:translate-x-0 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]
+               sm:bottom-4 sm:right-4 left-1/2 transform -translate-x-1/2 sm:left-auto"
+  >
+    Jump
+  </button>
+)}
 
-            )}
+{/* כפתור Jump נוסף למסכים רחבים בצד שמאל */}
+{gameRunning && (
+  <button
+    onClick={() => {
+      const e = new KeyboardEvent("keydown", { code: "Space" });
+      document.dispatchEvent(e);
+    }}
+    className="hidden sm:block fixed bottom-4 left-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
+  >
+    Jump
+  </button>
+)}
+
 
             {/* 🚪 Exit */}
             <button
