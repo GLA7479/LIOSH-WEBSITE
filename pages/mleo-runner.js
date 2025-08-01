@@ -45,7 +45,8 @@ export default function MleoRunner() {
     let bgX = 0;
     let running = true;
     let currentScore = 0;
-    let speedMultiplier = 1; // ✅ שליטה ברמת הקושי
+    let speedMultiplier = 1;
+    let showHitbox = false; // ✅ מאפשר הדלקה/כיבוי עם מקש H
 
     function initGame() {
       const isMobile = window.innerWidth < 768;
@@ -83,12 +84,10 @@ export default function MleoRunner() {
     function update() {
       if (!running) return;
 
-      // ✅ עדכון רמת קושי לפי ניקוד
       speedMultiplier = 1 + Math.floor(currentScore / 10) * 0.1;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // ✅ רקע
       if (bgImg.complete && bgImg.naturalWidth > 0) {
         bgX -= 1.5 * speedMultiplier;
         if (bgX <= -canvas.width) bgX = 0;
@@ -107,7 +106,6 @@ export default function MleoRunner() {
 
       drawLeo();
 
-      // ✅ מטבעות
       coins.forEach((c) => {
         if (coinImg.complete && coinImg.naturalWidth > 0) {
           c.x -= 3 * speedMultiplier;
@@ -115,7 +113,6 @@ export default function MleoRunner() {
         }
       });
 
-      // ✅ מכשולים
       obstacles.forEach((o) => {
         if (obstacleImg.complete && obstacleImg.naturalWidth > 0) {
           o.x -= 4 * speedMultiplier;
@@ -123,7 +120,6 @@ export default function MleoRunner() {
         }
       });
 
-      // ✅ יצירת מטבעות ומכשולים
       if (Math.random() < 0.03) coins.push({ x: canvas.width, y: Math.random() * 120 + 120, size: 38 });
       if (Math.random() < 0.012) {
         const isMobile = window.innerWidth < 768;
@@ -136,7 +132,6 @@ export default function MleoRunner() {
         });
       }
 
-      // ✅ בדיקת פגיעה במטבע
       coins.forEach((c, i) => {
         if (checkCollision(leo, { x: c.x, y: c.y, width: c.size, height: c.size })) {
           coins.splice(i, 1);
@@ -146,11 +141,25 @@ export default function MleoRunner() {
         if (c.x + c.size < 0) coins.splice(i, 1);
       });
 
-      // ✅ בדיקת פגיעה במכשול
-      obstacles.forEach((o, i) => {
-        const obstacleRect = { x: o.x, y: o.y - o.height, width: o.width, height: o.height };
-        if (checkCollision(leo, obstacleRect)) {
-          if (leo.y + leo.height - 10 <= obstacleRect.y) {
+      // ✅ בדיקת פגיעה במכשול (Hitbox מוקטן + אפשרות הדמיה עם H)
+  obstacles.forEach((o, i) => {
+  const reducedHitbox = {
+    x: o.x + o.width * 0.2,      // במקום 0.15 → מקטין יותר מהצד
+    y: o.y - o.height * 0.85,    // במקום 0.9 → מקטין יותר מלמעלה
+    width: o.width * 0.6,        // במקום 0.7 → צר יותר
+    height: o.height * 0.8,      // במקום 0.9 → נמוך יותר
+  };
+
+        if (showHitbox) {
+          ctx.save();
+          ctx.strokeStyle = "rgba(255,0,0,0.7)";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(reducedHitbox.x, reducedHitbox.y, reducedHitbox.width, reducedHitbox.height);
+          ctx.restore();
+        }
+
+        if (checkCollision(leo, reducedHitbox)) {
+          if (leo.y + leo.height - 15 <= reducedHitbox.y) {
             leo.dy = -10;
             leo.jumping = true;
           } else {
@@ -200,10 +209,14 @@ export default function MleoRunner() {
       }
     }
 
+    // ✅ הוספנו אפשרות ללחוץ על H כדי להציג/להסתיר Hitbox
     function handleKey(e) {
       if (e.code === "Space") {
         e.preventDefault();
         jump();
+      }
+      if (e.code === "KeyH") {
+        showHitbox = !showHitbox;
       }
     }
 
@@ -281,16 +294,14 @@ export default function MleoRunner() {
         {/* 🎮 מסך המשחק */}
         {!showIntro && (
           <>
-{!showIntro && (
-  <div
-    className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999]"
-    style={{ top: "80px" }}
-  >
-    Score: {score} | High Score: {highScore}
-  </div>
-)}
-
-
+            {!showIntro && (
+              <div
+                className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999]"
+                style={{ top: "80px" }}
+              >
+                Score: {score} | High Score: {highScore}
+              </div>
+            )}
 
             <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
               <canvas ref={canvasRef} width={960} height={480} className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]" />
