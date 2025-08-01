@@ -41,6 +41,32 @@ export default function MleoRunner() {
     const bgImg = new window.Image();
     bgImg.src = "/images/game.png";
 
+    // 🎵 יצירת קבצי סאונד רק בדפדפן
+    let bgMusic, jumpSound, coinSound, gameOverSound;
+
+    if (typeof window !== "undefined") {
+      const createSafeAudio = (path) => {
+        try {
+          return new Audio(path);
+        } catch {
+          return null;
+        }
+      };
+
+      bgMusic = createSafeAudio("/sounds/bg-music.mp3");
+      jumpSound = createSafeAudio("/sounds/jump.mp3");
+      coinSound = createSafeAudio("/sounds/coin.mp3");
+      gameOverSound = createSafeAudio("/sounds/game-over.mp3");
+
+      if (bgMusic) {
+        bgMusic.loop = true;
+        bgMusic.volume = 0.4;
+      }
+      if (jumpSound) jumpSound.volume = 0.6;
+      if (coinSound) coinSound.volume = 0.6;
+      if (gameOverSound) gameOverSound.volume = 0.7;
+    }
+
     let leo, gravity, coins, obstacles, frame = 0, frameCount = 0;
     let bgX = 0;
     let running = true;
@@ -137,6 +163,11 @@ export default function MleoRunner() {
           coins.splice(i, 1);
           currentScore++;
           setScore(currentScore);
+
+          if (coinSound) {
+            coinSound.currentTime = 0;
+            coinSound.play().catch(() => {});
+          }
         }
         if (c.x + c.size < 0) coins.splice(i, 1);
       });
@@ -160,11 +191,21 @@ export default function MleoRunner() {
 
         if (checkCollision(leo, reducedHitbox)) {
           if (leo.y + leo.height - 15 <= reducedHitbox.y) {
-            leo.dy = -10;
+            if (jumpSound) {
+        jumpSound.currentTime = 0;
+        jumpSound.play().catch(() => {});
+      }
+      leo.dy = -10;
             leo.jumping = true;
           } else {
             running = false;
             setGameRunning(false);
+            if (bgMusic) bgMusic.pause();
+            if (gameOverSound) {
+              gameOverSound.currentTime = 0;
+              gameOverSound.play().catch(() => {});
+            }
+
             setGameOver(true);
 
             if (currentScore > highScore) {
@@ -197,6 +238,11 @@ export default function MleoRunner() {
       if (isMobile && wrapper?.requestFullscreen) wrapper.requestFullscreen().catch(() => {});
       else if (isMobile && wrapper?.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
 
+      if (bgMusic) {
+        bgMusic.currentTime = 0;
+        bgMusic.play().catch(() => {});
+      }
+
       initGame();
       running = true;
       update();
@@ -204,7 +250,11 @@ export default function MleoRunner() {
 
     function jump() {
       if (leo && !leo.jumping) {
-        leo.dy = -10;
+        if (jumpSound) {
+        jumpSound.currentTime = 0;
+        jumpSound.play().catch(() => {});
+      }
+      leo.dy = -10;
         leo.jumping = true;
       }
     }
