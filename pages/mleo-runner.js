@@ -132,7 +132,7 @@ export default function MleoRunner() {
 
         obstacles.push({
           x: canvas.width,
-          y: ground,
+          y: ground + 30,
           width: 60 * scale * 0.75,
           height: 60 * scale,
         });
