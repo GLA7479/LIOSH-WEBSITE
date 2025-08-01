@@ -29,21 +29,17 @@ export default function MleoRunner() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    let leoSprite, coinImg, obstacleImg, bgImg;
+    const leoSprite = new window.Image();
+    leoSprite.src = "/images/dog-spritesheet.png";
 
-    if (typeof window !== "undefined") {
-      leoSprite = new window.Image();
-      leoSprite.src = "/images/dog-spritesheet.png";
+    const coinImg = new window.Image();
+    coinImg.src = "/images/leo-logo.png";
 
-      coinImg = new window.Image();
-      coinImg.src = "/images/leo-logo.png";
+    const obstacleImg = new window.Image();
+    obstacleImg.src = "/images/obstacle.png";
 
-      obstacleImg = new window.Image();
-      obstacleImg.src = "/images/obstacle.png";
-
-      bgImg = new window.Image();
-      bgImg.src = "/images/game.png";
-    }
+    const bgImg = new window.Image();
+    bgImg.src = "/images/game.png";
 
     let leo, gravity, coins, obstacles, frame = 0, frameCount = 0;
     let bgX = 0;
@@ -66,6 +62,7 @@ export default function MleoRunner() {
     }
 
     function drawBackground() {
+      if (!bgImg.complete || bgImg.naturalWidth === 0) return;
       bgX -= 1.5;
       if (bgX <= -canvas.width) bgX = 0;
       ctx.drawImage(bgImg, bgX, 0, canvas.width, canvas.height);
@@ -73,6 +70,7 @@ export default function MleoRunner() {
     }
 
     function drawLeo() {
+      if (!leoSprite.complete || leoSprite.naturalWidth === 0) return;
       const sw = leoSprite.width / 4;
       const sh = leoSprite.height;
       ctx.drawImage(leoSprite, frame * sw, 0, sw, sh, leo.x, leo.y, leo.width, leo.height);
@@ -81,6 +79,7 @@ export default function MleoRunner() {
     }
 
     function drawCoins() {
+      if (!coinImg.complete || coinImg.naturalWidth === 0) return;
       coins.forEach((c) => {
         c.x -= 3;
         ctx.drawImage(coinImg, c.x, c.y, c.size, c.size);
@@ -88,6 +87,7 @@ export default function MleoRunner() {
     }
 
     function drawObstacles() {
+      if (!obstacleImg.complete || obstacleImg.naturalWidth === 0) return;
       obstacles.forEach((o) => {
         o.x -= 4;
         ctx.drawImage(obstacleImg, o.x, o.y - o.height, o.width, o.height);
@@ -105,6 +105,7 @@ export default function MleoRunner() {
 
     function update() {
       if (!running) return;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawBackground();
 
@@ -166,7 +167,6 @@ export default function MleoRunner() {
             let updated = [...stored];
 
             const playerIndex = updated.findIndex((p) => p.name === playerName);
-
             if (playerIndex >= 0) {
               if (currentScore > updated[playerIndex].score) {
                 updated[playerIndex].score = currentScore;
@@ -176,7 +176,6 @@ export default function MleoRunner() {
             }
 
             updated = updated.sort((a, b) => b.score - a.score).slice(0, 20);
-
             localStorage.setItem("leaderboard", JSON.stringify(updated));
             setLeaderboard(updated);
           }
@@ -228,15 +227,20 @@ export default function MleoRunner() {
   return (
     <Layout>
       <div id="game-wrapper" className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white relative">
-        
+
         {showIntro && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 z-[999] text-center p-6">
             <Image src="/images/leo-intro.png" alt="Leo" width={220} height={220} className="mb-6 animate-bounce" />
             <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-2">🚀 LIO Runner</h1>
             <p className="text-base sm:text-lg text-gray-200 mb-4">Help Leo collect coins and reach the moon!</p>
 
-            <input type="text" placeholder="Enter your name" value={playerName} onChange={(e) => setPlayerName(e.target.value)}
-              className="mb-4 px-4 py-2 rounded text-black w-64 text-center" />
+            <input
+              type="text"
+              placeholder="Enter your name"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              className="mb-4 px-4 py-2 rounded text-black w-64 text-center"
+            />
 
             <button
               onClick={() => {
@@ -251,63 +255,61 @@ export default function MleoRunner() {
               }}
               disabled={!playerName.trim()}
               className={`px-8 py-4 font-bold rounded-lg text-xl shadow-lg transform transition animate-pulse ${
-                playerName.trim() ? "bg-yellow-400 text-black hover:scale-105" : "bg-gray-500 text-gray-300 cursor-not-allowed"
+                playerName.trim()
+                  ? "bg-yellow-400 text-black hover:scale-105"
+                  : "bg-gray-500 text-gray-300 cursor-not-allowed"
               }`}
             >
               ▶ Start Game
             </button>
 
-            {/* טבלת השיאים עם Rank */}
-{/* 🔹 טבלה לדסקטופ */}
-<div className="absolute top-12 right-20 bg-black/50 p-4 rounded-lg w-72 shadow-lg hidden sm:block">
-  <h2 className="text-lg font-bold mb-2 text-yellow-300">🏆 Leaderboard</h2>
-  <table className="w-full text-sm">
-    <thead>
-      <tr>
-        <th className="text-left">#</th>
-        <th className="text-left">Player</th>
-        <th className="text-right">High Score</th>
-      </tr>
-    </thead>
-    <tbody>
-      {leaderboard.map((p, i) => (
-        <tr key={i} className="border-t border-gray-600">
-          <td className="text-left py-1">{i + 1}</td>
-          <td className="text-left py-1">{p.name}</td>
-          <td className="text-right py-1">{p.score}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
+            {/* טבלת שיאים */}
+            <div className="absolute top-12 right-20 bg-black/50 p-4 rounded-lg w-72 shadow-lg hidden sm:block">
+              <h2 className="text-lg font-bold mb-2 text-yellow-300">🏆 Leaderboard</h2>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th className="text-left">#</th>
+                    <th className="text-left">Player</th>
+                    <th className="text-right">High Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {leaderboard.map((p, i) => (
+                    <tr key={i} className="border-t border-gray-600">
+                      <td className="text-left py-1">{i + 1}</td>
+                      <td className="text-left py-1">{p.name}</td>
+                      <td className="text-right py-1">{p.score}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-{/* 🔹 טבלה לנייד */}
-<div className="bg-black/50 p-4 rounded-lg w-72 shadow-lg mt-4 block sm:hidden">
-  <h2 className="text-lg font-bold mb-2 text-yellow-300">🏆 Leaderboard</h2>
-  <table className="w-full text-sm">
-    <thead>
-      <tr>
-        <th className="text-left">#</th>
-        <th className="text-left">Player</th>
-        <th className="text-right">High Score</th>
-      </tr>
-    </thead>
-    <tbody>
-      {leaderboard.map((p, i) => (
-        <tr key={i} className="border-t border-gray-600">
-          <td className="text-left py-1">{i + 1}</td>
-          <td className="text-left py-1">{p.name}</td>
-          <td className="text-right py-1">{p.score}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-
+            <div className="bg-black/50 p-4 rounded-lg w-72 shadow-lg mt-4 block sm:hidden">
+              <h2 className="text-lg font-bold mb-2 text-yellow-300">🏆 Leaderboard</h2>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th className="text-left">#</th>
+                    <th className="text-left">Player</th>
+                    <th className="text-right">High Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {leaderboard.map((p, i) => (
+                    <tr key={i} className="border-t border-gray-600">
+                      <td className="text-left py-1">{i + 1}</td>
+                      <td className="text-left py-1">{p.name}</td>
+                      <td className="text-right py-1">{p.score}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
-        {/* מסך המשחק */}
         {!showIntro && (
           <>
             <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded text-base sm:text-lg font-bold z-[999]">
@@ -315,14 +317,20 @@ export default function MleoRunner() {
             </div>
 
             <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
-              <canvas ref={canvasRef} width={960} height={480}
-                className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]" />
+              <canvas
+                ref={canvasRef}
+                width={960}
+                height={480}
+                className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]"
+              />
 
               {gameOver && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-[999]">
                   <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">GAME OVER</h2>
-                  <button className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
-                    onClick={() => setGameRunning(true)}>
+                  <button
+                    className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
+                    onClick={() => setGameRunning(true)}
+                  >
                     Start Again
                   </button>
                 </div>
@@ -342,31 +350,27 @@ export default function MleoRunner() {
                   const e = new KeyboardEvent("keydown", { code: "Space" });
                   document.dispatchEvent(e);
                 }}
-className="fixed bottom-4 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
-
+                className="fixed bottom-4 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
               >
                 Jump
               </button>
             )}
 
-<button
-  onClick={() => {
-    // יציאה ממסך מלא אם פעיל
-    if (document.fullscreenElement) {
-      document.exitFullscreen().catch(() => {});
-    } else if (document.webkitFullscreenElement) {
-      document.webkitExitFullscreen();
-    }
-
-    setGameRunning(false);
-    setGameOver(false);
-    setShowIntro(true);
-  }}
-  className="fixed top-24 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
->
-  Exit
-</button>
-
+            <button
+              onClick={() => {
+                if (document.fullscreenElement) {
+                  document.exitFullscreen().catch(() => {});
+                } else if (document.webkitFullscreenElement) {
+                  document.webkitExitFullscreen();
+                }
+                setGameRunning(false);
+                setGameOver(false);
+                setShowIntro(true);
+              }}
+              className="fixed top-24 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
+            >
+              Exit
+            </button>
           </>
         )}
       </div>
