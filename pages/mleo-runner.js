@@ -45,6 +45,7 @@ export default function MleoRunner() {
     let bgX = 0;
     let running = true;
     let currentScore = 0;
+    let speedMultiplier = 1; // ✅ שליטה ברמת הקושי
 
     function initGame() {
       const isMobile = window.innerWidth < 768;
@@ -61,12 +62,13 @@ export default function MleoRunner() {
       setGameOver(false);
     }
 
-    function drawBackground() {
-      if (!bgImg.complete || bgImg.naturalWidth === 0) return;
-      bgX -= 1.5;
-      if (bgX <= -canvas.width) bgX = 0;
-      ctx.drawImage(bgImg, bgX, 0, canvas.width, canvas.height);
-      ctx.drawImage(bgImg, bgX + canvas.width, 0, canvas.width, canvas.height);
+    function checkCollision(r1, r2) {
+      return (
+        r1.x < r2.x + r2.width &&
+        r1.x + r1.width > r2.x &&
+        r1.y < r2.y + r2.height &&
+        r1.y + r1.height > r2.y
+      );
     }
 
     function drawLeo() {
@@ -78,40 +80,24 @@ export default function MleoRunner() {
       if (frameCount % 6 === 0) frame = (frame + 1) % 4;
     }
 
-    function drawCoins() {
-      if (!coinImg.complete || coinImg.naturalWidth === 0) return;
-      coins.forEach((c) => {
-        c.x -= 3;
-        ctx.drawImage(coinImg, c.x, c.y, c.size, c.size);
-      });
-    }
-
-    function drawObstacles() {
-      if (!obstacleImg.complete || obstacleImg.naturalWidth === 0) return;
-      obstacles.forEach((o) => {
-        o.x -= 4;
-        ctx.drawImage(obstacleImg, o.x, o.y - o.height, o.width, o.height);
-      });
-    }
-
-    function checkCollision(r1, r2) {
-      return (
-        r1.x < r2.x + r2.width &&
-        r1.x + r1.width > r2.x &&
-        r1.y < r2.y + r2.height &&
-        r1.y + r1.height > r2.y
-      );
-    }
-
     function update() {
       if (!running) return;
 
+      // ✅ עדכון רמת קושי לפי ניקוד
+      speedMultiplier = 1 + Math.floor(currentScore / 10) * 0.1;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawBackground();
+
+      // ✅ רקע
+      if (bgImg.complete && bgImg.naturalWidth > 0) {
+        bgX -= 1.5 * speedMultiplier;
+        if (bgX <= -canvas.width) bgX = 0;
+        ctx.drawImage(bgImg, bgX, 0, canvas.width, canvas.height);
+        ctx.drawImage(bgImg, bgX + canvas.width, 0, canvas.width, canvas.height);
+      }
 
       const ground = canvas.height - 80;
       leo.y += leo.dy;
-
       if (leo.y + leo.height < ground) leo.dy += gravity;
       else {
         leo.dy = 0;
@@ -120,16 +106,28 @@ export default function MleoRunner() {
       }
 
       drawLeo();
-      drawCoins();
-      drawObstacles();
 
-      if (Math.random() < 0.03)
-        coins.push({ x: canvas.width, y: Math.random() * 120 + 120, size: 38 });
+      // ✅ מטבעות
+      coins.forEach((c) => {
+        if (coinImg.complete && coinImg.naturalWidth > 0) {
+          c.x -= 3 * speedMultiplier;
+          ctx.drawImage(coinImg, c.x, c.y, c.size, c.size);
+        }
+      });
 
+      // ✅ מכשולים
+      obstacles.forEach((o) => {
+        if (obstacleImg.complete && obstacleImg.naturalWidth > 0) {
+          o.x -= 4 * speedMultiplier;
+          ctx.drawImage(obstacleImg, o.x, o.y - o.height, o.width, o.height);
+        }
+      });
+
+      // ✅ יצירת מטבעות ומכשולים
+      if (Math.random() < 0.03) coins.push({ x: canvas.width, y: Math.random() * 120 + 120, size: 38 });
       if (Math.random() < 0.012) {
         const isMobile = window.innerWidth < 768;
         const scale = isMobile ? 1.8 : 1.5;
-
         obstacles.push({
           x: canvas.width,
           y: ground + 30,
@@ -138,6 +136,7 @@ export default function MleoRunner() {
         });
       }
 
+      // ✅ בדיקת פגיעה במטבע
       coins.forEach((c, i) => {
         if (checkCollision(leo, { x: c.x, y: c.y, width: c.size, height: c.size })) {
           coins.splice(i, 1);
@@ -147,6 +146,7 @@ export default function MleoRunner() {
         if (c.x + c.size < 0) coins.splice(i, 1);
       });
 
+      // ✅ בדיקת פגיעה במכשול
       obstacles.forEach((o, i) => {
         const obstacleRect = { x: o.x, y: o.y - o.height, width: o.width, height: o.height };
         if (checkCollision(leo, obstacleRect)) {
@@ -165,16 +165,12 @@ export default function MleoRunner() {
 
             const stored = JSON.parse(localStorage.getItem("leaderboard") || "[]");
             let updated = [...stored];
-
             const playerIndex = updated.findIndex((p) => p.name === playerName);
             if (playerIndex >= 0) {
-              if (currentScore > updated[playerIndex].score) {
-                updated[playerIndex].score = currentScore;
-              }
+              if (currentScore > updated[playerIndex].score) updated[playerIndex].score = currentScore;
             } else {
               updated.push({ name: playerName, score: currentScore });
             }
-
             updated = updated.sort((a, b) => b.score - a.score).slice(0, 20);
             localStorage.setItem("leaderboard", JSON.stringify(updated));
             setLeaderboard(updated);
@@ -189,12 +185,8 @@ export default function MleoRunner() {
     function startGame() {
       const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       const wrapper = document.getElementById("game-wrapper");
-
-      if (isMobile && wrapper?.requestFullscreen) {
-        wrapper.requestFullscreen().catch(() => {});
-      } else if (isMobile && wrapper?.webkitRequestFullscreen) {
-        wrapper.webkitRequestFullscreen();
-      }
+      if (isMobile && wrapper?.requestFullscreen) wrapper.requestFullscreen().catch(() => {});
+      else if (isMobile && wrapper?.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
 
       initGame();
       running = true;
@@ -227,7 +219,7 @@ export default function MleoRunner() {
   return (
     <Layout>
       <div id="game-wrapper" className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white relative">
-
+        {/* 🎬 מסך פתיחה */}
         {showIntro && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 z-[999] text-center p-6">
             <Image src="/images/leo-intro.png" alt="Leo" width={220} height={220} className="mb-6 animate-bounce" />
@@ -255,38 +247,14 @@ export default function MleoRunner() {
               }}
               disabled={!playerName.trim()}
               className={`px-8 py-4 font-bold rounded-lg text-xl shadow-lg transform transition animate-pulse ${
-                playerName.trim()
-                  ? "bg-yellow-400 text-black hover:scale-105"
-                  : "bg-gray-500 text-gray-300 cursor-not-allowed"
+                playerName.trim() ? "bg-yellow-400 text-black hover:scale-105" : "bg-gray-500 text-gray-300 cursor-not-allowed"
               }`}
             >
               ▶ Start Game
             </button>
 
-            {/* טבלת שיאים */}
+            {/* 📊 טבלת השיאים */}
             <div className="absolute top-12 right-20 bg-black/50 p-4 rounded-lg w-72 shadow-lg hidden sm:block">
-              <h2 className="text-lg font-bold mb-2 text-yellow-300">🏆 Leaderboard</h2>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr>
-                    <th className="text-left">#</th>
-                    <th className="text-left">Player</th>
-                    <th className="text-right">High Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaderboard.map((p, i) => (
-                    <tr key={i} className="border-t border-gray-600">
-                      <td className="text-left py-1">{i + 1}</td>
-                      <td className="text-left py-1">{p.name}</td>
-                      <td className="text-right py-1">{p.score}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="bg-black/50 p-4 rounded-lg w-72 shadow-lg mt-4 block sm:hidden">
               <h2 className="text-lg font-bold mb-2 text-yellow-300">🏆 Leaderboard</h2>
               <table className="w-full text-sm">
                 <thead>
@@ -310,40 +278,39 @@ export default function MleoRunner() {
           </div>
         )}
 
+        {/* 🎮 מסך המשחק */}
         {!showIntro && (
           <>
-            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded text-base sm:text-lg font-bold z-[999]">
-              Score: {score} | High Score: {highScore}
-            </div>
+{!showIntro && (
+  <div
+    className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999]"
+    style={{ top: "80px" }}
+  >
+    Score: {score} | High Score: {highScore}
+  </div>
+)}
+
+
 
             <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
-              <canvas
-                ref={canvasRef}
-                width={960}
-                height={480}
-                className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]"
-              />
+              <canvas ref={canvasRef} width={960} height={480} className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]" />
 
               {gameOver && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-[999]">
                   <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">GAME OVER</h2>
-                  <button
-                    className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
-                    onClick={() => setGameRunning(true)}
-                  >
+                  <button className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg" onClick={() => setGameRunning(true)}>
                     Start Again
                   </button>
                 </div>
               )}
             </div>
 
-            <button
-              onClick={() => window.history.back()}
-              className="fixed top-4 left-4 bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded z-[999]"
-            >
+            {/* 🔙 Back */}
+            <button onClick={() => window.history.back()} className="fixed top-4 left-4 bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded z-[999]">
               ⬅ Back
             </button>
 
+            {/* ⬆ Jump */}
             {gameRunning && (
               <button
                 onClick={() => {
@@ -356,13 +323,11 @@ export default function MleoRunner() {
               </button>
             )}
 
+            {/* 🚪 Exit */}
             <button
               onClick={() => {
-                if (document.fullscreenElement) {
-                  document.exitFullscreen().catch(() => {});
-                } else if (document.webkitFullscreenElement) {
-                  document.webkitExitFullscreen();
-                }
+                if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+                else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
                 setGameRunning(false);
                 setGameOver(false);
                 setShowIntro(true);
