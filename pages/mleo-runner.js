@@ -201,9 +201,9 @@ leo = {
       // ✅ בדיקת פגיעה במכשול (Hitbox מוקטן + אפשרות הדמיה עם H)
   obstacles.forEach((o, i) => {
   const reducedHitbox = {
-    x: o.x + o.width * 0.2,      // במקום 0.15 → מקטין יותר מהצד
-    y: o.y - o.height * 0.85,    // במקום 0.9 → מקטין יותר מלמעלה
-    width: o.width * 0.6,        // במקום 0.7 → צר יותר
+    x: o.x + o.width * 0.5,      // במקום 0.15 → מקטין יותר מהצד
+    y: o.y - o.height * 0.75,    // במקום 0.9 → מקטין יותר מלמעלה
+    width: o.width * 0.4,        // במקום 0.7 → צר יותר
     height: o.height * 0.8,      // במקום 0.9 → נמוך יותר
   };
 
@@ -381,23 +381,23 @@ leo = {
         {/* 🎮 מסך המשחק */}
         {!showIntro && (
           <>
-          {/* ניקוד במסכים רחבים */}
-{!showIntro && (
-  <div
-    className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999] top-20"
-  >
-    Score: {score} | High Score: {highScore}
-  </div>
-)}
+<>
+  {/* ניקוד במסכים רחבים */}
+  {!showIntro && (
+    <div className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999] top-10">
+      Score: {score} | High Score: {highScore}
+    </div>
+  )}
 
-{/* ניקוד במסכים רגילים */}
-{!showIntro && (
-  <div
-    className="sm:hidden absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded-md text-base font-bold z-[999] top-40"
-  >
-    {score}
-  </div>
-)}
+  {/* ניקוד במסכים קטנים */}
+  {!showIntro && (
+    <div className="sm:hidden absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded-md text-base font-bold z-[999] bottom-36">
+      Score: {score} | High Score: {highScore}
+    </div>
+  )}
+</>
+
+
 
 
             <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
@@ -426,7 +426,7 @@ leo = {
       const e = new KeyboardEvent("keydown", { code: "Space" });
       document.dispatchEvent(e);
     }}
-    className="fixed bottom-16 sm:bottom-4 right-4 sm:right-4 sm:left-auto sm:transform-none sm:translate-x-0 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]
+    className="fixed bottom-36 sm:bottom-4 right-4 sm:right-4 sm:left-auto sm:transform-none sm:translate-x-0 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]
                sm:bottom-4 sm:right-4 left-1/2 transform -translate-x-1/2 sm:left-auto"
   >
     Jump
