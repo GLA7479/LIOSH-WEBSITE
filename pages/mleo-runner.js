@@ -88,7 +88,15 @@ bgImg.src = backgrounds[0];
       const isMobile = window.innerWidth < 768;
       const scale = isMobile ? 1.8 : 1.5;
 
-      leo = { x: 50, y: 200, width: 70 * scale, height: 70 * scale, dy: 0, jumping: false };
+leo = { 
+  x: canvas.width / 2 - (150 * scale), 
+  y: 200, 
+  width: 70 * scale, 
+  height: 70 * scale, 
+  dy: 0, 
+  jumping: false 
+};
+
       gravity = 0.5;
       coins = [];
       obstacles = [];
@@ -448,7 +456,7 @@ bgImg.src = backgrounds[0];
                 setGameOver(false);
                 setShowIntro(true);
               }}
-              className="fixed top-24 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
+              className="fixed top-16 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
             >
               Exit
             </button>
