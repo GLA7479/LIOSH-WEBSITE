@@ -1,17 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
+import Image from "next/image";
 
 export default function MleoRunner() {
   const canvasRef = useRef(null);
   const [gameRunning, setGameRunning] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
+
+  const [playerName, setPlayerName] = useState("");
+  const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedHighScore = localStorage.getItem("mleoHighScore") || 0;
       setHighScore(Number(savedHighScore));
+
+      const stored = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+      setLeaderboard(stored);
     }
   }, []);
 
@@ -21,17 +29,21 @@ export default function MleoRunner() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    const leoSprite = new Image();
-    leoSprite.src = "/images/dog-spritesheet.png";
+    let leoSprite, coinImg, obstacleImg, bgImg;
 
-    const coinImg = new Image();
-    coinImg.src = "/images/leo-logo.png";
+    if (typeof window !== "undefined") {
+      leoSprite = new window.Image();
+      leoSprite.src = "/images/dog-spritesheet.png";
 
-    const obstacleImg = new Image();
-    obstacleImg.src = "/images/obstacle.png";
+      coinImg = new window.Image();
+      coinImg.src = "/images/leo-logo.png";
 
-    const bgImg = new Image();
-    bgImg.src = "/images/game.png";
+      obstacleImg = new window.Image();
+      obstacleImg.src = "/images/obstacle.png";
+
+      bgImg = new window.Image();
+      bgImg.src = "/images/game.png";
+    }
 
     let leo, gravity, coins, obstacles, frame = 0, frameCount = 0;
     let bgX = 0;
@@ -93,13 +105,12 @@ export default function MleoRunner() {
 
     function update() {
       if (!running) return;
-
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawBackground();
 
       const ground = canvas.height - 80;
-
       leo.y += leo.dy;
+
       if (leo.y + leo.height < ground) leo.dy += gravity;
       else {
         leo.dy = 0;
@@ -145,10 +156,29 @@ export default function MleoRunner() {
             running = false;
             setGameRunning(false);
             setGameOver(true);
+
             if (currentScore > highScore) {
               setHighScore(currentScore);
               localStorage.setItem("mleoHighScore", currentScore);
             }
+
+            const stored = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+            let updated = [...stored];
+
+            const playerIndex = updated.findIndex((p) => p.name === playerName);
+
+            if (playerIndex >= 0) {
+              if (currentScore > updated[playerIndex].score) {
+                updated[playerIndex].score = currentScore;
+              }
+            } else {
+              updated.push({ name: playerName, score: currentScore });
+            }
+
+            updated = updated.sort((a, b) => b.score - a.score).slice(0, 20);
+
+            localStorage.setItem("leaderboard", JSON.stringify(updated));
+            setLeaderboard(updated);
           }
         }
         if (o.x + o.width < 0) obstacles.splice(i, 1);
@@ -158,11 +188,12 @@ export default function MleoRunner() {
     }
 
     function startGame() {
+      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       const wrapper = document.getElementById("game-wrapper");
 
-      if (wrapper?.requestFullscreen) {
+      if (isMobile && wrapper?.requestFullscreen) {
         wrapper.requestFullscreen().catch(() => {});
-      } else if (wrapper?.webkitRequestFullscreen) {
+      } else if (isMobile && wrapper?.webkitRequestFullscreen) {
         wrapper.webkitRequestFullscreen();
       }
 
@@ -196,68 +227,114 @@ export default function MleoRunner() {
 
   return (
     <Layout>
-      <div
-        id="game-wrapper"
-        className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white relative"
-      >
-        {/* ✅ ניקוד – תמיד מוצג */}
-        <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded text-base sm:text-lg font-bold z-[999]">
-          Score: {score} | High Score: {highScore}
-        </div>
+      <div id="game-wrapper" className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white relative">
+        
+        {showIntro && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 z-[999] text-center p-6">
+            <Image src="/images/leo-intro.png" alt="Leo" width={220} height={220} className="mb-6 animate-bounce" />
+            <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-2">🚀 LIO Runner</h1>
+            <p className="text-base sm:text-lg text-gray-200 mb-4">Help Leo collect coins and reach the moon!</p>
 
-        <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
-          <canvas
-            ref={canvasRef}
-            width={960}
-            height={480}
-            className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]"
-          />
+            <input type="text" placeholder="Enter your name" value={playerName} onChange={(e) => setPlayerName(e.target.value)}
+              className="mb-4 px-4 py-2 rounded text-black w-64 text-center" />
 
-          {/* כפתור START */}
-          {!gameRunning && !gameOver && (
-            <div className="absolute inset-0 flex items-center justify-center z-[999]">
-              <button
-                className="px-5 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
-                onClick={() => setGameRunning(true)}
-              >
-                Start Game
-              </button>
+            <button
+              onClick={() => {
+                if (!playerName.trim()) return;
+                const stored = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+                if (!stored.find((p) => p.name === playerName)) {
+                  stored.push({ name: playerName, score: 0 });
+                  localStorage.setItem("leaderboard", JSON.stringify(stored.slice(-20)));
+                }
+                setShowIntro(false);
+                setGameRunning(true);
+              }}
+              disabled={!playerName.trim()}
+              className={`px-8 py-4 font-bold rounded-lg text-xl shadow-lg transform transition animate-pulse ${
+                playerName.trim() ? "bg-yellow-400 text-black hover:scale-105" : "bg-gray-500 text-gray-300 cursor-not-allowed"
+              }`}
+            >
+              ▶ Start Game
+            </button>
+
+            {/* טבלת השיאים עם Rank */}
+            <div className="absolute top-12 right-20 bg-black/50 p-4 rounded-lg w-72 shadow-lg">
+              <h2 className="text-lg font-bold mb-2 text-yellow-300">🏆 Leaderboard</h2>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th className="text-left">#</th>
+                    <th className="text-left">Player</th>
+                    <th className="text-right">High Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {leaderboard.map((p, i) => (
+                    <tr key={i} className="border-t border-gray-600">
+                      <td className="text-left py-1">{i + 1}</td>
+                      <td className="text-left py-1">{p.name}</td>
+                      <td className="text-right py-1">{p.score}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* מסך GAME OVER */}
-          {gameOver && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-[999]">
-              <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">GAME OVER</h2>
-              <button
-                className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
-                onClick={() => setGameRunning(true)}
-              >
-                Start Again
-              </button>
+        {/* מסך המשחק */}
+        {!showIntro && (
+          <>
+            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded text-base sm:text-lg font-bold z-[999]">
+              Score: {score} | High Score: {highScore}
             </div>
-          )}
-        </div>
 
-        {/* ✅ כפתור BACK – תמיד גלוי */}
-        <button
-          onClick={() => window.history.back()}
-          className="fixed top-4 left-4 bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded z-[999]"
-        >
-          ⬅ Back
-        </button>
+            <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
+              <canvas ref={canvasRef} width={960} height={480}
+                className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]" />
 
-        {/* ✅ כפתור JUMP – רק בזמן משחק */}
-        {gameRunning && (
-          <button
-            onClick={() => {
-              const e = new KeyboardEvent("keydown", { code: "Space" });
-              document.dispatchEvent(e);
-            }}
-            className="fixed bottom-16 left-1/2 transform -translate-x-1/2 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999] landscape:bottom-12 landscape:right-3 landscape:left-auto landscape:translate-x-0 landscape:scale-90"
-          >
-            Jump
-          </button>
+              {gameOver && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-[999]">
+                  <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">GAME OVER</h2>
+                  <button className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
+                    onClick={() => setGameRunning(true)}>
+                    Start Again
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => window.history.back()}
+              className="fixed top-4 left-4 bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded z-[999]"
+            >
+              ⬅ Back
+            </button>
+
+            {gameRunning && (
+              <button
+                onClick={() => {
+                  const e = new KeyboardEvent("keydown", { code: "Space" });
+                  document.dispatchEvent(e);
+                }}
+className="fixed bottom-4 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
+
+              >
+                Jump
+              </button>
+            )}
+
+            <button
+              onClick={() => {
+                setGameRunning(false);
+                setGameOver(false);
+                setShowIntro(true);
+              }}
+              className="fixed top-24 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
+            >
+              Exit
+            </button>
+          </>
         )}
       </div>
     </Layout>
