@@ -13,19 +13,6 @@ export default function MleoRunner() {
   const [playerName, setPlayerName] = useState("");
   const [leaderboard, setLeaderboard] = useState([]);
 
-  // ✅ פונקציית הקפיצה מחוץ ל-useEffect
-  function jump() {
-    if (window.leo && !window.leo.jumping) {
-      if (window.jumpSound) {
-        window.jumpSound.currentTime = 0;
-        window.jumpSound.play().catch(() => {});
-      }
-      window.leo.dy = -10;
-      window.leo.jumping = true;
-    }
-  }
-
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedHighScore = localStorage.getItem("mleoHighScore") || 0;
