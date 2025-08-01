@@ -258,27 +258,52 @@ export default function MleoRunner() {
             </button>
 
             {/* טבלת השיאים עם Rank */}
-            <div className="absolute top-12 right-20 bg-black/50 p-4 rounded-lg w-72 shadow-lg">
-              <h2 className="text-lg font-bold mb-2 text-yellow-300">🏆 Leaderboard</h2>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr>
-                    <th className="text-left">#</th>
-                    <th className="text-left">Player</th>
-                    <th className="text-right">High Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaderboard.map((p, i) => (
-                    <tr key={i} className="border-t border-gray-600">
-                      <td className="text-left py-1">{i + 1}</td>
-                      <td className="text-left py-1">{p.name}</td>
-                      <td className="text-right py-1">{p.score}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+{/* 🔹 טבלה לדסקטופ */}
+<div className="absolute top-12 right-20 bg-black/50 p-4 rounded-lg w-72 shadow-lg hidden sm:block">
+  <h2 className="text-lg font-bold mb-2 text-yellow-300">🏆 Leaderboard</h2>
+  <table className="w-full text-sm">
+    <thead>
+      <tr>
+        <th className="text-left">#</th>
+        <th className="text-left">Player</th>
+        <th className="text-right">High Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {leaderboard.map((p, i) => (
+        <tr key={i} className="border-t border-gray-600">
+          <td className="text-left py-1">{i + 1}</td>
+          <td className="text-left py-1">{p.name}</td>
+          <td className="text-right py-1">{p.score}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+{/* 🔹 טבלה לנייד */}
+<div className="bg-black/50 p-4 rounded-lg w-72 shadow-lg mt-4 block sm:hidden">
+  <h2 className="text-lg font-bold mb-2 text-yellow-300">🏆 Leaderboard</h2>
+  <table className="w-full text-sm">
+    <thead>
+      <tr>
+        <th className="text-left">#</th>
+        <th className="text-left">Player</th>
+        <th className="text-right">High Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {leaderboard.map((p, i) => (
+        <tr key={i} className="border-t border-gray-600">
+          <td className="text-left py-1">{i + 1}</td>
+          <td className="text-left py-1">{p.name}</td>
+          <td className="text-right py-1">{p.score}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
           </div>
         )}
 
@@ -324,16 +349,24 @@ className="fixed bottom-4 right-4 px-6 py-4 bg-yellow-400 text-black font-bold r
               </button>
             )}
 
-            <button
-              onClick={() => {
-                setGameRunning(false);
-                setGameOver(false);
-                setShowIntro(true);
-              }}
-              className="fixed top-24 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
-            >
-              Exit
-            </button>
+<button
+  onClick={() => {
+    // יציאה ממסך מלא אם פעיל
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    } else if (document.webkitFullscreenElement) {
+      document.webkitExitFullscreen();
+    }
+
+    setGameRunning(false);
+    setGameOver(false);
+    setShowIntro(true);
+  }}
+  className="fixed top-24 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
+>
+  Exit
+</button>
+
           </>
         )}
       </div>
