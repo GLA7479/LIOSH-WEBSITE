@@ -1,3 +1,4 @@
+// pages/mleo-runner.js
 import { useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import Image from "next/image";
@@ -12,6 +13,15 @@ export default function MleoRunner() {
 
   const [playerName, setPlayerName] = useState("");
   const [leaderboard, setLeaderboard] = useState([]);
+
+  // === helpers: mute flags from localStorage ===
+  const getMute = () => {
+    if (typeof window === "undefined") return { all:false, music:false, sfx:false };
+    const all   = localStorage.getItem("settings:muteAll")   === "true";
+    const music = localStorage.getItem("settings:muteMusic") === "true";
+    const sfx   = localStorage.getItem("settings:muteSFX")   === "true";
+    return { all, music, sfx };
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -29,32 +39,45 @@ export default function MleoRunner() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
+    // 🐶 תמונה בודדת של הכלב (לא ספרייט)
     const leoSprite = new window.Image();
-    leoSprite.src = "/images/dog-spritesheet.png";
+    leoSprite.src = "/images/dog.png";
 
     const coinImg = new window.Image();
     coinImg.src = "/images/leo-logo.png";
+
+    const diamondImg = new window.Image();
+    diamondImg.src = "/images/diamond.png";
+
+    const magnetImg = new window.Image();
+    magnetImg.src = "/images/magnet.png";
+
+    const coin2Img = new window.Image();
+    coin2Img.src = "/images/coin2.png";
 
     const obstacleImg = new window.Image();
     obstacleImg.src = "/images/obstacle.png";
 
     const backgrounds = [
-  "/images/game-day.png",
-  "/images/game-evening.png",
-  "/images/game-night.png",
-  "/images/game-space.png",
-  "/images/game-park.png",
-];
-let bgImg = new window.Image();
-bgImg.src = backgrounds[0];
+      "/images/game-day.png",
+      "/images/game-evening.png",
+      "/images/game-night.png",
+      "/images/game-space.png",
+      "/images/game-park.png",
+    ];
+    let bgImg = new window.Image();
+    bgImg.src = backgrounds[0];
 
-    // 🎵 יצירת קבצי סאונד רק בדפדפן
+    // ==== Audio (עם כיבוי בטוח) ====
     let bgMusic, jumpSound, coinSound, gameOverSound;
+    const mutes = getMute();
 
     if (typeof window !== "undefined") {
       const createSafeAudio = (path) => {
         try {
-          return new Audio(path);
+          const a = new Audio(path);
+          a.preload = "auto";
+          return a;
         } catch {
           return null;
         }
@@ -67,14 +90,26 @@ bgImg.src = backgrounds[0];
 
       if (bgMusic) {
         bgMusic.loop = true;
-        bgMusic.volume = 0.4;
+        bgMusic.volume = mutes.all || mutes.music ? 0 : 0.4;
       }
-      if (jumpSound) jumpSound.volume = 0.6;
-      if (coinSound) coinSound.volume = 0.6;
-      if (gameOverSound) gameOverSound.volume = 0.7;
+      if (jumpSound)   jumpSound.volume    = mutes.all || mutes.sfx ? 0 : 0.6;
+      if (coinSound)   coinSound.volume    = mutes.all || mutes.sfx ? 0 : 0.6;
+      if (gameOverSound) gameOverSound.volume = mutes.all || mutes.sfx ? 0 : 0.7;
     }
 
-    let leo, gravity, coins, obstacles, frame = 0, frameCount = 0;
+    // עוצר/מחדש רקע לפי נראות המסך
+    const onVisibility = () => {
+      if (!bgMusic) return;
+      if (document.hidden) bgMusic.pause();
+      else if (!mutes.all && !mutes.music && !gameOver) {
+        bgMusic.play().catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    let leo, gravity, coins, diamonds, obstacles;
+    let coins2 = [];
+
     let level = 1;
     let showLevelUp = false;
     let levelUpTimer = 0;
@@ -82,29 +117,62 @@ bgImg.src = backgrounds[0];
     let running = true;
     let currentScore = 0;
     let speedMultiplier = 1;
-    let showHitbox = false; // ✅ מאפשר הדלקה/כיבוי עם מקש H
+    let showHitbox = false;
+
+    let powerUps = [];
+    let magnetActive = false;
+
+    // === DPR setup (חדות) ===
+    function setupCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      const displayWidth = canvas.clientWidth || 960;
+      const displayHeight = canvas.clientHeight || 480;
+
+      canvas.width = Math.round(displayWidth * dpr);
+      canvas.height = Math.round(displayHeight * dpr);
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+    }
+    setupCanvas();
+    window.addEventListener("resize", setupCanvas);
+
+    const DPR = window.devicePixelRatio || 1;
+    const CW = () => canvas.width / DPR;
+    const CH = () => canvas.height / DPR;
+
+    function isWithinMagnetRange(obj) {
+      const dx = Math.abs(leo.x - obj.x);
+      const dy = Math.abs(leo.y - obj.y);
+      return dx < 150 && dy < 150;
+    }
 
     function initGame() {
       const isMobile = window.innerWidth < 768;
-      const scale = isMobile ? 1.8 : 1.5;
 
-leo = { 
-  x: canvas.width / 2 - (100 * scale), 
-  y: 200, 
-  width: 70 * scale, 
-  height: 70 * scale, 
-  dy: 0, 
-  jumping: false 
-};
+      const LEO_W = isMobile ? 90 : 85;
+      const LEO_H = isMobile ? 110 : 100;
 
-      gravity = 0.5;
+      leo = {
+        x: CW() * 0.18,
+        y: 0,
+        width: LEO_W,
+        height: LEO_H,
+        dy: 0,
+        jumping: false,
+      };
+
+      gravity = 0.35;
       coins = [];
+      diamonds = [];
+      powerUps = [];
       obstacles = [];
-      frame = 0;
-      frameCount = 0;
       currentScore = 0;
       setScore(0);
       setGameOver(false);
+
+      const ground = CH() - 40;
+      leo.y = ground - leo.height;
     }
 
     function checkCollision(r1, r2) {
@@ -118,19 +186,17 @@ leo = {
 
     function drawLeo() {
       if (!leoSprite.complete || leoSprite.naturalWidth === 0) return;
-      const sw = leoSprite.width / 4;
-      const sh = leoSprite.height;
-      ctx.drawImage(leoSprite, frame * sw, 0, sw, sh, leo.x, leo.y, leo.width, leo.height);
-      frameCount++;
-      if (frameCount % 6 === 0) frame = (frame + 1) % 4;
+      const x = Math.round(leo.x);
+      const y = Math.round(leo.y);
+      ctx.drawImage(leoSprite, x, y, leo.width, leo.height);
     }
 
     function update() {
       if (!running) return;
 
-      speedMultiplier = 1 + Math.floor(currentScore / 10) * 0.1;
+      speedMultiplier = 0.6 + Math.floor(currentScore / 20) * 0.05;
 
-      if (currentScore >= level * 30) {
+      if (!showLevelUp && currentScore >= level * 30) {
         level++;
         showLevelUp = true;
         levelUpTimer = Date.now();
@@ -138,16 +204,17 @@ leo = {
         bgImg.src = backgrounds[newBgIndex];
       }
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, CW(), CH());
 
       if (bgImg.complete && bgImg.naturalWidth > 0) {
         bgX -= 1.5 * speedMultiplier;
-        if (bgX <= -canvas.width) bgX = 0;
-        ctx.drawImage(bgImg, bgX, 0, canvas.width, canvas.height);
-        ctx.drawImage(bgImg, bgX + canvas.width, 0, canvas.width, canvas.height);
+        if (bgX <= -CW()) bgX = 0;
+        ctx.drawImage(bgImg, Math.round(bgX), 0, CW(), CH());
+        ctx.drawImage(bgImg, Math.round(bgX + CW()), 0, CW(), CH());
       }
 
-      const ground = canvas.height - 80;
+      const ground = CH() - 40;
+
       leo.y += leo.dy;
       if (leo.y + leo.height < ground) leo.dy += gravity;
       else {
@@ -158,54 +225,166 @@ leo = {
 
       drawLeo();
 
-      coins.forEach((c) => {
-        if (coinImg.complete && coinImg.naturalWidth > 0) {
-          c.x -= 3 * speedMultiplier;
-          ctx.drawImage(coinImg, c.x, c.y, c.size, c.size);
+      // Coins
+      coins.forEach((c, i) => {
+        c.x -= 3 * speedMultiplier;
+
+        if (magnetActive && isWithinMagnetRange(c)) {
+          const dx = leo.x - c.x;
+          const dy = leo.y - c.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const pullStrength = 4;
+          if (dist > 1) {
+            c.x += (dx / dist) * pullStrength;
+            c.y += (dy / dist) * pullStrength;
+          }
+        }
+
+        if (coinImg.complete) {
+          ctx.drawImage(coinImg, Math.round(c.x), Math.round(c.y), c.size, c.size);
+        }
+
+        if (
+          checkCollision(leo, { x: c.x, y: c.y, width: c.size, height: c.size }) ||
+          (magnetActive && isWithinMagnetRange(c))
+        ) {
+          coins.splice(i, 1);
+          currentScore++;
+          setScore(currentScore);
+          if (coinSound && !(mutes.all || mutes.sfx)) {
+            coinSound.currentTime = 0;
+            coinSound.play().catch(() => {});
+          }
+        }
+
+        if (c.x + c.size < 0) coins.splice(i, 1);
+      });
+
+      // Diamonds
+      diamonds.forEach((d, i) => {
+        d.x -= 3 * speedMultiplier;
+
+        if (magnetActive && isWithinMagnetRange(d)) {
+          const dx = leo.x - d.x;
+          const dy = leo.y - d.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const pullStrength = 4;
+          if (dist > 1) {
+            d.x += (dx / dist) * pullStrength;
+            d.y += (dy / dist) * pullStrength;
+          }
+        }
+
+        if (diamondImg.complete) {
+          ctx.drawImage(diamondImg, Math.round(d.x), Math.round(d.y), d.size, d.size);
+        }
+
+        if (
+          checkCollision(leo, { x: d.x, y: d.y, width: d.size, height: d.size }) ||
+          (magnetActive && isWithinMagnetRange(d))
+        ) {
+          diamonds.splice(i, 1);
+          currentScore += 5;
+          setScore(currentScore);
+          if (coinSound && !(mutes.all || mutes.sfx)) {
+            coinSound.currentTime = 0;
+            coinSound.play().catch(() => {});
+          }
+        }
+
+        if (d.x + d.size < 0) diamonds.splice(i, 1);
+      });
+
+      // PowerUps (magnet)
+      powerUps.forEach((p) => {
+        p.x -= 3 * speedMultiplier;
+        if (p.type === "magnet" && magnetImg.complete) {
+          ctx.drawImage(magnetImg, Math.round(p.x), Math.round(p.y), p.size, p.size);
         }
       });
 
+      // Obstacles
       obstacles.forEach((o) => {
         if (obstacleImg.complete && obstacleImg.naturalWidth > 0) {
-          o.x -= 4 * speedMultiplier;
-          ctx.drawImage(obstacleImg, o.x, o.y - o.height, o.width, o.height);
+          o.x -= 2.5 * speedMultiplier;
+          ctx.drawImage(obstacleImg, Math.round(o.x), Math.round(o.y - o.height), o.width, o.height);
         }
       });
 
-      if (Math.random() < 0.03) coins.push({ x: canvas.width, y: Math.random() * 120 + 120, size: 38 });
-      if (Math.random() < 0.012) {
+      // Spawns
+      if (Math.random() < 0.022) coins.push({ x: CW(), y: Math.random() * 60 + (CH() - 300), size: 38 });
+      if (Math.random() < 0.01) coins2.push({ x: CW(), y: Math.random() * 60 + (CH() - 300), size: 40 });
+      if (Math.random() < 0.002) diamonds.push({ x: CW(), y: Math.random() * 60 + (CH() - 300), size: 42 });
+
+      if (Math.random() < 0.0015) {
+        powerUps.push({ type: "magnet", x: CW(), y: Math.random() * 60 + (CH() - 300), size: 40 });
+      }
+
+      if (Math.random() < 0.007) {
         const isMobile = window.innerWidth < 768;
         const scale = isMobile ? 1.8 : 1.5;
         obstacles.push({
-          x: canvas.width,
-          y: ground + 30,
+          x: CW(),
+          y: CH() - 25,
           width: 60 * scale * 0.75,
           height: 60 * scale,
         });
       }
 
-      coins.forEach((c, i) => {
-        if (checkCollision(leo, { x: c.x, y: c.y, width: c.size, height: c.size })) {
-          coins.splice(i, 1);
-          currentScore++;
-          setScore(currentScore);
+      // Coins2
+      coins2.forEach((c, i) => {
+        c.x -= 3 * speedMultiplier;
 
-          if (coinSound) {
+        if (magnetActive && isWithinMagnetRange(c)) {
+          const dx = leo.x - c.x;
+          const dy = leo.y - c.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const pullStrength = 4;
+          if (dist > 1) {
+            c.x += (dx / dist) * pullStrength;
+            c.y += (dy / dist) * pullStrength;
+          }
+        }
+
+        if (coin2Img.complete) {
+          ctx.drawImage(coin2Img, Math.round(c.x), Math.round(c.y), c.size, c.size);
+        }
+
+        if (
+          checkCollision(leo, { x: c.x, y: c.y, width: c.size, height: c.size }) ||
+          (magnetActive && isWithinMagnetRange(c))
+        ) {
+          coins2.splice(i, 1);
+          currentScore += 3;
+          setScore(currentScore);
+          if (coinSound && !(mutes.all || mutes.sfx)) {
             coinSound.currentTime = 0;
             coinSound.play().catch(() => {});
           }
         }
-        if (c.x + c.size < 0) coins.splice(i, 1);
+
+        if (c.x + c.size < 0) coins2.splice(i, 1);
       });
 
-      // ✅ בדיקת פגיעה במכשול (Hitbox מוקטן + אפשרות הדמיה עם H)
-  obstacles.forEach((o, i) => {
-  const reducedHitbox = {
-    x: o.x + o.width * 0.5,      // במקום 0.15 → מקטין יותר מהצד
-    y: o.y - o.height * 0.75,    // במקום 0.9 → מקטין יותר מלמעלה
-    width: o.width * 0.4,        // במקום 0.7 → צר יותר
-    height: o.height * 0.8,      // במקום 0.9 → נמוך יותר
-  };
+      // איסוף מגנט
+      powerUps.forEach((p, i) => {
+        if (checkCollision(leo, { x: p.x, y: p.y, width: p.size, height: p.size })) {
+          powerUps.splice(i, 1);
+          if (p.type === "magnet") {
+            magnetActive = true;
+            setTimeout(() => (magnetActive = false), 5000);
+          }
+        }
+      });
+
+      // פגיעות במכשולים
+      obstacles.forEach((o, i) => {
+        const reducedHitbox = {
+          x: o.x + o.width * 0.5,
+          y: o.y - o.height * 0.55,
+          width: o.width * 0.1,
+          height: o.height * 0.2,
+        };
 
         if (showHitbox) {
           ctx.save();
@@ -217,17 +396,17 @@ leo = {
 
         if (checkCollision(leo, reducedHitbox)) {
           if (leo.y + leo.height - 15 <= reducedHitbox.y) {
-            if (jumpSound) {
-        jumpSound.currentTime = 0;
-        jumpSound.play().catch(() => {});
-      }
-      leo.dy = -10;
+            if (jumpSound && !(mutes.all || mutes.sfx)) {
+              jumpSound.currentTime = 0;
+              jumpSound.play().catch(() => {});
+            }
+            leo.dy = -10;
             leo.jumping = true;
           } else {
             running = false;
             setGameRunning(false);
             if (bgMusic) bgMusic.pause();
-            if (gameOverSound) {
+            if (gameOverSound && !(mutes.all || mutes.sfx)) {
               gameOverSound.currentTime = 0;
               gameOverSound.play().catch(() => {});
             }
@@ -255,12 +434,12 @@ leo = {
         if (o.x + o.width < 0) obstacles.splice(i, 1);
       });
 
-            if (showLevelUp && Date.now() - levelUpTimer < 2000) {
+      if (showLevelUp && Date.now() - levelUpTimer < 2000) {
         ctx.save();
-        ctx.font = 'bold 48px Arial';
-        ctx.fillStyle = 'yellow';
-        ctx.textAlign = 'center';
-        ctx.fillText('LEVEL ' + level + '!', canvas.width / 2, 100);
+        ctx.font = "bold 48px Arial";
+        ctx.fillStyle = "yellow";
+        ctx.textAlign = "center";
+        ctx.fillText("LEVEL " + level + "!", CW() / 2, 100);
         ctx.restore();
       } else if (Date.now() - levelUpTimer >= 2000) {
         showLevelUp = false;
@@ -275,7 +454,7 @@ leo = {
       if (isMobile && wrapper?.requestFullscreen) wrapper.requestFullscreen().catch(() => {});
       else if (isMobile && wrapper?.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
 
-      if (bgMusic) {
+      if (bgMusic && !(mutes.all || mutes.music)) {
         bgMusic.currentTime = 0;
         bgMusic.play().catch(() => {});
       }
@@ -287,16 +466,15 @@ leo = {
 
     function jump() {
       if (leo && !leo.jumping) {
-        if (jumpSound) {
-        jumpSound.currentTime = 0;
-        jumpSound.play().catch(() => {});
-      }
-      leo.dy = -10;
+        if (jumpSound && !(mutes.all || mutes.sfx)) {
+          jumpSound.currentTime = 0;
+          jumpSound.play().catch(() => {});
+        }
+        leo.dy = -8.5;
         leo.jumping = true;
       }
     }
 
-    // ✅ הוספנו אפשרות ללחוץ על H כדי להציג/להסתיר Hitbox
     function handleKey(e) {
       if (e.code === "Space") {
         e.preventDefault();
@@ -310,9 +488,24 @@ leo = {
     document.addEventListener("keydown", handleKey);
     startGame();
 
+    // ==== ניקוי מוחלט של אודיו והאזנות ====
     return () => {
       document.removeEventListener("keydown", handleKey);
+      window.removeEventListener("resize", setupCanvas);
+      document.removeEventListener("visibilitychange", onVisibility);
       running = false;
+
+      // עצירה ושחרור
+      [bgMusic, jumpSound, coinSound, gameOverSound].forEach((a) => {
+        if (!a) return;
+        try {
+          a.pause();
+          a.currentTime = 0;
+          // פריקה מהדפדפן כדי שלא ימשיך "לנשום" אחרי ניווט
+          a.src = "";
+          a.load?.();
+        } catch {}
+      });
     };
   }, [gameRunning]);
 
@@ -381,32 +574,36 @@ leo = {
         {/* 🎮 מסך המשחק */}
         {!showIntro && (
           <>
-<>
-  {/* ניקוד במסכים רחבים */}
-  {!showIntro && (
-    <div className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999] top-10">
-      Score: {score} | High Score: {highScore}
-    </div>
-  )}
-
-  {/* ניקוד במסכים קטנים */}
-  {!showIntro && (
-    <div className="sm:hidden absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded-md text-base font-bold z-[999] bottom-36">
-      Score: {score} | High Score: {highScore}
-    </div>
-  )}
-</>
-
-
-
+            <>
+              {/* ניקוד – רחב */}
+              {!showIntro && (
+                <div className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999] top-0.5">
+                  Score: {score} | High Score: {highScore}
+                </div>
+              )}
+              {/* ניקוד – מובייל */}
+              {!showIntro && (
+                <div className="sm:hidden absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded-md text-base font-bold z-[999] bottom-36">
+                  Score: {score} | High Score: {highScore}
+                </div>
+              )}
+            </>
 
             <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
-              <canvas ref={canvasRef} width={960} height={480} className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]" />
+              <canvas
+                ref={canvasRef}
+                width={960}
+                height={480}
+                className="relative z-0 border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]"
+              />
 
               {gameOver && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-[999]">
                   <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">GAME OVER</h2>
-                  <button className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg" onClick={() => setGameRunning(true)}>
+                  <button
+                    className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
+                    onClick={() => setGameRunning(true)}
+                  >
                     Start Again
                   </button>
                 </div>
@@ -414,49 +611,52 @@ leo = {
             </div>
 
             {/* 🔙 Back */}
-            <button onClick={() => window.history.back()} className="fixed top-4 left-4 bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded z-[999]">
+            <button
+              onClick={() => window.history.back()}
+              className="fixed top-4 left-4 bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded z-[999]"
+            >
               ⬅ Back
             </button>
 
             {/* ⬆ Jump */}
-{/* כפתור Jump רגיל */}
-{gameRunning && (
-  <button
-    onClick={() => {
-      const e = new KeyboardEvent("keydown", { code: "Space" });
-      document.dispatchEvent(e);
-    }}
-    className="fixed bottom-36 sm:bottom-4 right-4 sm:right-4 sm:left-auto sm:transform-none sm:translate-x-0 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]
-               sm:bottom-4 sm:right-4 left-1/2 transform -translate-x-1/2 sm:left-auto"
-  >
-    Jump
-  </button>
-)}
+            {gameRunning && (
+              <button
+                onClick={() => {
+                  const e = new KeyboardEvent("keydown", { code: "Space" });
+                  document.dispatchEvent(e);
+                }}
+                className="fixed bottom-36 sm:bottom-4 right-4 sm:right-4 sm:left-auto sm:transform-none sm:translate-x-0 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]
+                           sm:bottom-4 sm:right-4 left-1/2 transform -translate-x-1/2 sm:left-auto"
+              >
+                Jump
+              </button>
+            )}
 
-{/* כפתור Jump נוסף למסכים רחבים בצד שמאל */}
-{gameRunning && (
-  <button
-    onClick={() => {
-      const e = new KeyboardEvent("keydown", { code: "Space" });
-      document.dispatchEvent(e);
-    }}
-    className="hidden sm:block fixed bottom-4 left-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
-  >
-    Jump
-  </button>
-)}
-
+            {/* כפתור Jump נוסף למסכים רחבים בצד שמאל */}
+            {gameRunning && (
+              <button
+                onClick={() => {
+                  const e = new KeyboardEvent("keydown", { code: "Space" });
+                  document.dispatchEvent(e);
+                }}
+                className="hidden sm:block fixed bottom-4 left-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
+              >
+                Jump
+              </button>
+            )}
 
             {/* 🚪 Exit */}
             <button
               onClick={() => {
-                if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-                else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
+                try {
+                  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+                  else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
+                } catch {}
                 setGameRunning(false);
                 setGameOver(false);
                 setShowIntro(true);
               }}
-              className="fixed top-16 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
+              className="fixed top-4 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
             >
               Exit
             </button>
