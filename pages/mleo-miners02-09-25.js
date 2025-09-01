@@ -174,65 +174,14 @@ function rollDiamondPrize() {
 
 
 // ===== Formatting =====
-
-// בסיס קיצורים (אלפים עד טריליון)
-const SUFFIXES_BASE = ["", "K", "M", "B", "T"];
-
-// ממפה דרגת אלפים לסיומת: 0→"" , 1→K, 2→M, 3→B, 4→T, 5→AA, 6→AB, ... עד אינסוף
-function suffixFromTier(tier) {
-  if (tier < SUFFIXES_BASE.length) return SUFFIXES_BASE[tier];
-  const idx = tier - SUFFIXES_BASE.length; // 0→AA, 1→AB ...
-  // ממיר למחרוזת אותיות בסגנון גיליון (A..Z, AA..), ומבריח ל-2+ אותיות
-  let n = idx + 26; // 26→"AA"
-  let s = "";
-  while (n >= 0) {
-    const q = Math.floor(n / 26) - 1;
-    const r = n - (q + 1) * 26;
-    s = String.fromCharCode(65 + r) + s;
-    n = q;
-  }
-  if (s.length === 1) s = "A" + s; // הבטח מינימום 2 תווים
-  return s;
-}
-
-// קיצור מספרים כלליים (Coins, מחירים, עלויות וכו') — תמיד שלם, בלי נקודה עשרונית
-function formatAbbrevInt(n) {
-  const sign = (n || 0) < 0 ? "-" : "";
-  const abs = Math.abs(Number(n) || 0);
-
-  if (abs < 1000) return sign + String(Math.round(abs));
-
-  let tier = Math.floor(Math.log10(abs) / 3);        // אלפים=1, מיליונים=2...
-  let div = Math.pow(1000, tier);
-  let val = Math.round(abs / div);
-
-  // Normalize: 999.5K → 1M
-  if (val >= 1000) { tier += 1; val = 1; }
-
-  return sign + String(val) + suffixFromTier(tier);
-}
-
-// שמירה על השם הקיים בקוד
-const formatShort = formatAbbrevInt;
-
-// MLEO: ספרה עשרונית אחת רק עד 999.9; מעל 1000 → קיצור בלי עשרוניות
-function formatMleo(n) {
-  const sign = (n || 0) < 0 ? "-" : "";
-  const abs = Math.abs(Number(n) || 0);
-
-  if (abs < 1000) {
-    // תמיד ספרה אחת אחרי הנקודה (כולל ".0")
-    return sign + (abs).toFixed(1);
-  }
-
-  let tier = Math.floor(Math.log10(abs) / 3);
-  let div = Math.pow(1000, tier);
-  let val = Math.round(abs / div);
-  if (val >= 1000) { tier += 1; val = 1; }
-
-  return sign + String(val) + suffixFromTier(tier);
-}
-
+const formatShort = (n) => {
+  const abs = Math.abs(n || 0);
+  if (abs >= 1e12) return (n / 1e12).toFixed(abs < 1e13 ? 1 : 0) + "T";
+  if (abs >= 1e9)  return (n / 1e9 ).toFixed(abs < 1e10 ? 1 : 0) + "B";
+  if (abs >= 1e6)  return (n / 1e6 ).toFixed(abs < 1e7  ? 1 : 0) + "M";
+  if (abs >= 1e3)  return (n / 1e3 ).toFixed(abs < 1e4  ? 1 : 0) + "K";
+  return String(Math.floor(n || 0));
+};
 
 // ===== Simple image cache =====
 const IMG_CACHE = {};
@@ -553,8 +502,7 @@ export default function MleoMiners() {
 
     saveMiningState(st);
     setMining(st);
-    setGiftToastWithTTL(`Moved ${formatMleo(amt)} MLEO to Vault`);
-
+    setGiftToastWithTTL(`Moved ${amt.toFixed(3)} MLEO to Vault`);
   }
 
   // כפתור CLAIM — דמו: תמיד Vault
@@ -877,7 +825,6 @@ function freshState(){
     diamonds:0, nextDiamondPrize: rollDiamondPrize(),
 
     autoDogLastAt: now,
-autoDogNextAt: now + DOG_INTERVAL_SEC * 1000,
     autoDogBank: 0,
     autoDogPending: false,
 
@@ -1322,8 +1269,7 @@ function tick(dt){
       s.gold += coinsGain; setUi(u => ({ ...u, gold: s.gold }));
       addPlayerScorePoints(s, coinsGain);
 
-      const mleoTxt = formatMleo(mleoGainPreview || 0);
-
+      const mleoTxt = Number(mleoGainPreview || 0).toFixed(2);
       setCenterPopup({ text: `⛏️ +${formatShort(coinsGain)} coins • +${mleoTxt} MLEO`, id: Math.random() });
 
       s.lanes[l].rockCount += 1;
@@ -1413,11 +1359,8 @@ function save() {
       diamonds: s.diamonds || 0,
       nextDiamondPrize: s.nextDiamondPrize,
 
-     // auto-dog
-autoDogLastAt: s.autoDogLastAt,
-autoDogNextAt: s.autoDogNextAt,
-autoDogBank: s.autoDogBank,
-
+      autoDogLastAt: s.autoDogLastAt,
+      autoDogBank: s.autoDogBank,
       autoDogPending: !!s.autoDogPending,
 
       costBase: s.costBase,
@@ -1562,11 +1505,10 @@ function onOfflineCollect() {
   save();
 
   if (addCoins > 0 || addMleo > 0) {
-  setCenterPopup({
-  text: `⛏️ +${formatShort(addCoins)} coins • +${formatMleo(addMleo)} MLEO`,
-  id: Math.random()
-});
-
+    setCenterPopup({
+      text: `⛏️ +${formatShort(addCoins)} coins • +${addMleo.toFixed(2)} MLEO`,
+      id: Math.random()
+    });
   }
   setShowCollect(false);
 }
@@ -1585,61 +1527,90 @@ function chooseGiftDogLevelForRegularGift(s) {
 
 function accrueBankDogsUpToNow(s) {
   if (!s) return;
-  const period = DOG_INTERVAL_SEC * 1000;
-  const now = Date.now();
+  const intervalMs = DOG_INTERVAL_SEC * 1000;
+  const now  = Date.now();
+  const last = s.autoDogLastAt || now;
 
-  if (!s.autoDogNextAt || Number.isNaN(s.autoDogNextAt)) {
-    s.autoDogNextAt = now + period;
+  if (s.autoDogPending) {
+    if (hasFreeSlot(s)) {
+      const lvl = chooseAutoDogLevel(s);
+      const ok  = spawnMiner(s, lvl);
+      if (ok) {
+        s.autoDogPending = false;
+        s.autoDogLastAt  = now;
+        setCenterPopup?.({ text: `🐶 Auto Dog (LV ${lvl})`, id: Math.random() });
+        save?.();
+      }
+    }
+    return;
   }
 
-  if (now >= s.autoDogNextAt) {
-    const intervals = Math.floor((now - s.autoDogNextAt) / period) + 1;
-    s.autoDogBank = Math.min(DOG_BANK_CAP, (s.autoDogBank || 0) + intervals);
-    s.autoDogNextAt += intervals * period;
-    save?.();
+  if (now - last >= intervalMs) {
+    if (hasFreeSlot(s)) {
+      const lvl = chooseAutoDogLevel(s);
+      const ok  = spawnMiner(s, lvl);
+      if (ok) {
+        s.autoDogLastAt = now;
+        setCenterPopup?.({ text: `🐶 Auto Dog (LV ${lvl})`, id: Math.random() });
+        save?.();
+      }
+    } else {
+      s.autoDogPending = true;
+    }
   }
 }
 
 function tryDistributeBankDog(s) {
   if (!s) return;
+  if (!s.autoDogPending) return;
   if (!hasFreeSlot(s)) return;
-  if ((s.autoDogBank || 0) <= 0) return;
 
   const lvl = chooseAutoDogLevel(s);
-  const ok = spawnMiner(s, lvl);
+  const ok  = spawnMiner(s, lvl);
   if (ok) {
-    s.autoDogBank = Math.max(0, (s.autoDogBank || 0) - 1);
+    s.autoDogPending = false;
+    s.autoDogLastAt  = Date.now();
     setCenterPopup?.({ text: `🐶 Auto Dog (LV ${lvl})`, id: Math.random() });
     save?.();
   }
 }
 
-
 function handleOfflineAccrual(s, elapsedMs) {
   if (!s) return 0;
 
-   // Auto-dog: accrue by nextAt → bank (cap 6), then try to deploy
-  {
-    const period = DOG_INTERVAL_SEC * 1000;
-    const now = Date.now();
+  const intervalMs = DOG_INTERVAL_SEC * 1000;
+  const OFF_CAP = 6;
+  let ticks = Math.floor(elapsedMs / intervalMs);
+  if (ticks > OFF_CAP) ticks = OFF_CAP;
 
-    if (!s.autoDogNextAt || Number.isNaN(s.autoDogNextAt)) {
-      s.autoDogNextAt = now + period;
+  let placed = 0;
+  for (let i = 0; i < ticks; i++) {
+    if (!hasFreeSlot(s)) {
+      s.autoDogPending = true;
+      if ((Date.now() - (s.autoDogLastAt || 0)) < intervalMs) {
+        s.autoDogLastAt = Date.now() - intervalMs;
+      }
+      break;
     }
-    if (now >= s.autoDogNextAt) {
-      const intervals = Math.floor((now - s.autoDogNextAt) / period) + 1;
-      s.autoDogBank = Math.min(DOG_BANK_CAP, (s.autoDogBank || 0) + intervals);
-      s.autoDogNextAt += intervals * period;
+    const lvl = chooseAutoDogLevel(s);
+    const ok  = spawnMiner(s, lvl);
+    if (!ok) {
+      s.autoDogPending = true;
+      if ((Date.now() - (s.autoDogLastAt || 0)) < intervalMs) {
+        s.autoDogLastAt = Date.now() - intervalMs;
+      }
+      break;
     }
-
-    while ((s.autoDogBank || 0) > 0 && hasFreeSlot(s)) {
-      const lvl = chooseAutoDogLevel(s);
-      const ok = spawnMiner(s, lvl);
-      if (!ok) break;
-      s.autoDogBank -= 1;
-    }
+    placed += 1;
   }
 
+  if (s.autoDogPending) {
+  } else if (placed > 0) {
+    s.autoDogLastAt = Date.now();
+  } else {
+    const rem = elapsedMs % intervalMs;
+    s.autoDogLastAt = Date.now() - rem;
+  }
 
   const CAP_MS = 12 * 60 * 60 * 1000;
   const simMs = Math.min(elapsedMs, CAP_MS);
@@ -1806,15 +1777,15 @@ const giftProgress = (() => {
   return Math.max(0, Math.min(1, 1 - remain / total)); 
 })();
 
-const dogProgress = (() => {
-  const s = stateRef.current; if (!s) return 0;
-  if ((s.autoDogBank || 0) >= DOG_BANK_CAP) return 1;
-  const now = Date.now();
-  const total = DOG_INTERVAL_SEC * 1000;
-  const remain = Math.max(0, (s.autoDogNextAt || (now + total)) - now);
-  return Math.max(0, Math.min(1, 1 - remain / total));
+const dogProgress = (() => { 
+  const s = stateRef.current; if (!s) return 0; 
+  if ((s.autoDogBank || 0) >= DOG_BANK_CAP) return 1; 
+  const now = Date.now(); 
+  const total = DOG_INTERVAL_SEC * 1000; 
+  const last = s.autoDogLastAt || now; 
+  const elapsed = Math.max(0, now - last); 
+  return Math.max(0, Math.min(1, elapsed / total)); 
 })();
-
 
 const diamondsReady = (stateRef.current?.diamonds || 0) >= 3;
 
@@ -1891,7 +1862,7 @@ function claimCoinsToMining() {
   saveMiningState(mst);
   setMining(mst);
 
-  setGiftToastWithTTL(`Claimed ${formatMleo(add)} MLEO from coins`);
+  setGiftToastWithTTL(`Claimed ${add.toFixed(2)} MLEO from coins`);
 }
 
 // ===== HUD Info modal state & content =====
@@ -2408,39 +2379,37 @@ className={`${BTN_BASE} ${BTN_H} ${BTN_W} ${
           <div className="w-full flex justify-center mt-1">
             <div className="flex items-center gap-2 px-2 py-1.5 text-xs">
               {/* Icon button */}
-              {/* MLEO (icon + number) — both clickable */}
-<button
-  onClick={() => setShowMleoModal(true)}
-  className={`relative inline-flex items-center gap-2 px-2 py-1 rounded-md transition
-    ${(mining?.balance || 0) > 0 ? "hover:bg-white/10 active:scale-95 cursor-pointer" : "opacity-90"}`}
-  aria-label="Open MLEO details"
-  title="Open MLEO details"
->
-  <div className="relative w-6 h-6 rounded-full grid place-items-center">
-    {(mining?.balance || 0) > 0 && (
-      <span
-        aria-hidden
-        className="absolute -inset-px rounded-full"
-        style={{
-          animation: "glowPulse 1.2s infinite",
-          border: "2px solid rgba(250,204,21,.8)",
-          boxShadow: "0 0 10px rgba(250,204,21,.55), 0 0 20px rgba(250,204,21,.35)"
-        }}
-      />
-    )}
-    <img src={IMG_TOKEN} alt="MLEO" className="w-6 h-6 rounded-full pointer-events-none" />
-  </div>
+              <button
+                onClick={() => setShowMleoModal(true)}
+                className={`relative w-6 h-6 rounded-full grid place-items-center transition
+                  ${(mining?.balance || 0) > 0 ? "hover:opacity-90 active:scale-95 cursor-pointer" : "opacity-90"}`}
+                aria-label="Open MLEO details"
+                title="Open MLEO details"
+              >
+                {(mining?.balance || 0) > 0 && (
+                  <span
+                    aria-hidden
+                    className="absolute -inset-px rounded-full"
+                    style={{
+                      animation: "glowPulse 1.2s infinite",
+                      border: "2px solid rgba(250,204,21,.8)",
+                      boxShadow: "0 0 10px rgba(250,204,21,.55), 0 0 20px rgba(250,204,21,.35)"
+                    }}
+                  />
+                )}
 
-  <span
-    className={`text-yellow-300 font-extrabold tabular-nums ${
-      (mining?.balance || 0) > 0 ? "inline-block" : ""
-    }`}
-    style={(mining?.balance || 0) > 0 ? { animation: "nudge 1.8s ease-in-out infinite" } : undefined}
-  >
-    {formatMleo(mining?.balance || 0)} MLEO
-  </span>
-</button>
+                <img src={IMG_TOKEN} alt="MLEO" className="w-6 h-6 rounded-full pointer-events-none" />
+              </button>
 
+              {/* BALANCE */}
+              <span
+                className={`text-yellow-300 font-extrabold tabular-nums ${
+                  (mining?.balance || 0) > 0 ? "inline-block" : ""
+                }`}
+                style={(mining?.balance || 0) > 0 ? { animation: "nudge 1.8s ease-in-out infinite" } : undefined}
+              >
+                {Math.floor(Number(mining?.balance || 0)).toLocaleString()} MLEO
+              </span>
 
               <button
                 onClick={onClaimMined}
@@ -2469,9 +2438,8 @@ className={`${BTN_BASE} ${BTN_H} ${BTN_W} ${
                 title="Open Mining"
               >
                 Vault: <b className="text-cyan-300 tabular-nums">
-  {formatMleo(mining?.vault || 0)}
-</b> MLEO
-
+                  {Math.floor(Number(mining?.vault || 0)).toLocaleString()}
+                </b> C
               </button>
             </div>
           </div>
@@ -2544,11 +2512,10 @@ className={`${BTN_BASE} ${BTN_H} ${BTN_W} ${
                 {formatShort(stateRef.current?.pendingOfflineGold || 0)}
               </b>{" "}
               coins and{" "}
-             <b className="text-yellow-300">
-  {formatMleo(stateRef.current?.pendingOfflineMleo || 0)}
-</b>{" "}
-MLEO
-
+              <b className="text-yellow-300">
+                {Number(stateRef.current?.pendingOfflineMleo || 0).toFixed(2)}
+              </b>{" "}
+              MLEO in the background.
             </p>
 
             <button
@@ -2791,66 +2758,66 @@ MLEO
         </div>
       )}
 
-         {/* Diamonds modal */}
       {showDiamondInfo && (() => {
-        const s = stateRef.current || {};
-        const diamonds = Number(s.diamonds || 0);
+  const s = stateRef.current || {};
+  const diamonds = Number(s.diamonds || 0);
+  // מיפוי תצוגה בלי אחוזים
+  const prizeLabel = (() => {
+    switch (s.nextDiamondPrize) {
+      case "coins_x10":   return "10x gift";
+      case "coins_x100":  return "100x gift";
+      case "coins_x1000": return "1000x gift";
+      case "dog+3":       return "Dog +3 levels";
+      case "dog+5":       return "Dog +5 levels";
+      case "dog+7":       return "Dog +7 levels";
+      default:            return s.nextDiamondPrize || "";
+    }
+  })();
+  const ready = diamonds >= 3;
 
-        const prizeLabel = (() => {
-          switch (s.nextDiamondPrize) {
-            case "coins_x10":   return "10x gift";
-            case "coins_x100":  return "100x gift";
-            case "coins_x1000": return "1000x gift";
-            case "dog+3":       return "Dog +3 levels";
-            case "dog+5":       return "Dog +5 levels";
-            case "dog+7":       return "Dog +7 levels";
-            default:            return s.nextDiamondPrize || "";
-          }
-        })();
+  return (
+    <div className="fixed inset-0 z-[10000] bg-black/80 flex items-center justify-center p-4">
+      <div className="bg-white text-slate-900 max-w-sm w-full rounded-2xl p-6 shadow-2xl overflow-auto max-h-[85vh]">
+        <h2 className="text-xl font-extrabold mb-1">Diamonds</h2>
 
-        const ready = diamonds >= 3;
+        {/* תיאור מפורט יותר */}
+        <p className="text-xs text-slate-600 mb-3">
+          Collect <b>3</b> diamonds to open a chest. You can hold more than 3 and open rewards whenever you choose.
+          Possible rewards: <b>10x</b>/<b>100x</b>/<b>1000x</b> coin gifts or a <b>Dog</b> boost (+3/+5/+7 levels).
+        </p>
 
-        return (
-          <div className="fixed inset-0 z-[10000] bg-black/80 flex items-center justify-center p-4">
-            <div className="bg-white text-slate-900 max-w-sm w-full rounded-2xl p-6 shadow-2xl overflow-auto max-h-[85vh]">
-              <h2 className="text-xl font-extrabold mb-1">Diamonds</h2>
-
-              <p className="text-xs text-slate-600 mb-3">
-                Collect <b>3</b> diamonds to open a chest. You can hold more than 3 and open rewards whenever you choose.
-                Possible rewards: <b>10x</b>/<b>100x</b>/<b>1000x</b> coin gifts or a <b>Dog</b> boost (+3/+5/+7 levels).
-              </p>
-
-              <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-                <div className="p-3 rounded-xl bg-slate-100">
-                  <div className="text-slate-500 text-xs">Diamonds</div>
-                  <div className="font-extrabold text-slate-900">{diamonds} / 3</div>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-100">
-                  <div className="text-slate-500 text-xs">Next Prize</div>
-                  <div className="font-extrabold text-slate-900">{prizeLabel}</div>
-                </div>
-              </div>
-
-              <div className="flex justify-between gap-2">
-                <button
-                  onClick={() => setShowDiamondInfo(false)}
-                  className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-900 font-extrabold"
-                >
-                  Close
-                </button>
-                <button
-                  onClick={() => { openDiamondChestIfReady(); }}
-                  disabled={!ready}
-                  className={`px-4 py-2 rounded-lg font-extrabold ${ready ? "bg-yellow-400 hover:bg-yellow-300 text-black" : "bg-slate-300 text-slate-500 cursor-not-allowed"}`}
-                  title={ready ? "Open chest" : "Need 3 diamonds"}
-                >
-                  OPEN CHEST
-                </button>
-              </div>
-            </div>
+        <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+          <div className="p-3 rounded-xl bg-slate-100">
+            <div className="text-slate-500 text-xs">Diamonds</div>
+            <div className="font-extrabold text-slate-900">{diamonds} / 3</div>
           </div>
-        );
-      })()}
+          <div className="p-3 rounded-xl bg-slate-100">
+            <div className="text-slate-500 text-xs">Next Prize</div>
+            <div className="font-extrabold text-slate-900">{prizeLabel}</div>
+          </div>
+        </div>
+
+        <div className="flex justify-between gap-2">
+          <button
+            onClick={() => setShowDiamondInfo(false)}
+            className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-900 font-extrabold"
+          >
+            Close
+          </button>
+          <button
+            onClick={() => { openDiamondChestIfReady(); }}
+            disabled={!ready}
+            className={`px-4 py-2 rounded-lg font-extrabold ${ready ? "bg-yellow-400 hover:bg-yellow-300 text-black" : "bg-slate-300 text-slate-500 cursor-not-allowed"}`}
+            title={ready ? "Open chest" : "Need 3 diamonds"}
+          >
+            OPEN CHEST
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+})()}
+
 
       {/* MLEO quick modal (נפתח מלחיצה על אייקון ה-MLEO ב-HUD) + כפתור CLAIM */}
       {showMleoModal && (
@@ -2862,25 +2829,25 @@ MLEO
               <div className="p-3 rounded-xl bg-slate-100">
                 <div className="text-slate-500 text-xs">Balance</div>
                 <div className="font-extrabold text-slate-900 tabular-nums">
-                  {formatMleo(Number(mining?.balance || 0))} MLEO
+                  {Math.floor(Number(mining?.balance || 0)).toLocaleString()} MLEO
                 </div>
               </div>
               <div className="p-3 rounded-xl bg-slate-100">
                 <div className="text-slate-500 text-xs">Mined Today</div>
                 <div className="font-extrabold text-slate-900 tabular-nums">
-                  {formatMleo(Number(mining?.minedToday || 0))} / {formatShort(DAILY_CAP)}
+                  {Number(mining?.minedToday || 0).toFixed(2)} / {DAILY_CAP.toLocaleString()}
                 </div>
               </div>
               <div className="p-3 rounded-xl bg-slate-100">
                 <div className="text-slate-500 text-xs">Vault</div>
                 <div className="font-extrabold text-slate-900 tabular-nums">
-                  {formatMleo(Number(mining?.vault || 0))} MLEO
+                  {Math.floor(Number(mining?.vault || 0)).toLocaleString()}
                 </div>
               </div>
               <div className="p-3 rounded-xl bg-slate-100">
                 <div className="text-slate-500 text-xs">Claimed (Total)</div>
                 <div className="font-extrabold text-slate-900 tabular-nums">
-                  {formatMleo(Number(mining?.claimedTotal || 0))} MLEO
+                  {Math.floor(Number(mining?.claimedTotal || 0)).toLocaleString()}
                 </div>
               </div>
             </div>
@@ -2894,13 +2861,13 @@ MLEO
               </button>
               <button
                 onClick={onClaimMined}
-                disabled={claiming || (Number(mining?.balance || 0) <= 0)}
+                disabled={claiming || (mining?.balance || 0) <= 0}
                 className={`px-4 py-2 rounded-lg font-extrabold ${
-                  (Number(mining?.balance || 0) > 0) && !claiming
+                  (mining?.balance || 0) > 0 && !claiming
                     ? "bg-yellow-400 hover:bg-yellow-300 text-black"
                     : "bg-slate-300 text-slate-500 cursor-not-allowed"
                 }`}
-                title={(Number(mining?.balance || 0) > 0) ? "Claim" : "No tokens to claim"}
+                title={(mining?.balance || 0) > 0 ? "Claim" : "No tokens to claim"}
               >
                 CLAIM
               </button>
@@ -2909,18 +2876,16 @@ MLEO
         </div>
       )}
 
-
-           {/* Mining modal (Wallet connect + Claim UI) */}
+      {/* Mining modal (Wallet connect + Claim UI) */}
       {showMiningInfo && (() => {
         const vault   = Number(mining?.vault || 0);
         const bal     = Number(mining?.balance || 0);
         const mined   = Number(mining?.minedToday || 0);
         const claimed = Number(mining?.claimedTotal || 0);
-
-        const pct100   = Math.round(currentClaimPct(Date.now()) * 100);
+        const pct100  = Math.round(currentClaimPct(Date.now()) * 100);
         const canWallet = TOKEN_LIVE && walletClaimEnabled(Date.now());
-        const room      = remainingWalletClaimRoom();
-        const hasRoom   = room > 0;
+        const room    = remainingWalletClaimRoom();
+        const hasRoom = room > 0;
 
         return (
           <div className="fixed inset-0 z-[10000] bg-black/80 flex items-center justify-center p-4">
@@ -2937,95 +2902,100 @@ MLEO
                 </div>
               </div>
 
-              {/* Stats */}
               <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
                 <div className="p-3 rounded-xl bg-slate-100">
                   <div className="text-slate-500 text-xs">Balance</div>
-                  <div className="font-extrabold text-slate-900 tabular-nums">
-                    {formatMleo(bal)} MLEO
-                  </div>
+                  <div className="font-extrabold text-slate-900 tabular-nums">{Math.floor(bal).toLocaleString()} MLEO</div>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-100">
                   <div className="text-slate-500 text-xs">Mined Today</div>
-                  <div className="font-extrabold text-slate-900 tabular-nums">
-                    {formatMleo(mined)} / {formatShort(DAILY_CAP)}
-                  </div>
+                  <div className="font-extrabold text-slate-900 tabular-nums">{mined.toFixed(2)} / {DAILY_CAP.toLocaleString()}</div>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-100">
                   <div className="text-slate-500 text-xs">Vault</div>
-                  <div className="font-extrabold text-slate-900 tabular-nums">
-                    {formatMleo(vault)} MLEO
-                  </div>
+                  <div className="font-extrabold text-slate-900 tabular-nums">{Math.floor(vault).toLocaleString()}</div>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-100">
                   <div className="text-slate-500 text-xs">Claimed (Total)</div>
-                  <div className="font-extrabold text-slate-900 tabular-nums">
-                    {formatMleo(claimed)} MLEO
+                  <div className="font-extrabold text-slate-900 tabular-nums">{Math.floor(claimed).toLocaleString()}</div>
+                </div>
+              </div>
+
+             {/* Wallet actions */}
+<div className="mb-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
+  <div className="flex flex-wrap items-center justify-between gap-2">
+    <button
+      onClick={() => {
+        if (!isConnected) {
+          openConnectModal?.();
+        } else {
+          // פותח חלון ארנק ואז מודיע "COMING SOON" (נסגר אוטומטית ע"י ה-toast)
+          openAccountModal?.();
+          setGiftToastWithTTL("COMING SOON");
+        }
+      }}
+      className={`px-3 py-1.5 rounded-lg font-extrabold text-xs active:scale-95 ${
+        isConnected ? "bg-emerald-500 hover:bg-emerald-400 text-white" : "bg-indigo-500 hover:bg-indigo-400 text-white"
+      }`}
+    >
+      {isConnected ? "WALLET" : "CONNECT WALLET"}
+    </button>
+
+    <button
+      onClick={onClaimMined}
+      disabled={claiming || bal <= 0 || (TOKEN_LIVE && (!canWallet || !hasRoom))}
+      className={`px-3 py-1.5 rounded-lg font-extrabold text-xs active:scale-95 ${
+        (!TOKEN_LIVE || (canWallet && hasRoom && bal > 0)) && !claiming
+          ? "bg-yellow-400 hover:bg-yellow-300 text-black"
+          : "bg-slate-300 text-slate-500 cursor-not-allowed"
+      }`}
+      title={
+        !TOKEN_LIVE
+          ? "Claim to Vault (demo)"
+          : canWallet
+            ? (hasRoom ? "Claim to wallet" : "Wallet claim limit reached for now")
+            : "Wallet claim locked until 1 month after TGE"
+      }
+    >
+      {TOKEN_LIVE ? "CLAIM TO WALLET" : "CLAIM"}
+    </button>
+  </div>
+
+  {TOKEN_LIVE && (
+    <div className="text-[11px] text-slate-600 mt-2">
+      Allowed to wallet now: <b>{room.toFixed(2)} MLEO</b>
+    </div>
+  )}
+</div>
+
+
+              {/* History */}
+              <div className="mb-2">
+                <div className="text-sm font-bold mb-1">History</div>
+                {Array.isArray(mining?.history) && mining.history.length > 0 ? (
+                  <div className="space-y-1">
+                    {(showFullHistory ? mining.history : mining.history.slice(0, 8)).map((h, i) => {
+                      const d = new Date(h.ts || Date.now());
+                      const kind = h.type === "to_wallet" ? "to wallet" : "to vault";
+                      return (
+                        <div key={i} className="text-xs flex items-center justify-between bg-slate-100 rounded-md px-2 py-1">
+                          <span>{d.toLocaleString()}</span>
+                          <span className="font-semibold">{h.amt?.toFixed?.(2)} — {kind}</span>
+                        </div>
+                      );
+                    })}
+                    {mining.history.length > 8 && (
+                      <button
+                        onClick={() => setShowFullHistory(v => !v)}
+                        className="text-xs underline underline-offset-2 text-slate-600 hover:text-slate-800"
+                      >
+                        {showFullHistory ? "Show less" : "Show all"}
+                      </button>
+                    )}
                   </div>
-                </div>
-              </div>
-
-              {/* Wallet actions */}
-              <div className="mb-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <button
-                    onClick={() => {
-                      if (!isConnected) {
-                        openConnectModal?.();
-                      } else {
-                        // פותח חלון ארנק ואז מודיע "COMING SOON"
-                        openAccountModal?.();
-                        setGiftToastWithTTL("COMING SOON");
-                      }
-                    }}
-                    className={`px-3 py-1.5 rounded-lg font-extrabold text-xs active:scale-95 ${
-                      isConnected
-                        ? "bg-emerald-500 hover:bg-emerald-400 text-white"
-                        : "bg-indigo-500 hover:bg-indigo-400 text-white"
-                    }`}
-                  >
-                    {isConnected ? "WALLET" : "CONNECT WALLET"}
-                  </button>
-
-                  <button
-                    onClick={onClaimMined}
-                    disabled={
-                      claiming ||
-                      bal <= 0 ||
-                      (TOKEN_LIVE && (!canWallet || !hasRoom))
-                    }
-                    className={`px-3 py-1.5 rounded-lg font-extrabold text-xs active:scale-95 ${
-                      (!TOKEN_LIVE || (canWallet && hasRoom && bal > 0)) && !claiming
-                        ? "bg-yellow-400 hover:bg-yellow-300 text-black"
-                        : "bg-slate-300 text-slate-500 cursor-not-allowed"
-                    }`}
-                    title={
-                      !TOKEN_LIVE
-                        ? "Claim to Vault (demo)"
-                        : canWallet
-                          ? (hasRoom ? "Claim to Wallet" : "No wallet claim room yet")
-                          : "Wallet claim locked"
-                    }
-                  >
-                    {TOKEN_LIVE ? "CLAIM TO WALLET" : "CLAIM TO VAULT"}
-                  </button>
-                </div>
-
-                {TOKEN_LIVE && (
-                  <p className="text-[11px] text-slate-600 mt-2">
-                    Wallet claims unlock gradually after TGE.
-                    Available now: <b>{formatMleo(room)}</b> MLEO.
-                  </p>
+                ) : (
+                  <div className="text-xs text-slate-500">No history yet.</div>
                 )}
-              </div>
-
-              {/* Notes */}
-              <div className="text-xs text-slate-600 border-t pt-3">
-                <p>
-                  In demo mode, <b>CLAIM</b> moves your MLEO to the in-game <b>Vault</b>.
-                  When on-chain claims go live, this button will switch to wallet claiming
-                  with unlock rules.
-                </p>
               </div>
 
               <div className="flex justify-end gap-2 mt-4">
@@ -3040,7 +3010,6 @@ MLEO
           </div>
         );
       })()}
-
 
     </div>
   </Layout>
