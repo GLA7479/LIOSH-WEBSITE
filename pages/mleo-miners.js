@@ -1072,7 +1072,7 @@ function boardRect(){
 function laneRect(lane){
   const b = boardRect();
   const h = b.h * 0.18;
-  const centers = [0.38, 0.53, 0.68, 0.82];
+  const centers = [0.375,0.525,0.675,0.815];
   const centerY = b.y + b.h * centers[lane];
   const y = Math.max(b.y, Math.min(centerY - h*0.5, b.y + b.h - h));
   return { x:b.x, y, w:b.w, h };
