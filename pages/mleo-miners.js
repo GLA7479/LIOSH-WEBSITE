@@ -548,6 +548,32 @@ export default function MleoMiners() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+// === [GAIN] state & helpers (ADD) ===
+const [showGainModal, setShowGainModal] = useState(false);
+const [gainWatchEnabled, setGainWatchEnabled] = useState(false);
+
+// Bind to your real logic (timer/conditions). If no field exists yet, falls back to false.
+const gainReady = !!(stateRef.current && stateRef.current.gainReady);
+
+// “ring” matching the other icons (same sizing/ping behavior)
+const gainRingClass = gainReady
+  ? "animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400/40"
+  : "absolute inline-flex h-full w-full rounded-full border border-white/20";
+
+function toggleGainWatch() {
+  setGainWatchEnabled(v => !v);
+  try { localStorage.setItem("mleo_gain_watch", (!gainWatchEnabled).toString()); } catch {}
+}
+
+useEffect(() => {
+  try {
+    const v = localStorage.getItem("mleo_gain_watch");
+    if (v === "true") setGainWatchEnabled(true);
+  } catch {}
+}, []);
+// === [GAIN] END state ===
+
+
   // טוען/מרענן סטטוס ה־Mining
   useEffect(() => {
     if (!mounted) return;
@@ -844,6 +870,37 @@ useEffect(() => {
   };
 }, [showIntro]);
 
+useEffect(() => {
+  const canvas = canvasRef.current;
+  if (!canvas) return;
+
+  // התאמת קאנבס מידית לפי ה-wrapper
+  fitCanvasToWrapper(canvas);
+
+  // רענון על שינוי גודל/אוריינטציה/visualViewport (iOS)
+  const vv = window.visualViewport;
+  let t;
+  const onResize = () => {
+    clearTimeout(t);
+    t = setTimeout(() => fitCanvasToWrapper(canvas), 60);
+  };
+
+  window.addEventListener("resize", onResize);
+  window.addEventListener("orientationchange", onResize);
+  vv && vv.addEventListener("resize", onResize);
+
+  // אם יש לך לולאת ציור/engine שמחשב מחדש מטריקות — שמור
+  // ההוספה כאן רק מבטיחה שהקאנבס עצמו תמיד תפור לגובה העטיפה.
+
+  return () => {
+    clearTimeout(t);
+    window.removeEventListener("resize", onResize);
+    window.removeEventListener("orientationchange", onResize);
+    vv && vv.removeEventListener("resize", onResize);
+  };
+}, []);
+
+
 // רנדר/סנכרון מתנות — 500ms heartbeat
 useEffect(() => {
   const id = setInterval(() => {
@@ -1072,7 +1129,7 @@ function boardRect(){
 function laneRect(lane){
   const b = boardRect();
   const h = b.h * 0.18;
-  const centers = [0.375,0.525,0.675,0.815];
+  const centers = [0.375,0.525,0.675,0.825];
   const centerY = b.y + b.h * centers[lane];
   const y = Math.max(b.y, Math.min(centerY - h*0.5, b.y + b.h - h));
   return { x:b.x, y, w:b.w, h };
@@ -1089,14 +1146,38 @@ function slotRect(lane,slot){
 function rockRect(lane){
   const L = laneRect(lane);
   const rw = rockWidth(L);
-  const y = L.y + L.h * 0.06;
-  const h = L.h * 0.88;
+  const y = L.y + L.h * 0.15;
+  const h = L.h * 0.90;
   return { x:L.x + L.w - rw - 4, y, w:rw, h };
 }
 function pos(e){
   const r = canvasRef.current?.getBoundingClientRect();
   return { x: e.clientX - (r?.left||0), y: e.clientY - (r?.top||0) };
 }
+
+// Fit canvas to its wrapper with DPR (no lanes changes)
+function fitCanvasToWrapper(canvas) {
+  const wrap = canvas?.parentElement;
+  if (!canvas || !wrap) return;
+  const rect = wrap.getBoundingClientRect();
+
+  // DPI scaling for sharp rendering (cap to 2 for performance)
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  // Set internal buffer size
+  canvas.width  = Math.round(rect.width  * dpr);
+  canvas.height = Math.round(rect.height * dpr);
+
+  // CSS size to match wrapper
+  canvas.style.width  = `${Math.round(rect.width)}px`;
+  canvas.style.height = `${Math.round(rect.height)}px`;
+
+  // Scale context so all existing drawing uses CSS pixels
+  const ctx = canvas.getContext("2d");
+  if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+
 function pointInRect(x,y,r){ return x>=r.x && x<=r.x+r.w && y>=r.y && y<=r.y+r.h; }
 function pillRect(lane,slot){
   const r = slotRect(lane,slot);
@@ -1205,7 +1286,7 @@ function drawRock(ctx,rect,rock){
 function drawMiner(ctx,lane,slot,m){
   const r  = slotRect(lane,slot);
   const cx = r.x + r.w*0.52;
-  const cy = r.y + r.h*0.56;
+  const cy = r.y + r.h*0.45;
 
   const scaleH = (stateRef.current?.minerScale || 1);
   const base   = Math.min(r.w, r.h) * 0.84 * scaleH;
@@ -1618,9 +1699,12 @@ function chooseAutoDogLevel(s) {
   const existsLv2 = Object.values(s.miners || {}).some(m => m.level === target2);
   return existsLv2 ? target2 : sl;
 }
+
 function chooseGiftDogLevelForRegularGift(s) {
-  return chooseAutoDogLevel(s);
+  // Gift dog (REGULAR) = buy level by default; if no merge is possible at buy level → lowest existing level on board
+  return chooseGiftDogPlacementLevel(s);
 }
+
 
 function accrueBankDogsUpToNow(s) {
   if (!s) return;
@@ -1631,13 +1715,44 @@ function accrueBankDogsUpToNow(s) {
     s.autoDogNextAt = now + period;
   }
 
+  // cap bank by AVAILABLE FREE SLOTS (pause when full)
+  const freeSlots = Math.max(0, MAX_MINERS - countMiners(s));
+  const bankCapNow = Math.min(DOG_BANK_CAP, freeSlots);
+
   if (now >= s.autoDogNextAt) {
     const intervals = Math.floor((now - s.autoDogNextAt) / period) + 1;
-    s.autoDogBank = Math.min(DOG_BANK_CAP, (s.autoDogBank || 0) + intervals);
+    const cur = (s.autoDogBank || 0);
+    s.autoDogBank = Math.min(bankCapNow, cur + intervals);
     s.autoDogNextAt += intervals * period;
     save?.();
   }
 }
+
+// --- helpers for gift-dog placement (buy-level vs lowest-existing) ---
+function lowestExistingLevelOnBoard(s) {
+  const levels = Object.values(s.miners || {})
+    .filter(Boolean)
+    .map(m => m.level)
+    .filter(v => typeof v === "number" && v >= 1);
+  if (!levels.length) return null;
+  levels.sort((a,b)=>a-b);
+  return levels[0]; // lowest existing level
+}
+
+// "can merge at buy level" = יש לפחות כלב אחד ברמת הקנייה על הלוח (אפשרות לזוג/מיזוג)
+function canMergeAtBuyLevel(s) {
+  const bl = Math.max(1, s.spawnLevel || 1);
+  return Object.values(s.miners || {}).some(m => m && m.level === bl);
+}
+
+// בחירת דרגה למתנה רגילה: ברירת־מחדל דרגת קנייה; אם אין שום אפשרות מיזוג — הדרגה הנמוכה ביותר שקיימת על הלוח
+function chooseGiftDogPlacementLevel(s) {
+  const buyLevel = Math.max(1, s.spawnLevel || 1);
+  if (canMergeAtBuyLevel(s)) return buyLevel;
+  const low = lowestExistingLevelOnBoard(s);
+  return low || buyLevel; // אם הלוח ריק—נשארים עם דרגת הקנייה
+}
+
 
 function tryDistributeBankDog(s) {
   if (!s) return;
@@ -1657,27 +1772,40 @@ function tryDistributeBankDog(s) {
 function handleOfflineAccrual(s, elapsedMs) {
   if (!s) return 0;
 
-   // Auto-dog: accrue by nextAt → bank (cap 6), then try to deploy
-  {
-    const period = DOG_INTERVAL_SEC * 1000;
-    const now = Date.now();
+  // Auto-dog: accrue by nextAt → bank (but PAUSE when no free slots), then try to deploy
+{
+  const period = DOG_INTERVAL_SEC * 1000;
+  const now = Date.now();
 
-    if (!s.autoDogNextAt || Number.isNaN(s.autoDogNextAt)) {
-      s.autoDogNextAt = now + period;
-    }
-    if (now >= s.autoDogNextAt) {
-      const intervals = Math.floor((now - s.autoDogNextAt) / period) + 1;
-      s.autoDogBank = Math.min(DOG_BANK_CAP, (s.autoDogBank || 0) + intervals);
-      s.autoDogNextAt += intervals * period;
-    }
-
-    while ((s.autoDogBank || 0) > 0 && hasFreeSlot(s)) {
-      const lvl = chooseAutoDogLevel(s);
-      const ok = spawnMiner(s, lvl);
-      if (!ok) break;
-      s.autoDogBank -= 1;
-    }
+  if (!s.autoDogNextAt || Number.isNaN(s.autoDogNextAt)) {
+    s.autoDogNextAt = now + period;
   }
+
+  // capacity according to CURRENT free slots
+  const freeSlots0 = Math.max(0, MAX_MINERS - countMiners(s));
+  let bankCapNow = Math.min(DOG_BANK_CAP, freeSlots0);
+
+  if (now >= s.autoDogNextAt) {
+    const intervals = Math.floor((now - s.autoDogNextAt) / period) + 1;
+    const cur = (s.autoDogBank || 0);
+    s.autoDogBank = Math.min(bankCapNow, cur + intervals);
+    s.autoDogNextAt += intervals * period;
+  }
+
+  // Try to spend bank immediately if slots exist
+  while ((s.autoDogBank || 0) > 0 && hasFreeSlot(s)) {
+    const lvl = chooseAutoDogLevel(s); // אוטו-דוג: שומר על הבחירה הרגילה שלך
+    const ok = spawnMiner(s, lvl);
+    if (!ok) break;
+    s.autoDogBank -= 1;
+
+    // Recompute capacity after placement
+    const freeNow = Math.max(0, MAX_MINERS - countMiners(s));
+    bankCapNow = Math.min(DOG_BANK_CAP, freeNow);
+    if (bankCapNow <= 0) break; // pause accrual when full
+  }
+}
+
 
 
   const CAP_MS = 12 * 60 * 60 * 1000;
@@ -2187,18 +2315,23 @@ return (
         </div>
       )}
 
-      {/* ===== Canvas wrapper ===== */}
-      <div
-        id="miners-canvas-wrap"
-        className="relative w-full border border-slate-700 rounded-2xl overflow-hidden mt-1"
-        style={{
-          maxWidth: isDesktop ? "1024px" : "680px",
-          height: isDesktop ? undefined : "var(--app-100vh,100svh)",
-          maxHeight: "var(--app-100vh,100svh)",
-          aspectRatio: isDesktop ? "4 / 3" : undefined,
-        }}
-      >
-        <canvas id="miners-canvas" ref={canvasRef} className="w-full h-full block touch-none select-none" />
+{/* ===== Unified Canvas wrapper (no lanes changes) ===== */}
+<div
+  id="miners-canvas-wrap"
+  className="relative w-full rounded-2xl overflow-hidden mt-1 mx-auto border border-slate-700"
+  style={{
+    maxWidth: isDesktop ? "1024px" : "680px",
+    // גובה נטו שמתאים לשני האתרים (Header/ללא Header)
+    height: "calc(var(--app-100vh) - var(--header-h) - var(--safe-top) - var(--safe-bottom))",
+    // בדסקטופ שמור יחס קלאסי; במובייל מלא גובה
+    aspectRatio: isDesktop ? "4 / 3" : "auto",
+  }}
+>
+  <canvas
+    id="miners-canvas"
+    ref={canvasRef}
+    className="w-full h-full block touch-none select-none"
+  />
 
 {SHOW_FLOATING_RESET && (
   <div
@@ -2358,6 +2491,23 @@ return (
                 <div className="absolute inset-0 rounded-full" style={ringBg(dogProgress)} />
                 <div className="text-[22px] font-extrabold leading-none">🐶</div>
               </button>
+
+{/* === [GAIN] button (RING like 🎁/🐶, same size) === */}
+<button
+  onClick={() => setShowGainModal(true)}
+  className="relative w-8 h-8 rounded-full grid place-items-center hover:opacity-90 active:scale-95 transition"
+  title={`GAIN ${addRemainMs > 0 ? `in ${addRemainLabel}` : "ready"}`}
+  aria-label="GAIN info"
+>
+  {/* טבעת ספירה בדיוק כמו 🎁/🐶 */}
+  <div className="absolute inset-0 rounded-full" style={ringBg(addProgress)} />
+  {/* האייקון עצמו */}
+  <div className="text-[20px] font-extrabold leading-none">⚡</div>
+</button>
+{/* === END GAIN button === */}
+
+
+
             </div>
           </div>
 
@@ -2426,23 +2576,7 @@ className={`${BTN_BASE} ${BTN_H} ${BTN_W} ${
               <span className="align-middle">+10% ({formatShort(goldCostNow)})</span>
             </button>
 
-            {/* GAIN */}
-            <button
-              onClick={onAdd}
-              disabled={addDisabled}
-className={`${BTN_BASE} ${BTN_H} ${BTN_W} ${
-  addDisabled
-    ? `bg-indigo-400 ring-indigo-300 text-slate-900 ${BTN_DIS}`
-    : "bg-indigo-400 hover:bg-indigo-300 ring-indigo-300 text-slate-900"
-}`}
-
->
-              <span className="align-middle">GAIN</span>
-              {addRemainMs > 0 && <span className="opacity-80 align-middle">({addRemainLabel})</span>}
-            </button>
-
-
-          </div>
+                </div>
 
           {/* Mining status + CLAIM */}
           <div className="w-full flex justify-center mt-1">
@@ -2833,6 +2967,85 @@ MLEO
           </div>
         </div>
       )}
+
+{/* === [GAIN] Modal (ADD) === */}
+{showGainModal && (
+  <div className="fixed inset-0 z-[10060] bg-black/60 backdrop-blur-sm grid place-items-center p-4">
+    <div className="w-full max-w-md rounded-2xl bg-zinc-900 text-white border border-white/10 shadow-lg">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+        <h3 className="text-lg font-semibold">GAIN — How it works</h3>
+        <button
+          onClick={() => setShowGainModal(false)}
+          className="px-2 py-1 rounded hover:bg-white/10"
+          aria-label="Close"
+          title="Close"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div className="px-4 py-4 space-y-3 text-sm leading-6">
+        <p>
+          GAIN is a special reward. Follow the steps to enable it and receive the bonus.
+        </p>
+
+        {/* Dynamic status bar */}
+        <div className="rounded-lg bg-black/40 border border-white/10 p-3">
+          <div className="flex items-center justify-between">
+            <span className="font-medium">Status</span>
+            <span className={`px-2 py-0.5 rounded text-xs ${!addDisabled ? "bg-green-500 text-black" : "bg-zinc-700 text-white/80"}`}>
+  {!addDisabled ? "Available" : "Not available"}
+</span>
+
+          </div>
+          <p className="mt-2 text-white/80">
+            {!addDisabled
+  ? "Your GAIN is ready. Press WATCH to proceed and claim it."
+  : `GAIN will become available in ${addRemainLabel}.`}
+
+          </p>
+        </div>
+
+        {/* Instructions — replace copy with your exact flow */}
+        <ul className="list-disc list-inside space-y-1 text-white/80">
+          <li>Complete the required action to enable GAIN.</li>
+          <li>When ready, press WATCH to activate it and receive the reward.</li>
+          <li>If disabled, please wait until conditions are met.</li>
+        </ul>
+      </div>
+
+      <div className="px-4 pb-4 flex items-center justify-between gap-3">
+        <button
+          onClick={() => setShowGainModal(false)}
+          className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-white/10"
+        >
+          Close
+        </button>
+
+<button
+  onClick={() => {
+    if (addDisabled) return;   // עדיין בהמתנה
+    setShowGainModal(false);   // סגור את מודאל ההסבר
+    onAdd();                   // 👈 אותו אקשן שהיה על כפתור GAIN הישן
+  }}
+  disabled={addDisabled}
+  className={`px-4 py-2 rounded-lg font-semibold border ${
+    !addDisabled
+      ? "bg-emerald-500 text-black border-emerald-400"
+      : "bg-zinc-700 text-white/50 border-white/10 cursor-not-allowed"
+  }`}
+  title={!addDisabled ? "Watch and claim" : "Not available yet"}
+>
+  {!addDisabled ? "WATCH" : "WATCH (disabled)"}
+</button>
+
+
+      </div>
+    </div>
+  </div>
+)}
+{/* === [GAIN] END Modal === */}
+
 
          {/* Diamonds modal */}
       {showDiamondInfo && (() => {
