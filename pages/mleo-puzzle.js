@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const SHAPES = [
   "heart.png",
@@ -20,6 +21,7 @@ const DIFFICULTY_SETTINGS = {
 };
 
 export default function MleoMatch() {
+  const router = useRouter();
   const [playerName, setPlayerName] = useState("");
   const [difficulty, setDifficulty] = useState("easy");
   const [grid, setGrid] = useState([]);
@@ -245,7 +247,13 @@ export default function MleoMatch() {
               <div className="bg-black/60 px-3 py-1 rounded">⭐ {score}</div>
             </div>
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                setShowIntro(true);
+                setGameRunning(false);
+                setGameOver(false);
+                setDidWin(false);
+                router.push("/game");
+              }}
               className="fixed top-20 right-4 px-5 py-3 bg-yellow-400 text-black font-bold rounded-lg text-base z-[999] hover:scale-105 transition"
             >
               Exit
@@ -256,7 +264,7 @@ export default function MleoMatch() {
         {!isLandscape && showIntro ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 z-[999] text-center p-6">
             <Image src="/images/leo-intro.png" alt="Leo" width={200} height={200} className="mb-6 animate-bounce" />
-            <h1 className="text-4xl font-bold text-yellow-400 mb-4">🍬 LIO Match</h1>
+            <h1 className="text-4xl font-bold text-yellow-400 mb-4">🍬 LEO Match</h1>
             <input
               type="text"
               placeholder="Enter your name"
@@ -277,13 +285,27 @@ export default function MleoMatch() {
                 </button>
               ))}
             </div>
-            <button
-              onClick={startGame}
-              disabled={!playerName.trim()}
-              className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-lg hover:scale-105 transition"
-            >
-              ▶ Start Game
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={startGame}
+                disabled={!playerName.trim()}
+                className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-lg hover:scale-105 transition"
+              >
+                ▶ Start Game
+              </button>
+              <button
+                onClick={() => {
+                  setShowIntro(true);
+                  setGameRunning(false);
+                  setGameOver(false);
+                  setDidWin(false);
+                  router.push("/game");
+                }}
+                className="px-6 py-3 bg-gray-700 text-white font-bold rounded text-lg hover:bg-gray-600 transition"
+              >
+                ✖ Exit
+              </button>
+            </div>
           </div>
         ) : null}
 

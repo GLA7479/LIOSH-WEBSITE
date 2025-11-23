@@ -7,5 +7,5 @@ git add .
 git commit -m "Auto update and deploy"
 git push origin main
 
-echo ✅ Done! Changes pushed to GitHub.
+echo ✅ Done! hanges pushed to GitHub.
 pause

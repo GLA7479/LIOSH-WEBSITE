@@ -1,93 +1,31 @@
-// components/Layout.js
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
-import Header from "./Header";
-import { Footer } from "./Header";
-import FullscreenButton from "./FullscreenButton";
-import SettingsButton from "./SettingsButton";
-import BackButton from "./BackButton";
-import dynamic from "next/dynamic";
+import Link from "next/link";
 
-// נטען דינמי כדי להימנע מ-SSR בעייתי
-const SettingsModal = dynamic(() => import("./SettingsModal"), { ssr: false });
-
-export default function Layout({ children, video }) {
-  const videoRef = useRef(null);
-  const router = useRouter();
-
-  // Settings modal state (מקומי ל-Layout)
-  const [settingsOpen, setSettingsOpen] = useState(false);
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.load();
-      videoRef.current.play().catch(() => {});
-    }
-  }, [video]);
-
-  // הצגת הכפתורים רק בעמודי משחק משנה
-  const isGameHub = router.pathname === "/game";
-  const isSubGame = router.pathname.startsWith("/mleo-");
-  const showButtons = isSubGame;
-
-  // *** כאן שולטים בגובה שלושת הכפתורים ***
-  const TOP_OFFSET = 66;
-
+export default function Layout({ children }) {
   return (
-    <div className="relative w-full min-h-screen text-white overflow-hidden">
-      {video && (
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          className="fixed top-0 left-0 w-full h-full object-cover -z-10"
-          src={video}
-        />
-      )}
-      {video && <div className="absolute inset-0 bg-black/50 -z-10" />}
-
-      <Header />
-
-      {showButtons && (
-        <>
-          {/* שמאל: Back */}
-          <BackButton topOffset={TOP_OFFSET} leftOffsetPx={16} />
-
-          {/* ימין: Settings + Fullscreen */}
-          <SettingsButton
-            topOffset={TOP_OFFSET}
-            rightOffsetPx={16}
-            onClick={() => setSettingsOpen(true)}
-          />
-          <FullscreenButton
-            topOffset={TOP_OFFSET}
-            rightOffsetPx={64}
-          />
-        </>
-      )}
-
-      <main className="relative z-10 pt-[65px]">{children}</main>
-
-      {!isGameHub && !isSubGame && (
-        <a
-          href="/presale"
-          className="fixed bottom-4 left-4 bg-yellow-500 hover:bg-yellow-600
-                     text-black px-4 py-2 rounded-full text-sm font-bold
-                     shadow-lg transition z-50"
-        >
-          🚀 Join Presale
-        </a>
-      )}
-
-      <Footer />
-
-      {/* Settings modal (נשאר שלך) */}
-      {showButtons && (
-        <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
-      )}
+    <div className="min-h-screen bg-gradient-to-b from-[#050816] via-[#0b1020] to-[#050816] text-white">
+      <header className="w-full border-b border-white/10 bg-black/40 backdrop-blur sticky top-0 z-30">
+        <nav className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-2 font-extrabold tracking-widest text-lg">
+            <span className="text-2xl">🦁</span>
+            <span>LEO K</span>
+          </Link>
+          <div className="flex items-center gap-2 text-sm font-semibold">
+            <Link href="/" className="px-3 py-1.5 rounded-full hover:bg-white/10 transition">Home</Link>
+            <Link href="/game" className="px-3 py-1.5 rounded-full hover:bg-white/10 transition">Games</Link>
+            <Link href="/offline" className="px-3 py-1.5 rounded-full hover:bg-white/10 transition">Offline</Link>
+            <Link href="/learning" className="px-3 py-1.5 rounded-full hover:bg-white/10 transition">Learning</Link>
+          </div>
+        </nav>
+      </header>
+      <main className="min-h-[calc(100vh-56px)]">
+        {children}
+      </main>
+      <footer className="border-t border-white/10 bg-black/40 mt-10">
+        <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-white/60 flex flex-wrap gap-4 justify-between items-center">
+          <span>© {new Date().getFullYear()} LEO K · Fun games & learning for kids</span>
+          <span className="text-[10px] uppercase tracking-[0.2em]">Built with Next.js</span>
+        </div>
+      </footer>
     </div>
   );
 }

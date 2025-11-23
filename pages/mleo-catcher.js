@@ -2,8 +2,10 @@
 import { useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 export default function MleoCatcher() {
+  const router = useRouter();
   // ─────────────────────────────────────────────────────────────────────────────
   // מניעת העתקה/תפריט/לחיצה ארוכה
   // ─────────────────────────────────────────────────────────────────────────────
@@ -331,7 +333,7 @@ export default function MleoCatcher() {
         {showIntro && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 z-[999] text-center p-6">
             <Image src="/images/leo-intro.png" alt="Leo" width={220} height={220} className="mb-6 animate-bounce" />
-            <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-2">🎯 LIO Catcher</h1>
+            <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-2">🎯 LEO Catcher</h1>
             <p className="text-base sm:text-lg text-gray-200 mb-4">Move Leo to catch coins and avoid bombs!</p>
 
             <input
@@ -342,22 +344,35 @@ export default function MleoCatcher() {
               className="mb-4 px-4 py-2 rounded text-black w-64 text-center"
             />
 
-            <button
-              onClick={() => {
-                if (!playerName.trim()) return;
-                updateLeaderboard(playerName, 0);
-                setShowIntro(false);
-                setGameRunning(true);
-              }}
-              disabled={!playerName.trim()}
-              className={`px-8 py-4 font-bold rounded-lg text-xl shadow-lg transition animate-pulse ${
-                playerName.trim()
-                  ? "bg-yellow-400 text-black hover:scale-105"
-                  : "bg-gray-500 text-gray-300 cursor-not-allowed"
-              }`}
-            >
-              ▶ Start Game
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3 mt-2">
+              <button
+                onClick={() => {
+                  if (!playerName.trim()) return;
+                  updateLeaderboard(playerName, 0);
+                  setShowIntro(false);
+                  setGameRunning(true);
+                }}
+                disabled={!playerName.trim()}
+                className={`px-8 py-4 font-bold rounded-lg text-xl shadow-lg transition animate-pulse ${
+                  playerName.trim()
+                    ? "bg-yellow-400 text-black hover:scale-105"
+                    : "bg-gray-500 text-gray-300 cursor-not-allowed"
+                }`}
+              >
+                ▶ Start Game
+              </button>
+              <button
+                onClick={() => {
+                  setShowIntro(true);
+                  setGameRunning(false);
+                  setGameOver(false);
+                  router.push("/game");
+                }}
+                className="px-8 py-4 font-bold rounded-lg text-xl shadow-lg bg-gray-700 text-white hover:bg-gray-600 transition"
+              >
+                ✖ Exit
+              </button>
+            </div>
           </div>
         )}
 
@@ -402,6 +417,7 @@ export default function MleoCatcher() {
                 setGameRunning(false);
                 setGameOver(false);
                 setShowIntro(true);
+                router.push("/game");
               }}
               className="fixed top-4 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
             >
