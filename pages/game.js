@@ -1,129 +1,104 @@
-// pages/game.js
 import Layout from "../components/Layout";
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import SplashIntro from "../components/SplashIntro";
+import { useIOSViewportFix } from "../hooks/useIOSViewportFix";
+
+const GAMES = [
+  {
+    slug: "mleo-runner",
+    title: "Mleo Runner",
+    emoji: "🏃‍♂️",
+    type: "Arcade Game",
+    blurb: "Run with LEO and collect points!",
+  },
+  {
+    slug: "mleo-flyer",
+    title: "Mleo Flyer",
+    emoji: "🪂",
+    type: "Arcade Game",
+    blurb: "Fly with LEO and collect coins!",
+  },
+  {
+    slug: "mleo-catcher",
+    title: "Mleo Catcher",
+    emoji: "🎯",
+    type: "Arcade Game",
+    blurb: "Catch coins & diamonds, avoid bombs!",
+  },
+  {
+    slug: "mleo-puzzle",
+    title: "Mleo Puzzle",
+    emoji: "🧩",
+    type: "Arcade Game",
+    blurb: "Match 3 tiles and score points!",
+  },
+  {
+    slug: "mleo-memory",
+    title: "Mleo Memory",
+    emoji: "🧠",
+    type: "Arcade Game",
+    blurb: "Flip the cards and find matching pairs!",
+  },
+  {
+    slug: "mleo-penalty",
+    title: "Mleo Penalty",
+    emoji: "⚽",
+    type: "Arcade Game",
+    blurb: "Score goals in the ultimate penalty shoot!",
+  },
+];
 
 export default function Games() {
-  const router = useRouter();
-
-  const handleBack = () => {
-    if (typeof window !== "undefined" && window.history.length > 1) {
-      window.history.back();
-    } else {
-      router.replace("/");
-    }
-  };
-
-  const games = [
-    // Temporarily disabled games
-    // { title: "Mleo Miners",  description: "Merge miners, break rocks, earn gold!",       link: "/mleo-miners",   icon: "⛏️",   available: true },
-    // { title: "Mleo Token Rush", description: "Build, upgrade & automate your mine. Idle + online.", link: "/mleo-token-rush", icon: "🏭", available: true },
-    { title: "Mleo Runner",  description: "Run with LEO and collect points!",            link: "/mleo-runner",   icon: "🏃‍♂️", available: true },
-    { title: "Mleo Flyer",   description: "Fly with LEO and collect coins!",             link: "/mleo-flyer",    icon: "🪂",   available: true },
-    { title: "Mleo Catcher", description: "Catch coins & diamonds, avoid bombs!",        link: "/mleo-catcher",  icon: "🎯",   available: true },
-    { title: "Mleo Puzzle",  description: "Match 3 tiles and score points!",             link: "/mleo-puzzle",   icon: "🧩",   available: true },
-    { title: "Mleo Memory",  description: "Flip the cards and find matching pairs!",     link: "/mleo-memory",   icon: "🧠",   available: true },
-    { title: "Mleo Penalty", description: "Score goals in the ultimate penalty shoot!",  link: "/mleo-penalty",  icon: "⚽",   available: true },
-
-
-
-    // Remaining Coming Soon cards stay as-is
-
-    { title: "Coming Soon",  description: "More fun LEO games are coming soon!",         link: "#",              icon: "⭐",    available: false },
-    { title: "Coming Soon",  description: "A surprise LEO game is coming soon!",         link: "#",              icon: "🎲",    available: false },
-    { title: "Coming Soon",  description: "Stay tuned for a new multiplayer experience!", link: "#",              icon: "🤝",    available: false },
-    { title: "Coming Soon",  description: "A special event game is launching soon!",      link: "#",              icon: "🎉",    available: false },
-  ];
-
+  useIOSViewportFix();
   return (
-    <Layout page="games">
-      {/* Splash – רק ב-/game, פעם ראשונה בסשן */}
-      <SplashIntro />
-
-      <video
-        autoPlay muted loop playsInline preload="auto"
-        className="absolute inset-0 w-full h-full object-cover -z-10"
-      >
-        <source src="/videos/gallery-bg.mp4" type="video/mp4" />
-      </video>
-
-      {/* Back פשוט גם בדף זה (אם אין היסטוריה – חוזר הביתה) */}
-      <button
-        onClick={handleBack}
-        aria-label="Back"
-        className="fixed left-4 top-[calc(env(safe-area-inset-top,0px)+8px)] z-50
-                   rounded-xl bg-black/60 text-white px-4 py-2 border border-white/20
-                   backdrop-blur shadow active:scale-95"
-      >
-        ← Back
-      </button>
-
-      <motion.main
-        className="relative min-h-screen flex flex-col items-center p-4 text-white overflow-hidden pt-[70px]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80 -z-10" />
-
-        <motion.h1
-          className="text-4xl sm:text-5xl font-extrabold mb-2 flex items-center gap-3 text-center drop-shadow-lg"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.8 }}
-        >
-          🎮
-          <span className="bg-gradient-to-r from-yellow-300 via-yellow-500 to-orange-500 bg-clip-text text-transparent">
-            MLEO Games
-          </span>
-        </motion.h1>
-
-        <motion.p
-          className="text-base text-gray-300 max-w-xl text-center mb-6"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          Play and enjoy our exclusive LEO-themed games! Collect points, fly high, and have fun with the real Shiba Inu hero.
-        </motion.p>
-
-        <div
-          className="grid gap-4 w-full px-2"
-          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", maxWidth: "1000px" }}
-        >
-          {games.map((game, i) => (
-            <motion.div
-              key={i}
-              className="bg-gradient-to-br from-gray-900/80 to-gray-800/70 p-3 rounded-lg shadow-md border border-yellow-400/40 text-center hover:scale-105 transition flex flex-col justify-between"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              whileHover={{ scale: 1.05 }}
-              style={{ minHeight: "160px" }}
+    <Layout>
+      <main className="min-h-screen bg-gradient-to-b from-[#0f111a] to-[#1b1f2b] text-white px-4 py-10">
+        <div className="max-w-5xl mx-auto space-y-6">
+          <div className="flex justify-between items-center">
+            <Link
+              href="/"
+              className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-semibold tracking-widest"
             >
-              <div className="text-3xl mb-1">{game.icon}</div>
-              <h2 className="text-lg font-bold text-yellow-400 mb-1">{game.title}</h2>
-              <p className="text-xs text-gray-300 mb-2">{game.description}</p>
-              {game.available ? (
-                <Link href={game.link}>
-                  <button className="bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-1 rounded-md font-medium text-xs transition">
-                    Play Now
-                  </button>
-                </Link>
-              ) : (
-                <button className="bg-gray-600 text-gray-300 px-3 py-1 rounded-md font-medium text-xs cursor-not-allowed" disabled>
-                  Coming Soon
-                </button>
-              )}
-            </motion.div>
-          ))}
+              ← Home
+            </Link>
+            <p className="text-xs uppercase tracking-[0.3em] text-white/60">
+              Arcade Games
+            </p>
+          </div>
+
+          <header className="text-center space-y-3">
+            <p className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-sm tracking-wider uppercase text-sky-300 font-semibold">
+              🎮 Action · Fun · Adventure
+            </p>
+            <h1 className="text-3xl md:text-4xl font-black">Arcade Games Hub</h1>
+            <p className="text-sm md:text-base text-white/70 max-w-2xl mx-auto">
+              Play and enjoy our exclusive LEO-themed games! Collect points, fly high, and have fun with the real Shiba Inu hero.
+            </p>
+          </header>
+
+          <section className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            {GAMES.map((g) => (
+              <Link
+                key={g.slug}
+                href={`/${g.slug}`}
+                className="group rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition p-4 flex flex-col justify-between"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="text-3xl">{g.emoji}</div>
+                  <div>
+                    <h2 className="font-bold text-lg">{g.title}</h2>
+                    <p className="text-xs text-white/60">{g.type}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-white/70 flex-1">{g.blurb}</p>
+                <span className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-sky-300">
+                  Play now
+                  <span>→</span>
+                </span>
+              </Link>
+            ))}
+          </section>
         </div>
-      </motion.main>
+      </main>
     </Layout>
   );
 }
