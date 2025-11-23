@@ -504,149 +504,215 @@ function getHint(question, topic, gradeKey) {
 // הסבר מפורט צעד-אחר-צעד לפי נושא וכיתה
 function getSolutionSteps(question, topic, gradeKey) {
   if (!question || !question.params) return [];
+  const p = question.params;
+  const shape = question.shape;
   const { correctAnswer } = question;
+
+  const ltr = (expr) => `\u2066${expr}\u2069`; // LRI ... PDI
+  const toSpan = (text, key) => (
+    <span
+      key={key}
+      style={{ display: "block", direction: "rtl", unicodeBidi: "plaintext" }}
+    >
+      {text}
+    </span>
+  );
 
   switch (topic) {
     case "area": {
-      if (question.shape === "square") {
+      if (shape === "square") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: שטח ריבוע = צלע × צלע.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: שטח = {question.params.side} × {question.params.side}.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.side} × {question.params.side} = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות שטח.</span>,
+          toSpan("1. נכתוב את הנוסחה: שטח ריבוע = צלע × צלע.", "1"),
+          toSpan(`2. נציב: ${ltr(`שטח = ${p.side} × ${p.side}`)}.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`${p.side} × ${p.side} = ${correctAnswer}`)}.`, "3"),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
         ];
-      } else if (question.shape === "rectangle") {
+      }
+      if (shape === "rectangle") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: שטח מלבן = אורך × רוחב.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: שטח = {question.params.length} × {question.params.width}.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.length} × {question.params.width} = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות שטח.</span>,
+          toSpan("1. נכתוב את הנוסחה: שטח מלבן = אורך × רוחב.", "1"),
+          toSpan(`2. נציב: ${ltr(`שטח = ${p.length} × ${p.width}`)}.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`${p.length} × ${p.width} = ${correctAnswer}`)}.`, "3"),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
         ];
-      } else if (question.shape === "circle") {
+      }
+      if (shape === "triangle") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: שטח עיגול = π × רדיוס².</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: שטח = 3.14 × {question.params.radius}².</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.radius}² = {question.params.radius * question.params.radius}, ואז 3.14 × {question.params.radius * question.params.radius} = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות שטח.</span>,
+          toSpan("1. נכתוב את הנוסחה: שטח משולש = (בסיס × גובה) ÷ 2.", "1"),
+          toSpan(`2. נציב: ${ltr(`(${p.base} × ${p.height}) ÷ 2`)}.`, "2"),
+          toSpan(
+            `3. נחשב: ${ltr(`${p.base} × ${p.height} = ${p.base * p.height}`)}, ואז ${ltr(`${p.base * p.height} ÷ 2 = ${correctAnswer}`)}.`,
+            "3"
+          ),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
         ];
-      } else if (question.shape === "triangle") {
+      }
+      if (shape === "parallelogram") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: שטח משולש = (בסיס × גובה) ÷ 2.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: שטח = ({question.params.base} × {question.params.height}) ÷ 2.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.base} × {question.params.height} = {question.params.base * question.params.height}, ואז {question.params.base * question.params.height} ÷ 2 = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות שטח.</span>,
+          toSpan("1. נכתוב את הנוסחה: שטח מקבילית = בסיס × גובה.", "1"),
+          toSpan(`2. נציב: ${ltr(`${p.base} × ${p.height}`)}.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`${p.base} × ${p.height} = ${correctAnswer}`)}.`, "3"),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
         ];
-      } else if (question.shape === "parallelogram") {
+      }
+      if (shape === "trapezoid") {
+        const sumBases = p.base1 + p.base2;
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: שטח מקבילית = בסיס × גובה.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: שטח = {question.params.base} × {question.params.height}.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.base} × {question.params.height} = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות שטח.</span>,
+          toSpan("1. נכתוב את הנוסחה: שטח טרפז = ((בסיס1 + בסיס2) × גובה) ÷ 2.", "1"),
+          toSpan(`2. נציב: ${ltr(`((${p.base1} + ${p.base2}) × ${p.height}) ÷ 2`)}.`, "2"),
+          toSpan(
+            `3. נחשב: ${ltr(`${p.base1} + ${p.base2} = ${sumBases}`)}, ואז ${ltr(`(${sumBases} × ${p.height}) ÷ 2 = ${correctAnswer}`)}.`,
+            "3"
+          ),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
         ];
-      } else if (question.shape === "trapezoid") {
+      }
+      if (shape === "circle") {
+        const r2 = p.radius * p.radius;
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: שטח טרפז = ((בסיס1 + בסיס2) × גובה) ÷ 2.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: שטח = (({question.params.base1} + {question.params.base2}) × {question.params.height}) ÷ 2.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.base1} + {question.params.base2} = {question.params.base1 + question.params.base2}, ואז ({question.params.base1 + question.params.base2} × {question.params.height}) ÷ 2 = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות שטח.</span>,
+          toSpan("1. נכתוב את הנוסחה: שטח עיגול = π × רדיוס².", "1"),
+          toSpan(`2. נציב: ${ltr(`שטח = 3.14 × ${p.radius}²`)}.`, "2"),
+          toSpan(
+            `3. נחשב: ${ltr(`${p.radius}² = ${r2}`)}, ואז ${ltr(`3.14 × ${r2} = ${correctAnswer}`)}.`,
+            "3"
+          ),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
         ];
       }
       break;
     }
 
     case "perimeter": {
-      if (question.shape === "square") {
+      if (shape === "square") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: היקף ריבוע = צלע × 4.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: היקף = {question.params.side} × 4.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.side} × 4 = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות אורך.</span>,
+          toSpan("1. נוסחה: היקף ריבוע = צלע × 4.", "1"),
+          toSpan(`2. נציב: ${ltr(`${p.side} × 4`)}.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`${p.side} × 4 = ${correctAnswer}`)}.`, "3"),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות אורך.`, "4"),
         ];
-      } else if (question.shape === "rectangle") {
+      }
+      if (shape === "rectangle") {
+        const sum = p.length + p.width;
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: היקף מלבן = (אורך + רוחב) × 2.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: היקף = ({question.params.length} + {question.params.width}) × 2.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.length} + {question.params.width} = {question.params.length + question.params.width}, ואז {question.params.length + question.params.width} × 2 = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות אורך.</span>,
+          toSpan("1. נוסחה: היקף מלבן = (אורך + רוחב) × 2.", "1"),
+          toSpan(`2. נציב: ${ltr(`(${p.length} + ${p.width}) × 2`)}.`, "2"),
+          toSpan(
+            `3. נחשב: ${ltr(`${p.length} + ${p.width} = ${sum}`)}, ואז ${ltr(`${sum} × 2 = ${correctAnswer}`)}.`,
+            "3"
+          ),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות אורך.`, "4"),
         ];
-      } else if (question.shape === "circle") {
+      }
+      if (shape === "triangle") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: היקף עיגול = 2 × π × רדיוס.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: היקף = 2 × 3.14 × {question.params.radius}.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: 2 × 3.14 = 6.28, ואז 6.28 × {question.params.radius} = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות אורך.</span>,
+          toSpan("1. נוסחה: היקף משולש = צלע1 + צלע2 + צלע3.", "1"),
+          toSpan(
+            `2. נציב: ${ltr(`${p.side1} + ${p.side2} + ${p.side3}`)}.`,
+            "2"
+          ),
+          toSpan(
+            `3. נחשב: ${ltr(`${p.side1} + ${p.side2} + ${p.side3} = ${correctAnswer}`)}.`,
+            "3"
+          ),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות אורך.`, "4"),
         ];
-      } else if (question.shape === "triangle") {
+      }
+      if (shape === "circle") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: היקף משולש = צלע1 + צלע2 + צלע3.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: היקף = {question.params.side1} + {question.params.side2} + {question.params.side3}.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.side1} + {question.params.side2} + {question.params.side3} = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות אורך.</span>,
+          toSpan("1. נוסחה: היקף עיגול = 2 × π × רדיוס.", "1"),
+          toSpan(`2. נציב: ${ltr(`2 × 3.14 × ${p.radius}`)}.`, "2"),
+          toSpan(
+            `3. נחשב: ${ltr(`2 × 3.14 = 6.28`)}, ואז ${ltr(`6.28 × ${p.radius} = ${correctAnswer}`)}.`,
+            "3"
+          ),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות אורך.`, "4"),
         ];
       }
       break;
     }
 
     case "volume": {
-      if (question.shape === "cube") {
+      if (shape === "cube") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: נפח קובייה = צלע³.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: נפח = {question.params.side}³.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.side} × {question.params.side} × {question.params.side} = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות נפח.</span>,
+          toSpan("1. נוסחה: נפח קובייה = צלע³.", "1"),
+          toSpan(`2. נציב: ${ltr(`${p.side}³`)}.`, "2"),
+          toSpan(
+            `3. נחשב: ${ltr(`${p.side} × ${p.side} × ${p.side} = ${correctAnswer}`)}.`,
+            "3"
+          ),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות נפח.`, "4"),
         ];
-      } else if (question.shape === "cylinder") {
+      }
+      if (shape === "rectangular_prism") {
+        const product = p.length * p.width * p.height;
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: נפח גליל = π × רדיוס² × גובה.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: נפח = 3.14 × {question.params.radius}² × {question.params.height}.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.radius}² = {question.params.radius * question.params.radius}, ואז 3.14 × {question.params.radius * question.params.radius} × {question.params.height} = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות נפח.</span>,
+          toSpan("1. נוסחה: נפח תיבה = אורך × רוחב × גובה.", "1"),
+          toSpan(`2. נציב: ${ltr(`${p.length} × ${p.width} × ${p.height}`)}.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`${p.length} × ${p.width} × ${p.height} = ${product}`)}.`, "3"),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות נפח.`, "4"),
         ];
-      } else if (question.shape === "sphere") {
+      }
+      if (shape === "cylinder") {
+        const r2 = p.radius * p.radius;
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: נפח כדור = (4/3) × π × רדיוס³.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: נפח = (4/3) × 3.14 × {question.params.radius}³.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.radius}³ = {question.params.radius * question.params.radius * question.params.radius}, ואז (4/3) × 3.14 × {question.params.radius * question.params.radius * question.params.radius} = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות נפח.</span>,
+          toSpan("1. נוסחה: נפח גליל = π × רדיוס² × גובה.", "1"),
+          toSpan(`2. נציב: ${ltr(`3.14 × ${p.radius}² × ${p.height}`)}.`, "2"),
+          toSpan(
+            `3. נחשב: ${ltr(`${p.radius}² = ${r2}`)}, ואז ${ltr(`3.14 × ${r2} × ${p.height} = ${correctAnswer}`)}.`,
+            "3"
+          ),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות נפח.`, "4"),
         ];
-      } else if (question.shape === "rectangular_prism") {
+      }
+      if (shape === "sphere") {
+        const r3 = p.radius * p.radius * p.radius;
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את הנוסחה: נפח תיבה = אורך × רוחב × גובה.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: נפח = {question.params.length} × {question.params.width} × {question.params.height}.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {question.params.length} × {question.params.width} × {question.params.height} = {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: {correctAnswer} יחידות נפח.</span>,
+          toSpan("1. נוסחה: נפח כדור = (4/3) × π × רדיוס³.", "1"),
+          toSpan(`2. נציב: ${ltr(`(4/3) × 3.14 × ${p.radius}³`)}.`, "2"),
+          toSpan(
+            `3. נחשב: ${ltr(`${p.radius}³ = ${r3}`)}, ואז ${ltr(`(4/3) × 3.14 × ${r3} = ${correctAnswer}`)}.`,
+            "3"
+          ),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות נפח.`, "4"),
         ];
       }
       break;
     }
 
     case "angles": {
+      const angle1 = p.angle1 || 0;
+      const angle2 = p.angle2 || 0;
+      const sum = angle1 + angle2;
       return [
-        <span key="1" dir="ltr" style={{ display: "block" }}>1. נזכור: סכום הזוויות במשולש תמיד שווה ל-180°.</span>,
-        <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: זווית1 = {question.params?.angle1 || 0}°, זווית2 = {question.params?.angle2 || 0}°.</span>,
-        <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: זווית3 = 180° - ({question.params?.angle1 || 0}° + {question.params?.angle2 || 0}°) = 180° - {(question.params?.angle1 || 0) + (question.params?.angle2 || 0)}° = {correctAnswer}°.</span>,
-        <span key="4" dir="ltr" style={{ display: "block" }}>4. התוצאה: הזווית השלישית היא {correctAnswer}°.</span>,
+        toSpan("1. נזכור: סכום הזוויות במשולש = 180°.", "1"),
+        toSpan(`2. נציב: ${ltr(`זווית1 = ${angle1}°`)} ו-${ltr(`זווית2 = ${angle2}°`)}.`, "2"),
+        toSpan(
+          `3. נחשב: ${ltr(`זווית3 = 180° - (${angle1}° + ${angle2}°) = 180° - ${sum}° = ${correctAnswer}°`)}.`,
+          "3"
+        ),
+        toSpan(`4. הזווית השלישית היא ${correctAnswer}°.`, "4"),
       ];
     }
 
     case "pythagoras": {
-      const a = question.params?.a || 0;
-      const b = question.params?.b || 0;
-      const aSquared = a * a;
-      const bSquared = b * b;
-      const sum = aSquared + bSquared;
+      const a = p.a || 0;
+      const b = p.b || 0;
+      const a2 = a * a;
+      const b2 = b * b;
+      const sum = a2 + b2;
       return [
-        <span key="1" dir="ltr" style={{ display: "block" }}>1. נכתוב את משפט פיתגורס: a² + b² = c² (כאשר c הוא היתר).</span>,
-        <span key="2" dir="ltr" style={{ display: "block" }}>2. נציב את הערכים: {a}² + {b}² = c².</span>,
-        <span key="3" dir="ltr" style={{ display: "block" }}>3. נחשב: {a}² = {aSquared}, {b}² = {bSquared}.</span>,
-        <span key="4" dir="ltr" style={{ display: "block" }}>4. נחבר: {aSquared} + {bSquared} = {sum}.</span>,
-        <span key="5" dir="ltr" style={{ display: "block" }}>5. נוציא שורש: c = √{sum} = {correctAnswer}.</span>,
+        toSpan("1. משפט פיתגורס: a² + b² = c².", "1"),
+        toSpan(`2. נציב: ${ltr(`${a}² + ${b}² = c²`)}.`, "2"),
+        toSpan(`3. נחשב: ${ltr(`${a}² = ${a2}`)} ו-${ltr(`${b}² = ${b2}`)}.`, "3"),
+        toSpan(`4. נחבר: ${ltr(`${a2} + ${b2} = ${sum}`)}.`, "4"),
+        toSpan(`5. נוציא שורש: ${ltr(`c = √${sum} = ${correctAnswer}`)}.`, "5"),
       ];
     }
 
     default:
       return [];
   }
+
   return [];
 }
 
@@ -1635,7 +1701,10 @@ export default function GeometryMaster() {
                   className="w-full max-w-md flex flex-col items-center justify-center mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
-                  <div className="text-4xl font-black text-white mb-4 text-center" dir="rtl" style={{ unicodeBidi: "bidi-override" }}>
+                  <div
+                    className="text-4xl font-black text-white mb-4 text-center"
+                    style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                  >
                     {currentQuestion.question}
                   </div>
 
@@ -1652,7 +1721,10 @@ export default function GeometryMaster() {
                   )}
 
                   {showHint && (
-                    <div className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center max-w-md" dir="ltr">
+                    <div
+                      className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center max-w-md"
+                      style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                    >
                       {getHint(currentQuestion, currentQuestion.topic, grade)}
                     </div>
                   )}
@@ -1668,7 +1740,10 @@ export default function GeometryMaster() {
                       </button>
 
                       {showSolution && (
-                        <div className="mb-3 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/40 text-emerald-100 text-sm space-y-1 max-w-md">
+                        <div
+                          className="mb-3 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/40 text-emerald-100 text-sm space-y-1 max-w-md"
+                          style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                        >
                           {getSolutionSteps(
                             currentQuestion,
                             currentQuestion.topic,

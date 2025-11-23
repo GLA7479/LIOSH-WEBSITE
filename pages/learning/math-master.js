@@ -560,12 +560,17 @@ function getSolutionSteps(question, operation, gradeKey) {
   const p = question.params;
   const ans = question.correctAnswer;
   const isStory = !!question.isStory;
+  // מציג ביטויים מתמטיים משמאל לימין בתוך שורה בעברית
+  const ltr = (expr) => `\u2066${expr}\u2069`; // LRI ... PDI
 
   const toSpan = (text, key) => (
     <span
       key={key}
-      style={{ display: "block", unicodeBidi: "plaintext" }}
-      dir={isStory ? "rtl" : "ltr"}
+      style={{
+        display: "block",
+        direction: isStory ? "rtl" : "ltr",
+        unicodeBidi: "plaintext",
+      }}
     >
       {text}
     </span>
@@ -576,46 +581,48 @@ function getSolutionSteps(question, operation, gradeKey) {
       if (p.kind === "add_three") {
         const s1 = p.a + p.b;
         return [
-          toSpan(`1. נכתוב את התרגיל: ${p.a} + ${p.b} + ${p.c}.`, "1"),
-          toSpan(`2. נחבר את שני הראשונים: ${p.a} + ${p.b} = ${s1}.`, "2"),
-          toSpan(`3. נוסיף את האחרון: ${s1} + ${p.c} = ${ans}.`, "3"),
+          toSpan(`1. נכתוב את התרגיל: ${ltr(`${p.a} + ${p.b} + ${p.c}`)}.`, "1"),
+          toSpan(`2. נחבר את שני הראשונים: ${ltr(`${p.a} + ${p.b} = ${s1}`)}.`, "2"),
+          toSpan(`3. נוסיף את האחרון: ${ltr(`${s1} + ${p.c} = ${ans}`)}.`, "3"),
           toSpan(`4. התשובה: ${ans}.`, "4"),
         ];
       }
       const sum = p.a + p.b;
       return [
-        toSpan(`1. נכתוב את התרגיל: ${p.a} + ${p.b}.`, "1"),
-        toSpan(`2. נחבר: ${p.a} + ${p.b} = ${sum}.`, "2"),
+        toSpan(`1. נכתוב את התרגיל: ${ltr(`${p.a} + ${p.b}`)}.`, "1"),
+        toSpan(`2. נחבר: ${ltr(`${p.a} + ${p.b} = ${sum}`)}.`, "2"),
         toSpan(`3. התוצאה: ${ans}.`, "3"),
       ];
     }
 
     case "subtraction":
       return [
-        toSpan(`1. נכתוב את התרגיל: ${p.a} - ${p.b}.`, "1"),
+        toSpan(`1. נכתוב את התרגיל: ${ltr(`${p.a} - ${p.b}`)}.`, "1"),
         toSpan("2. נבדוק מי המספר הגדול ומי הקטן (משפיע על הסימן).", "2"),
-        toSpan(`3. נחשב: ${p.a} - ${p.b} = ${ans}.`, "3"),
-        toSpan(`4. נעשה בדיקה מהירה: ${ans} + ${p.b} = ${p.a}?`, "4"),
+        toSpan(`3. נחשב: ${ltr(`${p.a} - ${p.b} = ${ans}`)}.`, "3"),
+        toSpan(`4. נעשה בדיקה מהירה: ${ltr(`${ans} + ${p.b} = ${p.a}`)}?`, "4"),
       ];
 
     case "multiplication":
       return [
         toSpan(
-          `1. נכיר שכפל הוא חיבור חוזר: ${p.a} × ${p.b} = ${p.a} + ${p.a} + ... (${p.b} פעמים).`,
+          `1. נכיר שכפל הוא חיבור חוזר: ${ltr(`${p.a} × ${p.b}`)} = ${ltr(
+            `${p.a} + ${p.a} + ...`
+          )} (${p.b} פעמים).`,
           "1"
         ),
-        toSpan(`2. נחשב: ${p.a} × ${p.b} = ${ans}.`, "2"),
+        toSpan(`2. נחשב: ${ltr(`${p.a} × ${p.b} = ${ans}`)}.`, "2"),
         toSpan(`3. התשובה: ${ans}.`, "3"),
       ];
 
     case "division":
       return [
         toSpan(
-          `1. נכתוב: ${p.dividend} ÷ ${p.divisor} – כמה קבוצות של ${p.divisor} נכנסות בתוך ${p.dividend}?`,
+          `1. נכתוב: ${ltr(`${p.dividend} ÷ ${p.divisor}`)} – כמה קבוצות של ${p.divisor} נכנסות בתוך ${p.dividend}?`,
           "1"
         ),
         toSpan(
-          `2. נבדוק: ${p.divisor} × ${ans} = ${p.dividend}. אם כן – זה המספר הנכון.`,
+          `2. נבדוק: ${ltr(`${p.divisor} × ${ans} = ${p.dividend}`)}. אם כן – זה המספר הנכון.`,
           "2"
         ),
         toSpan(`3. לכן התשובה: ${ans}.`, "3"),
@@ -629,9 +636,9 @@ function getSolutionSteps(question, operation, gradeKey) {
             "1"
           ),
           toSpan(
-            `2. ${p.op === "add" ? "מחברים" : "מחסרים"} את המונים: ${p.n1} ${
-              p.op === "add" ? "+" : "-"
-            } ${p.n2}.`,
+            `2. ${p.op === "add" ? "מחברים" : "מחסרים"} את המונים: ${ltr(
+              `${p.n1} ${p.op === "add" ? "+" : "-"} ${p.n2}`
+            )}.`,
             "2"
           ),
           toSpan(`3. התוצאה במונה: ${ans.split("/")[0]}.`, "3"),
@@ -663,8 +670,8 @@ function getSolutionSteps(question, operation, gradeKey) {
         const sum = p.a + p.b;
         return [
           toSpan("1. מזהים שהשאלה מבקשת כמה יש בסך הכל – פעולה של חיבור.", "1"),
-          toSpan(`2. כותבים תרגיל: ${p.a} + ${p.b}.`, "2"),
-          toSpan(`3. מחשבים: ${p.a} + ${p.b} = ${sum}.`, "3"),
+          toSpan(`2. כותבים תרגיל: ${ltr(`${p.a} + ${p.b}`)}.`, "2"),
+          toSpan(`3. מחשבים: ${ltr(`${p.a} + ${p.b} = ${sum}`)}.`, "3"),
           toSpan(`4. התשובה: לליאו יש ${ans} כדורים.`, "4"),
         ];
       }
@@ -676,8 +683,8 @@ function getSolutionSteps(question, operation, gradeKey) {
             `1. בכל קופסה יש ${p.per} עפרונות ויש ${p.groups} קופסאות – מדובר בחיבור חוזר.`,
             "1"
           ),
-          toSpan(`2. נרשום תרגיל כפל: ${p.per} × ${p.groups}.`, "2"),
-          toSpan(`3. נחשב: ${p.per} × ${p.groups} = ${prod}.`, "3"),
+          toSpan(`2. נרשום תרגיל כפל: ${ltr(`${p.per} × ${p.groups}`)}.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`${p.per} × ${p.groups} = ${prod}`)}.`, "3"),
           toSpan(`4. התשובה: ${ans} עפרונות.`, "4"),
         ];
       }
@@ -689,11 +696,11 @@ function getSolutionSteps(question, operation, gradeKey) {
             "1"
           ),
           toSpan(
-            `2. נחשב כמה קבוצות שלמות: ${p.total} ÷ ${p.groupSize} = ${p.groups}.`,
+            `2. נחשב כמה קבוצות שלמות: ${ltr(`${p.total} ÷ ${p.groupSize} = ${p.groups}`)}.`,
             "2"
           ),
           toSpan(
-            `3. נבדוק כמה נשארו: ${p.total} - (${p.groups} × ${p.groupSize}) = ${p.leftover}.`,
+            `3. נבדוק כמה נשארו: ${ltr(`${p.total} - (${p.groups} × ${p.groupSize}) = ${p.leftover}`)}.`,
             "3"
           ),
           toSpan(`4. לכן ${ans} תלמידים נשארים בלי קבוצה מלאה.`, "4"),
@@ -1935,8 +1942,10 @@ export default function MathMaster() {
                   
                   <div
                     className="text-4xl font-black text-white mb-4 text-center"
-                    dir={currentQuestion.isStory ? "rtl" : "ltr"}
-                    style={{ unicodeBidi: "plaintext" }}
+                    style={{
+                      direction: currentQuestion.isStory ? "rtl" : "ltr",
+                      unicodeBidi: "plaintext",
+                    }}
                   >
                     {currentQuestion.question}
                   </div>
@@ -1957,8 +1966,10 @@ export default function MathMaster() {
                   {showHint && (
                     <div
                       className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center max-w-md"
-                      dir={currentQuestion.isStory ? "rtl" : "ltr"}
-                      style={{ unicodeBidi: "plaintext" }}
+                      style={{
+                        direction: currentQuestion.isStory ? "rtl" : "ltr",
+                        unicodeBidi: "plaintext",
+                      }}
                     >
                       {getHint(currentQuestion, currentQuestion.operation, grade)}
                     </div>
@@ -1977,8 +1988,10 @@ export default function MathMaster() {
                       {showSolution && (
                         <div
                           className="mb-3 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/40 text-emerald-100 text-sm space-y-1 max-w-md"
-                          dir={currentQuestion.isStory ? "rtl" : "ltr"}
-                          style={{ unicodeBidi: "plaintext" }}
+                          style={{
+                            direction: currentQuestion.isStory ? "rtl" : "ltr",
+                            unicodeBidi: "plaintext",
+                          }}
                         >
                           {getSolutionSteps(
                             currentQuestion,
