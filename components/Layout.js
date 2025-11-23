@@ -37,8 +37,8 @@ export default function Layout({ children }) {
             href="/"
             className="flex items-center gap-2 font-extrabold tracking-widest text-lg"
           >
-            <span className="text-2xl">🦁</span>
-            <span>LEO K</span>
+            <img src="/images/coin.png" alt="Leo Kids Logo" className="w-8 h-8" />
+            <span>LEO KIDS</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-2 text-sm font-semibold">
