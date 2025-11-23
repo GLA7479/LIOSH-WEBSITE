@@ -13,7 +13,7 @@ export default function HomePage() {
             Fun · Safe · Educational
           </p>
           <h1 className="text-4xl md:text-5xl font-black leading-tight">
-            Welcome to <span className="text-amber-300">LEO K</span>
+            Welcome to <span className="text-amber-300">LEO KIDS</span>
           </h1>
           <p className="text-base md:text-lg text-white/70 max-w-2xl mx-auto">
             A small world of mini games and learning activities for kids. Run, fly,

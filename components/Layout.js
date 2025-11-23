@@ -41,7 +41,7 @@ export default function Layout({ children }) {
               src="/images/coin.png"
               alt="Leo Kids Logo"
               className="w-8 h-8 object-contain"
-              style={{ transform: "scale(1.5)" }}
+              style={{ transform: "scale(1.9)" }}
             />
             <span>LEO KIDS</span>
           </Link>
