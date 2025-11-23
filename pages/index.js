@@ -1,9 +1,26 @@
+import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import Link from "next/link";
 import InstallAppPrompt from "../components/InstallAppPrompt";
 import InstallAppButton from "../components/InstallAppButton";
 
 export default function HomePage() {
+  const [playerName, setPlayerName] = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const saved = localStorage.getItem("mleo_player_name") || "";
+    setPlayerName(saved);
+  }, []);
+
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    setPlayerName(value);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("mleo_player_name", value);
+    }
+  };
+
   return (
     <Layout>
       <InstallAppPrompt />
@@ -71,20 +88,21 @@ export default function HomePage() {
           </Link>
         </section>
 
-        <div className="flex flex-col md:flex-row items-center justify-center gap-3 pt-4">
-          <div className="flex flex-col md:flex-row items-center gap-3">
-            <label className="text-sm uppercase tracking-[0.3em] text-white/60">
-              Player Name
-            </label>
+        {/* Player name + install app */}
+        <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-4 pt-4">
+          <div className="flex flex-col gap-1">
             <input
               type="text"
-              value=""
-              placeholder="Enter name"
+              value={playerName}
+              onChange={handleNameChange}
+              placeholder="Player Name"
               className="bg-black/40 border border-white/20 rounded-full px-4 py-2 text-sm text-white placeholder-white/40 w-48"
-              readOnly
             />
           </div>
-          <InstallAppButton />
+
+          <div>
+            <InstallAppButton />
+          </div>
         </div>
       </div>
     </Layout>
