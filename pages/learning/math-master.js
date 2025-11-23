@@ -6,46 +6,72 @@ import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 const LEVELS = {
   easy: {
     name: "Easy",
-    addition: { max: 9 },
-    subtraction: { min: 1, max: 20 },
+    addition: { max: 20 },
+    subtraction: { min: 0, max: 20 },
     multiplication: { max: 5 },
-    division: { max: 10, maxDivisor: 5 },
+    division: { max: 50, maxDivisor: 5 },
+    fractions: { maxDen: 4 },
   },
   medium: {
     name: "Medium",
-    addition: { max: 50 },
-    subtraction: { min: 10, max: 100 },
+    addition: { max: 100 },
+    subtraction: { min: 0, max: 100 },
     multiplication: { max: 10 },
     division: { max: 100, maxDivisor: 10 },
+    fractions: { maxDen: 8 },
   },
   hard: {
     name: "Hard",
-    addition: { max: 100 },
-    subtraction: { min: 50, max: 200 },
+    addition: { max: 500 },
+    subtraction: { min: -200, max: 500 },
     multiplication: { max: 12 },
-    division: { max: 144, maxDivisor: 12 },
+    division: { max: 500, maxDivisor: 12 },
+    fractions: { maxDen: 12 },
   },
 };
-
-const OPERATIONS = ["addition", "subtraction", "multiplication", "division", "mixed"];
 
 const GRADES = {
   g1_2: {
     name: "Grade 1–2",
-    operations: ["addition", "subtraction", "mixed"],
+    operations: ["addition", "subtraction"],
+    allowFractions: false,
+    allowNegatives: false,
   },
   g3_4: {
     name: "Grade 3–4",
-    operations: ["addition", "subtraction", "multiplication", "division", "mixed"],
+    operations: ["addition", "subtraction", "multiplication", "division", "fractions", "mixed"],
+    allowFractions: true,
+    allowNegatives: false,
   },
   g5_6: {
     name: "Grade 5–6",
-    operations: ["addition", "subtraction", "multiplication", "division", "mixed"],
+    operations: [
+      "addition",
+      "subtraction",
+      "multiplication",
+      "division",
+      "fractions",
+      "word_problems",
+      "mixed",
+    ],
+    allowFractions: true,
+    allowNegatives: true,
   },
 };
 
+const OPERATIONS = [
+  "addition",
+  "subtraction",
+  "multiplication",
+  "division",
+  "fractions",
+  "word_problems",
+  "mixed",
+];
+
 function getLevelForGrade(levelKey, gradeKey) {
   const base = LEVELS[levelKey] || LEVELS.easy;
+  const gradeCfg = GRADES[gradeKey] || GRADES.g3_4;
 
   let factor = 1;
   let allowNegatives = false;
@@ -53,14 +79,14 @@ function getLevelForGrade(levelKey, gradeKey) {
 
   switch (gradeKey) {
     case "g1_2":
-      factor = 0.7;
+      factor = 0.6;
       break;
     case "g3_4":
       factor = 1;
       break;
     case "g5_6":
       factor = 1.4;
-      allowNegatives = true;
+      allowNegatives = gradeCfg.allowNegatives;
       allowTwoStep = levelKey !== "easy";
       break;
     default:
@@ -70,27 +96,33 @@ function getLevelForGrade(levelKey, gradeKey) {
   const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
   const scale = (n, min, max) => clamp(Math.round(n * factor), min, max);
 
+  const additionMax = scale(base.addition?.max || 20, 10, 999);
+  const subMax = scale(base.subtraction?.max || 20, 10, 999);
+  const subMin =
+    base.subtraction?.min != null ? Math.round(base.subtraction.min * factor) : 0;
+  const mulMax = scale(base.multiplication?.max || 10, 3, 20);
+  const divMax = scale(base.division?.max || 50, 10, 999);
+  const maxDivisor = base.division?.maxDivisor || 12;
+
+  let maxDen = base.fractions?.maxDen || 4;
+  if (!gradeCfg.allowFractions) {
+    maxDen = 0;
+  } else if (gradeKey === "g3_4") {
+    maxDen = Math.min(maxDen, 8);
+  } else if (gradeKey === "g5_6") {
+    maxDen = Math.min(Math.max(maxDen, 8), 12);
+  }
+
   return {
     name: base.name,
-    addition: {
-      max: scale(base.addition?.max || 10, 10, 999),
-    },
-    subtraction: {
-      min:
-        base.subtraction?.min != null
-          ? Math.round(base.subtraction.min * factor)
-          : 0,
-      max: scale(base.subtraction?.max || 20, 10, 999),
-    },
-    multiplication: {
-      max: scale(base.multiplication?.max || 10, 5, 20),
-    },
-    division: {
-      max: scale(base.division?.max || 50, 10, 999),
-      maxDivisor: base.division?.maxDivisor || 12,
-    },
+    addition: { max: additionMax },
+    subtraction: { min: subMin, max: subMax },
+    multiplication: { max: mulMax },
+    division: { max: divMax, maxDivisor },
+    fractions: { maxDen },
     allowNegatives,
     allowTwoStep,
+    allowFractions: gradeCfg.allowFractions,
   };
 }
 
@@ -235,108 +267,242 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     selectedOp = "addition";
   }
 
-  const allowNegatives =
-    !!levelConfig.allowNegatives && selectedOp === "subtraction";
-  const allowTwoStep = !!levelConfig.allowTwoStep && gradeKey === "g5_6";
-
   const randInt = (min, max) => {
     const lo = Math.min(min, max);
     const hi = Math.max(min, max);
     return Math.floor(Math.random() * (hi - lo + 1)) + lo;
   };
 
+  const round = (n) => Math.round(n);
+
+  const allowNegatives = !!levelConfig.allowNegatives && gradeCfg.allowNegatives;
+  const allowTwoStep = !!levelConfig.allowTwoStep;
+
   let question = "";
   let correctAnswer = 0;
-  let params = {};
+  let params = { kind: selectedOp };
   let operandA = null;
   let operandB = null;
+  let isStory = false;
 
   if (selectedOp === "addition") {
     const maxA = levelConfig.addition.max || 20;
+
     if (allowTwoStep && Math.random() < 0.3) {
       const a = randInt(1, maxA);
       const b = randInt(1, maxA);
       const c = randInt(1, maxA);
+      correctAnswer = round(a + b + c);
+      question = `${a} + ${b} + ${c} = ?`;
+      params = { kind: "add_three", a, b, c };
       operandA = a;
       operandB = b;
-      correctAnswer = a + b + c;
-      question = `${a} + ${b} + ${c} = ?`;
-      params = { a, b, c, op: "addition3" };
     } else {
       const a = randInt(1, maxA);
       const b = randInt(1, maxA);
+      correctAnswer = round(a + b);
+      question = `${a} + ${b} = ?`;
+      params = { kind: "add_two", a, b };
       operandA = a;
       operandB = b;
-      correctAnswer = a + b;
-      question = `${a} + ${b} = ?`;
-      params = { a, b, op: "addition" };
     }
   } else if (selectedOp === "subtraction") {
     const maxS = levelConfig.subtraction.max || 20;
     const minS = levelConfig.subtraction.min ?? 0;
 
-    let a, b;
+    let a;
+    let b;
     if (allowNegatives) {
       a = randInt(minS, maxS);
       b = randInt(minS, maxS);
-      correctAnswer = a - b;
     } else {
       b = randInt(minS, maxS);
       a = randInt(b, maxS);
-      correctAnswer = a - b;
     }
+    correctAnswer = round(a - b);
+    question = `${a} - ${b} = ?`;
+    params = { kind: "sub_two", a, b };
     operandA = a;
     operandB = b;
-    question = `${a} - ${b} = ?`;
-    params = { a, b, op: "subtraction" };
   } else if (selectedOp === "multiplication") {
     const maxM = levelConfig.multiplication.max || 10;
     const a = randInt(1, maxM);
     const b = randInt(1, Math.min(maxM, 12));
+    correctAnswer = round(a * b);
+    question = `${a} × ${b} = ?`;
+    params = { kind: "mul", a, b };
     operandA = a;
     operandB = b;
-    correctAnswer = a * b;
-    question = `${a} Ã— ${b} = ?`;
-    params = { a, b, op: "multiplication" };
   } else if (selectedOp === "division") {
     const maxD = levelConfig.division.max || 100;
     const maxDivisor = levelConfig.division.maxDivisor || 12;
     const divisor = randInt(2, maxDivisor);
-    const quotient = randInt(
-      2,
-      Math.max(2, Math.floor(maxD / Math.max(2, divisor)))
-    );
+    const quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
     const dividend = divisor * quotient;
+    correctAnswer = round(quotient);
+    question = `${dividend} ÷ ${divisor} = ?`;
+    params = { kind: "div", dividend, divisor };
     operandA = dividend;
     operandB = divisor;
-    correctAnswer = quotient;
-    question = `${dividend} Ã· ${divisor} = ?`;
-    params = { dividend, divisor, op: "division" };
+  } else if (selectedOp === "fractions" && levelConfig.allowFractions) {
+    const densSmall = [2, 4, 5, 10];
+    const densBig = [2, 3, 4, 5, 6, 8, 10, 12];
+    const dens =
+      gradeKey === "g3_4"
+        ? densSmall.filter((d) => d <= levelConfig.fractions.maxDen)
+        : densBig.filter((d) => d <= levelConfig.fractions.maxDen);
+
+    const opKind = Math.random() < 0.5 ? "add_frac" : "sub_frac";
+
+    if (gradeKey === "g3_4") {
+      const den = dens[Math.floor(Math.random() * dens.length)] || 4;
+      const n1 = randInt(1, den - 1);
+      const n2 = randInt(1, den - 1);
+
+      let resNum = opKind === "add_frac" ? n1 + n2 : n1 - n2;
+      const resDen = den;
+
+      if (opKind === "sub_frac" && resNum < 0) {
+        resNum = n2 - n1;
+        question = `${n2}/${den} - ${n1}/${den} = ?`;
+        params = { kind: "frac_same_den", op: "sub", n1: n2, n2: n1, den };
+      } else {
+        question =
+          opKind === "add_frac"
+            ? `${n1}/${den} + ${n2}/${den} = ?`
+            : `${n1}/${den} - ${n2}/${den} = ?`;
+        params = {
+          kind: "frac_same_den",
+          op: opKind === "add_frac" ? "add" : "sub",
+          n1,
+          n2,
+          den,
+        };
+      }
+
+      correctAnswer = `${resNum}/${resDen}`;
+    } else {
+      const den1 = dens[Math.floor(Math.random() * dens.length)] || 4;
+      let den2 = dens[Math.floor(Math.random() * dens.length)] || 6;
+      if (den1 === den2 && Math.random() < 0.3) {
+        den2 = dens[(dens.indexOf(den1) + 1) % dens.length] || 3;
+      }
+
+      const n1 = randInt(1, den1 - 1);
+      const n2 = randInt(1, den2 - 1);
+
+      const lcm = (a, b) => {
+        const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
+        return Math.abs((a * b) / gcd(a, b));
+      };
+
+      const commonDen = lcm(den1, den2);
+      const m1 = commonDen / den1;
+      const m2 = commonDen / den2;
+
+      let resNum = opKind === "add_frac" ? n1 * m1 + n2 * m2 : n1 * m1 - n2 * m2;
+
+      if (opKind === "sub_frac" && resNum < 0) {
+        resNum = n2 * m2 - n1 * m1;
+        question = `${n2}/${den2} - ${n1}/${den1} = ?`;
+        params = {
+          kind: "frac_diff_den",
+          op: "sub",
+          n1: n2,
+          den1: den2,
+          n2: n1,
+          den2: den1,
+          commonDen,
+        };
+      } else {
+        question =
+          opKind === "add_frac"
+            ? `${n1}/${den1} + ${n2}/${den2} = ?`
+            : `${n1}/${den1} - ${n2}/${den2} = ?`;
+        params = {
+          kind: "frac_diff_den",
+          op: opKind === "add_frac" ? "add" : "sub",
+          n1,
+          den1,
+          n2,
+          den2,
+          commonDen,
+        };
+      }
+
+      correctAnswer = `${resNum}/${commonDen}`;
+    }
+  } else if (selectedOp === "word_problems") {
+    const templates =
+      gradeKey === "g5_6" ? ["multi_step", "groups", "leftover"] : ["groups", "simple_add"];
+    const t = templates[Math.floor(Math.random() * templates.length)];
+
+    if (t === "simple_add") {
+      const a = randInt(3, 9);
+      const b = randInt(2, 8);
+      correctAnswer = a + b;
+      question = `לליאו יש ${a} כדורים והוא מקבל עוד ${b} כדורים. כמה כדורים יש לליאו בסך הכל?`;
+      params = { kind: "wp_simple_add", a, b };
+    } else if (t === "groups") {
+      const per = randInt(3, 8);
+      const groups = randInt(2, 6);
+      correctAnswer = per * groups;
+      question = `בכל קופסה יש ${per} עפרונות. יש ${groups} קופסאות כאלה. כמה עפרונות יש בסך הכל?`;
+      params = { kind: "wp_groups", per, groups };
+    } else {
+      const total = randInt(40, 100);
+      const groupSize = randInt(4, 8);
+      const groups = Math.floor(total / groupSize);
+      const leftover = total - groups * groupSize;
+      correctAnswer = leftover;
+      question = `יש ${total} תלמידים והם מתחלקים לקבוצות של ${groupSize} תלמידים בכל קבוצה. כמה תלמידים יישארו בלי קבוצה מלאה?`;
+      params = { kind: "wp_leftover", total, groupSize, groups, leftover };
+    }
+    isStory = true;
   } else {
     const maxA = levelConfig.addition.max || 20;
     const a = randInt(1, maxA);
     const b = randInt(1, maxA);
+    correctAnswer = round(a + b);
+    question = `${a} + ${b} = ?`;
+    params = { kind: "add_two", a, b };
     operandA = a;
     operandB = b;
-    correctAnswer = a + b;
-    question = `${a} + ${b} = ?`;
-    params = { a, b, op: "addition" };
   }
 
   const wrongAnswers = new Set();
-  while (wrongAnswers.size < 3) {
-    const baseDelta = Math.max(1, Math.round(Math.abs(correctAnswer) * 0.15));
-    const variation = randInt(1, 3);
-    const sign = Math.random() > 0.5 ? 1 : -1;
-    const wrong = correctAnswer + sign * baseDelta * variation;
+  const correctIsFraction =
+    typeof correctAnswer === "string" && correctAnswer.includes("/");
 
-    if (
-      wrong !== correctAnswer &&
-      !wrongAnswers.has(wrong) &&
-      wrong >= -200 &&
-      wrong <= 2000
-    ) {
-      wrongAnswers.add(wrong);
+  if (correctIsFraction) {
+    const [cnRaw, cdRaw] = correctAnswer.split("/");
+    const cn = Number(cnRaw);
+    const cd = Number(cdRaw) || 1;
+
+    while (wrongAnswers.size < 3) {
+      const delta = randInt(1, 3);
+      const sign = Math.random() > 0.5 ? 1 : -1;
+      const nWrong = cn + sign * delta;
+      const wrong = `${nWrong}/${cd}`;
+      if (wrong !== correctAnswer && !wrongAnswers.has(wrong) && nWrong > 0) {
+        wrongAnswers.add(wrong);
+      }
+    }
+  } else {
+    while (wrongAnswers.size < 3) {
+      const baseDelta = Math.max(1, Math.round(Math.abs(correctAnswer) * 0.15));
+      const variation = randInt(1, 3);
+      const sign = Math.random() > 0.5 ? 1 : -1;
+      const wrong = correctAnswer + sign * baseDelta * variation;
+
+      if (
+        wrong !== correctAnswer &&
+        !wrongAnswers.has(wrong) &&
+        wrong >= -200 &&
+        wrong <= 5000
+      ) {
+        wrongAnswers.add(wrong);
+      }
     }
   }
 
@@ -354,116 +520,186 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     params,
     a: operandA,
     b: operandB,
-    isStory: false,
+    isStory,
   };
 }
+
+
 function getHint(question, operation, gradeKey) {
-  if (!question) return "";
+  if (!question || !question.params) return "";
 
-  if (!question.a || !question.b) {
-    return "";
-  }
-
-  const { a, b } = question;
+  const p = question.params;
 
   switch (operation) {
     case "addition":
-      if (gradeKey === "g1_2") {
-        return `התחל מהמספר הגדול (${Math.max(a, b)}) וספור קדימה עוד ${Math.min(a, b)} צעדים.`;
+      if (p.kind === "add_three") {
+        return "חבר שני מספרים ואז הוסף את השלישי: (a + b) + c.";
       }
-      return `נסה לפרק לעשרות ויחידות: לדוגמה ${a} + ${b} = (עשרות) + (יחידות).`;
-
+      return "השתמש בשיטת \"עמודות\" או בקפיצות על ציר המספרים: חיבור = הוספה.";
     case "subtraction":
-      if (gradeKey === "g1_2") {
-        return `תחשוב: כמה חסר ל-${b} כדי להגיע ל-${a}\u200F? אפשר לספור קדימה.`;
-      }
-      return `נסה להשתמש ב"חיסור בהשלמה": מה-${b} ל-${a} כמה קפיצות יש\u200F?`;
-
+      return "בדוק מי המספר הגדול יותר. חיסור = כמה חסר מהקטן לגדול או כמה מורידים מהגדול.";
     case "multiplication":
-      if (gradeKey === "g3_4") {
-        return `${a} × ${b} זה בעצם ${a} + ${a} + ... (${b} פעמים).`;
-      }
-      return `חלק את אחד המספרים: לדוגמה ${a} × ${b} = ${a} × (${Math.floor(
-        b / 2
-      )} + ${Math.ceil(b / 2)}) ואז חיבור התוצאות.`;
-
+      return "מחשבים כפל כמו חיבור חוזר: a × b זה כמו לחבר את a לעצמו b פעמים.";
     case "division":
-      if (gradeKey === "g3_4") {
-        return `דמיין ${a} פריטים שחולקו ל-${b} קבוצות שוות. כמה בכל קבוצה\u200F?`;
+      return "חילוק = כמה פעמים המספר הקטן נכנס בגדול, או כמה יש בכל קבוצה כשמחלקים שווה בשווה.";
+    case "fractions":
+      if (p.kind === "frac_same_den") {
+        return "כשיש אותו מכנה – המכנה נשאר אותו דבר, עובדים רק על המונים.";
       }
-      return `חישוב חילוק ארוך: כמה פעמים ${b} "נכנס" ב-${a}, ומה נשאר בכל צעד.`;
-
+      return "כשיש מכנים שונים – מוצאים מכנה משותף, מעבירים את השברים ואז מחברים או מחסרים.";
+    case "word_problems":
+      return "קרא לאט, סמן את המספרים ותרגם את הסיפור לתרגיל פשוט (חיבור, חיסור, כפל או חילוק).";
     default:
-      return "נסה לחשוב על הפתרון צעד אחר צעד.";
+      return "נסה לתרגם את השאלה לתרגיל חשבון פשוט.";
   }
 }
 
 // הסבר מפורט צעד-אחר-צעד לפי סוג תרגיל וכיתה
 function getSolutionSteps(question, operation, gradeKey) {
-  if (!question) return [];
-  const { a, b, correctAnswer } = question;
+  if (!question || !question.params) return [];
+  const p = question.params;
+  const ans = question.correctAnswer;
+
+  const toSpan = (text, key) => (
+    <span key={key} style={{ display: "block" }} dir="ltr">
+      {text}
+    </span>
+  );
 
   switch (operation) {
     case "addition": {
-      if (gradeKey === "g1_2") {
+      if (p.kind === "add_three") {
+        const s1 = p.a + p.b;
         return [
-          `1. נכתוב את התרגיל: ${a} + ${b}.`,
-          `2. בוחרים את המספר הגדול יותר: ${Math.max(a, b)}.`,
-          `3. סופרים קדימה עוד ${Math.min(a, b)} צעדים (אפשר על אצבעות או על המספרים על המסך).`,
-          `4. המספר שבו נעצרים הוא התוצאה: ${correctAnswer}.`,
+          toSpan(`1. נכתוב את התרגיל: ${p.a} + ${p.b} + ${p.c}.`, "1"),
+          toSpan(`2. נחבר את שני הראשונים: ${p.a} + ${p.b} = ${s1}.`, "2"),
+          toSpan(`3. נוסיף את האחרון: ${s1} + ${p.c} = ${ans}.`, "3"),
+          toSpan(`4. התשובה: ${ans}.`, "4"),
         ];
       }
-      // ג–ו: שיטת עשרות-יחידות
+      const sum = p.a + p.b;
       return [
-        `1. נפרק את המספרים לעשרות ויחידות.`,
-        `2. נחבר קודם את היחידות, ואז את העשרות.`,
-        `3. אם קיבלנו יותר מ-10 ביחידות – נעביר 1 לעשרות.`,
-        `4. נסכם את העשרות והיחידות ונקבל ${correctAnswer}.`,
+        toSpan(`1. נכתוב את התרגיל: ${p.a} + ${p.b}.`, "1"),
+        toSpan(`2. נחבר: ${p.a} + ${p.b} = ${sum}.`, "2"),
+        toSpan(`3. התוצאה: ${ans}.`, "3"),
       ];
     }
 
-    case "subtraction": {
-      if (gradeKey === "g1_2") {
+    case "subtraction":
+      return [
+        toSpan(`1. נכתוב את התרגיל: ${p.a} - ${p.b}.`, "1"),
+        toSpan("2. נבדוק מי המספר הגדול ומי הקטן (משפיע על הסימן).", "2"),
+        toSpan(`3. נחשב: ${p.a} - ${p.b} = ${ans}.`, "3"),
+        toSpan(`4. נעשה בדיקה מהירה: ${ans} + ${p.b} = ${p.a}?`, "4"),
+      ];
+
+    case "multiplication":
+      return [
+        toSpan(
+          `1. נכיר שכפל הוא חיבור חוזר: ${p.a} × ${p.b} = ${p.a} + ${p.a} + ... (${p.b} פעמים).`,
+          "1"
+        ),
+        toSpan(`2. נחשב: ${p.a} × ${p.b} = ${ans}.`, "2"),
+        toSpan(`3. התשובה: ${ans}.`, "3"),
+      ];
+
+    case "division":
+      return [
+        toSpan(
+          `1. נכתוב: ${p.dividend} ÷ ${p.divisor} – כמה קבוצות של ${p.divisor} נכנסות בתוך ${p.dividend}?`,
+          "1"
+        ),
+        toSpan(
+          `2. נבדוק: ${p.divisor} × ${ans} = ${p.dividend}. אם כן – זה המספר הנכון.`,
+          "2"
+        ),
+        toSpan(`3. לכן התשובה: ${ans}.`, "3"),
+      ];
+
+    case "fractions":
+      if (p.kind === "frac_same_den") {
         return [
-          `1. נכתוב את התרגיל: ${a} - ${b}.`,
-          `2. נתחיל מ-${a} ונלך אחורה ${b} צעדים.`,
-          `3. נספור כל צעד בקול.`,
-          `4. המספר שבו נעצרים הוא התוצאה: ${correctAnswer}.`,
+          toSpan(
+            `1. יש לנו אותו מכנה (${p.den}). במכנה לא נוגעים – עובדים רק על המונים.`,
+            "1"
+          ),
+          toSpan(
+            `2. ${p.op === "add" ? "מחברים" : "מחסרים"} את המונים: ${p.n1} ${
+              p.op === "add" ? "+" : "-"
+            } ${p.n2}.`,
+            "2"
+          ),
+          toSpan(`3. התוצאה במונה: ${ans.split("/")[0]}.`, "3"),
+          toSpan(`4. המכנה נשאר ${p.den} – לכן התשובה: ${ans}.`, "4"),
         ];
       }
-      return [
-        `1. נכתוב את התרגיל אחד מעל השני בטור.`,
-        `2. נחסר יחידות מיחידות. אם אי אפשר – נשאיל "1" מעמודת העשרות.`,
-        `3. נחסר עשרות מעשרות (כולל ההשאלה אם הייתה).`,
-        `4. נבדוק שהתוצאה הגיונית (קטנה מ-${a}) – התוצאה: ${correctAnswer}.`,
-      ];
-    }
 
-    case "multiplication": {
-      if (gradeKey === "g3_4") {
+      if (p.kind === "frac_diff_den") {
         return [
-          `1. נבין ש-${a} × ${b} פירושו ${a} חזרות של ${b} או ${b} חזרות של ${a}.`,
-          `2. נוכל לצייר טבלה עם ${a} שורות ו-${b} עמודות ולספור את כל הנקודות.`,
-          `3. נספור את כל הנקודות ונקבל ${correctAnswer}.`,
+          toSpan(
+            `1. יש מכנים שונים (${p.den1} ו-${p.den2}). נמצא מכנה משותף – כאן ${p.commonDen}.`,
+            "1"
+          ),
+          toSpan("2. נעביר כל שבר למכנה המשותף.", "2"),
+          toSpan("3. אחרי שהמכנים זהים – עובדים על המונים בלבד.", "3"),
+          toSpan(`4. כך נקבל את ${ans}.`, "4"),
         ];
       }
-      // ה–ו: פירוק לגורמים נוחים
-      return [
-        `1. נפרק את אחד הגורמים (לדוגמה את ${b}) לסכום נוח – עשרות ויחידות.`,
-        `2. נחשב ${a} כפול העשרות, ואז ${a} כפול היחידות.`,
-        `3. נחבר את שתי התוצאות.`,
-        `4. נקבל את ${correctAnswer}.`,
-      ];
-    }
 
-    case "division": {
       return [
-        `1. נבין ש-${a} ÷ ${b} פירושו "כמה קבוצות שוות של ${b} יש בתוך ${a}\u200F?".`,
-        `2. נוכל לצייר ${b} קופסאות ולחלק את ה-${a} פריטים שווה בשווה.`,
-        `3. נכניס פריט אחד בכל פעם לכל קופסה עד שנגמרים הפריטים.`,
-        `4. כמה פריטים יש בכל קופסה\u200F? זה התוצאה: ${correctAnswer}.`,
+        toSpan("1. מוצאים מכנה משותף.", "1"),
+        toSpan("2. מעבירים את השברים למכנה הזה.", "2"),
+        toSpan("3. מחברים או מחסרים את המונים.", "3"),
+        toSpan(`4. מצמצמים אם אפשר ומקבלים ${ans}.`, "4"),
       ];
-    }
+
+    case "word_problems":
+      if (p.kind === "wp_simple_add") {
+        const sum = p.a + p.b;
+        return [
+          toSpan("1. מזהים שהשאלה מבקשת כמה יש בסך הכל – פעולה של חיבור.", "1"),
+          toSpan(`2. כותבים תרגיל: ${p.a} + ${p.b}.`, "2"),
+          toSpan(`3. מחשבים: ${p.a} + ${p.b} = ${sum}.`, "3"),
+          toSpan(`4. התשובה: לליאו יש ${ans} כדורים.`, "4"),
+        ];
+      }
+
+      if (p.kind === "wp_groups") {
+        const prod = p.per * p.groups;
+        return [
+          toSpan(
+            `1. בכל קופסה יש ${p.per} עפרונות ויש ${p.groups} קופסאות – מדובר בחיבור חוזר.`,
+            "1"
+          ),
+          toSpan(`2. נרשום תרגיל כפל: ${p.per} × ${p.groups}.`, "2"),
+          toSpan(`3. נחשב: ${p.per} × ${p.groups} = ${prod}.`, "3"),
+          toSpan(`4. התשובה: ${ans} עפרונות.`, "4"),
+        ];
+      }
+
+      if (p.kind === "wp_leftover") {
+        return [
+          toSpan(
+            `1. יש ${p.total} תלמידים ומחלקים לקבוצות של ${p.groupSize}.`,
+            "1"
+          ),
+          toSpan(
+            `2. נחשב כמה קבוצות שלמות: ${p.total} ÷ ${p.groupSize} = ${p.groups}.`,
+            "2"
+          ),
+          toSpan(
+            `3. נבדוק כמה נשארו: ${p.total} - (${p.groups} × ${p.groupSize}) = ${p.leftover}.`,
+            "3"
+          ),
+          toSpan(`4. לכן ${ans} תלמידים נשארים בלי קבוצה מלאה.`, "4"),
+        ];
+      }
+
+      return [
+        toSpan("1. לזהות מה שואלים – כמה ביחד? כמה נשאר? כמה בכל קבוצה?", "1"),
+        toSpan("2. לכתוב תרגיל חשבון שמתאים לסיפור.", "2"),
+        toSpan("3. לפתור את התרגיל ולקשר אותו למילים.", "3"),
+      ];
 
     default:
       return [];
@@ -474,30 +710,33 @@ function getSolutionSteps(question, operation, gradeKey) {
 function getErrorExplanation(question, operation, wrongAnswer, gradeKey) {
   if (!question) return "";
   const userAnsNum = Number(wrongAnswer);
-  const correctNum = Number(question.correctAnswer);
+  const correctNum =
+    typeof question.correctAnswer === "string" && question.correctAnswer.includes("/")
+      ? Number(
+          question.correctAnswer.split("/")[0] /
+            (question.correctAnswer.split("/")[1] || 1)
+        )
+      : Number(question.correctAnswer);
 
   switch (operation) {
     case "addition":
       if (!Number.isNaN(userAnsNum) && userAnsNum < correctNum) {
-        return "נראה שהפסקת לספור מוקדם מדי. נסה לספור שוב מהמספר הגדול ולהוסיף את השני.";
+        return "נראה שלא חיברת את כל החלקים או פספסת מספר אחד בדרך.";
       }
       if (!Number.isNaN(userAnsNum) && userAnsNum > correctNum) {
-        return "נראה שהוספת יותר מדי. בדוק שוב את העשרות והיחידות.";
+        return "נראה שחיברת משהו פעמיים או טעית בחיבור ביניים.";
       }
-      return "בדוק שוב: האם חיברת את שני המספרים בדיוק פעם אחת כל אחד?";
-
+      return "בדוק שוב: האם חיברת את המספרים לפי הסדר?";
     case "subtraction":
-      if (!Number.isNaN(userAnsNum) && userAnsNum > correctNum) {
-        return "נראה שהגדלת במקום להקטין – אולי חיברת במקום לחסר?";
-      }
-      return "תזכור: בחיסור אנחנו מתחילים מהמספר הגדול והולכים אחורה, לא קדימה.";
-
+      return "בחיסור קל להתבלבל בסדר המספרים. בדוק שוב שהקטנת את המספר הגדול ולא להפך.";
     case "multiplication":
-      return "בכפל חשוב לזכור: זה חיבור חוזר. בדוק כמה פעמים חיברת את המספר, והאם זה בדיוק מספר הפעמים הנכון.";
-
+      return "בכפל לפעמים מערבבים בין כפל לחיבור. ודא שחזרת על המספר הנכון מספר הפעמים הנכון.";
     case "division":
-      return "בדוק: כמה פעמים המספר המחלק נכנס במספר המחולק? אם מכפלת התוצאה במחלק לא יוצאת בדיוק – התוצאה לא נכונה.";
-
+      return "בחילוק בדוק שהתוצאה כפול המחלק מחזירה את המספר המקורי.";
+    case "fractions":
+      return "בשברים לרוב שוכחים מכנה משותף או עובדים גם על המכנה במקום רק על המונה.";
+    case "word_problems":
+      return "בתרגילי מילים הטעות הנפוצה היא לבחור פעולה לא נכונה (חיבור במקום חיסור וכו'). נסה לכתוב תרגיל פשוט שמתאים לסיפור.";
     default:
       return "";
   }
@@ -560,6 +799,8 @@ export default function MathMaster() {
     subtraction: { total: 0, correct: 0 },
     multiplication: { total: 0, correct: 0 },
     division: { total: 0, correct: 0 },
+    fractions: { total: 0, correct: 0 },
+    word_problems: { total: 0, correct: 0 },
   });
 
   // תחרויות יומיות
@@ -593,6 +834,8 @@ export default function MathMaster() {
     subtraction: true,
     multiplication: false,
     division: false,
+    fractions: false,
+    word_problems: false,
   });
 
   const [showMultiplicationTable, setShowMultiplicationTable] = useState(false);
@@ -686,6 +929,8 @@ export default function MathMaster() {
       subtraction: availableOps.includes("subtraction"),
       multiplication: availableOps.includes("multiplication"),
       division: availableOps.includes("division"),
+      fractions: availableOps.includes("fractions"),
+      word_problems: availableOps.includes("word_problems"),
     };
     setMixedOperations(newMixedOps);
   }, [grade]);
@@ -1191,6 +1436,10 @@ export default function MathMaster() {
         return "×";
       case "division":
         return "÷";
+      case "fractions":
+        return "⅟ Fractions";
+      case "word_problems":
+        return "📘 Word Problems";
       case "mixed":
         return "🎲 Mixed";
       default:
@@ -1676,7 +1925,7 @@ export default function MathMaster() {
                   )}
                   
                   {showHint && (
-                    <div className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center max-w-md">
+                    <div className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center max-w-md" dir="ltr">
                       {getHint(currentQuestion, currentQuestion.operation, grade)}
                     </div>
                   )}
@@ -1692,7 +1941,7 @@ export default function MathMaster() {
                       </button>
 
                       {showSolution && (
-                        <div className="mb-3 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/40 text-emerald-100 text-sm space-y-1 max-w-md">
+                        <div className="mb-3 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/40 text-emerald-100 text-sm space-y-1 max-w-md" dir="ltr">
                           {getSolutionSteps(
                             currentQuestion,
                             currentQuestion.operation,
@@ -2482,5 +2731,6 @@ export default function MathMaster() {
     </Layout>
   );
 }
+
 
 
