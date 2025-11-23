@@ -1,9 +1,12 @@
 import Layout from "../components/Layout";
 import Link from "next/link";
+import InstallAppPrompt from "../components/InstallAppPrompt";
+import InstallAppButton from "../components/InstallAppButton";
 
 export default function HomePage() {
   return (
     <Layout>
+      <InstallAppPrompt />
       <div className="max-w-5xl mx-auto px-4 py-10 space-y-10">
         <section className="text-center space-y-4">
           <p className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-xs tracking-[0.25em] uppercase text-amber-300 font-semibold">
@@ -16,6 +19,7 @@ export default function HomePage() {
             A small world of mini games and learning activities for kids. Run, fly,
             solve puzzles and practice math, geometry and English – all in one place.
           </p>
+          <InstallAppButton />
         </section>
 
         <section className="grid md:grid-cols-3 gap-6">
