@@ -66,6 +66,9 @@ export default function MleoCatcher() {
     setHighScore(savedHighScore);
     const stored = JSON.parse(localStorage.getItem("mleoCatcherLeaderboard") || "[]");
     setLeaderboard(stored);
+    // טעינת שם משתמש שמור
+    const savedName = localStorage.getItem("mleo_player_name") || "";
+    setPlayerName(savedName);
   }, []);
 
   const updateLeaderboard = (name, scoreVal) => {
@@ -340,7 +343,13 @@ export default function MleoCatcher() {
               type="text"
               placeholder="Enter your name"
               value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
+              onChange={(e) => {
+                const newName = e.target.value;
+                setPlayerName(newName);
+                if (typeof window !== "undefined") {
+                  localStorage.setItem("mleo_player_name", newName);
+                }
+              }}
               className="mb-4 px-4 py-2 rounded text-black w-64 text-center"
             />
 

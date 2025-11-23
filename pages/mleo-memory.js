@@ -51,6 +51,14 @@ export default function MleoMemory() {
   const [startedPlaying, setStartedPlaying] = useState(false);
   const [didWin, setDidWin] = useState(false);
 
+  useEffect(() => {
+    // טעינת שם משתמש שמור
+    if (typeof window !== "undefined") {
+      const savedName = localStorage.getItem("mleo_player_name") || "";
+      setPlayerName(savedName);
+    }
+  }, []);
+
   const flipSound = typeof Audio !== "undefined" ? new Audio("/sounds/flap.mp3") : null;
   const winSound = typeof Audio !== "undefined" ? new Audio("/sounds/win.mp3") : null;
   const loseSound = typeof Audio !== "undefined" ? new Audio("/sounds/game-over.mp3") : null;
@@ -212,12 +220,19 @@ export default function MleoMemory() {
 
             <Image src="/images/leo-intro.png" alt="Leo" width={220} height={220} className="mb-6 animate-bounce" />
             <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-2">🧠 LEO Memory</h1>
+            <p className="text-base sm:text-lg text-gray-200 mb-4">Flip the cards and find matching pairs!</p>
 
             <input
               type="text"
               placeholder="Enter your name"
               value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
+              onChange={(e) => {
+                const newName = e.target.value;
+                setPlayerName(newName);
+                if (typeof window !== "undefined") {
+                  localStorage.setItem("mleo_player_name", newName);
+                }
+              }}
               className="mb-4 px-4 py-2 rounded text-black w-64 text-center"
             />
 

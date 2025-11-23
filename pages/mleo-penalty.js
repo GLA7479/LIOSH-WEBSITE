@@ -8,7 +8,7 @@ const IMG_BALL   = "/images/ball.png";
 const IMG_BG     = "/images/penalty-bg.png";
 
 const LS_HS   = "penaltyHighScore_v1";
-const LS_NAME = "penaltyPlayerName_v1";
+const LS_NAME = "mleo_player_name";
 
 // Levels
 const LEVEL_DUR_SEC = [60, 90, 120, 150, 180];
@@ -604,17 +604,23 @@ export default function MleoPenalty() {
         </button>
 
         {showIntro && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-gray-900/95 z-[999]">
-            <img src="/images/leo-intro.png" alt="Leo" width={220} height={220} className="mb-6" />
-            <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-2">⚽ Penalty Shootout</h1>
-            <p className="text-base sm:text-lg text-gray-200 mb-5">Select a level. Time decreases, and the goalkeeper gets faster at higher levels.</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 z-[999] text-center p-6">
+            <img src="/images/leo-intro.png" alt="Leo" width={220} height={220} className="mb-6 animate-bounce" />
+            <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-2">⚽ LEO Penalty</h1>
+            <p className="text-base sm:text-lg text-gray-200 mb-4">Select a level. Time decreases, and the goalkeeper gets faster at higher levels.</p>
 
             <input
               type="text"
               value={playerName}
-              onChange={(e)=>setPlayerName(e.target.value)}
+              onChange={(e) => {
+                const newName = e.target.value;
+                setPlayerName(newName);
+                if (typeof window !== "undefined") {
+                  localStorage.setItem(LS_NAME, newName);
+                }
+              }}
               onKeyDown={(e)=>{ if (e.key === "Enter" && playerName.trim()) handleChooseLevel(selectedLevel); }}
-              placeholder="Enter Player Name"
+              placeholder="Enter your name"
               className="mb-4 px-4 py-2 rounded text-black w-64 text-center"
             />
 
@@ -631,7 +637,7 @@ export default function MleoPenalty() {
               <button
                 onClick={() => handleChooseLevel(selectedLevel)}
                 disabled={!playerName.trim()}
-                className={`px-8 py-4 font-bold rounded-lg text-xl shadow-lg transition ${playerName.trim() ? "bg-yellow-400 text-black hover:scale-105" : "bg-gray-500 text-gray-300 cursor-not-allowed"}`}
+                className={`px-8 py-4 font-bold rounded-lg text-xl shadow-lg transform transition animate-pulse ${playerName.trim() ? "bg-yellow-400 text-black hover:scale-105" : "bg-gray-500 text-gray-300 cursor-not-allowed"}`}
               >
                 ▶ Start at Level {selectedLevel}
               </button>
