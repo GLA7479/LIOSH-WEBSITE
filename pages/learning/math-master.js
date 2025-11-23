@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -27,111 +27,71 @@ const LEVELS = {
   },
 };
 
-// הוספת סוג פעולה "fractions" לשברים
-const OPERATIONS = [
-  "addition",
-  "subtraction",
-  "multiplication",
-  "division",
-  "mixed",
-  "fractions",
-];
+const OPERATIONS = ["addition", "subtraction", "multiplication", "division", "mixed"];
 
-// חלוקה לכיתות – אילו סוגי תרגילים מותר לכל כיתה
 const GRADES = {
   g1_2: {
     name: "Grade 1–2",
-    operations: ["addition", "subtraction", "mixed"], // מיקס של חיבור וחיסור
+    operations: ["addition", "subtraction", "mixed"],
   },
   g3_4: {
     name: "Grade 3–4",
-    operations: ["addition", "subtraction", "multiplication", "mixed"], // מיקס של חיבור, חיסור וכפל
+    operations: ["addition", "subtraction", "multiplication", "division", "mixed"],
   },
   g5_6: {
     name: "Grade 5–6",
-    operations: ["addition", "subtraction", "multiplication", "division", "mixed", "fractions"],
+    operations: ["addition", "subtraction", "multiplication", "division", "mixed"],
   },
 };
 
-// התאמת טווחי המספרים לפי כיתה + רמת קושי (במקום factor כללי)
 function getLevelForGrade(levelKey, gradeKey) {
-  const base = LEVELS[levelKey];
+  const base = LEVELS[levelKey] || LEVELS.easy;
 
-  // ברירת מחדל – נתחיל מה־LEVELS שלך
-  const cfg = {
-    name: base.name,
-    addition: { max: base.addition.max },
-    subtraction: { min: base.subtraction.min, max: base.subtraction.max },
-    multiplication: { max: base.multiplication.max },
-    division: { max: base.division.max, maxDivisor: base.division.maxDivisor },
-  };
+  let factor = 1;
+  let allowNegatives = false;
+  let allowTwoStep = false;
 
   switch (gradeKey) {
-    case "g1_2": {
-      // כיתה א–ב: רק חיבור/חיסור קטן, לא מתעסקים במספרים גדולים
-      if (levelKey === "easy") {
-        cfg.addition.max = 10;           // 1–10
-        cfg.subtraction = { min: 1, max: 10 };
-      } else if (levelKey === "medium") {
-        cfg.addition.max = 20;           // 1–20
-        cfg.subtraction = { min: 1, max: 20 };
-      } else {
-        cfg.addition.max = 30;           // 1–30
-        cfg.subtraction = { min: 1, max: 30 };
-      }
-      // למקרה שיום אחד תאפשר כפל/חילוק בכיתות האלה – נשאיר קטן
-      cfg.multiplication.max = 5;
-      cfg.division = { max: 20, maxDivisor: 5 };
+    case "g1_2":
+      factor = 0.7;
       break;
-    }
-
-    case "g3_4": {
-      // כיתה ג–ד: חיבור/חיסור עד 100–200, כפל עד 10–12
-      if (levelKey === "easy") {
-        cfg.addition.max = 50;           // 1–50
-        cfg.subtraction = { min: 1, max: 50 };
-        cfg.multiplication.max = 6;      // 1–6
-      } else if (levelKey === "medium") {
-        cfg.addition.max = 100;          // 1–100
-        cfg.subtraction = { min: 1, max: 100 };
-        cfg.multiplication.max = 10;     // 1–10
-      } else {
-        cfg.addition.max = 200;          // 1–200
-        cfg.subtraction = { min: 1, max: 200 };
-        cfg.multiplication.max = 12;     // 1–12
-      }
-      // אם בעתיד תוסיף חילוק לכיתות האלה
-      cfg.division = { max: 100, maxDivisor: 10 };
+    case "g3_4":
+      factor = 1;
       break;
-    }
-
-    case "g5_6": {
-      // כיתה ה–ו: כבר אפשר מספרים גדולים יותר
-      if (levelKey === "easy") {
-        cfg.addition.max = 200;            // 1–200
-        cfg.subtraction = { min: 1, max: 200 };
-        cfg.multiplication.max = 10;       // 1–10
-        cfg.division = { max: 100, maxDivisor: 10 };
-      } else if (levelKey === "medium") {
-        cfg.addition.max = 500;            // 1–500
-        cfg.subtraction = { min: 1, max: 500 };
-        cfg.multiplication.max = 12;       // 1–12
-        cfg.division = { max: 200, maxDivisor: 12 };
-      } else {
-        cfg.addition.max = 1000;           // 1–1000
-        cfg.subtraction = { min: 1, max: 1000 };
-        cfg.multiplication.max = 20;       // עד 20×20
-        cfg.division = { max: 500, maxDivisor: 20 };
-      }
+    case "g5_6":
+      factor = 1.4;
+      allowNegatives = true;
+      allowTwoStep = levelKey !== "easy";
       break;
-    }
-
     default:
-      // fallback – אם נוסיף כיתה חדשה בעתיד
-      break;
+      factor = 1;
   }
 
-  return cfg;
+  const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
+  const scale = (n, min, max) => clamp(Math.round(n * factor), min, max);
+
+  return {
+    name: base.name,
+    addition: {
+      max: scale(base.addition?.max || 10, 10, 999),
+    },
+    subtraction: {
+      min:
+        base.subtraction?.min != null
+          ? Math.round(base.subtraction.min * factor)
+          : 0,
+      max: scale(base.subtraction?.max || 20, 10, 999),
+    },
+    multiplication: {
+      max: scale(base.multiplication?.max || 10, 5, 20),
+    },
+    division: {
+      max: scale(base.division?.max || 50, 10, 999),
+      maxDivisor: base.division?.maxDivisor || 12,
+    },
+    allowNegatives,
+    allowTwoStep,
+  };
 }
 
 const MODES = {
@@ -253,223 +213,134 @@ function saveScoreEntry(saved, key, entry) {
   saved[key] = levelData;
 }
 
-function generateQuestion(
-  level,
-  operation,
-  gradeKey,
-  useStory = false,
-  mixedOps = null,
-  practiceFocus = "default"
-) {
+function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
+  const gradeCfg = GRADES[gradeKey] || GRADES.g3_4;
+
+  let allowedOps = gradeCfg.operations.filter((op) => op !== "mixed");
+  if (mixedOps) {
+    allowedOps = allowedOps.filter((op) => mixedOps[op]);
+  }
+  if (allowedOps.length === 0) {
+    allowedOps = ["addition", "subtraction", "multiplication", "division"];
+  }
+
   const isMixed = operation === "mixed";
-  let ops;
-  
+  let selectedOp = operation;
+
   if (isMixed) {
-    // מיקס לפי הפעולות שנבחרו או הפעולות הזמינות לכל כיתה
-    let availableOps;
-    if (mixedOps) {
-      // השתמש בפעולות שנבחרו
-      availableOps = Object.entries(mixedOps)
-        .filter(([op, selected]) => selected && op !== "fractions")
-        .map(([op]) => op);
+    selectedOp = allowedOps[Math.floor(Math.random() * allowedOps.length)];
+  }
+
+  if (!allowedOps.includes(selectedOp)) {
+    selectedOp = "addition";
+  }
+
+  const allowNegatives =
+    !!levelConfig.allowNegatives && selectedOp === "subtraction";
+  const allowTwoStep = !!levelConfig.allowTwoStep && gradeKey === "g5_6";
+
+  const randInt = (min, max) => {
+    const lo = Math.min(min, max);
+    const hi = Math.max(min, max);
+    return Math.floor(Math.random() * (hi - lo + 1)) + lo;
+  };
+
+  let question = "";
+  let correctAnswer = 0;
+  let params = {};
+  let operandA = null;
+  let operandB = null;
+
+  if (selectedOp === "addition") {
+    const maxA = levelConfig.addition.max || 20;
+    if (allowTwoStep && Math.random() < 0.3) {
+      const a = randInt(1, maxA);
+      const b = randInt(1, maxA);
+      const c = randInt(1, maxA);
+      operandA = a;
+      operandB = b;
+      correctAnswer = a + b + c;
+      question = `${a} + ${b} + ${c} = ?`;
+      params = { a, b, c, op: "addition3" };
     } else {
-      // ברירת מחדל - כל הפעולות הזמינות
-      availableOps = GRADES[gradeKey].operations.filter(
-        (op) => op !== "mixed" && op !== "fractions"
-      );
-    }
-    
-    // אם אין פעולות נבחרות, נשתמש בברירת מחדל
-    if (availableOps.length === 0) {
-      availableOps = GRADES[gradeKey].operations.filter(
-        (op) => op !== "mixed" && op !== "fractions"
-      );
-    }
-    
-    ops = availableOps[Math.floor(Math.random() * availableOps.length)];
-  } else {
-    ops = operation;
-  }
-
-  let a, b, correctAnswer, question;
-
-  switch (ops) {
-    case "addition": {
-      let maxAdd = level.addition.max;
-
-      // תרגול ממוקד: חיבור עד 20
-      if (practiceFocus === "add_to_20") {
-        maxAdd = Math.min(maxAdd, 20);
-      }
-
-      a = Math.floor(Math.random() * maxAdd) + 1;
-      b = Math.floor(Math.random() * maxAdd) + 1;
+      const a = randInt(1, maxA);
+      const b = randInt(1, maxA);
+      operandA = a;
+      operandB = b;
       correctAnswer = a + b;
-      if (useStory) {
-        const stories = [
-          `יש לך ${a} תפוחים וקיבלת עוד ${b}. כמה תפוחים יש לך\u200F?`,
-          `בכיתה יש ${a} ילדים, הגיעו עוד ${b}. כמה ילדים יש עכשיו\u200F?`,
-          `יש לך ${a} כדורים, קנית עוד ${b}. כמה כדורים יש לך\u200F?`,
-        ];
-        question = stories[Math.floor(Math.random() * stories.length)];
-      } else {
-        question = `${a} + ${b} = ?`;
-      }
-      break;
+      question = `${a} + ${b} = ?`;
+      params = { a, b, op: "addition" };
     }
+  } else if (selectedOp === "subtraction") {
+    const maxS = levelConfig.subtraction.max || 20;
+    const minS = levelConfig.subtraction.min ?? 0;
 
-    case "subtraction": {
-      const max = level.subtraction.max;
-      const min = level.subtraction.min;
-      a = Math.floor(Math.random() * (max - min + 1)) + min;
-      b = Math.floor(Math.random() * a); // כולל 0, כדי שיצאו גם 0– וכאלה
+    let a, b;
+    if (allowNegatives) {
+      a = randInt(minS, maxS);
+      b = randInt(minS, maxS);
       correctAnswer = a - b;
-      if (useStory) {
-        const stories = [
-          `היו לך ${a} ממתקים, אכלת ${b}. כמה נשאר\u200F?`,
-          `בקופסה היו ${a} צעצועים, הוצאת ${b}. כמה נשאר\u200F?`,
-          `היו ${a} בלונים, ${b} התפוצצו. כמה נשארו\u200F?`,
-        ];
-        question = stories[Math.floor(Math.random() * stories.length)];
-      } else {
-        question = `${a} - ${b} = ?`;
-      }
-      break;
+    } else {
+      b = randInt(minS, maxS);
+      a = randInt(b, maxS);
+      correctAnswer = a - b;
     }
-
-    case "multiplication": {
-      // לכיתות גבוהות – לפעמים שני מספרים דו־ספרתיים
-      let maxA = level.multiplication.max;
-      let maxB = level.multiplication.max;
-
-      if (gradeKey === "g5_6" && level.name !== "Easy") {
-        maxA = Math.min(20, level.multiplication.max * 2);
-        maxB = Math.min(20, level.multiplication.max * 2);
-      }
-
-      // תרגול ממוקד: טבלת כפל 6–8
-      if (practiceFocus === "times_6_8") {
-        const baseFactors = [6, 7, 8];
-        a = baseFactors[Math.floor(Math.random() * baseFactors.length)];
-        b = Math.floor(Math.random() * Math.min(12, maxB)) + 1;
-      } else {
-        a = Math.floor(Math.random() * maxA) + 1;
-        b = Math.floor(Math.random() * maxB) + 1;
-      }
-
-      correctAnswer = a * b;
-      if (useStory) {
-        const stories = [
-          `יש לך ${a} קופסאות, בכל אחת ${b} כדורים. כמה כדורים יש\u200F?`,
-          `בכל שורה יש ${a} עציצים, יש ${b} שורות. כמה עציצים יש\u200F?`,
-          `כל ילד קיבל ${a} ממתקים, יש ${b} ילדים. כמה ממתקים בסך הכל\u200F?`,
-        ];
-        question = stories[Math.floor(Math.random() * stories.length)];
-      } else {
-        question = `${a} × ${b} = ?`;
-      }
-      break;
-    }
-
-    case "division": {
-      // חילוק עם תוצאה שלמה
-      const maxDivisor = level.division.maxDivisor;
-      const divisor =
-        Math.floor(Math.random() * (maxDivisor - 1)) + 2; // 2..maxDivisor
-
-      let maxQuotient = Math.floor(level.division.max / divisor);
-      if (gradeKey === "g5_6" && level.name === "Hard") {
-        maxQuotient = Math.min(maxQuotient, 50);
-      } else {
-        maxQuotient = Math.min(maxQuotient, 20);
-      }
-
-      const quotient =
-        Math.floor(Math.random() * Math.max(2, maxQuotient)) + 1;
-
-      a = divisor * quotient;
-      b = divisor;
-      correctAnswer = quotient;
-      if (useStory) {
-        const stories = [
-          `יש לך ${a} ממתקים, אתה רוצה לחלק אותם שווה בשווה ל-${b} ילדים. כמה ממתקים כל ילד יקבל\u200F?`,
-          `יש ${a} כדורים, אתה רוצה לשים אותם ב-${b} קופסאות שוות. כמה כדורים בכל קופסה\u200F?`,
-          `יש לך ${a} ספרים, אתה רוצה לחלק אותם ל-${b} ערימות שוות. כמה ספרים בכל ערימה\u200F?`,
-        ];
-        question = stories[Math.floor(Math.random() * stories.length)];
-      } else {
-        question = `${a} ÷ ${b} = ?`;
-      }
-      break;
-    }
-
-    case "fractions": {
-      // שברים – רק לכיתות הגבוהות, אחרת ניפול אחורה לחיבור רגיל
-      if (gradeKey !== "g5_6") {
-        return generateQuestion(level, "addition", gradeKey);
-      }
-
-      // שברים עם מכנה משותף
-      const denominators = [2, 3, 4, 5, 6, 8, 10, 12];
-      const denom =
-        denominators[Math.floor(Math.random() * denominators.length)];
-
-      let n1 = Math.floor(Math.random() * (denom - 1)) + 1;
-      let n2 = Math.floor(Math.random() * (denom - 1)) + 1;
-
-      // נשמור על תוצאה לא גדולה מידי
-      if (n1 + n2 > denom * 2) {
-        n2 = Math.max(1, denom * 2 - n1);
-      }
-
-      correctAnswer = `${n1 + n2}/${denom}`;
-      question = `${n1}/${denom} + ${n2}/${denom} = ?`;
-      break;
-    }
-
-    default: {
-      return generateQuestion(level, "addition", gradeKey);
-    }
+    operandA = a;
+    operandB = b;
+    question = `${a} - ${b} = ?`;
+    params = { a, b, op: "subtraction" };
+  } else if (selectedOp === "multiplication") {
+    const maxM = levelConfig.multiplication.max || 10;
+    const a = randInt(1, maxM);
+    const b = randInt(1, Math.min(maxM, 12));
+    operandA = a;
+    operandB = b;
+    correctAnswer = a * b;
+    question = `${a} Ã— ${b} = ?`;
+    params = { a, b, op: "multiplication" };
+  } else if (selectedOp === "division") {
+    const maxD = levelConfig.division.max || 100;
+    const maxDivisor = levelConfig.division.maxDivisor || 12;
+    const divisor = randInt(2, maxDivisor);
+    const quotient = randInt(
+      2,
+      Math.max(2, Math.floor(maxD / Math.max(2, divisor)))
+    );
+    const dividend = divisor * quotient;
+    operandA = dividend;
+    operandB = divisor;
+    correctAnswer = quotient;
+    question = `${dividend} Ã· ${divisor} = ?`;
+    params = { dividend, divisor, op: "division" };
+  } else {
+    const maxA = levelConfig.addition.max || 20;
+    const a = randInt(1, maxA);
+    const b = randInt(1, maxA);
+    operandA = a;
+    operandB = b;
+    correctAnswer = a + b;
+    question = `${a} + ${b} = ?`;
+    params = { a, b, op: "addition" };
   }
 
-  // יצירת תשובות שגויות
   const wrongAnswers = new Set();
+  while (wrongAnswers.size < 3) {
+    const baseDelta = Math.max(1, Math.round(Math.abs(correctAnswer) * 0.15));
+    const variation = randInt(1, 3);
+    const sign = Math.random() > 0.5 ? 1 : -1;
+    const wrong = correctAnswer + sign * baseDelta * variation;
 
-  if (ops === "fractions") {
-    // תשובות שגויות על בסיס מונה +-1 או +-2
-    const [numStr, denStr] = String(correctAnswer).split("/");
-    const num = parseInt(numStr, 10);
-    const den = parseInt(denStr, 10);
-
-    while (wrongAnswers.size < 3) {
-      const delta = [-2, -1, 1, 2][Math.floor(Math.random() * 4)];
-      const wrongNum = num + delta;
-      if (wrongNum <= 0 || wrongNum === num) continue;
-      const wrong = `${wrongNum}/${den}`;
-      if (wrong !== correctAnswer) {
-        wrongAnswers.add(wrong);
-      }
-    }
-  } else {
-    while (wrongAnswers.size < 3) {
-      let wrong;
-      if (ops === "multiplication") {
-        wrong = correctAnswer + Math.floor(Math.random() * 20) - 10;
-      } else if (ops === "division") {
-        wrong = correctAnswer + Math.floor(Math.random() * 10) - 5;
-      } else {
-        wrong = correctAnswer + Math.floor(Math.random() * 20) - 10;
-      }
-
-      if (wrong !== correctAnswer && wrong > 0 && !wrongAnswers.has(wrong)) {
-        wrongAnswers.add(wrong);
-      }
+    if (
+      wrong !== correctAnswer &&
+      !wrongAnswers.has(wrong) &&
+      wrong >= -200 &&
+      wrong <= 2000
+    ) {
+      wrongAnswers.add(wrong);
     }
   }
 
   const allAnswers = [correctAnswer, ...Array.from(wrongAnswers)];
-
-  // Shuffle answers
   for (let i = allAnswers.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
@@ -479,19 +350,17 @@ function generateQuestion(
     question,
     correctAnswer,
     answers: allAnswers,
-    operation: ops,
-    a,
-    b,
-    isStory: useStory || false,
+    operation: selectedOp,
+    params,
+    a: operandA,
+    b: operandB,
+    isStory: false,
   };
 }
-
-// פונקציה ליצירת רמז
 function getHint(question, operation, gradeKey) {
   if (!question) return "";
 
-  // לשברים לא חייבים a/b
-  if (operation !== "fractions" && (!question.a || !question.b)) {
+  if (!question.a || !question.b) {
     return "";
   }
 
@@ -523,12 +392,6 @@ function getHint(question, operation, gradeKey) {
         return `דמיין ${a} פריטים שחולקו ל-${b} קבוצות שוות. כמה בכל קבוצה\u200F?`;
       }
       return `חישוב חילוק ארוך: כמה פעמים ${b} "נכנס" ב-${a}, ומה נשאר בכל צעד.`;
-
-    case "fractions":
-      return `כשמחברים שברים עם אותו מכנה:
-1. המכנה נשאר אותו דבר.
-2. מחברים רק את המונים (המספרים העליונים).
-3. אם אפשר, מצמצמים את השבר (מחלקים גם את המונה וגם את המכנה באותו מספר).`;
 
     default:
       return "נסה לחשוב על הפתרון צעד אחר צעד.";
@@ -602,15 +465,6 @@ function getSolutionSteps(question, operation, gradeKey) {
       ];
     }
 
-    case "fractions": {
-      return [
-        `1. כשמחברים שברים עם אותו מכנה – המכנה (המספר התחתון) נשאר אותו דבר.`,
-        `2. מחברים רק את המונים (המספרים העליונים).`,
-        `3. אם המונה גדול מהמכנה, אפשר להפוך לשבר מעורב (שלם ועוד שבר).`,
-        `4. אם אפשר – מצמצמים (מחלקים גם את המונה וגם את המכנה באותו מספר).`,
-      ];
-    }
-
     default:
       return [];
   }
@@ -643,9 +497,6 @@ function getErrorExplanation(question, operation, wrongAnswer, gradeKey) {
 
     case "division":
       return "בדוק: כמה פעמים המספר המחלק נכנס במספר המחולק? אם מכפלת התוצאה במחלק לא יוצאת בדיוק – התוצאה לא נכונה.";
-
-    case "fractions":
-      return "בשברים עם אותו מכנה – מחברים רק את המספרים העליונים, והמכנה נשאר אותו דבר. אולי שינית גם את המכנה בטעות?";
 
     default:
       return "";
@@ -709,7 +560,6 @@ export default function MathMaster() {
     subtraction: { total: 0, correct: 0 },
     multiplication: { total: 0, correct: 0 },
     division: { total: 0, correct: 0 },
-    fractions: { total: 0, correct: 0 },
   });
 
   // תחרויות יומיות
@@ -829,7 +679,7 @@ export default function MathMaster() {
   // עדכון mixedOperations לפי הכיתה
   useEffect(() => {
     const availableOps = GRADES[grade].operations.filter(
-      (op) => op !== "mixed" && op !== "fractions"
+      (op) => op !== "mixed"
     );
     const newMixedOps = {
       addition: availableOps.includes("addition"),
@@ -989,9 +839,7 @@ export default function MathMaster() {
         levelConfig,
         operation,
         grade,
-        useStoryQuestions || storyOnly, // אם storyOnly מופעל, תמיד שאלות מילוליות
-        operation === "mixed" ? mixedOperations : null, // העבר את הפעולות שנבחרו למיקס
-        practiceFocus
+        operation === "mixed" ? mixedOperations : null
       );
       attempts++;
 
@@ -1345,8 +1193,6 @@ export default function MathMaster() {
         return "÷";
       case "mixed":
         return "🎲 Mixed";
-      case "fractions":
-        return "⅟ Fractions";
       default:
         return op;
     }
@@ -2554,7 +2400,7 @@ export default function MathMaster() {
 
                 <div className="space-y-3 mb-4">
                   {GRADES[grade].operations
-                    .filter((op) => op !== "mixed" && op !== "fractions")
+                    .filter((op) => op !== "mixed")
                     .map((op) => (
                       <label
                         key={op}
@@ -2583,7 +2429,7 @@ export default function MathMaster() {
                     onClick={() => {
                       // בחר הכל
                       const availableOps = GRADES[grade].operations.filter(
-                        (op) => op !== "mixed" && op !== "fractions"
+                        (op) => op !== "mixed"
                       );
                       const allSelected = {};
                       availableOps.forEach((op) => {
@@ -2599,7 +2445,7 @@ export default function MathMaster() {
                     onClick={() => {
                       // בטל הכל
                       const availableOps = GRADES[grade].operations.filter(
-                        (op) => op !== "mixed" && op !== "fractions"
+                        (op) => op !== "mixed"
                       );
                       const noneSelected = {};
                       availableOps.forEach((op) => {
@@ -2636,3 +2482,5 @@ export default function MathMaster() {
     </Layout>
   );
 }
+
+

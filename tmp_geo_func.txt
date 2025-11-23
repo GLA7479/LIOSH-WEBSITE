@@ -1,0 +1,255 @@
+function generateQuestion(level, topic, gradeKey, mixedOps = null) {
+  const isMixed = topic === "mixed";
+
+  let selectedTopic;
+  if (isMixed) {
+    let availableTopics;
+    if (mixedOps) {
+      availableTopics = Object.entries(mixedOps)
+        .filter(([t, selected]) => selected && t !== "mixed")
+        .map(([t]) => t);
+    } else {
+      availableTopics = GRADES[gradeKey].topics.filter((t) => t !== "mixed");
+    }
+    if (!availableTopics || availableTopics.length === 0) {
+      availableTopics = GRADES[gradeKey].topics.filter((t) => t !== "mixed");
+    }
+    selectedTopic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
+  } else {
+    selectedTopic = topic;
+  }
+
+  const availableShapes = getShapesForTopic(gradeKey, selectedTopic);
+  const shape =
+    availableShapes.length > 0
+      ? availableShapes[Math.floor(Math.random() * availableShapes.length)]
+      : null;
+
+  let question;
+  let correctAnswer;
+  let params = {};
+
+  const roundTo = level.decimals ? 2 : 0;
+  const round = (num) => Math.round(num * Math.pow(10, roundTo)) / Math.pow(10, roundTo);
+
+  switch (selectedTopic) {
+    case "area": {
+      switch (shape) {
+        case "square": {
+          const side = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { side };
+          correctAnswer = round(side * side);
+          question = `מה השטח של ריבוע עם צלע ${side}?`;
+          break;
+        }
+        case "rectangle": {
+          const length = Math.floor(Math.random() * level.maxSide) + 1;
+          const width = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { length, width };
+          correctAnswer = round(length * width);
+          question = `מה השטח של מלבן עם אורך ${length} ורוחב ${width}?`;
+          break;
+        }
+        case "triangle": {
+          const base = Math.floor(Math.random() * level.maxSide) + 1;
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { base, height };
+          correctAnswer = round((base * height) / 2);
+          question = `מה השטח של משולש עם בסיס ${base} וגובה ${height}?`;
+          break;
+        }
+        case "parallelogram": {
+          const base = Math.floor(Math.random() * level.maxSide) + 1;
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { base, height };
+          correctAnswer = round(base * height);
+          question = `מה השטח של מקבילית עם בסיס ${base} וגובה ${height}?`;
+          break;
+        }
+        case "trapezoid": {
+          const base1 = Math.floor(Math.random() * level.maxSide) + 1;
+          const base2 = Math.floor(Math.random() * level.maxSide) + 1;
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { base1, base2, height };
+          correctAnswer = round(((base1 + base2) * height) / 2);
+          question = `מה השטח של טרפז עם בסיסים ${base1} ו-${base2} וגובה ${height}?`;
+          break;
+        }
+        case "circle": {
+          const radius = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          params = { radius };
+          correctAnswer = round(PI * radius * radius);
+          question = `מה השטח של עיגול עם רדיוס ${radius}? (π = 3.14)`;
+          break;
+        }
+        default: {
+          const side = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { side };
+          correctAnswer = round(side * side);
+          question = `מה השטח של ריבוע עם צלע ${side}?`;
+        }
+      }
+      break;
+    }
+
+    case "perimeter": {
+      switch (shape) {
+        case "square": {
+          const side = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { side };
+          correctAnswer = round(side * 4);
+          question = `מה ההיקף של ריבוע עם צלע ${side}?`;
+          break;
+        }
+        case "rectangle": {
+          const length = Math.floor(Math.random() * level.maxSide) + 1;
+          const width = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { length, width };
+          correctAnswer = round((length + width) * 2);
+          question = `מה ההיקף של מלבן עם אורך ${length} ורוחב ${width}?`;
+          break;
+        }
+        case "triangle": {
+          const side1 = Math.floor(Math.random() * level.maxSide) + 1;
+          const side2 = Math.floor(Math.random() * level.maxSide) + 1;
+          const side3 = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { side1, side2, side3 };
+          correctAnswer = round(side1 + side2 + side3);
+          question = `מה ההיקף של משולש עם צלעות ${side1}, ${side2}, ${side3}?`;
+          break;
+        }
+        case "circle": {
+          const radius = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          params = { radius };
+          correctAnswer = round(2 * PI * radius);
+          question = `מה ההיקף של עיגול עם רדיוס ${radius}? (π = 3.14)`;
+          break;
+        }
+        default: {
+          const side = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { side };
+          correctAnswer = round(side * 4);
+          question = `מה ההיקף של ריבוע עם צלע ${side}?`;
+        }
+      }
+      break;
+    }
+
+    case "volume": {
+      switch (shape) {
+        case "cube": {
+          const side = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          params = { side };
+          correctAnswer = round(side * side * side);
+          question = `מה הנפח של קובייה עם צלע ${side}?`;
+          break;
+        }
+        case "rectangular_prism": {
+          const length = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          const width = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { length, width, height };
+          correctAnswer = round(length * width * height);
+          question = `מה הנפח של תיבה עם אורך ${length}, רוחב ${width} וגובה ${height}?`;
+          break;
+        }
+        case "cylinder": {
+          const radius = Math.floor(Math.random() * (level.maxSide / 3)) + 1;
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { radius, height };
+          correctAnswer = round(PI * radius * radius * height);
+          question = `מה הנפח של גליל עם רדיוס ${radius} וגובה ${height}? (π = 3.14)`;
+          break;
+        }
+        case "sphere": {
+          const radius = Math.floor(Math.random() * (level.maxSide / 3)) + 1;
+          params = { radius };
+          correctAnswer = round((4 / 3) * PI * radius * radius * radius);
+          question = `מה הנפח של כדור עם רדיוס ${radius}? (π = 3.14)`;
+          break;
+        }
+        default: {
+          const length = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          const width = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { length, width, height };
+          correctAnswer = round(length * width * height);
+          question = `מה הנפח של תיבה עם אורך ${length}, רוחב ${width} וגובה ${height}?`;
+        }
+      }
+      break;
+    }
+
+    case "angles": {
+      const angle1 = Math.floor(Math.random() * 61) + 40;
+      const maxAngle2 = 160 - angle1;
+      const angle2 = Math.floor(Math.random() * (maxAngle2 - 19)) + 20;
+      const angle3 = 180 - angle1 - angle2;
+
+      params = { angle1, angle2, angle3 };
+      correctAnswer = round(angle3);
+      question = `במשולש, זווית אחת היא ${angle1}° וזווית שנייה היא ${angle2}°. מה הזווית השלישית?`;
+      break;
+    }
+
+    case "pythagoras": {
+      const triples = [
+        [3, 4, 5],
+        [5, 12, 13],
+        [6, 8, 10],
+        [8, 15, 17],
+      ];
+      const [ba, bb, bc] = triples[Math.floor(Math.random() * triples.length)];
+      const maxK = gradeKey === "g7_8" ? 3 : 2;
+      const k = Math.floor(Math.random() * maxK) + 1;
+
+      const a = ba * k;
+      const b = bb * k;
+      const c = bc * k;
+
+      params = { a, b, c };
+      correctAnswer = round(c);
+      question = `במשולש ישר זווית, הניצבים הם ${a} ו-${b}. מה אורך היתר?`;
+      break;
+    }
+
+    default: {
+      const side = Math.floor(Math.random() * level.maxSide) + 1;
+      params = { side };
+      correctAnswer = round(side * side);
+      question = `מה השטח של ריבוע עם צלע ${side}?`;
+    }
+  }
+
+  const wrongAnswers = new Set();
+  while (wrongAnswers.size < 3) {
+    const variation = Math.floor(Math.random() * 3) + 1;
+    const sign = Math.random() > 0.5 ? 1 : -1;
+    const delta = Math.max(1, Math.abs(correctAnswer) * 0.1 * variation);
+    const wrong = round(correctAnswer + sign * delta);
+    if (
+      wrong !== correctAnswer &&
+      wrong > 0 &&
+      !Number.isNaN(wrong) &&
+      !wrongAnswers.has(wrong)
+    ) {
+      wrongAnswers.add(wrong);
+    }
+  }
+
+  const allAnswers = [correctAnswer, ...Array.from(wrongAnswers)];
+  for (let i = allAnswers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
+  }
+
+  return {
+    question,
+    correctAnswer,
+    answers: allAnswers,
+    topic: selectedTopic,
+    shape,
+    params,
+  };
+}
+

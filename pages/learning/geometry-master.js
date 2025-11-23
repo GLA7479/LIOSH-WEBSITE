@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -20,6 +20,8 @@ const LEVELS = {
     decimals: true,
   },
 };
+
+const PI = 3.14;
 
 const TOPICS = {
   area: { name: "Area", description: "חישוב שטח", icon: "📐" },
@@ -48,6 +50,37 @@ const GRADES = {
   },
 };
 
+const TOPIC_SHAPES = {
+  area: {
+    g3_4: ["square", "rectangle"],
+    g5_6: ["square", "rectangle", "triangle"],
+    g7_8: ["square", "rectangle", "triangle", "parallelogram", "trapezoid", "circle"],
+  },
+  perimeter: {
+    g3_4: ["square", "rectangle", "triangle"],
+    g5_6: ["square", "rectangle", "triangle"],
+    g7_8: ["square", "rectangle", "triangle", "circle"],
+  },
+  volume: {
+    g5_6: ["rectangular_prism", "cube"],
+    g7_8: ["rectangular_prism", "cube", "cylinder", "sphere"],
+  },
+  angles: {
+    g7_8: ["triangle"],
+  },
+  pythagoras: {
+    g7_8: ["triangle"],
+  },
+};
+
+function getShapesForTopic(gradeKey, topicKey) {
+  const cfg = TOPIC_SHAPES[topicKey];
+  if (cfg && cfg[gradeKey] && cfg[gradeKey].length > 0) {
+    return cfg[gradeKey];
+  }
+  return GRADES[gradeKey].shapes;
+}
+
 const MODES = {
   learning: { name: "Learning", description: "No hard game over, practice at your pace" },
   challenge: { name: "Challenge", description: "Timer + lives, high score race" },
@@ -60,17 +93,32 @@ const STORAGE_KEY = "mleo_geometry_master";
 function getLevelForGrade(levelKey, gradeKey) {
   const base = LEVELS[levelKey];
   let factor = 1;
+
   switch (gradeKey) {
-    case "g3_4": factor = 0.5; break;
-    case "g5_6": factor = 1; break;
-    case "g7_8": factor = 2; break;
-    default: factor = 1;
+    case "g3_4":
+      factor = 0.5;
+      break;
+    case "g5_6":
+      factor = 1;
+      break;
+    case "g7_8":
+      factor = 2;
+      break;
+    default:
+      factor = 1;
   }
+
   const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
+
+  let decimals = base.decimals;
+  if (gradeKey === "g3_4") {
+    decimals = false;
+  }
+
   return {
     name: base.name,
     maxSide: clamp(Math.round(base.maxSide * factor), 5, 100),
-    decimals: base.decimals,
+    decimals,
   };
 }
 
@@ -150,8 +198,8 @@ function saveScoreEntry(saved, key, entry) {
 
 function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   const isMixed = topic === "mixed";
+
   let selectedTopic;
-  
   if (isMixed) {
     let availableTopics;
     if (mixedOps) {
@@ -161,7 +209,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     } else {
       availableTopics = GRADES[gradeKey].topics.filter((t) => t !== "mixed");
     }
-    if (availableTopics.length === 0) {
+    if (!availableTopics || availableTopics.length === 0) {
       availableTopics = GRADES[gradeKey].topics.filter((t) => t !== "mixed");
     }
     selectedTopic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
@@ -169,9 +217,16 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     selectedTopic = topic;
   }
 
-  const availableShapes = GRADES[gradeKey].shapes;
-  const shape = availableShapes[Math.floor(Math.random() * availableShapes.length)];
-  let question, correctAnswer, params = {};
+  const availableShapes = getShapesForTopic(gradeKey, selectedTopic);
+  const shape =
+    availableShapes.length > 0
+      ? availableShapes[Math.floor(Math.random() * availableShapes.length)]
+      : null;
+
+  let question;
+  let correctAnswer;
+  let params = {};
+
   const roundTo = level.decimals ? 2 : 0;
   const round = (num) => Math.round(num * Math.pow(10, roundTo)) / Math.pow(10, roundTo);
 
@@ -182,7 +237,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const side = Math.floor(Math.random() * level.maxSide) + 1;
           params = { side };
           correctAnswer = round(side * side);
-          question = `מה השטח של ריבוע עם צלע ${side}\u200F?`;
+          question = `מה השטח של ריבוע עם צלע ${side}?`;
           break;
         }
         case "rectangle": {
@@ -190,14 +245,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const width = Math.floor(Math.random() * level.maxSide) + 1;
           params = { length, width };
           correctAnswer = round(length * width);
-          question = `מה השטח של מלבן עם אורך ${length} ורוחב ${width}\u200F?`;
-          break;
-        }
-        case "circle": {
-          const radius = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
-          params = { radius };
-          correctAnswer = round(Math.PI * radius * radius);
-          question = `מה השטח של עיגול עם רדיוס ${radius}\u200F? (π = 3.14)`;
+          question = `מה השטח של מלבן עם אורך ${length} ורוחב ${width}?`;
           break;
         }
         case "triangle": {
@@ -205,7 +253,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const height = Math.floor(Math.random() * level.maxSide) + 1;
           params = { base, height };
           correctAnswer = round((base * height) / 2);
-          question = `מה השטח של משולש עם בסיס ${base} וגובה ${height}\u200F?`;
+          question = `מה השטח של משולש עם בסיס ${base} וגובה ${height}?`;
           break;
         }
         case "parallelogram": {
@@ -213,7 +261,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const height = Math.floor(Math.random() * level.maxSide) + 1;
           params = { base, height };
           correctAnswer = round(base * height);
-          question = `מה השטח של מקבילית עם בסיס ${base} וגובה ${height}\u200F?`;
+          question = `מה השטח של מקבילית עם בסיס ${base} וגובה ${height}?`;
           break;
         }
         case "trapezoid": {
@@ -222,19 +270,33 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const height = Math.floor(Math.random() * level.maxSide) + 1;
           params = { base1, base2, height };
           correctAnswer = round(((base1 + base2) * height) / 2);
-          question = `מה השטח של טרפז עם בסיסים ${base1} ו-${base2} וגובה ${height}\u200F?`;
+          question = `מה השטח של טרפז עם בסיסים ${base1} ו-${base2} וגובה ${height}?`;
           break;
+        }
+        case "circle": {
+          const radius = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          params = { radius };
+          correctAnswer = round(PI * radius * radius);
+          question = `מה השטח של עיגול עם רדיוס ${radius}? (π = 3.14)`;
+          break;
+        }
+        default: {
+          const side = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { side };
+          correctAnswer = round(side * side);
+          question = `מה השטח של ריבוע עם צלע ${side}?`;
         }
       }
       break;
     }
+
     case "perimeter": {
       switch (shape) {
         case "square": {
           const side = Math.floor(Math.random() * level.maxSide) + 1;
           params = { side };
           correctAnswer = round(side * 4);
-          question = `מה ההיקף של ריבוע עם צלע ${side}\u200F?`;
+          question = `מה ההיקף של ריבוע עם צלע ${side}?`;
           break;
         }
         case "rectangle": {
@@ -242,14 +304,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const width = Math.floor(Math.random() * level.maxSide) + 1;
           params = { length, width };
           correctAnswer = round((length + width) * 2);
-          question = `מה ההיקף של מלבן עם אורך ${length} ורוחב ${width}\u200F?`;
-          break;
-        }
-        case "circle": {
-          const radius = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
-          params = { radius };
-          correctAnswer = round(2 * Math.PI * radius);
-          question = `מה ההיקף של עיגול עם רדיוס ${radius}\u200F? (π = 3.14)`;
+          question = `מה ההיקף של מלבן עם אורך ${length} ורוחב ${width}?`;
           break;
         }
         case "triangle": {
@@ -258,34 +313,33 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const side3 = Math.floor(Math.random() * level.maxSide) + 1;
           params = { side1, side2, side3 };
           correctAnswer = round(side1 + side2 + side3);
-          question = `מה ההיקף של משולש עם צלעות ${side1}, ${side2}, ${side3}\u200F?`;
+          question = `מה ההיקף של משולש עם צלעות ${side1}, ${side2}, ${side3}?`;
           break;
+        }
+        case "circle": {
+          const radius = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          params = { radius };
+          correctAnswer = round(2 * PI * radius);
+          question = `מה ההיקף של עיגול עם רדיוס ${radius}? (π = 3.14)`;
+          break;
+        }
+        default: {
+          const side = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { side };
+          correctAnswer = round(side * 4);
+          question = `מה ההיקף של ריבוע עם צלע ${side}?`;
         }
       }
       break;
     }
+
     case "volume": {
       switch (shape) {
         case "cube": {
           const side = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
           params = { side };
           correctAnswer = round(side * side * side);
-          question = `מה הנפח של קובייה עם צלע ${side}\u200F?`;
-          break;
-        }
-        case "cylinder": {
-          const radius = Math.floor(Math.random() * (level.maxSide / 3)) + 1;
-          const height = Math.floor(Math.random() * level.maxSide) + 1;
-          params = { radius, height };
-          correctAnswer = round(Math.PI * radius * radius * height);
-          question = `מה הנפח של גליל עם רדיוס ${radius} וגובה ${height}\u200F? (π = 3.14)`;
-          break;
-        }
-        case "sphere": {
-          const radius = Math.floor(Math.random() * (level.maxSide / 3)) + 1;
-          params = { radius };
-          correctAnswer = round((4 / 3) * Math.PI * radius * radius * radius);
-          question = `מה הנפח של כדור עם רדיוס ${radius}\u200F? (π = 3.14)`;
+          question = `מה הנפח של קובייה עם צלע ${side}?`;
           break;
         }
         case "rectangular_prism": {
@@ -294,32 +348,74 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const height = Math.floor(Math.random() * level.maxSide) + 1;
           params = { length, width, height };
           correctAnswer = round(length * width * height);
-          question = `מה הנפח של תיבה עם אורך ${length}, רוחב ${width} וגובה ${height}\u200F?`;
+          question = `מה הנפח של תיבה עם אורך ${length}, רוחב ${width} וגובה ${height}?`;
           break;
+        }
+        case "cylinder": {
+          const radius = Math.floor(Math.random() * (level.maxSide / 3)) + 1;
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { radius, height };
+          correctAnswer = round(PI * radius * radius * height);
+          question = `מה הנפח של גליל עם רדיוס ${radius} וגובה ${height}? (π = 3.14)`;
+          break;
+        }
+        case "sphere": {
+          const radius = Math.floor(Math.random() * (level.maxSide / 3)) + 1;
+          params = { radius };
+          correctAnswer = round((4 / 3) * PI * radius * radius * radius);
+          question = `מה הנפח של כדור עם רדיוס ${radius}? (π = 3.14)`;
+          break;
+        }
+        default: {
+          const length = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          const width = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { length, width, height };
+          correctAnswer = round(length * width * height);
+          question = `מה הנפח של תיבה עם אורך ${length}, רוחב ${width} וגובה ${height}?`;
         }
       }
       break;
     }
+
     case "angles": {
-      const angle1 = Math.floor(Math.random() * 180) + 1;
-      const angle2 = Math.floor(Math.random() * (180 - angle1)) + 1;
+      const angle1 = Math.floor(Math.random() * 61) + 40;
+      const maxAngle2 = 160 - angle1;
+      const angle2 = Math.floor(Math.random() * (maxAngle2 - 19)) + 20;
       const angle3 = 180 - angle1 - angle2;
+
+      params = { angle1, angle2, angle3 };
       correctAnswer = round(angle3);
-      question = `במשולש, זווית אחת היא ${angle1}° וזווית שנייה היא ${angle2}°. מה הזווית השלישית\u200F?`;
+      question = `במשולש, זווית אחת היא ${angle1}° וזווית שנייה היא ${angle2}°. מה הזווית השלישית?`;
       break;
     }
+
     case "pythagoras": {
-      const a = Math.floor(Math.random() * level.maxSide) + 1;
-      const b = Math.floor(Math.random() * level.maxSide) + 1;
-      const c = Math.sqrt(a * a + b * b);
+      const triples = [
+        [3, 4, 5],
+        [5, 12, 13],
+        [6, 8, 10],
+        [8, 15, 17],
+      ];
+      const [ba, bb, bc] = triples[Math.floor(Math.random() * triples.length)];
+      const maxK = gradeKey === "g7_8" ? 3 : 2;
+      const k = Math.floor(Math.random() * maxK) + 1;
+
+      const a = ba * k;
+      const b = bb * k;
+      const c = bc * k;
+
+      params = { a, b, c };
       correctAnswer = round(c);
-      question = `במשולש ישר זווית, הניצבים הם ${a} ו-${b}. מה אורך היתר\u200F?`;
+      question = `במשולש ישר זווית, הניצבים הם ${a} ו-${b}. מה אורך היתר?`;
       break;
     }
-    case "mixed": {
-      const availableTopics = GRADES[gradeKey].topics.filter((t) => t !== "mixed");
-      const randomTopic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
-      return generateQuestion(level, randomTopic, gradeKey);
+
+    default: {
+      const side = Math.floor(Math.random() * level.maxSide) + 1;
+      params = { side };
+      correctAnswer = round(side * side);
+      question = `מה השטח של ריבוע עם צלע ${side}?`;
     }
   }
 
@@ -327,8 +423,14 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   while (wrongAnswers.size < 3) {
     const variation = Math.floor(Math.random() * 3) + 1;
     const sign = Math.random() > 0.5 ? 1 : -1;
-    let wrong = round(correctAnswer + sign * (correctAnswer * 0.1 * variation));
-    if (wrong !== correctAnswer && wrong > 0 && !wrongAnswers.has(wrong)) {
+    const delta = Math.max(1, Math.abs(correctAnswer) * 0.1 * variation);
+    const wrong = round(correctAnswer + sign * delta);
+    if (
+      wrong !== correctAnswer &&
+      wrong > 0 &&
+      !Number.isNaN(wrong) &&
+      !wrongAnswers.has(wrong)
+    ) {
       wrongAnswers.add(wrong);
     }
   }
@@ -349,8 +451,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   };
 }
 
-// פונקציה ליצירת רמז
-function getHint(question, topic, gradeKey) {
+\nfunction getHint(question, topic, gradeKey) {
   if (!question || !question.params) return "";
   switch (topic) {
     case "area":
@@ -1853,4 +1954,6 @@ export default function GeometryMaster() {
     </Layout>
   );
 }
+
+
 
