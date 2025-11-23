@@ -842,6 +842,12 @@ export default function MathMaster() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardLevel, setLeaderboardLevel] = useState("easy");
   const [leaderboardData, setLeaderboardData] = useState([]);
+  useEffect(() => {
+    if (!GRADES[grade].operations.includes("word_problems")) {
+      setUseStoryQuestions(false);
+      setStoryOnly(false);
+    }
+  }, [grade]);
   const [playerName, setPlayerName] = useState(() => {
     if (typeof window !== "undefined") {
       try {
@@ -1079,12 +1085,24 @@ export default function MathMaster() {
     let attempts = 0;
     const maxAttempts = 50; // מקסימום ניסיונות למצוא שאלה חדשה
 
+    const supportsWordProblems = GRADES[grade].operations.includes("word_problems");
+
     do {
+      let opForQuestion = operation;
+      if (supportsWordProblems) {
+        if (storyOnly) {
+          opForQuestion = "word_problems";
+        } else if (useStoryQuestions && operation !== "word_problems") {
+          opForQuestion =
+            Math.random() < 0.5 ? "word_problems" : operation;
+        }
+      }
+
       question = generateQuestion(
         levelConfig,
-        operation,
+        opForQuestion,
         grade,
-        operation === "mixed" ? mixedOperations : null
+        opForQuestion === "mixed" ? mixedOperations : null
       );
       attempts++;
 
@@ -1456,6 +1474,7 @@ export default function MathMaster() {
 
   const accuracy =
     totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
+  const gradeSupportsWordProblems = GRADES[grade].operations.includes("word_problems");
 
   return (
     <Layout>
@@ -1788,31 +1807,33 @@ export default function MathMaster() {
               </div>
               
               {/* אפשרות לשאלות עם סיפור */}
-              <div className="flex items-center justify-center gap-4 mb-2 w-full max-w-md flex-wrap">
-                <label className="flex items-center gap-2 text-white text-sm">
-                  <input
-                    type="checkbox"
-                    checked={useStoryQuestions}
-                    onChange={(e) => {
-                      setUseStoryQuestions(e.target.checked);
-                      if (!e.target.checked) setStoryOnly(false); // אם מכבים story, גם מכבים storyOnly
-                    }}
-                    className="w-4 h-4"
-                  />
-                  📖 Story Questions
-                </label>
-                {useStoryQuestions && (
+              {gradeSupportsWordProblems && (
+                <div className="flex items-center justify-center gap-4 mb-2 w-full max-w-md flex-wrap">
                   <label className="flex items-center gap-2 text-white text-sm">
                     <input
                       type="checkbox"
-                      checked={storyOnly}
-                      onChange={(e) => setStoryOnly(e.target.checked)}
+                      checked={useStoryQuestions}
+                      onChange={(e) => {
+                        setUseStoryQuestions(e.target.checked);
+                        if (!e.target.checked) setStoryOnly(false);
+                      }}
                       className="w-4 h-4"
                     />
-                    📝 Story Only
+                    📖 Story Questions
                   </label>
-                )}
-              </div>
+                  {useStoryQuestions && (
+                    <label className="flex items-center gap-2 text-white text-sm">
+                      <input
+                        type="checkbox"
+                        checked={storyOnly}
+                        onChange={(e) => setStoryOnly(e.target.checked)}
+                        className="w-4 h-4"
+                      />
+                      📝 Story Only
+                    </label>
+                  )}
+                </div>
+              )}
 
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
                 <button

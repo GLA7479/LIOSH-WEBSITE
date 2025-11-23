@@ -451,7 +451,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   };
 }
 
-\nfunction getHint(question, topic, gradeKey) {
+function getHint(question, topic, gradeKey) {
   if (!question || !question.params) return "";
   switch (topic) {
     case "area":
