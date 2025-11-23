@@ -1,6 +1,19 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Layout({ children }) {
+  const router = useRouter();
+  
+  // Check if it's a game page by checking the route
+  const isGamePage = router.pathname.includes('/learning/') || 
+                     router.pathname.includes('/offline/') ||
+                     router.pathname.includes('/mleo-');
+  
+  if (isGamePage) {
+    // For game pages, return only the children without header/footer
+    return <>{children}</>;
+  }
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#050816] via-[#0b1020] to-[#050816] text-white">
       <header className="w-full border-b border-white/10 bg-black/40 backdrop-blur sticky top-0 z-30">

@@ -160,7 +160,7 @@ export default function TapBattle() {
       <div
         ref={wrapRef}
         className="relative w-full overflow-hidden bg-[#05070f] game-page-mobile"
-        style={{ minHeight: "100vh", minHeight: "100dvh" }}
+        style={{ height: "100vh", height: "100dvh" }}
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
@@ -198,11 +198,13 @@ export default function TapBattle() {
         </div>
 
         <div
-          className="relative h-full flex flex-col items-center justify-start px-4 overflow-hidden"
+          className="relative flex flex-col items-center justify-start px-4 overflow-hidden"
           style={{
             height: "100%",
+            maxHeight: "100%",
             paddingTop: "calc(var(--head-h, 56px) + 8px)",
             paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
+            overflow: "hidden"
           }}
         >
           <div className="text-center mb-1">

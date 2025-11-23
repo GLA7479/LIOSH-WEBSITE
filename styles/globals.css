@@ -7,8 +7,10 @@ html, body, #__next {
 body {
   @apply bg-[#050816] text-white antialiased;
   touch-action: pan-y;
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: none;
   -webkit-overflow-scrolling: touch;
+  width: 100%;
+  height: 100%;
 }
 
 * {
@@ -20,11 +22,14 @@ body {
   overflow: hidden;
   position: relative;
   width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   touch-action: pan-y pinch-zoom;
   overscroll-behavior: none;
 }
+
+/* Ensure game content doesn't get cut off */
+/* Removed to prevent header measurement issues */
 
 @keyframes slide-up {
   from {

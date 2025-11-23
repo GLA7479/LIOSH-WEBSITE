@@ -56,6 +56,7 @@ export default function MyApp({ Component, pageProps }) {
     }
   }, []);
 
+
   return (
     <>
       <Head>
