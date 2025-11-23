@@ -65,11 +65,11 @@ export default function InstallAppButton() {
       <button
         onClick={handleInstallClick}
         type="button"
-        className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-full hover:from-amber-600 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+        className="inline-flex items-center justify-center gap-2 w-48 h-10 px-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-bold rounded-full hover:from-amber-600 hover:to-orange-700 transition-all shadow-md hover:shadow-lg"
       >
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
-          className="h-6 w-6" 
+          className="h-4 w-4" 
           fill="none" 
           viewBox="0 0 24 24" 
           stroke="currentColor"
@@ -80,7 +80,7 @@ export default function InstallAppButton() {
         <span>התקן אפליקציה</span>
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
-          className="h-5 w-5" 
+          className="h-4 w-4" 
           fill="none" 
           viewBox="0 0 24 24" 
           stroke="currentColor"

@@ -106,9 +106,6 @@ export default function Layout({ children }) {
           <span>
             © {new Date().getFullYear()} LEO K · Fun games & learning for kids
           </span>
-          <span className="text-[10px] uppercase tracking-[0.2em]">
-            Built with Next.js
-          </span>
         </div>
       </footer>
     </div>
