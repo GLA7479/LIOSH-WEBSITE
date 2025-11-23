@@ -48,23 +48,27 @@ export default function MemoryMatch() {
     if (!wrapRef.current || !mounted) return;
     const calc = () => {
       const rootH = window.visualViewport?.height ?? window.innerHeight;
-      const safeBottom =
-        Number(
-          getComputedStyle(document.documentElement)
-            .getPropertyValue("--satb")
-            .replace("px", "")
-        ) || 0;
       const headH = headerRef.current?.offsetHeight || 0;
       document.documentElement.style.setProperty("--head-h", headH + "px");
       
-      const controlsH = controlsRef.current?.offsetHeight || 40;
+      // Measure all elements accurately for maximum board size
+      const controlsH = controlsRef.current?.offsetHeight || 50;
+      const titleH = 70; // Title + subtitle height
+      const spacing = 12; // Reduced spacing for more board space
+      const safeBottom = typeof window !== "undefined" 
+        ? Math.max(parseInt(getComputedStyle(document.documentElement).getPropertyValue("env(safe-area-inset-bottom)") || "0"), 20)
+        : 20;
+      
+      // Calculate used space - minimize padding to maximize board
       const used =
         headH +
+        titleH +
         controlsH +
-        80 + // Title, controls, scores
-        safeBottom +
-        32;
-      const freeH = Math.max(300, rootH - used);
+        spacing * 2 + // Minimal spacing
+        safeBottom;
+      
+      // Maximize board height - use all available space, minimum 250px
+      const freeH = Math.max(250, rootH - used);
       document.documentElement.style.setProperty("--board-h", freeH + "px");
     };
     const timer = setTimeout(calc, 100);
@@ -167,8 +171,8 @@ export default function MemoryMatch() {
     <Layout>
       <div
         ref={wrapRef}
-        className="relative w-full overflow-hidden bg-gradient-to-b from-[#090d17] to-[#11172b]"
-        style={{ height: "100svh" }}
+        className="relative w-full overflow-hidden bg-gradient-to-b from-[#090d17] to-[#11172b] game-page-mobile"
+        style={{ minHeight: "100vh", minHeight: "100dvh" }}
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
@@ -206,10 +210,11 @@ export default function MemoryMatch() {
         </div>
 
         <div
-          className="relative h-full flex flex-col items-center justify-start px-4 pb-4"
+          className="relative h-full flex flex-col items-center justify-start px-4 overflow-hidden"
           style={{
-            minHeight: "100%",
+            height: "100%",
             paddingTop: "calc(var(--head-h, 56px) + 8px)",
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
           }}
         >
           <div className="text-center mb-1">
@@ -302,7 +307,13 @@ export default function MemoryMatch() {
           <div
             ref={boardRef}
             className="w-full max-w-md flex items-center justify-center mb-1 flex-1 overflow-hidden"
-            style={{ height: "var(--board-h, 400px)", minHeight: "300px" }}
+            style={{ 
+              height: "var(--board-h, 400px)", 
+              minHeight: "250px",
+              width: "100%",
+              maxWidth: "100%",
+              flex: "1 1 auto"
+            }}
           >
             <div
               className="grid gap-2 w-full h-full"
@@ -311,6 +322,8 @@ export default function MemoryMatch() {
                 gridTemplateRows: `repeat(${Math.ceil(deck.length / gridColumns)}, minmax(0, 1fr))`,
                 maxWidth: "min(95vw, 450px)",
                 maxHeight: "100%",
+                width: "100%",
+                height: "100%"
               }}
             >
               {deck.map((card, idx) => {

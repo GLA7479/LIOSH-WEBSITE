@@ -1,21 +1,58 @@
 import "../styles/globals.css";
 import Head from "next/head";
 import { useEffect } from "react";
+import OfflineIndicator from "../components/OfflineIndicator";
 
 export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    // Register Service Worker
+    // Unregister ALL service workers to prevent caching issues
     if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
+      // Always unregister service workers - they cause issues
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(registration => {
+          registration.unregister().then(() => {
+            console.log("[SW] Unregistered:", registration.scope);
+          });
+        });
+      });
+      
+      // Don't register new service workers
+      return;
+
+      const registerSW = () => {
         navigator.serviceWorker
-          .register("/sw.js")
+          .register("/sw.js", { scope: "/" })
           .then((registration) => {
-            console.log("SW registered: ", registration);
+            console.log("[SW] Registered successfully:", registration.scope);
+            
+            // Check for updates periodically
+            setInterval(() => {
+              registration.update();
+            }, 60 * 60 * 1000); // Check every hour
+            
+            // Handle updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New service worker available, prompt user to reload
+                  if (confirm('עדכון זמין! האם ברצונך לרענן את הדף?')) {
+                    window.location.reload();
+                  }
+                }
+              });
+            });
           })
           .catch((registrationError) => {
-            console.log("SW registration failed: ", registrationError);
+            console.error("[SW] Registration failed:", registrationError);
           });
-      });
+      };
+
+      if (document.readyState === 'complete') {
+        registerSW();
+      } else {
+        window.addEventListener("load", registerSW);
+      }
     }
   }, []);
 
@@ -48,6 +85,7 @@ export default function MyApp({ Component, pageProps }) {
         
         <title>LEO K - Kids Games & Learning</title>
       </Head>
+      <OfflineIndicator />
       <Component {...pageProps} />
     </>
   );

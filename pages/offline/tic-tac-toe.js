@@ -70,24 +70,27 @@ export default function TicTacToeXL() {
     if (!wrapRef.current || !mounted) return;
     const calc = () => {
       const rootH = window.visualViewport?.height ?? window.innerHeight;
-      const safeBottom =
-        Number(
-          getComputedStyle(document.documentElement)
-            .getPropertyValue("--satb")
-            .replace("px", "")
-        ) || 0;
       const headH = headerRef.current?.offsetHeight || 0;
       document.documentElement.style.setProperty("--head-h", headH + "px");
       
-      // Measure once and use fixed calculations
-      const controlsH = controlsRef.current?.offsetHeight || 40;
+      // Measure all elements accurately for maximum board size
+      const controlsH = controlsRef.current?.offsetHeight || 50;
+      const titleH = 70; // Title + subtitle height
+      const spacing = 12; // Reduced spacing for more board space
+      const safeBottom = typeof window !== "undefined" 
+        ? Math.max(parseInt(getComputedStyle(document.documentElement).getPropertyValue("env(safe-area-inset-bottom)") || "0"), 20)
+        : 20;
+      
+      // Calculate used space - minimize padding to maximize board
       const used =
         headH +
+        titleH +
         controlsH +
-        60 + // Title and controls spacing
-        safeBottom +
-        32;
-      const freeH = Math.max(300, rootH - used);
+        spacing * 2 + // Minimal spacing
+        safeBottom;
+      
+      // Maximize board height - use all available space, minimum 250px
+      const freeH = Math.max(250, rootH - used);
       document.documentElement.style.setProperty("--board-h", freeH + "px");
     };
     // Calculate after a small delay to ensure DOM is ready
@@ -178,8 +181,8 @@ export default function TicTacToeXL() {
     <Layout>
       <div
         ref={wrapRef}
-        className="relative w-full overflow-hidden bg-gradient-to-b from-[#05070f] via-[#0e111b] to-[#020308]"
-        style={{ height: "100svh" }}
+        className="relative w-full overflow-hidden bg-gradient-to-b from-[#05070f] via-[#0e111b] to-[#020308] game-page-mobile"
+        style={{ minHeight: "100vh", minHeight: "100dvh" }}
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
@@ -217,10 +220,11 @@ export default function TicTacToeXL() {
         </div>
 
         <div
-          className="relative h-full flex flex-col items-center justify-start px-4 pb-4"
+          className="relative h-full flex flex-col items-center justify-start px-4 overflow-hidden"
           style={{
-            minHeight: "100%",
+            height: "100%",
             paddingTop: "calc(var(--head-h, 56px) + 8px)",
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
           }}
         >
           <div className="text-center mb-1">
@@ -297,7 +301,13 @@ export default function TicTacToeXL() {
           <div
             ref={boardRef}
             className="w-full flex items-center justify-center mb-1 flex-1"
-            style={{ height: "var(--board-h, 400px)", minHeight: "300px" }}
+            style={{ 
+              height: "var(--board-h, 400px)", 
+              minHeight: "250px",
+              width: "100%",
+              maxWidth: "100%",
+              flex: "1 1 auto"
+            }}
           >
             <div
               className="grid gap-2 w-full h-full"
@@ -306,6 +316,7 @@ export default function TicTacToeXL() {
                 gridTemplateRows: `repeat(${size}, minmax(0, 1fr))`,
                 maxWidth: "min(95vw, 500px)",
                 maxHeight: "100%",
+                aspectRatio: "1 / 1"
               }}
             >
               {board.map((cell, idx) => (

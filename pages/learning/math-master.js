@@ -884,22 +884,16 @@ export default function MathMaster() {
     if (!wrapRef.current || !mounted) return;
     const calc = () => {
       const rootH = window.visualViewport?.height ?? window.innerHeight;
-      const safeBottom =
-        Number(
-          getComputedStyle(document.documentElement)
-            .getPropertyValue("--satb")
-            .replace("px", "")
-        ) || 0;
       const headH = headerRef.current?.offsetHeight || 0;
       document.documentElement.style.setProperty("--head-h", headH + "px");
 
       const controlsH = controlsRef.current?.offsetHeight || 40;
+      // Use more conservative calculation to ensure content doesn't get cut
       const used =
         headH +
         controlsH +
-        100 + // Title, score, timer
-        safeBottom +
-        32;
+        120 + // Title, score, timer, spacing
+        40; // Safe bottom padding (includes safe area)
       const freeH = Math.max(300, rootH - used);
       document.documentElement.style.setProperty("--game-h", freeH + "px");
     };
@@ -1372,8 +1366,8 @@ export default function MathMaster() {
     <Layout>
       <div
         ref={wrapRef}
-        className="relative w-full overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928]"
-        style={{ height: "100svh" }}
+        className="relative w-full overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928] game-page-mobile"
+        style={{ minHeight: "100vh", minHeight: "100dvh" }}
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
@@ -1411,10 +1405,12 @@ export default function MathMaster() {
         </div>
 
         <div
-          className="relative h-full flex flex-col items-center justify-start px-4 pb-4"
+          className="relative h-full flex flex-col items-center justify-start px-4 overflow-hidden"
           style={{
-            minHeight: "100%",
+            height: "100%",
             paddingTop: "calc(var(--head-h, 56px) + 8px)",
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
+            maxHeight: "100%",
           }}
         >
           <div className="text-center mb-1">

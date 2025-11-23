@@ -107,22 +107,16 @@ export default function RockPaperScissors() {
     if (!wrapRef.current || !mounted) return;
     const calc = () => {
       const rootH = window.visualViewport?.height ?? window.innerHeight;
-      const safeBottom =
-        Number(
-          getComputedStyle(document.documentElement)
-            .getPropertyValue("--satb")
-            .replace("px", "")
-        ) || 0;
       const headH = headerRef.current?.offsetHeight || 0;
       document.documentElement.style.setProperty("--head-h", headH + "px");
       
       const controlsH = controlsRef.current?.offsetHeight || 40;
+      // Use more conservative calculation to ensure content doesn't get cut
       const used =
         headH +
         controlsH +
-        80 + // Title, controls, messages
-        safeBottom +
-        32;
+        100 + // Title, controls, messages
+        40; // Safe bottom padding
       const freeH = Math.max(300, rootH - used);
       document.documentElement.style.setProperty("--game-h", freeH + "px");
     };
@@ -229,8 +223,8 @@ export default function RockPaperScissors() {
     <Layout>
       <div
         ref={wrapRef}
-        className="relative w-full overflow-hidden bg-[#0a101d]"
-        style={{ height: "100svh" }}
+        className="relative w-full overflow-hidden bg-[#0a101d] game-page-mobile"
+        style={{ minHeight: "100vh", minHeight: "100dvh" }}
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
@@ -268,7 +262,12 @@ export default function RockPaperScissors() {
         </div>
 
         <div
-          className="relative h-full flex flex-col items-center justify-start px-4 pb-4"
+          className="relative h-full flex flex-col items-center justify-start px-4 overflow-hidden"
+          style={{
+            height: "100%",
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
+            maxHeight: "100%",
+          }}
           style={{
             minHeight: "100%",
             paddingTop: "calc(var(--head-h, 56px) + 8px)",
