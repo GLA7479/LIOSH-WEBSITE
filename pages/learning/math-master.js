@@ -559,9 +559,14 @@ function getSolutionSteps(question, operation, gradeKey) {
   if (!question || !question.params) return [];
   const p = question.params;
   const ans = question.correctAnswer;
+  const isStory = !!question.isStory;
 
   const toSpan = (text, key) => (
-    <span key={key} style={{ display: "block" }} dir="ltr">
+    <span
+      key={key}
+      style={{ display: "block", unicodeBidi: "plaintext" }}
+      dir={isStory ? "rtl" : "ltr"}
+    >
       {text}
     </span>
   );
@@ -1928,7 +1933,11 @@ export default function MathMaster() {
                     </div>
                   )}
                   
-                  <div className={`text-4xl font-black text-white mb-4 text-center ${currentQuestion.isStory ? "" : ""}`} dir={currentQuestion.isStory ? "rtl" : "ltr"} style={currentQuestion.isStory ? { unicodeBidi: "bidi-override" } : {}}>
+                  <div
+                    className="text-4xl font-black text-white mb-4 text-center"
+                    dir={currentQuestion.isStory ? "rtl" : "ltr"}
+                    style={{ unicodeBidi: "plaintext" }}
+                  >
                     {currentQuestion.question}
                   </div>
                   
@@ -1946,7 +1955,11 @@ export default function MathMaster() {
                   )}
                   
                   {showHint && (
-                    <div className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center max-w-md" dir="ltr">
+                    <div
+                      className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center max-w-md"
+                      dir={currentQuestion.isStory ? "rtl" : "ltr"}
+                      style={{ unicodeBidi: "plaintext" }}
+                    >
                       {getHint(currentQuestion, currentQuestion.operation, grade)}
                     </div>
                   )}
@@ -1962,7 +1975,11 @@ export default function MathMaster() {
                       </button>
 
                       {showSolution && (
-                        <div className="mb-3 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/40 text-emerald-100 text-sm space-y-1 max-w-md" dir="ltr">
+                        <div
+                          className="mb-3 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/40 text-emerald-100 text-sm space-y-1 max-w-md"
+                          dir={currentQuestion.isStory ? "rtl" : "ltr"}
+                          style={{ unicodeBidi: "plaintext" }}
+                        >
                           {getSolutionSteps(
                             currentQuestion,
                             currentQuestion.operation,
