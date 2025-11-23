@@ -1625,7 +1625,7 @@ export default function GeometryMaster() {
               onClick={() => setShowLeaderboard(false)}
             >
               <div
-                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-4 max-w-md w-full max-h-[90vh] overflow-y-auto"
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-4 max-w-md w-full max-h-[85svh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="text-center mb-4">

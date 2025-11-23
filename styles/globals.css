@@ -2,14 +2,43 @@
 
 html, body, #__next {
   height: 100%;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
 }
 
 body {
   @apply bg-[#050816] text-white antialiased;
+  touch-action: pan-y;
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Mobile optimization - prevent scrolling on game pages */
+@media (max-width: 768px) {
+  html, body {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    height: 100dvh; /* Dynamic viewport height for mobile */
+    touch-action: pan-y pinch-zoom;
+  }
+  
+  #__next {
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Prevent pull-to-refresh on mobile */
+  body {
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 @keyframes slide-up {

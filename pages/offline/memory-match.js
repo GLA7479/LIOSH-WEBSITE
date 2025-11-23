@@ -301,7 +301,7 @@ export default function MemoryMatch() {
 
           <div
             ref={boardRef}
-            className="w-full max-w-md flex items-center justify-center mb-1 flex-1 overflow-auto"
+            className="w-full max-w-md flex items-center justify-center mb-1 flex-1 overflow-hidden"
             style={{ height: "var(--board-h, 400px)", minHeight: "300px" }}
           >
             <div
