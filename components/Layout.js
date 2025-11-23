@@ -37,7 +37,12 @@ export default function Layout({ children }) {
             href="/"
             className="flex items-center gap-2 font-extrabold tracking-widest text-lg"
           >
-            <img src="/images/coin.png" alt="Leo Kids Logo" className="w-8 h-8" />
+            <img
+              src="/images/coin.png"
+              alt="Leo Kids Logo"
+              className="w-8 h-8 object-contain"
+              style={{ transform: "scale(1.5)" }}
+            />
             <span>LEO KIDS</span>
           </Link>
 
