@@ -27,6 +27,9 @@ export default function Layout({ children }) {
             <Link href="/game" className="px-3 py-1.5 rounded-full hover:bg-white/10 transition">Games</Link>
             <Link href="/offline" className="px-3 py-1.5 rounded-full hover:bg-white/10 transition">Offline</Link>
             <Link href="/learning" className="px-3 py-1.5 rounded-full hover:bg-white/10 transition">Learning</Link>
+            <Link href="/about" className="px-3 py-1.5 rounded-full hover:bg-white/10 transition">About</Link>
+            <Link href="/gallery" className="px-3 py-1.5 rounded-full hover:bg-white/10 transition">Gallery</Link>
+            <Link href="/contact" className="px-3 py-1.5 rounded-full hover:bg-white/10 transition">Contact</Link>
           </div>
         </nav>
       </header>
