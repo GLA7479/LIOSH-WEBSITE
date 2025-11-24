@@ -659,7 +659,7 @@ function makeStep(num, text) {
           fontWeight: 700,
         }}
       >
-        {num}.
+        .{num}
       </span>
       {/* הטקסט – בעברית, RTL */}
       <span style={{ flex: 1 }}>{text}</span>

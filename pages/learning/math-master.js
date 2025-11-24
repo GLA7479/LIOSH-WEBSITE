@@ -1090,6 +1090,9 @@ function getAdditionStepsColumn(a, b) {
   const digitsA = pad(aStr).split("").map((d) => (d === " " ? 0 : Number(d)));
   const digitsB = pad(bStr).split("").map((d) => (d === " " ? 0 : Number(d)));
 
+  // מציג ביטויים מתמטיים משמאל לימין בתוך שורה בעברית
+  const ltr = (expr) => `\u2066${expr}\u2069`; // LRI ... PDI
+
   // פונקציה שנותנת שם מקום (יחידות/עשרות/מאות...)
   const placeName = (idxFromRight) => {
     if (idxFromRight === 0) return "ספרת היחידות";
@@ -1125,11 +1128,14 @@ function getAdditionStepsColumn(a, b) {
     const nextCarry = Math.floor(raw / 10);
     const place = placeName(idxFromRight);
 
-    let text = `ב${place}: ${da} + ${db}`;
+    // הביטוי המתמטי כולו בתוך בלוק LTR אחד
+    const parts = [da, "+", db];
     if (carry > 0) {
-      text += ` ועוד ${carry} מההעברה הקודמת`;
+      parts.push("+", carry);
     }
-    text += ` = ${raw}. כותבים ${digit}`;
+    const expr = ltr(`${parts.join(" ")} = ${raw}`);
+
+    let text = `ב${place}: ${expr}. כותבים ${digit}`;
     if (nextCarry > 0) {
       text += ` ומעבירים ${nextCarry} לעמודה הבאה.`;
     } else {
@@ -1137,7 +1143,12 @@ function getAdditionStepsColumn(a, b) {
     }
 
     steps.push(
-      <div key={`step-${i}`} className="mb-1">
+      <div
+        key={`step-${i}`}
+        className="mb-1"
+        dir="rtl"
+        style={{ unicodeBidi: "plaintext" }}
+      >
         {text}
       </div>
     );
@@ -1147,7 +1158,12 @@ function getAdditionStepsColumn(a, b) {
 
   // שלב אחרון – מסכמים
   steps.push(
-    <div key="final" className="mt-2 font-semibold">
+    <div
+      key="final"
+      className="mt-2 font-semibold"
+      dir="rtl"
+      style={{ unicodeBidi: "plaintext" }}
+    >
       בסוף מקבלים את המספר המלא: {sum}.
     </div>
   );
@@ -1169,7 +1185,7 @@ function getSolutionSteps(question, operation, gradeKey) {
       key={key}
       style={{
         display: "block",
-        direction: isStory ? "rtl" : "ltr",
+        direction: "rtl",
         unicodeBidi: "plaintext",
       }}
     >
