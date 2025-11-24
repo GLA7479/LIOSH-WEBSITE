@@ -1715,16 +1715,6 @@ export default function EnglishMaster() {
                 </div>
               </div>
 
-              {/* כפתור "איך לומדים אנגלית כאן?" */}
-              <div className="mb-2 w-full max-w-md flex justify-center">
-                <button
-                  onClick={() => setShowHowTo(true)}
-                  className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
-                >
-                  ❓ איך לומדים אנגלית כאן?
-                </button>
-              </div>
-
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
                 <button
                   onClick={startGame}
@@ -1748,6 +1738,17 @@ export default function EnglishMaster() {
                   </button>
                 )}
               </div>
+
+              {/* כפתור "איך לומדים אנגלית כאן?" */}
+              <div className="mb-2 w-full max-w-md flex justify-center">
+                <button
+                  onClick={() => setShowHowTo(true)}
+                  className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
+                >
+                  ❓ איך לומדים אנגלית כאן?
+                </button>
+              </div>
+
               {!playerName.trim() && (
                 <p className="text-xs text-white/60 text-center mb-2">
                   הכנס את שמך כדי להתחיל

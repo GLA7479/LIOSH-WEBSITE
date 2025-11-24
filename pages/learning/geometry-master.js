@@ -1065,6 +1065,7 @@ export default function GeometryMaster() {
 
   // הסבר מפורט לשאלה
   const [showSolution, setShowSolution] = useState(false);
+  const [showHowTo, setShowHowTo] = useState(false);
 
   // הסבר לטעות אחרונה
   const [errorExplanation, setErrorExplanation] = useState("");
@@ -1919,6 +1920,17 @@ export default function GeometryMaster() {
                   </button>
                 )}
               </div>
+
+              {/* כפתור "איך לומדים גאומטריה כאן?" */}
+              <div className="mb-2 w-full max-w-md flex justify-center">
+                <button
+                  onClick={() => setShowHowTo(true)}
+                  className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
+                >
+                  ❓ איך לומדים גאומטריה כאן?
+                </button>
+              </div>
+
               {!playerName.trim() && (
                 <p className="text-xs text-white/60 text-center mb-2">
                   הכנס את שמך כדי להתחיל
@@ -2344,6 +2356,44 @@ export default function GeometryMaster() {
                     className="flex-1 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
                   >
                     שמור
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showHowTo && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[180] p-4"
+              onClick={() => setShowHowTo(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-emerald-400/60 rounded-2xl p-4 max-w-md w-full text-sm text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 className="text-xl font-extrabold mb-2 text-center">
+                  📘 איך לומדים גאומטריה כאן?
+                </h2>
+
+                <p className="text-white/80 text-xs mb-3 text-center">
+                  המטרה היא לתרגל גאומטריה בצורה משחקית, עם התאמה לכיתה, נושא ורמת קושי.
+                </p>
+
+                <ul className="list-disc pr-4 space-y-1 text-[13px] text-white/90">
+                  <li>בחר כיתה, רמת קושי ונושא (שטח, היקף, נפח, זוויות, פיתגורס ועוד).</li>
+                  <li>בחר מצב משחק: למידה, אתגר עם טיימר וחיים, מרוץ מהירות או מרתון.</li>
+                  <li>קרא היטב את השאלה – לפעמים יש תרגילי מילים על גינות, גדרות וארגזים.</li>
+                  <li>לחץ על 💡 Hint כדי לקבל רמז, ועל "📘 הסבר מלא" כדי לראות פתרון צעד־אחר־צעד.</li>
+                  <li>ניקוד גבוה, רצף תשובות נכון, כוכבים ו־Badges עוזרים לך לעלות רמה כשחקן.</li>
+                </ul>
+
+                <div className="mt-4 flex justify-center">
+                  <button
+                    onClick={() => setShowHowTo(false)}
+                    className="px-5 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                  >
+                    סגור
                   </button>
                 </div>
               </div>

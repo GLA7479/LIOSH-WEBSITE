@@ -47,11 +47,11 @@ const GRADES = {
   g3_4: {
     name: "כיתות ג–ד",
     operations: [
-      "addition",
-      "subtraction",
-      "multiplication",
-      "division",
-      "fractions",
+  "addition",
+  "subtraction",
+  "multiplication",
+  "division",
+  "fractions",
       "sequences",
       "decimals",
       "compare",
@@ -293,7 +293,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
   const isMixed = operation === "mixed";
   let selectedOp = operation;
-
+  
   if (isMixed) {
     selectedOp = allowedOps[Math.floor(Math.random() * allowedOps.length)];
   }
@@ -356,7 +356,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       params = { kind: "add_three", a, b, c, exerciseText, op: "add", grade: gradeKey };
       operandA = a;
       operandB = b;
-    } else {
+  } else {
       const a = randInt(1, maxA);
       const b = randInt(1, maxA);
       correctAnswer = round(a + b);
@@ -444,7 +444,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       }
 
       correctAnswer = `${resNum}/${resDen}`;
-    } else {
+      } else {
       const den1 = dens[Math.floor(Math.random() * dens.length)] || 4;
       let den2 = dens[Math.floor(Math.random() * dens.length)] || 6;
       if (den1 === den2 && Math.random() < 0.3) {
@@ -507,7 +507,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       correctAnswer = round((base * p) / 100);
       question = `כמה זה ${p}% מתוך ${base}? = ${BLANK}`;
       params = { kind: "perc_part_of", base, p };
-    } else {
+      } else {
       const discount = round((base * p) / 100);
       const finalPrice = base - discount;
       correctAnswer = finalPrice;
@@ -1213,7 +1213,7 @@ function getSolutionSteps(question, operation, gradeKey) {
         ];
       }
       if (p.kind === "add_complement10" || p.kind === "add_complement_round10") {
-        return [
+      return [
           toSpan(
             `1. זה תרגיל השלמה: מחפשים כמה חסר כדי להגיע ל-${p.c ?? p.tens}.`,
             "1"
@@ -1238,7 +1238,7 @@ function getSolutionSteps(question, operation, gradeKey) {
     }
 
     case "subtraction":
-      return [
+        return [
         toSpan(`1. נכתוב את התרגיל: ${ltr(`${p.a} - ${p.b}`)}.`, "1"),
         toSpan("2. נבדוק מי המספר הגדול ומי הקטן (משפיע על הסימן).", "2"),
         toSpan(`3. נחשב: ${ltr(`${p.a} - ${p.b} = ${ans}`)}.`, "3"),
@@ -1289,7 +1289,7 @@ function getSolutionSteps(question, operation, gradeKey) {
       }
 
       if (p.kind === "frac_diff_den") {
-        return [
+      return [
           toSpan(
             `1. יש מכנים שונים (${p.den1} ו-${p.den2}). נמצא מכנה משותף – כאן ${p.commonDen}.`,
             "1"
@@ -1300,7 +1300,7 @@ function getSolutionSteps(question, operation, gradeKey) {
         ];
       }
 
-      return [
+        return [
         toSpan("1. מוצאים מכנה משותף.", "1"),
         toSpan("2. מעבירים את השברים למכנה הזה.", "2"),
         toSpan("3. מחברים או מחסרים את המונים.", "3"),
@@ -1388,7 +1388,7 @@ function getSolutionSteps(question, operation, gradeKey) {
       }
 
       if (p.kind === "eq_sub") {
-        return [
+      return [
           toSpan(
             `1. בחיסור הפעולה ההפוכה היא חיבור.`,
             "1"
@@ -1405,7 +1405,7 @@ function getSolutionSteps(question, operation, gradeKey) {
       }
 
       if (p.kind === "eq_mul") {
-        return [
+      return [
           toSpan(
             `1. בכפל הפעולה ההפוכה היא חילוק.`,
             "1"
@@ -1825,6 +1825,7 @@ export default function MathMaster() {
 
   // בחירת פעולות למיקס
   const [showMixedSelector, setShowMixedSelector] = useState(false);
+  const [showHowTo, setShowHowTo] = useState(false);
   const [mixedOperations, setMixedOperations] = useState({
     addition: true,
     subtraction: true,
@@ -2868,21 +2869,21 @@ export default function MathMaster() {
               {/* אפשרות לשאלות עם סיפור */}
               {/* אפשרות לשאלות עם סיפור */}
               {gradeSupportsWordProblems && (
-                <div className="flex items-center justify-center gap-4 mb-2 w-full max-w-md flex-wrap">
+              <div className="flex items-center justify-center gap-4 mb-2 w-full max-w-md flex-wrap">
                   <label className="flex items-center gap-2 text-white text-xs">
-                    <input
-                      type="checkbox"
+                  <input
+                    type="checkbox"
                       className="w-4 h-4"
-                      checked={useStoryQuestions}
-                      onChange={(e) => {
-                        setUseStoryQuestions(e.target.checked);
+                    checked={useStoryQuestions}
+                    onChange={(e) => {
+                      setUseStoryQuestions(e.target.checked);
                         if (!e.target.checked) {
                           setStoryOnly(false);
                         }
-                      }}
-                    />
+                    }}
+                  />
                     <span>📘 לשלב שאלות מילוליות בתוך המשחק</span>
-                  </label>
+                </label>
                   <label className="flex items-center gap-2 text-white text-xs">
                     <input
                       type="checkbox"
@@ -2893,7 +2894,7 @@ export default function MathMaster() {
                     />
                     <span>📖 רק שאלות מילוליות</span>
                   </label>
-                </div>
+              </div>
               )}
 
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
@@ -2925,6 +2926,17 @@ export default function MathMaster() {
                   </button>
                 )}
               </div>
+
+              {/* כפתור "איך לומדים חשבון כאן?" */}
+              <div className="mb-2 w-full max-w-md flex justify-center">
+                <button
+                  onClick={() => setShowHowTo(true)}
+                  className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
+                >
+                  ❓ איך לומדים חשבון כאן?
+                </button>
+              </div>
+
               {!playerName.trim() && (
                 <p className="text-xs text-white/60 text-center mb-2">
                   הכנס את שמך כדי להתחיל
@@ -3030,7 +3042,7 @@ export default function MathMaster() {
                       }}
                     >
                       {currentQuestion.question}
-                    </div>
+                        </div>
                   )}
                   
 
@@ -3080,6 +3092,49 @@ export default function MathMaster() {
                           📖 הסבר צעד־אחר־צעד
                         </button>
                       </div>
+
+                      {/* כפתור חיבור לטבלת כפל/חילוק – רק במצב למידה */}
+                      {mode === "learning" &&
+                        (currentQuestion.operation === "multiplication" ||
+                          currentQuestion.operation === "division") && (
+                          <div className="flex justify-center">
+                            <button
+                              onClick={() => {
+                                setShowMultiplicationTable(true);
+                                setTableMode(
+                                  currentQuestion.operation === "multiplication"
+                                    ? "multiplication"
+                                    : "division"
+                                );
+                                if (currentQuestion.operation === "multiplication") {
+                                  const a = currentQuestion.a;
+                                  const b = currentQuestion.b;
+                                  if (a >= 1 && a <= 12 && b >= 1 && b <= 12) {
+                                    const value = a * b;
+                                    setSelectedCell({ row: a, col: b, value });
+                                    setSelectedRow(null);
+                                    setSelectedCol(null);
+                                    setSelectedResult(null);
+                                    setSelectedDivisor(null);
+                                  }
+                                } else {
+                                  const { a, b } = currentQuestion;
+                                  const value = a;
+                                  if (b >= 1 && b <= 12) {
+                                    setSelectedCell({ row: 1, col: b, value });
+                                    setSelectedResult(value);
+                                    setSelectedDivisor(b);
+                                    setSelectedRow(null);
+                                    setSelectedCol(null);
+                                  }
+                                }
+                              }}
+                              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white"
+                            >
+                              📊 הצג בטבלה
+                            </button>
+                          </div>
+                        )}
 
                       {/* תיבת רמז */}
                       {showHint && hintText && (
@@ -3159,47 +3214,6 @@ export default function MathMaster() {
                       )}
                     </div>
                   )}
-
-                  {/* כפתור חיבור לטבלת כפל/חילוק – רק במצב למידה */}
-                  {mode === "learning" &&
-                    (currentQuestion.operation === "multiplication" ||
-                      currentQuestion.operation === "division") && (
-                      <button
-                        onClick={() => {
-                          setShowMultiplicationTable(true);
-                          setTableMode(
-                            currentQuestion.operation === "multiplication"
-                              ? "multiplication"
-                              : "division"
-                          );
-                          if (currentQuestion.operation === "multiplication") {
-                            const a = currentQuestion.a;
-                            const b = currentQuestion.b;
-                            if (a >= 1 && a <= 12 && b >= 1 && b <= 12) {
-                              const value = a * b;
-                              setSelectedCell({ row: a, col: b, value });
-                              setSelectedRow(null);
-                              setSelectedCol(null);
-                              setSelectedResult(null);
-                              setSelectedDivisor(null);
-                            }
-                          } else {
-                            const { a, b } = currentQuestion;
-                            const value = a;
-                            if (b >= 1 && b <= 12) {
-                              setSelectedCell({ row: 1, col: b, value });
-                              setSelectedResult(value);
-                              setSelectedDivisor(b);
-                              setSelectedRow(null);
-                              setSelectedCol(null);
-                            }
-                          }
-                        }}
-                        className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-sm font-bold"
-                      >
-                        📊 הצג בטבלה
-                      </button>
-                    )}
                 </div>
               )}
 
@@ -3901,6 +3915,44 @@ export default function MathMaster() {
                     className="flex-1 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
                   >
                     שמור
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showHowTo && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[180] p-4"
+              onClick={() => setShowHowTo(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-emerald-400/60 rounded-2xl p-4 max-w-md w-full text-sm text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 className="text-xl font-extrabold mb-2 text-center">
+                  📘 איך לומדים חשבון כאן?
+                </h2>
+
+                <p className="text-white/80 text-xs mb-3 text-center">
+                  המטרה היא לתרגל חשבון בצורה משחקית, עם התאמה לכיתה, פעולה ורמת קושי.
+                </p>
+
+                <ul className="list-disc pr-4 space-y-1 text-[13px] text-white/90">
+                  <li>בחר כיתה, רמת קושי ופעולה (חיבור, חיסור, כפל, חילוק, שברים, אחוזים ועוד).</li>
+                  <li>בחר מצב משחק: למידה, אתגר עם טיימר וחיים, מרוץ מהירות או מרתון.</li>
+                  <li>קרא היטב את השאלה – לפעמים יש תרגילי מילים שצריך להבין את הסיפור.</li>
+                  <li>לחץ על 💡 Hint כדי לקבל רמז, ועל "📘 הסבר מלא" כדי לראות פתרון צעד־אחר־צעד.</li>
+                  <li>ניקוד גבוה, רצף תשובות נכון, כוכבים ו־Badges עוזרים לך לעלות רמה כשחקן.</li>
+                </ul>
+
+                <div className="mt-4 flex justify-center">
+                  <button
+                    onClick={() => setShowHowTo(false)}
+                    className="px-5 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                  >
+                    סגור
                   </button>
                 </div>
               </div>
