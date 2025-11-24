@@ -2366,17 +2366,22 @@ function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
   const pb = bStr.padStart(maxLen, "0");
 
   if (op === "addition") {
+    const answerStr = String(answer);
+    const answerLen = answerStr.length;
+    
     // צעד 1: מיישרים את הספרות
     steps.push({
       id: "place-value",
       title: "מיישרים את הספרות",
       text: "כותבים את המספרים אחד מעל השני כך שסַפְרות היחידות נמצאות באותה עמודה.",
       highlights: ["aAll", "bAll"],
+      revealDigits: 0, // עדיין לא מראים כלום
     });
 
     // חישוב ספרה ספרה
     let carry = 0;
     let stepIndex = 2;
+    let revealedCount = 0; // כמה ספרות כבר נחשפו
 
     for (let i = maxLen - 1; i >= 0; i--) {
       const da = Number(pa[i]);
@@ -2394,12 +2399,14 @@ function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
 
       const highlightKey = i === maxLen - 1 ? "Units" : i === maxLen - 2 ? "Tens" : "Hundreds";
 
+      revealedCount++; // חושפים ספרה נוספת
       steps.push({
         id: `step-${stepIndex}`,
         title: `ספרת ה${placeName}`,
         text: `מחברים את ספרת ה${placeName}: ${da} + ${db}${carry ? " + " + carry : ""} = ${sum}. כותבים ${ones} בעמודת ה${placeName}${newCarry ? " ומעבירים 1 לעמודה הבאה" : ""}.`,
         highlights: [`a${highlightKey}`, `b${highlightKey}`, `result${highlightKey}`],
         carry: newCarry,
+        revealDigits: revealedCount, // כמה ספרות מימין חשופות
       });
 
       carry = newCarry;
@@ -2407,11 +2414,13 @@ function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
     }
 
     if (carry) {
+      revealedCount++; // אם יש carry, יש ספרה נוספת
       steps.push({
         id: "final-carry",
         title: "העברה נוספת",
         text: "בסוף החיבור נשאר לנו 1 נוסף, כותבים אותו משמאל כמספר חדש בעמודת המאות/אלפים.",
         highlights: ["resultAll"],
+        revealDigits: revealedCount,
       });
     }
 
@@ -2421,19 +2430,25 @@ function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
       title: "התוצאה הסופית",
       text: `המספר שנוצר הוא ${answer}. זהו התשובה הסופית לתרגיל.`,
       highlights: ["resultAll"],
+      revealDigits: answerLen, // מראים את כל הספרות
     });
   } else if (op === "subtraction") {
+    const answerStr = String(answer);
+    const answerLen = answerStr.length;
+    
     // צעד 1: מיישרים את הספרות
     steps.push({
       id: "place-value",
       title: "מיישרים את הספרות",
       text: "כותבים את המספרים אחד מעל השני כך שסַפְרות היחידות, העשרות וכו' נמצאות באותו טור.",
       highlights: ["aAll", "bAll"],
+      revealDigits: 0, // עדיין לא מראים כלום
     });
 
     // חישוב ספרה ספרה
     let borrow = 0;
     let stepIndex = 2;
+    let revealedCount = 0; // כמה ספרות כבר נחשפו
 
     for (let i = maxLen - 1; i >= 0; i--) {
       let da = Number(pa[i]);
@@ -2455,6 +2470,7 @@ function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
           title: `השאלה מעמודת ה${placeName}`,
           text: `בעמודת ה${placeName} ${da} קטן מ-${db}, לכן לוקחים "השאלה" מהעמודה הבאה (מוסיפים 10 לספרה הזו ומפחיתים 1 בעמודה הבאה).`,
           highlights: [`a${highlightKey}`, `b${highlightKey}`],
+          revealDigits: revealedCount, // לא חושפים ספרה חדשה בשלב ההשאלה
         });
         da += 10;
         borrow = 1;
@@ -2464,11 +2480,13 @@ function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
       }
 
       const diff = da - db;
+      revealedCount++; // חושפים ספרה נוספת
       steps.push({
         id: `step-${stepIndex}`,
         title: `ספרת ה${placeName}`,
         text: `כעת מחשבים בעמודת ה${placeName}: ${da} - ${db} = ${diff} וכותבים ${diff} בעמודה זו.`,
         highlights: [`a${highlightKey}`, `b${highlightKey}`, `result${highlightKey}`],
+        revealDigits: revealedCount, // כמה ספרות מימין חשופות
       });
 
       stepIndex++;
@@ -2480,6 +2498,7 @@ function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
       title: "התוצאה הסופית",
       text: `המספר שקיבלנו בסוף הוא ${answer}. זו התוצאה של החיסור.`,
       highlights: ["resultAll"],
+      revealDigits: answerLen, // מראים את כל הספרות
     });
   }
 
@@ -4494,7 +4513,22 @@ export default function MathMaster() {
                         
                         const aDigits = splitDigits(aEff, maxLen);
                         const bDigits = splitDigits(bEff, maxLen);
-                        const resDigits = answer != null ? splitDigits(answer, maxLen) : Array(maxLen).fill(" ");
+                        const resDigitsFull = answer != null ? splitDigits(answer, maxLen) : Array(maxLen).fill(" ");
+                        
+                        // חישוב כמה ספרות לחשוף לפי הצעד הנוכחי
+                        const revealCount = (activeStep && typeof activeStep.revealDigits === "number") 
+                          ? activeStep.revealDigits 
+                          : 0;
+                        
+                        // יצירת מערך ספרות תוצאה חלקי - רק הספרות החשופות
+                        const visibleResultDigits = resDigitsFull.map((d, idx) => {
+                          const fromRight = maxLen - 1 - idx; // 0 = ספרת אחדות (מימין)
+                          if (fromRight < revealCount) {
+                            return d.trim() || "\u00A0";
+                          }
+                          // ספרות לא חשופות - רווח
+                          return "\u00A0";
+                        });
                         
                         const isHighlighted = (key) => {
                           if (!activeStep || !activeStep.highlights || !Array.isArray(activeStep.highlights)) {
@@ -4594,7 +4628,7 @@ export default function MathMaster() {
                                     style={{ width: `${(maxLen + 1) * 1.5}ch` }}
                                   />
                                   
-                                  {/* שורה 3 – התוצאה */}
+                                  {/* שורה 3 – התוצאה (חשיפה הדרגתית) */}
                                   <div 
                                     className="grid gap-x-1"
                                     style={{ 
@@ -4602,13 +4636,17 @@ export default function MathMaster() {
                                     }}
                                   >
                                     <span className="w-4" /> {/* תא ריק */}
-                                    {resDigits.map((d, idx) => {
+                                    {visibleResultDigits.map((d, idx) => {
                                       const pos = maxLen - idx - 1;
+                                      const fromRight = pos; // 0 = אחדות, 1 = עשרות וכו'
+                                      const isVisible = fromRight < revealCount;
                                       const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
-                                      const shouldHighlight = isHighlighted("resultAll") || 
-                                                            (pos === 0 && isHighlighted("resultUnits")) ||
-                                                            (pos === 1 && isHighlighted("resultTens")) ||
-                                                            (pos === 2 && isHighlighted("resultHundreds"));
+                                      const shouldHighlight = isVisible && (
+                                        isHighlighted("resultAll") || 
+                                        (pos === 0 && isHighlighted("resultUnits")) ||
+                                        (pos === 1 && isHighlighted("resultTens")) ||
+                                        (pos === 2 && isHighlighted("resultHundreds"))
+                                      );
                                       return (
                                         <span
                                           key={`r-${idx}`}
@@ -4616,7 +4654,7 @@ export default function MathMaster() {
                                             shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
                                           }`}
                                         >
-                                          {d.trim() || "\u00A0"}
+                                          {d}
                                         </span>
                                       );
                                     })}
