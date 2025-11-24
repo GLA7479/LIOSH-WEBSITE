@@ -4260,7 +4260,7 @@ export default function MathMaster() {
               <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-pulse">
                 <div className="text-4xl mb-2">🌟</div>
                 <div className="text-2xl font-bold">עלית רמה!</div>
-                <div className="text-xl">עכשיו אתה ברמה {playerLevel}!</div>
+                <div className="text-base">עכשיו אתה ברמה {playerLevel}!</div>
               </div>
             </div>
           )}
@@ -4411,7 +4411,7 @@ export default function MathMaster() {
                   {playerLevel > 1 && (
                     <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
                       <div className="text-xs text-white/60">Level</div>
-                      <div className="text-lg font-bold text-purple-400">
+                      <div className="text-xs font-bold text-purple-400">
                         Lv.{playerLevel} ({xp}/{playerLevel * 100} XP)
                       </div>
                     </div>
