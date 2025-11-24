@@ -693,10 +693,46 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     const maxM = levelConfig.multiplication.max || 10;
     const a = randInt(1, maxM);
     const b = randInt(1, Math.min(maxM, 12));
-    correctAnswer = round(a * b);
-    const exerciseText = `${a} × ${b} = ${BLANK}`;
-    question = exerciseText;
-    params = { kind: "mul", a, b, exerciseText };
+    const c = a * b;
+
+    const variant = Math.random();
+
+    if (variant < 0.33) {
+      // צורה רגילה: a × b = __
+      correctAnswer = round(c);
+      const exerciseText = `${a} × ${b} = ${BLANK}`;
+      question = exerciseText;
+      params = { kind: "mul", a, b, exerciseText };
+    } else if (variant < 0.66) {
+      // חסר המספר הראשון: __ × b = c
+      correctAnswer = a;
+      const exerciseText = `${BLANK} × ${b} = ${c}`;
+      question = exerciseText;
+      params = {
+        kind: "mul_missing_first",
+        a,
+        b,
+        c,
+        exerciseText,
+        op: "mul",
+        grade: gradeKey,
+      };
+    } else {
+      // חסר המספר השני: a × __ = c
+      correctAnswer = b;
+      const exerciseText = `${a} × ${BLANK} = ${c}`;
+      question = exerciseText;
+      params = {
+        kind: "mul_missing_second",
+        a,
+        b,
+        c,
+        exerciseText,
+        op: "mul",
+        grade: gradeKey,
+      };
+    }
+
     operandA = a;
     operandB = b;
   } else if (selectedOp === "division") {
@@ -705,10 +741,45 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     const divisor = randInt(2, maxDivisor);
     const quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
     const dividend = divisor * quotient;
-    correctAnswer = round(quotient);
-    const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
-    question = exerciseText;
-    params = { kind: "div", dividend, divisor, exerciseText };
+
+    const variant = Math.random();
+
+    if (variant < 0.33) {
+      // צורה רגילה: dividend ÷ divisor = __
+      correctAnswer = round(quotient);
+      const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
+      question = exerciseText;
+      params = { kind: "div", dividend, divisor, exerciseText };
+    } else if (variant < 0.66) {
+      // חסר המחולק: __ ÷ divisor = quotient
+      correctAnswer = dividend;
+      const exerciseText = `${BLANK} ÷ ${divisor} = ${quotient}`;
+      question = exerciseText;
+      params = {
+        kind: "div_missing_dividend",
+        dividend,
+        divisor,
+        quotient,
+        exerciseText,
+        op: "div",
+        grade: gradeKey,
+      };
+    } else {
+      // חסר המחלק: dividend ÷ __ = quotient
+      correctAnswer = divisor;
+      const exerciseText = `${dividend} ÷ ${BLANK} = ${quotient}`;
+      question = exerciseText;
+      params = {
+        kind: "div_missing_divisor",
+        dividend,
+        divisor,
+        quotient,
+        exerciseText,
+        op: "div",
+        grade: gradeKey,
+      };
+    }
+
     operandA = dividend;
     operandB = divisor;
   } else if (selectedOp === "fractions" && levelConfig.allowFractions) {
@@ -2356,6 +2427,101 @@ function buildVerticalOperation(topNumber, bottomNumber, operator = "-") {
   return `\u2066${raw}\u2069`;
 }
 
+// פונקציה כללית לטיפול בתרגילי השלמה
+function convertMissingNumberEquation(op, kind, params) {
+  if (!params || !kind) return null;
+  
+  const { a, b, c } = params;
+  
+  // חיבור: __ + b = c או a + __ = c → חיסור
+  if (op === "addition" && (kind === "add_missing_first" || kind === "add_missing_second")) {
+    if (kind === "add_missing_first") {
+      // __ + b = c  →  c - b = __
+      return {
+        effectiveOp: "subtraction",
+        top: c,
+        bottom: b,
+        answer: a
+      };
+    } else {
+      // a + __ = c  →  c - a = __
+      return {
+        effectiveOp: "subtraction",
+        top: c,
+        bottom: a,
+        answer: b
+      };
+    }
+  }
+  
+  // חיסור: __ - b = c או a - __ = c
+  if (op === "subtraction" && (kind === "sub_missing_first" || kind === "sub_missing_second")) {
+    if (kind === "sub_missing_first") {
+      // __ - b = c  →  c + b = __ (חיבור)
+      return {
+        effectiveOp: "addition",
+        top: c,
+        bottom: b,
+        answer: a
+      };
+    } else {
+      // a - __ = c  →  a - c = __ (חיסור)
+      return {
+        effectiveOp: "subtraction",
+        top: a,
+        bottom: c,
+        answer: b
+      };
+    }
+  }
+  
+  // כפל: __ × b = c או a × __ = c → חילוק
+  if (op === "multiplication" && (kind === "mul_missing_first" || kind === "mul_missing_second")) {
+    if (kind === "mul_missing_first") {
+      // __ × b = c  →  c ÷ b = __
+      return {
+        effectiveOp: "division",
+        top: c,
+        bottom: b,
+        answer: a
+      };
+    } else {
+      // a × __ = c  →  c ÷ a = __
+      return {
+        effectiveOp: "division",
+        top: c,
+        bottom: a,
+        answer: b
+      };
+    }
+  }
+  
+  // חילוק: __ ÷ divisor = quotient או dividend ÷ __ = quotient
+  if (op === "division" && (kind === "div_missing_dividend" || kind === "div_missing_divisor")) {
+    const { dividend, divisor, quotient } = params;
+    
+    if (kind === "div_missing_dividend") {
+      // __ ÷ divisor = quotient  →  quotient × divisor = __ (כפל)
+      return {
+        effectiveOp: "multiplication",
+        top: quotient,
+        bottom: divisor,
+        answer: dividend
+      };
+    } else {
+      // dividend ÷ __ = quotient  →  dividend ÷ quotient = __ (חילוק)
+      return {
+        effectiveOp: "division",
+        top: dividend,
+        bottom: quotient,
+        answer: divisor
+      };
+    }
+  }
+  
+  return null;
+}
+
 // פונקציה לבניית צעדי אנימציה לחיבור וחיסור
 function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
   const steps = [];
@@ -2543,7 +2709,15 @@ function buildStepExplanation(question) {
     );
   }
 
-  // טיפול בתרגילי השלמה בחיבור - הופכים לחיסור
+  // טיפול בתרגילי השלמה - משתמש בפונקציה הכללית
+  const missingConversion = convertMissingNumberEquation(op, p.kind, p);
+  if (missingConversion) {
+    effectiveOp = missingConversion.effectiveOp;
+    aEff = missingConversion.top;
+    bEff = missingConversion.bottom;
+  }
+
+  // טיפול בתרגילי השלמה בחיבור - הופכים לחיסור (להסבר מפורט)
   if (
     op === "addition" &&
     (p.kind === "add_missing_first" || p.kind === "add_missing_second")
@@ -2626,6 +2800,127 @@ function buildStepExplanation(question) {
           : LTR(`${p.a} + ${missing} = ${c}`)
       }.`
     );
+
+    return {
+      exercise,
+      vertical,
+      steps,
+    };
+  }
+
+  // טיפול בתרגילי השלמה בכפל - הופכים לחילוק (להסבר מפורט)
+  if (
+    op === "multiplication" &&
+    (p.kind === "mul_missing_first" || p.kind === "mul_missing_second")
+  ) {
+    const c = p.c; // התוצאה הסופית
+    let leftNum, rightNum;
+
+    if (p.kind === "mul_missing_first") {
+      // __ × b = c  →  c ÷ b = __
+      leftNum = c;
+      rightNum = p.b;
+      exercise = LTR(`${BLANK} × ${p.b} = ${c}`);
+    } else {
+      // a × __ = c  →  c ÷ a = __
+      leftNum = c;
+      rightNum = p.a;
+      exercise = LTR(`${p.a} × ${BLANK} = ${c}`);
+    }
+
+    const missing = answer;
+    vertical = buildVerticalOperation(leftNum, rightNum, "÷");
+
+    steps.push(
+      `1. הופכים את התרגיל לחילוק: במקום ${exercise} כותבים ${LTR(
+        `${c} ÷ ${rightNum} = ${BLANK}`
+      )}.`
+    );
+    steps.push(
+      `2. חילוק הוא בעצם הפוך מהכפל: כמה פעמים המספר ${rightNum} נכנס ב-${c}?`
+    );
+    
+    if (typeof answer === "number") {
+      steps.push(
+        `3. בודקים: ${LTR(`${rightNum} × ${answer} = ${rightNum * answer}`)}. זה נותן לנו ${rightNum * answer}, שזה בדיוק ${c}.`
+      );
+      steps.push(
+        `4. לכן המספר החסר הוא ${missing}. זה המספר שחסר בתרגיל: ${
+          p.kind === "mul_missing_first"
+            ? LTR(`${missing} × ${p.b} = ${c}`)
+            : LTR(`${p.a} × ${missing} = ${c}`)
+        }.`
+      );
+    }
+
+    return {
+      exercise,
+      vertical,
+      steps,
+    };
+  }
+
+  // טיפול בתרגילי השלמה בחילוק (להסבר מפורט)
+  if (
+    op === "division" &&
+    (p.kind === "div_missing_dividend" || p.kind === "div_missing_divisor")
+  ) {
+    const { dividend, divisor, quotient } = p;
+    let leftNum, rightNum, opSymbol;
+
+    if (p.kind === "div_missing_dividend") {
+      // __ ÷ divisor = quotient  →  quotient × divisor = __ (כפל)
+      leftNum = quotient;
+      rightNum = divisor;
+      opSymbol = "×";
+      exercise = LTR(`${BLANK} ÷ ${divisor} = ${quotient}`);
+      steps.push(
+        `1. הופכים את התרגיל לכפל: במקום ${exercise} כותבים ${LTR(
+          `${quotient} × ${divisor} = ${BLANK}`
+        )}.`
+      );
+    } else {
+      // dividend ÷ __ = quotient  →  dividend ÷ quotient = __ (חילוק)
+      leftNum = dividend;
+      rightNum = quotient;
+      opSymbol = "÷";
+      exercise = LTR(`${dividend} ÷ ${BLANK} = ${quotient}`);
+      steps.push(
+        `1. הופכים את התרגיל לחילוק: במקום ${exercise} כותבים ${LTR(
+          `${dividend} ÷ ${quotient} = ${BLANK}`
+        )}.`
+      );
+    }
+
+    const missing = answer;
+    vertical = buildVerticalOperation(leftNum, rightNum, opSymbol);
+
+    if (p.kind === "div_missing_dividend") {
+      steps.push(
+        `2. כפל הוא בעצם חיבור חוזר: ${LTR(
+          `${quotient} × ${divisor} = ${Array(quotient).fill(divisor).join(" + ")} = ${dividend}`
+        )}.`
+      );
+      steps.push(
+        `3. לכן המספר החסר הוא ${missing}. זה המספר שחסר בתרגיל: ${LTR(
+          `${missing} ÷ ${divisor} = ${quotient}`
+        )}.`
+      );
+    } else {
+      steps.push(
+        `2. חילוק הוא בעצם הפוך מהכפל: כמה פעמים המספר ${quotient} נכנס ב-${dividend}?`
+      );
+      if (typeof answer === "number") {
+        steps.push(
+          `3. בודקים: ${LTR(`${quotient} × ${answer} = ${quotient * answer}`)}. זה נותן לנו ${quotient * answer}, שזה בדיוק ${dividend}.`
+        );
+        steps.push(
+          `4. לכן המספר החסר הוא ${missing}. זה המספר שחסר בתרגיל: ${LTR(
+            `${dividend} ÷ ${missing} = ${quotient}`
+          )}.`
+        );
+      }
+    }
 
     return {
       exercise,
@@ -2998,28 +3293,12 @@ export default function MathMaster() {
       ? currentQuestion.correctAnswer
       : currentQuestion.answer;
     
-    // זיהוי תרגיל השלמה בחיבור: __ + b = c או a + __ = c
-    // לדוגמה: 72 + __ = 96 → נהפוך לחיסור 96 - 72 = 24
-    const kind = p.kind;
-    const isMissingAddend = 
-      op === "addition" && 
-      (kind === "add_missing_first" || kind === "add_missing_second");
-    
-    if (isMissingAddend) {
-      const { a, b, c } = p;
-      
-      // נמיר לחיסור
-      effectiveOp = "subtraction";
-      
-      if (kind === "add_missing_first") {
-        // __ + b = c  →  c - b = __
-        top = c;
-        bottom = b;
-      } else {
-        // a + __ = c  →  c - a = __
-        top = c;
-        bottom = a;
-      }
+    // טיפול כללי בתרגילי השלמה
+    const missingConversion = convertMissingNumberEquation(op, p.kind, p);
+    if (missingConversion) {
+      effectiveOp = missingConversion.effectiveOp;
+      top = missingConversion.top;
+      bottom = missingConversion.bottom;
     }
     // טיפול במספר שלילי בחיבור (רק אם זה לא תרגיל השלמה)
     else if (op === "addition" && typeof bottom === "number" && bottom < 0) {
@@ -4452,28 +4731,12 @@ export default function MathMaster() {
                         let aEff = p.a ?? currentQuestion.a;
                         let bEff = p.b ?? currentQuestion.b;
                         
-                        // זיהוי תרגיל השלמה בחיבור: __ + b = c או a + __ = c
-                        // לדוגמה: 72 + __ = 96 → נהפוך לחיסור 96 - 72 = 24
-                        const kind = p.kind;
-                        const isMissingAddend = 
-                          op === "addition" && 
-                          (kind === "add_missing_first" || kind === "add_missing_second");
-                        
-                        if (isMissingAddend) {
-                          const { a, b, c } = p;
-                          
-                          // נמיר לחיסור
-                          effectiveOp = "subtraction";
-                          
-                          if (kind === "add_missing_first") {
-                            // __ + b = c  →  c - b = __
-                            aEff = c;
-                            bEff = b;
-                          } else {
-                            // a + __ = c  →  c - a = __
-                            aEff = c;
-                            bEff = a;
-                          }
+                        // טיפול כללי בתרגילי השלמה
+                        const missingConversion = convertMissingNumberEquation(op, p.kind, p);
+                        if (missingConversion) {
+                          effectiveOp = missingConversion.effectiveOp;
+                          aEff = missingConversion.top;
+                          bEff = missingConversion.bottom;
                         }
                         // טיפול במספר שלילי בחיבור (רק אם זה לא תרגיל השלמה)
                         else if (op === "addition" && typeof bEff === "number" && bEff < 0) {
