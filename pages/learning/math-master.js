@@ -333,8 +333,9 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       const c = 10;
       const a = c - b;
       correctAnswer = a;
-      question = `${BLANK} + ${b} = ${c}`;
-      params = { kind: "add_complement10", a, b, c };
+      const exerciseText = `${BLANK} + ${b} = ${c}`;
+      question = exerciseText;
+      params = { kind: "add_complement10", a, b, c, exerciseText };
       operandA = a;
       operandB = b;
     } else if (gradeKey === "g3_4" && Math.random() < 0.2) {
@@ -342,23 +343,26 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       const tens = Math.round(base / 10) * 10;
       const diff = tens - base;
       correctAnswer = diff;
-      question = `${base} + ${BLANK} = ${tens}`;
-      params = { kind: "add_complement_round10", base, tens, diff };
+      const exerciseText = `${base} + ${BLANK} = ${tens}`;
+      question = exerciseText;
+      params = { kind: "add_complement_round10", base, tens, diff, exerciseText };
     } else if (allowTwoStep && Math.random() < 0.3) {
       const a = randInt(1, maxA);
       const b = randInt(1, maxA);
       const c = randInt(1, maxA);
       correctAnswer = round(a + b + c);
-      question = `${a} + ${b} + ${c} = ${BLANK}`;
-      params = { kind: "add_three", a, b, c };
+      const exerciseText = `${a} + ${b} + ${c} = ${BLANK}`;
+      question = exerciseText;
+      params = { kind: "add_three", a, b, c, exerciseText };
       operandA = a;
       operandB = b;
     } else {
       const a = randInt(1, maxA);
       const b = randInt(1, maxA);
       correctAnswer = round(a + b);
-      question = `${a} + ${b} = ${BLANK}`;
-      params = { kind: "add_two", a, b };
+      const exerciseText = `${a} + ${b} = ${BLANK}`;
+      question = exerciseText;
+      params = { kind: "add_two", a, b, exerciseText };
       operandA = a;
       operandB = b;
     }
@@ -376,8 +380,9 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       a = randInt(b, maxS);
     }
     correctAnswer = round(a - b);
-    question = `${a} - ${b} = ${BLANK}`;
-    params = { kind: "sub_two", a, b };
+    const exerciseText = `${a} - ${b} = ${BLANK}`;
+    question = exerciseText;
+    params = { kind: "sub_two", a, b, exerciseText };
     operandA = a;
     operandB = b;
   } else if (selectedOp === "multiplication") {
@@ -385,8 +390,9 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     const a = randInt(1, maxM);
     const b = randInt(1, Math.min(maxM, 12));
     correctAnswer = round(a * b);
-    question = `${a} × ${b} = ${BLANK}`;
-    params = { kind: "mul", a, b };
+    const exerciseText = `${a} × ${b} = ${BLANK}`;
+    question = exerciseText;
+    params = { kind: "mul", a, b, exerciseText };
     operandA = a;
     operandB = b;
   } else if (selectedOp === "division") {
@@ -396,8 +402,9 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     const quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
     const dividend = divisor * quotient;
     correctAnswer = round(quotient);
-    question = `${dividend} ÷ ${divisor} = ${BLANK}`;
-    params = { kind: "div", dividend, divisor };
+    const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
+    question = exerciseText;
+    params = { kind: "div", dividend, divisor, exerciseText };
     operandA = dividend;
     operandB = divisor;
   } else if (selectedOp === "fractions" && levelConfig.allowFractions) {
@@ -578,56 +585,64 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       const c = a + b;
       const form = Math.random() < 0.5 ? "a_plus_x" : "x_plus_b";
 
+      let exerciseText;
       if (form === "a_plus_x") {
         correctAnswer = b;
-        question = `${a} + ${BLANK} = ${c}`;
+        exerciseText = `${a} + ${BLANK} = ${c}`;
       } else {
         correctAnswer = a;
-        question = `${BLANK} + ${b} = ${c}`;
+        exerciseText = `${BLANK} + ${b} = ${c}`;
       }
-      params = { kind: "eq_add", form, a, b, c };
+      question = exerciseText;
+      params = { kind: "eq_add", form, a, b, c, exerciseText };
     } else if (t === "sub") {
       const c = randInt(0, Math.floor(maxSub / 2));
       const b = randInt(0, Math.floor(maxSub / 2));
       const a = c + b;
       const form = Math.random() < 0.5 ? "a_minus_x" : "x_minus_b";
 
+      let exerciseText;
       if (form === "a_minus_x") {
         correctAnswer = b;
-        question = `${a} - ${BLANK} = ${c}`;
+        exerciseText = `${a} - ${BLANK} = ${c}`;
       } else {
         correctAnswer = a;
-        question = `${BLANK} - ${b} = ${c}`;
+        exerciseText = `${BLANK} - ${b} = ${c}`;
       }
-      params = { kind: "eq_sub", form, a, b, c };
+      question = exerciseText;
+      params = { kind: "eq_sub", form, a, b, c, exerciseText };
     } else if (t === "mul") {
       const a = randInt(1, maxMul);
       const b = randInt(1, maxMul);
       const c = a * b;
       const form = Math.random() < 0.5 ? "a_times_x" : "x_times_b";
 
+      let exerciseText;
       if (form === "a_times_x") {
         correctAnswer = b;
-        question = `${a} × ${BLANK} = ${c}`;
+        exerciseText = `${a} × ${BLANK} = ${c}`;
       } else {
         correctAnswer = a;
-        question = `${BLANK} × ${b} = ${c}`;
+        exerciseText = `${BLANK} × ${b} = ${c}`;
       }
-      params = { kind: "eq_mul", form, a, b, c };
+      question = exerciseText;
+      params = { kind: "eq_mul", form, a, b, c, exerciseText };
     } else {
       const divisor = randInt(2, maxDivisor);
       const quotient = randInt(2, Math.max(2, Math.floor(maxDiv / divisor)));
       const dividend = divisor * quotient;
       const form = Math.random() < 0.5 ? "a_div_x" : "x_div_b";
 
+      let exerciseText;
       if (form === "a_div_x") {
         correctAnswer = divisor;
-        question = `${dividend} ÷ ${BLANK} = ${quotient}`;
+        exerciseText = `${dividend} ÷ ${BLANK} = ${quotient}`;
       } else {
         correctAnswer = dividend;
-        question = `${BLANK} ÷ ${divisor} = ${quotient}`;
+        exerciseText = `${BLANK} ÷ ${divisor} = ${quotient}`;
       }
-      params = { kind: "eq_div", form, dividend, divisor, quotient };
+      question = exerciseText;
+      params = { kind: "eq_div", form, dividend, divisor, quotient, exerciseText };
     }
   } else if (selectedOp === "compare") {
     const isLowGrade = gradeKey === "g1_2";
@@ -640,8 +655,10 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     else if (a > b) symbol = ">";
 
     correctAnswer = symbol;
-    question = `השלם את הסימן: ${a} ${BLANK} ${b}`;
-    params = { kind: "cmp", a, b };
+    const questionLabel = "השלם את הסימן:";
+    const exerciseText = `${a} ${BLANK} ${b}`;
+    question = `${questionLabel} ${exerciseText}`;
+    params = { kind: "cmp", a, b, questionLabel, exerciseText };
 
     const baseOptions = ["<", ">", "="];
     const answers = [symbol, ...baseOptions.filter((s) => s !== symbol)];
@@ -652,6 +669,8 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
     return {
       question,
+      questionLabel,
+      exerciseText,
       correctAnswer,
       answers,
       operation: selectedOp,
@@ -910,8 +929,9 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     const a = randInt(1, maxA);
     const b = randInt(1, maxA);
     correctAnswer = round(a + b);
-    question = `${a} + ${b} = ${BLANK}`;
-    params = { kind: "add_two", a, b };
+    const exerciseText = `${a} + ${b} = ${BLANK}`;
+    question = exerciseText;
+    params = { kind: "add_two", a, b, exerciseText };
     operandA = a;
     operandB = b;
   }
@@ -983,6 +1003,8 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
   return {
     question,
+    questionLabel: params.questionLabel,
+    exerciseText: params.exerciseText,
     correctAnswer,
     answers: allAnswers,
     operation: selectedOp,
@@ -2860,15 +2882,49 @@ export default function MathMaster() {
                     </div>
                   )}
                   
-                  <div
-                    className="text-4xl font-black text-white mb-4 text-center"
-                    style={{
-                      direction: currentQuestion.isStory ? "rtl" : "ltr",
-                      unicodeBidi: "plaintext",
-                    }}
-                  >
-                    {currentQuestion.question}
-                  </div>
+                  {/* הפרדה בין שורת השאלה לשורת התרגיל */}
+                  {currentQuestion.questionLabel && currentQuestion.exerciseText ? (
+                    <>
+                      <p
+                        className="text-2xl text-center text-white mb-1"
+                        style={{
+                          direction: currentQuestion.isStory ? "rtl" : "ltr",
+                          unicodeBidi: "plaintext",
+                        }}
+                      >
+                        {currentQuestion.questionLabel}
+                      </p>
+                      <p
+                        className="text-4xl text-center text-white font-bold mb-4 whitespace-nowrap"
+                        style={{
+                          direction: "ltr",
+                          unicodeBidi: "plaintext",
+                        }}
+                      >
+                        {currentQuestion.exerciseText}
+                      </p>
+                    </>
+                  ) : currentQuestion.exerciseText ? (
+                    <p
+                      className="text-4xl text-center text-white font-bold mb-4 whitespace-nowrap"
+                      style={{
+                        direction: "ltr",
+                        unicodeBidi: "plaintext",
+                      }}
+                    >
+                      {currentQuestion.exerciseText}
+                    </p>
+                  ) : (
+                    <div
+                      className="text-4xl font-black text-white mb-4 text-center"
+                      style={{
+                        direction: currentQuestion.isStory ? "rtl" : "ltr",
+                        unicodeBidi: "plaintext",
+                      }}
+                    >
+                      {currentQuestion.question}
+                    </div>
+                  )}
                   
 
                   <div className="grid grid-cols-2 gap-3 w-full mb-3">

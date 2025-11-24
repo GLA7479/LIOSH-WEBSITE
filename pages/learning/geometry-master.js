@@ -1961,12 +1961,30 @@ export default function GeometryMaster() {
                     </div>
                   )}
 
-                  <div
-                    className="text-4xl font-black text-white mb-4 text-center"
-                    style={{ direction: "rtl", unicodeBidi: "plaintext" }}
-                  >
-                    {currentQuestion.question}
-                  </div>
+                  {/* הפרדה בין שורת השאלה לשורת התרגיל */}
+                  {currentQuestion.questionLabel && currentQuestion.exerciseText ? (
+                    <>
+                      <p
+                        className="text-2xl text-center text-white mb-1"
+                        style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                      >
+                        {currentQuestion.questionLabel}
+                      </p>
+                      <p
+                        className="text-4xl text-center text-white font-bold mb-4 whitespace-nowrap"
+                        style={{ direction: "ltr", unicodeBidi: "plaintext" }}
+                      >
+                        {currentQuestion.exerciseText}
+                      </p>
+                    </>
+                  ) : (
+                    <div
+                      className="text-4xl font-black text-white mb-4 text-center"
+                      style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                    >
+                      {currentQuestion.question}
+                    </div>
+                  )}
 
                   {!hintUsed && !selectedAnswer && (
                     <button
