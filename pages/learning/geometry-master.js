@@ -839,15 +839,39 @@ function getSolutionSteps(question, topic, gradeKey) {
     case "pythagoras": {
       const a = p.a || 0;
       const b = p.b || 0;
-      const a2 = a * a;
-      const b2 = b * b;
-      const sum = a2 + b2;
+      const c = p.c || 0;
+      const kind = p.kind || (p.which ? "pythagoras_leg" : "pythagoras_hyp");
+
+      // מצב 1 – מוצאים יתר (קלאסי)
+      if (kind === "pythagoras_hyp" || !p.which) {
+        const a2 = a * a;
+        const b2 = b * b;
+        const sum = a2 + b2;
+        return [
+          toSpan("1. משפט פיתגורס: a² + b² = c².", "1"),
+          toSpan(`2. נציב: ${ltr(`${a}² + ${b}² = c²`)}.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`${a}² = ${a2}`)} ו-${ltr(`${b}² = ${b2}`)}.`, "3"),
+          toSpan(`4. נחבר: ${ltr(`${a2} + ${b2} = ${sum}`)}.`, "4"),
+          toSpan(`5. נוציא שורש: ${ltr(`c = √${sum} = ${correctAnswer}`)}.`, "5"),
+        ];
+      }
+
+      // מצב 2 – מוצאים ניצב חסר (מתקדם יותר)
+      const c2 = c * c;
+      const missingLeg = p.which === "leg_a" ? "a" : "b";
+      const knownLegValue = p.which === "leg_a" ? b : a;
+      const known2 = knownLegValue * knownLegValue;
+      const diff = c2 - known2;
+
       return [
         toSpan("1. משפט פיתגורס: a² + b² = c².", "1"),
-        toSpan(`2. נציב: ${ltr(`${a}² + ${b}² = c²`)}.`, "2"),
-        toSpan(`3. נחשב: ${ltr(`${a}² = ${a2}`)} ו-${ltr(`${b}² = ${b2}`)}.`, "3"),
-        toSpan(`4. נחבר: ${ltr(`${a2} + ${b2} = ${sum}`)}.`, "4"),
-        toSpan(`5. נוציא שורש: ${ltr(`c = √${sum} = ${correctAnswer}`)}.`, "5"),
+        toSpan(
+          `2. כאן מחפשים ניצב חסר, ולכן נשתמש ב-${missingLeg}² = c² - (הניצב הידוע)².`,
+          "2"
+        ),
+        toSpan(`3. נחשב: ${ltr(`${c}² = ${c2}`)} ו-${ltr(`${knownLegValue}² = ${known2}`)}.`, "3"),
+        toSpan(`4. נחסיר: ${ltr(`${c2} - ${known2} = ${diff}`)}.`, "4"),
+        toSpan(`5. נוציא שורש: ${ltr(`${missingLeg} = √${diff} = ${correctAnswer}`)}.`, "5"),
       ];
     }
 
@@ -901,6 +925,91 @@ function getErrorExplanation(question, topic, wrongAnswer, gradeKey) {
     default:
       return "";
   }
+}
+
+// תקציר תיאורטי קצר לפי נושא וכיתה – מוצג לפני השאלה במצב Learning
+function getTheorySummary(question, topic, gradeKey) {
+  if (!question) return null;
+
+  const lines = [];
+
+  switch (topic) {
+    case "area": {
+      lines.push("שטח מודד כמה מקום תופסת צורה על המשטח.");
+      if (gradeKey === "g3_4") {
+        lines.push("ריבוע: שטח = צלע × צלע.");
+        lines.push("מלבן: שטח = אורך × רוחב.");
+      } else if (gradeKey === "g5_6") {
+        lines.push("ריבוע: שטח = צלע × צלע.");
+        lines.push("מלבן: שטח = אורך × רוחב.");
+        lines.push("משולש: שטח = (בסיס × גובה) ÷ 2.");
+      } else {
+        // g7_8
+        lines.push("ריבוע: שטח = צלע².");
+        lines.push("מלבן: שטח = אורך × רוחב.");
+        lines.push("משולש: שטח = (בסיס × גובה) ÷ 2.");
+        lines.push("מקבילית: שטח = בסיס × גובה.");
+        lines.push("טרפז: שטח = ((בסיס1 + בסיס2) × גובה) ÷ 2.");
+        lines.push("עיגול: שטח = π × רדיוס².");
+      }
+      break;
+    }
+
+    case "perimeter": {
+      lines.push("היקף מודד את אורך המסלול שמקיף את הצורה.");
+      lines.push("תמיד מחברים את כל הצלעות.");
+      if (gradeKey === "g3_4") {
+        lines.push("ריבוע: היקף = צלע × 4.");
+        lines.push("מלבן: היקף = (אורך + רוחב) × 2.");
+      } else {
+        lines.push("בכל צורה: היקף = סכום אורכי כל הצלעות.");
+        lines.push("עיגול: היקף = 2 × π × רדיוס.");
+      }
+      break;
+    }
+
+    case "volume": {
+      lines.push("נפח מודד כמה מקום תופס גוף במרחב (תלת-מימד).");
+      if (gradeKey === "g5_6") {
+        lines.push("קובייה: נפח = צלע³.");
+        lines.push("תיבה (מלבנית): נפח = אורך × רוחב × גובה.");
+      } else {
+        lines.push("קובייה: נפח = צלע³.");
+        lines.push("תיבה: נפח = אורך × רוחב × גובה.");
+        lines.push("גליל: נפח = π × רדיוס² × גובה.");
+        lines.push("כדור: נפח = (4/3) × π × רדיוס³.");
+      }
+      break;
+    }
+
+    case "angles": {
+      lines.push("בכל משולש: סכום הזוויות הפנימיות הוא 180°.");
+      lines.push("אם שתי זוויות ידועות – מוצאים את השלישית בעזרת 180° פחות הסכום שלהן.");
+      break;
+    }
+
+    case "pythagoras": {
+      lines.push("במשולש ישר-זווית: a² + b² = c² (c הוא היתר).");
+      lines.push("אם יודעים את שני הניצבים – מוצאים יתר: c = √(a² + b²).");
+      lines.push("אם יודעים יתר וניצב – מוצאים ניצב חסר: √(c² - ניצב²).");
+      break;
+    }
+
+    default: {
+      lines.push("חשוב לזכור את הנוסחה המתאימה לנושא ולצורה.");
+    }
+  }
+
+  return (
+    <div>
+      <div className="font-bold mb-1 text-[11px]">📘 מה חשוב לזכור?</div>
+      <ul className="list-disc pr-4 text-[11px] space-y-0.5 text-right">
+        {lines.map((line, idx) => (
+          <li key={idx}>{line}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 export default function GeometryMaster() {
@@ -1843,6 +1952,15 @@ export default function GeometryMaster() {
                   className="w-full max-w-md flex flex-col items-center justify-center mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
+                  {mode === "learning" && (
+                    <div
+                      className="mb-2 px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 max-w-md"
+                      style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                    >
+                      {getTheorySummary(currentQuestion, currentQuestion.topic, grade)}
+                    </div>
+                  )}
+
                   <div
                     className="text-4xl font-black text-white mb-4 text-center"
                     style={{ direction: "rtl", unicodeBidi: "plaintext" }}

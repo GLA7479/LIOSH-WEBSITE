@@ -3,6 +3,8 @@ import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 
+const BLANK = "__";
+
 const LEVELS = {
   easy: {
     name: "Easy",
@@ -33,7 +35,12 @@ const LEVELS = {
 const GRADES = {
   g1_2: {
     name: "Grade 1–2",
-    operations: ["addition", "subtraction", "compare"],
+    operations: [
+      "addition",
+      "subtraction",
+      "compare",
+      "number_sense", // שכנים, זוגי/אי-זוגי, השלמה ל-10, עשרות/יחידות
+    ],
     allowFractions: false,
     allowNegatives: false,
   },
@@ -49,6 +56,7 @@ const GRADES = {
       "decimals",
       "compare",
       "equations",
+      "number_sense",
       "mixed",
     ],
     allowFractions: true,
@@ -68,6 +76,8 @@ const GRADES = {
       "rounding",
       "equations",
       "compare",
+      "number_sense",
+      "factors_multiples",
       "word_problems",
       "mixed",
     ],
@@ -88,6 +98,8 @@ const OPERATIONS = [
   "rounding",
   "equations",
   "compare",
+  "number_sense",
+  "factors_multiples",
   "word_problems",
   "mixed",
 ];
@@ -296,7 +308,10 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     return Math.floor(Math.random() * (hi - lo + 1)) + lo;
   };
 
-  const round = (n) => Math.round(n);
+  const round = (n, places = 0) => {
+    const factor = Math.pow(10, places);
+    return Math.round(n * factor) / factor;
+  };
 
   const allowNegatives = !!levelConfig.allowNegatives && gradeCfg.allowNegatives;
   const allowTwoStep = !!levelConfig.allowTwoStep;
@@ -308,15 +323,33 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
   let operandB = null;
   let isStory = false;
 
+  // ===== חיבור =====
   if (selectedOp === "addition") {
     const maxA = levelConfig.addition.max || 20;
 
-    if (allowTwoStep && Math.random() < 0.3) {
+    // שילוב השלמה ל-10/100 בתוך חיבור (מתאים לסעיף 10)
+    if (gradeKey === "g1_2" && Math.random() < 0.3) {
+      const b = randInt(1, 9);
+      const c = 10;
+      const a = c - b;
+      correctAnswer = a;
+      question = `${BLANK} + ${b} = ${c}`;
+      params = { kind: "add_complement10", a, b, c };
+      operandA = a;
+      operandB = b;
+    } else if (gradeKey === "g3_4" && Math.random() < 0.2) {
+      const base = randInt(10, 90);
+      const tens = Math.round(base / 10) * 10;
+      const diff = tens - base;
+      correctAnswer = diff;
+      question = `${base} + ${BLANK} = ${tens}`;
+      params = { kind: "add_complement_round10", base, tens, diff };
+    } else if (allowTwoStep && Math.random() < 0.3) {
       const a = randInt(1, maxA);
       const b = randInt(1, maxA);
       const c = randInt(1, maxA);
       correctAnswer = round(a + b + c);
-      question = `${a} + ${b} + ${c} = ?`;
+      question = `${a} + ${b} + ${c} = ${BLANK}`;
       params = { kind: "add_three", a, b, c };
       operandA = a;
       operandB = b;
@@ -324,7 +357,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       const a = randInt(1, maxA);
       const b = randInt(1, maxA);
       correctAnswer = round(a + b);
-      question = `${a} + ${b} = ?`;
+      question = `${a} + ${b} = ${BLANK}`;
       params = { kind: "add_two", a, b };
       operandA = a;
       operandB = b;
@@ -343,7 +376,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       a = randInt(b, maxS);
     }
     correctAnswer = round(a - b);
-    question = `${a} - ${b} = ?`;
+    question = `${a} - ${b} = ${BLANK}`;
     params = { kind: "sub_two", a, b };
     operandA = a;
     operandB = b;
@@ -352,7 +385,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     const a = randInt(1, maxM);
     const b = randInt(1, Math.min(maxM, 12));
     correctAnswer = round(a * b);
-    question = `${a} × ${b} = ?`;
+    question = `${a} × ${b} = ${BLANK}`;
     params = { kind: "mul", a, b };
     operandA = a;
     operandB = b;
@@ -363,7 +396,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     const quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
     const dividend = divisor * quotient;
     correctAnswer = round(quotient);
-    question = `${dividend} ÷ ${divisor} = ?`;
+    question = `${dividend} ÷ ${divisor} = ${BLANK}`;
     params = { kind: "div", dividend, divisor };
     operandA = dividend;
     operandB = divisor;
@@ -387,13 +420,13 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
       if (opKind === "sub_frac" && resNum < 0) {
         resNum = n2 - n1;
-        question = `${n2}/${den} - ${n1}/${den} = ?`;
+        question = `${n2}/${den} - ${n1}/${den} = ${BLANK}`;
         params = { kind: "frac_same_den", op: "sub", n1: n2, n2: n1, den };
       } else {
         question =
           opKind === "add_frac"
-            ? `${n1}/${den} + ${n2}/${den} = ?`
-            : `${n1}/${den} - ${n2}/${den} = ?`;
+            ? `${n1}/${den} + ${n2}/${den} = ${BLANK}`
+            : `${n1}/${den} - ${n2}/${den} = ${BLANK}`;
         params = {
           kind: "frac_same_den",
           op: opKind === "add_frac" ? "add" : "sub",
@@ -427,7 +460,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
       if (opKind === "sub_frac" && resNum < 0) {
         resNum = n2 * m2 - n1 * m1;
-        question = `${n2}/${den2} - ${n1}/${den1} = ?`;
+        question = `${n2}/${den2} - ${n1}/${den1} = ${BLANK}`;
         params = {
           kind: "frac_diff_den",
           op: "sub",
@@ -440,8 +473,8 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       } else {
         question =
           opKind === "add_frac"
-            ? `${n1}/${den1} + ${n2}/${den2} = ?`
-            : `${n1}/${den1} - ${n2}/${den2} = ?`;
+            ? `${n1}/${den1} + ${n2}/${den2} = ${BLANK}`
+            : `${n1}/${den1} - ${n2}/${den2} = ${BLANK}`;
         params = {
           kind: "frac_diff_den",
           op: opKind === "add_frac" ? "add" : "sub",
@@ -455,137 +488,79 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
       correctAnswer = `${resNum}/${commonDen}`;
     }
+  // ===== אחוזים (כיתות ה–ו) =====
   } else if (selectedOp === "percentages") {
-    const templates =
-      gradeKey === "g5_6" ? ["percent_of", "what_percent"] : ["percent_of"];
-    const percentOptions = [10, 20, 25, 30, 40, 50];
-    const t = templates[Math.floor(Math.random() * templates.length)];
+    const base = randInt(40, 400);
+    const percOptions = [10, 20, 25, 50];
+    const p = percOptions[Math.floor(Math.random() * percOptions.length)];
 
-    if (t === "percent_of") {
-      const base = randInt(20, 500);
-      const percent =
-        percentOptions[Math.floor(Math.random() * percentOptions.length)];
-      correctAnswer = Math.round((base * percent) / 100);
-      question = `${percent}% מ-${base} = ?`;
-      params = { kind: "perc_of", base, percent };
+    const t = Math.random() < 0.5 ? "part_of" : "discount";
+
+    if (t === "part_of") {
+      correctAnswer = round((base * p) / 100);
+      question = `כמה זה ${p}% מתוך ${base}? = ${BLANK}`;
+      params = { kind: "perc_part_of", base, p };
     } else {
-      const base = randInt(40, 200);
-      const percent =
-        percentOptions[Math.floor(Math.random() * percentOptions.length)];
-      const part = Math.round((base * percent) / 100);
-      correctAnswer = percent;
-      question = `${part} הוא כמה אחוז מ-${base}?`;
-      params = { kind: "perc_what", base, part };
+      const discount = round((base * p) / 100);
+      const finalPrice = base - discount;
+      correctAnswer = finalPrice;
+      question = `מחיר מוצר הוא ${base}₪ ויש הנחה של ${p}%. מה המחיר אחרי ההנחה? = ${BLANK}`;
+      params = { kind: "perc_discount", base, p, discount, finalPrice };
     }
+  // ===== סדרות =====
   } else if (selectedOp === "sequences") {
-    const isLowerGrade = gradeKey === "g3_4";
-    const length = 5;
-    const step =
-      isLowerGrade
-        ? randInt(1, 5)
-        : Math.random() < 0.7
-        ? randInt(1, 7)
-        : -randInt(1, 5);
-    const start = isLowerGrade ? randInt(1, 20) : randInt(-20, 50);
-
-    const terms = [];
-    for (let i = 0; i < length; i++) {
-      terms.push(start + i * step);
+    const start = randInt(1, 20);
+    let step;
+    if (gradeKey === "g1_2") {
+      step = randInt(1, 3);
+    } else if (gradeKey === "g3_4") {
+      step = randInt(1, 9);
+    } else {
+      step = randInt(-9, 9) || 2;
     }
-    const missingIndex = randInt(1, length - 2);
-    correctAnswer = terms[missingIndex];
-    const displayTerms = terms
-      .map((val, idx) => (idx === missingIndex ? "?" : val))
+
+    const posOfBlank = randInt(0, 4); // אחד מחמשת המספרים
+    const seq = [];
+    for (let i = 0; i < 5; i++) {
+      seq.push(start + i * step);
+    }
+    correctAnswer = seq[posOfBlank];
+    const display = seq
+      .map((v, idx) => (idx === posOfBlank ? BLANK : v))
       .join(", ");
-    question = `מצא את המספר החסר בסדרה: ${displayTerms}`;
-    params = { kind: "seq_arith", start, step, terms, missingIndex };
+    question = `השלים את הסדרה: ${display}`;
+    params = { kind: "sequence", start, step, seq, posOfBlank };
+  // ===== עשרוניים =====
   } else if (selectedOp === "decimals") {
-    const isLower = gradeKey === "g3_4";
-    const types = isLower ? ["add", "sub"] : ["add", "sub", "times10", "div10"];
-
-    const t = types[Math.floor(Math.random() * types.length)];
-
-    const randDec = (min, max, places) => {
-      const factor = Math.pow(10, places);
-      const lo = Math.round(min * factor);
-      const hi = Math.round(max * factor);
-      const n = randInt(lo, hi);
-      return n / factor;
-    };
-
-    const places = gradeKey === "g3_4" ? 1 : Math.random() < 0.5 ? 1 : 2;
-    const fmt = (x) => x.toFixed(places);
+    const places = gradeKey === "g3_4" ? 1 : 2;
+    const maxBase = gradeKey === "g3_4" ? 50 : 200;
+    const a = round(Math.random() * maxBase, places);
+    const b = round(Math.random() * maxBase, places);
+    const t = Math.random() < 0.5 ? "add" : "sub";
 
     if (t === "add") {
-      const a = randDec(0.1, 50, places);
-      const b = randDec(0.1, 50, places);
-      const res = a + b;
-      correctAnswer = fmt(res);
-      question = `${fmt(a)} + ${fmt(b)} = ?`;
-      params = { kind: "dec_add", a: fmt(a), b: fmt(b), places };
-    } else if (t === "sub") {
-      let a = randDec(0.1, 50, places);
-      let b = randDec(0.1, 50, places);
-      if (isLower && a < b) {
-        [a, b] = [b, a];
-      }
-      const res = a - b;
-      correctAnswer = fmt(res);
-      question = `${fmt(a)} - ${fmt(b)} = ?`;
-      params = { kind: "dec_sub", a: fmt(a), b: fmt(b), places };
-    } else if (t === "times10") {
-      const a = randDec(0.1, 500, places);
-      const factor = Math.random() < 0.5 ? 10 : 100;
-      const res = a * factor;
-      correctAnswer = fmt(res);
-      question = `${fmt(a)} × ${factor} = ?`;
-      params = { kind: "dec_times", a: fmt(a), factor, places };
+      correctAnswer = round(a + b, places);
+      question = `${a.toFixed(places)} + ${b.toFixed(places)} = ${BLANK}`;
+      params = { kind: "dec_add", a, b, places };
     } else {
-      const a = randDec(1, 500, places);
-      const factor = Math.random() < 0.5 ? 10 : 100;
-      const res = a / factor;
-      const resPlaces = places + (factor === 100 ? 2 : 1);
-      const fmtRes = (x) => x.toFixed(Math.min(resPlaces, 3));
-      correctAnswer = fmtRes(res);
-      question = `${fmt(a)} ÷ ${factor} = ?`;
-      params = { kind: "dec_div", a: fmt(a), factor, places: resPlaces };
+      const big = Math.max(a, b);
+      const small = Math.min(a, b);
+      correctAnswer = round(big - small, places);
+      question = `${big.toFixed(places)} - ${small.toFixed(places)} = ${BLANK}`;
+      params = { kind: "dec_sub", a: big, b: small, places };
     }
+  // ===== עיגול =====
   } else if (selectedOp === "rounding") {
-    const isLower = gradeKey === "g3_4";
-    const kinds = isLower
-      ? ["nearest_10", "nearest_100"]
-      : ["nearest_10", "nearest_100", "nearest_whole", "nearest_tenth"];
-
-    const k = kinds[Math.floor(Math.random() * kinds.length)];
-    const roundTo = (num, factor) => Math.round(num / factor) * factor;
-
-    if (k === "nearest_10") {
-      const n = randInt(10, 999);
-      correctAnswer = roundTo(n, 10);
-      question = `עגל את ${n} לעשרות הקרובות ביותר.`;
-      params = { kind: "round_10", n };
-    } else if (k === "nearest_100") {
-      const n = randInt(100, 9999);
-      correctAnswer = roundTo(n, 100);
-      question = `עגל את ${n} למאות הקרובות ביותר.`;
-      params = { kind: "round_100", n };
-    } else if (k === "nearest_whole") {
-      const base = randInt(1, 100);
-      const frac = randInt(1, 9) / 10;
-      const n = base + frac;
-      const rounded = Math.round(n);
-      correctAnswer = rounded;
-      question = `עגל את ${n.toFixed(1)} למספר השלם הקרוב ביותר.`;
-      params = { kind: "round_whole", n: n.toFixed(1) };
-    } else {
-      const base = randInt(1, 100);
-      const frac = randInt(1, 99) / 100;
-      const n = base + frac;
-      const rounded = Math.round(n * 10) / 10;
-      correctAnswer = Number(rounded.toFixed(1));
-      question = `עגל את ${n.toFixed(2)} לעשירית הקרובה ביותר.`;
-      params = { kind: "round_tenth", n: n.toFixed(2) };
-    }
+    const toWhat = Math.random() < 0.5 ? 10 : 100;
+    const maxN = toWhat === 10 ? 999 : 9999;
+    const n = randInt(1, maxN);
+    correctAnswer =
+      toWhat === 10 ? Math.round(n / 10) * 10 : Math.round(n / 100) * 100;
+    question =
+      toWhat === 10
+        ? `עגל את ${n} לעשרות הקרובות = ${BLANK}`
+        : `עגל את ${n} למאות הקרובות = ${BLANK}`;
+    params = { kind: "round", n, toWhat };
   } else if (selectedOp === "equations") {
     const canUseMulDiv = gradeKey === "g5_6";
     const types = canUseMulDiv ? ["add", "sub", "mul", "div"] : ["add", "sub"];
@@ -605,10 +580,10 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
       if (form === "a_plus_x") {
         correctAnswer = b;
-        question = `${a} + ? = ${c}`;
+        question = `${a} + ${BLANK} = ${c}`;
       } else {
         correctAnswer = a;
-        question = `? + ${b} = ${c}`;
+        question = `${BLANK} + ${b} = ${c}`;
       }
       params = { kind: "eq_add", form, a, b, c };
     } else if (t === "sub") {
@@ -619,10 +594,10 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
       if (form === "a_minus_x") {
         correctAnswer = b;
-        question = `${a} - ? = ${c}`;
+        question = `${a} - ${BLANK} = ${c}`;
       } else {
         correctAnswer = a;
-        question = `? - ${b} = ${c}`;
+        question = `${BLANK} - ${b} = ${c}`;
       }
       params = { kind: "eq_sub", form, a, b, c };
     } else if (t === "mul") {
@@ -633,10 +608,10 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
       if (form === "a_times_x") {
         correctAnswer = b;
-        question = `${a} × ? = ${c}`;
+        question = `${a} × ${BLANK} = ${c}`;
       } else {
         correctAnswer = a;
-        question = `? × ${b} = ${c}`;
+        question = `${BLANK} × ${b} = ${c}`;
       }
       params = { kind: "eq_mul", form, a, b, c };
     } else {
@@ -647,10 +622,10 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
       if (form === "a_div_x") {
         correctAnswer = divisor;
-        question = `${dividend} ÷ ? = ${quotient}`;
+        question = `${dividend} ÷ ${BLANK} = ${quotient}`;
       } else {
         correctAnswer = dividend;
-        question = `? ÷ ${divisor} = ${quotient}`;
+        question = `${BLANK} ÷ ${divisor} = ${quotient}`;
       }
       params = { kind: "eq_div", form, dividend, divisor, quotient };
     }
@@ -665,7 +640,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     else if (a > b) symbol = ">";
 
     correctAnswer = symbol;
-    question = `השלם את הסימן: ${a} ? ${b}`;
+    question = `השלם את הסימן: ${a} ${BLANK} ${b}`;
     params = { kind: "cmp", a, b };
 
     const baseOptions = ["<", ">", "="];
@@ -685,13 +660,186 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       b,
       isStory: false,
     };
+
+  // ===== Number Sense – שכנים, עשרות/יחידות, זוגי/אי-זוגי, השלמה =====
+  } else if (selectedOp === "number_sense") {
+    const types =
+      gradeKey === "g1_2"
+        ? ["neighbors", "place_tens_units", "even_odd", "complement10"]
+        : gradeKey === "g3_4"
+        ? ["neighbors", "place_hundreds", "complement10", "complement100"]
+        : ["neighbors", "place_hundreds", "complement100"];
+    const t = types[Math.floor(Math.random() * types.length)];
+
+    if (t === "neighbors") {
+      const n = randInt(1, 999);
+      const dir = Math.random() < 0.5 ? "after" : "before";
+      if (dir === "after") {
+        correctAnswer = n + 1;
+        question = `מה המספר שבא אחרי ${n}? = ${BLANK}`;
+      } else {
+        correctAnswer = n - 1;
+        question = `מה המספר שבא לפני ${n}? = ${BLANK}`;
+      }
+      params = { kind: "ns_neighbors", n, dir };
+    } else if (t === "place_tens_units") {
+      const n = randInt(10, 99);
+      const askTens = Math.random() < 0.5;
+      const tens = Math.floor(n / 10);
+      const units = n % 10;
+      correctAnswer = askTens ? tens : units;
+      question = askTens
+        ? `מהי ספרת העשרות במספר ${n}? = ${BLANK}`
+        : `מהי ספרת היחידות במספר ${n}? = ${BLANK}`;
+      params = { kind: "ns_place_tens_units", n, askTens, tens, units };
+    } else if (t === "place_hundreds") {
+      const n = randInt(100, 999);
+      const partType = ["hundreds", "tens", "units"][
+        Math.floor(Math.random() * 3)
+      ];
+      const hundreds = Math.floor(n / 100);
+      const tens = Math.floor((n % 100) / 10);
+      const units = n % 10;
+      if (partType === "hundreds") correctAnswer = hundreds;
+      else if (partType === "tens") correctAnswer = tens;
+      else correctAnswer = units;
+      const label =
+        partType === "hundreds"
+          ? "המאות"
+          : partType === "tens"
+          ? "העשרות"
+          : "היחידות";
+      question = `מהי ספרת ${label} במספר ${n}? = ${BLANK}`;
+      params = { kind: "ns_place_hundreds", n, partType, hundreds, tens, units };
+    } else if (t === "complement10") {
+      const b = randInt(1, 9);
+      const c = 10;
+      const a = c - b;
+      correctAnswer = a;
+      question = `${BLANK} + ${b} = ${c}`;
+      params = { kind: "ns_complement10", a, b, c };
+    } else if (t === "complement100") {
+      const b = randInt(1, 99);
+      const c = 100;
+      const a = c - b;
+      correctAnswer = a;
+      question = `${BLANK} + ${b} = ${c}`;
+      params = { kind: "ns_complement100", a, b, c };
+    } else {
+      // even_odd – תשובה טקסטואלית
+      const n = randInt(0, 200);
+      const isEven = n % 2 === 0;
+      correctAnswer = isEven ? "זוגי" : "אי-זוגי";
+      question = `האם המספר ${n} הוא זוגי או אי-זוגי?`;
+      params = { kind: "ns_even_odd", n, isEven };
+      const answers = ["זוגי", "אי-זוגי"];
+      if (!isEven) answers.reverse();
+
+      return {
+        question,
+        correctAnswer,
+        answers,
+        operation: selectedOp,
+        params,
+        a: n,
+        b: null,
+        isStory: false,
+      };
+    }
+
+  // ===== גורמים / כפולות / מ.כ.ק/מ.א.ח – Factors & Multiples =====
+  } else if (selectedOp === "factors_multiples") {
+    const types = ["factor", "multiple", "gcd"];
+    const t = types[Math.floor(Math.random() * types.length)];
+
+    if (t === "factor") {
+      const n = randInt(12, 60);
+      const factors = [];
+      for (let i = 1; i <= n; i++) {
+        if (n % i === 0) factors.push(i);
+      }
+      const correct = factors[randInt(1, factors.length - 1)]; // לא 1
+      const options = new Set([correct]);
+      while (options.size < 4) {
+        const candidate = randInt(2, n + 5);
+        if (candidate !== n && n % candidate !== 0) {
+          options.add(candidate);
+        }
+      }
+      const answers = Array.from(options);
+      for (let i = answers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [answers[i], answers[j]] = [answers[j], answers[i]];
+      }
+
+      correctAnswer = correct;
+      question = `איזה מהמספרים הבאים הוא מחלק (גורם) של ${n}?`;
+      params = { kind: "fm_factor", n, correct };
+
+      return {
+        question,
+        correctAnswer,
+        answers,
+        operation: selectedOp,
+        params,
+        a: n,
+        b: null,
+        isStory: false,
+      };
+    } else if (t === "multiple") {
+      const base = randInt(3, 12);
+      const correct = base * randInt(2, 10);
+      const options = new Set([correct]);
+      while (options.size < 4) {
+        const candidate = randInt(base + 1, base * 15);
+        if (candidate % base !== 0) options.add(candidate);
+      }
+      const answers = Array.from(options);
+      for (let i = answers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [answers[i], answers[j]] = [answers[j], answers[i]];
+      }
+
+      correctAnswer = correct;
+      question = `איזה מהמספרים הבאים הוא כפולה של ${base}?`;
+      params = { kind: "fm_multiple", base, correct };
+
+      return {
+        question,
+        correctAnswer,
+        answers,
+        operation: selectedOp,
+        params,
+        a: base,
+        b: null,
+        isStory: false,
+      };
+    } else {
+      // gcd – מ.א.ח
+      const base = randInt(2, 10);
+      const k1 = randInt(2, 10);
+      const k2 = randInt(2, 10);
+      const a = base * k1;
+      const b = base * k2;
+      correctAnswer = base;
+      question = `מהו המחלק המשותף הגדול ביותר של ${a} ו-${b}? = ${BLANK}`;
+      params = { kind: "fm_gcd", a, b, gcd: base };
+    }
+
+  // ===== תרגילי מילים (כולל זמן, כסף, מידות) =====
   } else if (selectedOp === "word_problems") {
     const templates =
       gradeKey === "g5_6"
-        ? ["multi_step", "groups", "leftover", "money"]
+        ? [
+            "multi_step",
+            "groups",
+            "leftover",
+            "shop_discount",
+            "unit_convert",
+            "distance_time",
+          ]
         : ["groups", "simple_add"];
     const t = templates[Math.floor(Math.random() * templates.length)];
-    isStory = true;
 
     if (t === "simple_add") {
       const a = randInt(3, 9);
@@ -713,35 +861,56 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       correctAnswer = leftover;
       question = `יש ${total} תלמידים והם מתחלקים לקבוצות של ${groupSize} תלמידים בכל קבוצה. כמה תלמידים יישארו בלי קבוצה מלאה?`;
       params = { kind: "wp_leftover", total, groupSize, groups, leftover };
-    } else if (t === "multi_step") {
-      const price = randInt(5, 20);
-      const qty1 = randInt(2, 5);
-      const qty2 = randInt(1, 4);
-      const totalCost = price * (qty1 + qty2);
-      const money = randInt(totalCost + 20, totalCost + 80);
-      correctAnswer = money - totalCost;
-      question = `לליאו יש ${money} שקלים. הוא קונה ${qty1} מחברות ו-${qty2} עפרונות, שכל אחד מהם עולה ${price} שקלים. כמה כסף יישאר לו אחרי הקנייה?`;
+    } else if (t === "shop_discount") {
+      const price = randInt(50, 400);
+      const discPerc = [10, 20, 25, 50][randInt(0, 3)];
+      const discount = Math.round((price * discPerc) / 100);
+      const finalPrice = price - discount;
+      correctAnswer = finalPrice;
+      question = `חולצה עולה ${price}₪ ויש עליה הנחה של ${discPerc}%. כמה תשלם אחרי ההנחה?`;
       params = {
-        kind: "wp_multi_step",
-        money,
+        kind: "wp_shop_discount",
         price,
-        qty1,
-        qty2,
-        totalCost,
+        discPerc,
+        discount,
+        finalPrice,
       };
+    } else if (t === "unit_convert") {
+      const mode = Math.random() < 0.5 ? "cm_to_m" : "g_to_kg";
+      if (mode === "cm_to_m") {
+        const meters = randInt(1, 9);
+        const cm = meters * 100;
+        correctAnswer = meters;
+        question = `כמה מטרים הם ${cm} סנטימטרים? = ${BLANK}`;
+        params = { kind: "wp_unit_cm_to_m", cm, meters };
+      } else {
+        const kg = randInt(1, 9);
+        const g = kg * 1000;
+        correctAnswer = kg;
+        question = `כמה קילוגרמים הם ${g} גרם? = ${BLANK}`;
+        params = { kind: "wp_unit_g_to_kg", g, kg };
+      }
     } else {
-      const price = randInt(3, 15);
-      const qty = randInt(2, 8);
-      correctAnswer = price * qty;
-      question = `מחברת אחת עולה ${price} שקלים. כמה יעלה לקנות ${qty} מחברות?`;
-      params = { kind: "wp_money", price, qty };
+      // distance_time
+      const speed = [5, 6, 8, 10][randInt(0, 3)]; // קמ"ש
+      const hours = randInt(1, 4);
+      const distance = speed * hours;
+      correctAnswer = distance;
+      question = `ילד הולך במהירות קבועה של ${speed} ק"מ בשעה במשך ${hours} שעות. כמה קילומטרים יעבור?`;
+      params = {
+        kind: "wp_distance_time",
+        speed,
+        hours,
+        distance,
+      };
     }
+    isStory = true;
   } else {
     const maxA = levelConfig.addition.max || 20;
     const a = randInt(1, maxA);
     const b = randInt(1, maxA);
     correctAnswer = round(a + b);
-    question = `${a} + ${b} = ?`;
+    question = `${a} + ${b} = ${BLANK}`;
     params = { kind: "add_two", a, b };
     operandA = a;
     operandB = b;
@@ -835,6 +1004,9 @@ function getHint(question, operation, gradeKey) {
       if (p.kind === "add_three") {
         return "חבר שני מספרים ואז הוסף את השלישי: (a + b) + c.";
       }
+      if (p.kind === "add_complement10" || p.kind === "add_complement_round10") {
+        return "חפש כמה חסר כדי להגיע לעשר/מספר עגול – לא צריך לחשב את כל החיבור הארוך.";
+      }
       return "השתמש בשיטת \"עמודות\" או בקפיצות על ציר המספרים: חיבור = הוספה.";
     case "subtraction":
       return "בדוק מי המספר הגדול יותר. חיסור = כמה חסר מהקטן לגדול או כמה מורידים מהגדול.";
@@ -848,23 +1020,33 @@ function getHint(question, operation, gradeKey) {
       }
       return "כשיש מכנים שונים – מוצאים מכנה משותף, מעבירים את השברים ואז מחברים או מחסרים.";
     case "percentages":
-      if (p.kind === "perc_of") {
-        return "כדי למצוא אחוז ממספר, מכפילים במספר האחוז ומחלקים ב-100.";
-      }
-      if (p.kind === "perc_what") {
-        return "חלקי שלם = אחוז/100. חלק ÷ שלם ואז כפול 100 לקבלת אחוז.";
-      }
-      return "אחוז הוא חלק מתוך 100. אפשר לחשוב על 25% כמו 25 מתוך 100.";
+      return "אחוזים הם חלק מ-100. 10% זה עשירית, 25% זה רבע, 50% זה חצי. נסה לתרגם לחלק פשוט.";
     case "sequences":
-      return "בסדרה חשבונית ההפרש בין כל שני איברים סמוכים קבוע. בדוק בכמה המספרים עולים (או יורדים) כל פעם.";
+      return "בדוק מה קורה בין כל שני מספרים סמוכים – מה מוסיפים או מחסרים בכל צעד.";
     case "decimals":
-      return "בעשרוניים מיישרים את הנקודה העשרונית ומבצעים את הפעולה כמו בחשבון רגיל. אפשר לחשוב על עשיריות ומאות כמו על אגורות.";
+      return "יישר את הנקודות העשרוניות וחשב כאילו היו מספרים רגילים, ואז החזר את הנקודה למקום הנכון.";
     case "rounding":
-      return "בעיגול מסתכלים על הספרה שאחרי המקום שאליו מעגלים: אם היא 5 או יותר – מעגלים למעלה, אחרת נשארים למטה.";
+      return "חפש את הספרה שמקיפים (עשרות/מאות) והסתכל על הספרה שאחריה: 0–4 עיגול למטה, 5–9 למעלה.";
     case "equations":
-      return "במשוואות עם מספר חסר משתמשים בפעולה ההפוכה: בחיבור נעזר בחיסור, בכפל בחילוק. שאל: איזה מספר הופך את שני הצדדים לשווים?";
+      return "במשוואות עם מספר חסר משתמשים בפעולה ההפוכה: בחיבור נעזרים בחיסור, בכפל – בחילוק וכדומה.";
     case "compare":
-      return "כדי להשוות, הסתכל על החלק השלם קודם ואז על העשיריות/מאיות. בציר המספרים – מי שמימין גדול יותר.";
+      return "דמיין את המספרים על ציר מספרים: מי שמימין גדול יותר. במספרים עשרוניים משווים קודם את החלק השלם.";
+    case "number_sense":
+      if (p.kind?.startsWith("ns_place")) {
+        return "פרק את המספר לעשרות/מאות/יחידות: למשל 57 זה 5 עשרות ו-7 יחידות.";
+      }
+      if (p.kind === "ns_neighbors") {
+        return "מספר אחד לפני – מורידים 1. מספר אחד אחרי – מוסיפים 1.";
+      }
+      if (p.kind === "ns_complement10" || p.kind === "ns_complement100") {
+        return "חפש כמה חסר כדי להשלים לעשר/מאה – זה ההפרש בין שני המספרים.";
+      }
+      if (p.kind === "ns_even_odd") {
+        return "הסתכל על ספרת היחידות: 0,2,4,6,8 – זוגי. 1,3,5,7,9 – אי-זוגי.";
+      }
+      return "נסה לחשוב על \"תחושת מספר\" – עשרות, יחידות, שכנים, זוגי/אי-זוגי.";
+    case "factors_multiples":
+      return "מחלק (גורם) מתחלק במספר בלי שארית. כפולה מתקבלת כשמכפילים את המספר במספר שלם.";
     case "word_problems":
       return "קרא לאט, סמן את המספרים ותרגם את הסיפור לתרגיל פשוט (חיבור, חיסור, כפל או חילוק).";
     default:
@@ -903,6 +1085,19 @@ function getSolutionSteps(question, operation, gradeKey) {
           toSpan(`2. נחבר את שני הראשונים: ${ltr(`${p.a} + ${p.b} = ${s1}`)}.`, "2"),
           toSpan(`3. נוסיף את האחרון: ${ltr(`${s1} + ${p.c} = ${ans}`)}.`, "3"),
           toSpan(`4. התשובה: ${ans}.`, "4"),
+        ];
+      }
+      if (p.kind === "add_complement10" || p.kind === "add_complement_round10") {
+        return [
+          toSpan(
+            `1. זה תרגיל השלמה: מחפשים כמה חסר כדי להגיע ל-${p.c ?? p.tens}.`,
+            "1"
+          ),
+          toSpan(
+            `2. נחשב: ${ltr(`${p.c ?? p.tens} - ${p.b ?? p.base} = ${ans}`)}.`,
+            "2"
+          ),
+          toSpan(`3. נבדוק שחיבור התוצאה נותן את המספר העגול.`, "3"),
         ];
       }
       const sum = p.a + p.b;
@@ -984,117 +1179,252 @@ function getSolutionSteps(question, operation, gradeKey) {
       ];
 
     case "percentages":
-      if (p.kind === "perc_of") {
+      if (p.kind === "perc_discount") {
         return [
-          toSpan(`1. נרשום: ${ltr(`${p.percent}% מ-${p.base}`)}.`, "1"),
-          toSpan(`2. נהפוך אחוז לשבר: ${p.percent}% = ${ltr(`${p.percent} ÷ 100`)}.`, "2"),
-          toSpan(`3. נחשב: ${ltr(`${p.base} × ${p.percent} ÷ 100 = ${ans}`)}.`, "3"),
-          toSpan(`4. לכן ${p.percent}% מ-${p.base} הוא ${ans}.`, "4"),
+          toSpan(
+            `1. מחשבים את גובה ההנחה: ${ltr(`${p.base} × ${p.p}/100 = ${p.discount}`)}.`,
+            "1"
+          ),
+          toSpan(
+            `2. מפחיתים מהמחיר: ${ltr(`${p.base} - ${p.discount} = ${ans}`)}.`,
+            "2"
+          ),
         ];
       }
-      if (p.kind === "perc_what") {
-        const approx = ((p.part / p.base) * 100).toFixed(1);
-        return [
-          toSpan(`1. נרשום יחס: ${ltr(`${p.part} ÷ ${p.base}`)}.`, "1"),
-          toSpan("2. את התוצאה נכפיל ב-100 כדי לקבל אחוז.", "2"),
-          toSpan(`3. זה יוצא בערך ${approx}%, ובעיגול ${ans}%.`, "3"),
-          toSpan(`4. לכן ${p.part} הוא ${ans}% מתוך ${p.base}.`, "4"),
-        ];
-      }
-      return [];
+      return [
+        toSpan(
+          `1. ${p.p}% מתוך ${p.base} זה ${p.base} כפול ${p.p}/100.`,
+          "1"
+        ),
+        toSpan(
+          `2. נחשב: ${ltr(`${p.base} × ${p.p}/100 = ${ans}`)}.`,
+          "2"
+        ),
+      ];
 
     case "sequences":
-      if (p.kind === "seq_arith") {
-        const diffList = p.terms
-          .slice(1)
-          .map((val, idx) => val - p.terms[idx])
-          .join(", ");
-        return [
-          toSpan(`1. נסתכל על הסדרה: ${ltr(p.terms.join(", "))}.`, "1"),
-          toSpan(`2. נחשב הפרשים בין איברים סמוכים: ${diffList}.`, "2"),
-          toSpan(`3. ההפרש הקבוע הוא ${p.step}.`, "3"),
-          toSpan(`4. נמשיך באותו הפרש ונקבל שהאיבר החסר הוא ${ans}.`, "4"),
-        ];
-      }
-      return [];
+      return [
+        toSpan(
+          `1. נסתכל על ההפרש בין שני מספרים סמוכים: למשל ${ltr(
+            `${p.seq[1]} - ${p.seq[0]} = ${p.step}`
+          )}.`,
+          "1"
+        ),
+        toSpan("2. זה הצעד הקבוע של הסדרה.", "2"),
+        toSpan(
+          `3. נשתמש באותו צעד כדי להשלים את המקום הריק.`,
+          "3"
+        ),
+      ];
 
-    case "decimals": {
-      if (p.kind === "dec_add") {
+    case "decimals":
+      return [
+        toSpan("1. ניישר את הנקודות העשרוניות אחת מתחת לשנייה.", "1"),
+        toSpan("2. נחשב כאילו זה מספרים שלמים.", "2"),
+        toSpan(
+          "3. נחזיר את הנקודה למקום לפי מספר הספרות אחרי הנקודה.",
+          "3"
+        ),
+      ];
+
+    case "rounding":
+      return [
+        toSpan(
+          `1. נזהה אם מעגלים לעשרות או למאות ומסתכלים על הספרה שאחרי.`,
+          "1"
+        ),
+        toSpan(
+          "2. אם הספרה שאחרי היא 0–4 – מעגלים למטה. אם 5–9 – למעלה.",
+          "2"
+        ),
+        toSpan(`3. כך נקבל את ${ans}.`, "3"),
+      ];
+
+    case "equations": {
+      if (p.kind === "eq_add") {
         return [
           toSpan(
-            "1. נרשום את המספרים אחד מתחת לשני כך שהנקודות העשרוניות מיושרות.",
+            `1. זוכרים שבחיבור הפעולה ההפוכה היא חיסור.`,
             "1"
           ),
-          toSpan("2. נחבר כמו בעמודות רגילות, והנקודה נשארת באותו מקום.", "2"),
-          toSpan(`3. נקבל: ${ltr(`${p.a} + ${p.b} = ${ans}`)}.`, "3"),
-        ];
-      }
-      if (p.kind === "dec_sub") {
-        return [
-          toSpan("1. נכין את המספרים בעמודה ונדאג לנקודות מיושרות.", "1"),
-          toSpan("2. נחסר ספרה אחר ספרה מימין לשמאל.", "2"),
-          toSpan(`3. התוצאה: ${ltr(`${p.a} - ${p.b} = ${ans}`)}.`, "3"),
-        ];
-      }
-      if (p.kind === "dec_times") {
-        return [
           toSpan(
-            `1. הכפלה ב-${p.factor} משמעה הזזה של הנקודה ${p.factor === 10 ? "ספרה אחת" : "שתי ספרות"} ימינה.`,
-            "1"
-          ),
-          toSpan(
-            `2. נבצע את ההזזה על ${p.a} ונמלא אפסים אם צריך.`,
+            `2. במקום לנחש את המספר ב-${BLANK}, נחשב ${ltr(`${p.c} - ${p.a}`)} או ${ltr(`${p.c} - ${p.b}`)}.`,
             "2"
           ),
-          toSpan(`3. נקבל: ${ltr(`${p.a} × ${p.factor} = ${ans}`)}.`, "3"),
+          toSpan(
+            `3. קבלת התוצאה: ${ans}.`,
+            "3"
+          ),
         ];
       }
-      if (p.kind === "dec_div") {
+
+      if (p.kind === "eq_sub") {
         return [
           toSpan(
-            `1. בחילוק ב-${p.factor} מזיזים את הנקודה ${p.factor === 10 ? "ספרה אחת" : "שתי ספרות"} שמאלה.`,
+            `1. בחיסור הפעולה ההפוכה היא חיבור.`,
             "1"
           ),
           toSpan(
-            "2. נוסיף אפסים משמאל אם צריך כדי לבצע את ההזזה.",
+            `2. אם יש ${ltr(`${p.a} - ${BLANK} = ${p.c}`)}, נחשב ${ltr(`${p.a} - ${p.c}`)}.`,
             "2"
           ),
-          toSpan(`3. לכן ${ltr(`${p.a} ÷ ${p.factor} = ${ans}`)}.`, "3"),
+          toSpan(
+            `3. התוצאה היא ${ans} – נבדוק: ${ltr(`${p.a} - ${ans} = ${p.c}`)}.`,
+            "3"
+          ),
         ];
       }
+
+      if (p.kind === "eq_mul") {
+        return [
+          toSpan(
+            `1. בכפל הפעולה ההפוכה היא חילוק.`,
+            "1"
+          ),
+          toSpan(
+            `2. נחשב ${ltr(`${p.c} ÷ ${p.a}`)} או ${ltr(`${p.c} ÷ ${p.b}`)} לפי המקום של ${BLANK}.`,
+            "2"
+          ),
+          toSpan(
+            `3. מקבלים ${ans} ובודקים: ${ltr(`${p.a} × ${ans} = ${p.c}`)} או ${ltr(`${ans} × ${p.b} = ${p.c}`)}.`,
+            "3"
+          ),
+        ];
+      }
+
+      if (p.kind === "eq_div") {
+        return [
+          toSpan(
+            `1. בחילוק הפעולה ההפוכה היא כפל.`,
+            "1"
+          ),
+          toSpan(
+            `2. אם ${ltr(`${BLANK} ÷ ${p.divisor} = ${p.quotient}`)}, נכפול ${ltr(`${p.quotient} × ${p.divisor}`)}.`,
+            "2"
+          ),
+          toSpan(
+            `3. מקבלים ${ans} ובודקים חזרה בחילוק.`,
+            "3"
+          ),
+        ];
+      }
+
       return [];
     }
 
-    case "rounding": {
-      if (p.kind === "round_10") {
-        return [
-          toSpan(`1. נסתכל על ספרת היחידות של ${p.n}.`, "1"),
-          toSpan("2. אם היא 0–4 נעגל למטה, אם 5–9 נעגל למעלה.", "2"),
-          toSpan(`3. התוצאה העגולה לעשרות: ${ans}.`, "3"),
-        ];
-      }
-      if (p.kind === "round_100") {
-        return [
-          toSpan(`1. נסתכל על ספרת העשרות של ${p.n}.`, "1"),
-          toSpan("2. 0–4 -> מעגלים למטה, 5–9 -> למעלה.", "2"),
-          toSpan(`3. לכן ${p.n} מעוגל למאות הוא ${ans}.`, "3"),
-        ];
-      }
-      if (p.kind === "round_whole") {
-        return [
-          toSpan(`1. נסתכל על החלק העשרוני של ${p.n}.`, "1"),
-          toSpan("2. אם הוא קטן מ-0.5 נעגל למטה, אחרת למעלה.", "2"),
-          toSpan(`3. לכן המספר השלם הקרוב ביותר הוא ${ans}.`, "3"),
-        ];
-      }
-      if (p.kind === "round_tenth") {
+    case "compare": {
+      return [
+        toSpan(
+          `1. נסתכל על שני המספרים: ${ltr(`${p.a}`)} ו-${ltr(`${p.b}`)}.`,
+          "1"
+        ),
+        toSpan(
+          `2. נבדוק מי גדול יותר (או אם שווים).`,
+          "2"
+        ),
+        toSpan(
+          `3. לפי זה נבחר את הסימן הנכון: "<" אם הראשון קטן, ">" אם גדול, "=" אם שווים.`,
+          "3"
+        ),
+      ];
+    }
+
+    case "number_sense": {
+      if (p.kind === "ns_place_tens_units" || p.kind === "ns_place_hundreds") {
         return [
           toSpan(
-            `1. נסתכל על הספרה במקום המאות של ${p.n} (השנייה אחרי הנקודה).`,
+            `1. מפרקים את המספר לעשרות/מאות/יחידות.`,
             "1"
           ),
-          toSpan("2. אם היא 5 או יותר – נעלה את ספרת העשיריות, אחרת נשאיר.", "2"),
-          toSpan(`3. לכן לעשירית הקרובה ביותר נקבל ${ans}.`, "3"),
+          toSpan(
+            `2. לדוגמה ${ltr(String(p.n))} = ${p.hundreds ?? ""}${p.hundreds != null ? " מאות," : ""} ${p.tens ?? ""}${p.tens != null ? " עשרות," : ""} ${p.units ?? ""}${p.units != null ? " יחידות" : ""}.`,
+            "2"
+          ),
+          toSpan(
+            `3. בוחרים את הספרה לפי מה ששאלו.`,
+            "3"
+          ),
+        ];
+      }
+
+      if (p.kind === "ns_neighbors") {
+        return [
+          toSpan(
+            `1. מספר אחד אחרי – מוסיפים 1. מספר אחד לפני – מחסרים 1.`,
+            "1"
+          ),
+          toSpan(
+            `2. למשל אחרי ${p.n} מגיע ${p.n + 1}, ולפניו ${p.n - 1}.`,
+            "2"
+          ),
+        ];
+      }
+
+      if (p.kind === "ns_complement10" || p.kind === "ns_complement100") {
+        const target = p.c;
+        return [
+          toSpan(
+            `1. מחפשים כמה חסר מ-${p.b} כדי להגיע ל-${target}.`,
+            "1"
+          ),
+          toSpan(
+            `2. נחשב: ${ltr(`${target} - ${p.b} = ${ans}`)}.`,
+            "2"
+          ),
+        ];
+      }
+
+      if (p.kind === "ns_even_odd") {
+        return [
+          toSpan(
+            `1. מסתכלים על ספרת היחידות של ${p.n}.`,
+            "1"
+          ),
+          toSpan(
+            `2. אם הספרה היא 0,2,4,6,8 – המספר זוגי. אם 1,3,5,7,9 – אי-זוגי.`,
+            "2"
+          ),
+        ];
+      }
+
+      return [];
+    }
+
+    case "factors_multiples": {
+      if (p.kind === "fm_factor") {
+        return [
+          toSpan(
+            `1. נבדוק אילו מספרים מתחלקים ב-${p.n} בלי שארית.`,
+            "1"
+          ),
+          toSpan(
+            `2. נחלק את ${p.n} במספרים האפשריים עד שנמצא מי שמתחלק בדיוק.`,
+            "2"
+          ),
+        ];
+      }
+      if (p.kind === "fm_multiple") {
+        return [
+          toSpan(
+            `1. כפולות של ${p.base} מתקבלות כשמכפילים את המספר ב-1,2,3,...`,
+            "1"
+          ),
+          toSpan(
+            `2. נבדוק מי מהרשימה מתאים לצורה ${p.base} × מספר שלם.`,
+            "2"
+          ),
+        ];
+      }
+      if (p.kind === "fm_gcd") {
+        return [
+          toSpan(
+            `1. נפרק את ${p.a} ו-${p.b} לגורמים.`,
+            "1"
+          ),
+          toSpan(
+            `2. נמצא גורמים משותפים ונראה מי הגדול ביותר – כאן ${ans}.`,
+            "2"
+          ),
         ];
       }
       return [];
@@ -1156,14 +1486,55 @@ function getSolutionSteps(question, operation, gradeKey) {
         ];
       }
 
-      if (p.kind === "wp_money") {
+      if (p.kind === "wp_shop_discount") {
         return [
-          toSpan("1. מבינים שמדובר בכפל (מחיר × כמות).", "1"),
           toSpan(
-            `2. נחשב: ${ltr(`${p.price} × ${p.qty} = ${ans}`)}.`,
+            `1. נחשב את ההנחה: ${ltr(`${p.price} × ${p.discPerc}/100 = ${p.discount}`)}.`,
+            "1"
+          ),
+          toSpan(
+            `2. נפחית מהמחיר: ${ltr(`${p.price} - ${p.discount} = ${ans}`)}.`,
             "2"
           ),
-          toSpan("3. זה הסכום הכולל שיש לשלם.", "3"),
+        ];
+      }
+
+      if (p.kind === "wp_unit_cm_to_m") {
+        return [
+          toSpan(
+            `1. יודעים ש-1 מ' = 100 ס"מ.`,
+            "1"
+          ),
+          toSpan(
+            `2. לכן מחלקים ב-100: ${ltr(`${p.cm} ÷ 100 = ${ans}`)}.`,
+            "2"
+          ),
+        ];
+      }
+
+      if (p.kind === "wp_unit_g_to_kg") {
+        return [
+          toSpan(
+            `1. יודעים ש-1 ק\"ג = 1000 גרם.`,
+            "1"
+          ),
+          toSpan(
+            `2. לכן מחלקים ב-1000: ${ltr(`${p.g} ÷ 1000 = ${ans}`)}.`,
+            "2"
+          ),
+        ];
+      }
+
+      if (p.kind === "wp_distance_time") {
+        return [
+          toSpan(
+            `1. נוסחת הדרך: דרך = מהירות × זמן.`,
+            "1"
+          ),
+          toSpan(
+            `2. נחשב: ${ltr(`${p.speed} × ${p.hours} = ${ans}`)} ק\"מ.`,
+            "2"
+          ),
         ];
       }
 
@@ -1208,17 +1579,21 @@ function getErrorExplanation(question, operation, wrongAnswer, gradeKey) {
     case "fractions":
       return "בשברים לרוב שוכחים מכנה משותף או עובדים גם על המכנה במקום רק על המונה.";
     case "percentages":
-      return "באחוזים קל להתבלבל אם מחלקים או מכפילים ב-100. ודא מי המספר המלא (שלם) ומי החלק שאתה משווה אליו.";
+      return "באחוזים טעות נפוצה היא להתבלבל בין חלק מתוך 100 לבין חיבור/חיסור רגיל. נסה לכתוב קודם את השבר (למשל 25% = 1/4).";
     case "sequences":
-      return "בסדרות כדאי לוודא שהפרש בין כל שני איברים סמוכים קבוע. אולי בחרת הפרש לא נכון או דילגת על איבר.";
+      return "בסדרות רבים מפספסים את ההפרש הקבוע. בדוק שוב מה קורה בין שני איברים סמוכים.";
     case "decimals":
-      return "בעשרוניים הטעות הנפוצה היא אי-יישור נכון של הנקודות או שכחת אפס במקום ריק. כתוב את המספרים אחד מתחת לשני ויישר את הנקודה.";
+      return "בעשרוניים באגים קורים כשלא מיישרים את הנקודות או שוכחים את מספר הספרות אחרי הנקודה.";
     case "rounding":
-      return "בעיגול צריך להסתכל על הספרה שאחרי המקום שאליו מעגלים. אם היא 5 ומעלה – מעגלים למעלה, אחרת למטה.";
+      return "בעיגול קל להתבלבל בספרה שאחריה. בדוק אם היא 0–4 (למטה) או 5–9 (למעלה).";
     case "equations":
-      return "במשוואות מספר חסר עדיף להשתמש בפעולה ההפוכה במקום לנחש. לדוגמה 7 + ? = 15 → חיסור 15 - 7.";
+      return "במשוואות מספר חסר רבים מנסים לנחש. כדאי להשתמש בפעולה ההפוכה ולהחזיר את שני הצדדים לאותו מספר.";
     case "compare":
-      return "בהשוואת מספרים קל להתבלבל במיוחד בעשרוניים. בדוק קודם את החלק השלם ורק אחר כך את החלק העשרוני.";
+      return "בהשוואת מספרים הטעות הנפוצה היא להתבלבל מי גדול יותר, במיוחד בעשרוניים. נסה להשוות קודם את החלק השלם.";
+    case "number_sense":
+      return "בדוק שוב את פירוק המספר לעשרות/מאות/יחידות או אם המספר זוגי/אי-זוגי. אלה דברים שקל להתבלבל בהם כשממהרים.";
+    case "factors_multiples":
+      return "בגורמים וכפולות קל להתבלבל בין \"מה מחלק את המספר\" לבין \"מה מתקבל כשמכפילים\". נסה לכתוב את כל הגורמים או הכפולות בצד.";
     case "word_problems":
       return "בתרגילי מילים הטעות הנפוצה היא לבחור פעולה לא נכונה (חיבור במקום חיסור וכו'). נסה לכתוב תרגיל פשוט שמתאים לסיפור.";
     default:
@@ -1290,6 +1665,8 @@ export default function MathMaster() {
     rounding: { total: 0, correct: 0 },
     equations: { total: 0, correct: 0 },
     compare: { total: 0, correct: 0 },
+    number_sense: { total: 0, correct: 0 },
+    factors_multiples: { total: 0, correct: 0 },
     word_problems: { total: 0, correct: 0 },
   });
 
@@ -1331,6 +1708,8 @@ export default function MathMaster() {
     rounding: false,
     equations: false,
     compare: false,
+    number_sense: false,
+    factors_multiples: false,
     word_problems: false,
   });
 
@@ -1438,6 +1817,8 @@ export default function MathMaster() {
       rounding: availableOps.includes("rounding"),
       equations: availableOps.includes("equations"),
       compare: availableOps.includes("compare"),
+      number_sense: availableOps.includes("number_sense"),
+      factors_multiples: availableOps.includes("factors_multiples"),
       word_problems: availableOps.includes("word_problems"),
     };
     setMixedOperations(newMixedOps);
@@ -1961,15 +2342,19 @@ export default function MathMaster() {
       case "percentages":
         return "% Percentages";
       case "sequences":
-        return "🔢 Sequences";
+        return "⬆⬇ Sequences";
       case "decimals":
-        return "• Decimals";
+        return "0.1 Decimals";
       case "rounding":
         return "≈ Rounding";
       case "equations":
         return "? Equations";
       case "compare":
         return "< > Compare";
+      case "number_sense":
+        return "🔢 Number Sense";
+      case "factors_multiples":
+        return "🧩 Factors & Multiples";
       case "word_problems":
         return "📘 Word Problems";
       case "mixed":
