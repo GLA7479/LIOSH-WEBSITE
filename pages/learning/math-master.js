@@ -2180,13 +2180,18 @@ function buildVerticalOperation(topNumber, bottomNumber, operator = "-") {
   const line2 = operator + " " + " ".repeat(maxLen - bottom.length) + bottom;
   const line3 = "-".repeat(width);
 
-  return `${line1}\n${line2}\n${line3}`;
+  const raw = `${line1}\n${line2}\n${line3}`;
+
+  // עוטפים את כל הבלוק בסימון LTR כדי שלא יתבלגן בתוך טקסט עברי
+  return `\u2066${raw}\u2069`;
 }
 
 function buildStepExplanation(question) {
   if (!question) return null;
 
   const BLANK = "__";
+  const LTR = (expr) => `\u2066${expr}\u2069`;
+
   const p = question.params || {};
 
   const op = question.operation;
@@ -2202,27 +2207,32 @@ function buildStepExplanation(question) {
   const steps = [];
 
   // טיפול בתרגילי השלמה בחיבור - הופכים לחיסור
-  if (op === "addition" && (p.kind === "add_missing_first" || p.kind === "add_missing_second")) {
+  if (
+    op === "addition" &&
+    (p.kind === "add_missing_first" || p.kind === "add_missing_second")
+  ) {
     const c = p.c; // התוצאה הסופית
     let leftNum, rightNum;
-    
+
     if (p.kind === "add_missing_first") {
       // __ + b = c  →  c - b = __
       leftNum = c;
       rightNum = p.b;
-      exercise = `${BLANK} + ${p.b} = ${c}`;
+      exercise = LTR(`${BLANK} + ${p.b} = ${c}`);
     } else {
       // a + __ = c  →  c - a = __
       leftNum = c;
       rightNum = p.a;
-      exercise = `${p.a} + ${BLANK} = ${c}`;
+      exercise = LTR(`${p.a} + ${BLANK} = ${c}`);
     }
 
     const missing = answer;
     vertical = buildVerticalOperation(leftNum, rightNum, "-");
 
     steps.push(
-      `1. הופכים את התרגיל לחיסור: במקום ${exercise} כותבים ${c} - ${rightNum} = __.`
+      `1. הופכים את התרגיל לחיסור: במקום ${exercise} כותבים ${LTR(
+        `${c} - ${rightNum} = ${BLANK}`
+      )}.`
     );
     steps.push(
       "2. כותבים את המספרים זה מתחת לזה בעמודות: עשרות מעל עשרות ויחידות מעל יחידות."
@@ -2265,13 +2275,19 @@ function buildStepExplanation(question) {
       const diff = topDigit - bottomDigit;
       resultDigits.unshift(diff);
       steps.push(
-        `${stepIndex}. כעת מחשבים בעמודת ה${placeName}: ${topDigit} − ${bottomDigit} = ${diff} וכותבים ${diff} בעמודה זו.`
+        `${stepIndex}. כעת מחשבים בעמודת ה${placeName}: ${LTR(
+          `${topDigit} - ${bottomDigit} = ${diff}`
+        )} וכותבים ${diff} בעמודה זו.`
       );
       stepIndex++;
     }
 
     steps.push(
-      `5. המספר שנוצר הוא ${missing}. זה המספר שחסר בתרגיל: ${p.kind === "add_missing_first" ? `${missing} + ${p.b}` : `${p.a} + ${missing}`} = ${c}.`
+      `5. המספר שנוצר הוא ${missing}. זה המספר שחסר בתרגיל: ${
+        p.kind === "add_missing_first"
+          ? LTR(`${missing} + ${p.b} = ${c}`)
+          : LTR(`${p.a} + ${missing} = ${c}`)
+      }.`
     );
 
     return {
@@ -2289,12 +2305,15 @@ function buildStepExplanation(question) {
     else if (op === "multiplication") symbol = "×";
     else if (op === "division") symbol = "÷";
 
-    exercise = `${a} ${symbol} ${b} = ${BLANK}`;
+    exercise = LTR(`${a} ${symbol} ${b} = ${BLANK}`);
   } else {
-    exercise = question.params?.exerciseText || question.question || "";
+    const raw = question.params?.exerciseText || question.question || "";
+    exercise = raw ? LTR(raw) : "";
   }
 
   // טיפוסי הסבר לפי פעולה
+
+  // חיבור
   if (op === "addition" && typeof a === "number" && typeof b === "number") {
     vertical = buildVerticalOperation(a, b, "+");
     const aStr = String(a);
@@ -2304,7 +2323,9 @@ function buildStepExplanation(question) {
     const pb = bStr.padStart(maxLen, "0");
 
     steps.push(
-      "1. כותבים את המספרים אחד מעל השני, כך שסַפְרות היחידות נמצאות באותה עמודה."
+      `1. כותבים את המספרים אחד מעל השני, כך שסַפְרות היחידות נמצאות באותה עמודה: ${LTR(
+        `${a}\n+ ${b}`
+      )}.`
     );
 
     let carry = 0;
@@ -2324,9 +2345,9 @@ function buildStepExplanation(question) {
           ? "עשרות"
           : "מאות ומעלה";
 
-      let text = `${stepIndex}. מחברים את ספרת ה${placeName}: ${da} + ${db}`;
-      if (carry) text += ` ועוד ${carry} שנשאר מהשלב הקודם`;
-      text += ` = ${sum}. כותבים ${ones} בעמודת ה${placeName}`;
+      let text = `${stepIndex}. מחברים את ספרת ה${placeName}: ${LTR(
+        `${da} + ${db}${carry ? " + " + carry : ""} = ${sum}`
+      )}. כותבים ${ones} בעמודת ה${placeName}`;
       if (newCarry) text += ` ומעבירים 1 לעמודת ה${placeName} הבאה.`;
       steps.push(text);
 
@@ -2346,11 +2367,16 @@ function buildStepExplanation(question) {
         `${stepIndex}. המספר שנוצר בסוף הוא ${answer}. זהו התשובה הסופית לתרגיל.`
       );
     }
-  } else if (
-    op === "subtraction" &&
-    typeof a === "number" &&
-    typeof b === "number"
-  ) {
+
+    return {
+      exercise,
+      vertical,
+      steps,
+    };
+  }
+
+  // חיסור
+  if (op === "subtraction" && typeof a === "number" && typeof b === "number") {
     vertical = buildVerticalOperation(a, b, "-");
     const aStr = String(a);
     const bStr = String(b);
@@ -2359,7 +2385,9 @@ function buildStepExplanation(question) {
     const pb = bStr.padStart(maxLen, "0");
 
     steps.push(
-      "1. כותבים את המספרים אחד מעל השני, כך שסַפְרות היחידות, העשרות וכו' נמצאות באותו טור."
+      `1. כותבים את המספרים אחד מעל השני, כך שסַפְרות היחידות, העשרות וכו' נמצאות באותו טור: ${LTR(
+        `${a}\n- ${b}`
+      )}.`
     );
 
     let borrow = 0;
@@ -2391,7 +2419,9 @@ function buildStepExplanation(question) {
       stepIndex++;
 
       steps.push(
-        `${stepIndex}. כעת מחשבים בעמודת ה${placeName}: ${da} − ${db} = ${diff} וכותבים ${diff} בעמודה זו.`
+        `${stepIndex}. כעת מחשבים בעמודת ה${placeName}: ${LTR(
+          `${da} - ${db} = ${diff}`
+        )} וכותבים ${diff} בעמודה זו.`
       );
       stepIndex++;
     }
@@ -2401,27 +2431,40 @@ function buildStepExplanation(question) {
         `${stepIndex}. המספר שקיבלנו בסוף הוא ${answer}. זו התוצאה של החיסור.`
       );
     }
-  } else if (
+
+    return {
+      exercise,
+      vertical,
+      steps,
+    };
+  }
+
+  // כפל
+  if (
     op === "multiplication" &&
     typeof a === "number" &&
     typeof b === "number"
   ) {
-    vertical = `${a}\n× ${b}`;
+    vertical = LTR(`${a}\n× ${b}`);
 
     steps.push(
-      "1. מבינים שהכפל הוא חיבור חוזר: אם נכפול למשל 3 × 4 זה כמו 4 + 4 + 4."
+      "1. מבינים שהכפל הוא חיבור חוזר: למשל 3 × 4 זה כמו 4 + 4 + 4."
     );
     steps.push(
-      `2. במקרה שלנו מחשבים: ${a} × ${b}. אפשר לחשב כ-${a} פעמים המספר ${b} או ${b} פעמים המספר ${a}.`
+      `2. במקרה שלנו מחשבים: ${LTR(
+        `${a} × ${b}`
+      )}. אפשר לחשב כ-${a} פעמים המספר ${b} או ${b} פעמים המספר ${a}.`
     );
 
     if (a <= 12 && b <= 12) {
       const smaller = Math.min(a, b);
       const bigger = Math.max(a, b);
       steps.push(
-        `3. למשל: ${smaller} × ${bigger} = ${Array(smaller)
-          .fill(bigger)
-          .join(" + ")} = ${answer}.`
+        `3. למשל: ${LTR(
+          `${smaller} × ${bigger} = ${Array(smaller)
+            .fill(bigger)
+            .join(" + ")} = ${answer}`
+        )}.`
       );
     } else if (typeof answer === "number") {
       steps.push(
@@ -2430,13 +2473,18 @@ function buildStepExplanation(question) {
     }
 
     if (typeof answer === "number") {
-      steps.push(`4. לכן ${a} × ${b} = ${answer}.`);
+      steps.push(`4. לכן ${LTR(`${a} × ${b} = ${answer}`)}.`);
     }
-  } else if (
-    op === "division" &&
-    typeof a === "number" &&
-    typeof b === "number"
-  ) {
+
+    return {
+      exercise,
+      vertical,
+      steps,
+    };
+  }
+
+  // חילוק
+  if (op === "division" && typeof a === "number" && typeof b === "number") {
     steps.push(
       `1. חלוקה היא בעצם הפוך מהכפל: כמה פעמים המספר ${b} נכנס ב-${a}?`
     );
@@ -2444,12 +2492,16 @@ function buildStepExplanation(question) {
       const q = Math.floor(answer);
       const r = a - q * b;
       steps.push(
-        `2. בודקים: ${b} × ${q} = ${b * q}. זה נותן לנו ${b * q} מתוך ${a}.`
+        `2. בודקים: ${LTR(`${b} × ${q} = ${b * q}`)}. זה נותן לנו ${
+          b * q
+        } מתוך ${a}.`
       );
 
       if (r > 0) {
         steps.push(
-          `3. נשאר שארית: ${a} − ${b * q} = ${r}. כלומר התשובה היא ${q} עם שארית ${r}.`
+          `3. נשאר שארית: ${LTR(
+            `${a} - ${b * q} = ${r}`
+          )}. כלומר התשובה היא ${q} עם שארית ${r}.`
         );
       } else {
         steps.push(
@@ -2457,8 +2509,16 @@ function buildStepExplanation(question) {
         );
       }
     }
-  } else if (op === "word_problems") {
-    // תרגיל מילים – מסבירים במילים פשוטות את הדרך
+
+    return {
+      exercise,
+      vertical,
+      steps,
+    };
+  }
+
+  // תרגיל מילים – הסבר כללי
+  if (op === "word_problems") {
     steps.push("1. קוראים את שאלת המילים לאט ומסמנים את הנתונים החשובים.");
     steps.push(
       "2. מחליטים אם צריך לחבר, לחסר, לכפול או לחלק לפי הסיפור (האם הכמות גדלה, קטנה, חוזרת על עצמה או מתחלקת?)."
@@ -2469,15 +2529,21 @@ function buildStepExplanation(question) {
     if (typeof answer === "number") {
       steps.push(`4. החישוב נותן לנו ${answer}, ולכן זו התשובה לשאלה.`);
     }
-  } else {
-    // כל השאר (שברים וכו') – הסבר כללי
-    steps.push(
-      "1. בודקים איזה סוג פעולה זו (חיבור, חיסור, כפל או חילוק) ומסדרים את המספרים בצורה נוחה על הדף."
-    );
-    steps.push("2. פותרים שלב־אחר־שלב, בלי לדלג, ומסמנים כל שלב בדרך.");
-    if (typeof answer === "number") {
-      steps.push(`3. בסוף מקבלים את התוצאה ${answer}.`);
-    }
+
+    return {
+      exercise,
+      vertical,
+      steps,
+    };
+  }
+
+  // כל השאר (שברים, אחוזים וכו') – הסבר כללי
+  steps.push(
+    "1. בודקים איזה סוג פעולה זו (חיבור, חיסור, כפל או חילוק) ומסדרים את המספרים בצורה נוחה על הדף."
+  );
+  steps.push("2. פותרים שלב־אחר־שלב, בלי לדלג, ומסמנים כל שלב בדרך.");
+  if (typeof answer === "number") {
+    steps.push(`3. בסוף מקבלים את התוצאה ${answer}.`);
   }
 
   return {
