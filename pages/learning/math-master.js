@@ -33,7 +33,7 @@ const LEVELS = {
 const GRADES = {
   g1_2: {
     name: "Grade 1–2",
-    operations: ["addition", "subtraction"],
+    operations: ["addition", "subtraction", "compare"],
     allowFractions: false,
     allowNegatives: false,
   },
@@ -47,6 +47,8 @@ const GRADES = {
       "fractions",
       "sequences",
       "decimals",
+      "compare",
+      "equations",
       "mixed",
     ],
     allowFractions: true,
@@ -64,6 +66,8 @@ const GRADES = {
       "sequences",
       "decimals",
       "rounding",
+      "equations",
+      "compare",
       "word_problems",
       "mixed",
     ],
@@ -82,6 +86,8 @@ const OPERATIONS = [
   "sequences",
   "decimals",
   "rounding",
+  "equations",
+  "compare",
   "word_problems",
   "mixed",
 ];
@@ -580,6 +586,105 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       question = `עגל את ${n.toFixed(2)} לעשירית הקרובה ביותר.`;
       params = { kind: "round_tenth", n: n.toFixed(2) };
     }
+  } else if (selectedOp === "equations") {
+    const canUseMulDiv = gradeKey === "g5_6";
+    const types = canUseMulDiv ? ["add", "sub", "mul", "div"] : ["add", "sub"];
+    const t = types[Math.floor(Math.random() * types.length)];
+
+    const maxAdd = levelConfig.addition.max || 100;
+    const maxSub = levelConfig.subtraction.max || 100;
+    const maxMul = levelConfig.multiplication.max || 10;
+    const maxDiv = levelConfig.division.max || 100;
+    const maxDivisor = levelConfig.division.maxDivisor || 12;
+
+    if (t === "add") {
+      const a = randInt(1, Math.floor(maxAdd / 2));
+      const b = randInt(1, Math.floor(maxAdd / 2));
+      const c = a + b;
+      const form = Math.random() < 0.5 ? "a_plus_x" : "x_plus_b";
+
+      if (form === "a_plus_x") {
+        correctAnswer = b;
+        question = `${a} + ? = ${c}`;
+      } else {
+        correctAnswer = a;
+        question = `? + ${b} = ${c}`;
+      }
+      params = { kind: "eq_add", form, a, b, c };
+    } else if (t === "sub") {
+      const c = randInt(0, Math.floor(maxSub / 2));
+      const b = randInt(0, Math.floor(maxSub / 2));
+      const a = c + b;
+      const form = Math.random() < 0.5 ? "a_minus_x" : "x_minus_b";
+
+      if (form === "a_minus_x") {
+        correctAnswer = b;
+        question = `${a} - ? = ${c}`;
+      } else {
+        correctAnswer = a;
+        question = `? - ${b} = ${c}`;
+      }
+      params = { kind: "eq_sub", form, a, b, c };
+    } else if (t === "mul") {
+      const a = randInt(1, maxMul);
+      const b = randInt(1, maxMul);
+      const c = a * b;
+      const form = Math.random() < 0.5 ? "a_times_x" : "x_times_b";
+
+      if (form === "a_times_x") {
+        correctAnswer = b;
+        question = `${a} × ? = ${c}`;
+      } else {
+        correctAnswer = a;
+        question = `? × ${b} = ${c}`;
+      }
+      params = { kind: "eq_mul", form, a, b, c };
+    } else {
+      const divisor = randInt(2, maxDivisor);
+      const quotient = randInt(2, Math.max(2, Math.floor(maxDiv / divisor)));
+      const dividend = divisor * quotient;
+      const form = Math.random() < 0.5 ? "a_div_x" : "x_div_b";
+
+      if (form === "a_div_x") {
+        correctAnswer = divisor;
+        question = `${dividend} ÷ ? = ${quotient}`;
+      } else {
+        correctAnswer = dividend;
+        question = `? ÷ ${divisor} = ${quotient}`;
+      }
+      params = { kind: "eq_div", form, dividend, divisor, quotient };
+    }
+  } else if (selectedOp === "compare") {
+    const isLowGrade = gradeKey === "g1_2";
+    const maxVal = levelConfig.addition.max || 500;
+    const a = isLowGrade ? randInt(0, 100) : randInt(-20, maxVal);
+    const b = isLowGrade ? randInt(0, 100) : randInt(-20, maxVal);
+
+    let symbol = "=";
+    if (a < b) symbol = "<";
+    else if (a > b) symbol = ">";
+
+    correctAnswer = symbol;
+    question = `השלם את הסימן: ${a} ? ${b}`;
+    params = { kind: "cmp", a, b };
+
+    const baseOptions = ["<", ">", "="];
+    const answers = [symbol, ...baseOptions.filter((s) => s !== symbol)];
+    for (let i = answers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [answers[i], answers[j]] = [answers[j], answers[i]];
+    }
+
+    return {
+      question,
+      correctAnswer,
+      answers,
+      operation: selectedOp,
+      params,
+      a,
+      b,
+      isStory: false,
+    };
   } else if (selectedOp === "word_problems") {
     const templates =
       gradeKey === "g5_6"
@@ -643,63 +748,62 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
   }
 
   const wrongAnswers = new Set();
+  const isDecimalsOp = selectedOp === "decimals";
+  const correctIsFraction =
+    typeof correctAnswer === "string" && correctAnswer.includes("/");
+  const isNumericAnswer = typeof correctAnswer === "number";
 
-  if (selectedOp === "decimals") {
+  if (isDecimalsOp) {
     const places =
-      params?.places != null
-        ? Math.max(1, Math.min(3, params.places))
-        : 1;
+      params?.places != null ? Math.max(1, Math.min(3, params.places)) : 1;
     const correctNum = Number(correctAnswer);
-    const fmtWrong = (x) => x.toFixed(places);
+    const fmt = (x) => x.toFixed(places);
 
     while (wrongAnswers.size < 3) {
       const deltaBase = Math.max(0.1, Math.abs(correctNum) * 0.1);
       const sign = Math.random() < 0.5 ? 1 : -1;
       const step = Math.random() < 0.5 ? 0.1 : 0.2;
       const wrongNum = correctNum + sign * deltaBase * step;
-      const wrong = fmtWrong(wrongNum);
+      const wrong = fmt(wrongNum);
       if (wrong !== correctAnswer && !wrongAnswers.has(wrong)) {
         wrongAnswers.add(wrong);
       }
     }
-  } else {
-    const correctIsFraction =
-      typeof correctAnswer === "string" && correctAnswer.includes("/");
+  } else if (correctIsFraction) {
+    const [cnRaw, cdRaw] = String(correctAnswer).split("/");
+    const cn = Number(cnRaw);
+    const cd = Number(cdRaw) || 1;
 
-    if (correctIsFraction) {
-      const [cnRaw, cdRaw] = correctAnswer.split("/");
-      const cn = Number(cnRaw);
-      const cd = Number(cdRaw) || 1;
-
-      while (wrongAnswers.size < 3) {
-        const delta = randInt(1, 3);
-        const sign = Math.random() > 0.5 ? 1 : -1;
-        const nWrong = cn + sign * delta;
-        const wrong = `${nWrong}/${cd}`;
-        if (wrong !== correctAnswer && !wrongAnswers.has(wrong) && nWrong > 0) {
-          wrongAnswers.add(wrong);
-        }
-      }
-    } else {
-      while (wrongAnswers.size < 3) {
-        const baseDelta = Math.max(
-          1,
-          Math.round(Math.abs(correctAnswer) * 0.15)
-        );
-        const variation = randInt(1, 3);
-        const sign = Math.random() > 0.5 ? 1 : -1;
-        const wrong = correctAnswer + sign * baseDelta * variation;
-
-        if (
-          wrong !== correctAnswer &&
-          !wrongAnswers.has(wrong) &&
-          wrong >= -200 &&
-          wrong <= 5000
-        ) {
-          wrongAnswers.add(wrong);
-        }
+    while (wrongAnswers.size < 3) {
+      const delta = randInt(1, 3);
+      const sign = Math.random() > 0.5 ? 1 : -1;
+      const nWrong = cn + sign * delta;
+      const wrong = `${nWrong}/${cd}`;
+      if (wrong !== correctAnswer && !wrongAnswers.has(wrong) && nWrong > 0) {
+        wrongAnswers.add(wrong);
       }
     }
+  } else if (isNumericAnswer) {
+    while (wrongAnswers.size < 3) {
+      const baseDelta = Math.max(
+        1,
+        Math.round(Math.abs(correctAnswer) * 0.15)
+      );
+      const variation = randInt(1, 3);
+      const sign = Math.random() > 0.5 ? 1 : -1;
+      const wrong = correctAnswer + sign * baseDelta * variation;
+
+      if (
+        wrong !== correctAnswer &&
+        !wrongAnswers.has(wrong) &&
+        wrong >= -200 &&
+        wrong <= 5000
+      ) {
+        wrongAnswers.add(wrong);
+      }
+    }
+  } else {
+    // תשובות לא מספריות (כמו סימני השוואה) כבר טופלו ב-return מוקדם
   }
 
   const allAnswers = [correctAnswer, ...Array.from(wrongAnswers)];
@@ -757,6 +861,10 @@ function getHint(question, operation, gradeKey) {
       return "בעשרוניים מיישרים את הנקודה העשרונית ומבצעים את הפעולה כמו בחשבון רגיל. אפשר לחשוב על עשיריות ומאות כמו על אגורות.";
     case "rounding":
       return "בעיגול מסתכלים על הספרה שאחרי המקום שאליו מעגלים: אם היא 5 או יותר – מעגלים למעלה, אחרת נשארים למטה.";
+    case "equations":
+      return "במשוואות עם מספר חסר משתמשים בפעולה ההפוכה: בחיבור נעזר בחיסור, בכפל בחילוק. שאל: איזה מספר הופך את שני הצדדים לשווים?";
+    case "compare":
+      return "כדי להשוות, הסתכל על החלק השלם קודם ואז על העשיריות/מאיות. בציר המספרים – מי שמימין גדול יותר.";
     case "word_problems":
       return "קרא לאט, סמן את המספרים ותרגם את הסיפור לתרגיל פשוט (חיבור, חיסור, כפל או חילוק).";
     default:
@@ -1103,6 +1211,14 @@ function getErrorExplanation(question, operation, wrongAnswer, gradeKey) {
       return "באחוזים קל להתבלבל אם מחלקים או מכפילים ב-100. ודא מי המספר המלא (שלם) ומי החלק שאתה משווה אליו.";
     case "sequences":
       return "בסדרות כדאי לוודא שהפרש בין כל שני איברים סמוכים קבוע. אולי בחרת הפרש לא נכון או דילגת על איבר.";
+    case "decimals":
+      return "בעשרוניים הטעות הנפוצה היא אי-יישור נכון של הנקודות או שכחת אפס במקום ריק. כתוב את המספרים אחד מתחת לשני ויישר את הנקודה.";
+    case "rounding":
+      return "בעיגול צריך להסתכל על הספרה שאחרי המקום שאליו מעגלים. אם היא 5 ומעלה – מעגלים למעלה, אחרת למטה.";
+    case "equations":
+      return "במשוואות מספר חסר עדיף להשתמש בפעולה ההפוכה במקום לנחש. לדוגמה 7 + ? = 15 → חיסור 15 - 7.";
+    case "compare":
+      return "בהשוואת מספרים קל להתבלבל במיוחד בעשרוניים. בדוק קודם את החלק השלם ורק אחר כך את החלק העשרוני.";
     case "word_problems":
       return "בתרגילי מילים הטעות הנפוצה היא לבחור פעולה לא נכונה (חיבור במקום חיסור וכו'). נסה לכתוב תרגיל פשוט שמתאים לסיפור.";
     default:
@@ -1172,6 +1288,8 @@ export default function MathMaster() {
     sequences: { total: 0, correct: 0 },
     decimals: { total: 0, correct: 0 },
     rounding: { total: 0, correct: 0 },
+    equations: { total: 0, correct: 0 },
+    compare: { total: 0, correct: 0 },
     word_problems: { total: 0, correct: 0 },
   });
 
@@ -1211,6 +1329,8 @@ export default function MathMaster() {
     sequences: false,
     decimals: false,
     rounding: false,
+    equations: false,
+    compare: false,
     word_problems: false,
   });
 
@@ -1314,6 +1434,10 @@ export default function MathMaster() {
       fractions: availableOps.includes("fractions"),
       percentages: availableOps.includes("percentages"),
       sequences: availableOps.includes("sequences"),
+      decimals: availableOps.includes("decimals"),
+      rounding: availableOps.includes("rounding"),
+      equations: availableOps.includes("equations"),
+      compare: availableOps.includes("compare"),
       word_problems: availableOps.includes("word_problems"),
     };
     setMixedOperations(newMixedOps);
@@ -1842,6 +1966,10 @@ export default function MathMaster() {
         return "• Decimals";
       case "rounding":
         return "≈ Rounding";
+      case "equations":
+        return "? Equations";
+      case "compare":
+        return "< > Compare";
       case "word_problems":
         return "📘 Word Problems";
       case "mixed":
