@@ -1713,6 +1713,18 @@ export default function ScienceMaster() {
                 </div>
               )}
 
+              {/* מה חשוב לזכור - מחוץ ל-container */}
+              {mode === "learning" && currentQuestion && (
+                <div className="mb-3 px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 text-right w-full max-w-md" dir="rtl">
+                  <div className="font-bold mb-1">📘 מה חשוב לזכור?</div>
+                  <ul className="list-disc pr-4 space-y-0.5">
+                    {(currentQuestion.theoryLines || []).map((line, i) => (
+                      <li key={i}>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* QUESTION AREA */}
               <div
                 ref={gameRef}
@@ -1722,20 +1734,9 @@ export default function ScienceMaster() {
                   minHeight: "300px",
                 }}
               >
-                {mode === "learning" && currentQuestion && (
-                  <div className="mb-2 px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 text-right" dir="rtl">
-                    <div className="font-bold mb-1">📘 מה חשוב לזכור?</div>
-                    <ul className="list-disc pr-4 space-y-0.5">
-                      {(currentQuestion.theoryLines || []).map((line, i) => (
-                        <li key={i}>{line}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
                 {/* STEM */}
                 <div
-                  className="text-4xl font-black text-white mb-4 text-center"
+                  className="text-4xl font-black text-white mb-6 text-center -mt-12"
                   style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                 >
                   {currentQuestion
