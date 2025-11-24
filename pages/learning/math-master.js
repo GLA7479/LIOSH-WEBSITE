@@ -4172,28 +4172,28 @@ export default function MathMaster() {
             className="grid grid-cols-7 gap-0.5 mb-1 w-full max-w-md"
           >
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[8px] text-white/60 leading-tight mb-0.5">ניקוד</div>
-              <div className="text-xs font-bold text-emerald-400 leading-tight">{score}</div>
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">ניקוד</div>
+              <div className="text-sm font-bold text-emerald-400 leading-tight">{score}</div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[8px] text-white/60 leading-tight mb-0.5">רצף</div>
-              <div className="text-xs font-bold text-amber-400 leading-tight">🔥{streak}</div>
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">רצף</div>
+              <div className="text-sm font-bold text-amber-400 leading-tight">🔥{streak}</div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[8px] text-white/60 leading-tight mb-0.5">כוכבים</div>
-              <div className="text-xs font-bold text-yellow-400 leading-tight">⭐{stars}</div>
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">כוכבים</div>
+              <div className="text-sm font-bold text-yellow-400 leading-tight">⭐{stars}</div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[8px] text-white/60 leading-tight mb-0.5">רמה</div>
-              <div className="text-xs font-bold text-purple-400 leading-tight">Lv.{playerLevel}</div>
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">רמה</div>
+              <div className="text-sm font-bold text-purple-400 leading-tight">Lv.{playerLevel}</div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[8px] text-white/60 leading-tight mb-0.5">✅</div>
-              <div className="text-xs font-bold text-green-400 leading-tight">{correct}</div>
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">✅</div>
+              <div className="text-sm font-bold text-green-400 leading-tight">{correct}</div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[8px] text-white/60 leading-tight mb-0.5">חיים</div>
-              <div className="text-xs font-bold text-rose-400 leading-tight">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">חיים</div>
+              <div className="text-sm font-bold text-rose-400 leading-tight">
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
             </div>
@@ -4204,9 +4204,9 @@ export default function MathMaster() {
                   : "bg-black/30 border border-white/10"
               }`}
             >
-              <div className="text-[8px] text-white/60 leading-tight mb-0.5">⏰ טיימר</div>
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">⏰ טיימר</div>
               <div
-                className={`text-xs font-black leading-tight ${
+                className={`text-sm font-black leading-tight ${
                   gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
                     ? "text-red-400"
                     : gameActive && (mode === "challenge" || mode === "speed")
