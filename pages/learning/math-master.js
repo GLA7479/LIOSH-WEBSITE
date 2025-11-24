@@ -335,7 +335,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       correctAnswer = a;
       const exerciseText = `${BLANK} + ${b} = ${c}`;
       question = exerciseText;
-      params = { kind: "add_complement10", a, b, c, exerciseText };
+      params = { kind: "add_complement10", a, b, c, exerciseText, op: "add", grade: gradeKey };
       operandA = a;
       operandB = b;
     } else if (gradeKey === "g3_4" && Math.random() < 0.2) {
@@ -353,7 +353,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       correctAnswer = round(a + b + c);
       const exerciseText = `${a} + ${b} + ${c} = ${BLANK}`;
       question = exerciseText;
-      params = { kind: "add_three", a, b, c, exerciseText };
+      params = { kind: "add_three", a, b, c, exerciseText, op: "add", grade: gradeKey };
       operandA = a;
       operandB = b;
     } else {
@@ -362,7 +362,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       correctAnswer = round(a + b);
       const exerciseText = `${a} + ${b} = ${BLANK}`;
       question = exerciseText;
-      params = { kind: "add_two", a, b, exerciseText };
+      params = { kind: "add_two", a, b, exerciseText, op: "add", grade: gradeKey };
       operandA = a;
       operandB = b;
     }
@@ -1076,6 +1076,85 @@ function getHint(question, operation, gradeKey) {
   }
 }
 
+// פונקציה עזר: הסבר חיבור בעמודה עם העברה
+function getAdditionStepsColumn(a, b) {
+  const sum = a + b;
+  const aStr = String(a);
+  const bStr = String(b);
+  const resultStr = String(sum);
+  const maxLen = Math.max(aStr.length, bStr.length, resultStr.length);
+  const pad = (s) => s.toString().padStart(maxLen, " ");
+  const line1 = pad(aStr);
+  const line2 = "+" + pad(bStr).slice(1);  // לשים +
+  const line3 = "-".repeat(maxLen);
+  const digitsA = pad(aStr).split("").map((d) => (d === " " ? 0 : Number(d)));
+  const digitsB = pad(bStr).split("").map((d) => (d === " " ? 0 : Number(d)));
+
+  // פונקציה שנותנת שם מקום (יחידות/עשרות/מאות...)
+  const placeName = (idxFromRight) => {
+    if (idxFromRight === 0) return "ספרת היחידות";
+    if (idxFromRight === 1) return "ספרת העשרות";
+    if (idxFromRight === 2) return "ספרת המאות";
+    return `המקום ה-${idxFromRight + 1} מימין`;
+  };
+
+  let carry = 0;
+  const steps = [];
+
+  // שלב 1 – מציגים את החיבור בעמודה
+  steps.push(
+    <div key="col" className="font-mono text-lg text-center mb-2" dir="ltr">
+      <div>{line1}</div>
+      <div>{line2}</div>
+      <div>{line3}</div>
+    </div>
+  );
+
+  // שלב 2 – מסבירים חיבור ספרות מימין לשמאל
+  const len = digitsA.length;
+  for (let i = len - 1; i >= 0; i--) {
+    const idxFromRight = len - 1 - i;
+    const da = digitsA[i];
+    const db = digitsB[i];
+
+    // אם שתי הספרות 0 וגם אין העברה – אין מה להסביר כאן
+    if (da === 0 && db === 0 && carry === 0) continue;
+
+    const raw = da + db + carry;
+    const digit = raw % 10;
+    const nextCarry = Math.floor(raw / 10);
+    const place = placeName(idxFromRight);
+
+    let text = `ב${place}: ${da} + ${db}`;
+    if (carry > 0) {
+      text += ` ועוד ${carry} מההעברה הקודמת`;
+    }
+    text += ` = ${raw}. כותבים ${digit}`;
+    if (nextCarry > 0) {
+      text += ` ומעבירים ${nextCarry} לעמודה הבאה.`;
+    } else {
+      text += `. אין העברה לעמודה הבאה.`;
+    }
+
+    steps.push(
+      <div key={`step-${i}`} className="mb-1">
+        {text}
+      </div>
+    );
+
+    carry = nextCarry;
+  }
+
+  // שלב אחרון – מסכמים
+  steps.push(
+    <div key="final" className="mt-2 font-semibold">
+      בסוף מקבלים את המספר המלא: {sum}.
+    </div>
+  );
+
+  return steps;
+}
+
 // הסבר מפורט צעד-אחר-צעד לפי סוג תרגיל וכיתה
 function getSolutionSteps(question, operation, gradeKey) {
   if (!question || !question.params) return [];
@@ -1097,6 +1176,14 @@ function getSolutionSteps(question, operation, gradeKey) {
       {text}
     </span>
   );
+
+  // אם יש params.op, נשתמש בו; אחרת נשתמש ב-operation
+  const op = p.op || operation;
+
+  // אם זה חיבור רגיל עם שני מספרים - נשתמש בהסבר בעמודה
+  if (op === "add" && typeof p.a === "number" && typeof p.b === "number" && p.kind === "add_two") {
+    return getAdditionStepsColumn(p.a, p.b);
+  }
 
   switch (operation) {
     case "addition": {
@@ -1121,6 +1208,10 @@ function getSolutionSteps(question, operation, gradeKey) {
           ),
           toSpan(`3. נבדוק שחיבור התוצאה נותן את המספר העגול.`, "3"),
         ];
+      }
+      // אם זה חיבור רגיל עם שני מספרים - נשתמש בהסבר בעמודה
+      if (typeof p.a === "number" && typeof p.b === "number") {
+        return getAdditionStepsColumn(p.a, p.b);
       }
       const sum = p.a + p.b;
       return [
@@ -2425,7 +2516,7 @@ export default function MathMaster() {
 
   const solutionSteps =
     currentQuestion && currentQuestion.operation
-      ? getSolutionSteps(currentQuestion, currentQuestion.operation, grade)
+      ? getSolutionSteps(currentQuestion, currentQuestion.params?.op || currentQuestion.operation, grade)
       : [];
 
   return (
@@ -2982,14 +3073,51 @@ export default function MathMaster() {
                         </div>
                       )}
 
-                      {/* תיבת הסבר מלא */}
-                      {showSolution && solutionSteps.length > 0 && (
-                        <div className="w-full max-w-md mx-auto bg-emerald-500/10 border border-emerald-400/50 rounded-lg p-2 text-right">
-                          <div className="text-[11px] text-emerald-300 mb-1">
-                            איך פותרים את התרגיל?
-                          </div>
-                          <div className="text-xs text-emerald-100 leading-relaxed">
-                            {solutionSteps}
+                      {/* חלון הסבר מלא - Modal גדול ומרכזי */}
+                      {showSolution && currentQuestion && (
+                        <div
+                          className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                          onClick={() => setShowSolution(false)}
+                        >
+                          <div
+                            className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className="text-lg font-bold text-emerald-100">
+                                איך פותרים את התרגיל?
+                              </h3>
+                              <button
+                                onClick={() => setShowSolution(false)}
+                                className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                              >
+                                ✖
+                              </button>
+                            </div>
+                            <div className="mb-2 text-sm text-emerald-50" dir="rtl">
+                              {/* מציגים שוב את התרגיל */}
+                              <div className="mb-2 font-semibold text-base text-center text-white">
+                                {currentQuestion.question}
+                              </div>
+                              {/* כאן הצעדים */}
+                              <div className="space-y-1 text-sm">
+                                {solutionSteps.map((step, idx) =>
+                                  typeof step === "string" ? (
+                                    <div key={idx}>{step}</div>
+                                  ) : (
+                                    <div key={idx}>{step}</div>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                            <div className="mt-3 flex justify-center">
+                              <button
+                                onClick={() => setShowSolution(false)}
+                                className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                              >
+                                סגור
+                              </button>
+                            </div>
                           </div>
                         </div>
                       )}

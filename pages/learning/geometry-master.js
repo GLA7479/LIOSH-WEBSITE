@@ -2017,16 +2017,56 @@ export default function GeometryMaster() {
                         📘 הסבר מלא
                       </button>
 
-                      {showSolution && (
+                      {/* חלון הסבר מלא - Modal גדול ומרכזי */}
+                      {showSolution && currentQuestion && (
                         <div
-                          className="mb-3 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/40 text-emerald-100 text-sm space-y-1 max-w-md"
-                          style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                          className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                          onClick={() => setShowSolution(false)}
                         >
-                          {getSolutionSteps(
-                            currentQuestion,
-                            currentQuestion.topic,
-                            grade
-                          )}
+                          <div
+                            className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className="text-lg font-bold text-emerald-100">
+                                איך פותרים את התרגיל?
+                              </h3>
+                              <button
+                                onClick={() => setShowSolution(false)}
+                                className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                              >
+                                ✖
+                              </button>
+                            </div>
+                            <div className="mb-2 text-sm text-emerald-50" dir="rtl">
+                              {/* מציגים שוב את התרגיל */}
+                              <div className="mb-2 font-semibold text-base text-center text-white">
+                                {currentQuestion.question}
+                              </div>
+                              {/* כאן הצעדים */}
+                              <div className="space-y-1 text-sm" style={{ direction: "rtl", unicodeBidi: "plaintext" }}>
+                                {getSolutionSteps(
+                                  currentQuestion,
+                                  currentQuestion.topic,
+                                  grade
+                                ).map((step, idx) =>
+                                  typeof step === "string" ? (
+                                    <div key={idx}>{step}</div>
+                                  ) : (
+                                    <div key={idx}>{step}</div>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                            <div className="mt-3 flex justify-center">
+                              <button
+                                onClick={() => setShowSolution(false)}
+                                className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                              >
+                                סגור
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </>
