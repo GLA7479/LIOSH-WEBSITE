@@ -1379,15 +1379,14 @@ export default function ScienceMaster() {
                     })}
                   </div>
                 )}
-
-                {/* STOP */}
-                <button
-                  onClick={stopGame}
-                  className="h-9 px-4 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm"
-                >
-                  ⏹️ עצור
-                </button>
               </div>
+
+              <button
+                onClick={stopGame}
+                className="h-9 px-4 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm"
+              >
+                ⏹️ עצור
+              </button>
 
               {/* SOLUTION MODAL */}
               {showSolution && currentQuestion && (
