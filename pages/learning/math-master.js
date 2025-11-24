@@ -4169,52 +4169,44 @@ export default function MathMaster() {
 
           <div
             ref={controlsRef}
-            className={`grid gap-1 mb-1 w-full max-w-md ${
-              stars > 0 || playerLevel > 1
-                ? "grid-cols-6"
-                : "grid-cols-5"
-            }`}
+            className="grid grid-cols-7 gap-0.5 mb-1 w-full max-w-md"
           >
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">ניקוד</div>
-              <div className="text-sm font-bold text-emerald-400">{score}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[8px] text-white/60 leading-tight mb-0.5">ניקוד</div>
+              <div className="text-xs font-bold text-emerald-400 leading-tight">{score}</div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">רצף</div>
-              <div className="text-sm font-bold text-amber-400">🔥{streak}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[8px] text-white/60 leading-tight mb-0.5">רצף</div>
+              <div className="text-xs font-bold text-amber-400 leading-tight">🔥{streak}</div>
             </div>
-            {stars > 0 && (
-              <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-                <div className="text-[10px] text-white/60">כוכבים</div>
-                <div className="text-sm font-bold text-yellow-400">⭐{stars}</div>
-              </div>
-            )}
-            {playerLevel > 1 && (
-              <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-                <div className="text-[10px] text-white/60">רמה</div>
-                <div className="text-sm font-bold text-purple-400">Lv.{playerLevel}</div>
-              </div>
-            )}
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">✅</div>
-              <div className="text-sm font-bold text-green-400">{correct}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[8px] text-white/60 leading-tight mb-0.5">כוכבים</div>
+              <div className="text-xs font-bold text-yellow-400 leading-tight">⭐{stars}</div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">חיים</div>
-              <div className="text-sm font-bold text-rose-400">
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[8px] text-white/60 leading-tight mb-0.5">רמה</div>
+              <div className="text-xs font-bold text-purple-400 leading-tight">Lv.{playerLevel}</div>
+            </div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[8px] text-white/60 leading-tight mb-0.5">✅</div>
+              <div className="text-xs font-bold text-green-400 leading-tight">{correct}</div>
+            </div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[8px] text-white/60 leading-tight mb-0.5">חיים</div>
+              <div className="text-xs font-bold text-rose-400 leading-tight">
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
             </div>
             <div
-              className={`rounded-lg p-1 text-center ${
+              className={`rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] ${
                 gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
                   ? "bg-red-500/30 border-2 border-red-400 animate-pulse"
                   : "bg-black/30 border border-white/10"
               }`}
             >
-              <div className="text-[10px] text-white/60">⏰ טיימר</div>
+              <div className="text-[8px] text-white/60 leading-tight mb-0.5">⏰ טיימר</div>
               <div
-                className={`text-lg font-black ${
+                className={`text-xs font-black leading-tight ${
                   gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
                     ? "text-red-400"
                     : gameActive && (mode === "challenge" || mode === "speed")
