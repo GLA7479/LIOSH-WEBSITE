@@ -3100,13 +3100,16 @@ export default function MathMaster() {
                             <div className="mb-2 text-sm text-emerald-50" dir="rtl">
                               {/* מציגים שוב את התרגיל */}
                               <div
-                                className="mb-2 font-semibold text-base text-center text-white"
-                                dir="ltr"
+                                className="mb-2 font-semibold text-base text-center text-white whitespace-nowrap"
+                                style={{
+                                  direction: "ltr",
+                                  unicodeBidi: "plaintext"
+                                }}
                               >
-                                {currentQuestion.question}
+                                {currentQuestion.exerciseText || currentQuestion.question}
                               </div>
                               {/* כאן הצעדים */}
-                              <div className="space-y-1 text-sm">
+                              <div className="space-y-1 text-sm" style={{ direction: "rtl", unicodeBidi: "plaintext" }}>
                                 {solutionSteps.map((step, idx) =>
                                   typeof step === "string" ? (
                                     <div key={idx}>{step}</div>

@@ -638,6 +638,35 @@ function getHint(question, topic, gradeKey) {
   }
 }
 
+// פונקציית עזר למיספור צעדים
+function makeStep(num, text) {
+  return (
+    <div
+      key={num}
+      dir="rtl"
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "0.4rem",
+      }}
+    >
+      {/* המספר – תמיד מיושר וכיווני LTR כדי שלא יברח לסוף */}
+      <span
+        dir="ltr"
+        style={{
+          minWidth: "1.5em",
+          textAlign: "center",
+          fontWeight: 700,
+        }}
+      >
+        {num}.
+      </span>
+      {/* הטקסט – בעברית, RTL */}
+      <span style={{ flex: 1 }}>{text}</span>
+    </div>
+  );
+}
+
 // הסבר מפורט צעד-אחר-צעד לפי נושא וכיתה
 function getSolutionSteps(question, topic, gradeKey) {
   if (!question || !question.params) return [];
@@ -647,88 +676,111 @@ function getSolutionSteps(question, topic, gradeKey) {
     case "vocabulary": {
       if (question.params.direction === "en_to_he") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נבין שהמילה "{question.params.word}" היא באנגלית.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נחפש את הפירוש של המילה בעברית.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. הפירוש הנכון הוא: {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. נבדוק שהפירוש הגיוני ונכון.</span>,
+          makeStep(1, `נבין שהמילה "${question.params.word}" היא באנגלית.`),
+          makeStep(2, "נחפש את הפירוש של המילה בעברית."),
+          makeStep(3, `הפירוש הנכון הוא: ${correctAnswer}.`),
+          makeStep(4, "נבדוק שהפירוש הגיוני ונכון."),
         ];
       } else {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נבין שהמילה "{question.params.word}" היא בעברית.</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נחפש את הפירוש של המילה באנגלית.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. הפירוש הנכון הוא: {correctAnswer}.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. נבדוק שהפירוש הגיוני ונכון.</span>,
+          makeStep(1, `נבין שהמילה "${question.params.word}" היא בעברית.`),
+          makeStep(2, "נחפש את הפירוש של המילה באנגלית."),
+          makeStep(3, `הפירוש הנכון הוא: ${correctAnswer}.`),
+          makeStep(4, "נבדוק שהפירוש הגיוני ונכון."),
         ];
       }
     }
 
     case "grammar": {
       return [
-        <span key="1" dir="ltr" style={{ display: "block" }}>1. נבין את כללי הדקדוק באנגלית.</span>,
-        <span key="2" dir="ltr" style={{ display: "block" }}>2. I (אני) = am, You/We/They (אתה/אנחנו/הם) = are, He/She/It (הוא/היא/זה) = is.</span>,
-        <span key="3" dir="ltr" style={{ display: "block" }}>3. התשובה הנכונה היא: {correctAnswer}.</span>,
-        <span key="4" dir="ltr" style={{ display: "block" }}>4. {question.params.explanation || "נבדוק שהתשובה מתאימה לנושא המשפט"}.</span>,
+        makeStep(1, "נבין את כללי הדקדוק באנגלית."),
+        makeStep(
+          2,
+          "I (אני) = am, You/We/They (אתה/אנחנו/הם) = are, He/She/It (הוא/היא/זה) = is."
+        ),
+        makeStep(3, `התשובה הנכונה היא: ${correctAnswer}.`),
+        makeStep(
+          4,
+          question.params.explanation ||
+            "נבדוק שהתשובה מתאימה לנושא המשפט."
+        ),
       ];
     }
 
     case "translation": {
       if (question.params.direction === "en_to_he") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נקרא את המשפט באנגלית: "{question.params.sentence}".</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נתרגם כל מילה: {question.params.sentence.split(" ").map((w, i) => `${w} = ...`).join(", ")}.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחבר את המילים למשפט בעברית.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התרגום הנכון: {correctAnswer}.</span>,
+          makeStep(
+            1,
+            `נקרא את המשפט באנגלית: "${question.params.sentence}".`
+          ),
+          makeStep(2, "ננסה לתרגם כל מילה או חלק מהמשפט."),
+          makeStep(3, "נחבר את המילים למשפט בעברית."),
+          makeStep(4, `התרגום הנכון: ${correctAnswer}.`),
         ];
       } else {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>1. נקרא את המשפט בעברית: "{question.params.sentence}".</span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>2. נתרגם כל מילה לאנגלית.</span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>3. נחבר את המילים למשפט באנגלית.</span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>4. התרגום הנכון: {correctAnswer}.</span>,
+          makeStep(
+            1,
+            `נקרא את המשפט בעברית: "${question.params.sentence}".`
+          ),
+          makeStep(2, "ננסה לתרגם כל מילה או חלק מהמשפט לאנגלית."),
+          makeStep(3, "נחבר את המילים למשפט באנגלית."),
+          makeStep(4, `התרגום הנכון: ${correctAnswer}.`),
         ];
       }
     }
 
     case "sentences": {
       return [
-        <span key="1" dir="ltr" style={{ display: "block" }}>1. נקרא את המשפט: "{question.params.template}".</span>,
-        <span key="2" dir="ltr" style={{ display: "block" }}>2. נבין מה חסר במשפט - איזו מילה או צורה דקדוקית.</span>,
-        <span key="3" dir="ltr" style={{ display: "block" }}>3. נבדוק מה מתאים לפי כללי הדקדוק: I/You/We/They = are, He/She/It = is.</span>,
-        <span key="4" dir="ltr" style={{ display: "block" }}>4. התשובה הנכונה: {correctAnswer}. {question.params.explanation || ""}</span>,
+        makeStep(1, `נקרא את המשפט: "${question.params.template}".`),
+        makeStep(
+          2,
+          "נבין מה חסר במשפט - איזו מילה או צורה דקדוקית."
+        ),
+        makeStep(
+          3,
+          "נבדוק מה מתאים לפי כללי הדקדוק: I/You/We/They = are, He/She/It = is."
+        ),
+        makeStep(
+          4,
+          `התשובה הנכונה: ${correctAnswer}. ${
+            question.params.explanation || ""
+          }`
+        ),
       ];
     }
 
     case "writing": {
       if (question.params.type === "word") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>
-            1. נקרא את המילה בעברית: "{question.params.wordHe}".
-          </span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>
-            2. נזכר בצורה שלה באנגלית שלמדנו קודם.
-          </span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>
-            3. נכתוב אות-אחר-אות, ושמים לב לאיות (spelling).
-          </span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>
-            4. התשובה הנכונה היא: {correctAnswer}.
-          </span>,
+          makeStep(
+            1,
+            `נקרא את המילה בעברית: "${question.params.wordHe}".`
+          ),
+          makeStep(2, "נזכר בצורה שלה באנגלית שלמדנו קודם."),
+          makeStep(
+            3,
+            "נכתוב אות-אחר-אות, ושמים לב לאיות (spelling)."
+          ),
+          makeStep(4, `התשובה הנכונה היא: ${correctAnswer}.`),
         ];
       }
       if (question.params.type === "sentence") {
         return [
-          <span key="1" dir="ltr" style={{ display: "block" }}>
-            1. נקרא את המשפט בעברית: "{question.params.sentenceHe}".
-          </span>,
-          <span key="2" dir="ltr" style={{ display: "block" }}>
-            2. נתרגם כל חלק לאנגלית (I / my / dog...).
-          </span>,
-          <span key="3" dir="ltr" style={{ display: "block" }}>
-            3. נבדוק סדר מילים נכון ואות גדולה בתחילת המשפט.
-          </span>,
-          <span key="4" dir="ltr" style={{ display: "block" }}>
-            4. המשפט הנכון באנגלית: {correctAnswer}.
-          </span>,
+          makeStep(
+            1,
+            `נקרא את המשפט בעברית: "${question.params.sentenceHe}".`
+          ),
+          makeStep(
+            2,
+            "נפרק את המשפט לחלקים ונחשוב איך אומרים כל חלק באנגלית."
+          ),
+          makeStep(
+            3,
+            "נבדוק סדר מילים נכון ואות גדולה בתחילת המשפט."
+          ),
+          makeStep(4, `המשפט הנכון באנגלית: ${correctAnswer}.`),
         ];
       }
       return [];
@@ -737,7 +789,6 @@ function getSolutionSteps(question, topic, gradeKey) {
     default:
       return [];
   }
-  return [];
 }
 
 // "למה טעיתי?" – הסבר קצר לטעות נפוצה
