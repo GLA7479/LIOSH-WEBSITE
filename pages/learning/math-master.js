@@ -46,6 +46,7 @@ const GRADES = {
       "division",
       "fractions",
       "sequences",
+      "decimals",
       "mixed",
     ],
     allowFractions: true,
@@ -61,6 +62,8 @@ const GRADES = {
       "fractions",
       "percentages",
       "sequences",
+      "decimals",
+      "rounding",
       "word_problems",
       "mixed",
     ],
@@ -77,6 +80,8 @@ const OPERATIONS = [
   "fractions",
   "percentages",
   "sequences",
+  "decimals",
+  "rounding",
   "word_problems",
   "mixed",
 ];
@@ -452,13 +457,15 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
     if (t === "percent_of") {
       const base = randInt(20, 500);
-      const percent = percentOptions[Math.floor(Math.random() * percentOptions.length)];
+      const percent =
+        percentOptions[Math.floor(Math.random() * percentOptions.length)];
       correctAnswer = Math.round((base * percent) / 100);
       question = `${percent}% מ-${base} = ?`;
       params = { kind: "perc_of", base, percent };
     } else {
       const base = randInt(40, 200);
-      const percent = percentOptions[Math.floor(Math.random() * percentOptions.length)];
+      const percent =
+        percentOptions[Math.floor(Math.random() * percentOptions.length)];
       const part = Math.round((base * percent) / 100);
       correctAnswer = percent;
       question = `${part} הוא כמה אחוז מ-${base}?`;
@@ -486,10 +493,100 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       .join(", ");
     question = `מצא את המספר החסר בסדרה: ${displayTerms}`;
     params = { kind: "seq_arith", start, step, terms, missingIndex };
+  } else if (selectedOp === "decimals") {
+    const isLower = gradeKey === "g3_4";
+    const types = isLower ? ["add", "sub"] : ["add", "sub", "times10", "div10"];
+
+    const t = types[Math.floor(Math.random() * types.length)];
+
+    const randDec = (min, max, places) => {
+      const factor = Math.pow(10, places);
+      const lo = Math.round(min * factor);
+      const hi = Math.round(max * factor);
+      const n = randInt(lo, hi);
+      return n / factor;
+    };
+
+    const places = gradeKey === "g3_4" ? 1 : Math.random() < 0.5 ? 1 : 2;
+    const fmt = (x) => x.toFixed(places);
+
+    if (t === "add") {
+      const a = randDec(0.1, 50, places);
+      const b = randDec(0.1, 50, places);
+      const res = a + b;
+      correctAnswer = fmt(res);
+      question = `${fmt(a)} + ${fmt(b)} = ?`;
+      params = { kind: "dec_add", a: fmt(a), b: fmt(b), places };
+    } else if (t === "sub") {
+      let a = randDec(0.1, 50, places);
+      let b = randDec(0.1, 50, places);
+      if (isLower && a < b) {
+        [a, b] = [b, a];
+      }
+      const res = a - b;
+      correctAnswer = fmt(res);
+      question = `${fmt(a)} - ${fmt(b)} = ?`;
+      params = { kind: "dec_sub", a: fmt(a), b: fmt(b), places };
+    } else if (t === "times10") {
+      const a = randDec(0.1, 500, places);
+      const factor = Math.random() < 0.5 ? 10 : 100;
+      const res = a * factor;
+      correctAnswer = fmt(res);
+      question = `${fmt(a)} × ${factor} = ?`;
+      params = { kind: "dec_times", a: fmt(a), factor, places };
+    } else {
+      const a = randDec(1, 500, places);
+      const factor = Math.random() < 0.5 ? 10 : 100;
+      const res = a / factor;
+      const resPlaces = places + (factor === 100 ? 2 : 1);
+      const fmtRes = (x) => x.toFixed(Math.min(resPlaces, 3));
+      correctAnswer = fmtRes(res);
+      question = `${fmt(a)} ÷ ${factor} = ?`;
+      params = { kind: "dec_div", a: fmt(a), factor, places: resPlaces };
+    }
+  } else if (selectedOp === "rounding") {
+    const isLower = gradeKey === "g3_4";
+    const kinds = isLower
+      ? ["nearest_10", "nearest_100"]
+      : ["nearest_10", "nearest_100", "nearest_whole", "nearest_tenth"];
+
+    const k = kinds[Math.floor(Math.random() * kinds.length)];
+    const roundTo = (num, factor) => Math.round(num / factor) * factor;
+
+    if (k === "nearest_10") {
+      const n = randInt(10, 999);
+      correctAnswer = roundTo(n, 10);
+      question = `עגל את ${n} לעשרות הקרובות ביותר.`;
+      params = { kind: "round_10", n };
+    } else if (k === "nearest_100") {
+      const n = randInt(100, 9999);
+      correctAnswer = roundTo(n, 100);
+      question = `עגל את ${n} למאות הקרובות ביותר.`;
+      params = { kind: "round_100", n };
+    } else if (k === "nearest_whole") {
+      const base = randInt(1, 100);
+      const frac = randInt(1, 9) / 10;
+      const n = base + frac;
+      const rounded = Math.round(n);
+      correctAnswer = rounded;
+      question = `עגל את ${n.toFixed(1)} למספר השלם הקרוב ביותר.`;
+      params = { kind: "round_whole", n: n.toFixed(1) };
+    } else {
+      const base = randInt(1, 100);
+      const frac = randInt(1, 99) / 100;
+      const n = base + frac;
+      const rounded = Math.round(n * 10) / 10;
+      correctAnswer = Number(rounded.toFixed(1));
+      question = `עגל את ${n.toFixed(2)} לעשירית הקרובה ביותר.`;
+      params = { kind: "round_tenth", n: n.toFixed(2) };
+    }
   } else if (selectedOp === "word_problems") {
     const templates =
-      gradeKey === "g5_6" ? ["multi_step", "groups", "leftover"] : ["groups", "simple_add"];
+      gradeKey === "g5_6"
+        ? ["multi_step", "groups", "leftover", "money"]
+        : ["groups", "simple_add"];
     const t = templates[Math.floor(Math.random() * templates.length)];
+    isStory = true;
 
     if (t === "simple_add") {
       const a = randInt(3, 9);
@@ -503,7 +600,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       correctAnswer = per * groups;
       question = `בכל קופסה יש ${per} עפרונות. יש ${groups} קופסאות כאלה. כמה עפרונות יש בסך הכל?`;
       params = { kind: "wp_groups", per, groups };
-    } else {
+    } else if (t === "leftover") {
       const total = randInt(40, 100);
       const groupSize = randInt(4, 8);
       const groups = Math.floor(total / groupSize);
@@ -511,8 +608,29 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       correctAnswer = leftover;
       question = `יש ${total} תלמידים והם מתחלקים לקבוצות של ${groupSize} תלמידים בכל קבוצה. כמה תלמידים יישארו בלי קבוצה מלאה?`;
       params = { kind: "wp_leftover", total, groupSize, groups, leftover };
+    } else if (t === "multi_step") {
+      const price = randInt(5, 20);
+      const qty1 = randInt(2, 5);
+      const qty2 = randInt(1, 4);
+      const totalCost = price * (qty1 + qty2);
+      const money = randInt(totalCost + 20, totalCost + 80);
+      correctAnswer = money - totalCost;
+      question = `לליאו יש ${money} שקלים. הוא קונה ${qty1} מחברות ו-${qty2} עפרונות, שכל אחד מהם עולה ${price} שקלים. כמה כסף יישאר לו אחרי הקנייה?`;
+      params = {
+        kind: "wp_multi_step",
+        money,
+        price,
+        qty1,
+        qty2,
+        totalCost,
+      };
+    } else {
+      const price = randInt(3, 15);
+      const qty = randInt(2, 8);
+      correctAnswer = price * qty;
+      question = `מחברת אחת עולה ${price} שקלים. כמה יעלה לקנות ${qty} מחברות?`;
+      params = { kind: "wp_money", price, qty };
     }
-    isStory = true;
   } else {
     const maxA = levelConfig.addition.max || 20;
     const a = randInt(1, maxA);
@@ -525,37 +643,61 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
   }
 
   const wrongAnswers = new Set();
-  const correctIsFraction =
-    typeof correctAnswer === "string" && correctAnswer.includes("/");
 
-  if (correctIsFraction) {
-    const [cnRaw, cdRaw] = correctAnswer.split("/");
-    const cn = Number(cnRaw);
-    const cd = Number(cdRaw) || 1;
+  if (selectedOp === "decimals") {
+    const places =
+      params?.places != null
+        ? Math.max(1, Math.min(3, params.places))
+        : 1;
+    const correctNum = Number(correctAnswer);
+    const fmtWrong = (x) => x.toFixed(places);
 
     while (wrongAnswers.size < 3) {
-      const delta = randInt(1, 3);
-      const sign = Math.random() > 0.5 ? 1 : -1;
-      const nWrong = cn + sign * delta;
-      const wrong = `${nWrong}/${cd}`;
-      if (wrong !== correctAnswer && !wrongAnswers.has(wrong) && nWrong > 0) {
+      const deltaBase = Math.max(0.1, Math.abs(correctNum) * 0.1);
+      const sign = Math.random() < 0.5 ? 1 : -1;
+      const step = Math.random() < 0.5 ? 0.1 : 0.2;
+      const wrongNum = correctNum + sign * deltaBase * step;
+      const wrong = fmtWrong(wrongNum);
+      if (wrong !== correctAnswer && !wrongAnswers.has(wrong)) {
         wrongAnswers.add(wrong);
       }
     }
   } else {
-    while (wrongAnswers.size < 3) {
-      const baseDelta = Math.max(1, Math.round(Math.abs(correctAnswer) * 0.15));
-      const variation = randInt(1, 3);
-      const sign = Math.random() > 0.5 ? 1 : -1;
-      const wrong = correctAnswer + sign * baseDelta * variation;
+    const correctIsFraction =
+      typeof correctAnswer === "string" && correctAnswer.includes("/");
 
-      if (
-        wrong !== correctAnswer &&
-        !wrongAnswers.has(wrong) &&
-        wrong >= -200 &&
-        wrong <= 5000
-      ) {
-        wrongAnswers.add(wrong);
+    if (correctIsFraction) {
+      const [cnRaw, cdRaw] = correctAnswer.split("/");
+      const cn = Number(cnRaw);
+      const cd = Number(cdRaw) || 1;
+
+      while (wrongAnswers.size < 3) {
+        const delta = randInt(1, 3);
+        const sign = Math.random() > 0.5 ? 1 : -1;
+        const nWrong = cn + sign * delta;
+        const wrong = `${nWrong}/${cd}`;
+        if (wrong !== correctAnswer && !wrongAnswers.has(wrong) && nWrong > 0) {
+          wrongAnswers.add(wrong);
+        }
+      }
+    } else {
+      while (wrongAnswers.size < 3) {
+        const baseDelta = Math.max(
+          1,
+          Math.round(Math.abs(correctAnswer) * 0.15)
+        );
+        const variation = randInt(1, 3);
+        const sign = Math.random() > 0.5 ? 1 : -1;
+        const wrong = correctAnswer + sign * baseDelta * variation;
+
+        if (
+          wrong !== correctAnswer &&
+          !wrongAnswers.has(wrong) &&
+          wrong >= -200 &&
+          wrong <= 5000
+        ) {
+          wrongAnswers.add(wrong);
+        }
       }
     }
   }
@@ -611,6 +753,10 @@ function getHint(question, operation, gradeKey) {
       return "אחוז הוא חלק מתוך 100. אפשר לחשוב על 25% כמו 25 מתוך 100.";
     case "sequences":
       return "בסדרה חשבונית ההפרש בין כל שני איברים סמוכים קבוע. בדוק בכמה המספרים עולים (או יורדים) כל פעם.";
+    case "decimals":
+      return "בעשרוניים מיישרים את הנקודה העשרונית ומבצעים את הפעולה כמו בחשבון רגיל. אפשר לחשוב על עשיריות ומאות כמו על אגורות.";
+    case "rounding":
+      return "בעיגול מסתכלים על הספרה שאחרי המקום שאליו מעגלים: אם היא 5 או יותר – מעגלים למעלה, אחרת נשארים למטה.";
     case "word_problems":
       return "קרא לאט, סמן את המספרים ותרגם את הסיפור לתרגיל פשוט (חיבור, חיסור, כפל או חילוק).";
     default:
@@ -764,6 +910,88 @@ function getSolutionSteps(question, operation, gradeKey) {
       }
       return [];
 
+    case "decimals": {
+      if (p.kind === "dec_add") {
+        return [
+          toSpan(
+            "1. נרשום את המספרים אחד מתחת לשני כך שהנקודות העשרוניות מיושרות.",
+            "1"
+          ),
+          toSpan("2. נחבר כמו בעמודות רגילות, והנקודה נשארת באותו מקום.", "2"),
+          toSpan(`3. נקבל: ${ltr(`${p.a} + ${p.b} = ${ans}`)}.`, "3"),
+        ];
+      }
+      if (p.kind === "dec_sub") {
+        return [
+          toSpan("1. נכין את המספרים בעמודה ונדאג לנקודות מיושרות.", "1"),
+          toSpan("2. נחסר ספרה אחר ספרה מימין לשמאל.", "2"),
+          toSpan(`3. התוצאה: ${ltr(`${p.a} - ${p.b} = ${ans}`)}.`, "3"),
+        ];
+      }
+      if (p.kind === "dec_times") {
+        return [
+          toSpan(
+            `1. הכפלה ב-${p.factor} משמעה הזזה של הנקודה ${p.factor === 10 ? "ספרה אחת" : "שתי ספרות"} ימינה.`,
+            "1"
+          ),
+          toSpan(
+            `2. נבצע את ההזזה על ${p.a} ונמלא אפסים אם צריך.`,
+            "2"
+          ),
+          toSpan(`3. נקבל: ${ltr(`${p.a} × ${p.factor} = ${ans}`)}.`, "3"),
+        ];
+      }
+      if (p.kind === "dec_div") {
+        return [
+          toSpan(
+            `1. בחילוק ב-${p.factor} מזיזים את הנקודה ${p.factor === 10 ? "ספרה אחת" : "שתי ספרות"} שמאלה.`,
+            "1"
+          ),
+          toSpan(
+            "2. נוסיף אפסים משמאל אם צריך כדי לבצע את ההזזה.",
+            "2"
+          ),
+          toSpan(`3. לכן ${ltr(`${p.a} ÷ ${p.factor} = ${ans}`)}.`, "3"),
+        ];
+      }
+      return [];
+    }
+
+    case "rounding": {
+      if (p.kind === "round_10") {
+        return [
+          toSpan(`1. נסתכל על ספרת היחידות של ${p.n}.`, "1"),
+          toSpan("2. אם היא 0–4 נעגל למטה, אם 5–9 נעגל למעלה.", "2"),
+          toSpan(`3. התוצאה העגולה לעשרות: ${ans}.`, "3"),
+        ];
+      }
+      if (p.kind === "round_100") {
+        return [
+          toSpan(`1. נסתכל על ספרת העשרות של ${p.n}.`, "1"),
+          toSpan("2. 0–4 -> מעגלים למטה, 5–9 -> למעלה.", "2"),
+          toSpan(`3. לכן ${p.n} מעוגל למאות הוא ${ans}.`, "3"),
+        ];
+      }
+      if (p.kind === "round_whole") {
+        return [
+          toSpan(`1. נסתכל על החלק העשרוני של ${p.n}.`, "1"),
+          toSpan("2. אם הוא קטן מ-0.5 נעגל למטה, אחרת למעלה.", "2"),
+          toSpan(`3. לכן המספר השלם הקרוב ביותר הוא ${ans}.`, "3"),
+        ];
+      }
+      if (p.kind === "round_tenth") {
+        return [
+          toSpan(
+            `1. נסתכל על הספרה במקום המאות של ${p.n} (השנייה אחרי הנקודה).`,
+            "1"
+          ),
+          toSpan("2. אם היא 5 או יותר – נעלה את ספרת העשיריות, אחרת נשאיר.", "2"),
+          toSpan(`3. לכן לעשירית הקרובה ביותר נקבל ${ans}.`, "3"),
+        ];
+      }
+      return [];
+    }
+
     case "word_problems":
       if (p.kind === "wp_simple_add") {
         const sum = p.a + p.b;
@@ -803,6 +1031,31 @@ function getSolutionSteps(question, operation, gradeKey) {
             "3"
           ),
           toSpan(`4. לכן ${ans} תלמידים נשארים בלי קבוצה מלאה.`, "4"),
+        ];
+      }
+
+      if (p.kind === "wp_multi_step") {
+        return [
+          toSpan(`1. נחשב כמה פריטים קונים בסך הכל: ${p.qty1 + p.qty2}.`, "1"),
+          toSpan(
+            `2. נמצא את עלות הקנייה: ${ltr(`${p.price} × (${p.qty1} + ${p.qty2}) = ${p.totalCost}`)}.`,
+            "2"
+          ),
+          toSpan(
+            `3. נחסר מהסכום שהיה לליאו: ${ltr(`${p.money} - ${p.totalCost} = ${ans}`)}.`,
+            "3"
+          ),
+        ];
+      }
+
+      if (p.kind === "wp_money") {
+        return [
+          toSpan("1. מבינים שמדובר בכפל (מחיר × כמות).", "1"),
+          toSpan(
+            `2. נחשב: ${ltr(`${p.price} × ${p.qty} = ${ans}`)}.`,
+            "2"
+          ),
+          toSpan("3. זה הסכום הכולל שיש לשלם.", "3"),
         ];
       }
 
@@ -917,6 +1170,8 @@ export default function MathMaster() {
     fractions: { total: 0, correct: 0 },
     percentages: { total: 0, correct: 0 },
     sequences: { total: 0, correct: 0 },
+    decimals: { total: 0, correct: 0 },
+    rounding: { total: 0, correct: 0 },
     word_problems: { total: 0, correct: 0 },
   });
 
@@ -954,6 +1209,8 @@ export default function MathMaster() {
     fractions: false,
     percentages: false,
     sequences: false,
+    decimals: false,
+    rounding: false,
     word_problems: false,
   });
 
@@ -1581,6 +1838,10 @@ export default function MathMaster() {
         return "% Percentages";
       case "sequences":
         return "🔢 Sequences";
+      case "decimals":
+        return "• Decimals";
+      case "rounding":
+        return "≈ Rounding";
       case "word_problems":
         return "📘 Word Problems";
       case "mixed":
