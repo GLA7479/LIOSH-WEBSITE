@@ -7,7 +7,7 @@ const BLANK = "__";
 
 const LEVELS = {
   easy: {
-    name: "Easy",
+    name: "קל",
     addition: { max: 20 },
     subtraction: { min: 0, max: 20 },
     multiplication: { max: 5 },
@@ -15,7 +15,7 @@ const LEVELS = {
     fractions: { maxDen: 4 },
   },
   medium: {
-    name: "Medium",
+    name: "בינוני",
     addition: { max: 100 },
     subtraction: { min: 0, max: 100 },
     multiplication: { max: 10 },
@@ -23,7 +23,7 @@ const LEVELS = {
     fractions: { maxDen: 8 },
   },
   hard: {
-    name: "Hard",
+    name: "קשה",
     addition: { max: 500 },
     subtraction: { min: -200, max: 500 },
     multiplication: { max: 12 },
@@ -34,7 +34,7 @@ const LEVELS = {
 
 const GRADES = {
   g1_2: {
-    name: "Grade 1–2",
+    name: "כיתות א–ב",
     operations: [
       "addition",
       "subtraction",
@@ -45,7 +45,7 @@ const GRADES = {
     allowNegatives: false,
   },
   g3_4: {
-    name: "Grade 3–4",
+    name: "כיתות ג–ד",
     operations: [
       "addition",
       "subtraction",
@@ -63,7 +63,7 @@ const GRADES = {
     allowNegatives: false,
   },
   g5_6: {
-    name: "Grade 5–6",
+    name: "כיתות ה–ו",
     operations: [
       "addition",
       "subtraction",
@@ -163,24 +163,24 @@ function getLevelForGrade(levelKey, gradeKey) {
 
 const MODES = {
   learning: {
-    name: "Learning",
-    description: "No hard game over, practice at your pace",
+    name: "למידה",
+    description: "ללא סיום משחק, תרגול בקצב שלך",
   },
   challenge: {
-    name: "Challenge",
-    description: "Timer + lives, high score race",
+    name: "אתגר",
+    description: "טיימר + חיים, מרוץ ניקוד גבוה",
   },
   speed: {
-    name: "Speed Run",
-    description: "Fast answers = more points! ⚡",
+    name: "מרוץ מהירות",
+    description: "תשובות מהירות = יותר נקודות! ⚡",
   },
   marathon: {
-    name: "Marathon",
-    description: "How many questions can you solve? 🏃",
+    name: "מרתון",
+    description: "כמה שאלות תוכל לפתור? 🏃",
   },
   practice: {
-    name: "Practice",
-    description: "Focus on one operation 📚",
+    name: "תרגול",
+    description: "התמקד בפעולה אחת 📚",
   },
 };
 
@@ -2202,7 +2202,7 @@ export default function MathMaster() {
     // Time up – במצב Challenge או Speed
     setWrong((prev) => prev + 1);
     setStreak(0);
-    setFeedback("Time's up! Game Over! ⏰");
+      setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
     setGameActive(false);
     setCurrentQuestion(null);
     setTimeLeft(0);
@@ -2463,35 +2463,35 @@ export default function MathMaster() {
   const getOperationName = (op) => {
     switch (op) {
       case "addition":
-        return "+";
+        return "חיבור";
       case "subtraction":
-        return "-";
+        return "חיסור";
       case "multiplication":
-        return "×";
+        return "כפל";
       case "division":
-        return "÷";
+        return "חילוק";
       case "fractions":
-        return "⅟ Fractions";
+        return "שברים";
       case "percentages":
-        return "% Percentages";
+        return "אחוזים";
       case "sequences":
-        return "⬆⬇ Sequences";
+        return "סדרות";
       case "decimals":
-        return "0.1 Decimals";
+        return "עשרוניים";
       case "rounding":
-        return "≈ Rounding";
+        return "עיגול";
       case "equations":
-        return "? Equations";
+        return "משוואות";
       case "compare":
-        return "< > Compare";
+        return "השוואה";
       case "number_sense":
-        return "🔢 Number Sense";
+        return "חוש מספרים";
       case "factors_multiples":
-        return "🧩 Factors & Multiples";
+        return "גורמים וכפולות";
       case "word_problems":
-        return "📘 Word Problems";
+        return "בעיות מילוליות";
       case "mixed":
-        return "🎲 Mixed";
+        return "ערבוב";
       default:
         return op;
     }
@@ -2500,7 +2500,7 @@ export default function MathMaster() {
   if (!mounted)
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+        <div className="text-white text-xl">טוען...</div>
       </div>
     );
 
@@ -2576,7 +2576,7 @@ export default function MathMaster() {
               🧮 Math Master
             </h1>
             <p className="text-white/70 text-xs">
-              {playerName || "Player"} • {GRADES[grade].name} •{" "}
+              {playerName || "שחקן"} • {GRADES[grade].name} •{" "}
               {LEVELS[level].name} • {getOperationName(operation)} •{" "}
               {MODES[mode].name}
             </p>
@@ -2591,22 +2591,22 @@ export default function MathMaster() {
             }`}
           >
             <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">Score</div>
+              <div className="text-[10px] text-white/60">ניקוד</div>
               <div className="text-sm font-bold text-emerald-400">{score}</div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">Streak</div>
+              <div className="text-[10px] text-white/60">רצף</div>
               <div className="text-sm font-bold text-amber-400">🔥{streak}</div>
             </div>
             {stars > 0 && (
               <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-                <div className="text-[10px] text-white/60">Stars</div>
+                <div className="text-[10px] text-white/60">כוכבים</div>
                 <div className="text-sm font-bold text-yellow-400">⭐{stars}</div>
               </div>
             )}
             {playerLevel > 1 && (
               <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-                <div className="text-[10px] text-white/60">Level</div>
+                <div className="text-[10px] text-white/60">רמה</div>
                 <div className="text-sm font-bold text-purple-400">Lv.{playerLevel}</div>
               </div>
             )}
@@ -2615,7 +2615,7 @@ export default function MathMaster() {
               <div className="text-sm font-bold text-green-400">{correct}</div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">Lives</div>
+              <div className="text-[10px] text-white/60">חיים</div>
               <div className="text-sm font-bold text-rose-400">
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
@@ -2627,7 +2627,7 @@ export default function MathMaster() {
                   : "bg-black/30 border border-white/10"
               }`}
             >
-              <div className="text-[10px] text-white/60">⏰ Timer</div>
+              <div className="text-[10px] text-white/60">⏰ טיימר</div>
               <div
                 className={`text-lg font-black ${
                   gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
@@ -2672,7 +2672,7 @@ export default function MathMaster() {
             <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none">
               <div className="bg-gradient-to-br from-yellow-400 to-orange-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-bounce">
                 <div className="text-4xl mb-2">🎉</div>
-                <div className="text-2xl font-bold">New Badge!</div>
+                <div className="text-2xl font-bold">תג חדש!</div>
                 <div className="text-xl">{showBadge}</div>
               </div>
             </div>
@@ -2682,8 +2682,8 @@ export default function MathMaster() {
             <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none">
               <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-pulse">
                 <div className="text-4xl mb-2">🌟</div>
-                <div className="text-2xl font-bold">Level Up!</div>
-                <div className="text-xl">You're now Level {playerLevel}!</div>
+                <div className="text-2xl font-bold">עלית רמה!</div>
+                <div className="text-xl">עכשיו אתה ברמה {playerLevel}!</div>
               </div>
             </div>
           )}
@@ -2703,7 +2703,7 @@ export default function MathMaster() {
                       } catch {}
                     }
                   }}
-                  placeholder="Player Name"
+                  placeholder="שם שחקן"
                   className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-sm font-bold placeholder:text-white/40 flex-1 min-w-[120px]"
                   maxLength={15}
                 />
@@ -2792,13 +2792,13 @@ export default function MathMaster() {
 
               <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">Best Score</div>
+                  <div className="text-xs text-white/60">שיא ניקוד</div>
                   <div className="text-lg font-bold text-emerald-400">
                     {bestScore}
                   </div>
                 </div>
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">Best Streak</div>
+                  <div className="text-xs text-white/60">שיא רצף</div>
                   <div className="text-lg font-bold text-amber-400">
                     {bestStreak}
                   </div>
@@ -2843,9 +2843,9 @@ export default function MathMaster() {
               
               {/* תחרות יומית */}
               <div className="bg-black/20 border border-white/10 rounded-lg p-2 mb-2 w-full max-w-md text-center">
-                <div className="text-xs text-white/60 mb-1">Daily Challenge</div>
+                <div className="text-xs text-white/60 mb-1">אתגר יומי</div>
                 <div className="text-sm text-white">
-                  Best: {dailyChallenge.bestScore} • Questions: {dailyChallenge.questions}
+                  שיא: {dailyChallenge.bestScore} • שאלות: {dailyChallenge.questions}
                 </div>
               </div>
               
@@ -2886,19 +2886,19 @@ export default function MathMaster() {
                   disabled={!playerName.trim()}
                   className="h-10 px-6 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-sm"
                 >
-                  ▶️ Start
+                  ▶️ התחל
                 </button>
                 <button
                   onClick={() => setShowMultiplicationTable(true)}
                   className="h-10 px-4 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
                 >
-                  📊 Times Table
+                  📊 לוח הכפל
                 </button>
                 <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
                 >
-                  🏆 Leaderboard
+                  🏆 לוח תוצאות
                 </button>
                 {bestScore > 0 && (
                   <button
@@ -2911,7 +2911,7 @@ export default function MathMaster() {
               </div>
               {!playerName.trim() && (
                 <p className="text-xs text-white/60 text-center mb-2">
-                  Enter your name to start
+                  הכנס את שמך כדי להתחיל
                 </p>
               )}
             </>
@@ -3178,7 +3178,7 @@ export default function MathMaster() {
                         }}
                         className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-sm font-bold"
                       >
-                        📊 Show on table
+                        📊 הצג בטבלה
                       </button>
                     )}
                 </div>
@@ -3188,7 +3188,7 @@ export default function MathMaster() {
                 onClick={stopGame}
                 className="h-9 px-4 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm"
               >
-                ⏹️ Stop
+                ⏹️ עצור
               </button>
             </>
           )}
@@ -3212,7 +3212,7 @@ export default function MathMaster() {
               <div className="relative w-full max-w-md max-h-[80svh] overflow-y-auto bg-gradient-to-b from-[#0a0f1d] to-[#141928] rounded-2xl border-2 border-white/20 shadow-2xl">
                 <div className="sticky top-0 bg-gradient-to-b from-[#0a0f1d] to-[#141928] border-b border-white/10 px-4 py-3 flex items-center justify-between z-10">
                   <h2 className="text-xl font-bold text-white">
-                    📊 Multiplication Table
+                    📊 לוח הכפל
                   </h2>
                   <div className="flex items-center gap-2">
                     <button
@@ -3226,7 +3226,7 @@ export default function MathMaster() {
                       }}
                       className="px-2 py-1 rounded text-xs font-bold bg-white/10 hover:bg-white/20 text-white"
                     >
-                      RESET
+                      איפוס
                     </button>
                     <button
                       onClick={() => {
@@ -3264,7 +3264,7 @@ export default function MathMaster() {
                           : "bg-white/10 text-white/70 hover:bg-white/20"
                       }`}
                     >
-                      × Multiplication
+                      × כפל
                     </button>
                     <button
                       onClick={() => {
@@ -3282,7 +3282,7 @@ export default function MathMaster() {
                           : "bg-white/10 text-white/70 hover:bg-white/20"
                       }`}
                     >
-                      ÷ Division
+                      ÷ חילוק
                     </button>
                   </div>
 
@@ -3296,13 +3296,13 @@ export default function MathMaster() {
                       selectedResult % selectedDivisor !== 0 && (
                         <div className="w-full px-4 py-1 rounded-lg bg-red-500/20 border border-red-400/50 text-center flex items-center justify-center gap-2">
                           <span className="text-sm text-red-200 font-semibold">
-                            ⚠️ Error: {selectedResult} ÷ {selectedDivisor} is
-                            not a whole number!
+                            ⚠️ שגיאה: {selectedResult} ÷ {selectedDivisor} הוא
+                            לא מספר שלם!
                           </span>
                           <span className="text-xs text-red-300">
                             (
                             {Math.floor(selectedResult / selectedDivisor)}{" "}
-                            remainder {selectedResult % selectedDivisor})
+                            שארית {selectedResult % selectedDivisor})
                           </span>
                         </div>
                       )}
@@ -3621,8 +3621,8 @@ export default function MathMaster() {
                   <div className="mt-4 text-center space-y-2">
                     <div className="text-xs text-white/60 mb-2 text-center">
                       {tableMode === "multiplication"
-                        ? "Click a number from the table, then a row or column number"
-                        : "Click a result number, then a row/column number to see the division"}
+                        ? "לחץ על מספר מהטבלה, ואז על מספר שורה או עמודה"
+                        : "לחץ על מספר תוצאה, ואז על מספר שורה/עמודה כדי לראות את החילוק"}
                     </div>
                     <button
                       onClick={() => {
@@ -3636,7 +3636,7 @@ export default function MathMaster() {
                       }}
                       className="px-6 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
                     >
-                      Close
+                      סגור
                     </button>
                   </div>
                 </div>
@@ -3656,9 +3656,9 @@ export default function MathMaster() {
               >
                 <div className="text-center mb-4">
                   <h2 className="text-2xl font-extrabold text-white mb-1">
-                    🏆 Leaderboard
+                    🏆 לוח תוצאות
                   </h2>
-                  <p className="text-white/70 text-xs">Local High Scores</p>
+                  <p className="text-white/70 text-xs">שיאים מקומיים</p>
                 </div>
 
                 {/* Level Selection */}
@@ -3677,7 +3677,7 @@ export default function MathMaster() {
                             setLeaderboardData(topScores);
                           } catch (e) {
                             console.error(
-                              "Error loading leaderboard:",
+                              "שגיאה בטעינת לוח התוצאות:",
                               e
                             );
                           }
@@ -3700,16 +3700,16 @@ export default function MathMaster() {
                     <thead>
                       <tr className="border-b border-white/20">
                         <th className="text-white/80 p-2 font-bold text-xs">
-                          Rank
+                          דירוג
                         </th>
                         <th className="text-white/80 p-2 font-bold text-xs">
-                          Player
+                          שחקן
                         </th>
                         <th className="text-white/80 p-2 font-bold text-xs">
-                          Score
+                          ניקוד
                         </th>
                         <th className="text-white/80 p-2 font-bold text-xs">
-                          Streak
+                          רצף
                         </th>
                       </tr>
                     </thead>
@@ -3720,8 +3720,8 @@ export default function MathMaster() {
                             colSpan={4}
                             className="text-white/60 p-4 text-sm"
                           >
-                            No scores yet for{" "}
-                            {LEVELS[leaderboardLevel].name} level
+                            עדיין אין תוצאות ברמה{" "}
+                            {LEVELS[leaderboardLevel].name}
                           </td>
                         </tr>
                       ) : (

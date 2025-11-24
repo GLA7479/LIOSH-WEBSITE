@@ -5,17 +5,17 @@ import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 
 const LEVELS = {
   easy: {
-    name: "Easy",
+    name: "קל",
     maxSide: 10,
     decimals: false,
   },
   medium: {
-    name: "Medium",
+    name: "בינוני",
     maxSide: 20,
     decimals: true,
   },
   hard: {
-    name: "Hard",
+    name: "קשה",
     maxSide: 50,
     decimals: true,
   },
@@ -24,27 +24,27 @@ const LEVELS = {
 const PI = 3.14;
 
 const TOPICS = {
-  area: { name: "Area", description: "חישוב שטח", icon: "📐" },
-  perimeter: { name: "Perimeter", description: "חישוב היקף", icon: "📏" },
-  volume: { name: "Volume", description: "חישוב נפח", icon: "📦" },
-  angles: { name: "Angles", description: "זוויות", icon: "📐" },
-  pythagoras: { name: "Pythagoras", description: "משפט פיתגורס", icon: "🔺" },
-  mixed: { name: "Mixed", description: "ערבוב", icon: "🎲" },
+  area: { name: "שטח", description: "חישוב שטח", icon: "📐" },
+  perimeter: { name: "היקף", description: "חישוב היקף", icon: "📏" },
+  volume: { name: "נפח", description: "חישוב נפח", icon: "📦" },
+  angles: { name: "זוויות", description: "זוויות", icon: "📐" },
+  pythagoras: { name: "פיתגורס", description: "משפט פיתגורס", icon: "🔺" },
+  mixed: { name: "ערבוב", description: "ערבוב", icon: "🎲" },
 };
 
 const GRADES = {
   g3_4: {
-    name: "Grade 3–4",
+    name: "כיתות ג–ד",
     topics: ["area", "perimeter"],
     shapes: ["square", "rectangle", "circle", "triangle"],
   },
   g5_6: {
-    name: "Grade 5–6",
+    name: "כיתות ה–ו",
     topics: ["area", "perimeter", "volume", "mixed"],
     shapes: ["square", "rectangle", "circle", "triangle", "parallelogram", "trapezoid"],
   },
   g7_8: {
-    name: "Grade 7–8",
+    name: "כיתות ז–ח",
     topics: ["area", "perimeter", "volume", "angles", "pythagoras", "mixed"],
     shapes: ["square", "rectangle", "circle", "triangle", "parallelogram", "trapezoid", "cylinder", "sphere", "cube"],
   },
@@ -82,10 +82,10 @@ function getShapesForTopic(gradeKey, topicKey) {
 }
 
 const MODES = {
-  learning: { name: "Learning", description: "No hard game over, practice at your pace" },
-  challenge: { name: "Challenge", description: "Timer + lives, high score race" },
-  speed: { name: "Speed Run", description: "Fast answers = more points! ⚡" },
-  marathon: { name: "Marathon", description: "How many questions can you solve? 🏃" },
+  learning: { name: "למידה", description: "ללא סיום משחק, תרגול בקצב שלך" },
+  challenge: { name: "אתגר", description: "טיימר + חיים, מרוץ ניקוד גבוה" },
+  speed: { name: "מרוץ מהירות", description: "תשובות מהירות = יותר נקודות! ⚡" },
+  marathon: { name: "מרתון", description: "כמה שאלות תוכל לפתור? 🏃" },
 };
 
 const STORAGE_KEY = "mleo_geometry_master";
@@ -1349,7 +1349,7 @@ export default function GeometryMaster() {
   function handleTimeUp() {
     setWrong((prev) => prev + 1);
     setStreak(0);
-    setFeedback("Time's up! Game Over! ⏰");
+      setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
     setGameActive(false);
     setCurrentQuestion(null);
     setTimeLeft(0);
@@ -1584,7 +1584,7 @@ export default function GeometryMaster() {
   if (!mounted)
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+        <div className="text-white text-xl">טוען...</div>
       </div>
     );
 
@@ -1648,7 +1648,7 @@ export default function GeometryMaster() {
               📐 Geometry Master
             </h1>
             <p className="text-white/70 text-xs">
-              {playerName || "Player"} • {GRADES[grade].name} •{" "}
+              {playerName || "שחקן"} • {GRADES[grade].name} •{" "}
               {LEVELS[level].name} • {getTopicName(topic)} • {MODES[mode].name}
             </p>
           </div>
@@ -1660,22 +1660,22 @@ export default function GeometryMaster() {
             }`}
           >
             <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">Score</div>
+              <div className="text-[10px] text-white/60">ניקוד</div>
               <div className="text-sm font-bold text-emerald-400">{score}</div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">Streak</div>
+              <div className="text-[10px] text-white/60">רצף</div>
               <div className="text-sm font-bold text-amber-400">🔥{streak}</div>
             </div>
             {stars > 0 && (
               <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-                <div className="text-[10px] text-white/60">Stars</div>
+                <div className="text-[10px] text-white/60">כוכבים</div>
                 <div className="text-sm font-bold text-yellow-400">⭐{stars}</div>
               </div>
             )}
             {playerLevel > 1 && (
               <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-                <div className="text-[10px] text-white/60">Level</div>
+                <div className="text-[10px] text-white/60">רמה</div>
                 <div className="text-sm font-bold text-purple-400">Lv.{playerLevel}</div>
               </div>
             )}
@@ -1684,7 +1684,7 @@ export default function GeometryMaster() {
               <div className="text-sm font-bold text-green-400">{correct}</div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">Lives</div>
+              <div className="text-[10px] text-white/60">חיים</div>
               <div className="text-sm font-bold text-rose-400">
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
@@ -1696,7 +1696,7 @@ export default function GeometryMaster() {
                   : "bg-black/30 border border-white/10"
               }`}
             >
-              <div className="text-[10px] text-white/60">⏰ Timer</div>
+              <div className="text-[10px] text-white/60">⏰ טיימר</div>
               <div
                 className={`text-lg font-black ${
                   gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
@@ -1739,7 +1739,7 @@ export default function GeometryMaster() {
             <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none">
               <div className="bg-gradient-to-br from-yellow-400 to-orange-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-bounce">
                 <div className="text-4xl mb-2">🎉</div>
-                <div className="text-2xl font-bold">New Badge!</div>
+                <div className="text-2xl font-bold">תג חדש!</div>
                 <div className="text-xl">{showBadge}</div>
               </div>
             </div>
@@ -1749,7 +1749,7 @@ export default function GeometryMaster() {
             <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none">
               <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-pulse">
                 <div className="text-4xl mb-2">🌟</div>
-                <div className="text-2xl font-bold">Level Up!</div>
+                <div className="text-2xl font-bold">עלית רמה!</div>
                 <div className="text-xl">You're now Level {playerLevel}!</div>
               </div>
             </div>
@@ -1770,7 +1770,7 @@ export default function GeometryMaster() {
                       } catch {}
                     }
                   }}
-                  placeholder="Player Name"
+                  placeholder="שם שחקן"
                   className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-sm font-bold placeholder:text-white/40 flex-1 min-w-[120px]"
                   maxLength={15}
                 />
@@ -1841,13 +1841,13 @@ export default function GeometryMaster() {
 
               <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">Best Score</div>
+                  <div className="text-xs text-white/60">שיא ניקוד</div>
                   <div className="text-lg font-bold text-emerald-400">
                     {bestScore}
                   </div>
                 </div>
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">Best Streak</div>
+                  <div className="text-xs text-white/60">שיא רצף</div>
                   <div className="text-lg font-bold text-amber-400">
                     {bestStreak}
                   </div>
@@ -1890,9 +1890,9 @@ export default function GeometryMaster() {
               )}
 
               <div className="bg-black/20 border border-white/10 rounded-lg p-2 mb-2 w-full max-w-md text-center">
-                <div className="text-xs text-white/60 mb-1">Daily Challenge</div>
+                <div className="text-xs text-white/60 mb-1">אתגר יומי</div>
                 <div className="text-sm text-white">
-                  Best: {dailyChallenge.bestScore} • Questions: {dailyChallenge.questions}
+                  שיא: {dailyChallenge.bestScore} • שאלות: {dailyChallenge.questions}
                 </div>
               </div>
 
@@ -1902,26 +1902,26 @@ export default function GeometryMaster() {
                   disabled={!playerName.trim()}
                   className="h-10 px-6 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-sm"
                 >
-                  ▶️ Start
+                  ▶️ התחל
                 </button>
                 <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
                 >
-                  🏆 Leaderboard
+                  🏆 לוח תוצאות
                 </button>
                 {bestScore > 0 && (
                   <button
                     onClick={resetStats}
                     className="h-10 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-sm"
                   >
-                    🧹 Reset
+                    🧹 איפוס
                   </button>
                 )}
               </div>
               {!playerName.trim() && (
                 <p className="text-xs text-white/60 text-center mb-2">
-                  Enter your name to start
+                  הכנס את שמך כדי להתחיל
                 </p>
               )}
             </>
@@ -2113,7 +2113,7 @@ export default function GeometryMaster() {
                 onClick={stopGame}
                 className="h-9 px-4 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm"
               >
-                ⏹️ Stop
+                ⏹️ עצור
               </button>
             </>
           )}
@@ -2129,9 +2129,9 @@ export default function GeometryMaster() {
               >
                 <div className="text-center mb-4">
                   <h2 className="text-2xl font-extrabold text-white mb-1">
-                    🏆 Leaderboard
+                    🏆 לוח תוצאות
                   </h2>
-                  <p className="text-white/70 text-xs">Local High Scores</p>
+                  <p className="text-white/70 text-xs">שיאים מקומיים</p>
                 </div>
 
                 <div className="flex gap-2 mb-4 justify-center">
@@ -2148,7 +2148,7 @@ export default function GeometryMaster() {
                             const topScores = buildTop10ByScore(saved, lvl);
                             setLeaderboardData(topScores);
                           } catch (e) {
-                            console.error("Error loading leaderboard:", e);
+                            console.error("שגיאה בטעינת לוח התוצאות:", e);
                           }
                         }
                       }}
@@ -2168,16 +2168,16 @@ export default function GeometryMaster() {
                     <thead>
                       <tr className="border-b border-white/20">
                         <th className="text-white/80 p-2 font-bold text-xs">
-                          Rank
+                          דירוג
                         </th>
                         <th className="text-white/80 p-2 font-bold text-xs">
-                          Player
+                          שחקן
                         </th>
                         <th className="text-white/80 p-2 font-bold text-xs">
-                          Score
+                          ניקוד
                         </th>
                         <th className="text-white/80 p-2 font-bold text-xs">
-                          Streak
+                          רצף
                         </th>
                       </tr>
                     </thead>
@@ -2188,7 +2188,7 @@ export default function GeometryMaster() {
                             colSpan={4}
                             className="text-white/60 p-4 text-sm"
                           >
-                            No scores yet for {LEVELS[leaderboardLevel].name} level
+                            עדיין אין תוצאות ברמה {LEVELS[leaderboardLevel].name}
                           </td>
                         </tr>
                       ) : (
@@ -2239,7 +2239,7 @@ export default function GeometryMaster() {
                     onClick={() => setShowLeaderboard(false)}
                     className="px-6 py-2 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
                   >
-                    Close
+                    סגור
                   </button>
                 </div>
               </div>
