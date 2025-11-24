@@ -4408,11 +4408,12 @@ export default function MathMaster() {
                               onClick={() => setShowSolution(false)}
                             >
                               <div
-                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-[390px] h-[450px] overflow-y-auto shadow-2xl"
+                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
                                 onClick={(e) => e.stopPropagation()}
                                 style={{ maxWidth: "90vw", maxHeight: "90vh" }}
                               >
-                                <div className="flex items-center justify-between mb-2">
+                                {/* כותרת - קבועה */}
+                                <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
                                   <h3 className="text-lg font-bold text-emerald-100" dir="rtl">
                                     {"\u200Fאיך פותרים את התרגיל?"}
                                   </h3>
@@ -4423,7 +4424,9 @@ export default function MathMaster() {
                                     ✖
                                   </button>
                                 </div>
-                                <div className="mb-2 text-sm text-emerald-50" dir="rtl">
+                                
+                                {/* תוכן - גלילה */}
+                                <div className="flex-1 overflow-y-auto px-4 pb-2 text-sm text-emerald-50" dir="rtl">
                                   <div
                                     className="mb-2 font-semibold text-base text-center text-white"
                                     style={{ direction: "ltr", unicodeBidi: "plaintext" }}
@@ -4448,7 +4451,9 @@ export default function MathMaster() {
                                     ))}
                                   </div>
                                 </div>
-                                <div className="mt-6 flex justify-center">
+                                
+                                {/* כפתורים - קבועים בתחתית */}
+                                <div className="p-4 pt-2 flex justify-center flex-shrink-0 border-t border-emerald-400/20">
                                   <button
                                     onClick={() => setShowSolution(false)}
                                     className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
@@ -4475,11 +4480,21 @@ export default function MathMaster() {
                           return null;
                         }
                         
-                        const splitDigits = (num) => String(num).split("");
-                        const aDigits = splitDigits(aEff);
-                        const bDigits = splitDigits(bEff);
-                        const resDigits = splitDigits(answer ?? "__");
-                        const maxLen = Math.max(aDigits.length, bDigits.length);
+                        // פונקציה לפיצול ספרות עם padding
+                        const splitDigits = (num, minLength = 1) => {
+                          const s = String(Math.abs(num)).padStart(minLength, " ");
+                          return s.split("");
+                        };
+                        
+                        const maxLen = Math.max(
+                          String(aEff).length,
+                          String(bEff).length,
+                          answer != null ? String(answer).length : 0
+                        );
+                        
+                        const aDigits = splitDigits(aEff, maxLen);
+                        const bDigits = splitDigits(bEff, maxLen);
+                        const resDigits = answer != null ? splitDigits(answer, maxLen) : Array(maxLen).fill(" ");
                         
                         const isHighlighted = (key) => {
                           if (!activeStep || !activeStep.highlights || !Array.isArray(activeStep.highlights)) {
@@ -4494,11 +4509,12 @@ export default function MathMaster() {
                             onClick={() => setShowSolution(false)}
                           >
                             <div
-                              className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-[390px] h-[450px] overflow-y-auto shadow-2xl"
+                              className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
                               onClick={(e) => e.stopPropagation()}
                               style={{ maxWidth: "90vw", maxHeight: "90vh" }}
                             >
-                              <div className="flex items-center justify-between mb-3">
+                              {/* כותרת - קבועה */}
+                              <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
                                 <h3 className="text-lg font-bold text-emerald-100" dir="rtl">
                                   {"\u200Fאיך פותרים את התרגיל?"}
                                 </h3>
@@ -4510,111 +4526,141 @@ export default function MathMaster() {
                                 </button>
                               </div>
                               
-                              {/* תצוגת התרגיל המאונך עם הדגשות */}
-                              <div className="mb-4" style={{ direction: "ltr", textAlign: "center" }}>
-                                <div className="flex justify-center gap-1 mb-1">
-                                  {aDigits.map((d, idx) => {
-                                    const pos = aDigits.length - idx - 1;
-                                    const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
-                                    const shouldHighlight = isHighlighted("aAll") || 
-                                                          (pos === 0 && isHighlighted("aUnits")) ||
-                                                          (pos === 1 && isHighlighted("aTens")) ||
-                                                          (pos === 2 && isHighlighted("aHundreds"));
-                                    return (
-                                      <span
-                                        key={`a-${idx}`}
-                                        className={`inline-block min-w-[20px] text-center text-2xl font-bold ${
-                                          shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
-                                        }`}
-                                      >
-                                        {d}
-                                      </span>
-                                    );
-                                  })}
+                              {/* תוכן - גלילה */}
+                              <div className="flex-1 overflow-y-auto px-4 pb-2">
+                                {/* תצוגת התרגיל המאונך עם הדגשות - טבלה */}
+                                <div className="mb-4 flex flex-col items-center font-mono text-2xl leading-[1.8]" style={{ direction: "ltr" }}>
+                                  {/* שורה 1 – המספר הראשון (תא ריק במקום סימן הפעולה) */}
+                                  <div 
+                                    className="grid gap-x-1 mb-1"
+                                    style={{ 
+                                      gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
+                                    }}
+                                  >
+                                    <span className="w-4" /> {/* תא ריק במקום סימן הפעולה */}
+                                    {aDigits.map((d, idx) => {
+                                      const pos = maxLen - idx - 1; // מיקום מהסוף (0 = אחדות, 1 = עשרות וכו')
+                                      const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
+                                      const shouldHighlight = isHighlighted("aAll") || 
+                                                            (pos === 0 && isHighlighted("aUnits")) ||
+                                                            (pos === 1 && isHighlighted("aTens")) ||
+                                                            (pos === 2 && isHighlighted("aHundreds"));
+                                      return (
+                                        <span
+                                          key={`a-${idx}`}
+                                          className={`text-center font-bold ${
+                                            shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
+                                          }`}
+                                        >
+                                          {d.trim() || "\u00A0"}
+                                        </span>
+                                      );
+                                    })}
+                                  </div>
+                                  
+                                  {/* שורה 2 – סימן הפעולה והמספר השני */}
+                                  <div 
+                                    className="grid gap-x-1 mb-1"
+                                    style={{ 
+                                      gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
+                                    }}
+                                  >
+                                    <span className="w-4 text-center text-2xl font-bold">
+                                      {effectiveOp === "addition" ? "+" : "−"}
+                                    </span>
+                                    {bDigits.map((d, idx) => {
+                                      const pos = maxLen - idx - 1;
+                                      const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
+                                      const shouldHighlight = isHighlighted("bAll") || 
+                                                            (pos === 0 && isHighlighted("bUnits")) ||
+                                                            (pos === 1 && isHighlighted("bTens")) ||
+                                                            (pos === 2 && isHighlighted("bHundreds"));
+                                      return (
+                                        <span
+                                          key={`b-${idx}`}
+                                          className={`text-center font-bold ${
+                                            shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
+                                          }`}
+                                        >
+                                          {d.trim() || "\u00A0"}
+                                        </span>
+                                      );
+                                    })}
+                                  </div>
+                                  
+                                  {/* קו תחתון */}
+                                  <div 
+                                    className="h-[2px] bg-white my-2"
+                                    style={{ width: `${(maxLen + 1) * 1.5}ch` }}
+                                  />
+                                  
+                                  {/* שורה 3 – התוצאה */}
+                                  <div 
+                                    className="grid gap-x-1"
+                                    style={{ 
+                                      gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
+                                    }}
+                                  >
+                                    <span className="w-4" /> {/* תא ריק */}
+                                    {resDigits.map((d, idx) => {
+                                      const pos = maxLen - idx - 1;
+                                      const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
+                                      const shouldHighlight = isHighlighted("resultAll") || 
+                                                            (pos === 0 && isHighlighted("resultUnits")) ||
+                                                            (pos === 1 && isHighlighted("resultTens")) ||
+                                                            (pos === 2 && isHighlighted("resultHundreds"));
+                                      return (
+                                        <span
+                                          key={`r-${idx}`}
+                                          className={`text-center font-bold ${
+                                            shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
+                                          }`}
+                                        >
+                                          {d.trim() || "\u00A0"}
+                                        </span>
+                                      );
+                                    })}
+                                  </div>
                                 </div>
                                 
-                                <div className="flex justify-center gap-1 mb-1">
-                                  <span className="text-2xl font-bold mr-2">
-                                    {effectiveOp === "addition" ? "+" : "−"}
-                                  </span>
-                                  {bDigits.map((d, idx) => {
-                                    const pos = bDigits.length - idx - 1;
-                                    const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
-                                    const shouldHighlight = isHighlighted("bAll") || 
-                                                          (pos === 0 && isHighlighted("bUnits")) ||
-                                                          (pos === 1 && isHighlighted("bTens")) ||
-                                                          (pos === 2 && isHighlighted("bHundreds"));
-                                    return (
-                                      <span
-                                        key={`b-${idx}`}
-                                        className={`inline-block min-w-[20px] text-center text-2xl font-bold ${
-                                          shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
-                                        }`}
-                                      >
-                                        {d}
-                                      </span>
-                                    );
-                                  })}
-                                </div>
-                                
-                                <div className="mb-1 text-2xl">——</div>
-                                
-                                <div className="flex justify-center gap-1">
-                                  {resDigits.map((d, idx) => {
-                                    const pos = resDigits.length - idx - 1;
-                                    const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
-                                    const shouldHighlight = isHighlighted("resultAll") || 
-                                                          (pos === 0 && isHighlighted("resultUnits")) ||
-                                                          (pos === 1 && isHighlighted("resultTens")) ||
-                                                          (pos === 2 && isHighlighted("resultHundreds"));
-                                    return (
-                                      <span
-                                        key={`r-${idx}`}
-                                        className={`inline-block min-w-[20px] text-center text-2xl font-bold ${
-                                          shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
-                                        }`}
-                                      >
-                                        {d}
-                                      </span>
-                                    );
-                                  })}
+                                {/* טקסט ההסבר */}
+                                <div className="mb-4 text-sm text-emerald-50" dir="rtl">
+                                  <h4 className="font-bold text-base mb-1">{activeStep.title}</h4>
+                                  <p className="leading-relaxed">{activeStep.text}</p>
                                 </div>
                               </div>
                               
-                              {/* טקסט ההסבר */}
-                              <div className="mb-6 text-sm text-emerald-50" dir="rtl">
-                                <h4 className="font-bold text-base mb-1">{activeStep.title}</h4>
-                                <p className="leading-relaxed">{activeStep.text}</p>
-                              </div>
-                              
-                              {/* שליטה באנימציה */}
-                              <div className="flex gap-2 justify-center items-center">
-                                <button
-                                  onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
-                                  disabled={animationStep === 0}
-                                  className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
-                                  dir="rtl"
-                                >
-                                  {"\u200F« קודם"}
-                                </button>
-                                <button
-                                  onClick={() => setAutoPlay((p) => !p)}
-                                  className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
-                                >
-                                  {autoPlay ? "⏸ עצור" : "▶ נגן"}
-                                </button>
-                                <button
-                                  onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
-                                  disabled={animationStep >= animationSteps.length - 1}
-                                  className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
-                                >
-                                  הבא »
-                                </button>
-                              </div>
-                              
-                              {/* אינדיקטור צעדים */}
-                              <div className="mt-4 text-center text-xs text-emerald-300">
-                                צעד {animationStep + 1} מתוך {animationSteps.length}
+                              {/* כפתורים ואינדיקטור - קבועים בתחתית */}
+                              <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
+                                {/* שליטה באנימציה */}
+                                <div className="flex gap-2 justify-center items-center">
+                                  <button
+                                    onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
+                                    disabled={animationStep >= animationSteps.length - 1}
+                                    className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                  >
+                                    הבא
+                                  </button>
+                                  <button
+                                    onClick={() => setAutoPlay((p) => !p)}
+                                    className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
+                                  >
+                                    {autoPlay ? "עצור" : "נגן"}
+                                  </button>
+                                  <button
+                                    onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
+                                    disabled={animationStep === 0}
+                                    className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                    dir="rtl"
+                                  >
+                                    {"\u200Fקודם"}
+                                  </button>
+                                </div>
+                                
+                                {/* אינדיקטור צעדים */}
+                                <div className="text-center text-xs text-emerald-300">
+                                  צעד {animationStep + 1} מתוך {animationSteps.length}
+                                </div>
                               </div>
                             </div>
                           </div>
