@@ -1257,7 +1257,10 @@ export default function ScienceMaster() {
               )}
 
               {/* SHORT THEORY BANNER */}
-              <div className="bg-black/30 border border-emerald-500/40 rounded-xl p-3 w-full max-w-md text-xs text-white/80 text-right">
+              <div
+                className="bg-black/30 border border-emerald-500/40 rounded-xl p-3 w-full max-w-md text-xs text-white/80"
+                dir="rtl"
+              >
                 <div className="font-bold mb-1">📘 איך לומדים מדעים כאן?</div>
                 <ul className="list-disc pr-4 space-y-0.5">
                   <li>בחר כיתה, רמה ונושא (לדוגמה: גוף האדם).</li>
@@ -1297,7 +1300,7 @@ export default function ScienceMaster() {
                 }}
               >
                 {mode === "learning" && currentQuestion && (
-                  <div className="mb-2 px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 text-right">
+                  <div className="mb-2 px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 text-right" dir="rtl">
                     <div className="font-bold mb-1">📘 מה חשוב לזכור?</div>
                     <ul className="list-disc pr-4 space-y-0.5">
                       {(currentQuestion.theoryLines || []).map((line, i) => (
@@ -1310,7 +1313,7 @@ export default function ScienceMaster() {
                 {/* STEM */}
                 <div
                   className="text-base sm:text-lg font-semibold text-white mb-3 text-center"
-                  style={{ direction: "rtl" }}
+                  style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                 >
                   {currentQuestion
                     ? currentQuestion.stem
@@ -1368,7 +1371,7 @@ export default function ScienceMaster() {
                               ? "bg-emerald-500/20 border-emerald-400 text-emerald-100"
                               : "bg-black/30 border-white/15 text-white hover:border-white/50"
                           }`}
-                          style={{ direction: "rtl" }}
+                          style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                         >
                           {opt}
                         </button>
@@ -1415,11 +1418,11 @@ export default function ScienceMaster() {
                       >
                         {(() => {
                           const q = (currentQuestion.stem || "").trim().replace(/^\?+/, "");
-                          return q.endsWith("?") ? q : q + " ?";
+                          return q.endsWith("?") ? q : q + "?";
                         })()}
                       </p>
                       {/* כאן הצעדים */}
-                      <div className="space-y-1 text-sm" style={{ direction: "rtl", unicodeBidi: "plaintext" }}>
+                      <div className="space-y-1 text-sm" style={{ direction: "rtl" }}>
                         {getSolutionStepsScience(currentQuestion).map(
                           (line, idx) => (
                             <div key={idx}>{line}</div>
