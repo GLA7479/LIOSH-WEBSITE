@@ -1479,7 +1479,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     const fallback = correctAnswer + wrongAnswersArray.length + 10;
     if (fallback !== correctAnswer && !wrongAnswersArray.includes(fallback)) {
       wrongAnswersArray.push(fallback);
-    } else {
+      } else {
       // ננסה ערכים אחרים
       const altFallback = correctAnswer - (wrongAnswersArray.length + 10);
       if (altFallback !== correctAnswer && !wrongAnswersArray.includes(altFallback)) {
@@ -2356,6 +2356,136 @@ function buildVerticalOperation(topNumber, bottomNumber, operator = "-") {
   return `\u2066${raw}\u2069`;
 }
 
+// פונקציה לבניית צעדי אנימציה לחיבור וחיסור
+function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
+  const steps = [];
+  const aStr = String(a);
+  const bStr = String(Math.abs(b));
+  const maxLen = Math.max(aStr.length, bStr.length);
+  const pa = aStr.padStart(maxLen, "0");
+  const pb = bStr.padStart(maxLen, "0");
+
+  if (op === "addition") {
+    // צעד 1: מיישרים את הספרות
+    steps.push({
+      id: "place-value",
+      title: "מיישרים את הספרות",
+      text: "כותבים את המספרים אחד מעל השני כך שסַפְרות היחידות נמצאות באותה עמודה.",
+      highlights: ["aAll", "bAll"],
+    });
+
+    // חישוב ספרה ספרה
+    let carry = 0;
+    let stepIndex = 2;
+
+    for (let i = maxLen - 1; i >= 0; i--) {
+      const da = Number(pa[i]);
+      const db = Number(pb[i]);
+      const sum = da + db + carry;
+      const ones = sum % 10;
+      const newCarry = sum >= 10 ? 1 : 0;
+
+      const placeName =
+        i === maxLen - 1
+          ? "יחידות"
+          : i === maxLen - 2
+          ? "עשרות"
+          : "מאות ומעלה";
+
+      const highlightKey = i === maxLen - 1 ? "Units" : i === maxLen - 2 ? "Tens" : "Hundreds";
+
+      steps.push({
+        id: `step-${stepIndex}`,
+        title: `ספרת ה${placeName}`,
+        text: `מחברים את ספרת ה${placeName}: ${da} + ${db}${carry ? " + " + carry : ""} = ${sum}. כותבים ${ones} בעמודת ה${placeName}${newCarry ? " ומעבירים 1 לעמודה הבאה" : ""}.`,
+        highlights: [`a${highlightKey}`, `b${highlightKey}`, `result${highlightKey}`],
+        carry: newCarry,
+      });
+
+      carry = newCarry;
+      stepIndex++;
+    }
+
+    if (carry) {
+      steps.push({
+        id: "final-carry",
+        title: "העברה נוספת",
+        text: "בסוף החיבור נשאר לנו 1 נוסף, כותבים אותו משמאל כמספר חדש בעמודת המאות/אלפים.",
+        highlights: ["resultAll"],
+      });
+    }
+
+    // צעד אחרון: התוצאה הסופית
+    steps.push({
+      id: "final",
+      title: "התוצאה הסופית",
+      text: `המספר שנוצר הוא ${answer}. זהו התשובה הסופית לתרגיל.`,
+      highlights: ["resultAll"],
+    });
+  } else if (op === "subtraction") {
+    // צעד 1: מיישרים את הספרות
+    steps.push({
+      id: "place-value",
+      title: "מיישרים את הספרות",
+      text: "כותבים את המספרים אחד מעל השני כך שסַפְרות היחידות, העשרות וכו' נמצאות באותו טור.",
+      highlights: ["aAll", "bAll"],
+    });
+
+    // חישוב ספרה ספרה
+    let borrow = 0;
+    let stepIndex = 2;
+
+    for (let i = maxLen - 1; i >= 0; i--) {
+      let da = Number(pa[i]);
+      const db = Number(pb[i]);
+      da -= borrow;
+
+      const placeName =
+        i === maxLen - 1
+          ? "יחידות"
+          : i === maxLen - 2
+          ? "עשרות"
+          : "מאות ומעלה";
+
+      const highlightKey = i === maxLen - 1 ? "Units" : i === maxLen - 2 ? "Tens" : "Hundreds";
+
+      if (da < db) {
+        steps.push({
+          id: `borrow-${stepIndex}`,
+          title: `השאלה מעמודת ה${placeName}`,
+          text: `בעמודת ה${placeName} ${da} קטן מ-${db}, לכן לוקחים "השאלה" מהעמודה הבאה (מוסיפים 10 לספרה הזו ומפחיתים 1 בעמודה הבאה).`,
+          highlights: [`a${highlightKey}`, `b${highlightKey}`],
+        });
+        da += 10;
+        borrow = 1;
+        stepIndex++;
+      } else {
+        borrow = 0;
+      }
+
+      const diff = da - db;
+      steps.push({
+        id: `step-${stepIndex}`,
+        title: `ספרת ה${placeName}`,
+        text: `כעת מחשבים בעמודת ה${placeName}: ${da} - ${db} = ${diff} וכותבים ${diff} בעמודה זו.`,
+        highlights: [`a${highlightKey}`, `b${highlightKey}`, `result${highlightKey}`],
+      });
+
+      stepIndex++;
+    }
+
+    // צעד אחרון: התוצאה הסופית
+    steps.push({
+      id: "final",
+      title: "התוצאה הסופית",
+      text: `המספר שקיבלנו בסוף הוא ${answer}. זו התוצאה של החיסור.`,
+      highlights: ["resultAll"],
+    });
+  }
+
+  return steps;
+}
+
 function buildStepExplanation(question) {
   if (!question) return null;
 
@@ -2823,12 +2953,65 @@ export default function MathMaster() {
 
   // הסבר מפורט לשאלה
   const [showSolution, setShowSolution] = useState(false);
+  const [animationStep, setAnimationStep] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
   
   // Memoize explanation to avoid recalculating on every render
   const stepExplanation = useMemo(
     () => showSolution && currentQuestion ? buildStepExplanation(currentQuestion) : null,
     [showSolution, currentQuestion]
   );
+
+  // בניית צעדי אנימציה
+  const animationSteps = useMemo(() => {
+    if (!showSolution || !currentQuestion) return null;
+    
+    const p = currentQuestion.params || {};
+    const op = currentQuestion.operation;
+    let effectiveOp = op;
+    let aEff = p.a ?? currentQuestion.a;
+    let bEff = p.b ?? currentQuestion.b;
+    
+    // טיפול במספר שלילי בחיבור
+    if (op === "addition" && typeof bEff === "number" && bEff < 0) {
+      effectiveOp = "subtraction";
+      bEff = Math.abs(bEff);
+    }
+    
+    const answer = currentQuestion.correctAnswer !== undefined
+      ? currentQuestion.correctAnswer
+      : currentQuestion.answer;
+    
+    if ((effectiveOp === "addition" || effectiveOp === "subtraction") && 
+        typeof aEff === "number" && typeof bEff === "number") {
+      return buildAdditionOrSubtractionAnimation(aEff, bEff, answer, effectiveOp);
+    }
+    
+    return null;
+  }, [showSolution, currentQuestion]);
+
+  // אנימציה אוטומטית
+  useEffect(() => {
+    if (!showSolution || !autoPlay || !animationSteps) return;
+    if (animationStep >= animationSteps.length - 1) return;
+
+    const id = setTimeout(() => {
+      setAnimationStep((s) => s + 1);
+    }, 2000); // 2 שניות בין שלבים
+
+    return () => clearTimeout(id);
+  }, [showSolution, autoPlay, animationStep, animationSteps]);
+
+  // איפוס צעד האנימציה כשפותחים את המודל או כשהשאלה משתנה
+  useEffect(() => {
+    if (showSolution && animationSteps && animationSteps.length > 0) {
+      setAnimationStep(0);
+      setAutoPlay(true);
+    } else if (showSolution && (!animationSteps || animationSteps.length === 0)) {
+      // אם אין אנימציה, נאפס את הצעד
+      setAnimationStep(0);
+    }
+  }, [showSolution, animationSteps]);
 
   // הסבר לטעות אחרונה
   const [errorExplanation, setErrorExplanation] = useState("");
@@ -4194,24 +4377,129 @@ export default function MathMaster() {
                       )}
 
                       {/* חלון הסבר מלא - Modal גדול ומרכזי - רק במצב למידה */}
-                      {mode === "learning" && showSolution && currentQuestion && stepExplanation && (() => {
-                        const info = stepExplanation;
-                        if (!info) return null;
-
+                      {mode === "learning" && showSolution && currentQuestion && (() => {
+                        const p = currentQuestion.params || {};
+                        const op = currentQuestion.operation;
+                        let effectiveOp = op;
+                        let aEff = p.a ?? currentQuestion.a;
+                        let bEff = p.b ?? currentQuestion.b;
+                        
+                        // טיפול במספר שלילי בחיבור
+                        if (op === "addition" && typeof bEff === "number" && bEff < 0) {
+                          effectiveOp = "subtraction";
+                          bEff = Math.abs(bEff);
+                        }
+                        
+                        const answer = currentQuestion.correctAnswer !== undefined
+                          ? currentQuestion.correctAnswer
+                          : currentQuestion.answer;
+                        
+                        const hasAnimation = (effectiveOp === "addition" || effectiveOp === "subtraction") && 
+                                            typeof aEff === "number" && typeof bEff === "number";
+                        
+                        if (!hasAnimation) {
+                          // חזרה למודל הישן אם אין אנימציה
+                          const info = stepExplanation;
+                          if (!info) return null;
+                          
+                          return (
+                            <div
+                              className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                              onClick={() => setShowSolution(false)}
+                            >
+                              <div
+                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-[390px] h-[450px] overflow-y-auto shadow-2xl"
+                                onClick={(e) => e.stopPropagation()}
+                                style={{ maxWidth: "90vw", maxHeight: "90vh" }}
+                              >
+                                <div className="flex items-center justify-between mb-2">
+                                  <h3 className="text-lg font-bold text-emerald-100" dir="rtl">
+                                    {"\u200Fאיך פותרים את התרגיל?"}
+                                  </h3>
+                                  <button
+                                    onClick={() => setShowSolution(false)}
+                                    className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                                  >
+                                    ✖
+                                  </button>
+                                </div>
+                                <div className="mb-2 text-sm text-emerald-50" dir="rtl">
+                                  <div
+                                    className="mb-2 font-semibold text-base text-center text-white"
+                                    style={{ direction: "ltr", unicodeBidi: "plaintext" }}
+                                  >
+                                    {info.exercise || currentQuestion.exerciseText || currentQuestion.question}
+                                  </div>
+                                  {info.vertical && (
+                                    <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2">
+                                      <pre
+                                        dir="ltr"
+                                        className="text-center font-mono text-base leading-relaxed whitespace-pre text-emerald-100"
+                                      >
+                                        {info.vertical}
+                                      </pre>
+                                    </div>
+                                  )}
+                                  <div className="space-y-1.5 text-sm" style={{ direction: "rtl", unicodeBidi: "plaintext" }}>
+                                    {info.steps.map((step, idx) => (
+                                      <div key={idx} className="text-emerald-50 leading-relaxed">
+                                        {step}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="mt-6 flex justify-center">
+                                  <button
+                                    onClick={() => setShowSolution(false)}
+                                    className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                                    dir="rtl"
+                                  >
+                                    {"\u200Fסגור"}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+                        
+                        // מודל עם אנימציה
+                        if (!animationSteps || !Array.isArray(animationSteps) || animationSteps.length === 0) {
+                          return null;
+                        }
+                        
+                        // וודא ש-animationStep בטווח תקין
+                        const safeStepIndex = Math.max(0, Math.min(animationStep || 0, animationSteps.length - 1));
+                        const activeStep = animationSteps[safeStepIndex];
+                        
+                        if (!activeStep || !activeStep.highlights || !Array.isArray(activeStep.highlights)) {
+                          return null;
+                        }
+                        
+                        const splitDigits = (num) => String(num).split("");
+                        const aDigits = splitDigits(aEff);
+                        const bDigits = splitDigits(bEff);
+                        const resDigits = splitDigits(answer ?? "__");
+                        const maxLen = Math.max(aDigits.length, bDigits.length);
+                        
+                        const isHighlighted = (key) => {
+                          if (!activeStep || !activeStep.highlights || !Array.isArray(activeStep.highlights)) {
+                            return false;
+                          }
+                          return activeStep.highlights.includes(key);
+                        };
+                        
                         return (
                           <div
                             className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
                             onClick={() => setShowSolution(false)}
                           >
                             <div
-                              className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl"
+                              className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-[390px] h-[450px] overflow-y-auto shadow-2xl"
                               onClick={(e) => e.stopPropagation()}
+                              style={{ maxWidth: "90vw", maxHeight: "90vh" }}
                             >
-                              <div className="flex items-center justify-between mb-2">
-                                <h3
-                                  className="text-lg font-bold text-emerald-100"
-                                  dir="rtl"
-                                >
+                              <div className="flex items-center justify-between mb-3">
+                                <h3 className="text-lg font-bold text-emerald-100" dir="rtl">
                                   {"\u200Fאיך פותרים את התרגיל?"}
                                 </h3>
                                 <button
@@ -4221,47 +4509,112 @@ export default function MathMaster() {
                                   ✖
                                 </button>
                               </div>
-                              <div className="mb-2 text-sm text-emerald-50" dir="rtl">
-                                {/* מציגים שוב את התרגיל */}
-                                <div
-                                  className="mb-2 font-semibold text-base text-center text-white"
-                                  style={{
-                                    direction: "ltr",
-                                    unicodeBidi: "plaintext"
-                                  }}
-                                >
-                                  {info.exercise || currentQuestion.exerciseText || currentQuestion.question}
+                              
+                              {/* תצוגת התרגיל המאונך עם הדגשות */}
+                              <div className="mb-4" style={{ direction: "ltr", textAlign: "center" }}>
+                                <div className="flex justify-center gap-1 mb-1">
+                                  {aDigits.map((d, idx) => {
+                                    const pos = aDigits.length - idx - 1;
+                                    const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
+                                    const shouldHighlight = isHighlighted("aAll") || 
+                                                          (pos === 0 && isHighlighted("aUnits")) ||
+                                                          (pos === 1 && isHighlighted("aTens")) ||
+                                                          (pos === 2 && isHighlighted("aHundreds"));
+                                    return (
+                                      <span
+                                        key={`a-${idx}`}
+                                        className={`inline-block min-w-[20px] text-center text-2xl font-bold ${
+                                          shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
+                                        }`}
+                                      >
+                                        {d}
+                                      </span>
+                                    );
+                                  })}
                                 </div>
                                 
-                                {/* תצוגה במאונך (אם יש) */}
-                                {info.vertical && (
-                                  <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2">
-                                    <pre
-                                      dir="ltr"
-                                      className="text-center font-mono text-base leading-relaxed whitespace-pre text-emerald-100"
-                                    >
-                                      {info.vertical}
-                                    </pre>
-                                  </div>
-                                )}
-
-                                {/* כאן הצעדים המפורטים */}
-                                <div className="space-y-1.5 text-sm" style={{ direction: "rtl", unicodeBidi: "plaintext" }}>
-                                  {info.steps.map((step, idx) => (
-                                    <div key={idx} className="text-emerald-50 leading-relaxed">
-                                      {step}
-                                    </div>
-                                  ))}
+                                <div className="flex justify-center gap-1 mb-1">
+                                  <span className="text-2xl font-bold mr-2">
+                                    {effectiveOp === "addition" ? "+" : "−"}
+                                  </span>
+                                  {bDigits.map((d, idx) => {
+                                    const pos = bDigits.length - idx - 1;
+                                    const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
+                                    const shouldHighlight = isHighlighted("bAll") || 
+                                                          (pos === 0 && isHighlighted("bUnits")) ||
+                                                          (pos === 1 && isHighlighted("bTens")) ||
+                                                          (pos === 2 && isHighlighted("bHundreds"));
+                                    return (
+                                      <span
+                                        key={`b-${idx}`}
+                                        className={`inline-block min-w-[20px] text-center text-2xl font-bold ${
+                                          shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
+                                        }`}
+                                      >
+                                        {d}
+                                      </span>
+                                    );
+                                  })}
+                                </div>
+                                
+                                <div className="mb-1 text-2xl">——</div>
+                                
+                                <div className="flex justify-center gap-1">
+                                  {resDigits.map((d, idx) => {
+                                    const pos = resDigits.length - idx - 1;
+                                    const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
+                                    const shouldHighlight = isHighlighted("resultAll") || 
+                                                          (pos === 0 && isHighlighted("resultUnits")) ||
+                                                          (pos === 1 && isHighlighted("resultTens")) ||
+                                                          (pos === 2 && isHighlighted("resultHundreds"));
+                                    return (
+                                      <span
+                                        key={`r-${idx}`}
+                                        className={`inline-block min-w-[20px] text-center text-2xl font-bold ${
+                                          shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
+                                        }`}
+                                      >
+                                        {d}
+                                      </span>
+                                    );
+                                  })}
                                 </div>
                               </div>
-                              <div className="mt-3 flex justify-center">
+                              
+                              {/* טקסט ההסבר */}
+                              <div className="mb-6 text-sm text-emerald-50" dir="rtl">
+                                <h4 className="font-bold text-base mb-1">{activeStep.title}</h4>
+                                <p className="leading-relaxed">{activeStep.text}</p>
+                              </div>
+                              
+                              {/* שליטה באנימציה */}
+                              <div className="flex gap-2 justify-center items-center">
                                 <button
-                                  onClick={() => setShowSolution(false)}
-                                  className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                                  onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
+                                  disabled={animationStep === 0}
+                                  className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
                                   dir="rtl"
                                 >
-                                  {"\u200Fסגור"}
+                                  {"\u200F« קודם"}
                                 </button>
+                                <button
+                                  onClick={() => setAutoPlay((p) => !p)}
+                                  className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
+                                >
+                                  {autoPlay ? "⏸ עצור" : "▶ נגן"}
+                                </button>
+                                <button
+                                  onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
+                                  disabled={animationStep >= animationSteps.length - 1}
+                                  className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                >
+                                  הבא »
+                                </button>
+                              </div>
+                              
+                              {/* אינדיקטור צעדים */}
+                              <div className="mt-4 text-center text-xs text-emerald-300">
+                                צעד {animationStep + 1} מתוך {animationSteps.length}
                               </div>
                             </div>
                           </div>
