@@ -39,7 +39,15 @@ const GRADES = {
   },
   g3_4: {
     name: "Grade 3–4",
-    operations: ["addition", "subtraction", "multiplication", "division", "fractions", "mixed"],
+    operations: [
+      "addition",
+      "subtraction",
+      "multiplication",
+      "division",
+      "fractions",
+      "sequences",
+      "mixed",
+    ],
     allowFractions: true,
     allowNegatives: false,
   },
@@ -51,6 +59,8 @@ const GRADES = {
       "multiplication",
       "division",
       "fractions",
+      "percentages",
+      "sequences",
       "word_problems",
       "mixed",
     ],
@@ -65,6 +75,8 @@ const OPERATIONS = [
   "multiplication",
   "division",
   "fractions",
+  "percentages",
+  "sequences",
   "word_problems",
   "mixed",
 ];
@@ -432,6 +444,48 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
       correctAnswer = `${resNum}/${commonDen}`;
     }
+  } else if (selectedOp === "percentages") {
+    const templates =
+      gradeKey === "g5_6" ? ["percent_of", "what_percent"] : ["percent_of"];
+    const percentOptions = [10, 20, 25, 30, 40, 50];
+    const t = templates[Math.floor(Math.random() * templates.length)];
+
+    if (t === "percent_of") {
+      const base = randInt(20, 500);
+      const percent = percentOptions[Math.floor(Math.random() * percentOptions.length)];
+      correctAnswer = Math.round((base * percent) / 100);
+      question = `${percent}% מ-${base} = ?`;
+      params = { kind: "perc_of", base, percent };
+    } else {
+      const base = randInt(40, 200);
+      const percent = percentOptions[Math.floor(Math.random() * percentOptions.length)];
+      const part = Math.round((base * percent) / 100);
+      correctAnswer = percent;
+      question = `${part} הוא כמה אחוז מ-${base}?`;
+      params = { kind: "perc_what", base, part };
+    }
+  } else if (selectedOp === "sequences") {
+    const isLowerGrade = gradeKey === "g3_4";
+    const length = 5;
+    const step =
+      isLowerGrade
+        ? randInt(1, 5)
+        : Math.random() < 0.7
+        ? randInt(1, 7)
+        : -randInt(1, 5);
+    const start = isLowerGrade ? randInt(1, 20) : randInt(-20, 50);
+
+    const terms = [];
+    for (let i = 0; i < length; i++) {
+      terms.push(start + i * step);
+    }
+    const missingIndex = randInt(1, length - 2);
+    correctAnswer = terms[missingIndex];
+    const displayTerms = terms
+      .map((val, idx) => (idx === missingIndex ? "?" : val))
+      .join(", ");
+    question = `מצא את המספר החסר בסדרה: ${displayTerms}`;
+    params = { kind: "seq_arith", start, step, terms, missingIndex };
   } else if (selectedOp === "word_problems") {
     const templates =
       gradeKey === "g5_6" ? ["multi_step", "groups", "leftover"] : ["groups", "simple_add"];
@@ -547,6 +601,16 @@ function getHint(question, operation, gradeKey) {
         return "כשיש אותו מכנה – המכנה נשאר אותו דבר, עובדים רק על המונים.";
       }
       return "כשיש מכנים שונים – מוצאים מכנה משותף, מעבירים את השברים ואז מחברים או מחסרים.";
+    case "percentages":
+      if (p.kind === "perc_of") {
+        return "כדי למצוא אחוז ממספר, מכפילים במספר האחוז ומחלקים ב-100.";
+      }
+      if (p.kind === "perc_what") {
+        return "חלקי שלם = אחוז/100. חלק ÷ שלם ואז כפול 100 לקבלת אחוז.";
+      }
+      return "אחוז הוא חלק מתוך 100. אפשר לחשוב על 25% כמו 25 מתוך 100.";
+    case "sequences":
+      return "בסדרה חשבונית ההפרש בין כל שני איברים סמוכים קבוע. בדוק בכמה המספרים עולים (או יורדים) כל פעם.";
     case "word_problems":
       return "קרא לאט, סמן את המספרים ותרגם את הסיפור לתרגיל פשוט (חיבור, חיסור, כפל או חילוק).";
     default:
@@ -665,6 +729,41 @@ function getSolutionSteps(question, operation, gradeKey) {
         toSpan(`4. מצמצמים אם אפשר ומקבלים ${ans}.`, "4"),
       ];
 
+    case "percentages":
+      if (p.kind === "perc_of") {
+        return [
+          toSpan(`1. נרשום: ${ltr(`${p.percent}% מ-${p.base}`)}.`, "1"),
+          toSpan(`2. נהפוך אחוז לשבר: ${p.percent}% = ${ltr(`${p.percent} ÷ 100`)}.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`${p.base} × ${p.percent} ÷ 100 = ${ans}`)}.`, "3"),
+          toSpan(`4. לכן ${p.percent}% מ-${p.base} הוא ${ans}.`, "4"),
+        ];
+      }
+      if (p.kind === "perc_what") {
+        const approx = ((p.part / p.base) * 100).toFixed(1);
+        return [
+          toSpan(`1. נרשום יחס: ${ltr(`${p.part} ÷ ${p.base}`)}.`, "1"),
+          toSpan("2. את התוצאה נכפיל ב-100 כדי לקבל אחוז.", "2"),
+          toSpan(`3. זה יוצא בערך ${approx}%, ובעיגול ${ans}%.`, "3"),
+          toSpan(`4. לכן ${p.part} הוא ${ans}% מתוך ${p.base}.`, "4"),
+        ];
+      }
+      return [];
+
+    case "sequences":
+      if (p.kind === "seq_arith") {
+        const diffList = p.terms
+          .slice(1)
+          .map((val, idx) => val - p.terms[idx])
+          .join(", ");
+        return [
+          toSpan(`1. נסתכל על הסדרה: ${ltr(p.terms.join(", "))}.`, "1"),
+          toSpan(`2. נחשב הפרשים בין איברים סמוכים: ${diffList}.`, "2"),
+          toSpan(`3. ההפרש הקבוע הוא ${p.step}.`, "3"),
+          toSpan(`4. נמשיך באותו הפרש ונקבל שהאיבר החסר הוא ${ans}.`, "4"),
+        ];
+      }
+      return [];
+
     case "word_problems":
       if (p.kind === "wp_simple_add") {
         const sum = p.a + p.b;
@@ -747,6 +846,10 @@ function getErrorExplanation(question, operation, wrongAnswer, gradeKey) {
       return "בחילוק בדוק שהתוצאה כפול המחלק מחזירה את המספר המקורי.";
     case "fractions":
       return "בשברים לרוב שוכחים מכנה משותף או עובדים גם על המכנה במקום רק על המונה.";
+    case "percentages":
+      return "באחוזים קל להתבלבל אם מחלקים או מכפילים ב-100. ודא מי המספר המלא (שלם) ומי החלק שאתה משווה אליו.";
+    case "sequences":
+      return "בסדרות כדאי לוודא שהפרש בין כל שני איברים סמוכים קבוע. אולי בחרת הפרש לא נכון או דילגת על איבר.";
     case "word_problems":
       return "בתרגילי מילים הטעות הנפוצה היא לבחור פעולה לא נכונה (חיבור במקום חיסור וכו'). נסה לכתוב תרגיל פשוט שמתאים לסיפור.";
     default:
@@ -812,6 +915,8 @@ export default function MathMaster() {
     multiplication: { total: 0, correct: 0 },
     division: { total: 0, correct: 0 },
     fractions: { total: 0, correct: 0 },
+    percentages: { total: 0, correct: 0 },
+    sequences: { total: 0, correct: 0 },
     word_problems: { total: 0, correct: 0 },
   });
 
@@ -847,6 +952,8 @@ export default function MathMaster() {
     multiplication: false,
     division: false,
     fractions: false,
+    percentages: false,
+    sequences: false,
     word_problems: false,
   });
 
@@ -948,6 +1055,8 @@ export default function MathMaster() {
       multiplication: availableOps.includes("multiplication"),
       division: availableOps.includes("division"),
       fractions: availableOps.includes("fractions"),
+      percentages: availableOps.includes("percentages"),
+      sequences: availableOps.includes("sequences"),
       word_problems: availableOps.includes("word_problems"),
     };
     setMixedOperations(newMixedOps);
@@ -1468,6 +1577,10 @@ export default function MathMaster() {
         return "÷";
       case "fractions":
         return "⅟ Fractions";
+      case "percentages":
+        return "% Percentages";
+      case "sequences":
+        return "🔢 Sequences";
       case "word_problems":
         return "📘 Word Problems";
       case "mixed":
