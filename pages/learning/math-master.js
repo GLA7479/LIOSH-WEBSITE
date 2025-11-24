@@ -32,6 +32,198 @@ const LEVELS = {
   },
 };
 
+// לכל כיתה (1–6) יש 3 רמות: easy / medium / hard
+// בכל רמה יש אותו מבנה כמו LEVELS: addition / subtraction / multiplication / division / fractions
+const GRADE_LEVELS = {
+  1: {
+    name: "כיתה א׳",
+    levels: {
+      easy: {
+        addition: { max: 10 },
+        subtraction: { min: 0, max: 10 },
+        multiplication: { max: 5 },
+        division: { max: 20, maxDivisor: 5 },
+        fractions: { maxDen: 2 },
+      },
+      medium: {
+        addition: { max: 20 },
+        subtraction: { min: 0, max: 20 },
+        multiplication: { max: 5 },
+        division: { max: 20, maxDivisor: 5 },
+        fractions: { maxDen: 2 },
+      },
+      hard: {
+        addition: { max: 20 },
+        subtraction: { min: 0, max: 20 },
+        multiplication: { max: 5 },
+        division: { max: 20, maxDivisor: 5 },
+        fractions: { maxDen: 2 },
+      },
+    },
+  },
+  2: {
+    name: "כיתה ב׳",
+    levels: {
+      easy: {
+        addition: { max: 50 },
+        subtraction: { min: 0, max: 50 },
+        multiplication: { max: 5 },
+        division: { max: 50, maxDivisor: 5 },
+        fractions: { maxDen: 2 },
+      },
+      medium: {
+        addition: { max: 100 },
+        subtraction: { min: 0, max: 100 },
+        multiplication: { max: 10 },
+        division: { max: 100, maxDivisor: 10 },
+        fractions: { maxDen: 3 },
+      },
+      hard: {
+        addition: { max: 100 },
+        subtraction: { min: 0, max: 100 },
+        multiplication: { max: 10 },
+        division: { max: 100, maxDivisor: 10 },
+        fractions: { maxDen: 4 },
+      },
+    },
+  },
+  3: {
+    name: "כיתה ג׳",
+    levels: {
+      easy: {
+        addition: { max: 200 },
+        subtraction: { min: 0, max: 200 },
+        multiplication: { max: 10 },
+        division: { max: 100, maxDivisor: 10 },
+        fractions: { maxDen: 4 },
+      },
+      medium: {
+        addition: { max: 500 },
+        subtraction: { min: 0, max: 500 },
+        multiplication: { max: 12 },
+        division: { max: 144, maxDivisor: 12 },
+        fractions: { maxDen: 6 },
+      },
+      hard: {
+        addition: { max: 1000 },
+        subtraction: { min: 0, max: 1000 },
+        multiplication: { max: 12 },
+        division: { max: 200, maxDivisor: 12 },
+        fractions: { maxDen: 6 },
+      },
+    },
+  },
+  4: {
+    name: "כיתה ד׳",
+    levels: {
+      easy: {
+        addition: { max: 1000 },
+        subtraction: { min: 0, max: 1000 },
+        multiplication: { max: 12 },
+        division: { max: 200, maxDivisor: 12 },
+        fractions: { maxDen: 6 },
+      },
+      medium: {
+        addition: { max: 5000 },
+        subtraction: { min: 0, max: 5000 },
+        multiplication: { max: 12 },
+        division: { max: 500, maxDivisor: 12 },
+        fractions: { maxDen: 8 },
+      },
+      hard: {
+        addition: { max: 10000 },
+        subtraction: { min: 0, max: 10000 },
+        multiplication: { max: 12 },
+        division: { max: 1000, maxDivisor: 12 },
+        fractions: { maxDen: 8 },
+      },
+    },
+  },
+  5: {
+    name: "כיתה ה׳",
+    levels: {
+      easy: {
+        addition: { max: 10000 },
+        subtraction: { min: 0, max: 10000 },
+        multiplication: { max: 12 },
+        division: { max: 1000, maxDivisor: 12 },
+        fractions: { maxDen: 8 },
+      },
+      medium: {
+        addition: { max: 50000 },
+        subtraction: { min: 0, max: 50000 },
+        multiplication: { max: 12 },
+        division: { max: 2000, maxDivisor: 12 },
+        fractions: { maxDen: 10 },
+      },
+      hard: {
+        addition: { max: 100000 },
+        subtraction: { min: 0, max: 100000 },
+        multiplication: { max: 12 },
+        division: { max: 5000, maxDivisor: 12 },
+        fractions: { maxDen: 12 },
+      },
+    },
+  },
+  6: {
+    name: "כיתה ו׳",
+    levels: {
+      easy: {
+        addition: { max: 50000 },
+        subtraction: { min: 0, max: 50000 },
+        multiplication: { max: 12 },
+        division: { max: 2000, maxDivisor: 12 },
+        fractions: { maxDen: 10 },
+      },
+      medium: {
+        addition: { max: 100000 },
+        subtraction: { min: 0, max: 100000 },
+        multiplication: { max: 12 },
+        division: { max: 10000, maxDivisor: 12 },
+        fractions: { maxDen: 12 },
+      },
+      hard: {
+        addition: { max: 200000 },
+        subtraction: { min: 0, max: 200000 },
+        multiplication: { max: 12 },
+        division: { max: 20000, maxDivisor: 12 },
+        fractions: { maxDen: 20 },
+      },
+    },
+  },
+};
+
+// מחזיר את ההגדרות האקטואליות לפי כיתה + רמת קושי
+function getLevelConfig(grade, levelKey) {
+  const safeGrade = Math.min(6, Math.max(1, grade || 1));
+  const gradeCfg = GRADE_LEVELS[safeGrade];
+  const gradeKey = safeGrade <= 2 ? "g1_2" : safeGrade <= 4 ? "g3_4" : "g5_6";
+  const gradeCfgGrades = GRADES[gradeKey] || GRADES.g3_4;
+
+  let levelData;
+  if (gradeCfg && gradeCfg.levels && gradeCfg.levels[levelKey]) {
+    levelData = gradeCfg.levels[levelKey];
+  } else {
+    // אם משום מה אין – נופלים להגדרות הכלליות
+    levelData = LEVELS[levelKey] || LEVELS.easy;
+  }
+
+  // לוודא שיש ערך תקין
+  if (!levelData) {
+    console.warn(`Invalid level config for grade ${grade}, level ${levelKey}, using default`);
+    levelData = LEVELS.easy;
+  }
+
+  // מוסיפים שדות נוספים שנדרשים
+  return {
+    ...levelData,
+    name: levelData.name || LEVELS[levelKey]?.name || "קל",
+    allowNegatives: gradeCfgGrades.allowNegatives && levelKey === "hard",
+    allowTwoStep: levelKey !== "easy" && safeGrade >= 5,
+    allowFractions: gradeCfgGrades.allowFractions,
+  };
+}
+
 const GRADES = {
   g1_2: {
     name: "כיתות א–ב",
@@ -1974,14 +2166,32 @@ function getErrorExplanation(question, operation, wrongAnswer, gradeKey) {
 }
 
 // Build detailed step-by-step explanation for the current question
+// מחזיר מחרוזת עם כתיבה מאונכת מיושרת:
+//   33
+// - 13
+// ----
+function buildVerticalOperation(topNumber, bottomNumber, operator = "-") {
+  const top = String(topNumber);
+  const bottom = String(bottomNumber);
+  const maxLen = Math.max(top.length, bottom.length);
+  const width = maxLen + 2; // 2 לתו הפעולה ולרווח
+
+  const line1 = " ".repeat(width - top.length) + top;
+  const line2 = operator + " " + " ".repeat(maxLen - bottom.length) + bottom;
+  const line3 = "-".repeat(width);
+
+  return `${line1}\n${line2}\n${line3}`;
+}
+
 function buildStepExplanation(question) {
   if (!question) return null;
 
   const BLANK = "__";
+  const p = question.params || {};
 
   const op = question.operation;
-  const a = question.params?.a ?? question.a;
-  const b = question.params?.b ?? question.b;
+  const a = p.a ?? question.a;
+  const b = p.b ?? question.b;
   const answer =
     question.correctAnswer !== undefined
       ? question.correctAnswer
@@ -1990,6 +2200,86 @@ function buildStepExplanation(question) {
   let exercise = "";
   let vertical = "";
   const steps = [];
+
+  // טיפול בתרגילי השלמה בחיבור - הופכים לחיסור
+  if (op === "addition" && (p.kind === "add_missing_first" || p.kind === "add_missing_second")) {
+    const c = p.c; // התוצאה הסופית
+    let leftNum, rightNum;
+    
+    if (p.kind === "add_missing_first") {
+      // __ + b = c  →  c - b = __
+      leftNum = c;
+      rightNum = p.b;
+      exercise = `${BLANK} + ${p.b} = ${c}`;
+    } else {
+      // a + __ = c  →  c - a = __
+      leftNum = c;
+      rightNum = p.a;
+      exercise = `${p.a} + ${BLANK} = ${c}`;
+    }
+
+    const missing = answer;
+    vertical = buildVerticalOperation(leftNum, rightNum, "-");
+
+    steps.push(
+      `1. הופכים את התרגיל לחיסור: במקום ${exercise} כותבים ${c} - ${rightNum} = __.`
+    );
+    steps.push(
+      "2. כותבים את המספרים זה מתחת לזה בעמודות: עשרות מעל עשרות ויחידות מעל יחידות."
+    );
+
+    // חישוב ספרה ספרה
+    const topStr = String(leftNum);
+    const bottomStr = String(rightNum);
+    const maxLen = Math.max(topStr.length, bottomStr.length);
+    const topPadded = topStr.padStart(maxLen, "0");
+    const bottomPadded = bottomStr.padStart(maxLen, "0");
+
+    let borrow = 0;
+    let stepIndex = 3;
+    const resultDigits = [];
+
+    for (let i = maxLen - 1; i >= 0; i--) {
+      let topDigit = Number(topPadded[i]);
+      const bottomDigit = Number(bottomPadded[i]);
+      topDigit -= borrow;
+
+      const placeName =
+        i === maxLen - 1
+          ? "יחידות"
+          : i === maxLen - 2
+          ? "עשרות"
+          : "מאות ומעלה";
+
+      if (topDigit < bottomDigit) {
+        steps.push(
+          `${stepIndex}. בעמודת ה${placeName} ${topDigit} קטן מ-${bottomDigit}, לכן לוקחים "השאלה" מהעמודה הבאה (מוסיפים 10 לספרה הזו ומפחיתים 1 בעמודה הבאה).`
+        );
+        topDigit += 10;
+        borrow = 1;
+        stepIndex++;
+      } else {
+        borrow = 0;
+      }
+
+      const diff = topDigit - bottomDigit;
+      resultDigits.unshift(diff);
+      steps.push(
+        `${stepIndex}. כעת מחשבים בעמודת ה${placeName}: ${topDigit} − ${bottomDigit} = ${diff} וכותבים ${diff} בעמודה זו.`
+      );
+      stepIndex++;
+    }
+
+    steps.push(
+      `5. המספר שנוצר הוא ${missing}. זה המספר שחסר בתרגיל: ${p.kind === "add_missing_first" ? `${missing} + ${p.b}` : `${p.a} + ${missing}`} = ${c}.`
+    );
+
+    return {
+      exercise,
+      vertical,
+      steps,
+    };
+  }
 
   // תצוגת תרגיל בסיסית (אופקית) – רק חשבון
   if (a != null && b != null) {
@@ -2006,13 +2296,12 @@ function buildStepExplanation(question) {
 
   // טיפוסי הסבר לפי פעולה
   if (op === "addition" && typeof a === "number" && typeof b === "number") {
+    vertical = buildVerticalOperation(a, b, "+");
     const aStr = String(a);
     const bStr = String(b);
     const maxLen = Math.max(aStr.length, bStr.length);
     const pa = aStr.padStart(maxLen, "0");
     const pb = bStr.padStart(maxLen, "0");
-
-    vertical = `${a}\n+ ${b}\n${"-".repeat(Math.max(aStr.length, bStr.length + 2))}`;
 
     steps.push(
       "1. כותבים את המספרים אחד מעל השני, כך שסַפְרות היחידות נמצאות באותה עמודה."
@@ -2062,13 +2351,12 @@ function buildStepExplanation(question) {
     typeof a === "number" &&
     typeof b === "number"
   ) {
+    vertical = buildVerticalOperation(a, b, "-");
     const aStr = String(a);
     const bStr = String(b);
     const maxLen = Math.max(aStr.length, bStr.length);
     const pa = aStr.padStart(maxLen, "0");
     const pb = bStr.padStart(maxLen, "0");
-
-    vertical = `${a}\n- ${b}\n${"-".repeat(Math.max(aStr.length, bStr.length + 2))}`;
 
     steps.push(
       "1. כותבים את המספרים אחד מעל השני, כך שסַפְרות היחידות, העשרות וכו' נמצאות באותו טור."
@@ -2212,6 +2500,7 @@ export default function MathMaster() {
 
   // NEW: grade & mode
   const [grade, setGrade] = useState("g3_4");
+  const [gradeNumber, setGradeNumber] = useState(3); // 1 = כיתה א׳, 2 = ב׳, ... 6 = ו׳
   const [mode, setMode] = useState("learning");
 
   const [level, setLevel] = useState("easy");
@@ -2424,13 +2713,16 @@ export default function MathMaster() {
 
   // לא צריך useEffect - ה-modal נפתח ישירות ב-onChange
 
-  // בדיקה אם זה יום חדש לתחרות יומית
+  // בדיקה אם זה יום חדש לתחרות יומית - רק פעם אחת בטעינה
   useEffect(() => {
     const today = new Date().toDateString();
-    if (dailyChallenge.date !== today) {
-      setDailyChallenge({ date: today, bestScore: 0, questions: 0 });
-    }
-  }, [dailyChallenge.date]);
+    setDailyChallenge((prev) => {
+      if (prev.date !== today) {
+        return { date: today, bestScore: 0, questions: 0 };
+      }
+      return prev;
+    });
+  }, []); // רק פעם אחת בטעינה
 
   // לא צריך event listener - ה-modal נפתח רק ב-onChange או דרך כפתור ⚙️
 
@@ -2561,7 +2853,12 @@ export default function MathMaster() {
   }
 
   function generateNewQuestion() {
-    const levelConfig = getLevelForGrade(level, grade);
+    const levelConfig = getLevelConfig(gradeNumber, level);
+    if (!levelConfig) {
+      console.error("Invalid level config for grade", gradeNumber, "level", level);
+      return;
+    }
+
     let question;
     let attempts = 0;
     const maxAttempts = 50; // מקסימום ניסיונות למצוא שאלה חדשה
@@ -2570,23 +2867,33 @@ export default function MathMaster() {
 
     // ✅ התאמה לפי מצב תרגול ממוקד (Practice)
     let operationForState = operation;
+    const levelConfigCopy = { ...levelConfig }; // עותק כדי לא לשנות את המקורי
 
     if (mode === "practice") {
       if (practiceFocus === "add_to_20") {
         // תרגול חיבור עד 20 – מתאים בעיקר לקטנים
         operationForState = "addition";
-        if (levelConfig.addition) {
-          levelConfig.addition.max = Math.min(levelConfig.addition.max || 20, 20);
+        if (levelConfigCopy.addition) {
+          levelConfigCopy.addition = {
+            ...levelConfigCopy.addition,
+            max: Math.min(levelConfigCopy.addition.max || 20, 20),
+          };
         }
       } else if (practiceFocus === "times_6_8") {
         // תרגול טבלת כפל 6–8
         operationForState = "multiplication";
-        if (levelConfig.multiplication) {
+        if (levelConfigCopy.multiplication) {
           // מבטיחים שהטווח יכלול לפחות 8
-          levelConfig.multiplication.max = Math.max(levelConfig.multiplication.max || 8, 8);
+          levelConfigCopy.multiplication = {
+            ...levelConfigCopy.multiplication,
+            max: Math.max(levelConfigCopy.multiplication.max || 8, 8),
+          };
         }
       }
     }
+
+    // עותק מקומי של recentQuestions כדי לא לעדכן state בתוך הלולאה
+    const localRecentQuestions = new Set(recentQuestions);
 
     do {
       let opForQuestion = operationForState;
@@ -2600,7 +2907,7 @@ export default function MathMaster() {
       }
 
       question = generateQuestion(
-        levelConfig,
+        levelConfigCopy,
         opForQuestion,
         grade,
         opForQuestion === "mixed" ? mixedOperations : null
@@ -2611,26 +2918,23 @@ export default function MathMaster() {
       const questionKey = question.question;
 
       // אם השאלה לא הייתה לאחרונה, נשתמש בה
-      if (!recentQuestions.has(questionKey)) {
-        // שמירת השאלה החדשה בהיסטוריה
-        setRecentQuestions((prev) => {
-          const newSet = new Set(prev);
-          newSet.add(questionKey);
-          // שמירה רק על 60 שאלות אחרונות
-          if (newSet.size > 60) {
-            const first = Array.from(newSet)[0];
-            newSet.delete(first);
-          }
-          return newSet;
-        });
+      if (!localRecentQuestions.has(questionKey)) {
+        localRecentQuestions.add(questionKey);
+        // שמירה רק על 60 שאלות אחרונות
+        if (localRecentQuestions.size > 60) {
+          const first = Array.from(localRecentQuestions)[0];
+          localRecentQuestions.delete(first);
+        }
         break;
       }
     } while (attempts < maxAttempts);
 
-    // אם לא מצאנו שאלה חדשה אחרי 50 ניסיונות, נשתמש בכל מקרה
+    // עדכון state רק פעם אחת אחרי הלולאה
     if (attempts >= maxAttempts) {
       // איפוס ההיסטוריה כדי לאפשר שאלות חוזרות
       setRecentQuestions(new Set());
+    } else {
+      setRecentQuestions(localRecentQuestions);
     }
 
     setCurrentQuestion(question);
@@ -3193,16 +3497,25 @@ export default function MathMaster() {
                   maxLength={15}
                 />
                 <select
-                  value={grade}
+                  value={gradeNumber}
                   onChange={(e) => {
-                    setGrade(e.target.value);
+                    const newGradeNum = Number(e.target.value);
+                    setGradeNumber(newGradeNum);
+                    // עדכן גם את grade לפי gradeNumber
+                    if (newGradeNum <= 2) {
+                      setGrade("g1_2");
+                    } else if (newGradeNum <= 4) {
+                      setGrade("g3_4");
+                    } else {
+                      setGrade("g5_6");
+                    }
                     setGameActive(false);
                   }}
                   className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
                 >
-                  {Object.keys(GRADES).map((g) => (
+                  {[1, 2, 3, 4, 5, 6].map((g) => (
                     <option key={g} value={g}>
-                      {GRADES[g].name}
+                      {`כיתה ${["א","ב","ג","ד","ה","ו"][g - 1]}`}
                     </option>
                   ))}
                 </select>
