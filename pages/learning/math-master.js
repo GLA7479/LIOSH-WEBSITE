@@ -2975,6 +2975,9 @@ export default function MathMaster() {
   const [animationStep, setAnimationStep] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
   
+  // Ref לשמירת timeouts לניקוי - מונע תקיעות
+  const animationTimeoutsRef = useRef([]);
+  
   // Memoize explanation to avoid recalculating on every render
   const stepExplanation = useMemo(
     () => showSolution && currentQuestion ? buildStepExplanation(currentQuestion) : null,
@@ -2988,49 +2991,95 @@ export default function MathMaster() {
     const p = currentQuestion.params || {};
     const op = currentQuestion.operation;
     let effectiveOp = op;
-    let aEff = p.a ?? currentQuestion.a;
-    let bEff = p.b ?? currentQuestion.b;
-    
-    // טיפול במספר שלילי בחיבור
-    if (op === "addition" && typeof bEff === "number" && bEff < 0) {
-      effectiveOp = "subtraction";
-      bEff = Math.abs(bEff);
-    }
+    let top = p.a ?? currentQuestion.a;
+    let bottom = p.b ?? currentQuestion.b;
     
     const answer = currentQuestion.correctAnswer !== undefined
       ? currentQuestion.correctAnswer
       : currentQuestion.answer;
     
+    // זיהוי תרגיל השלמה בחיבור: __ + b = c או a + __ = c
+    // לדוגמה: 72 + __ = 96 → נהפוך לחיסור 96 - 72 = 24
+    const kind = p.kind;
+    const isMissingAddend = 
+      op === "addition" && 
+      (kind === "add_missing_first" || kind === "add_missing_second");
+    
+    if (isMissingAddend) {
+      const { a, b, c } = p;
+      
+      // נמיר לחיסור
+      effectiveOp = "subtraction";
+      
+      if (kind === "add_missing_first") {
+        // __ + b = c  →  c - b = __
+        top = c;
+        bottom = b;
+      } else {
+        // a + __ = c  →  c - a = __
+        top = c;
+        bottom = a;
+      }
+    }
+    // טיפול במספר שלילי בחיבור (רק אם זה לא תרגיל השלמה)
+    else if (op === "addition" && typeof bottom === "number" && bottom < 0) {
+      effectiveOp = "subtraction";
+      bottom = Math.abs(bottom);
+    }
+    
     if ((effectiveOp === "addition" || effectiveOp === "subtraction") && 
-        typeof aEff === "number" && typeof bEff === "number") {
-      return buildAdditionOrSubtractionAnimation(aEff, bEff, answer, effectiveOp);
+        typeof top === "number" && typeof bottom === "number") {
+      return buildAdditionOrSubtractionAnimation(top, bottom, answer, effectiveOp);
     }
     
     return null;
   }, [showSolution, currentQuestion]);
 
-  // אנימציה אוטומטית
+  // אנימציה אוטומטית - עם ניקוי תקין של timeouts
   useEffect(() => {
+    // ניקוי כל ה-timeouts הקודמים
+    animationTimeoutsRef.current.forEach(clearTimeout);
+    animationTimeoutsRef.current = [];
+    
     if (!showSolution || !autoPlay || !animationSteps) return;
     if (animationStep >= animationSteps.length - 1) return;
 
     const id = setTimeout(() => {
       setAnimationStep((s) => s + 1);
     }, 2000); // 2 שניות בין שלבים
+    
+    animationTimeoutsRef.current.push(id);
 
-    return () => clearTimeout(id);
+    return () => {
+      animationTimeoutsRef.current.forEach(clearTimeout);
+      animationTimeoutsRef.current = [];
+    };
   }, [showSolution, autoPlay, animationStep, animationSteps]);
 
   // איפוס צעד האנימציה כשפותחים את המודל או כשהשאלה משתנה
   useEffect(() => {
+    // ניקוי timeouts כשסוגרים את המודל או משנים שאלה
+    animationTimeoutsRef.current.forEach(clearTimeout);
+    animationTimeoutsRef.current = [];
+    
     if (showSolution && animationSteps && animationSteps.length > 0) {
       setAnimationStep(0);
       setAutoPlay(true);
     } else if (showSolution && (!animationSteps || animationSteps.length === 0)) {
       // אם אין אנימציה, נאפס את הצעד
       setAnimationStep(0);
+    } else if (!showSolution) {
+      // כשסוגרים את המודל - ניקוי מלא
+      setAnimationStep(0);
+      setAutoPlay(true);
     }
-  }, [showSolution, animationSteps]);
+    
+    // cleanup כשסוגרים את המודל או משנים שאלה
+    return () => {
+      animationTimeoutsRef.current.forEach(clearTimeout);
+      animationTimeoutsRef.current = [];
+    };
+  }, [showSolution, animationSteps, currentQuestion]);
 
   // הסבר לטעות אחרונה
   const [errorExplanation, setErrorExplanation] = useState("");
@@ -4403,8 +4452,31 @@ export default function MathMaster() {
                         let aEff = p.a ?? currentQuestion.a;
                         let bEff = p.b ?? currentQuestion.b;
                         
-                        // טיפול במספר שלילי בחיבור
-                        if (op === "addition" && typeof bEff === "number" && bEff < 0) {
+                        // זיהוי תרגיל השלמה בחיבור: __ + b = c או a + __ = c
+                        // לדוגמה: 72 + __ = 96 → נהפוך לחיסור 96 - 72 = 24
+                        const kind = p.kind;
+                        const isMissingAddend = 
+                          op === "addition" && 
+                          (kind === "add_missing_first" || kind === "add_missing_second");
+                        
+                        if (isMissingAddend) {
+                          const { a, b, c } = p;
+                          
+                          // נמיר לחיסור
+                          effectiveOp = "subtraction";
+                          
+                          if (kind === "add_missing_first") {
+                            // __ + b = c  →  c - b = __
+                            aEff = c;
+                            bEff = b;
+                          } else {
+                            // a + __ = c  →  c - a = __
+                            aEff = c;
+                            bEff = a;
+                          }
+                        }
+                        // טיפול במספר שלילי בחיבור (רק אם זה לא תרגיל השלמה)
+                        else if (op === "addition" && typeof bEff === "number" && bEff < 0) {
                           effectiveOp = "subtraction";
                           bEff = Math.abs(bEff);
                         }
