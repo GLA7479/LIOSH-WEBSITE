@@ -1970,8 +1970,28 @@ export default function MathMaster() {
 
     const supportsWordProblems = GRADES[grade].operations.includes("word_problems");
 
+    // ✅ התאמה לפי מצב תרגול ממוקד (Practice)
+    let operationForState = operation;
+
+    if (mode === "practice") {
+      if (practiceFocus === "add_to_20") {
+        // תרגול חיבור עד 20 – מתאים בעיקר לקטנים
+        operationForState = "addition";
+        if (levelConfig.addition) {
+          levelConfig.addition.max = Math.min(levelConfig.addition.max || 20, 20);
+        }
+      } else if (practiceFocus === "times_6_8") {
+        // תרגול טבלת כפל 6–8
+        operationForState = "multiplication";
+        if (levelConfig.multiplication) {
+          // מבטיחים שהטווח יכלול לפחות 8
+          levelConfig.multiplication.max = Math.max(levelConfig.multiplication.max || 8, 8);
+        }
+      }
+    }
+
     do {
-      let opForQuestion = operation;
+      let opForQuestion = operationForState;
       if (supportsWordProblems) {
         if (storyOnly) {
           opForQuestion = "word_problems";
@@ -2375,6 +2395,17 @@ export default function MathMaster() {
     totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
   const gradeSupportsWordProblems = GRADES[grade].operations.includes("word_problems");
 
+  // ✅ טקסט רמז והסבר מלא לשאלה הנוכחית
+  const hintText =
+    currentQuestion && currentQuestion.operation
+      ? getHint(currentQuestion, currentQuestion.operation, grade)
+      : "";
+
+  const solutionSteps =
+    currentQuestion && currentQuestion.operation
+      ? getSolutionSteps(currentQuestion, currentQuestion.operation, grade)
+      : [];
+
   return (
     <Layout>
       <div
@@ -2706,31 +2737,33 @@ export default function MathMaster() {
               </div>
               
               {/* אפשרות לשאלות עם סיפור */}
+              {/* אפשרות לשאלות עם סיפור */}
               {gradeSupportsWordProblems && (
                 <div className="flex items-center justify-center gap-4 mb-2 w-full max-w-md flex-wrap">
-                  <label className="flex items-center gap-2 text-white text-sm">
+                  <label className="flex items-center gap-2 text-white text-xs">
                     <input
                       type="checkbox"
+                      className="w-4 h-4"
                       checked={useStoryQuestions}
                       onChange={(e) => {
                         setUseStoryQuestions(e.target.checked);
-                        if (!e.target.checked) setStoryOnly(false);
+                        if (!e.target.checked) {
+                          setStoryOnly(false);
+                        }
                       }}
-                      className="w-4 h-4"
                     />
-                    📖 Story Questions
+                    <span>📘 לשלב שאלות מילוליות בתוך המשחק</span>
                   </label>
-                  {useStoryQuestions && (
-                    <label className="flex items-center gap-2 text-white text-sm">
-                      <input
-                        type="checkbox"
-                        checked={storyOnly}
-                        onChange={(e) => setStoryOnly(e.target.checked)}
-                        className="w-4 h-4"
-                      />
-                      📝 Story Only
-                    </label>
-                  )}
+                  <label className="flex items-center gap-2 text-white text-xs">
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4"
+                      checked={storyOnly}
+                      disabled={!useStoryQuestions}
+                      onChange={(e) => setStoryOnly(e.target.checked)}
+                    />
+                    <span>📖 רק שאלות מילוליות</span>
+                  </label>
                 </div>
               )}
 
@@ -2837,58 +2870,6 @@ export default function MathMaster() {
                     {currentQuestion.question}
                   </div>
                   
-                  {/* כפתור רמז */}
-                  {!hintUsed && !selectedAnswer && (
-                    <button
-                      onClick={() => {
-                        setShowHint(true);
-                        setHintUsed(true);
-                      }}
-                      className="mb-2 px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-sm font-bold"
-                    >
-                      💡 Hint
-                    </button>
-                  )}
-                  
-                  {showHint && (
-                    <div
-                      className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center max-w-md"
-                      style={{
-                        direction: currentQuestion.isStory ? "rtl" : "ltr",
-                        unicodeBidi: "plaintext",
-                      }}
-                    >
-                      {getHint(currentQuestion, currentQuestion.operation, grade)}
-                    </div>
-                  )}
-
-                  {/* כפתור הסבר מלא – רק במצב Learning */}
-                  {mode === "learning" && currentQuestion && (
-                    <>
-                      <button
-                        onClick={() => setShowSolution((prev) => !prev)}
-                        className="mb-2 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
-                      >
-                        📘 הסבר מלא
-                      </button>
-
-                      {showSolution && (
-                        <div
-                          className="mb-3 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/40 text-emerald-100 text-sm space-y-1 max-w-md"
-                          style={{
-                            direction: currentQuestion.isStory ? "rtl" : "ltr",
-                            unicodeBidi: "plaintext",
-                          }}
-                        >
-                          {getSolutionSteps(
-                            currentQuestion,
-                            currentQuestion.operation,
-                            grade
-                          )}
-                        </div>
-                      )}
-                    </>
-                  )}
 
                   <div className="grid grid-cols-2 gap-3 w-full mb-3">
                     {currentQuestion.answers.map((answer, idx) => {
@@ -2917,6 +2898,57 @@ export default function MathMaster() {
                       );
                     })}
                   </div>
+
+                  {/* רמז + הסבר + למה טעיתי */}
+                  {currentQuestion && (
+                    <div className="mt-3 flex flex-col gap-2 w-full">
+                      {/* כפתורי רמז/הסבר */}
+                      <div className="flex gap-2 justify-center flex-wrap">
+                        <button
+                          onClick={() => setShowHint((prev) => !prev)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white"
+                        >
+                          💡 רמז
+                        </button>
+                        <button
+                          onClick={() => setShowSolution((prev) => !prev)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/80 hover:bg-emerald-500 text-white"
+                        >
+                          📖 הסבר צעד־אחר־צעד
+                        </button>
+                      </div>
+
+                      {/* תיבת רמז */}
+                      {showHint && hintText && (
+                        <div className="w-full max-w-md mx-auto bg-blue-500/10 border border-blue-400/50 rounded-lg p-2 text-right">
+                          <div className="text-[11px] text-blue-300 mb-1">רמז</div>
+                          <div className="text-xs text-blue-100 leading-relaxed">{hintText}</div>
+                        </div>
+                      )}
+
+                      {/* תיבת הסבר מלא */}
+                      {showSolution && solutionSteps.length > 0 && (
+                        <div className="w-full max-w-md mx-auto bg-emerald-500/10 border border-emerald-400/50 rounded-lg p-2 text-right">
+                          <div className="text-[11px] text-emerald-300 mb-1">
+                            איך פותרים את התרגיל?
+                          </div>
+                          <div className="text-xs text-emerald-100 leading-relaxed">
+                            {solutionSteps}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* למה טעיתי? – רק אחרי טעות */}
+                      {errorExplanation && (
+                        <div className="w-full max-w-md mx-auto bg-rose-500/10 border border-rose-400/50 rounded-lg p-2 text-right">
+                          <div className="text-[11px] text-rose-300 mb-1">למה הטעות קרתה?</div>
+                          <div className="text-xs text-rose-100 leading-relaxed">
+                            {errorExplanation}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* כפתור חיבור לטבלת כפל/חילוק – רק במצב למידה */}
                   {mode === "learning" &&
