@@ -26,24 +26,56 @@ const TOPICS = {
   grammar: { name: "Grammar", description: "דקדוק", icon: "✏️" },
   translation: { name: "Translation", description: "תרגום", icon: "🌐" },
   sentences: { name: "Sentences", description: "משפטים", icon: "💬" },
+  writing: { name: "Writing", description: "כתיבה", icon: "✍️" },
   mixed: { name: "Mixed", description: "ערבוב", icon: "🎲" },
 };
 
 const GRADES = {
   g1_2: {
     name: "Grade 1–2",
+    // קל – בלי דקדוק מורכב ובלי כתיבה חופשית
     topics: ["vocabulary", "translation", "mixed"],
     wordLists: ["animals", "colors", "numbers", "family", "body"],
   },
   g3_4: {
     name: "Grade 3–4",
-    topics: ["vocabulary", "grammar", "translation", "mixed"],
-    wordLists: ["animals", "colors", "numbers", "family", "body", "food", "school", "weather"],
+    // מוסיפים דקדוק, משפטים וכתיבה
+    topics: ["vocabulary", "grammar", "translation", "sentences", "writing", "mixed"],
+    wordLists: [
+      "animals",
+      "colors",
+      "numbers",
+      "family",
+      "body",
+      "food",
+      "school",
+      "weather",
+    ],
   },
   g5_6: {
     name: "Grade 5–6",
-    topics: ["vocabulary", "grammar", "translation", "sentences", "mixed"],
-    wordLists: ["animals", "colors", "numbers", "family", "body", "food", "school", "weather", "sports", "travel", "emotions"],
+    // כיתות גבוהות – כל הנושאים
+    topics: [
+      "vocabulary",
+      "grammar",
+      "translation",
+      "sentences",
+      "writing",
+      "mixed",
+    ],
+    wordLists: [
+      "animals",
+      "colors",
+      "numbers",
+      "family",
+      "body",
+      "food",
+      "school",
+      "weather",
+      "sports",
+      "travel",
+      "emotions",
+    ],
   },
 };
 
@@ -281,6 +313,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   }
 
   let question, correctAnswer, params = {};
+  let qType = "choice"; // ברירת מחדל – שאלת בחירה
   const availableWordLists = GRADES[gradeKey].wordLists;
   const selectedList = availableWordLists[Math.floor(Math.random() * availableWordLists.length)];
   const words = WORD_LISTS[selectedList];
@@ -304,40 +337,68 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
 
     case "grammar": {
-      // שאלות דקדוק בסיסיות
-      const grammarTypes = [
+      // דקדוק – מותאם לפי כיתה
+      const basic = [
         {
           question: `מה הצורה הנכונה: "I ___ a student"`,
           options: ["am", "is", "are"],
           correct: "am",
-          explanation: "I am - אני",
+          explanation: "עם I תמיד משתמשים ב-am: I am",
         },
         {
           question: `מה הצורה הנכונה: "She ___ happy"`,
           options: ["am", "is", "are"],
           correct: "is",
-          explanation: "She is - היא",
+          explanation: "She/He/It לוקחים is",
         },
         {
           question: `מה הצורה הנכונה: "They ___ friends"`,
           options: ["am", "is", "are"],
           correct: "are",
-          explanation: "They are - הם",
-        },
-        {
-          question: `מה הצורה הנכונה: "I have a ___" (כלב)`,
-          options: ["dog", "dogs", "doges"],
-          correct: "dog",
-          explanation: "a dog - כלב אחד",
-        },
-        {
-          question: `מה הצורה הנכונה: "I ___ to school" (הולך)`,
-          options: ["go", "goes", "going"],
-          correct: "go",
-          explanation: "I go - אני הולך",
+          explanation: "You/We/They לוקחים are",
         },
       ];
-      const grammarQ = grammarTypes[Math.floor(Math.random() * grammarTypes.length)];
+      const midExtra = [
+        {
+          question: `בחר את הצורה הנכונה: "He ___ football on Sundays"`,
+          options: ["play", "plays", "playing"],
+          correct: "plays",
+          explanation: "He/She/It מקבלים s: He plays",
+        },
+        {
+          question: `בחר את הצורה הנכונה: "We ___ in class now"`,
+          options: ["are", "is", "am"],
+          correct: "are",
+          explanation: "We = are",
+        },
+        {
+          question: `בחר את הצורה הנכונה: "I have two ___" (כלבים)`,
+          options: ["dog", "dogs", "doges"],
+          correct: "dogs",
+          explanation: "רבים רגילים – מוסיפים s: dogs",
+        },
+      ];
+      const advancedExtra = [
+        {
+          question: `מה הצורה הנכונה: "Right now, they ___ English"`,
+          options: ["study", "studies", "are studying"],
+          correct: "are studying",
+          explanation: "Right now → Present Continuous: are studying",
+        },
+        {
+          question: `בחר את הצורה הנכונה: "She ___ to school every day"`,
+          options: ["go", "goes", "is going"],
+          correct: "goes",
+          explanation: "Every day → Present Simple, He/She/It + s: goes",
+        },
+      ];
+      let pool = basic;
+      if (gradeKey === "g3_4") {
+        pool = basic.concat(midExtra);
+      } else if (gradeKey === "g5_6") {
+        pool = basic.concat(midExtra, advancedExtra);
+      }
+      const grammarQ = pool[Math.floor(Math.random() * pool.length)];
       question = grammarQ.question;
       correctAnswer = grammarQ.correct;
       params = { explanation: grammarQ.explanation };
@@ -373,8 +434,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
 
     case "sentences": {
-      // השלמת משפט
-      const sentenceTemplates = [
+      const baseTemplates = [
         {
           template: "I ___ a book",
           options: ["read", "reads", "reading"],
@@ -382,34 +442,88 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           explanation: "I read - אני קורא",
         },
         {
+          template: "We ___ friends",
+          options: ["am", "is", "are"],
+          correct: "are",
+          explanation: "We are - אנחנו",
+        },
+      ];
+      const midTemplates = [
+        {
           template: "She ___ to school",
           options: ["go", "goes", "going"],
           correct: "goes",
           explanation: "She goes - היא הולכת",
         },
         {
-          template: "We ___ friends",
-          options: ["am", "is", "are"],
-          correct: "are",
-          explanation: "We are - אנחנו",
+          template: "They ___ football on Sundays",
+          options: ["play", "plays", "playing"],
+          correct: "play",
+          explanation: "They play - הם משחקים (ללא s)",
+        },
+      ];
+      const advancedTemplates = [
+        {
+          template: "Right now, I ___ English",
+          options: ["study", "studies", "am studying"],
+          correct: "am studying",
+          explanation: "Right now → am studying (Present Continuous)",
         },
         {
           template: "He ___ a car",
           options: ["have", "has", "having"],
           correct: "has",
-          explanation: "He has - יש לו",
-        },
-        {
-          template: "They ___ playing",
-          options: ["am", "is", "are"],
-          correct: "are",
-          explanation: "They are - הם",
+          explanation: "He/She/It + has",
         },
       ];
-      const template = sentenceTemplates[Math.floor(Math.random() * sentenceTemplates.length)];
+      let pool = baseTemplates;
+      if (gradeKey === "g3_4") {
+        pool = baseTemplates.concat(midTemplates);
+      } else if (gradeKey === "g5_6") {
+        pool = baseTemplates.concat(midTemplates, advancedTemplates);
+      }
+      const template = pool[Math.floor(Math.random() * pool.length)];
       question = `השלם את המשפט: "${template.template}"`;
       correctAnswer = template.correct;
       params = { template: template.template, explanation: template.explanation };
+      break;
+    }
+
+    case "writing": {
+      // כתיבה – תמיד לכתוב באנגלית (spelling)
+      // כיתות ג–ד: מילים בודדות; ה–ו: לפעמים גם משפט פשוט
+      const useSentence =
+        gradeKey === "g5_6" && Math.random() < 0.35; // בערך שליש מהשאלות – משפט
+
+      if (useSentence) {
+        const sentences = [
+          { en: "Good morning", he: "בוקר טוב" },
+          { en: "Good night", he: "לילה טוב" },
+          { en: "I love my dog", he: "אני אוהב את הכלב שלי" },
+          { en: "I am happy", he: "אני שמח" },
+        ];
+        const s = sentences[Math.floor(Math.random() * sentences.length)];
+        question = `כתוב באנגלית: "${s.he}"`;
+        correctAnswer = s.en;
+        params = {
+          type: "sentence",
+          sentenceHe: s.he,
+          sentenceEn: s.en,
+          direction: "he_to_en",
+        };
+      } else {
+        // מילים בודדות מהמילון שנבחר
+        const [en, he] = randomWord; // [wordEN, wordHE]
+        question = `כתוב באנגלית: "${he}"`;
+        correctAnswer = en;
+        params = {
+          type: "word",
+          wordHe: he,
+          wordEn: en,
+          direction: "he_to_en",
+        };
+      }
+      qType = "typing"; // מצב כתיבה חופשית
       break;
     }
 
@@ -420,45 +534,65 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
   }
 
-  // יצירת תשובות שגויות
-  const wrongAnswers = new Set();
-  while (wrongAnswers.size < 3) {
-    let wrong;
-    if (selectedTopic === "vocabulary") {
-      // אם השאלה בעברית, התשובות צריכות להיות באנגלית
-      if (params.direction === "he_to_en") {
-        // תשובות שגויות באנגלית
-        const allEnglishWords = Object.values(WORD_LISTS).flatMap(list => Object.keys(list));
-        wrong = allEnglishWords[Math.floor(Math.random() * allEnglishWords.length)];
+  let allAnswers = [];
+  if (qType === "choice") {
+    // יצירת תשובות שגויות רק לשאלות בחירה
+    const wrongAnswers = new Set();
+    while (wrongAnswers.size < 3) {
+      let wrong;
+      if (selectedTopic === "vocabulary") {
+        if (params.direction === "he_to_en") {
+          const allEnglishWords = Object.values(WORD_LISTS).flatMap((list) =>
+            Object.keys(list)
+          );
+          wrong =
+            allEnglishWords[Math.floor(Math.random() * allEnglishWords.length)];
+        } else {
+          const allHebrewWords = Object.values(WORD_LISTS).flatMap((list) =>
+            Object.values(list)
+          );
+          wrong =
+            allHebrewWords[Math.floor(Math.random() * allHebrewWords.length)];
+        }
+      } else if (selectedTopic === "grammar" || selectedTopic === "sentences") {
+        const allOptions = [
+          "am",
+          "is",
+          "are",
+          "go",
+          "goes",
+          "have",
+          "has",
+          "read",
+          "reads",
+          "play",
+          "plays",
+        ];
+        wrong = allOptions[Math.floor(Math.random() * allOptions.length)];
       } else {
-        // אם השאלה באנגלית, התשובות בעברית
-        const allHebrewWords = Object.values(WORD_LISTS).flatMap(list => Object.values(list));
-        wrong = allHebrewWords[Math.floor(Math.random() * allHebrewWords.length)];
+        if (params.direction === "he_to_en") {
+          const allEnglishWords = Object.values(WORD_LISTS).flatMap((list) =>
+            Object.keys(list)
+          );
+          wrong =
+            allEnglishWords[Math.floor(Math.random() * allEnglishWords.length)];
+        } else {
+          const allHebrewWords = Object.values(WORD_LISTS).flatMap((list) =>
+            Object.values(list)
+          );
+          wrong =
+            allHebrewWords[Math.floor(Math.random() * allHebrewWords.length)];
+        }
       }
-    } else if (selectedTopic === "grammar" || selectedTopic === "sentences") {
-      // תשובות שגויות מהאופציות האחרות
-      const allOptions = ["am", "is", "are", "go", "goes", "have", "has", "read", "reads", "dog", "dogs"];
-      wrong = allOptions[Math.floor(Math.random() * allOptions.length)];
-    } else {
-      // תרגום שגוי
-      if (params.direction === "he_to_en") {
-        // אם השאלה בעברית, התשובות באנגלית
-        const allEnglishWords = Object.values(WORD_LISTS).flatMap(list => Object.keys(list));
-        wrong = allEnglishWords[Math.floor(Math.random() * allEnglishWords.length)];
-      } else {
-        const allHebrewWords = Object.values(WORD_LISTS).flatMap(list => Object.values(list));
-        wrong = allHebrewWords[Math.floor(Math.random() * allHebrewWords.length)];
+      if (wrong !== correctAnswer && !wrongAnswers.has(wrong)) {
+        wrongAnswers.add(wrong);
       }
     }
-    if (wrong !== correctAnswer && !wrongAnswers.has(wrong)) {
-      wrongAnswers.add(wrong);
+    allAnswers = [correctAnswer, ...Array.from(wrongAnswers)];
+    for (let i = allAnswers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
     }
-  }
-
-  const allAnswers = [correctAnswer, ...Array.from(wrongAnswers)];
-  for (let i = allAnswers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
   }
 
   return {
@@ -467,6 +601,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     answers: allAnswers,
     topic: selectedTopic,
     params,
+    qType,
   };
 }
 
@@ -490,6 +625,14 @@ function getHint(question, topic, gradeKey) {
       }
     case "sentences":
       return question.params.explanation || "בדוק מה מתאים: I/You/We/They = are, He/She/It = is";
+    case "writing":
+      if (question.params?.type === "word" && question.params.wordHe) {
+        return `כתוב באנגלית את המילה "${question.params.wordHe}". שים לב לאיות (spelling) של כל אות.`;
+      }
+      if (question.params?.type === "sentence" && question.params.sentenceHe) {
+        return `נסה לפרק את המשפט "${question.params.sentenceHe}" למילים באנגלית. התחל באות גדולה בתחילת המשפט.`;
+      }
+      return "בדוק אות אחר אות באנגלית, בלי למהר.";
     default:
       return "נסה לחשוב על התשובה צעד אחר צעד";
   }
@@ -555,6 +698,42 @@ function getSolutionSteps(question, topic, gradeKey) {
       ];
     }
 
+    case "writing": {
+      if (question.params.type === "word") {
+        return [
+          <span key="1" dir="ltr" style={{ display: "block" }}>
+            1. נקרא את המילה בעברית: "{question.params.wordHe}".
+          </span>,
+          <span key="2" dir="ltr" style={{ display: "block" }}>
+            2. נזכר בצורה שלה באנגלית שלמדנו קודם.
+          </span>,
+          <span key="3" dir="ltr" style={{ display: "block" }}>
+            3. נכתוב אות-אחר-אות, ושמים לב לאיות (spelling).
+          </span>,
+          <span key="4" dir="ltr" style={{ display: "block" }}>
+            4. התשובה הנכונה היא: {correctAnswer}.
+          </span>,
+        ];
+      }
+      if (question.params.type === "sentence") {
+        return [
+          <span key="1" dir="ltr" style={{ display: "block" }}>
+            1. נקרא את המשפט בעברית: "{question.params.sentenceHe}".
+          </span>,
+          <span key="2" dir="ltr" style={{ display: "block" }}>
+            2. נתרגם כל חלק לאנגלית (I / my / dog...).
+          </span>,
+          <span key="3" dir="ltr" style={{ display: "block" }}>
+            3. נבדוק סדר מילים נכון ואות גדולה בתחילת המשפט.
+          </span>,
+          <span key="4" dir="ltr" style={{ display: "block" }}>
+            4. המשפט הנכון באנגלית: {correctAnswer}.
+          </span>,
+        ];
+      }
+      return [];
+    }
+
     default:
       return [];
   }
@@ -586,6 +765,9 @@ function getErrorExplanation(question, topic, wrongAnswer, gradeKey) {
     case "sentences":
       return "בדוק שוב: האם המילה שבחרת מתאימה לנושא המשפט? זכור: I/You/We/They = are, He/She/It = is.";
 
+    case "writing":
+      return "כנראה שטעית באיות (spelling). בדוק שוב אות-אחר-אות, שים לב ל־th / sh / ch ולסיום המילה (s / ed / ing).";
+
     default:
       return "";
   }
@@ -613,6 +795,7 @@ export default function EnglishMaster() {
   const [wrong, setWrong] = useState(0);
   const [timeLeft, setTimeLeft] = useState(20);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [typedAnswer, setTypedAnswer] = useState("");
   const [feedback, setFeedback] = useState(null);
   const [bestScore, setBestScore] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
@@ -632,6 +815,7 @@ export default function EnglishMaster() {
     grammar: { total: 0, correct: 0 },
     translation: { total: 0, correct: 0 },
     sentences: { total: 0, correct: 0 },
+    writing: { total: 0, correct: 0 },
   });
   const [dailyChallenge, setDailyChallenge] = useState({
     date: new Date().toDateString(),
@@ -839,6 +1023,7 @@ export default function EnglishMaster() {
     setWrong(0);
     setTimeLeft(20);
     setSelectedAnswer(null);
+    setTypedAnswer("");
     setFeedback(null);
     setLives(3);
     setTotalQuestions(0);
@@ -878,6 +1063,7 @@ export default function EnglishMaster() {
     }
     setCurrentQuestion(question);
     setSelectedAnswer(null);
+    setTypedAnswer("");
     setFeedback(null);
     setQuestionStartTime(Date.now());
     setShowHint(false);
@@ -898,6 +1084,7 @@ export default function EnglishMaster() {
     setQuestionStartTime(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    setTypedAnswer("");
     setLives(mode === "challenge" ? 3 : 0);
     setShowHint(false);
     setHintUsed(false);
@@ -949,7 +1136,9 @@ export default function EnglishMaster() {
       return newCount;
     });
     setSelectedAnswer(answer);
-    const isCorrect = answer === currentQuestion.correctAnswer;
+    const normalize = (v) => String(v).trim().toLowerCase();
+    const isCorrect =
+      normalize(answer) === normalize(currentQuestion.correctAnswer);
     if (isCorrect) {
       let points = 10 + streak;
       if (mode === "speed") {
@@ -1574,33 +1763,62 @@ export default function EnglishMaster() {
                     </>
                   )}
 
-                  <div className="grid grid-cols-2 gap-3 w-full mb-3">
-                    {currentQuestion.answers.map((answer, idx) => {
-                      const isSelected = selectedAnswer === answer;
-                      const isCorrect = answer === currentQuestion.correctAnswer;
-                      const isWrong = isSelected && !isCorrect;
+                  {currentQuestion.qType === "typing" ? (
+                    <div className="w-full max-w-md mb-3 flex flex-col items-center">
+                      <input
+                        dir="ltr"
+                        type="text"
+                        value={typedAnswer}
+                        onChange={(e) => setTypedAnswer(e.target.value)}
+                        disabled={!!selectedAnswer || !gameActive}
+                        placeholder="Write your answer here..."
+                        className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/30 text-white text-lg text-center"
+                      />
+                      <button
+                        onClick={() => {
+                          if (!typedAnswer.trim()) return;
+                          handleAnswer(typedAnswer);
+                        }}
+                        disabled={!!selectedAnswer || !gameActive || !typedAnswer.trim()}
+                        className="mt-2 px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/60 font-bold text-sm"
+                      >
+                        ✅ בדוק תשובה
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3 w-full mb-3">
+                      {currentQuestion.answers.map((answer, idx) => {
+                        const isSelected = selectedAnswer === answer;
+                        const isCorrect =
+                          String(answer).trim().toLowerCase() ===
+                          String(currentQuestion.correctAnswer).trim().toLowerCase();
+                        const isWrong = isSelected && !isCorrect;
 
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => handleAnswer(answer)}
-                          disabled={!!selectedAnswer}
-                          className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                            isCorrect && isSelected
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : isWrong
-                              ? "bg-red-500/30 border-red-400 text-red-200"
-                              : selectedAnswer &&
-                                answer === currentQuestion.correctAnswer
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : "bg-black/30 border-white/15 text-white hover:border-white/40"
-                          }`}
-                        >
-                          {answer}
-                        </button>
-                      );
-                    })}
-                  </div>
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => handleAnswer(answer)}
+                            disabled={!!selectedAnswer}
+                            className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                              isCorrect && isSelected
+                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                : isWrong
+                                ? "bg-red-500/30 border-red-400 text-red-200"
+                                : selectedAnswer &&
+                                  String(answer).trim().toLowerCase() ===
+                                    String(currentQuestion.correctAnswer)
+                                      .trim()
+                                      .toLowerCase()
+                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                            }`}
+                          >
+                            {answer}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               )}
 
