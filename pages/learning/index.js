@@ -24,6 +24,13 @@ const LEARNING_GAMES = [
     grades: "Grades 1–6",
     blurb: "Vocabulary, grammar, translation and sentence building with Hebrew support.",
   },
+  {
+    slug: "science-master",
+    title: "Science Master",
+    emoji: "🔬",
+    grades: "Grades 1–8",
+    blurb: "Body, animals, plants, space, matter, weather, forces and more with explanations.",
+  },
 ];
 
 export default function LearningHub() {
