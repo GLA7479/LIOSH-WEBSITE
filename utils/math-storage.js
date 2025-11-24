@@ -4,8 +4,8 @@ import { LEVELS, GRADES, GRADE_LEVELS, OPERATIONS, STORAGE_KEY } from './math-co
 export function getLevelConfig(grade, levelKey) {
   const safeGrade = Math.min(6, Math.max(1, grade || 1));
   const gradeCfg = GRADE_LEVELS[safeGrade];
-  const gradeKey = safeGrade <= 2 ? "g1_2" : safeGrade <= 4 ? "g3_4" : "g5_6";
-  const gradeCfgGrades = GRADES[gradeKey] || GRADES.g3_4;
+  const gradeKey = `g${safeGrade}`; // g1, g2, g3, g4, g5, g6
+  const gradeCfgGrades = GRADES[gradeKey] || GRADES.g3;
 
   let levelData;
   if (gradeCfg && gradeCfg.levels && gradeCfg.levels[levelKey]) {
@@ -33,26 +33,21 @@ export function getLevelConfig(grade, levelKey) {
 
 export function getLevelForGrade(levelKey, gradeKey) {
   const base = LEVELS[levelKey] || LEVELS.easy;
-  const gradeCfg = GRADES[gradeKey] || GRADES.g3_4;
+  const gradeCfg = GRADES[gradeKey] || GRADES.g3;
 
   let factor = 1;
   let allowNegatives = false;
   let allowTwoStep = false;
 
-  switch (gradeKey) {
-    case "g1_2":
-      factor = 0.6;
-      break;
-    case "g3_4":
-      factor = 1;
-      break;
-    case "g5_6":
-      factor = 1.4;
-      allowNegatives = gradeCfg.allowNegatives;
-      allowTwoStep = levelKey !== "easy";
-      break;
-    default:
-      factor = 1;
+  // 6 כיתות נפרדות
+  if (gradeKey === "g1" || gradeKey === "g2") {
+    factor = 0.6;
+  } else if (gradeKey === "g3" || gradeKey === "g4") {
+    factor = 1;
+  } else if (gradeKey === "g5" || gradeKey === "g6") {
+    factor = 1.4;
+    allowNegatives = gradeCfg.allowNegatives;
+    allowTwoStep = levelKey !== "easy";
   }
 
   const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
@@ -69,9 +64,9 @@ export function getLevelForGrade(levelKey, gradeKey) {
   let maxDen = base.fractions?.maxDen || 4;
   if (!gradeCfg.allowFractions) {
     maxDen = 0;
-  } else if (gradeKey === "g3_4") {
+  } else if (gradeKey === "g3" || gradeKey === "g4") {
     maxDen = Math.min(maxDen, 8);
-  } else if (gradeKey === "g5_6") {
+  } else if (gradeKey === "g5" || gradeKey === "g6") {
     maxDen = Math.min(Math.max(maxDen, 8), 12);
   }
 

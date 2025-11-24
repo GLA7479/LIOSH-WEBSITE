@@ -43,8 +43,8 @@ export default function MathMaster() {
   const [mounted, setMounted] = useState(false);
 
   // NEW: grade & mode
-  const [grade, setGrade] = useState("g3_4");
   const [gradeNumber, setGradeNumber] = useState(3); // 1 = כיתה א׳, 2 = ב׳, ... 6 = ו׳
+  const [grade, setGrade] = useState("g3"); // g1, g2, g3, g4, g5, g6
   const [mode, setMode] = useState("learning");
 
   const [level, setLevel] = useState("easy");
@@ -1137,14 +1137,8 @@ export default function MathMaster() {
                   onChange={(e) => {
                     const newGradeNum = Number(e.target.value);
                     setGradeNumber(newGradeNum);
-                    // עדכן גם את grade לפי gradeNumber
-                    if (newGradeNum <= 2) {
-                      setGrade("g1_2");
-                    } else if (newGradeNum <= 4) {
-                      setGrade("g3_4");
-                    } else {
-                      setGrade("g5_6");
-                    }
+                    // עדכן גם את grade לפי gradeNumber - 6 כיתות נפרדות
+                    setGrade(`g${newGradeNum}`);
                     setGameActive(false);
                   }}
                   className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
@@ -1388,7 +1382,7 @@ export default function MathMaster() {
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
                   {/* ויזואליזציה של מספרים (רק לכיתות נמוכות) */}
-                  {grade === "g1_2" && currentQuestion.operation === "addition" && (
+                  {(grade === "g1" || grade === "g2") && currentQuestion.operation === "addition" && (
                     <div className="mb-2 flex gap-4 items-center">
                       {currentQuestion.a <= 10 && (
                         <div className="flex flex-wrap gap-1 justify-center max-w-[100px]">

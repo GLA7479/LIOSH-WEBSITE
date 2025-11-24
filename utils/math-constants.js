@@ -189,8 +189,8 @@ export const GRADE_LEVELS = {
 };
 
 export const GRADES = {
-  g1_2: {
-    name: "כיתות א–ב",
+  g1: {
+    name: "כיתה א׳",
     operations: [
       "addition",
       "subtraction",
@@ -200,8 +200,19 @@ export const GRADES = {
     allowFractions: false,
     allowNegatives: false,
   },
-  g3_4: {
-    name: "כיתות ג–ד",
+  g2: {
+    name: "כיתה ב׳",
+    operations: [
+      "addition",
+      "subtraction",
+      "compare",
+      "number_sense", // שכנים, זוגי/אי-זוגי, השלמה ל-10, עשרות/יחידות
+    ],
+    allowFractions: false,
+    allowNegatives: false,
+  },
+  g3: {
+    name: "כיתה ג׳",
     operations: [
       "addition",
       "subtraction",
@@ -218,8 +229,48 @@ export const GRADES = {
     allowFractions: true,
     allowNegatives: false,
   },
-  g5_6: {
-    name: "כיתות ה–ו",
+  g4: {
+    name: "כיתה ד׳",
+    operations: [
+      "addition",
+      "subtraction",
+      "multiplication",
+      "division",
+      "fractions",
+      "sequences",
+      "decimals",
+      "compare",
+      "equations",
+      "number_sense",
+      "mixed",
+    ],
+    allowFractions: true,
+    allowNegatives: false,
+  },
+  g5: {
+    name: "כיתה ה׳",
+    operations: [
+      "addition",
+      "subtraction",
+      "multiplication",
+      "division",
+      "fractions",
+      "percentages",
+      "sequences",
+      "decimals",
+      "rounding",
+      "equations",
+      "compare",
+      "number_sense",
+      "factors_multiples",
+      "word_problems",
+      "mixed",
+    ],
+    allowFractions: true,
+    allowNegatives: true,
+  },
+  g6: {
+    name: "כיתה ו׳",
     operations: [
       "addition",
       "subtraction",
