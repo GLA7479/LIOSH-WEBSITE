@@ -327,42 +327,120 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
   if (selectedOp === "addition") {
     const maxA = levelConfig.addition.max || 20;
 
-    // שילוב השלמה ל-10/100 בתוך חיבור (מתאים לסעיף 10)
-    if (gradeKey === "g1_2" && Math.random() < 0.3) {
+    // האם להשתמש בתרגילי השלמה (לעשר/מספר עגול)
+    const useComplementG1 = gradeKey === "g1_2" && Math.random() < 0.3;
+    const useComplementG3 = gradeKey === "g3_4" && Math.random() < 0.2;
+    // האם להשתמש בתרגיל 3 מספרים
+    const useThreeTerms = allowTwoStep && Math.random() < 0.3;
+
+    if (useComplementG1) {
+      // כיתות א–ב: השלמה ל-10
       const b = randInt(1, 9);
       const c = 10;
       const a = c - b;
       correctAnswer = a;
       const exerciseText = `${BLANK} + ${b} = ${c}`;
       question = exerciseText;
-      params = { kind: "add_complement10", a, b, c, exerciseText, op: "add", grade: gradeKey };
+      params = {
+        kind: "add_complement10",
+        a,
+        b,
+        c,
+        exerciseText,
+        op: "add",
+        grade: gradeKey,
+      };
       operandA = a;
       operandB = b;
-    } else if (gradeKey === "g3_4" && Math.random() < 0.2) {
+    } else if (useComplementG3) {
+      // כיתות ג–ד: השלמה לעשרות קרובות
       const base = randInt(10, 90);
       const tens = Math.round(base / 10) * 10;
       const diff = tens - base;
       correctAnswer = diff;
       const exerciseText = `${base} + ${BLANK} = ${tens}`;
       question = exerciseText;
-      params = { kind: "add_complement_round10", base, tens, diff, exerciseText };
-    } else if (allowTwoStep && Math.random() < 0.3) {
+      params = {
+        kind: "add_complement_round10",
+        base,
+        tens,
+        diff,
+        exerciseText,
+        op: "add",
+        grade: gradeKey,
+      };
+      operandA = base;
+      operandB = diff;
+    } else if (useThreeTerms) {
+      // חיבור של 3 מספרים
       const a = randInt(1, maxA);
       const b = randInt(1, maxA);
       const c = randInt(1, maxA);
       correctAnswer = round(a + b + c);
       const exerciseText = `${a} + ${b} + ${c} = ${BLANK}`;
       question = exerciseText;
-      params = { kind: "add_three", a, b, c, exerciseText, op: "add", grade: gradeKey };
+      params = {
+        kind: "add_three",
+        a,
+        b,
+        c,
+        exerciseText,
+        op: "add",
+        grade: gradeKey,
+      };
       operandA = a;
       operandB = b;
-  } else {
+    } else {
+      // ✅ וריאציות שונות של חיבור שני מספרים
       const a = randInt(1, maxA);
       const b = randInt(1, maxA);
-      correctAnswer = round(a + b);
-      const exerciseText = `${a} + ${b} = ${BLANK}`;
-      question = exerciseText;
-      params = { kind: "add_two", a, b, exerciseText, op: "add", grade: gradeKey };
+      const c = a + b;
+
+      const variant = Math.random();
+
+      if (variant < 0.33) {
+        // צורה רגילה: a + b = __
+        correctAnswer = c;
+        const exerciseText = `${a} + ${b} = ${BLANK}`;
+        question = exerciseText;
+        params = {
+          kind: "add_two",
+          a,
+          b,
+          exerciseText,
+          op: "add",
+          grade: gradeKey,
+        };
+      } else if (variant < 0.66) {
+        // חסר המספר הראשון: __ + b = c
+        correctAnswer = a;
+        const exerciseText = `${BLANK} + ${b} = ${c}`;
+        question = exerciseText;
+        params = {
+          kind: "add_missing_first",
+          a,
+          b,
+          c,
+          exerciseText,
+          op: "add",
+          grade: gradeKey,
+        };
+      } else {
+        // חסר המספר השני: a + __ = c
+        correctAnswer = b;
+        const exerciseText = `${a} + ${BLANK} = ${c}`;
+        question = exerciseText;
+        params = {
+          kind: "add_missing_second",
+          a,
+          b,
+          c,
+          exerciseText,
+          op: "add",
+          grade: gradeKey,
+        };
+      }
+
       operandA = a;
       operandB = b;
     }
@@ -372,17 +450,51 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
 
     let a;
     let b;
+
     if (allowNegatives) {
       a = randInt(minS, maxS);
       b = randInt(minS, maxS);
-    } else {
+  } else {
       b = randInt(minS, maxS);
-      a = randInt(b, maxS);
+      a = randInt(b, maxS); // דואג ש-a ≥ b
     }
-    correctAnswer = round(a - b);
-    const exerciseText = `${a} - ${b} = ${BLANK}`;
-    question = exerciseText;
-    params = { kind: "sub_two", a, b, exerciseText };
+
+    const c = a - b;
+    const variant = Math.random();
+
+    if (variant < 0.33) {
+      // צורה רגילה: a - b = __
+      correctAnswer = c;
+      const exerciseText = `${a} - ${b} = ${BLANK}`;
+      question = exerciseText;
+      params = { kind: "sub_two", a, b, c, exerciseText };
+    } else if (variant < 0.66) {
+      // חסר המספר הראשון: __ - b = c
+      // מתאים רק אם אין צורך בשליליים לתשובה הראשונה
+      correctAnswer = a;
+      const exerciseText = `${BLANK} - ${b} = ${c}`;
+      question = exerciseText;
+      params = {
+        kind: "sub_missing_first",
+        a,
+        b,
+        c,
+        exerciseText,
+      };
+    } else {
+      // חסר המספר השני: a - __ = c
+      correctAnswer = b;
+      const exerciseText = `${a} - ${BLANK} = ${c}`;
+      question = exerciseText;
+      params = {
+        kind: "sub_missing_second",
+        a,
+        b,
+        c,
+        exerciseText,
+      };
+    }
+
     operandA = a;
     operandB = b;
   } else if (selectedOp === "multiplication") {
@@ -845,7 +957,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       params = { kind: "fm_gcd", a, b, gcd: base };
     }
 
-  // ===== תרגילי מילים (כולל זמן, כסף, מידות) =====
+  // ===== תרגילי מילים (רק חשבון – בלי גאומטריה) =====
   } else if (selectedOp === "word_problems") {
     const templates =
       gradeKey === "g5_6"
@@ -856,8 +968,13 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
             "shop_discount",
             "unit_convert",
             "distance_time",
+            "simple_sub",
+            "pocket_money",
+            "time_sum",
+            "average",
           ]
-        : ["groups", "simple_add"];
+        : ["groups", "simple_add", "simple_sub", "pocket_money"];
+
     const t = templates[Math.floor(Math.random() * templates.length)];
 
     if (t === "simple_add") {
@@ -866,6 +983,18 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       correctAnswer = a + b;
       question = `לליאו יש ${a} כדורים והוא מקבל עוד ${b} כדורים. כמה כדורים יש לליאו בסך הכל?`;
       params = { kind: "wp_simple_add", a, b };
+    } else if (t === "simple_sub") {
+      const total = randInt(8, 15);
+      const give = randInt(2, total - 3);
+      correctAnswer = total - give;
+      question = `לליאו יש ${total} מדבקות. הוא נותן לחבר ${give} מדבקות. כמה מדבקות נשארות לליאו?`;
+      params = { kind: "wp_simple_sub", total, give };
+    } else if (t === "pocket_money") {
+      const money = randInt(20, 80);
+      const toy = randInt(10, money - 5);
+      correctAnswer = money - toy;
+      question = `לליאו יש ${money}₪ דמי כיס. הוא קונה משחק ב-${toy}₪. כמה כסף נשאר לו?`;
+      params = { kind: "wp_pocket_money", money, toy };
     } else if (t === "groups") {
       const per = randInt(3, 8);
       const groups = randInt(2, 6);
@@ -909,8 +1038,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
         question = `כמה קילוגרמים הם ${g} גרם? = ${BLANK}`;
         params = { kind: "wp_unit_g_to_kg", g, kg };
       }
-    } else {
-      // distance_time
+    } else if (t === "distance_time") {
       const speed = [5, 6, 8, 10][randInt(0, 3)]; // קמ"ש
       const hours = randInt(1, 4);
       const distance = speed * hours;
@@ -921,6 +1049,38 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
         speed,
         hours,
         distance,
+      };
+    } else if (t === "time_sum") {
+      const l1 = randInt(20, 60);
+      const l2 = randInt(10, 40);
+      correctAnswer = l1 + l2;
+      question = `סרט ראשון נמשך ${l1} דקות וסרטון נוסף נמשך ${l2} דקות. כמה דקות נמשך הצפייה ביחד?`;
+      params = { kind: "wp_time_sum", l1, l2 };
+    } else if (t === "average") {
+      const s1 = randInt(60, 100);
+      const s2 = randInt(60, 100);
+      const s3 = randInt(60, 100);
+      correctAnswer = Math.round((s1 + s2 + s3) / 3);
+      question = `לליאו ציונים ${s1}, ${s2} ו-${s3} בשלושה מבחנים. מה הממוצע שלו (מעוגל למספר שלם)?`;
+      params = { kind: "wp_average", s1, s2, s3 };
+    } else {
+      // multi_step – בעיה חשבונית רב-שלבית (קנייה+עודף)
+      const a = randInt(2, 5);
+      const b = randInt(3, 7);
+      const price = randInt(5, 20);
+      const totalQty = a + b;
+      const totalCost = totalQty * price;
+      const money = randInt(totalCost + 10, totalCost + 50);
+      correctAnswer = money - totalCost;
+      question = `לליאו יש ${money}₪. הוא קונה ${a} עטים ו-${b} עפרונות, וכל פריט עולה ${price}₪. כמה כסף יישאר לו אחרי הקנייה?`;
+      params = {
+        kind: "wp_multi_step",
+        a,
+        b,
+        price,
+        totalQty,
+        totalCost,
+        money,
       };
     }
     isStory = true;
@@ -1029,8 +1189,14 @@ function getHint(question, operation, gradeKey) {
       if (p.kind === "add_complement10" || p.kind === "add_complement_round10") {
         return "חפש כמה חסר כדי להגיע לעשר/מספר עגול – לא צריך לחשב את כל החיבור הארוך.";
       }
+      if (p.kind === "add_missing_first" || p.kind === "add_missing_second") {
+        return "אם יש לך __ + b = c, אז המספר החסר הוא c - b. אם יש לך a + __ = c, אז המספר החסר הוא c - a.";
+      }
       return "השתמש בשיטת \"עמודות\" או בקפיצות על ציר המספרים: חיבור = הוספה.";
     case "subtraction":
+      if (p.kind === "sub_missing_first" || p.kind === "sub_missing_second") {
+        return "אם יש לך __ - b = c, אז המספר החסר הוא c + b. אם יש לך a - __ = c, אז המספר החסר הוא a - c.";
+      }
       return "בדוק מי המספר הגדול יותר. חיסור = כמה חסר מהקטן לגדול או כמה מורידים מהגדול.";
     case "multiplication":
       return "מחשבים כפל כמו חיבור חוזר: a × b זה כמו לחבר את a לעצמו b פעמים.";
@@ -1225,6 +1391,24 @@ function getSolutionSteps(question, operation, gradeKey) {
           toSpan(`3. נבדוק שחיבור התוצאה נותן את המספר העגול.`, "3"),
         ];
       }
+      if (p.kind === "add_missing_first") {
+        // __ + b = c
+        return [
+          toSpan(`1. נבין: מחפשים מספר שכשמוסיפים לו ${p.b}, מקבלים ${p.c}.`, "1"),
+          toSpan(`2. נחשב: ${ltr(`${p.c} - ${p.b} = ${ans}`)}.`, "2"),
+          toSpan(`3. נבדוק: ${ltr(`${ans} + ${p.b} = ${p.c}`)}? כן!`, "3"),
+          toSpan(`4. התשובה: ${ans}.`, "4"),
+        ];
+      }
+      if (p.kind === "add_missing_second") {
+        // a + __ = c
+        return [
+          toSpan(`1. נבין: מחפשים מספר שכשמוסיפים ל-${p.a}, מקבלים ${p.c}.`, "1"),
+          toSpan(`2. נחשב: ${ltr(`${p.c} - ${p.a} = ${ans}`)}.`, "2"),
+          toSpan(`3. נבדוק: ${ltr(`${p.a} + ${ans} = ${p.c}`)}? כן!`, "3"),
+          toSpan(`4. התשובה: ${ans}.`, "4"),
+        ];
+      }
       // אם זה חיבור רגיל עם שני מספרים - נשתמש בהסבר בעמודה
       if (typeof p.a === "number" && typeof p.b === "number") {
         return getAdditionStepsColumn(p.a, p.b);
@@ -1238,7 +1422,25 @@ function getSolutionSteps(question, operation, gradeKey) {
     }
 
     case "subtraction":
+      if (p.kind === "sub_missing_first") {
+        // __ - b = c
         return [
+          toSpan(`1. נבין: מחפשים מספר שכשמחסרים ממנו ${p.b}, מקבלים ${p.c}.`, "1"),
+          toSpan(`2. נחשב: ${ltr(`${p.c} + ${p.b} = ${ans}`)}.`, "2"),
+          toSpan(`3. נבדוק: ${ltr(`${ans} - ${p.b} = ${p.c}`)}? כן!`, "3"),
+          toSpan(`4. התשובה: ${ans}.`, "4"),
+        ];
+      }
+      if (p.kind === "sub_missing_second") {
+        // a - __ = c
+      return [
+          toSpan(`1. נבין: מחפשים מספר שכשמחסרים אותו מ-${p.a}, מקבלים ${p.c}.`, "1"),
+          toSpan(`2. נחשב: ${ltr(`${p.a} - ${p.c} = ${ans}`)}.`, "2"),
+          toSpan(`3. נבדוק: ${ltr(`${p.a} - ${ans} = ${p.c}`)}? כן!`, "3"),
+          toSpan(`4. התשובה: ${ans}.`, "4"),
+        ];
+      }
+      return [
         toSpan(`1. נכתוב את התרגיל: ${ltr(`${p.a} - ${p.b}`)}.`, "1"),
         toSpan("2. נבדוק מי המספר הגדול ומי הקטן (משפיע על הסימן).", "2"),
         toSpan(`3. נחשב: ${ltr(`${p.a} - ${p.b} = ${ans}`)}.`, "3"),
@@ -1246,7 +1448,7 @@ function getSolutionSteps(question, operation, gradeKey) {
       ];
 
     case "multiplication":
-      return [
+        return [
         toSpan(
           `1. נכיר שכפל הוא חיבור חוזר: ${ltr(`${p.a} × ${p.b}`)} = ${ltr(
             `${p.a} + ${p.a} + ...`
@@ -1300,7 +1502,7 @@ function getSolutionSteps(question, operation, gradeKey) {
         ];
       }
 
-        return [
+      return [
         toSpan("1. מוצאים מכנה משותף.", "1"),
         toSpan("2. מעבירים את השברים למכנה הזה.", "2"),
         toSpan("3. מחברים או מחסרים את המונים.", "3"),
@@ -1570,6 +1772,44 @@ function getSolutionSteps(question, operation, gradeKey) {
         ];
       }
 
+      if (p.kind === "wp_simple_sub") {
+        return [
+          toSpan("1. מזהים שהשאלה מבקשת כמה נשאר – פעולה של חיסור.", "1"),
+          toSpan(`2. כותבים תרגיל: ${ltr(`${p.total} - ${p.give}`)}.`, "2"),
+          toSpan(`3. מחשבים: ${ltr(`${p.total} - ${p.give} = ${ans}`)}.`, "3"),
+          toSpan(`4. התשובה: נשארו לליאו ${ans} מדבקות.`, "4"),
+        ];
+      }
+
+      if (p.kind === "wp_pocket_money") {
+        return [
+          toSpan("1. מזהים שהשאלה מבקשת כמה כסף נשאר אחרי קנייה – פעולה של חיסור.", "1"),
+          toSpan(`2. כותבים תרגיל: ${ltr(`${p.money} - ${p.toy}`)}.`, "2"),
+          toSpan(`3. מחשבים: ${ltr(`${p.money} - ${p.toy} = ${ans}`)}.`, "3"),
+          toSpan(`4. התשובה: נשאר לליאו ${ans}₪.`, "4"),
+        ];
+      }
+
+      if (p.kind === "wp_time_sum") {
+        const sum = p.l1 + p.l2;
+        return [
+          toSpan("1. מזהים שהשאלה מבקשת כמה זמן נמשך ביחד – פעולה של חיבור.", "1"),
+          toSpan(`2. כותבים תרגיל: ${ltr(`${p.l1} + ${p.l2}`)}.`, "2"),
+          toSpan(`3. מחשבים: ${ltr(`${p.l1} + ${p.l2} = ${sum}`)}.`, "3"),
+          toSpan(`4. התשובה: הצפייה נמשכה ${ans} דקות.`, "4"),
+        ];
+      }
+
+      if (p.kind === "wp_average") {
+        const sum = p.s1 + p.s2 + p.s3;
+        return [
+          toSpan("1. ממוצע מחושב על ידי חיבור כל הציונים וחילוק במספר המבחנים.", "1"),
+          toSpan(`2. נחבר את הציונים: ${ltr(`${p.s1} + ${p.s2} + ${p.s3} = ${sum}`)}.`, "2"),
+          toSpan(`3. נחלק ב-3: ${ltr(`${sum} ÷ 3 = ${ans}`)}.`, "3"),
+          toSpan(`4. התשובה: הממוצע הוא ${ans}.`, "4"),
+        ];
+      }
+
       if (p.kind === "wp_groups") {
         const prod = p.per * p.groups;
         return [
@@ -1603,9 +1843,12 @@ function getSolutionSteps(question, operation, gradeKey) {
 
       if (p.kind === "wp_multi_step") {
         return [
-          toSpan(`1. נחשב כמה פריטים קונים בסך הכל: ${p.qty1 + p.qty2}.`, "1"),
           toSpan(
-            `2. נמצא את עלות הקנייה: ${ltr(`${p.price} × (${p.qty1} + ${p.qty2}) = ${p.totalCost}`)}.`,
+            `1. נחשב כמה פריטים קונים בסך הכל: ${p.a} + ${p.b} = ${p.totalQty}.`,
+            "1"
+          ),
+          toSpan(
+            `2. נמצא את עלות הקנייה: ${ltr(`${p.price} × ${p.totalQty} = ${p.totalCost}`)}.`,
             "2"
           ),
           toSpan(
@@ -1730,6 +1973,231 @@ function getErrorExplanation(question, operation, wrongAnswer, gradeKey) {
   }
 }
 
+// Build detailed step-by-step explanation for the current question
+function buildStepExplanation(question) {
+  if (!question) return null;
+
+  const BLANK = "__";
+
+  const op = question.operation;
+  const a = question.params?.a ?? question.a;
+  const b = question.params?.b ?? question.b;
+  const answer =
+    question.correctAnswer !== undefined
+      ? question.correctAnswer
+      : question.answer;
+
+  let exercise = "";
+  let vertical = "";
+  const steps = [];
+
+  // תצוגת תרגיל בסיסית (אופקית) – רק חשבון
+  if (a != null && b != null) {
+    let symbol = "";
+    if (op === "addition") symbol = "+";
+    else if (op === "subtraction") symbol = "−";
+    else if (op === "multiplication") symbol = "×";
+    else if (op === "division") symbol = "÷";
+
+    exercise = `${a} ${symbol} ${b} = ${BLANK}`;
+  } else {
+    exercise = question.params?.exerciseText || question.question || "";
+  }
+
+  // טיפוסי הסבר לפי פעולה
+  if (op === "addition" && typeof a === "number" && typeof b === "number") {
+    const aStr = String(a);
+    const bStr = String(b);
+    const maxLen = Math.max(aStr.length, bStr.length);
+    const pa = aStr.padStart(maxLen, "0");
+    const pb = bStr.padStart(maxLen, "0");
+
+    vertical = `${a}\n+ ${b}\n${"-".repeat(Math.max(aStr.length, bStr.length + 2))}`;
+
+    steps.push(
+      "1. כותבים את המספרים אחד מעל השני, כך שסַפְרות היחידות נמצאות באותה עמודה."
+    );
+
+    let carry = 0;
+    let stepIndex = 2;
+
+    for (let i = maxLen - 1; i >= 0; i--) {
+      const da = Number(pa[i]);
+      const db = Number(pb[i]);
+      const sum = da + db + carry;
+      const ones = sum % 10;
+      const newCarry = sum >= 10 ? 1 : 0;
+
+      const placeName =
+        i === maxLen - 1
+          ? "יחידות"
+          : i === maxLen - 2
+          ? "עשרות"
+          : "מאות ומעלה";
+
+      let text = `${stepIndex}. מחברים את ספרת ה${placeName}: ${da} + ${db}`;
+      if (carry) text += ` ועוד ${carry} שנשאר מהשלב הקודם`;
+      text += ` = ${sum}. כותבים ${ones} בעמודת ה${placeName}`;
+      if (newCarry) text += ` ומעבירים 1 לעמודת ה${placeName} הבאה.`;
+      steps.push(text);
+
+      carry = newCarry;
+      stepIndex++;
+    }
+
+    if (carry) {
+      steps.push(
+        `${stepIndex}. בסוף החיבור נשאר לנו 1 נוסף, כותבים אותו משמאל כמספר חדש בעמודת המאות/אלפים.`
+      );
+      stepIndex++;
+    }
+
+    if (typeof answer === "number") {
+      steps.push(
+        `${stepIndex}. המספר שנוצר בסוף הוא ${answer}. זהו התשובה הסופית לתרגיל.`
+      );
+    }
+  } else if (
+    op === "subtraction" &&
+    typeof a === "number" &&
+    typeof b === "number"
+  ) {
+    const aStr = String(a);
+    const bStr = String(b);
+    const maxLen = Math.max(aStr.length, bStr.length);
+    const pa = aStr.padStart(maxLen, "0");
+    const pb = bStr.padStart(maxLen, "0");
+
+    vertical = `${a}\n- ${b}\n${"-".repeat(Math.max(aStr.length, bStr.length + 2))}`;
+
+    steps.push(
+      "1. כותבים את המספרים אחד מעל השני, כך שסַפְרות היחידות, העשרות וכו' נמצאות באותו טור."
+    );
+
+    let borrow = 0;
+    let stepIndex = 2;
+
+    for (let i = maxLen - 1; i >= 0; i--) {
+      let da = Number(pa[i]);
+      const db = Number(pb[i]);
+      da -= borrow;
+
+      const placeName =
+        i === maxLen - 1
+          ? "יחידות"
+          : i === maxLen - 2
+          ? "עשרות"
+          : "מאות ומעלה";
+
+      if (da < db) {
+        steps.push(
+          `${stepIndex}. בעמודת ה${placeName} ${da} קטן מ-${db}, לכן לוקחים "השאלה" מהעמודה הבאה (מוסיפים 10 לספרה הזו ומפחיתים 1 בעמודה הבאה).`
+        );
+        da += 10;
+        borrow = 1;
+      } else {
+        borrow = 0;
+      }
+
+      const diff = da - db;
+      stepIndex++;
+
+      steps.push(
+        `${stepIndex}. כעת מחשבים בעמודת ה${placeName}: ${da} − ${db} = ${diff} וכותבים ${diff} בעמודה זו.`
+      );
+      stepIndex++;
+    }
+
+    if (typeof answer === "number") {
+      steps.push(
+        `${stepIndex}. המספר שקיבלנו בסוף הוא ${answer}. זו התוצאה של החיסור.`
+      );
+    }
+  } else if (
+    op === "multiplication" &&
+    typeof a === "number" &&
+    typeof b === "number"
+  ) {
+    vertical = `${a}\n× ${b}`;
+
+    steps.push(
+      "1. מבינים שהכפל הוא חיבור חוזר: אם נכפול למשל 3 × 4 זה כמו 4 + 4 + 4."
+    );
+    steps.push(
+      `2. במקרה שלנו מחשבים: ${a} × ${b}. אפשר לחשב כ-${a} פעמים המספר ${b} או ${b} פעמים המספר ${a}.`
+    );
+
+    if (a <= 12 && b <= 12) {
+      const smaller = Math.min(a, b);
+      const bigger = Math.max(a, b);
+      steps.push(
+        `3. למשל: ${smaller} × ${bigger} = ${Array(smaller)
+          .fill(bigger)
+          .join(" + ")} = ${answer}.`
+      );
+    } else if (typeof answer === "number") {
+      steps.push(
+        `3. משתמשים בטבלת כפל או פירוק לגורמים כדי להגיע לתוצאה ${answer}.`
+      );
+    }
+
+    if (typeof answer === "number") {
+      steps.push(`4. לכן ${a} × ${b} = ${answer}.`);
+    }
+  } else if (
+    op === "division" &&
+    typeof a === "number" &&
+    typeof b === "number"
+  ) {
+    steps.push(
+      `1. חלוקה היא בעצם הפוך מהכפל: כמה פעמים המספר ${b} נכנס ב-${a}?`
+    );
+    if (typeof answer === "number") {
+      const q = Math.floor(answer);
+      const r = a - q * b;
+      steps.push(
+        `2. בודקים: ${b} × ${q} = ${b * q}. זה נותן לנו ${b * q} מתוך ${a}.`
+      );
+
+      if (r > 0) {
+        steps.push(
+          `3. נשאר שארית: ${a} − ${b * q} = ${r}. כלומר התשובה היא ${q} עם שארית ${r}.`
+        );
+      } else {
+        steps.push(
+          `3. אין שארית ולכן ${a} מתחלק ב-${b} בדיוק ${q} פעמים (ללא שארית).`
+        );
+      }
+    }
+  } else if (op === "word_problems") {
+    // תרגיל מילים – מסבירים במילים פשוטות את הדרך
+    steps.push("1. קוראים את שאלת המילים לאט ומסמנים את הנתונים החשובים.");
+    steps.push(
+      "2. מחליטים אם צריך לחבר, לחסר, לכפול או לחלק לפי הסיפור (האם הכמות גדלה, קטנה, חוזרת על עצמה או מתחלקת?)."
+    );
+    steps.push(
+      "3. כותבים תרגיל חשבוני שמתאים לסיפור, פותרים אותו ואז עונים במשפט מלא."
+    );
+    if (typeof answer === "number") {
+      steps.push(`4. החישוב נותן לנו ${answer}, ולכן זו התשובה לשאלה.`);
+    }
+  } else {
+    // כל השאר (שברים וכו') – הסבר כללי
+    steps.push(
+      "1. בודקים איזה סוג פעולה זו (חיבור, חיסור, כפל או חילוק) ומסדרים את המספרים בצורה נוחה על הדף."
+    );
+    steps.push("2. פותרים שלב־אחר־שלב, בלי לדלג, ומסמנים כל שלב בדרך.");
+    if (typeof answer === "number") {
+      steps.push(`3. בסוף מקבלים את התוצאה ${answer}.`);
+    }
+  }
+
+  return {
+    exercise,
+    vertical,
+    steps,
+  };
+}
 
 export default function MathMaster() {
   useIOSViewportFix();
@@ -2148,8 +2616,8 @@ export default function MathMaster() {
         setRecentQuestions((prev) => {
           const newSet = new Set(prev);
           newSet.add(questionKey);
-          // שמירה רק על 20 שאלות אחרונות
-          if (newSet.size > 20) {
+          // שמירה רק על 60 שאלות אחרונות
+          if (newSet.size > 60) {
             const first = Array.from(newSet)[0];
             newSet.delete(first);
           }
@@ -3085,54 +3553,56 @@ export default function MathMaster() {
                         >
                           💡 רמז
                         </button>
-                        <button
-                          onClick={() => setShowSolution((prev) => !prev)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/80 hover:bg-emerald-500 text-white"
-                        >
-                          📖 הסבר צעד־אחר־צעד
-                        </button>
-                      </div>
+                        {mode === "learning" && (
+                          <button
+                            onClick={() => setShowSolution((prev) => !prev)}
+                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/80 hover:bg-emerald-500 text-white"
+                          >
+                            📖 הסבר צעד־אחר־צעד
+                          </button>
+                        )}
+                  </div>
 
-                      {/* כפתור חיבור לטבלת כפל/חילוק – רק במצב למידה */}
-                      {mode === "learning" &&
-                        (currentQuestion.operation === "multiplication" ||
-                          currentQuestion.operation === "division") && (
+                  {/* כפתור חיבור לטבלת כפל/חילוק – רק במצב למידה */}
+                  {mode === "learning" &&
+                    (currentQuestion.operation === "multiplication" ||
+                      currentQuestion.operation === "division") && (
                           <div className="flex justify-center">
-                            <button
-                              onClick={() => {
-                                setShowMultiplicationTable(true);
-                                setTableMode(
-                                  currentQuestion.operation === "multiplication"
-                                    ? "multiplication"
-                                    : "division"
-                                );
-                                if (currentQuestion.operation === "multiplication") {
-                                  const a = currentQuestion.a;
-                                  const b = currentQuestion.b;
-                                  if (a >= 1 && a <= 12 && b >= 1 && b <= 12) {
-                                    const value = a * b;
-                                    setSelectedCell({ row: a, col: b, value });
-                                    setSelectedRow(null);
-                                    setSelectedCol(null);
-                                    setSelectedResult(null);
-                                    setSelectedDivisor(null);
-                                  }
-                                } else {
-                                  const { a, b } = currentQuestion;
-                                  const value = a;
-                                  if (b >= 1 && b <= 12) {
-                                    setSelectedCell({ row: 1, col: b, value });
-                                    setSelectedResult(value);
-                                    setSelectedDivisor(b);
-                                    setSelectedRow(null);
-                                    setSelectedCol(null);
-                                  }
-                                }
-                              }}
+                      <button
+                        onClick={() => {
+                          setShowMultiplicationTable(true);
+                          setTableMode(
+                            currentQuestion.operation === "multiplication"
+                              ? "multiplication"
+                              : "division"
+                          );
+                          if (currentQuestion.operation === "multiplication") {
+                            const a = currentQuestion.a;
+                            const b = currentQuestion.b;
+                            if (a >= 1 && a <= 12 && b >= 1 && b <= 12) {
+                              const value = a * b;
+                              setSelectedCell({ row: a, col: b, value });
+                              setSelectedRow(null);
+                              setSelectedCol(null);
+                              setSelectedResult(null);
+                              setSelectedDivisor(null);
+                            }
+                          } else {
+                            const { a, b } = currentQuestion;
+                            const value = a;
+                            if (b >= 1 && b <= 12) {
+                              setSelectedCell({ row: 1, col: b, value });
+                              setSelectedResult(value);
+                              setSelectedDivisor(b);
+                              setSelectedRow(null);
+                              setSelectedCol(null);
+                            }
+                          }
+                        }}
                               className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white"
-                            >
+                      >
                               📊 הצג בטבלה
-                            </button>
+                      </button>
                           </div>
                         )}
 
@@ -3144,64 +3614,80 @@ export default function MathMaster() {
                         </div>
                       )}
 
-                      {/* חלון הסבר מלא - Modal גדול ומרכזי */}
-                      {showSolution && currentQuestion && (
-                        <div
-                          className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
-                          onClick={() => setShowSolution(false)}
-                        >
+                      {/* חלון הסבר מלא - Modal גדול ומרכזי - רק במצב למידה */}
+                      {mode === "learning" && showSolution && currentQuestion && (() => {
+                        const info = buildStepExplanation(currentQuestion);
+                        if (!info) return null;
+
+                        return (
                           <div
-                            className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl"
-                            onClick={(e) => e.stopPropagation()}
+                            className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                            onClick={() => setShowSolution(false)}
                           >
-                            <div className="flex items-center justify-between mb-2">
-                              <h3
-                                className="text-lg font-bold text-emerald-100"
-                                dir="rtl"
-                              >
-                                {"\u200Fאיך פותרים את התרגיל?"}
-                              </h3>
-                              <button
-                                onClick={() => setShowSolution(false)}
-                                className="text-emerald-200 hover:text-white text-xl leading-none px-2"
-                              >
-                                ✖
-                              </button>
-                            </div>
-                            <div className="mb-2 text-sm text-emerald-50" dir="rtl">
-                              {/* מציגים שוב את התרגיל */}
-                              <div
-                                className="mb-2 font-semibold text-base text-center text-white whitespace-nowrap"
-                                style={{
-                                  direction: "ltr",
-                                  unicodeBidi: "plaintext"
-                                }}
-                              >
-                                {currentQuestion.exerciseText || currentQuestion.question}
+                            <div
+                              className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <h3
+                                  className="text-lg font-bold text-emerald-100"
+                                  dir="rtl"
+                                >
+                                  {"\u200Fאיך פותרים את התרגיל?"}
+                                </h3>
+                                <button
+                                  onClick={() => setShowSolution(false)}
+                                  className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                                >
+                                  ✖
+                                </button>
                               </div>
-                              {/* כאן הצעדים */}
-                              <div className="space-y-1 text-sm" style={{ direction: "rtl", unicodeBidi: "plaintext" }}>
-                                {solutionSteps.map((step, idx) =>
-                                  typeof step === "string" ? (
-                                    <div key={idx}>{step}</div>
-                                  ) : (
-                                    <div key={idx}>{step}</div>
-                                  )
+                              <div className="mb-2 text-sm text-emerald-50" dir="rtl">
+                                {/* מציגים שוב את התרגיל */}
+                                <div
+                                  className="mb-2 font-semibold text-base text-center text-white"
+                                  style={{
+                                    direction: "ltr",
+                                    unicodeBidi: "plaintext"
+                                  }}
+                                >
+                                  {info.exercise || currentQuestion.exerciseText || currentQuestion.question}
+                                </div>
+                                
+                                {/* תצוגה במאונך (אם יש) */}
+                                {info.vertical && (
+                                  <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2">
+                                    <pre
+                                      dir="ltr"
+                                      className="text-center font-mono text-base leading-relaxed whitespace-pre text-emerald-100"
+                                    >
+                                      {info.vertical}
+                                    </pre>
+                                  </div>
                                 )}
+
+                                {/* כאן הצעדים המפורטים */}
+                                <div className="space-y-1.5 text-sm" style={{ direction: "rtl", unicodeBidi: "plaintext" }}>
+                                  {info.steps.map((step, idx) => (
+                                    <div key={idx} className="text-emerald-50 leading-relaxed">
+                                      {step}
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                            <div className="mt-3 flex justify-center">
-                              <button
-                                onClick={() => setShowSolution(false)}
-                                className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
-                                dir="rtl"
-                              >
-                                {"\u200Fסגור"}
-                              </button>
+                              <div className="mt-3 flex justify-center">
+                                <button
+                                  onClick={() => setShowSolution(false)}
+                                  className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                                  dir="rtl"
+                                >
+                                  {"\u200Fסגור"}
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
+                        );
+                      })()}
 
                       {/* למה טעיתי? – רק אחרי טעות */}
                       {errorExplanation && (
