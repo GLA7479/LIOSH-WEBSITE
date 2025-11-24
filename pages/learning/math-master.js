@@ -65,7 +65,7 @@ const GRADE_LEVELS = {
     name: "כיתה ב׳",
     levels: {
       easy: {
-        addition: { max: 50 },
+    addition: { max: 50 },
         subtraction: { min: 0, max: 50 },
         multiplication: { max: 5 },
         division: { max: 50, maxDivisor: 5 },
@@ -74,12 +74,12 @@ const GRADE_LEVELS = {
       medium: {
         addition: { max: 100 },
         subtraction: { min: 0, max: 100 },
-        multiplication: { max: 10 },
-        division: { max: 100, maxDivisor: 10 },
+    multiplication: { max: 10 },
+    division: { max: 100, maxDivisor: 10 },
         fractions: { maxDen: 3 },
-      },
-      hard: {
-        addition: { max: 100 },
+  },
+  hard: {
+    addition: { max: 100 },
         subtraction: { min: 0, max: 100 },
         multiplication: { max: 10 },
         division: { max: 100, maxDivisor: 10 },
@@ -100,8 +100,8 @@ const GRADE_LEVELS = {
       medium: {
         addition: { max: 500 },
         subtraction: { min: 0, max: 500 },
-        multiplication: { max: 12 },
-        division: { max: 144, maxDivisor: 12 },
+    multiplication: { max: 12 },
+    division: { max: 144, maxDivisor: 12 },
         fractions: { maxDen: 6 },
       },
       hard: {
@@ -1048,15 +1048,37 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       correctAnswer = a;
       question = `${BLANK} + ${b} = ${c}`;
       params = { kind: "ns_complement100", a, b, c };
-    } else {
+      } else {
       // even_odd – תשובה טקסטואלית
       const n = randInt(0, 200);
       const isEven = n % 2 === 0;
       correctAnswer = isEven ? "זוגי" : "אי-זוגי";
       question = `האם המספר ${n} הוא זוגי או אי-זוגי?`;
       params = { kind: "ns_even_odd", n, isEven };
-      const answers = ["זוגי", "אי-זוגי"];
-      if (!isEven) answers.reverse();
+      // ליצירת 4 תשובות, נוסיף גם תשובות על בסיס מספרים שכנים
+      const baseAnswers = ["זוגי", "אי-זוגי"];
+      const neighbor1 = n + 1;
+      const neighbor2 = n - 1;
+      baseAnswers.push(neighbor1 % 2 === 0 ? "זוגי" : "אי-זוגי");
+      baseAnswers.push(neighbor2 % 2 === 0 ? "זוגי" : "אי-זוגי");
+      // נסיר כפילויות ונשמור רק 4 תשובות ייחודיות
+      const uniqueAnswers = [...new Set(baseAnswers)];
+      while (uniqueAnswers.length < 4) {
+        // אם עדיין אין 4, נוסיף תשובות חלופיות
+        const altNum = n + uniqueAnswers.length;
+        uniqueAnswers.push(altNum % 2 === 0 ? "זוגי" : "אי-זוגי");
+      }
+      const answers = uniqueAnswers.slice(0, 4);
+      // נשמור את התשובה הנכונה ברשימה
+      const correctIdx = answers.indexOf(correctAnswer);
+      if (correctIdx === -1) {
+        // אם התשובה הנכונה לא ברשימה, נחליף את הראשונה
+        answers[0] = correctAnswer;
+      } else if (correctIdx > 0) {
+        // נזיז את התשובה הנכונה למקום אקראי (לא בהכרח ראשון)
+        const randomPos = Math.floor(Math.random() * answers.length);
+        [answers[randomPos], answers[correctIdx]] = [answers[correctIdx], answers[randomPos]];
+      }
 
       return {
         question,
@@ -1362,7 +1384,140 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     // תשובות לא מספריות (כמו סימני השוואה) כבר טופלו ב-return מוקדם
   }
 
-  const allAnswers = [correctAnswer, ...Array.from(wrongAnswers)];
+  // וודא שיש תמיד 3 תשובות שגויות (4 כולל התשובה הנכונה)
+  // אם הלולאות הקודמות לא הצליחו ליצור 3 תשובות, נוסיף תשובות פשוטות
+  if (wrongAnswers.size < 3) {
+    if (isNumericAnswer && typeof correctAnswer === "number") {
+      // יצירת תשובות שגויות פשוטות למספרים
+      const attempts = [
+        correctAnswer + 1,
+        correctAnswer - 1,
+        correctAnswer + 2,
+        correctAnswer - 2,
+        correctAnswer + Math.max(1, Math.round(Math.abs(correctAnswer) * 0.1)),
+        correctAnswer - Math.max(1, Math.round(Math.abs(correctAnswer) * 0.1)),
+        correctAnswer * 2,
+        correctAnswer + 5,
+        correctAnswer - 5,
+      ];
+      
+      for (const attempt of attempts) {
+        if (wrongAnswers.size >= 3) break;
+        if (
+          attempt !== correctAnswer &&
+          !wrongAnswers.has(attempt) &&
+          attempt >= -200 &&
+          attempt <= 5000 &&
+          !Number.isNaN(attempt)
+        ) {
+          wrongAnswers.add(attempt);
+        }
+      }
+    } else if (correctIsFraction) {
+      const [cnRaw, cdRaw] = String(correctAnswer).split("/");
+      const cn = Number(cnRaw);
+      const cd = Number(cdRaw) || 1;
+      
+      // יצירת תשובות שגויות פשוטות לשברים
+      const attempts = [
+        `${cn + 1}/${cd}`,
+        `${Math.max(1, cn - 1)}/${cd}`,
+        `${cn}/${cd + 1}`,
+        `${cn + 2}/${cd}`,
+        `${cn}/${Math.max(1, cd - 1)}`,
+      ];
+      
+      for (const attempt of attempts) {
+        if (wrongAnswers.size >= 3) break;
+        if (attempt !== correctAnswer && !wrongAnswers.has(attempt)) {
+          wrongAnswers.add(attempt);
+        }
+      }
+    } else if (isDecimalsOp) {
+      const correctNum = Number(correctAnswer);
+      const places = params?.places != null ? Math.max(1, Math.min(3, params.places)) : 1;
+      const fmt = (x) => x.toFixed(places);
+      
+      // יצירת תשובות שגויות פשוטות לעשרוניים
+      const attempts = [
+        fmt(correctNum + 0.1),
+        fmt(correctNum - 0.1),
+        fmt(correctNum + 0.2),
+        fmt(correctNum - 0.2),
+        fmt(correctNum * 1.1),
+        fmt(correctNum * 0.9),
+      ];
+      
+      for (const attempt of attempts) {
+        if (wrongAnswers.size >= 3) break;
+        if (attempt !== correctAnswer && !wrongAnswers.has(attempt)) {
+          wrongAnswers.add(attempt);
+        }
+      }
+    } else if (typeof correctAnswer === "number") {
+      // למקרים אחרים עם מספרים
+      const attempts = [
+        correctAnswer + 1,
+        correctAnswer - 1,
+        correctAnswer + 2,
+        correctAnswer - 2,
+        correctAnswer * 2,
+      ];
+      
+      for (const attempt of attempts) {
+        if (wrongAnswers.size >= 3) break;
+        if (attempt !== correctAnswer && !wrongAnswers.has(attempt)) {
+          wrongAnswers.add(attempt);
+        }
+      }
+    }
+  }
+
+  // וודא שיש בדיוק 3 תשובות שגויות (אם עדיין לא, נוסיף תשובות ברירת מחדל)
+  const wrongAnswersArray = Array.from(wrongAnswers);
+  while (wrongAnswersArray.length < 3 && typeof correctAnswer === "number") {
+    const fallback = correctAnswer + wrongAnswersArray.length + 10;
+    if (fallback !== correctAnswer && !wrongAnswersArray.includes(fallback)) {
+      wrongAnswersArray.push(fallback);
+    } else {
+      // ננסה ערכים אחרים
+      const altFallback = correctAnswer - (wrongAnswersArray.length + 10);
+      if (altFallback !== correctAnswer && !wrongAnswersArray.includes(altFallback)) {
+        wrongAnswersArray.push(altFallback);
+      } else {
+        break; // הגנה מפני לולאה אינסופית
+      }
+    }
+  }
+  
+  // וודא שיש בדיוק 4 תשובות (1 נכונה + 3 שגויות)
+  const allAnswers = [correctAnswer, ...wrongAnswersArray.slice(0, 3)];
+  
+  // אם עדיין אין 4 תשובות, נוסיף תשובות ברירת מחדל
+  while (allAnswers.length < 4) {
+    if (typeof correctAnswer === "number") {
+      const defaultWrong = correctAnswer + allAnswers.length * 5;
+      if (defaultWrong !== correctAnswer && !allAnswers.includes(defaultWrong)) {
+        allAnswers.push(defaultWrong);
+      } else {
+        break; // הגנה מפני לולאה אינסופית
+      }
+    } else {
+      // למקרים לא מספריים, נסיים כאן
+      break;
+    }
+  }
+  
+  // וודא שיש בדיוק 4 תשובות לפני ערבוב
+  if (allAnswers.length !== 4) {
+    console.warn(`Expected 4 answers but got ${allAnswers.length} for question: ${question}`);
+    // אם יש פחות מ-4, נמלא עם תשובות ברירת מחדל
+    while (allAnswers.length < 4 && typeof correctAnswer === "number") {
+      allAnswers.push(correctAnswer + allAnswers.length * 10);
+    }
+  }
+  
+  // ערבוב התשובות
   for (let i = allAnswers.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
@@ -2824,7 +2979,7 @@ export default function MathMaster() {
     setDailyChallenge((prev) => {
       if (prev.date !== today) {
         return { date: today, bestScore: 0, questions: 0 };
-      }
+    }
       return prev;
     });
   }, []); // רק פעם אחת בטעינה
@@ -2868,13 +3023,13 @@ export default function MathMaster() {
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         const rootH = window.innerHeight; // Use innerHeight instead of visualViewport
-        const headH = headerRef.current?.offsetHeight || 0;
-        document.documentElement.style.setProperty("--head-h", headH + "px");
+      const headH = headerRef.current?.offsetHeight || 0;
+      document.documentElement.style.setProperty("--head-h", headH + "px");
 
-        const controlsH = controlsRef.current?.offsetHeight || 40;
+      const controlsH = controlsRef.current?.offsetHeight || 40;
         const used = headH + controlsH + 120 + 40;
-        const freeH = Math.max(300, rootH - used);
-        document.documentElement.style.setProperty("--game-h", freeH + "px");
+      const freeH = Math.max(300, rootH - used);
+      document.documentElement.style.setProperty("--game-h", freeH + "px");
       }, 150); // Debounce 150ms
     };
     
