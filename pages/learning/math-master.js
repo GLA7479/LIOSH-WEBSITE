@@ -3084,8 +3084,11 @@ export default function MathMaster() {
                             onClick={(e) => e.stopPropagation()}
                           >
                             <div className="flex items-center justify-between mb-2">
-                              <h3 className="text-lg font-bold text-emerald-100">
-                                איך פותרים את התרגיל?
+                              <h3
+                                className="text-lg font-bold text-emerald-100"
+                                dir="rtl"
+                              >
+                                {"\u200Fאיך פותרים את התרגיל?"}
                               </h3>
                               <button
                                 onClick={() => setShowSolution(false)}
@@ -3096,7 +3099,10 @@ export default function MathMaster() {
                             </div>
                             <div className="mb-2 text-sm text-emerald-50" dir="rtl">
                               {/* מציגים שוב את התרגיל */}
-                              <div className="mb-2 font-semibold text-base text-center text-white">
+                              <div
+                                className="mb-2 font-semibold text-base text-center text-white"
+                                dir="ltr"
+                              >
                                 {currentQuestion.question}
                               </div>
                               {/* כאן הצעדים */}
@@ -3114,8 +3120,9 @@ export default function MathMaster() {
                               <button
                                 onClick={() => setShowSolution(false)}
                                 className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                                dir="rtl"
                               >
-                                סגור
+                                {"\u200Fסגור"}
                               </button>
                             </div>
                           </div>
