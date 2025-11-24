@@ -892,6 +892,7 @@ export default function EnglishMaster() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardLevel, setLeaderboardLevel] = useState("easy");
   const [leaderboardData, setLeaderboardData] = useState([]);
+  const [showHowTo, setShowHowTo] = useState(false);
   const [playerName, setPlayerName] = useState(() => {
     if (typeof window !== "undefined") {
       try {
@@ -1714,6 +1715,16 @@ export default function EnglishMaster() {
                 </div>
               </div>
 
+              {/* כפתור "איך לומדים אנגלית כאן?" */}
+              <div className="mb-2 w-full max-w-md flex justify-center">
+                <button
+                  onClick={() => setShowHowTo(true)}
+                  className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
+                >
+                  ❓ איך לומדים אנגלית כאן?
+                </button>
+              </div>
+
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
                 <button
                   onClick={startGame}
@@ -1796,21 +1807,11 @@ export default function EnglishMaster() {
                   {mode === "learning" && currentQuestion && (
                     <>
                       <button
-                        onClick={() => setShowSolution((prev) => !prev)}
+                        onClick={() => setShowSolution(true)}
                         className="mb-2 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
                       >
                         📘 הסבר מלא
                       </button>
-
-                      {showSolution && (
-                        <div className="mb-3 px-4 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/40 text-emerald-100 text-sm space-y-1 max-w-md">
-                          {getSolutionSteps(
-                            currentQuestion,
-                            currentQuestion.topic,
-                            grade
-                          )}
-                        </div>
-                      )}
                     </>
                   )}
 
@@ -2108,6 +2109,100 @@ export default function EnglishMaster() {
                     className="flex-1 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
                   >
                     שמור
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showHowTo && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[180] p-4"
+              onClick={() => setShowHowTo(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-emerald-400/60 rounded-2xl p-4 max-w-md w-full text-sm text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 className="text-xl font-extrabold mb-2 text-center">
+                  📘 איך לומדים אנגלית כאן?
+                </h2>
+
+                <p className="text-white/80 text-xs mb-3 text-center">
+                  המטרה היא לתרגל אנגלית בצורה משחקית, עם התאמה לכיתה, נושא ורמת קושי.
+                </p>
+
+                <ul className="list-disc pr-4 space-y-1 text-[13px] text-white/90">
+                  <li>בחר כיתה, רמת קושי ונושא (אוצר מילים, דקדוק, תרגום, כתיבה ועוד).</li>
+                  <li>בחר מצב משחק: למידה, אתגר עם טיימר וחיים, מרוץ מהירות או מרתון.</li>
+                  <li>קרא היטב את השאלה – לפעמים צריך לבחור תשובה, ולפעמים לכתוב באנגלית.</li>
+                  <li>לחץ על 💡 Hint כדי לקבל רמז, ועל "📘 הסבר מלא" כדי לראות פתרון צעד־אחר־צעד.</li>
+                  <li>ניקוד גבוה, רצף תשובות נכון, כוכבים ו־Badges עוזרים לך לעלות רמה כשחקן.</li>
+                </ul>
+
+                <div className="mt-4 flex justify-center">
+                  <button
+                    onClick={() => setShowHowTo(false)}
+                    className="px-5 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                  >
+                    סגור
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* חלון הסבר מלא - Modal גדול ומרכזי */}
+          {showSolution && currentQuestion && (
+            <div
+              className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+              onClick={() => setShowSolution(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3
+                    className="text-lg font-bold text-emerald-100"
+                    dir="rtl"
+                  >
+                    {"\u200Fאיך פותרים את השאלה?"}
+                  </h3>
+                  <button
+                    onClick={() => setShowSolution(false)}
+                    className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                <div className="mb-2 text-sm text-emerald-50" dir="rtl">
+                  {/* מציגים שוב את השאלה */}
+                  <p
+                    className="text-base font-bold text-white mb-3 text-center"
+                    style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                  >
+                    {currentQuestion.stem || currentQuestion.question}
+                  </p>
+                  {/* כאן הצעדים */}
+                  <div className="space-y-1 text-sm" style={{ direction: "rtl" }}>
+                    {getSolutionSteps(
+                      currentQuestion,
+                      currentQuestion.topic,
+                      grade
+                    ).map((step, idx) => (
+                      <div key={idx}>{step}</div>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-3 flex justify-center">
+                  <button
+                    onClick={() => setShowSolution(false)}
+                    className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                    dir="rtl"
+                  >
+                    {"\u200Fסגור"}
                   </button>
                 </div>
               </div>
