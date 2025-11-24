@@ -764,7 +764,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
         op: "div",
         grade: gradeKey,
       };
-    } else {
+      } else {
       // חסר המחלק: dividend ÷ __ = quotient
       correctAnswer = divisor;
       const exerciseText = `${dividend} ÷ ${BLANK} = ${quotient}`;
@@ -924,7 +924,7 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       correctAnswer = round(a + b, places);
       question = `${a.toFixed(places)} + ${b.toFixed(places)} = ${BLANK}`;
       params = { kind: "dec_add", a, b, places };
-    } else {
+      } else {
       const big = Math.max(a, b);
       const small = Math.min(a, b);
       correctAnswer = round(big - small, places);
@@ -4182,11 +4182,11 @@ export default function MathMaster() {
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">כוכבים</div>
               <div className="text-sm font-bold text-yellow-400 leading-tight">⭐{stars}</div>
-            </div>
+              </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">רמה</div>
               <div className="text-sm font-bold text-purple-400 leading-tight">Lv.{playerLevel}</div>
-            </div>
+              </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">✅</div>
               <div className="text-sm font-bold text-green-400 leading-tight">{correct}</div>
@@ -4283,6 +4283,8 @@ export default function MathMaster() {
                   placeholder="שם שחקן"
                   className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-sm font-bold placeholder:text-white/40 flex-1 min-w-[120px]"
                   maxLength={15}
+                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
+                  style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
                 />
                 <select
                   value={gradeNumber}
