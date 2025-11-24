@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef, useMemo } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -1300,7 +1300,9 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
     const correctNum = Number(correctAnswer);
     const fmt = (x) => x.toFixed(places);
 
-    while (wrongAnswers.size < 3) {
+    let guard = 0;
+    while (wrongAnswers.size < 3 && guard < 50) {
+      guard++;
       const deltaBase = Math.max(0.1, Math.abs(correctNum) * 0.1);
       const sign = Math.random() < 0.5 ? 1 : -1;
       const step = Math.random() < 0.5 ? 0.1 : 0.2;
@@ -1310,12 +1312,17 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
         wrongAnswers.add(wrong);
       }
     }
+    if (guard >= 50) {
+      console.warn("Failed to generate enough wrong answers for decimals");
+    }
   } else if (correctIsFraction) {
     const [cnRaw, cdRaw] = String(correctAnswer).split("/");
     const cn = Number(cnRaw);
     const cd = Number(cdRaw) || 1;
 
-    while (wrongAnswers.size < 3) {
+    let guard = 0;
+    while (wrongAnswers.size < 3 && guard < 50) {
+      guard++;
       const delta = randInt(1, 3);
       const sign = Math.random() > 0.5 ? 1 : -1;
       const nWrong = cn + sign * delta;
@@ -1324,8 +1331,13 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
         wrongAnswers.add(wrong);
       }
     }
+    if (guard >= 50) {
+      console.warn("Failed to generate enough wrong answers for fractions");
+    }
   } else if (isNumericAnswer) {
-    while (wrongAnswers.size < 3) {
+    let guard = 0;
+    while (wrongAnswers.size < 3 && guard < 50) {
+      guard++;
       const baseDelta = Math.max(
         1,
         Math.round(Math.abs(correctAnswer) * 0.15)
@@ -1342,6 +1354,9 @@ function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
       ) {
         wrongAnswers.add(wrong);
       }
+    }
+    if (guard >= 50) {
+      console.warn("Failed to generate enough wrong answers for numeric");
     }
   } else {
     // תשובות לא מספריות (כמו סימני השוואה) כבר טופלו ב-return מוקדם
@@ -2206,6 +2221,24 @@ function buildStepExplanation(question) {
   let vertical = "";
   const steps = [];
 
+  // נריץ את ההסבר על פעולה "אפקטיבית" – למשל:
+  // 53 + (-3) → פעולה אפקטיבית: חיסור 53 - 3
+  let effectiveOp = op;
+  let aEff = a;
+  let bEff = b;
+
+  // אם זה חיבור עם מספר שני שלילי – נמיר לחיסור רגיל
+  if (op === "addition" && typeof b === "number" && b < 0) {
+    effectiveOp = "subtraction";
+    bEff = Math.abs(b);
+
+    steps.push(
+      `0. שמים לב שתרגיל החיבור ${LTR(
+        `${a} + (${b})`
+      )} הוא בעצם כמו חיסור: ${LTR(`${a} - ${Math.abs(b)}`)}.`
+    );
+  }
+
   // טיפול בתרגילי השלמה בחיבור - הופכים לחיסור
   if (
     op === "addition" &&
@@ -2298,14 +2331,14 @@ function buildStepExplanation(question) {
   }
 
   // תצוגת תרגיל בסיסית (אופקית) – רק חשבון
-  if (a != null && b != null) {
+  if (aEff != null && bEff != null && typeof aEff === "number" && typeof bEff === "number") {
     let symbol = "";
-    if (op === "addition") symbol = "+";
-    else if (op === "subtraction") symbol = "−";
-    else if (op === "multiplication") symbol = "×";
-    else if (op === "division") symbol = "÷";
+    if (effectiveOp === "addition") symbol = "+";
+    else if (effectiveOp === "subtraction") symbol = "−";
+    else if (effectiveOp === "multiplication") symbol = "×";
+    else if (effectiveOp === "division") symbol = "÷";
 
-    exercise = LTR(`${a} ${symbol} ${b} = ${BLANK}`);
+    exercise = LTR(`${aEff} ${symbol} ${bEff} = ${BLANK}`);
   } else {
     const raw = question.params?.exerciseText || question.question || "";
     exercise = raw ? LTR(raw) : "";
@@ -2314,17 +2347,17 @@ function buildStepExplanation(question) {
   // טיפוסי הסבר לפי פעולה
 
   // חיבור
-  if (op === "addition" && typeof a === "number" && typeof b === "number") {
-    vertical = buildVerticalOperation(a, b, "+");
-    const aStr = String(a);
-    const bStr = String(b);
+  if (effectiveOp === "addition" && typeof aEff === "number" && typeof bEff === "number") {
+    vertical = buildVerticalOperation(aEff, bEff, "+");
+    const aStr = String(aEff);
+    const bStr = String(bEff);
     const maxLen = Math.max(aStr.length, bStr.length);
     const pa = aStr.padStart(maxLen, "0");
     const pb = bStr.padStart(maxLen, "0");
 
     steps.push(
       `1. כותבים את המספרים אחד מעל השני, כך שסַפְרות היחידות נמצאות באותה עמודה: ${LTR(
-        `${a}\n+ ${b}`
+        `${aEff}\n+ ${bEff}`
       )}.`
     );
 
@@ -2376,17 +2409,17 @@ function buildStepExplanation(question) {
   }
 
   // חיסור
-  if (op === "subtraction" && typeof a === "number" && typeof b === "number") {
-    vertical = buildVerticalOperation(a, b, "-");
-    const aStr = String(a);
-    const bStr = String(b);
+  if (effectiveOp === "subtraction" && typeof aEff === "number" && typeof bEff === "number") {
+    vertical = buildVerticalOperation(aEff, bEff, "-");
+    const aStr = String(aEff);
+    const bStr = String(bEff);
     const maxLen = Math.max(aStr.length, bStr.length);
     const pa = aStr.padStart(maxLen, "0");
     const pb = bStr.padStart(maxLen, "0");
 
     steps.push(
       `1. כותבים את המספרים אחד מעל השני, כך שסַפְרות היחידות, העשרות וכו' נמצאות באותו טור: ${LTR(
-        `${a}\n- ${b}`
+        `${aEff}\n- ${bEff}`
       )}.`
     );
 
@@ -2441,24 +2474,24 @@ function buildStepExplanation(question) {
 
   // כפל
   if (
-    op === "multiplication" &&
-    typeof a === "number" &&
-    typeof b === "number"
+    effectiveOp === "multiplication" &&
+    typeof aEff === "number" &&
+    typeof bEff === "number"
   ) {
-    vertical = LTR(`${a}\n× ${b}`);
+    vertical = LTR(`${aEff}\n× ${bEff}`);
 
     steps.push(
       "1. מבינים שהכפל הוא חיבור חוזר: למשל 3 × 4 זה כמו 4 + 4 + 4."
     );
     steps.push(
       `2. במקרה שלנו מחשבים: ${LTR(
-        `${a} × ${b}`
-      )}. אפשר לחשב כ-${a} פעמים המספר ${b} או ${b} פעמים המספר ${a}.`
+        `${aEff} × ${bEff}`
+      )}. אפשר לחשב כ-${aEff} פעמים המספר ${bEff} או ${bEff} פעמים המספר ${aEff}.`
     );
 
-    if (a <= 12 && b <= 12) {
-      const smaller = Math.min(a, b);
-      const bigger = Math.max(a, b);
+    if (aEff <= 12 && bEff <= 12) {
+      const smaller = Math.min(aEff, bEff);
+      const bigger = Math.max(aEff, bEff);
       steps.push(
         `3. למשל: ${LTR(
           `${smaller} × ${bigger} = ${Array(smaller)
@@ -2473,7 +2506,7 @@ function buildStepExplanation(question) {
     }
 
     if (typeof answer === "number") {
-      steps.push(`4. לכן ${LTR(`${a} × ${b} = ${answer}`)}.`);
+      steps.push(`4. לכן ${LTR(`${aEff} × ${bEff} = ${answer}`)}.`);
     }
 
     return {
@@ -2484,28 +2517,28 @@ function buildStepExplanation(question) {
   }
 
   // חילוק
-  if (op === "division" && typeof a === "number" && typeof b === "number") {
+  if (effectiveOp === "division" && typeof aEff === "number" && typeof bEff === "number") {
     steps.push(
-      `1. חלוקה היא בעצם הפוך מהכפל: כמה פעמים המספר ${b} נכנס ב-${a}?`
+      `1. חלוקה היא בעצם הפוך מהכפל: כמה פעמים המספר ${bEff} נכנס ב-${aEff}?`
     );
     if (typeof answer === "number") {
       const q = Math.floor(answer);
-      const r = a - q * b;
+      const r = aEff - q * bEff;
       steps.push(
-        `2. בודקים: ${LTR(`${b} × ${q} = ${b * q}`)}. זה נותן לנו ${
-          b * q
-        } מתוך ${a}.`
+        `2. בודקים: ${LTR(`${bEff} × ${q} = ${bEff * q}`)}. זה נותן לנו ${
+          bEff * q
+        } מתוך ${aEff}.`
       );
 
       if (r > 0) {
         steps.push(
           `3. נשאר שארית: ${LTR(
-            `${a} - ${b * q} = ${r}`
+            `${aEff} - ${bEff * q} = ${r}`
           )}. כלומר התשובה היא ${q} עם שארית ${r}.`
         );
       } else {
         steps.push(
-          `3. אין שארית ולכן ${a} מתחלק ב-${b} בדיוק ${q} פעמים (ללא שארית).`
+          `3. אין שארית ולכן ${aEff} מתחלק ב-${bEff} בדיוק ${q} פעמים (ללא שארית).`
         );
       }
     }
@@ -2635,6 +2668,12 @@ export default function MathMaster() {
 
   // הסבר מפורט לשאלה
   const [showSolution, setShowSolution] = useState(false);
+  
+  // Memoize explanation to avoid recalculating on every render
+  const stepExplanation = useMemo(
+    () => showSolution && currentQuestion ? buildStepExplanation(currentQuestion) : null,
+    [showSolution, currentQuestion]
+  );
 
   // הסבר לטעות אחרונה
   const [errorExplanation, setErrorExplanation] = useState("");
@@ -2819,31 +2858,36 @@ export default function MathMaster() {
     }
   }, [showLeaderboard, leaderboardLevel]);
 
-  // Dynamic layout calculation - stable, no state dependencies
+  // Dynamic layout calculation - optimized to prevent performance issues
   useEffect(() => {
     if (!wrapRef.current || !mounted) return;
+    
+    let resizeTimer = null;
     const calc = () => {
-      const rootH = window.visualViewport?.height ?? window.innerHeight;
-      const headH = headerRef.current?.offsetHeight || 0;
-      document.documentElement.style.setProperty("--head-h", headH + "px");
+      // Debounce resize events to prevent excessive recalculations
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const rootH = window.innerHeight; // Use innerHeight instead of visualViewport
+        const headH = headerRef.current?.offsetHeight || 0;
+        document.documentElement.style.setProperty("--head-h", headH + "px");
 
-      const controlsH = controlsRef.current?.offsetHeight || 40;
-      // Use more conservative calculation to ensure content doesn't get cut
-      const used =
-        headH +
-        controlsH +
-        120 + // Title, score, timer, spacing
-        40; // Safe bottom padding (includes safe area)
-      const freeH = Math.max(300, rootH - used);
-      document.documentElement.style.setProperty("--game-h", freeH + "px");
+        const controlsH = controlsRef.current?.offsetHeight || 40;
+        const used = headH + controlsH + 120 + 40;
+        const freeH = Math.max(300, rootH - used);
+        document.documentElement.style.setProperty("--game-h", freeH + "px");
+      }, 150); // Debounce 150ms
     };
+    
+    // Initial calculation
     const timer = setTimeout(calc, 100);
-    window.addEventListener("resize", calc);
-    window.visualViewport?.addEventListener("resize", calc);
+    
+    // Only listen to window resize, not visualViewport (causes too many events)
+    window.addEventListener("resize", calc, { passive: true });
+    
     return () => {
       clearTimeout(timer);
+      if (resizeTimer) clearTimeout(resizeTimer);
       window.removeEventListener("resize", calc);
-      window.visualViewport?.removeEventListener("resize", calc);
     };
   }, [mounted]);
 
@@ -2997,6 +3041,7 @@ export default function MathMaster() {
 
     // עדכון state רק פעם אחת אחרי הלולאה
     if (attempts >= maxAttempts) {
+      console.warn(`Too many attempts (${attempts}) to generate new question, resetting recent questions`);
       // איפוס ההיסטוריה כדי לאפשר שאלות חוזרות
       setRecentQuestions(new Set());
     } else {
@@ -3994,8 +4039,8 @@ export default function MathMaster() {
                       )}
 
                       {/* חלון הסבר מלא - Modal גדול ומרכזי - רק במצב למידה */}
-                      {mode === "learning" && showSolution && currentQuestion && (() => {
-                        const info = buildStepExplanation(currentQuestion);
+                      {mode === "learning" && showSolution && currentQuestion && stepExplanation && (() => {
+                        const info = stepExplanation;
                         if (!info) return null;
 
                         return (
