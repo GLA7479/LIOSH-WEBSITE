@@ -22,13 +22,27 @@ export function getLevelConfig(grade, levelKey) {
   }
 
   // מוסיפים שדות נוספים שנדרשים
-  return {
+  // אם אין כפל/חילוק/שברים בכיתה - לא נוסיף אותם
+  const result = {
     ...levelData,
     name: levelData.name || LEVELS[levelKey]?.name || "קל",
     allowNegatives: gradeCfgGrades.allowNegatives && levelKey === "hard",
     allowTwoStep: levelKey !== "easy" && safeGrade >= 5,
     allowFractions: gradeCfgGrades.allowFractions,
   };
+  
+  // אם אין כפל/חילוק/שברים בכיתה - נסיר אותם מהתוצאה
+  if (!gradeCfgGrades.operations.includes("multiplication")) {
+    delete result.multiplication;
+  }
+  if (!gradeCfgGrades.operations.includes("division")) {
+    delete result.division;
+  }
+  if (!gradeCfgGrades.allowFractions) {
+    delete result.fractions;
+  }
+  
+  return result;
 }
 
 export function getLevelForGrade(levelKey, gradeKey) {

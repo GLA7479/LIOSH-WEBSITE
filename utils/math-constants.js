@@ -36,23 +36,17 @@ export const GRADE_LEVELS = {
       easy: {
         addition: { max: 10 },
         subtraction: { min: 0, max: 10 },
-        multiplication: { max: 5 },
-        division: { max: 20, maxDivisor: 5 },
-        fractions: { maxDen: 2 },
+        // כיתה א' - אין כפל, חילוק או שברים
       },
       medium: {
         addition: { max: 20 },
         subtraction: { min: 0, max: 20 },
-        multiplication: { max: 5 },
-        division: { max: 20, maxDivisor: 5 },
-        fractions: { maxDen: 2 },
+        // כיתה א' - אין כפל, חילוק או שברים
       },
       hard: {
         addition: { max: 20 },
         subtraction: { min: 0, max: 20 },
-        multiplication: { max: 5 },
-        division: { max: 20, maxDivisor: 5 },
-        fractions: { maxDen: 2 },
+        // כיתה א' - אין כפל, חילוק או שברים
       },
     },
   },
@@ -62,23 +56,17 @@ export const GRADE_LEVELS = {
       easy: {
         addition: { max: 50 },
         subtraction: { min: 0, max: 50 },
-        multiplication: { max: 5 },
-        division: { max: 50, maxDivisor: 5 },
-        fractions: { maxDen: 2 },
+        // כיתה ב' - אין כפל, חילוק או שברים
       },
       medium: {
         addition: { max: 100 },
         subtraction: { min: 0, max: 100 },
-        multiplication: { max: 10 },
-        division: { max: 100, maxDivisor: 10 },
-        fractions: { maxDen: 3 },
+        // כיתה ב' - אין כפל, חילוק או שברים
       },
       hard: {
         addition: { max: 100 },
         subtraction: { min: 0, max: 100 },
-        multiplication: { max: 10 },
-        division: { max: 100, maxDivisor: 10 },
-        fractions: { maxDen: 4 },
+        // כיתה ב' - אין כפל, חילוק או שברים
       },
     },
   },
