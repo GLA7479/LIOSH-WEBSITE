@@ -993,6 +993,13 @@ export default function MathMaster() {
               >
                 BACK
               </button>
+              <button
+                onClick={() => router.push("/learning/curriculum")}
+                className="min-w-[100px] px-3 py-1 rounded-lg text-sm font-bold bg-emerald-500/20 border border-emerald-400/30 hover:bg-emerald-500/30 text-emerald-200"
+                dir="rtl"
+              >
+                📋 תוכנית לימודים
+              </button>
             </div>
             <div className="absolute right-2 top-2 pointer-events-auto">
               <span className="text-xs uppercase tracking-[0.3em] text-white/60">
