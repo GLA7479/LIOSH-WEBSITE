@@ -966,6 +966,7 @@ export default function MathMaster() {
         ref={wrapRef}
         className="relative w-full overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928] game-page-mobile"
         style={{ height: "100vh", height: "100dvh" }}
+        dir="rtl"
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
@@ -986,25 +987,21 @@ export default function MathMaster() {
             className="relative px-2 py-3"
             style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 10px)" }}
           >
-            <div className="absolute left-2 top-2 flex gap-2 pointer-events-auto">
+            <div className="absolute right-2 top-2 flex gap-2 pointer-events-auto">
+              <button
+                onClick={() => router.push("/learning/curriculum")}
+                className="min-w-[100px] px-3 py-1 rounded-lg text-sm font-bold bg-emerald-500/20 border border-emerald-400/30 hover:bg-emerald-500/30 text-emerald-200"
+              >
+                📋 תוכנית לימודים
+              </button>
+            </div>
+            <div className="absolute left-2 top-2 pointer-events-auto">
               <button
                 onClick={backSafe}
                 className="min-w-[60px] px-3 py-1 rounded-lg text-sm font-bold bg-white/5 border border-white/10 hover:bg-white/10"
               >
                 BACK
               </button>
-              <button
-                onClick={() => router.push("/learning/curriculum")}
-                className="min-w-[100px] px-3 py-1 rounded-lg text-sm font-bold bg-emerald-500/20 border border-emerald-400/30 hover:bg-emerald-500/30 text-emerald-200"
-                dir="rtl"
-              >
-                📋 תוכנית לימודים
-              </button>
-            </div>
-            <div className="absolute right-2 top-2 pointer-events-auto">
-              <span className="text-xs uppercase tracking-[0.3em] text-white/60">
-                Local
-              </span>
             </div>
           </div>
         </div>
@@ -1087,8 +1084,8 @@ export default function MathMaster() {
           </div>
 
           {/* בחירת מצב (Learning / Challenge) */}
-          <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
-            {Object.keys(MODES).map((m) => (
+          <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md" dir="rtl">
+            {["learning", "challenge", "speed", "marathon", "practice"].map((m) => (
               <button
                 key={m}
                 onClick={() => {
@@ -1109,7 +1106,7 @@ export default function MathMaster() {
 
           {/* הודעות מיוחדות */}
           {showBadge && (
-            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none">
+            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none" dir="rtl">
               <div className="bg-gradient-to-br from-yellow-400 to-orange-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-bounce">
                 <div className="text-4xl mb-2">🎉</div>
                 <div className="text-2xl font-bold">תג חדש!</div>
@@ -1119,7 +1116,7 @@ export default function MathMaster() {
           )}
           
           {showLevelUp && (
-            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none">
+            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none" dir="rtl">
               <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-pulse">
                 <div className="text-4xl mb-2">🌟</div>
                 <div className="text-2xl font-bold">עלית רמה!</div>
@@ -1130,57 +1127,20 @@ export default function MathMaster() {
 
           {!gameActive ? (
             <>
-              <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
-                <input
-                  type="text"
-                  value={playerName}
-                  onChange={(e) => {
-                    const newName = e.target.value;
-                    setPlayerName(newName);
-                    if (typeof window !== "undefined") {
-                      try {
-                        localStorage.setItem("mleo_player_name", newName);
-                      } catch {}
-                    }
-                  }}
-                  placeholder="שם שחקן"
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-sm font-bold placeholder:text-white/40 flex-1 min-w-[120px]"
-                  maxLength={15}
-                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
-                  style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
-                />
-                <select
-                  value={gradeNumber}
-                  onChange={(e) => {
-                    const newGradeNum = Number(e.target.value);
-                    setGradeNumber(newGradeNum);
-                    // עדכן גם את grade לפי gradeNumber - 6 כיתות נפרדות
-                    setGrade(`g${newGradeNum}`);
-                    setGameActive(false);
-                  }}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
-                >
-                  {[1, 2, 3, 4, 5, 6].map((g) => (
-                    <option key={g} value={g}>
-                      {`כיתה ${["א","ב","ג","ד","ה","ו"][g - 1]}`}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={level}
-                  onChange={(e) => {
-                    setLevel(e.target.value);
-                    setGameActive(false);
-                  }}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
-                >
-                  {Object.keys(LEVELS).map((lvl) => (
-                    <option key={lvl} value={lvl}>
-                      {LEVELS[lvl].name}
-                    </option>
-                  ))}
-                </select>
+              <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md" dir="rtl">
                 <div className="flex items-center gap-1">
+                  {/* כפתור לפתיחת modal אם operation הוא mixed */}
+                  {operation === "mixed" && (
+                    <button
+                      onClick={() => {
+                        setShowMixedSelector(true);
+                      }}
+                      className="h-9 w-9 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-xs font-bold flex items-center justify-center"
+                      title="ערוך פעולות למיקס"
+                    >
+                      ⚙️
+                    </button>
+                  )}
                   <select
                     ref={operationSelectRef}
                     value={operation}
@@ -1207,19 +1167,56 @@ export default function MathMaster() {
                       </option>
                     ))}
                   </select>
-                  {/* כפתור לפתיחת modal אם operation הוא mixed */}
-                  {operation === "mixed" && (
-                    <button
-                      onClick={() => {
-                        setShowMixedSelector(true);
-                      }}
-                      className="h-9 w-9 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-xs font-bold flex items-center justify-center"
-                      title="ערוך פעולות למיקס"
-                    >
-                      ⚙️
-                    </button>
-                  )}
                 </div>
+                <select
+                  value={level}
+                  onChange={(e) => {
+                    setLevel(e.target.value);
+                    setGameActive(false);
+                  }}
+                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
+                >
+                  {Object.keys(LEVELS).map((lvl) => (
+                    <option key={lvl} value={lvl}>
+                      {LEVELS[lvl].name}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={gradeNumber}
+                  onChange={(e) => {
+                    const newGradeNum = Number(e.target.value);
+                    setGradeNumber(newGradeNum);
+                    // עדכן גם את grade לפי gradeNumber - 6 כיתות נפרדות
+                    setGrade(`g${newGradeNum}`);
+                    setGameActive(false);
+                  }}
+                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
+                >
+                  {[1, 2, 3, 4, 5, 6].map((g) => (
+                    <option key={g} value={g}>
+                      {`כיתה ${["א","ב","ג","ד","ה","ו"][g - 1]}`}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  value={playerName}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    setPlayerName(newName);
+                    if (typeof window !== "undefined") {
+                      try {
+                        localStorage.setItem("mleo_player_name", newName);
+                      } catch {}
+                    }
+                  }}
+                  placeholder="שם שחקן"
+                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-sm font-bold placeholder:text-white/40 flex-1 min-w-[120px]"
+                  maxLength={15}
+                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
+                  style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
+                />
               </div>
 
               {/* בחירת נושא תרגול ממוקד – רק במצב Practice */}
@@ -1590,13 +1587,7 @@ export default function MathMaster() {
                   {currentQuestion && (
                     <div className="mt-3 flex flex-col gap-2 w-full">
                       {/* כפתורי רמז/הסבר */}
-                      <div className="flex gap-2 justify-center flex-wrap">
-                        <button
-                          onClick={() => setShowHint((prev) => !prev)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white"
-                        >
-                          💡 רמז
-                        </button>
+                      <div className="flex gap-2 justify-center flex-wrap" dir="rtl">
                         {mode === "learning" && (
                           <button
                             onClick={() => setShowSolution((prev) => !prev)}
@@ -1605,6 +1596,12 @@ export default function MathMaster() {
                             📖 הסבר צעד־אחר־צעד
                           </button>
                         )}
+                        <button
+                          onClick={() => setShowHint((prev) => !prev)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white"
+                        >
+                          💡 רמז
+                        </button>
                   </div>
 
                   {/* כפתור חיבור לטבלת כפל/חילוק – רק במצב למידה */}
@@ -1750,9 +1747,8 @@ export default function MathMaster() {
                                   <button
                                     onClick={() => setShowSolution(false)}
                                     className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
-                                    dir="rtl"
                                   >
-                                    {"\u200Fסגור"}
+                                    סגור
                                   </button>
                                 </div>
                               </div>
@@ -1854,6 +1850,7 @@ export default function MathMaster() {
                             <div
                               className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
                               onClick={() => setShowSolution(false)}
+                              dir="rtl"
                             >
                               <div
                                 className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
@@ -1862,15 +1859,15 @@ export default function MathMaster() {
                               >
                                 {/* כותרת - קבועה */}
                                 <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
-                                  <h3 className="text-lg font-bold text-emerald-100" dir="rtl">
-                                    {"\u200Fאיך פותרים את התרגיל?"}
-                                  </h3>
                                   <button
                                     onClick={() => setShowSolution(false)}
                                     className="text-emerald-200 hover:text-white text-xl leading-none px-2"
                                   >
                                     ✖
                                   </button>
+                                  <h3 className="text-lg font-bold text-emerald-100">
+                                    {"\u200Fאיך פותרים את התרגיל?"}
+                                  </h3>
                                 </div>
                                 
                                 {/* תוכן - גלילה */}
@@ -1984,13 +1981,13 @@ export default function MathMaster() {
                                 {/* כפתורים ואינדיקטור - קבועים בתחתית */}
                                 <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
                                   {/* שליטה באנימציה */}
-                                  <div className="flex gap-2 justify-center items-center">
+                                  <div className="flex gap-2 justify-center items-center" dir="rtl">
                                     <button
-                                      onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
-                                      disabled={animationStep >= animationSteps.length - 1}
+                                      onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
+                                      disabled={animationStep === 0}
                                       className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
                                     >
-                                      הבא
+                                      קודם
                                     </button>
                                     <button
                                       onClick={() => setAutoPlay((p) => !p)}
@@ -1999,12 +1996,11 @@ export default function MathMaster() {
                                       {autoPlay ? "עצור" : "נגן"}
                                     </button>
                                     <button
-                                      onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
-                                      disabled={animationStep === 0}
+                                      onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
+                                      disabled={animationStep >= animationSteps.length - 1}
                                       className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
-                                      dir="rtl"
                                     >
-                                      {"\u200Fקודם"}
+                                      הבא
                                     </button>
                                   </div>
                                   
@@ -2023,6 +2019,7 @@ export default function MathMaster() {
                           <div
                             className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
                             onClick={() => setShowSolution(false)}
+                            dir="rtl"
                           >
                             <div
                               className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
@@ -2031,15 +2028,15 @@ export default function MathMaster() {
                             >
                               {/* כותרת - קבועה */}
                               <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
-                                <h3 className="text-lg font-bold text-emerald-100" dir="rtl">
-                                  {"\u200Fאיך פותרים את התרגיל?"}
-                                </h3>
                                 <button
                                   onClick={() => setShowSolution(false)}
                                   className="text-emerald-200 hover:text-white text-xl leading-none px-2"
                                 >
                                   ✖
                                 </button>
+                                <h3 className="text-lg font-bold text-emerald-100">
+                                  {"\u200Fאיך פותרים את התרגיל?"}
+                                </h3>
                               </div>
                               
                               {/* תוכן - גלילה */}
@@ -2061,13 +2058,13 @@ export default function MathMaster() {
                               {/* כפתורים ואינדיקטור - קבועים בתחתית */}
                               <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
                                 {/* שליטה באנימציה */}
-                                <div className="flex gap-2 justify-center items-center">
+                                <div className="flex gap-2 justify-center items-center" dir="rtl">
                                   <button
-                                    onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
-                                    disabled={animationStep >= animationSteps.length - 1}
+                                    onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
+                                    disabled={animationStep === 0}
                                     className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
                                   >
-                                    הבא
+                                    קודם
                                   </button>
                                   <button
                                     onClick={() => setAutoPlay((p) => !p)}
@@ -2076,12 +2073,11 @@ export default function MathMaster() {
                                     {autoPlay ? "עצור" : "נגן"}
                                   </button>
                                   <button
-                                    onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
-                                    disabled={animationStep === 0}
+                                    onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
+                                    disabled={animationStep >= animationSteps.length - 1}
                                     className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
-                                    dir="rtl"
                                   >
-                                    {"\u200Fקודם"}
+                                    הבא
                                   </button>
                                 </div>
                                 
@@ -2120,7 +2116,7 @@ export default function MathMaster() {
 
           {/* Multiplication Table Modal */}
           {showMultiplicationTable && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" dir="rtl">
               <div
                 className="absolute inset-0 bg-black/70 backdrop-blur-sm"
                 onClick={() => {
@@ -2136,23 +2132,7 @@ export default function MathMaster() {
               />
               <div className="relative w-full max-w-md max-h-[80svh] overflow-y-auto bg-gradient-to-b from-[#0a0f1d] to-[#141928] rounded-2xl border-2 border-white/20 shadow-2xl">
                 <div className="sticky top-0 bg-gradient-to-b from-[#0a0f1d] to-[#141928] border-b border-white/10 px-4 py-3 flex items-center justify-between z-10">
-                  <h2 className="text-xl font-bold text-white">
-                    📊 לוח הכפל
-                  </h2>
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => {
-                        setSelectedRow(null);
-                        setSelectedCol(null);
-                        setHighlightedAnswer(null);
-                        setSelectedResult(null);
-                        setSelectedDivisor(null);
-                        setSelectedCell(null);
-                      }}
-                      className="px-2 py-1 rounded text-xs font-bold bg-white/10 hover:bg-white/20 text-white"
-                    >
-                      איפוס
-                    </button>
                     <button
                       onClick={() => {
                         setShowMultiplicationTable(false);
@@ -2168,14 +2148,8 @@ export default function MathMaster() {
                     >
                       ×
                     </button>
-                  </div>
-                </div>
-                <div className="p-4">
-                  {/* Mode toggle */}
-                  <div className="mb-4 flex gap-2 justify-center">
                     <button
                       onClick={() => {
-                        setTableMode("multiplication");
                         setSelectedRow(null);
                         setSelectedCol(null);
                         setHighlightedAnswer(null);
@@ -2183,14 +2157,18 @@ export default function MathMaster() {
                         setSelectedDivisor(null);
                         setSelectedCell(null);
                       }}
-                      className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                        tableMode === "multiplication"
-                          ? "bg-blue-500/80 text-white"
-                          : "bg-white/10 text-white/70 hover:bg-white/20"
-                      }`}
+                      className="px-2 py-1 rounded text-xs font-bold bg-white/10 hover:bg-white/20 text-white"
                     >
-                      × כפל
+                      איפוס
                     </button>
+                  </div>
+                  <h2 className="text-xl font-bold text-white">
+                    📊 לוח הכפל
+                  </h2>
+                </div>
+                <div className="p-4">
+                  {/* Mode toggle */}
+                  <div className="mb-4 flex gap-2 justify-center" dir="rtl">
                     <button
                       onClick={() => {
                         setTableMode("division");
@@ -2208,6 +2186,24 @@ export default function MathMaster() {
                       }`}
                     >
                       ÷ חילוק
+                    </button>
+                    <button
+                      onClick={() => {
+                        setTableMode("multiplication");
+                        setSelectedRow(null);
+                        setSelectedCol(null);
+                        setHighlightedAnswer(null);
+                        setSelectedResult(null);
+                        setSelectedDivisor(null);
+                        setSelectedCell(null);
+                      }}
+                      className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                        tableMode === "multiplication"
+                          ? "bg-blue-500/80 text-white"
+                          : "bg-white/10 text-white/70 hover:bg-white/20"
+                      }`}
+                    >
+                      × כפל
                     </button>
                   </div>
 
@@ -2574,6 +2570,7 @@ export default function MathMaster() {
             <div
               className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
               onClick={() => setShowLeaderboard(false)}
+              dir="rtl"
             >
               <div
                 className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-4 max-w-md w-full max-h-[85svh] overflow-y-auto"
@@ -2587,8 +2584,8 @@ export default function MathMaster() {
                 </div>
 
                 {/* Level Selection */}
-                <div className="flex gap-2 mb-4 justify-center">
-                  {Object.keys(LEVELS).map((lvl) => (
+                <div className="flex gap-2 mb-4 justify-center" dir="rtl">
+                  {Object.keys(LEVELS).reverse().map((lvl) => (
                     <button
                       key={lvl}
                       onClick={() => {
@@ -2697,7 +2694,7 @@ export default function MathMaster() {
                     onClick={() => setShowLeaderboard(false)}
                     className="px-6 py-2 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
                   >
-                    Close
+                    סגור
                   </button>
                 </div>
               </div>
@@ -2719,6 +2716,7 @@ export default function MathMaster() {
                   setOperation(allowed.find(op => op !== "mixed") || allowed[0]);
                 }
               }}
+              dir="rtl"
             >
               <div
                 className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full"
@@ -2759,22 +2757,22 @@ export default function MathMaster() {
                     ))}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2" dir="rtl">
                   <button
                     onClick={() => {
-                      // בחר הכל
-                      const availableOps = GRADES[grade].operations.filter(
-                        (op) => op !== "mixed"
+                      // בדוק שיש לפחות פעולה אחת נבחרת
+                      const hasSelected = Object.values(mixedOperations).some(
+                        (selected) => selected
                       );
-                      const allSelected = {};
-                      availableOps.forEach((op) => {
-                        allSelected[op] = true;
-                      });
-                      setMixedOperations(allSelected);
+                      if (hasSelected) {
+                        setShowMixedSelector(false);
+                      } else {
+                        alert("אנא בחר לפחות פעולה אחת");
+                      }
                     }}
-                    className="flex-1 px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
+                    className="flex-1 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
                   >
-                    הכל
+                    שמור
                   </button>
                   <button
                     onClick={() => {
@@ -2794,19 +2792,19 @@ export default function MathMaster() {
                   </button>
                   <button
                     onClick={() => {
-                      // בדוק שיש לפחות פעולה אחת נבחרת
-                      const hasSelected = Object.values(mixedOperations).some(
-                        (selected) => selected
+                      // בחר הכל
+                      const availableOps = GRADES[grade].operations.filter(
+                        (op) => op !== "mixed"
                       );
-                      if (hasSelected) {
-                        setShowMixedSelector(false);
-                      } else {
-                        alert("אנא בחר לפחות פעולה אחת");
-                      }
+                      const allSelected = {};
+                      availableOps.forEach((op) => {
+                        allSelected[op] = true;
+                      });
+                      setMixedOperations(allSelected);
                     }}
-                    className="flex-1 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                    className="flex-1 px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
                   >
-                    שמור
+                    הכל
                   </button>
                 </div>
               </div>

@@ -537,24 +537,24 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   let allAnswers = [];
   if (qType === "choice") {
     // יצירת תשובות שגויות רק לשאלות בחירה
-    const wrongAnswers = new Set();
-    while (wrongAnswers.size < 3) {
-      let wrong;
-      if (selectedTopic === "vocabulary") {
-        if (params.direction === "he_to_en") {
+  const wrongAnswers = new Set();
+  while (wrongAnswers.size < 3) {
+    let wrong;
+    if (selectedTopic === "vocabulary") {
+      if (params.direction === "he_to_en") {
           const allEnglishWords = Object.values(WORD_LISTS).flatMap((list) =>
             Object.keys(list)
           );
           wrong =
             allEnglishWords[Math.floor(Math.random() * allEnglishWords.length)];
-        } else {
+      } else {
           const allHebrewWords = Object.values(WORD_LISTS).flatMap((list) =>
             Object.values(list)
           );
           wrong =
             allHebrewWords[Math.floor(Math.random() * allHebrewWords.length)];
-        }
-      } else if (selectedTopic === "grammar" || selectedTopic === "sentences") {
+      }
+    } else if (selectedTopic === "grammar" || selectedTopic === "sentences") {
         const allOptions = [
           "am",
           "is",
@@ -568,30 +568,30 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           "play",
           "plays",
         ];
-        wrong = allOptions[Math.floor(Math.random() * allOptions.length)];
-      } else {
-        if (params.direction === "he_to_en") {
+      wrong = allOptions[Math.floor(Math.random() * allOptions.length)];
+    } else {
+      if (params.direction === "he_to_en") {
           const allEnglishWords = Object.values(WORD_LISTS).flatMap((list) =>
             Object.keys(list)
           );
           wrong =
             allEnglishWords[Math.floor(Math.random() * allEnglishWords.length)];
-        } else {
+      } else {
           const allHebrewWords = Object.values(WORD_LISTS).flatMap((list) =>
             Object.values(list)
           );
           wrong =
             allHebrewWords[Math.floor(Math.random() * allHebrewWords.length)];
-        }
-      }
-      if (wrong !== correctAnswer && !wrongAnswers.has(wrong)) {
-        wrongAnswers.add(wrong);
       }
     }
+    if (wrong !== correctAnswer && !wrongAnswers.has(wrong)) {
+      wrongAnswers.add(wrong);
+    }
+  }
     allAnswers = [correctAnswer, ...Array.from(wrongAnswers)];
-    for (let i = allAnswers.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
+  for (let i = allAnswers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
     }
   }
 
@@ -784,10 +784,10 @@ function getSolutionSteps(question, topic, gradeKey) {
         ];
       }
       return [];
-    }
+  }
 
     default:
-      return [];
+  return [];
   }
 }
 
@@ -1839,38 +1839,38 @@ export default function EnglishMaster() {
                       </button>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-3 w-full mb-3">
-                      {currentQuestion.answers.map((answer, idx) => {
-                        const isSelected = selectedAnswer === answer;
+                  <div className="grid grid-cols-2 gap-3 w-full mb-3">
+                    {currentQuestion.answers.map((answer, idx) => {
+                      const isSelected = selectedAnswer === answer;
                         const isCorrect =
                           String(answer).trim().toLowerCase() ===
                           String(currentQuestion.correctAnswer).trim().toLowerCase();
-                        const isWrong = isSelected && !isCorrect;
+                      const isWrong = isSelected && !isCorrect;
 
-                        return (
-                          <button
-                            key={idx}
-                            onClick={() => handleAnswer(answer)}
-                            disabled={!!selectedAnswer}
-                            className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                              isCorrect && isSelected
-                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                                : isWrong
-                                ? "bg-red-500/30 border-red-400 text-red-200"
-                                : selectedAnswer &&
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => handleAnswer(answer)}
+                          disabled={!!selectedAnswer}
+                          className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                            isCorrect && isSelected
+                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                              : isWrong
+                              ? "bg-red-500/30 border-red-400 text-red-200"
+                              : selectedAnswer &&
                                   String(answer).trim().toLowerCase() ===
                                     String(currentQuestion.correctAnswer)
                                       .trim()
                                       .toLowerCase()
-                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                                : "bg-black/30 border-white/15 text-white hover:border-white/40"
-                            }`}
-                          >
-                            {answer}
-                          </button>
-                        );
-                      })}
-                    </div>
+                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                              : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                          }`}
+                        >
+                          {answer}
+                        </button>
+                      );
+                    })}
+                  </div>
                   )}
                 </div>
               )}

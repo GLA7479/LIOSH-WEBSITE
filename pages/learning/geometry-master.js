@@ -198,7 +198,7 @@ function saveScoreEntry(saved, key, entry) {
 
 function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   const isMixed = topic === "mixed";
-
+  
   let selectedTopic;
   if (isMixed) {
     let availableTopics;
@@ -328,9 +328,9 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
             question = `מגרש משחקים עגול בעל רדיוס ${radius} מטר. מה שטח המגרש? (π = 3.14)`;
           } else {
             question = `מה השטח של עיגול עם רדיוס ${radius}? (π = 3.14)`;
-          }
-          break;
-        }
+      }
+      break;
+    }
 
         default: {
           const side = Math.floor(Math.random() * level.maxSide) + 1;
@@ -402,9 +402,9 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
             question = `שביל הליכה מקיף אגם עגול בעל רדיוס ${radius} מטר. כמה מטרים אורך השביל? (π = 3.14)`;
           } else {
             question = `מה ההיקף של עיגול עם רדיוס ${radius}? (π = 3.14)`;
-          }
-          break;
-        }
+      }
+      break;
+    }
 
         default: {
           const side = Math.floor(Math.random() * level.maxSide) + 1;
@@ -530,7 +530,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
         allowStory && Math.random() < 0.4; // "שאלה הפוכה" רק בכיתות גבוהות
       if (!askLeg) {
         params = { a, b, c, which: "hypotenuse", kind: "pythagoras_hyp" };
-        correctAnswer = round(c);
+      correctAnswer = round(c);
         question = `במשולש ישר זווית, הניצבים הם ${a} ו-${b}. מה אורך היתר?`;
       } else {
         // נשאל על ניצב חסר
@@ -847,7 +847,7 @@ function getSolutionSteps(question, topic, gradeKey) {
         const a2 = a * a;
         const b2 = b * b;
         const sum = a2 + b2;
-        return [
+      return [
           toSpan("1. משפט פיתגורס: a² + b² = c².", "1"),
           toSpan(`2. נציב: ${ltr(`${a}² + ${b}² = c²`)}.`, "2"),
           toSpan(`3. נחשב: ${ltr(`${a}² = ${a2}`)} ו-${ltr(`${b}² = ${b2}`)}.`, "3"),
@@ -1994,8 +1994,8 @@ export default function GeometryMaster() {
                       className="text-4xl font-black text-white mb-4 text-center"
                       style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                     >
-                      {currentQuestion.question}
-                    </div>
+                    {currentQuestion.question}
+                  </div>
                   )}
 
                   {!hintUsed && !selectedAnswer && (
@@ -2063,10 +2063,10 @@ export default function GeometryMaster() {
                               </div>
                               {/* כאן הצעדים */}
                               <div className="space-y-1 text-sm" style={{ direction: "rtl", unicodeBidi: "plaintext" }}>
-                                {getSolutionSteps(
-                                  currentQuestion,
-                                  currentQuestion.topic,
-                                  grade
+                          {getSolutionSteps(
+                            currentQuestion,
+                            currentQuestion.topic,
+                            grade
                                 ).map((step, idx) =>
                                   typeof step === "string" ? (
                                     <div key={idx}>{step}</div>
