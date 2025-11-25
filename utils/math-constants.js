@@ -54,19 +54,30 @@ export const GRADE_LEVELS = {
     name: "כיתה ב׳",
     levels: {
       easy: {
+        // חיבור/חיסור עד 50
         addition: { max: 50 },
         subtraction: { min: 0, max: 50 },
-        // כיתה ב' - אין כפל, חילוק או שברים
+        // התחלה רכה של כפל וחילוק – לוח עד 5×5
+        multiplication: { max: 5 },
+        division: { max: 50, maxDivisor: 5 },
+        // אופציונלי – חצי בלבד, להמשך
+        fractions: { maxDen: 2 },
       },
       medium: {
+        // חיבור/חיסור עד 100
         addition: { max: 100 },
         subtraction: { min: 0, max: 100 },
-        // כיתה ב' - אין כפל, חילוק או שברים
+        // לוח כפל מלא עד 10×10
+        multiplication: { max: 10 },
+        division: { max: 100, maxDivisor: 10 },
+        fractions: { maxDen: 4 }, // חצי/רבע אם תרצה להשתמש
       },
       hard: {
         addition: { max: 100 },
         subtraction: { min: 0, max: 100 },
-        // כיתה ב' - אין כפל, חילוק או שברים
+        multiplication: { max: 10 },
+        division: { max: 100, maxDivisor: 10 },
+        fractions: { maxDen: 4 },
       },
     },
   },
@@ -102,21 +113,21 @@ export const GRADE_LEVELS = {
       easy: {
         addition: { max: 1000 },
         subtraction: { min: 0, max: 1000 },
-        multiplication: { max: 12 },
+        multiplication: { max: 20 },  // עד 20×20 = 400
         division: { max: 200, maxDivisor: 12 },
         fractions: { maxDen: 6 },
       },
       medium: {
         addition: { max: 5000 },
         subtraction: { min: 0, max: 5000 },
-        multiplication: { max: 12 },
+        multiplication: { max: 30 },  // עד 30×30 = 900
         division: { max: 500, maxDivisor: 12 },
         fractions: { maxDen: 8 },
       },
       hard: {
         addition: { max: 10000 },
         subtraction: { min: 0, max: 10000 },
-        multiplication: { max: 12 },
+        multiplication: { max: 50 },  // עד 50×50 = 2500
         division: { max: 1000, maxDivisor: 12 },
         fractions: { maxDen: 8 },
       },
@@ -128,21 +139,21 @@ export const GRADE_LEVELS = {
       easy: {
         addition: { max: 10000 },
         subtraction: { min: 0, max: 10000 },
-        multiplication: { max: 12 },
+        multiplication: { max: 50 },  // עד 50×50 = 2500
         division: { max: 1000, maxDivisor: 12 },
         fractions: { maxDen: 8 },
       },
       medium: {
         addition: { max: 50000 },
         subtraction: { min: 0, max: 50000 },
-        multiplication: { max: 12 },
+        multiplication: { max: 100 },  // עד 100×100 = 10000
         division: { max: 2000, maxDivisor: 12 },
         fractions: { maxDen: 10 },
       },
       hard: {
         addition: { max: 100000 },
         subtraction: { min: 0, max: 100000 },
-        multiplication: { max: 12 },
+        multiplication: { max: 200 },  // עד 200×200 = 40000
         division: { max: 5000, maxDivisor: 12 },
         fractions: { maxDen: 12 },
       },
@@ -154,21 +165,21 @@ export const GRADE_LEVELS = {
       easy: {
         addition: { max: 50000 },
         subtraction: { min: 0, max: 50000 },
-        multiplication: { max: 12 },
+        multiplication: { max: 100 },  // עד 100×100 = 10000
         division: { max: 2000, maxDivisor: 12 },
         fractions: { maxDen: 10 },
       },
       medium: {
         addition: { max: 100000 },
         subtraction: { min: 0, max: 100000 },
-        multiplication: { max: 12 },
+        multiplication: { max: 200 },  // עד 200×200 = 40000
         division: { max: 10000, maxDivisor: 12 },
         fractions: { maxDen: 12 },
       },
       hard: {
         addition: { max: 200000 },
         subtraction: { min: 0, max: 200000 },
-        multiplication: { max: 12 },
+        multiplication: { max: 500 },  // עד 500×500 = 250000
         division: { max: 20000, maxDivisor: 12 },
         fractions: { maxDen: 20 },
       },
@@ -193,10 +204,13 @@ export const GRADES = {
     operations: [
       "addition",
       "subtraction",
+      "multiplication", // לוח כפל עד 10×10
+      "division",       // חילוק פשוט לפי לוח הכפל
       "compare",
-      "number_sense", // שכנים, זוגי/אי-זוגי, השלמה ל-10, עשרות/יחידות
+      "number_sense",
+      "mixed",          // תרגילים מעורבים בתחום ה-100
     ],
-    allowFractions: false,
+    allowFractions: false,  // שברים מסודרים מתחילים רשמית מד׳
     allowNegatives: false,
   },
   g3: {
@@ -206,9 +220,9 @@ export const GRADES = {
       "subtraction",
       "multiplication",
       "division",
-      "fractions",
+      "fractions",     // היכרות עם שבר כחלק משלם
       "sequences",
-      "decimals",
+      "decimals",      // עשרוניים בסיסיים
       "compare",
       "equations",
       "number_sense",
@@ -224,12 +238,14 @@ export const GRADES = {
       "subtraction",
       "multiplication",
       "division",
-      "fractions",
-      "sequences",
+      "fractions",      // שברים פשוטים – משמעות והשוואה
       "decimals",
-      "compare",
+      "sequences",
+      "rounding",
       "equations",
+      "compare",
       "number_sense",
+      "factors_multiples",
       "mixed",
     ],
     allowFractions: true,

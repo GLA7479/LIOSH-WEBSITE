@@ -258,23 +258,21 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
   return steps;
 }
 
-// פונקציה לבניית צעדי אנימציה לכפל
+// פונקציה לבניית צעדי אנימציה לכפל (עם תרגיל מאונך)
 export function buildMultiplicationAnimation(a, b, answer) {
   const steps = [];
   const aStr = String(a);
   const bStr = String(b);
   const answerStr = String(answer);
+  const maxLen = Math.max(aStr.length, bStr.length, answerStr.length);
   
-  // צעד 1: הצגת התרגיל
+  // צעד 1: מיישרים את הספרות
   steps.push({
-    id: "show-equation",
-    title: "הצגת התרגיל",
-    text: `נכתוב את התרגיל: ${a} × ${b} = __`,
-    highlights: ["equation"],
-    type: "multiplication",
-    a,
-    b,
-    answer,
+    id: "place-value",
+    title: "מיישרים את הספרות",
+    text: "כותבים את המספרים אחד מעל השני כך שסַפְרות היחידות נמצאות באותה עמודה.",
+    highlights: ["aAll", "bAll"],
+    revealDigits: 0,
   });
   
   // צעד 2: הסבר על כפל
@@ -282,54 +280,45 @@ export function buildMultiplicationAnimation(a, b, answer) {
     id: "explain",
     title: "מה זה כפל?",
     text: `כפל הוא חיבור חוזר: ${a} × ${b} זה כמו לחבר את ${a} לעצמו ${b} פעמים.`,
-    highlights: ["explanation"],
-    type: "multiplication",
-    a,
-    b,
-    answer,
+    highlights: ["aAll", "bAll"],
+    revealDigits: 0,
   });
   
-  // צעד 3: החישוב
+  // צעד 3: החישוב - חשיפה הדרגתית
   steps.push({
     id: "calculate",
     title: "החישוב",
-    text: `נחשב: ${a} × ${b} = ${answer}`,
-    highlights: ["result"],
-    type: "multiplication",
-    a,
-    b,
-    answer,
+    text: `מחשבים: ${a} × ${b} = ${answer}`,
+    highlights: ["aAll", "bAll", "resultAll"],
+    revealDigits: answerStr.length,
   });
   
-  // צעד 4: התוצאה
+  // צעד 4: התוצאה הסופית
   steps.push({
     id: "final",
     title: "התוצאה הסופית",
     text: `התשובה היא ${answer}`,
-    highlights: ["result"],
-    type: "multiplication",
-    a,
-    b,
-    answer,
+    highlights: ["resultAll"],
+    revealDigits: answerStr.length,
   });
   
   return steps;
 }
 
-// פונקציה לבניית צעדי אנימציה לחילוק
+// פונקציה לבניית צעדי אנימציה לחילוק (עם תרגיל מאונך)
 export function buildDivisionAnimation(dividend, divisor, quotient) {
   const steps = [];
+  const dividendStr = String(dividend);
+  const divisorStr = String(divisor);
+  const quotientStr = String(quotient);
   
-  // צעד 1: הצגת התרגיל
+  // צעד 1: מיישרים את הספרות
   steps.push({
-    id: "show-equation",
-    title: "הצגת התרגיל",
-    text: `נכתוב את התרגיל: ${dividend} ÷ ${divisor} = __`,
-    highlights: ["equation"],
-    type: "division",
-    dividend,
-    divisor,
-    quotient,
+    id: "place-value",
+    title: "מיישרים את הספרות",
+    text: "כותבים את המחלק והמחולק כך שסַפְרות היחידות נמצאות באותה עמודה.",
+    highlights: ["aAll", "bAll"],
+    revealDigits: 0,
   });
   
   // צעד 2: הסבר על חילוק
@@ -337,11 +326,8 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
     id: "explain",
     title: "מה זה חילוק?",
     text: `חילוק שואל: כמה פעמים ${divisor} נכנס בתוך ${dividend}?`,
-    highlights: ["explanation"],
-    type: "division",
-    dividend,
-    divisor,
-    quotient,
+    highlights: ["aAll", "bAll"],
+    revealDigits: 0,
   });
   
   // צעד 3: בדיקה
@@ -349,23 +335,17 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
     id: "check",
     title: "בדיקה",
     text: `נבדוק: ${divisor} × ${quotient} = ${dividend}. אם כן – זה המספר הנכון.`,
-    highlights: ["check"],
-    type: "division",
-    dividend,
-    divisor,
-    quotient,
+    highlights: ["aAll", "bAll", "resultAll"],
+    revealDigits: quotientStr.length,
   });
   
-  // צעד 4: התוצאה
+  // צעד 4: התוצאה הסופית
   steps.push({
     id: "final",
     title: "התוצאה הסופית",
     text: `לכן התשובה היא ${quotient}`,
-    highlights: ["result"],
-    type: "division",
-    dividend,
-    divisor,
-    quotient,
+    highlights: ["resultAll"],
+    revealDigits: quotientStr.length,
   });
   
   return steps;
@@ -485,6 +465,53 @@ export function buildFractionsAnimation(params, answer) {
       answer,
     });
   }
+  
+  return steps;
+}
+
+// פונקציה לבניית צעדי אנימציה לעשרוניים (עם תרגיל מאונך)
+export function buildDecimalsAnimation(params, answer) {
+  const steps = [];
+  const { a, b, kind } = params;
+  const aStr = a.toFixed(2);
+  const bStr = b.toFixed(2);
+  const answerStr = answer.toFixed(2);
+  
+  // צעד 1: מיישרים את הנקודות העשרוניות
+  steps.push({
+    id: "place-value",
+    title: "מיישרים את הנקודות העשרוניות",
+    text: "כותבים את המספרים אחד מעל השני כך שהנקודות העשרוניות נמצאות באותה עמודה.",
+    highlights: ["aAll", "bAll"],
+    revealDigits: 0,
+  });
+  
+  // צעד 2: הסבר
+  steps.push({
+    id: "explain",
+    title: "חישוב עשרוניים",
+    text: `מבצעים ${kind === "dec_add" ? "חיבור" : "חיסור"} רגיל בין המספרים אחרי היישור.`,
+    highlights: ["aAll", "bAll"],
+    revealDigits: 0,
+  });
+  
+  // צעד 3: החישוב - חשיפה הדרגתית
+  steps.push({
+    id: "calculate",
+    title: "החישוב",
+    text: `מחשבים: ${aStr} ${kind === "dec_add" ? "+" : "−"} ${bStr} = ${answerStr}`,
+    highlights: ["aAll", "bAll", "resultAll"],
+    revealDigits: answerStr.length,
+  });
+  
+  // צעד 4: התוצאה הסופית
+  steps.push({
+    id: "final",
+    title: "התוצאה הסופית",
+    text: `התשובה היא ${answerStr}`,
+    highlights: ["resultAll"],
+    revealDigits: answerStr.length,
+  });
   
   return steps;
 }
@@ -1383,6 +1410,12 @@ export function buildAnimationForOperation(question, operation, gradeKey) {
     case "division":
       if (params.dividend && params.divisor && params.quotient) {
         return buildDivisionAnimation(params.dividend, params.divisor, params.quotient);
+      }
+      break;
+      
+    case "decimals":
+      if (params.a && params.b) {
+        return buildDecimalsAnimation(params, answer);
       }
       break;
       

@@ -1676,7 +1676,10 @@ export default function MathMaster() {
                           ? currentQuestion.correctAnswer
                           : currentQuestion.answer;
                         
-                        const hasAnimation = (effectiveOp === "addition" || effectiveOp === "subtraction") && 
+                        // בדיקה אם יש תצוגה מאונכת - חיבור, חיסור, כפל, חילוק, עשרוניים
+                        const hasAnimation = (effectiveOp === "addition" || effectiveOp === "subtraction" || 
+                                             effectiveOp === "multiplication" || effectiveOp === "division" ||
+                                             op === "decimals") && 
                                             typeof aEff === "number" && typeof bEff === "number";
                         
                         // מודל עם אנימציה - בדיקה ראשונית
@@ -1758,23 +1761,64 @@ export default function MathMaster() {
                           return null;
                         }
                         
-                        // חיבור וחיסור - הקוד המקורי בדיוק כמו שהיה (לא לשנות!)
+                        // תצוגה מאונכת - חיבור, חיסור, כפל, חילוק, עשרוניים
                         if (hasAnimation) {
+                          // קביעת הערכים לפי סוג הפעולה
+                          let aVal = aEff;
+                          let bVal = bEff;
+                          let answerVal = answer;
+                          let opSymbol = effectiveOp === "addition" ? "+" : 
+                                        effectiveOp === "subtraction" ? "−" : 
+                                        effectiveOp === "multiplication" ? "×" : 
+                                        effectiveOp === "division" ? "÷" : "";
+                          
+                          // טיפול בעשרוניים
+                          if (op === "decimals" && currentQuestion.params) {
+                            const p = currentQuestion.params;
+                            aVal = p.a;
+                            bVal = p.b;
+                            answerVal = answer;
+                            opSymbol = p.kind === "dec_add" ? "+" : "−";
+                          }
+                          
+                          // טיפול בכפל
+                          if (effectiveOp === "multiplication" && currentQuestion.params) {
+                            aVal = currentQuestion.params.a;
+                            bVal = currentQuestion.params.b;
+                            answerVal = answer;
+                            opSymbol = "×";
+                          }
+                          
+                          // טיפול בחילוק
+                          if (effectiveOp === "division" && currentQuestion.params) {
+                            aVal = currentQuestion.params.dividend;
+                            bVal = currentQuestion.params.divisor;
+                            answerVal = currentQuestion.params.quotient || answer;
+                            opSymbol = "÷";
+                          }
+                          
                           // פונקציה לפיצול ספרות עם padding
                           const splitDigits = (num, minLength = 1) => {
                             const s = String(Math.abs(num)).padStart(minLength, " ");
                             return s.split("");
                           };
                           
+                          // טיפול בעשרוניים - צריך לטפל בנקודה העשרונית
+                          const isDecimal = op === "decimals";
+                          let aStr = isDecimal ? aVal.toFixed(2) : String(aVal);
+                          let bStr = isDecimal ? bVal.toFixed(2) : String(bVal);
+                          let answerStr = isDecimal ? answerVal.toFixed(2) : String(answerVal);
+                          
+                          // חישוב אורך מקסימלי (כולל נקודה עשרונית)
                           const maxLen = Math.max(
-                            String(aEff).length,
-                            String(bEff).length,
-                            answer != null ? String(answer).length : 0
+                            aStr.length,
+                            bStr.length,
+                            answerStr.length
                           );
                           
-                          const aDigits = splitDigits(aEff, maxLen);
-                          const bDigits = splitDigits(bEff, maxLen);
-                          const resDigitsFull = answer != null ? splitDigits(answer, maxLen) : Array(maxLen).fill(" ");
+                          const aDigits = aStr.padStart(maxLen, " ").split("");
+                          const bDigits = bStr.padStart(maxLen, " ").split("");
+                          const resDigitsFull = answerStr.padStart(maxLen, " ").split("");
                           
                           // חישוב כמה ספרות לחשוף לפי הצעד הנוכחי
                           const revealCount = (activeStep && typeof activeStep.revealDigits === "number") 
@@ -1862,7 +1906,7 @@ export default function MathMaster() {
                                       }}
                                     >
                                       <span className="w-4 text-center text-2xl font-bold">
-                                        {effectiveOp === "addition" ? "+" : "−"}
+                                        {opSymbol}
                                       </span>
                                       {bDigits.map((d, idx) => {
                                         const pos = maxLen - idx - 1;

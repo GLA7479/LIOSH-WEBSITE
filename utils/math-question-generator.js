@@ -228,9 +228,11 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     operandA = a;
     operandB = b;
   } else if (selectedOp === "multiplication") {
-    const maxM = levelConfig.multiplication.max || 10;
+    // שימוש ב-levelConfig.multiplication.max ישירות מ-GRADE_LEVELS
+    const maxM = levelConfig.multiplication?.max || 10;
+    // שני הגורמים יכולים להיות עד maxM (ללא הגבלה של 12)
     const a = randInt(1, maxM);
-    const b = randInt(1, Math.min(maxM, 12));
+    const b = randInt(1, maxM);
     const c = a * b;
 
     const variant = Math.random();
