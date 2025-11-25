@@ -1510,14 +1510,16 @@ export default function MathMaster() {
                       <p
                         className="text-2xl text-center text-white mb-1"
                         style={{
-                          direction: currentQuestion.isStory ? "rtl" : "ltr",
+                          direction: currentQuestion.isStory ? "rtl" : "rtl",
                           unicodeBidi: "plaintext",
                         }}
                       >
                         {currentQuestion.questionLabel}
                       </p>
                       <p
-                        className="text-4xl text-center text-white font-bold mb-4 whitespace-nowrap"
+                        className={`text-4xl text-center text-white font-bold mb-4 ${
+                          currentQuestion.operation === "sequences" ? "whitespace-normal" : "whitespace-nowrap"
+                        }`}
                         style={{
                           direction: "ltr",
                           unicodeBidi: "plaintext",

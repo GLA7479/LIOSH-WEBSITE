@@ -445,11 +445,31 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       seq.push(start + i * step);
     }
     correctAnswer = seq[posOfBlank];
-    const display = seq
-      .map((v, idx) => (idx === posOfBlank ? BLANK : v))
-      .join(", ");
-    question = `השלים את הסדרה: ${display}`;
-    params = { kind: "sequence", start, step, seq, posOfBlank };
+    // יצירת הסדרה עם פסיקים, אבל בלי פסיקים לפני ואחרי המספר החסר
+    const displayParts = [];
+    for (let i = 0; i < seq.length; i++) {
+      if (i === posOfBlank) {
+        displayParts.push(BLANK);
+      } else {
+        displayParts.push(seq[i]);
+      }
+    }
+    // חיבור עם פסיקים, אבל בלי פסיקים לפני ואחרי BLANK
+    const display = displayParts
+      .map((item, idx) => {
+        if (item === BLANK) {
+          return BLANK;
+        }
+        // נוסיף פסיק רק אחרי המספר, אם יש משהו אחרי (ולא BLANK)
+        const needsCommaAfter = idx < displayParts.length - 1 && displayParts[idx + 1] !== BLANK;
+        return needsCommaAfter ? item + ", " : item;
+      })
+      .join(" ");
+    
+    const questionLabel = "השלם את הסדרה";
+    const exerciseText = display;
+    question = `${questionLabel} ${exerciseText}`;
+    params = { kind: "sequence", start, step, seq, posOfBlank, questionLabel, exerciseText };
   // ===== עשרוניים =====
   } else if (selectedOp === "decimals") {
     const places = (gradeKey === "g3" || gradeKey === "g4") ? 1 : 2;
