@@ -605,6 +605,7 @@ export default function GeometryMaster() {
         ref={wrapRef}
         className="relative w-full overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928] game-page-mobile"
         style={{ height: "100vh", height: "100dvh" }}
+        dir="rtl"
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
@@ -625,18 +626,21 @@ export default function GeometryMaster() {
             className="relative px-2 py-3"
             style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 10px)" }}
           >
-            <div className="absolute left-2 top-2 flex gap-2 pointer-events-auto">
+            <div className="absolute right-2 top-2 flex gap-2 pointer-events-auto">
+              <button
+                onClick={() => router.push("/learning/geometry-curriculum")}
+                className="min-w-[100px] px-3 py-1 rounded-lg text-sm font-bold bg-emerald-500/20 border border-emerald-400/30 hover:bg-emerald-500/30 text-emerald-200"
+              >
+                📋 תוכנית לימודים
+              </button>
+            </div>
+            <div className="absolute left-2 top-2 pointer-events-auto">
               <button
                 onClick={backSafe}
                 className="min-w-[60px] px-3 py-1 rounded-lg text-sm font-bold bg-white/5 border border-white/10 hover:bg-white/10"
               >
                 BACK
               </button>
-            </div>
-            <div className="absolute right-2 top-2 pointer-events-auto">
-              <span className="text-xs uppercase tracking-[0.3em] text-white/60">
-                Local
-              </span>
             </div>
           </div>
         </div>
@@ -656,57 +660,50 @@ export default function GeometryMaster() {
               📐 Geometry Master
             </h1>
             <p className="text-white/70 text-xs">
-              {playerName || "שחקן"} • {GRADES[grade]?.name || ""} •{" "}
-              {LEVELS[level].name} • {getTopicName(topic)} • {MODES[mode].name}
+              {playerName || "שחקן"} • {GRADES[grade]?.name || ""} • {LEVELS[level].name} • {getTopicName(topic)} • {MODES[mode].name}
             </p>
           </div>
 
           <div
             ref={controlsRef}
-            className={`grid gap-1 mb-1 w-full max-w-md ${
-              stars > 0 || playerLevel > 1 ? "grid-cols-6" : "grid-cols-5"
-            }`}
+            className="grid grid-cols-7 gap-0.5 mb-1 w-full max-w-md"
           >
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">ניקוד</div>
-              <div className="text-sm font-bold text-emerald-400">{score}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">ניקוד</div>
+              <div className="text-sm font-bold text-emerald-400 leading-tight">{score}</div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">רצף</div>
-              <div className="text-sm font-bold text-amber-400">🔥{streak}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">רצף</div>
+              <div className="text-sm font-bold text-amber-400 leading-tight">🔥{streak}</div>
             </div>
-            {stars > 0 && (
-              <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-                <div className="text-[10px] text-white/60">כוכבים</div>
-                <div className="text-sm font-bold text-yellow-400">⭐{stars}</div>
-              </div>
-            )}
-            {playerLevel > 1 && (
-              <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-                <div className="text-[10px] text-white/60">רמה</div>
-                <div className="text-sm font-bold text-purple-400">Lv.{playerLevel}</div>
-              </div>
-            )}
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">✅</div>
-              <div className="text-sm font-bold text-green-400">{correct}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">כוכבים</div>
+              <div className="text-sm font-bold text-yellow-400 leading-tight">⭐{stars}</div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">חיים</div>
-              <div className="text-sm font-bold text-rose-400">
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">רמה</div>
+              <div className="text-sm font-bold text-purple-400 leading-tight">Lv.{playerLevel}</div>
+            </div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">✅</div>
+              <div className="text-sm font-bold text-green-400 leading-tight">{correct}</div>
+            </div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">חיים</div>
+              <div className="text-sm font-bold text-rose-400 leading-tight">
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
             </div>
             <div
-              className={`rounded-lg p-1 text-center ${
+              className={`rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] ${
                 gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
                   ? "bg-red-500/30 border-2 border-red-400 animate-pulse"
                   : "bg-black/30 border border-white/10"
               }`}
             >
-              <div className="text-[10px] text-white/60">⏰ טיימר</div>
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">⏰ טיימר</div>
               <div
-                className={`text-lg font-black ${
+                className={`text-sm font-black leading-tight ${
                   gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
                     ? "text-red-400"
                     : gameActive && (mode === "challenge" || mode === "speed")
@@ -723,7 +720,7 @@ export default function GeometryMaster() {
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
+          <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md" dir="rtl">
             {Object.keys(MODES).map((m) => (
               <button
                 key={m}
@@ -744,7 +741,7 @@ export default function GeometryMaster() {
           </div>
 
           {showBadge && (
-            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none">
+            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none" dir="rtl">
               <div className="bg-gradient-to-br from-yellow-400 to-orange-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-bounce">
                 <div className="text-4xl mb-2">🎉</div>
                 <div className="text-2xl font-bold">תג חדש!</div>
@@ -754,18 +751,18 @@ export default function GeometryMaster() {
           )}
 
           {showLevelUp && (
-            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none">
+            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none" dir="rtl">
               <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-pulse">
                 <div className="text-4xl mb-2">🌟</div>
                 <div className="text-2xl font-bold">עלית רמה!</div>
-                <div className="text-xl">You're now Level {playerLevel}!</div>
+                <div className="text-base">עכשיו אתה ברמה {playerLevel}!</div>
               </div>
             </div>
           )}
 
           {!gameActive ? (
             <>
-              <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
+              <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md" dir="rtl">
                 <input
                   type="text"
                   value={playerName}
@@ -781,6 +778,8 @@ export default function GeometryMaster() {
                   placeholder="שם שחקן"
                   className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-sm font-bold placeholder:text-white/40 flex-1 min-w-[120px]"
                   maxLength={15}
+                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
+                  style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
                 />
                 <select
                   value={grade}
@@ -811,6 +810,17 @@ export default function GeometryMaster() {
                   ))}
                 </select>
                 <div className="flex items-center gap-1">
+                  {topic === "mixed" && (
+                    <button
+                      onClick={() => {
+                        setShowMixedSelector(true);
+                      }}
+                      className="h-9 w-9 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-xs font-bold flex items-center justify-center"
+                      title="ערוך נושאים למיקס"
+                    >
+                      ⚙️
+                    </button>
+                  )}
                   <select
                     ref={topicSelectRef}
                     value={topic}
@@ -833,17 +843,6 @@ export default function GeometryMaster() {
                       </option>
                     ))}
                   </select>
-                  {topic === "mixed" && (
-                    <button
-                      onClick={() => {
-                        setShowMixedSelector(true);
-                      }}
-                      className="h-9 w-9 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-xs font-bold flex items-center justify-center"
-                      title="ערוך נושאים למיקס"
-                    >
-                      ⚙️
-                    </button>
-                  )}
                 </div>
               </div>
 
@@ -881,7 +880,7 @@ export default function GeometryMaster() {
                   {playerLevel > 1 && (
                     <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
                       <div className="text-xs text-white/60">Level</div>
-                      <div className="text-lg font-bold text-purple-400">
+                      <div className="text-xs font-bold text-purple-400">
                         Lv.{playerLevel} ({xp}/{playerLevel * 100} XP)
                       </div>
                     </div>
@@ -923,7 +922,7 @@ export default function GeometryMaster() {
                     onClick={resetStats}
                     className="h-10 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-sm"
                   >
-                    🧹 איפוס
+                    🧹 Reset
                   </button>
                 )}
               </div>
@@ -1041,6 +1040,7 @@ export default function GeometryMaster() {
                         <div
                           className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
                           onClick={() => setShowSolution(false)}
+                          dir="rtl"
                         >
                           <div
                             className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl"
@@ -1141,6 +1141,7 @@ export default function GeometryMaster() {
             <div
               className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
               onClick={() => setShowLeaderboard(false)}
+              dir="rtl"
             >
               <div
                 className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-4 max-w-md w-full max-h-[85svh] overflow-y-auto"
@@ -1153,7 +1154,7 @@ export default function GeometryMaster() {
                   <p className="text-white/70 text-xs">שיאים מקומיים</p>
                 </div>
 
-                <div className="flex gap-2 mb-4 justify-center">
+                <div className="flex gap-2 mb-4 justify-center" dir="rtl">
                   {Object.keys(LEVELS).map((lvl) => (
                     <button
                       key={lvl}
@@ -1281,6 +1282,7 @@ export default function GeometryMaster() {
                   }
                 }
               }}
+              dir="rtl"
             >
               <div
                 className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full"
@@ -1321,7 +1323,7 @@ export default function GeometryMaster() {
                     ))}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2" dir="rtl">
                   <button
                     onClick={() => {
                       const availableTopics = (GRADES[grade]?.topics || []).filter(
@@ -1376,6 +1378,7 @@ export default function GeometryMaster() {
             <div
               className="fixed inset-0 bg-black/80 flex items-center justify-center z-[180] p-4"
               onClick={() => setShowHowTo(false)}
+              dir="rtl"
             >
               <div
                 className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-emerald-400/60 rounded-2xl p-4 max-w-md w-full text-sm text-white"
