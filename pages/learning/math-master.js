@@ -1396,20 +1396,48 @@ export default function MathMaster() {
                     <div className="mb-4 flex gap-6 items-center justify-center flex-wrap">
                       {currentQuestion.a <= 10 && (
                         <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
-                          {Array(Math.min(currentQuestion.a, 10) - movedCirclesA)
-                            .fill(0)
-                            .map((_, i) => (
-                              <span
-                                key={`a-${i}`}
-                                onClick={() => {
-                                  if (movedCirclesA < Math.min(currentQuestion.a, 10)) {
-                                    setMovedCirclesA(prev => prev + 1);
-                                  }
-                                }}
-                                className="inline-block w-8 h-8 bg-blue-500 rounded-full cursor-pointer hover:bg-blue-400 active:bg-blue-600 transition-colors touch-manipulation"
-                                style={{ userSelect: "none", minWidth: "32px", minHeight: "32px" }}
-                              />
-                            ))}
+                          {(() => {
+                            const maxA = Math.min(currentQuestion.a, 10);
+                            const maxB = Math.min(currentQuestion.b, 10);
+                            let remainingA;
+                            
+                            if (currentQuestion.operation === "subtraction") {
+                              // בחיסור - העיגולים הכחולים שנותרו (לפני שעברו לאחר הסימן שווה)
+                              if (movedCirclesB >= maxB) {
+                                // כל ה-b הורדו, אז כל העיגולים הכחולים עברו לאחר הסימן שווה
+                                remainingA = 0;
+                              } else {
+                                // עדיין יש עיגולים ירוקים, אז העיגולים הכחולים שנותרו = a - movedCirclesB
+                                remainingA = Math.max(0, maxA - movedCirclesB);
+                              }
+                            } else {
+                              // בחיבור - העיגולים שנותרו אחרי שעברו
+                              remainingA = maxA - movedCirclesA;
+                            }
+                            
+                            return Array(remainingA)
+                              .fill(0)
+                              .map((_, i) => (
+                                <span
+                                  key={`a-${i}`}
+                                  onClick={() => {
+                                    if (currentQuestion.operation === "addition") {
+                                      // בחיבור - עיגול עובר לאחר הסימן שווה
+                                      if (movedCirclesA < maxA) {
+                                        setMovedCirclesA(prev => prev + 1);
+                                      }
+                                    } else {
+                                      // בחיסור - לחיצה על עיגול מ-a מורידה עיגול מ-b (והעיגול הכחול עצמו נמחק)
+                                      if (movedCirclesB < maxB) {
+                                        setMovedCirclesB(prev => prev + 1);
+                                      }
+                                    }
+                                  }}
+                                  className="inline-block w-6 h-6 bg-blue-500 rounded-full cursor-pointer hover:bg-blue-400 active:bg-blue-600 transition-all duration-200 touch-manipulation hover:scale-110 active:scale-95 animate-pulse-glow ring-2 ring-blue-300 ring-opacity-75"
+                                  style={{ userSelect: "none", minWidth: "24px", minHeight: "24px" }}
+                                />
+                              ));
+                          })()}
                         </div>
                       )}
                       <span className="text-white text-3xl font-bold min-w-[40px] text-center">
@@ -1423,31 +1451,54 @@ export default function MathMaster() {
                               <span
                                 key={`b-${i}`}
                                 onClick={() => {
-                                  if (movedCirclesB < Math.min(currentQuestion.b, 10)) {
-                                    setMovedCirclesB(prev => prev + 1);
+                                  if (currentQuestion.operation === "addition") {
+                                    // בחיבור - עיגול עובר לאחר הסימן שווה
+                                    if (movedCirclesB < Math.min(currentQuestion.b, 10)) {
+                                      setMovedCirclesB(prev => prev + 1);
+                                    }
                                   }
+                                  // בחיסור - לא ניתן ללחוץ על עיגולים מ-b
                                 }}
-                                className="inline-block w-8 h-8 bg-green-500 rounded-full cursor-pointer hover:bg-green-400 active:bg-green-600 transition-colors touch-manipulation"
-                                style={{ userSelect: "none", minWidth: "32px", minHeight: "32px" }}
+                                className={`inline-block w-6 h-6 rounded-full ${
+                                  currentQuestion.operation === "addition" 
+                                    ? "bg-green-500 cursor-pointer hover:bg-green-400 active:bg-green-600 transition-all duration-200 hover:scale-110 active:scale-95 animate-pulse-glow-green ring-2 ring-green-300 ring-opacity-75" 
+                                    : "bg-green-500"
+                                } touch-manipulation`}
+                                style={{ userSelect: "none", minWidth: "24px", minHeight: "24px" }}
                               />
                             ))}
                         </div>
                       )}
                       <span className="text-white text-3xl font-bold min-w-[40px] text-center">=</span>
                       {/* עיגולים שעברו מאחורי הסימן שווה */}
-                      {(movedCirclesA > 0 || movedCirclesB > 0) && (
+                      {(movedCirclesA > 0 || movedCirclesB > 0 || (currentQuestion.operation === "subtraction" && movedCirclesB >= Math.min(currentQuestion.b, 10))) && (
                         <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
-                          {Array(movedCirclesA + movedCirclesB)
-                            .fill(0)
-                            .map((_, i) => (
-                              <span
-                                key={`result-${i}`}
-                                className={`inline-block w-8 h-8 rounded-full ${
-                                  i < movedCirclesA ? "bg-blue-500" : "bg-green-500"
-                                }`}
-                                style={{ minWidth: "32px", minHeight: "32px" }}
-                              />
-                            ))}
+                          {currentQuestion.operation === "addition" ? (
+                            // בחיבור - כל העיגולים שעברו
+                            Array(movedCirclesA + movedCirclesB)
+                              .fill(0)
+                              .map((_, i) => (
+                                <span
+                                  key={`result-${i}`}
+                                  className={`inline-block w-6 h-6 rounded-full ${
+                                    i < movedCirclesA ? "bg-blue-500" : "bg-green-500"
+                                  }`}
+                                  style={{ minWidth: "24px", minHeight: "24px" }}
+                                />
+                              ))
+                          ) : (
+                            // בחיסור - העיגולים שנותרו מ-a אחרי שהורידנו את כל ה-b
+                            movedCirclesB >= Math.min(currentQuestion.b, 10) && 
+                            Array(Math.max(0, Math.min(currentQuestion.a, 10) - movedCirclesB))
+                              .fill(0)
+                              .map((_, i) => (
+                                <span
+                                  key={`result-${i}`}
+                                  className="inline-block w-6 h-6 bg-blue-500 rounded-full"
+                                  style={{ minWidth: "24px", minHeight: "24px" }}
+                                />
+                              ))
+                          )}
                         </div>
                       )}
                     </div>
