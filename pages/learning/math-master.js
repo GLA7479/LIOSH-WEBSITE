@@ -29,6 +29,7 @@ import {
   buildVerticalOperation,
   convertMissingNumberEquation,
   buildAdditionOrSubtractionAnimation,
+  buildAnimationForOperation,
 } from "../../utils/math-animations";
 
 export default function MathMaster() {
@@ -152,13 +153,15 @@ export default function MathMaster() {
       bottom = Math.abs(bottom);
     }
     
+    // חיבור וחיסור - אנימציה מיוחדת עם תרגיל בעמודה (קוד מקורי - לא לשנות!)
     if ((effectiveOp === "addition" || effectiveOp === "subtraction") && 
         typeof top === "number" && typeof bottom === "number") {
       return buildAdditionOrSubtractionAnimation(top, bottom, answer, effectiveOp);
     }
     
-    return null;
-  }, [showSolution, currentQuestion]);
+    // שאר הנושאים - אנימציה כללית (רק אם זה לא חיבור/חיסור)
+    return buildAnimationForOperation(currentQuestion, op, grade);
+  }, [showSolution, currentQuestion, grade]);
 
   // אנימציה אוטומטית - עם ניקוי תקין של timeouts
   useEffect(() => {
@@ -215,6 +218,10 @@ export default function MathMaster() {
   // מצב story questions
   const [useStoryQuestions, setUseStoryQuestions] = useState(false);
   const [storyOnly, setStoryOnly] = useState(false); // שאלות מילוליות בלבד
+
+  // מעקב אחר עיגולים שעברו (רק לכיתה א')
+  const [movedCirclesA, setMovedCirclesA] = useState(0); // כמה עיגולים עברו מ-a
+  const [movedCirclesB, setMovedCirclesB] = useState(0); // כמה עיגולים עברו מ-b
 
   // בחירת פעולות למיקס
   const [showMixedSelector, setShowMixedSelector] = useState(false);
@@ -587,6 +594,9 @@ export default function MathMaster() {
     setHintUsed(false);
     setShowSolution(false);
     setErrorExplanation("");
+    // איפוס עיגולים שעברו כשמשנים שאלה
+    setMovedCirclesA(0);
+    setMovedCirclesB(0);
   }
 
   function startGame() {
@@ -1381,30 +1391,61 @@ export default function MathMaster() {
                   className="w-full max-w-md flex flex-col items-center justify-center mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
-                  {/* ויזואליזציה של מספרים (רק לכיתות נמוכות) */}
-                  {(grade === "g1" || grade === "g2") && currentQuestion.operation === "addition" && (
-                    <div className="mb-2 flex gap-4 items-center">
+                  {/* ויזואליזציה של מספרים (רק לכיתה א') */}
+                  {grade === "g1" && (currentQuestion.operation === "addition" || currentQuestion.operation === "subtraction") && (
+                    <div className="mb-4 flex gap-6 items-center justify-center flex-wrap">
                       {currentQuestion.a <= 10 && (
-                        <div className="flex flex-wrap gap-1 justify-center max-w-[100px]">
-                          {Array(Math.min(currentQuestion.a, 10))
+                        <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
+                          {Array(Math.min(currentQuestion.a, 10) - movedCirclesA)
                             .fill(0)
                             .map((_, i) => (
                               <span
-                                key={i}
-                                className="inline-block w-3 h-3 bg-blue-500 rounded-full"
+                                key={`a-${i}`}
+                                onClick={() => {
+                                  if (movedCirclesA < Math.min(currentQuestion.a, 10)) {
+                                    setMovedCirclesA(prev => prev + 1);
+                                  }
+                                }}
+                                className="inline-block w-8 h-8 bg-blue-500 rounded-full cursor-pointer hover:bg-blue-400 active:bg-blue-600 transition-colors touch-manipulation"
+                                style={{ userSelect: "none", minWidth: "32px", minHeight: "32px" }}
                               />
                             ))}
                         </div>
                       )}
-                      <span className="text-white text-2xl">+</span>
+                      <span className="text-white text-3xl font-bold min-w-[40px] text-center">
+                        {currentQuestion.operation === "addition" ? "+" : "−"}
+                      </span>
                       {currentQuestion.b <= 10 && (
-                        <div className="flex flex-wrap gap-1 justify-center max-w-[100px]">
-                          {Array(Math.min(currentQuestion.b, 10))
+                        <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
+                          {Array(Math.min(currentQuestion.b, 10) - movedCirclesB)
                             .fill(0)
                             .map((_, i) => (
                               <span
-                                key={i}
-                                className="inline-block w-3 h-3 bg-green-500 rounded-full"
+                                key={`b-${i}`}
+                                onClick={() => {
+                                  if (movedCirclesB < Math.min(currentQuestion.b, 10)) {
+                                    setMovedCirclesB(prev => prev + 1);
+                                  }
+                                }}
+                                className="inline-block w-8 h-8 bg-green-500 rounded-full cursor-pointer hover:bg-green-400 active:bg-green-600 transition-colors touch-manipulation"
+                                style={{ userSelect: "none", minWidth: "32px", minHeight: "32px" }}
+                              />
+                            ))}
+                        </div>
+                      )}
+                      <span className="text-white text-3xl font-bold min-w-[40px] text-center">=</span>
+                      {/* עיגולים שעברו מאחורי הסימן שווה */}
+                      {(movedCirclesA > 0 || movedCirclesB > 0) && (
+                        <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
+                          {Array(movedCirclesA + movedCirclesB)
+                            .fill(0)
+                            .map((_, i) => (
+                              <span
+                                key={`result-${i}`}
+                                className={`inline-block w-8 h-8 rounded-full ${
+                                  i < movedCirclesA ? "bg-blue-500" : "bg-green-500"
+                                }`}
+                                style={{ minWidth: "32px", minHeight: "32px" }}
                               />
                             ))}
                         </div>
@@ -1585,8 +1626,9 @@ export default function MathMaster() {
                         const hasAnimation = (effectiveOp === "addition" || effectiveOp === "subtraction") && 
                                             typeof aEff === "number" && typeof bEff === "number";
                         
-                        if (!hasAnimation) {
-                          // חזרה למודל הישן אם אין אנימציה
+                        // מודל עם אנימציה - בדיקה ראשונית
+                        if (!animationSteps || !Array.isArray(animationSteps) || animationSteps.length === 0) {
+                          // אין אנימציה - חזרה למודל הישן
                           const info = stepExplanation;
                           if (!info) return null;
                           
@@ -1655,57 +1697,224 @@ export default function MathMaster() {
                           );
                         }
                         
-                        // מודל עם אנימציה
-                        if (!animationSteps || !Array.isArray(animationSteps) || animationSteps.length === 0) {
-                          return null;
-                        }
-                        
                         // וודא ש-animationStep בטווח תקין
                         const safeStepIndex = Math.max(0, Math.min(animationStep || 0, animationSteps.length - 1));
                         const activeStep = animationSteps[safeStepIndex];
                         
-                        if (!activeStep || !activeStep.highlights || !Array.isArray(activeStep.highlights)) {
+                        if (!activeStep) {
                           return null;
                         }
                         
-                        // פונקציה לפיצול ספרות עם padding
-                        const splitDigits = (num, minLength = 1) => {
-                          const s = String(Math.abs(num)).padStart(minLength, " ");
-                          return s.split("");
-                        };
+                        // חיבור וחיסור - הקוד המקורי בדיוק כמו שהיה (לא לשנות!)
+                        if (hasAnimation) {
+                          // פונקציה לפיצול ספרות עם padding
+                          const splitDigits = (num, minLength = 1) => {
+                            const s = String(Math.abs(num)).padStart(minLength, " ");
+                            return s.split("");
+                          };
+                          
+                          const maxLen = Math.max(
+                            String(aEff).length,
+                            String(bEff).length,
+                            answer != null ? String(answer).length : 0
+                          );
+                          
+                          const aDigits = splitDigits(aEff, maxLen);
+                          const bDigits = splitDigits(bEff, maxLen);
+                          const resDigitsFull = answer != null ? splitDigits(answer, maxLen) : Array(maxLen).fill(" ");
+                          
+                          // חישוב כמה ספרות לחשוף לפי הצעד הנוכחי
+                          const revealCount = (activeStep && typeof activeStep.revealDigits === "number") 
+                            ? activeStep.revealDigits 
+                            : 0;
+                          
+                          // יצירת מערך ספרות תוצאה חלקי - רק הספרות החשופות
+                          const visibleResultDigits = resDigitsFull.map((d, idx) => {
+                            const fromRight = maxLen - 1 - idx; // 0 = ספרת אחדות (מימין)
+                            if (fromRight < revealCount) {
+                              return d.trim() || "\u00A0";
+                            }
+                            // ספרות לא חשופות - רווח
+                            return "\u00A0";
+                          });
+                          
+                          const isHighlighted = (key) => {
+                            if (!activeStep || !activeStep.highlights || !Array.isArray(activeStep.highlights)) {
+                              return false;
+                            }
+                            return activeStep.highlights.includes(key);
+                          };
+                          
+                          // חיבור וחיסור - הקוד המקורי בדיוק כמו שהיה
+                          return (
+                            <div
+                              className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                              onClick={() => setShowSolution(false)}
+                            >
+                              <div
+                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
+                                onClick={(e) => e.stopPropagation()}
+                                style={{ maxWidth: "90vw", maxHeight: "90vh" }}
+                              >
+                                {/* כותרת - קבועה */}
+                                <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
+                                  <h3 className="text-lg font-bold text-emerald-100" dir="rtl">
+                                    {"\u200Fאיך פותרים את התרגיל?"}
+                                  </h3>
+                                  <button
+                                    onClick={() => setShowSolution(false)}
+                                    className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                                  >
+                                    ✖
+                                  </button>
+                                </div>
+                                
+                                {/* תוכן - גלילה */}
+                                <div className="flex-1 overflow-y-auto px-4 pb-2">
+                                  {/* תצוגת התרגיל המאונך עם הדגשות - טבלה */}
+                                  <div className="mb-4 flex flex-col items-center font-mono text-2xl leading-[1.8]" style={{ direction: "ltr" }}>
+                                    {/* שורה 1 – המספר הראשון (תא ריק במקום סימן הפעולה) */}
+                                    <div 
+                                      className="grid gap-x-1 mb-1"
+                                      style={{ 
+                                        gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
+                                      }}
+                                    >
+                                      <span className="w-4" /> {/* תא ריק במקום סימן הפעולה */}
+                                      {aDigits.map((d, idx) => {
+                                        const pos = maxLen - idx - 1; // מיקום מהסוף (0 = אחדות, 1 = עשרות וכו')
+                                        const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
+                                        const shouldHighlight = isHighlighted("aAll") || 
+                                                              (pos === 0 && isHighlighted("aUnits")) ||
+                                                              (pos === 1 && isHighlighted("aTens")) ||
+                                                              (pos === 2 && isHighlighted("aHundreds"));
+                                        return (
+                                          <span
+                                            key={`a-${idx}`}
+                                            className={`text-center font-bold ${
+                                              shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
+                                            }`}
+                                          >
+                                            {d.trim() || "\u00A0"}
+                                          </span>
+                                        );
+                                      })}
+                                    </div>
+                                    
+                                    {/* שורה 2 – סימן הפעולה והמספר השני */}
+                                    <div 
+                                      className="grid gap-x-1 mb-1"
+                                      style={{ 
+                                        gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
+                                      }}
+                                    >
+                                      <span className="w-4 text-center text-2xl font-bold">
+                                        {effectiveOp === "addition" ? "+" : "−"}
+                                      </span>
+                                      {bDigits.map((d, idx) => {
+                                        const pos = maxLen - idx - 1;
+                                        const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
+                                        const shouldHighlight = isHighlighted("bAll") || 
+                                                              (pos === 0 && isHighlighted("bUnits")) ||
+                                                              (pos === 1 && isHighlighted("bTens")) ||
+                                                              (pos === 2 && isHighlighted("bHundreds"));
+                                        return (
+                                          <span
+                                            key={`b-${idx}`}
+                                            className={`text-center font-bold ${
+                                              shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
+                                            }`}
+                                          >
+                                            {d.trim() || "\u00A0"}
+                                          </span>
+                                        );
+                                      })}
+                                    </div>
+                                    
+                                    {/* קו תחתון */}
+                                    <div 
+                                      className="h-[2px] bg-white my-2"
+                                      style={{ width: `${(maxLen + 1) * 1.5}ch` }}
+                                    />
+                                    
+                                    {/* שורה 3 – התוצאה (חשיפה הדרגתית) */}
+                                    <div 
+                                      className="grid gap-x-1"
+                                      style={{ 
+                                        gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
+                                      }}
+                                    >
+                                      <span className="w-4" /> {/* תא ריק */}
+                                      {visibleResultDigits.map((d, idx) => {
+                                        const pos = maxLen - idx - 1;
+                                        const fromRight = pos; // 0 = אחדות, 1 = עשרות וכו'
+                                        const isVisible = fromRight < revealCount;
+                                        const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
+                                        const shouldHighlight = isVisible && (
+                                          isHighlighted("resultAll") || 
+                                          (pos === 0 && isHighlighted("resultUnits")) ||
+                                          (pos === 1 && isHighlighted("resultTens")) ||
+                                          (pos === 2 && isHighlighted("resultHundreds"))
+                                        );
+                                        return (
+                                          <span
+                                            key={`r-${idx}`}
+                                            className={`text-center font-bold ${
+                                              shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
+                                            }`}
+                                          >
+                                            {d}
+                                          </span>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* טקסט ההסבר */}
+                                  <div className="mb-4 text-sm text-emerald-50" dir="rtl">
+                                    <h4 className="font-bold text-base mb-1">{activeStep.title}</h4>
+                                    <p className="leading-relaxed">{activeStep.text}</p>
+                                  </div>
+                                </div>
+                                
+                                {/* כפתורים ואינדיקטור - קבועים בתחתית */}
+                                <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
+                                  {/* שליטה באנימציה */}
+                                  <div className="flex gap-2 justify-center items-center">
+                                    <button
+                                      onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
+                                      disabled={animationStep >= animationSteps.length - 1}
+                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                    >
+                                      הבא
+                                    </button>
+                                    <button
+                                      onClick={() => setAutoPlay((p) => !p)}
+                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
+                                    >
+                                      {autoPlay ? "עצור" : "נגן"}
+                                    </button>
+                                    <button
+                                      onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
+                                      disabled={animationStep === 0}
+                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                      dir="rtl"
+                                    >
+                                      {"\u200Fקודם"}
+                                    </button>
+                                  </div>
+                                  
+                                  {/* אינדיקטור צעדים */}
+                                  <div className="text-center text-xs text-emerald-300">
+                                    צעד {animationStep + 1} מתוך {animationSteps.length}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
                         
-                        const maxLen = Math.max(
-                          String(aEff).length,
-                          String(bEff).length,
-                          answer != null ? String(answer).length : 0
-                        );
-                        
-                        const aDigits = splitDigits(aEff, maxLen);
-                        const bDigits = splitDigits(bEff, maxLen);
-                        const resDigitsFull = answer != null ? splitDigits(answer, maxLen) : Array(maxLen).fill(" ");
-                        
-                        // חישוב כמה ספרות לחשוף לפי הצעד הנוכחי
-                        const revealCount = (activeStep && typeof activeStep.revealDigits === "number") 
-                          ? activeStep.revealDigits 
-                          : 0;
-                        
-                        // יצירת מערך ספרות תוצאה חלקי - רק הספרות החשופות
-                        const visibleResultDigits = resDigitsFull.map((d, idx) => {
-                          const fromRight = maxLen - 1 - idx; // 0 = ספרת אחדות (מימין)
-                          if (fromRight < revealCount) {
-                            return d.trim() || "\u00A0";
-                          }
-                          // ספרות לא חשופות - רווח
-                          return "\u00A0";
-                        });
-                        
-                        const isHighlighted = (key) => {
-                          if (!activeStep || !activeStep.highlights || !Array.isArray(activeStep.highlights)) {
-                            return false;
-                          }
-                          return activeStep.highlights.includes(key);
-                        };
-                        
+                        // שאר הנושאים - אנימציה כללית עם כפתורי ניווט
                         return (
                           <div
                             className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
@@ -1731,109 +1940,17 @@ export default function MathMaster() {
                               
                               {/* תוכן - גלילה */}
                               <div className="flex-1 overflow-y-auto px-4 pb-2">
-                                {/* תצוגת התרגיל המאונך עם הדגשות - טבלה */}
-                                <div className="mb-4 flex flex-col items-center font-mono text-2xl leading-[1.8]" style={{ direction: "ltr" }}>
-                                  {/* שורה 1 – המספר הראשון (תא ריק במקום סימן הפעולה) */}
-                                  <div 
-                                    className="grid gap-x-1 mb-1"
-                                    style={{ 
-                                      gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
-                                    }}
-                                  >
-                                    <span className="w-4" /> {/* תא ריק במקום סימן הפעולה */}
-                                    {aDigits.map((d, idx) => {
-                                      const pos = maxLen - idx - 1; // מיקום מהסוף (0 = אחדות, 1 = עשרות וכו')
-                                      const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
-                                      const shouldHighlight = isHighlighted("aAll") || 
-                                                            (pos === 0 && isHighlighted("aUnits")) ||
-                                                            (pos === 1 && isHighlighted("aTens")) ||
-                                                            (pos === 2 && isHighlighted("aHundreds"));
-                                      return (
-                                        <span
-                                          key={`a-${idx}`}
-                                          className={`text-center font-bold ${
-                                            shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
-                                          }`}
-                                        >
-                                          {d.trim() || "\u00A0"}
-                                        </span>
-                                      );
-                                    })}
-                                  </div>
-                                  
-                                  {/* שורה 2 – סימן הפעולה והמספר השני */}
-                                  <div 
-                                    className="grid gap-x-1 mb-1"
-                                    style={{ 
-                                      gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
-                                    }}
-                                  >
-                                    <span className="w-4 text-center text-2xl font-bold">
-                                      {effectiveOp === "addition" ? "+" : "−"}
-                                    </span>
-                                    {bDigits.map((d, idx) => {
-                                      const pos = maxLen - idx - 1;
-                                      const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
-                                      const shouldHighlight = isHighlighted("bAll") || 
-                                                            (pos === 0 && isHighlighted("bUnits")) ||
-                                                            (pos === 1 && isHighlighted("bTens")) ||
-                                                            (pos === 2 && isHighlighted("bHundreds"));
-                                      return (
-                                        <span
-                                          key={`b-${idx}`}
-                                          className={`text-center font-bold ${
-                                            shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
-                                          }`}
-                                        >
-                                          {d.trim() || "\u00A0"}
-                                        </span>
-                                      );
-                                    })}
-                                  </div>
-                                  
-                                  {/* קו תחתון */}
-                                  <div 
-                                    className="h-[2px] bg-white my-2"
-                                    style={{ width: `${(maxLen + 1) * 1.5}ch` }}
-                                  />
-                                  
-                                  {/* שורה 3 – התוצאה (חשיפה הדרגתית) */}
-                                  <div 
-                                    className="grid gap-x-1"
-                                    style={{ 
-                                      gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
-                                    }}
-                                  >
-                                    <span className="w-4" /> {/* תא ריק */}
-                                    {visibleResultDigits.map((d, idx) => {
-                                      const pos = maxLen - idx - 1;
-                                      const fromRight = pos; // 0 = אחדות, 1 = עשרות וכו'
-                                      const isVisible = fromRight < revealCount;
-                                      const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
-                                      const shouldHighlight = isVisible && (
-                                        isHighlighted("resultAll") || 
-                                        (pos === 0 && isHighlighted("resultUnits")) ||
-                                        (pos === 1 && isHighlighted("resultTens")) ||
-                                        (pos === 2 && isHighlighted("resultHundreds"))
-                                      );
-                                      return (
-                                        <span
-                                          key={`r-${idx}`}
-                                          className={`text-center font-bold ${
-                                            shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
-                                          }`}
-                                        >
-                                          {d}
-                                        </span>
-                                      );
-                                    })}
+                                {/* הצגת התרגיל/שאלה */}
+                                <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2" dir="rtl">
+                                  <div className="text-sm text-emerald-100 font-semibold mb-1">
+                                    {currentQuestion.exerciseText || currentQuestion.question}
                                   </div>
                                 </div>
                                 
                                 {/* טקסט ההסבר */}
                                 <div className="mb-4 text-sm text-emerald-50" dir="rtl">
-                                  <h4 className="font-bold text-base mb-1">{activeStep.title}</h4>
-                                  <p className="leading-relaxed">{activeStep.text}</p>
+                                  <h4 className="font-bold text-base mb-1">{activeStep.title || "הסבר"}</h4>
+                                  <p className="leading-relaxed">{activeStep.text || ""}</p>
                                 </div>
                               </div>
                               
