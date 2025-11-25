@@ -58,23 +58,10 @@ export default function Curriculum() {
                 </ol>
                 <div className="bg-white/5 p-3 rounded mb-3">
                   <h4 className="font-semibold mb-2">רמות קושי:</h4>
-                  <div className="grid grid-cols-4 gap-2 text-sm">
-                    <div className="font-semibold">רמה</div>
-                    <div className="font-semibold">חיבור</div>
-                    <div className="font-semibold">חיסור</div>
-                    <div className="font-semibold">השוואה/תחושת מספר</div>
-                    <div>קל</div>
-                    <div>עד 10</div>
-                    <div>עד 10</div>
-                    <div>עד 10</div>
-                    <div>בינוני</div>
-                    <div>עד 20</div>
-                    <div>עד 20</div>
-                    <div>עד 20</div>
-                    <div>קשה</div>
-                    <div>עד 20</div>
-                    <div>עד 20</div>
-                    <div>עד 20</div>
+                  <div className="text-sm space-y-2">
+                    <div><strong>קל:</strong> חיבור עד 10, חיסור עד 10, השוואה עד 10, תחושת מספר עד 10</div>
+                    <div><strong>בינוני:</strong> חיבור עד 20, חיסור עד 20, השוואה עד 20, תחושת מספר עד 20</div>
+                    <div><strong>קשה:</strong> חיבור עד 20, חיסור עד 20, השוואה עד 20, תחושת מספר עד 20</div>
                   </div>
                 </div>
                 <div className="bg-yellow-500/20 p-3 rounded text-sm">
@@ -97,27 +84,10 @@ export default function Curriculum() {
                 </ol>
                 <div className="bg-white/5 p-3 rounded mb-3">
                   <h4 className="font-semibold mb-2">רמות קושי:</h4>
-                  <div className="grid grid-cols-5 gap-2 text-sm">
-                    <div className="font-semibold">רמה</div>
-                    <div className="font-semibold">חיבור/חיסור</div>
-                    <div className="font-semibold">כפל</div>
-                    <div className="font-semibold">חילוק</div>
-                    <div className="font-semibold">שברים</div>
-                    <div>קל</div>
-                    <div>עד 50</div>
-                    <div>עד 5×5</div>
-                    <div>עד 50</div>
-                    <div>מכנה עד 2</div>
-                    <div>בינוני</div>
-                    <div>עד 100</div>
-                    <div>עד 10×10</div>
-                    <div>עד 100</div>
-                    <div>מכנה עד 4</div>
-                    <div>קשה</div>
-                    <div>עד 100</div>
-                    <div>עד 10×10</div>
-                    <div>עד 100</div>
-                    <div>מכנה עד 4</div>
+                  <div className="text-sm space-y-2">
+                    <div><strong>קל:</strong> חיבור/חיסור עד 50, כפל עד 5×5, חילוק עד 50, שברים מכנה עד 2</div>
+                    <div><strong>בינוני:</strong> חיבור/חיסור עד 100, כפל עד 10×10, חילוק עד 100, שברים מכנה עד 4</div>
+                    <div><strong>קשה:</strong> חיבור/חיסור עד 100, כפל עד 10×10, חילוק עד 100, שברים מכנה עד 4</div>
                   </div>
                 </div>
                 <div className="bg-yellow-500/20 p-3 rounded text-sm">
