@@ -42,6 +42,18 @@ export function getLevelConfig(grade, levelKey) {
     delete result.fractions;
   }
   
+  // הסרת פעולות שלא מוגדרות בכיתה
+  const operationsToCheck = [
+    "percentages", "sequences", "decimals", "rounding", 
+    "equations", "compare", "number_sense", "factors_multiples", "word_problems"
+  ];
+  
+  operationsToCheck.forEach(op => {
+    if (!gradeCfgGrades.operations.includes(op)) {
+      delete result[op];
+    }
+  });
+  
   return result;
 }
 

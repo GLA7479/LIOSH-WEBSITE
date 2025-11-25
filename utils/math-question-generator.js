@@ -412,8 +412,10 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     }
   // ===== אחוזים (כיתות ה–ו) =====
   } else if (selectedOp === "percentages") {
-    const base = randInt(40, 400);
-    const percOptions = [10, 20, 25, 50];
+    const maxBase = levelConfig.percentages?.maxBase || 400;
+    const maxPercent = levelConfig.percentages?.maxPercent || 50;
+    const base = randInt(40, maxBase);
+    const percOptions = [10, 20, 25, maxPercent].filter(p => p <= maxPercent);
     const p = percOptions[Math.floor(Math.random() * percOptions.length)];
 
     const t = Math.random() < 0.5 ? "part_of" : "discount";
@@ -431,14 +433,16 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     }
   // ===== סדרות =====
   } else if (selectedOp === "sequences") {
-    const start = randInt(1, 20);
+    const maxStart = levelConfig.sequences?.maxStart || 20;
+    const maxStep = levelConfig.sequences?.maxStep || 9;
+    const start = randInt(1, maxStart);
     let step;
     if (gradeKey === "g1" || gradeKey === "g2") {
-      step = randInt(1, 3);
+      step = randInt(1, Math.min(3, maxStep));
     } else if (gradeKey === "g3" || gradeKey === "g4") {
-      step = randInt(1, 9);
+      step = randInt(1, maxStep);
     } else {
-      step = randInt(-9, 9) || 2;
+      step = randInt(-maxStep, maxStep) || 2;
     }
 
     const posOfBlank = randInt(0, 4); // אחד מחמשת המספרים
@@ -474,8 +478,8 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     params = { kind: "sequence", start, step, seq, posOfBlank, questionLabel, exerciseText };
   // ===== עשרוניים =====
   } else if (selectedOp === "decimals") {
-    const places = (gradeKey === "g3" || gradeKey === "g4") ? 1 : 2;
-    const maxBase = (gradeKey === "g3" || gradeKey === "g4") ? 50 : 200;
+    const places = levelConfig.decimals?.places || 2;
+    const maxBase = levelConfig.decimals?.maxBase || 200;
     const a = round(Math.random() * maxBase, places);
     const b = round(Math.random() * maxBase, places);
     const t = Math.random() < 0.5 ? "add" : "sub";
@@ -493,8 +497,9 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     }
   // ===== עיגול =====
   } else if (selectedOp === "rounding") {
-    const toWhat = Math.random() < 0.5 ? 10 : 100;
-    const maxN = toWhat === 10 ? 999 : 9999;
+    const roundingConfig = levelConfig.rounding || {};
+    const toWhat = roundingConfig.toWhat || (Math.random() < 0.5 ? 10 : 100);
+    const maxN = roundingConfig.maxN || (toWhat === 10 ? 999 : 9999);
     const n = randInt(1, maxN);
     correctAnswer =
       toWhat === 10 ? Math.round(n / 10) * 10 : Math.round(n / 100) * 100;
@@ -581,7 +586,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     }
   } else if (selectedOp === "compare") {
     const isLowGrade = gradeKey === "g1" || gradeKey === "g2";
-    const maxVal = levelConfig.addition.max || 500;
+    const maxVal = levelConfig.compare?.max || levelConfig.addition?.max || 500;
     const a = isLowGrade ? randInt(0, 100) : randInt(-20, maxVal);
     const b = isLowGrade ? randInt(0, 100) : randInt(-20, maxVal);
 
@@ -625,8 +630,10 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         : ["neighbors", "place_hundreds", "complement100"];
     const t = types[Math.floor(Math.random() * types.length)];
 
+    const maxNumberSense = levelConfig.number_sense?.max || levelConfig.addition?.max || 999;
+    
     if (t === "neighbors") {
-      const n = randInt(1, 999);
+      const n = randInt(1, Math.min(999, maxNumberSense));
       const dir = Math.random() < 0.5 ? "after" : "before";
       if (dir === "after") {
         correctAnswer = n + 1;
@@ -681,7 +688,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       params = { kind: "ns_complement100", a, b, c };
       } else {
       // even_odd – תשובה טקסטואלית
-      const n = randInt(0, 200);
+      const n = randInt(0, Math.min(200, maxNumberSense));
       const isEven = n % 2 === 0;
       correctAnswer = isEven ? "זוגי" : "אי-זוגי";
       question = `האם המספר ${n} הוא זוגי או אי-זוגי?`;
@@ -727,9 +734,10 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
   } else if (selectedOp === "factors_multiples") {
     const types = ["factor", "multiple", "gcd"];
     const t = types[Math.floor(Math.random() * types.length)];
+    const maxNumber = levelConfig.factors_multiples?.maxNumber || 100;
 
     if (t === "factor") {
-      const n = randInt(12, 60);
+      const n = randInt(12, Math.min(60, maxNumber));
       const factors = [];
       for (let i = 1; i <= n; i++) {
         if (n % i === 0) factors.push(i);
@@ -763,11 +771,11 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         isStory: false,
       };
     } else if (t === "multiple") {
-      const base = randInt(3, 12);
-      const correct = base * randInt(2, 10);
+      const base = randInt(3, Math.min(12, Math.floor(maxNumber / 10)));
+      const correct = base * randInt(2, Math.min(10, Math.floor(maxNumber / base)));
       const options = new Set([correct]);
       while (options.size < 4) {
-        const candidate = randInt(base + 1, base * 15);
+        const candidate = randInt(base + 1, Math.min(base * 15, maxNumber));
         if (candidate % base !== 0) options.add(candidate);
       }
       const answers = Array.from(options);
