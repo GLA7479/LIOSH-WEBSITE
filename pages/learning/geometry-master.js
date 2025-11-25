@@ -99,32 +99,6 @@ export default function GeometryMaster() {
   });
 
 
-  useEffect(() => {
-    const allowed = GRADES[grade]?.topics || [];
-    if (allowed.length > 0 && !allowed.includes(topic)) {
-      const firstAllowed = allowed.find((t) => t !== "mixed") || allowed[0];
-      if (firstAllowed && firstAllowed !== topic) {
-        setTopic(firstAllowed);
-      }
-    } else if (allowed.length === 0) {
-      // אם אין נושאים זמינים (כמו בכיתה א'), נגדיר ברירת מחדל
-      if (topic !== "area") {
-        setTopic("area");
-      }
-    }
-  }, [grade]); // הסרתי את topic מה-dependencies כדי למנוע לולאה אינסופית
-
-  useEffect(() => {
-    const availableTopics = (GRADES[grade]?.topics || []).filter((t) => t !== "mixed");
-    const newMixedTopics = {
-      area: availableTopics.includes("area"),
-      perimeter: availableTopics.includes("perimeter"),
-      volume: availableTopics.includes("volume"),
-      angles: availableTopics.includes("angles"),
-      pythagoras: availableTopics.includes("pythagoras"),
-    };
-    setMixedTopics(newMixedTopics);
-  }, [grade]);
 
   useEffect(() => {
     const today = new Date().toDateString();
@@ -163,23 +137,96 @@ export default function GeometryMaster() {
   }, []);
 
   const generateNewQuestion = () => {
+    // בדיקה שהכיתה קיימת
+    if (!GRADES[grade]) {
+      console.error("כיתה לא תקינה:", grade);
+      return;
+    }
+    
+    const allowedTopics = GRADES[grade].topics || [];
+    
+    // בדיקה שיש נושאים זמינים
+    if (allowedTopics.length === 0) {
+      console.error("אין נושאים זמינים לכיתה:", grade);
+      setCurrentQuestion({
+        question: "אין נושאים זמינים עבור הכיתה הזו. אנא בחר כיתה אחרת.",
+        correctAnswer: 0,
+        options: [0],
+        params: { kind: "no_question" },
+      });
+      return;
+    }
+    
+    // בדיקה שהנושא הנוכחי תקין, אם לא - נעצור
+    let validTopic = topic;
+    if (topic === "mixed") {
+      const mixedAvailable = Object.keys(mixedTopics).filter(t => mixedTopics[t] && allowedTopics.includes(t));
+      if (mixedAvailable.length === 0) {
+        validTopic = allowedTopics.find(t => t !== "mixed") || allowedTopics[0];
+      }
+    } else if (!allowedTopics.includes(topic)) {
+      // אם הנושא לא תקין, נעצור ולא ננסה ליצור שאלה
+      // ה-onChange של הכיתה יעדכן את ה-topic
+      setCurrentQuestion({
+        question: "מעדכן נושא...",
+        correctAnswer: 0,
+        options: [0],
+        params: { kind: "no_question" },
+      });
+      return; // נעצור כאן - ה-onChange יעדכן את ה-topic
+    }
+    
+    // בדיקה סופית שהנושא תקין
+    if (!validTopic || !allowedTopics.includes(validTopic)) {
+      setCurrentQuestion({
+        question: "אין נושאים זמינים. אנא בחר נושא אחר.",
+        correctAnswer: 0,
+        options: [0],
+        params: { kind: "no_question" },
+      });
+      return;
+    }
+    
     const levelConfig = getLevelForGrade(level, grade);
     let question;
     let attempts = 0;
     const maxAttempts = 50;
     do {
-      const selectedTopics = topic === "mixed" 
-        ? Object.keys(mixedTopics).filter(t => mixedTopics[t])
-        : [topic];
+      const selectedTopics = validTopic === "mixed" 
+        ? Object.keys(mixedTopics).filter(t => mixedTopics[t] && allowedTopics.includes(t))
+        : [validTopic];
+      
+      if (selectedTopics.length === 0) {
+        question = {
+          question: "אין נושאים זמינים. אנא בחר נושא אחר.",
+          correctAnswer: 0,
+          options: [0],
+          params: { kind: "no_question" },
+        };
+        break;
+      }
+      
+      const currentTopic = selectedTopics[0];
       question = generateQuestion(
         levelConfig,
-        selectedTopics.length > 0 ? selectedTopics[0] : topic,
+        currentTopic,
         grade,
-        topic === "mixed" ? mixedTopics : null
+        validTopic === "mixed" ? mixedTopics : null
       );
+      
+      // אם אין שאלה זמינה, ננסה נושא אחר
+      if (question.params?.kind === "no_question") {
+        const nextTopic = allowedTopics.find(t => t !== "mixed" && t !== currentTopic);
+        if (nextTopic) {
+          question = generateQuestion(levelConfig, nextTopic, grade, null);
+        } else {
+          break; // אין נושאים אחרים לנסות
+        }
+      }
+      
       attempts++;
       const questionKey = question.question;
-      if (!recentQuestions.has(questionKey)) {
+      if (!recentQuestions.has(questionKey) && question.params?.kind !== "no_question") {
         setRecentQuestions((prev) => {
           const newSet = new Set(prev);
           newSet.add(questionKey);
@@ -784,8 +831,38 @@ export default function GeometryMaster() {
                 <select
                   value={grade}
                   onChange={(e) => {
-                    setGrade(e.target.value);
+                    const newGrade = e.target.value;
+
+                    // מעדכנים כיתה ומפסיקים משחק
+                    setGrade(newGrade);
                     setGameActive(false);
+                    setCurrentQuestion(null);
+                    setFeedback(null);
+                    setSelectedAnswer(null);
+                    setShowHint(false);
+                    setHintUsed(false);
+                    setShowSolution(false);
+
+                    // בחירת נושא ברירת מחדל שמתאים לכיתה
+                    const allowed = GRADES[newGrade]?.topics || [];
+                    const firstAllowed = allowed.find((t) => t !== "mixed") || allowed[0] || "area";
+                    if (firstAllowed) {
+                      setTopic(firstAllowed);
+                    }
+
+                    // עדכון נושאים זמינים למיקס לפי הכיתה החדשה
+                    const availableTopics = allowed.filter((t) => t !== "mixed");
+                    const newMixedTopics = {
+                      area: availableTopics.includes("area"),
+                      perimeter: availableTopics.includes("perimeter"),
+                      volume: availableTopics.includes("volume"),
+                      angles: availableTopics.includes("angles"),
+                      pythagoras: availableTopics.includes("pythagoras"),
+                    };
+                    setMixedTopics(newMixedTopics);
+
+                    // מאפס את רשימת השאלות האחרונות כדי שלא תהיה לולאה בניסיון למצוא "שאלה חדשה"
+                    setRecentQuestions(new Set());
                   }}
                   className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
                 >
@@ -970,7 +1047,7 @@ export default function GeometryMaster() {
                   className="w-full max-w-md flex flex-col items-center justify-center mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
-                  {mode === "learning" && (
+                  {mode === "learning" && currentQuestion.params?.kind !== "no_question" && (
                     <div
                       className="mb-2 px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 max-w-md"
                       style={{ direction: "rtl", unicodeBidi: "plaintext" }}
@@ -979,32 +1056,44 @@ export default function GeometryMaster() {
                     </div>
                   )}
 
-                  {/* הפרדה בין שורת השאלה לשורת התרגיל */}
-                  {currentQuestion.questionLabel && currentQuestion.exerciseText ? (
-                    <>
-                      <p
-                        className="text-2xl text-center text-white mb-1"
-                        style={{ direction: "rtl", unicodeBidi: "plaintext" }}
-                      >
-                        {currentQuestion.questionLabel}
-                      </p>
-                      <p
-                        className="text-4xl text-center text-white font-bold mb-4 whitespace-nowrap"
-                        style={{ direction: "ltr", unicodeBidi: "plaintext" }}
-                      >
-                        {currentQuestion.exerciseText}
-                      </p>
-                    </>
-                  ) : (
+                  {/* בדיקה אם יש שאלה תקינה */}
+                  {currentQuestion.params?.kind === "no_question" ? (
                     <div
-                      className="text-4xl font-black text-white mb-4 text-center"
+                      className="text-xl font-bold text-red-400 mb-4 text-center p-4 bg-red-500/20 rounded-lg border border-red-400/50"
                       style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                     >
-                    {currentQuestion.question}
-                  </div>
+                      {currentQuestion.question}
+                    </div>
+                  ) : (
+                    <>
+                      {/* הפרדה בין שורת השאלה לשורת התרגיל */}
+                      {currentQuestion.questionLabel && currentQuestion.exerciseText ? (
+                        <>
+                          <p
+                            className="text-2xl text-center text-white mb-1"
+                            style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                          >
+                            {currentQuestion.questionLabel}
+                          </p>
+                          <p
+                            className="text-4xl text-center text-white font-bold mb-4 whitespace-nowrap"
+                            style={{ direction: "ltr", unicodeBidi: "plaintext" }}
+                          >
+                            {currentQuestion.exerciseText}
+                          </p>
+                        </>
+                      ) : (
+                        <div
+                          className="text-4xl font-black text-white mb-4 text-center"
+                          style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                        >
+                          {currentQuestion.question}
+                        </div>
+                      )}
+                    </>
                   )}
 
-                  {!hintUsed && !selectedAnswer && (
+                  {!hintUsed && !selectedAnswer && currentQuestion.params?.kind !== "no_question" && (
                     <button
                       onClick={() => {
                         setShowHint(true);
@@ -1016,7 +1105,7 @@ export default function GeometryMaster() {
                     </button>
                   )}
 
-                  {showHint && (
+                  {showHint && currentQuestion.params?.kind !== "no_question" && (
                     <div
                       className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center max-w-md"
                       style={{ direction: "rtl", unicodeBidi: "plaintext" }}
@@ -1026,7 +1115,7 @@ export default function GeometryMaster() {
                   )}
 
                   {/* כפתור הסבר מלא – רק במצב Learning */}
-                  {mode === "learning" && currentQuestion && (
+                  {mode === "learning" && currentQuestion && currentQuestion.params?.kind !== "no_question" && (
                     <>
                       <button
                         onClick={() => setShowSolution((prev) => !prev)}
@@ -1098,6 +1187,7 @@ export default function GeometryMaster() {
                     </>
                   )}
 
+                  {currentQuestion.params?.kind !== "no_question" && currentQuestion.answers && (
                   <div className="grid grid-cols-2 gap-3 w-full mb-3">
                     {currentQuestion.answers.map((answer, idx) => {
                       const isSelected = selectedAnswer === answer;
@@ -1125,6 +1215,7 @@ export default function GeometryMaster() {
                       );
                     })}
                   </div>
+                  )}
                 </div>
               )}
 

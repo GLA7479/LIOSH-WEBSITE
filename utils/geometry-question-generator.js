@@ -3,7 +3,18 @@
 import { GRADES, PI, getShapesForTopic } from "./geometry-constants";
 
 export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
+  // בדיקה שהכיתה קיימת
+  if (!GRADES[gradeKey]) {
+    return {
+      question: "כיתה לא תקינה. אנא בחר כיתה אחרת.",
+      correctAnswer: 0,
+      options: [0],
+      params: { kind: "no_question" },
+    };
+  }
+  
   const isMixed = topic === "mixed";
+  const allowedTopics = GRADES[gradeKey].topics || [];
   
   let selectedTopic;
   if (isMixed) {
@@ -13,18 +24,53 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
         .filter(([t, selected]) => selected && t !== "mixed")
         .map(([t]) => t);
     } else {
-      availableTopics = GRADES[gradeKey].topics.filter((t) => t !== "mixed");
+      availableTopics = allowedTopics.filter((t) => t !== "mixed");
     }
     if (!availableTopics || availableTopics.length === 0) {
-      availableTopics = GRADES[gradeKey].topics.filter((t) => t !== "mixed");
+      availableTopics = allowedTopics.filter((t) => t !== "mixed");
+    }
+    if (!availableTopics || availableTopics.length === 0) {
+      return {
+        question: "אין נושאים זמינים עבור הכיתה הזו. אנא בחר כיתה אחרת.",
+        correctAnswer: 0,
+        options: [0],
+        params: { kind: "no_question" },
+      };
     }
     selectedTopic =
       availableTopics[Math.floor(Math.random() * availableTopics.length)];
   } else {
-    selectedTopic = topic;
+    // בדיקה שהנושא קיים עבור הכיתה
+    if (!allowedTopics.includes(topic)) {
+      // ננסה למצוא נושא חלופי
+      const alternativeTopic = allowedTopics.find(t => t !== "mixed");
+      if (alternativeTopic) {
+        selectedTopic = alternativeTopic;
+      } else {
+        return {
+          question: `הנושא "${topic}" לא זמין עבור הכיתה הזו. אנא בחר נושא אחר.`,
+          correctAnswer: 0,
+          options: [0],
+          params: { kind: "no_question" },
+        };
+      }
+    } else {
+      selectedTopic = topic;
+    }
   }
 
   const availableShapes = getShapesForTopic(gradeKey, selectedTopic);
+  
+  // אם אין צורות זמינות, נחזיר שאלה ברירת מחדל
+  if (!availableShapes || availableShapes.length === 0) {
+    return {
+      question: "אין שאלות זמינות עבור הנושא והכיתה שנבחרו. אנא בחר נושא אחר.",
+      correctAnswer: 0,
+      options: [0],
+      params: { kind: "no_question" },
+    };
+  }
+  
   const shape =
     availableShapes.length > 0
       ? availableShapes[Math.floor(Math.random() * availableShapes.length)]
@@ -351,6 +397,165 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           question = `במשולש ישר זווית, היתר הוא ${c} והניצב השני הוא ${a}. מה אורך הניצב החסר?`;
         }
       }
+      break;
+    }
+
+    // ===================== SHAPES BASIC =====================
+    case "shapes_basic": {
+      // שאלות זיהוי בסיסיות - מה השם של הצורה?
+      const side = Math.floor(Math.random() * level.maxSide) + 1;
+      const isSquare = Math.random() < 0.5;
+      
+      if (isSquare) {
+        params = { shape: "ריבוע", side, kind: "shapes_basic_square" };
+        correctAnswer = 1; // ריבוע
+        question = `צורה עם 4 צלעות שוות באורך ${side}. מה שמה? (1 = ריבוע, 2 = מלבן)`;
+      } else {
+        const width = Math.floor(Math.random() * level.maxSide) + 1;
+        params = { shape: "מלבן", length: side, width, kind: "shapes_basic_rectangle" };
+        correctAnswer = 2; // מלבן
+        question = `צורה עם אורך ${side} ורוחב ${width}. מה שמה? (1 = ריבוע, 2 = מלבן)`;
+      }
+      break;
+    }
+
+    // ===================== PARALLEL PERPENDICULAR =====================
+    case "parallel_perpendicular": {
+      const types = ["מקבילות", "מאונכות"];
+      const selectedType = types[Math.floor(Math.random() * types.length)];
+      const isParallel = selectedType === "מקבילות";
+      
+      params = { type: selectedType, isParallel, kind: "parallel_perpendicular" };
+      correctAnswer = isParallel ? 1 : 2; // 1 = מקבילות, 2 = מאונכות
+      question = `איזה סוג קווים הם ${selectedType}? (1 = מקבילות, 2 = מאונכות)`;
+      break;
+    }
+
+    // ===================== TRIANGLES =====================
+    case "triangles": {
+      const types = ["שווה צלעות", "שווה שוקיים", "שונה צלעות"];
+      const selectedType = types[Math.floor(Math.random() * types.length)];
+      
+      params = { type: selectedType, kind: "triangles" };
+      correctAnswer = types.indexOf(selectedType) + 1;
+      question = `איזה סוג משולש הוא ${selectedType}? (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`;
+      break;
+    }
+
+    // ===================== QUADRILATERALS =====================
+    case "quadrilaterals": {
+      const types = ["ריבוע", "מלבן", "מקבילית", "טרפז"];
+      const selectedType = types[Math.floor(Math.random() * types.length)];
+      
+      params = { type: selectedType, kind: "quadrilaterals" };
+      correctAnswer = types.indexOf(selectedType) + 1;
+      question = `איזה סוג מרובע הוא ${selectedType}? (1 = ריבוע, 2 = מלבן, 3 = מקבילית, 4 = טרפז)`;
+      break;
+    }
+
+    // ===================== TRANSFORMATIONS =====================
+    case "transformations": {
+      const types = ["הזזה", "שיקוף"];
+      const selectedType = types[Math.floor(Math.random() * types.length)];
+      const isTranslation = selectedType === "הזזה";
+      
+      params = { type: selectedType, isTranslation, kind: "transformations" };
+      correctAnswer = isTranslation ? 1 : 2; // 1 = הזזה, 2 = שיקוף
+      question = `איזה סוג טרנספורמציה היא ${selectedType}? (1 = הזזה, 2 = שיקוף)`;
+      break;
+    }
+
+    // ===================== ROTATION =====================
+    case "rotation": {
+      const angle = [90, 180, 270][Math.floor(Math.random() * 3)];
+      params = { angle, kind: "rotation" };
+      correctAnswer = angle;
+      question = `סיבוב של כמה מעלות? (${angle}°)`;
+      break;
+    }
+
+    // ===================== SYMMETRY =====================
+    case "symmetry": {
+      const shapes = ["ריבוע", "מלבן", "משולש שווה צלעות"];
+      const selectedShape = shapes[Math.floor(Math.random() * shapes.length)];
+      const axes = selectedShape === "ריבוע" ? 4 : selectedShape === "מלבן" ? 2 : 3;
+      
+      params = { shape: selectedShape, axes, kind: "symmetry" };
+      correctAnswer = axes;
+      question = `כמה צירי סימטרייה יש ל${selectedShape}?`;
+      break;
+    }
+
+    // ===================== DIAGONAL =====================
+    case "diagonal": {
+      const shape = ["ריבוע", "מלבן"][Math.floor(Math.random() * 2)];
+      const side = Math.floor(Math.random() * level.maxSide) + 1;
+      const isSquare = shape === "ריבוע";
+      const diagonal = isSquare ? round(side * Math.sqrt(2)) : round(Math.sqrt(side * side + (side * 1.5) * (side * 1.5)));
+      
+      params = { shape, side, diagonal, kind: "diagonal" };
+      correctAnswer = diagonal;
+      question = `מה אורך האלכסון של ${shape} עם צלע ${side}?`;
+      break;
+    }
+
+    // ===================== HEIGHTS =====================
+    case "heights": {
+      const base = Math.floor(Math.random() * level.maxSide) + 1;
+      const area = Math.floor(Math.random() * level.maxSide * 5) + 10;
+      const height = round((area * 2) / base);
+      
+      params = { base, area, height, kind: "heights" };
+      correctAnswer = height;
+      question = `במשולש עם בסיס ${base} ושטח ${area}, מה הגובה?`;
+      break;
+    }
+
+    // ===================== TILING =====================
+    case "tiling": {
+      const shapes = ["ריבוע", "משולש שווה צלעות", "משושה"];
+      const selectedShape = shapes[Math.floor(Math.random() * shapes.length)];
+      const angle = selectedShape === "ריבוע" ? 90 : selectedShape === "משולש שווה צלעות" ? 60 : 120;
+      
+      params = { shape: selectedShape, angle, kind: "tiling" };
+      correctAnswer = angle;
+      question = `איזו זווית יש ב${selectedShape} המשמש לריצוף?`;
+      break;
+    }
+
+    // ===================== CIRCLES =====================
+    case "circles": {
+      const radius = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+      const askArea = Math.random() < 0.5;
+      
+      if (askArea) {
+        params = { radius, kind: "circle_area", askArea: true };
+        correctAnswer = round(PI * radius * radius);
+        question = `מה שטח העיגול עם רדיוס ${radius}? (π = 3.14)`;
+      } else {
+        params = { radius, kind: "circle_perimeter", askArea: false };
+        correctAnswer = round(2 * PI * radius);
+        question = `מה היקף המעגל עם רדיוס ${radius}? (π = 3.14)`;
+      }
+      break;
+    }
+
+    // ===================== SOLIDS =====================
+    case "solids": {
+      // שאלות זיהוי גופים - מה השם של הגוף?
+      const solids = [
+        { name: "קובייה", desc: "6 פאות ריבועיות שוות", num: 1 },
+        { name: "תיבה", desc: "6 פאות מלבניות", num: 2 },
+        { name: "גליל", desc: "2 בסיסים עגולים", num: 3 },
+        { name: "פירמידה", desc: "בסיס מצולע ופאות משולשות", num: 4 },
+        { name: "חרוט", desc: "בסיס עגול וקודקוד", num: 5 },
+        { name: "כדור", desc: "כל הנקודות במרחק שווה מהמרכז", num: 6 },
+      ];
+      const selected = solids[Math.floor(Math.random() * solids.length)];
+      
+      params = { solid: selected.name, desc: selected.desc, kind: "solids" };
+      correctAnswer = selected.num;
+      question = `גוף עם ${selected.desc}. מה שמו? (1 = קובייה, 2 = תיבה, 3 = גליל, 4 = פירמידה, 5 = חרוט, 6 = כדור)`;
       break;
     }
 

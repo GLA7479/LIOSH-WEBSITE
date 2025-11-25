@@ -44,6 +44,32 @@ export function getHint(question, topic, gradeKey) {
       return `סכום זוויות במשולש = 180°. אם יש ${question.params?.angle1 || 0}° ו-${question.params?.angle2 || 0}°, אז השלישית = 180° - (שתי הזוויות)`;
     case "pythagoras":
       return `משפט פיתגורס: a² + b² = c². כאן: ${question.params?.a || 0}² + ${question.params?.b || 0}² = c²`;
+    case "shapes_basic":
+      return `זהה את הצורה: ${question.params?.shape || "ריבוע"} - ריבוע יש לו 4 צלעות שוות, מלבן יש לו 2 זוגות של צלעות שוות`;
+    case "parallel_perpendicular":
+      return `קווים ${question.params?.type || "מקבילות"} - מקבילות לא נפגשות, מאונכות יוצרות זווית ישרה`;
+    case "triangles":
+      return `מיון משולשים: ${question.params?.type || "שווה צלעות"} - לפי אורך הצלעות`;
+    case "quadrilaterals":
+      return `מיון מרובעים: ${question.params?.type || "ריבוע"} - לפי תכונות הצלעות והזוויות`;
+    case "transformations":
+      return `טרנספורמציה: ${question.params?.type || "הזזה"} - הזזה מעתיקה את הצורה, שיקוף הופך אותה`;
+    case "rotation":
+      return `סיבוב: ${question.params?.angle || 90}° - סיבוב סביב נקודה`;
+    case "symmetry":
+      return `סימטרייה: ${question.params?.shape || "ריבוע"} - כמה צירי סימטרייה יש לצורה?`;
+    case "diagonal":
+      return `אלכסון: ${question.params?.shape || "ריבוע"} - קטע המחבר שני קדקודים שאינם על אותה צלע`;
+    case "heights":
+      return `גובה: במשולש, הגובה הוא המרחק מהקדקוד לבסיס. שטח = (בסיס × גובה) ÷ 2`;
+    case "tiling":
+      return `ריצוף: ${question.params?.shape || "ריבוע"} - צורות המשמשות לריצוף ללא רווחים`;
+    case "circles":
+      return question.params?.askArea 
+        ? `שטח עיגול = π × רדיוס² = 3.14 × ${question.params?.radius || 0}²`
+        : `היקף מעגל = 2 × π × רדיוס = 2 × 3.14 × ${question.params?.radius || 0}`;
+    case "solids":
+      return `גוף תלת-מימדי: ${question.params?.solid || "קובייה"} - זהה את הגוף לפי תכונותיו`;
     default:
       return "נסה לחשוב על הנוסחה המתאימה";
   }
@@ -282,6 +308,129 @@ export function getSolutionSteps(question, topic, gradeKey) {
       ];
     }
 
+    case "shapes_basic": {
+      const shape = p.shape || "ריבוע";
+      return [
+        toSpan(`1. ${shape} הוא מצולע.`, "1"),
+        toSpan(shape === "ריבוע" ? "2. לריבוע יש 4 צלעות שוות ו-4 זוויות ישרות." : "2. למלבן יש 2 זוגות של צלעות שוות ו-4 זוויות ישרות.", "2"),
+        toSpan(`3. זהה את הצורה לפי התכונות.`, "3"),
+      ];
+    }
+
+    case "parallel_perpendicular": {
+      const type = p.type || "מקבילות";
+      return [
+        toSpan(`1. קווים ${type} הם קווים מיוחדים.`, "1"),
+        toSpan(type === "מקבילות" ? "2. קווים מקבילים לא נפגשים לעולם." : "2. קווים מאונכים יוצרים זווית ישרה (90°).", "2"),
+        toSpan(`3. זהה את סוג הקווים לפי התכונות.`, "3"),
+      ];
+    }
+
+    case "triangles": {
+      const type = p.type || "שווה צלעות";
+      return [
+        toSpan(`1. משולש ${type} מסווג לפי אורך הצלעות.`, "1"),
+        toSpan(type === "שווה צלעות" ? "2. כל 3 הצלעות שוות." : type === "שווה שוקיים" ? "2. יש 2 צלעות שוות." : "2. כל הצלעות שונות.", "2"),
+        toSpan(`3. זהה את סוג המשולש לפי התכונות.`, "3"),
+      ];
+    }
+
+    case "quadrilaterals": {
+      const type = p.type || "ריבוע";
+      return [
+        toSpan(`1. ${type} הוא סוג של מרובע.`, "1"),
+        toSpan(`2. כל מרובע יש לו תכונות מיוחדות של צלעות וזוויות.`, "2"),
+        toSpan(`3. זהה את סוג המרובע לפי התכונות.`, "3"),
+      ];
+    }
+
+    case "transformations": {
+      const type = p.type || "הזזה";
+      return [
+        toSpan(`1. ${type} היא טרנספורמציה גאומטרית.`, "1"),
+        toSpan(type === "הזזה" ? "2. הזזה מעתיקה את הצורה באותו כיוון ובאותו מרחק." : "2. שיקוף הופך את הצורה סביב קו (ציר).", "2"),
+        toSpan(`3. זהה את סוג הטרנספורמציה לפי התכונות.`, "3"),
+      ];
+    }
+
+    case "rotation": {
+      const angle = p.angle || 90;
+      return [
+        toSpan(`1. סיבוב הוא טרנספורמציה סביב נקודה.`, "1"),
+        toSpan(`2. סיבוב של ${angle}° מעביר את הצורה סביב מרכז הסיבוב.`, "2"),
+        toSpan(`3. זהה את זווית הסיבוב.`, "3"),
+      ];
+    }
+
+    case "symmetry": {
+      const shape = p.shape || "ריבוע";
+      const axes = p.axes || 4;
+      return [
+        toSpan(`1. סימטרייה היא תכונה של צורות.`, "1"),
+        toSpan(`2. ${shape} יש לו ${axes} צירי סימטרייה.`, "2"),
+        toSpan(`3. ציר סימטרייה הוא קו שמחלק את הצורה לשני חלקים זהים.`, "3"),
+      ];
+    }
+
+    case "diagonal": {
+      const shape = p.shape || "ריבוע";
+      const side = p.side || 1;
+      return [
+        toSpan(`1. אלכסון הוא קטע המחבר שני קדקודים שאינם על אותה צלע.`, "1"),
+        toSpan(`2. ב${shape} עם צלע ${side}, האלכסון מחושב לפי משפט פיתגורס.`, "2"),
+        toSpan(`3. נחשב: ${ltr(`אלכסון = √(${side}² + ${side}²) = ${correctAnswer}`)}.`, "3"),
+      ];
+    }
+
+    case "heights": {
+      const base = p.base || 1;
+      const area = p.area || 1;
+      return [
+        toSpan("1. גובה במשולש הוא המרחק מהקדקוד לבסיס.", "1"),
+        toSpan(`2. נוסחה: שטח = (בסיס × גובה) ÷ 2.`, "2"),
+        toSpan(`3. נציב: ${ltr(`${area} = (${base} × גובה) ÷ 2`)}.`, "3"),
+        toSpan(`4. נחשב: ${ltr(`גובה = (${area} × 2) ÷ ${base} = ${correctAnswer}`)}.`, "4"),
+      ];
+    }
+
+    case "tiling": {
+      const shape = p.shape || "ריבוע";
+      const angle = p.angle || 90;
+      return [
+        toSpan("1. ריצוף הוא כיסוי של משטח ללא רווחים.", "1"),
+        toSpan(`2. ${shape} משמש לריצוף כי הזוויות שלו מתאימות.`, "2"),
+        toSpan(`3. זווית של ${shape} היא ${angle}°.`, "3"),
+      ];
+    }
+
+    case "circles": {
+      const radius = p.radius || 1;
+      const askArea = p.askArea;
+      if (askArea) {
+        const r2 = radius * radius;
+        return [
+          toSpan("1. נוסחה: שטח עיגול = π × רדיוס².", "1"),
+          toSpan(`2. נציב: ${ltr(`שטח = 3.14 × ${radius}²`)}.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`${radius}² = ${r2}`)}, ואז ${ltr(`3.14 × ${r2} = ${correctAnswer}`)}.`, "3"),
+        ];
+      } else {
+        return [
+          toSpan("1. נוסחה: היקף מעגל = 2 × π × רדיוס.", "1"),
+          toSpan(`2. נציב: ${ltr(`2 × 3.14 × ${radius}`)}.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`2 × 3.14 = 6.28`)}, ואז ${ltr(`6.28 × ${radius} = ${correctAnswer}`)}.`, "3"),
+        ];
+      }
+    }
+
+    case "solids": {
+      const solid = p.solid || "קובייה";
+      return [
+        toSpan(`1. ${solid} הוא גוף תלת-מימדי.`, "1"),
+        toSpan(`2. כל גוף יש לו תכונות מיוחדות של פאות, צלעות וקדקודים.`, "2"),
+        toSpan(`3. זהה את הגוף לפי התכונות.`, "3"),
+      ];
+    }
+
     default:
       return [];
   }
@@ -328,6 +477,42 @@ export function getErrorExplanation(question, topic, wrongAnswer, gradeKey) {
         return "נראה ששכחת להוציא שורש, או שכחת לכפול אחד המספרים בעצמו. זכור: a² + b² = c², אז c = √(a² + b²).";
       }
       return "בדוק שוב: משפט פיתגורס אומר a² + b² = c². חשב את a² ו-b², חבר אותם, ואז הוצא שורש.";
+
+    case "shapes_basic":
+      return "בדוק שוב: ריבוע יש לו 4 צלעות שוות, מלבן יש לו 2 זוגות של צלעות שוות.";
+
+    case "parallel_perpendicular":
+      return "בדוק שוב: קווים מקבילים לא נפגשים, קווים מאונכים יוצרים זווית ישרה.";
+
+    case "triangles":
+      return "בדוק שוב: משולש שווה צלעות = כל הצלעות שוות, שווה שוקיים = 2 צלעות שוות, שונה צלעות = כל הצלעות שונות.";
+
+    case "quadrilaterals":
+      return "בדוק שוב: זהה את המרובע לפי תכונות הצלעות והזוויות.";
+
+    case "transformations":
+      return "בדוק שוב: הזזה מעתיקה את הצורה, שיקוף הופך אותה.";
+
+    case "rotation":
+      return "בדוק שוב: סיבוב הוא טרנספורמציה סביב נקודה.";
+
+    case "symmetry":
+      return "בדוק שוב: ציר סימטרייה מחלק את הצורה לשני חלקים זהים.";
+
+    case "diagonal":
+      return "בדוק שוב: אלכסון מחושב לפי משפט פיתגורס.";
+
+    case "heights":
+      return "בדוק שוב: גובה במשולש מחושב לפי שטח = (בסיס × גובה) ÷ 2.";
+
+    case "tiling":
+      return "בדוק שוב: ריצוף דורש שהזוויות יתאימו.";
+
+    case "circles":
+      return "בדוק שוב: שטח עיגול = π × רדיוס², היקף מעגל = 2 × π × רדיוס.";
+
+    case "solids":
+      return "בדוק שוב: זהה את הגוף לפי תכונות הפאות והצלעות.";
 
     default:
       return "";
@@ -408,6 +593,84 @@ export function getTheorySummary(question, topic, gradeKey) {
       lines.push("במשולש ישר-זווית: a² + b² = c² (c הוא היתר).");
       lines.push("אם יודעים את שני הניצבים – מוצאים יתר: c = √(a² + b²).");
       lines.push("אם יודעים יתר וניצב – מוצאים ניצב חסר: √(c² - ניצב²).");
+      break;
+    }
+
+    case "shapes_basic": {
+      lines.push("ריבוע: 4 צלעות שוות, 4 זוויות ישרות.");
+      lines.push("מלבן: 2 זוגות של צלעות שוות, 4 זוויות ישרות.");
+      break;
+    }
+
+    case "parallel_perpendicular": {
+      lines.push("קווים מקבילים: לא נפגשים לעולם.");
+      lines.push("קווים מאונכים: יוצרים זווית ישרה (90°).");
+      break;
+    }
+
+    case "triangles": {
+      lines.push("משולש שווה צלעות: כל 3 הצלעות שוות.");
+      lines.push("משולש שווה שוקיים: 2 צלעות שוות.");
+      lines.push("משולש שונה צלעות: כל הצלעות שונות.");
+      break;
+    }
+
+    case "quadrilaterals": {
+      lines.push("ריבוע: 4 צלעות שוות, 4 זוויות ישרות.");
+      lines.push("מלבן: 2 זוגות של צלעות שוות, 4 זוויות ישרות.");
+      lines.push("מקבילית: 2 זוגות של צלעות מקבילות.");
+      lines.push("טרפז: זוג אחד של צלעות מקבילות.");
+      break;
+    }
+
+    case "transformations": {
+      lines.push("הזזה: מעתיקה את הצורה באותו כיוון ובאותו מרחק.");
+      lines.push("שיקוף: הופך את הצורה סביב קו (ציר).");
+      break;
+    }
+
+    case "rotation": {
+      lines.push("סיבוב: מעביר את הצורה סביב נקודה.");
+      lines.push("סיבוב של 90° = רבע סיבוב, 180° = חצי סיבוב, 360° = סיבוב שלם.");
+      break;
+    }
+
+    case "symmetry": {
+      lines.push("סימטרייה: צורה שיש לה ציר סימטרייה.");
+      lines.push("ריבוע: 4 צירי סימטרייה, מלבן: 2 צירי סימטרייה.");
+      break;
+    }
+
+    case "diagonal": {
+      lines.push("אלכסון: קטע המחבר שני קדקודים שאינם על אותה צלע.");
+      lines.push("בריבוע: אלכסון = צלע × √2.");
+      break;
+    }
+
+    case "heights": {
+      lines.push("גובה: המרחק מהקדקוד לבסיס.");
+      lines.push("במשולש: שטח = (בסיס × גובה) ÷ 2.");
+      break;
+    }
+
+    case "tiling": {
+      lines.push("ריצוף: כיסוי משטח ללא רווחים.");
+      lines.push("ריבוע: זווית 90°, משולש שווה צלעות: זווית 60°.");
+      break;
+    }
+
+    case "circles": {
+      lines.push("מעגל: כל הנקודות במרחק שווה מהמרכז.");
+      lines.push("שטח עיגול = π × רדיוס².");
+      lines.push("היקף מעגל = 2 × π × רדיוס.");
+      break;
+    }
+
+    case "solids": {
+      lines.push("קובייה: 6 פאות ריבועיות שוות.");
+      lines.push("תיבה: 6 פאות מלבניות.");
+      lines.push("גליל: 2 בסיסים עגולים.");
+      lines.push("כדור: כל הנקודות במרחק שווה מהמרכז.");
       break;
     }
 

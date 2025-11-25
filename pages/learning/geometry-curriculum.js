@@ -64,15 +64,24 @@ export default function GeometryCurriculum() {
                 <ul className="list-disc pr-6 space-y-2">
                   <li><strong>6 כיתות</strong>: א', ב', ג', ד', ה', ו'</li>
                   <li><strong>3 רמות קושי</strong> לכל כיתה: קל, בינוני, קשה</li>
-                  <li><strong>6 נושאי הנדסה</strong>: שטח, היקף, נפח, זוויות, פיתגורס, ערבוב</li>
+                  <li><strong>17 נושאי הנדסה</strong>: צורות בסיסיות, שטח, היקף, נפח, זוויות, מקבילות ומאונכות, משולשים, מרובעים, טרנספורמציות, סיבוב, סימטרייה, אלכסון, גבהים, ריצוף, מעגל ועיגול, גופים, פיתגורס, ערבוב</li>
                 </ul>
               </div>
 
               {/* כיתה א' */}
               <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
                 <h2 className="text-2xl font-bold mb-3">כיתה א'</h2>
-                <div className="bg-yellow-500/20 p-3 rounded text-sm mb-3">
-                  <strong>הערות:</strong> הנדסה לא נלמדת בכיתה א'. המערכת לא כוללת נושאי הנדסה לכיתה זו.
+                <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
+                <ol className="list-decimal pr-6 space-y-1 mb-4">
+                  <li>צורות בסיסיות - הכרת מצולעים</li>
+                  <li>טרנספורמציות - הזזה ושיקוף</li>
+                </ol>
+                <div className="bg-white/5 p-3 rounded mb-3">
+                  <h4 className="font-semibold mb-2">צורות זמינות:</h4>
+                  <div className="text-sm">ריבוע, מלבן</div>
+                </div>
+                <div className="bg-yellow-500/20 p-3 rounded text-sm">
+                  <strong>הערות:</strong> היכרות ראשונית עם מצולעים (ריבוע ומלבן). טרנספורמציות בסיסיות (הזזה ושיקוף).
                 </div>
               </div>
 
@@ -83,21 +92,20 @@ export default function GeometryCurriculum() {
                 <ol className="list-decimal pr-6 space-y-1 mb-4">
                   <li>שטח - היכרות בסיסית</li>
                   <li>היקף - היכרות בסיסית</li>
+                  <li>גופים - הכרת גופים תלת-מימדיים</li>
+                  <li>טרנספורמציות - שיקוף והזזה</li>
                 </ol>
                 <div className="bg-white/5 p-3 rounded mb-3">
                   <h4 className="font-semibold mb-2">צורות זמינות:</h4>
-                  <div className="text-sm">ריבוע, מלבן</div>
-                </div>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">רמות קושי:</h4>
-                  <div className="text-sm space-y-2">
-                    <div><strong>קל:</strong> צלעות עד 10, ללא עשרוניים</div>
-                    <div><strong>בינוני:</strong> צלעות עד 20, עם עשרוניים</div>
-                    <div><strong>קשה:</strong> צלעות עד 50, עם עשרוניים</div>
+                  <div className="text-sm mb-2">
+                    <strong>לשטח והיקף:</strong> ריבוע, מלבן
+                  </div>
+                  <div className="text-sm">
+                    <strong>גופים:</strong> קובייה, תיבה, גליל, פירמידה, חרוט, כדור
                   </div>
                 </div>
                 <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> היכרות ראשונית עם מושגי שטח והיקף. רק צורות בסיסיות (ריבוע ומלבן).
+                  <strong>הערות:</strong> היכרות ראשונית עם מושגי שטח והיקף. הכרת גופים תלת-מימדיים. טרנספורמציות (שיקוף והזזה).
                 </div>
               </div>
 
@@ -108,21 +116,18 @@ export default function GeometryCurriculum() {
                 <ol className="list-decimal pr-6 space-y-1 mb-4">
                   <li>שטח</li>
                   <li>היקף</li>
+                  <li>זוויות - מיון זוויות (חדות, ישרות, קהות)</li>
+                  <li>מקבילות ומאונכות</li>
+                  <li>משולשים - מיון משולשים</li>
+                  <li>מרובעים - מיון מרובעים</li>
+                  <li>סיבוב</li>
                 </ol>
                 <div className="bg-white/5 p-3 rounded mb-3">
                   <h4 className="font-semibold mb-2">צורות זמינות:</h4>
                   <div className="text-sm">ריבוע, מלבן, משולש</div>
                 </div>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">רמות קושי:</h4>
-                  <div className="text-sm space-y-2">
-                    <div><strong>קל:</strong> צלעות עד 10, ללא עשרוניים</div>
-                    <div><strong>בינוני:</strong> צלעות עד 20, עם עשרוניים</div>
-                    <div><strong>קשה:</strong> צלעות עד 50, עם עשרוניים</div>
-                  </div>
-                </div>
                 <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> מתווספת צורת המשולש. הרחבת הבנת שטח והיקף.
+                  <strong>הערות:</strong> מתווספת צורת המשולש. זוויות, מקבילות ומאונכות. מיון משולשים ומרובעים. סיבוב.
                 </div>
               </div>
 
@@ -131,23 +136,24 @@ export default function GeometryCurriculum() {
                 <h2 className="text-2xl font-bold mb-3">כיתה ד'</h2>
                 <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
                 <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>שטח</li>
+                  <li>שטח (מ"ר, סמ"ר)</li>
                   <li>היקף</li>
+                  <li>אלכסון</li>
+                  <li>סימטרייה</li>
+                  <li>נפח תיבה</li>
+                  <li>צורות בסיסיות - ריבוע ומלבן (תכונות)</li>
                 </ol>
                 <div className="bg-white/5 p-3 rounded mb-3">
                   <h4 className="font-semibold mb-2">צורות זמינות:</h4>
-                  <div className="text-sm">ריבוע, מלבן, משולש, עיגול</div>
-                </div>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">רמות קושי:</h4>
-                  <div className="text-sm space-y-2">
-                    <div><strong>קל:</strong> צלעות עד 10, ללא עשרוניים</div>
-                    <div><strong>בינוני:</strong> צלעות עד 20, עם עשרוניים</div>
-                    <div><strong>קשה:</strong> צלעות עד 50, עם עשרוניים</div>
+                  <div className="text-sm mb-2">
+                    <strong>לשטח והיקף:</strong> ריבוע, מלבן, משולש, עיגול
+                  </div>
+                  <div className="text-sm">
+                    <strong>לנפח:</strong> תיבה, קובייה
                   </div>
                 </div>
                 <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> מתווספת צורת העיגול. חישוב שטח והיקף של עיגול (π = 3.14).
+                  <strong>הערות:</strong> מתווספת צורת העיגול. אלכסון במצולעים. סימטרייה. נפח תיבות. תכונות ריבוע ומלבן.
                 </div>
               </div>
 
@@ -156,9 +162,15 @@ export default function GeometryCurriculum() {
                 <h2 className="text-2xl font-bold mb-3">כיתה ה'</h2>
                 <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
                 <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>שטח</li>
+                  <li>שטח (מלבנים, מקביליות, משולשים)</li>
                   <li>היקף</li>
-                  <li>נפח - היכרות ראשונית</li>
+                  <li>נפח</li>
+                  <li>זוויות</li>
+                  <li>מקבילות ומאונכות</li>
+                  <li>מרובעים - ניתוח תכונות, מיון מרובעים, קשרי הכלה</li>
+                  <li>גבהים</li>
+                  <li>ריצוף במצולעים משוכללים</li>
+                  <li>אלכסון</li>
                   <li>ערבוב - תרגילים מעורבים</li>
                 </ol>
                 <div className="bg-white/5 p-3 rounded mb-3">
@@ -170,16 +182,8 @@ export default function GeometryCurriculum() {
                     <strong>לנפח:</strong> תיבה, קובייה
                   </div>
                 </div>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">רמות קושי:</h4>
-                  <div className="text-sm space-y-2">
-                    <div><strong>קל:</strong> צלעות עד 10, ללא עשרוניים</div>
-                    <div><strong>בינוני:</strong> צלעות עד 20, עם עשרוניים</div>
-                    <div><strong>קשה:</strong> צלעות עד 50, עם עשרוניים</div>
-                  </div>
-                </div>
                 <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> מתווספות צורות מורכבות יותר (מקבילית, טרפז) ונפח. תרגילי ערבוב מאפשרים תרגול מעורב של כל הנושאים.
+                  <strong>הערות:</strong> מתווספות צורות מורכבות יותר (מקבילית, טרפז). גבהים במשולשים ובמקביליות. ריצוף במצולעים משוכללים. ניתוח תכונות מרובעים.
                 </div>
               </div>
 
@@ -190,9 +194,11 @@ export default function GeometryCurriculum() {
                 <ol className="list-decimal pr-6 space-y-1 mb-4">
                   <li>שטח</li>
                   <li>היקף</li>
-                  <li>נפח</li>
+                  <li>נפח - חישובי נפחים (תיבות, גלילים, מנסרות, פירמידות, כדורים)</li>
                   <li>זוויות</li>
                   <li>פיתגורס - משפט פיתגורס</li>
+                  <li>מעגל ועיגול - היקף ושטח</li>
+                  <li>גופים - מנסרה, פירמידה, גליל, חרוט, כדור, גופים משוכללים</li>
                   <li>ערבוב - תרגילים מעורבים</li>
                 </ol>
                 <div className="bg-white/5 p-3 rounded mb-3">
@@ -201,31 +207,29 @@ export default function GeometryCurriculum() {
                     <strong>לשטח והיקף:</strong> ריבוע, מלבן, משולש, עיגול, מקבילית, טרפז
                   </div>
                   <div className="text-sm mb-2">
-                    <strong>לנפח:</strong> תיבה, קובייה, גליל, כדור
+                    <strong>לנפח:</strong> תיבה, קובייה, גליל, כדור, מנסרה, פירמידה, חרוט
                   </div>
-                  <div className="text-sm">
+                  <div className="text-sm mb-2">
                     <strong>לזוויות ופיתגורס:</strong> משולש
                   </div>
-                </div>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">רמות קושי:</h4>
-                  <div className="text-sm space-y-2">
-                    <div><strong>קל:</strong> צלעות עד 10, ללא עשרוניים</div>
-                    <div><strong>בינוני:</strong> צלעות עד 20, עם עשרוניים</div>
-                    <div><strong>קשה:</strong> צלעות עד 50, עם עשרוניים</div>
+                  <div className="text-sm">
+                    <strong>גופים:</strong> קובייה, תיבה, גליל, פירמידה, חרוט, כדור
                   </div>
                 </div>
                 <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> כל נושאי ההנדסה זמינים. משפט פיתגורס לחישוב אורך צלעות במשולש ישר זווית. זוויות במשולשים. נפח של צורות תלת-ממדיות מורכבות (גליל, כדור).
+                  <strong>הערות:</strong> כל נושאי ההנדסה זמינים. משפט פיתגורס לחישוב אורך צלעות במשולש ישר זווית. מעגל ועיגול (היקף ושטח). נפח של צורות תלת-ממדיות מורכבות. גופים משוכללים.
                 </div>
               </div>
 
               {/* סיכום */}
               <div className="bg-emerald-500/20 border-r-4 border-emerald-500 p-4 rounded-lg">
                 <h3 className="text-xl font-bold mb-3 text-center">סיכום כללי</h3>
-                <p className="text-center">
-                  המערכת כוללת <strong>6 נושאי הנדסה</strong>, <strong>6 כיתות</strong> (ב'-ו'), <strong>3 רמות קושי</strong> לכל כיתה, 
+                <p className="text-center mb-3">
+                  המערכת כוללת <strong>17 נושאי הנדסה</strong>, <strong>6 כיתות</strong> (א'-ו'), <strong>3 רמות קושי</strong> לכל כיתה, 
                   עם התאמה מלאה לתכנית הלימודים של משרד החינוך.
+                </p>
+                <p className="text-center text-sm text-white/80">
+                  כל הנושאים והצורות מותאמים בדיוק לתוכנית הלימודים הרשמית של משרד החינוך לכיתות א'-ו'.
                 </p>
               </div>
             </div>
