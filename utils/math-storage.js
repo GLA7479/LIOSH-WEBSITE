@@ -45,6 +45,9 @@ export function getLevelConfig(grade, levelKey) {
   // הסרת פעולות שלא מוגדרות בכיתה
   const operationsToCheck = [
     "percentages", "sequences", "decimals", "rounding", 
+    "divisibility", "prime_composite", "powers", "ratio",
+    "order_of_operations", "estimation", "properties_0_1",
+    "decimal_measures", "scale",
     "equations", "compare", "number_sense", "factors_multiples", "word_problems"
   ];
   

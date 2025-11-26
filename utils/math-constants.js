@@ -345,6 +345,7 @@ export const GRADES = {
       "sequences",
       "decimals",       // עשרוניים בסיסיים
       "divisibility",   // סימני התחלקות ב-2,5,10
+      "order_of_operations", // סדר פעולות והשימוש בסוגריים
       "compare",
       "equations",
       "number_sense",
@@ -367,6 +368,8 @@ export const GRADES = {
       "divisibility",   // סימני התחלקות ב-3,6,9
       "prime_composite", // מספרים ראשוניים ופריקים
       "powers",         // חזקות
+      "estimation",     // אומדן ופיתוח תובנה מספרית
+      "properties_0_1", // תכונות ה-0 וה-1
       "equations",
       "compare",
       "number_sense",
