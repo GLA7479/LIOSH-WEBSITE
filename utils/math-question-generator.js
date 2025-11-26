@@ -97,67 +97,18 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       const b = randInt(1, maxA);
       const c = a + b;
 
-      // בכיתות א' וב' - רק תרגיל ישיר (ללא נעלם)
-      if (isLowGrade) {
-        // צורה רגילה: a + b = __
-        correctAnswer = c;
-        const exerciseText = `${a} + ${b} = ${BLANK}`;
-        question = exerciseText;
-        params = {
-          kind: "add_two",
-          a,
-          b,
-          exerciseText,
-          op: "add",
-          grade: gradeKey,
-        };
-      } else {
-        // מכיתה ג' ומעלה - אפשר גם נעלם
-        const variant = Math.random();
-
-        if (variant < 0.33) {
-          // צורה רגילה: a + b = __
-          correctAnswer = c;
-          const exerciseText = `${a} + ${b} = ${BLANK}`;
-          question = exerciseText;
-          params = {
-            kind: "add_two",
-            a,
-            b,
-            exerciseText,
-            op: "add",
-            grade: gradeKey,
-          };
-        } else if (variant < 0.66) {
-          // חסר המספר הראשון: __ + b = c
-          correctAnswer = a;
-          const exerciseText = `${BLANK} + ${b} = ${c}`;
-          question = exerciseText;
-          params = {
-            kind: "add_missing_first",
-            a,
-            b,
-            c,
-            exerciseText,
-            op: "add",
-            grade: gradeKey,
-          };
-        } else {
-          // חסר המספר השני: a + __ = c
-          correctAnswer = b;
-          const exerciseText = `${a} + ${BLANK} = ${c}`;
-          question = exerciseText;
-          params = {
-            kind: "add_missing_second",
-            a,
-            b,
-            c,
-            exerciseText,
-            op: "add",
-            grade: gradeKey,
-          };
-        }
-      }
+      // חיבור - רק תרגיל ישיר (ללא נעלם) - נעלמים רק במשוואות
+      correctAnswer = c;
+      const exerciseText = `${a} + ${b} = ${BLANK}`;
+      question = exerciseText;
+      params = {
+        kind: "add_two",
+        a,
+        b,
+        exerciseText,
+        op: "add",
+        grade: gradeKey,
+      };
 
       operandA = a;
       operandB = b;
@@ -180,50 +131,11 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
 
     const c = a - b;
 
-    // בכיתות א' וב' - רק תרגיל ישיר (ללא נעלם)
-    if (isLowGrade) {
-      // צורה רגילה: a - b = __
-      correctAnswer = c;
-      const exerciseText = `${a} - ${b} = ${BLANK}`;
-      question = exerciseText;
-      params = { kind: "sub_two", a, b, c, exerciseText };
-    } else {
-      // מכיתה ג' ומעלה - אפשר גם נעלם
-      const variant = Math.random();
-
-      if (variant < 0.33) {
-        // צורה רגילה: a - b = __
-        correctAnswer = c;
-        const exerciseText = `${a} - ${b} = ${BLANK}`;
-        question = exerciseText;
-        params = { kind: "sub_two", a, b, c, exerciseText };
-      } else if (variant < 0.66) {
-        // חסר המספר הראשון: __ - b = c
-        // מתאים רק אם אין צורך בשליליים לתשובה הראשונה
-        correctAnswer = a;
-        const exerciseText = `${BLANK} - ${b} = ${c}`;
-        question = exerciseText;
-        params = {
-          kind: "sub_missing_first",
-          a,
-          b,
-          c,
-          exerciseText,
-        };
-      } else {
-        // חסר המספר השני: a - __ = c
-        correctAnswer = b;
-        const exerciseText = `${a} - ${BLANK} = ${c}`;
-        question = exerciseText;
-        params = {
-          kind: "sub_missing_second",
-          a,
-          b,
-          c,
-          exerciseText,
-        };
-      }
-    }
+    // חיסור - רק תרגיל ישיר (ללא נעלם) - נעלמים רק במשוואות
+    correctAnswer = c;
+    const exerciseText = `${a} - ${b} = ${BLANK}`;
+    question = exerciseText;
+    params = { kind: "sub_two", a, b, c, exerciseText };
 
     operandA = a;
     operandB = b;
@@ -278,28 +190,47 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
   } else if (selectedOp === "division") {
     const maxD = levelConfig.division.max || 100;
     const maxDivisor = levelConfig.division.maxDivisor || 12;
+    const allowRemainder = levelConfig.division.allowRemainder || false; // כיתה ג' ומעלה
     const divisor = randInt(2, maxDivisor);
-    const quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
-    const dividend = divisor * quotient;
+    
+    let quotient, dividend, remainder = 0;
+    if (allowRemainder && Math.random() < 0.3) {
+      // חילוק עם שארית - רק לכיתה ג' ומעלה
+      quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
+      remainder = randInt(1, divisor - 1); // שארית בין 1 ל-divisor-1
+      dividend = divisor * quotient + remainder;
+    } else {
+      // חילוק ללא שארית
+      quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
+      dividend = divisor * quotient;
+    }
 
     const variant = Math.random();
 
     if (variant < 0.33) {
-      // צורה רגילה: dividend ÷ divisor = __
-      correctAnswer = round(quotient);
-      const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
-      question = exerciseText;
-      params = { kind: "div", dividend, divisor, exerciseText };
+      // צורה רגילה: dividend ÷ divisor = __ (או עם שארית)
+      if (remainder > 0) {
+        correctAnswer = `${quotient} ושארית ${remainder}`;
+        const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
+        question = exerciseText;
+        params = { kind: "div_with_remainder", dividend, divisor, quotient, remainder, exerciseText };
+      } else {
+        correctAnswer = round(quotient);
+        const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
+        question = exerciseText;
+        params = { kind: "div", dividend, divisor, exerciseText };
+      }
     } else if (variant < 0.66) {
       // חסר המחולק: __ ÷ divisor = quotient
       correctAnswer = dividend;
-      const exerciseText = `${BLANK} ÷ ${divisor} = ${quotient}`;
+      const exerciseText = `${BLANK} ÷ ${divisor} = ${quotient}${remainder > 0 ? ` ושארית ${remainder}` : ''}`;
       question = exerciseText;
       params = {
         kind: "div_missing_dividend",
         dividend,
         divisor,
         quotient,
+        remainder,
         exerciseText,
         op: "div",
         grade: gradeKey,
@@ -307,13 +238,14 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       } else {
       // חסר המחלק: dividend ÷ __ = quotient
       correctAnswer = divisor;
-      const exerciseText = `${dividend} ÷ ${BLANK} = ${quotient}`;
+      const exerciseText = `${dividend} ÷ ${BLANK} = ${quotient}${remainder > 0 ? ` ושארית ${remainder}` : ''}`;
       question = exerciseText;
       params = {
         kind: "div_missing_divisor",
         dividend,
         divisor,
         quotient,
+        remainder,
         exerciseText,
         op: "div",
         grade: gradeKey,
@@ -330,9 +262,122 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         ? densSmall.filter((d) => d <= levelConfig.fractions.maxDen)
         : densBig.filter((d) => d <= levelConfig.fractions.maxDen);
 
-    const opKind = Math.random() < 0.5 ? "add_frac" : "sub_frac";
-
-    if (gradeKey === "g3" || gradeKey === "g4") {
+    // כיתה ה' - צמצום והרחבה, חיבור וחיסור
+    if (gradeKey === "g5") {
+      const fractionType = Math.random();
+      if (fractionType < 0.3) {
+        // צמצום והרחבה
+        const den = dens[Math.floor(Math.random() * dens.length)] || 4;
+        const num = randInt(1, den - 1);
+        const factor = randInt(2, 3);
+        const variant = Math.random();
+        
+        if (variant < 0.5) {
+          // הרחבה: מצא שבר שווה
+          const expandedNum = num * factor;
+          const expandedDen = den * factor;
+          correctAnswer = `${expandedNum}/${expandedDen}`;
+          question = `מצא שבר שווה ל-${num}/${den} (הרחב ב-${factor}): ${BLANK}`;
+          params = { kind: "frac_expand", num, den, factor, expandedNum, expandedDen };
+        } else {
+          // צמצום: מצא שבר שווה
+          const reducedNum = num;
+          const reducedDen = den;
+          const expandedNum = num * factor;
+          const expandedDen = den * factor;
+          correctAnswer = `${reducedNum}/${reducedDen}`;
+          question = `צמצם את השבר ${expandedNum}/${expandedDen}: ${BLANK}`;
+          params = { kind: "frac_reduce", num: expandedNum, den: expandedDen, reducedNum, reducedDen };
+        }
+      } else {
+        // חיבור וחיסור שברים - כיתה ה'
+        const den1 = dens[Math.floor(Math.random() * dens.length)] || 4;
+        let den2 = dens[Math.floor(Math.random() * dens.length)] || 6;
+        if (den1 === den2 && Math.random() < 0.3) {
+          den2 = dens[(dens.indexOf(den1) + 1) % dens.length] || 3;
+        }
+        
+        const n1 = randInt(1, den1 - 1);
+        const n2 = randInt(1, den2 - 1);
+        
+        const lcm = (a, b) => {
+          const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
+          return Math.abs((a * b) / gcd(a, b));
+        };
+        
+        const commonDen = lcm(den1, den2);
+        const m1 = commonDen / den1;
+        const m2 = commonDen / den2;
+        
+        const opKind = Math.random() < 0.5 ? "add" : "sub";
+        let resNum = opKind === "add" ? n1 * m1 + n2 * m2 : n1 * m1 - n2 * m2;
+        
+        if (opKind === "sub" && resNum < 0) {
+          resNum = n2 * m2 - n1 * m1;
+          question = `${n2}/${den2} - ${n1}/${den1} = ${BLANK}`;
+          params = { kind: "frac_add_sub", op: "sub", n1: n2, den1: den2, n2: n1, den2: den1, commonDen, resNum };
+        } else {
+          question = opKind === "add" 
+            ? `${n1}/${den1} + ${n2}/${den2} = ${BLANK}`
+            : `${n1}/${den1} - ${n2}/${den2} = ${BLANK}`;
+          params = { kind: "frac_add_sub", op: opKind, n1, den1, n2, den2, commonDen, resNum };
+        }
+        
+        // צמצום התוצאה אם אפשר
+        const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
+        const divisor = gcd(resNum, commonDen);
+        if (divisor > 1) {
+          resNum = resNum / divisor;
+          const resDen = commonDen / divisor;
+          correctAnswer = `${resNum}/${resDen}`;
+        } else {
+          correctAnswer = `${resNum}/${commonDen}`;
+        }
+      }
+    } else if (gradeKey === "g6") {
+      // כיתה ו' - כפל וחילוק שברים
+      const fractionType = Math.random();
+      if (fractionType < 0.5) {
+        // כפל שברים
+        const den1 = dens[Math.floor(Math.random() * dens.length)] || 4;
+        const den2 = dens[Math.floor(Math.random() * dens.length)] || 6;
+        const n1 = randInt(1, den1 - 1);
+        const n2 = randInt(1, den2 - 1);
+        
+        const resNum = n1 * n2;
+        const resDen = den1 * den2;
+        
+        // צמצום התוצאה
+        const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
+        const divisor = gcd(resNum, resDen);
+        const finalNum = resNum / divisor;
+        const finalDen = resDen / divisor;
+        
+        correctAnswer = `${finalNum}/${finalDen}`;
+        question = `${n1}/${den1} × ${n2}/${den2} = ${BLANK}`;
+        params = { kind: "frac_multiply", n1, den1, n2, den2, finalNum, finalDen };
+      } else {
+        // חילוק שברים
+        const den1 = dens[Math.floor(Math.random() * dens.length)] || 4;
+        const den2 = dens[Math.floor(Math.random() * dens.length)] || 6;
+        const n1 = randInt(1, den1 - 1);
+        const n2 = randInt(1, den2 - 1);
+        
+        // חילוק = כפל בהופכי
+        const resNum = n1 * den2;
+        const resDen = den1 * n2;
+        
+        // צמצום התוצאה
+        const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
+        const divisor = gcd(resNum, resDen);
+        const finalNum = resNum / divisor;
+        const finalDen = resDen / divisor;
+        
+        correctAnswer = `${finalNum}/${finalDen}`;
+        question = `${n1}/${den1} ÷ ${n2}/${den2} = ${BLANK}`;
+        params = { kind: "frac_divide", n1, den1, n2, den2, finalNum, finalDen };
+      }
+    } else if (gradeKey === "g3" || gradeKey === "g4") {
       const den = dens[Math.floor(Math.random() * dens.length)] || 4;
       const n1 = randInt(1, den - 1);
       const n2 = randInt(1, den - 1);
@@ -359,56 +404,34 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       }
 
       correctAnswer = `${resNum}/${resDen}`;
+    } else if (gradeKey === "g2") {
+      // כיתה ב' - חצי ורבע בלבד
+      const fractionType = Math.random() < 0.5 ? "half" : "quarter";
+      if (fractionType === "half") {
+        const whole = randInt(2, 20);
+        const variant = Math.random();
+        if (variant < 0.5) {
+          correctAnswer = whole / 2;
+          question = `מהו חצי מ-${whole}?`;
+          params = { kind: "frac_half", whole };
+        } else {
+          correctAnswer = whole;
+          question = `חצי מ-${BLANK} הוא ${whole / 2}. מה המספר השלם?`;
+          params = { kind: "frac_half_reverse", half: whole / 2, whole };
+        }
       } else {
-      const den1 = dens[Math.floor(Math.random() * dens.length)] || 4;
-      let den2 = dens[Math.floor(Math.random() * dens.length)] || 6;
-      if (den1 === den2 && Math.random() < 0.3) {
-        den2 = dens[(dens.indexOf(den1) + 1) % dens.length] || 3;
+        const whole = randInt(4, 20);
+        const variant = Math.random();
+        if (variant < 0.5) {
+          correctAnswer = whole / 4;
+          question = `מהו רבע מ-${whole}?`;
+          params = { kind: "frac_quarter", whole };
+        } else {
+          correctAnswer = whole;
+          question = `רבע מ-${BLANK} הוא ${whole / 4}. מה המספר השלם?`;
+          params = { kind: "frac_quarter_reverse", quarter: whole / 4, whole };
+        }
       }
-
-      const n1 = randInt(1, den1 - 1);
-      const n2 = randInt(1, den2 - 1);
-
-      const lcm = (a, b) => {
-        const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
-        return Math.abs((a * b) / gcd(a, b));
-      };
-
-      const commonDen = lcm(den1, den2);
-      const m1 = commonDen / den1;
-      const m2 = commonDen / den2;
-
-      let resNum = opKind === "add_frac" ? n1 * m1 + n2 * m2 : n1 * m1 - n2 * m2;
-
-      if (opKind === "sub_frac" && resNum < 0) {
-        resNum = n2 * m2 - n1 * m1;
-        question = `${n2}/${den2} - ${n1}/${den1} = ${BLANK}`;
-        params = {
-          kind: "frac_diff_den",
-          op: "sub",
-          n1: n2,
-          den1: den2,
-          n2: n1,
-          den2: den1,
-          commonDen,
-        };
-      } else {
-        question =
-          opKind === "add_frac"
-            ? `${n1}/${den1} + ${n2}/${den2} = ${BLANK}`
-            : `${n1}/${den1} - ${n2}/${den2} = ${BLANK}`;
-        params = {
-          kind: "frac_diff_den",
-          op: opKind === "add_frac" ? "add" : "sub",
-          n1,
-          den1,
-          n2,
-          den2,
-          commonDen,
-        };
-      }
-
-      correctAnswer = `${resNum}/${commonDen}`;
     }
   // ===== אחוזים (כיתות ה–ו) =====
   } else if (selectedOp === "percentages") {
@@ -937,7 +960,111 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       };
     }
     isStory = true;
+  // ===== סימני התחלקות =====
+  } else if (selectedOp === "divisibility") {
+    const divisibilityConfig = levelConfig.divisibility || {};
+    const divisors = divisibilityConfig.divisors || [2, 5, 10];
+    const divisor = divisors[Math.floor(Math.random() * divisors.length)];
+    const maxNum = levelConfig.compare?.max || 1000;
+    const num = randInt(10, maxNum);
+    const isDivisible = num % divisor === 0;
+    
+    correctAnswer = isDivisible ? "כן" : "לא";
+    question = `האם המספר ${num} מתחלק ב-${divisor}?`;
+    params = { kind: "divisibility", num, divisor, isDivisible };
+    operandA = num;
+    operandB = divisor;
+    // הוספת תשובה שגויה
+    wrongAnswers.add(isDivisible ? "לא" : "כן");
+
+  // ===== מספרים ראשוניים ופריקים =====
+  } else if (selectedOp === "prime_composite") {
+    const primeConfig = levelConfig.prime_composite || {};
+    const maxNum = primeConfig.maxNumber || 100;
+    
+    // פונקציה לבדיקת ראשוני
+    const isPrime = (n) => {
+      if (n < 2) return false;
+      if (n === 2) return true;
+      if (n % 2 === 0) return false;
+      for (let i = 3; i * i <= n; i += 2) {
+        if (n % i === 0) return false;
+      }
+      return true;
+    };
+    
+    const num = randInt(2, maxNum);
+    const isNumPrime = isPrime(num);
+    correctAnswer = isNumPrime ? "ראשוני" : "פריק";
+    question = `האם המספר ${num} הוא ראשוני או פריק?`;
+    params = { kind: "prime_composite", num, isPrime: isNumPrime };
+    operandA = num;
+    operandB = null;
+    // הוספת תשובה שגויה
+    wrongAnswers.add(isNumPrime ? "פריק" : "ראשוני");
+
+  // ===== חזקות =====
+  } else if (selectedOp === "powers") {
+    const powersConfig = levelConfig.powers || {};
+    const maxBase = powersConfig.maxBase || 10;
+    const maxExp = powersConfig.maxExp || 3;
+    const base = randInt(2, maxBase);
+    const exp = randInt(2, maxExp);
+    const result = Math.pow(base, exp);
+    
+    const variant = Math.random();
+    if (variant < 0.5) {
+      // מה התוצאה?
+      correctAnswer = result;
+      question = `${base}^${exp} = ${BLANK}`;
+      params = { kind: "power_calc", base, exp, result };
+    } else {
+      // מה הבסיס?
+      correctAnswer = base;
+      question = `${BLANK}^${exp} = ${result}`;
+      params = { kind: "power_base", base, exp, result };
+    }
+    
+    operandA = base;
+    operandB = exp;
+
+  // ===== יחס =====
+  } else if (selectedOp === "ratio") {
+    const a = randInt(1, 20);
+    const b = randInt(1, 20);
+    const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
+    const divisor = gcd(a, b);
+    const simplifiedA = a / divisor;
+    const simplifiedB = b / divisor;
+    
+    const variant = Math.random();
+    if (variant < 0.33) {
+      // מציאת היחס
+      correctAnswer = `${simplifiedA}:${simplifiedB}`;
+      question = `מה היחס בין ${a} ל-${b}? (בצורה מצומצמת)`;
+      params = { kind: "ratio_find", a, b, simplifiedA, simplifiedB };
+    } else if (variant < 0.66) {
+      // מציאת המספר הראשון
+      const ratio = simplifiedA / simplifiedB;
+      const secondNum = randInt(1, 20);
+      const firstNum = Math.round(secondNum * ratio);
+      correctAnswer = firstNum;
+      question = `היחס בין מספר למספר ${secondNum} הוא ${simplifiedA}:${simplifiedB}. מה המספר הראשון?`;
+      params = { kind: "ratio_first", firstNum, secondNum, simplifiedA, simplifiedB };
+    } else {
+      // מציאת המספר השני
+      const ratio = simplifiedA / simplifiedB;
+      const firstNum = randInt(1, 20);
+      const secondNum = Math.round(firstNum / ratio);
+      correctAnswer = secondNum;
+      question = `היחס בין מספר ${firstNum} למספר הוא ${simplifiedA}:${simplifiedB}. מה המספר השני?`;
+      params = { kind: "ratio_second", firstNum, secondNum, simplifiedA, simplifiedB };
+    }
+    
+    operandA = a;
+    operandB = b;
   } else {
+    // ברירת מחדל - חיבור פשוט
     const maxA = levelConfig.addition.max || 20;
     const a = randInt(1, maxA);
     const b = randInt(1, maxA);
@@ -1146,6 +1273,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       break;
     }
   }
+
   
   // וודא שיש בדיוק 4 תשובות לפני ערבוב
   if (allAnswers.length !== 4) {

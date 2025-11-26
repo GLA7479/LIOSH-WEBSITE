@@ -36,23 +36,26 @@ export const GRADE_LEVELS = {
       easy: {
         addition: { max: 10 },
         subtraction: { min: 0, max: 10 },
+        multiplication: { max: 5 }, // כפל עד 20 (5×4)
+        division: { max: 20, maxDivisor: 5 },
         compare: { max: 10 },
         number_sense: { max: 10 },
-        // כיתה א' - אין כפל, חילוק או שברים
       },
       medium: {
         addition: { max: 20 },
         subtraction: { min: 0, max: 20 },
+        multiplication: { max: 5 }, // כפל עד 20
+        division: { max: 20, maxDivisor: 5 },
         compare: { max: 20 },
         number_sense: { max: 20 },
-        // כיתה א' - אין כפל, חילוק או שברים
       },
       hard: {
         addition: { max: 20 },
         subtraction: { min: 0, max: 20 },
+        multiplication: { max: 5 }, // כפל עד 20
+        division: { max: 20, maxDivisor: 5 },
         compare: { max: 20 },
         number_sense: { max: 20 },
-        // כיתה א' - אין כפל, חילוק או שברים
       },
     },
   },
@@ -60,27 +63,26 @@ export const GRADE_LEVELS = {
     name: "כיתה ב׳",
     levels: {
       easy: {
-        // חיבור/חיסור עד 50
+        // חיבור/חיסור עד 50, מספרים עד 1000
         addition: { max: 50 },
         subtraction: { min: 0, max: 50 },
-        // התחלה רכה של כפל וחילוק – לוח עד 5×5
         multiplication: { max: 5 },
         division: { max: 50, maxDivisor: 5 },
-        // אופציונלי – חצי בלבד, להמשך
-        fractions: { maxDen: 2 },
-        compare: { max: 50 },
-        number_sense: { max: 50 },
+        fractions: { maxDen: 2 }, // חצי ורבע
+        divisibility: { divisors: [2, 5, 10] }, // סימני התחלקות
+        compare: { max: 1000 },
+        number_sense: { max: 1000 },
       },
       medium: {
-        // חיבור/חיסור עד 100
+        // חיבור/חיסור עד 100, מספרים עד 1000
         addition: { max: 100 },
         subtraction: { min: 0, max: 100 },
-        // לוח כפל מלא עד 10×10
         multiplication: { max: 10 },
         division: { max: 100, maxDivisor: 10 },
-        fractions: { maxDen: 4 }, // חצי/רבע אם תרצה להשתמש
-        compare: { max: 100 },
-        number_sense: { max: 100 },
+        fractions: { maxDen: 4 },
+        divisibility: { divisors: [2, 5, 10] },
+        compare: { max: 1000 },
+        number_sense: { max: 1000 },
       },
       hard: {
         addition: { max: 100 },
@@ -88,8 +90,9 @@ export const GRADE_LEVELS = {
         multiplication: { max: 10 },
         division: { max: 100, maxDivisor: 10 },
         fractions: { maxDen: 4 },
-        compare: { max: 100 },
-        number_sense: { max: 100 },
+        divisibility: { divisors: [2, 5, 10] },
+        compare: { max: 1000 },
+        number_sense: { max: 1000 },
       },
     },
   },
@@ -100,37 +103,40 @@ export const GRADE_LEVELS = {
         addition: { max: 200 },
         subtraction: { min: 0, max: 200 },
         multiplication: { max: 10 },
-        division: { max: 100, maxDivisor: 10 },
+        division: { max: 100, maxDivisor: 10, allowRemainder: true }, // חילוק עם שארית
         fractions: { maxDen: 4 },
         sequences: { maxStart: 20, maxStep: 3 },
         decimals: { maxBase: 50, places: 1 },
+        divisibility: { divisors: [2, 5, 10] },
         equations: { max: 200 },
-        compare: { max: 200 },
-        number_sense: { max: 200 },
+        compare: { max: 10000 }, // עד רבבה
+        number_sense: { max: 10000 },
       },
       medium: {
         addition: { max: 500 },
         subtraction: { min: 0, max: 500 },
         multiplication: { max: 12 },
-        division: { max: 144, maxDivisor: 12 },
+        division: { max: 144, maxDivisor: 12, allowRemainder: true },
         fractions: { maxDen: 6 },
         sequences: { maxStart: 50, maxStep: 9 },
         decimals: { maxBase: 50, places: 1 },
+        divisibility: { divisors: [2, 5, 10] },
         equations: { max: 500 },
-        compare: { max: 500 },
-        number_sense: { max: 500 },
+        compare: { max: 10000 },
+        number_sense: { max: 10000 },
       },
       hard: {
         addition: { max: 1000 },
         subtraction: { min: 0, max: 1000 },
         multiplication: { max: 12 },
-        division: { max: 200, maxDivisor: 12 },
+        division: { max: 200, maxDivisor: 12, allowRemainder: true },
         fractions: { maxDen: 6 },
         sequences: { maxStart: 50, maxStep: 9 },
         decimals: { maxBase: 50, places: 1 },
+        divisibility: { divisors: [2, 5, 10] },
         equations: { max: 1000 },
-        compare: { max: 1000 },
-        number_sense: { max: 1000 },
+        compare: { max: 10000 },
+        number_sense: { max: 10000 },
       },
     },
   },
@@ -146,9 +152,12 @@ export const GRADE_LEVELS = {
         sequences: { maxStart: 100, maxStep: 9 },
         decimals: { maxBase: 100, places: 1 },
         rounding: { maxN: 999, toWhat: 10 },
+        divisibility: { divisors: [2, 3, 5, 6, 9, 10] }, // סימני התחלקות ב-3,6,9
+        prime_composite: { maxNumber: 100 }, // מספרים ראשוניים ופריקים
+        powers: { maxBase: 10, maxExp: 3 }, // חזקות
         equations: { max: 1000 },
-        compare: { max: 1000 },
-        number_sense: { max: 1000 },
+        compare: { max: 1000000 }, // עד מיליון
+        number_sense: { max: 1000000 },
         factors_multiples: { maxNumber: 100 },
       },
       medium: {
@@ -160,9 +169,12 @@ export const GRADE_LEVELS = {
         sequences: { maxStart: 200, maxStep: 9 },
         decimals: { maxBase: 200, places: 2 },
         rounding: { maxN: 9999, toWhat: 100 },
+        divisibility: { divisors: [2, 3, 5, 6, 9, 10] },
+        prime_composite: { maxNumber: 200 },
+        powers: { maxBase: 10, maxExp: 4 },
         equations: { max: 5000 },
-        compare: { max: 5000 },
-        number_sense: { max: 5000 },
+        compare: { max: 1000000 },
+        number_sense: { max: 1000000 },
         factors_multiples: { maxNumber: 200 },
       },
       hard: {
@@ -174,9 +186,12 @@ export const GRADE_LEVELS = {
         sequences: { maxStart: 200, maxStep: 9 },
         decimals: { maxBase: 200, places: 2 },
         rounding: { maxN: 9999, toWhat: 100 },
+        divisibility: { divisors: [2, 3, 5, 6, 9, 10] },
+        prime_composite: { maxNumber: 500 },
+        powers: { maxBase: 10, maxExp: 5 },
         equations: { max: 10000 },
-        compare: { max: 10000 },
-        number_sense: { max: 10000 },
+        compare: { max: 1000000 },
+        number_sense: { max: 1000000 },
         factors_multiples: { maxNumber: 500 },
       },
     },
@@ -295,8 +310,10 @@ export const GRADES = {
     operations: [
       "addition",
       "subtraction",
+      "multiplication", // כפל עד 20
+      "division",       // חילוק עד 20
       "compare",
-      "number_sense", // שכנים, זוגי/אי-זוגי, השלמה ל-10, עשרות/יחידות
+      "number_sense",
     ],
     allowFractions: false,
     allowNegatives: false,
@@ -308,11 +325,13 @@ export const GRADES = {
       "subtraction",
       "multiplication", // לוח כפל עד 10×10
       "division",       // חילוק פשוט לפי לוח הכפל
+      "fractions",      // חצי ורבע
+      "divisibility",   // סימני התחלקות ב-2,5,10
       "compare",
       "number_sense",
-      "mixed",          // תרגילים מעורבים בתחום ה-100
+      "mixed",          // תרגילים מעורבים בתחום ה-1000
     ],
-    allowFractions: false,  // שברים מסודרים מתחילים רשמית מד׳
+    allowFractions: false,
     allowNegatives: false,
   },
   g3: {
@@ -321,10 +340,11 @@ export const GRADES = {
       "addition",
       "subtraction",
       "multiplication",
-      "division",
-      "fractions",     // היכרות עם שבר כחלק משלם
+      "division",       // חילוק עם שארית
+      "fractions",      // היכרות עם שבר כחלק משלם
       "sequences",
-      "decimals",      // עשרוניים בסיסיים
+      "decimals",       // עשרוניים בסיסיים
+      "divisibility",   // סימני התחלקות ב-2,5,10
       "compare",
       "equations",
       "number_sense",
@@ -344,6 +364,9 @@ export const GRADES = {
       "decimals",
       "sequences",
       "rounding",
+      "divisibility",   // סימני התחלקות ב-3,6,9
+      "prime_composite", // מספרים ראשוניים ופריקים
+      "powers",         // חזקות
       "equations",
       "compare",
       "number_sense",
@@ -360,7 +383,7 @@ export const GRADES = {
       "subtraction",
       "multiplication",
       "division",
-      "fractions",
+      "fractions",      // כולל צמצום, הרחבה, חיבור וחיסור
       "percentages",
       "sequences",
       "decimals",
@@ -382,8 +405,9 @@ export const GRADES = {
       "subtraction",
       "multiplication",
       "division",
-      "fractions",
+      "fractions",      // כולל כפל וחילוק שברים
       "percentages",
+      "ratio",          // יחס
       "sequences",
       "decimals",
       "rounding",
@@ -409,6 +433,10 @@ export const OPERATIONS = [
   "sequences",
   "decimals",
   "rounding",
+  "divisibility",
+  "prime_composite",
+  "powers",
+  "ratio",
   "equations",
   "compare",
   "number_sense",
