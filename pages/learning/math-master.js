@@ -984,8 +984,24 @@ export default function MathMaster() {
         return "עשרוניים";
       case "rounding":
         return "עיגול";
+      case "divisibility":
+        return "סימני התחלקות";
+      case "prime_composite":
+        return "מספרים ראשוניים ופריקים";
+      case "powers":
+        return "חזקות";
+      case "ratio":
+        return "יחס";
       case "equations":
         return "משוואות";
+      case "order_of_operations":
+        return "סדר פעולות";
+      case "zero_one_properties":
+        return "תכונות ה-0 וה-1";
+      case "estimation":
+        return "אומדן";
+      case "scale":
+        return "קנה מידה";
       case "compare":
         return "השוואה";
       case "number_sense":
@@ -2841,10 +2857,10 @@ export default function MathMaster() {
               dir="rtl"
             >
               <div
-                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full"
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="text-center mb-4">
+                <div className="text-center mb-4 flex-shrink-0">
                   <h2 className="text-2xl font-extrabold text-white mb-2">
                     🎲 בחר פעולות למיקס
                   </h2>
@@ -2853,7 +2869,7 @@ export default function MathMaster() {
                   </p>
                 </div>
 
-                <div className="space-y-3 mb-4">
+                <div className="space-y-3 mb-4 overflow-y-auto flex-1 min-h-0">
                   {GRADES[grade].operations
                     .filter((op) => op !== "mixed")
                     .map((op) => (
@@ -2879,7 +2895,7 @@ export default function MathMaster() {
                     ))}
                 </div>
 
-                <div className="flex gap-2" dir="rtl">
+                <div className="flex gap-2 flex-shrink-0" dir="rtl">
                   <button
                     onClick={() => {
                       // בדוק שיש לפחות פעולה אחת נבחרת

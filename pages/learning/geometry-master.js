@@ -1376,10 +1376,10 @@ export default function GeometryMaster() {
               dir="rtl"
             >
               <div
-                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full"
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="text-center mb-4">
+                <div className="text-center mb-4 flex-shrink-0">
                   <h2 className="text-2xl font-extrabold text-white mb-2">
                     🎲 בחר נושאים למיקס
                   </h2>
@@ -1388,7 +1388,7 @@ export default function GeometryMaster() {
                   </p>
                 </div>
 
-                <div className="space-y-3 mb-4">
+                <div className="space-y-3 mb-4 overflow-y-auto flex-1 min-h-0">
                   {(GRADES[grade]?.topics || [])
                     .filter((t) => t !== "mixed")
                     .map((t) => (
@@ -1414,7 +1414,7 @@ export default function GeometryMaster() {
                     ))}
                 </div>
 
-                <div className="flex gap-2" dir="rtl">
+                <div className="flex gap-2 flex-shrink-0" dir="rtl">
                   <button
                     onClick={() => {
                       const availableTopics = (GRADES[grade]?.topics || []).filter(

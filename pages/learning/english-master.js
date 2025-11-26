@@ -2027,10 +2027,10 @@ export default function EnglishMaster() {
               }}
             >
               <div
-                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full"
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="text-center mb-4">
+                <div className="text-center mb-4 flex-shrink-0">
                   <h2 className="text-2xl font-extrabold text-white mb-2">
                     🎲 בחר נושאים למיקס
                   </h2>
@@ -2039,7 +2039,7 @@ export default function EnglishMaster() {
                   </p>
                 </div>
 
-                <div className="space-y-3 mb-4">
+                <div className="space-y-3 mb-4 overflow-y-auto flex-1 min-h-0">
                   {GRADES[grade].topics
                     .filter((t) => t !== "mixed")
                     .map((t) => (
@@ -2065,7 +2065,7 @@ export default function EnglishMaster() {
                     ))}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-shrink-0">
                   <button
                     onClick={() => {
                       const availableTopics = GRADES[grade].topics.filter(
