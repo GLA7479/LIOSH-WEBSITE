@@ -22,6 +22,7 @@ import {
   getErrorExplanation,
   getTheorySummary,
 } from "../../utils/geometry-explanations";
+import { trackGeometryTopicTime } from "../../utils/math-time-tracking";
 
 export default function GeometryMaster() {
   useIOSViewportFix();
@@ -33,7 +34,10 @@ export default function GeometryMaster() {
   const topicSelectRef = useRef(null);
 
   const [mounted, setMounted] = useState(false);
-  const [grade, setGrade] = useState("g5");
+  
+  // NEW: grade & mode
+  const [gradeNumber, setGradeNumber] = useState(5); // 1 = כיתה א׳, 2 = ב׳, ... 6 = ו׳
+  const [grade, setGrade] = useState("g5"); // g1, g2, g3, g4, g5, g6
   const [mode, setMode] = useState("learning");
   const [level, setLevel] = useState("easy");
   const [topic, setTopic] = useState("area");
@@ -56,9 +60,28 @@ export default function GeometryMaster() {
   const [stars, setStars] = useState(0);
   const [badges, setBadges] = useState([]);
   const [showBadge, setShowBadge] = useState(null);
+  const [showBadgeGallery, setShowBadgeGallery] = useState(false);
+  const [showPlayerProfile, setShowPlayerProfile] = useState(false);
+  const [playerAvatar, setPlayerAvatar] = useState("👤"); // אווטר ברירת מחדל
   const [playerLevel, setPlayerLevel] = useState(1);
   const [xp, setXp] = useState(0);
   const [showLevelUp, setShowLevelUp] = useState(false);
+  
+  // תרגול ממוקד
+  const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal"); // "normal", "mistakes", "graded"
+  const [practiceFocus, setPracticeFocus] = useState("default");
+  const [mistakes, setMistakes] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_geometry_mistakes") || "[]");
+        return saved;
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
+  const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   const [progress, setProgress] = useState({
     area: { total: 0, correct: 0 },
     perimeter: { total: 0, correct: 0 },
@@ -242,6 +265,19 @@ export default function GeometryMaster() {
     if (attempts >= maxAttempts) {
       setRecentQuestions(new Set());
     }
+    // מעקב זמן - סיום שאלה קודמת (אם יש)
+    if (questionStartTime && currentQuestion) {
+      const duration = (Date.now() - questionStartTime) / 1000; // שניות
+      if (duration > 0 && duration < 300) { // רק אם זמן סביר (פחות מ-5 דקות)
+        trackGeometryTopicTime(
+          currentQuestion.topic,
+          grade,
+          level,
+          duration
+        );
+      }
+    }
+    
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setFeedback(null);
@@ -675,6 +711,12 @@ export default function GeometryMaster() {
           >
             <div className="absolute right-2 top-2 flex gap-2 pointer-events-auto">
               <button
+                onClick={() => router.push("/learning/parent-report")}
+                className="min-w-[100px] px-3 py-1 rounded-lg text-sm font-bold bg-blue-500/20 border border-blue-400/30 hover:bg-blue-500/30 text-blue-200"
+              >
+                📊 דוח להורים
+              </button>
+              <button
                 onClick={() => router.push("/learning/geometry-curriculum")}
                 className="min-w-[100px] px-3 py-1 rounded-lg text-sm font-bold bg-emerald-500/20 border border-emerald-400/30 hover:bg-emerald-500/30 text-emerald-200"
               >
@@ -989,11 +1031,25 @@ export default function GeometryMaster() {
                   ▶️ התחל
                 </button>
                 <button
+                  onClick={() => setShowPracticeOptions(true)}
+                  className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-sm"
+                >
+                  🎯 תרגול ממוקד
+                </button>
+                <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
                 >
                   🏆 לוח תוצאות
                 </button>
+                {badges.length > 0 && (
+                  <button
+                    onClick={() => setShowBadgeGallery(true)}
+                    className="h-10 px-4 rounded-lg bg-yellow-500/80 hover:bg-yellow-500 font-bold text-sm"
+                  >
+                    🏅 תגים ({badges.length})
+                  </button>
+                )}
                 {bestScore > 0 && (
                   <button
                     onClick={resetStats}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
-import { generateParentReport, getOperationName, exportReportToPDF } from "../../utils/math-report-generator";
+import { generateParentReport, getOperationName, getTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { useRouter } from "next/router";
 import {
   BarChart,
@@ -88,7 +88,7 @@ export default function ParentReport() {
     );
   }
 
-  if (!report || !report.summary) {
+  if (!report || !report.summary || (report.summary.totalQuestions === 0 && report.summary.totalTimeMinutes === 0)) {
     return (
       <Layout>
         <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center p-4" dir="rtl">
@@ -100,21 +100,101 @@ export default function ParentReport() {
               <br />
               התחל לשחק כדי ליצור דוח.
             </p>
+            
+            {/* בחירת תקופה גם במסך "אין נתונים" */}
+            <div className="mb-4 space-y-2">
+              <div className="text-sm text-white/60 mb-2">בחר תקופה:</div>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <button
+                  onClick={() => {
+                    setCustomDates(false);
+                    setPeriod('week');
+                    setAppliedStartDate("");
+                    setAppliedEndDate("");
+                  }}
+                  className={`px-3 py-2 rounded-lg font-bold text-xs transition-all ${
+                    !customDates && period === 'week'
+                      ? "bg-blue-500/80 text-white"
+                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                  }`}
+                >
+                  שבוע
+                </button>
+                <button
+                  onClick={() => {
+                    setCustomDates(false);
+                    setPeriod('month');
+                    setAppliedStartDate("");
+                    setAppliedEndDate("");
+                  }}
+                  className={`px-3 py-2 rounded-lg font-bold text-xs transition-all ${
+                    !customDates && period === 'month'
+                      ? "bg-blue-500/80 text-white"
+                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                  }`}
+                >
+                  חודש
+                </button>
+                <button
+                  onClick={() => {
+                    setCustomDates(true);
+                    setPeriod('custom');
+                  }}
+                  className={`px-3 py-2 rounded-lg font-bold text-xs transition-all ${
+                    customDates
+                      ? "bg-blue-500/80 text-white"
+                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                  }`}
+                >
+                  תאריכים מותאמים
+                </button>
+              </div>
+              
+              {/* בחירת תאריכים מותאמת אישית */}
+              {customDates && (
+                <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-3 mb-3 p-3 bg-black/20 rounded-lg">
+                  <div className="flex flex-col sm:flex-row items-center gap-2">
+                    <label className="text-xs md:text-sm text-white/70 whitespace-nowrap">מתאריך:</label>
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      max={endDate || new Date().toISOString().split('T')[0]}
+                      className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div className="flex flex-col sm:flex-row items-center gap-2">
+                    <label className="text-xs md:text-sm text-white/70 whitespace-nowrap">עד תאריך:</label>
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      min={startDate}
+                      max={new Date().toISOString().split('T')[0]}
+                      className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleShowReport();
+                    }}
+                    disabled={!startDate || !endDate || startDate > endDate}
+                    className="px-4 md:px-6 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 active:bg-blue-600 font-bold text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all whitespace-nowrap cursor-pointer"
+                  >
+                    הצג
+                  </button>
+                </div>
+              )}
+            </div>
+            
             <div className="space-y-3">
               <button
                 onClick={() => router.push("/learning/math-master")}
-                className="px-6 py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold"
+                className="px-6 py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold block w-full"
               >
                 חזור למשחק
-              </button>
-              <button
-                onClick={() => {
-                  setCustomDates(false);
-                  setPeriod('week');
-                }}
-                className="px-6 py-3 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold block w-full"
-              >
-                נסה תקופה אחרת
               </button>
             </div>
           </div>
@@ -265,10 +345,33 @@ export default function ParentReport() {
             </div>
           </div>
 
-          {/* טבלת פעולות */}
-          {Object.keys(report.operations).length > 0 && (
+          {/* סיכום לפי מקצוע */}
+          <div className="grid grid-cols-2 gap-2 md:gap-3 mb-4 md:mb-6">
+            <div className="bg-blue-500/20 border border-blue-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="text-xs md:text-sm text-white/60 mb-1">🧮 חשבון</div>
+              <div className="text-base md:text-lg font-bold text-blue-400">
+                {report.summary.mathQuestions || 0} שאלות
+              </div>
+              <div className="text-xs text-white/80">
+                {report.summary.mathCorrect || 0} נכון • {report.summary.mathAccuracy || 0}% דיוק
+              </div>
+            </div>
+            
+            <div className="bg-emerald-500/20 border border-emerald-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="text-xs md:text-sm text-white/60 mb-1">📐 גאומטריה</div>
+              <div className="text-base md:text-lg font-bold text-emerald-400">
+                {report.summary.geometryQuestions || 0} שאלות
+              </div>
+              <div className="text-xs text-white/80">
+                {report.summary.geometryCorrect || 0} נכון • {report.summary.geometryAccuracy || 0}% דיוק
+              </div>
+            </div>
+          </div>
+
+          {/* טבלת פעולות חשבון */}
+          {Object.keys(report.mathOperations || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📈 התקדמות לפי פעולות</h2>
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">🧮 התקדמות בחשבון</h2>
               <div className="overflow-x-auto -mx-2 md:mx-0">
                 <table className="w-full text-xs md:text-sm min-w-[600px]">
                   <thead>
@@ -282,12 +385,69 @@ export default function ParentReport() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(report.operations)
+                    {Object.entries(report.mathOperations)
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([op, data]) => (
                         <tr key={op} className="border-b border-white/10">
                           <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
                             {getOperationName(op)}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.timeMinutes} דק'
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.questions}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                            {data.correct}
+                          </td>
+                          <td className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                            data.accuracy >= 90 ? "text-emerald-400" :
+                            data.accuracy >= 70 ? "text-yellow-400" :
+                            "text-red-400"
+                          }`}>
+                            {data.accuracy}%
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                            {data.excellent ? (
+                              <span className="text-emerald-400">✅</span>
+                            ) : data.needsPractice ? (
+                              <span className="text-red-400">⚠️</span>
+                            ) : (
+                              <span className="text-yellow-400">👍</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* טבלת נושאים גאומטריה */}
+          {Object.keys(report.geometryTopics || {}).length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📐 התקדמות בגאומטריה</h2>
+              <div className="overflow-x-auto -mx-2 md:mx-0">
+                <table className="w-full text-xs md:text-sm min-w-[600px]">
+                  <thead>
+                    <tr className="border-b border-white/20">
+                      <th className="text-right py-2 px-1 md:px-2">נושא</th>
+                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
+                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
+                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
+                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
+                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(report.geometryTopics)
+                      .sort(([_, a], [__, b]) => b.questions - a.questions)
+                      .map(([topic, data]) => (
+                        <tr key={topic} className="border-b border-white/10">
+                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
+                            {getTopicName(topic)}
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.timeMinutes} דק'
@@ -398,6 +558,22 @@ export default function ParentReport() {
                       name="שאלות"
                       dot={{ fill: "#10b981", r: 4 }}
                     />
+                    <Line
+                      type="monotone"
+                      dataKey="mathTopics"
+                      stroke="#60a5fa"
+                      strokeWidth={2}
+                      name="נושאי חשבון"
+                      dot={{ fill: "#60a5fa", r: 3 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="geometryTopics"
+                      stroke="#34d399"
+                      strokeWidth={2}
+                      name="נושאי גאומטריה"
+                      dot={{ fill: "#34d399", r: 3 }}
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -405,17 +581,24 @@ export default function ParentReport() {
           )}
 
           {/* גרף דיוק לפי פעולות */}
-          {Object.keys(report.operations).length > 0 && (
+          {Object.keys(report.allItems || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📊 דיוק לפי פעולות</h2>
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📊 דיוק לפי פעולות ונושאים</h2>
               <div className="h-48 md:h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={Object.entries(report.operations)
-                    .map(([op, data]) => ({
-                      name: getOperationName(op),
-                      דיוק: data.accuracy,
-                      שאלות: data.questions,
-                    }))
+                  <BarChart data={Object.entries(report.allItems)
+                    .map(([key, data]) => {
+                      const name = key.startsWith('math_') 
+                        ? getOperationName(key.replace('math_', ''))
+                        : key.startsWith('geometry_')
+                        ? getTopicName(key.replace('geometry_', ''))
+                        : key;
+                      return {
+                        name,
+                        דיוק: data.accuracy,
+                        שאלות: data.questions,
+                      };
+                    })
                     .sort((a, b) => b.דיוק - a.דיוק)
                     .slice(0, 10)
                   }>
@@ -443,16 +626,23 @@ export default function ParentReport() {
           )}
 
           {/* גרף זמן לפי פעולות */}
-          {Object.keys(report.operations).length > 0 && (
+          {Object.keys(report.allItems || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">⏰ זמן תרגול לפי פעולות</h2>
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
               <div className="h-48 md:h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={Object.entries(report.operations)
-                    .map(([op, data]) => ({
-                      name: getOperationName(op),
-                      זמן: data.timeMinutes,
-                    }))
+                  <BarChart data={Object.entries(report.allItems)
+                    .map(([key, data]) => {
+                      const name = key.startsWith('math_') 
+                        ? getOperationName(key.replace('math_', ''))
+                        : key.startsWith('geometry_')
+                        ? getTopicName(key.replace('geometry_', ''))
+                        : key;
+                      return {
+                        name,
+                        זמן: data.timeMinutes,
+                      };
+                    })
                     .sort((a, b) => b.זמן - a.זמן)
                     .slice(0, 10)
                   }>
@@ -481,19 +671,26 @@ export default function ParentReport() {
           )}
 
           {/* גרף עוגה - חלוקת זמן */}
-          {Object.keys(report.operations).length > 0 && (
+          {Object.keys(report.allItems || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
               <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">🥧 חלוקת זמן תרגול</h2>
               <div className="h-48 md:h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={Object.entries(report.operations)
+                      data={Object.entries(report.allItems)
                         .filter(([_, data]) => data.timeMinutes > 0)
-                        .map(([op, data]) => ({
-                          name: getOperationName(op),
-                          value: data.timeMinutes,
-                        }))
+                        .map(([key, data]) => {
+                          const name = key.startsWith('math_') 
+                            ? getOperationName(key.replace('math_', ''))
+                            : key.startsWith('geometry_')
+                            ? getTopicName(key.replace('geometry_', ''))
+                            : key;
+                          return {
+                            name,
+                            value: data.timeMinutes,
+                          };
+                        })
                         .sort((a, b) => b.value - a.value)
                         .slice(0, 8)
                       }
@@ -507,7 +704,7 @@ export default function ParentReport() {
                       fill="#8884d8"
                       dataKey="value"
                     >
-                      {Object.entries(report.operations)
+                      {Object.entries(report.allItems)
                         .filter(([_, data]) => data.timeMinutes > 0)
                         .map(([_, data], index) => (
                           <Cell

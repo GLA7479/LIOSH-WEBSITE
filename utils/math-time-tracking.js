@@ -1,8 +1,9 @@
-// מערכת מעקב זמן לפי פעולה, כיתה ורמה
+// מערכת מעקב זמן לפי פעולה/נושא, כיתה ורמה (חשבון וגאומטריה)
 
 const TIME_TRACKING_KEY = "mleo_time_tracking";
+const GEOMETRY_TIME_TRACKING_KEY = "mleo_geometry_time_tracking";
 
-// שמירת זמן עבודה על פעולה ספציפית
+// שמירת זמן עבודה על פעולה ספציפית (חשבון)
 export function trackOperationTime(operation, grade, level, duration) {
   if (typeof window === "undefined") return;
   
@@ -229,6 +230,172 @@ export function cleanOldTimeTracking() {
     localStorage.setItem(TIME_TRACKING_KEY, JSON.stringify(saved));
   } catch (error) {
     console.error("Error cleaning old time tracking:", error);
+  }
+}
+
+// ========== גאומטריה ==========
+
+// שמירת זמן עבודה על נושא ספציפי (גאומטריה)
+export function trackGeometryTopicTime(topic, grade, level, duration) {
+  if (typeof window === "undefined") return;
+  
+  try {
+    const saved = JSON.parse(localStorage.getItem(GEOMETRY_TIME_TRACKING_KEY) || "{}");
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    
+    // אתחול מבנה הנתונים
+    if (!saved.topics) saved.topics = {};
+    if (!saved.topics[topic]) {
+      saved.topics[topic] = {
+        total: 0, // סך הכל בשניות
+        sessions: [],
+        byGrade: {},
+        byLevel: {}
+      };
+    }
+    
+    if (!saved.daily) saved.daily = {};
+    if (!saved.daily[today]) {
+      saved.daily[today] = {
+        total: 0,
+        topics: {},
+        byGrade: {},
+        byLevel: {}
+      };
+    }
+    
+    // עדכון סך הכל
+    saved.topics[topic].total += duration;
+    
+    // עדכון לפי כיתה
+    if (!saved.topics[topic].byGrade[grade]) {
+      saved.topics[topic].byGrade[grade] = 0;
+    }
+    saved.topics[topic].byGrade[grade] += duration;
+    
+    // עדכון לפי רמה
+    if (!saved.topics[topic].byLevel[level]) {
+      saved.topics[topic].byLevel[level] = 0;
+    }
+    saved.topics[topic].byLevel[level] += duration;
+    
+    // הוספת סשן
+    saved.topics[topic].sessions.push({
+      date: today,
+      duration,
+      grade,
+      level,
+      timestamp: Date.now()
+    });
+    
+    // שמירת רק 1000 סשנים אחרונים לכל נושא
+    if (saved.topics[topic].sessions.length > 1000) {
+      saved.topics[topic].sessions = saved.topics[topic].sessions.slice(-1000);
+    }
+    
+    // עדכון יומי
+    saved.daily[today].total += duration;
+    if (!saved.daily[today].topics[topic]) {
+      saved.daily[today].topics[topic] = 0;
+    }
+    saved.daily[today].topics[topic] += duration;
+    
+    if (!saved.daily[today].byGrade[grade]) {
+      saved.daily[today].byGrade[grade] = 0;
+    }
+    saved.daily[today].byGrade[grade] += duration;
+    
+    if (!saved.daily[today].byLevel[level]) {
+      saved.daily[today].byLevel[level] = 0;
+    }
+    saved.daily[today].byLevel[level] += duration;
+    
+    // שמירה
+    localStorage.setItem(GEOMETRY_TIME_TRACKING_KEY, JSON.stringify(saved));
+  } catch (error) {
+    console.error("Error tracking geometry time:", error);
+  }
+}
+
+// קבלת זמן לפי תקופה מותאמת אישית (גאומטריה)
+export function getGeometryTimeByCustomPeriod(startDate, endDate) {
+  if (typeof window === "undefined") return {};
+  
+  try {
+    const saved = JSON.parse(localStorage.getItem(GEOMETRY_TIME_TRACKING_KEY) || "{}");
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    const result = {
+      total: 0,
+      topics: {},
+      daily: [],
+      byGrade: {},
+      byLevel: {}
+    };
+    
+    // סיכום לפי ימים
+    Object.entries(saved.daily || {}).forEach(([date, data]) => {
+      const dateObj = new Date(date);
+      if (dateObj >= start && dateObj <= end) {
+        result.total += data.total || 0;
+        result.daily.push({
+          date,
+          total: data.total || 0,
+          topics: data.topics || {},
+          byGrade: data.byGrade || {},
+          byLevel: data.byLevel || {}
+        });
+        
+        // סיכום לפי נושאים
+        Object.entries(data.topics || {}).forEach(([topic, time]) => {
+          if (!result.topics[topic]) result.topics[topic] = 0;
+          result.topics[topic] += time;
+        });
+        
+        // סיכום לפי כיתה
+        Object.entries(data.byGrade || {}).forEach(([grade, time]) => {
+          if (!result.byGrade[grade]) result.byGrade[grade] = 0;
+          result.byGrade[grade] += time;
+        });
+        
+        // סיכום לפי רמה
+        Object.entries(data.byLevel || {}).forEach(([level, time]) => {
+          if (!result.byLevel[level]) result.byLevel[level] = 0;
+          result.byLevel[level] += time;
+        });
+      }
+    });
+    
+    // המרה לדקות
+    result.totalMinutes = Math.round(result.total / 60);
+    result.totalHours = (result.total / 3600).toFixed(2);
+    
+    Object.keys(result.topics).forEach(topic => {
+      result.topics[topic] = {
+        seconds: result.topics[topic],
+        minutes: Math.round(result.topics[topic] / 60),
+        hours: (result.topics[topic] / 3600).toFixed(2)
+      };
+    });
+    
+    return result;
+  } catch {
+    return { total: 0, totalMinutes: 0, topics: {}, daily: [], byGrade: {}, byLevel: {} };
+  }
+}
+
+// קבלת זמן לפי תקופה (גאומטריה)
+export function getGeometryTimeByPeriod(period = 'week') {
+  if (typeof window === "undefined") return {};
+  
+  try {
+    const now = new Date();
+    const days = period === 'week' ? 7 : period === 'month' ? 30 : 365;
+    const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+    return getGeometryTimeByCustomPeriod(startDate, now);
+  } catch {
+    return { total: 0, totalMinutes: 0, topics: {}, daily: [], byGrade: {}, byLevel: {} };
   }
 }
 
