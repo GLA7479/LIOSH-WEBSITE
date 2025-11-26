@@ -51,27 +51,27 @@ export const GRADES = {
   },
   g2: {
     name: "כיתה ב'",
-    topics: ["area", "perimeter", "solids", "transformations"], // שטח, היקף, גופים, שיקוף/הזזה
+    topics: ["area", "solids", "transformations"], // מדידות שטח, מצולעים וגופים, שיקוף/הזזה (היקף מוזכר בהקשר של שטח אך לא כנושא נפרד)
     shapes: ["square", "rectangle", "cube", "rectangular_prism", "cylinder", "pyramid", "cone", "sphere"],
   },
   g3: {
     name: "כיתה ג'",
-    topics: ["area", "perimeter", "angles", "parallel_perpendicular", "triangles", "quadrilaterals", "rotation"], // שטח, היקף, זוויות, מקבילות/מאונכות, משולשים, מרובעים, סיבוב
+    topics: ["angles", "parallel_perpendicular", "triangles", "quadrilaterals", "area", "perimeter", "rotation"], // מאונכוּת, מקבילוּת, זוויות, משולשים, מרובעים, שטח, היקף, סיבוב
     shapes: ["triangle", "square", "rectangle"],
   },
   g4: {
     name: "כיתה ד'",
-    topics: ["area", "perimeter", "diagonal", "symmetry", "volume", "shapes_basic"], // שטח, היקף, אלכסון, סימטרייה, נפח תיבות, ריבוע ומלבן (תכונות)
+    topics: ["shapes_basic", "diagonal", "symmetry", "area", "perimeter", "volume"], // מצולעים ואלכסון, ריבוע ומלבן, תכונות משולש, תיבות, סימטרייה, שטח, היקף, נפח תיבה
     shapes: ["square", "rectangle", "triangle", "circle", "rectangular_prism", "cube"],
   },
   g5: {
     name: "כיתה ה'",
-    topics: ["area", "perimeter", "volume", "angles", "parallel_perpendicular", "quadrilaterals", "heights", "tiling", "mixed"], // שטח, היקף, נפח, זוויות, מקבילות/מאונכות, מרובעים, גבהים, ריצוף, ערבוב
+    topics: ["angles", "parallel_perpendicular", "quadrilaterals", "heights", "tiling", "area", "perimeter", "volume", "mixed"], // אלכסונים, מקבילוּת, מאונכוּת, זוויות, מרובעים, גבהים, ריצוף, מדידות שטחים, ערבוב
     shapes: ["square", "rectangle", "triangle", "circle", "parallelogram", "trapezoid", "rectangular_prism", "cube"],
   },
   g6: {
     name: "כיתה ו'",
-    topics: ["area", "perimeter", "volume", "angles", "pythagoras", "circles", "solids", "mixed"], // שטח, היקף, נפח, זוויות, פיתגורס, מעגל, גופים, ערבוב
+    topics: ["solids", "circles", "volume", "area", "perimeter", "angles", "pythagoras", "mixed"], // גופים, מעגל ועיגול, חישובי נפחים, שטח, היקף, זוויות, פיתגורס, ערבוב
     shapes: ["square", "rectangle", "triangle", "circle", "parallelogram", "trapezoid", "cylinder", "sphere", "cube", "rectangular_prism", "pyramid", "cone", "prism"],
   },
 };
@@ -90,8 +90,7 @@ export const TOPIC_SHAPES = {
     g6: ["square", "rectangle", "triangle", "parallelogram", "trapezoid", "circle"],
   },
   perimeter: {
-    g2: ["square", "rectangle"],
-    g3: ["square", "rectangle", "triangle"],
+    g3: ["square", "rectangle", "triangle"], // מדידת היקף של מצולע - כיתה ג'
     g4: ["square", "rectangle", "triangle"],
     g5: ["square", "rectangle", "triangle"],
     g6: ["square", "rectangle", "triangle", "circle"],

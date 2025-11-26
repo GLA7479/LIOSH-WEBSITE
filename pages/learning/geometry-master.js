@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef, useMemo } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -33,6 +33,12 @@ export default function GeometryMaster() {
   const controlsRef = useRef(null);
   const topicSelectRef = useRef(null);
 
+  // פונקציה עזר לקבלת מפתח תאריך
+  const getTodayKey = () => {
+    const today = new Date();
+    return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+  };
+
   const [mounted, setMounted] = useState(false);
   
   // NEW: grade & mode
@@ -61,6 +67,9 @@ export default function GeometryMaster() {
   const [badges, setBadges] = useState([]);
   const [showBadge, setShowBadge] = useState(null);
   const [showBadgeGallery, setShowBadgeGallery] = useState(false);
+  const [showCorrectAnimation, setShowCorrectAnimation] = useState(false);
+  const [showWrongAnimation, setShowWrongAnimation] = useState(false);
+  const [celebrationEmoji, setCelebrationEmoji] = useState("🎉");
   const [showPlayerProfile, setShowPlayerProfile] = useState(false);
   const [playerAvatar, setPlayerAvatar] = useState("👤"); // אווטר ברירת מחדל
   const [playerLevel, setPlayerLevel] = useState(1);
@@ -89,11 +98,44 @@ export default function GeometryMaster() {
     angles: { total: 0, correct: 0 },
     pythagoras: { total: 0, correct: 0 },
   });
-  const [dailyChallenge, setDailyChallenge] = useState({
-    date: new Date().toDateString(),
-    bestScore: 0,
-    questions: 0,
+  const [dailyChallenge, setDailyChallenge] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_geometry_daily_challenge") || "{}");
+        const todayKey = getTodayKey();
+        if (saved.date === todayKey) {
+          return saved;
+        }
+      } catch {}
+    }
+    return {
+      date: getTodayKey(),
+      questions: 0,
+      correct: 0,
+      bestScore: 0,
+      completed: false,
+    };
   });
+  const [weeklyChallenge, setWeeklyChallenge] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_weekly_challenge") || "{}");
+        const today = new Date();
+        const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+        const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
+        if (saved.week === weekKey) {
+          return saved;
+        }
+      } catch {}
+    }
+    return {
+      week: getTodayKey().split('-').slice(0, 2).join('-'), // שבוע נוכחי
+      target: 100, // יעד: 100 שאלות נכונות
+      current: 0,
+      completed: false,
+    };
+  });
+  const [showDailyChallenge, setShowDailyChallenge] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
@@ -123,10 +165,26 @@ export default function GeometryMaster() {
 
 
 
+  // טעינת אווטר מ-localStorage
   useEffect(() => {
-    const today = new Date().toDateString();
-    if (dailyChallenge.date !== today) {
-      setDailyChallenge({ date: today, bestScore: 0, questions: 0 });
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("mleo_player_avatar");
+      if (saved) {
+        setPlayerAvatar(saved);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const todayKey = getTodayKey();
+    if (dailyChallenge.date !== todayKey) {
+      setDailyChallenge({ 
+        date: todayKey, 
+        bestScore: 0, 
+        questions: 0, 
+        correct: 0,
+        completed: false 
+      });
     }
   }, [dailyChallenge.date]);
 
@@ -420,11 +478,43 @@ export default function GeometryMaster() {
       });
 
       // עדכון תחרות יומית
-      setDailyChallenge((prev) => ({
-        ...prev,
-        bestScore: Math.max(prev.bestScore, score + points),
-        questions: prev.questions + 1,
-      }));
+      setDailyChallenge((prev) => {
+        const updated = {
+          ...prev,
+          bestScore: Math.max(prev.bestScore, score + points),
+          questions: prev.questions + 1,
+          correct: (prev.correct || 0) + 1,
+        };
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem("mleo_geometry_daily_challenge", JSON.stringify(updated));
+          } catch {}
+        }
+        return updated;
+      });
+
+      // עדכון תחרות שבועית
+      setWeeklyChallenge((prev) => {
+        const newCurrent = (prev.current || 0) + 1;
+        const updated = {
+          ...prev,
+          current: newCurrent,
+          completed: newCurrent >= prev.target,
+        };
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem("mleo_weekly_challenge", JSON.stringify(updated));
+          } catch {}
+        }
+        return updated;
+      });
+
+      // אנימציה ותגובה חזותית לתשובה נכונה
+      const emojis = ["🎉", "✨", "🌟", "💫", "⭐", "🔥", "💪", "🎊", "👏", "🏆"];
+      const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+      setCelebrationEmoji(randomEmoji);
+      setShowCorrectAnimation(true);
+      setTimeout(() => setShowCorrectAnimation(false), 1000);
 
       setFeedback("Correct! 🎉");
       if ("vibrate" in navigator) navigator.vibrate?.(50);
@@ -684,6 +774,35 @@ export default function GeometryMaster() {
 
   return (
     <Layout>
+      <style jsx>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+          20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
+        @keyframes celebrate {
+          0% { transform: scale(0) rotate(0deg); opacity: 0; }
+          50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+          100% { transform: scale(1) rotate(360deg); opacity: 0; }
+        }
+        .animate-celebrate {
+          animation: celebrate 1s ease-out;
+        }
+        @keyframes confetti {
+          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .animate-confetti {
+          animation: confetti 2s ease-out forwards;
+        }
+        @keyframes fadeIn {
+          0% { opacity: 0; transform: scale(0.5); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
       <div
         ref={wrapRef}
         className="relative w-full overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928] game-page-mobile"
@@ -710,12 +829,6 @@ export default function GeometryMaster() {
             style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 10px)" }}
           >
             <div className="absolute right-2 top-2 flex gap-2 pointer-events-auto">
-              <button
-                onClick={() => router.push("/learning/parent-report")}
-                className="min-w-[100px] px-3 py-1 rounded-lg text-sm font-bold bg-blue-500/20 border border-blue-400/30 hover:bg-blue-500/30 text-blue-200"
-              >
-                📊 דוח להורים
-              </button>
               <button
                 onClick={() => router.push("/learning/geometry-curriculum")}
                 className="min-w-[100px] px-3 py-1 rounded-lg text-sm font-bold bg-emerald-500/20 border border-emerald-400/30 hover:bg-emerald-500/30 text-emerald-200"
@@ -852,6 +965,14 @@ export default function GeometryMaster() {
           {!gameActive ? (
             <>
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md" dir="rtl">
+                {/* כפתור פרופיל */}
+                <button
+                  onClick={() => setShowPlayerProfile(true)}
+                  className="h-9 w-9 rounded-lg bg-purple-500/80 hover:bg-purple-500 border border-white/20 text-white text-xl font-bold flex items-center justify-center transition-all"
+                  title="פרופיל שחקן"
+                >
+                  {playerAvatar}
+                </button>
                 <input
                   type="text"
                   value={playerName}
@@ -1005,8 +1126,12 @@ export default function GeometryMaster() {
                     </div>
                   )}
                   {badges.length > 0 && (
-                    <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                      <div className="text-xs text-white/60">Badges</div>
+                    <div 
+                      className="bg-black/20 border border-white/10 rounded-lg p-2 text-center cursor-pointer hover:bg-black/30 transition"
+                      onClick={() => setShowBadgeGallery(true)}
+                      title="לחץ לראות את כל התגים"
+                    >
+                      <div className="text-xs text-white/60">תגים</div>
                       <div className="text-sm font-bold text-orange-400">
                         {badges.length} 🏅
                       </div>
@@ -1015,11 +1140,41 @@ export default function GeometryMaster() {
                 </div>
               )}
 
-              <div className="bg-black/20 border border-white/10 rounded-lg p-2 mb-2 w-full max-w-md text-center">
-                <div className="text-xs text-white/60 mb-1">אתגר יומי</div>
-                <div className="text-sm text-white">
-                  שיא: {dailyChallenge.bestScore} • שאלות: {dailyChallenge.questions}
+              {/* אתגרים יומיים ושבועיים */}
+              <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs text-white/60">אתגר יומי</div>
+                  <button
+                    onClick={() => setShowDailyChallenge(true)}
+                    className="text-xs text-blue-400 hover:text-blue-300"
+                  >
+                    פרטים
+                  </button>
                 </div>
+                <div className="text-sm text-white mb-2">
+                  {dailyChallenge.correct || 0} נכון מתוך {dailyChallenge.questions} שאלות
+                </div>
+                {dailyChallenge.questions > 0 && (
+                  <div className="w-full bg-black/30 rounded-full h-2 mb-2">
+                    <div
+                      className="bg-emerald-500 h-2 rounded-full transition-all"
+                      style={{ width: `${Math.min(100, ((dailyChallenge.correct || 0) / dailyChallenge.questions) * 100)}%` }}
+                    />
+                  </div>
+                )}
+                <div className="text-xs text-white/60 mb-2">אתגר שבועי</div>
+                <div className="text-sm text-white mb-1">
+                  {weeklyChallenge.current} / {weeklyChallenge.target} שאלות נכונות
+                </div>
+                <div className="w-full bg-black/30 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all ${weeklyChallenge.completed ? "bg-yellow-500" : "bg-blue-500"}`}
+                    style={{ width: `${Math.min(100, (weeklyChallenge.current / weeklyChallenge.target) * 100)}%` }}
+                  />
+                </div>
+                {weeklyChallenge.completed && (
+                  <div className="text-xs text-yellow-400 mt-1">🎉 השלמת את האתגר השבועי!</div>
+                )}
               </div>
 
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
@@ -1030,12 +1185,14 @@ export default function GeometryMaster() {
                 >
                   ▶️ התחל
                 </button>
-                <button
-                  onClick={() => setShowPracticeOptions(true)}
-                  className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-sm"
-                >
-                  🎯 תרגול ממוקד
-                </button>
+                {mistakes.length > 0 && (
+                  <button
+                    onClick={() => setShowPracticeOptions(true)}
+                    className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-sm"
+                  >
+                    🎯 תרגול ממוקד ({mistakes.length})
+                  </button>
+                )}
                 <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
@@ -1060,14 +1217,28 @@ export default function GeometryMaster() {
                 )}
               </div>
 
-              {/* כפתור "איך לומדים גאומטריה כאן?" */}
-              <div className="mb-2 w-full max-w-md flex justify-center">
+              {/* כפתורים עזרה ותרגול ממוקד */}
+              <div className="mb-2 w-full max-w-md flex justify-center gap-2 flex-wrap">
                 <button
                   onClick={() => setShowHowTo(true)}
                   className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
                 >
                   ❓ איך לומדים גאומטריה כאן?
                 </button>
+                <button
+                  onClick={() => router.push("/learning/parent-report")}
+                  className="px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-xs font-bold text-white shadow-sm"
+                >
+                  📊 דוח להורים
+                </button>
+                {mistakes.length > 0 && (
+                  <button
+                    onClick={() => setShowPracticeOptions(true)}
+                    className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
+                  >
+                    🎯 תרגול ממוקד ({mistakes.length})
+                  </button>
+                )}
               </div>
 
               {!playerName.trim() && (
@@ -1078,12 +1249,30 @@ export default function GeometryMaster() {
             </>
           ) : (
             <>
+              {/* אנימציות חזותיות */}
+              {showCorrectAnimation && (
+                <div className="fixed inset-0 z-[190] flex items-center justify-center pointer-events-none">
+                  <div className="text-8xl animate-celebrate">
+                    {celebrationEmoji}
+                  </div>
+                </div>
+              )}
+
+              {showWrongAnimation && (
+                <div className="fixed inset-0 z-[190] flex items-center justify-center pointer-events-none">
+                  <div className="text-6xl animate-shake">
+                    ❌
+                  </div>
+                </div>
+              )}
+
               {feedback && (
                 <div
                   className={`mb-2 px-4 py-2 rounded-lg text-sm font-semibold text-center ${
                     feedback.includes("Correct") ||
                     feedback.includes("∞") ||
-                    feedback.includes("Start")
+                    feedback.includes("Start") ||
+                    feedback.includes("נכון")
                       ? "bg-emerald-500/20 text-emerald-200"
                       : "bg-red-500/20 text-red-200"
                   }`}
@@ -1517,6 +1706,338 @@ export default function GeometryMaster() {
                     שמור
                   </button>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Daily Challenge Modal */}
+          {showDailyChallenge && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
+              onClick={() => setShowDailyChallenge(false)}
+              dir="rtl"
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-blue-400/60 rounded-2xl p-6 max-w-md w-full text-sm text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 className="text-2xl font-extrabold mb-4 text-center">
+                  📅 אתגר יומי
+                </h2>
+                <div className="space-y-3 mb-4">
+                  <div className="bg-black/30 rounded-lg p-3">
+                    <div className="text-xs text-white/60 mb-1">שאלות היום</div>
+                    <div className="text-2xl font-bold text-white">
+                      {dailyChallenge.questions || 0}
+                    </div>
+                  </div>
+                  <div className="bg-black/30 rounded-lg p-3">
+                    <div className="text-xs text-white/60 mb-1">תשובות נכונות</div>
+                    <div className="text-2xl font-bold text-emerald-400">
+                      {dailyChallenge.correct || 0}
+                    </div>
+                  </div>
+                  <div className="bg-black/30 rounded-lg p-3">
+                    <div className="text-xs text-white/60 mb-1">ניקוד שיא</div>
+                    <div className="text-2xl font-bold text-yellow-400">
+                      {dailyChallenge.bestScore || 0}
+                    </div>
+                  </div>
+                  {(dailyChallenge.questions || 0) > 0 && (
+                    <div className="bg-black/30 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">דיוק</div>
+                      <div className="text-2xl font-bold text-blue-400">
+                        {Math.round(((dailyChallenge.correct || 0) / (dailyChallenge.questions || 1)) * 100)}%
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="text-center">
+                  <button
+                    onClick={() => setShowDailyChallenge(false)}
+                    className="px-6 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
+                  >
+                    סגור
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Player Profile Modal */}
+          {showPlayerProfile && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
+              onClick={() => setShowPlayerProfile(false)}
+              dir="rtl"
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-center mb-4">
+                  <h2 className="text-2xl font-extrabold text-white mb-2">
+                    👤 פרופיל שחקן
+                  </h2>
+                </div>
+
+                {/* אווטר */}
+                <div className="text-center mb-4">
+                  <div className="text-6xl mb-3">{playerAvatar}</div>
+                  <div className="text-sm text-white/60 mb-3">בחר אווטר:</div>
+                  <div className="grid grid-cols-6 gap-2 mb-4">
+                    {["👤", "🧑", "👦", "👧", "🦁", "🐱", "🐶", "🐰", "🐻", "🐼", "🦊", "🐸", "🦄", "🌟", "🎮", "🏆", "⭐", "💫"].map((avatar) => (
+                      <button
+                        key={avatar}
+                        onClick={() => {
+                          setPlayerAvatar(avatar);
+                          if (typeof window !== "undefined") {
+                            localStorage.setItem("mleo_player_avatar", avatar);
+                          }
+                        }}
+                        className={`text-3xl p-2 rounded-lg transition-all ${
+                          playerAvatar === avatar
+                            ? "bg-yellow-500/40 border-2 border-yellow-400 scale-110"
+                            : "bg-black/30 border border-white/10 hover:bg-black/40"
+                        }`}
+                      >
+                        {avatar}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* סטטיסטיקות */}
+                <div className="space-y-3 mb-4">
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-1">שם שחקן</div>
+                    <div className="text-lg font-bold text-white">{playerName || "שחקן"}</div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">ניקוד שיא</div>
+                      <div className="text-xl font-bold text-emerald-400">{bestScore}</div>
+                    </div>
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">רצף שיא</div>
+                      <div className="text-xl font-bold text-amber-400">{bestStreak}</div>
+                    </div>
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">כוכבים</div>
+                      <div className="text-xl font-bold text-yellow-400">⭐ {stars}</div>
+                    </div>
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">רמה</div>
+                      <div className="text-xl font-bold text-purple-400">Lv.{playerLevel}</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-2">דיוק כללי</div>
+                    <div className="text-2xl font-bold text-blue-400">{accuracy}%</div>
+                    <div className="text-xs text-white/60 mt-1">
+                      {correct} נכון מתוך {totalQuestions} שאלות
+                    </div>
+                  </div>
+
+                  {/* התקדמות לפי נושאים */}
+                  {Object.keys(progress).some(topic => progress[topic].total > 0) && (
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-sm text-white/60 mb-2">התקדמות לפי נושאים</div>
+                      <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                        {Object.entries(progress)
+                          .filter(([_, data]) => data.total > 0)
+                          .sort(([_, a], [__, b]) => b.total - a.total)
+                          .map(([topic, data]) => {
+                            const topicAccuracy = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
+                            return (
+                              <div key={topic} className="flex items-center justify-between text-xs">
+                                <span className="text-white/80">{getTopicName(topic)}</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-white/60">{data.correct}/{data.total}</span>
+                                  <span className={`font-bold ${topicAccuracy >= 80 ? "text-emerald-400" : topicAccuracy >= 60 ? "text-yellow-400" : "text-red-400"}`}>
+                                    {topicAccuracy}%
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="text-center">
+                  <button
+                    onClick={() => setShowPlayerProfile(false)}
+                    className="px-6 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-sm"
+                  >
+                    סגור
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Badge Gallery Modal */}
+          {showBadgeGallery && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
+              onClick={() => setShowBadgeGallery(false)}
+              dir="rtl"
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-center mb-4">
+                  <h2 className="text-2xl font-extrabold text-white mb-2">
+                    🏅 התגים שלי
+                  </h2>
+                  <p className="text-white/70 text-sm">
+                    {badges.length > 0 ? `יש לך ${badges.length} תגים!` : "עדיין אין לך תגים. המשך לתרגל!"}
+                  </p>
+                </div>
+
+                {badges.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-3">
+                    {badges.map((badge, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30"
+                      >
+                        <div className="text-3xl">{badge.split(" ")[0]}</div>
+                        <div className="flex-1 text-white font-semibold text-lg">
+                          {badge}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-white/60">
+                    <div className="text-6xl mb-4">🎯</div>
+                    <p>המשך לתרגל כדי לזכות בתגים!</p>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setShowBadgeGallery(false)}
+                  className="mt-4 w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                >
+                  סגור
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Practice Options Modal */}
+          {showPracticeOptions && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
+              onClick={() => setShowPracticeOptions(false)}
+              dir="rtl"
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 className="text-2xl font-extrabold text-white mb-4 text-center">
+                  🎯 תרגול ממוקד
+                </h2>
+
+                <div className="space-y-3 mb-4">
+                  <button
+                    onClick={() => {
+                      setFocusedPracticeMode("mistakes");
+                      setShowPracticeOptions(false);
+                      if (mistakes.length > 0) {
+                        setGameActive(true);
+                        startGame();
+                      }
+                    }}
+                    disabled={mistakes.length === 0}
+                    className={`w-full p-4 rounded-lg border transition-all text-right ${
+                      mistakes.length > 0
+                        ? "bg-purple-500/20 border-purple-400/50 hover:bg-purple-500/30"
+                        : "bg-gray-500/20 border-gray-400/30 opacity-50 cursor-not-allowed"
+                    }`}
+                  >
+                    <div className="text-lg font-bold text-white mb-1">
+                      🔄 חזרה על שגיאות
+                    </div>
+                    <div className="text-sm text-white/70">
+                      {mistakes.length > 0
+                        ? `תרגל את ${mistakes.length} השגיאות שעשית`
+                        : "אין שגיאות לתרגל"}
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setFocusedPracticeMode("graded");
+                      setShowPracticeOptions(false);
+                      setGameActive(true);
+                      startGame();
+                    }}
+                    className="w-full p-4 rounded-lg bg-blue-500/20 border border-blue-400/50 hover:bg-blue-500/30 transition-all text-right"
+                  >
+                    <div className="text-lg font-bold text-white mb-1">
+                      📈 תרגול מדורג
+                    </div>
+                    <div className="text-sm text-white/70">
+                      התחל קל והתקדם לקשה יותר
+                    </div>
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setFocusedPracticeMode("normal");
+                      setShowPracticeOptions(false);
+                    }}
+                    className="w-full p-4 rounded-lg bg-emerald-500/20 border border-emerald-400/50 hover:bg-emerald-500/30 transition-all text-right"
+                  >
+                    <div className="text-lg font-bold text-white mb-1">
+                      🎮 תרגול רגיל
+                    </div>
+                    <div className="text-sm text-white/70">
+                      חזור לתרגול רגיל
+                    </div>
+                  </button>
+                </div>
+
+                {mistakes.length > 0 && (
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3 mb-4">
+                    <div className="text-sm text-white/60 mb-2">שגיאות אחרונות:</div>
+                    <div className="space-y-1 max-h-[150px] overflow-y-auto">
+                      {mistakes.slice(-5).reverse().map((mistake, idx) => (
+                        <div key={idx} className="text-xs text-white/80">
+                          {mistake.question} = {mistake.wrongAnswer} ❌ (נכון: {mistake.correctAnswer})
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => {
+                    setMistakes([]);
+                    if (typeof window !== "undefined") {
+                      localStorage.setItem("mleo_geometry_mistakes", JSON.stringify([]));
+                    }
+                  }}
+                  className="w-full px-4 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm mb-2"
+                >
+                  🗑️ נקה שגיאות
+                </button>
+
+                <button
+                  onClick={() => setShowPracticeOptions(false)}
+                  className="w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                >
+                  סגור
+                </button>
               </div>
             </div>
           )}
