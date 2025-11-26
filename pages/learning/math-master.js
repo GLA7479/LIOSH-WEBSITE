@@ -2266,10 +2266,12 @@ export default function MathMaster() {
                   {currentQuestion.questionLabel && currentQuestion.exerciseText ? (
                     <>
                       <p
-                        className="text-2xl text-center text-white mb-1"
+                        className="text-2xl text-center text-white mb-1 break-words overflow-wrap-anywhere max-w-full px-2"
                         style={{
                           direction: currentQuestion.isStory ? "rtl" : "rtl",
                           unicodeBidi: "plaintext",
+                          wordBreak: "break-word",
+                          overflowWrap: "break-word",
                         }}
                       >
                         {currentQuestion.questionLabel}
@@ -2290,12 +2292,14 @@ export default function MathMaster() {
                       
                       {/* תצוגת התרגיל - מאוזן או מאונך */}
                       {isVerticalDisplay && canDisplayVertically ? (
-                        <div className="mb-4 flex justify-center">
+                        <div className="mb-4 flex justify-center w-full max-w-full px-2">
                           <pre
-                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre"
+                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
                             style={{
                               direction: "ltr",
                               unicodeBidi: "plaintext",
+                              wordBreak: "break-word",
+                              overflowWrap: "break-word",
                             }}
                           >
                             {getVerticalExercise() || currentQuestion.exerciseText}
@@ -2303,12 +2307,14 @@ export default function MathMaster() {
                         </div>
                       ) : (
                         <p
-                          className={`text-4xl text-center text-white font-bold mb-4 ${
-                            currentQuestion.operation === "sequences" ? "whitespace-normal" : "whitespace-nowrap"
+                          className={`text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2 ${
+                            currentQuestion.operation === "sequences" ? "whitespace-normal" : ""
                           }`}
                           style={{
                             direction: "ltr",
                             unicodeBidi: "plaintext",
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
                           }}
                         >
                           {currentQuestion.exerciseText}
@@ -2332,12 +2338,14 @@ export default function MathMaster() {
                       
                       {/* תצוגת התרגיל - מאוזן או מאונך */}
                       {isVerticalDisplay && canDisplayVertically ? (
-                        <div className="mb-4 flex justify-center">
+                        <div className="mb-4 flex justify-center w-full max-w-full px-2">
                           <pre
-                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre"
+                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
                             style={{
                               direction: "ltr",
                               unicodeBidi: "plaintext",
+                              wordBreak: "break-word",
+                              overflowWrap: "break-word",
                             }}
                           >
                             {getVerticalExercise() || currentQuestion.exerciseText}
@@ -2345,10 +2353,12 @@ export default function MathMaster() {
                         </div>
                       ) : (
                         <p
-                          className="text-4xl text-center text-white font-bold mb-4 whitespace-nowrap"
+                          className="text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2"
                           style={{
                             direction: "ltr",
                             unicodeBidi: "plaintext",
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
                           }}
                         >
                           {currentQuestion.exerciseText}
@@ -2357,14 +2367,16 @@ export default function MathMaster() {
                     </>
                   ) : (
                     <div
-                      className="text-4xl font-black text-white mb-4 text-center"
+                      className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
                       style={{
                         direction: currentQuestion.isStory ? "rtl" : "ltr",
                         unicodeBidi: "plaintext",
+                        wordBreak: "break-word",
+                        overflowWrap: "break-word",
                       }}
                     >
                       {currentQuestion.question}
-                        </div>
+                    </div>
                   )}
                   
 
@@ -2531,8 +2543,13 @@ export default function MathMaster() {
                                 {/* תוכן - גלילה */}
                                 <div className="flex-1 overflow-y-auto px-4 pb-2 text-sm text-emerald-50" dir="rtl">
                                   <div
-                                    className="mb-2 font-semibold text-base text-center text-white"
-                                    style={{ direction: "ltr", unicodeBidi: "plaintext" }}
+                                    className="mb-2 font-semibold text-base text-center text-white break-words overflow-wrap-anywhere max-w-full px-2"
+                                    style={{ 
+                                      direction: "ltr", 
+                                      unicodeBidi: "plaintext",
+                                      wordBreak: "break-word",
+                                      overflowWrap: "break-word",
+                                    }}
                                   >
                                     {info.exercise || currentQuestion.exerciseText || currentQuestion.question}
                                   </div>
@@ -2856,7 +2873,7 @@ export default function MathMaster() {
                               <div className="flex-1 overflow-y-auto px-4 pb-2">
                                 {/* הצגת התרגיל/שאלה */}
                                 <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2" dir="rtl">
-                                  <div className="text-sm text-emerald-100 font-semibold mb-1">
+                                  <div className="text-sm text-emerald-100 font-semibold mb-1 break-words overflow-wrap-anywhere max-w-full">
                                     {currentQuestion.exerciseText || currentQuestion.question}
                                   </div>
                                 </div>
