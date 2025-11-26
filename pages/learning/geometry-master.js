@@ -221,6 +221,12 @@ export default function GeometryMaster() {
     // בדיקה שהכיתה קיימת
     if (!GRADES[grade]) {
       console.error("כיתה לא תקינה:", grade);
+      setCurrentQuestion({
+        question: "כיתה לא תקינה. אנא בחר כיתה אחרת.",
+        correctAnswer: 0,
+        answers: [0],
+        params: { kind: "no_question" },
+      });
       return;
     }
     
@@ -232,29 +238,34 @@ export default function GeometryMaster() {
       setCurrentQuestion({
         question: "אין נושאים זמינים עבור הכיתה הזו. אנא בחר כיתה אחרת.",
         correctAnswer: 0,
-        options: [0],
+        answers: [0],
         params: { kind: "no_question" },
       });
       return;
     }
     
-    // בדיקה שהנושא הנוכחי תקין, אם לא - נעצור
+    // בדיקה שהנושא הנוכחי תקין, אם לא - נבחר נושא תקין
     let validTopic = topic;
     if (topic === "mixed") {
       const mixedAvailable = Object.keys(mixedTopics).filter(t => mixedTopics[t] && allowedTopics.includes(t));
       if (mixedAvailable.length === 0) {
         validTopic = allowedTopics.find(t => t !== "mixed") || allowedTopics[0];
+        if (validTopic) setTopic(validTopic); // עדכון הנושא
       }
     } else if (!allowedTopics.includes(topic)) {
-      // אם הנושא לא תקין, נעצור ולא ננסה ליצור שאלה
-      // ה-onChange של הכיתה יעדכן את ה-topic
-      setCurrentQuestion({
-        question: "מעדכן נושא...",
-        correctAnswer: 0,
-        options: [0],
-        params: { kind: "no_question" },
-      });
-      return; // נעצור כאן - ה-onChange יעדכן את ה-topic
+      // אם הנושא לא תקין, נבחר נושא תקין
+      validTopic = allowedTopics.find(t => t !== "mixed") || allowedTopics[0];
+      if (validTopic) {
+        setTopic(validTopic); // עדכון הנושא
+      } else {
+        setCurrentQuestion({
+          question: "אין נושאים זמינים עבור הכיתה הזו. אנא בחר כיתה אחרת.",
+          correctAnswer: 0,
+          answers: [0],
+          params: { kind: "no_question" },
+        });
+        return;
+      }
     }
     
     // בדיקה סופית שהנושא תקין
@@ -262,7 +273,7 @@ export default function GeometryMaster() {
       setCurrentQuestion({
         question: "אין נושאים זמינים. אנא בחר נושא אחר.",
         correctAnswer: 0,
-        options: [0],
+        answers: [0],
         params: { kind: "no_question" },
       });
       return;
@@ -272,6 +283,10 @@ export default function GeometryMaster() {
     let question;
     let attempts = 0;
     const maxAttempts = 50;
+    
+    // עותק מקומי של recentQuestions כדי לא לעדכן state בתוך הלולאה
+    const localRecentQuestions = new Set(recentQuestions);
+    
     do {
       const selectedTopics = validTopic === "mixed" 
         ? Object.keys(mixedTopics).filter(t => mixedTopics[t] && allowedTopics.includes(t))
@@ -281,13 +296,13 @@ export default function GeometryMaster() {
         question = {
           question: "אין נושאים זמינים. אנא בחר נושא אחר.",
           correctAnswer: 0,
-          options: [0],
+          answers: [0],
           params: { kind: "no_question" },
         };
         break;
       }
       
-      const currentTopic = selectedTopics[0];
+      const currentTopic = selectedTopics[Math.floor(Math.random() * selectedTopics.length)];
       question = generateQuestion(
         levelConfig,
         currentTopic,
@@ -296,33 +311,75 @@ export default function GeometryMaster() {
       );
       
       // אם אין שאלה זמינה, ננסה נושא אחר
-      if (question.params?.kind === "no_question") {
+      if (!question || question.params?.kind === "no_question") {
         const nextTopic = allowedTopics.find(t => t !== "mixed" && t !== currentTopic);
         if (nextTopic) {
           question = generateQuestion(levelConfig, nextTopic, grade, null);
         } else {
-          break; // אין נושאים אחרים לנסות
+          // אם אין נושאים אחרים, נעצור
+          question = {
+            question: "אין שאלות זמינות עבור הנושא והכיתה שנבחרו.",
+            correctAnswer: 0,
+            answers: [0],
+            params: { kind: "no_question" },
+          };
+          break;
         }
       }
       
+      // בדיקה שהשאלה תקינה
+      if (!question || !question.answers || question.answers.length === 0) {
+        attempts++;
+        continue; // ננסה שוב
+      }
+      
       attempts++;
+      
+      // בדיקה שהשאלה תקינה
+      if (!question || !question.answers || question.answers.length === 0 || question.params?.kind === "no_question") {
+        continue; // ננסה שוב
+      }
+      
       const questionKey = question.question;
-      if (!recentQuestions.has(questionKey) && question.params?.kind !== "no_question") {
-        setRecentQuestions((prev) => {
-          const newSet = new Set(prev);
-          newSet.add(questionKey);
-          if (newSet.size > 20) {
-            const first = Array.from(newSet)[0];
-            newSet.delete(first);
-          }
-          return newSet;
-        });
+      
+      // אם השאלה לא הייתה לאחרונה, נשתמש בה
+      if (!localRecentQuestions.has(questionKey)) {
+        localRecentQuestions.add(questionKey);
+        // שמירה רק על 60 שאלות אחרונות
+        if (localRecentQuestions.size > 60) {
+          const first = Array.from(localRecentQuestions)[0];
+          localRecentQuestions.delete(first);
+        }
+        break;
+      }
+      
+      // אם הגענו למקסימום ניסיונות, נשתמש בשאלה האחרונה גם אם היא חוזרת
+      if (attempts >= maxAttempts - 5) {
         break;
       }
     } while (attempts < maxAttempts);
+    
+    // עדכון state רק פעם אחת אחרי הלולאה
     if (attempts >= maxAttempts) {
+      console.warn(`Too many attempts (${attempts}) to generate new question, resetting recent questions`);
+      // איפוס ההיסטוריה כדי לאפשר שאלות חוזרות
       setRecentQuestions(new Set());
+    } else {
+      setRecentQuestions(localRecentQuestions);
     }
+    
+    // בדיקה שהשאלה תקינה לפני הצגתה
+    if (!question || !question.answers || question.answers.length === 0) {
+      console.error("Failed to generate valid question");
+      setCurrentQuestion({
+        question: "שגיאה ביצירת שאלה. אנא נסה שוב או בחר נושא אחר.",
+        correctAnswer: 0,
+        answers: [0],
+        params: { kind: "no_question" },
+      });
+      return;
+    }
+    
     // מעקב זמן - סיום שאלה קודמת (אם יש)
     if (questionStartTime && currentQuestion) {
       const duration = (Date.now() - questionStartTime) / 1000; // שניות

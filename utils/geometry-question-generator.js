@@ -63,10 +63,11 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   
   // אם אין צורות זמינות, נחזיר שאלה ברירת מחדל
   if (!availableShapes || availableShapes.length === 0) {
+    console.warn(`No shapes available for topic ${selectedTopic} in grade ${gradeKey}`);
     return {
       question: "אין שאלות זמינות עבור הנושא והכיתה שנבחרו. אנא בחר נושא אחר.",
       correctAnswer: 0,
-      options: [0],
+      answers: [0],
       params: { kind: "no_question" },
     };
   }
@@ -75,6 +76,16 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     availableShapes.length > 0
       ? availableShapes[Math.floor(Math.random() * availableShapes.length)]
       : null;
+  
+  if (!shape) {
+    console.warn(`Failed to select shape from available shapes:`, availableShapes);
+    return {
+      question: "שגיאה ביצירת שאלה. אנא נסה שוב.",
+      correctAnswer: 0,
+      answers: [0],
+      params: { kind: "no_question" },
+    };
+  }
 
   let question;
   let correctAnswer;
@@ -690,21 +701,59 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
   // ===== יצירת תשובות =====
   const wrongAnswers = new Set();
-  while (wrongAnswers.size < 3) {
-    const variation = Math.floor(Math.random() * 3) + 1;
-    const sign = Math.random() > 0.5 ? 1 : -1;
-    const delta = Math.max(
-      1,
-      Math.abs(correctAnswer) * 0.1 * variation
-    );
-    const wrong = round(correctAnswer + sign * delta);
-    if (
-      wrong !== correctAnswer &&
-      wrong > 0 &&
-      !Number.isNaN(wrong) &&
-      !wrongAnswers.has(wrong)
-    ) {
-      wrongAnswers.add(wrong);
+  let attempts = 0;
+  const maxWrongAttempts = 100; // מקסימום ניסיונות ליצירת תשובות שגויות
+  
+  // אם התשובה הנכונה היא מספר קטן (1-10), נשתמש בלוגיקה שונה
+  const isSmallAnswer = correctAnswer >= 1 && correctAnswer <= 10 && Number.isInteger(correctAnswer);
+  
+  if (isSmallAnswer) {
+    // עבור תשובות קטנות, ניצור תשובות שגויות מהטווח 1-10
+    const possibleAnswers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const shuffled = [...possibleAnswers].sort(() => Math.random() - 0.5);
+    for (const ans of shuffled) {
+      if (ans !== correctAnswer && wrongAnswers.size < 3) {
+        wrongAnswers.add(ans);
+      }
+      if (wrongAnswers.size >= 3) break;
+    }
+  } else {
+    // עבור תשובות גדולות יותר, נשתמש בלוגיקה המקורית
+    while (wrongAnswers.size < 3 && attempts < maxWrongAttempts) {
+      attempts++;
+      const variation = Math.floor(Math.random() * 3) + 1;
+      const sign = Math.random() > 0.5 ? 1 : -1;
+      const delta = Math.max(
+        1,
+        Math.abs(correctAnswer) * 0.1 * variation
+      );
+      const wrong = round(correctAnswer + sign * delta);
+      if (
+        wrong !== correctAnswer &&
+        wrong > 0 &&
+        !Number.isNaN(wrong) &&
+        !wrongAnswers.has(wrong)
+      ) {
+        wrongAnswers.add(wrong);
+      }
+    }
+  }
+  
+  // אם עדיין אין מספיק תשובות שגויות, נוסיף תשובות ברירת מחדל
+  let defaultAttempts = 0;
+  while (wrongAnswers.size < 3 && defaultAttempts < 20) {
+    defaultAttempts++;
+    const defaultWrong = correctAnswer + wrongAnswers.size + 1;
+    if (defaultWrong !== correctAnswer && defaultWrong > 0) {
+      wrongAnswers.add(defaultWrong);
+    } else {
+      // ננסה תשובה אחרת
+      const altWrong = Math.max(1, correctAnswer - wrongAnswers.size - 1);
+      if (altWrong !== correctAnswer && altWrong > 0 && !wrongAnswers.has(altWrong)) {
+        wrongAnswers.add(altWrong);
+      } else {
+        break; // נמנע מלולאה אינסופית
+      }
     }
   }
 
