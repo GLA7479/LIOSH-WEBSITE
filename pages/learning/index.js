@@ -84,6 +84,20 @@ export default function LearningHub() {
               </Link>
             ))}
           </section>
+          
+          {/* קישור לדוח להורים */}
+          <section className="mt-8">
+            <Link
+              href="/learning/parent-report"
+              className="block rounded-2xl border-2 border-emerald-400/50 bg-emerald-500/10 hover:bg-emerald-500/20 transition p-6 text-center"
+            >
+              <div className="text-4xl mb-2">📊</div>
+              <h2 className="font-bold text-xl mb-2">דוח להורים</h2>
+              <p className="text-sm text-white/70">
+                צפה בהתקדמות, סטטיסטיקות מפורטות והמלצות לשיפור
+              </p>
+            </Link>
+          </section>
         </div>
       </main>
     </Layout>

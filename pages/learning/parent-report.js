@@ -1,0 +1,504 @@
+import { useState, useEffect } from "react";
+import Layout from "../../components/Layout";
+import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
+import { generateParentReport, getOperationName, exportReportToPDF } from "../../utils/math-report-generator";
+import { useRouter } from "next/router";
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
+export default function ParentReport() {
+  useIOSViewportFix();
+  const router = useRouter();
+  const [report, setReport] = useState(null);
+  const [period, setPeriod] = useState('week');
+  const [playerName, setPlayerName] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const name = localStorage.getItem("mleo_player_name") || "";
+      setPlayerName(name);
+      
+      if (name) {
+        const data = generateParentReport(name, period);
+        setReport(data);
+      }
+      setLoading(false);
+    }
+  }, [period]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center">
+          <div className="text-white text-xl">טוען דוח...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!report) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center p-4" dir="rtl">
+          <div className="text-center text-white">
+            <div className="text-4xl mb-4">📊</div>
+            <h1 className="text-2xl font-bold mb-2">דוח להורים</h1>
+            <p className="text-white/70 mb-4">לא נמצאו נתונים. התחל לשחק כדי ליצור דוח.</p>
+            <button
+              onClick={() => router.push("/learning/math-master")}
+              className="px-6 py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold"
+            >
+              חזור למשחק
+            </button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  return (
+    <Layout>
+      <div
+        className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-4"
+        dir="rtl"
+        style={{
+          paddingTop: "calc(var(--head-h, 56px) + 16px)",
+          paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
+        }}
+      >
+        <div className="max-w-4xl mx-auto">
+          {/* כותרת */}
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-extrabold mb-2">📊 דוח להורים</h1>
+            <p className="text-white/70">{report.playerName}</p>
+            
+            {/* בחירת תקופה */}
+            <div className="flex gap-2 justify-center mt-4">
+              <button
+                onClick={() => setPeriod('week')}
+                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                  period === 'week'
+                    ? "bg-blue-500/80 text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                שבוע
+              </button>
+              <button
+                onClick={() => setPeriod('month')}
+                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                  period === 'month'
+                    ? "bg-blue-500/80 text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                חודש
+              </button>
+            </div>
+            
+            <p className="text-sm text-white/60 mt-2">
+              {report.startDate} - {report.endDate}
+            </p>
+          </div>
+
+          {/* סיכום כללי */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-4 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
+              <div className="text-[10px] md:text-xs text-white/60 mb-1">זמן כולל</div>
+              <div className="text-lg md:text-2xl font-bold text-blue-400">
+                {report.summary.totalTimeMinutes} דק'
+              </div>
+              <div className="text-[10px] md:text-xs text-white/60">
+                ({report.summary.totalTimeHours} שעות)
+              </div>
+            </div>
+            
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
+              <div className="text-[10px] md:text-xs text-white/60 mb-1">שאלות</div>
+              <div className="text-lg md:text-2xl font-bold text-emerald-400">
+                {report.summary.totalQuestions}
+              </div>
+              <div className="text-[10px] md:text-xs text-white/60">
+                {report.summary.totalCorrect} נכון
+              </div>
+            </div>
+            
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
+              <div className="text-[10px] md:text-xs text-white/60 mb-1">דיוק כללי</div>
+              <div className="text-lg md:text-2xl font-bold text-yellow-400">
+                {report.summary.overallAccuracy}%
+              </div>
+            </div>
+            
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
+              <div className="text-[10px] md:text-xs text-white/60 mb-1">רמה</div>
+              <div className="text-lg md:text-2xl font-bold text-purple-400">
+                Lv.{report.summary.playerLevel}
+              </div>
+              <div className="text-[10px] md:text-xs text-white/60">
+                ⭐ {report.summary.stars} • 🏆 {report.summary.achievements}
+              </div>
+            </div>
+          </div>
+
+          {/* טבלת פעולות */}
+          {Object.keys(report.operations).length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📈 התקדמות לפי פעולות</h2>
+              <div className="overflow-x-auto -mx-2 md:mx-0">
+                <table className="w-full text-xs md:text-sm min-w-[600px]">
+                  <thead>
+                    <tr className="border-b border-white/20">
+                      <th className="text-right py-2 px-1 md:px-2">פעולה</th>
+                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
+                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
+                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
+                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
+                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(report.operations)
+                      .sort(([_, a], [__, b]) => b.questions - a.questions)
+                      .map(([op, data]) => (
+                        <tr key={op} className="border-b border-white/10">
+                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
+                            {getOperationName(op)}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.timeMinutes} דק'
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.questions}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                            {data.correct}
+                          </td>
+                          <td className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                            data.accuracy >= 90 ? "text-emerald-400" :
+                            data.accuracy >= 70 ? "text-yellow-400" :
+                            "text-red-400"
+                          }`}>
+                            {data.accuracy}%
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                            {data.excellent ? (
+                              <span className="text-emerald-400">✅</span>
+                            ) : data.needsPractice ? (
+                              <span className="text-red-400">⚠️</span>
+                            ) : (
+                              <span className="text-yellow-400">👍</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* המלצות */}
+          {report.analysis.recommendations.length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">💡 המלצות</h2>
+              <div className="space-y-2 md:space-y-3">
+                {report.analysis.recommendations.map((rec, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-2 md:p-3 rounded-lg border ${
+                      rec.priority === 'high'
+                        ? "bg-red-500/20 border-red-400/50"
+                        : rec.priority === 'medium'
+                        ? "bg-yellow-500/20 border-yellow-400/50"
+                        : "bg-blue-500/20 border-blue-400/50"
+                    }`}
+                  >
+                    <div className="flex items-start gap-2">
+                      <span className="text-lg md:text-xl">
+                        {rec.priority === 'high' ? '🔴' : rec.priority === 'medium' ? '🟡' : '🔵'}
+                      </span>
+                      <div className="flex-1">
+                        <div className="font-semibold mb-1 text-sm md:text-base">{rec.operationName}</div>
+                        <div className="text-xs md:text-sm text-white/80 break-words">{rec.message}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* גרף פעילות יומית */}
+          {report.dailyActivity.length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📅 פעילות יומית</h2>
+              <div className="h-48 md:h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={report.dailyActivity}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fill: "#ffffff80", fontSize: 12 }}
+                      tickFormatter={(value) => {
+                        const date = new Date(value);
+                        return `${date.getDate()}/${date.getMonth() + 1}`;
+                      }}
+                    />
+                    <YAxis tick={{ fill: "#ffffff80", fontSize: 12 }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "rgba(0, 0, 0, 0.9)",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        borderRadius: "8px",
+                      }}
+                      labelFormatter={(value) => {
+                        const date = new Date(value);
+                        return date.toLocaleDateString('he-IL');
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="timeMinutes"
+                      stroke="#3b82f6"
+                      strokeWidth={2}
+                      name="זמן (דקות)"
+                      dot={{ fill: "#3b82f6", r: 4 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="questions"
+                      stroke="#10b981"
+                      strokeWidth={2}
+                      name="שאלות"
+                      dot={{ fill: "#10b981", r: 4 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          {/* גרף דיוק לפי פעולות */}
+          {Object.keys(report.operations).length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📊 דיוק לפי פעולות</h2>
+              <div className="h-48 md:h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={Object.entries(report.operations)
+                    .map(([op, data]) => ({
+                      name: getOperationName(op),
+                      דיוק: data.accuracy,
+                      שאלות: data.questions,
+                    }))
+                    .sort((a, b) => b.דיוק - a.דיוק)
+                    .slice(0, 10)
+                  }>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+                    <XAxis
+                      dataKey="name"
+                      tick={{ fill: "#ffffff80", fontSize: 9 }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis tick={{ fill: "#ffffff80", fontSize: 12 }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "rgba(0, 0, 0, 0.9)",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        borderRadius: "8px",
+                      }}
+                    />
+                    <Bar dataKey="דיוק" fill="#10b981" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          {/* גרף זמן לפי פעולות */}
+          {Object.keys(report.operations).length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">⏰ זמן תרגול לפי פעולות</h2>
+              <div className="h-48 md:h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={Object.entries(report.operations)
+                    .map(([op, data]) => ({
+                      name: getOperationName(op),
+                      זמן: data.timeMinutes,
+                    }))
+                    .sort((a, b) => b.זמן - a.זמן)
+                    .slice(0, 10)
+                  }>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+                    <XAxis
+                      dataKey="name"
+                      tick={{ fill: "#ffffff80", fontSize: 9 }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis tick={{ fill: "#ffffff80", fontSize: 12 }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "rgba(0, 0, 0, 0.9)",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        borderRadius: "8px",
+                      }}
+                      formatter={(value) => `${value} דקות`}
+                    />
+                    <Bar dataKey="זמן" fill="#3b82f6" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          {/* גרף עוגה - חלוקת זמן */}
+          {Object.keys(report.operations).length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">🥧 חלוקת זמן תרגול</h2>
+              <div className="h-48 md:h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={Object.entries(report.operations)
+                        .filter(([_, data]) => data.timeMinutes > 0)
+                        .map(([op, data]) => ({
+                          name: getOperationName(op),
+                          value: data.timeMinutes,
+                        }))
+                        .sort((a, b) => b.value - a.value)
+                        .slice(0, 8)
+                      }
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) =>
+                        `${name}: ${(percent * 100).toFixed(0)}%`
+                      }
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {Object.entries(report.operations)
+                        .filter(([_, data]) => data.timeMinutes > 0)
+                        .map(([_, data], index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={[
+                              "#3b82f6",
+                              "#10b981",
+                              "#f59e0b",
+                              "#ef4444",
+                              "#8b5cf6",
+                              "#ec4899",
+                              "#06b6d4",
+                              "#84cc16",
+                            ][index % 8]}
+                          />
+                        ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "rgba(0, 0, 0, 0.9)",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        borderRadius: "8px",
+                      }}
+                      formatter={(value) => `${value} דקות`}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          {/* אתגרים */}
+          <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
+            <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">🎯 אתגרים</h2>
+            <div className="grid grid-cols-2 gap-2 md:gap-4">
+              <div className="bg-blue-500/20 border border-blue-400/50 rounded-lg p-2 md:p-3">
+                <div className="text-xs md:text-sm text-white/60 mb-1">אתגר יומי</div>
+                <div className="text-base md:text-lg font-bold">
+                  {report.challenges.daily.correct} / {report.challenges.daily.questions}
+                </div>
+                <div className="text-[10px] md:text-xs text-white/60">
+                  ניקוד שיא: {report.challenges.daily.bestScore}
+                </div>
+              </div>
+              <div className={`border rounded-lg p-2 md:p-3 ${
+                report.challenges.weekly.completed
+                  ? "bg-yellow-500/20 border-yellow-400/50"
+                  : "bg-purple-500/20 border-purple-400/50"
+              }`}>
+                <div className="text-xs md:text-sm text-white/60 mb-1">אתגר שבועי</div>
+                <div className="text-base md:text-lg font-bold">
+                  {report.challenges.weekly.current} / {report.challenges.weekly.target}
+                </div>
+                {report.challenges.weekly.completed && (
+                  <div className="text-[10px] md:text-xs text-yellow-400">🎉 הושלם!</div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* הישגים */}
+          {report.achievements.length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">🏆 הישגים</h2>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {report.achievements.map((achievement, idx) => (
+                  <div
+                    key={idx}
+                    className="px-2 md:px-3 py-1 md:py-2 bg-emerald-500/20 border border-emerald-400/50 rounded-lg text-xs md:text-sm break-words"
+                  >
+                    {achievement.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* כפתורים */}
+          <div className="flex gap-2 md:gap-3 justify-center flex-wrap mb-4 md:mb-6">
+            <button
+              onClick={() => window.print()}
+              className="px-4 md:px-6 py-2 md:py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm md:text-base"
+            >
+              🖨️ הדפס
+            </button>
+            <button
+              onClick={() => exportReportToPDF(report)}
+              className="px-4 md:px-6 py-2 md:py-3 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm md:text-base"
+            >
+              📄 ייצא ל-PDF
+            </button>
+            <button
+              onClick={() => router.push("/learning/math-master")}
+              className="px-4 md:px-6 py-2 md:py-3 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm md:text-base"
+            >
+              ← חזור למשחק
+            </button>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+}
+

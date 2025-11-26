@@ -25,6 +25,7 @@ import {
   getAdditionStepsColumn,
   buildStepExplanation,
 } from "../../utils/math-explanations";
+import { trackOperationTime } from "../../utils/math-time-tracking";
 import {
   buildVerticalOperation,
   convertMissingNumberEquation,
@@ -754,6 +755,19 @@ export default function MathMaster() {
       setRecentQuestions(localRecentQuestions);
     }
 
+    // מעקב זמן - סיום שאלה קודמת (אם יש)
+    if (questionStartTime && currentQuestion) {
+      const duration = (Date.now() - questionStartTime) / 1000; // שניות
+      if (duration > 0 && duration < 300) { // רק אם זמן סביר (פחות מ-5 דקות)
+        trackOperationTime(
+          currentQuestion.operation,
+          grade,
+          level,
+          duration
+        );
+      }
+    }
+    
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setFeedback(null);
@@ -2027,6 +2041,12 @@ export default function MathMaster() {
                   className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
                 >
                   ❓ איך לומדים חשבון כאן?
+                </button>
+                <button
+                  onClick={() => router.push("/learning/parent-report")}
+                  className="px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-xs font-bold text-white shadow-sm"
+                >
+                  📊 דוח להורים
                 </button>
                 {mistakes.length > 0 && (
                   <button
