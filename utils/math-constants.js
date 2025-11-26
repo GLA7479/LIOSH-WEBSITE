@@ -34,7 +34,7 @@ export const GRADE_LEVELS = {
     name: "כיתה א׳",
     levels: {
       easy: {
-        addition: { max: 10 },
+        addition: { max: 10, complementTo10: true }, // השלמה לעשר
         subtraction: { min: 0, max: 10 },
         multiplication: { max: 5 }, // כפל עד 20 (5×4)
         division: { max: 20, maxDivisor: 5 },
@@ -64,8 +64,8 @@ export const GRADE_LEVELS = {
     levels: {
       easy: {
         // חיבור/חיסור עד 50, מספרים עד 1000
-        addition: { max: 50 },
-        subtraction: { min: 0, max: 50 },
+        addition: { max: 50, vertical: true }, // חיבור במאונך
+        subtraction: { min: 0, max: 50, vertical: true }, // חיסור במאונך
         multiplication: { max: 5 },
         division: { max: 50, maxDivisor: 5 },
         fractions: { maxDen: 2 }, // חצי ורבע
@@ -146,8 +146,8 @@ export const GRADE_LEVELS = {
       easy: {
         addition: { max: 1000 },
         subtraction: { min: 0, max: 1000 },
-        multiplication: { max: 20 },  // עד 20×20 = 400
-        division: { max: 200, maxDivisor: 12 },
+        multiplication: { max: 20, multiDigit: true },  // עד 20×20 = 400, כפל במאונך
+        division: { max: 200, maxDivisor: 12, longDivision: true }, // חילוק ארוך
         fractions: { maxDen: 6 },
         sequences: { maxStart: 100, maxStep: 9 },
         decimals: { maxBase: 100, places: 1 },
@@ -223,7 +223,7 @@ export const GRADE_LEVELS = {
         fractions: { maxDen: 10 },
         percentages: { maxBase: 1000, maxPercent: 50 },
         sequences: { maxStart: 1000, maxStep: 9 },
-        decimals: { maxBase: 500, places: 2 },
+        decimals: { maxBase: 500, places: 2, multiply: true, divide: true, repeatingDecimals: true }, // כפל/חילוק עשרוניים ושברים מחזוריים
         rounding: { maxN: 99999, toWhat: 100 },
         equations: { max: 50000 },
         compare: { max: 50000 },
@@ -257,10 +257,10 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 50000 },
         multiplication: { max: 100 },  // עד 100×100 = 10000
         division: { max: 2000, maxDivisor: 12 },
-        fractions: { maxDen: 10 },
+        fractions: { maxDen: 10, multiply: true, divide: true }, // כפל וחילוק שברים
         percentages: { maxBase: 1000, maxPercent: 50 },
         sequences: { maxStart: 1000, maxStep: 9 },
-        decimals: { maxBase: 500, places: 2 },
+        decimals: { maxBase: 500, places: 2, multiply: true, divide: true, repeatingDecimals: true }, // כפל/חילוק עשרוניים ושברים מחזוריים
         rounding: { maxN: 99999, toWhat: 100 },
         equations: { max: 50000 },
         compare: { max: 50000 },
