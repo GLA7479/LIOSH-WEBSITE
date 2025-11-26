@@ -73,6 +73,9 @@ export default function MathMaster() {
   // מניעת שאלות חוזרות
   const [recentQuestions, setRecentQuestions] = useState(new Set());
 
+  // מצב תצוגה מאוזן/מאונך
+  const [isVerticalDisplay, setIsVerticalDisplay] = useState(false);
+
   // מערכת כוכבים ותגים
   const [stars, setStars] = useState(0);
   const [badges, setBadges] = useState([]);
@@ -119,6 +122,65 @@ export default function MathMaster() {
   
   // Ref לשמירת timeouts לניקוי - מונע תקיעות
   const animationTimeoutsRef = useRef([]);
+  
+  // בדיקה אם התרגיל יכול להיות מאונך
+  const canDisplayVertically = useMemo(() => {
+    if (!currentQuestion) return false;
+    const op = currentQuestion.operation;
+    const params = currentQuestion.params || {};
+    
+    // בדיקה אם יש לנו את הנתונים הדרושים לתצוגה מאונכת
+    if (op === "addition" || op === "subtraction") {
+      return typeof currentQuestion.a === "number" && typeof currentQuestion.b === "number";
+    }
+    if (op === "multiplication") {
+      return typeof currentQuestion.a === "number" && typeof currentQuestion.b === "number";
+    }
+    if (op === "division") {
+      return (params.dividend && params.divisor) || (typeof currentQuestion.a === "number" && typeof currentQuestion.b === "number");
+    }
+    if (op === "decimals") {
+      return params.a && params.b;
+    }
+    return false;
+  }, [currentQuestion]);
+
+  // פונקציה שבונה את התרגיל המאונך
+  const getVerticalExercise = () => {
+    if (!currentQuestion || !canDisplayVertically) return null;
+    
+    const op = currentQuestion.operation;
+    const params = currentQuestion.params || {};
+    
+    if (op === "addition") {
+      const a = currentQuestion.a;
+      const b = currentQuestion.b;
+      return buildVerticalOperation(a, b, "+");
+    }
+    if (op === "subtraction") {
+      const a = currentQuestion.a;
+      const b = currentQuestion.b;
+      return buildVerticalOperation(a, b, "-");
+    }
+    if (op === "multiplication") {
+      const a = currentQuestion.a;
+      const b = currentQuestion.b;
+      return buildVerticalOperation(a, b, "×");
+    }
+    if (op === "division") {
+      const dividend = params.dividend || currentQuestion.a;
+      const divisor = params.divisor || currentQuestion.b;
+      return buildVerticalOperation(dividend, divisor, "÷");
+    }
+    if (op === "decimals") {
+      const a = params.a;
+      const b = params.b;
+      // לעשרוניים נצטרך לוגיקה מיוחדת - בינתיים נחזיר null
+      return null;
+    }
+    
+    return null;
+  };
   
   // Memoize explanation to avoid recalculating on every render
   const stepExplanation = useMemo(
@@ -594,6 +656,7 @@ export default function MathMaster() {
     setHintUsed(false);
     setShowSolution(false);
     setErrorExplanation("");
+    setIsVerticalDisplay(false); // איפוס למצב מאוזן בכל שאלה חדשה
     // איפוס עיגולים שעברו כשמשנים שאלה
     setMovedCirclesA(0);
     setMovedCirclesB(0);
@@ -1520,28 +1583,87 @@ export default function MathMaster() {
                       >
                         {currentQuestion.questionLabel}
                       </p>
-                      <p
-                        className={`text-4xl text-center text-white font-bold mb-4 ${
-                          currentQuestion.operation === "sequences" ? "whitespace-normal" : "whitespace-nowrap"
-                        }`}
-                        style={{
-                          direction: "ltr",
-                          unicodeBidi: "plaintext",
-                        }}
-                      >
-                        {currentQuestion.exerciseText}
-                      </p>
+                      
+                      {/* כפתור החלפה מאוזן/מאונך - רק אם התרגיל יכול להיות מאונך */}
+                      {canDisplayVertically && (
+                        <div className="flex justify-center mb-2">
+                          <button
+                            onClick={() => setIsVerticalDisplay((prev) => !prev)}
+                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/80 hover:bg-purple-500 text-white transition-all"
+                            title={isVerticalDisplay ? "הצג מאוזן" : "הצג מאונך"}
+                          >
+                            {isVerticalDisplay ? "↔️ מאוזן" : "↕️ מאונך"}
+                          </button>
+                        </div>
+                      )}
+                      
+                      {/* תצוגת התרגיל - מאוזן או מאונך */}
+                      {isVerticalDisplay && canDisplayVertically ? (
+                        <div className="mb-4 flex justify-center">
+                          <pre
+                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre"
+                            style={{
+                              direction: "ltr",
+                              unicodeBidi: "plaintext",
+                            }}
+                          >
+                            {getVerticalExercise() || currentQuestion.exerciseText}
+                          </pre>
+                        </div>
+                      ) : (
+                        <p
+                          className={`text-4xl text-center text-white font-bold mb-4 ${
+                            currentQuestion.operation === "sequences" ? "whitespace-normal" : "whitespace-nowrap"
+                          }`}
+                          style={{
+                            direction: "ltr",
+                            unicodeBidi: "plaintext",
+                          }}
+                        >
+                          {currentQuestion.exerciseText}
+                        </p>
+                      )}
                     </>
                   ) : currentQuestion.exerciseText ? (
-                    <p
-                      className="text-4xl text-center text-white font-bold mb-4 whitespace-nowrap"
-                      style={{
-                        direction: "ltr",
-                        unicodeBidi: "plaintext",
-                      }}
-                    >
-                      {currentQuestion.exerciseText}
-                    </p>
+                    <>
+                      {/* כפתור החלפה מאוזן/מאונך - רק אם התרגיל יכול להיות מאונך */}
+                      {canDisplayVertically && (
+                        <div className="flex justify-center mb-2">
+                          <button
+                            onClick={() => setIsVerticalDisplay((prev) => !prev)}
+                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/80 hover:bg-purple-500 text-white transition-all"
+                            title={isVerticalDisplay ? "הצג מאוזן" : "הצג מאונך"}
+                          >
+                            {isVerticalDisplay ? "↔️ מאוזן" : "↕️ מאונך"}
+                          </button>
+                        </div>
+                      )}
+                      
+                      {/* תצוגת התרגיל - מאוזן או מאונך */}
+                      {isVerticalDisplay && canDisplayVertically ? (
+                        <div className="mb-4 flex justify-center">
+                          <pre
+                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre"
+                            style={{
+                              direction: "ltr",
+                              unicodeBidi: "plaintext",
+                            }}
+                          >
+                            {getVerticalExercise() || currentQuestion.exerciseText}
+                          </pre>
+                        </div>
+                      ) : (
+                        <p
+                          className="text-4xl text-center text-white font-bold mb-4 whitespace-nowrap"
+                          style={{
+                            direction: "ltr",
+                            unicodeBidi: "plaintext",
+                          }}
+                        >
+                          {currentQuestion.exerciseText}
+                        </p>
+                      )}
+                    </>
                   ) : (
                     <div
                       className="text-4xl font-black text-white mb-4 text-center"
