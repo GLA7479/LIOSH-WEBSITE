@@ -338,10 +338,32 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         ? densSmall.filter((d) => d <= levelConfig.fractions.maxDen)
         : densBig.filter((d) => d <= levelConfig.fractions.maxDen);
 
-    // כיתה ה' - צמצום והרחבה, חיבור וחיסור
+    // כיתה ה' - צמצום והרחבה, חיבור וחיסור, מספרים מעורבים
     if (gradeKey === "g5") {
       const fractionType = Math.random();
-      if (fractionType < 0.3) {
+      if (fractionType < 0.2) {
+        // מספרים מעורבים (20% מהשאלות)
+        const variant = Math.random();
+        if (variant < 0.5) {
+          // המרה משבר למספר מעורב
+          const whole = randInt(1, 3);
+          const den = dens[Math.floor(Math.random() * dens.length)] || 4;
+          const num = randInt(1, den - 1);
+          const improperNum = whole * den + num;
+          correctAnswer = `${whole} ${num}/${den}`;
+          question = `המר את השבר ${improperNum}/${den} למספר מעורב: ${BLANK}`;
+          params = { kind: "frac_to_mixed", improperNum, den, whole, num };
+        } else {
+          // המרה ממספר מעורב לשבר
+          const whole = randInt(1, 3);
+          const den = dens[Math.floor(Math.random() * dens.length)] || 4;
+          const num = randInt(1, den - 1);
+          const improperNum = whole * den + num;
+          correctAnswer = `${improperNum}/${den}`;
+          question = `המר את המספר המעורב ${whole} ${num}/${den} לשבר: ${BLANK}`;
+          params = { kind: "mixed_to_frac", whole, num, den, improperNum };
+        }
+      } else if (fractionType < 0.5) {
         // צמצום והרחבה
         const den = dens[Math.floor(Math.random() * dens.length)] || 4;
         const num = randInt(1, den - 1);
@@ -411,9 +433,35 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         }
       }
     } else if (gradeKey === "g6") {
-      // כיתה ו' - כפל וחילוק שברים
+      // כיתה ו' - כפל וחילוק שברים, שבר כמנת חילוק
       const fractionType = Math.random();
-      if (fractionType < 0.5) {
+      if (fractionType < 0.2) {
+        // שבר כמנת חילוק (20% מהשאלות)
+        const dividend = randInt(2, 20);
+        const divisor = randInt(2, 10);
+        const quotient = dividend / divisor;
+        if (quotient % 1 !== 0) {
+          // אם התוצאה היא שבר
+          const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
+          const divisorGcd = gcd(dividend, divisor);
+          const num = dividend / divisorGcd;
+          const den = divisor / divisorGcd;
+          correctAnswer = `${num}/${den}`;
+          question = `מה התוצאה של ${dividend} ÷ ${divisor}? רשמו כשבר: ${BLANK}`;
+          params = { kind: "frac_as_division", dividend, divisor, num, den };
+        } else {
+          // אם התוצאה היא מספר שלם, ננסה שוב
+          const newDividend = randInt(3, 15);
+          const newDivisor = randInt(2, 7);
+          const newGcd = (x, y) => (y === 0 ? x : newGcd(y, x % y));
+          const divisorGcd = newGcd(newDividend, newDivisor);
+          const num = newDividend / divisorGcd;
+          const den = newDivisor / divisorGcd;
+          correctAnswer = `${num}/${den}`;
+          question = `מה התוצאה של ${newDividend} ÷ ${newDivisor}? רשמו כשבר: ${BLANK}`;
+          params = { kind: "frac_as_division", dividend: newDividend, divisor: newDivisor, num, den };
+        }
+      } else if (fractionType < 0.7) {
         // כפל שברים
         const den1 = dens[Math.floor(Math.random() * dens.length)] || 4;
         const den2 = dens[Math.floor(Math.random() * dens.length)] || 6;
@@ -1066,8 +1114,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
 
   // ===== תרגילי מילים (רק חשבון – בלי גאומטריה) =====
   } else if (selectedOp === "word_problems") {
+    // כיתות א' וב' - שאלות פשוטות
     const templates =
-      gradeKey === "g5" || gradeKey === "g6"
+      gradeKey === "g1"
+        ? ["simple_add", "simple_sub", "pocket_money", "time_days", "coins"]
+        : gradeKey === "g2"
+        ? ["simple_add", "simple_sub", "pocket_money", "groups", "time_days", "coins", "division_simple"]
+        : gradeKey === "g5" || gradeKey === "g6"
         ? [
             "multi_step",
             "groups",
@@ -1108,6 +1161,56 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       correctAnswer = per * groups;
       question = `בכל קופסה יש ${per} עפרונות. יש ${groups} קופסאות כאלה. כמה עפרונות יש בסך הכל?`;
       params = { kind: "wp_groups", per, groups };
+    } else if (t === "time_days") {
+      // שאלות זמן - ימים בשבוע (כיתות א'-ב')
+      const variant = Math.random();
+      if (variant < 0.5) {
+        const days = randInt(1, 6);
+        const startDay = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי"][randInt(0, 5)];
+        const endDay = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"][randInt(0, 6)];
+        correctAnswer = days;
+        question = `אם היום יום ${startDay}, כמה ימים יעברו עד יום ${endDay}?`;
+        params = { kind: "wp_time_days", days };
+      } else {
+        const today = randInt(1, 5);
+        const daysLater = randInt(1, 7 - today);
+        correctAnswer = today + daysLater;
+        question = `אם היום ה-${today} לחודש, איזה תאריך יהיה בעוד ${daysLater} ימים?`;
+        params = { kind: "wp_time_date", today, daysLater };
+      }
+    } else if (t === "coins") {
+      // שאלות כסף - מטבעות (כיתות א'-ב')
+      const variant = Math.random();
+      if (variant < 0.5) {
+        const coins1 = randInt(1, 5);
+        const coins2 = randInt(1, 5);
+        const value1 = coins1 * 1; // שקל
+        const value2 = coins2 * 2; // 2 שקלים
+        correctAnswer = value1 + value2;
+        question = `לליאו יש ${coins1} מטבעות של שקל ו-${coins2} מטבעות של 2 שקלים. כמה כסף יש לו בסך הכל?`;
+        params = { kind: "wp_coins", coins1, coins2, value1, value2 };
+      } else {
+        const total = randInt(5, 15);
+        const spent = randInt(2, total - 2);
+        correctAnswer = total - spent;
+        question = `לליאו יש ${total}₪ במטבעות. הוא קונה ממתק ב-${spent}₪. כמה כסף נשאר לו?`;
+        params = { kind: "wp_coins_spent", total, spent };
+      }
+    } else if (t === "division_simple") {
+      // שאלות חילוק פשוטות (כיתה ב')
+      const total = randInt(6, 20);
+      const perGroup = randInt(2, 5);
+      const groups = Math.floor(total / perGroup);
+      const remainder = total % perGroup;
+      if (remainder === 0) {
+        correctAnswer = groups;
+        question = `יש ${total} תפוחים. מחלקים אותם לקבוצות של ${perGroup} תפוחים בכל קבוצה. כמה קבוצות יש?`;
+        params = { kind: "wp_division_simple", total, perGroup, groups };
+      } else {
+        correctAnswer = groups;
+        question = `יש ${total} תפוחים. מחלקים אותם לקבוצות של ${perGroup} תפוחים בכל קבוצה. כמה קבוצות מלאות יש?`;
+        params = { kind: "wp_division_simple_remainder", total, perGroup, groups, remainder };
+      }
     } else if (t === "leftover") {
       const total = randInt(40, 100);
       const groupSize = randInt(4, 8);
@@ -1294,6 +1397,117 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     
     operandA = a;
     operandB = b;
+
+  // ===== תכונות ה-0 וה-1 (כיתה ד') =====
+  } else if (selectedOp === "zero_one_properties") {
+    const variant = Math.random();
+    if (variant < 0.25) {
+      // כפל ב-0
+      const a = randInt(1, 100);
+      correctAnswer = 0;
+      question = `מה התוצאה של ${a} × 0?`;
+      params = { kind: "zero_mul", a };
+      operandA = a;
+      operandB = 0;
+    } else if (variant < 0.5) {
+      // חיבור עם 0
+      const a = randInt(1, 100);
+      correctAnswer = a;
+      question = `מה התוצאה של ${a} + 0?`;
+      params = { kind: "zero_add", a };
+      operandA = a;
+      operandB = 0;
+    } else if (variant < 0.75) {
+      // חיסור של 0
+      const a = randInt(1, 100);
+      correctAnswer = a;
+      question = `מה התוצאה של ${a} - 0?`;
+      params = { kind: "zero_sub", a };
+      operandA = a;
+      operandB = 0;
+    } else {
+      // כפל ב-1
+      const a = randInt(1, 100);
+      correctAnswer = a;
+      question = `מה התוצאה של ${a} × 1?`;
+      params = { kind: "one_mul", a };
+      operandA = a;
+      operandB = 1;
+    }
+
+  // ===== אומדן (כיתות ד'-ה') =====
+  } else if (selectedOp === "estimation") {
+    const maxVal = levelConfig.estimation?.max || 1000;
+    const variant = Math.random();
+    if (variant < 0.33) {
+      // אומדן חיבור
+      const a = randInt(10, maxVal);
+      const b = randInt(10, maxVal);
+      const exact = a + b;
+      const estimate = Math.round(exact / 10) * 10; // עיגול לעשרות
+      correctAnswer = estimate;
+      question = `אמד את התוצאה של ${a} + ${b} (עיגול לעשרות הקרובות): ${BLANK}`;
+      params = { kind: "est_add", a, b, exact, estimate };
+      operandA = a;
+      operandB = b;
+    } else if (variant < 0.66) {
+      // אומדן כפל
+      const a = randInt(10, Math.min(100, maxVal));
+      const b = randInt(2, 10);
+      const exact = a * b;
+      const estimate = Math.round(exact / 100) * 100; // עיגול למאות
+      correctAnswer = estimate;
+      question = `אמד את התוצאה של ${a} × ${b} (עיגול למאות הקרובות): ${BLANK}`;
+      params = { kind: "est_mul", a, b, exact, estimate };
+      operandA = a;
+      operandB = b;
+    } else {
+      // אומדן כמויות
+      const quantity = randInt(50, maxVal);
+      const estimate = Math.round(quantity / 10) * 10;
+      correctAnswer = estimate;
+      question = `אמד את הכמות ${quantity} (עיגול לעשרות הקרובות): ${BLANK}`;
+      params = { kind: "est_quantity", quantity, estimate };
+      operandA = quantity;
+      operandB = null;
+    }
+
+  // ===== קנה מידה (כיתה ו') =====
+  } else if (selectedOp === "scale") {
+    const scaleConfig = levelConfig.scale || {};
+    const maxScale = scaleConfig.max || 100;
+    const variant = Math.random();
+    if (variant < 0.33) {
+      // מציאת אורך במציאות לפי מפה
+      const mapLength = randInt(1, 10);
+      const scale = randInt(2, 10);
+      const realLength = mapLength * scale;
+      correctAnswer = realLength;
+      question = `במפה בקנה מידה 1:${scale}, אורך של ${mapLength} ס"מ במפה שווה ל-${BLANK} ס"מ במציאות`;
+      params = { kind: "scale_map_to_real", mapLength, scale, realLength };
+      operandA = mapLength;
+      operandB = scale;
+    } else if (variant < 0.66) {
+      // מציאת אורך במפה לפי מציאות
+      const realLength = randInt(10, maxScale);
+      const scale = randInt(2, 10);
+      const mapLength = realLength / scale;
+      correctAnswer = round(mapLength, 1);
+      question = `במפה בקנה מידה 1:${scale}, אורך של ${realLength} ס"מ במציאות שווה ל-${BLANK} ס"מ במפה`;
+      params = { kind: "scale_real_to_map", realLength, scale, mapLength };
+      operandA = realLength;
+      operandB = scale;
+    } else {
+      // מציאת קנה מידה
+      const mapLength = randInt(1, 5);
+      const realLength = randInt(10, 50);
+      const scale = realLength / mapLength;
+      correctAnswer = scale;
+      question = `אורך של ${mapLength} ס"מ במפה שווה ל-${realLength} ס"מ במציאות. מה קנה המידה? (1:${BLANK})`;
+      params = { kind: "scale_find", mapLength, realLength, scale };
+      operandA = mapLength;
+      operandB = realLength;
+    }
   } else {
     // ברירת מחדל - חיבור פשוט
     const maxA = levelConfig.addition.max || 20;

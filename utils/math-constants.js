@@ -48,6 +48,7 @@ export const GRADE_LEVELS = {
         // חילוק נלמד רק כהפוך לכפל בשאלות מילוליות, לא תרגילים ישירים
         compare: { max: 20 },
         number_sense: { max: 20 },
+        word_problems: { max: 20 }, // שאלות חיבור וחיסור
       },
       hard: {
         addition: { max: 20 },
@@ -56,6 +57,7 @@ export const GRADE_LEVELS = {
         // חילוק נלמד רק כהפוך לכפל בשאלות מילוליות, לא תרגילים ישירים
         compare: { max: 20 },
         number_sense: { max: 20 },
+        word_problems: { max: 20 }, // שאלות חיבור וחיסור
       },
     },
   },
@@ -72,6 +74,7 @@ export const GRADE_LEVELS = {
         divisibility: { divisors: [2, 5, 10] }, // סימני התחלקות
         compare: { max: 1000 },
         number_sense: { max: 1000 },
+        word_problems: { max: 100 }, // שאלות חיבור, חיסור, כפל וחילוק
       },
       medium: {
         // חיבור/חיסור עד 100, מספרים עד 1000
@@ -83,6 +86,7 @@ export const GRADE_LEVELS = {
         divisibility: { divisors: [2, 5, 10] },
         compare: { max: 1000 },
         number_sense: { max: 1000 },
+        word_problems: { max: 100 }, // שאלות חיבור, חיסור, כפל וחילוק
       },
       hard: {
         addition: { max: 100 },
@@ -93,6 +97,7 @@ export const GRADE_LEVELS = {
         divisibility: { divisors: [2, 5, 10] },
         compare: { max: 1000 },
         number_sense: { max: 1000 },
+        word_problems: { max: 100 }, // שאלות חיבור, חיסור, כפל וחילוק
       },
     },
   },
@@ -108,6 +113,7 @@ export const GRADE_LEVELS = {
         sequences: { maxStart: 20, maxStep: 3 },
         decimals: { maxBase: 50, places: 1 },
         divisibility: { divisors: [2, 5, 10] },
+        order_of_operations: { max: 200 }, // סדר פעולות והשימוש בסוגריים
         equations: { max: 200 },
         compare: { max: 10000 }, // עד רבבה
         number_sense: { max: 10000 },
@@ -121,6 +127,7 @@ export const GRADE_LEVELS = {
         sequences: { maxStart: 50, maxStep: 9 },
         decimals: { maxBase: 50, places: 1 },
         divisibility: { divisors: [2, 5, 10] },
+        order_of_operations: { max: 500 }, // סדר פעולות והשימוש בסוגריים
         equations: { max: 500 },
         compare: { max: 10000 },
         number_sense: { max: 10000 },
@@ -134,6 +141,7 @@ export const GRADE_LEVELS = {
         sequences: { maxStart: 50, maxStep: 9 },
         decimals: { maxBase: 50, places: 1 },
         divisibility: { divisors: [2, 5, 10] },
+        order_of_operations: { max: 1000 }, // סדר פעולות והשימוש בסוגריים
         equations: { max: 1000 },
         compare: { max: 10000 },
         number_sense: { max: 10000 },
@@ -155,10 +163,12 @@ export const GRADE_LEVELS = {
         divisibility: { divisors: [2, 3, 5, 6, 9, 10] }, // סימני התחלקות ב-3,6,9
         prime_composite: { maxNumber: 100 }, // מספרים ראשוניים ופריקים
         powers: { maxBase: 10, maxExp: 3 }, // חזקות
+        zero_one_properties: { max: 100 }, // תכונות ה-0 וה-1
         equations: { max: 1000 },
         compare: { max: 1000000 }, // עד מיליון
         number_sense: { max: 1000000 },
         factors_multiples: { maxNumber: 100 },
+        estimation: { max: 1000 }, // אומדן ופיתוח תובנה מספרית
       },
       medium: {
         addition: { max: 5000 },
@@ -172,10 +182,12 @@ export const GRADE_LEVELS = {
         divisibility: { divisors: [2, 3, 5, 6, 9, 10] },
         prime_composite: { maxNumber: 200 },
         powers: { maxBase: 10, maxExp: 4 },
+        zero_one_properties: { max: 5000 }, // תכונות ה-0 וה-1
         equations: { max: 5000 },
         compare: { max: 1000000 },
         number_sense: { max: 1000000 },
         factors_multiples: { maxNumber: 200 },
+        estimation: { max: 5000 }, // אומדן ופיתוח תובנה מספרית
       },
       hard: {
         addition: { max: 10000 },
@@ -189,10 +201,12 @@ export const GRADE_LEVELS = {
         divisibility: { divisors: [2, 3, 5, 6, 9, 10] },
         prime_composite: { maxNumber: 500 },
         powers: { maxBase: 10, maxExp: 5 },
+        zero_one_properties: { max: 10000 }, // תכונות ה-0 וה-1
         equations: { max: 10000 },
         compare: { max: 1000000 },
         number_sense: { max: 1000000 },
         factors_multiples: { maxNumber: 500 },
+        estimation: { max: 10000 }, // אומדן ופיתוח תובנה מספרית
       },
     },
   },
@@ -214,6 +228,7 @@ export const GRADE_LEVELS = {
         number_sense: { max: 10000 },
         factors_multiples: { maxNumber: 500 },
         word_problems: { max: 10000 },
+        estimation: { max: 10000 }, // אומדן תוצאות של פעולות
       },
       medium: {
         addition: { max: 50000 },
@@ -267,6 +282,7 @@ export const GRADE_LEVELS = {
         number_sense: { max: 50000 },
         factors_multiples: { maxNumber: 1000 },
         word_problems: { max: 50000 },
+        scale: { max: 100 }, // קנה מידה
       },
       medium: {
         addition: { max: 100000 },
@@ -283,6 +299,7 @@ export const GRADE_LEVELS = {
         number_sense: { max: 100000 },
         factors_multiples: { maxNumber: 2000 },
         word_problems: { max: 100000 },
+        scale: { max: 500 }, // קנה מידה
       },
       hard: {
         addition: { max: 200000 },
@@ -299,6 +316,7 @@ export const GRADE_LEVELS = {
         number_sense: { max: 200000 },
         factors_multiples: { maxNumber: 5000 },
         word_problems: { max: 200000 },
+        scale: { max: 1000 }, // קנה מידה
       },
     },
   },
@@ -314,6 +332,7 @@ export const GRADES = {
       // חילוק נלמד רק כהפוך לכפל בשאלות מילוליות, לא תרגילים ישירים
       "compare",
       "number_sense",
+      "word_problems", // שאלות חיבור וחיסור
     ],
     allowFractions: false,
     allowNegatives: false,
@@ -329,6 +348,7 @@ export const GRADES = {
       "divisibility",   // סימני התחלקות ב-2,5,10
       "compare",
       "number_sense",
+      "word_problems",  // שאלות חיבור, חיסור, כפל וחילוק
       "mixed",          // תרגילים מעורבים בתחום ה-1000
     ],
     allowFractions: false,
@@ -345,6 +365,7 @@ export const GRADES = {
       "sequences",
       "decimals",       // עשרוניים בסיסיים
       "divisibility",   // סימני התחלקות ב-2,5,10
+      "order_of_operations", // סדר פעולות והשימוש בסוגריים
       "compare",
       "equations",
       "number_sense",
@@ -367,10 +388,12 @@ export const GRADES = {
       "divisibility",   // סימני התחלקות ב-3,6,9
       "prime_composite", // מספרים ראשוניים ופריקים
       "powers",         // חזקות
+      "zero_one_properties", // תכונות ה-0 וה-1
       "equations",
       "compare",
       "number_sense",
       "factors_multiples",
+      "estimation",    // אומדן ופיתוח תובנה מספרית
       "mixed",
     ],
     allowFractions: true,
@@ -393,6 +416,7 @@ export const GRADES = {
       "number_sense",
       "factors_multiples",
       "word_problems",
+      "estimation",    // אומדן תוצאות של פעולות
       "mixed",
     ],
     allowFractions: true,
@@ -416,6 +440,7 @@ export const GRADES = {
       "number_sense",
       "factors_multiples",
       "word_problems",
+      "scale",          // קנה מידה
       "mixed",
     ],
     allowFractions: true,
@@ -438,6 +463,10 @@ export const OPERATIONS = [
   "powers",
   "ratio",
   "equations",
+  "order_of_operations", // סדר פעולות והשימוש בסוגריים (כיתה ג')
+  "zero_one_properties", // תכונות ה-0 וה-1 (כיתה ד')
+  "estimation",          // אומדן (כיתות ד'-ה')
+  "scale",               // קנה מידה (כיתה ו')
   "compare",
   "number_sense",
   "factors_multiples",
