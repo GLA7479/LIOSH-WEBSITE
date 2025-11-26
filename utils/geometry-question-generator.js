@@ -332,6 +332,62 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           break;
         }
 
+        case "pyramid": {
+          // נפח פירמידה = (1/3) × שטח בסיס × גובה
+          // נשתמש בפירמידה עם בסיס ריבועי או מלבני
+          const baseSide = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          const isSquareBase = Math.random() < 0.5;
+          
+          if (isSquareBase) {
+            const baseArea = baseSide * baseSide;
+            params = { baseSide, height, baseArea, kind: "pyramid_volume_square" };
+            correctAnswer = round((baseArea * height) / 3);
+            question = `מה הנפח של פירמידה עם בסיס ריבועי (צלע ${baseSide}) וגובה ${height}?`;
+          } else {
+            const baseWidth = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+            const baseArea = baseSide * baseWidth;
+            params = { baseSide, baseWidth, height, baseArea, kind: "pyramid_volume_rectangular" };
+            correctAnswer = round((baseArea * height) / 3);
+            question = `מה הנפח של פירמידה עם בסיס מלבני (${baseSide} × ${baseWidth}) וגובה ${height}?`;
+          }
+          break;
+        }
+
+        case "cone": {
+          // נפח חרוט = (1/3) × π × רדיוס² × גובה
+          const radius = Math.floor(Math.random() * (level.maxSide / 3)) + 1;
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { radius, height, kind: "cone_volume" };
+          correctAnswer = round((PI * radius * radius * height) / 3);
+          question = `מה הנפח של חרוט עם רדיוס ${radius} וגובה ${height}? (π = 3.14)`;
+          break;
+        }
+
+        case "prism": {
+          // נפח מנסרה = שטח בסיס × גובה
+          // נשתמש במנסרה עם בסיס משולש או מלבני
+          const baseType = Math.random() < 0.5 ? "triangle" : "rectangle";
+          const height = Math.floor(Math.random() * level.maxSide) + 1;
+          
+          if (baseType === "triangle") {
+            const base = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+            const baseHeight = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+            const baseArea = (base * baseHeight) / 2;
+            params = { base, baseHeight, height, baseArea, kind: "prism_volume_triangle" };
+            correctAnswer = round(baseArea * height);
+            question = `מה הנפח של מנסרה עם בסיס משולש (בסיס ${base}, גובה ${baseHeight}) וגובה המנסרה ${height}?`;
+          } else {
+            const baseLength = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+            const baseWidth = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
+            const baseArea = baseLength * baseWidth;
+            params = { baseLength, baseWidth, height, baseArea, kind: "prism_volume_rectangular" };
+            correctAnswer = round(baseArea * height);
+            question = `מה הנפח של מנסרה עם בסיס מלבני (${baseLength} × ${baseWidth}) וגובה המנסרה ${height}?`;
+          }
+          break;
+        }
+
         default: {
           const length =
             Math.floor(Math.random() * (level.maxSide / 2)) + 1;
@@ -402,19 +458,42 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
     // ===================== SHAPES BASIC =====================
     case "shapes_basic": {
-      // שאלות זיהוי בסיסיות - מה השם של הצורה?
-      const side = Math.floor(Math.random() * level.maxSide) + 1;
-      const isSquare = Math.random() < 0.5;
-      
-      if (isSquare) {
-        params = { shape: "ריבוע", side, kind: "shapes_basic_square" };
-        correctAnswer = 1; // ריבוע
-        question = `צורה עם 4 צלעות שוות באורך ${side}. מה שמה? (1 = ריבוע, 2 = מלבן)`;
+      // כיתה א' - זיהוי בסיסי, כיתה ד' - תכונות
+      if (gradeKey === "g1") {
+        // שאלות זיהוי בסיסיות - מה השם של הצורה?
+        const side = Math.floor(Math.random() * level.maxSide) + 1;
+        const isSquare = Math.random() < 0.5;
+        
+        if (isSquare) {
+          params = { shape: "ריבוע", side, kind: "shapes_basic_square" };
+          correctAnswer = 1; // ריבוע
+          question = `צורה עם 4 צלעות שוות באורך ${side}. מה שמה? (1 = ריבוע, 2 = מלבן)`;
+        } else {
+          const width = Math.floor(Math.random() * level.maxSide) + 1;
+          params = { shape: "מלבן", length: side, width, kind: "shapes_basic_rectangle" };
+          correctAnswer = 2; // מלבן
+          question = `צורה עם אורך ${side} ורוחב ${width}. מה שמה? (1 = ריבוע, 2 = מלבן)`;
+        }
       } else {
-        const width = Math.floor(Math.random() * level.maxSide) + 1;
-        params = { shape: "מלבן", length: side, width, kind: "shapes_basic_rectangle" };
-        correctAnswer = 2; // מלבן
-        question = `צורה עם אורך ${side} ורוחב ${width}. מה שמה? (1 = ריבוע, 2 = מלבן)`;
+        // כיתה ד' - תכונות ריבוע ומלבן
+        const questionType = Math.random();
+        if (questionType < 0.33) {
+          // כמה צלעות שוות יש לריבוע?
+          params = { shape: "ריבוע", kind: "shapes_basic_properties_square" };
+          correctAnswer = 4; // 4 צלעות שוות
+          question = `כמה צלעות שוות יש לריבוע? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`;
+        } else if (questionType < 0.66) {
+          // כמה זוגות של צלעות שוות יש למלבן?
+          params = { shape: "מלבן", kind: "shapes_basic_properties_rectangle" };
+          correctAnswer = 2; // 2 זוגות
+          question = `כמה זוגות של צלעות שוות יש למלבן? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`;
+        } else {
+          // כמה זוויות ישרות יש לריבוע/מלבן?
+          const shape = Math.random() < 0.5 ? "ריבוע" : "מלבן";
+          params = { shape, kind: "shapes_basic_properties_angles" };
+          correctAnswer = 4; // 4 זוויות ישרות
+          question = `כמה זוויות ישרות יש ל${shape}? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`;
+        }
       }
       break;
     }
@@ -488,26 +567,67 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
     // ===================== DIAGONAL =====================
     case "diagonal": {
-      const shape = ["ריבוע", "מלבן"][Math.floor(Math.random() * 2)];
+      // כיתה ד' - ריבוע ומלבן, כיתה ה' - גם מקבילית
+      const shapeOptions = gradeKey === "g5" 
+        ? ["ריבוע", "מלבן", "מקבילית"]
+        : ["ריבוע", "מלבן"];
+      const shape = shapeOptions[Math.floor(Math.random() * shapeOptions.length)];
       const side = Math.floor(Math.random() * level.maxSide) + 1;
-      const isSquare = shape === "ריבוע";
-      const diagonal = isSquare ? round(side * Math.sqrt(2)) : round(Math.sqrt(side * side + (side * 1.5) * (side * 1.5)));
       
-      params = { shape, side, diagonal, kind: "diagonal" };
+      let diagonal;
+      if (shape === "ריבוע") {
+        diagonal = round(side * Math.sqrt(2));
+        params = { shape, side, diagonal, kind: "diagonal_square" };
+        question = `מה אורך האלכסון של ריבוע עם צלע ${side}?`;
+      } else if (shape === "מלבן") {
+        const width = Math.floor(Math.random() * level.maxSide) + 1;
+        diagonal = round(Math.sqrt(side * side + width * width));
+        params = { shape, side, width, diagonal, kind: "diagonal_rectangle" };
+        question = `מה אורך האלכסון של מלבן עם אורך ${side} ורוחב ${width}?`;
+      } else {
+        // מקבילית - כיתה ה'
+        const width = Math.floor(Math.random() * level.maxSide) + 1;
+        diagonal = round(Math.sqrt(side * side + width * width));
+        params = { shape, side, width, diagonal, kind: "diagonal_parallelogram" };
+        question = `מה אורך האלכסון של מקבילית עם צלע ${side} וצלע ${width}?`;
+      }
+      
       correctAnswer = diagonal;
-      question = `מה אורך האלכסון של ${shape} עם צלע ${side}?`;
       break;
     }
 
     // ===================== HEIGHTS =====================
     case "heights": {
-      const base = Math.floor(Math.random() * level.maxSide) + 1;
-      const area = Math.floor(Math.random() * level.maxSide * 5) + 10;
-      const height = round((area * 2) / base);
-      
-      params = { base, area, height, kind: "heights" };
-      correctAnswer = height;
-      question = `במשולש עם בסיס ${base} ושטח ${area}, מה הגובה?`;
+      const shapeType = Math.random();
+      if (shapeType < 0.33) {
+        // משולש
+        const base = Math.floor(Math.random() * level.maxSide) + 1;
+        const area = Math.floor(Math.random() * level.maxSide * 5) + 10;
+        const height = round((area * 2) / base);
+        
+        params = { base, area, height, shape: "triangle", kind: "heights_triangle" };
+        correctAnswer = height;
+        question = `במשולש עם בסיס ${base} ושטח ${area}, מה הגובה?`;
+      } else if (shapeType < 0.66) {
+        // מקבילית
+        const base = Math.floor(Math.random() * level.maxSide) + 1;
+        const area = Math.floor(Math.random() * level.maxSide * 5) + 10;
+        const height = round(area / base);
+        
+        params = { base, area, height, shape: "parallelogram", kind: "heights_parallelogram" };
+        correctAnswer = height;
+        question = `במקבילית עם בסיס ${base} ושטח ${area}, מה הגובה?`;
+      } else {
+        // טרפז
+        const base1 = Math.floor(Math.random() * level.maxSide) + 1;
+        const base2 = Math.floor(Math.random() * level.maxSide) + 1;
+        const area = Math.floor(Math.random() * level.maxSide * 5) + 10;
+        const height = round((area * 2) / (base1 + base2));
+        
+        params = { base1, base2, area, height, shape: "trapezoid", kind: "heights_trapezoid" };
+        correctAnswer = height;
+        question = `בטרפז עם בסיסים ${base1} ו-${base2} ושטח ${area}, מה הגובה?`;
+      }
       break;
     }
 

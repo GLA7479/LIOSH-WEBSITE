@@ -38,6 +38,14 @@ export function getHint(question, topic, gradeKey) {
         return `נפח כדור = (4/3) × π × רדיוס³ = (4/3) × 3.14 × ${question.params.radius}³`;
       } else if (question.shape === "rectangular_prism") {
         return `נפח תיבה = אורך × רוחב × גובה = ${question.params.length} × ${question.params.width} × ${question.params.height}`;
+      } else if (question.params.kind === "pyramid_volume_square" || question.params.kind === "pyramid_volume_rectangular") {
+        const baseArea = question.params.baseArea || (question.params.baseSide * (question.params.baseWidth || question.params.baseSide));
+        return `נפח פירמידה = (1/3) × שטח בסיס × גובה = (1/3) × ${baseArea} × ${question.params.height}`;
+      } else if (question.params.kind === "cone_volume") {
+        return `נפח חרוט = (1/3) × π × רדיוס² × גובה = (1/3) × 3.14 × ${question.params.radius}² × ${question.params.height}`;
+      } else if (question.params.kind === "prism_volume_triangle" || question.params.kind === "prism_volume_rectangular") {
+        const baseArea = question.params.baseArea || (question.params.base * question.params.baseHeight / 2) || (question.params.baseLength * question.params.baseWidth);
+        return `נפח מנסרה = שטח בסיס × גובה = ${baseArea} × ${question.params.height}`;
       }
       break;
     case "angles":
@@ -45,7 +53,16 @@ export function getHint(question, topic, gradeKey) {
     case "pythagoras":
       return `משפט פיתגורס: a² + b² = c². כאן: ${question.params?.a || 0}² + ${question.params?.b || 0}² = c²`;
     case "shapes_basic":
-      return `זהה את הצורה: ${question.params?.shape || "ריבוע"} - ריבוע יש לו 4 צלעות שוות, מלבן יש לו 2 זוגות של צלעות שוות`;
+      if (question.params.kind === "shapes_basic_square" || question.params.kind === "shapes_basic_rectangle") {
+        return `זהה את הצורה: ${question.params?.shape || "ריבוע"} - ריבוע יש לו 4 צלעות שוות, מלבן יש לו 2 זוגות של צלעות שוות`;
+      } else if (question.params.kind === "shapes_basic_properties_square") {
+        return `ריבוע: כל 4 הצלעות שוות באורכן. לכן התשובה היא 4.`;
+      } else if (question.params.kind === "shapes_basic_properties_rectangle") {
+        return `מלבן: יש 2 זוגות של צלעות שוות (זוג אחד ארוך וזוג אחד קצר). לכן התשובה היא 2.`;
+      } else if (question.params.kind === "shapes_basic_properties_angles") {
+        return `${question.params.shape || "ריבוע"}: כל 4 הזוויות הן זוויות ישרות (90°). לכן התשובה היא 4.`;
+      }
+      return `זהה את הצורה לפי התכונות: ריבוע יש לו 4 צלעות שוות, מלבן יש לו 2 זוגות של צלעות שוות`;
     case "parallel_perpendicular":
       return `קווים ${question.params?.type || "מקבילות"} - מקבילות לא נפגשות, מאונכות יוצרות זווית ישרה`;
     case "triangles":
@@ -59,9 +76,23 @@ export function getHint(question, topic, gradeKey) {
     case "symmetry":
       return `סימטרייה: ${question.params?.shape || "ריבוע"} - כמה צירי סימטרייה יש לצורה?`;
     case "diagonal":
-      return `אלכסון: ${question.params?.shape || "ריבוע"} - קטע המחבר שני קדקודים שאינם על אותה צלע`;
+      if (question.params.kind === "diagonal_square") {
+        return `אלכסון בריבוע: אלכסון = צלע × √2 = ${question.params.side} × √2`;
+      } else if (question.params.kind === "diagonal_rectangle") {
+        return `אלכסון במלבן: אלכסון = √(אורך² + רוחב²) = √(${question.params.side}² + ${question.params.width}²)`;
+      } else if (question.params.kind === "diagonal_parallelogram") {
+        return `אלכסון במקבילית: אלכסון = √(צלע1² + צלע2²) = √(${question.params.side}² + ${question.params.width}²)`;
+      }
+      return `אלכסון: קטע המחבר שני קדקודים שאינם על אותה צלע. חשב לפי משפט פיתגורס.`;
     case "heights":
-      return `גובה: במשולש, הגובה הוא המרחק מהקדקוד לבסיס. שטח = (בסיס × גובה) ÷ 2`;
+      if (question.params.shape === "triangle") {
+        return `גובה במשולש: שטח = (בסיס × גובה) ÷ 2, אז גובה = (שטח × 2) ÷ בסיס = (${question.params.area} × 2) ÷ ${question.params.base}`;
+      } else if (question.params.shape === "parallelogram") {
+        return `גובה במקבילית: שטח = בסיס × גובה, אז גובה = שטח ÷ בסיס = ${question.params.area} ÷ ${question.params.base}`;
+      } else if (question.params.shape === "trapezoid") {
+        return `גובה בטרפז: שטח = ((בסיס1 + בסיס2) × גובה) ÷ 2, אז גובה = (שטח × 2) ÷ (בסיס1 + בסיס2) = (${question.params.area} × 2) ÷ (${question.params.base1} + ${question.params.base2})`;
+      }
+      return `גובה: המרחק מהקדקוד לבסיס. חשב לפי הנוסחה המתאימה לצורה.`;
     case "tiling":
       return `ריצוף: ${question.params?.shape || "ריבוע"} - צורות המשמשות לריצוף ללא רווחים`;
     case "circles":
@@ -309,12 +340,38 @@ export function getSolutionSteps(question, topic, gradeKey) {
     }
 
     case "shapes_basic": {
-      const shape = p.shape || "ריבוע";
-      return [
-        toSpan(`1. ${shape} הוא מצולע.`, "1"),
-        toSpan(shape === "ריבוע" ? "2. לריבוע יש 4 צלעות שוות ו-4 זוויות ישרות." : "2. למלבן יש 2 זוגות של צלעות שוות ו-4 זוויות ישרות.", "2"),
-        toSpan(`3. זהה את הצורה לפי התכונות.`, "3"),
-      ];
+      if (p.kind === "shapes_basic_square" || p.kind === "shapes_basic_rectangle") {
+        // כיתה א' - זיהוי
+        const shape = p.shape || "ריבוע";
+        return [
+          toSpan(`1. ${shape} הוא מצולע.`, "1"),
+          toSpan(shape === "ריבוע" ? "2. לריבוע יש 4 צלעות שוות ו-4 זוויות ישרות." : "2. למלבן יש 2 זוגות של צלעות שוות ו-4 זוויות ישרות.", "2"),
+          toSpan(`3. זהה את הצורה לפי התכונות.`, "3"),
+        ];
+      } else {
+        // כיתה ד' - תכונות
+        if (p.kind === "shapes_basic_properties_square") {
+          return [
+            toSpan("1. ריבוע הוא מצולע עם 4 צלעות.", "1"),
+            toSpan("2. כל 4 הצלעות של ריבוע שוות באורכן.", "2"),
+            toSpan("3. לכן התשובה היא 4 צלעות שוות.", "3"),
+          ];
+        } else if (p.kind === "shapes_basic_properties_rectangle") {
+          return [
+            toSpan("1. מלבן הוא מצולע עם 4 צלעות.", "1"),
+            toSpan("2. למלבן יש 2 זוגות של צלעות שוות: זוג אחד של צלעות ארוכות וזוג אחד של צלעות קצרות.", "2"),
+            toSpan("3. לכן התשובה היא 2 זוגות של צלעות שוות.", "3"),
+          ];
+        } else if (p.kind === "shapes_basic_properties_angles") {
+          const shape = p.shape || "ריבוע";
+          return [
+            toSpan(`1. ${shape} הוא מצולע עם 4 זוויות.`, "1"),
+            toSpan(`2. כל 4 הזוויות של ${shape} הן זוויות ישרות (90°).`, "2"),
+            toSpan("3. לכן התשובה היא 4 זוויות ישרות.", "3"),
+          ];
+        }
+      }
+      return [];
     }
 
     case "parallel_perpendicular": {
@@ -373,24 +430,65 @@ export function getSolutionSteps(question, topic, gradeKey) {
     }
 
     case "diagonal": {
-      const shape = p.shape || "ריבוע";
-      const side = p.side || 1;
-      return [
-        toSpan(`1. אלכסון הוא קטע המחבר שני קדקודים שאינם על אותה צלע.`, "1"),
-        toSpan(`2. ב${shape} עם צלע ${side}, האלכסון מחושב לפי משפט פיתגורס.`, "2"),
-        toSpan(`3. נחשב: ${ltr(`אלכסון = √(${side}² + ${side}²) = ${correctAnswer}`)}.`, "3"),
-      ];
+      if (p.kind === "diagonal_square") {
+        const side = p.side || 1;
+        return [
+          toSpan(`1. אלכסון הוא קטע המחבר שני קדקודים שאינם על אותה צלע.`, "1"),
+          toSpan(`2. בריבוע עם צלע ${side}, האלכסון מחושב לפי משפט פיתגורס.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`אלכסון = √(${side}² + ${side}²) = √(${side * side * 2}) = ${correctAnswer}`)}.`, "3"),
+        ];
+      } else if (p.kind === "diagonal_rectangle") {
+        const side = p.side || 1;
+        const width = p.width || 1;
+        return [
+          toSpan(`1. אלכסון הוא קטע המחבר שני קדקודים שאינם על אותה צלע.`, "1"),
+          toSpan(`2. במלבן עם אורך ${side} ורוחב ${width}, האלכסון מחושב לפי משפט פיתגורס.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`אלכסון = √(${side}² + ${width}²) = √(${side * side + width * width}) = ${correctAnswer}`)}.`, "3"),
+        ];
+      } else if (p.kind === "diagonal_parallelogram") {
+        const side = p.side || 1;
+        const width = p.width || 1;
+        return [
+          toSpan(`1. אלכסון הוא קטע המחבר שני קדקודים שאינם על אותה צלע.`, "1"),
+          toSpan(`2. במקבילית עם צלעות ${side} ו-${width}, האלכסון מחושב לפי משפט פיתגורס.`, "2"),
+          toSpan(`3. נחשב: ${ltr(`אלכסון = √(${side}² + ${width}²) = √(${side * side + width * width}) = ${correctAnswer}`)}.`, "3"),
+        ];
+      }
+      return [];
     }
 
     case "heights": {
-      const base = p.base || 1;
-      const area = p.area || 1;
-      return [
-        toSpan("1. גובה במשולש הוא המרחק מהקדקוד לבסיס.", "1"),
-        toSpan(`2. נוסחה: שטח = (בסיס × גובה) ÷ 2.`, "2"),
-        toSpan(`3. נציב: ${ltr(`${area} = (${base} × גובה) ÷ 2`)}.`, "3"),
-        toSpan(`4. נחשב: ${ltr(`גובה = (${area} × 2) ÷ ${base} = ${correctAnswer}`)}.`, "4"),
-      ];
+      if (p.shape === "triangle") {
+        const base = p.base || 1;
+        const area = p.area || 1;
+        return [
+          toSpan("1. גובה במשולש הוא המרחק מהקדקוד לבסיס.", "1"),
+          toSpan(`2. נוסחה: שטח = (בסיס × גובה) ÷ 2.`, "2"),
+          toSpan(`3. נציב: ${ltr(`${area} = (${base} × גובה) ÷ 2`)}.`, "3"),
+          toSpan(`4. נחשב: ${ltr(`גובה = (${area} × 2) ÷ ${base} = ${correctAnswer}`)}.`, "4"),
+        ];
+      } else if (p.shape === "parallelogram") {
+        const base = p.base || 1;
+        const area = p.area || 1;
+        return [
+          toSpan("1. גובה במקבילית הוא המרחק בין שתי הצלעות המקבילות.", "1"),
+          toSpan(`2. נוסחה: שטח = בסיס × גובה.`, "2"),
+          toSpan(`3. נציב: ${ltr(`${area} = ${base} × גובה`)}.`, "3"),
+          toSpan(`4. נחשב: ${ltr(`גובה = ${area} ÷ ${base} = ${correctAnswer}`)}.`, "4"),
+        ];
+      } else if (p.shape === "trapezoid") {
+        const base1 = p.base1 || 1;
+        const base2 = p.base2 || 1;
+        const area = p.area || 1;
+        const sumBases = base1 + base2;
+        return [
+          toSpan("1. גובה בטרפז הוא המרחק בין שתי הבסיסים המקבילים.", "1"),
+          toSpan(`2. נוסחה: שטח = ((בסיס1 + בסיס2) × גובה) ÷ 2.`, "2"),
+          toSpan(`3. נציב: ${ltr(`${area} = ((${base1} + ${base2}) × גובה) ÷ 2`)}.`, "3"),
+          toSpan(`4. נחשב: ${ltr(`${base1} + ${base2} = ${sumBases}`)}, ואז ${ltr(`גובה = (${area} × 2) ÷ ${sumBases} = ${correctAnswer}`)}.`, "4"),
+        ];
+      }
+      return [];
     }
 
     case "tiling": {
@@ -479,6 +577,13 @@ export function getErrorExplanation(question, topic, wrongAnswer, gradeKey) {
       return "בדוק שוב: משפט פיתגורס אומר a² + b² = c². חשב את a² ו-b², חבר אותם, ואז הוצא שורש.";
 
     case "shapes_basic":
+      if (question.params.kind === "shapes_basic_properties_square") {
+        return "בדוק שוב: ריבוע יש לו 4 צלעות שוות. לכן התשובה היא 4.";
+      } else if (question.params.kind === "shapes_basic_properties_rectangle") {
+        return "בדוק שוב: מלבן יש לו 2 זוגות של צלעות שוות (זוג אחד ארוך וזוג אחד קצר). לכן התשובה היא 2.";
+      } else if (question.params.kind === "shapes_basic_properties_angles") {
+        return `בדוק שוב: ${question.params.shape || "ריבוע"} יש לו 4 זוויות ישרות (90°). לכן התשובה היא 4.`;
+      }
       return "בדוק שוב: ריבוע יש לו 4 צלעות שוות, מלבן יש לו 2 זוגות של צלעות שוות.";
 
     case "parallel_perpendicular":
@@ -500,10 +605,22 @@ export function getErrorExplanation(question, topic, wrongAnswer, gradeKey) {
       return "בדוק שוב: ציר סימטרייה מחלק את הצורה לשני חלקים זהים.";
 
     case "diagonal":
+      if (question.params.kind === "diagonal_square") {
+        return "בדוק שוב: אלכסון בריבוע = צלע × √2.";
+      } else if (question.params.kind === "diagonal_rectangle" || question.params.kind === "diagonal_parallelogram") {
+        return "בדוק שוב: אלכסון מחושב לפי משפט פיתגורס: √(צלע1² + צלע2²).";
+      }
       return "בדוק שוב: אלכסון מחושב לפי משפט פיתגורס.";
 
     case "heights":
-      return "בדוק שוב: גובה במשולש מחושב לפי שטח = (בסיס × גובה) ÷ 2.";
+      if (question.params.shape === "triangle") {
+        return "בדוק שוב: גובה במשולש מחושב לפי שטח = (בסיס × גובה) ÷ 2, אז גובה = (שטח × 2) ÷ בסיס.";
+      } else if (question.params.shape === "parallelogram") {
+        return "בדוק שוב: גובה במקבילית מחושב לפי שטח = בסיס × גובה, אז גובה = שטח ÷ בסיס.";
+      } else if (question.params.shape === "trapezoid") {
+        return "בדוק שוב: גובה בטרפז מחושב לפי שטח = ((בסיס1 + בסיס2) × גובה) ÷ 2, אז גובה = (שטח × 2) ÷ (בסיס1 + בסיס2).";
+      }
+      return "בדוק שוב: גובה מחושב לפי הנוסחה המתאימה לצורה.";
 
     case "tiling":
       return "בדוק שוב: ריצוף דורש שהזוויות יתאימו.";
@@ -597,8 +714,16 @@ export function getTheorySummary(question, topic, gradeKey) {
     }
 
     case "shapes_basic": {
-      lines.push("ריבוע: 4 צלעות שוות, 4 זוויות ישרות.");
-      lines.push("מלבן: 2 זוגות של צלעות שוות, 4 זוויות ישרות.");
+      if (gradeKey === "g1") {
+        lines.push("ריבוע: 4 צלעות שוות, 4 זוויות ישרות.");
+        lines.push("מלבן: 2 זוגות של צלעות שוות, 4 זוויות ישרות.");
+      } else {
+        // כיתה ד' - תכונות
+        lines.push("ריבוע: 4 צלעות שוות, 4 זוויות ישרות (90°).");
+        lines.push("מלבן: 2 זוגות של צלעות שוות, 4 זוויות ישרות (90°).");
+        lines.push("ריבוע: כל 4 הצלעות שוות באורכן.");
+        lines.push("מלבן: יש 2 זוגות של צלעות שוות (זוג אחד ארוך וזוג אחד קצר).");
+      }
       break;
     }
 
@@ -643,13 +768,17 @@ export function getTheorySummary(question, topic, gradeKey) {
 
     case "diagonal": {
       lines.push("אלכסון: קטע המחבר שני קדקודים שאינם על אותה צלע.");
-      lines.push("בריבוע: אלכסון = צלע × √2.");
+      lines.push("ריבוע: אלכסון = צלע × √2.");
+      lines.push("מלבן: אלכסון = √(אורך² + רוחב²).");
+      lines.push("מקבילית: אלכסון = √(צלע1² + צלע2²).");
       break;
     }
 
     case "heights": {
-      lines.push("גובה: המרחק מהקדקוד לבסיס.");
-      lines.push("במשולש: שטח = (בסיס × גובה) ÷ 2.");
+      lines.push("גובה: המרחק מהקדקוד לבסיס (במשולש) או המרחק בין צלעות מקבילות (במקבילית/טרפז).");
+      lines.push("משולש: שטח = (בסיס × גובה) ÷ 2, אז גובה = (שטח × 2) ÷ בסיס.");
+      lines.push("מקבילית: שטח = בסיס × גובה, אז גובה = שטח ÷ בסיס.");
+      lines.push("טרפז: שטח = ((בסיס1 + בסיס2) × גובה) ÷ 2, אז גובה = (שטח × 2) ÷ (בסיס1 + בסיס2).");
       break;
     }
 

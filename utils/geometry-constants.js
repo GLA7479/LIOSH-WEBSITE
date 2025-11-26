@@ -99,7 +99,7 @@ export const TOPIC_SHAPES = {
   volume: {
     g4: ["rectangular_prism", "cube"], // תיבות - כיתה ד'
     g5: ["rectangular_prism", "cube"],
-    g6: ["rectangular_prism", "cube", "cylinder", "sphere", "pyramid", "cone"],
+    g6: ["rectangular_prism", "cube", "cylinder", "sphere", "pyramid", "cone", "prism"], // כיתה ו' - כולל מנסרה
   },
   angles: {
     g3: ["triangle", "quadrilateral"],

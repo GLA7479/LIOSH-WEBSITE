@@ -334,53 +334,54 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
 
       const variant = Math.random();
 
-    if (variant < 0.33) {
-      // צורה רגילה: dividend ÷ divisor = __ (או עם שארית)
-      if (remainder > 0) {
-        correctAnswer = `${quotient} ושארית ${remainder}`;
-        const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
+      if (variant < 0.33) {
+        // צורה רגילה: dividend ÷ divisor = __ (או עם שארית)
+        if (remainder > 0) {
+          correctAnswer = `${quotient} ושארית ${remainder}`;
+          const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
+          question = exerciseText;
+          params = { kind: "div_with_remainder", dividend, divisor, quotient, remainder, exerciseText };
+        } else {
+          correctAnswer = round(quotient);
+          const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
+          question = exerciseText;
+          params = { kind: "div", dividend, divisor, exerciseText };
+        }
+      } else if (variant < 0.66) {
+        // חסר המחולק: __ ÷ divisor = quotient
+        correctAnswer = dividend;
+        const exerciseText = `${BLANK} ÷ ${divisor} = ${quotient}${remainder > 0 ? ` ושארית ${remainder}` : ''}`;
         question = exerciseText;
-        params = { kind: "div_with_remainder", dividend, divisor, quotient, remainder, exerciseText };
+        params = {
+          kind: "div_missing_dividend",
+          dividend,
+          divisor,
+          quotient,
+          remainder,
+          exerciseText,
+          op: "div",
+          grade: gradeKey,
+        };
       } else {
-        correctAnswer = round(quotient);
-        const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
+        // חסר המחלק: dividend ÷ __ = quotient
+        correctAnswer = divisor;
+        const exerciseText = `${dividend} ÷ ${BLANK} = ${quotient}${remainder > 0 ? ` ושארית ${remainder}` : ''}`;
         question = exerciseText;
-        params = { kind: "div", dividend, divisor, exerciseText };
+        params = {
+          kind: "div_missing_divisor",
+          dividend,
+          divisor,
+          quotient,
+          remainder,
+          exerciseText,
+          op: "div",
+          grade: gradeKey,
+        };
       }
-    } else if (variant < 0.66) {
-      // חסר המחולק: __ ÷ divisor = quotient
-      correctAnswer = dividend;
-      const exerciseText = `${BLANK} ÷ ${divisor} = ${quotient}${remainder > 0 ? ` ושארית ${remainder}` : ''}`;
-      question = exerciseText;
-      params = {
-        kind: "div_missing_dividend",
-        dividend,
-        divisor,
-        quotient,
-        remainder,
-        exerciseText,
-        op: "div",
-        grade: gradeKey,
-      };
-      } else {
-      // חסר המחלק: dividend ÷ __ = quotient
-      correctAnswer = divisor;
-      const exerciseText = `${dividend} ÷ ${BLANK} = ${quotient}${remainder > 0 ? ` ושארית ${remainder}` : ''}`;
-      question = exerciseText;
-      params = {
-        kind: "div_missing_divisor",
-        dividend,
-        divisor,
-        quotient,
-        remainder,
-        exerciseText,
-        op: "div",
-        grade: gradeKey,
-      };
-    }
 
-    operandA = dividend;
-    operandB = divisor;
+      operandA = dividend;
+      operandB = divisor;
+    }
   } else if (selectedOp === "fractions" && levelConfig.allowFractions) {
     const densSmall = [2, 4, 5, 10];
     const densBig = [2, 3, 4, 5, 6, 8, 10, 12];
