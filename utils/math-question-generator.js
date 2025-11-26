@@ -48,39 +48,16 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     const maxA = levelConfig.addition.max || 20;
     const isLowGrade = gradeKey === "g1" || gradeKey === "g2"; // כיתות א' וב'
 
-    // כיתה א' - תרגילי השלמה לעשר
-    const useComplementTo10 = gradeKey === "g1" && levelConfig.addition?.complementTo10 && Math.random() < 0.4;
     // כיתה א' - חיבור בעשרות שלמות (30+40=70)
     const useTensOnly = gradeKey === "g1" && Math.random() < 0.2;
     // כיתה א' - חיבור בעשרת השנייה (13+4, 17-4)
     const useSecondDecade = gradeKey === "g1" && Math.random() < 0.2;
     // כיתה ב' - חיבור במאונך (אם מוגדר)
     const useVertical = (gradeKey === "g2" && levelConfig.addition?.vertical && Math.random() < 0.4);
-    // האם להשתמש בתרגילי השלמה (לעשר/מספר עגול) - רק מכיתה ג' ומעלה
-    const useComplementG3 = !isLowGrade && (gradeKey === "g3" || gradeKey === "g4") && Math.random() < 0.2;
     // האם להשתמש בתרגיל 3 מספרים - רק מכיתה ג' ומעלה
     const useThreeTerms = !isLowGrade && allowTwoStep && Math.random() < 0.3;
 
-    if (useComplementTo10) {
-      // כיתה א': השלמה לעשר
-      const a = randInt(1, 9);
-      const target = 10;
-      const b = target - a;
-      correctAnswer = b;
-      const exerciseText = `${a} + ${BLANK} = ${target}`;
-      question = exerciseText;
-      params = {
-        kind: "add_complement_to10",
-        a,
-        b,
-        target,
-        exerciseText,
-        op: "add",
-        grade: gradeKey,
-      };
-      operandA = a;
-      operandB = b;
-    } else if (useTensOnly) {
+    if (useTensOnly) {
       // כיתה א': חיבור בעשרות שלמות (30+40=70)
       const tens1 = randInt(1, 9) * 10; // 10, 20, 30, ..., 90
       const tens2 = randInt(1, Math.min(9, Math.floor((100 - tens1) / 10))) * 10;
@@ -114,25 +91,6 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       };
       operandA = base;
       operandB = addend;
-    } else if (useComplementG3) {
-      // כיתות ג–ד: השלמה לעשרות קרובות
-      const base = randInt(10, 90);
-      const tens = Math.round(base / 10) * 10;
-      const diff = tens - base;
-      correctAnswer = diff;
-      const exerciseText = `${base} + ${BLANK} = ${tens}`;
-      question = exerciseText;
-      params = {
-        kind: "add_complement_round10",
-        base,
-        tens,
-        diff,
-        exerciseText,
-        op: "add",
-        grade: gradeKey,
-      };
-      operandA = base;
-      operandB = diff;
     } else if (useThreeTerms) {
       // חיבור של 3 מספרים - רק מכיתה ג' ומעלה
       const a = randInt(1, maxA);
@@ -292,48 +250,16 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         operandB = multiplier;
       }
     } else {
-      // כפל רגיל
+      // כפל רגיל - רק תרגיל ישיר (ללא נעלם) - נעלמים רק במשוואות
       const a = randInt(1, maxM);
       const b = randInt(1, maxM);
       const c = a * b;
 
-      const variant = Math.random();
-
-      if (variant < 0.33) {
-        // צורה רגילה: a × b = __
-        correctAnswer = round(c);
-        const exerciseText = `${a} × ${b} = ${BLANK}`;
-        question = exerciseText;
-        params = { kind: "mul", a, b, exerciseText };
-      } else if (variant < 0.66) {
-        // חסר המספר הראשון: __ × b = c
-        correctAnswer = a;
-        const exerciseText = `${BLANK} × ${b} = ${c}`;
-        question = exerciseText;
-        params = {
-          kind: "mul_missing_first",
-          a,
-          b,
-          c,
-          exerciseText,
-          op: "mul",
-          grade: gradeKey,
-        };
-      } else {
-        // חסר המספר השני: a × __ = c
-        correctAnswer = b;
-        const exerciseText = `${a} × ${BLANK} = ${c}`;
-        question = exerciseText;
-        params = {
-          kind: "mul_missing_second",
-          a,
-          b,
-          c,
-          exerciseText,
-          op: "mul",
-          grade: gradeKey,
-        };
-      }
+      // צורה רגילה: a × b = __
+      correctAnswer = round(c);
+      const exerciseText = `${a} × ${b} = ${BLANK}`;
+      question = exerciseText;
+      params = { kind: "mul", a, b, exerciseText };
 
       operandA = a;
       operandB = b;
@@ -387,9 +313,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         dividend = divisor * quotient;
       }
 
-      const variant = Math.random();
-
-    if (variant < 0.33) {
+      // חילוק - רק תרגיל ישיר (ללא נעלם) - נעלמים רק במשוואות
       // צורה רגילה: dividend ÷ divisor = __ (או עם שארית)
       if (remainder > 0) {
         correctAnswer = `${quotient} ושארית ${remainder}`;
@@ -402,37 +326,6 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         question = exerciseText;
         params = { kind: "div", dividend, divisor, exerciseText };
       }
-    } else if (variant < 0.66) {
-      // חסר המחולק: __ ÷ divisor = quotient
-      correctAnswer = dividend;
-      const exerciseText = `${BLANK} ÷ ${divisor} = ${quotient}${remainder > 0 ? ` ושארית ${remainder}` : ''}`;
-      question = exerciseText;
-      params = {
-        kind: "div_missing_dividend",
-        dividend,
-        divisor,
-        quotient,
-        remainder,
-        exerciseText,
-        op: "div",
-        grade: gradeKey,
-      };
-      } else {
-      // חסר המחלק: dividend ÷ __ = quotient
-      correctAnswer = divisor;
-      const exerciseText = `${dividend} ÷ ${BLANK} = ${quotient}${remainder > 0 ? ` ושארית ${remainder}` : ''}`;
-      question = exerciseText;
-      params = {
-        kind: "div_missing_divisor",
-        dividend,
-        divisor,
-        quotient,
-        remainder,
-        exerciseText,
-        op: "div",
-        grade: gradeKey,
-      };
-    }
 
       operandA = dividend;
       operandB = divisor;

@@ -34,18 +34,18 @@ export const GRADE_LEVELS = {
     name: "כיתה א׳",
     levels: {
       easy: {
-        addition: { max: 10, complementTo10: true }, // השלמה לעשר
-        subtraction: { min: 0, max: 10 },
+        addition: { max: 10, tensOnly: true, secondDecade: true, simpleEquations: true },
+        subtraction: { min: 0, max: 10, tensOnly: true, secondDecade: true, simpleEquations: true },
         multiplication: { max: 5 }, // כפל עד 20 (5×4)
-        division: { max: 20, maxDivisor: 5 },
+        // חילוק נלמד רק כהפוך לכפל בשאלות מילוליות, לא תרגילים ישירים
         compare: { max: 10 },
-        number_sense: { max: 10 },
+        number_sense: { max: 10, numberLine: true, counting: true },
       },
       medium: {
         addition: { max: 20 },
         subtraction: { min: 0, max: 20 },
         multiplication: { max: 5 }, // כפל עד 20
-        division: { max: 20, maxDivisor: 5 },
+        // חילוק נלמד רק כהפוך לכפל בשאלות מילוליות, לא תרגילים ישירים
         compare: { max: 20 },
         number_sense: { max: 20 },
       },
@@ -53,7 +53,7 @@ export const GRADE_LEVELS = {
         addition: { max: 20 },
         subtraction: { min: 0, max: 20 },
         multiplication: { max: 5 }, // כפל עד 20
-        division: { max: 20, maxDivisor: 5 },
+        // חילוק נלמד רק כהפוך לכפל בשאלות מילוליות, לא תרגילים ישירים
         compare: { max: 20 },
         number_sense: { max: 20 },
       },
@@ -311,7 +311,7 @@ export const GRADES = {
       "addition",
       "subtraction",
       "multiplication", // כפל עד 20
-      "division",       // חילוק עד 20
+      // חילוק נלמד רק כהפוך לכפל בשאלות מילוליות, לא תרגילים ישירים
       "compare",
       "number_sense",
     ],

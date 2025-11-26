@@ -1460,7 +1460,7 @@ export default function MathMaster() {
                 >
                   {/* ויזואליזציה של מספרים (רק לכיתה א') */}
                   {grade === "g1" && (currentQuestion.operation === "addition" || currentQuestion.operation === "subtraction") && (
-                    <div className="mb-4 flex gap-6 items-center justify-center flex-wrap">
+                    <div className="mb-4 flex gap-6 items-center justify-center flex-wrap" style={{ direction: "ltr" }}>
                       {currentQuestion.a <= 10 && (
                         <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
                           {(() => {
