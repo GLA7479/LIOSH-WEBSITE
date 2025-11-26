@@ -26,11 +26,26 @@ export default function ParentReport() {
   const [period, setPeriod] = useState('week');
   const [playerName, setPlayerName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [customDates, setCustomDates] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [appliedStartDate, setAppliedStartDate] = useState("");
+  const [appliedEndDate, setAppliedEndDate] = useState("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const name = localStorage.getItem("mleo_player_name") || "";
       setPlayerName(name);
+      
+      // הגדרת תאריכים ברירת מחדל
+      const today = new Date();
+      const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const defaultEndDate = today.toISOString().split('T')[0];
+      const defaultStartDate = weekAgo.toISOString().split('T')[0];
+      setEndDate(defaultEndDate);
+      setStartDate(defaultStartDate);
+      setAppliedEndDate(defaultEndDate);
+      setAppliedStartDate(defaultStartDate);
       
       if (name) {
         const data = generateParentReport(name, period);
@@ -38,7 +53,30 @@ export default function ParentReport() {
       }
       setLoading(false);
     }
-  }, [period]);
+  }, []);
+
+  const handleShowReport = () => {
+    if (startDate && endDate && startDate <= endDate) {
+      setAppliedStartDate(startDate);
+      setAppliedEndDate(endDate);
+    } else {
+      alert("אנא בחר תאריכים תקינים");
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && playerName && !loading) {
+      let data;
+      if (customDates && appliedStartDate && appliedEndDate) {
+        data = generateParentReport(playerName, 'custom', appliedStartDate, appliedEndDate);
+      } else if (!customDates) {
+        data = generateParentReport(playerName, period);
+      }
+      if (data) {
+        setReport(data);
+      }
+    }
+  }, [period, customDates, appliedStartDate, appliedEndDate, playerName, loading]);
 
   if (loading) {
     return (
@@ -50,20 +88,35 @@ export default function ParentReport() {
     );
   }
 
-  if (!report) {
+  if (!report || !report.summary) {
     return (
       <Layout>
         <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center p-4" dir="rtl">
-          <div className="text-center text-white">
+          <div className="text-center text-white max-w-md">
             <div className="text-4xl mb-4">📊</div>
             <h1 className="text-2xl font-bold mb-2">דוח להורים</h1>
-            <p className="text-white/70 mb-4">לא נמצאו נתונים. התחל לשחק כדי ליצור דוח.</p>
-            <button
-              onClick={() => router.push("/learning/math-master")}
-              className="px-6 py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold"
-            >
-              חזור למשחק
-            </button>
+            <p className="text-white/70 mb-4">
+              לא נמצאו נתונים לתקופה שנבחרה.
+              <br />
+              התחל לשחק כדי ליצור דוח.
+            </p>
+            <div className="space-y-3">
+              <button
+                onClick={() => router.push("/learning/math-master")}
+                className="px-6 py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold"
+              >
+                חזור למשחק
+              </button>
+              <button
+                onClick={() => {
+                  setCustomDates(false);
+                  setPeriod('week');
+                }}
+                className="px-6 py-3 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold block w-full"
+              >
+                נסה תקופה אחרת
+              </button>
+            </div>
           </div>
         </div>
       </Layout>
@@ -82,16 +135,19 @@ export default function ParentReport() {
       >
         <div className="max-w-4xl mx-auto">
           {/* כותרת */}
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-extrabold mb-2">📊 דוח להורים</h1>
-            <p className="text-white/70">{report.playerName}</p>
+          <div className="text-center mb-4 md:mb-6">
+            <h1 className="text-2xl md:text-3xl font-extrabold mb-2">📊 דוח להורים</h1>
+            <p className="text-white/70 text-sm md:text-base">{report.playerName}</p>
             
             {/* בחירת תקופה */}
-            <div className="flex gap-2 justify-center mt-4">
+            <div className="flex flex-wrap gap-2 justify-center mt-4 mb-3">
               <button
-                onClick={() => setPeriod('week')}
-                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                  period === 'week'
+                onClick={() => {
+                  setCustomDates(false);
+                  setPeriod('week');
+                }}
+                className={`px-3 md:px-4 py-2 rounded-lg font-bold text-xs md:text-sm transition-all ${
+                  !customDates && period === 'week'
                     ? "bg-blue-500/80 text-white"
                     : "bg-white/10 text-white/70 hover:bg-white/20"
                 }`}
@@ -99,18 +155,72 @@ export default function ParentReport() {
                 שבוע
               </button>
               <button
-                onClick={() => setPeriod('month')}
-                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                  period === 'month'
+                onClick={() => {
+                  setCustomDates(false);
+                  setPeriod('month');
+                }}
+                className={`px-3 md:px-4 py-2 rounded-lg font-bold text-xs md:text-sm transition-all ${
+                  !customDates && period === 'month'
                     ? "bg-blue-500/80 text-white"
                     : "bg-white/10 text-white/70 hover:bg-white/20"
                 }`}
               >
                 חודש
               </button>
+              <button
+                onClick={() => {
+                  setCustomDates(true);
+                  setPeriod('custom');
+                }}
+                className={`px-3 md:px-4 py-2 rounded-lg font-bold text-xs md:text-sm transition-all ${
+                  customDates
+                    ? "bg-blue-500/80 text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                תאריכים מותאמים
+              </button>
             </div>
             
-            <p className="text-sm text-white/60 mt-2">
+            {/* בחירת תאריכים מותאמת אישית */}
+            {customDates && (
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-3 mb-3 p-3 bg-black/20 rounded-lg">
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                  <label className="text-xs md:text-sm text-white/70 whitespace-nowrap">מתאריך:</label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    max={endDate || new Date().toISOString().split('T')[0]}
+                    className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                  <label className="text-xs md:text-sm text-white/70 whitespace-nowrap">עד תאריך:</label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    min={startDate}
+                    max={new Date().toISOString().split('T')[0]}
+                    className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleShowReport();
+                  }}
+                  disabled={!startDate || !endDate || startDate > endDate}
+                  className="px-4 md:px-6 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 active:bg-blue-600 font-bold text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed transition-all whitespace-nowrap cursor-pointer"
+                >
+                  הצג
+                </button>
+              </div>
+            )}
+            
+            <p className="text-xs md:text-sm text-white/60 mt-2">
               {report.startDate} - {report.endDate}
             </p>
           </div>

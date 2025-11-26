@@ -102,15 +102,14 @@ export function getOperationTime(operation) {
   }
 }
 
-// קבלת זמן לפי תקופה
-export function getTimeByPeriod(period = 'week') {
+// קבלת זמן לפי תקופה מותאמת אישית
+export function getTimeByCustomPeriod(startDate, endDate) {
   if (typeof window === "undefined") return {};
   
   try {
     const saved = JSON.parse(localStorage.getItem(TIME_TRACKING_KEY) || "{}");
-    const now = new Date();
-    const days = period === 'week' ? 7 : period === 'month' ? 30 : 365;
-    const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
     
     const result = {
       total: 0,
@@ -123,7 +122,7 @@ export function getTimeByPeriod(period = 'week') {
     // סיכום לפי ימים
     Object.entries(saved.daily || {}).forEach(([date, data]) => {
       const dateObj = new Date(date);
-      if (dateObj >= startDate) {
+      if (dateObj >= start && dateObj <= end) {
         result.total += data.total || 0;
         result.daily.push({
           date,
@@ -166,6 +165,20 @@ export function getTimeByPeriod(period = 'week') {
     });
     
     return result;
+  } catch {
+    return { total: 0, totalMinutes: 0, operations: {}, daily: [], byGrade: {}, byLevel: {} };
+  }
+}
+
+// קבלת זמן לפי תקופה (שבוע/חודש/שנה)
+export function getTimeByPeriod(period = 'week') {
+  if (typeof window === "undefined") return {};
+  
+  try {
+    const now = new Date();
+    const days = period === 'week' ? 7 : period === 'month' ? 30 : 365;
+    const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+    return getTimeByCustomPeriod(startDate, now);
   } catch {
     return { total: 0, totalMinutes: 0, operations: {}, daily: [], byGrade: {}, byLevel: {} };
   }

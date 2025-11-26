@@ -1,7 +1,7 @@
 // מערכת יצירת דוחות להורים
 
 import { STORAGE_KEY } from './math-constants';
-import { getTimeByPeriod, getAllTimeTracking } from './math-time-tracking';
+import { getTimeByPeriod, getTimeByCustomPeriod, getAllTimeTracking } from './math-time-tracking';
 
 // שמות פעולות בעברית
 const OPERATION_NAMES = {
@@ -35,7 +35,7 @@ export function getOperationName(op) {
 }
 
 // יצירת דוח להורים
-export function generateParentReport(playerName, period = 'week') {
+export function generateParentReport(playerName, period = 'week', customStartDate = null, customEndDate = null) {
   if (typeof window === "undefined") return null;
   
   try {
@@ -43,8 +43,25 @@ export function generateParentReport(playerName, period = 'week') {
     const progress = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
     const progressData = progress.progress || {};
     
-    // איסוף נתוני זמן
-    const timeData = getTimeByPeriod(period);
+    // חישוב תקופה
+    const now = new Date();
+    let startDate, endDate;
+    
+    if (period === 'custom' && customStartDate && customEndDate) {
+      startDate = new Date(customStartDate);
+      endDate = new Date(customEndDate);
+      // וידוא ש-endDate לא אחרי היום
+      if (endDate > now) {
+        endDate = now;
+      }
+    } else {
+      const days = period === 'week' ? 7 : period === 'month' ? 30 : 365;
+      startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+      endDate = now;
+    }
+    
+    // איסוף נתוני זמן לפי תקופה מותאמת
+    const timeData = getTimeByCustomPeriod(startDate, endDate);
     
     // איסוף שגיאות
     const mistakes = JSON.parse(localStorage.getItem("mleo_mistakes") || "[]");
@@ -52,11 +69,6 @@ export function generateParentReport(playerName, period = 'week') {
     // איסוף אתגרים
     const dailyChallenge = JSON.parse(localStorage.getItem("mleo_daily_challenge") || "{}");
     const weeklyChallenge = JSON.parse(localStorage.getItem("mleo_weekly_challenge") || "{}");
-    
-    // חישוב תקופה
-    const now = new Date();
-    const days = period === 'week' ? 7 : period === 'month' ? 30 : 365;
-    const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
     
     // סיכום לפי פעולות
     const operationsSummary = {};
@@ -89,9 +101,16 @@ export function generateParentReport(playerName, period = 'week') {
       ? Math.round((totalCorrect / totalQuestions) * 100) 
       : 0;
     
+    // סינון שגיאות לפי תקופה
+    const filteredMistakes = mistakes.filter(mistake => {
+      if (!mistake.timestamp) return false;
+      const mistakeDate = new Date(mistake.timestamp);
+      return mistakeDate >= startDate && mistakeDate <= endDate;
+    });
+    
     // ניתוח שגיאות
     const mistakesByOperation = {};
-    mistakes.forEach(mistake => {
+    filteredMistakes.forEach(mistake => {
       const op = mistake.operation;
       if (!mistakesByOperation[op]) {
         mistakesByOperation[op] = {
@@ -116,22 +135,27 @@ export function generateParentReport(playerName, period = 'week') {
     const playerLevel = progress.playerLevel || 1;
     const xp = progress.xp || 0;
     
-    // פעילות יומית
+    // פעילות יומית - רק בתקופה שנבחרה
     const dailyActivity = [];
     if (timeData.daily) {
-      timeData.daily.forEach(day => {
-        const dayQuestions = Object.values(day.operations || {}).reduce((sum, time) => {
-          // הערכה: שאלה אחת כל 30 שניות בממוצע
-          return sum + Math.round(time / 30);
-        }, 0);
-        
-        dailyActivity.push({
-          date: day.date,
-          timeMinutes: Math.round(day.total / 60),
-          questions: dayQuestions,
-          operations: Object.keys(day.operations || {}).length
+      timeData.daily
+        .filter(day => {
+          const dayDate = new Date(day.date);
+          return dayDate >= startDate && dayDate <= endDate;
+        })
+        .forEach(day => {
+          const dayQuestions = Object.values(day.operations || {}).reduce((sum, time) => {
+            // הערכה: שאלה אחת כל 30 שניות בממוצע
+            return sum + Math.round(time / 30);
+          }, 0);
+          
+          dailyActivity.push({
+            date: day.date,
+            timeMinutes: Math.round(day.total / 60),
+            questions: dayQuestions,
+            operations: Object.keys(day.operations || {}).length
+          });
         });
-      });
     }
     
     // נושאים שצריך תרגול
@@ -146,9 +170,9 @@ export function generateParentReport(playerName, period = 'week') {
     
     return {
       playerName,
-      period,
+      period: period === 'custom' ? 'custom' : period,
       startDate: startDate.toISOString().split('T')[0],
-      endDate: now.toISOString().split('T')[0],
+      endDate: endDate.toISOString().split('T')[0],
       generatedAt: now.toISOString(),
       
       // סיכום כללי
