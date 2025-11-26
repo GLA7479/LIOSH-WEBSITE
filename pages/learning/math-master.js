@@ -86,6 +86,14 @@ export default function MathMaster() {
   const [xp, setXp] = useState(0);
   const [showLevelUp, setShowLevelUp] = useState(false);
 
+  // אנימציות ומשוב חזותי
+  const [showCorrectAnimation, setShowCorrectAnimation] = useState(false);
+  const [showWrongAnimation, setShowWrongAnimation] = useState(false);
+  const [celebrationEmoji, setCelebrationEmoji] = useState("🎉");
+  const [showBadgeGallery, setShowBadgeGallery] = useState(false);
+  const [showPlayerProfile, setShowPlayerProfile] = useState(false);
+  const [playerAvatar, setPlayerAvatar] = useState("👤"); // אווטר ברירת מחדל
+
   // מערכת התקדמות אישית
   const [progress, setProgress] = useState({
     addition: { total: 0, correct: 0 },
@@ -105,11 +113,65 @@ export default function MathMaster() {
   });
 
   // תחרויות יומיות
-  const [dailyChallenge, setDailyChallenge] = useState({
-    date: new Date().toDateString(),
-    bestScore: 0,
-    questions: 0,
+  // אתגר יומי - שאלות יומיות
+  const getTodayKey = () => {
+    const today = new Date();
+    return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+  };
+
+  const [dailyChallenge, setDailyChallenge] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_daily_challenge") || "{}");
+        const todayKey = getTodayKey();
+        if (saved.date === todayKey) {
+          return saved;
+        }
+      } catch {}
+    }
+    return {
+      date: getTodayKey(),
+      questions: 0,
+      correct: 0,
+      bestScore: 0,
+      completed: false,
+    };
   });
+
+  const [weeklyChallenge, setWeeklyChallenge] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_weekly_challenge") || "{}");
+        const today = new Date();
+        const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+        const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
+        if (saved.week === weekKey) {
+          return saved;
+        }
+      } catch {}
+    }
+    return {
+      week: getTodayKey().split('-').slice(0, 2).join('-'), // שבוע נוכחי
+      target: 100, // יעד: 100 שאלות נכונות
+      current: 0,
+      completed: false,
+    };
+  });
+
+  const [showDailyChallenge, setShowDailyChallenge] = useState(false);
+  
+  // תרגול ממוקד - שמירת שגיאות ותרגול מדורג
+  const [mistakes, setMistakes] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_mistakes") || "[]");
+        return saved;
+      } catch {}
+    }
+    return [];
+  });
+  const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal"); // "normal", "mistakes", "graded"
+  const [showPracticeOptions, setShowPracticeOptions] = useState(false);
 
   // רמזים
   const [showHint, setShowHint] = useState(false);
@@ -306,6 +368,11 @@ export default function MathMaster() {
   });
 
   const [showMultiplicationTable, setShowMultiplicationTable] = useState(false);
+  const [practiceRow, setPracticeRow] = useState(null); // שורה לתרגול ממוקד
+  const [practiceCol, setPracticeCol] = useState(null); // עמודה לתרגול ממוקד
+  const [practiceMode, setPracticeMode] = useState(false); // מצב תרגול
+  const [practiceQuestion, setPracticeQuestion] = useState(null); // שאלת תרגול
+  const [practiceAnswer, setPracticeAnswer] = useState(""); // תשובת התרגול
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardLevel, setLeaderboardLevel] = useState("easy");
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -332,6 +399,16 @@ export default function MathMaster() {
   const [selectedResult, setSelectedResult] = useState(null); // For division mode
   const [selectedDivisor, setSelectedDivisor] = useState(null); // For division mode
   const [selectedCell, setSelectedCell] = useState(null); // {row, col, value}
+
+  // טעינת אווטר מ-localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("mleo_player_avatar");
+      if (saved) {
+        setPlayerAvatar(saved);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -579,6 +656,35 @@ export default function MathMaster() {
     let operationForState = operation;
     const levelConfigCopy = { ...levelConfig }; // עותק כדי לא לשנות את המקורי
 
+    // תרגול ממוקד - חזרה על שגיאות
+    if (focusedPracticeMode === "mistakes" && mistakes.length > 0) {
+      // בחר שגיאה אקראית מהרשימה
+      const randomMistake = mistakes[Math.floor(Math.random() * mistakes.length)];
+      operationForState = randomMistake.operation;
+      // נסה ליצור שאלה דומה
+      if (randomMistake.grade) {
+        const mistakeGrade = randomMistake.grade;
+        const mistakeLevel = randomMistake.level || "easy";
+        const mistakeLevelConfig = getLevelConfig(
+          parseInt(mistakeGrade.replace("g", "")) || gradeNumber,
+          mistakeLevel
+        );
+        if (mistakeLevelConfig) {
+          Object.assign(levelConfigCopy, mistakeLevelConfig);
+        }
+      }
+    }
+    
+    // תרגול מדורג - התחלה קל והתקדמות
+    if (focusedPracticeMode === "graded") {
+      // התחל עם רמה קלה יותר
+      const gradedLevel = correct < 5 ? "easy" : correct < 15 ? "medium" : level;
+      const gradedLevelConfig = getLevelConfig(gradeNumber, gradedLevel);
+      if (gradedLevelConfig) {
+        Object.assign(levelConfigCopy, gradedLevelConfig);
+      }
+    }
+
     if (mode === "practice") {
       if (practiceFocus === "add_to_20") {
         // תרגול חיבור עד 20 – מתאים בעיקר לקטנים
@@ -717,6 +823,62 @@ export default function MathMaster() {
     }, 2000);
   }
 
+  // פונקציה עזר לשמירת תג
+  const saveBadge = (badge) => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+        saved.badges = [...badges, badge];
+        localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+      } catch {}
+    }
+  };
+
+  // פונקציות לתרגול ממוקד בלוח הכפל
+  const generatePracticeQuestion = (row = null, col = null) => {
+    let selectedRow = row || practiceRow;
+    let selectedCol = col || practiceCol;
+    
+    if (selectedRow && !selectedCol) {
+      // תרגול שורה - בחר עמודה אקראית
+      selectedCol = Math.floor(Math.random() * 12) + 1;
+    } else if (selectedCol && !selectedRow) {
+      // תרגול עמודה - בחר שורה אקראית
+      selectedRow = Math.floor(Math.random() * 12) + 1;
+    } else if (!selectedRow && !selectedCol) {
+      // תרגול אקראי
+      selectedRow = Math.floor(Math.random() * 12) + 1;
+      selectedCol = Math.floor(Math.random() * 12) + 1;
+    }
+    
+    setPracticeQuestion({
+      row: selectedRow,
+      col: selectedCol,
+      answer: selectedRow * selectedCol
+    });
+    setPracticeAnswer("");
+  };
+
+  const checkPracticeAnswer = () => {
+    if (!practiceQuestion) return;
+    
+    const userAnswer = parseInt(practiceAnswer);
+    const correctAnswer = practiceQuestion.answer;
+    
+    if (userAnswer === correctAnswer) {
+      // תשובה נכונה - אנימציה והצגת שאלה חדשה
+      setShowCorrectAnimation(true);
+      setTimeout(() => setShowCorrectAnimation(false), 1000);
+      setTimeout(() => {
+        generatePracticeQuestion();
+      }, 1500);
+    } else {
+      // תשובה שגויה - אנימציה
+      setShowWrongAnimation(true);
+      setTimeout(() => setShowWrongAnimation(false), 1000);
+    }
+  };
+
   function handleAnswer(answer) {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
 
@@ -759,8 +921,14 @@ export default function MathMaster() {
         },
       }));
 
-      // מערכת כוכבים - כוכב כל 5 תשובות נכונות
+      // משתנים משותפים למערכת תגים וכוכבים
       const newCorrect = correct + 1;
+      const newStreak = streak + 1;
+      const newScore = score + points;
+      const opProgress = progress[op] || { total: 0, correct: 0 };
+      const newOpCorrect = opProgress.correct + 1;
+
+      // מערכת כוכבים - כוכב כל 5 תשובות נכונות
       if (newCorrect % 5 === 0) {
         setStars((prev) => {
           const newStars = prev + 1;
@@ -776,44 +944,79 @@ export default function MathMaster() {
         });
       }
 
-      // מערכת תגים
-      const newStreak = streak + 1;
-      if (newStreak === 10 && !badges.includes("🔥 Hot Streak")) {
-        const newBadge = "🔥 Hot Streak";
+      // מערכת תגים משופרת
+      
+      // תגים לפי רצף
+      if (newStreak === 10 && !badges.includes("🔥 רצף חם")) {
+        const newBadge = "🔥 רצף חם";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
         setTimeout(() => setShowBadge(null), 3000);
-        if (typeof window !== "undefined") {
-          try {
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
-            saved.badges = [...badges, newBadge];
-            localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
-          } catch {}
-        }
-      } else if (newStreak === 25 && !badges.includes("⚡ Lightning Fast")) {
-        const newBadge = "⚡ Lightning Fast";
+        saveBadge(newBadge);
+      } else if (newStreak === 25 && !badges.includes("⚡ מהיר כברק")) {
+        const newBadge = "⚡ מהיר כברק";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
         setTimeout(() => setShowBadge(null), 3000);
-        if (typeof window !== "undefined") {
-          try {
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
-            saved.badges = [...badges, newBadge];
-            localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
-          } catch {}
-        }
-      } else if (newStreak === 50 && !badges.includes("🌟 Master")) {
-        const newBadge = "🌟 Master";
+        saveBadge(newBadge);
+      } else if (newStreak === 50 && !badges.includes("🌟 מאסטר")) {
+        const newBadge = "🌟 מאסטר";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
         setTimeout(() => setShowBadge(null), 3000);
-        if (typeof window !== "undefined") {
-          try {
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
-            saved.badges = [...badges, newBadge];
-            localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
-          } catch {}
-        }
+        saveBadge(newBadge);
+      } else if (newStreak === 100 && !badges.includes("👑 מלך החשבון")) {
+        const newBadge = "👑 מלך החשבון";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      }
+      
+      // תגים לפי פעולות ספציפיות
+      const opName = getOperationName(op);
+      if (newOpCorrect === 50 && !badges.includes(`🧮 מלך ה${opName}`)) {
+        const newBadge = `🧮 מלך ה${opName}`;
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      } else if (newOpCorrect === 100 && !badges.includes(`🏆 גאון ה${opName}`)) {
+        const newBadge = `🏆 גאון ה${opName}`;
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      }
+      
+      // תגים לפי ניקוד
+      if (newScore >= 1000 && newScore - points < 1000 && !badges.includes("💎 אלף נקודות")) {
+        const newBadge = "💎 אלף נקודות";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      } else if (newScore >= 5000 && newScore - points < 5000 && !badges.includes("🎯 חמשת אלפים")) {
+        const newBadge = "🎯 חמשת אלפים";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      }
+      
+      // תגים לפי מספר תשובות נכונות
+      if (newCorrect === 100 && correct < 100 && !badges.includes("⭐ מאה תשובות נכונות")) {
+        const newBadge = "⭐ מאה תשובות נכונות";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      } else if (newCorrect === 500 && correct < 500 && !badges.includes("🌟 חמש מאות תשובות")) {
+        const newBadge = "🌟 חמש מאות תשובות";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
       }
 
       // מערכת XP ורמות
@@ -857,7 +1060,26 @@ export default function MathMaster() {
         questions: prev.questions + 1,
       }));
 
-      setFeedback("Correct! 🎉");
+      // אנימציה ותגובה חזותית לתשובה נכונה
+      const emojis = ["🎉", "✨", "🌟", "💫", "⭐", "🔥", "💪", "🎊", "👏", "🏆"];
+      const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+      setCelebrationEmoji(randomEmoji);
+      setShowCorrectAnimation(true);
+      setTimeout(() => setShowCorrectAnimation(false), 1000);
+      
+      // משוב דינמי לפי רצף
+      let feedbackText = "נכון! ";
+      if (streak + 1 >= 50) {
+        feedbackText = `מדהים! רצף של ${streak + 1}! `;
+      } else if (streak + 1 >= 25) {
+        feedbackText = `מצוין! רצף של ${streak + 1}! `;
+      } else if (streak + 1 >= 10) {
+        feedbackText = `כל הכבוד! רצף של ${streak + 1}! `;
+      } else if (streak + 1 >= 5) {
+        feedbackText = `יופי! רצף של ${streak + 1}! `;
+      }
+      setFeedback(`${feedbackText}${randomEmoji}`);
+      
       if ("vibrate" in navigator) navigator.vibrate?.(50);
 
       setTimeout(() => {
@@ -873,6 +1095,24 @@ export default function MathMaster() {
     } else {
       setWrong((prev) => prev + 1);
       setStreak(0);
+      
+      // שמירת שגיאה לתרגול ממוקד
+      const mistake = {
+        operation: currentQuestion.operation,
+        question: currentQuestion.exerciseText || `${currentQuestion.a} ${currentQuestion.operation === "addition" ? "+" : currentQuestion.operation === "subtraction" ? "-" : currentQuestion.operation === "multiplication" ? "×" : "÷"} ${currentQuestion.b}`,
+        correctAnswer: currentQuestion.correctAnswer,
+        wrongAnswer: answer,
+        grade: grade,
+        level: level,
+        timestamp: Date.now(),
+      };
+      setMistakes((prev) => {
+        const updated = [...prev, mistake].slice(-50); // שמור רק 50 שגיאות אחרונות
+        if (typeof window !== "undefined") {
+          localStorage.setItem("mleo_mistakes", JSON.stringify(updated));
+        }
+        return updated;
+      });
       
       setErrorExplanation(
         getErrorExplanation(
@@ -893,23 +1133,27 @@ export default function MathMaster() {
         },
       }));
       
+      // אנימציה ותגובה חזותית לתשובה שגויה
+      setShowWrongAnimation(true);
+      setTimeout(() => setShowWrongAnimation(false), 1000);
+      
       if ("vibrate" in navigator) navigator.vibrate?.(200);
 
       if (mode === "learning") {
         // במצב למידה – אין Game Over, רק הצגת תשובה והמשך
         setFeedback(
-          `Wrong! Correct answer: ${currentQuestion.correctAnswer} ❌`
+          `לא נכון 😔 התשובה הנכונה: ${currentQuestion.correctAnswer} ✅`
         );
         setTimeout(() => {
           generateNewQuestion();
           setSelectedAnswer(null);
           setFeedback(null);
           setTimeLeft(null);
-        }, 1500);
+        }, 2000);
       } else {
         // מצב Challenge – עובדים עם חיים
         setFeedback(
-          `Wrong! Correct: ${currentQuestion.correctAnswer} ❌ (-1 ❤️)`
+          `לא נכון 😔 התשובה: ${currentQuestion.correctAnswer} ❌ (-1 ❤️)`
         );
         setLives((prevLives) => {
           const nextLives = prevLives - 1;
@@ -1041,6 +1285,35 @@ export default function MathMaster() {
 
   return (
     <Layout>
+      <style jsx>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+          20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
+        @keyframes celebrate {
+          0% { transform: scale(0) rotate(0deg); opacity: 0; }
+          50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+          100% { transform: scale(1) rotate(360deg); opacity: 0; }
+        }
+        .animate-celebrate {
+          animation: celebrate 1s ease-out;
+        }
+        @keyframes confetti {
+          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        .animate-confetti {
+          animation: confetti 2s ease-out forwards;
+        }
+        @keyframes fadeIn {
+          0% { opacity: 0; transform: scale(0.5); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
       <div
         ref={wrapRef}
         className="relative w-full overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928] game-page-mobile"
@@ -1121,11 +1394,11 @@ export default function MathMaster() {
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">כוכבים</div>
               <div className="text-sm font-bold text-yellow-400 leading-tight">⭐{stars}</div>
-              </div>
+            </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">רמה</div>
               <div className="text-sm font-bold text-purple-400 leading-tight">Lv.{playerLevel}</div>
-              </div>
+            </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">✅</div>
               <div className="text-sm font-bold text-green-400 leading-tight">{correct}</div>
@@ -1193,6 +1466,57 @@ export default function MathMaster() {
               </div>
             </div>
           )}
+
+          {/* גלריית תגים */}
+          {showBadgeGallery && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
+              onClick={() => setShowBadgeGallery(false)}
+              dir="rtl"
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-center mb-4">
+                  <h2 className="text-2xl font-extrabold text-white mb-2">
+                    🏅 התגים שלי
+                  </h2>
+                  <p className="text-white/70 text-sm">
+                    {badges.length > 0 ? `יש לך ${badges.length} תגים!` : "עדיין אין לך תגים. המשך לתרגל!"}
+                  </p>
+                </div>
+
+                {badges.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-3">
+                    {badges.map((badge, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30"
+                      >
+                        <div className="text-3xl">{badge.split(" ")[0]}</div>
+                        <div className="flex-1 text-white font-semibold text-lg">
+                          {badge}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-white/60">
+                    <div className="text-6xl mb-4">🎯</div>
+                    <p>המשך לתרגל כדי לזכות בתגים!</p>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setShowBadgeGallery(false)}
+                  className="mt-4 w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                >
+                  סגור
+                </button>
+              </div>
+            </div>
+          )}
           
           {showLevelUp && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none" dir="rtl">
@@ -1200,6 +1524,230 @@ export default function MathMaster() {
                 <div className="text-4xl mb-2">🌟</div>
                 <div className="text-2xl font-bold">עלית רמה!</div>
                 <div className="text-base">עכשיו אתה ברמה {playerLevel}!</div>
+              </div>
+            </div>
+          )}
+
+          {/* פרופיל שחקן */}
+          {showPlayerProfile && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
+              onClick={() => setShowPlayerProfile(false)}
+              dir="rtl"
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-center mb-4">
+                  <h2 className="text-2xl font-extrabold text-white mb-2">
+                    👤 פרופיל שחקן
+                  </h2>
+                </div>
+
+                {/* אווטר */}
+                <div className="text-center mb-4">
+                  <div className="text-6xl mb-3">{playerAvatar}</div>
+                  <div className="text-sm text-white/60 mb-3">בחר אווטר:</div>
+                  <div className="grid grid-cols-6 gap-2 mb-4">
+                    {["👤", "🧑", "👦", "👧", "🦁", "🐱", "🐶", "🐰", "🐻", "🐼", "🦊", "🐸", "🦄", "🌟", "🎮", "🏆", "⭐", "💫"].map((avatar) => (
+                      <button
+                        key={avatar}
+                        onClick={() => {
+                          setPlayerAvatar(avatar);
+                          if (typeof window !== "undefined") {
+                            localStorage.setItem("mleo_player_avatar", avatar);
+                          }
+                        }}
+                        className={`text-3xl p-2 rounded-lg transition-all ${
+                          playerAvatar === avatar
+                            ? "bg-yellow-500/40 border-2 border-yellow-400 scale-110"
+                            : "bg-black/30 border border-white/10 hover:bg-black/40"
+                        }`}
+                      >
+                        {avatar}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* סטטיסטיקות */}
+                <div className="space-y-3 mb-4">
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-1">שם שחקן</div>
+                    <div className="text-lg font-bold text-white">{playerName || "שחקן"}</div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">ניקוד שיא</div>
+                      <div className="text-xl font-bold text-emerald-400">{bestScore}</div>
+                    </div>
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">רצף שיא</div>
+                      <div className="text-xl font-bold text-amber-400">{bestStreak}</div>
+                    </div>
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">כוכבים</div>
+                      <div className="text-xl font-bold text-yellow-400">⭐ {stars}</div>
+                    </div>
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">רמה</div>
+                      <div className="text-xl font-bold text-purple-400">Lv.{playerLevel}</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-2">דיוק כללי</div>
+                    <div className="text-2xl font-bold text-blue-400">{accuracy}%</div>
+                    <div className="text-xs text-white/60 mt-1">
+                      {correct} נכון מתוך {totalQuestions} שאלות
+                    </div>
+                  </div>
+
+                  {/* התקדמות לפי פעולות */}
+                  {Object.keys(progress).some(op => progress[op].total > 0) && (
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-sm text-white/60 mb-2">התקדמות לפי פעולות</div>
+                      <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                        {Object.entries(progress)
+                          .filter(([_, data]) => data.total > 0)
+                          .sort(([_, a], [__, b]) => b.total - a.total)
+                          .map(([op, data]) => {
+                            const opAccuracy = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
+                            return (
+                              <div key={op} className="flex items-center justify-between text-xs">
+                                <span className="text-white/80">{getOperationName(op)}</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-white/60">{data.correct}/{data.total}</span>
+                                  <span className={`font-bold ${opAccuracy >= 80 ? "text-emerald-400" : opAccuracy >= 60 ? "text-yellow-400" : "text-red-400"}`}>
+                                    {opAccuracy}%
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setShowPlayerProfile(false)}
+                  className="w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                >
+                  סגור
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* מודל תרגול ממוקד */}
+          {showPracticeOptions && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
+              onClick={() => setShowPracticeOptions(false)}
+              dir="rtl"
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 className="text-2xl font-extrabold text-white mb-4 text-center">
+                  🎯 תרגול ממוקד
+                </h2>
+
+                <div className="space-y-3 mb-4">
+                  <button
+                    onClick={() => {
+                      setFocusedPracticeMode("mistakes");
+                      setShowPracticeOptions(false);
+                      if (mistakes.length > 0) {
+                        setGameActive(true);
+                        startGame();
+                      }
+                    }}
+                    disabled={mistakes.length === 0}
+                    className={`w-full p-4 rounded-lg border transition-all text-right ${
+                      mistakes.length > 0
+                        ? "bg-purple-500/20 border-purple-400/50 hover:bg-purple-500/30"
+                        : "bg-gray-500/20 border-gray-400/30 opacity-50 cursor-not-allowed"
+                    }`}
+                  >
+                    <div className="text-lg font-bold text-white mb-1">
+                      🔄 חזרה על שגיאות
+                    </div>
+                    <div className="text-sm text-white/70">
+                      {mistakes.length > 0
+                        ? `תרגל את ${mistakes.length} השגיאות שעשית`
+                        : "אין שגיאות לתרגל"}
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setFocusedPracticeMode("graded");
+                      setShowPracticeOptions(false);
+                      setGameActive(true);
+                      startGame();
+                    }}
+                    className="w-full p-4 rounded-lg bg-blue-500/20 border border-blue-400/50 hover:bg-blue-500/30 transition-all text-right"
+                  >
+                    <div className="text-lg font-bold text-white mb-1">
+                      📈 תרגול מדורג
+                    </div>
+                    <div className="text-sm text-white/70">
+                      התחל קל והתקדם לקשה יותר
+                    </div>
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setFocusedPracticeMode("normal");
+                      setShowPracticeOptions(false);
+                    }}
+                    className="w-full p-4 rounded-lg bg-emerald-500/20 border border-emerald-400/50 hover:bg-emerald-500/30 transition-all text-right"
+                  >
+                    <div className="text-lg font-bold text-white mb-1">
+                      🎮 תרגול רגיל
+                    </div>
+                    <div className="text-sm text-white/70">
+                      חזור לתרגול רגיל
+                    </div>
+                  </button>
+                </div>
+
+                {mistakes.length > 0 && (
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3 mb-4">
+                    <div className="text-sm text-white/60 mb-2">שגיאות אחרונות:</div>
+                    <div className="space-y-1 max-h-[150px] overflow-y-auto">
+                      {mistakes.slice(-5).reverse().map((mistake, idx) => (
+                        <div key={idx} className="text-xs text-white/80">
+                          {mistake.question} = {mistake.wrongAnswer} ❌ (נכון: {mistake.correctAnswer})
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => {
+                    setMistakes([]);
+                    if (typeof window !== "undefined") {
+                      localStorage.setItem("mleo_mistakes", JSON.stringify([]));
+                    }
+                  }}
+                  className="w-full px-4 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm mb-2"
+                >
+                  🗑️ נקה שגיאות
+                </button>
+
+                <button
+                  onClick={() => setShowPracticeOptions(false)}
+                  className="w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                >
+                  סגור
+                </button>
               </div>
             </div>
           )}
@@ -1278,6 +1826,14 @@ export default function MathMaster() {
                     </option>
                   ))}
                 </select>
+                {/* כפתור פרופיל */}
+                <button
+                  onClick={() => setShowPlayerProfile(true)}
+                  className="h-9 w-9 rounded-lg bg-purple-500/80 hover:bg-purple-500 border border-white/20 text-white text-xl font-bold flex items-center justify-center transition-all"
+                  title="פרופיל שחקן"
+                >
+                  {playerAvatar}
+                </button>
                 <input
                   type="text"
                   value={playerName}
@@ -1352,8 +1908,12 @@ export default function MathMaster() {
                     </div>
                   )}
                   {badges.length > 0 && (
-                    <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                      <div className="text-xs text-white/60">Badges</div>
+                    <div 
+                      className="bg-black/20 border border-white/10 rounded-lg p-2 text-center cursor-pointer hover:bg-black/30 transition"
+                      onClick={() => setShowBadgeGallery(true)}
+                      title="לחץ לראות את כל התגים"
+                    >
+                      <div className="text-xs text-white/60">תגים</div>
                       <div className="text-sm font-bold text-orange-400">
                         {badges.length} 🏅
                       </div>
@@ -1362,12 +1922,41 @@ export default function MathMaster() {
                 </div>
               )}
               
-              {/* תחרות יומית */}
-              <div className="bg-black/20 border border-white/10 rounded-lg p-2 mb-2 w-full max-w-md text-center">
-                <div className="text-xs text-white/60 mb-1">אתגר יומי</div>
-                <div className="text-sm text-white">
-                  שיא: {dailyChallenge.bestScore} • שאלות: {dailyChallenge.questions}
+              {/* אתגרים יומיים ושבועיים */}
+              <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs text-white/60">אתגר יומי</div>
+                  <button
+                    onClick={() => setShowDailyChallenge(true)}
+                    className="text-xs text-blue-400 hover:text-blue-300"
+                  >
+                    פרטים
+                  </button>
                 </div>
+                <div className="text-sm text-white mb-2">
+                  {dailyChallenge.correct} נכון מתוך {dailyChallenge.questions} שאלות
+                </div>
+                {dailyChallenge.questions > 0 && (
+                  <div className="w-full bg-black/30 rounded-full h-2 mb-2">
+                    <div
+                      className="bg-emerald-500 h-2 rounded-full transition-all"
+                      style={{ width: `${Math.min(100, (dailyChallenge.correct / dailyChallenge.questions) * 100)}%` }}
+                    />
+                  </div>
+                )}
+                <div className="text-xs text-white/60 mb-2">אתגר שבועי</div>
+                <div className="text-sm text-white mb-1">
+                  {weeklyChallenge.current} / {weeklyChallenge.target} שאלות נכונות
+                </div>
+                <div className="w-full bg-black/30 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all ${weeklyChallenge.completed ? "bg-yellow-500" : "bg-blue-500"}`}
+                    style={{ width: `${Math.min(100, (weeklyChallenge.current / weeklyChallenge.target) * 100)}%` }}
+                  />
+                </div>
+                {weeklyChallenge.completed && (
+                  <div className="text-xs text-yellow-400 mt-1">🎉 השלמת את האתגר השבועי!</div>
+                )}
               </div>
               
               {/* אפשרות לשאלות עם סיפור */}
@@ -1431,14 +2020,22 @@ export default function MathMaster() {
                 )}
               </div>
 
-              {/* כפתור "איך לומדים חשבון כאן?" */}
-              <div className="mb-2 w-full max-w-md flex justify-center">
+              {/* כפתורים עזרה ותרגול ממוקד */}
+              <div className="mb-2 w-full max-w-md flex justify-center gap-2 flex-wrap">
                 <button
                   onClick={() => setShowHowTo(true)}
                   className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
                 >
                   ❓ איך לומדים חשבון כאן?
                 </button>
+                {mistakes.length > 0 && (
+                  <button
+                    onClick={() => setShowPracticeOptions(true)}
+                    className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
+                  >
+                    🎯 תרגול ממוקד ({mistakes.length})
+                  </button>
+                )}
               </div>
 
               {!playerName.trim() && (
@@ -1449,17 +2046,44 @@ export default function MathMaster() {
             </>
           ) : (
             <>
+              {/* אנימציה לתשובה נכונה */}
+              {showCorrectAnimation && (
+                <div className="fixed inset-0 pointer-events-none z-[300] flex items-center justify-center">
+                  <div className="text-8xl animate-bounce animate-pulse">
+                    {celebrationEmoji}
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-6xl animate-ping opacity-75">
+                      ✨
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* אנימציה לתשובה שגויה */}
+              {showWrongAnimation && (
+                <div className="fixed inset-0 pointer-events-none z-[300] flex items-center justify-center">
+                  <div className="text-6xl animate-shake">
+                    😔
+                  </div>
+                </div>
+              )}
+
               {feedback && (
                 <div
-                  className={`mb-2 px-4 py-2 rounded-lg text-sm font-semibold text-center ${
-                    feedback.includes("Correct") ||
-                    feedback.includes("∞") ||
-                    feedback.includes("Start")
+                  className={`mb-2 px-4 py-2 rounded-lg text-sm font-semibold text-center transition-all duration-300 ${
+                    showCorrectAnimation
+                      ? "bg-emerald-500/40 text-emerald-100 scale-110 shadow-lg shadow-emerald-500/50"
+                      : showWrongAnimation
+                      ? "bg-red-500/40 text-red-100 scale-105 shadow-lg shadow-red-500/50"
+                      : feedback.includes("נכון") ||
+                        feedback.includes("∞") ||
+                        feedback.includes("Start")
                       ? "bg-emerald-500/20 text-emerald-200"
                       : "bg-red-500/20 text-red-200"
                   }`}
                 >
-                  <div>{feedback}</div>
+                  <div className="text-lg">{feedback}</div>
                   {errorExplanation && (
                     <div className="mt-1 text-xs text-red-100/90 font-normal">
                       {errorExplanation}
@@ -1474,116 +2098,167 @@ export default function MathMaster() {
                   className="w-full max-w-md flex flex-col items-center justify-center mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
-                  {/* ויזואליזציה של מספרים (רק לכיתה א') */}
-                  {grade === "g1" && (currentQuestion.operation === "addition" || currentQuestion.operation === "subtraction") && (
+                  {/* ויזואליזציה של מספרים (כיתות א'-ג') */}
+                  {(grade === "g1" || grade === "g2" || grade === "g3") && (currentQuestion.operation === "addition" || currentQuestion.operation === "subtraction") && (
                     <div className="mb-4 flex gap-6 items-center justify-center flex-wrap" style={{ direction: "ltr" }}>
-                      {currentQuestion.a <= 10 && (
-                        <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
-                          {(() => {
-                            const maxA = Math.min(currentQuestion.a, 10);
-                            const maxB = Math.min(currentQuestion.b, 10);
-                            let remainingA;
-                            
-                            if (currentQuestion.operation === "subtraction") {
-                              // בחיסור - העיגולים הכחולים שנותרו (לפני שעברו לאחר הסימן שווה)
-                              if (movedCirclesB >= maxB) {
-                                // כל ה-b הורדו, אז כל העיגולים הכחולים עברו לאחר הסימן שווה
-                                remainingA = 0;
-                              } else {
-                                // עדיין יש עיגולים ירוקים, אז העיגולים הכחולים שנותרו = a - movedCirclesB
-                                remainingA = Math.max(0, maxA - movedCirclesB);
-                              }
-                            } else {
-                              // בחיבור - העיגולים שנותרו אחרי שעברו
-                              remainingA = maxA - movedCirclesA;
-                            }
-                            
-                            return Array(remainingA)
-                              .fill(0)
-                              .map((_, i) => (
-                                <span
-                                  key={`a-${i}`}
-                                  onClick={() => {
-                                    if (currentQuestion.operation === "addition") {
-                                      // בחיבור - עיגול עובר לאחר הסימן שווה
-                                      if (movedCirclesA < maxA) {
-                                        setMovedCirclesA(prev => prev + 1);
+                      {/* הגדרת מגבלות לפי כיתה */}
+                      {(() => {
+                        const maxVisual = grade === "g1" ? 10 : grade === "g2" ? 20 : 30;
+                        const showVisual = currentQuestion.a <= maxVisual && currentQuestion.b <= maxVisual;
+                        if (!showVisual) return null;
+                        
+                        const maxA = Math.min(currentQuestion.a, maxVisual);
+                        const maxB = Math.min(currentQuestion.b, maxVisual);
+                        let remainingA;
+                        
+                        if (currentQuestion.operation === "subtraction") {
+                          // בחיסור - העיגולים הכחולים שנותרו (לפני שעברו לאחר הסימן שווה)
+                          if (movedCirclesB >= maxB) {
+                            // כל ה-b הורדו, אז כל העיגולים הכחולים עברו לאחר הסימן שווה
+                            remainingA = 0;
+                          } else {
+                            // עדיין יש עיגולים ירוקים, אז העיגולים הכחולים שנותרו = a - movedCirclesB
+                            remainingA = Math.max(0, maxA - movedCirclesB);
+                          }
+                        } else {
+                          // בחיבור - העיגולים שנותרו אחרי שעברו
+                          remainingA = maxA - movedCirclesA;
+                        }
+                        
+                        return (
+                          <>
+                            <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
+                              {Array(remainingA)
+                                .fill(0)
+                                .map((_, i) => (
+                                  <span
+                                    key={`a-${i}`}
+                                    onClick={() => {
+                                      if (currentQuestion.operation === "addition") {
+                                        // בחיבור - עיגול עובר לאחר הסימן שווה
+                                        if (movedCirclesA < maxA) {
+                                          setMovedCirclesA(prev => prev + 1);
+                                        }
+                                      } else {
+                                        // בחיסור - לחיצה על עיגול מ-a מורידה עיגול מ-b (והעיגול הכחול עצמו נמחק)
+                                        if (movedCirclesB < maxB) {
+                                          setMovedCirclesB(prev => prev + 1);
+                                        }
                                       }
-                                    } else {
-                                      // בחיסור - לחיצה על עיגול מ-a מורידה עיגול מ-b (והעיגול הכחול עצמו נמחק)
-                                      if (movedCirclesB < maxB) {
-                                        setMovedCirclesB(prev => prev + 1);
+                                    }}
+                                    className="inline-block bg-blue-500 rounded-full cursor-pointer hover:bg-blue-400 active:bg-blue-600 transition-all duration-300 touch-manipulation hover:scale-110 active:scale-95 animate-pulse-glow ring-2 ring-blue-300 ring-opacity-75"
+                                    style={{ 
+                                      userSelect: "none", 
+                                      width: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                      height: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                      minWidth: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                      minHeight: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                      animation: "none"
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.currentTarget.style.animation = "bounce 0.3s ease";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.currentTarget.style.animation = "none";
+                                    }}
+                                  />
+                                ))}
+                            </div>
+                            <span className="text-white text-3xl font-bold min-w-[40px] text-center">
+                              {currentQuestion.operation === "addition" ? "+" : "−"}
+                            </span>
+                            <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
+                              {Array(Math.min(currentQuestion.b, maxVisual) - movedCirclesB)
+                                .fill(0)
+                                .map((_, i) => (
+                                  <span
+                                    key={`b-${i}`}
+                                    onClick={() => {
+                                      if (currentQuestion.operation === "addition") {
+                                        // בחיבור - עיגול עובר לאחר הסימן שווה
+                                        if (movedCirclesB < Math.min(currentQuestion.b, maxVisual)) {
+                                          setMovedCirclesB(prev => prev + 1);
+                                        }
                                       }
-                                    }
-                                  }}
-                                  className="inline-block w-6 h-6 bg-blue-500 rounded-full cursor-pointer hover:bg-blue-400 active:bg-blue-600 transition-all duration-200 touch-manipulation hover:scale-110 active:scale-95 animate-pulse-glow ring-2 ring-blue-300 ring-opacity-75"
-                                  style={{ userSelect: "none", minWidth: "24px", minHeight: "24px" }}
-                                />
-                              ));
-                          })()}
-                        </div>
-                      )}
-                      <span className="text-white text-3xl font-bold min-w-[40px] text-center">
-                        {currentQuestion.operation === "addition" ? "+" : "−"}
-                      </span>
-                      {currentQuestion.b <= 10 && (
-                        <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
-                          {Array(Math.min(currentQuestion.b, 10) - movedCirclesB)
-                            .fill(0)
-                            .map((_, i) => (
-                              <span
-                                key={`b-${i}`}
-                                onClick={() => {
-                                  if (currentQuestion.operation === "addition") {
-                                    // בחיבור - עיגול עובר לאחר הסימן שווה
-                                    if (movedCirclesB < Math.min(currentQuestion.b, 10)) {
-                                      setMovedCirclesB(prev => prev + 1);
-                                    }
-                                  }
-                                  // בחיסור - לא ניתן ללחוץ על עיגולים מ-b
-                                }}
-                                className={`inline-block w-6 h-6 rounded-full ${
-                                  currentQuestion.operation === "addition" 
-                                    ? "bg-green-500 cursor-pointer hover:bg-green-400 active:bg-green-600 transition-all duration-200 hover:scale-110 active:scale-95 animate-pulse-glow-green ring-2 ring-green-300 ring-opacity-75" 
-                                    : "bg-green-500"
-                                } touch-manipulation`}
-                                style={{ userSelect: "none", minWidth: "24px", minHeight: "24px" }}
-                              />
-                            ))}
-                        </div>
-                      )}
-                      <span className="text-white text-3xl font-bold min-w-[40px] text-center">=</span>
-                      {/* עיגולים שעברו מאחורי הסימן שווה */}
-                      {(movedCirclesA > 0 || movedCirclesB > 0 || (currentQuestion.operation === "subtraction" && movedCirclesB >= Math.min(currentQuestion.b, 10))) && (
-                        <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
-                          {currentQuestion.operation === "addition" ? (
-                            // בחיבור - כל העיגולים שעברו
-                            Array(movedCirclesA + movedCirclesB)
-                              .fill(0)
-                              .map((_, i) => (
-                                <span
-                                  key={`result-${i}`}
-                                  className={`inline-block w-6 h-6 rounded-full ${
-                                    i < movedCirclesA ? "bg-blue-500" : "bg-green-500"
-                                  }`}
-                                  style={{ minWidth: "24px", minHeight: "24px" }}
-                                />
-                              ))
-                          ) : (
-                            // בחיסור - העיגולים שנותרו מ-a אחרי שהורידנו את כל ה-b
-                            movedCirclesB >= Math.min(currentQuestion.b, 10) && 
-                            Array(Math.max(0, Math.min(currentQuestion.a, 10) - movedCirclesB))
-                              .fill(0)
-                              .map((_, i) => (
-                                <span
-                                  key={`result-${i}`}
-                                  className="inline-block w-6 h-6 bg-blue-500 rounded-full"
-                                  style={{ minWidth: "24px", minHeight: "24px" }}
-                                />
-                              ))
-                          )}
-                        </div>
-                      )}
+                                      // בחיסור - לא ניתן ללחוץ על עיגולים מ-b
+                                    }}
+                                    className={`inline-block rounded-full ${
+                                      currentQuestion.operation === "addition" 
+                                        ? "bg-green-500 cursor-pointer hover:bg-green-400 active:bg-green-600 transition-all duration-300 hover:scale-110 active:scale-95 animate-pulse-glow-green ring-2 ring-green-300 ring-opacity-75" 
+                                        : "bg-green-500"
+                                    } touch-manipulation`}
+                                    style={{ 
+                                      userSelect: "none",
+                                      width: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                      height: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                      minWidth: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                      minHeight: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                      animation: currentQuestion.operation === "addition" ? "none" : "none"
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      if (currentQuestion.operation === "addition") {
+                                        e.currentTarget.style.animation = "bounce 0.3s ease";
+                                      }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.currentTarget.style.animation = "none";
+                                    }}
+                                  />
+                                ))}
+                            </div>
+                            <span className="text-white text-3xl font-bold min-w-[40px] text-center">=</span>
+                            {/* עיגולים שעברו מאחורי הסימן שווה */}
+                            {(() => {
+                              const maxVisual = grade === "g1" ? 10 : grade === "g2" ? 20 : 30;
+                              const showResult = (movedCirclesA > 0 || movedCirclesB > 0 || (currentQuestion.operation === "subtraction" && movedCirclesB >= Math.min(currentQuestion.b, maxVisual)));
+                              if (!showResult) return null;
+                              
+                              return (
+                                <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
+                                  {currentQuestion.operation === "addition" ? (
+                                    // בחיבור - כל העיגולים שעברו
+                                    Array(movedCirclesA + movedCirclesB)
+                                      .fill(0)
+                                      .map((_, i) => (
+                                        <span
+                                          key={`result-${i}`}
+                                          className={`inline-block rounded-full transition-all duration-300 ${
+                                            i < movedCirclesA ? "bg-blue-500" : "bg-green-500"
+                                          }`}
+                                          style={{ 
+                                            width: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                            height: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                            minWidth: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                            minHeight: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                            animation: "fadeIn 0.5s ease-in"
+                                          }}
+                                        />
+                                      ))
+                                  ) : (
+                                    // בחיסור - העיגולים שנותרו מ-a אחרי שהורידנו את כל ה-b
+                                    movedCirclesB >= Math.min(currentQuestion.b, maxVisual) && 
+                                    Array(Math.max(0, Math.min(currentQuestion.a, maxVisual) - movedCirclesB))
+                                      .fill(0)
+                                      .map((_, i) => (
+                                        <span
+                                          key={`result-${i}`}
+                                          className="inline-block bg-blue-500 rounded-full transition-all duration-300"
+                                          style={{ 
+                                            width: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                            height: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                            minWidth: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                            minHeight: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
+                                            animation: "fadeIn 0.5s ease-in"
+                                          }}
+                                        />
+                                      ))
+                                  )}
+                                </div>
+                              );
+                            })()}
+                          </>
+                        );
+                      })()}
                     </div>
                   )}
                   
@@ -2306,7 +2981,7 @@ export default function MathMaster() {
                 </div>
                 <div className="p-4">
                   {/* Mode toggle */}
-                  <div className="mb-4 flex gap-2 justify-center" dir="rtl">
+                  <div className="mb-4 flex gap-2 justify-center flex-wrap" dir="rtl">
                     <button
                       onClick={() => {
                         setTableMode("division");
@@ -2316,6 +2991,9 @@ export default function MathMaster() {
                         setSelectedResult(null);
                         setSelectedDivisor(null);
                         setSelectedCell(null);
+                        setPracticeMode(false);
+                        setPracticeQuestion(null);
+                        setPracticeAnswer("");
                       }}
                       className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
                         tableMode === "division"
@@ -2334,6 +3012,9 @@ export default function MathMaster() {
                         setSelectedResult(null);
                         setSelectedDivisor(null);
                         setSelectedCell(null);
+                        setPracticeMode(false);
+                        setPracticeQuestion(null);
+                        setPracticeAnswer("");
                       }}
                       className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
                         tableMode === "multiplication"
@@ -2343,7 +3024,122 @@ export default function MathMaster() {
                     >
                       × כפל
                     </button>
+                    <button
+                      onClick={() => {
+                        setPracticeMode(!practiceMode);
+                        if (!practiceMode) {
+                          generatePracticeQuestion();
+                        } else {
+                          setPracticeQuestion(null);
+                          setPracticeAnswer("");
+                          setPracticeRow(null);
+                          setPracticeCol(null);
+                        }
+                      }}
+                      className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                        practiceMode
+                          ? "bg-emerald-500/80 text-white"
+                          : "bg-white/10 text-white/70 hover:bg-white/20"
+                      }`}
+                    >
+                      🎯 תרגול
+                    </button>
                   </div>
+
+                  {/* מצב תרגול */}
+                  {practiceMode && practiceQuestion && (
+                    <div className="mb-4 p-4 rounded-lg bg-emerald-500/20 border border-emerald-400/50">
+                      <div className="text-center mb-3">
+                        <div className="text-2xl font-bold text-white mb-2">
+                          {practiceQuestion.row} × {practiceQuestion.col} = ?
+                        </div>
+                        <input
+                          type="number"
+                          value={practiceAnswer}
+                          onChange={(e) => setPracticeAnswer(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.key === "Enter") {
+                              checkPracticeAnswer();
+                            }
+                          }}
+                          placeholder="הכנס תשובה"
+                          className="w-full max-w-[200px] px-4 py-2 rounded-lg bg-black/40 border border-white/20 text-white text-xl font-bold text-center"
+                          autoFocus
+                        />
+                      </div>
+                      <div className="flex gap-2 justify-center">
+                        <button
+                          onClick={checkPracticeAnswer}
+                          className="px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                        >
+                          בדוק
+                        </button>
+                        <button
+                          onClick={() => generatePracticeQuestion()}
+                          className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
+                        >
+                          שאלה חדשה
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* בחירת שורה/עמודה לתרגול ממוקד */}
+                  {practiceMode && !practiceQuestion && (
+                    <div className="mb-4 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
+                      <div className="text-center mb-3">
+                        <div className="text-sm text-white/80 mb-2">בחר שורה או עמודה לתרגול:</div>
+                        <div className="flex gap-2 justify-center flex-wrap">
+                          {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
+                            <button
+                              key={num}
+                              onClick={() => {
+                                setPracticeRow(num);
+                                setPracticeCol(null);
+                                generatePracticeQuestion(num, null);
+                              }}
+                              className={`px-3 py-1 rounded-lg text-sm font-bold transition-all ${
+                                practiceRow === num
+                                  ? "bg-yellow-500/80 text-white"
+                                  : "bg-white/10 text-white/70 hover:bg-white/20"
+                              }`}
+                            >
+                              שורה {num}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="flex gap-2 justify-center flex-wrap mt-2">
+                          {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
+                            <button
+                              key={num}
+                              onClick={() => {
+                                setPracticeCol(num);
+                                setPracticeRow(null);
+                                generatePracticeQuestion(null, num);
+                              }}
+                              className={`px-3 py-1 rounded-lg text-sm font-bold transition-all ${
+                                practiceCol === num
+                                  ? "bg-yellow-500/80 text-white"
+                                  : "bg-white/10 text-white/70 hover:bg-white/20"
+                              }`}
+                            >
+                              עמודה {num}
+                            </button>
+                          ))}
+                        </div>
+                        <button
+                          onClick={() => {
+                            setPracticeRow(null);
+                            setPracticeCol(null);
+                            generatePracticeQuestion();
+                          }}
+                          className="mt-2 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                        >
+                          תרגול אקראי
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Result window */}
                   <div className="mb-3 min-h-[30px] w-full flex items-center justify-center">
@@ -2627,6 +3423,10 @@ export default function MathMaster() {
                                     <td
                                       key={`${row}-${col}`}
                                       onClick={() => {
+                                        if (practiceMode) {
+                                          // במצב תרגול - לא ניתן ללחוץ על תאים
+                                          return;
+                                        }
                                         if (tableMode === "multiplication") {
                                           setSelectedCell({
                                             row,
@@ -2648,7 +3448,12 @@ export default function MathMaster() {
                                           });
                                         }
                                       }}
-                                      className={`p-2 rounded border text-white text-sm min-w-[40px] cursor-pointer transition-all ${
+                                      className={`p-2 rounded border text-white text-sm min-w-[40px] transition-all ${
+                                        practiceMode && practiceQuestion && 
+                                        row === practiceQuestion.row && col === practiceQuestion.col
+                                          ? "bg-yellow-500/60 border-2 border-yellow-400 animate-pulse cursor-default"
+                                          : "cursor-pointer"
+                                      } ${
                                         isCellSelected
                                           ? tableMode === "multiplication"
                                             ? "bg-emerald-500/40 border-2 border-emerald-400 text-emerald-200 font-bold text-base"

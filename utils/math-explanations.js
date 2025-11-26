@@ -747,6 +747,56 @@ export function getSolutionSteps(question, operation, gradeKey) {
 }
 
 // "למה טעיתי?" – הסבר קצר לטעות נפוצה
+// פונקציה להסבר מותאם לגיל - הסברים פשוטים יותר לכיתות נמוכות
+function getAgeAppropriateExplanation(operation, gradeKey, question, correctAnswer) {
+  // לכיתות א'-ב' - הסברים פשוטים מאוד עם דוגמאות ויזואליות
+  if (gradeKey === "g1" || gradeKey === "g2") {
+    const a = question.a || question.params?.a;
+    const b = question.b || question.params?.b;
+    
+    switch (operation) {
+      case "addition":
+        return `💡 נסה לחשוב על זה כך: יש לך ${a} עיגולים, ואתה מוסיף ${b} עיגולים נוספים. כמה עיגולים יש לך עכשיו? נסה לספור: ${a}... ${a + 1}... ${a + 2}... עד ${correctAnswer}!`;
+      case "subtraction":
+        return `💡 נסה לחשוב על זה כך: יש לך ${a} עיגולים, ואתה לוקח ${b} עיגולים. כמה עיגולים נשארו? נסה לספור לאחור: ${a}... ${a - 1}... ${a - 2}... עד ${correctAnswer}!`;
+      case "multiplication":
+        return `💡 כפל זה כמו חיבור חוזר! ${a} × ${b} זה כמו ${a} + ${a} + ${a}... (${b} פעמים). נסה לספור: ${a}, ${a * 2}, ${a * 3}... עד ${correctAnswer}!`;
+      case "division":
+        return `💡 חילוק זה כמו חלוקה לקבוצות! ${a} ÷ ${b} זה כמו לקחת ${a} עיגולים ולחלק אותם ל-${b} קבוצות שוות. כמה עיגולים בכל קבוצה? ${correctAnswer}!`;
+      default:
+        return `💡 נסה לחשוב על התרגיל בצורה פשוטה. התשובה הנכונה היא ${correctAnswer}.`;
+    }
+  }
+  
+  // לכיתות ג'-ד' - הסברים בינוניים
+  if (gradeKey === "g3" || gradeKey === "g4") {
+    const a = question.a || question.params?.a;
+    const b = question.b || question.params?.b;
+    
+    switch (operation) {
+      case "addition":
+        if (a && b) {
+          const tens = Math.floor(b / 10) * 10;
+          const ones = b % 10;
+          return `💡 נסה לחשוב על חיבור: ${a} + ${b} = ${correctAnswer}. אם קשה, נסה לפרק: ${a} + ${b} = ${a} + ${tens} + ${ones} = ${a + tens} + ${ones} = ${correctAnswer}`;
+        }
+        return `💡 נסה לחשוב על התרגיל בצורה שיטתית. התשובה הנכונה היא ${correctAnswer}.`;
+      case "subtraction":
+        if (a && b) {
+          const tens = Math.floor(b / 10) * 10;
+          const ones = b % 10;
+          return `💡 נסה לחשוב על חיסור: ${a} - ${b} = ${correctAnswer}. אם קשה, נסה לפרק: ${a} - ${b} = ${a} - ${tens} - ${ones} = ${a - tens} - ${ones} = ${correctAnswer}`;
+        }
+        return `💡 נסה לחשוב על התרגיל בצורה שיטתית. התשובה הנכונה היא ${correctAnswer}.`;
+      default:
+        return `💡 נסה לחשוב על התרגיל בצורה שיטתית. התשובה הנכונה היא ${correctAnswer}.`;
+    }
+  }
+  
+  // לכיתות ה'-ו' - הסברים רגילים
+  return null; // נשתמש בהסבר הרגיל
+}
+
 export function getErrorExplanation(question, operation, wrongAnswer, gradeKey) {
   if (!question) return "";
   const userAnsNum = Number(wrongAnswer);
@@ -757,6 +807,12 @@ export function getErrorExplanation(question, operation, wrongAnswer, gradeKey) 
             (question.correctAnswer.split("/")[1] || 1)
         )
       : Number(question.correctAnswer);
+
+  // נסה להשתמש בהסבר מותאם לגיל קודם
+  const ageAppropriate = getAgeAppropriateExplanation(operation, gradeKey, question, correctNum);
+  if (ageAppropriate) {
+    return ageAppropriate;
+  }
 
   switch (operation) {
     case "addition":
