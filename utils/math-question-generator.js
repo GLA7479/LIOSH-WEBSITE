@@ -1008,17 +1008,27 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         const altNum = n + uniqueAnswers.length;
         uniqueAnswers.push(altNum % 2 === 0 ? "זוגי" : "אי-זוגי");
       }
-      const answers = uniqueAnswers.slice(0, 4);
+      let answers = uniqueAnswers.slice(0, 4);
       // נשמור את התשובה הנכונה ברשימה
       const correctIdx = answers.indexOf(correctAnswer);
       if (correctIdx === -1) {
         // אם התשובה הנכונה לא ברשימה, נחליף את הראשונה
         answers[0] = correctAnswer;
-      } else if (correctIdx > 0) {
-        // נזיז את התשובה הנכונה למקום אקראי (לא בהכרח ראשון)
-        const randomPos = Math.floor(Math.random() * answers.length);
-        [answers[randomPos], answers[correctIdx]] = [answers[correctIdx], answers[randomPos]];
       }
+      
+      // ערבוב התשובות - Fisher-Yates shuffle
+      for (let i = answers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [answers[i], answers[j]] = [answers[j], answers[i]];
+      }
+      
+      // ערבוב נוסף
+      const shuffled = [...answers];
+      for (let i = 0; i < shuffled.length; i++) {
+        const randomIndex = Math.floor(Math.random() * shuffled.length);
+        [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+      }
+      answers = shuffled;
 
       return {
         question,
@@ -1052,11 +1062,20 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
           options.add(candidate);
         }
       }
-      const answers = Array.from(options);
+      let answers = Array.from(options);
+      // ערבוב התשובות - Fisher-Yates shuffle
       for (let i = answers.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [answers[i], answers[j]] = [answers[j], answers[i]];
       }
+      
+      // ערבוב נוסף
+      const shuffled = [...answers];
+      for (let i = 0; i < shuffled.length; i++) {
+        const randomIndex = Math.floor(Math.random() * shuffled.length);
+        [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+      }
+      answers = shuffled;
 
       correctAnswer = correct;
       question = `איזה מהמספרים הבאים הוא מחלק (גורם) של ${n}?`;
@@ -1080,11 +1099,20 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         const candidate = randInt(base + 1, Math.min(base * 15, maxNumber));
         if (candidate % base !== 0) options.add(candidate);
       }
-      const answers = Array.from(options);
+      let answers = Array.from(options);
+      // ערבוב התשובות - Fisher-Yates shuffle
       for (let i = answers.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [answers[i], answers[j]] = [answers[j], answers[i]];
       }
+      
+      // ערבוב נוסף
+      const shuffled = [...answers];
+      for (let i = 0; i < shuffled.length; i++) {
+        const randomIndex = Math.floor(Math.random() * shuffled.length);
+        [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+      }
+      answers = shuffled;
 
       correctAnswer = correct;
       question = `איזה מהמספרים הבאים הוא כפולה של ${base}?`;
@@ -1309,9 +1337,15 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     operandA = num;
     operandB = divisor;
     
-    // יצירת תשובות (תשובה נכונה + תשובה שגויה)
+    // יצירת תשובות (תשובה נכונה + תשובה שגויה בלבד - 2 תשובות)
     const wrongAnswer = isDivisible ? "לא" : "כן";
     const answers = [correctAnswer, wrongAnswer];
+    
+    // ערבוב התשובות
+    if (Math.random() < 0.5) {
+      // נהפוך את הסדר ב-50% מהמקרים
+      answers.reverse();
+    }
     
     return {
       question,
@@ -1348,9 +1382,15 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     operandA = num;
     operandB = null;
     
-    // יצירת תשובות (תשובה נכונה + תשובה שגויה)
+    // יצירת תשובות (תשובה נכונה + תשובה שגויה + תשובות נוספות)
     const wrongAnswer = isNumPrime ? "פריק" : "ראשוני";
-    const answers = [correctAnswer, wrongAnswer];
+    const answers = [correctAnswer, wrongAnswer, "זוגי", "אי-זוגי"];
+    
+    // ערבוב התשובות
+    for (let i = answers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [answers[i], answers[j]] = [answers[j], answers[i]];
+    }
     
     return {
       question,
@@ -1728,12 +1768,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
   }
   
   // וודא שיש בדיוק 4 תשובות (1 נכונה + 3 שגויות)
-  const allAnswers = [correctAnswer, ...wrongAnswersArray.slice(0, 3)];
+  // נוסיף את התשובה הנכונה לרשימה בצורה אקראית, לא תמיד ראשונה
+  const allAnswers = [...wrongAnswersArray.slice(0, 3)];
   
   // אם עדיין אין 4 תשובות, נוסיף תשובות ברירת מחדל
-  while (allAnswers.length < 4) {
+  while (allAnswers.length < 3) {
     if (typeof correctAnswer === "number") {
-      const defaultWrong = correctAnswer + allAnswers.length * 5;
+      const defaultWrong = correctAnswer + (allAnswers.length + 1) * 5;
       if (defaultWrong !== correctAnswer && !allAnswers.includes(defaultWrong)) {
         allAnswers.push(defaultWrong);
       } else {
@@ -1746,20 +1787,43 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
   }
 
   
-  // וודא שיש בדיוק 4 תשובות לפני ערבוב
-  if (allAnswers.length !== 4) {
-    console.warn(`Expected 4 answers but got ${allAnswers.length} for question: ${question}`);
-    // אם יש פחות מ-4, נמלא עם תשובות ברירת מחדל
-    while (allAnswers.length < 4 && typeof correctAnswer === "number") {
-      allAnswers.push(correctAnswer + allAnswers.length * 10);
+  // וודא שיש בדיוק 3 תשובות שגויות לפני הוספת התשובה הנכונה
+  if (allAnswers.length < 3) {
+    console.warn(`Expected 3 wrong answers but got ${allAnswers.length} for question: ${question}`);
+    // אם יש פחות מ-3, נמלא עם תשובות ברירת מחדל
+    while (allAnswers.length < 3 && typeof correctAnswer === "number") {
+      const fallback = correctAnswer + (allAnswers.length + 1) * 10;
+      if (fallback !== correctAnswer && !allAnswers.includes(fallback)) {
+        allAnswers.push(fallback);
+      } else {
+        break;
+      }
     }
   }
   
-  // ערבוב התשובות
-  for (let i = allAnswers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
+  // הוספת התשובה הנכונה לרשימה במקום אקראי, לא תמיד בסוף
+  const randomInsertPos = Math.floor(Math.random() * (allAnswers.length + 1));
+  allAnswers.splice(randomInsertPos, 0, correctAnswer);
+  
+  // ערבוב התשובות - Fisher-Yates shuffle משופר
+  // נערבב מספר פעמים כדי להבטיח ערבוב טוב יותר
+  for (let shuffleRound = 0; shuffleRound < 3; shuffleRound++) {
+    for (let i = allAnswers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
+    }
   }
+  
+  // ערבוב נוסף - שיטה נוספת לערבוב טוב יותר
+  const shuffledAnswers = [...allAnswers];
+  for (let i = 0; i < shuffledAnswers.length; i++) {
+    const randomIndex = Math.floor(Math.random() * shuffledAnswers.length);
+    [shuffledAnswers[i], shuffledAnswers[randomIndex]] = [shuffledAnswers[randomIndex], shuffledAnswers[i]];
+  }
+  
+  // נשתמש ברשימה המעורבבת
+  allAnswers.length = 0;
+  allAnswers.push(...shuffledAnswers);
 
   // וודא שיש טקסט לשאלה
   const finalQuestionText = question && question.trim().length > 0 ? question : `תרגיל ${selectedOp}`;

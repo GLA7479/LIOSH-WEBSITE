@@ -757,16 +757,31 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
   }
 
-  const allAnswers = [correctAnswer, ...Array.from(wrongAnswers)];
-  for (let i = allAnswers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
+  // הוספת התשובה הנכונה לרשימה במקום אקראי, לא תמיד ראשונה
+  const wrongAnswersArray = Array.from(wrongAnswers);
+  const randomInsertPos = Math.floor(Math.random() * (wrongAnswersArray.length + 1));
+  wrongAnswersArray.splice(randomInsertPos, 0, correctAnswer);
+  
+  // ערבוב התשובות - Fisher-Yates shuffle משופר
+  // נערבב מספר פעמים כדי להבטיח ערבוב טוב יותר
+  for (let shuffleRound = 0; shuffleRound < 3; shuffleRound++) {
+    for (let i = wrongAnswersArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [wrongAnswersArray[i], wrongAnswersArray[j]] = [wrongAnswersArray[j], wrongAnswersArray[i]];
+    }
+  }
+  
+  // ערבוב נוסף - שיטה נוספת לערבוב טוב יותר
+  const shuffledAnswers = [...wrongAnswersArray];
+  for (let i = 0; i < shuffledAnswers.length; i++) {
+    const randomIndex = Math.floor(Math.random() * shuffledAnswers.length);
+    [shuffledAnswers[i], shuffledAnswers[randomIndex]] = [shuffledAnswers[randomIndex], shuffledAnswers[i]];
   }
 
   return {
     question,
     correctAnswer,
-    answers: allAnswers,
+    answers: shuffledAnswers,
     topic: selectedTopic,
     shape,
     params,
