@@ -1308,8 +1308,21 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     params = { kind: "divisibility", num, divisor, isDivisible };
     operandA = num;
     operandB = divisor;
-    // הוספת תשובה שגויה
-    wrongAnswers.add(isDivisible ? "לא" : "כן");
+    
+    // יצירת תשובות (תשובה נכונה + תשובה שגויה)
+    const wrongAnswer = isDivisible ? "לא" : "כן";
+    const answers = [correctAnswer, wrongAnswer];
+    
+    return {
+      question,
+      correctAnswer,
+      answers,
+      operation: selectedOp,
+      params,
+      a: num,
+      b: divisor,
+      isStory: false,
+    };
 
   // ===== מספרים ראשוניים ופריקים =====
   } else if (selectedOp === "prime_composite") {
@@ -1334,8 +1347,21 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     params = { kind: "prime_composite", num, isPrime: isNumPrime };
     operandA = num;
     operandB = null;
-    // הוספת תשובה שגויה
-    wrongAnswers.add(isNumPrime ? "פריק" : "ראשוני");
+    
+    // יצירת תשובות (תשובה נכונה + תשובה שגויה)
+    const wrongAnswer = isNumPrime ? "פריק" : "ראשוני";
+    const answers = [correctAnswer, wrongAnswer];
+    
+    return {
+      question,
+      correctAnswer,
+      answers,
+      operation: selectedOp,
+      params,
+      a: num,
+      b: null,
+      isStory: false,
+    };
 
   // ===== חזקות =====
   } else if (selectedOp === "powers") {
