@@ -32,6 +32,16 @@ export default function ParentReport() {
   const [appliedStartDate, setAppliedStartDate] = useState("");
   const [appliedEndDate, setAppliedEndDate] = useState("");
 
+  // פונקציה לפרמט תאריך מ-YYYY-MM-DD ל-DD/MM/YYYY
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`; // DD/MM/YYYY
+    }
+    return dateStr;
+  };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const name = localStorage.getItem("mleo_player_name") || "";
@@ -176,6 +186,7 @@ export default function ParentReport() {
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
                       max={endDate || new Date().toISOString().split('T')[0]}
+                      dir="ltr"
                       className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -187,6 +198,7 @@ export default function ParentReport() {
                       onChange={(e) => setEndDate(e.target.value)}
                       min={startDate}
                       max={new Date().toISOString().split('T')[0]}
+                      dir="ltr"
                       className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -304,6 +316,7 @@ export default function ParentReport() {
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     max={endDate || new Date().toISOString().split('T')[0]}
+                    dir="ltr"
                     className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -315,6 +328,7 @@ export default function ParentReport() {
                     onChange={(e) => setEndDate(e.target.value)}
                     min={startDate}
                     max={new Date().toISOString().split('T')[0]}
+                    dir="ltr"
                     className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -332,8 +346,8 @@ export default function ParentReport() {
               </div>
             )}
             
-            <p className="text-xs md:text-sm text-white/60 mt-2">
-              {report.startDate} - {report.endDate}
+            <p className="text-xs md:text-sm text-white/60 mt-2 text-center" dir="ltr" style={{ direction: 'ltr', textAlign: 'center' }}>
+              {formatDate(report.startDate)} - {formatDate(report.endDate)}
             </p>
           </div>
 
@@ -405,10 +419,12 @@ export default function ParentReport() {
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
               <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">🧮 התקדמות בחשבון</h2>
               <div className="overflow-x-auto -mx-2 md:mx-0">
-                <table className="w-full text-xs md:text-sm min-w-[600px]">
+                <table className="w-full text-xs md:text-sm min-w-[800px]">
                   <thead>
                     <tr className="border-b border-white/20">
                       <th className="text-right py-2 px-1 md:px-2">פעולה</th>
+                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
+                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
                       <th className="text-center py-2 px-1 md:px-2">זמן</th>
                       <th className="text-center py-2 px-1 md:px-2">שאלות</th>
                       <th className="text-center py-2 px-1 md:px-2">נכון</th>
@@ -423,6 +439,12 @@ export default function ParentReport() {
                         <tr key={op} className="border-b border-white/10">
                           <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
                             {getOperationName(op)}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.level || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.grade || "לא זמין"}
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.timeMinutes} דק'
@@ -462,10 +484,12 @@ export default function ParentReport() {
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
               <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📐 התקדמות בגאומטריה</h2>
               <div className="overflow-x-auto -mx-2 md:mx-0">
-                <table className="w-full text-xs md:text-sm min-w-[600px]">
+                <table className="w-full text-xs md:text-sm min-w-[800px]">
                   <thead>
                     <tr className="border-b border-white/20">
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
+                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
+                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
                       <th className="text-center py-2 px-1 md:px-2">זמן</th>
                       <th className="text-center py-2 px-1 md:px-2">שאלות</th>
                       <th className="text-center py-2 px-1 md:px-2">נכון</th>
@@ -480,6 +504,12 @@ export default function ParentReport() {
                         <tr key={topic} className="border-b border-white/10">
                           <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
                             {getTopicName(topic)}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.level || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.grade || "לא זמין"}
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.timeMinutes} דק'

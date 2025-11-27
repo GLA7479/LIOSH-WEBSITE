@@ -130,6 +130,50 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;
       const timeMinutes = mathTimeData.operations?.[op]?.minutes || 0;
       
+      // מציאת הכיתה והרמה הנפוצים ביותר מהנתונים שנשמרו
+      let mostCommonGrade = "לא זמין";
+      let mostCommonLevel = "לא זמין";
+      
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_time_tracking") || "{}");
+        const opData = saved.operations?.[op];
+        
+        if (opData?.sessions && opData.sessions.length > 0) {
+          // סיכום לפי כיתה
+          const gradeCounts = {};
+          const levelCounts = {};
+          
+          opData.sessions.forEach(session => {
+            if (session.grade) {
+              gradeCounts[session.grade] = (gradeCounts[session.grade] || 0) + 1;
+            }
+            if (session.level) {
+              levelCounts[session.level] = (levelCounts[session.level] || 0) + 1;
+            }
+          });
+          
+          // מציאת הכיתה הנפוצה ביותר
+          if (Object.keys(gradeCounts).length > 0) {
+            const gradeEntries = Object.entries(gradeCounts);
+            gradeEntries.sort((a, b) => b[1] - a[1]);
+            const gradeKey = gradeEntries[0][0];
+            const gradeNames = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
+            mostCommonGrade = gradeNames[gradeKey] || gradeKey;
+          }
+          
+          // מציאת הרמה הנפוצה ביותר
+          if (Object.keys(levelCounts).length > 0) {
+            const levelEntries = Object.entries(levelCounts);
+            levelEntries.sort((a, b) => b[1] - a[1]);
+            const levelKey = levelEntries[0][0];
+            const levelNames = { easy: "קל", medium: "בינוני", hard: "קשה" };
+            mostCommonLevel = levelNames[levelKey] || levelKey;
+          }
+        }
+      } catch (e) {
+        // אם יש שגיאה, נשאיר את הערכים ברירת המחדל
+      }
+      
       // אם יש זמן בתקופה, נכלול את הנתונים
       if (timeMinutes > 0 || questions > 0) {
         mathTotalQuestions += questions;
@@ -145,7 +189,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
           timeHours: (timeMinutes / 60).toFixed(2),
           needsPractice: accuracy < 70,
           excellent: accuracy >= 90,
-          improvement: calculateImprovement(op, mathProgressData, period)
+          improvement: calculateImprovement(op, mathProgressData, period),
+          grade: mostCommonGrade,
+          level: mostCommonLevel
         };
       }
     });
@@ -175,6 +221,50 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;
       const timeMinutes = geometryTimeData.topics?.[topic]?.minutes || 0;
       
+      // מציאת הכיתה והרמה הנפוצים ביותר מהנתונים שנשמרו
+      let mostCommonGrade = "לא זמין";
+      let mostCommonLevel = "לא זמין";
+      
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_geometry_time_tracking") || "{}");
+        const topicData = saved.topics?.[topic];
+        
+        if (topicData?.sessions && topicData.sessions.length > 0) {
+          // סיכום לפי כיתה
+          const gradeCounts = {};
+          const levelCounts = {};
+          
+          topicData.sessions.forEach(session => {
+            if (session.grade) {
+              gradeCounts[session.grade] = (gradeCounts[session.grade] || 0) + 1;
+            }
+            if (session.level) {
+              levelCounts[session.level] = (levelCounts[session.level] || 0) + 1;
+            }
+          });
+          
+          // מציאת הכיתה הנפוצה ביותר
+          if (Object.keys(gradeCounts).length > 0) {
+            const gradeEntries = Object.entries(gradeCounts);
+            gradeEntries.sort((a, b) => b[1] - a[1]);
+            const gradeKey = gradeEntries[0][0];
+            const gradeNames = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
+            mostCommonGrade = gradeNames[gradeKey] || gradeKey;
+          }
+          
+          // מציאת הרמה הנפוצה ביותר
+          if (Object.keys(levelCounts).length > 0) {
+            const levelEntries = Object.entries(levelCounts);
+            levelEntries.sort((a, b) => b[1] - a[1]);
+            const levelKey = levelEntries[0][0];
+            const levelNames = { easy: "קל", medium: "בינוני", hard: "קשה" };
+            mostCommonLevel = levelNames[levelKey] || levelKey;
+          }
+        }
+      } catch (e) {
+        // אם יש שגיאה, נשאיר את הערכים ברירת המחדל
+      }
+      
       // אם יש זמן בתקופה, נכלול את הנתונים
       if (timeMinutes > 0 || questions > 0) {
         geometryTotalQuestions += questions;
@@ -189,7 +279,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
           timeMinutes,
           timeHours: (timeMinutes / 60).toFixed(2),
           needsPractice: accuracy < 70,
-          excellent: accuracy >= 90
+          excellent: accuracy >= 90,
+          grade: mostCommonGrade,
+          level: mostCommonLevel
         };
       }
     });
