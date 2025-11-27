@@ -91,8 +91,25 @@ export default function ParentReport() {
   if (!report || !report.summary || (report.summary.totalQuestions === 0 && report.summary.totalTimeMinutes === 0)) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center p-4" dir="rtl">
+        <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center p-4 relative" dir="rtl">
+          {/* כפתור BACK - מיקום מוחלט */}
+          <div className="absolute left-4 top-4">
+            <button
+              onClick={() => {
+                if (typeof window !== "undefined" && window.history.length > 1) {
+                  router.back();
+                } else {
+                  router.push("/learning");
+                }
+              }}
+              className="px-4 py-2 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all"
+            >
+              BACK
+            </button>
+          </div>
+          
           <div className="text-center text-white max-w-md">
+            
             <div className="text-4xl mb-4">📊</div>
             <h1 className="text-2xl font-bold mb-2">דוח להורים</h1>
             <p className="text-white/70 mb-4">
@@ -206,14 +223,31 @@ export default function ParentReport() {
   return (
     <Layout>
       <div
-        className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-4"
+        className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-4 relative"
         dir="rtl"
         style={{
           paddingTop: "calc(var(--head-h, 56px) + 16px)",
           paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
         }}
       >
+        {/* כפתור BACK - מיקום מוחלט */}
+        <div className="absolute left-4 top-4" style={{ top: "calc(var(--head-h, 56px) + 20px)" }}>
+          <button
+            onClick={() => {
+              if (typeof window !== "undefined" && window.history.length > 1) {
+                router.back();
+              } else {
+                router.push("/learning");
+              }
+            }}
+            className="px-4 py-2 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all"
+          >
+            BACK
+          </button>
+        </div>
+        
         <div className="max-w-4xl mx-auto">
+          
           {/* כותרת */}
           <div className="text-center mb-4 md:mb-6">
             <h1 className="text-2xl md:text-3xl font-extrabold mb-2">📊 דוח להורים</h1>
