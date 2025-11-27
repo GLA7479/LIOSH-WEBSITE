@@ -31,6 +31,7 @@ export default function ParentReport() {
   const [endDate, setEndDate] = useState("");
   const [appliedStartDate, setAppliedStartDate] = useState("");
   const [appliedEndDate, setAppliedEndDate] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
 
   // פונקציה לפרמט תאריך מ-YYYY-MM-DD ל-DD/MM/YYYY
   const formatDate = (dateStr) => {
@@ -41,6 +42,16 @@ export default function ParentReport() {
     }
     return dateStr;
   };
+
+  // בדיקת גודל מסך
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -234,14 +245,16 @@ export default function ParentReport() {
   return (
     <Layout>
       <div
-        className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-4"
+        className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-2 md:p-4"
         dir="rtl"
         style={{
           paddingTop: "calc(var(--head-h, 56px) + 16px)",
           paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch"
         }}
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto w-full">
           {/* כפתור BACK */}
           <div className="mb-4 text-left">
             <button
@@ -264,7 +277,7 @@ export default function ParentReport() {
             <p className="text-white/70 text-sm md:text-base">{report.playerName}</p>
             
             {/* בחירת תקופה */}
-            <div className="flex flex-wrap gap-2 justify-center mt-4 mb-3">
+            <div className="flex flex-wrap gap-2 justify-center mt-2 md:mt-4 mb-2 md:mb-3">
               <button
                 onClick={() => {
                   setCustomDates(false);
@@ -352,7 +365,7 @@ export default function ParentReport() {
           </div>
 
           {/* סיכום כללי */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-4 md:mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-3 md:mb-6">
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
               <div className="text-[10px] md:text-xs text-white/60 mb-1">זמן כולל</div>
               <div className="text-lg md:text-2xl font-bold text-blue-400">
@@ -392,7 +405,7 @@ export default function ParentReport() {
           </div>
 
           {/* סיכום לפי מקצוע */}
-          <div className="grid grid-cols-2 gap-2 md:gap-3 mb-4 md:mb-6">
+          <div className="grid grid-cols-2 gap-2 md:gap-3 mb-3 md:mb-6">
             <div className="bg-blue-500/20 border border-blue-400/50 rounded-lg p-2 md:p-4 text-center">
               <div className="text-xs md:text-sm text-white/60 mb-1">🧮 חשבון</div>
               <div className="text-base md:text-lg font-bold text-blue-400">
@@ -416,8 +429,8 @@ export default function ParentReport() {
 
           {/* טבלת פעולות חשבון */}
           {Object.keys(report.mathOperations || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">🧮 התקדמות בחשבון</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🧮 התקדמות בחשבון</h2>
               <div className="overflow-x-auto -mx-2 md:mx-0">
                 <table className="w-full text-xs md:text-sm min-w-[800px]">
                   <thead>
@@ -481,8 +494,8 @@ export default function ParentReport() {
 
           {/* טבלת נושאים גאומטריה */}
           {Object.keys(report.geometryTopics || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📐 התקדמות בגאומטריה</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">📐 התקדמות בגאומטריה</h2>
               <div className="overflow-x-auto -mx-2 md:mx-0">
                 <table className="w-full text-xs md:text-sm min-w-[800px]">
                   <thead>
@@ -546,8 +559,8 @@ export default function ParentReport() {
 
           {/* המלצות */}
           {report.analysis.recommendations.length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">💡 המלצות</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">💡 המלצות</h2>
               <div className="space-y-2 md:space-y-3">
                 {report.analysis.recommendations.map((rec, idx) => (
                   <div
@@ -577,10 +590,10 @@ export default function ParentReport() {
 
           {/* גרף פעילות יומית */}
           {report.dailyActivity.length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📅 פעילות יומית</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">📅 פעילות יומית</h2>
               <div className="h-48 md:h-64">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
                   <LineChart data={report.dailyActivity}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
                     <XAxis
@@ -644,10 +657,10 @@ export default function ParentReport() {
 
           {/* גרף דיוק לפי פעולות */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">📊 דיוק לפי פעולות ונושאים</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">📊 דיוק לפי פעולות ונושאים</h2>
               <div className="h-48 md:h-64">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
                   <BarChart data={Object.entries(report.allItems)
                     .map(([key, data]) => {
                       const name = key.startsWith('math_') 
@@ -670,7 +683,7 @@ export default function ParentReport() {
                       tick={{ fill: "#ffffff80", fontSize: 9 }}
                       angle={-45}
                       textAnchor="end"
-                      height={60}
+                      height={isMobile ? 40 : 60}
                     />
                     <YAxis tick={{ fill: "#ffffff80", fontSize: 12 }} />
                     <Tooltip
@@ -689,10 +702,10 @@ export default function ParentReport() {
 
           {/* גרף זמן לפי פעולות */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
               <div className="h-48 md:h-64">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
                   <BarChart data={Object.entries(report.allItems)
                     .map(([key, data]) => {
                       const name = key.startsWith('math_') 
@@ -714,7 +727,7 @@ export default function ParentReport() {
                       tick={{ fill: "#ffffff80", fontSize: 9 }}
                       angle={-45}
                       textAnchor="end"
-                      height={60}
+                      height={isMobile ? 40 : 60}
                     />
                     <YAxis tick={{ fill: "#ffffff80", fontSize: 12 }} />
                     <Tooltip
@@ -734,10 +747,10 @@ export default function ParentReport() {
 
           {/* גרף עוגה - חלוקת זמן */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">🥧 חלוקת זמן תרגול</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🥧 חלוקת זמן תרגול</h2>
               <div className="h-48 md:h-64">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
                   <PieChart>
                     <Pie
                       data={Object.entries(report.allItems)
@@ -799,8 +812,8 @@ export default function ParentReport() {
           )}
 
           {/* אתגרים */}
-          <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-            <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">🎯 אתגרים</h2>
+          <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+            <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🎯 אתגרים</h2>
             <div className="grid grid-cols-2 gap-2 md:gap-4">
               <div className="bg-blue-500/20 border border-blue-400/50 rounded-lg p-2 md:p-3">
                 <div className="text-xs md:text-sm text-white/60 mb-1">אתגר יומי</div>
@@ -829,8 +842,8 @@ export default function ParentReport() {
 
           {/* הישגים */}
           {report.achievements.length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
-              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-center">🏆 הישגים</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🏆 הישגים</h2>
               <div className="flex flex-wrap gap-2 justify-center">
                 {report.achievements.map((achievement, idx) => (
                   <div
@@ -845,7 +858,7 @@ export default function ParentReport() {
           )}
 
           {/* כפתורים */}
-          <div className="flex gap-2 md:gap-3 justify-center flex-wrap mb-4 md:mb-6">
+          <div className="flex gap-2 md:gap-3 justify-center flex-wrap mb-3 md:mb-6">
             <button
               onClick={() => window.print()}
               className="px-4 md:px-6 py-2 md:py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm md:text-base"
