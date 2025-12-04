@@ -2,9 +2,186 @@ import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 
+const ENGLISH_GENERAL_GOALS = [
+  "פיתוח כשירות תקשורתית באנגלית בארבע המיומנויות: האזנה, דיבור, קריאה וכתיבה.",
+  "בניית אוצר מילים לפי נושאים וחיזוקו באמצעות פעילויות חווייתיות ואותנטיות.",
+  "טיפוח אסטרטגיות למידה עצמאית, עבודת צוות ומודעות בין-תרבותית.",
+  "שימוש באנגלית ככלי לתקשורת משמעותית בכיתה, בפרויקטים ובהצגת תוצרים."
+];
+
+const ENGLISH_CURRICULUM = [
+  {
+    grade: "כיתה א׳",
+    stage: "שלב חשיפה",
+    focus: [
+      "חשיפה חווייתית לשפה דרך שירים, חרוזים, משחקים וסיפורים.",
+      "הבנת שגרת הכיתה ותגובה להוראות בעזרת תנועה, חפצים ותמונות.",
+      "עידוד חזרתיות על ביטויים מוכרים ללא לחץ על דיוק."
+    ],
+    skills: [
+      "ביצוע הוראות קצרות בליווי מחוות או תמיכה חזותית.",
+      "זיהוי מילים וביטויים מוכרים בשירים ובסיפורים משותפים.",
+      "תגובה לברכות, רגשות ושאלות פשוטות במילה בודדת או פעולה."
+    ],
+    grammar: [
+      "אין הוראת דקדוק פורמלית; חשיפה לביטויים קבועים כגון \"I am / You are\".",
+      "מודעות לכינויי גוף ולביטויי כיתה קבועים."
+    ],
+    vocabulary: [
+      "צבעים, צורות בסיסיות ומספרים 1–10.",
+      "בני משפחה, חפצי כיתה, חיות מחמד ורגשות בסיסיים."
+    ],
+    benchmark: [
+      "מבין הוראות קצרות ומגיב באמצעות פעולה או מחווה.",
+      "מתאים מילים מוכרות לתמונות ומראה מעורבות חיובית באנגלית."
+    ]
+  },
+  {
+    grade: "כיתה ב׳",
+    stage: "שלב יסוד",
+    focus: [
+      "מעבר מחשיפה להפקה מבוקרת והרחבת אוצר המילים.",
+      "התחלת פענוח צלילים, קריאת מילים פשוטות וכתיבת העתקה.",
+      "תרגול משפטים קצרים ודפוסים חוזרים בדיבור."
+    ],
+    skills: [
+      "האזנה לסיפורים קצרים וזיהוי מילים וביטויים מרכזיים.",
+      "קריאה וכתיבה של מילים, תוויות ומשפטים פשוטים.",
+      "מענה על שאלות כן/לא ושאלות wh בעזרת תבניות מוכרות."
+    ],
+    grammar: [
+      "Present Simple של הפועל to be (I am / He is).",
+      "כינויי גוף, שמות עצם ברבים וכינויי רמז this/that.",
+      "מבני שאלות בסיסיים (What is it? Where is...?)."
+    ],
+    vocabulary: [
+      "מזון, לבוש, חדרים בבית ומקומות בקהילה.",
+      "חיי בית הספר ופעולות יומיומיות (run, read, play, draw)."
+    ],
+    benchmark: [
+      "קורא/ת וכותב/ת מילים מוכרות באיות נכון.",
+      "משתתף/ת בשיחה קצרה תוך שימוש בביטויים שנלמדו."
+    ]
+  },
+  {
+    grade: "כיתה ג׳",
+    stage: "שלב ראשית אוריינות",
+    focus: [
+      "שילוב ארבע המיומנויות בעזרת טקסטים מובנים ומשימות קצרות.",
+      "הרחבת אינטראקציות: הצגה עצמית, תיאור חפצים/אנשים ושאלות הדדיות.",
+      "חיזוק פענוח עצמאי ואיות מדויק."
+    ],
+    skills: [
+      "קריאת טקסטים בני 60–80 מילים ואיתור רעיון מרכזי ופרטים.",
+      "האזנה לדו-שיחים ולהוראות בני 2–3 שלבים והבנתם.",
+      "כתיבת משפטים פשוטים על שגרה, תחביבים ותחושות."
+    ],
+    grammar: [
+      "Present Simple בחיובי, שלילי ושאלות.",
+      "שמות עצם עם יידוע (a/an/the) ושמות תואר בסיסיים.",
+      "מילות יחס מקום כגון in, on, under, next to."
+    ],
+    vocabulary: [
+      "שגרת יום, בית הספר, תחביבים וספורט.",
+      "מזג אוויר ועונות, חלקי גוף וטכנולוגיה בכיתה."
+    ],
+    benchmark: [
+      "מפיק/ה 4–5 משפטים מדוברים או כתובים בנושא נלמד.",
+      "משתמש/ת נכונה בזמן Present Simple עם he/she/it."
+    ]
+  },
+  {
+    grade: "כיתה ד׳",
+    stage: "שלב אוריינות מתפתחת",
+    focus: [
+      "הארכת הטקסטים ל-100–150 מילים והעמקת ההבנה.",
+      "יישום אסטרטגיות קריאה: חיזוי, סריקה, סיכום ולכידת מידע.",
+      "עידוד דיבור מתאר, השוואה והבעת דעה."
+    ],
+    skills: [
+      "קריאת טקסטים מידעיים, מיילים וסיפורים והפקת פרטים תומכים.",
+      "האזנה להוראות מרובות שלבים ורישום נקודות.",
+      "כתיבת פסקה קצרה (3–5 משפטים) עם מילות קישור כגון and, but, because."
+    ],
+    grammar: [
+      "הבחנה בין Present Simple ל-Present Continuous.",
+      "שמות עצם ספירים ובלתי-ספירים, some/any, much/many.",
+      "כינויי שייכות, כינויי מושא ותוארי פועל (slowly/quickly)."
+    ],
+    vocabulary: [
+      "קבוצות מזון, מקומות בעיר ודרכי תחבורה.",
+      "חגים, מסורות, רגשות ופעולות סביבתיות."
+    ],
+    benchmark: [
+      "כותב/ת פסקה קוהרנטית המתארת שגרה, מקום או אירוע.",
+      "מבין/ה דיבור קצר הכולל מספר פרטים ומגיב/ה בהתאם."
+    ]
+  },
+  {
+    grade: "כיתה ה׳",
+    stage: "שלב אוריינות מורחבת",
+    focus: [
+      "קריאה אסטרטגית של טקסטים מידעיים, מאמרים וביוגרפיות.",
+      "כתיבה מובנית: משפט נושא, פרטים תומכים ומשפט מסכם.",
+      "הכנת מצגות בעל פה שמסבירות, משוות ומשכנעות."
+    ],
+    skills: [
+      "האזנה לקטעי מידע או ראיונות ורישום עובדות מרכזיות.",
+      "קריאת מאמרים בני 150–200 מילים והסקת משמעות מהקשר.",
+      "כתיבת שני פסקאות מחוברות (60–80 מילים) עם מילות קישור first/next/finally."
+    ],
+    grammar: [
+      "Past Simple (פעלי עבר סדירים וחריגים נפוצים).",
+      "עתיד עם will / be going to ומודלים can, must, have to.",
+      "השוואתיים ועליונים, ותנאי בסיסי (If...)."
+    ],
+    vocabulary: [
+      "נסיעות ותחבורה, גאוגרפיה וסביבה.",
+      "בריאות וגוף האדם, טכנולוגיה ומדיה, קהילה ומקצועות."
+    ],
+    benchmark: [
+      "מסכם/ת רעיון מרכזי ופרטים עיקריים מטקסט כתוב או מושמע.",
+      "מציג/ה בעל פה קצר בעזרת עזרים חזותיים או כרטיסיות."
+    ]
+  },
+  {
+    grade: "כיתה ו׳",
+    stage: "שלב מתקדם (סוף יסודי)",
+    focus: [
+      "היערכות לחטיבת הביניים בעזרת פרויקטים, מחקר והצגת ממצאים.",
+      "שילוב אוריינות מידע: רישום נקודות, ארגון נתונים וציון מקורות.",
+      "פיתוח קול אישי להצגת טיעון, דעה והסבר."
+    ],
+    skills: [
+      "האזנה לפודקאסטים או קטעי מדע והפקת מידע גלוי וסמוי.",
+      "קריאת מאמרים בני 200–250 מילים, סיפורים וחדשות מותאמות.",
+      "כתיבת מכתבים, דיווחים או חיבורים בני 80–120 מילים."
+    ],
+    grammar: [
+      "Past Continuous לצד Past Simple והיכרות עם Present Perfect.",
+      "צורות עתיד שונות (will / going to / present continuous לתכניות).",
+      "תנאי 0 ו-1 ומודלים מורחבים (should, might, could)."
+    ],
+    vocabulary: [
+      "סוגיות גלובליות: מים, אנרגיה, קיימות ואיכות סביבה.",
+      "תרבות וזהות, ביוגרפיות, טכנולוגיה ואזרחות דיגיטלית."
+    ],
+    benchmark: [
+      "כותב/ת טקסט רב-פסקאות עם שליטה בזמנים, קוהרנטיות ומילות קישור.",
+      "מציג/ה ממצאי מחקר בעל פה ובכתב ומשתתף/ת בדיונים קבוצתיים."
+    ]
+  }
+];
+
 export default function Curriculum() {
   useIOSViewportFix();
   const router = useRouter();
+  const subjectParam = Array.isArray(router.query.subject)
+    ? router.query.subject[0]
+    : router.query.subject;
+  const normalizedSubject = (subjectParam || "math").toString().toLowerCase();
+  const subject = normalizedSubject === "english" ? "english" : "math";
+  const isEnglish = subject === "english";
   
   const handleClose = () => {
     router.back();
@@ -28,109 +205,176 @@ export default function Curriculum() {
 
           <header className="text-center space-y-3">
             <h1 className="text-3xl md:text-4xl font-black" dir="rtl">
-              תוכנית הלימודים באתר - מתמטיקה
+              תוכנית הלימודים באתר - {isEnglish ? "אנגלית" : "מתמטיקה"}
             </h1>
             <p className="text-sm md:text-base text-white/70 max-w-2xl mx-auto" dir="rtl">
-              סיכום מלא של כל הנושאים, רמות הקושי והכיתות הזמינות במערכת
+              {isEnglish
+                ? "מיפוי רשמי של תכנית משרד החינוך באנגלית (כיתות א׳–ו׳) לפי מיומנויות, דקדוק ואוצר מילים."
+                : "סיכום מלא של כל נושאי החשבון, רמות הקושי והכיתות הזמינות במערכת."}
             </p>
           </header>
 
-          <div className="bg-white/5 rounded-2xl border border-white/10 p-6" dir="rtl">
-            <div className="prose prose-invert max-w-none">
-              <div className="bg-emerald-500/20 border-r-4 border-emerald-500 p-4 rounded-lg mb-6">
-                <h3 className="text-xl font-bold mb-2">מבנה כללי</h3>
+          {isEnglish ? (
+            <div className="bg-white/5 rounded-2xl border border-white/10 p-6" dir="rtl">
+              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
+                <h3 className="text-xl font-bold mb-2">מטרות כלליות</h3>
                 <ul className="list-disc pr-6 space-y-2">
-                  <li><strong>6 כיתות</strong>: א', ב', ג', ד', ה', ו'</li>
-                  <li><strong>3 רמות קושי</strong> לכל כיתה: קל, בינוני, קשה</li>
-                  <li><strong>23 נושאים מתמטיים</strong> בסך הכל</li>
+                  {ENGLISH_GENERAL_GOALS.map((goal, idx) => (
+                    <li key={`goal-${idx}`}>{goal}</li>
+                  ))}
                 </ul>
               </div>
-
-              {/* כיתה א' */}
-              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
-                <h2 className="text-2xl font-bold mb-3">כיתה א'</h2>
-                <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
-                <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>חיבור - כולל חיבור בעשרות שלמות ובעשרת השנייה</li>
-                  <li>חיסור - כולל חיסור בעשרות שלמות ובעשרת השנייה</li>
-                  <li>כפל - עד 20</li>
-                  <li>השוואה</li>
-                  <li>תחושת מספר - שכנים, זוגי/אי-זוגי, השלמה ל-10, עשרות/יחידות, ישר המספרים, מנייה וספירה</li>
-                  <li>שאלות מילוליות - שאלות חיבור וחיסור (כסף, זמן, כמויות)</li>
-                </ol>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">רמות קושי:</h4>
-                  <div className="text-sm space-y-2">
-                    <div><strong>קל:</strong> חיבור עד 10 (כולל חיבור בעשרות שלמות ובעשרת השנייה), חיסור עד 10, כפל עד 5×5, השוואה עד 10, תחושת מספר עד 10 (ישר המספרים, מנייה וספירה), שאלות מילוליות עד 10</div>
-                    <div><strong>בינוני:</strong> חיבור עד 20 (כולל חיבור בעשרות שלמות ובעשרת השנייה), חיסור עד 20, כפל עד 5×5, השוואה עד 20, תחושת מספר עד 20 (ישר המספרים, מנייה וספירה), שאלות מילוליות עד 20</div>
-                    <div><strong>קשה:</strong> חיבור עד 20 (כולל חיבור בעשרות שלמות ובעשרת השנייה), חיסור עד 20, כפל עד 5×5, השוואה עד 20, תחושת מספר עד 20 (ישר המספרים, מנייה וספירה), שאלות מילוליות עד 20</div>
+              {ENGLISH_CURRICULUM.map((grade) => (
+                <div
+                  key={grade.grade}
+                  className="bg-blue-500/15 border-r-4 border-blue-400 p-4 rounded-lg mb-6"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
+                    <h2 className="text-2xl font-bold">{grade.grade}</h2>
+                    <span className="text-sm text-white/70">{grade.stage}</span>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                      <h4 className="font-semibold mb-1 text-white">מוקדי למידה</h4>
+                      <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
+                        {grade.focus.map((item, idx) => (
+                          <li key={`focus-${grade.grade}-${idx}`}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1 text-white">מיומנויות עיקריות</h4>
+                      <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
+                        {grade.skills.map((item, idx) => (
+                          <li key={`skills-${grade.grade}-${idx}`}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1 text-white">דקדוק ומבנים</h4>
+                      <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
+                        {grade.grammar.map((item, idx) => (
+                          <li key={`grammar-${grade.grade}-${idx}`}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1 text-white">נושאי אוצר מילים</h4>
+                      <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
+                        {grade.vocabulary.map((item, idx) => (
+                          <li key={`vocab-${grade.grade}-${idx}`}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <h4 className="font-semibold mb-1 text-white">יעדי סף</h4>
+                    <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
+                      {grade.benchmark.map((item, idx) => (
+                        <li key={`benchmark-${grade.grade}-${idx}`}>{item}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-                <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> כפל עד 20. חילוק נלמד רק כהפוך לכפל בשאלות מילוליות, לא תרגילים ישירים. אין שברים. אין מספרים שליליים. רק תרגילים ישירים (ללא נעלם).
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white/5 rounded-2xl border border-white/10 p-6" dir="rtl">
+              <div className="prose prose-invert max-w-none">
+                <div className="bg-emerald-500/20 border-r-4 border-emerald-500 p-4 rounded-lg mb-6">
+                  <h3 className="text-xl font-bold mb-2">מבנה כללי</h3>
+                  <ul className="list-disc pr-6 space-y-2">
+                    <li><strong>6 כיתות</strong>: א', ב', ג', ד', ה', ו'</li>
+                    <li><strong>3 רמות קושי</strong> לכל כיתה: קל, בינוני, קשה</li>
+                    <li><strong>23 נושאים מתמטיים</strong> בסך הכל</li>
+                  </ul>
                 </div>
-              </div>
 
-              {/* כיתה ב' */}
-              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
-                <h2 className="text-2xl font-bold mb-3">כיתה ב'</h2>
-                <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
-                <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>חיבור</li>
-                  <li>חיסור</li>
-                  <li>כפל - לוח כפל עד 10×10</li>
-                  <li>חילוק - לפי לוח הכפל</li>
-                  <li>שברים - חצי ורבע</li>
-                  <li>סימני התחלקות - ב-2, 5, 10</li>
-                  <li>השוואה</li>
-                  <li>תחושת מספר</li>
-                  <li>שאלות מילוליות - שאלות חיבור, חיסור, כפל וחילוק (כסף, זמן, כמויות)</li>
-                  <li>מעורב - תרגילים מעורבים בתחום ה-1000</li>
-                </ol>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">רמות קושי:</h4>
-                  <div className="text-sm space-y-2">
-                    <div><strong>קל:</strong> חיבור/חיסור עד 50, כפל עד 5×5, חילוק עד 50, שברים חצי/רבע, סימני התחלקות ב-2,5,10, השוואה עד 1000, שאלות מילוליות עד 100</div>
-                    <div><strong>בינוני:</strong> חיבור/חיסור עד 100, כפל עד 10×10, חילוק עד 100, שברים חצי/רבע, סימני התחלקות ב-2,5,10, השוואה עד 1000, שאלות מילוליות עד 100</div>
-                    <div><strong>קשה:</strong> חיבור/חיסור עד 100, כפל עד 10×10, חילוק עד 100, שברים חצי/רבע, סימני התחלקות ב-2,5,10, השוואה עד 1000, שאלות מילוליות עד 100</div>
+                {/* כיתה א' */}
+                <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
+                  <h2 className="text-2xl font-bold mb-3">כיתה א'</h2>
+                  <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
+                  <ol className="list-decimal pr-6 space-y-1 mb-4">
+                    <li>חיבור - כולל חיבור בעשרות שלמות ובעשרת השנייה</li>
+                    <li>חיסור - כולל חיסור בעשרות שלמות ובעשרת השנייה</li>
+                    <li>כפל - עד 20</li>
+                    <li>השוואה</li>
+                    <li>תחושת מספר - שכנים, זוגי/אי-זוגי, השלמה ל-10, עשרות/יחידות, ישר המספרים, מנייה וספירה</li>
+                    <li>שאלות מילוליות - שאלות חיבור וחיסור (כסף, זמן, כמויות)</li>
+                  </ol>
+                  <div className="bg-white/5 p-3 rounded mb-3">
+                    <h4 className="font-semibold mb-2">רמות קושי:</h4>
+                    <div className="text-sm space-y-2">
+                      <div><strong>קל:</strong> חיבור עד 10 (כולל חיבור בעשרות שלמות ובעשרת השנייה), חיסור עד 10, כפל עד 5×5, השוואה עד 10, תחושת מספר עד 10 (ישר המספרים, מנייה וספירה), שאלות מילוליות עד 10</div>
+                      <div><strong>בינוני:</strong> חיבור עד 20 (כולל חיבור בעשרות שלמות ובעשרת השנייה), חיסור עד 20, כפל עד 5×5, השוואה עד 20, תחושת מספר עד 20 (ישר המספרים, מנייה וספירה), שאלות מילוליות עד 20</div>
+                      <div><strong>קשה:</strong> חיבור עד 20 (כולל חיבור בעשרות שלמות ובעשרת השנייה), חיסור עד 20, כפל עד 5×5, השוואה עד 20, תחושת מספר עד 20 (ישר המספרים, מנייה וספירה), שאלות מילוליות עד 20</div>
+                    </div>
+                  </div>
+                  <div className="bg-yellow-500/20 p-3 rounded text-sm">
+                    <strong>הערות:</strong> כפל עד 20. חילוק נלמד רק כהפוך לכפל בשאלות מילוליות, לא תרגילים ישירים. אין שברים. אין מספרים שליליים. רק תרגילים ישירים (ללא נעלם).
                   </div>
                 </div>
-                <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> אין מספרים שליליים. רק תרגילים ישירים (ללא נעלם).
-                </div>
-              </div>
 
-              {/* כיתה ג' */}
-              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
-                <h2 className="text-2xl font-bold mb-3">כיתה ג'</h2>
-                <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
-                <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>חיבור</li>
-                  <li>חיסור</li>
-                  <li>כפל - כולל כפל בעשרות שלמות ובמאות שלמות</li>
-                  <li>חילוק - כולל חילוק עם שארית</li>
-                  <li>שברים - היכרות עם שבר כחלק משלם</li>
-                  <li>סדרות</li>
-                  <li>עשרוניים - עשרוניים בסיסיים</li>
-                  <li>סימני התחלקות - ב-2, 5, 10</li>
-                  <li>סדר פעולות והשימוש בסוגריים</li>
-                  <li>השוואה</li>
-                  <li>משוואות</li>
-                  <li>תחושת מספר</li>
-                  <li>מעורב</li>
-                </ol>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">רמות קושי:</h4>
-                  <div className="text-sm space-y-2">
-                    <div><strong>קל:</strong> חיבור/חיסור עד 200, כפל עד 10 (כולל כפל בעשרות ומאות), חילוק עד 100 (עם שארית), שברים מכנה עד 4, סדרות התחלה עד 20, עשרוניים בסיס עד 50, סימני התחלקות ב-2,5,10, סדר פעולות עם סוגריים, השוואה עד 10000</div>
-                    <div><strong>בינוני:</strong> חיבור/חיסור עד 500, כפל עד 12 (כולל כפל בעשרות ומאות), חילוק עד 144 (עם שארית), שברים מכנה עד 6, סדרות התחלה עד 50, עשרוניים בסיס עד 50, סימני התחלקות ב-2,5,10, סדר פעולות עם סוגריים, השוואה עד 10000</div>
-                    <div><strong>קשה:</strong> חיבור/חיסור עד 1000, כפל עד 12 (כולל כפל בעשרות ומאות), חילוק עד 200 (עם שארית), שברים מכנה עד 6, סדרות התחלה עד 50, עשרוניים בסיס עד 50, סימני התחלקות ב-2,5,10, סדר פעולות עם סוגריים, השוואה עד 10000</div>
+                {/* כיתה ב' */}
+                <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
+                  <h2 className="text-2xl font-bold mb-3">כיתה ב'</h2>
+                  <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
+                  <ol className="list-decimal pr-6 space-y-1 mb-4">
+                    <li>חיבור</li>
+                    <li>חיסור</li>
+                    <li>כפל - לוח כפל עד 10×10</li>
+                    <li>חילוק - לפי לוח הכפל</li>
+                    <li>שברים - חצי ורבע</li>
+                    <li>סימני התחלקות - ב-2, 5, 10</li>
+                    <li>השוואה</li>
+                    <li>תחושת מספר</li>
+                    <li>שאלות מילוליות - שאלות חיבור, חיסור, כפל וחילוק (כסף, זמן, כמויות)</li>
+                    <li>מעורב - תרגילים מעורבים בתחום ה-1000</li>
+                  </ol>
+                  <div className="bg-white/5 p-3 rounded mb-3">
+                    <h4 className="font-semibold mb-2">רמות קושי:</h4>
+                    <div className="text-sm space-y-2">
+                      <div><strong>קל:</strong> חיבור/חיסור עד 50, כפל עד 5×5, חילוק עד 50, שברים חצי/רבע, סימני התחלקות ב-2,5,10, השוואה עד 1000, שאלות מילוליות עד 100</div>
+                      <div><strong>בינוני:</strong> חיבור/חיסור עד 100, כפל עד 10×10, חילוק עד 100, שברים חצי/רבע, סימני התחלקות ב-2,5,10, השוואה עד 1000, שאלות מילוליות עד 100</div>
+                      <div><strong>קשה:</strong> חיבור/חיסור עד 100, כפל עד 10×10, חילוק עד 100, שברים חצי/רבע, סימני התחלקות ב-2,5,10, השוואה עד 1000, שאלות מילוליות עד 100</div>
+                    </div>
+                  </div>
+                  <div className="bg-yellow-500/20 p-3 rounded text-sm">
+                    <strong>הערות:</strong> אין מספרים שליליים. רק תרגילים ישירים (ללא נעלם).
                   </div>
                 </div>
-                <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> אין מספרים שליליים. נעלמים רק בתרגילי משוואות. חילוק עם שארית.
+
+                {/* כיתה ג' */}
+                <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
+                  <h2 className="text-2xl font-bold mb-3">כיתה ג'</h2>
+                  <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
+                  <ol className="list-decimal pr-6 space-y-1 mb-4">
+                    <li>חיבור</li>
+                    <li>חיסור</li>
+                    <li>כפל - כולל כפל בעשרות שלמות ובמאות שלמות</li>
+                    <li>חילוק - כולל חילוק עם שארית</li>
+                    <li>שברים - היכרות עם שבר כחלק משלם</li>
+                    <li>סדרות</li>
+                    <li>עשרוניים - עשרוניים בסיסיים</li>
+                    <li>סימני התחלקות - ב-2, 5, 10</li>
+                    <li>סדר פעולות והשימוש בסוגריים</li>
+                    <li>השוואה</li>
+                    <li>משוואות</li>
+                    <li>תחושת מספר</li>
+                    <li>מעורב</li>
+                  </ol>
+                  <div className="bg-white/5 p-3 rounded mb-3">
+                    <h4 className="font-semibold mb-2">רמות קושי:</h4>
+                    <div className="text-sm space-y-2">
+                      <div><strong>קל:</strong> חיבור/חיסור עד 200, כפל עד 10 (כולל כפל בעשרות ומאות), חילוק עד 100 (עם שארית), שברים מכנה עד 4, סדרות התחלה עד 20, עשרוניים בסיס עד 50, סימני התחלקות ב-2,5,10, סדר פעולות עם סוגריים, השוואה עד 10000</div>
+                      <div><strong>בינוני:</strong> חיבור/חיסור עד 500, כפל עד 12 (כולל כפל בעשרות ומאות), חילוק עד 144 (עם שארית), שברים מכנה עד 6, סדרות התחלה עד 50, עשרוניים בסיס עד 50, סימני התחלקות ב-2,5,10, סדר פעולות עם סוגריים, השוואה עד 10000</div>
+                      <div><strong>קשה:</strong> חיבור/חיסור עד 1000, כפל עד 12 (כולל כפל בעשרות ומאות), חילוק עד 200 (עם שארית), שברים מכנה עד 6, סדרות התחלה עד 50, עשרוניים בסיס עד 50, סימני התחלקות ב-2,5,10, סדר פעולות עם סוגריים, השוואה עד 10000</div>
+                    </div>
+                  </div>
+                  <div className="bg-yellow-500/20 p-3 rounded text-sm">
+                    <strong>הערות:</strong> אין מספרים שליליים. נעלמים רק בתרגילי משוואות. חילוק עם שארית.
+                  </div>
                 </div>
-              </div>
 
               {/* כיתה ד' */}
               <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
@@ -250,7 +494,8 @@ export default function Curriculum() {
                 </p>
               </div>
             </div>
-          </div>
+            </div>
+          )}
         </div>
       </main>
     </Layout>

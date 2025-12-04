@@ -1355,7 +1355,7 @@ export default function MathMaster() {
           >
             <div className="absolute right-2 top-2 flex gap-2 pointer-events-auto">
               <button
-                onClick={() => router.push("/learning/curriculum")}
+                onClick={() => router.push("/learning/curriculum?subject=math")}
                 className="min-w-[100px] px-3 py-1 rounded-lg text-sm font-bold bg-emerald-500/20 border border-emerald-400/30 hover:bg-emerald-500/30 text-emerald-200"
               >
                 📋 תוכנית לימודים

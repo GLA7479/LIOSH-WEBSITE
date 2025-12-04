@@ -2,44 +2,92 @@ import { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
+import { trackEnglishTopicTime } from "../../utils/english-time-tracking";
 
 const LEVELS = {
-  easy: {
-    name: "קל",
-    maxWords: 5,
-    complexity: "basic",
-  },
-  medium: {
-    name: "בינוני",
-    maxWords: 10,
-    complexity: "intermediate",
-  },
-  hard: {
-    name: "קשה",
-    maxWords: 15,
-    complexity: "advanced",
-  },
+  easy: { name: "קל", maxWords: 5, complexity: "basic" },
+  medium: { name: "בינוני", maxWords: 10, complexity: "intermediate" },
+  hard: { name: "קשה", maxWords: 15, complexity: "advanced" },
 };
 
 const TOPICS = {
-  vocabulary: { name: "אוצר מילים", description: "אוצר מילים", icon: "📚" },
-  grammar: { name: "דקדוק", description: "דקדוק", icon: "✏️" },
-  translation: { name: "תרגום", description: "תרגום", icon: "🌐" },
-  sentences: { name: "משפטים", description: "משפטים", icon: "💬" },
-  writing: { name: "כתיבה", description: "כתיבה", icon: "✍️" },
-  mixed: { name: "ערבוב", description: "ערבוב", icon: "🎲" },
+  vocabulary: { name: "אוצר מילים", description: "Vocabulary practice", icon: "📚" },
+  grammar: { name: "דקדוק", description: "Grammar focus", icon: "✏️" },
+  translation: { name: "תרגום", description: "Sentence translation", icon: "🌐" },
+  sentences: { name: "משפטים", description: "Sentence building", icon: "💬" },
+  writing: { name: "כתיבה", description: "Free typing practice", icon: "✍️" },
+  mixed: { name: "ערבוב", description: "Blend topics", icon: "🎲" },
 };
 
+const GRADE_ORDER = ["g1", "g2", "g3", "g4", "g5", "g6"];
+
 const GRADES = {
-  g1_2: {
-    name: "כיתות א–ב",
-    // קל – בלי דקדוק מורכב ובלי כתיבה חופשית
-    topics: ["vocabulary", "translation", "mixed"],
-    wordLists: ["animals", "colors", "numbers", "family", "body"],
+  g1: {
+    name: "כיתה א׳ · Grade 1",
+    stage: "Exposure Stage",
+    topics: ["vocabulary"],
+    wordLists: ["colors", "numbers", "family", "animals", "emotions", "actions", "school"],
+    curriculum: {
+      summary: "Joyful exposure through songs, stories and action-based games.",
+      skills: [
+        "Follow simple classroom instructions with gestures",
+        "Recognise key words in chants and stories",
+        "Respond with single words or actions",
+      ],
+      grammar: [
+        "No formal grammar; exposure to 'I am / You are'",
+        "Pronouns and classroom routines in fixed chunks",
+      ],
+      vocabulary: [
+        "Colors, shapes, numbers 1–10",
+        "Family members, classroom objects, pets",
+      ],
+      benchmark: [
+        "Understands short teacher directions with support",
+        "Matches familiar words to pictures within taught themes",
+      ],
+    },
   },
-  g3_4: {
-    name: "כיתות ג–ד",
-    // מוסיפים דקדוק, משפטים וכתיבה
+  g2: {
+    name: "כיתה ב׳ · Grade 2",
+    stage: "Foundation Stage",
+    topics: ["vocabulary", "translation", "writing"],
+    wordLists: [
+      "colors",
+      "numbers",
+      "family",
+      "animals",
+      "emotions",
+      "school",
+      "food",
+      "actions",
+      "house",
+    ],
+    curriculum: {
+      summary: "Move from exposure to controlled production with phonics and decoding.",
+      skills: [
+        "Listen to short stories and identify key words",
+        "Read and copy simple sentences",
+        "Answer patterned questions orally",
+      ],
+      grammar: [
+        "Present simple of 'be' (I am / He is)",
+        "Pronouns and plural nouns (-s)",
+        "Question frames: What is it? Who is this?",
+      ],
+      vocabulary: [
+        "Food, clothes, rooms at home, community places",
+        "Action verbs (run, jump, read, play)",
+      ],
+      benchmark: [
+        "Reads and writes familiar words with correct spelling",
+        "Responds orally to yes/no and wh- questions using chunks",
+      ],
+    },
+  },
+  g3: {
+    name: "כיתה ג׳ · Grade 3",
+    stage: "Beginning Literacy",
     topics: ["vocabulary", "grammar", "translation", "sentences", "writing", "mixed"],
     wordLists: [
       "animals",
@@ -50,23 +98,38 @@ const GRADES = {
       "food",
       "school",
       "weather",
+      "sports",
+      "actions",
+      "house",
     ],
+    curriculum: {
+      summary: "Full integration of the four skills with systematic reading comprehension.",
+      skills: [
+        "Listen to short dialogues with 2–3 steps",
+        "Read 60–80 word texts and find main ideas",
+        "Write and say simple sentences about routines",
+      ],
+      grammar: [
+        "Present Simple (affirmative/negative/questions)",
+        "Adjectives, article use (a/an/the)",
+        "Prepositions of place (in/on/under/next to)",
+      ],
+      vocabulary: [
+        "Daily routine, hobbies, seasons, weather",
+        "Body parts, extended animals, school life",
+      ],
+      benchmark: [
+        "Produces 4–5 spoken/written sentences per topic",
+        "Uses Present Simple accurately with he/she/it",
+      ],
+    },
   },
-  g5_6: {
-    name: "כיתות ה–ו",
-    // כיתות גבוהות – כל הנושאים
-    topics: [
-      "vocabulary",
-      "grammar",
-      "translation",
-      "sentences",
-      "writing",
-      "mixed",
-    ],
+  g4: {
+    name: "כיתה ד׳ · Grade 4",
+    stage: "Developing Literacy",
+    topics: ["vocabulary", "grammar", "translation", "sentences", "writing", "mixed"],
     wordLists: [
       "animals",
-      "colors",
-      "numbers",
       "family",
       "body",
       "food",
@@ -74,8 +137,107 @@ const GRADES = {
       "weather",
       "sports",
       "travel",
+      "community",
+      "environment",
       "emotions",
     ],
+    curriculum: {
+      summary: "Extend text length and use strategies such as predicting and scanning.",
+      skills: [
+        "Read 100–150 word texts and extract details",
+        "Listen to multi-step instructions and respond",
+        "Write short paragraphs with connectors",
+      ],
+      grammar: [
+        "Present Simple + Present Continuous",
+        "Countable vs. uncountable nouns, some/any",
+        "Possessives and adverbs of manner",
+      ],
+      vocabulary: [
+        "Food groups, places in town, transportation",
+        "Festivals, emotions, environmental actions",
+      ],
+      benchmark: [
+        "Writes coherent 3–5 sentence paragraphs",
+        "Understands instructions containing several details",
+      ],
+    },
+  },
+  g5: {
+    name: "כיתה ה׳ · Grade 5",
+    stage: "Extended Literacy",
+    topics: ["vocabulary", "grammar", "translation", "sentences", "writing", "mixed"],
+    wordLists: [
+      "animals",
+      "family",
+      "food",
+      "school",
+      "sports",
+      "travel",
+      "environment",
+      "health",
+      "technology",
+      "emotions",
+    ],
+    curriculum: {
+      summary: "Strategic reading of informational texts and structured writing.",
+      skills: [
+        "Read 150–200 word texts and infer meaning",
+        "Deliver short presentations with visuals",
+        "Write two connected paragraphs (60–80 words)",
+      ],
+      grammar: [
+        "Past Simple (regular + common irregular)",
+        "Future forms (will / be going to)",
+        "Modal verbs (can, must, have to) & comparatives",
+      ],
+      vocabulary: [
+        "Travel, geography, global citizenship",
+        "Health, fitness, technology, media",
+      ],
+      benchmark: [
+        "Summarises main idea + details from grade-level text",
+        "Applies past/future tenses and modals accurately",
+      ],
+    },
+  },
+  g6: {
+    name: "כיתה ו׳ · Grade 6",
+    stage: "Advanced Elementary",
+    topics: ["vocabulary", "grammar", "translation", "sentences", "writing", "mixed"],
+    wordLists: [
+      "animals",
+      "travel",
+      "environment",
+      "health",
+      "technology",
+      "global_issues",
+      "culture",
+      "history",
+      "community",
+      "emotions",
+    ],
+    curriculum: {
+      summary: "Transition to lower-secondary expectations with projects and research tasks.",
+      skills: [
+        "Listen to grade-level content and infer information",
+        "Read 200–250 word texts and cite evidence",
+        "Write structured letters/reports of 80–120 words",
+      ],
+      grammar: [
+        "Past Continuous vs. Past Simple",
+        "Future (will/going to) and introductory Present Perfect",
+        "Conditionals (zero/first) and extended modals (should, might)",
+      ],
+      vocabulary: [
+        "Global issues, sustainability, culture & identity",
+        "Technology, media literacy, history & biographies",
+      ],
+      benchmark: [
+        "Produces multi-paragraph texts with cohesive devices",
+        "Presents research findings orally and in writing",
+      ],
+    },
   },
 };
 
@@ -88,7 +250,7 @@ const MODES = {
 
 const STORAGE_KEY = "mleo_english_master";
 
-// Word lists for vocabulary questions
+// Word lists for vocabulary questions (aligned with curriculum themes)
 const WORD_LISTS = {
   animals: {
     dog: "כלב",
@@ -99,6 +261,8 @@ const WORD_LISTS = {
     horse: "סוס",
     cow: "פרה",
     sheep: "כבשה",
+    lion: "אריה",
+    dolphin: "דולפין",
   },
   colors: {
     red: "אדום",
@@ -110,8 +274,10 @@ const WORD_LISTS = {
     pink: "ורוד",
     black: "שחור",
     white: "לבן",
+    brown: "חום",
   },
   numbers: {
+    zero: "אפס",
     one: "אחד",
     two: "שניים",
     three: "שלושה",
@@ -122,6 +288,7 @@ const WORD_LISTS = {
     eight: "שמונה",
     nine: "תשעה",
     ten: "עשרה",
+    twenty: "עשרים",
   },
   family: {
     mother: "אמא",
@@ -132,6 +299,7 @@ const WORD_LISTS = {
     grandfather: "סבא",
     uncle: "דוד",
     aunt: "דודה",
+    cousin: "בן דוד",
   },
   body: {
     head: "ראש",
@@ -140,8 +308,9 @@ const WORD_LISTS = {
     nose: "אף",
     mouth: "פה",
     hand: "יד",
-    foot: "רגל",
+    foot: "כף רגל",
     leg: "רגל",
+    shoulder: "כתף",
   },
   food: {
     apple: "תפוח",
@@ -152,6 +321,8 @@ const WORD_LISTS = {
     banana: "בננה",
     water: "מים",
     cake: "עוגה",
+    rice: "אורז",
+    salad: "סלט",
   },
   school: {
     book: "ספר",
@@ -162,6 +333,7 @@ const WORD_LISTS = {
     teacher: "מורה",
     student: "תלמיד",
     classroom: "כיתה",
+    backpack: "תיק",
   },
   weather: {
     sun: "שמש",
@@ -172,6 +344,7 @@ const WORD_LISTS = {
     hot: "חם",
     cold: "קר",
     warm: "חמים",
+    storm: "סערה",
   },
   sports: {
     football: "כדורגל",
@@ -180,6 +353,8 @@ const WORD_LISTS = {
     swimming: "שחייה",
     running: "ריצה",
     cycling: "רכיבה על אופניים",
+    yoga: "יוגה",
+    hiking: "טיול רגלי",
   },
   travel: {
     car: "מכונית",
@@ -189,26 +364,340 @@ const WORD_LISTS = {
     hotel: "מלון",
     beach: "חוף",
     mountain: "הר",
+    passport: "דרכון",
   },
   emotions: {
     happy: "שמח",
     sad: "עצוב",
-    angry: "כעס",
+    angry: "כועס",
     excited: "נרגש",
     tired: "עייף",
     scared: "מפחד",
+    proud: "גאה",
+    worried: "מודאג",
+  },
+  actions: {
+    run: "לרוץ",
+    jump: "לקפוץ",
+    read: "לקרוא",
+    write: "לכתוב",
+    draw: "לצייר",
+    sing: "לשיר",
+    dance: "לרקוד",
+    play: "לשחק",
+  },
+  house: {
+    kitchen: "מטבח",
+    bedroom: "חדר שינה",
+    living_room: "סלון",
+    bathroom: "חדר רחצה",
+    garden: "גינה",
+    window: "חלון",
+    door: "דלת",
+    roof: "גג",
+  },
+  community: {
+    library: "ספרייה",
+    park: "פארק",
+    hospital: "בית חולים",
+    police: "משטרה",
+    museum: "מוזיאון",
+    supermarket: "סופרמרקט",
+    post_office: "דואר",
+  },
+  technology: {
+    computer: "מחשב",
+    tablet: "טאבלט",
+    keyboard: "מקלדת",
+    screen: "מסך",
+    robot: "רובוט",
+    camera: "מצלמה",
+    internet: "אינטרנט",
+  },
+  health: {
+    doctor: "רופא",
+    nurse: "אחות",
+    medicine: "תרופה",
+    healthy: "בריא",
+    hurt: "כואב",
+    exercise: "התעמלות",
+    rest: "מנוחה",
+  },
+  environment: {
+    recycle: "למחזר",
+    clean_water: "מים נקיים",
+    tree: "עץ",
+    planet: "כדור הארץ",
+    save_energy: "לחסוך באנרגיה",
+    pollution: "זיהום",
+    nature: "טבע",
+  },
+  culture: {
+    tradition: "מסורת",
+    music: "מוזיקה",
+    dance: "ריקוד",
+    language: "שפה",
+    holiday: "חג",
+    flag: "דגל",
+    story: "סיפור",
+  },
+  history: {
+    hero: "גיבור",
+    leader: "מנהיג",
+    past: "עבר",
+    today: "היום",
+    future: "עתיד",
+    memory: "זיכרון",
+    journey: "מסע",
+  },
+  global_issues: {
+    ocean: "אוקיינוס",
+    climate: "אקלים",
+    recycle_bin: "פח מחזור",
+    energy: "אנרגיה",
+    planet_earth: "כדור הארץ",
+    protect: "להגן",
+    volunteer: "להתנדב",
   },
 };
 
+const GRADE_FACTORS = {
+  g1: 0.5,
+  g2: 0.7,
+  g3: 1,
+  g4: 1.1,
+  g5: 1.3,
+  g6: 1.5,
+};
+
+const GRAMMAR_FOUNDATION = [
+  {
+    question: `Choose the correct word: "I ___ a student"`,
+    options: ["am", "is", "are"],
+    correct: "am",
+    explanation: "With I we use am.",
+  },
+  {
+    question: `Choose the correct word: "She ___ happy"`,
+    options: ["am", "is", "are"],
+    correct: "is",
+    explanation: "She/He/It uses is.",
+  },
+  {
+    question: `Fill in the blank: "They ___ friends"`,
+    options: ["am", "is", "are"],
+    correct: "are",
+    explanation: "They takes are.",
+  },
+];
+
+const GRAMMAR_DEVELOPING = [
+  {
+    question: `Choose the correct form: "He ___ football on Sundays"`,
+    options: ["play", "plays", "playing"],
+    correct: "plays",
+    explanation: "He/She/It takes -s in Present Simple.",
+  },
+  {
+    question: `Choose the correct form: "We ___ in class now"`,
+    options: ["are", "is", "am"],
+    correct: "are",
+    explanation: "We = are.",
+  },
+  {
+    question: `Choose the plural: "I have two ___" (dogs)`,
+    options: ["dog", "dogs", "doges"],
+    correct: "dogs",
+    explanation: "Plural regular nouns add s.",
+  },
+  {
+    question: `Choose the correct word: "There ___ some apples on the table"`,
+    options: ["is", "are", "am"],
+    correct: "are",
+    explanation: "Apples is plural → are.",
+  },
+  {
+    question: `Choose the correct tense: "Right now, they ___ English"`,
+    options: ["study", "studies", "are studying"],
+    correct: "are studying",
+    explanation: "Right now → Present Continuous.",
+  },
+];
+
+const GRAMMAR_EXTENDED = [
+  {
+    question: `Choose the correct verb: "She ___ to school every day"`,
+    options: ["go", "goes", "is going"],
+    correct: "goes",
+    explanation: "Every day → Present Simple with -s for she.",
+  },
+  {
+    question: `Choose the correct verb: "Yesterday we ___ a science project"`,
+    options: ["finish", "finished", "finishing"],
+    correct: "finished",
+    explanation: "Yesterday → Past Simple.",
+  },
+  {
+    question: `Choose the correct modal: "You ___ wear a helmet when you ride"` ,
+    options: ["can", "should", "am"],
+    correct: "should",
+    explanation: "Give advice → should.",
+  },
+  {
+    question: `Choose the correct future: "Tomorrow we ___ a trip"`,
+    options: ["take", "will take", "took"],
+    correct: "will take",
+    explanation: "Tomorrow → future with will.",
+  },
+];
+
+const GRAMMAR_ADVANCED = [
+  {
+    question: `Choose the correct tense: "They ___ when the phone rang"`,
+    options: ["played", "were playing", "are playing"],
+    correct: "were playing",
+    explanation: "Action in progress in the past → Past Continuous.",
+  },
+  {
+    question: `Choose the correct verb: "I have ___ finished my homework"`,
+    options: ["already", "ever", "never"],
+    correct: "already",
+    explanation: "Present Perfect often uses already.",
+  },
+  {
+    question: `Choose the correct form: "If we save water, we ___ the planet"`,
+    options: ["help", "helped", "will help"],
+    correct: "help",
+    explanation: "Zero conditional: If + present, present.",
+  },
+  {
+    question: `Choose the correct modal: "You ___ visit the new science museum"`,
+    options: ["might", "am", "was"],
+    correct: "might",
+    explanation: "Suggestion/possibility → might.",
+  },
+];
+
+const SENTENCE_TEMPLATES = {
+  base: [
+    {
+      template: "I ___ a book",
+      options: ["read", "reads", "reading"],
+      correct: "read",
+      explanation: "I read - אני קורא",
+    },
+    {
+      template: "We ___ friends",
+      options: ["am", "is", "are"],
+      correct: "are",
+      explanation: "We are - אנחנו",
+    },
+  ],
+  mid: [
+    {
+      template: "She ___ to school",
+      options: ["go", "goes", "going"],
+      correct: "goes",
+      explanation: "She goes - היא הולכת",
+    },
+    {
+      template: "They ___ football on Sundays",
+      options: ["play", "plays", "playing"],
+      correct: "play",
+      explanation: "They play - אין s",
+    },
+    {
+      template: "It is ___ today",
+      options: ["sunny", "sun", "suns"],
+      correct: "sunny",
+      explanation: "Weather adjectives: sunny, rainy...",
+    },
+  ],
+  advanced: [
+    {
+      template: "Right now, I ___ English",
+      options: ["study", "studies", "am studying"],
+      correct: "am studying",
+      explanation: "Right now → Present Continuous.",
+    },
+    {
+      template: "He ___ a car last year",
+      options: ["buy", "buys", "bought"],
+      correct: "bought",
+      explanation: "Last year → Past Simple irregular.",
+    },
+    {
+      template: "Tomorrow we ___ our grandparents",
+      options: ["visit", "visited", "are visiting"],
+      correct: "are visiting",
+      explanation: "Future plan → Present Continuous.",
+    },
+  ],
+  mastery: [
+    {
+      template: "I have ___ been to London",
+      options: ["ever", "never", "already"],
+      correct: "never",
+      explanation: "Have never been → Present Perfect experience.",
+    },
+    {
+      template: "If it ___ tomorrow, we will stay home",
+      options: ["rains", "rained", "is raining"],
+      correct: "rains",
+      explanation: "First conditional: If + present, will + base.",
+    },
+  ],
+};
+
+const TRANSLATION_BANK = {
+  early: [
+    { en: "I love you", he: "אני אוהב אותך" },
+    { en: "How are you?", he: "מה שלומך?" },
+    { en: "Thank you", he: "תודה" },
+    { en: "Good morning", he: "בוקר טוב" },
+    { en: "Good night", he: "לילה טוב" },
+    { en: "My name is", he: "השם שלי הוא" },
+    { en: "I am happy", he: "אני שמח" },
+    { en: "I like apples", he: "אני אוהב תפוחים" },
+  ],
+  mid: [
+    { en: "I go to school at seven", he: "אני הולך לבית הספר בשבע" },
+    { en: "My best friend is funny", he: "החבר הכי טוב שלי מצחיק" },
+    { en: "The weather is sunny today", he: "היום מזג האוויר שמשי" },
+    { en: "Please open the window", he: "בבקשה תפתח את החלון" },
+    { en: "We play sports after school", he: "אנחנו משחקים ספורט אחרי בית הספר" },
+  ],
+  extended: [
+    { en: "Yesterday we visited the museum", he: "אתמול ביקרנו במוזיאון" },
+    { en: "Tomorrow I will help my dad", he: "מחר אני אעזור לאבא שלי" },
+    { en: "She can ride a bike very fast", he: "היא יודעת לרכוב על אופניים מהר מאוד" },
+    { en: "We must save water every day", he: "אנחנו חייבים לחסוך במים כל יום" },
+  ],
+  advanced: [
+    { en: "I have never seen snow", he: "מעולם לא ראיתי שלג" },
+    { en: "If we recycle, the city stays clean", he: "אם אנחנו ממחזרים העיר נשארת נקייה" },
+    { en: "They are going to build a new library", he: "הם הולכים לבנות ספרייה חדשה" },
+    { en: "We might travel to London next summer", he: "אולי נטוס ללונדון בקיץ הבא" },
+  ],
+};
+
+const WRITING_SENTENCES_BASIC = [
+  { en: "Good morning", he: "בוקר טוב" },
+  { en: "Good night", he: "לילה טוב" },
+  { en: "I love my dog", he: "אני אוהב את הכלב שלי" },
+  { en: "I am happy", he: "אני שמח" },
+];
+
+const WRITING_SENTENCES_ADVANCED = [
+  { en: "I will visit my grandparents tomorrow", he: "אני אבקר את סבא וסבתא מחר" },
+  { en: "We are going to start a science project", he: "אנחנו הולכים להתחיל פרויקט מדעים" },
+  { en: "If it rains, we will stay at home", he: "אם ירד גשם, נישאר בבית" },
+  { en: "I have already finished my homework", he: "כבר סיימתי את שיעורי הבית שלי" },
+];
+
 function getLevelForGrade(levelKey, gradeKey) {
-  const base = LEVELS[levelKey];
-  let factor = 1;
-  switch (gradeKey) {
-    case "g1_2": factor = 0.5; break;
-    case "g3_4": factor = 1; break;
-    case "g5_6": factor = 1.5; break;
-    default: factor = 1;
-  }
+  const base = LEVELS[levelKey] || LEVELS.easy;
+  const factor = GRADE_FACTORS[gradeKey] || 1;
   const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
   return {
     name: base.name,
@@ -312,13 +801,31 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     selectedTopic = topic;
   }
 
-  let question, correctAnswer, params = {};
+  let question,
+    correctAnswer,
+    params = {};
   let qType = "choice"; // ברירת מחדל – שאלת בחירה
-  const availableWordLists = GRADES[gradeKey].wordLists;
-  const selectedList = availableWordLists[Math.floor(Math.random() * availableWordLists.length)];
-  const words = WORD_LISTS[selectedList];
+  const gradeConfig = GRADES[gradeKey] || GRADES.g3;
+  const gradeWordLists = (gradeConfig.wordLists || []).filter(
+    (list) => WORD_LISTS[list]
+  );
+  const fallbackWordLists = gradeWordLists.length
+    ? gradeWordLists
+    : Object.keys(WORD_LISTS);
+  const selectedList =
+    fallbackWordLists[Math.floor(Math.random() * fallbackWordLists.length)];
+  const words = WORD_LISTS[selectedList] || WORD_LISTS.colors;
   const wordEntries = Object.entries(words);
-  const randomWord = wordEntries[Math.floor(Math.random() * wordEntries.length)];
+  const randomWord =
+    wordEntries[Math.floor(Math.random() * wordEntries.length)] || [
+      "sun",
+      "שמש",
+    ];
+  const isEarly = gradeKey === "g1";
+  const isFoundation = gradeKey === "g2";
+  const isMid = gradeKey === "g3" || gradeKey === "g4";
+  const isUpper = gradeKey === "g5";
+  const isAdvanced = gradeKey === "g6";
 
   switch (selectedTopic) {
     case "vocabulary": {
@@ -337,66 +844,19 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
 
     case "grammar": {
-      // דקדוק – מותאם לפי כיתה
-      const basic = [
-        {
-          question: `מה הצורה הנכונה: "I ___ a student"`,
-          options: ["am", "is", "are"],
-          correct: "am",
-          explanation: "עם I תמיד משתמשים ב-am: I am",
-        },
-        {
-          question: `מה הצורה הנכונה: "She ___ happy"`,
-          options: ["am", "is", "are"],
-          correct: "is",
-          explanation: "She/He/It לוקחים is",
-        },
-        {
-          question: `מה הצורה הנכונה: "They ___ friends"`,
-          options: ["am", "is", "are"],
-          correct: "are",
-          explanation: "You/We/They לוקחים are",
-        },
-      ];
-      const midExtra = [
-        {
-          question: `בחר את הצורה הנכונה: "He ___ football on Sundays"`,
-          options: ["play", "plays", "playing"],
-          correct: "plays",
-          explanation: "He/She/It מקבלים s: He plays",
-        },
-        {
-          question: `בחר את הצורה הנכונה: "We ___ in class now"`,
-          options: ["are", "is", "am"],
-          correct: "are",
-          explanation: "We = are",
-        },
-        {
-          question: `בחר את הצורה הנכונה: "I have two ___" (כלבים)`,
-          options: ["dog", "dogs", "doges"],
-          correct: "dogs",
-          explanation: "רבים רגילים – מוסיפים s: dogs",
-        },
-      ];
-      const advancedExtra = [
-        {
-          question: `מה הצורה הנכונה: "Right now, they ___ English"`,
-          options: ["study", "studies", "are studying"],
-          correct: "are studying",
-          explanation: "Right now → Present Continuous: are studying",
-        },
-        {
-          question: `בחר את הצורה הנכונה: "She ___ to school every day"`,
-          options: ["go", "goes", "is going"],
-          correct: "goes",
-          explanation: "Every day → Present Simple, He/She/It + s: goes",
-        },
-      ];
-      let pool = basic;
-      if (gradeKey === "g3_4") {
-        pool = basic.concat(midExtra);
-      } else if (gradeKey === "g5_6") {
-        pool = basic.concat(midExtra, advancedExtra);
+      let pool = [...GRAMMAR_FOUNDATION];
+      if (isMid) {
+        pool = pool.concat(GRAMMAR_DEVELOPING);
+      }
+      if (isUpper) {
+        pool = pool.concat(GRAMMAR_DEVELOPING, GRAMMAR_EXTENDED);
+      }
+      if (isAdvanced) {
+        pool = pool.concat(
+          GRAMMAR_DEVELOPING,
+          GRAMMAR_EXTENDED,
+          GRAMMAR_ADVANCED
+        );
       }
       const grammarQ = pool[Math.floor(Math.random() * pool.length)];
       question = grammarQ.question;
@@ -406,19 +866,20 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
 
     case "translation": {
-      // משפטים פשוטים לתרגום
-      const sentences = [
-        { en: "I love you", he: "אני אוהב אותך" },
-        { en: "How are you?", he: "מה שלומך?" },
-        { en: "Thank you", he: "תודה" },
-        { en: "Good morning", he: "בוקר טוב" },
-        { en: "Good night", he: "לילה טוב" },
-        { en: "What is your name?", he: "מה השם שלך?" },
-        { en: "My name is", he: "השם שלי הוא" },
-        { en: "I am happy", he: "אני שמח" },
-        { en: "I am sad", he: "אני עצוב" },
-        { en: "I like apples", he: "אני אוהב תפוחים" },
-      ];
+      let sentencesPool = TRANSLATION_BANK.early;
+      if (isFoundation) {
+        sentencesPool = TRANSLATION_BANK.early;
+      } else if (isMid) {
+        sentencesPool = TRANSLATION_BANK.mid;
+      } else if (isUpper) {
+        sentencesPool = TRANSLATION_BANK.mid.concat(TRANSLATION_BANK.extended);
+      } else if (isAdvanced) {
+        sentencesPool = TRANSLATION_BANK.mid
+          .concat(TRANSLATION_BANK.extended)
+          .concat(TRANSLATION_BANK.advanced);
+      }
+      const sentences =
+        sentencesPool.length > 0 ? sentencesPool : TRANSLATION_BANK.early;
       const sentence = sentences[Math.floor(Math.random() * sentences.length)];
       const direction = Math.random() > 0.5;
       if (direction) {
@@ -434,55 +895,21 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
 
     case "sentences": {
-      const baseTemplates = [
-        {
-          template: "I ___ a book",
-          options: ["read", "reads", "reading"],
-          correct: "read",
-          explanation: "I read - אני קורא",
-        },
-        {
-          template: "We ___ friends",
-          options: ["am", "is", "are"],
-          correct: "are",
-          explanation: "We are - אנחנו",
-        },
-      ];
-      const midTemplates = [
-        {
-          template: "She ___ to school",
-          options: ["go", "goes", "going"],
-          correct: "goes",
-          explanation: "She goes - היא הולכת",
-        },
-        {
-          template: "They ___ football on Sundays",
-          options: ["play", "plays", "playing"],
-          correct: "play",
-          explanation: "They play - הם משחקים (ללא s)",
-        },
-      ];
-      const advancedTemplates = [
-        {
-          template: "Right now, I ___ English",
-          options: ["study", "studies", "am studying"],
-          correct: "am studying",
-          explanation: "Right now → am studying (Present Continuous)",
-        },
-        {
-          template: "He ___ a car",
-          options: ["have", "has", "having"],
-          correct: "has",
-          explanation: "He/She/It + has",
-        },
-      ];
-      let pool = baseTemplates;
-      if (gradeKey === "g3_4") {
-        pool = baseTemplates.concat(midTemplates);
-      } else if (gradeKey === "g5_6") {
-        pool = baseTemplates.concat(midTemplates, advancedTemplates);
+      let pool = [...SENTENCE_TEMPLATES.base];
+      if (isMid) {
+        pool = pool.concat(SENTENCE_TEMPLATES.mid);
       }
-      const template = pool[Math.floor(Math.random() * pool.length)];
+      if (isUpper) {
+        pool = pool.concat(SENTENCE_TEMPLATES.mid, SENTENCE_TEMPLATES.advanced);
+      }
+      if (isAdvanced) {
+        pool = pool
+          .concat(SENTENCE_TEMPLATES.mid, SENTENCE_TEMPLATES.advanced)
+          .concat(SENTENCE_TEMPLATES.mastery);
+      }
+      const template =
+        pool[Math.floor(Math.random() * pool.length)] ||
+        SENTENCE_TEMPLATES.base[0];
       question = `השלם את המשפט: "${template.template}"`;
       correctAnswer = template.correct;
       params = { template: template.template, explanation: template.explanation };
@@ -490,19 +917,14 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
 
     case "writing": {
-      // כתיבה – תמיד לכתוב באנגלית (spelling)
-      // כיתות ג–ד: מילים בודדות; ה–ו: לפעמים גם משפט פשוט
-      const useSentence =
-        gradeKey === "g5_6" && Math.random() < 0.35; // בערך שליש מהשאלות – משפט
+      const allowSentences = isUpper || isAdvanced;
+      const useSentence = allowSentences && Math.random() < 0.35;
 
       if (useSentence) {
-        const sentences = [
-          { en: "Good morning", he: "בוקר טוב" },
-          { en: "Good night", he: "לילה טוב" },
-          { en: "I love my dog", he: "אני אוהב את הכלב שלי" },
-          { en: "I am happy", he: "אני שמח" },
-        ];
-        const s = sentences[Math.floor(Math.random() * sentences.length)];
+        const pool = allowSentences
+          ? WRITING_SENTENCES_BASIC.concat(WRITING_SENTENCES_ADVANCED)
+          : WRITING_SENTENCES_BASIC;
+        const s = pool[Math.floor(Math.random() * pool.length)];
         question = `כתוב באנגלית: "${s.he}"`;
         correctAnswer = s.en;
         params = {
@@ -512,8 +934,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           direction: "he_to_en",
         };
       } else {
-        // מילים בודדות מהמילון שנבחר
-        const [en, he] = randomWord; // [wordEN, wordHE]
+        const [en, he] = randomWord;
         question = `כתוב באנגלית: "${he}"`;
         correctAnswer = en;
         params = {
@@ -834,7 +1255,11 @@ export default function EnglishMaster() {
   const topicSelectRef = useRef(null);
 
   const [mounted, setMounted] = useState(false);
-  const [grade, setGrade] = useState("g3_4");
+  const [grade, setGrade] = useState("g3");
+  const [gradeNumber, setGradeNumber] = useState(() => {
+    const idx = GRADE_ORDER.indexOf("g3");
+    return idx >= 0 ? idx + 1 : 3;
+  });
   const [mode, setMode] = useState("learning");
   const [level, setLevel] = useState("easy");
   const [topic, setTopic] = useState("vocabulary");
@@ -872,6 +1297,7 @@ export default function EnglishMaster() {
     date: new Date().toDateString(),
     bestScore: 0,
     questions: 0,
+    correct: 0,
   });
   const [showHint, setShowHint] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
@@ -888,6 +1314,7 @@ export default function EnglishMaster() {
     grammar: false,
     translation: true,
     sentences: false,
+    writing: false,
   });
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardLevel, setLeaderboardLevel] = useState("easy");
@@ -903,6 +1330,75 @@ export default function EnglishMaster() {
     }
     return "";
   });
+  const gradeLabels = ["א", "ב", "ג", "ד", "ה", "ו"];
+  const [weeklyChallenge, setWeeklyChallenge] = useState({
+    target: 50,
+    current: 0,
+    completed: false,
+  });
+
+  useEffect(() => {
+    const idx = GRADE_ORDER.indexOf(grade);
+    if (idx !== -1 && gradeNumber !== idx + 1) {
+      setGradeNumber(idx + 1);
+    }
+  }, [grade, gradeNumber]);
+
+  const handleGradeNumberChange = (value) => {
+    const numeric = Number(value);
+    if (!numeric) return;
+    const nextGradeKey = GRADE_ORDER[numeric - 1] || "g3";
+    setGradeNumber(numeric);
+    setGrade(nextGradeKey);
+    setGameActive(false);
+  };
+
+  function persistProgressSnapshot(newProgress) {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem(STORAGE_KEY + "_progress") || "{}"
+      );
+      saved.progress = newProgress;
+      localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+    } catch {}
+  }
+
+  function updateTopicProgress(topic, isCorrect) {
+    if (!topic) return;
+    setProgress((prev) => {
+      const prevEntry = prev[topic] || { total: 0, correct: 0 };
+      const updated = {
+        ...prev,
+        [topic]: {
+          total: (prevEntry.total || 0) + 1,
+          correct: (prevEntry.correct || 0) + (isCorrect ? 1 : 0),
+        },
+      };
+      persistProgressSnapshot(updated);
+      return updated;
+    });
+  }
+
+  function logEnglishMistakeEntry(entry) {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("mleo_english_mistakes") || "[]"
+      );
+      saved.push({ ...entry, timestamp: Date.now() });
+      if (saved.length > 200) saved.shift();
+      localStorage.setItem("mleo_english_mistakes", JSON.stringify(saved));
+    } catch {}
+  }
+
+  function trackCurrentQuestionTime() {
+    if (!questionStartTime || !currentQuestion) return;
+    const duration = (Date.now() - questionStartTime) / 1000;
+    if (duration > 0 && duration < 300) {
+      trackEnglishTopicTime(currentQuestion.topic, grade, level, duration);
+    }
+  }
 
   useEffect(() => {
     setMounted(true);
@@ -963,6 +1459,7 @@ export default function EnglishMaster() {
       grammar: availableTopics.includes("grammar"),
       translation: availableTopics.includes("translation"),
       sentences: availableTopics.includes("sentences"),
+      writing: availableTopics.includes("writing"),
     };
     setMixedTopics(newMixedTopics);
   }, [grade]);
@@ -970,7 +1467,7 @@ export default function EnglishMaster() {
   useEffect(() => {
     const today = new Date().toDateString();
     if (dailyChallenge.date !== today) {
-      setDailyChallenge({ date: today, bestScore: 0, questions: 0 });
+      setDailyChallenge({ date: today, bestScore: 0, questions: 0, correct: 0 });
     }
   }, [dailyChallenge.date]);
 
@@ -982,7 +1479,12 @@ export default function EnglishMaster() {
       if (saved.badges) setBadges(saved.badges);
       if (saved.playerLevel) setPlayerLevel(saved.playerLevel);
       if (saved.xp) setXp(saved.xp);
-      if (saved.progress) setProgress(saved.progress);
+      if (saved.progress) {
+        setProgress((prev) => ({
+          ...prev,
+          ...saved.progress,
+        }));
+      }
     } catch {}
   }, []);
 
@@ -1088,6 +1590,7 @@ export default function EnglishMaster() {
     let question;
     let attempts = 0;
     const maxAttempts = 50;
+    trackCurrentQuestionTime();
     do {
       question = generateQuestion(
         levelConfig,
@@ -1155,6 +1658,7 @@ export default function EnglishMaster() {
   }
 
   function stopGame() {
+    trackCurrentQuestionTime();
     setGameActive(false);
     setCurrentQuestion(null);
     setFeedback(null);
@@ -1163,6 +1667,7 @@ export default function EnglishMaster() {
   }
 
   function handleTimeUp() {
+    trackCurrentQuestionTime();
     setWrong((prev) => prev + 1);
     setStreak(0);
     setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
@@ -1191,26 +1696,21 @@ export default function EnglishMaster() {
     const normalize = (v) => String(v).trim().toLowerCase();
     const isCorrect =
       normalize(answer) === normalize(currentQuestion.correctAnswer);
+    let awardedPoints = 0;
     if (isCorrect) {
-      let points = 10 + streak;
+      awardedPoints = 10 + streak;
       if (mode === "speed") {
         const timeBonus = timeLeft ? Math.floor(timeLeft * 2) : 0;
-        points += timeBonus;
+        awardedPoints += timeBonus;
       }
-      setScore((prev) => prev + points);
+      setScore((prev) => prev + awardedPoints);
       setStreak((prev) => prev + 1);
       setCorrect((prev) => prev + 1);
       
       setErrorExplanation("");
 
       const top = currentQuestion.topic;
-      setProgress((prev) => ({
-        ...prev,
-        [top]: {
-          total: (prev[top]?.total || 0) + 1,
-          correct: (prev[top]?.correct || 0) + 1,
-        },
-      }));
+      updateTopicProgress(top, true);
       const newCorrect = correct + 1;
       if (newCorrect % 5 === 0) {
         setStars((prev) => {
@@ -1293,11 +1793,6 @@ export default function EnglishMaster() {
         }
         return newXp;
       });
-      setDailyChallenge((prev) => ({
-        ...prev,
-        bestScore: Math.max(prev.bestScore, score + points),
-        questions: prev.questions + 1,
-      }));
       setFeedback("Correct! 🎉");
       if ("vibrate" in navigator) navigator.vibrate?.(50);
       setTimeout(() => {
@@ -1324,13 +1819,15 @@ export default function EnglishMaster() {
       );
       
       const top = currentQuestion.topic;
-      setProgress((prev) => ({
-        ...prev,
-        [top]: {
-          total: (prev[top]?.total || 0) + 1,
-          correct: prev[top]?.correct || 0,
-        },
-      }));
+      updateTopicProgress(top, false);
+      logEnglishMistakeEntry({
+        topic: currentQuestion.topic,
+        grade,
+        level,
+        question: currentQuestion.question,
+        correctAnswer: currentQuestion.correctAnswer,
+        wrongAnswer: answer,
+      });
       if ("vibrate" in navigator) navigator.vibrate?.(200);
       if (mode === "learning") {
         setFeedback(
@@ -1349,6 +1846,7 @@ export default function EnglishMaster() {
         setLives((prevLives) => {
           const nextLives = prevLives - 1;
           if (nextLives <= 0) {
+            trackCurrentQuestionTime();
             setFeedback("Game Over! 💔");
             saveRunToStorage();
             setGameActive(false);
@@ -1368,6 +1866,26 @@ export default function EnglishMaster() {
           return nextLives;
         });
       }
+    }
+
+    const potentialScore = isCorrect ? score + awardedPoints : score;
+    setDailyChallenge((prev) => ({
+      ...prev,
+      bestScore: Math.max(prev.bestScore || 0, potentialScore),
+      questions: (prev.questions || 0) + 1,
+      correct: (prev.correct || 0) + (isCorrect ? 1 : 0),
+    }));
+    if (isCorrect) {
+      setWeeklyChallenge((prev) => {
+        if (prev.completed) return prev;
+        const next = prev.current + 1;
+        const completed = next >= prev.target;
+        return {
+          ...prev,
+          current: next,
+          completed,
+        };
+      });
     }
   }
 
@@ -1396,6 +1914,10 @@ export default function EnglishMaster() {
     }
   };
 
+  const goToParentReport = () => {
+    router.push("/learning/parent-report");
+  };
+
   const getTopicName = (t) => {
     return TOPICS[t]?.icon + " " + TOPICS[t]?.name || t;
   };
@@ -1409,6 +1931,18 @@ export default function EnglishMaster() {
 
   const accuracy =
     totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
+  const gradeInfo = GRADES[grade] || GRADES.g3;
+  const dailySolved = dailyChallenge.correct || 0;
+  const dailyProgress =
+    dailyChallenge.questions > 0
+      ? Math.min(1, dailySolved / dailyChallenge.questions)
+      : 0;
+  const dailyPercent = Math.round(dailyProgress * 100);
+  const weeklyProgress = Math.min(
+    1,
+    (weeklyChallenge.current || 0) / (weeklyChallenge.target || 1)
+  );
+  const weeklyPercent = Math.round(weeklyProgress * 100);
 
   return (
     <Layout>
@@ -1416,6 +1950,7 @@ export default function EnglishMaster() {
         ref={wrapRef}
         className="relative w-full overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928] game-page-mobile"
         style={{ height: "100vh", height: "100dvh" }}
+        dir="rtl"
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
@@ -1436,18 +1971,21 @@ export default function EnglishMaster() {
             className="relative px-2 py-3"
             style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 10px)" }}
           >
-            <div className="absolute left-2 top-2 flex gap-2 pointer-events-auto">
+            <div className="absolute right-2 top-2 flex gap-2 pointer-events-auto">
+              <button
+                onClick={() => router.push("/learning/curriculum?subject=english")}
+                className="min-w-[100px] px-3 py-1 rounded-lg text-sm font-bold bg-emerald-500/20 border border-emerald-400/30 hover:bg-emerald-500/30 text-emerald-200"
+              >
+                📋 תוכנית לימודים
+              </button>
+            </div>
+            <div className="absolute left-2 top-2 pointer-events-auto">
               <button
                 onClick={backSafe}
                 className="min-w-[60px] px-3 py-1 rounded-lg text-sm font-bold bg-white/5 border border-white/10 hover:bg-white/10"
               >
                 BACK
               </button>
-            </div>
-            <div className="absolute right-2 top-2 pointer-events-auto">
-              <span className="text-xs uppercase tracking-[0.3em] text-white/60">
-                Local
-              </span>
             </div>
           </div>
         </div>
@@ -1467,57 +2005,51 @@ export default function EnglishMaster() {
               🇬🇧 English Master
             </h1>
             <p className="text-white/70 text-xs">
-              {playerName || "שחקן"} • {GRADES[grade].name} •{" "}
+              {playerName || "שחקן"} • {gradeInfo.name} •{" "}
               {LEVELS[level].name} • {getTopicName(topic)} • {MODES[mode].name}
             </p>
           </div>
 
           <div
             ref={controlsRef}
-            className={`grid gap-1 mb-1 w-full max-w-md ${
-              stars > 0 || playerLevel > 1 ? "grid-cols-6" : "grid-cols-5"
-            }`}
+            className="grid grid-cols-7 gap-0.5 mb-1 w-full max-w-md"
           >
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">ניקוד</div>
-              <div className="text-sm font-bold text-emerald-400">{score}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">ניקוד</div>
+              <div className="text-sm font-bold text-emerald-400 leading-tight">{score}</div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">רצף</div>
-              <div className="text-sm font-bold text-amber-400">🔥{streak}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">רצף</div>
+              <div className="text-sm font-bold text-amber-400 leading-tight">🔥{streak}</div>
             </div>
-            {stars > 0 && (
-              <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-                <div className="text-[10px] text-white/60">כוכבים</div>
-                <div className="text-sm font-bold text-yellow-400">⭐{stars}</div>
-              </div>
-            )}
-            {playerLevel > 1 && (
-              <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-                <div className="text-[10px] text-white/60">רמה</div>
-                <div className="text-sm font-bold text-purple-400">Lv.{playerLevel}</div>
-              </div>
-            )}
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">✅</div>
-              <div className="text-sm font-bold text-green-400">{correct}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">כוכבים</div>
+              <div className="text-sm font-bold text-yellow-400 leading-tight">⭐{stars}</div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1 text-center">
-              <div className="text-[10px] text-white/60">חיים</div>
-              <div className="text-sm font-bold text-rose-400">
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">רמה</div>
+              <div className="text-sm font-bold text-purple-400 leading-tight">Lv.{playerLevel}</div>
+            </div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">✅</div>
+              <div className="text-sm font-bold text-green-400 leading-tight">{correct}</div>
+            </div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">חיים</div>
+              <div className="text-sm font-bold text-rose-400 leading-tight">
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
             </div>
             <div
-              className={`rounded-lg p-1 text-center ${
+              className={`rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] ${
                 gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
                   ? "bg-red-500/30 border-2 border-red-400 animate-pulse"
                   : "bg-black/30 border border-white/10"
               }`}
             >
-              <div className="text-[10px] text-white/60">⏰ טיימר</div>
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">⏰ טיימר</div>
               <div
-                className={`text-lg font-black ${
+                className={`text-sm font-black leading-tight ${
                   gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
                     ? "text-red-400"
                     : gameActive && (mode === "challenge" || mode === "speed")
@@ -1576,34 +2108,15 @@ export default function EnglishMaster() {
 
           {!gameActive ? (
             <>
-              <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
-                <input
-                  type="text"
-                  value={playerName}
-                  onChange={(e) => {
-                    const newName = e.target.value;
-                    setPlayerName(newName);
-                    if (typeof window !== "undefined") {
-                      try {
-                        localStorage.setItem("mleo_player_name", newName);
-                      } catch {}
-                    }
-                  }}
-                  placeholder="שם שחקן"
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-sm font-bold placeholder:text-white/40 flex-1 min-w-[120px]"
-                  maxLength={15}
-                />
+              <div className="flex items-center justify-center gap-2 mb-3 flex-wrap w-full max-w-3xl">
                 <select
-                  value={grade}
-                  onChange={(e) => {
-                    setGrade(e.target.value);
-                    setGameActive(false);
-                  }}
+                  value={gradeNumber}
+                  onChange={(e) => handleGradeNumberChange(e.target.value)}
                   className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
                 >
-                  {Object.keys(GRADES).map((g) => (
-                    <option key={g} value={g}>
-                      {GRADES[g].name}
+                  {GRADE_ORDER.map((_, idx) => (
+                    <option key={`grade-${idx + 1}`} value={idx + 1}>
+                      {`כיתה ${gradeLabels[idx]}`}
                     </option>
                   ))}
                 </select>
@@ -1621,7 +2134,7 @@ export default function EnglishMaster() {
                     </option>
                   ))}
                 </select>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 min-w-[180px]">
                   <select
                     ref={topicSelectRef}
                     value={topic}
@@ -1646,9 +2159,7 @@ export default function EnglishMaster() {
                   </select>
                   {topic === "mixed" && (
                     <button
-                      onClick={() => {
-                        setShowMixedSelector(true);
-                      }}
+                      onClick={() => setShowMixedSelector(true)}
                       className="h-9 w-9 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-xs font-bold flex items-center justify-center"
                       title="ערוך נושאים למיקס"
                     >
@@ -1656,6 +2167,24 @@ export default function EnglishMaster() {
                     </button>
                   )}
                 </div>
+                <input
+                  type="text"
+                  value={playerName}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    setPlayerName(newName);
+                    if (typeof window !== "undefined") {
+                      try {
+                        localStorage.setItem("mleo_player_name", newName);
+                      } catch {}
+                    }
+                  }}
+                  placeholder="שם שחקן"
+                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-sm font-bold placeholder:text-white/40 flex-1 min-w-[180px]"
+                  maxLength={15}
+                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
+                  style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
+                />
               </div>
 
               <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
@@ -1672,7 +2201,7 @@ export default function EnglishMaster() {
                   </div>
                 </div>
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">Accuracy</div>
+                  <div className="text-xs text-white/60">דיוק</div>
                   <div className="text-lg font-bold text-blue-400">
                     {accuracy}%
                   </div>
@@ -1708,11 +2237,38 @@ export default function EnglishMaster() {
                 </div>
               )}
 
-              <div className="bg-black/20 border border-white/10 rounded-lg p-2 mb-2 w-full max-w-md text-center">
-                <div className="text-xs text-white/60 mb-1">אתגר יומי</div>
-                <div className="text-sm text-white">
-                  Best: {dailyChallenge.bestScore} • Questions: {dailyChallenge.questions}
+              <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="text-xs text-white/60">אתגר יומי</div>
+                  <div className="text-xs text-white/60">שיא: {dailyChallenge.bestScore}</div>
                 </div>
+                <div className="text-sm text-white mb-1">
+                  {dailySolved} נכון מתוך {dailyChallenge.questions || 0} שאלות
+                </div>
+                <div className="w-full bg-black/30 rounded-full h-2 mb-1">
+                  <div
+                    className="bg-emerald-500 h-2 rounded-full transition-all"
+                    style={{ width: `${dailyProgress * 100}%` }}
+                  />
+                </div>
+                <div className="text-xs text-white/60">דיוק {dailyPercent}%</div>
+                <div className="text-xs text-white/60 mt-3 mb-1">אתגר שבועי</div>
+                <div className="text-sm text-white mb-1">
+                  {weeklyChallenge.current} / {weeklyChallenge.target} שאלות נכונות
+                </div>
+                <div className="w-full bg-black/30 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all ${
+                      weeklyChallenge.completed ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
+                    style={{ width: `${weeklyProgress * 100}%` }}
+                  />
+                </div>
+                {weeklyChallenge.completed && (
+                  <div className="text-xs text-yellow-400 mt-1">
+                    🎉 השלמת את האתגר השבועי!
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
@@ -1739,13 +2295,24 @@ export default function EnglishMaster() {
                 )}
               </div>
 
-              {/* כפתור "איך לומדים אנגלית כאן?" */}
-              <div className="mb-2 w-full max-w-md flex justify-center">
+              <div className="mb-2 w-full max-w-md flex justify-center gap-2 flex-wrap">
                 <button
                   onClick={() => setShowHowTo(true)}
                   className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
                 >
                   ❓ איך לומדים אנגלית כאן?
+                </button>
+                <button
+                  onClick={goToParentReport}
+                  className="px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-xs font-bold text-white shadow-sm"
+                >
+                  📊 דוח להורים
+                </button>
+                <button
+                  onClick={() => router.push("/learning/curriculum?subject=english")}
+                  className="px-4 py-2 rounded-lg bg-amber-500/80 hover:bg-amber-500 text-xs font-bold text-white shadow-sm"
+                >
+                  📋 תוכנית לימודים
                 </button>
               </div>
 
