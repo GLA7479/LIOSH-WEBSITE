@@ -3,6 +3,10 @@ import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { trackEnglishTopicTime } from "../../utils/english-time-tracking";
+import {
+  ENGLISH_GRADES,
+  ENGLISH_GRADE_ORDER,
+} from "../../data/english-curriculum";
 
 const LEVELS = {
   easy: { name: "קל", maxWords: 5, complexity: "basic" },
@@ -19,233 +23,15 @@ const TOPICS = {
   mixed: { name: "ערבוב", description: "Blend topics", icon: "🎲" },
 };
 
-const GRADE_ORDER = ["g1", "g2", "g3", "g4", "g5", "g6"];
-
-const GRADES = {
-  g1: {
-    name: "כיתה א׳ · Grade 1",
-    stage: "Exposure Stage",
-    topics: ["vocabulary"],
-    wordLists: ["colors", "numbers", "family", "animals", "emotions", "actions", "school"],
-    curriculum: {
-      summary: "Joyful exposure through songs, stories and action-based games.",
-      skills: [
-        "Follow simple classroom instructions with gestures",
-        "Recognise key words in chants and stories",
-        "Respond with single words or actions",
-      ],
-      grammar: [
-        "No formal grammar; exposure to 'I am / You are'",
-        "Pronouns and classroom routines in fixed chunks",
-      ],
-      vocabulary: [
-        "Colors, shapes, numbers 1–10",
-        "Family members, classroom objects, pets",
-      ],
-      benchmark: [
-        "Understands short teacher directions with support",
-        "Matches familiar words to pictures within taught themes",
-      ],
-    },
-  },
-  g2: {
-    name: "כיתה ב׳ · Grade 2",
-    stage: "Foundation Stage",
-    topics: ["vocabulary", "translation", "writing"],
-    wordLists: [
-      "colors",
-      "numbers",
-      "family",
-      "animals",
-      "emotions",
-      "school",
-      "food",
-      "actions",
-      "house",
-    ],
-    curriculum: {
-      summary: "Move from exposure to controlled production with phonics and decoding.",
-      skills: [
-        "Listen to short stories and identify key words",
-        "Read and copy simple sentences",
-        "Answer patterned questions orally",
-      ],
-      grammar: [
-        "Present simple of 'be' (I am / He is)",
-        "Pronouns and plural nouns (-s)",
-        "Question frames: What is it? Who is this?",
-      ],
-      vocabulary: [
-        "Food, clothes, rooms at home, community places",
-        "Action verbs (run, jump, read, play)",
-      ],
-      benchmark: [
-        "Reads and writes familiar words with correct spelling",
-        "Responds orally to yes/no and wh- questions using chunks",
-      ],
-    },
-  },
-  g3: {
-    name: "כיתה ג׳ · Grade 3",
-    stage: "Beginning Literacy",
-    topics: ["vocabulary", "grammar", "translation", "sentences", "writing", "mixed"],
-    wordLists: [
-      "animals",
-      "colors",
-      "numbers",
-      "family",
-      "body",
-      "food",
-      "school",
-      "weather",
-      "sports",
-      "actions",
-      "house",
-    ],
-    curriculum: {
-      summary: "Full integration of the four skills with systematic reading comprehension.",
-      skills: [
-        "Listen to short dialogues with 2–3 steps",
-        "Read 60–80 word texts and find main ideas",
-        "Write and say simple sentences about routines",
-      ],
-      grammar: [
-        "Present Simple (affirmative/negative/questions)",
-        "Adjectives, article use (a/an/the)",
-        "Prepositions of place (in/on/under/next to)",
-      ],
-      vocabulary: [
-        "Daily routine, hobbies, seasons, weather",
-        "Body parts, extended animals, school life",
-      ],
-      benchmark: [
-        "Produces 4–5 spoken/written sentences per topic",
-        "Uses Present Simple accurately with he/she/it",
-      ],
-    },
-  },
-  g4: {
-    name: "כיתה ד׳ · Grade 4",
-    stage: "Developing Literacy",
-    topics: ["vocabulary", "grammar", "translation", "sentences", "writing", "mixed"],
-    wordLists: [
-      "animals",
-      "family",
-      "body",
-      "food",
-      "school",
-      "weather",
-      "sports",
-      "travel",
-      "community",
-      "environment",
-      "emotions",
-    ],
-    curriculum: {
-      summary: "Extend text length and use strategies such as predicting and scanning.",
-      skills: [
-        "Read 100–150 word texts and extract details",
-        "Listen to multi-step instructions and respond",
-        "Write short paragraphs with connectors",
-      ],
-      grammar: [
-        "Present Simple + Present Continuous",
-        "Countable vs. uncountable nouns, some/any",
-        "Possessives and adverbs of manner",
-      ],
-      vocabulary: [
-        "Food groups, places in town, transportation",
-        "Festivals, emotions, environmental actions",
-      ],
-      benchmark: [
-        "Writes coherent 3–5 sentence paragraphs",
-        "Understands instructions containing several details",
-      ],
-    },
-  },
-  g5: {
-    name: "כיתה ה׳ · Grade 5",
-    stage: "Extended Literacy",
-    topics: ["vocabulary", "grammar", "translation", "sentences", "writing", "mixed"],
-    wordLists: [
-      "animals",
-      "family",
-      "food",
-      "school",
-      "sports",
-      "travel",
-      "environment",
-      "health",
-      "technology",
-      "emotions",
-    ],
-    curriculum: {
-      summary: "Strategic reading of informational texts and structured writing.",
-      skills: [
-        "Read 150–200 word texts and infer meaning",
-        "Deliver short presentations with visuals",
-        "Write two connected paragraphs (60–80 words)",
-      ],
-      grammar: [
-        "Past Simple (regular + common irregular)",
-        "Future forms (will / be going to)",
-        "Modal verbs (can, must, have to) & comparatives",
-      ],
-      vocabulary: [
-        "Travel, geography, global citizenship",
-        "Health, fitness, technology, media",
-      ],
-      benchmark: [
-        "Summarises main idea + details from grade-level text",
-        "Applies past/future tenses and modals accurately",
-      ],
-    },
-  },
-  g6: {
-    name: "כיתה ו׳ · Grade 6",
-    stage: "Advanced Elementary",
-    topics: ["vocabulary", "grammar", "translation", "sentences", "writing", "mixed"],
-    wordLists: [
-      "animals",
-      "travel",
-      "environment",
-      "health",
-      "technology",
-      "global_issues",
-      "culture",
-      "history",
-      "community",
-      "emotions",
-    ],
-    curriculum: {
-      summary: "Transition to lower-secondary expectations with projects and research tasks.",
-      skills: [
-        "Listen to grade-level content and infer information",
-        "Read 200–250 word texts and cite evidence",
-        "Write structured letters/reports of 80–120 words",
-      ],
-      grammar: [
-        "Past Continuous vs. Past Simple",
-        "Future (will/going to) and introductory Present Perfect",
-        "Conditionals (zero/first) and extended modals (should, might)",
-      ],
-      vocabulary: [
-        "Global issues, sustainability, culture & identity",
-        "Technology, media literacy, history & biographies",
-      ],
-      benchmark: [
-        "Produces multi-paragraph texts with cohesive devices",
-        "Presents research findings orally and in writing",
-      ],
-    },
-  },
-};
+const GRADES = ENGLISH_GRADES;
+const GRADE_ORDER = ENGLISH_GRADE_ORDER;
 
 const MODES = {
   learning: { name: "למידה", description: "ללא סיום משחק, תרגול בקצב שלך" },
   challenge: { name: "אתגר", description: "טיימר + חיים, מרוץ ניקוד גבוה" },
   speed: { name: "מרוץ מהירות", description: "תשובות מהירות = יותר נקודות! ⚡" },
   marathon: { name: "מרתון", description: "כמה שאלות תוכל לפתור? 🏃" },
+  practice: { name: "תרגול ממוקד", description: "בוחר נושא/מצב אימון מדויק" },
 };
 
 const STORAGE_KEY = "mleo_english_master";
@@ -461,6 +247,27 @@ const WORD_LISTS = {
   },
 };
 
+const PRACTICE_FOCUS_OPTIONS = [
+  { value: "balanced", label: "📚 כל הנושאים" },
+  { value: "vocab_core", label: "🔤 אוצר מילים בסיסי" },
+  { value: "grammar_forms", label: "✏️ דקדוק ומבנים" },
+  { value: "writing_lab", label: "📝 כתיבה ומשפטים" },
+  { value: "translation_boost", label: "📖 תרגום והבנת קטע" },
+];
+
+const AVATAR_OPTIONS = ["👧", "👦", "🧒", "🦊", "🐱", "🐼", "🦁", "🐵", "🐱‍🚀", "🦉"];
+
+const REFERENCE_CATEGORIES = {
+  colors: { label: "צבעים", lists: ["colors"] },
+  animals: { label: "חיות", lists: ["animals"] },
+  actions: { label: "פעלים נפוצים", lists: ["actions"] },
+  emotions: { label: "רגשות", lists: ["emotions"] },
+  school: { label: "חיי בית ספר", lists: ["school", "family"] },
+  technology: { label: "טכנולוגיה", lists: ["technology", "global_issues"] },
+};
+
+const REFERENCE_CATEGORY_KEYS = Object.keys(REFERENCE_CATEGORIES);
+
 const GRADE_FACTORS = {
   g1: 0.5,
   g2: 0.7,
@@ -470,214 +277,398 @@ const GRADE_FACTORS = {
   g6: 1.5,
 };
 
-const GRAMMAR_FOUNDATION = [
-  {
-    question: `Choose the correct word: "I ___ a student"`,
-    options: ["am", "is", "are"],
-    correct: "am",
-    explanation: "With I we use am.",
-  },
-  {
-    question: `Choose the correct word: "She ___ happy"`,
-    options: ["am", "is", "are"],
-    correct: "is",
-    explanation: "She/He/It uses is.",
-  },
-  {
-    question: `Fill in the blank: "They ___ friends"`,
-    options: ["am", "is", "are"],
-    correct: "are",
-    explanation: "They takes are.",
-  },
-];
+const GRAMMAR_POOLS = {
+  be_basic: [
+    {
+      question: `Choose the correct word: "I ___ ten years old"`,
+      options: ["am", "is", "are"],
+      correct: "am",
+      explanation: "עם I משתמשים ב-am.",
+    },
+    {
+      question: `Choose the correct word: "He ___ my teacher"`,
+      options: ["are", "is", "am"],
+      correct: "is",
+      explanation: "He/She/It → is.",
+    },
+    {
+      question: `Complete the sentence: "We ___ in class"`,
+      options: ["am", "is", "are"],
+      correct: "are",
+      explanation: "We/They → are.",
+    },
+    {
+      question: `Choose the correct word: "They ___ happy"`,
+      options: ["am", "is", "are"],
+      correct: "are",
+      explanation: "They → are.",
+    },
+  ],
+  question_frames: [
+    {
+      question: `Choose the correct question word: "___ is your name?"`,
+      options: ["What", "Where", "When"],
+      correct: "What",
+      explanation: "שואלים על שם בעזרת What.",
+    },
+    {
+      question: `Choose the correct question word: "___ do you live?"`,
+      options: ["Where", "Why", "Who"],
+      correct: "Where",
+      explanation: "שאלה על מקום → Where.",
+    },
+    {
+      question: `Choose the correct helper: "___ you like pizza?"`,
+      options: ["Do", "Does", "Is"],
+      correct: "Do",
+      explanation: "You → Do בשאלות.",
+    },
+    {
+      question: `Choose the correct order: "___ is this?" (pointing at an object)`,
+      options: ["Who", "What", "When"],
+      correct: "What",
+      explanation: "שואלים על חפץ עם What.",
+    },
+  ],
+  present_simple: [
+    {
+      question: `Choose the correct form: "She ___ basketball on Fridays"`,
+      options: ["play", "plays", "playing"],
+      correct: "plays",
+      explanation: "He/She/It מקבלים ‎-s‎ בזמן הווה פשוט.",
+    },
+    {
+      question: `Choose the correct form: "We ___ breakfast at seven"`,
+      options: ["eat", "eats", "eating"],
+      correct: "eat",
+      explanation: "We → צורת הבסיס ללא ‎-s.",
+    },
+    {
+      question: `Choose the correct negative: "He ___ like carrots"`,
+      options: ["don't", "doesn't", "isn't"],
+      correct: "doesn't",
+      explanation: "He/she/it → doesn't + verb base.",
+    },
+    {
+      question: `Choose the question: "___ they play music?"`,
+      options: ["Do", "Does", "Did"],
+      correct: "Do",
+      explanation: "They → Do בשאלות בהווה.",
+    },
+  ],
+  progressive: [
+    {
+      question: `Choose the correct tense: "Right now, they ___ English"`,
+      options: ["study", "studies", "are studying"],
+      correct: "are studying",
+      explanation: "Right now → Present Continuous.",
+    },
+    {
+      question: `Choose the correct form: "I ___ a movie"`,
+      options: ["watch", "am watching", "watched"],
+      correct: "am watching",
+      explanation: "I + am + verb-ing בזמן הווה ממושך.",
+    },
+    {
+      question: `Choose the correct sentence: "She ___ dinner at the moment"`,
+      options: ["is cook", "is cooking", "cook"],
+      correct: "is cooking",
+      explanation: "She + is + verb-ing.",
+    },
+  ],
+  quantifiers: [
+    {
+      question: `Choose the correct word: "There aren't ___ apples left"`,
+      options: ["some", "any", "much"],
+      correct: "any",
+      explanation: "בשלילה משתמשים ב-any.",
+    },
+    {
+      question: `Choose the correct option: "How ___ water do you drink?"`,
+      options: ["many", "much", "few"],
+      correct: "much",
+      explanation: "Water הוא לא ספיר → much.",
+    },
+    {
+      question: `Choose the correct option: "We have ___ homework today"`,
+      options: ["a few", "much", "many"],
+      correct: "a few",
+      explanation: "Homework במובן של משימות נפרדות → a few.",
+    },
+  ],
+  past_simple: [
+    {
+      question: `Choose the correct verb: "Yesterday we ___ a science project"`,
+      options: ["finish", "finished", "finishing"],
+      correct: "finished",
+      explanation: "Yesterday → Past Simple.",
+    },
+    {
+      question: `Choose the correct form: "He ___ to the museum last week"`,
+      options: ["go", "goes", "went"],
+      correct: "went",
+      explanation: "Went היא צורת העבר של go.",
+    },
+    {
+      question: `Choose the correct negative: "They ___ the film"`,
+      options: ["don't like", "didn't like", "weren't like"],
+      correct: "didn't like",
+      explanation: "Past Simple שלילי: didn't + verb base.",
+    },
+  ],
+  modals: [
+    {
+      question: `Choose the correct modal: "You ___ wear a helmet when you ride"`,
+      options: ["should", "am", "was"],
+      correct: "should",
+      explanation: "עצה → should.",
+    },
+    {
+      question: `Choose the correct modal: "We ___ go to the new science fair"`,
+      options: ["might", "am", "is"],
+      correct: "might",
+      explanation: "אפשרות עתידית → might.",
+    },
+    {
+      question: `Choose the correct modal: "Students ___ bring water to the trip"`,
+      options: ["must", "can", "am"],
+      correct: "must",
+      explanation: "חובה → must.",
+    },
+  ],
+  comparatives: [
+    {
+      question: `Choose the correct form: "This book is ___ than that one"`,
+      options: ["more interesting", "most interesting", "interesting"],
+      correct: "more interesting",
+      explanation: "השוואה של תואר דו-הברתי → more + adjective.",
+    },
+    {
+      question: `Choose the correct word: "My bag is ___ than yours"`,
+      options: ["heavier", "heavy", "heaviest"],
+      correct: "heavier",
+      explanation: "השוואה → adjective + er.",
+    },
+    {
+      question: `Choose the correct form: "This exercise is the ___ of the unit"`,
+      options: ["harder", "hardest", "hard"],
+      correct: "hardest",
+      explanation: "Superlative → the + adjective + est.",
+    },
+  ],
+  future_forms: [
+    {
+      question: `Choose the correct future: "Tomorrow we ___ a trip"`,
+      options: ["take", "will take", "took"],
+      correct: "will take",
+      explanation: "Tomorrow → will + base form.",
+    },
+    {
+      question: `Choose the correct plan: "We ___ my cousins on Sunday"`,
+      options: ["are visiting", "visited", "visits"],
+      correct: "are visiting",
+      explanation: "תכנית קרובה → Present Continuous.",
+    },
+    {
+      question: `Choose the correct option: "I'm sure it ___ fine"`,
+      options: ["is", "will be", "was"],
+      correct: "will be",
+      explanation: "בטחון בעתיד → will + base.",
+    },
+  ],
+  complex_tenses: [
+    {
+      question: `Choose the correct tense: "They ___ when the phone rang"`,
+      options: ["played", "were playing", "are playing"],
+      correct: "were playing",
+      explanation: "פעולה נמשכת בעבר → Past Continuous.",
+    },
+    {
+      question: `Choose the correct form: "I have ___ finished my project"`,
+      options: ["already", "ever", "never"],
+      correct: "already",
+      explanation: "Present Perfect אוהב already/just.",
+    },
+    {
+      question: `Choose the correct option: "She has ___ visited London"` ,
+      options: ["never", "ever", "always"],
+      correct: "never",
+      explanation: "ניסיון בעבר עד כה → never/ever.",
+    },
+  ],
+  conditionals: [
+    {
+      question: `Choose the correct form: "If we save water, we ___ the planet"`,
+      options: ["help", "helped", "will help"],
+      correct: "help",
+      explanation: "Zero conditional: If + present, present.",
+    },
+    {
+      question: `Choose the correct option: "If it rains, we ___ at home"`,
+      options: ["stay", "stayed", "will stay"],
+      correct: "will stay",
+      explanation: "First conditional: If + present, will + base.",
+    },
+    {
+      question: `Choose the correct sentence: "If you study, you ___ the test"`,
+      options: ["pass", "passed", "passes"],
+      correct: "pass",
+      explanation: "עובדה כללית → Zero conditional.",
+    },
+  ],
+};
 
-const GRAMMAR_DEVELOPING = [
-  {
-    question: `Choose the correct form: "He ___ football on Sundays"`,
-    options: ["play", "plays", "playing"],
-    correct: "plays",
-    explanation: "He/She/It takes -s in Present Simple.",
-  },
-  {
-    question: `Choose the correct form: "We ___ in class now"`,
-    options: ["are", "is", "am"],
-    correct: "are",
-    explanation: "We = are.",
-  },
-  {
-    question: `Choose the plural: "I have two ___" (dogs)`,
-    options: ["dog", "dogs", "doges"],
-    correct: "dogs",
-    explanation: "Plural regular nouns add s.",
-  },
-  {
-    question: `Choose the correct word: "There ___ some apples on the table"`,
-    options: ["is", "are", "am"],
-    correct: "are",
-    explanation: "Apples is plural → are.",
-  },
-  {
-    question: `Choose the correct tense: "Right now, they ___ English"`,
-    options: ["study", "studies", "are studying"],
-    correct: "are studying",
-    explanation: "Right now → Present Continuous.",
-  },
-];
-
-const GRAMMAR_EXTENDED = [
-  {
-    question: `Choose the correct verb: "She ___ to school every day"`,
-    options: ["go", "goes", "is going"],
-    correct: "goes",
-    explanation: "Every day → Present Simple with -s for she.",
-  },
-  {
-    question: `Choose the correct verb: "Yesterday we ___ a science project"`,
-    options: ["finish", "finished", "finishing"],
-    correct: "finished",
-    explanation: "Yesterday → Past Simple.",
-  },
-  {
-    question: `Choose the correct modal: "You ___ wear a helmet when you ride"` ,
-    options: ["can", "should", "am"],
-    correct: "should",
-    explanation: "Give advice → should.",
-  },
-  {
-    question: `Choose the correct future: "Tomorrow we ___ a trip"`,
-    options: ["take", "will take", "took"],
-    correct: "will take",
-    explanation: "Tomorrow → future with will.",
-  },
-];
-
-const GRAMMAR_ADVANCED = [
-  {
-    question: `Choose the correct tense: "They ___ when the phone rang"`,
-    options: ["played", "were playing", "are playing"],
-    correct: "were playing",
-    explanation: "Action in progress in the past → Past Continuous.",
-  },
-  {
-    question: `Choose the correct verb: "I have ___ finished my homework"`,
-    options: ["already", "ever", "never"],
-    correct: "already",
-    explanation: "Present Perfect often uses already.",
-  },
-  {
-    question: `Choose the correct form: "If we save water, we ___ the planet"`,
-    options: ["help", "helped", "will help"],
-    correct: "help",
-    explanation: "Zero conditional: If + present, present.",
-  },
-  {
-    question: `Choose the correct modal: "You ___ visit the new science museum"`,
-    options: ["might", "am", "was"],
-    correct: "might",
-    explanation: "Suggestion/possibility → might.",
-  },
-];
-
-const SENTENCE_TEMPLATES = {
+const SENTENCE_POOLS = {
   base: [
     {
-      template: "I ___ a book",
-      options: ["read", "reads", "reading"],
-      correct: "read",
-      explanation: "I read - אני קורא",
+      template: "I ___ a cat",
+      options: ["have", "has", "having"],
+      correct: "have",
+      explanation: "I + have.",
     },
     {
       template: "We ___ friends",
       options: ["am", "is", "are"],
       correct: "are",
-      explanation: "We are - אנחנו",
+      explanation: "We/They → are.",
+    },
+    {
+      template: "It ___ cold today",
+      options: ["is", "are", "am"],
+      correct: "is",
+      explanation: "It → is.",
     },
   ],
-  mid: [
+  routine: [
     {
-      template: "She ___ to school",
-      options: ["go", "goes", "going"],
-      correct: "goes",
-      explanation: "She goes - היא הולכת",
+      template: "She ___ her teeth every night",
+      options: ["brush", "brushes", "brushing"],
+      correct: "brushes",
+      explanation: "She + ‎-es‎ בזמן הווה.",
     },
     {
-      template: "They ___ football on Sundays",
-      options: ["play", "plays", "playing"],
-      correct: "play",
-      explanation: "They play - אין s",
+      template: "They ___ the bus to school",
+      options: ["take", "takes", "took"],
+      correct: "take",
+      explanation: "They → take.",
     },
     {
-      template: "It is ___ today",
-      options: ["sunny", "sun", "suns"],
-      correct: "sunny",
-      explanation: "Weather adjectives: sunny, rainy...",
+      template: "Do you ___ breakfast early?",
+      options: ["eat", "eats", "ate"],
+      correct: "eat",
+      explanation: "Do + subject + base form.",
+    },
+  ],
+  descriptive: [
+    {
+      template: "The library is ___ the park",
+      options: ["next to", "under", "between"],
+      correct: "next to",
+      explanation: "תיאור מיקום שכיח לכיתה ד'.",
+    },
+    {
+      template: "This notebook is ___ than mine",
+      options: ["bigger", "biggest", "big"],
+      correct: "bigger",
+      explanation: "השוואה → ‎-er‎.",
+    },
+    {
+      template: "The cake smells ___",
+      options: ["delicious", "deliciously", "delish"],
+      correct: "delicious",
+      explanation: "תארים מתארים שמות עצם.",
+    },
+  ],
+  narrative: [
+    {
+      template: "Yesterday we ___ to the science museum",
+      options: ["go", "went", "gone"],
+      correct: "went",
+      explanation: "Past Simple של go.",
+    },
+    {
+      template: "While I ___, my friend called",
+      options: ["study", "was studying", "studied"],
+      correct: "was studying",
+      explanation: "פעולה נמשכת בעבר → was/were + verb-ing.",
+    },
+    {
+      template: "He ___ a robot for the fair",
+      options: ["built", "builds", "building"],
+      correct: "built",
+      explanation: "עבר של build.",
     },
   ],
   advanced: [
     {
-      template: "Right now, I ___ English",
-      options: ["study", "studies", "am studying"],
-      correct: "am studying",
-      explanation: "Right now → Present Continuous.",
+      template: "If we ___ plastic, the beach stays clean",
+      options: ["recycle", "recycled", "are recycling"],
+      correct: "recycle",
+      explanation: "Zero conditional.",
     },
     {
-      template: "He ___ a car last year",
-      options: ["buy", "buys", "bought"],
-      correct: "bought",
-      explanation: "Last year → Past Simple irregular.",
+      template: "She ___ a presentation by tomorrow",
+      options: ["will finish", "finished", "finishes"],
+      correct: "will finish",
+      explanation: "פעולה תושלם בעתיד → will + base.",
     },
     {
-      template: "Tomorrow we ___ our grandparents",
-      options: ["visit", "visited", "are visiting"],
-      correct: "are visiting",
-      explanation: "Future plan → Present Continuous.",
-    },
-  ],
-  mastery: [
-    {
-      template: "I have ___ been to London",
-      options: ["ever", "never", "already"],
-      correct: "never",
-      explanation: "Have never been → Present Perfect experience.",
-    },
-    {
-      template: "If it ___ tomorrow, we will stay home",
-      options: ["rains", "rained", "is raining"],
-      correct: "rains",
-      explanation: "First conditional: If + present, will + base.",
+      template: "They have ___ studied renewable energy",
+      options: ["already", "ever", "never"],
+      correct: "already",
+      explanation: "Present Perfect עם already.",
     },
   ],
 };
 
-const TRANSLATION_BANK = {
-  early: [
-    { en: "I love you", he: "אני אוהב אותך" },
-    { en: "How are you?", he: "מה שלומך?" },
-    { en: "Thank you", he: "תודה" },
-    { en: "Good morning", he: "בוקר טוב" },
-    { en: "Good night", he: "לילה טוב" },
-    { en: "My name is", he: "השם שלי הוא" },
-    { en: "I am happy", he: "אני שמח" },
-    { en: "I like apples", he: "אני אוהב תפוחים" },
+const TRANSLATION_POOLS = {
+  classroom: [
+    { en: "Please sit down", he: "בבקשה שבו" },
+    { en: "Open your notebook", he: "פתחו את המחברת" },
+    { en: "Raise your hand", he: "הרימו את היד" },
+    { en: "Listen carefully", he: "הקשיבו היטב" },
+    { en: "Write the date", he: "כתבו את התאריך" },
+    { en: "Close the door softly", he: "סגרו את הדלת בעדינות" },
   ],
-  mid: [
-    { en: "I go to school at seven", he: "אני הולך לבית הספר בשבע" },
-    { en: "My best friend is funny", he: "החבר הכי טוב שלי מצחיק" },
-    { en: "The weather is sunny today", he: "היום מזג האוויר שמשי" },
-    { en: "Please open the window", he: "בבקשה תפתח את החלון" },
-    { en: "We play sports after school", he: "אנחנו משחקים ספורט אחרי בית הספר" },
+  routines: [
+    { en: "I brush my teeth at night", he: "אני מצחצח שיניים בלילה" },
+    { en: "She drinks milk every morning", he: "היא שותה חלב בכל בוקר" },
+    { en: "We walk the dog after school", he: "אנחנו מטיילים עם הכלב אחרי בית הספר" },
+    { en: "My brother cleans his room on Friday", he: "אחי מנקה את החדר שלו ביום שישי" },
+    { en: "They read a story before bed", he: "הם קוראים סיפור לפני השינה" },
+    { en: "Dad cooks dinner on Sundays", he: "אבא מבשל ארוחת ערב בימי ראשון" },
   ],
-  extended: [
-    { en: "Yesterday we visited the museum", he: "אתמול ביקרנו במוזיאון" },
-    { en: "Tomorrow I will help my dad", he: "מחר אני אעזור לאבא שלי" },
-    { en: "She can ride a bike very fast", he: "היא יודעת לרכוב על אופניים מהר מאוד" },
-    { en: "We must save water every day", he: "אנחנו חייבים לחסוך במים כל יום" },
+  hobbies: [
+    { en: "We play basketball after school", he: "אנחנו משחקים כדורסל אחרי בית הספר" },
+    { en: "My sister paints colorful pictures", he: "אחותי מציירת ציורים צבעוניים" },
+    { en: "It is windy, so we fly a kite", he: "יש רוח, אז אנחנו מעיפים עפיפון" },
+    { en: "He collects stickers of animals", he: "הוא אוסף מדבקות של חיות" },
+    { en: "They practice piano every Tuesday", he: "הם מתרגלים פסנתר בכל יום שלישי" },
+    { en: "I like to build Lego cities", he: "אני אוהב לבנות ערי לגו" },
   ],
-  advanced: [
-    { en: "I have never seen snow", he: "מעולם לא ראיתי שלג" },
-    { en: "If we recycle, the city stays clean", he: "אם אנחנו ממחזרים העיר נשארת נקייה" },
-    { en: "They are going to build a new library", he: "הם הולכים לבנות ספרייה חדשה" },
-    { en: "We might travel to London next summer", he: "אולי נטוס ללונדון בקיץ הבא" },
+  community: [
+    { en: "The library is next to the park", he: "הספרייה נמצאת ליד הפארק" },
+    { en: "We visited the science museum", he: "ביקרנו במוזיאון המדע" },
+    { en: "Please recycle the bottles in the bin", he: "בבקשה ממחזרו את הבקבוקים בפח" },
+    { en: "The market is crowded on Fridays", he: "השוק עמוס בימי שישי" },
+    { en: "Our town celebrates a music festival", he: "העיר שלנו חוגגת פסטיבל מוזיקה" },
+    { en: "The nurse helps people feel better", he: "האחות עוזרת לאנשים להרגיש טוב יותר" },
+  ],
+  technology: [
+    { en: "She is coding a friendly robot", he: "היא כותבת קוד לרובוט ידידותי" },
+    { en: "We use tablets for digital art", he: "אנחנו משתמשים בטאבלטים לאמנות דיגיטלית" },
+    { en: "The drone takes photos of the field", he: "הרחפן מצלם את השדה" },
+    { en: "He uploads a podcast every week", he: "הוא מעלה פודקאסט בכל שבוע" },
+    { en: "Our class designs a smart garden", he: "הכיתה שלנו מתכננת גינה חכמה" },
+    { en: "They research clean energy online", he: "הם חוקרים אנרגיה נקייה באינטרנט" },
+  ],
+  global: [
+    { en: "If we save water, rivers stay clean", he: "אם אנחנו חוסכים במים, הנהרות נשארים נקיים" },
+    { en: "Planting trees helps our planet breathe", he: "נטיעת עצים עוזרת לכדור הארץ לנשום" },
+    { en: "We write about cultures around the world", he: "אנחנו כותבים על תרבויות ברחבי העולם" },
+    { en: "She reads news about space missions", he: "היא קוראת חדשות על משימות חלל" },
+    { en: "They discuss how communities share water", he: "הם דנים כיצד קהילות חולקות מים" },
+    { en: "Working together keeps the ocean blue", he: "עבודה משותפת שומרת על האוקיינוס כחול" },
   ],
 };
 
@@ -694,6 +685,71 @@ const WRITING_SENTENCES_ADVANCED = [
   { en: "If it rains, we will stay at home", he: "אם ירד גשם, נישאר בבית" },
   { en: "I have already finished my homework", he: "כבר סיימתי את שיעורי הבית שלי" },
 ];
+
+const WRITING_SENTENCES_MASTER = [
+  { en: "We should protect the forest to keep animals safe", he: "אנחנו צריכים להגן על היער כדי לשמור על החיות" },
+  { en: "By working together, we can solve difficult problems", he: "בעבודה משותפת נוכל לפתור בעיות קשות" },
+  { en: "I have never forgotten the trip to the science park", he: "מעולם לא שכחתי את הטיול לפארק המדע" },
+  { en: "If we recycle plastic, the beach stays beautiful", he: "אם נמחזר פלסטיק, החוף יישאר יפה" },
+];
+
+const DEFAULT_GRADE_PROFILE = {
+  choiceCount: 4,
+  translationPools: ["routines"],
+  grammarPools: ["present_simple"],
+  sentencePools: ["routine"],
+  writingPools: ["word", "sentence_basic"],
+  vocabDirections: ["en_to_he", "he_to_en"],
+};
+
+const GRADE_PROFILES = {
+  g1: {
+    ...DEFAULT_GRADE_PROFILE,
+    choiceCount: 2,
+    translationPools: ["classroom"],
+    grammarPools: ["be_basic"],
+    sentencePools: ["base"],
+    writingPools: ["word"],
+    vocabDirections: ["en_to_he", "en_to_he", "he_to_en"],
+  },
+  g2: {
+    ...DEFAULT_GRADE_PROFILE,
+    choiceCount: 3,
+    translationPools: ["classroom", "routines"],
+    grammarPools: ["be_basic", "question_frames"],
+    sentencePools: ["base", "routine"],
+    writingPools: ["word", "sentence_basic"],
+  },
+  g3: {
+    ...DEFAULT_GRADE_PROFILE,
+    translationPools: ["routines", "hobbies"],
+    grammarPools: ["present_simple", "question_frames"],
+    sentencePools: ["routine", "descriptive"],
+    writingPools: ["word", "sentence_basic"],
+  },
+  g4: {
+    ...DEFAULT_GRADE_PROFILE,
+    translationPools: ["hobbies", "community"],
+    grammarPools: ["present_simple", "progressive", "quantifiers"],
+    sentencePools: ["descriptive", "narrative"],
+    writingPools: ["word", "sentence_basic", "sentence_extended"],
+  },
+  g5: {
+    ...DEFAULT_GRADE_PROFILE,
+    translationPools: ["community", "technology"],
+    grammarPools: ["past_simple", "modals", "comparatives", "future_forms"],
+    sentencePools: ["narrative", "advanced"],
+    writingPools: ["sentence_extended", "sentence_extended", "word"],
+  },
+  g6: {
+    ...DEFAULT_GRADE_PROFILE,
+    translationPools: ["technology", "global"],
+    grammarPools: ["complex_tenses", "conditionals", "modals", "comparatives"],
+    sentencePools: ["advanced"],
+    writingPools: ["sentence_extended", "sentence_master"],
+    vocabDirections: ["he_to_en", "en_to_he", "he_to_en"],
+  },
+};
 
 function getLevelForGrade(levelKey, gradeKey) {
   const base = LEVELS[levelKey] || LEVELS.easy;
@@ -806,6 +862,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     params = {};
   let qType = "choice"; // ברירת מחדל – שאלת בחירה
   const gradeConfig = GRADES[gradeKey] || GRADES.g3;
+  const gradeProfile = GRADE_PROFILES[gradeKey] || DEFAULT_GRADE_PROFILE;
   const gradeWordLists = (gradeConfig.wordLists || []).filter(
     (list) => WORD_LISTS[list]
   );
@@ -821,42 +878,44 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       "sun",
       "שמש",
     ];
-  const isEarly = gradeKey === "g1";
-  const isFoundation = gradeKey === "g2";
-  const isMid = gradeKey === "g3" || gradeKey === "g4";
-  const isUpper = gradeKey === "g5";
-  const isAdvanced = gradeKey === "g6";
 
   switch (selectedTopic) {
     case "vocabulary": {
-      // שאלה: מה פירוש המילה?
-      const direction = Math.random() > 0.5; // true = אנגלית->עברית, false = עברית->אנגלית
-      if (direction) {
+      const vocabDirections =
+        gradeProfile.vocabDirections || ["en_to_he", "he_to_en"];
+      const directionKey =
+        vocabDirections[Math.floor(Math.random() * vocabDirections.length)];
+      const directionIsEnglish = directionKey === "en_to_he";
+      if (directionIsEnglish) {
         question = `מה פירוש המילה "${randomWord[0]}"\u200F?`;
         correctAnswer = randomWord[1];
-        params = { word: randomWord[0], translation: randomWord[1], direction: "en_to_he" };
+        params = {
+          word: randomWord[0],
+          translation: randomWord[1],
+          direction: "en_to_he",
+        };
       } else {
         question = `מה פירוש המילה "${randomWord[1]}"\u200F?`;
         correctAnswer = randomWord[0];
-        params = { word: randomWord[1], translation: randomWord[0], direction: "he_to_en" };
+        params = {
+          word: randomWord[1],
+          translation: randomWord[0],
+          direction: "he_to_en",
+        };
       }
       break;
     }
 
     case "grammar": {
-      let pool = [...GRAMMAR_FOUNDATION];
-      if (isMid) {
-        pool = pool.concat(GRAMMAR_DEVELOPING);
-      }
-      if (isUpper) {
-        pool = pool.concat(GRAMMAR_DEVELOPING, GRAMMAR_EXTENDED);
-      }
-      if (isAdvanced) {
-        pool = pool.concat(
-          GRAMMAR_DEVELOPING,
-          GRAMMAR_EXTENDED,
-          GRAMMAR_ADVANCED
-        );
+      const grammarPools = gradeProfile.grammarPools || ["present_simple"];
+      let pool = [];
+      grammarPools.forEach((key) => {
+        if (GRAMMAR_POOLS[key]) {
+          pool = pool.concat(GRAMMAR_POOLS[key]);
+        }
+      });
+      if (pool.length === 0) {
+        pool = Object.values(GRAMMAR_POOLS).flat();
       }
       const grammarQ = pool[Math.floor(Math.random() * pool.length)];
       question = grammarQ.question;
@@ -866,50 +925,52 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
 
     case "translation": {
-      let sentencesPool = TRANSLATION_BANK.early;
-      if (isFoundation) {
-        sentencesPool = TRANSLATION_BANK.early;
-      } else if (isMid) {
-        sentencesPool = TRANSLATION_BANK.mid;
-      } else if (isUpper) {
-        sentencesPool = TRANSLATION_BANK.mid.concat(TRANSLATION_BANK.extended);
-      } else if (isAdvanced) {
-        sentencesPool = TRANSLATION_BANK.mid
-          .concat(TRANSLATION_BANK.extended)
-          .concat(TRANSLATION_BANK.advanced);
+      const translationPools = gradeProfile.translationPools || ["classroom"];
+      let sentencesPool = [];
+      translationPools.forEach((key) => {
+        if (TRANSLATION_POOLS[key]) {
+          sentencesPool = sentencesPool.concat(TRANSLATION_POOLS[key]);
+        }
+      });
+      if (sentencesPool.length === 0) {
+        sentencesPool = Object.values(TRANSLATION_POOLS).flat();
       }
-      const sentences =
-        sentencesPool.length > 0 ? sentencesPool : TRANSLATION_BANK.early;
-      const sentence = sentences[Math.floor(Math.random() * sentences.length)];
-      const direction = Math.random() > 0.5;
-      if (direction) {
+      const sentence =
+        sentencesPool[Math.floor(Math.random() * sentencesPool.length)];
+      const direction = Math.random() > 0.5 ? "en_to_he" : "he_to_en";
+      if (direction === "en_to_he") {
         question = `תרגם: "${sentence.en}"`;
         correctAnswer = sentence.he;
-        params = { sentence: sentence.en, translation: sentence.he, direction: "en_to_he" };
+        params = {
+          sentence: sentence.en,
+          translation: sentence.he,
+          direction: "en_to_he",
+        };
       } else {
         question = `תרגם: "${sentence.he}"`;
         correctAnswer = sentence.en;
-        params = { sentence: sentence.he, translation: sentence.en, direction: "he_to_en" };
+        params = {
+          sentence: sentence.he,
+          translation: sentence.en,
+          direction: "he_to_en",
+        };
       }
       break;
     }
 
     case "sentences": {
-      let pool = [...SENTENCE_TEMPLATES.base];
-      if (isMid) {
-        pool = pool.concat(SENTENCE_TEMPLATES.mid);
-      }
-      if (isUpper) {
-        pool = pool.concat(SENTENCE_TEMPLATES.mid, SENTENCE_TEMPLATES.advanced);
-      }
-      if (isAdvanced) {
-        pool = pool
-          .concat(SENTENCE_TEMPLATES.mid, SENTENCE_TEMPLATES.advanced)
-          .concat(SENTENCE_TEMPLATES.mastery);
+      const sentencePools = gradeProfile.sentencePools || ["routine"];
+      let pool = [];
+      sentencePools.forEach((key) => {
+        if (SENTENCE_POOLS[key]) {
+          pool = pool.concat(SENTENCE_POOLS[key]);
+        }
+      });
+      if (pool.length === 0) {
+        pool = SENTENCE_POOLS.base;
       }
       const template =
-        pool[Math.floor(Math.random() * pool.length)] ||
-        SENTENCE_TEMPLATES.base[0];
+        pool[Math.floor(Math.random() * pool.length)] || SENTENCE_POOLS.base[0];
       question = `השלם את המשפט: "${template.template}"`;
       correctAnswer = template.correct;
       params = { template: template.template, explanation: template.explanation };
@@ -917,23 +978,10 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
 
     case "writing": {
-      const allowSentences = isUpper || isAdvanced;
-      const useSentence = allowSentences && Math.random() < 0.35;
-
-      if (useSentence) {
-        const pool = allowSentences
-          ? WRITING_SENTENCES_BASIC.concat(WRITING_SENTENCES_ADVANCED)
-          : WRITING_SENTENCES_BASIC;
-        const s = pool[Math.floor(Math.random() * pool.length)];
-        question = `כתוב באנגלית: "${s.he}"`;
-        correctAnswer = s.en;
-        params = {
-          type: "sentence",
-          sentenceHe: s.he,
-          sentenceEn: s.en,
-          direction: "he_to_en",
-        };
-      } else {
+      const writingPools = gradeProfile.writingPools || ["word"];
+      const mode =
+        writingPools[Math.floor(Math.random() * writingPools.length)] || "word";
+      if (mode === "word") {
         const [en, he] = randomWord;
         question = `כתוב באנגלית: "${he}"`;
         correctAnswer = en;
@@ -943,8 +991,26 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           wordEn: en,
           direction: "he_to_en",
         };
+      } else {
+        let pool = WRITING_SENTENCES_BASIC;
+        if (mode === "sentence_extended") {
+          pool = WRITING_SENTENCES_ADVANCED;
+        } else if (mode === "sentence_master") {
+          pool = WRITING_SENTENCES_MASTER;
+        }
+        const s = pool[Math.floor(Math.random() * pool.length)];
+        question = `כתוב באנגלית: "${s.he}"`;
+        correctAnswer = s.en;
+        params = {
+          type: "sentence",
+          sentenceHe: s.he,
+          sentenceEn: s.en,
+          direction: "he_to_en",
+        };
+        qType = "typing";
+        break;
       }
-      qType = "typing"; // מצב כתיבה חופשית
+      qType = "typing";
       break;
     }
 
@@ -958,8 +1024,10 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   let allAnswers = [];
   if (qType === "choice") {
     // יצירת תשובות שגויות רק לשאלות בחירה
+  const targetChoices = Math.max(2, gradeProfile.choiceCount || 4);
+  const wrongNeeded = Math.max(1, targetChoices - 1);
   const wrongAnswers = new Set();
-  while (wrongAnswers.size < 3) {
+  while (wrongAnswers.size < wrongNeeded) {
     let wrong;
     if (selectedTopic === "vocabulary") {
       if (params.direction === "he_to_en") {
@@ -1009,7 +1077,10 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       wrongAnswers.add(wrong);
     }
   }
-    allAnswers = [correctAnswer, ...Array.from(wrongAnswers)];
+    allAnswers = [correctAnswer, ...Array.from(wrongAnswers)].slice(
+      0,
+      targetChoices
+    );
   for (let i = allAnswers.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
@@ -1261,6 +1332,10 @@ export default function EnglishMaster() {
     return idx >= 0 ? idx + 1 : 3;
   });
   const [mode, setMode] = useState("learning");
+  const [practiceFocus, setPracticeFocus] = useState("balanced");
+  const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal");
+  const [useStoryQuestions, setUseStoryQuestions] = useState(false);
+  const [storyOnly, setStoryOnly] = useState(false);
   const [level, setLevel] = useState("easy");
   const [topic, setTopic] = useState("vocabulary");
   const [gameActive, setGameActive] = useState(false);
@@ -1283,6 +1358,8 @@ export default function EnglishMaster() {
   const [stars, setStars] = useState(0);
   const [badges, setBadges] = useState([]);
   const [showBadge, setShowBadge] = useState(null);
+  const [showBadgeGallery, setShowBadgeGallery] = useState(false);
+  const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   const [playerLevel, setPlayerLevel] = useState(1);
   const [xp, setXp] = useState(0);
   const [showLevelUp, setShowLevelUp] = useState(false);
@@ -1320,6 +1397,10 @@ export default function EnglishMaster() {
   const [leaderboardLevel, setLeaderboardLevel] = useState("easy");
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [showHowTo, setShowHowTo] = useState(false);
+  const [mistakes, setMistakes] = useState([]);
+  const [showPracticeModal, setShowPracticeModal] = useState(false);
+  const [showReferenceModal, setShowReferenceModal] = useState(false);
+  const [referenceCategory, setReferenceCategory] = useState(REFERENCE_CATEGORY_KEYS[0]);
   const [playerName, setPlayerName] = useState(() => {
     if (typeof window !== "undefined") {
       try {
@@ -1330,6 +1411,17 @@ export default function EnglishMaster() {
     }
     return "";
   });
+  const [playerAvatar, setPlayerAvatar] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        return localStorage.getItem("mleo_avatar") || "👤";
+      } catch {
+        return "👤";
+      }
+    }
+    return "👤";
+  });
+  const [showPlayerProfile, setShowPlayerProfile] = useState(false);
   const gradeLabels = ["א", "ב", "ג", "ד", "ה", "ו"];
   const [weeklyChallenge, setWeeklyChallenge] = useState({
     target: 50,
@@ -1343,6 +1435,10 @@ export default function EnglishMaster() {
       setGradeNumber(idx + 1);
     }
   }, [grade, gradeNumber]);
+
+  useEffect(() => {
+    refreshMistakes();
+  }, []);
 
   const handleGradeNumberChange = (value) => {
     const numeric = Number(value);
@@ -1380,6 +1476,46 @@ export default function EnglishMaster() {
     });
   }
 
+  function refreshMistakes() {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = JSON.parse(localStorage.getItem("mleo_english_mistakes") || "[]");
+      setMistakes(saved.slice(-50).reverse());
+    } catch {}
+  }
+
+  function clearMistakes() {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.removeItem("mleo_english_mistakes");
+      setMistakes([]);
+    } catch {}
+  }
+
+  function handleMistakePractice(entry) {
+    if (!entry) return;
+    const gradeKey = entry.grade || grade;
+    const levelKey = entry.level || level;
+    const topicKey = entry.topic || "vocabulary";
+    const gradeIdx = GRADE_ORDER.indexOf(gradeKey);
+    if (gradeIdx !== -1) {
+      setGradeNumber(gradeIdx + 1);
+    }
+    setGrade(gradeKey);
+    setLevel(levelKey);
+    setTopic(topicKey);
+    setMode("learning");
+    setGameActive(false);
+    setShowPracticeModal(false);
+    setTimeout(() => {
+      if (playerName.trim()) {
+        startGame();
+      } else {
+        setFeedback("הכנס שם שחקן כדי לתרגל את הטעות שנבחרה");
+      }
+    }, 200);
+  }
+
   function logEnglishMistakeEntry(entry) {
     if (typeof window === "undefined") return;
     try {
@@ -1389,6 +1525,7 @@ export default function EnglishMaster() {
       saved.push({ ...entry, timestamp: Date.now() });
       if (saved.length > 200) saved.shift();
       localStorage.setItem("mleo_english_mistakes", JSON.stringify(saved));
+      refreshMistakes();
     } catch {}
   }
 
@@ -1396,7 +1533,9 @@ export default function EnglishMaster() {
     if (!questionStartTime || !currentQuestion) return;
     const duration = (Date.now() - questionStartTime) / 1000;
     if (duration > 0 && duration < 300) {
-      trackEnglishTopicTime(currentQuestion.topic, grade, level, duration);
+      const qGrade = currentQuestion.gradeKey || grade;
+      const qLevel = currentQuestion.levelKey || level;
+      trackEnglishTopicTime(currentQuestion.topic, qGrade, qLevel, duration);
     }
   }
 
@@ -1586,7 +1725,56 @@ export default function EnglishMaster() {
   }
 
   function generateNewQuestion() {
-    const levelConfig = getLevelForGrade(level, grade);
+    let gradeForQuestion = grade;
+    let levelForQuestion = level;
+    let topicForState = topic;
+    let mixedConfig = topic === "mixed" ? mixedTopics : null;
+
+    if (focusedPracticeMode === "mistakes" && mistakes.length > 0) {
+      const randomMistake =
+        mistakes[Math.floor(Math.random() * mistakes.length)];
+      if (randomMistake.grade) {
+        gradeForQuestion = randomMistake.grade;
+      }
+      if (randomMistake.level) {
+        levelForQuestion = randomMistake.level;
+      }
+      if (randomMistake.topic) {
+        topicForState = randomMistake.topic;
+      }
+    }
+
+    if (focusedPracticeMode === "graded") {
+      levelForQuestion =
+        correct < 5 ? "easy" : correct < 15 ? "medium" : level;
+    }
+
+    if (mode === "practice") {
+      switch (practiceFocus) {
+        case "vocab_core":
+          topicForState = "vocabulary";
+          break;
+        case "grammar_forms":
+          topicForState = "grammar";
+          break;
+        case "writing_lab":
+          topicForState = "writing";
+          break;
+        case "translation_boost":
+          topicForState = "translation";
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (storyOnly) {
+      topicForState = "translation";
+    } else if (useStoryQuestions && topicForState !== "translation") {
+      topicForState = Math.random() < 0.5 ? "translation" : topicForState;
+    }
+
+    const levelConfig = getLevelForGrade(levelForQuestion, gradeForQuestion);
     let question;
     let attempts = 0;
     const maxAttempts = 50;
@@ -1594,9 +1782,9 @@ export default function EnglishMaster() {
     do {
       question = generateQuestion(
         levelConfig,
-        topic,
-        grade,
-        topic === "mixed" ? mixedTopics : null
+        topicForState,
+        gradeForQuestion,
+        topicForState === "mixed" ? mixedConfig : null
       );
       attempts++;
       const questionKey = question.question;
@@ -1616,6 +1804,9 @@ export default function EnglishMaster() {
     if (attempts >= maxAttempts) {
       setRecentQuestions(new Set());
     }
+    question.gradeKey = gradeForQuestion;
+    question.levelKey = levelForQuestion;
+    question.practiceFocus = mode === "practice" ? practiceFocus : "default";
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setTypedAnswer("");
@@ -1809,12 +2000,13 @@ export default function EnglishMaster() {
       setWrong((prev) => prev + 1);
       setStreak(0);
       
+      const questionGradeKey = currentQuestion.gradeKey || grade;
       setErrorExplanation(
         getErrorExplanation(
           currentQuestion,
           currentQuestion.topic,
           answer,
-          grade
+          questionGradeKey
         )
       );
       
@@ -1822,8 +2014,8 @@ export default function EnglishMaster() {
       updateTopicProgress(top, false);
       logEnglishMistakeEntry({
         topic: currentQuestion.topic,
-        grade,
-        level,
+        grade: questionGradeKey,
+        level: currentQuestion.levelKey || level,
         question: currentQuestion.question,
         correctAnswer: currentQuestion.correctAnswer,
         wrongAnswer: answer,
@@ -1922,6 +2114,12 @@ export default function EnglishMaster() {
     return TOPICS[t]?.icon + " " + TOPICS[t]?.name || t;
   };
 
+  const getGradeLabel = (gradeKey) => {
+    const idx = GRADE_ORDER.indexOf(gradeKey);
+    if (idx === -1) return "";
+    return `כיתה ${gradeLabels[idx]}`;
+  };
+
   if (!mounted)
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center">
@@ -1943,6 +2141,12 @@ export default function EnglishMaster() {
     (weeklyChallenge.current || 0) / (weeklyChallenge.target || 1)
   );
   const weeklyPercent = Math.round(weeklyProgress * 100);
+  const referenceData =
+    REFERENCE_CATEGORIES[referenceCategory] ||
+    REFERENCE_CATEGORIES[REFERENCE_CATEGORY_KEYS[0]];
+  const referenceEntries = referenceData.lists.flatMap((listKey) =>
+    Object.entries(WORD_LISTS[listKey] || {})
+  );
 
   return (
     <Layout>
@@ -2084,6 +2288,13 @@ export default function EnglishMaster() {
                 {MODES[m].name}
               </button>
             ))}
+            <button
+              onClick={() => setShowPlayerProfile(true)}
+              className="h-8 w-8 rounded-lg bg-purple-500/80 hover:bg-purple-500 border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all"
+              title="פרופיל שחקן"
+            >
+              {playerAvatar}
+            </button>
           </div>
 
           {showBadge && (
@@ -2092,6 +2303,57 @@ export default function EnglishMaster() {
                 <div className="text-4xl mb-2">🎉</div>
                 <div className="text-2xl font-bold">תג חדש!</div>
                 <div className="text-xl">{showBadge}</div>
+              </div>
+            </div>
+          )}
+
+          {showBadgeGallery && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
+              onClick={() => setShowBadgeGallery(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-center mb-4">
+                  <h2 className="text-2xl font-extrabold text-white mb-2">
+                    🏅 התגים שלי
+                  </h2>
+                  <p className="text-white/70 text-sm">
+                    {badges.length > 0
+                      ? `יש לך ${badges.length} תגים שונים במשחק האנגלית`
+                      : "עדיין לא צברת תגיות. תמשיך לתרגל כדי לזכות בהם!"}
+                  </p>
+                </div>
+
+                {badges.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-3">
+                    {badges.map((badge, idx) => (
+                      <div
+                        key={`${badge}-${idx}`}
+                        className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30"
+                      >
+                        <div className="text-3xl">{badge.split(" ")[0]}</div>
+                        <div className="flex-1 text-white font-semibold text-lg" dir="rtl">
+                          {badge}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-white/60">
+                    <div className="text-6xl mb-4">🎯</div>
+                    <p>ענה ברצף, צבור כוכבים והאתגרים יעניקו לך תג חדש.</p>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setShowBadgeGallery(false)}
+                  className="mt-4 w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                >
+                  סגור
+                </button>
               </div>
             </div>
           )}
@@ -2187,6 +2449,20 @@ export default function EnglishMaster() {
                 />
               </div>
 
+              {mode === "practice" && (
+                <select
+                  value={practiceFocus}
+                  onChange={(e) => setPracticeFocus(e.target.value)}
+                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold w-full max-w-md mb-2"
+                >
+                  {PRACTICE_FOCUS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+
               <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
                   <div className="text-xs text-white/60">שיא ניקוד</div>
@@ -2208,6 +2484,33 @@ export default function EnglishMaster() {
                 </div>
               </div>
 
+              <div className="flex items-center justify-center gap-4 mb-2 w-full max-w-md flex-wrap">
+                <label className="flex items-center gap-2 text-white text-xs">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4"
+                    checked={useStoryQuestions}
+                    onChange={(e) => {
+                      setUseStoryQuestions(e.target.checked);
+                      if (!e.target.checked) {
+                        setStoryOnly(false);
+                      }
+                    }}
+                  />
+                  <span>📘 שלב שאלות תרגום/סיפור</span>
+                </label>
+                <label className="flex items-center gap-2 text-white text-xs">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4"
+                    checked={storyOnly}
+                    disabled={!useStoryQuestions}
+                    onChange={(e) => setStoryOnly(e.target.checked)}
+                  />
+                  <span>📖 רק שאלות תרגום</span>
+                </label>
+              </div>
+
               {(stars > 0 || playerLevel > 1 || badges.length > 0) && (
                 <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
                   {stars > 0 && (
@@ -2227,12 +2530,16 @@ export default function EnglishMaster() {
                     </div>
                   )}
                   {badges.length > 0 && (
-                    <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                      <div className="text-xs text-white/60">Badges</div>
-                      <div className="text-sm font-bold text-orange-400">
-                        {badges.length} 🏅
-                      </div>
+                  <button
+                    onClick={() => setShowBadgeGallery(true)}
+                    className="bg-black/20 border border-white/10 rounded-lg p-2 text-center hover:bg-black/30 transition text-white"
+                    type="button"
+                  >
+                    <div className="text-xs text-white/60">תגים</div>
+                    <div className="text-sm font-bold text-orange-400">
+                      {badges.length} 🏅
                     </div>
+                  </button>
                   )}
                 </div>
               )}
@@ -2280,6 +2587,12 @@ export default function EnglishMaster() {
                   ▶️ התחל
                 </button>
                 <button
+                  onClick={() => setShowReferenceModal(true)}
+                  className="h-10 px-4 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
+                >
+                  📚 לוח מילים
+                </button>
+                <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
                 >
@@ -2308,6 +2621,20 @@ export default function EnglishMaster() {
                 >
                   📊 דוח להורים
                 </button>
+                <button
+                  onClick={() => setShowPracticeOptions(true)}
+                  className="px-4 py-2 rounded-lg bg-gray-500/70 hover:bg-gray-500 text-xs font-bold text-white shadow-sm"
+                >
+                  🎛️ הגדרות תרגול
+                </button>
+                {mistakes.length > 0 && (
+                  <button
+                    onClick={() => setShowPracticeModal(true)}
+                    className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
+                  >
+                    🎯 תרגול טעויות ({mistakes.length})
+                  </button>
+                )}
                 <button
                   onClick={() => router.push("/learning/curriculum?subject=english")}
                   className="px-4 py-2 rounded-lg bg-amber-500/80 hover:bg-amber-500 text-xs font-bold text-white shadow-sm"
@@ -2679,6 +3006,293 @@ export default function EnglishMaster() {
                     שמור
                   </button>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {showPracticeModal && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[190] p-4"
+              onClick={() => setShowPracticeModal(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-purple-400/60 rounded-2xl p-5 max-w-lg w-full max-h-[85vh] overflow-y-auto"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-center mb-4">
+                  <h2 className="text-2xl font-extrabold text-white mb-1">
+                    🎯 תרגול טעויות אחרונות
+                  </h2>
+                  <p className="text-white/70 text-sm">
+                    בחר טעות אחרונה כדי לפתוח משחק ממוקד באותו נושא, כיתה ורמת קושי.
+                  </p>
+                </div>
+
+                {mistakes.length === 0 ? (
+                  <div className="text-center py-6 text-white/60">
+                    אין טעויות פעילות כרגע. תתחיל משחק, אסוף נתונים ואז חזור לכאן.
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {mistakes.slice(0, 10).map((mistake, idx) => (
+                      <div
+                        key={`${mistake.timestamp || idx}-${idx}`}
+                        className="bg-black/30 border border-white/10 rounded-xl p-3"
+                        dir="rtl"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-white font-semibold mb-1">
+                          <span>{getTopicName(mistake.topic || "vocabulary")}</span>
+                          <span className="text-white/70 text-xs">
+                            {getGradeLabel(mistake.grade) || "כיתה נוכחית"} ·{" "}
+                            {LEVELS[mistake.level || level]?.name || LEVELS[level].name}
+                          </span>
+                        </div>
+                        {mistake.question && (
+                          <p className="text-xs text-white/80 mb-1" dir="auto">
+                            {mistake.question}
+                          </p>
+                        )}
+                        {mistake.correctAnswer && (
+                          <p className="text-xs text-emerald-300 mb-1" dir="auto">
+                            תשובה נכונה: {mistake.correctAnswer}
+                          </p>
+                        )}
+                        <button
+                          onClick={() => handleMistakePractice(mistake)}
+                          className="mt-2 w-full px-3 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-xs font-bold text-white"
+                        >
+                          תרגל עכשיו
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setShowPracticeModal(false)}
+                    className="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm font-bold text-white"
+                  >
+                    סגור
+                  </button>
+                  {mistakes.length > 0 && (
+                    <button
+                      onClick={clearMistakes}
+                      className="flex-1 px-4 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 text-sm font-bold text-white"
+                    >
+                      🧹 איפוס טעויות
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showReferenceModal && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[185] p-4"
+              onClick={() => setShowReferenceModal(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-blue-400/60 rounded-2xl p-5 w-full max-w-lg max-h-[85vh] overflow-y-auto text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-2xl font-extrabold">📚 לוח מילים אינטראקטיבי</h2>
+                  <button
+                    onClick={() => setShowReferenceModal(false)}
+                    className="text-white/80 hover:text-white text-xl px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                <p className="text-sm text-white/70 mb-3">
+                  בחר קטגוריה כדי לראות מילים חשובות באנגלית ובעברית, בדיוק כמו בעזרי העזר של משחק החשבון.
+                </p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {REFERENCE_CATEGORY_KEYS.map((key) => (
+                    <button
+                      key={key}
+                      onClick={() => setReferenceCategory(key)}
+                      className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                        referenceCategory === key
+                          ? "bg-blue-500/80 border-blue-300 text-white"
+                          : "bg-white/5 border-white/20 text-white/70 hover:bg-white/10"
+                      }`}
+                    >
+                      {REFERENCE_CATEGORIES[key].label}
+                    </button>
+                  ))}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" dir="ltr">
+                  {referenceEntries.map(([en, he]) => (
+                    <div
+                      key={`${referenceCategory}-${en}-${he}`}
+                      className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 flex items-center justify-between text-sm"
+                    >
+                      <span className="font-semibold">{en}</span>
+                      <span className="text-white/50 mx-2">|</span>
+                      <span className="text-right" dir="rtl">
+                        {he}
+                      </span>
+                    </div>
+                  ))}
+                  {referenceEntries.length === 0 && (
+                    <div className="text-center col-span-full text-white/60 py-4">
+                      אין מילים להצגה בקטגוריה זו.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showPracticeOptions && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[188] p-4"
+              onClick={() => setShowPracticeOptions(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-emerald-400/60 rounded-2xl p-5 w-full max-w-md max-h-[85vh] overflow-y-auto text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-2xl font-extrabold">🎛️ הגדרות תרגול חכם</h2>
+                  <button
+                    onClick={() => setShowPracticeOptions(false)}
+                    className="text-white/80 hover:text-white text-xl px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                <p className="text-sm text-white/70 mb-3">
+                  כמו במשחקי החשבון והגאומטריה, ניתן לבחור כאן מצב אימון מיוחד, חיבור לשגיאות אחרונות או מעבר מדורג בין רמות.
+                </p>
+                <div className="space-y-2 mb-4">
+                  <p className="text-xs text-white/60 font-semibold">מצב מיקוד</p>
+                  {[
+                    { value: "normal", label: "ברירת מחדל" },
+                    { value: "mistakes", label: "חזרה על טעויות אחרונות" },
+                    { value: "graded", label: "תרגול מדורג (קל → בינוני → רמתך)" },
+                  ].map((opt) => (
+                    <label key={opt.value} className="flex items-center gap-2 text-sm">
+                      <input
+                        type="radio"
+                        name="focus-mode"
+                        value={opt.value}
+                        checked={focusedPracticeMode === opt.value}
+                        onChange={(e) => setFocusedPracticeMode(e.target.value)}
+                      />
+                      <span>{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
+                <div className="space-y-2 mb-4">
+                  <p className="text-xs text-white/60 font-semibold">שאלות תרגום/סיפור</p>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={useStoryQuestions}
+                      onChange={(e) => {
+                        setUseStoryQuestions(e.target.checked);
+                        if (!e.target.checked) setStoryOnly(false);
+                      }}
+                    />
+                    <span>שלב שאלות תרגום בתוך משחקי האוצר מילים/דקדוק</span>
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={storyOnly}
+                      disabled={!useStoryQuestions}
+                      onChange={(e) => setStoryOnly(e.target.checked)}
+                    />
+                    <span>הצג רק שאלות תרגום/סיפור</span>
+                  </label>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-lg p-3 text-xs text-white/80">
+                  <div className="font-semibold mb-1">סיכום מצב נוכחי</div>
+                  <p>מצב תרגול: {MODES[mode].name}</p>
+                  <p>פוקוס: {PRACTICE_FOCUS_OPTIONS.find((o) => o.value === practiceFocus)?.label || ""}</p>
+                  <p>מיקוד שגיאות: {focusedPracticeMode === "normal" ? "רגיל" : focusedPracticeMode === "mistakes" ? "טעויות אחרונות" : "מדורג"}</p>
+                  <p>שאלות תרגום: {storyOnly ? "רק תרגום" : useStoryQuestions ? "מעורב" : "כבוי"}</p>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={() => setShowPracticeOptions(false)}
+                    className="flex-1 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                  >
+                    סגור
+                  </button>
+                  <button
+                    onClick={() => {
+                      setFocusedPracticeMode("normal");
+                      setUseStoryQuestions(false);
+                      setStoryOnly(false);
+                      setPracticeFocus("balanced");
+                      setShowPracticeOptions(false);
+                    }}
+                    className="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm font-bold"
+                  >
+                    איפוס ברירות מחדל
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showPlayerProfile && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[186] p-4"
+              onClick={() => setShowPlayerProfile(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-purple-400/60 rounded-2xl p-5 w-full max-w-sm max-h-[80vh] overflow-y-auto text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-2xl font-extrabold">🧑‍🎓 בחירת אווטר</h2>
+                  <button
+                    onClick={() => setShowPlayerProfile(false)}
+                    className="text-white/80 hover:text-white text-xl px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                <p className="text-sm text-white/70 mb-3">
+                  בחר דמות שתופיע לצד שמך בכל משחק – בדיוק כמו במשחקי החשבון וההנדסה.
+                </p>
+                <div className="grid grid-cols-4 gap-3 mb-4">
+                  {AVATAR_OPTIONS.map((icon) => (
+                    <button
+                      key={icon}
+                      onClick={() => {
+                        setPlayerAvatar(icon);
+                        try {
+                          localStorage.setItem("mleo_avatar", icon);
+                        } catch {}
+                        setShowPlayerProfile(false);
+                      }}
+                      className={`h-12 rounded-xl border text-2xl flex items-center justify-center ${
+                        playerAvatar === icon
+                          ? "bg-purple-500/80 border-purple-300"
+                          : "bg-white/5 border-white/20 hover:bg-white/10"
+                      }`}
+                    >
+                      {icon}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setShowPlayerProfile(false)}
+                  className="w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                >
+                  סגור
+                </button>
               </div>
             </div>
           )}

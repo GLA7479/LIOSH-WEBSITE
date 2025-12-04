@@ -1,177 +1,11 @@
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
-
-const ENGLISH_GENERAL_GOALS = [
-  "פיתוח כשירות תקשורתית באנגלית בארבע המיומנויות: האזנה, דיבור, קריאה וכתיבה.",
-  "בניית אוצר מילים לפי נושאים וחיזוקו באמצעות פעילויות חווייתיות ואותנטיות.",
-  "טיפוח אסטרטגיות למידה עצמאית, עבודת צוות ומודעות בין-תרבותית.",
-  "שימוש באנגלית ככלי לתקשורת משמעותית בכיתה, בפרויקטים ובהצגת תוצרים."
-];
-
-const ENGLISH_CURRICULUM = [
-  {
-    grade: "כיתה א׳",
-    stage: "שלב חשיפה",
-    focus: [
-      "חשיפה חווייתית לשפה דרך שירים, חרוזים, משחקים וסיפורים.",
-      "הבנת שגרת הכיתה ותגובה להוראות בעזרת תנועה, חפצים ותמונות.",
-      "עידוד חזרתיות על ביטויים מוכרים ללא לחץ על דיוק."
-    ],
-    skills: [
-      "ביצוע הוראות קצרות בליווי מחוות או תמיכה חזותית.",
-      "זיהוי מילים וביטויים מוכרים בשירים ובסיפורים משותפים.",
-      "תגובה לברכות, רגשות ושאלות פשוטות במילה בודדת או פעולה."
-    ],
-    grammar: [
-      "אין הוראת דקדוק פורמלית; חשיפה לביטויים קבועים כגון \"I am / You are\".",
-      "מודעות לכינויי גוף ולביטויי כיתה קבועים."
-    ],
-    vocabulary: [
-      "צבעים, צורות בסיסיות ומספרים 1–10.",
-      "בני משפחה, חפצי כיתה, חיות מחמד ורגשות בסיסיים."
-    ],
-    benchmark: [
-      "מבין הוראות קצרות ומגיב באמצעות פעולה או מחווה.",
-      "מתאים מילים מוכרות לתמונות ומראה מעורבות חיובית באנגלית."
-    ]
-  },
-  {
-    grade: "כיתה ב׳",
-    stage: "שלב יסוד",
-    focus: [
-      "מעבר מחשיפה להפקה מבוקרת והרחבת אוצר המילים.",
-      "התחלת פענוח צלילים, קריאת מילים פשוטות וכתיבת העתקה.",
-      "תרגול משפטים קצרים ודפוסים חוזרים בדיבור."
-    ],
-    skills: [
-      "האזנה לסיפורים קצרים וזיהוי מילים וביטויים מרכזיים.",
-      "קריאה וכתיבה של מילים, תוויות ומשפטים פשוטים.",
-      "מענה על שאלות כן/לא ושאלות wh בעזרת תבניות מוכרות."
-    ],
-    grammar: [
-      "Present Simple של הפועל to be (I am / He is).",
-      "כינויי גוף, שמות עצם ברבים וכינויי רמז this/that.",
-      "מבני שאלות בסיסיים (What is it? Where is...?)."
-    ],
-    vocabulary: [
-      "מזון, לבוש, חדרים בבית ומקומות בקהילה.",
-      "חיי בית הספר ופעולות יומיומיות (run, read, play, draw)."
-    ],
-    benchmark: [
-      "קורא/ת וכותב/ת מילים מוכרות באיות נכון.",
-      "משתתף/ת בשיחה קצרה תוך שימוש בביטויים שנלמדו."
-    ]
-  },
-  {
-    grade: "כיתה ג׳",
-    stage: "שלב ראשית אוריינות",
-    focus: [
-      "שילוב ארבע המיומנויות בעזרת טקסטים מובנים ומשימות קצרות.",
-      "הרחבת אינטראקציות: הצגה עצמית, תיאור חפצים/אנשים ושאלות הדדיות.",
-      "חיזוק פענוח עצמאי ואיות מדויק."
-    ],
-    skills: [
-      "קריאת טקסטים בני 60–80 מילים ואיתור רעיון מרכזי ופרטים.",
-      "האזנה לדו-שיחים ולהוראות בני 2–3 שלבים והבנתם.",
-      "כתיבת משפטים פשוטים על שגרה, תחביבים ותחושות."
-    ],
-    grammar: [
-      "Present Simple בחיובי, שלילי ושאלות.",
-      "שמות עצם עם יידוע (a/an/the) ושמות תואר בסיסיים.",
-      "מילות יחס מקום כגון in, on, under, next to."
-    ],
-    vocabulary: [
-      "שגרת יום, בית הספר, תחביבים וספורט.",
-      "מזג אוויר ועונות, חלקי גוף וטכנולוגיה בכיתה."
-    ],
-    benchmark: [
-      "מפיק/ה 4–5 משפטים מדוברים או כתובים בנושא נלמד.",
-      "משתמש/ת נכונה בזמן Present Simple עם he/she/it."
-    ]
-  },
-  {
-    grade: "כיתה ד׳",
-    stage: "שלב אוריינות מתפתחת",
-    focus: [
-      "הארכת הטקסטים ל-100–150 מילים והעמקת ההבנה.",
-      "יישום אסטרטגיות קריאה: חיזוי, סריקה, סיכום ולכידת מידע.",
-      "עידוד דיבור מתאר, השוואה והבעת דעה."
-    ],
-    skills: [
-      "קריאת טקסטים מידעיים, מיילים וסיפורים והפקת פרטים תומכים.",
-      "האזנה להוראות מרובות שלבים ורישום נקודות.",
-      "כתיבת פסקה קצרה (3–5 משפטים) עם מילות קישור כגון and, but, because."
-    ],
-    grammar: [
-      "הבחנה בין Present Simple ל-Present Continuous.",
-      "שמות עצם ספירים ובלתי-ספירים, some/any, much/many.",
-      "כינויי שייכות, כינויי מושא ותוארי פועל (slowly/quickly)."
-    ],
-    vocabulary: [
-      "קבוצות מזון, מקומות בעיר ודרכי תחבורה.",
-      "חגים, מסורות, רגשות ופעולות סביבתיות."
-    ],
-    benchmark: [
-      "כותב/ת פסקה קוהרנטית המתארת שגרה, מקום או אירוע.",
-      "מבין/ה דיבור קצר הכולל מספר פרטים ומגיב/ה בהתאם."
-    ]
-  },
-  {
-    grade: "כיתה ה׳",
-    stage: "שלב אוריינות מורחבת",
-    focus: [
-      "קריאה אסטרטגית של טקסטים מידעיים, מאמרים וביוגרפיות.",
-      "כתיבה מובנית: משפט נושא, פרטים תומכים ומשפט מסכם.",
-      "הכנת מצגות בעל פה שמסבירות, משוות ומשכנעות."
-    ],
-    skills: [
-      "האזנה לקטעי מידע או ראיונות ורישום עובדות מרכזיות.",
-      "קריאת מאמרים בני 150–200 מילים והסקת משמעות מהקשר.",
-      "כתיבת שני פסקאות מחוברות (60–80 מילים) עם מילות קישור first/next/finally."
-    ],
-    grammar: [
-      "Past Simple (פעלי עבר סדירים וחריגים נפוצים).",
-      "עתיד עם will / be going to ומודלים can, must, have to.",
-      "השוואתיים ועליונים, ותנאי בסיסי (If...)."
-    ],
-    vocabulary: [
-      "נסיעות ותחבורה, גאוגרפיה וסביבה.",
-      "בריאות וגוף האדם, טכנולוגיה ומדיה, קהילה ומקצועות."
-    ],
-    benchmark: [
-      "מסכם/ת רעיון מרכזי ופרטים עיקריים מטקסט כתוב או מושמע.",
-      "מציג/ה בעל פה קצר בעזרת עזרים חזותיים או כרטיסיות."
-    ]
-  },
-  {
-    grade: "כיתה ו׳",
-    stage: "שלב מתקדם (סוף יסודי)",
-    focus: [
-      "היערכות לחטיבת הביניים בעזרת פרויקטים, מחקר והצגת ממצאים.",
-      "שילוב אוריינות מידע: רישום נקודות, ארגון נתונים וציון מקורות.",
-      "פיתוח קול אישי להצגת טיעון, דעה והסבר."
-    ],
-    skills: [
-      "האזנה לפודקאסטים או קטעי מדע והפקת מידע גלוי וסמוי.",
-      "קריאת מאמרים בני 200–250 מילים, סיפורים וחדשות מותאמות.",
-      "כתיבת מכתבים, דיווחים או חיבורים בני 80–120 מילים."
-    ],
-    grammar: [
-      "Past Continuous לצד Past Simple והיכרות עם Present Perfect.",
-      "צורות עתיד שונות (will / going to / present continuous לתכניות).",
-      "תנאי 0 ו-1 ומודלים מורחבים (should, might, could)."
-    ],
-    vocabulary: [
-      "סוגיות גלובליות: מים, אנרגיה, קיימות ואיכות סביבה.",
-      "תרבות וזהות, ביוגרפיות, טכנולוגיה ואזרחות דיגיטלית."
-    ],
-    benchmark: [
-      "כותב/ת טקסט רב-פסקאות עם שליטה בזמנים, קוהרנטיות ומילות קישור.",
-      "מציג/ה ממצאי מחקר בעל פה ובכתב ומשתתף/ת בדיונים קבוצתיים."
-    ]
-  }
-];
+import {
+  ENGLISH_GENERAL_GOALS,
+  ENGLISH_GRADES,
+  ENGLISH_GRADE_ORDER,
+} from "../../data/english-curriculum";
 
 export default function Curriculum() {
   useIOSViewportFix();
@@ -182,6 +16,7 @@ export default function Curriculum() {
   const normalizedSubject = (subjectParam || "math").toString().toLowerCase();
   const subject = normalizedSubject === "english" ? "english" : "math";
   const isEnglish = subject === "english";
+  const englishGrades = ENGLISH_GRADE_ORDER.map((key) => ENGLISH_GRADES[key]);
   
   const handleClose = () => {
     router.back();
@@ -224,45 +59,50 @@ export default function Curriculum() {
                   ))}
                 </ul>
               </div>
-              {ENGLISH_CURRICULUM.map((grade) => (
+              {englishGrades.map((grade) => (
                 <div
-                  key={grade.grade}
+                  key={grade.key}
                   className="bg-blue-500/15 border-r-4 border-blue-400 p-4 rounded-lg mb-6"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
-                    <h2 className="text-2xl font-bold">{grade.grade}</h2>
+                    <h2 className="text-2xl font-bold">{grade.name}</h2>
                     <span className="text-sm text-white/70">{grade.stage}</span>
                   </div>
+                  {grade.curriculum?.summary && (
+                    <p className="text-sm text-white/80 mb-3" dir="rtl">
+                      {grade.curriculum.summary}
+                    </p>
+                  )}
                   <div className="grid gap-4 md:grid-cols-2">
                     <div>
                       <h4 className="font-semibold mb-1 text-white">מוקדי למידה</h4>
                       <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
-                        {grade.focus.map((item, idx) => (
-                          <li key={`focus-${grade.grade}-${idx}`}>{item}</li>
+                        {grade.curriculum?.focus?.map((item, idx) => (
+                          <li key={`focus-${grade.key}-${idx}`}>{item}</li>
                         ))}
                       </ul>
                     </div>
                     <div>
                       <h4 className="font-semibold mb-1 text-white">מיומנויות עיקריות</h4>
                       <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
-                        {grade.skills.map((item, idx) => (
-                          <li key={`skills-${grade.grade}-${idx}`}>{item}</li>
+                        {grade.curriculum?.skills?.map((item, idx) => (
+                          <li key={`skills-${grade.key}-${idx}`}>{item}</li>
                         ))}
                       </ul>
                     </div>
                     <div>
                       <h4 className="font-semibold mb-1 text-white">דקדוק ומבנים</h4>
                       <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
-                        {grade.grammar.map((item, idx) => (
-                          <li key={`grammar-${grade.grade}-${idx}`}>{item}</li>
+                        {grade.curriculum?.grammar?.map((item, idx) => (
+                          <li key={`grammar-${grade.key}-${idx}`}>{item}</li>
                         ))}
                       </ul>
                     </div>
                     <div>
                       <h4 className="font-semibold mb-1 text-white">נושאי אוצר מילים</h4>
                       <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
-                        {grade.vocabulary.map((item, idx) => (
-                          <li key={`vocab-${grade.grade}-${idx}`}>{item}</li>
+                        {grade.curriculum?.vocabulary?.map((item, idx) => (
+                          <li key={`vocab-${grade.key}-${idx}`}>{item}</li>
                         ))}
                       </ul>
                     </div>
@@ -270,8 +110,8 @@ export default function Curriculum() {
                   <div className="mt-3">
                     <h4 className="font-semibold mb-1 text-white">יעדי סף</h4>
                     <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
-                      {grade.benchmark.map((item, idx) => (
-                        <li key={`benchmark-${grade.grade}-${idx}`}>{item}</li>
+                      {grade.curriculum?.benchmark?.map((item, idx) => (
+                        <li key={`benchmark-${grade.key}-${idx}`}>{item}</li>
                       ))}
                     </ul>
                   </div>

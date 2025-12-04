@@ -1468,6 +1468,13 @@ export default function MathMaster() {
                 {MODES[m].name}
               </button>
             ))}
+            <button
+              onClick={() => setShowPlayerProfile(true)}
+              className="h-8 w-8 rounded-lg bg-purple-500/80 hover:bg-purple-500 border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all"
+              title="פרופיל שחקן"
+            >
+              {playerAvatar}
+            </button>
           </div>
 
           {/* הודעות מיוחדות */}
@@ -1840,14 +1847,6 @@ export default function MathMaster() {
                     </option>
                   ))}
                 </select>
-                {/* כפתור פרופיל */}
-                <button
-                  onClick={() => setShowPlayerProfile(true)}
-                  className="h-9 w-9 rounded-lg bg-purple-500/80 hover:bg-purple-500 border border-white/20 text-white text-xl font-bold flex items-center justify-center transition-all"
-                  title="פרופיל שחקן"
-                >
-                  {playerAvatar}
-                </button>
                 <input
                   type="text"
                   value={playerName}

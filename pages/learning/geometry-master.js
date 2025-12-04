@@ -997,6 +997,13 @@ export default function GeometryMaster() {
                 {MODES[m].name}
               </button>
             ))}
+            <button
+              onClick={() => setShowPlayerProfile(true)}
+              className="h-8 w-8 rounded-lg bg-purple-500/80 hover:bg-purple-500 border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all"
+              title="פרופיל שחקן"
+            >
+              {playerAvatar}
+            </button>
           </div>
 
           {showBadge && (
@@ -1022,14 +1029,6 @@ export default function GeometryMaster() {
           {!gameActive ? (
             <>
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md" dir="rtl">
-                {/* כפתור פרופיל */}
-                <button
-                  onClick={() => setShowPlayerProfile(true)}
-                  className="h-9 w-9 rounded-lg bg-purple-500/80 hover:bg-purple-500 border border-white/20 text-white text-xl font-bold flex items-center justify-center transition-all"
-                  title="פרופיל שחקן"
-                >
-                  {playerAvatar}
-                </button>
                 <input
                   type="text"
                   value={playerName}
