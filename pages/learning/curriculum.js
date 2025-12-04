@@ -6,6 +6,11 @@ import {
   ENGLISH_GRADES,
   ENGLISH_GRADE_ORDER,
 } from "../../data/english-curriculum";
+import {
+  SCIENCE_GENERAL_GOALS,
+  SCIENCE_GRADES,
+  SCIENCE_GRADE_ORDER,
+} from "../../data/science-curriculum";
 
 export default function Curriculum() {
   useIOSViewportFix();
@@ -14,10 +19,30 @@ export default function Curriculum() {
     ? router.query.subject[0]
     : router.query.subject;
   const normalizedSubject = (subjectParam || "math").toString().toLowerCase();
-  const subject = normalizedSubject === "english" ? "english" : "math";
+  const supportedSubjects = ["math", "english", "science"];
+  const subject = supportedSubjects.includes(normalizedSubject) ? normalizedSubject : "math";
   const isEnglish = subject === "english";
+  const isScience = subject === "science";
   const englishGrades = ENGLISH_GRADE_ORDER.map((key) => ENGLISH_GRADES[key]);
+  const scienceGrades = SCIENCE_GRADE_ORDER.map((key) => SCIENCE_GRADES[key]);
   
+  const subjectTitles = {
+    math: "מתמטיקה",
+    english: "אנגלית",
+    science: "מדעים",
+  };
+
+  const subjectDescriptions = {
+    math: "סיכום מלא של כל נושאי החשבון, רמות הקושי והכיתות הזמינות במערכת.",
+    english:
+      "מיפוי רשמי של תכנית משרד החינוך באנגלית (כיתות א׳–ו׳) לפי מיומנויות, דקדוק ואוצר מילים.",
+    science:
+      "התאמה מלאה לתוכנית \"מדע וטכנולוגיה\" של משרד החינוך (כיתות א׳–ו׳) – לפי תחומי דעת, חקר והתנסות.",
+  };
+
+  const subjectTitle = subjectTitles[subject] || subjectTitles.math;
+  const subjectDescription = subjectDescriptions[subject] || subjectDescriptions.math;
+
   const handleClose = () => {
     router.back();
   };
@@ -40,12 +65,10 @@ export default function Curriculum() {
 
           <header className="text-center space-y-3">
             <h1 className="text-3xl md:text-4xl font-black" dir="rtl">
-              תוכנית הלימודים באתר - {isEnglish ? "אנגלית" : "מתמטיקה"}
+              תוכנית הלימודים באתר - {subjectTitle}
             </h1>
             <p className="text-sm md:text-base text-white/70 max-w-2xl mx-auto" dir="rtl">
-              {isEnglish
-                ? "מיפוי רשמי של תכנית משרד החינוך באנגלית (כיתות א׳–ו׳) לפי מיומנויות, דקדוק ואוצר מילים."
-                : "סיכום מלא של כל נושאי החשבון, רמות הקושי והכיתות הזמינות במערכת."}
+              {subjectDescription}
             </p>
           </header>
 
@@ -114,6 +137,68 @@ export default function Curriculum() {
                         <li key={`benchmark-${grade.key}-${idx}`}>{item}</li>
                       ))}
                     </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : isScience ? (
+            <div className="bg-white/5 rounded-2xl border border-white/10 p-6" dir="rtl">
+              <div className="bg-emerald-500/20 border-r-4 border-emerald-500 p-4 rounded-lg mb-6">
+                <h3 className="text-xl font-bold mb-2">מטרות כלליות</h3>
+                <ul className="list-disc pr-6 space-y-2">
+                  {SCIENCE_GENERAL_GOALS.map((goal, idx) => (
+                    <li key={`science-goal-${idx}`}>{goal}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {scienceGrades.map((grade) => (
+                <div
+                  key={grade.key}
+                  className="bg-emerald-500/15 border-r-4 border-emerald-400 p-4 rounded-lg mb-6"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
+                    <h2 className="text-2xl font-bold">{grade.name}</h2>
+                    <span className="text-sm text-white/70">{grade.stage}</span>
+                  </div>
+                  {grade.curriculum?.summary && (
+                    <p className="text-sm text-white/80 mb-3" dir="rtl">
+                      {grade.curriculum.summary}
+                    </p>
+                  )}
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                      <h4 className="font-semibold mb-1 text-white">נושאים מרכזיים</h4>
+                      <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
+                        {grade.curriculum?.focus?.map((item, idx) => (
+                          <li key={`science-focus-${grade.key}-${idx}`}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1 text-white">מיומנויות</h4>
+                      <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
+                        {grade.curriculum?.skills?.map((item, idx) => (
+                          <li key={`science-skills-${grade.key}-${idx}`}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1 text-white">חקר והתנסות</h4>
+                      <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
+                        {grade.curriculum?.inquiry?.map((item, idx) => (
+                          <li key={`science-inquiry-${grade.key}-${idx}`}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1 text-white">קישור לטכנולוגיה</h4>
+                      <ul className="list-disc pr-5 space-y-1 text-sm text-white/80">
+                        {grade.curriculum?.technology?.map((item, idx) => (
+                          <li key={`science-tech-${grade.key}-${idx}`}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               ))}

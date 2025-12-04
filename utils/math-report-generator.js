@@ -4,6 +4,7 @@ import { STORAGE_KEY } from './math-constants';
 import { getTimeByPeriod, getTimeByCustomPeriod, getAllTimeTracking } from './math-time-tracking';
 import { getGeometryTimeByPeriod, getGeometryTimeByCustomPeriod } from './math-time-tracking';
 import { getEnglishTimeByCustomPeriod } from './english-time-tracking';
+import { getScienceTimeByCustomPeriod } from './science-time-tracking';
 
 // שמות פעולות בעברית (חשבון)
 const OPERATION_NAMES = {
@@ -75,6 +76,21 @@ export function getEnglishTopicName(topic) {
   return ENGLISH_TOPIC_NAMES[topic] || topic;
 }
 
+const SCIENCE_TOPIC_NAMES = {
+  body: "גוף האדם",
+  animals: "בעלי חיים",
+  plants: "צמחים",
+  materials: "חומרים",
+  earth_space: "כדור הארץ והחלל",
+  environment: "סביבה ואקולוגיה",
+  experiments: "ניסויים ותהליכים",
+  mixed: "ערבוב נושאים",
+};
+
+export function getScienceTopicName(topic) {
+  return SCIENCE_TOPIC_NAMES[topic] || topic;
+}
+
 // יצירת דוח להורים
 export function generateParentReport(playerName, period = 'week', customStartDate = null, customEndDate = null) {
   if (typeof window === "undefined") return null;
@@ -92,6 +108,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
     
     const englishProgress = JSON.parse(localStorage.getItem("mleo_english_master" + "_progress") || "{}");
     const englishProgressData = englishProgress.progress || {};
+    
+    const scienceProgress = JSON.parse(localStorage.getItem("mleo_science_master" + "_progress") || "{}");
+    const scienceProgressData = scienceProgress.progress || {};
     
     // חישוב תקופה
     const now = new Date();
@@ -116,6 +135,7 @@ export function generateParentReport(playerName, period = 'week', customStartDat
     // איסוף נתוני זמן לפי תקופה מותאמת (גאומטריה)
     const geometryTimeData = getGeometryTimeByCustomPeriod(startDate, endDate);
     const englishTimeData = getEnglishTimeByCustomPeriod(startDate, endDate);
+    const scienceTimeData = getScienceTimeByCustomPeriod(startDate, endDate);
     
     // איסוף שגיאות (חשבון)
     const mathMistakes = JSON.parse(localStorage.getItem("mleo_mistakes") || "[]");
@@ -125,6 +145,7 @@ export function generateParentReport(playerName, period = 'week', customStartDat
     
     // איסוף שגיאות (אנגלית)
     const englishMistakes = JSON.parse(localStorage.getItem("mleo_english_mistakes") || "[]");
+    const scienceMistakes = JSON.parse(localStorage.getItem("mleo_science_mistakes") || "[]");
     
     // איסוף אתגרים (חשבון)
     const dailyChallenge = JSON.parse(localStorage.getItem("mleo_daily_challenge") || "{}");
@@ -391,9 +412,88 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       ? Math.round((englishTotalCorrect / englishTotalQuestions) * 100)
       : 0;
     
+    // ========== סיכום מדעים ==========
+    const scienceTopicsSummary = {};
+    let scienceTotalQuestions = 0;
+    let scienceTotalCorrect = 0;
+    
+    const scienceTopicsWithTime = Object.keys(scienceTimeData.topics || {});
+    const scienceTopicsToProcess = scienceTopicsWithTime.length > 0
+      ? scienceTopicsWithTime
+      : Object.keys(scienceProgressData);
+    
+    scienceTopicsToProcess.forEach((topic) => {
+      const progressData = scienceProgressData[topic] || { total: 0, correct: 0 };
+      const questions = progressData.total || 0;
+      const correct = progressData.correct || 0;
+      const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;
+      const timeMinutes = scienceTimeData.topics?.[topic]?.minutes || 0;
+      
+      let mostCommonGrade = "לא זמין";
+      let mostCommonLevel = "לא זמין";
+      
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_science_time_tracking") || "{}");
+        const topicData = saved.topics?.[topic];
+        if (topicData?.sessions && topicData.sessions.length > 0) {
+          const gradeCounts = {};
+          const levelCounts = {};
+          
+          topicData.sessions.forEach((session) => {
+            if (session.grade) {
+              gradeCounts[session.grade] = (gradeCounts[session.grade] || 0) + 1;
+            }
+            if (session.level) {
+              levelCounts[session.level] = (levelCounts[session.level] || 0) + 1;
+            }
+          });
+          
+          if (Object.keys(gradeCounts).length > 0) {
+            const gradeEntries = Object.entries(gradeCounts);
+            gradeEntries.sort((a, b) => b[1] - a[1]);
+            const gradeKey = gradeEntries[0][0];
+            const gradeNames = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
+            mostCommonGrade = gradeNames[gradeKey] || gradeKey;
+          }
+          
+          if (Object.keys(levelCounts).length > 0) {
+            const levelEntries = Object.entries(levelCounts);
+            levelEntries.sort((a, b) => b[1] - a[1]);
+            const levelKey = levelEntries[0][0];
+            const levelNames = { easy: "קל", medium: "בינוני", hard: "קשה" };
+            mostCommonLevel = levelNames[levelKey] || levelKey;
+          }
+        }
+      } catch {}
+      
+      if (timeMinutes > 0 || questions > 0) {
+        scienceTotalQuestions += questions;
+        scienceTotalCorrect += correct;
+        
+        scienceTopicsSummary[topic] = {
+          subject: "science",
+          questions,
+          correct,
+          wrong: questions - correct,
+          accuracy,
+          timeMinutes,
+          timeHours: (timeMinutes / 60).toFixed(2),
+          needsPractice: accuracy < 70 && questions > 0,
+          excellent: accuracy >= 90 && questions >= 10,
+          grade: mostCommonGrade,
+          level: mostCommonLevel,
+          displayName: getScienceTopicName(topic)
+        };
+      }
+    });
+    
+    const scienceOverallAccuracy = scienceTotalQuestions > 0
+      ? Math.round((scienceTotalCorrect / scienceTotalQuestions) * 100)
+      : 0;
+    
     // ========== סיכום כללי ==========
-    const totalQuestions = mathTotalQuestions + geometryTotalQuestions + englishTotalQuestions;
-    const totalCorrect = mathTotalCorrect + geometryTotalCorrect + englishTotalCorrect;
+    const totalQuestions = mathTotalQuestions + geometryTotalQuestions + englishTotalQuestions + scienceTotalQuestions;
+    const totalCorrect = mathTotalCorrect + geometryTotalCorrect + englishTotalCorrect + scienceTotalCorrect;
     const overallAccuracy = totalQuestions > 0 
       ? Math.round((totalCorrect / totalQuestions) * 100) 
       : 0;
@@ -412,6 +512,12 @@ export function generateParentReport(playerName, period = 'week', customStartDat
     });
     
     const filteredEnglishMistakes = englishMistakes.filter(mistake => {
+      if (!mistake.timestamp) return false;
+      const mistakeDate = new Date(mistake.timestamp);
+      return mistakeDate >= startDate && mistakeDate <= endDate;
+    });
+    
+    const filteredScienceMistakes = scienceMistakes.filter(mistake => {
       if (!mistake.timestamp) return false;
       const mistakeDate = new Date(mistake.timestamp);
       return mistakeDate >= startDate && mistakeDate <= endDate;
@@ -473,36 +579,78 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       }
     });
     
+    const scienceMistakesByTopic = {};
+    filteredScienceMistakes.forEach(mistake => {
+      const topic = mistake.topic;
+      if (!scienceMistakesByTopic[topic]) {
+        scienceMistakesByTopic[topic] = {
+          count: 0,
+          lastSeen: null,
+          commonErrors: {}
+        };
+      }
+      scienceMistakesByTopic[topic].count++;
+      if (
+        !scienceMistakesByTopic[topic].lastSeen ||
+        new Date(mistake.timestamp) > new Date(scienceMistakesByTopic[topic].lastSeen)
+      ) {
+        scienceMistakesByTopic[topic].lastSeen = mistake.timestamp;
+      }
+    });
+    
     // ========== המלצות ==========
     const mathRecommendations = generateRecommendations(mathOperationsSummary, mathMistakesByOperation);
     const geometryRecommendations = generateRecommendations(geometryTopicsSummary, geometryMistakesByTopic);
     const englishRecommendations = generateRecommendations(englishTopicsSummary, englishMistakesByTopic);
-    const recommendations = [...mathRecommendations, ...geometryRecommendations, ...englishRecommendations];
+    const scienceRecommendations = generateRecommendations(scienceTopicsSummary, scienceMistakesByTopic);
+    const recommendations = [
+      ...mathRecommendations,
+      ...geometryRecommendations,
+      ...englishRecommendations,
+      ...scienceRecommendations,
+    ];
     
     // ========== הישגים ==========
     const mathAchievements = mathProgress.badges || [];
     const geometryAchievements = geometryProgress.badges || [];
     const englishAchievements = englishProgress.badges || [];
-    const achievements = [...mathAchievements, ...geometryAchievements, ...englishAchievements];
-    const stars = (mathProgress.stars || 0) + (geometryProgress.stars || 0) + (englishProgress.stars || 0);
+    const scienceAchievements = scienceProgress.badges || [];
+    const achievements = [
+      ...mathAchievements,
+      ...geometryAchievements,
+      ...englishAchievements,
+      ...scienceAchievements,
+    ];
+    const stars =
+      (mathProgress.stars || 0) +
+      (geometryProgress.stars || 0) +
+      (englishProgress.stars || 0) +
+      (scienceProgress.stars || 0);
     const playerLevel = Math.max(
       mathProgress.playerLevel || 1,
       geometryProgress.playerLevel || 1,
-      englishProgress.playerLevel || 1
+      englishProgress.playerLevel || 1,
+      scienceProgress.playerLevel || 1
     );
-    const xp = (mathProgress.xp || 0) + (geometryProgress.xp || 0) + (englishProgress.xp || 0);
+    const xp =
+      (mathProgress.xp || 0) +
+      (geometryProgress.xp || 0) +
+      (englishProgress.xp || 0) +
+      (scienceProgress.xp || 0);
     
     // פעילות יומית - רק בתקופה שנבחרה
     const dailyActivity = [];
     const mathDailyData = mathTimeData.daily || {};
     const geometryDailyData = geometryTimeData.daily || {};
     const englishDailyData = englishTimeData.daily || {};
+    const scienceDailyData = scienceTimeData.daily || {};
     
     // איחוד נתונים יומיים
     const allDailyDates = new Set([
       ...Object.keys(mathDailyData),
       ...Object.keys(geometryDailyData),
-      ...Object.keys(englishDailyData)
+      ...Object.keys(englishDailyData),
+      ...Object.keys(scienceDailyData)
     ]);
     
     allDailyDates.forEach(dateStr => {
@@ -511,8 +659,13 @@ export function generateParentReport(playerName, period = 'week', customStartDat
         const mathDay = mathDailyData[dateStr] || { total: 0, operations: {} };
         const geometryDay = geometryDailyData[dateStr] || { total: 0, topics: {} };
         const englishDay = englishDailyData[dateStr] || { total: 0, topics: {} };
+        const scienceDay = scienceDailyData[dateStr] || { total: 0, topics: {} };
         
-        const totalTime = (mathDay.total || 0) + (geometryDay.total || 0) + (englishDay.total || 0);
+        const totalTime =
+          (mathDay.total || 0) +
+          (geometryDay.total || 0) +
+          (englishDay.total || 0) +
+          (scienceDay.total || 0);
         const mathQuestions = Object.values(mathDay.operations || {}).reduce((sum, time) => {
           return sum + Math.round(time / 30); // הערכה: שאלה אחת כל 30 שניות
         }, 0);
@@ -522,14 +675,18 @@ export function generateParentReport(playerName, period = 'week', customStartDat
         const englishQuestions = Object.values(englishDay.topics || {}).reduce((sum, time) => {
           return sum + Math.round(time / 30);
         }, 0);
+        const scienceQuestions = Object.values(scienceDay.topics || {}).reduce((sum, time) => {
+          return sum + Math.round(time / 30);
+        }, 0);
         
         dailyActivity.push({
           date: dateStr,
           timeMinutes: Math.round(totalTime / 60),
-          questions: mathQuestions + geometryQuestions + englishQuestions,
+          questions: mathQuestions + geometryQuestions + englishQuestions + scienceQuestions,
           mathTopics: Object.keys(mathDay.operations || {}).length,
           geometryTopics: Object.keys(geometryDay.topics || {}).length,
-          englishTopics: Object.keys(englishDay.topics || {}).length
+          englishTopics: Object.keys(englishDay.topics || {}).length,
+          scienceTopics: Object.keys(scienceDay.topics || {}).length,
         });
       }
     });
@@ -547,7 +704,10 @@ export function generateParentReport(playerName, period = 'week', customStartDat
         .map(([topic, _]) => `גאומטריה: ${getTopicName(topic)}`),
       ...Object.entries(englishTopicsSummary)
         .filter(([_, data]) => data.needsPractice)
-        .map(([topic, _]) => `אנגלית: ${getEnglishTopicName(topic)}`)
+        .map(([topic, _]) => `אנגלית: ${getEnglishTopicName(topic)}`),
+      ...Object.entries(scienceTopicsSummary)
+        .filter(([_, data]) => data.needsPractice)
+        .map(([topic, _]) => `מדעים: ${getScienceTopicName(topic)}`)
     ];
     
     // נושאים מצוינים
@@ -560,7 +720,10 @@ export function generateParentReport(playerName, period = 'week', customStartDat
         .map(([topic, _]) => `גאומטריה: ${getTopicName(topic)}`),
       ...Object.entries(englishTopicsSummary)
         .filter(([_, data]) => data.excellent && data.questions >= 10)
-        .map(([topic, _]) => `אנגלית: ${getEnglishTopicName(topic)}`)
+        .map(([topic, _]) => `אנגלית: ${getEnglishTopicName(topic)}`),
+      ...Object.entries(scienceTopicsSummary)
+        .filter(([_, data]) => data.excellent && data.questions >= 10)
+        .map(([topic, _]) => `מדעים: ${getScienceTopicName(topic)}`)
     ];
     
     return {
@@ -575,11 +738,13 @@ export function generateParentReport(playerName, period = 'week', customStartDat
         totalTimeMinutes:
           (mathTimeData.totalMinutes || 0) +
           (geometryTimeData.totalMinutes || 0) +
-          (englishTimeData.totalMinutes || 0),
+          (englishTimeData.totalMinutes || 0) +
+          (scienceTimeData.totalMinutes || 0),
         totalTimeHours: (
           ((mathTimeData.totalMinutes || 0) +
             (geometryTimeData.totalMinutes || 0) +
-            (englishTimeData.totalMinutes || 0)) /
+            (englishTimeData.totalMinutes || 0) +
+            (scienceTimeData.totalMinutes || 0)) /
           60
         ).toFixed(2),
         totalQuestions,
@@ -594,6 +759,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
         englishQuestions: englishTotalQuestions,
         englishCorrect: englishTotalCorrect,
         englishAccuracy: englishOverallAccuracy,
+        scienceQuestions: scienceTotalQuestions,
+        scienceCorrect: scienceTotalCorrect,
+        scienceAccuracy: scienceOverallAccuracy,
         stars,
         playerLevel,
         xp,
@@ -609,11 +777,15 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       // לפי נושאים (אנגלית)
       englishTopics: englishTopicsSummary,
       
+      // לפי נושאים (מדעים)
+      scienceTopics: scienceTopicsSummary,
+      
       // כל הפעולות והנושאים יחד (לצורך תצוגה)
       allItems: {
         ...Object.fromEntries(Object.entries(mathOperationsSummary).map(([k, v]) => [`math_${k}`, v])),
         ...Object.fromEntries(Object.entries(geometryTopicsSummary).map(([k, v]) => [`geometry_${k}`, v])),
-        ...Object.fromEntries(Object.entries(englishTopicsSummary).map(([k, v]) => [`english_${k}`, v]))
+        ...Object.fromEntries(Object.entries(englishTopicsSummary).map(([k, v]) => [`english_${k}`, v])),
+        ...Object.fromEntries(Object.entries(scienceTopicsSummary).map(([k, v]) => [`science_${k}`, v])),
       },
       
       // פעילות יומית
@@ -628,6 +800,7 @@ export function generateParentReport(playerName, period = 'week', customStartDat
         mathMistakesByOperation,
         geometryMistakesByTopic,
         englishMistakesByTopic,
+        scienceMistakesByTopic,
         recommendations
       },
       
@@ -675,6 +848,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
         englishQuestions: 0,
         englishCorrect: 0,
         englishAccuracy: 0,
+        scienceQuestions: 0,
+        scienceCorrect: 0,
+        scienceAccuracy: 0,
         stars: 0,
         playerLevel: 1,
         xp: 0,
@@ -683,6 +859,7 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       mathOperations: {},
       geometryTopics: {},
       englishTopics: {},
+      scienceTopics: {},
       allItems: {},
       dailyActivity: [],
       analysis: {
@@ -691,6 +868,7 @@ export function generateParentReport(playerName, period = 'week', customStartDat
         mathMistakesByOperation: {},
         geometryMistakesByTopic: {},
         englishMistakesByTopic: {},
+        scienceMistakesByTopic: {},
         recommendations: []
       },
       challenges: {
@@ -712,6 +890,7 @@ function calculateImprovement(operation, progressData, period) {
 function getDisplayNameForEntry(op, data) {
   if (data.subject === 'geometry') return getTopicName(op);
   if (data.subject === 'english') return getEnglishTopicName(op);
+  if (data.subject === 'science') return getScienceTopicName(op);
   return getOperationName(op);
 }
 

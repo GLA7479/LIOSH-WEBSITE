@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
-import { generateParentReport, getOperationName, getTopicName, getEnglishTopicName, exportReportToPDF } from "../../utils/math-report-generator";
+import { generateParentReport, getOperationName, getTopicName, getEnglishTopicName, getScienceTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { useRouter } from "next/router";
 import {
   BarChart,
@@ -435,6 +435,16 @@ export default function ParentReport() {
                 {report.summary.englishCorrect || 0} נכון • {report.summary.englishAccuracy || 0}% דיוק
               </div>
             </div>
+            
+            <div className="bg-green-500/20 border border-green-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="text-xs md:text-sm text-white/60 mb-1">🔬 מדעים</div>
+              <div className="text-base md:text-lg font-bold text-green-200">
+                {report.summary.scienceQuestions || 0} שאלות
+              </div>
+              <div className="text-xs text-white/80">
+                {report.summary.scienceCorrect || 0} נכון • {report.summary.scienceAccuracy || 0}% דיוק
+              </div>
+            </div>
           </div>
 
           {/* טבלת פעולות חשבון */}
@@ -613,6 +623,75 @@ export default function ParentReport() {
                             data.accuracy >= 70 ? "text-yellow-400" :
                             "text-red-400"
                           }`}>
+                            {data.accuracy}%
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                            {data.excellent ? (
+                              <span className="text-emerald-400">✅</span>
+                            ) : data.needsPractice ? (
+                              <span className="text-red-400">⚠️</span>
+                            ) : (
+                              <span className="text-yellow-400">👍</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* טבלת נושאים מדעים */}
+          {Object.keys(report.scienceTopics || {}).length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🔬 התקדמות במדעים</h2>
+              <div className="overflow-x-auto -mx-2 md:mx-0">
+                <table className="w-full text-xs md:text-sm min-w-[800px]">
+                  <thead>
+                    <tr className="border-b border-white/20">
+                      <th className="text-right py-2 px-1 md:px-2">נושא</th>
+                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
+                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
+                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
+                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
+                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
+                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
+                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(report.scienceTopics)
+                      .sort(([_, a], [__, b]) => b.questions - a.questions)
+                      .map(([topic, data]) => (
+                        <tr key={topic} className="border-b border-white/10">
+                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
+                            {getScienceTopicName(topic)}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.level || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.grade || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.timeMinutes} דק'
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.questions}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                            {data.correct}
+                          </td>
+                          <td
+                            className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                              data.accuracy >= 90
+                                ? "text-emerald-400"
+                                : data.accuracy >= 70
+                                ? "text-yellow-400"
+                                : "text-red-400"
+                            }`}
+                          >
                             {data.accuracy}%
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">

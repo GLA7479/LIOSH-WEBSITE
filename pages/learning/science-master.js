@@ -2,6 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
+import { SCIENCE_QUESTIONS } from "../../data/science-questions";
+import {
+  SCIENCE_GRADES,
+  SCIENCE_GRADE_ORDER,
+} from "../../data/science-curriculum";
+import { trackScienceTopicTime } from "../../utils/science-time-tracking";
 
 // ================== CONFIG ==================
 
@@ -18,14 +24,11 @@ const MODES = {
   challenge: { name: "אתגר", description: "טיימר + חיים, מרוץ ניקוד גבוה" },
   speed: { name: "מרוץ מהירות", description: "תשובות מהירות = יותר נקודות! ⚡" },
   marathon: { name: "מרתון", description: "כמה שאלות תצליח ברצף? 🏃" },
+  practice: { name: "תרגול ממוקד", description: "בוחר נושא או מיקוד אימון ייעודי" },
 };
 
-const GRADES = {
-  g1_2: { name: "כיתות א–ב" },
-  g3_4: { name: "כיתות ג–ד" },
-  g5_6: { name: "כיתות ה–ו" },
-  g7_8: { name: "כיתות ז–ח" },
-};
+const GRADES = SCIENCE_GRADES;
+const GRADE_ORDER = SCIENCE_GRADE_ORDER;
 
 const TOPICS = {
   body: { name: "גוף האדם", icon: "🫀" },
@@ -38,10 +41,72 @@ const TOPICS = {
   mixed: { name: "ערבוב נושאים", icon: "🎲" },
 };
 
+const PRACTICE_FOCUS_OPTIONS = [
+  { value: "balanced", label: "📚 כל הנושאים" },
+  { value: "life_science", label: "🧬 מדעי החיים" },
+  { value: "earth_space", label: "🌍 כדור הארץ והחלל" },
+  { value: "materials_energy", label: "🧪 חומרים וניסויים" },
+];
+
+const PRACTICE_TOPIC_GROUPS = {
+  balanced: null,
+  life_science: ["body", "animals", "plants", "environment"],
+  earth_space: ["earth_space", "environment"],
+  materials_energy: ["materials", "experiments"],
+};
+
+const AVATAR_OPTIONS = ["👧", "👦", "🧒", "🦊", "🐱", "🐼", "🦁", "🐸", "🐱‍🚀", "🧠"];
+
+const SCIENCE_MISTAKES_KEY = "mleo_science_mistakes";
+
+const REFERENCE_SECTIONS = {
+  life_science: {
+    label: "מדעי החיים",
+    entries: [
+      { term: "מערכת הנשימה", desc: "מביאה חמצן לגוף ומוציאה פחמן דו־חמצני." },
+      { term: "פוטוסינתזה", desc: "תהליך שבו הצמח מייצר מזון בעזרת אור." },
+      { term: "מארג מזון", desc: "רשת של שרשראות מזון שמראות איך אנרגיה עוברת בטבע." },
+      { term: "התאמות", desc: "שינויים בגוף או בהתנהגות שעוזרים לשרוד." },
+    ],
+  },
+  earth_space: {
+    label: "כדור הארץ והחלל",
+    entries: [
+      { term: "אטמוספרה", desc: "מעטפת הגזים שעוטפת את כדור הארץ." },
+      { term: "מחזור המים", desc: "המסלול של המים בין ים, עננים ויבשה." },
+      { term: "קרום כדור הארץ", desc: "השכבה החיצונית הבנויה מסלעים ולוחות טקטוניים." },
+      { term: "כוכב לכת", desc: "גוף שמקיף שמש, למשל כדור הארץ או מאדים." },
+    ],
+  },
+  materials_energy: {
+    label: "חומרים ואנרגיה",
+    entries: [
+      { term: "מצבי צבירה", desc: "מוצק, נוזל וגז – צורות שונות של אותו חומר." },
+      { term: "תערובת לעומת תרכובת", desc: "תערובת – ערבוב חומרים ללא קשר כימי, תרכובת – קשר חזק." },
+      { term: "אנרגיה מתחדשת", desc: "מקורות כמו שמש ורוח שאינם נגמרים." },
+      { term: "שינוי פיזיקלי", desc: "שינוי בצורה או מצב צבירה בלי יצירת חומר חדש." },
+    ],
+  },
+};
+
+const QUESTIONS = SCIENCE_QUESTIONS;
+
 function getTopicLabel(key) {
   const t = TOPICS[key];
   if (!t) return key;
   return `${t.icon} ${t.name}`;
+}
+
+function loadScienceMistakesFromStorage() {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(SCIENCE_MISTAKES_KEY) || "[]";
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed;
+  } catch {
+    return [];
+  }
 }
 
 // ================== QUESTION BANK ==================
@@ -50,685 +115,7 @@ function getTopicLabel(key) {
 // ================== QUESTION BANK ==================
 
 // כל שאלה: נושא, כיתות מתאימות, רמת קושי, ניסוח, תשובות, הסבר, תיאוריה קצרה
-const QUESTIONS = [
-  // ========= גוף האדם =========
-  {
-    id: "body_1",
-    topic: "body",
-    grades: ["g1_2"],
-    minLevel: "easy",
-    maxLevel: "easy",
-    type: "mcq",
-    stem: "איפה נמצא הלב בגוף האדם?",
-    options: ["בראש", "בחזה", "בבטן", "ברגליים"],
-    correctIndex: 1,
-    explanation: "הלב נמצא בחזה, מעט שמאלה מקו האמצע, ומזרים דם לכל הגוף.",
-    theoryLines: [
-      "הלב הוא איבר שרירי שפועל ללא הפסקה.",
-      "תפקידו להזרים דם המכיל חמצן וחומרי מזון לכל חלקי הגוף.",
-    ],
-  },
-  {
-    id: "body_2",
-    topic: "body",
-    grades: ["g1_2"],
-    minLevel: "easy",
-    maxLevel: "easy",
-    type: "mcq",
-    stem: "באיזה איבר אנחנו משתמשים כדי לראות?",
-    options: ["אוזניים", "עיניים", "פה", "ידיים"],
-    correctIndex: 1,
-    explanation: "העיניים הן איבר הראייה. דרכן נכנס האור למוח שמפרש את התמונה.",
-    theoryLines: [
-      "חמשת החושים: ראייה, שמיעה, ריח, טעם ומישוש.",
-      "העיניים קשורות למוח בעזרת עצב הראייה.",
-    ],
-  },
-  {
-    id: "body_3",
-    topic: "body",
-    grades: ["g3_4"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "mcq",
-    stem: "מה תפקידה העיקרי של מערכת הנשימה?",
-    options: [
-      "להזרים דם בגוף",
-      "להכניס חמצן ולהוציא פחמן דו־חמצני",
-      "לעכל מזון",
-      "להגן על העצמות",
-    ],
-    correctIndex: 1,
-    explanation:
-      "מערכת הנשימה אחראית על חילוף הגזים: הכנסת חמצן הדרוש לתאים והוצאת פחמן דו־חמצני מהגוף.",
-    theoryLines: [
-      "איברי מערכת הנשימה כוללים אף, קנה הנשימה וריאות.",
-      "בתוך הריאות מתבצע חילוף הגזים בין האוויר לדם.",
-    ],
-  },
-  {
-    id: "body_4",
-    topic: "body",
-    grades: ["g3_4", "g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "true_false",
-    stem: "השרירים והשלד עובדים יחד כדי לאפשר לנו תנועה.",
-    options: ["נכון", "לא נכון"],
-    correctIndex: 0,
-    explanation:
-      "השלד נותן מסגרת לגוף, והשרירים מחוברים לעצמות ומושכים אותן כדי לייצר תנועה.",
-    theoryLines: [
-      "ללא שלד הגוף היה רפוי ולא יציב.",
-      "ללא שרירים לא היינו יכולים להזיז את העצמות והגוף.",
-    ],
-  },
-  {
-    id: "body_5",
-    topic: "body",
-    grades: ["g5_6", "g7_8"],
-    minLevel: "hard",
-    maxLevel: "hard",
-    type: "mcq",
-    stem: "איזה משפט מתאר בצורה הטובה ביותר את תפקיד מערכת הדם?",
-    options: [
-      "המערכת שמעכלת מזון ומפרקת אותו לחומרים פשוטים.",
-      "המערכת שמובילה אותות עצביים בין המוח לשרירים.",
-      "המערכת שמובילה חמצן, מזון והורמונים לתאים ומפנה מהם פסולת.",
-      "המערכת שמגינה מפני חיידקים באמצעות העור בלבד.",
-    ],
-    correctIndex: 2,
-    explanation:
-      "מערכת הדם מורכבת מהלב, כלי הדם והדם עצמו, ותפקידה להוביל חומרים חיוניים ולפנות פסולת.",
-    theoryLines: [
-      "הדם זורם בעורקים, ורידים ונימים.",
-      "הלב משמש משאבה שמניעה את הדם בכל הגוף.",
-    ],
-  },
-  {
-    id: "body_6",
-    topic: "body",
-    grades: ["g7_8"],
-    minLevel: "hard",
-    maxLevel: "hard",
-    type: "mcq",
-    stem: "מהו תפקידה העיקרי של מערכת העצבים?",
-    options: [
-      "לסנן פסולת מהדם",
-      "לתאם ולהעביר מידע בין חלקי הגוף והסביבה",
-      "להוביל מזון מהמעיים לדם",
-      "לאחסן אנרגיה כשומן",
-    ],
-    correctIndex: 1,
-    explanation:
-      "מערכת העצבים אחראית על קבלת מידע מהחושים, עיבודו במוח ושליחת הוראות לשרירים ולאיברים.",
-    theoryLines: [
-      "מערכת העצבים כוללת מוח, חוט שדרה ועצבים רבים.",
-      "עצבים מעבירים אותות חשמליים במהירות רבה.",
-    ],
-  },
 
-  // ========= בעלי חיים =========
-  {
-    id: "animals_1",
-    topic: "animals",
-    grades: ["g1_2"],
-    minLevel: "easy",
-    maxLevel: "easy",
-    type: "mcq",
-    stem: "איזה בעל חיים הוא יונק?",
-    options: ["צפרדע", "כריש", "חתול", "תרנגול"],
-    correctIndex: 2,
-    explanation:
-      "יונקים ממליטים צאצאים חיים ומניקים אותם בחלב. חתול הוא יונק, בעוד שצפרדע היא דו־חיים ותרנגול הוא עוף.",
-    theoryLines: [
-      "ליונקים יש פרווה או שיער, ריאות לנשימה וחלבונים להנקה.",
-      "עופות מכוסים נוצות ומטילים ביצים.",
-    ],
-  },
-  {
-    id: "animals_2",
-    topic: "animals",
-    grades: ["g3_4"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "mcq",
-    stem: "מהי תכונה שמתאימה דג לחיים במים?",
-    options: [
-      "כנפיים גדולות",
-      "פרווה עבה",
-      "סנפירים וגוף בצורת טורפדו",
-      "רגליים ארוכות",
-    ],
-    correctIndex: 2,
-    explanation:
-      "הסנפירים והגוף הצר והמאורך מאפשרים לדג לשחות ביעילות במים.",
-    theoryLines: [
-      "בעלי חיים מותאמים לסביבת החיים שלהם.",
-      "צורת הגוף משפיעה על יכולת התנועה במים, באוויר או ביבשה.",
-    ],
-  },
-  {
-    id: "animals_3",
-    topic: "animals",
-    grades: ["g3_4", "g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "true_false",
-    stem: "זוחלים הם בעלי חיים שמכוסים בדרך כלל קשקשים ומטילים ביצים.",
-    options: ["נכון", "לא נכון"],
-    correctIndex: 0,
-    explanation:
-      "רוב הזוחלים מכוסים קשקשים, והם מטילים ביצים או ממליטים, אך אינם יונקים חלב.",
-    theoryLines: [
-      "זוחלים כוללים נחשים, לטאות, צבים ותנינים.",
-      "הם בעלי דם קר, כלומר טמפרטורת גופם מושפעת מהסביבה.",
-    ],
-  },
-  {
-    id: "animals_4",
-    topic: "animals",
-    grades: ["g5_6"],
-    minLevel: "hard",
-    maxLevel: "hard",
-    type: "mcq",
-    stem: "מהי 'שרשרת מזון'?",
-    options: [
-      "רשימת בעלי חיים שחיים באותו אזור",
-      "סדרה של יצורים חיים שבה כל אחד נטרף על ידי הבא אחריו",
-      "רשימה של מזונות בריאים",
-      "קבוצת בעלי חיים מאותו מין",
-    ],
-    correctIndex: 1,
-    explanation:
-      "שרשרת מזון מתארת את זרימת האנרגיה מהיצרנים (צמחים) לצרכנים (בעלי חיים).",
-    theoryLines: [
-      "הצמחים הם בדרך כלל היצרנים, כי הם מייצרים מזון בפוטוסינתזה.",
-      "טורפים ואוכלי עשב הם חלק משרשראות ומארגי מזון.",
-    ],
-  },
-  {
-    id: "animals_5",
-    topic: "animals",
-    grades: ["g7_8"],
-    minLevel: "hard",
-    maxLevel: "hard",
-    type: "mcq",
-    stem: "מה נכון לגבי התאמות התנהגותיות אצל בעלי חיים?",
-    options: [
-      "הן תמיד קשורות רק לצבע הגוף.",
-      "הן כוללות שינויי התנהגות שעוזרים לשרוד, כמו נדידה או תרדמת חורף.",
-      "הן קורות רק אצל חיות מחמד.",
-      "הן תלויות רק במזג האוויר.",
-    ],
-    correctIndex: 1,
-    explanation:
-      "התאמות התנהגותיות הן דרכי פעולה שעוזרות לבעל החיים לשרוד בסביבתו, כמו נדידה או פעילות לילה.",
-    theoryLines: [
-      "יש התאמות מבניות (צורת גוף) והתאמות התנהגותיות.",
-      "התאמות נוצרות לאורך דורות בתהליך של אבולוציה.",
-    ],
-  },
-
-  // ========= צמחים =========
-  {
-    id: "plants_1",
-    topic: "plants",
-    grades: ["g1_2"],
-    minLevel: "easy",
-    maxLevel: "easy",
-    type: "mcq",
-    stem: "מה הצמח צריך כדי לגדול?",
-    options: [
-      "רק מים",
-      "אור שמש, מים ואדמה",
-      "רק אור",
-      "רק אדמה",
-    ],
-    correctIndex: 1,
-    explanation:
-      "צמח זקוק לאור, מים, מינרלים מהאדמה ואוויר כדי לגדול ולהתפתח.",
-    theoryLines: [
-      "העלים קולטים אור, השורשים קולטים מים ומינרלים.",
-      "ללא אור או מים הצמח נחלש ועלול למות.",
-    ],
-  },
-  {
-    id: "plants_2",
-    topic: "plants",
-    grades: ["g3_4"],
-    minLevel: "easy",
-    maxLevel: "easy",
-    type: "mcq",
-    stem: "איזה חלק בצמח אחראי על הכנסת מים מהאדמה?",
-    options: ["העלים", "הגבעול", "השורשים", "הפרחים"],
-    correctIndex: 2,
-    explanation:
-      "השורשים סופגים מים ומינרלים מהאדמה ומעבירים אותם דרך הגבעול לשאר חלקי הצמח.",
-    theoryLines: [
-      "הצמח בנוי משורשים, גבעול, עלים ופרחים (ברוב המקרים).",
-      "השורשים מעגנים את הצמח בקרקע.",
-    ],
-  },
-  {
-    id: "plants_3",
-    topic: "plants",
-    grades: ["g3_4", "g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "mcq",
-    stem: "מהי פוטוסינתזה?",
-    options: [
-      "תהליך שבו הצמח משיר עלים",
-      "תהליך שבו הצמח מייצר מזון מאור השמש",
-      "תהליך שבו הצמח סופג מים בלבד",
-      "תהליך שבו הצמח נרקב באדמה",
-    ],
-    correctIndex: 1,
-    explanation:
-      "בפוטוסינתזה הצמח משתמש באור, מים ופחמן דו־חמצני כדי לייצר סוכר (גלוקוז) ולשחרר חמצן.",
-    theoryLines: [
-      "התהליך מתרחש בכלורופלסטים שנמצאים בעלים.",
-      "פוטוסינתזה היא בסיס שרשרת המזון ברוב המערכות האקולוגיות.",
-    ],
-  },
-  {
-    id: "plants_4",
-    topic: "plants",
-    grades: ["g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "true_false",
-    stem: "הצמח נושם רק ביום, כאשר יש אור שמש.",
-    options: ["נכון", "לא נכון"],
-    correctIndex: 1,
-    explanation:
-      "צמח מבצע נשימה תאית כל הזמן, ביום ובלילה. פוטוסינתזה מתרחשת רק כאשר יש אור.",
-    theoryLines: [
-      "נשימה תאית היא תהליך הפקת אנרגיה מסוכר.",
-      "פוטוסינתזה מייצרת סוכר; נשימה צורכת אותו כדי להפיק אנרגיה.",
-    ],
-  },
-  {
-    id: "plants_5",
-    topic: "plants",
-    grades: ["g7_8"],
-    minLevel: "hard",
-    maxLevel: "hard",
-    type: "mcq",
-    stem: "מה תפקיד פיוניות בעלה?",
-    options: [
-      "קליטת מים מהקרקע",
-      "ייצור כלורופיל",
-      "ויסות כניסת פחמן דו־חמצני ויציאת גזים ואדים",
-      "אחסון עמילן",
-    ],
-    correctIndex: 2,
-    explanation:
-      "פיוניות הן פתחים זעירים בעלה המאפשרים חילוף גזים: כניסת פחמן דו־חמצני ויציאת חמצן ואדי מים.",
-    theoryLines: [
-      "פתיחת וסגירת פיוניות מושפעת מאור וממצב המים בצמח.",
-      "דרך פיוניות אובדים גם מים באידוי (דיות).",
-    ],
-  },
-
-  // ========= חומרים =========
-  {
-    id: "materials_1",
-    topic: "materials",
-    grades: ["g3_4"],
-    minLevel: "easy",
-    maxLevel: "easy",
-    type: "mcq",
-    stem: "מהו מצב הצבירה של קרח?",
-    options: ["מוצק", "נוזל", "גז", "תערובת"],
-    correctIndex: 0,
-    explanation:
-      "קרח הוא מים במצב מוצק. חימום הקרח יהפוך אותו לנוזל, וקירור מים יכול להפוך אותם לקרח.",
-    theoryLines: [
-      "למים יש שלושה מצבי צבירה: מוצק (קרח), נוזל (מים), גז (אדי מים).",
-      "שינוי טמפרטורה יכול לגרום לשינוי מצב הצבירה.",
-    ],
-  },
-  {
-    id: "materials_2",
-    topic: "materials",
-    grades: ["g3_4", "g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "mcq",
-    stem: "מה נכון לגבי חומרים מתכתיים?",
-    options: [
-      "הם תמיד קלים ועדינים",
-      "הם מוליכים חום וחשמל טוב",
-      "הם לא ניתנים לעיבוד",
-      "הם שקופים לאור",
-    ],
-    correctIndex: 1,
-    explanation:
-      "למתכות יש תכונה חשובה של הולכת חום וחשמל, ולכן משתמשים בהן בכבלים, סירים ועוד.",
-    theoryLines: [
-      "מתכות רבות גם מבריקות וניתנות לריקוע (יצירת יריעות) ולמתיחה.",
-      "לא כל חומר מתכתי חזק, אבל רבים מהם חזקים ועמידים.",
-    ],
-  },
-  {
-    id: "materials_3",
-    topic: "materials",
-    grades: ["g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "true_false",
-    stem: "פלסטיק הוא חומר מעשה ידי אדם, שאינו נמצא בטבע כפי שהוא.",
-    options: ["נכון", "לא נכון"],
-    correctIndex: 0,
-    explanation:
-      "פלסטיק מיוצר במפעלים מחומרי גלם, בעיקר מנפט, ואינו חומר טבעי כמו עץ או אבן.",
-    theoryLines: [
-      "חומרים טבעיים מקורם בעולם החי, הצומח או הדומם.",
-      "חומרים סינתטיים מיוצרים בתהליכים תעשייתיים.",
-    ],
-  },
-  {
-    id: "materials_4",
-    topic: "materials",
-    grades: ["g5_6", "g7_8"],
-    minLevel: "hard",
-    maxLevel: "hard",
-    type: "mcq",
-    stem: "תמיסה של מלח ומים היא דוגמה ל...",
-    options: [
-      "תערובת הטרוגנית",
-      "תערובת הומוגנית",
-      "תרכובת כימית טהורה",
-      "גז דליק",
-    ],
-    correctIndex: 1,
-    explanation:
-      "כאשר המלח מתמוסס במים, מתקבלת תמיסה אחידה בכל חלקיה – זו תערובת הומוגנית.",
-    theoryLines: [
-      "תערובת הומוגנית נראית אחידה, ואין בה גבולות ברורים בין החומרים.",
-      "תמיסה היא סוג של תערובת שבה חומר אחד מומס באחר.",
-    ],
-  },
-  {
-    id: "materials_5",
-    topic: "materials",
-    grades: ["g7_8"],
-    minLevel: "hard",
-    maxLevel: "hard",
-    type: "mcq",
-    stem: "מהו שינוי פיזיקלי?",
-    options: [
-      "שינוי שבו נוצרת זהות חומר חדשה לגמרי",
-      "שינוי שבו החומר משנה מצב צבירה אך נשאר אותו חומר",
-      "שינוי שיכול לקרות רק בחימום חזק",
-      "שינוי שקורה רק למתכות",
-    ],
-    correctIndex: 1,
-    explanation:
-      "בשינוי פיזיקלי החומר משנה צורה או מצב צבירה, אך הרכבו הכימי נשאר זהה.",
-    theoryLines: [
-      "התכת קרח למים היא שינוי פיזיקלי – עדיין מדובר במים.",
-      "שרפת נייר היא שינוי כימי – נוצר חומר חדש (אפר וגזים).",
-    ],
-  },
-
-  // ========= כדור הארץ והחלל =========
-  {
-    id: "earth_1",
-    topic: "earth_space",
-    grades: ["g3_4"],
-    minLevel: "easy",
-    maxLevel: "easy",
-    type: "mcq",
-    stem: "מדוע יש יום ולילה?",
-    options: [
-      "כי השמש מסתובבת סביב כדור הארץ",
-      "כי כדור הארץ מסתובב סביב עצמו",
-      "כי הירח מסתיר את השמש",
-      "כי העננים מכסים את השמש",
-    ],
-    correctIndex: 1,
-    explanation:
-      "יום ולילה נוצרים בגלל שכדור הארץ מסתובב סביב צירו. החלק שפונה לשמש חווה יום, והחלק הרחוק ממנה לילה.",
-    theoryLines: [
-      "סיבוב כדור הארץ סביב צירו נמשך כ־24 שעות.",
-      "בכל רגע חצי מכדור הארץ מואר וחצי אחר חשוך.",
-    ],
-  },
-  {
-    id: "earth_2",
-    topic: "earth_space",
-    grades: ["g3_4", "g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "mcq",
-    stem: "מה נכון לגבי מסלול כדור הארץ?",
-    options: [
-      "כדור הארץ מסתובב סביב הירח פעם בשנה",
-      "כדור הארץ סובב את השמש פעם בשנה",
-      "השמש סובבת את כדור הארץ פעם ביום",
-      "הירח והשמש סובבים יחד את כדור הארץ",
-    ],
-    correctIndex: 1,
-    explanation:
-      "כדור הארץ נע במסלול סביב השמש והקפה מלאה נמשכת כשנה אחת.",
-    theoryLines: [
-      "לכדור הארץ יש שני סוגי תנועה: סיבוב סביב צירו והקפה סביב השמש.",
-      "ההקפה סביב השמש קשורה לעונות השנה.",
-    ],
-  },
-  {
-    id: "earth_3",
-    topic: "earth_space",
-    grades: ["g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "true_false",
-    stem: "הירח הוא כוכב שמאיר מעצמו.",
-    options: ["נכון", "לא נכון"],
-    correctIndex: 1,
-    explanation:
-      "הירח אינו כוכב ואינו מייצר אור. הוא מחזיר את אור השמש שמאיר עליו.",
-    theoryLines: [
-      "כוכבים מפיקים אור ואנרגיה בעצמם.",
-      "ירח הוא לוויין טבעי הסובב סביב כוכב לכת.",
-    ],
-  },
-  {
-    id: "earth_4",
-    topic: "earth_space",
-    grades: ["g7_8"],
-    minLevel: "hard",
-    maxLevel: "hard",
-    type: "mcq",
-    stem: "מה נכון לגבי שכבות כדור הארץ?",
-    options: [
-      "כדור הארץ בנוי רק מקרום דק מעל חלל ריק",
-      "כדור הארץ בנוי מקרום, מעטפת וליבה",
-      "כדור הארץ בנוי משכבה אחת אחידה",
-      "אין לנו כל מידע על פנים כדור הארץ",
-    ],
-    correctIndex: 1,
-    explanation:
-      "כדור הארץ בנוי משכבות: קרום חיצוני דק, מעטפת עבה וליבה חמה מאוד.",
-    theoryLines: [
-      "רוב הידע על פנים כדור הארץ מגיע מרעידות אדמה וממחקר גיאולוגי.",
-      "הליבה הפנימית צפופה וחמה מאוד.",
-    ],
-  },
-
-  // ========= סביבה ואקולוגיה =========
-  {
-    id: "env_1",
-    topic: "environment",
-    grades: ["g3_4"],
-    minLevel: "easy",
-    maxLevel: "easy",
-    type: "mcq",
-    stem: "מהי פעולה שעוזרת לשמור על הסביבה?",
-    options: [
-      "להשאיר אורות דולקים כל הזמן",
-      "להשליך פסולת לים",
-      "למחזר נייר, פלסטיק וזכוכית",
-      "לבזבז מים ללא הגבלה",
-    ],
-    correctIndex: 2,
-    explanation:
-      "מיחזור מפחית כמות פסולת, חוסך בחומרי גלם ותורם לשמירה על הסביבה.",
-    theoryLines: [
-      "שמירה על הסביבה כוללת צמצום פסולת, מיחזור וחיסכון במשאבים.",
-      "מיחזור מאפשר שימוש מחדש בחומרים קיימים.",
-    ],
-  },
-  {
-    id: "env_2",
-    topic: "environment",
-    grades: ["g3_4", "g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "mcq",
-    stem: "מהי מערכת אקולוגית (מערכת סביבתית)?",
-    options: [
-      "עיר גדולה עם בניינים",
-      "אוסף יצורים חיים וסביבת החיים שלהם והקשרים ביניהם",
-      "רשימת בעלי חיים בספר",
-      "רק צמחים ללא בעלי חיים",
-    ],
-    correctIndex: 1,
-    explanation:
-      "מערכת אקולוגית כוללת יצורים חיים, סביבת החיים שלהם והקשרים ביניהם.",
-    theoryLines: [
-      "דוגמאות: יער, בריכה, שונית אלמוגים.",
-      "שינויים בסביבה משפיעים על כל המרכיבים במערכת.",
-    ],
-  },
-  {
-    id: "env_3",
-    topic: "environment",
-    grades: ["g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "true_false",
-    stem: "זיהום אוויר יכול להשפיע גם על הבריאות של בני האדם.",
-    options: ["נכון", "לא נכון"],
-    correctIndex: 0,
-    explanation:
-      "זיהום אוויר פוגע במערכת הנשימה, עלול לגרום למחלות ריאה ולבעיות בריאות שונות.",
-    theoryLines: [
-      "מקורות לזיהום: תחבורה, תעשייה, שריפת דלקים.",
-      "צמצום זיהום אוויר חשוב לבריאות האדם והטבע.",
-    ],
-  },
-  {
-    id: "env_4",
-    topic: "environment",
-    grades: ["g5_6", "g7_8"],
-    minLevel: "hard",
-    maxLevel: "hard",
-    type: "mcq",
-    stem: "מה נכון לגבי גזי חממה?",
-    options: [
-      "הם תמיד מסוכנים ואסור שיהיו בכלל באטמוספרה",
-      "הם לוכדים חום באטמוספרה, וכמותם משפיעה על האקלים",
-      "הם נמצאים רק מעל הערים הגדולות",
-      "הם נוצרים רק מפעילות הרי געש",
-    ],
-    correctIndex: 1,
-    explanation:
-      "גזי חממה כמו פחמן דו־חמצני ומתאן לוכדים חום; כמות גבוהה מדי שלהם גורמת להתחממות גלובלית.",
-    theoryLines: [
-      "אפקט החממה הטבעי חיוני לשמירה על טמפרטורה מתאימה לחיים.",
-      "פעילות אנושית הוסיפה כמות גדולה של גזי חממה לאטמוספרה.",
-    ],
-  },
-
-  // ========= ניסויים ותהליכים =========
-  {
-    id: "exp_1",
-    topic: "experiments",
-    grades: ["g3_4"],
-    minLevel: "easy",
-    maxLevel: "easy",
-    type: "mcq",
-    stem: "ביצעת ניסוי עם שני כוסות מים: אחת בשמש ואחת בצל. באיזו כוס המים יתחממו יותר?",
-    options: [
-      "בכוס שבצל",
-      "בשתי הכוסות אותו דבר",
-      "בכוס שבשמש",
-      "בכוס הריקה",
-    ],
-    correctIndex: 2,
-    explanation:
-      "בשמש המים מקבלים יותר אנרגיית חום ולכן מתחממים יותר מאשר בצל.",
-    theoryLines: [
-      "חום הוא מעבר אנרגיה מגוף חם לגוף קר.",
-      "קל לראות ניסויים פשוטים של חימום וקירור בעזרת השמש.",
-    ],
-  },
-  {
-    id: "exp_2",
-    topic: "experiments",
-    grades: ["g3_4", "g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "mcq",
-    stem: "מה חשוב לעשות בתחילת כל ניסוי מדעי?",
-    options: [
-      "לנחש את התוצאה בלי לחשוב",
-      "לכתוב שאלה או בעיה שרוצים לבדוק",
-      "להחליף בין כל החומרים כל הזמן",
-      "לא לרשום כלום במחברת",
-    ],
-    correctIndex: 1,
-    explanation:
-      "ניסוי מדעי מתחיל משאלה או בעיה ברורה שרוצים לבדוק. לאחר מכן מתכננים את הצעדים.",
-    theoryLines: [
-      "מדע מבוסס על שאלות, תצפיות וניסויים.",
-      "רישום מסודר עוזר להשוות בין תוצאות.",
-    ],
-  },
-  {
-    id: "exp_3",
-    topic: "experiments",
-    grades: ["g5_6"],
-    minLevel: "medium",
-    maxLevel: "medium",
-    type: "true_false",
-    stem: "בכל ניסוי אפשרי חייבים תמיד להחליף כמה משתנים בו־זמנית.",
-    options: ["נכון", "לא נכון"],
-    correctIndex: 1,
-    explanation:
-      "בניסוי טוב משתדלים לשנות משתנה אחד בלבד ולשמור אחרים קבועים, כדי להבין מה בדיוק גרם לתוצאה.",
-    theoryLines: [
-      "משתנה בלתי תלוי – מה שאנחנו משנים.",
-      "משתנה תלוי – מה שאנחנו מודדים כתוצאה.",
-    ],
-  },
-  {
-    id: "exp_4",
-    topic: "experiments",
-    grades: ["g5_6", "g7_8"],
-    minLevel: "hard",
-    maxLevel: "hard",
-    type: "mcq",
-    stem: "סדר את שלבי מחזור המים מהראשון לאחרון:",
-    options: [
-      "אידוי → עיבוי → ירידת משקעים → איסוף במקורות מים",
-      "עיבוי → איסוף → אידוי → ירידת משקעים",
-      "איסוף → ירידת משקעים → עיבוי → אידוי",
-      "ירידת משקעים → אידוי → עיבוי → איסוף",
-    ],
-    correctIndex: 0,
-    explanation:
-      "ראשית המים מתאדים, אחר כך מתעבים לעננים, לאחר מכן יורדים כגשם/שלג ולבסוף נאספים בים, אגמים ומי תהום.",
-    theoryLines: [
-      "מחזור המים הוא תהליך מתמשך בין הים, היבשה והאטמוספרה.",
-      "הוא מושפע מהשמש, מהרוח ומהטופוגרפיה של פני השטח.",
-    ],
-  },
-];
 
 // ================== HELPERS ==================
 
@@ -855,7 +242,7 @@ export default function ScienceMaster() {
   const controlsRef = useRef(null);
   const gameRef = useRef(null);
   const [mounted, setMounted] = useState(false);
-  const [grade, setGrade] = useState("g3_4");
+  const [grade, setGrade] = useState(GRADE_ORDER[0]);
   const [mode, setMode] = useState("learning");
   const [level, setLevel] = useState("easy");
   const [topic, setTopic] = useState("body");
@@ -891,6 +278,22 @@ export default function ScienceMaster() {
       return "";
     }
   });
+  const [playerAvatar, setPlayerAvatar] = useState(() => {
+    if (typeof window === "undefined") return "👤";
+    try {
+      return localStorage.getItem("mleo_avatar") || "👤";
+    } catch {
+      return "👤";
+    }
+  });
+  const [showPlayerProfile, setShowPlayerProfile] = useState(false);
+  const [practiceFocus, setPracticeFocus] = useState("balanced");
+  const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal");
+  const [mistakes, setMistakes] = useState([]);
+  const [showPracticeModal, setShowPracticeModal] = useState(false);
+  const [showPracticeOptions, setShowPracticeOptions] = useState(false);
+  const [showReferenceModal, setShowReferenceModal] = useState(false);
+  const [referenceCategory, setReferenceCategory] = useState("life_science");
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [stars, setStars] = useState(0);
@@ -917,6 +320,18 @@ export default function ScienceMaster() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    refreshMistakesList();
+  }, []);
+
+  useEffect(() => {
+    const allowed = GRADES[grade]?.topics || Object.keys(TOPICS);
+    if (!allowed.includes(topic)) {
+      const fallback = allowed[0] || "body";
+      setTopic(fallback);
+    }
+  }, [grade, topic]);
 
   // ----- LAYOUT HEIGHT -----
   useEffect(() => {
@@ -1029,21 +444,124 @@ export default function ScienceMaster() {
   // ================== GAME LOGIC ==================
 
   function filterQuestionsForCurrentSettings() {
-    // topic === mixed -> כל הנושאים למעט mixed
     const gradeKey = grade;
+    const allowedTopicsForGrade =
+      GRADES[gradeKey]?.topics || Object.keys(TOPICS);
+    const levelForFilter =
+      focusedPracticeMode === "graded"
+        ? correct < 5
+          ? "easy"
+          : correct < 15
+          ? "medium"
+          : level
+        : level;
+
+    if (focusedPracticeMode === "mistakes" && mistakes.length > 0) {
+      const ids = new Set(mistakes.map((m) => m.id));
+      const mistakePool = QUESTIONS.filter(
+        (q) => ids.has(q.id) && levelAllowed(q, levelForFilter)
+      );
+      if (mistakePool.length > 0) {
+        return mistakePool;
+      }
+    }
+
     let topicsList;
-    if (topic === "mixed") {
-      topicsList = Object.keys(TOPICS).filter((t) => t !== "mixed");
+    if (mode === "practice" && practiceFocus !== "balanced") {
+      topicsList = (PRACTICE_TOPIC_GROUPS[practiceFocus] || []).filter((t) =>
+        allowedTopicsForGrade.includes(t)
+      );
+    } else if (topic === "mixed") {
+      topicsList = allowedTopicsForGrade.filter((t) => t !== "mixed");
     } else {
       topicsList = [topic];
+    }
+    if (!topicsList || topicsList.length === 0) {
+      topicsList =
+        topic === "mixed"
+          ? allowedTopicsForGrade.filter((t) => t !== "mixed")
+          : [allowedTopicsForGrade[0] || "body"];
+      if (!topicsList || topicsList.length === 0) {
+        topicsList = ["body"];
+      }
     }
     const pool = QUESTIONS.filter(
       (q) =>
         topicsList.includes(q.topic) &&
         q.grades.includes(gradeKey) &&
-        levelAllowed(q, level)
+        levelAllowed(q, levelForFilter)
     );
     return pool;
+  }
+
+  const refreshMistakesList = () => {
+    const stored = loadScienceMistakesFromStorage();
+    setMistakes(stored.slice(-50).reverse());
+  };
+
+  function trackCurrentQuestionTime() {
+    if (!questionStartTime || !currentQuestion) return;
+    const duration = (Date.now() - questionStartTime) / 1000;
+    if (duration <= 0 || duration > 300) return;
+    const qGrade =
+      currentQuestion.assignedGrade ||
+      currentQuestion.gradeKey ||
+      grade;
+    const qLevel =
+      currentQuestion.assignedLevel ||
+      currentQuestion.levelKey ||
+      level;
+    trackScienceTopicTime(currentQuestion.topic, qGrade, qLevel, duration);
+  }
+
+  function logScienceMistakeEntry(question, wrongAnswer) {
+    if (typeof window === "undefined" || !question) return;
+    try {
+      const entry = {
+        id: question.id,
+        topic: question.topic,
+        grade: question.assignedGrade || question.grades?.[0] || grade,
+        level: question.assignedLevel || question.minLevel || level,
+        stem: question.stem,
+        correct: question.options?.[question.correctIndex],
+        wrong: wrongAnswer,
+        timestamp: Date.now(),
+      };
+      const stored = loadScienceMistakesFromStorage();
+      stored.push(entry);
+      const trimmed = stored.slice(-50);
+      localStorage.setItem(SCIENCE_MISTAKES_KEY, JSON.stringify(trimmed));
+      setMistakes(trimmed.slice().reverse());
+    } catch {
+      // ignore
+    }
+  }
+
+  function clearScienceMistakes() {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.removeItem(SCIENCE_MISTAKES_KEY);
+    } catch {}
+    setMistakes([]);
+  }
+
+  function handleMistakePractice(entry) {
+    if (!entry) return;
+    const targetGrade = entry.grade || grade;
+    const targetLevel = entry.level || level;
+    const targetTopic = entry.topic || topic;
+    setGrade(targetGrade);
+    setLevel(targetLevel);
+    setTopic(targetTopic);
+    setMode("learning");
+    setGameActive(false);
+    setShowPracticeModal(false);
+    setShowPracticeOptions(false);
+    setTimeout(() => {
+      if (playerName.trim()) {
+        startGame();
+      }
+    }, 200);
   }
 
   function generateNewQuestion(resetPool = false) {
@@ -1074,7 +592,11 @@ export default function ScienceMaster() {
     const q = questionPoolRef.current[questionIndexRef.current];
     questionIndexRef.current += 1;
 
-    setCurrentQuestion(q);
+    setCurrentQuestion({
+      ...q,
+      assignedGrade: grade,
+      assignedLevel: level,
+    });
     setSelectedAnswer(null);
     setShowHint(false);
     setHintUsed(false);
@@ -1173,6 +695,7 @@ export default function ScienceMaster() {
   }
 
   function handleTimeUp() {
+    trackCurrentQuestionTime();
     setWrong((prev) => prev + 1);
     setStreak(0);
     setFeedback("הזמן נגמר! ⏰");
@@ -1185,6 +708,7 @@ export default function ScienceMaster() {
   }
 
   function handleAnswer(idx) {
+    trackCurrentQuestionTime();
     if (!gameActive || !currentQuestion || selectedAnswer != null) return;
     const answerText = currentQuestion.options?.[idx];
     // update time stats
@@ -1269,6 +793,7 @@ export default function ScienceMaster() {
       setWrong((prev) => prev + 1);
       setStreak(0);
       setErrorExplanation(getErrorExplanationScience(currentQuestion, answerText));
+      logScienceMistakeEntry(currentQuestion, answerText);
       setProgress((prev) => {
         const key = currentQuestion.topic;
         const cur = prev[key] || { total: 0, correct: 0 };
@@ -1373,6 +898,10 @@ export default function ScienceMaster() {
     }
   };
 
+  const goToParentReport = () => {
+    router.push("/learning/parent-report");
+  };
+
   if (!mounted) {
     return (
       <Layout>
@@ -1385,6 +914,10 @@ export default function ScienceMaster() {
 
   const accuracy =
     totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
+  const referenceSection =
+    REFERENCE_SECTIONS[referenceCategory] || REFERENCE_SECTIONS.life_science;
+  const referenceEntries = referenceSection.entries || [];
+  const allowedTopics = GRADES[grade]?.topics || Object.keys(TOPICS);
 
   return (
     <Layout>
@@ -1422,10 +955,13 @@ export default function ScienceMaster() {
                 BACK
               </button>
             </div>
-            <div className="absolute right-2 top-2 pointer-events-auto">
-              <span className="text-xs uppercase tracking-[0.3em] text-white/60">
-                Local
-              </span>
+            <div className="absolute right-2 top-2 pointer-events-auto flex gap-2">
+              <button
+                onClick={() => router.push("/learning/curriculum?subject=science")}
+                className="min-w-[110px] px-3 py-1 rounded-lg text-xs font-bold bg-emerald-500/20 border border-emerald-400/40 text-emerald-100 hover:bg-emerald-500/30"
+              >
+                📋 תוכנית לימודים
+              </button>
             </div>
           </div>
         </div>
@@ -1527,6 +1063,13 @@ export default function ScienceMaster() {
                 {MODES[m].name}
               </button>
             ))}
+            <button
+              onClick={() => setShowPlayerProfile(true)}
+              className="h-8 w-8 rounded-lg bg-purple-500/80 hover:bg-purple-500 border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all"
+              title="פרופיל שחקן"
+            >
+              {playerAvatar}
+            </button>
           </div>
 
           {/* LEVEL-UP POPUP */}
@@ -1560,8 +1103,13 @@ export default function ScienceMaster() {
                     }
                   }}
                   placeholder="שם שחקן"
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-sm font-bold placeholder:text-white/40 flex-1 min-w-[130px]"
+                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[110px]"
                   maxLength={15}
+                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
+                  style={{
+                    textAlign:
+                      playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left",
+                  }}
                 />
                 <select
                   value={grade}
@@ -1571,9 +1119,9 @@ export default function ScienceMaster() {
                   }}
                   className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
                 >
-                  {Object.keys(GRADES).map((g) => (
+                  {GRADE_ORDER.map((g) => (
                     <option key={g} value={g}>
-                      {GRADES[g].name}
+                      {GRADES[g]?.name || g}
                     </option>
                   ))}
                 </select>
@@ -1599,13 +1147,30 @@ export default function ScienceMaster() {
                   }}
                   className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold flex-1 min-w-[130px]"
                 >
-                  {Object.keys(TOPICS).map((t) => (
+                  {allowedTopics.map((t) => (
                     <option key={t} value={t}>
                       {getTopicLabel(t)}
                     </option>
                   ))}
                 </select>
               </div>
+
+              {mode === "practice" && (
+                <select
+                  value={practiceFocus}
+                  onChange={(e) => {
+                    setPracticeFocus(e.target.value);
+                    setGameActive(false);
+                  }}
+                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold w-full max-w-md mb-2"
+                >
+                  {PRACTICE_FOCUS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              )}
 
               {/* BEST / ACCURACY */}
               <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
@@ -1662,6 +1227,12 @@ export default function ScienceMaster() {
                   ▶️ התחל מדעים
                 </button>
                 <button
+                  onClick={() => setShowReferenceModal(true)}
+                  className="h-10 px-4 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
+                >
+                  📚 לוח מדעים
+                </button>
+                <button
                   onClick={openLeaderboard}
                   className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
                 >
@@ -1675,6 +1246,14 @@ export default function ScienceMaster() {
                     🧹 איפוס
                   </button>
                 )}
+                {mistakes.length > 0 && (
+                  <button
+                    onClick={() => setShowPracticeModal(true)}
+                    className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-white font-bold text-sm"
+                  >
+                    🎯 תרגול טעויות ({mistakes.length})
+                  </button>
+                )}
               </div>
 
               {!playerName.trim() && (
@@ -1684,12 +1263,24 @@ export default function ScienceMaster() {
               )}
 
               {/* כפתור "איך לומדים מדעים כאן?" */}
-              <div className="mb-2 w-full max-w-md flex justify-center">
+              <div className="mb-2 w-full max-w-md flex flex-wrap justify-center gap-2">
                 <button
                   onClick={() => setShowHowTo(true)}
                   className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
                 >
                   ❓ איך לומדים מדעים כאן?
+                </button>
+                <button
+                  onClick={() => setShowPracticeOptions(true)}
+                  className="px-4 py-2 rounded-lg bg-gray-500/70 hover:bg-gray-500 text-xs font-bold text-white shadow-sm"
+                >
+                  🎛️ הגדרות תרגול
+                </button>
+                <button
+                  onClick={goToParentReport}
+                  className="px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-xs font-bold text-white shadow-sm"
+                >
+                  📊 דוח להורים
                 </button>
               </div>
             </>
@@ -1959,6 +1550,271 @@ export default function ScienceMaster() {
                     סגור
                   </button>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {showReferenceModal && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[160] p-4"
+              onClick={() => setShowReferenceModal(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-blue-400/60 rounded-2xl p-5 w-full max-w-lg max-h-[85vh] overflow-y-auto text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-2xl font-extrabold">📚 לוח המושגים במדעים</h2>
+                  <button
+                    onClick={() => setShowReferenceModal(false)}
+                    className="text-white/80 hover:text-white text-xl px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                <p className="text-sm text-white/70 mb-3">
+                  בחר קטגוריה כדי לחזור במהירות על נקודות מפתח – כמו דפי העזר במשחקי החשבון וההנדסה.
+                </p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {Object.entries(REFERENCE_SECTIONS).map(([key, section]) => (
+                    <button
+                      key={key}
+                      onClick={() => setReferenceCategory(key)}
+                      className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                        referenceCategory === key
+                          ? "bg-blue-500/80 border-blue-300 text-white"
+                          : "bg-white/5 border-white/20 text-white/70 hover:bg-white/10"
+                      }`}
+                    >
+                      {section.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" dir="rtl">
+                  {referenceEntries.map((entry, idx) => (
+                    <div
+                      key={`${referenceCategory}-${idx}`}
+                      className="bg-white/5 border border-white/10 rounded-lg px-3 py-2"
+                    >
+                      <div className="text-sm font-semibold mb-1">{entry.term}</div>
+                      <div className="text-xs text-white/80">{entry.desc}</div>
+                    </div>
+                  ))}
+                  {referenceEntries.length === 0 && (
+                    <div className="text-center text-white/60 py-4 col-span-full">
+                      אין עדיין מושגים להצגה.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showPracticeModal && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[150] p-4"
+              onClick={() => setShowPracticeModal(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-purple-400/60 rounded-2xl p-5 w-full max-w-lg max-h-[85vh] overflow-y-auto text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-2xl font-extrabold">🎯 תרגול טעויות</h2>
+                  <button
+                    onClick={() => setShowPracticeModal(false)}
+                    className="text-white/80 hover:text-white text-xl px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                {mistakes.length === 0 ? (
+                  <p className="text-sm text-white/70 text-center py-4">
+                    עדיין אין טעויות לשמור. תרגל, טעה ולחץ כאן כדי לחזור בדיוק על מה שצריך.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {mistakes.slice(0, 10).map((item, idx) => (
+                      <div
+                        key={`${item.id}-${item.timestamp}-${idx}`}
+                        className="bg-white/5 border border-white/10 rounded-lg p-3"
+                      >
+                        <div className="flex items-center justify-between text-xs text-white/60 mb-1">
+                          <span>{getTopicLabel(item.topic)}</span>
+                          <span>
+                            {GRADES[item.grade]?.name || "כיתה"} • {LEVELS[item.level]?.name || ""}
+                          </span>
+                        </div>
+                        <p className="text-sm font-semibold text-white mb-1">
+                          {item.stem}
+                        </p>
+                        <p className="text-xs text-emerald-300 mb-1">
+                          תשובה נכונה: {item.correct}
+                        </p>
+                        <p className="text-xs text-rose-300">
+                          התשובה שלך: {item.wrong || "—"}
+                        </p>
+                        <button
+                          onClick={() => handleMistakePractice(item)}
+                          className="mt-2 w-full px-3 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-xs font-bold"
+                        >
+                          תרגל שאלה זו
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={() => setShowPracticeModal(false)}
+                    className="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm font-bold"
+                  >
+                    סגור
+                  </button>
+                  {mistakes.length > 0 && (
+                    <button
+                      onClick={clearScienceMistakes}
+                      className="flex-1 px-4 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 text-sm font-bold"
+                    >
+                      🧹 איפוס טעויות
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showPracticeOptions && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[155] p-4"
+              onClick={() => setShowPracticeOptions(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-emerald-400/60 rounded-2xl p-5 w-full max-w-md max-h-[85vh] overflow-y-auto text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-2xl font-extrabold">🎛️ הגדרות תרגול</h2>
+                  <button
+                    onClick={() => setShowPracticeOptions(false)}
+                    className="text-white/80 hover:text-white text-xl px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                <p className="text-sm text-white/70 mb-3">
+                  שלוט באימון שלך: אפשר להתרכז בטעויות, לעבור רמות באופן מדורג או לבחור קטגוריה מדעית.
+                </p>
+                <div className="space-y-2 mb-4">
+                  <p className="text-xs text-white/60 font-semibold">מצב תרגול</p>
+                  {[
+                    { value: "normal", label: "ברירת מחדל" },
+                    { value: "mistakes", label: "חזרה על טעויות אחרונות" },
+                    { value: "graded", label: "תרגול מדורג (קל → בינוני → רמתך)" },
+                  ].map((opt) => (
+                    <label key={opt.value} className="flex items-center gap-2 text-sm">
+                      <input
+                        type="radio"
+                        name="science-focus-mode"
+                        value={opt.value}
+                        checked={focusedPracticeMode === opt.value}
+                        onChange={(e) => setFocusedPracticeMode(e.target.value)}
+                      />
+                      <span>{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-lg p-3 text-xs text-white/80">
+                  <div className="font-semibold mb-1">מצב נוכחי</div>
+                  <p>מצב: {MODES[mode].name}</p>
+                  <p>
+                    מיקוד:{" "}
+                    {PRACTICE_FOCUS_OPTIONS.find((o) => o.value === practiceFocus)?.label ||
+                      PRACTICE_FOCUS_OPTIONS[0].label}
+                  </p>
+                  <p>
+                    רגישות טעויות:{" "}
+                    {focusedPracticeMode === "normal"
+                      ? "רגיל"
+                      : focusedPracticeMode === "mistakes"
+                      ? "חזרה על טעויות"
+                      : "מדורג"}
+                  </p>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={() => setShowPracticeOptions(false)}
+                    className="flex-1 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                  >
+                    סגור
+                  </button>
+                  <button
+                    onClick={() => {
+                      setFocusedPracticeMode("normal");
+                      setPracticeFocus("balanced");
+                      setShowPracticeOptions(false);
+                    }}
+                    className="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm font-bold"
+                  >
+                    איפוס ברירות מחדל
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showPlayerProfile && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[165] p-4"
+              onClick={() => setShowPlayerProfile(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-purple-400/60 rounded-2xl p-5 w-full max-w-sm max-h-[80vh] overflow-y-auto text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-2xl font-extrabold">🧑‍🔬 בחר דמות</h2>
+                  <button
+                    onClick={() => setShowPlayerProfile(false)}
+                    className="text-white/80 hover:text-white text-xl px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                <p className="text-sm text-white/70 mb-3">
+                  הדמות הנבחרת תופיע לצד שמך בכל משחקי הלמידה.
+                </p>
+                <div className="grid grid-cols-4 gap-3 mb-4">
+                  {AVATAR_OPTIONS.map((icon) => (
+                    <button
+                      key={icon}
+                      onClick={() => {
+                        setPlayerAvatar(icon);
+                        try {
+                          localStorage.setItem("mleo_avatar", icon);
+                        } catch {}
+                        setShowPlayerProfile(false);
+                      }}
+                      className={`h-12 rounded-xl border text-2xl flex items-center justify-center ${
+                        playerAvatar === icon
+                          ? "bg-purple-500/80 border-purple-300"
+                          : "bg-white/5 border-white/20 hover:bg-white/10"
+                      }`}
+                    >
+                      {icon}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setShowPlayerProfile(false)}
+                  className="w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                >
+                  סגור
+                </button>
               </div>
             </div>
           )}
