@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -8,7 +8,17 @@ import {
   SCIENCE_GRADE_ORDER,
 } from "../../data/science-curriculum";
 import { trackScienceTopicTime } from "../../utils/science-time-tracking";
-import { addSessionProgress } from "../../utils/progress-storage";
+import {
+  addSessionProgress,
+  loadMonthlyProgress,
+  loadRewardChoice,
+  getCurrentYearMonth,
+} from "../../utils/progress-storage";
+import {
+  REWARD_OPTIONS,
+  MONTHLY_MINUTES_TARGET,
+  getRewardLabel,
+} from "../../data/reward-options";
 
 // ================== CONFIG ==================
 
@@ -272,6 +282,7 @@ export default function ScienceMaster() {
   const questionIndexRef = useRef(0);
   const sessionStartRef = useRef(null);
   const solvedCountRef = useRef(0);
+  const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [playerName, setPlayerName] = useState(() => {
     if (typeof window === "undefined") return "";
@@ -318,11 +329,39 @@ export default function ScienceMaster() {
     bestScore: 0,
     questions: 0,
   });
+  const [monthlyProgress, setMonthlyProgress] = useState({
+    totalMinutes: 0,
+    totalExercises: 0,
+  });
+  const [goalPercent, setGoalPercent] = useState(0);
+  const [minutesRemaining, setMinutesRemaining] = useState(MONTHLY_MINUTES_TARGET);
+  const [rewardChoice, setRewardChoice] = useState(null);
+  const refreshMonthlyProgress = useCallback(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const all = loadMonthlyProgress();
+      const current = all[yearMonthRef.current] || { totalMinutes: 0, totalExercises: 0 };
+      setMonthlyProgress(current);
+      const percent = MONTHLY_MINUTES_TARGET
+        ? Math.min(100, Math.round((current.totalMinutes / MONTHLY_MINUTES_TARGET) * 100))
+        : 0;
+      setGoalPercent(percent);
+      setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - current.totalMinutes));
+      const choice = loadRewardChoice(yearMonthRef.current);
+      setRewardChoice(choice);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   // ----- MOUNT -----
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    refreshMonthlyProgress();
+  }, [refreshMonthlyProgress]);
 
   useEffect(() => {
     refreshMistakesList();
@@ -534,6 +573,7 @@ function recordSessionProgress() {
   const durationMinutes = Math.max(1, Math.round(elapsedMs / 60000));
   const exercises = Math.max(solvedCountRef.current, totalQuestions);
   addSessionProgress(durationMinutes, exercises);
+  refreshMonthlyProgress();
   sessionStartRef.current = null;
   solvedCountRef.current = 0;
 }
@@ -1267,6 +1307,48 @@ function recordSessionProgress() {
                 <div className="text-xs text-white/60">
                   שמור על רצף תרגול כדי לפתוח הישגים חדשים.
                 </div>
+              </div>
+
+              <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
+                <div className="flex items-center justify-between text-[11px] text-white/70 mb-1">
+                  <span>🎁 מסע פרס חודשי</span>
+                  <span>
+                    {monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳
+                  </span>
+                </div>
+                <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="h-2 bg-emerald-400 rounded-full transition-all"
+                    style={{ width: `${goalPercent}%` }}
+                  />
+                </div>
+                <p className="text-[11px] text-white/70 mt-1 text-center">
+                  {minutesRemaining > 0
+                    ? `נותרו עוד ${minutesRemaining} דק׳ (~${Math.ceil(
+                        minutesRemaining / 60
+                      )} ש׳)`
+                    : "🎉 יעד הושלם! בקשו מההורה לבחור פרס."}
+                </p>
+                <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                  {REWARD_OPTIONS.map((option) => (
+                    <div
+                      key={option.key}
+                      className={`rounded-lg border p-2 text-[11px] bg-black/30 flex flex-col items-center gap-1 ${
+                        rewardChoice === option.key
+                          ? "border-emerald-400 text-emerald-200"
+                          : "border-white/15 text-white/70"
+                      }`}
+                    >
+                      <div className="text-xl">{option.icon}</div>
+                      <div className="font-bold leading-tight">{option.label}</div>
+                    </div>
+                  ))}
+                </div>
+                {rewardChoice && (
+                  <p className="text-[11px] text-emerald-300 mt-2 text-center">
+                    הפרס שנבחר: {getRewardLabel(rewardChoice)}
+                  </p>
+                )}
               </div>
 
               {/* BUTTONS */}

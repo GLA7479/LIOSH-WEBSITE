@@ -7,27 +7,11 @@ import {
   loadRewardChoice,
   saveRewardChoice,
 } from "../../utils/progress-storage";
-
-const TARGET_MINUTES = 1800; // 30 שעות
-const TARGET_EXERCISES = 300;
-
-const REWARD_OPTIONS = [
-  {
-    key: "DIGITAL_GIFTCARD",
-    label: "כרטיס מתנה דיגיטלי למשחק אהוב",
-    description: "Roblox / Google Play / Steam בהתאם להעדפתכם",
-  },
-  {
-    key: "PHYSICAL_TOY",
-    label: "פרס פיזי (משחק / ספר / צעצוע)",
-    description: "אנחנו נבחר יחד פרס מוחשי שמתאים לילד/ה",
-  },
-  {
-    key: "SURPRISE",
-    label: "הפתעה חודשית",
-    description: "אנחנו נפתיע את הילד/ה בפרס מיוחד",
-  },
-];
+import {
+  REWARD_OPTIONS,
+  MONTHLY_MINUTES_TARGET,
+  MONTHLY_EXERCISES_TARGET,
+} from "../../data/reward-options";
 
 function RewardCard({ option, selected, onSelect }) {
   const isActive = selected === option.key;
@@ -45,7 +29,10 @@ function RewardCard({ option, selected, onSelect }) {
           onChange={() => onSelect(option.key)}
         />
         <div>
-          <p className="font-bold text-lg">{option.label}</p>
+          <p className="font-bold text-lg flex items-center gap-2">
+            <span className="text-2xl">{option.icon}</span>
+            <span>{option.label}</span>
+          </p>
           <p className="text-sm text-white/70 mt-1">{option.description}</p>
         </div>
       </div>
@@ -67,8 +54,8 @@ export default function ParentRewards() {
     const current = all[yearMonth] || { totalMinutes: 0, totalExercises: 0 };
     setProgress(current);
     const goalReached =
-      current.totalMinutes >= TARGET_MINUTES &&
-      current.totalExercises >= TARGET_EXERCISES;
+      current.totalMinutes >= MONTHLY_MINUTES_TARGET &&
+      current.totalExercises >= MONTHLY_EXERCISES_TARGET;
     setReached(goalReached);
 
     const storedChoice = loadRewardChoice(yearMonth);
@@ -104,7 +91,7 @@ export default function ParentRewards() {
                       {progress.totalMinutes} דק׳
                     </p>
                     <p className="text-xs text-white/60">
-                      יעד: {TARGET_MINUTES} דק׳ (≈30 שעות)
+                      יעד: {MONTHLY_MINUTES_TARGET} דק׳ (≈30 שעות)
                     </p>
                   </div>
                   <div className="bg-black/30 rounded-xl p-4 text-center">
@@ -113,7 +100,7 @@ export default function ParentRewards() {
                       {progress.totalExercises}
                     </p>
                     <p className="text-xs text-white/60">
-                      יעד: {TARGET_EXERCISES} תרגילים
+                      יעד: {MONTHLY_EXERCISES_TARGET} תרגילים
                     </p>
                   </div>
                 </div>

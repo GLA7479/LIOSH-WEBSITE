@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useMemo } from "react";
+﻿import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -32,7 +32,17 @@ import {
   buildAdditionOrSubtractionAnimation,
   buildAnimationForOperation,
 } from "../../utils/math-animations";
-import { addSessionProgress } from "../../utils/progress-storage";
+import {
+  addSessionProgress,
+  loadMonthlyProgress,
+  loadRewardChoice,
+  getCurrentYearMonth,
+} from "../../utils/progress-storage";
+import {
+  REWARD_OPTIONS,
+  MONTHLY_MINUTES_TARGET,
+  getRewardLabel,
+} from "../../data/reward-options";
 
 export default function MathMaster() {
   useIOSViewportFix();
@@ -44,6 +54,7 @@ export default function MathMaster() {
   const operationSelectRef = useRef(null);
   const sessionStartRef = useRef(null);
   const solvedCountRef = useRef(0);
+  const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [mounted, setMounted] = useState(false);
 
@@ -97,6 +108,31 @@ export default function MathMaster() {
   const [showBadgeGallery, setShowBadgeGallery] = useState(false);
   const [showPlayerProfile, setShowPlayerProfile] = useState(false);
   const [playerAvatar, setPlayerAvatar] = useState("👤"); // אווטר ברירת מחדל
+  const [monthlyProgress, setMonthlyProgress] = useState({
+    totalMinutes: 0,
+    totalExercises: 0,
+  });
+  const [goalPercent, setGoalPercent] = useState(0);
+  const [minutesRemaining, setMinutesRemaining] = useState(MONTHLY_MINUTES_TARGET);
+  const [rewardChoice, setRewardChoice] = useState(null);
+
+  const refreshMonthlyProgress = useCallback(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const all = loadMonthlyProgress();
+      const current = all[yearMonthRef.current] || { totalMinutes: 0, totalExercises: 0 };
+      setMonthlyProgress(current);
+      const percent = MONTHLY_MINUTES_TARGET
+        ? Math.min(100, Math.round((current.totalMinutes / MONTHLY_MINUTES_TARGET) * 100))
+        : 0;
+      setGoalPercent(percent);
+      setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - current.totalMinutes));
+      const choice = loadRewardChoice(yearMonthRef.current);
+      setRewardChoice(choice);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   // מערכת התקדמות אישית
   const [progress, setProgress] = useState({
@@ -336,6 +372,10 @@ export default function MathMaster() {
       animationTimeoutsRef.current = [];
     };
   }, [showSolution, animationSteps, currentQuestion]);
+
+  useEffect(() => {
+    refreshMonthlyProgress();
+  }, [refreshMonthlyProgress]);
 
   // הסבר לטעות אחרונה
   const [errorExplanation, setErrorExplanation] = useState("");
@@ -802,6 +842,7 @@ export default function MathMaster() {
     const durationMinutes = Math.max(1, Math.round(elapsedMs / 60000));
     const exercises = Math.max(solvedCountRef.current, totalQuestions);
     addSessionProgress(durationMinutes, exercises);
+    refreshMonthlyProgress();
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
   }
@@ -2000,6 +2041,48 @@ export default function MathMaster() {
                 </div>
                 {weeklyChallenge.completed && (
                   <div className="text-xs text-yellow-400 mt-1">🎉 השלמת את האתגר השבועי!</div>
+                )}
+              </div>
+              
+              <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
+                <div className="flex items-center justify-between text-[11px] text-white/70 mb-1">
+                  <span>🎁 מסע פרס חודשי</span>
+                  <span>
+                    {monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳
+                  </span>
+                </div>
+                <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="h-2 bg-emerald-400 rounded-full transition-all"
+                    style={{ width: `${goalPercent}%` }}
+                  />
+                </div>
+                <p className="text-[11px] text-white/70 mt-1 text-center">
+                  {minutesRemaining > 0
+                    ? `נותרו עוד ${minutesRemaining} דק׳ (~${Math.ceil(
+                        minutesRemaining / 60
+                      )} ש׳)`
+                    : "🎉 יעד הושלם! בקשו מההורה לבחור פרס."}
+                </p>
+                <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                  {REWARD_OPTIONS.map((option) => (
+                    <div
+                      key={option.key}
+                      className={`rounded-lg border p-2 text-[11px] bg-black/30 flex flex-col items-center gap-1 ${
+                        rewardChoice === option.key
+                          ? "border-emerald-400 text-emerald-200"
+                          : "border-white/15 text-white/70"
+                      }`}
+                    >
+                      <div className="text-xl">{option.icon}</div>
+                      <div className="font-bold leading-tight">{option.label}</div>
+                    </div>
+                  ))}
+                </div>
+                {rewardChoice && (
+                  <p className="text-[11px] text-emerald-300 mt-2 text-center">
+                    הפרס שנבחר: {getRewardLabel(rewardChoice)}
+                  </p>
                 )}
               </div>
               
