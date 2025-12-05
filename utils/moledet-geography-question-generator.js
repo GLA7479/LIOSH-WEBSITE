@@ -651,12 +651,24 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     const fallbackQuestions = G1_EASY_QUESTIONS[selectedTopic] || G1_EASY_QUESTIONS.homeland;
     const randomQ = fallbackQuestions[Math.floor(Math.random() * fallbackQuestions.length)];
     
+    // ערבוב התשובות - Fisher-Yates shuffle
+    const shuffledAnswers = [...randomQ.answers];
+    for (let i = shuffledAnswers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledAnswers[i], shuffledAnswers[j]] = [shuffledAnswers[j], shuffledAnswers[i]];
+    }
+
+    // מציאת המיקום החדש של התשובה הנכונה
+    const correctAnswer = randomQ.answers[randomQ.correct];
+    const newCorrectIndex = shuffledAnswers.findIndex(ans => ans === correctAnswer);
+    
     return {
       question: randomQ.question,
       questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
       exerciseText: randomQ.question,
-      answers: randomQ.answers,
-      correctAnswer: randomQ.answers[randomQ.correct],
+      answers: shuffledAnswers,
+      correctAnswer: correctAnswer,
+      correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : 0,
       topic: selectedTopic,
       operation: selectedTopic,
       a: null,
@@ -672,12 +684,24 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   
   const randomQ = topicQuestions[Math.floor(Math.random() * topicQuestions.length)];
 
+  // ערבוב התשובות - Fisher-Yates shuffle
+  const shuffledAnswers = [...randomQ.answers];
+  for (let i = shuffledAnswers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledAnswers[i], shuffledAnswers[j]] = [shuffledAnswers[j], shuffledAnswers[i]];
+  }
+
+  // מציאת המיקום החדש של התשובה הנכונה
+  const correctAnswer = randomQ.answers[randomQ.correct];
+  const newCorrectIndex = shuffledAnswers.findIndex(ans => ans === correctAnswer);
+
   return {
     question: randomQ.question,
     questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
     exerciseText: randomQ.question,
-    answers: randomQ.answers,
-    correctAnswer: randomQ.answers[randomQ.correct],
+    answers: shuffledAnswers,
+    correctAnswer: correctAnswer,
+    correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : 0,
     topic: selectedTopic,
     operation: selectedTopic,
     a: null,

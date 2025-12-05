@@ -677,8 +677,24 @@ function recordSessionProgress() {
     const q = questionPoolRef.current[questionIndexRef.current];
     questionIndexRef.current += 1;
 
+    // ערבוב התשובות (options) - Fisher-Yates shuffle
+    let shuffledOptions = [...(q.options || [])];
+    const originalCorrectIndex = q.correctIndex;
+    
+    // ערבוב התשובות
+    for (let i = shuffledOptions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+    }
+
+    // מציאת המיקום החדש של התשובה הנכונה
+    const originalCorrectAnswer = q.options?.[originalCorrectIndex];
+    const newCorrectIndex = shuffledOptions.findIndex(opt => opt === originalCorrectAnswer);
+
     setCurrentQuestion({
       ...q,
+      options: shuffledOptions,
+      correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : originalCorrectIndex,
       assignedGrade: grade,
       assignedLevel: level,
     });
