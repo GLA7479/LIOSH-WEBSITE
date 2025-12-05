@@ -35,7 +35,7 @@ const MODES = {
   challenge: { name: "אתגר", description: "טיימר + חיים, מרוץ ניקוד גבוה" },
   speed: { name: "מרוץ מהירות", description: "תשובות מהירות = יותר נקודות! ⚡" },
   marathon: { name: "מרתון", description: "כמה שאלות תצליח ברצף? 🏃" },
-  practice: { name: "תרגול ממוקד", description: "בוחר נושא או מיקוד אימון ייעודי" },
+  practice: { name: "תרגול", description: "בוחר נושא או מיקוד אימון ייעודי" },
 };
 
 const GRADES = SCIENCE_GRADES;
@@ -1253,29 +1253,7 @@ function recordSessionProgress() {
                 </div>
               </div>
 
-              {/* PROGRESS */}
-              {(stars > 0 || playerLevel > 1 || avgTime > 0) && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-2 w-full max-w-md">
-                  <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                    <div className="text-xs text-white/60">כוכבים</div>
-                    <div className="text-lg font-bold text-yellow-400">
-                      ⭐ {stars}
-                    </div>
-                  </div>
-                  <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                    <div className="text-xs text-white/60">רמת מדען</div>
-                    <div className="text-xs font-bold text-purple-300">
-                      Lv.{playerLevel} ({xp}/{playerLevel * 100} XP)
-                    </div>
-                  </div>
-                  <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                    <div className="text-xs text-white/60">⏱ ממוצע</div>
-                    <div className="text-lg font-bold text-blue-400">
-                      {avgTime.toFixed(1)}ש״
-                    </div>
-                  </div>
-                </div>
-              )}
+              
 
               <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
                 <div className="flex items-center justify-between mb-1">
@@ -1353,7 +1331,7 @@ function recordSessionProgress() {
                     onClick={() => setShowPracticeOptions(true)}
                     className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-sm"
                   >
-                    🎯 תרגול ממוקד ({mistakes.length})
+                    🎯 תרגול ({mistakes.length})
                   </button>
                 )}
                 <button
@@ -1396,7 +1374,7 @@ function recordSessionProgress() {
                     onClick={() => setShowPracticeOptions(true)}
                     className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
                   >
-                    🎯 תרגול ממוקד ({mistakes.length})
+                    🎯 תרגול ({mistakes.length})
                   </button>
                 )}
               </div>

@@ -1235,38 +1235,7 @@ const refreshMonthlyProgress = useCallback(() => {
                 </div>
               </div>
 
-              {(stars > 0 || playerLevel > 1 || badges.length > 0) && (
-                <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
-                  {stars > 0 && (
-                    <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                      <div className="text-xs text-white/60">Stars</div>
-                      <div className="text-lg font-bold text-yellow-400">
-                        ⭐ {stars}
-                      </div>
-                    </div>
-                  )}
-                  {playerLevel > 1 && (
-                    <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                      <div className="text-xs text-white/60">Level</div>
-                      <div className="text-xs font-bold text-purple-400">
-                        Lv.{playerLevel} ({xp}/{playerLevel * 100} XP)
-                      </div>
-                    </div>
-                  )}
-                  {badges.length > 0 && (
-                    <div 
-                      className="bg-black/20 border border-white/10 rounded-lg p-2 text-center cursor-pointer hover:bg-black/30 transition"
-                      onClick={() => setShowBadgeGallery(true)}
-                      title="לחץ לראות את כל התגים"
-                    >
-                      <div className="text-xs text-white/60">תגים</div>
-                      <div className="text-sm font-bold text-orange-400">
-                        {badges.length} 🏅
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
+              
 
               {/* אתגרים יומיים ושבועיים */}
               <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
