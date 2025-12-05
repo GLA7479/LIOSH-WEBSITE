@@ -1,7 +1,7 @@
 // Service Worker for LEO K PWA - Full Offline Support
-const CACHE_NAME = 'leo-k-v2';
-const STATIC_CACHE = 'leo-k-static-v2';
-const DYNAMIC_CACHE = 'leo-k-dynamic-v2';
+const CACHE_NAME = 'leo-k-v3';
+const STATIC_CACHE = 'leo-k-static-v3';
+const DYNAMIC_CACHE = 'leo-k-dynamic-v3';
 
 // Essential pages and assets to cache on install
 const STATIC_ASSETS = [
@@ -27,6 +27,12 @@ const STATIC_ASSETS = [
   '/learning/math-master',
   '/learning/geometry-master',
   '/learning/english-master',
+  '/learning/science-master',
+  '/learning/hebrew-master',
+  '/learning/moledet-geography-master',
+  '/learning/index',
+  '/learning/curriculum',
+  '/learning/parent-report',
   // Essential images
   '/images/leo-intro.png',
   '/images/leo-icons/android-chrome-192x192.png',
@@ -172,7 +178,7 @@ function shouldCache(request) {
   );
 }
 
-// Fetch event - Only handle static assets, let Next.js handle pages
+// Fetch event - Network First for pages, Cache First for assets
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -187,18 +193,73 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Skip Next.js internal requests and API routes
-  if (
-    url.pathname.startsWith('/_next/') ||
-    url.pathname.startsWith('/api/') ||
-    request.destination === 'document' ||
-    request.destination === 'script'
-  ) {
-    // Let Next.js handle these
+  // Handle Next.js pages with Network First, fallback to cache
+  // This works for both browser and PWA mode
+  if (request.destination === 'document' && !url.pathname.startsWith('/_next')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          // Cache successful responses
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(DYNAMIC_CACHE).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          // Network failed, try cache
+          return caches.match(request).then((cachedResponse) => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            // If no cache, return offline page
+            return caches.match('/offline').then((offlinePage) => {
+              return offlinePage || new Response('Offline', { 
+                status: 503,
+                headers: { 'Content-Type': 'text/html; charset=utf-8' }
+              });
+            });
+          });
+        })
+    );
     return;
   }
 
-  // Only handle static assets (images, sounds, CSS from public folder)
+  // Handle Next.js static chunks - Cache First
+  if (url.pathname.startsWith('/_next/static')) {
+    event.respondWith(
+      caches.match(request)
+        .then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          return fetch(request).then((response) => {
+            if (response && response.status === 200) {
+              const responseToCache = response.clone();
+              caches.open(DYNAMIC_CACHE).then((cache) => {
+                cache.put(request, responseToCache);
+              });
+            }
+            return response;
+          }).catch(() => {
+            return new Response('', { status: 404 });
+          });
+        })
+    );
+    return;
+  }
+
+  // Skip API routes and scripts
+  if (
+    url.pathname.startsWith('/api/') ||
+    request.destination === 'script'
+  ) {
+    return;
+  }
+
+  // Handle static assets (images, sounds, CSS) - Cache First
   if (
     request.destination === 'image' ||
     request.destination === 'audio' ||
@@ -215,7 +276,6 @@ self.addEventListener('fetch', (event) => {
           
           return fetch(request)
             .then((response) => {
-              // Don't cache non-successful responses
               if (!response || response.status !== 200 || response.type !== 'basic') {
                 return response;
               }
@@ -234,6 +294,7 @@ self.addEventListener('fetch', (event) => {
             });
         })
     );
+    return;
   }
 });
 

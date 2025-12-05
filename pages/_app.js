@@ -5,40 +5,26 @@ import OfflineIndicator from "../components/OfflineIndicator";
 
 export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    // Unregister ALL service workers to prevent caching issues
+    // רישום Service Worker עבור תמיכה offline ו-PWA
     if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-      // Always unregister service workers - they cause issues
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        registrations.forEach(registration => {
-          registration.unregister().then(() => {
-            console.log("[SW] Unregistered:", registration.scope);
-          });
-        });
-      });
-      
-      // Don't register new service workers
-      return;
-
       const registerSW = () => {
         navigator.serviceWorker
           .register("/sw.js", { scope: "/" })
           .then((registration) => {
             console.log("[SW] Registered successfully:", registration.scope);
             
-            // Check for updates periodically
+            // בדיקה לעדכונים כל שעה
             setInterval(() => {
               registration.update();
-            }, 60 * 60 * 1000); // Check every hour
+            }, 60 * 60 * 1000);
             
-            // Handle updates
+            // טיפול בעדכונים
             registration.addEventListener('updatefound', () => {
               const newWorker = registration.installing;
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // New service worker available, prompt user to reload
-                  if (confirm('עדכון זמין! האם ברצונך לרענן את הדף?')) {
-                    window.location.reload();
-                  }
+                  // Service Worker חדש זמין - אפשר להציע רענון (לא אוטומטי)
+                  console.log("[SW] New service worker available");
                 }
               });
             });
