@@ -1367,7 +1367,7 @@ export default function ParentReport() {
           {/* גרף דיוק לפי פעולות */}
           {Object.keys(report.allItems || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📊 דיוק לפי פעולות ונושאים</h2>
+              <h2 className="text-base md:text-xl font-bold mb-8 md:mb-10 text-center">📊 דיוק לפי פעולות ונושאים</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 288 : 384}>
                   <BarChart 
@@ -1458,7 +1458,7 @@ export default function ParentReport() {
           {/* גרף זמן לפי פעולות */}
           {Object.keys(report.allItems || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
+              <h2 className="text-base md:text-xl font-bold mb-8 md:mb-10 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 288 : 384}>
                   <BarChart 
@@ -1532,7 +1532,7 @@ export default function ParentReport() {
           {/* גרף עוגה - חלוקת זמן */}
           {Object.keys(report.allItems || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🥧 חלוקת זמן תרגול</h2>
+              <h2 className="text-base md:text-xl font-bold mb-8 md:mb-10 text-center">🥧 חלוקת זמן תרגול</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 280 : 380}>
                   <PieChart>
