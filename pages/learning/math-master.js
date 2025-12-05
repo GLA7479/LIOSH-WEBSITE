@@ -2033,14 +2033,6 @@ export default function MathMaster() {
                 >
                   📊 לוח כפל
                 </button>
-                {mistakes.length > 0 && (
-                  <button
-                    onClick={() => setShowPracticeOptions(true)}
-                    className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-sm"
-                  >
-                    🎯 תרגול ממוקד ({mistakes.length})
-                  </button>
-                )}
                 <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"

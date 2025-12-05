@@ -1891,7 +1891,8 @@ function recordSessionProgress() {
               <div
                 className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto relative"
                 onClick={(e) => e.stopPropagation()}
-                style={{ direction: "rtl", scrollbarGutter: "stable" }}
+                dir="rtl"
+                style={{ scrollbarGutter: "stable" }}
               >
                 <button
                   onClick={() => setShowPlayerProfile(false)}
