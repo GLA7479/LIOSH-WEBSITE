@@ -1523,7 +1523,7 @@ export default function MathMaster() {
 
           {/* בחירת מצב (Learning / Challenge) */}
           <div
-            className="flex items-center justify-center gap-2 mb-2 w-full max-w-md overflow-x-auto flex-nowrap px-1 whitespace-nowrap"
+            className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-wrap px-1"
             dir="rtl"
           >
             {["learning", "challenge", "speed", "marathon", "practice"].map((m) => (
@@ -2019,23 +2019,23 @@ export default function MathMaster() {
                 </div>
               </div>
               
-              <div className="flex items-center justify-center gap-2 mb-2 w-full max-w-md overflow-x-auto flex-nowrap px-1 whitespace-nowrap">
+              <div className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-wrap px-1">
                 <button
                   onClick={startGame}
                   disabled={!playerName.trim()}
-                  className="h-10 px-6 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-sm"
+                  className="h-9 px-4 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-xs"
                 >
                   ▶️ התחל
                 </button>
                 <button
                   onClick={() => setShowMultiplicationTable(true)}
-                  className="h-10 px-4 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
+                  className="h-9 px-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-xs"
                 >
                   📊 לוח כפל
                 </button>
                 <button
                   onClick={() => setShowLeaderboard(true)}
-                  className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
+                  className="h-9 px-3 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-xs"
                 >
                   🏆 לוח תוצאות
                 </button>

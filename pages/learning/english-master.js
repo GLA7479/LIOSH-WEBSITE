@@ -2593,7 +2593,7 @@ const refreshMonthlyProgress = useCallback(() => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-2 mb-2 w-full max-w-md overflow-x-auto flex-nowrap px-1 whitespace-nowrap">
+              <div className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-wrap px-1">
                 <button
                   onClick={startGame}
                   disabled={!playerName.trim()}
@@ -2603,21 +2603,21 @@ const refreshMonthlyProgress = useCallback(() => {
                 </button>
                 <button
                   onClick={() => setShowReferenceModal(true)}
-                  className="h-10 px-4 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
+                  className="h-9 px-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-xs"
                 >
                   📚 לוח מילים
                 </button>
                 {mistakes.length > 0 && (
                   <button
                     onClick={() => setShowPracticeOptions(true)}
-                    className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-sm"
+                    className="h-9 px-3 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-xs"
                   >
                     🎯 תרגול ({mistakes.length})
                   </button>
                 )}
                 <button
                   onClick={() => setShowLeaderboard(true)}
-                  className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
+                  className="h-9 px-3 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-xs"
                 >
                   🏆 לוח תוצאות
                 </button>
