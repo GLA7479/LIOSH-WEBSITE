@@ -522,6 +522,16 @@ export default function HebrewMaster() {
     } catch {}
   }, []);
 
+  // שמירת progress ל-localStorage כשהם משתנים
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+      saved.progress = progress;
+      localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+    } catch {}
+  }, [progress]);
+
   // Load leaderboard data when modal opens or level changes
   useEffect(() => {
     if (showLeaderboard && typeof window !== "undefined") {
@@ -953,20 +963,31 @@ export default function HebrewMaster() {
       setErrorExplanation("");
 
       // עדכון התקדמות אישית
-      const op = currentQuestion.operation;
-      setProgress((prev) => ({
-        ...prev,
-        [op]: {
-          total: (prev[op]?.total || 0) + 1,
-          correct: (prev[op]?.correct || 0) + 1,
-        },
-      }));
+      const topicKey = currentQuestion.topic || currentQuestion.operation || "reading";
+      setProgress((prev) => {
+        const updated = {
+          ...prev,
+          [topicKey]: {
+            total: (prev[topicKey]?.total || 0) + 1,
+            correct: (prev[topicKey]?.correct || 0) + 1,
+          },
+        };
+        // שמירה מיידית ל-localStorage
+        if (typeof window !== "undefined") {
+          try {
+            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+            saved.progress = updated;
+            localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+          } catch {}
+        }
+        return updated;
+      });
 
       // משתנים משותפים למערכת תגים וכוכבים
       const newCorrect = correct + 1;
       const newStreak = streak + 1;
       const newScore = score + points;
-      const opProgress = progress[op] || { total: 0, correct: 0 };
+      const opProgress = progress[topicKey] || { total: 0, correct: 0 };
       const newOpCorrect = opProgress.correct + 1;
 
       // מערכת כוכבים - כוכב כל 5 תשובות נכונות
@@ -1015,7 +1036,7 @@ export default function HebrewMaster() {
       }
       
       // תגים לפי פעולות ספציפיות
-      const opName = getOperationName(op);
+      const opName = getOperationName(topicKey);
       if (newOpCorrect === 50 && !badges.includes(`🧮 מלך ה${opName}`)) {
         const newBadge = `🧮 מלך ה${opName}`;
         setBadges((prev) => [...prev, newBadge]);
@@ -1138,9 +1159,10 @@ export default function HebrewMaster() {
       setStreak(0);
       
       // שמירת שגיאה לתרגול ממוקד
+      const topicKey = currentQuestion.topic || currentQuestion.operation || "reading";
       const mistake = {
-        operation: currentQuestion.operation,
-        question: currentQuestion.exerciseText || `${currentQuestion.a} ${currentQuestion.operation === "addition" ? "+" : currentQuestion.operation === "subtraction" ? "-" : currentQuestion.operation === "multiplication" ? "×" : "÷"} ${currentQuestion.b}`,
+        operation: topicKey,
+        question: currentQuestion.exerciseText || currentQuestion.question || "",
         correctAnswer: currentQuestion.correctAnswer,
         wrongAnswer: answer,
         grade: grade,
@@ -1150,7 +1172,7 @@ export default function HebrewMaster() {
       setMistakes((prev) => {
         const updated = [...prev, mistake].slice(-50); // שמור רק 50 שגיאות אחרונות
         if (typeof window !== "undefined") {
-          localStorage.setItem("mleo_mistakes", JSON.stringify(updated));
+          localStorage.setItem("mleo_hebrew_mistakes", JSON.stringify(updated));
         }
         return updated;
       });
@@ -1158,21 +1180,31 @@ export default function HebrewMaster() {
       setErrorExplanation(
         getErrorExplanation(
           currentQuestion,
-          currentQuestion.operation,
+          topicKey,
           answer,
           grade
         )
       );
       
       // עדכון התקדמות אישית
-      const op = currentQuestion.operation;
-      setProgress((prev) => ({
-        ...prev,
-        [op]: {
-          total: (prev[op]?.total || 0) + 1,
-          correct: prev[op]?.correct || 0,
-        },
-      }));
+      setProgress((prev) => {
+        const updated = {
+          ...prev,
+          [topicKey]: {
+            total: (prev[topicKey]?.total || 0) + 1,
+            correct: prev[topicKey]?.correct || 0,
+          },
+        };
+        // שמירה מיידית ל-localStorage
+        if (typeof window !== "undefined") {
+          try {
+            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+            saved.progress = updated;
+            localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+          } catch {}
+        }
+        return updated;
+      });
       
       // אנימציה ותגובה חזותית לתשובה שגויה
       setShowWrongAnimation(true);
