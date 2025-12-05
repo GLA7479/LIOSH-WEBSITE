@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { generateParentReport, getOperationName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import {
   BarChart,
   Bar,
@@ -244,6 +245,46 @@ export default function ParentReport() {
 
   return (
     <Layout>
+      <Head>
+        <style>{`
+          @media print {
+            body {
+              background: white !important;
+              color: black !important;
+            }
+            .bg-gradient-to-b,
+            .bg-black\\/30,
+            .bg-black\\/40,
+            .bg-blue-500\\/20,
+            .bg-emerald-500\\/20,
+            .bg-purple-500\\/20,
+            .bg-green-500\\/20,
+            .bg-orange-500\\/20,
+            .bg-cyan-500\\/20 {
+              background: white !important;
+              border: 1px solid #ccc !important;
+            }
+            .text-white {
+              color: black !important;
+            }
+            .text-white\\/60,
+            .text-white\\/70,
+            .text-white\\/80,
+            .text-white\\/90 {
+              color: #333 !important;
+            }
+            button {
+              display: none !important;
+            }
+            table {
+              page-break-inside: avoid;
+            }
+            .recharts-wrapper {
+              page-break-inside: avoid;
+            }
+          }
+        `}</style>
+      </Head>
       <div
         className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-2 md:p-4"
         dir="rtl"
@@ -470,9 +511,10 @@ export default function ParentReport() {
           {/* טבלת פעולות חשבון */}
           {Object.keys(report.mathOperations || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🧮 התקדמות בחשבון</h2>
-              <div className="overflow-x-auto -mx-2 md:mx-0">
-                <table className="w-full text-xs md:text-sm min-w-[800px]">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🧮 התקדמות בחשבון</h2>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/20">
                       <th className="text-right py-2 px-1 md:px-2">פעולה</th>
@@ -529,15 +571,58 @@ export default function ParentReport() {
                   </tbody>
                 </table>
               </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                {Object.entries(report.mathOperations)
+                  .sort(([_, a], [__, b]) => b.questions - a.questions)
+                  .map(([op, data]) => (
+                    <div key={op} className="bg-black/40 border border-white/20 rounded-lg p-3">
+                      <div className="font-semibold text-sm mb-2 text-blue-400">{getOperationName(op)}</div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">שאלות:</span> <span className="text-white/90">{data.questions}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">נכון:</span> <span className="text-emerald-400">{data.correct}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">דיוק:</span> <span className={`font-bold ${
+                            data.accuracy >= 90 ? "text-emerald-400" :
+                            data.accuracy >= 70 ? "text-yellow-400" :
+                            "text-red-400"
+                          }`}>{data.accuracy}%</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-center">
+                        {data.excellent ? (
+                          <span className="text-emerald-400 text-xs">✅ מצוין</span>
+                        ) : data.needsPractice ? (
+                          <span className="text-red-400 text-xs">⚠️ דורש תרגול</span>
+                        ) : (
+                          <span className="text-yellow-400 text-xs">👍 טוב</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
 
           {/* טבלת נושאים גאומטריה */}
           {Object.keys(report.geometryTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">📐 התקדמות בגאומטריה</h2>
-              <div className="overflow-x-auto -mx-2 md:mx-0">
-                <table className="w-full text-xs md:text-sm min-w-[800px]">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📐 התקדמות בגאומטריה</h2>
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/20">
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
@@ -902,88 +987,157 @@ export default function ParentReport() {
 
           {/* גרף פעילות יומית */}
           {report.dailyActivity.length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">📅 פעילות יומית</h2>
-              <div className="h-48 md:h-64">
-                <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
-                  <LineChart data={report.dailyActivity}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📅 פעילות יומית</h2>
+              <div className="h-56 md:h-80">
+                <ResponsiveContainer width="100%" height={isMobile ? 220 : 320}>
+                  <LineChart data={report.dailyActivity} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
                     <XAxis
                       dataKey="date"
-                      tick={{ fill: "#ffffff80", fontSize: 12 }}
+                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 12 }}
                       tickFormatter={(value) => {
                         const date = new Date(value);
                         return `${date.getDate()}/${date.getMonth() + 1}`;
                       }}
+                      style={{ direction: 'ltr' }}
                     />
-                    <YAxis tick={{ fill: "#ffffff80", fontSize: 12 }} />
+                    <YAxis 
+                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 12 }}
+                      width={isMobile ? 40 : 50}
+                    />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "rgba(0, 0, 0, 0.9)",
-                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        backgroundColor: "rgba(10, 15, 29, 0.95)",
+                        border: "1px solid rgba(255, 255, 255, 0.3)",
                         borderRadius: "8px",
+                        color: "#ffffff",
+                        direction: 'rtl',
+                      }}
+                      labelFormatter={(value) => {
+                        const date = new Date(value);
+                        return date.toLocaleDateString('he-IL');
+                      }}
+                      formatter={(value, name) => {
+                        if (name === 'זמן (דקות)') return [`${value} דק'`, name];
+                        if (name === 'שאלות') return [value, name];
+                        return [value, name];
+                      }}
+                    />
+                    <Legend 
+                      wrapperStyle={{ paddingTop: '10px' }}
+                      iconType="line"
+                      iconSize={12}
+                      formatter={(value) => <span style={{ fontSize: isMobile ? '11px' : '12px', color: '#ffffff90' }}>{value}</span>}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="timeMinutes"
+                      stroke="#3b82f6"
+                      strokeWidth={isMobile ? 2 : 3}
+                      name="זמן (דקות)"
+                      dot={{ fill: "#3b82f6", r: isMobile ? 3 : 4 }}
+                      activeDot={{ r: isMobile ? 5 : 6 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="questions"
+                      stroke="#10b981"
+                      strokeWidth={isMobile ? 2 : 3}
+                      name="שאלות"
+                      dot={{ fill: "#10b981", r: isMobile ? 3 : 4 }}
+                      activeDot={{ r: isMobile ? 5 : 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          {/* גרף פעילות לפי נושאים */}
+          {report.dailyActivity.length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📚 פעילות לפי נושאים (יומי)</h2>
+              <div className="h-56 md:h-80">
+                <ResponsiveContainer width="100%" height={isMobile ? 220 : 320}>
+                  <LineChart data={report.dailyActivity} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 12 }}
+                      tickFormatter={(value) => {
+                        const date = new Date(value);
+                        return `${date.getDate()}/${date.getMonth() + 1}`;
+                      }}
+                      style={{ direction: 'ltr' }}
+                    />
+                    <YAxis 
+                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 12 }}
+                      width={isMobile ? 40 : 50}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "rgba(10, 15, 29, 0.95)",
+                        border: "1px solid rgba(255, 255, 255, 0.3)",
+                        borderRadius: "8px",
+                        color: "#ffffff",
+                        direction: 'rtl',
                       }}
                       labelFormatter={(value) => {
                         const date = new Date(value);
                         return date.toLocaleDateString('he-IL');
                       }}
                     />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="timeMinutes"
-                      stroke="#3b82f6"
-                      strokeWidth={2}
-                      name="זמן (דקות)"
-                      dot={{ fill: "#3b82f6", r: 4 }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="questions"
-                      stroke="#10b981"
-                      strokeWidth={2}
-                      name="שאלות"
-                      dot={{ fill: "#10b981", r: 4 }}
+                    <Legend 
+                      wrapperStyle={{ paddingTop: '10px' }}
+                      iconType="line"
+                      iconSize={12}
+                      formatter={(value) => <span style={{ fontSize: isMobile ? '11px' : '12px', color: '#ffffff90' }}>{value}</span>}
                     />
                     <Line
                       type="monotone"
                       dataKey="mathTopics"
                       stroke="#60a5fa"
-                      strokeWidth={2}
-                      name="נושאי חשבון"
-                      dot={{ fill: "#60a5fa", r: 3 }}
+                      strokeWidth={isMobile ? 2 : 3}
+                      name="חשבון"
+                      dot={{ fill: "#60a5fa", r: isMobile ? 2 : 3 }}
+                      activeDot={{ r: isMobile ? 4 : 5 }}
                     />
                     <Line
                       type="monotone"
                       dataKey="geometryTopics"
                       stroke="#34d399"
-                      strokeWidth={2}
-                      name="נושאי גאומטריה"
-                      dot={{ fill: "#34d399", r: 3 }}
+                      strokeWidth={isMobile ? 2 : 3}
+                      name="גאומטריה"
+                      dot={{ fill: "#34d399", r: isMobile ? 2 : 3 }}
+                      activeDot={{ r: isMobile ? 4 : 5 }}
                     />
                     <Line
                       type="monotone"
                       dataKey="englishTopics"
                       stroke="#a855f7"
-                      strokeWidth={2}
-                      name="נושאי אנגלית"
-                      dot={{ fill: "#a855f7", r: 3 }}
+                      strokeWidth={isMobile ? 2 : 3}
+                      name="אנגלית"
+                      dot={{ fill: "#a855f7", r: isMobile ? 2 : 3 }}
+                      activeDot={{ r: isMobile ? 4 : 5 }}
                     />
                     <Line
                       type="monotone"
                       dataKey="hebrewTopics"
                       stroke="#f97316"
-                      strokeWidth={2}
-                      name="נושאי עברית"
-                      dot={{ fill: "#f97316", r: 3 }}
+                      strokeWidth={isMobile ? 2 : 3}
+                      name="עברית"
+                      dot={{ fill: "#f97316", r: isMobile ? 2 : 3 }}
+                      activeDot={{ r: isMobile ? 4 : 5 }}
                     />
                     <Line
                       type="monotone"
                       dataKey="moledetGeographyTopics"
                       stroke="#06b6d4"
-                      strokeWidth={2}
-                      name="נושאי מולדת וגאוגרפיה"
-                      dot={{ fill: "#06b6d4", r: 3 }}
+                      strokeWidth={isMobile ? 2 : 3}
+                      name="מולדת וגאוגרפיה"
+                      dot={{ fill: "#06b6d4", r: isMobile ? 2 : 3 }}
+                      activeDot={{ r: isMobile ? 4 : 5 }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -993,51 +1147,88 @@ export default function ParentReport() {
 
           {/* גרף דיוק לפי פעולות */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">📊 דיוק לפי פעולות ונושאים</h2>
-              <div className="h-48 md:h-64">
-                <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
-                  <BarChart data={Object.entries(report.allItems)
-                    .map(([key, data]) => {
-                      const name = key.startsWith('math_') 
-                        ? getOperationName(key.replace('math_', ''))
-                        : key.startsWith('geometry_')
-                        ? getTopicName(key.replace('geometry_', ''))
-                        : key.startsWith('english_')
-                        ? getEnglishTopicName(key.replace('english_', ''))
-                        : key.startsWith('science_')
-                        ? getScienceTopicName(key.replace('science_', ''))
-                        : key.startsWith('hebrew_')
-                        ? getHebrewTopicName(key.replace('hebrew_', ''))
-                        : key.startsWith('moledet-geography_')
-                        ? getMoledetGeographyTopicName(key.replace('moledet-geography_', ''))
-                        : key;
-                      return {
-                        name,
-                        דיוק: data.accuracy,
-                        שאלות: data.questions,
-                      };
-                    })
-                    .sort((a, b) => b.דיוק - a.דיוק)
-                    .slice(0, 10)
-                  }>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📊 דיוק לפי פעולות ונושאים</h2>
+              <div className="h-64 md:h-80">
+                <ResponsiveContainer width="100%" height={isMobile ? 240 : 320}>
+                  <BarChart 
+                    data={Object.entries(report.allItems)
+                      .map(([key, data]) => {
+                        const name = key.startsWith('math_') 
+                          ? getOperationName(key.replace('math_', ''))
+                          : key.startsWith('geometry_')
+                          ? getTopicName(key.replace('geometry_', ''))
+                          : key.startsWith('english_')
+                          ? getEnglishTopicName(key.replace('english_', ''))
+                          : key.startsWith('science_')
+                          ? getScienceTopicName(key.replace('science_', ''))
+                          : key.startsWith('hebrew_')
+                          ? getHebrewTopicName(key.replace('hebrew_', ''))
+                          : key.startsWith('moledet-geography_')
+                          ? getMoledetGeographyTopicName(key.replace('moledet-geography_', ''))
+                          : key;
+                        return {
+                          name: name.length > 15 ? name.substring(0, 15) + '...' : name,
+                          fullName: name,
+                          דיוק: data.accuracy,
+                          שאלות: data.questions,
+                        };
+                      })
+                      .sort((a, b) => b.דיוק - a.דיוק)
+                      .slice(0, 10)
+                    }
+                    margin={{ top: 5, right: 20, left: -10, bottom: isMobile ? 60 : 80 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
                     <XAxis
                       dataKey="name"
-                      tick={{ fill: "#ffffff80", fontSize: 9 }}
-                      angle={-45}
+                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 11 }}
+                      angle={isMobile ? -45 : -45}
                       textAnchor="end"
-                      height={isMobile ? 40 : 60}
+                      height={isMobile ? 70 : 90}
+                      interval={0}
                     />
-                    <YAxis tick={{ fill: "#ffffff80", fontSize: 12 }} />
+                    <YAxis 
+                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 12 }}
+                      width={isMobile ? 40 : 50}
+                      domain={[0, 100]}
+                    />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "rgba(0, 0, 0, 0.9)",
-                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        backgroundColor: "rgba(10, 15, 29, 0.95)",
+                        border: "1px solid rgba(255, 255, 255, 0.3)",
                         borderRadius: "8px",
+                        color: "#ffffff",
+                        direction: 'rtl',
+                      }}
+                      formatter={(value, name) => {
+                        if (name === 'דיוק') return [`${value}%`, 'דיוק'];
+                        return [value, name];
+                      }}
+                      labelFormatter={(label, payload) => {
+                        if (payload && payload[0] && payload[0].payload.fullName) {
+                          return payload[0].payload.fullName;
+                        }
+                        return label;
                       }}
                     />
-                    <Bar dataKey="דיוק" fill="#10b981" />
+                    <Bar 
+                      dataKey="דיוק" 
+                      fill="#10b981"
+                      radius={[4, 4, 0, 0]}
+                    >
+                      {Object.entries(report.allItems)
+                        .map(([_, data], index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={
+                              data.accuracy >= 90 ? "#10b981" :
+                              data.accuracy >= 70 ? "#f59e0b" :
+                              "#ef4444"
+                            }
+                          />
+                        ))}
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -1046,51 +1237,71 @@ export default function ParentReport() {
 
           {/* גרף זמן לפי פעולות */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
-              <div className="h-48 md:h-64">
-                <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
-                  <BarChart data={Object.entries(report.allItems)
-                    .map(([key, data]) => {
-                      const name = key.startsWith('math_') 
-                        ? getOperationName(key.replace('math_', ''))
-                        : key.startsWith('geometry_')
-                        ? getTopicName(key.replace('geometry_', ''))
-                        : key.startsWith('english_')
-                        ? getEnglishTopicName(key.replace('english_', ''))
-                        : key.startsWith('science_')
-                        ? getScienceTopicName(key.replace('science_', ''))
-                        : key.startsWith('hebrew_')
-                        ? getHebrewTopicName(key.replace('hebrew_', ''))
-                        : key.startsWith('moledet-geography_')
-                        ? getMoledetGeographyTopicName(key.replace('moledet-geography_', ''))
-                        : key;
-                      return {
-                        name,
-                        זמן: data.timeMinutes,
-                      };
-                    })
-                    .sort((a, b) => b.זמן - a.זמן)
-                    .slice(0, 10)
-                  }>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
+              <div className="h-64 md:h-80">
+                <ResponsiveContainer width="100%" height={isMobile ? 240 : 320}>
+                  <BarChart 
+                    data={Object.entries(report.allItems)
+                      .map(([key, data]) => {
+                        const name = key.startsWith('math_') 
+                          ? getOperationName(key.replace('math_', ''))
+                          : key.startsWith('geometry_')
+                          ? getTopicName(key.replace('geometry_', ''))
+                          : key.startsWith('english_')
+                          ? getEnglishTopicName(key.replace('english_', ''))
+                          : key.startsWith('science_')
+                          ? getScienceTopicName(key.replace('science_', ''))
+                          : key.startsWith('hebrew_')
+                          ? getHebrewTopicName(key.replace('hebrew_', ''))
+                          : key.startsWith('moledet-geography_')
+                          ? getMoledetGeographyTopicName(key.replace('moledet-geography_', ''))
+                          : key;
+                        return {
+                          name: name.length > 15 ? name.substring(0, 15) + '...' : name,
+                          fullName: name,
+                          זמן: data.timeMinutes,
+                        };
+                      })
+                      .sort((a, b) => b.זמן - a.זמן)
+                      .slice(0, 10)
+                    }
+                    margin={{ top: 5, right: 20, left: -10, bottom: isMobile ? 60 : 80 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
                     <XAxis
                       dataKey="name"
-                      tick={{ fill: "#ffffff80", fontSize: 9 }}
-                      angle={-45}
+                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 11 }}
+                      angle={isMobile ? -45 : -45}
                       textAnchor="end"
-                      height={isMobile ? 40 : 60}
+                      height={isMobile ? 70 : 90}
+                      interval={0}
                     />
-                    <YAxis tick={{ fill: "#ffffff80", fontSize: 12 }} />
+                    <YAxis 
+                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 12 }}
+                      width={isMobile ? 40 : 50}
+                    />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "rgba(0, 0, 0, 0.9)",
-                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        backgroundColor: "rgba(10, 15, 29, 0.95)",
+                        border: "1px solid rgba(255, 255, 255, 0.3)",
                         borderRadius: "8px",
+                        color: "#ffffff",
+                        direction: 'rtl',
                       }}
                       formatter={(value) => `${value} דקות`}
+                      labelFormatter={(label, payload) => {
+                        if (payload && payload[0] && payload[0].payload.fullName) {
+                          return payload[0].payload.fullName;
+                        }
+                        return label;
+                      }}
                     />
-                    <Bar dataKey="זמן" fill="#3b82f6" />
+                    <Bar 
+                      dataKey="זמן" 
+                      fill="#3b82f6"
+                      radius={[4, 4, 0, 0]}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -1099,30 +1310,31 @@ export default function ParentReport() {
 
           {/* גרף עוגה - חלוקת זמן */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🥧 חלוקת זמן תרגול</h2>
-              <div className="h-48 md:h-64">
-                <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🥧 חלוקת זמן תרגול</h2>
+              <div className="h-72 md:h-96">
+                <ResponsiveContainer width="100%" height={isMobile ? 280 : 380}>
                   <PieChart>
                     <Pie
                       data={Object.entries(report.allItems)
                         .filter(([_, data]) => data.timeMinutes > 0)
                         .map(([key, data]) => {
-                      const name = key.startsWith('math_') 
-                        ? getOperationName(key.replace('math_', ''))
-                        : key.startsWith('geometry_')
-                        ? getTopicName(key.replace('geometry_', ''))
-                        : key.startsWith('english_')
-                        ? getEnglishTopicName(key.replace('english_', ''))
-                        : key.startsWith('science_')
-                        ? getScienceTopicName(key.replace('science_', ''))
-                        : key.startsWith('hebrew_')
-                        ? getHebrewTopicName(key.replace('hebrew_', ''))
-                        : key.startsWith('moledet-geography_')
-                        ? getMoledetGeographyTopicName(key.replace('moledet-geography_', ''))
-                        : key;
+                          const name = key.startsWith('math_') 
+                            ? getOperationName(key.replace('math_', ''))
+                            : key.startsWith('geometry_')
+                            ? getTopicName(key.replace('geometry_', ''))
+                            : key.startsWith('english_')
+                            ? getEnglishTopicName(key.replace('english_', ''))
+                            : key.startsWith('science_')
+                            ? getScienceTopicName(key.replace('science_', ''))
+                            : key.startsWith('hebrew_')
+                            ? getHebrewTopicName(key.replace('hebrew_', ''))
+                            : key.startsWith('moledet-geography_')
+                            ? getMoledetGeographyTopicName(key.replace('moledet-geography_', ''))
+                            : key;
                           return {
-                            name,
+                            name: name.length > 12 ? name.substring(0, 12) + '...' : name,
+                            fullName: name,
                             value: data.timeMinutes,
                           };
                         })
@@ -1131,16 +1343,21 @@ export default function ParentReport() {
                       }
                       cx="50%"
                       cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name}: ${(percent * 100).toFixed(0)}%`
-                      }
-                      outerRadius={80}
+                      labelLine={true}
+                      label={({ name, percent }) => {
+                        const percentage = (percent * 100).toFixed(0);
+                        return percentage >= 5 ? `${name}\n${percentage}%` : '';
+                      }}
+                      outerRadius={isMobile ? 70 : 90}
+                      innerRadius={isMobile ? 30 : 40}
                       fill="#8884d8"
                       dataKey="value"
+                      style={{ fontSize: isMobile ? '10px' : '11px' }}
                     >
                       {Object.entries(report.allItems)
                         .filter(([_, data]) => data.timeMinutes > 0)
+                        .sort(([_, a], [__, b]) => b.timeMinutes - a.timeMinutes)
+                        .slice(0, 8)
                         .map(([_, data], index) => (
                           <Cell
                             key={`cell-${index}`}
@@ -1159,11 +1376,23 @@ export default function ParentReport() {
                     </Pie>
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "rgba(0, 0, 0, 0.9)",
-                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        backgroundColor: "rgba(10, 15, 29, 0.95)",
+                        border: "1px solid rgba(255, 255, 255, 0.3)",
                         borderRadius: "8px",
+                        color: "#ffffff",
+                        direction: 'rtl',
                       }}
-                      formatter={(value) => `${value} דקות`}
+                      formatter={(value, name, props) => {
+                        const fullName = props.payload.fullName || name;
+                        return [`${value} דקות`, fullName];
+                      }}
+                    />
+                    <Legend 
+                      wrapperStyle={{ paddingTop: '10px' }}
+                      formatter={(value, entry) => {
+                        const fullName = entry.payload?.fullName || value;
+                        return <span style={{ fontSize: isMobile ? '10px' : '11px', color: '#ffffff90' }}>{fullName}</span>;
+                      }}
                     />
                   </PieChart>
                 </ResponsiveContainer>

@@ -1284,15 +1284,23 @@ function generateRecommendations(operations, mistakes) {
   return recommendations;
 }
 
-// יצירת דוח PDF (דורש jsPDF)
+// יצירת דוח PDF (דורש jsPDF ו-jspdf-autotable)
 export function exportReportToPDF(report) {
   if (typeof window === "undefined") return;
   
   try {
-    // Dynamic import של jsPDF
-    import('jspdf').then(({ default: jsPDF }) => {
-      const doc = new jsPDF();
+    // Dynamic import של jsPDF ו-autoTable
+    Promise.all([
+      import('jspdf'),
+      import('jspdf-autotable')
+    ]).then(([{ default: jsPDF }]) => {
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
       
+      // הערה: jsPDF תומך בעברית חלקית. עבור תמיכה מלאה, מומלץ להשתמש ב-html2pdf.js
       // כותרת
       doc.setFontSize(20);
       doc.text('דוח להורים', 105, 20, { align: 'center' });
@@ -1323,147 +1331,342 @@ export function exportReportToPDF(report) {
       
       // פעולות חשבון
       if (Object.keys(report.mathOperations || {}).length > 0) {
+        if (y > 200) {
+          doc.addPage();
+          y = 20;
+        }
         doc.setFontSize(14);
         doc.text('התקדמות בחשבון', 20, y);
         y += 10;
-        doc.setFontSize(10);
         
-        Object.entries(report.mathOperations)
+        const mathData = Object.entries(report.mathOperations)
           .sort(([_, a], [__, b]) => b.questions - a.questions)
-          .slice(0, 10)
-          .forEach(([op, data]) => {
-            if (y > 250) {
-              doc.addPage();
-              y = 20;
-            }
-            const opName = getOperationName(op);
-            doc.text(`${opName}: ${data.questions} שאלות, ${data.correct} נכון, ${data.accuracy}% דיוק, ${data.timeMinutes} דק'`, 20, y);
-            y += 7;
-          });
-        y += 5;
+          .slice(0, 15)
+          .map(([op, data]) => [
+            getOperationName(op),
+            data.level || '-',
+            data.grade || '-',
+            `${data.timeMinutes} דק'`,
+            data.questions.toString(),
+            data.correct.toString(),
+            `${data.accuracy}%`,
+            data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
+          ]);
+        
+        doc.autoTable({
+          head: [['פעולה', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
+          body: mathData,
+          startY: y,
+          styles: { fontSize: 9, halign: 'right' },
+          headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: 'bold', halign: 'right' },
+          alternateRowStyles: { fillColor: [245, 245, 245] },
+          columnStyles: {
+            0: { cellWidth: 40 },
+            1: { cellWidth: 25, halign: 'center' },
+            2: { cellWidth: 25, halign: 'center' },
+            3: { cellWidth: 25, halign: 'center' },
+            4: { cellWidth: 20, halign: 'center' },
+            5: { cellWidth: 20, halign: 'center' },
+            6: { cellWidth: 25, halign: 'center' },
+            7: { cellWidth: 35, halign: 'center' }
+          },
+          margin: { left: 20, right: 20 }
+        });
+        y = doc.lastAutoTable.finalY + 10;
       }
       
       // נושאי גאומטריה
       if (Object.keys(report.geometryTopics || {}).length > 0) {
-        if (y > 240) {
+        if (y > 200) {
           doc.addPage();
           y = 20;
         }
         doc.setFontSize(14);
         doc.text('התקדמות בגאומטריה', 20, y);
         y += 10;
-        doc.setFontSize(10);
         
-        Object.entries(report.geometryTopics)
+        const geometryData = Object.entries(report.geometryTopics)
           .sort(([_, a], [__, b]) => b.questions - a.questions)
-          .slice(0, 10)
-          .forEach(([topic, data]) => {
-            if (y > 250) {
-              doc.addPage();
-              y = 20;
-            }
-            const topicName = getTopicName(topic);
-            doc.text(`${topicName}: ${data.questions} שאלות, ${data.correct} נכון, ${data.accuracy}% דיוק, ${data.timeMinutes} דק'`, 20, y);
-            y += 7;
-          });
-        y += 5;
+          .slice(0, 15)
+          .map(([topic, data]) => [
+            getTopicName(topic),
+            data.level || '-',
+            data.grade || '-',
+            `${data.timeMinutes} דק'`,
+            data.questions.toString(),
+            data.correct.toString(),
+            `${data.accuracy}%`,
+            data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
+          ]);
+        
+        doc.autoTable({
+          head: [['נושא', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
+          body: geometryData,
+          startY: y,
+          styles: { fontSize: 9, halign: 'right' },
+          headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold', halign: 'right' },
+          alternateRowStyles: { fillColor: [245, 245, 245] },
+          columnStyles: {
+            0: { cellWidth: 45 },
+            1: { cellWidth: 25, halign: 'center' },
+            2: { cellWidth: 25, halign: 'center' },
+            3: { cellWidth: 25, halign: 'center' },
+            4: { cellWidth: 20, halign: 'center' },
+            5: { cellWidth: 20, halign: 'center' },
+            6: { cellWidth: 25, halign: 'center' },
+            7: { cellWidth: 35, halign: 'center' }
+          },
+          margin: { left: 20, right: 20 }
+        });
+        y = doc.lastAutoTable.finalY + 10;
       }
       
       if (Object.keys(report.englishTopics || {}).length > 0) {
-        if (y > 240) {
+        if (y > 200) {
           doc.addPage();
           y = 20;
         }
         doc.setFontSize(14);
         doc.text('התקדמות באנגלית', 20, y);
         y += 10;
-        doc.setFontSize(10);
         
-        Object.entries(report.englishTopics)
+        const englishData = Object.entries(report.englishTopics)
           .sort(([_, a], [__, b]) => b.questions - a.questions)
-          .slice(0, 10)
-          .forEach(([topic, data]) => {
-            if (y > 250) {
-              doc.addPage();
-              y = 20;
-            }
-            const topicName = getEnglishTopicName(topic);
-            doc.text(`${topicName}: ${data.questions} שאלות, ${data.correct} נכון, ${data.accuracy}% דיוק, ${data.timeMinutes} דק'`, 20, y);
-            y += 7;
-          });
-        y += 5;
+          .slice(0, 15)
+          .map(([topic, data]) => [
+            getEnglishTopicName(topic),
+            data.level || '-',
+            data.grade || '-',
+            `${data.timeMinutes} דק'`,
+            data.questions.toString(),
+            data.correct.toString(),
+            `${data.accuracy}%`,
+            data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
+          ]);
+        
+        doc.autoTable({
+          head: [['נושא', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
+          body: englishData,
+          startY: y,
+          styles: { fontSize: 9, halign: 'right' },
+          headStyles: { fillColor: [168, 85, 247], textColor: 255, fontStyle: 'bold', halign: 'right' },
+          alternateRowStyles: { fillColor: [245, 245, 245] },
+          columnStyles: {
+            0: { cellWidth: 45 },
+            1: { cellWidth: 25, halign: 'center' },
+            2: { cellWidth: 25, halign: 'center' },
+            3: { cellWidth: 25, halign: 'center' },
+            4: { cellWidth: 20, halign: 'center' },
+            5: { cellWidth: 20, halign: 'center' },
+            6: { cellWidth: 25, halign: 'center' },
+            7: { cellWidth: 35, halign: 'center' }
+          },
+          margin: { left: 20, right: 20 }
+        });
+        y = doc.lastAutoTable.finalY + 10;
+      }
+      
+      if (Object.keys(report.scienceTopics || {}).length > 0) {
+        if (y > 200) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.setFontSize(14);
+        doc.text('התקדמות במדעים', 20, y);
+        y += 10;
+        
+        const scienceData = Object.entries(report.scienceTopics)
+          .sort(([_, a], [__, b]) => b.questions - a.questions)
+          .slice(0, 15)
+          .map(([topic, data]) => [
+            getScienceTopicName(topic),
+            data.level || '-',
+            data.grade || '-',
+            `${data.timeMinutes} דק'`,
+            data.questions.toString(),
+            data.correct.toString(),
+            `${data.accuracy}%`,
+            data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
+          ]);
+        
+        doc.autoTable({
+          head: [['נושא', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
+          body: scienceData,
+          startY: y,
+          styles: { fontSize: 9, halign: 'right' },
+          headStyles: { fillColor: [34, 197, 94], textColor: 255, fontStyle: 'bold', halign: 'right' },
+          alternateRowStyles: { fillColor: [245, 245, 245] },
+          columnStyles: {
+            0: { cellWidth: 45 },
+            1: { cellWidth: 25, halign: 'center' },
+            2: { cellWidth: 25, halign: 'center' },
+            3: { cellWidth: 25, halign: 'center' },
+            4: { cellWidth: 20, halign: 'center' },
+            5: { cellWidth: 20, halign: 'center' },
+            6: { cellWidth: 25, halign: 'center' },
+            7: { cellWidth: 35, halign: 'center' }
+          },
+          margin: { left: 20, right: 20 }
+        });
+        y = doc.lastAutoTable.finalY + 10;
       }
       
       if (Object.keys(report.hebrewTopics || {}).length > 0) {
-        if (y > 240) {
+        if (y > 200) {
           doc.addPage();
           y = 20;
         }
         doc.setFontSize(14);
         doc.text('התקדמות בעברית', 20, y);
         y += 10;
-        doc.setFontSize(10);
         
-        Object.entries(report.hebrewTopics)
+        const hebrewData = Object.entries(report.hebrewTopics)
           .sort(([_, a], [__, b]) => b.questions - a.questions)
-          .slice(0, 10)
-          .forEach(([topic, data]) => {
-            if (y > 250) {
-              doc.addPage();
-              y = 20;
-            }
-            const topicName = getHebrewTopicName(topic);
-            doc.text(`${topicName}: ${data.questions} שאלות, ${data.correct} נכון, ${data.accuracy}% דיוק, ${data.timeMinutes} דק'`, 20, y);
-            y += 7;
-          });
-        y += 5;
+          .slice(0, 15)
+          .map(([topic, data]) => [
+            getHebrewTopicName(topic),
+            data.level || '-',
+            data.grade || '-',
+            `${data.timeMinutes} דק'`,
+            data.questions.toString(),
+            data.correct.toString(),
+            `${data.accuracy}%`,
+            data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
+          ]);
+        
+        doc.autoTable({
+          head: [['נושא', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
+          body: hebrewData,
+          startY: y,
+          styles: { fontSize: 9, halign: 'right' },
+          headStyles: { fillColor: [249, 115, 22], textColor: 255, fontStyle: 'bold', halign: 'right' },
+          alternateRowStyles: { fillColor: [245, 245, 245] },
+          columnStyles: {
+            0: { cellWidth: 45 },
+            1: { cellWidth: 25, halign: 'center' },
+            2: { cellWidth: 25, halign: 'center' },
+            3: { cellWidth: 25, halign: 'center' },
+            4: { cellWidth: 20, halign: 'center' },
+            5: { cellWidth: 20, halign: 'center' },
+            6: { cellWidth: 25, halign: 'center' },
+            7: { cellWidth: 35, halign: 'center' }
+          },
+          margin: { left: 20, right: 20 }
+        });
+        y = doc.lastAutoTable.finalY + 10;
       }
       
       if (Object.keys(report.moledetGeographyTopics || {}).length > 0) {
-        if (y > 240) {
+        if (y > 200) {
           doc.addPage();
           y = 20;
         }
         doc.setFontSize(14);
         doc.text('התקדמות במולדת וגאוגרפיה', 20, y);
         y += 10;
-        doc.setFontSize(10);
         
-        Object.entries(report.moledetGeographyTopics)
+        const moledetData = Object.entries(report.moledetGeographyTopics)
           .sort(([_, a], [__, b]) => b.questions - a.questions)
-          .slice(0, 10)
-          .forEach(([topic, data]) => {
-            if (y > 250) {
-              doc.addPage();
-              y = 20;
-            }
-            const topicName = getMoledetGeographyTopicName(topic);
-            doc.text(`${topicName}: ${data.questions} שאלות, ${data.correct} נכון, ${data.accuracy}% דיוק, ${data.timeMinutes} דק'`, 20, y);
-            y += 7;
-          });
-        y += 5;
+          .slice(0, 15)
+          .map(([topic, data]) => [
+            getMoledetGeographyTopicName(topic),
+            data.level || '-',
+            data.grade || '-',
+            `${data.timeMinutes} דק'`,
+            data.questions.toString(),
+            data.correct.toString(),
+            `${data.accuracy}%`,
+            data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
+          ]);
+        
+        doc.autoTable({
+          head: [['נושא', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
+          body: moledetData,
+          startY: y,
+          styles: { fontSize: 9, halign: 'right' },
+          headStyles: { fillColor: [6, 182, 212], textColor: 255, fontStyle: 'bold', halign: 'right' },
+          alternateRowStyles: { fillColor: [245, 245, 245] },
+          columnStyles: {
+            0: { cellWidth: 45 },
+            1: { cellWidth: 25, halign: 'center' },
+            2: { cellWidth: 25, halign: 'center' },
+            3: { cellWidth: 25, halign: 'center' },
+            4: { cellWidth: 20, halign: 'center' },
+            5: { cellWidth: 20, halign: 'center' },
+            6: { cellWidth: 25, halign: 'center' },
+            7: { cellWidth: 35, halign: 'center' }
+          },
+          margin: { left: 20, right: 20 }
+        });
+        y = doc.lastAutoTable.finalY + 10;
       }
       
       // המלצות
       if (report.analysis.recommendations.length > 0) {
-        if (y > 240) {
+        if (y > 200) {
           doc.addPage();
           y = 20;
         }
         doc.setFontSize(14);
         doc.text('המלצות', 20, y);
         y += 10;
-        doc.setFontSize(10);
         
-        report.analysis.recommendations.slice(0, 10).forEach(rec => {
-          if (y > 250) {
-            doc.addPage();
-            y = 20;
-          }
-          doc.text(`• ${rec.message}`, 20, y);
-          y += 7;
+        const recommendationsData = report.analysis.recommendations.slice(0, 15).map(rec => [
+          rec.operationName || '-',
+          rec.priority === 'high' ? 'גבוה' : rec.priority === 'medium' ? 'בינוני' : 'נמוך',
+          rec.message.length > 60 ? rec.message.substring(0, 60) + '...' : rec.message
+        ]);
+        
+        doc.autoTable({
+          head: [['נושא', 'עדיפות', 'המלצה']],
+          body: recommendationsData,
+          startY: y,
+          styles: { fontSize: 9, halign: 'right' },
+          headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: 'bold', halign: 'right' },
+          alternateRowStyles: { fillColor: [245, 245, 245] },
+          columnStyles: {
+            0: { cellWidth: 40, halign: 'right' },
+            1: { cellWidth: 30, halign: 'center' },
+            2: { cellWidth: 120, halign: 'right' }
+          },
+          margin: { left: 20, right: 20 }
         });
+        y = doc.lastAutoTable.finalY + 10;
       }
+      
+      // סיכום לפי מקצועות
+      if (y > 200) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.setFontSize(14);
+      doc.text('סיכום לפי מקצועות', 20, y);
+      y += 10;
+      
+      const subjectSummary = [
+        ['חשבון', `${report.summary.mathQuestions || 0}`, `${report.summary.mathCorrect || 0}`, `${report.summary.mathAccuracy || 0}%`],
+        ['גאומטריה', `${report.summary.geometryQuestions || 0}`, `${report.summary.geometryCorrect || 0}`, `${report.summary.geometryAccuracy || 0}%`],
+        ['אנגלית', `${report.summary.englishQuestions || 0}`, `${report.summary.englishCorrect || 0}`, `${report.summary.englishAccuracy || 0}%`],
+        ['מדעים', `${report.summary.scienceQuestions || 0}`, `${report.summary.scienceCorrect || 0}`, `${report.summary.scienceAccuracy || 0}%`],
+        ['עברית', `${report.summary.hebrewQuestions || 0}`, `${report.summary.hebrewCorrect || 0}`, `${report.summary.hebrewAccuracy || 0}%`],
+        ['מולדת וגאוגרפיה', `${report.summary.moledetGeographyQuestions || 0}`, `${report.summary.moledetGeographyCorrect || 0}`, `${report.summary.moledetGeographyAccuracy || 0}%`]
+      ];
+      
+      doc.autoTable({
+        head: [['מקצוע', 'שאלות', 'נכון', 'דיוק']],
+        body: subjectSummary,
+        startY: y,
+        styles: { fontSize: 10, halign: 'right' },
+        headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: 'bold', halign: 'right' },
+        alternateRowStyles: { fillColor: [245, 245, 245] },
+        columnStyles: {
+          0: { cellWidth: 60, halign: 'right' },
+          1: { cellWidth: 40, halign: 'center' },
+          2: { cellWidth: 40, halign: 'center' },
+          3: { cellWidth: 40, halign: 'center' }
+        },
+        margin: { left: 20, right: 20 }
+      });
       
       // שמירה
       doc.save(`דוח-${report.playerName}-${report.endDate}.pdf`);
