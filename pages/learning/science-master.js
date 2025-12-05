@@ -343,6 +343,7 @@ export default function ScienceMaster() {
     environment: { total: 0, correct: 0 },
     experiments: { total: 0, correct: 0 },
   });
+  const badges = [];
   const [dailyChallenge, setDailyChallenge] = useState({
     date: new Date().toDateString(),
     bestScore: 0,
@@ -1142,7 +1143,7 @@ function recordSessionProgress() {
           </div>
 
           {/* MODES */}
-          <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
+          <div className="flex items-center justify-center gap-2 mb-2 w-full max-w-md overflow-x-auto flex-nowrap px-1 whitespace-nowrap">
             {Object.keys(MODES).map((m) => (
               <button
                 key={m}
@@ -1184,7 +1185,7 @@ function recordSessionProgress() {
           {!gameActive ? (
             <>
               {/* PLAYER & SETTINGS */}
-              <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
+              <div className="flex items-center justify-center gap-2 mb-2 w-full max-w-md overflow-x-auto flex-nowrap px-1 whitespace-nowrap">
                 <input
                   type="text"
                   value={playerName}
@@ -1200,7 +1201,7 @@ function recordSessionProgress() {
                     }
                   }}
                   placeholder="שם שחקן"
-                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[110px]"
+                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[55px]"
                   maxLength={15}
                   dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
                   style={{
@@ -1993,6 +1994,29 @@ function recordSessionProgress() {
                             );
                           })}
                       </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-black/30 border border-white/10 rounded-lg p-3 mt-4">
+                  <div className="text-sm text-white/60 mb-2">תגים</div>
+                  {badges.length > 0 ? (
+                    <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                      {badges.map((badge, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30"
+                        >
+                          <div className="text-3xl">{badge.split(" ")[0]}</div>
+                          <div className="flex-1 text-white font-semibold text-lg">
+                            {badge}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center text-white/60 text-sm py-4">
+                      עדיין לא הרווחת תגים. המשך לתרגל!
                     </div>
                   )}
                 </div>

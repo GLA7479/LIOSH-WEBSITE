@@ -105,7 +105,6 @@ export default function MathMaster() {
   const [showCorrectAnimation, setShowCorrectAnimation] = useState(false);
   const [showWrongAnimation, setShowWrongAnimation] = useState(false);
   const [celebrationEmoji, setCelebrationEmoji] = useState("🎉");
-  const [showBadgeGallery, setShowBadgeGallery] = useState(false);
   const [showPlayerProfile, setShowPlayerProfile] = useState(false);
   const [playerAvatar, setPlayerAvatar] = useState("👤"); // אווטר ברירת מחדל
   const [monthlyProgress, setMonthlyProgress] = useState({
@@ -1522,7 +1521,10 @@ export default function MathMaster() {
           </div>
 
           {/* בחירת מצב (Learning / Challenge) */}
-          <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md" dir="rtl">
+          <div
+            className="flex items-center justify-center gap-2 mb-2 w-full max-w-md overflow-x-auto flex-nowrap px-1 whitespace-nowrap"
+            dir="rtl"
+          >
             {["learning", "challenge", "speed", "marathon", "practice"].map((m) => (
               <button
                 key={m}
@@ -1560,57 +1562,6 @@ export default function MathMaster() {
             </div>
           )}
 
-          {/* גלריית תגים */}
-          {showBadgeGallery && (
-            <div
-              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
-              onClick={() => setShowBadgeGallery(false)}
-              dir="rtl"
-            >
-              <div
-                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="text-center mb-4">
-                  <h2 className="text-2xl font-extrabold text-white mb-2">
-                    🏅 התגים שלי
-                  </h2>
-                  <p className="text-white/70 text-sm">
-                    {badges.length > 0 ? `יש לך ${badges.length} תגים!` : "עדיין אין לך תגים. המשך לתרגל!"}
-                  </p>
-                </div>
-
-                {badges.length > 0 ? (
-                  <div className="grid grid-cols-1 gap-3">
-                    {badges.map((badge, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30"
-                      >
-                        <div className="text-3xl">{badge.split(" ")[0]}</div>
-                        <div className="flex-1 text-white font-semibold text-lg">
-                          {badge}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-white/60">
-                    <div className="text-6xl mb-4">🎯</div>
-                    <p>המשך לתרגל כדי לזכות בתגים!</p>
-                  </div>
-                )}
-
-                <button
-                  onClick={() => setShowBadgeGallery(false)}
-                  className="mt-4 w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
-                >
-                  סגור
-                </button>
-              </div>
-            </div>
-          )}
-          
           {showLevelUp && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none" dir="rtl">
               <div className="bg-gradient-to-br from-purple-500 to-pink-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-pulse">
@@ -1723,6 +1674,29 @@ export default function MathMaster() {
                       </div>
                     </div>
                   )}
+
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-2">תגים</div>
+                    {badges.length > 0 ? (
+                      <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                        {badges.map((badge, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30"
+                          >
+                            <div className="text-3xl">{badge.split(" ")[0]}</div>
+                            <div className="flex-1 text-white font-semibold text-lg">
+                              {badge}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center text-white/60 text-sm py-4">
+                        עדיין לא הרווחת תגים. המשך לתרגל!
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <button
@@ -1861,7 +1835,7 @@ export default function MathMaster() {
                     }
                   }}
                   placeholder="שם שחקן"
-                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[110px]"
+                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[55px]"
                   maxLength={15}
                   dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
                   style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
@@ -2033,7 +2007,7 @@ export default function MathMaster() {
                 )}
               </div>
               
-              <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
+              <div className="flex items-center justify-center gap-2 mb-2 w-full max-w-md overflow-x-auto flex-nowrap px-1 whitespace-nowrap">
                 <button
                   onClick={startGame}
                   disabled={!playerName.trim()}
@@ -2061,14 +2035,6 @@ export default function MathMaster() {
                 >
                   🏆 לוח תוצאות
                 </button>
-                {badges.length > 0 && (
-                  <button
-                    onClick={() => setShowBadgeGallery(true)}
-                    className="h-10 px-4 rounded-lg bg-yellow-500/80 hover:bg-yellow-500 font-bold text-sm"
-                  >
-                    🏅 תגים ({badges.length})
-                  </button>
-                )}
               </div>
 
               {/* כפתורים עזרה ותרגול ממוקד */}
