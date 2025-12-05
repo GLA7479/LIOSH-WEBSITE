@@ -1593,12 +1593,21 @@ export default function ParentReport() {
                     </Pie>
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "rgba(10, 15, 29, 0.95)",
-                        border: "1px solid rgba(255, 255, 255, 0.3)",
+                        backgroundColor: "#ffffff",
+                        border: "2px solid #3b82f6",
                         borderRadius: "8px",
-                        color: "#ffffff",
+                        color: "#1a1a1a",
                         direction: 'rtl',
-                        fontSize: isMobile ? '12px' : '14px',
+                        fontSize: isMobile ? '13px' : '14px',
+                        fontWeight: '500',
+                        padding: '10px 12px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+                      }}
+                      labelStyle={{
+                        color: "#1a1a1a",
+                        fontWeight: 'bold',
+                        fontSize: isMobile ? '14px' : '16px',
+                        marginBottom: '4px',
                       }}
                       formatter={(value, name, props) => {
                         const fullName = props.payload.fullName || name;
