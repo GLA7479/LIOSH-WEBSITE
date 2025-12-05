@@ -484,7 +484,7 @@ export const MODES = {
     description: "טיימר + חיים, מרוץ ניקוד גבוה",
   },
   speed: {
-    name: "מרוץ מהירות",
+    name: "מהירות",
     description: "תשובות מהירות = יותר נקודות! ⚡",
   },
   marathon: {

@@ -1580,9 +1580,21 @@ export default function MathMaster() {
               dir="rtl"
             >
               <div
-                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto relative"
                 onClick={(e) => e.stopPropagation()}
+                dir="rtl"
+                style={{ 
+                  scrollbarGutter: "stable",
+                  scrollbarWidth: "thin"
+                }}
               >
+                <button
+                  onClick={() => setShowPlayerProfile(false)}
+                  className="absolute left-4 top-4 text-white/80 hover:text-white text-2xl font-bold z-10"
+                  style={{ direction: "ltr" }}
+                >
+                  ✖
+                </button>
                 <div className="text-center mb-4">
                   <h2 className="text-2xl font-extrabold text-white mb-2">
                     👤 פרופיל שחקן
@@ -3814,7 +3826,7 @@ export default function MathMaster() {
 
                 <ul className="list-disc pr-4 space-y-1 text-[13px] text-white/90">
                   <li>בחר כיתה, רמת קושי ופעולה (חיבור, חיסור, כפל, חילוק, שברים, אחוזים ועוד).</li>
-                  <li>בחר מצב משחק: למידה, אתגר עם טיימר וחיים, מרוץ מהירות או מרתון.</li>
+                  <li>בחר מצב משחק: למידה, אתגר עם טיימר וחיים, מהירות או מרתון.</li>
                   <li>קרא היטב את השאלה – לפעמים יש תרגילי מילים שצריך להבין את הסיפור.</li>
                   <li>לחץ על 💡 Hint כדי לקבל רמז, ועל "📘 הסבר מלא" כדי לראות פתרון צעד־אחר־צעד.</li>
                   <li>ניקוד גבוה, רצף תשובות נכון, כוכבים ו־Badges עוזרים לך לעלות רמה כשחקן.</li>

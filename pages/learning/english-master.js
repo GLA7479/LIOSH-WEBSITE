@@ -40,7 +40,7 @@ const GRADE_ORDER = ENGLISH_GRADE_ORDER;
 const MODES = {
   learning: { name: "למידה", description: "ללא סיום משחק, תרגול בקצב שלך" },
   challenge: { name: "אתגר", description: "טיימר + חיים, מרוץ ניקוד גבוה" },
-  speed: { name: "מרוץ מהירות", description: "תשובות מהירות = יותר נקודות! ⚡" },
+  speed: { name: "מהירות", description: "תשובות מהירות = יותר נקודות! ⚡" },
   marathon: { name: "מרתון", description: "כמה שאלות תוכל לפתור? 🏃" },
   practice: { name: "תרגול", description: "בוחר נושא/מצב אימון מדויק" },
 };
@@ -3248,9 +3248,17 @@ const refreshMonthlyProgress = useCallback(() => {
               dir="rtl"
             >
               <div
-                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto relative"
                 onClick={(e) => e.stopPropagation()}
+                style={{ direction: "rtl", scrollbarGutter: "stable" }}
               >
+                <button
+                  onClick={() => setShowPlayerProfile(false)}
+                  className="absolute left-4 top-4 text-white/80 hover:text-white text-2xl font-bold z-10"
+                  style={{ direction: "ltr" }}
+                >
+                  ✖
+                </button>
                 <div className="text-center mb-4">
                   <h2 className="text-2xl font-extrabold text-white mb-2">
                     👤 פרופיל שחקן
@@ -3410,7 +3418,7 @@ const refreshMonthlyProgress = useCallback(() => {
 
                 <ul className="list-disc pr-4 space-y-1 text-[13px] text-white/90">
                   <li>בחר כיתה, רמת קושי ונושא (אוצר מילים, דקדוק, תרגום, כתיבה ועוד).</li>
-                  <li>בחר מצב משחק: למידה, אתגר עם טיימר וחיים, מרוץ מהירות או מרתון.</li>
+                  <li>בחר מצב משחק: למידה, אתגר עם טיימר וחיים, מהירות או מרתון.</li>
                   <li>קרא היטב את השאלה – לפעמים צריך לבחור תשובה, ולפעמים לכתוב באנגלית.</li>
                   <li>לחץ על 💡 Hint כדי לקבל רמז, ועל "📘 הסבר מלא" כדי לראות פתרון צעד־אחר־צעד.</li>
                   <li>ניקוד גבוה, רצף תשובות נכון, כוכבים ו־Badges עוזרים לך לעלות רמה כשחקן.</li>

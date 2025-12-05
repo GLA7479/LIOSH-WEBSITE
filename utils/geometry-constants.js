@@ -160,7 +160,7 @@ export function getShapesForTopic(gradeKey, topicKey) {
 export const MODES = {
   learning: { name: "למידה", description: "ללא סיום משחק, תרגול בקצב שלך" },
   challenge: { name: "אתגר", description: "טיימר + חיים, מרוץ ניקוד גבוה" },
-  speed: { name: "מרוץ מהירות", description: "תשובות מהירות = יותר נקודות! ⚡" },
+  speed: { name: "מהירות", description: "תשובות מהירות = יותר נקודות! ⚡" },
   marathon: { name: "מרתון", description: "כמה שאלות תוכל לפתור? 🏃" },
   practice: { name: "תרגול", description: "התמקד בנושא אחד 📚" },
 };
