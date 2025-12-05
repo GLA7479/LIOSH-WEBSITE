@@ -1357,7 +1357,7 @@ function recordSessionProgress() {
                 )}
                 <button
                   onClick={openLeaderboard}
-                  className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
+                  className="h-9 px-3 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-xs"
                 >
                   🏆 לוח תוצאות
                 </button>
