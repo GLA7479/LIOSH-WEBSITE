@@ -165,6 +165,8 @@ export default function GeometryMaster() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardLevel, setLeaderboardLevel] = useState("easy");
   const [leaderboardData, setLeaderboardData] = useState([]);
+  const [showReferenceModal, setShowReferenceModal] = useState(false);
+  const [referenceCategory, setReferenceCategory] = useState("shapes");
 const [playerName, setPlayerName] = useState(() => {
     if (typeof window !== "undefined") {
       try {
@@ -1329,6 +1331,12 @@ const refreshMonthlyProgress = useCallback(() => {
                 >
                   ▶️ התחל
                 </button>
+                <button
+                  onClick={() => setShowReferenceModal(true)}
+                  className="h-10 px-4 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
+                >
+                  📐 לוח צורות
+                </button>
                 {mistakes.length > 0 && (
                   <button
                     onClick={() => setShowPracticeOptions(true)}
@@ -2193,6 +2201,179 @@ const refreshMonthlyProgress = useCallback(() => {
                   >
                     סגור
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* לוח צורות ונוסחאות */}
+          {showReferenceModal && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[185] p-4"
+              onClick={() => setShowReferenceModal(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-blue-400/60 rounded-2xl p-5 w-full max-w-lg max-h-[85vh] overflow-y-auto text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-2xl font-extrabold">📐 לוח צורות ונוסחאות</h2>
+                  <button
+                    onClick={() => setShowReferenceModal(false)}
+                    className="text-white/80 hover:text-white text-xl px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                <p className="text-sm text-white/70 mb-3">
+                  בחר קטגוריה כדי לראות צורות, נוסחאות ומונחים חשובים בהנדסה.
+                </p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {[
+                    { key: "shapes", label: "צורות" },
+                    { key: "formulas", label: "נוסחאות" },
+                    { key: "terms", label: "מונחים" },
+                  ].map((cat) => (
+                    <button
+                      key={cat.key}
+                      onClick={() => setReferenceCategory(cat.key)}
+                      className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                        referenceCategory === cat.key
+                          ? "bg-blue-500/80 border-blue-300 text-white"
+                          : "bg-white/5 border-white/20 text-white/70 hover:bg-white/10"
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="space-y-3">
+                  {referenceCategory === "shapes" && (
+                    <>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🔷 ריבוע</div>
+                        <div className="text-sm text-white/80">4 צלעות שוות, 4 זוויות ישרות</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">⬜ מלבן</div>
+                        <div className="text-sm text-white/80">2 זוגות של צלעות שוות, 4 זוויות ישרות</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🔺 משולש</div>
+                        <div className="text-sm text-white/80">3 צלעות, 3 זוויות</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">⭕ מעגל</div>
+                        <div className="text-sm text-white/80">צורה עגולה, כל הנקודות במרחק שווה מהמרכז</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📦 תיבה</div>
+                        <div className="text-sm text-white/80">גוף תלת-מימדי עם 6 פאות מלבניות</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🔲 קובייה</div>
+                        <div className="text-sm text-white/80">תיבה עם כל הצלעות שוות</div>
+                      </div>
+                    </>
+                  )}
+                  {referenceCategory === "formulas" && (
+                    <>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 שטח ריבוע</div>
+                        <div className="text-sm text-white/80">צלע × צלע</div>
+                        <div className="text-xs text-white/60 mt-1">S = a²</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 שטח מלבן</div>
+                        <div className="text-sm text-white/80">אורך × רוחב</div>
+                        <div className="text-xs text-white/60 mt-1">S = a × b</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 שטח משולש</div>
+                        <div className="text-sm text-white/80">(בסיס × גובה) ÷ 2</div>
+                        <div className="text-xs text-white/60 mt-1">S = (b × h) ÷ 2</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📏 היקף ריבוע</div>
+                        <div className="text-sm text-white/80">4 × צלע</div>
+                        <div className="text-xs text-white/60 mt-1">P = 4a</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📏 היקף מלבן</div>
+                        <div className="text-sm text-white/80">2 × (אורך + רוחב)</div>
+                        <div className="text-xs text-white/60 mt-1">P = 2(a + b)</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📦 נפח תיבה</div>
+                        <div className="text-sm text-white/80">אורך × רוחב × גובה</div>
+                        <div className="text-xs text-white/60 mt-1">V = a × b × c</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📦 נפח קובייה</div>
+                        <div className="text-sm text-white/80">צלע × צלע × צלע</div>
+                        <div className="text-xs text-white/60 mt-1">V = a³</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">⭕ היקף מעגל</div>
+                        <div className="text-sm text-white/80">2 × π × רדיוס</div>
+                        <div className="text-xs text-white/60 mt-1">P = 2πr</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">⭕ שטח מעגל</div>
+                        <div className="text-sm text-white/80">π × רדיוס²</div>
+                        <div className="text-xs text-white/60 mt-1">S = πr²</div>
+                      </div>
+                    </>
+                  )}
+                  {referenceCategory === "terms" && (
+                    <>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 שטח</div>
+                        <div className="text-sm text-white/80">המקום שצורה תופסת במישור</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📏 היקף</div>
+                        <div className="text-sm text-white/80">אורך הקו המקיף את הצורה</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📦 נפח</div>
+                        <div className="text-sm text-white/80">המקום שגוף תופס במרחב</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 זווית</div>
+                        <div className="text-sm text-white/80">המקום בין שתי קרניים היוצאות מאותה נקודה</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 זווית ישרה</div>
+                        <div className="text-sm text-white/80">90 מעלות</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 זווית חדה</div>
+                        <div className="text-sm text-white/80">פחות מ-90 מעלות</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 זווית קהה</div>
+                        <div className="text-sm text-white/80">יותר מ-90 מעלות</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 מקבילות</div>
+                        <div className="text-sm text-white/80">קווים שלא נפגשים לעולם</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 מאונכות</div>
+                        <div className="text-sm text-white/80">קווים שנפגשים בזווית ישרה</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 אלכסון</div>
+                        <div className="text-sm text-white/80">קו המחבר שני קודקודים לא סמוכים</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 סימטרייה</div>
+                        <div className="text-sm text-white/80">כאשר צורה נראית זהה משני צדדים</div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
