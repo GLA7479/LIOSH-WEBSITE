@@ -1317,15 +1317,10 @@ const refreshMonthlyProgress = useCallback(() => {
                       }`}
                     >
                       <div className="text-xl">{option.icon}</div>
-                      <div className="font-bold leading-tight">{option.label}</div>
+                      <div className="font-bold leading-tight" dir="ltr">{option.label}</div>
                     </button>
                   ))}
                 </div>
-                {rewardChoice && (
-                  <p className="text-[11px] text-emerald-300 mt-2 text-center">
-                    הפרס שנבחר: {getRewardLabel(rewardChoice)}
-                  </p>
-                )}
               </div>
 
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">

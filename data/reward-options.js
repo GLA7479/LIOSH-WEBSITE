@@ -10,14 +10,14 @@ export const REWARD_OPTIONS = [
   },
   {
     key: "VBUCKS",
-    icon: "💎",
+    icon: "👑",
     label: "1000 V-BUCKS",
     description: "1000 V-Bucks למשחק Fortnite",
   },
   {
     key: "CLASH_ROYALE",
-    icon: "👑",
-    label: "1200 CLASH ROYALE GEMS",
+    icon: "💎",
+    label: "1200 CLASH ROYALE",
     description: "1200 Gems למשחק Clash Royale",
   },
 ];

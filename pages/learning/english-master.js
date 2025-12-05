@@ -1409,6 +1409,7 @@ export default function EnglishMaster() {
     questions: 0,
     correct: 0,
   });
+  const [showDailyChallenge, setShowDailyChallenge] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
 
@@ -2513,9 +2514,14 @@ const refreshMonthlyProgress = useCallback(() => {
               
 
               <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-2">
                   <div className="text-xs text-white/60">אתגר יומי</div>
-                  <div className="text-xs text-white/60">שיא: {dailyChallenge.bestScore}</div>
+                  <button
+                    onClick={() => setShowDailyChallenge(true)}
+                    className="text-xs text-blue-400 hover:text-blue-300"
+                  >
+                    פרטים
+                  </button>
                 </div>
                 <div className="text-sm text-white mb-1">
                   {dailySolved} נכון מתוך {dailyChallenge.questions || 0} שאלות
@@ -2581,15 +2587,10 @@ const refreshMonthlyProgress = useCallback(() => {
                       }`}
                     >
                       <div className="text-xl">{option.icon}</div>
-                      <div className="font-bold leading-tight">{option.label}</div>
+                      <div className="font-bold leading-tight" dir="ltr">{option.label}</div>
                     </button>
                   ))}
                 </div>
-                {rewardChoice && (
-                  <p className="text-[11px] text-emerald-300 mt-2 text-center">
-                    הפרס שנבחר: {getRewardLabel(rewardChoice)}
-                  </p>
-                )}
               </div>
 
               <div className="flex items-center justify-center gap-2 mb-2 w-full max-w-md overflow-x-auto flex-nowrap px-1 whitespace-nowrap">
