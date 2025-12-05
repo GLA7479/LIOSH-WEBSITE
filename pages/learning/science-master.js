@@ -66,7 +66,26 @@ const PRACTICE_TOPIC_GROUPS = {
   materials_energy: ["materials", "experiments"],
 };
 
-const AVATAR_OPTIONS = ["👧", "👦", "🧒", "🦊", "🐱", "🐼", "🦁", "🐸", "🐱‍🚀", "🧠"];
+const AVATAR_OPTIONS = [
+  "👤",
+  "🧑",
+  "👦",
+  "👧",
+  "🦁",
+  "🐱",
+  "🐶",
+  "🐰",
+  "🐻",
+  "🐼",
+  "🦊",
+  "🐸",
+  "🦄",
+  "🌟",
+  "🎮",
+  "🏆",
+  "⭐",
+  "💫",
+];
 
 const SCIENCE_MISTAKES_KEY = "mleo_science_mistakes";
 
@@ -295,7 +314,7 @@ export default function ScienceMaster() {
   const [playerAvatar, setPlayerAvatar] = useState(() => {
     if (typeof window === "undefined") return "👤";
     try {
-      return localStorage.getItem("mleo_avatar") || "👤";
+      return localStorage.getItem("mleo_player_avatar") || "👤";
     } catch {
       return "👤";
     }
@@ -996,6 +1015,7 @@ function recordSessionProgress() {
         ref={wrapRef}
         className="relative w-full overflow-hidden bg-gradient-to-b from-[#050816] to-[#0b1121] game-page-mobile"
         style={{ height: "100vh", height: "100dvh" }}
+        dir="rtl"
       >
         {/* רקע עדין */}
         <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -1018,20 +1038,20 @@ function recordSessionProgress() {
             className="relative px-2 py-3"
             style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 10px)" }}
           >
-            <div className="absolute left-2 top-2 flex gap-2 pointer-events-auto">
-              <button
-                onClick={backSafe}
-                className="min-w-[60px] px-3 py-1 rounded-lg text-sm font-bold bg-white/5 border border-white/10 hover:bg-white/10"
-              >
-                BACK
-              </button>
-            </div>
-            <div className="absolute right-2 top-2 pointer-events-auto flex gap-2">
+            <div className="absolute right-2 top-2 flex gap-2 pointer-events-auto">
               <button
                 onClick={() => router.push("/learning/curriculum?subject=science")}
                 className="min-w-[110px] px-3 py-1 rounded-lg text-xs font-bold bg-emerald-500/20 border border-emerald-400/40 text-emerald-100 hover:bg-emerald-500/30"
               >
                 📋 תוכנית לימודים
+              </button>
+            </div>
+            <div className="absolute left-2 top-2 pointer-events-auto flex gap-2">
+              <button
+                onClick={backSafe}
+                className="min-w-[60px] px-3 py-1 rounded-lg text-sm font-bold bg-white/5 border border-white/10 hover:bg-white/10"
+              >
+                BACK
               </button>
             </div>
           </div>
@@ -1863,50 +1883,123 @@ function recordSessionProgress() {
 
           {showPlayerProfile && (
             <div
-              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[165] p-4"
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
               onClick={() => setShowPlayerProfile(false)}
+              dir="rtl"
             >
               <div
-                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-purple-400/60 rounded-2xl p-5 w-full max-w-sm max-h-[80vh] overflow-y-auto text-white"
-                dir="rtl"
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-2xl font-extrabold">🧑‍🔬 בחר דמות</h2>
-                  <button
-                    onClick={() => setShowPlayerProfile(false)}
-                    className="text-white/80 hover:text-white text-xl px-2"
-                  >
-                    ✖
-                  </button>
+                <div className="text-center mb-4">
+                  <h2 className="text-2xl font-extrabold text-white mb-2">
+                    👤 פרופיל שחקן
+                  </h2>
                 </div>
-                <p className="text-sm text-white/70 mb-3">
-                  הדמות הנבחרת תופיע לצד שמך בכל משחקי הלמידה.
-                </p>
-                <div className="grid grid-cols-4 gap-3 mb-4">
-                  {AVATAR_OPTIONS.map((icon) => (
-                    <button
-                      key={icon}
-                      onClick={() => {
-                        setPlayerAvatar(icon);
-                        try {
-                          localStorage.setItem("mleo_avatar", icon);
-                        } catch {}
-                        setShowPlayerProfile(false);
-                      }}
-                      className={`h-12 rounded-xl border text-2xl flex items-center justify-center ${
-                        playerAvatar === icon
-                          ? "bg-purple-500/80 border-purple-300"
-                          : "bg-white/5 border-white/20 hover:bg-white/10"
-                      }`}
-                    >
-                      {icon}
-                    </button>
-                  ))}
+
+                <div className="text-center mb-4">
+                  <div className="text-6xl mb-3">{playerAvatar}</div>
+                  <div className="text-sm text-white/60 mb-3">בחר אווטר:</div>
+                  <div className="grid grid-cols-6 gap-2 mb-4">
+                    {AVATAR_OPTIONS.map((avatar) => (
+                      <button
+                        key={avatar}
+                        onClick={() => {
+                          setPlayerAvatar(avatar);
+                          try {
+                            localStorage.setItem("mleo_player_avatar", avatar);
+                          } catch {
+                            // ignore
+                          }
+                        }}
+                        className={`text-3xl p-2 rounded-lg transition-all ${
+                          playerAvatar === avatar
+                            ? "bg-yellow-500/40 border-2 border-yellow-400 scale-110"
+                            : "bg-black/30 border border-white/10 hover:bg-black/40"
+                        }`}
+                      >
+                        {avatar}
+                      </button>
+                    ))}
+                  </div>
                 </div>
+
+                <div className="space-y-3 mb-4">
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-1">שם שחקן</div>
+                    <div className="text-lg font-bold text-white">{playerName || "שחקן"}</div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">ניקוד שיא</div>
+                      <div className="text-xl font-bold text-emerald-400">{bestScore}</div>
+                    </div>
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">רצף שיא</div>
+                      <div className="text-xl font-bold text-amber-400">{bestStreak}</div>
+                    </div>
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">כוכבים</div>
+                      <div className="text-xl font-bold text-yellow-400">⭐ {stars}</div>
+                    </div>
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">רמת מדען</div>
+                      <div className="text-xl font-bold text-purple-400">Lv.{playerLevel}</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-2">דיוק כללי</div>
+                    <div className="text-2xl font-bold text-blue-400">{accuracy}%</div>
+                    <div className="text-xs text-white/60 mt-1">
+                      {correct} נכון מתוך {totalQuestions} שאלות
+                    </div>
+                  </div>
+
+                  {Object.keys(progress).some((topicKey) => progress[topicKey]?.total > 0) && (
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-sm text-white/60 mb-2">התקדמות לפי נושאים</div>
+                      <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                        {Object.entries(progress)
+                          .filter(([, data]) => (data?.total || 0) > 0)
+                          .sort(([, a], [, b]) => (b?.total || 0) - (a?.total || 0))
+                          .map(([topicKey, data]) => {
+                            const topicAccuracy =
+                              data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
+                            return (
+                              <div
+                                key={topicKey}
+                                className="flex items-center justify-between text-xs"
+                              >
+                                <span className="text-white/80">{getTopicLabel(topicKey)}</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-white/60">
+                                    {data.correct}/{data.total}
+                                  </span>
+                                  <span
+                                    className={`font-bold ${
+                                      topicAccuracy >= 80
+                                        ? "text-emerald-400"
+                                        : topicAccuracy >= 60
+                                        ? "text-yellow-400"
+                                        : "text-red-400"
+                                    }`}
+                                  >
+                                    {topicAccuracy}%
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <button
                   onClick={() => setShowPlayerProfile(false)}
-                  className="w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
+                  className="w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
                 >
                   סגור
                 </button>
