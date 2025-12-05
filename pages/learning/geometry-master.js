@@ -27,6 +27,7 @@ import {
   addSessionProgress,
   loadMonthlyProgress,
   loadRewardChoice,
+  saveRewardChoice,
   getCurrentYearMonth,
 } from "../../utils/progress-storage";
 import {
@@ -1303,17 +1304,21 @@ const refreshMonthlyProgress = useCallback(() => {
                 </p>
                 <div className="mt-2 grid grid-cols-3 gap-2 text-center">
                   {REWARD_OPTIONS.map((option) => (
-                    <div
+                    <button
                       key={option.key}
-                      className={`rounded-lg border p-2 text-[11px] bg-black/30 flex flex-col items-center gap-1 ${
+                      onClick={() => {
+                        saveRewardChoice(yearMonthRef.current, option.key);
+                        setRewardChoice(option.key);
+                      }}
+                      className={`rounded-lg border p-2 text-[11px] bg-black/30 flex flex-col items-center gap-1 transition-all hover:scale-105 ${
                         rewardChoice === option.key
-                          ? "border-emerald-400 text-emerald-200"
-                          : "border-white/15 text-white/70"
+                          ? "border-emerald-400 text-emerald-200 bg-emerald-500/20"
+                          : "border-white/15 text-white/70 hover:border-white/30"
                       }`}
                     >
                       <div className="text-xl">{option.icon}</div>
                       <div className="font-bold leading-tight">{option.label}</div>
-                    </div>
+                    </button>
                   ))}
                 </div>
                 {rewardChoice && (
