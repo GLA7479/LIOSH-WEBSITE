@@ -32,6 +32,7 @@ import {
   buildAdditionOrSubtractionAnimation,
   buildAnimationForOperation,
 } from "../../utils/math-animations";
+import { addSessionProgress } from "../../utils/progress-storage";
 
 export default function MathMaster() {
   useIOSViewportFix();
@@ -41,6 +42,8 @@ export default function MathMaster() {
   const gameRef = useRef(null);
   const controlsRef = useRef(null);
   const operationSelectRef = useRef(null);
+  const sessionStartRef = useRef(null);
+  const solvedCountRef = useRef(0);
 
   const [mounted, setMounted] = useState(false);
 
@@ -409,6 +412,12 @@ export default function MathMaster() {
         setPlayerAvatar(saved);
       }
     }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      recordSessionProgress();
+    };
   }, []);
 
   useEffect(() => {
@@ -782,7 +791,25 @@ export default function MathMaster() {
     setMovedCirclesB(0);
   }
 
+  function recordSessionProgress() {
+    if (!sessionStartRef.current) return;
+    const elapsedMs = Date.now() - sessionStartRef.current;
+    if (elapsedMs <= 0) {
+      sessionStartRef.current = null;
+      solvedCountRef.current = 0;
+      return;
+    }
+    const durationMinutes = Math.max(1, Math.round(elapsedMs / 60000));
+    const exercises = Math.max(solvedCountRef.current, totalQuestions);
+    addSessionProgress(durationMinutes, exercises);
+    sessionStartRef.current = null;
+    solvedCountRef.current = 0;
+  }
+
   function startGame() {
+    recordSessionProgress();
+    sessionStartRef.current = Date.now();
+    solvedCountRef.current = 0;
     setRecentQuestions(new Set()); // איפוס ההיסטוריה
     setGameActive(true);
     setScore(0);
@@ -815,6 +842,7 @@ export default function MathMaster() {
   }
 
   function stopGame() {
+    recordSessionProgress();
     setGameActive(false);
     setCurrentQuestion(null);
     setFeedback(null);
@@ -824,6 +852,7 @@ export default function MathMaster() {
 
   function handleTimeUp() {
     // Time up – במצב Challenge או Speed
+    recordSessionProgress();
     setWrong((prev) => prev + 1);
     setStreak(0);
       setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
@@ -1161,6 +1190,7 @@ export default function MathMaster() {
         setTimeout(() => {
           generateNewQuestion();
           setSelectedAnswer(null);
+    solvedCountRef.current += 1;
           setFeedback(null);
           setTimeLeft(null);
         }, 2000);
@@ -1175,6 +1205,7 @@ export default function MathMaster() {
           if (nextLives <= 0) {
             // Game Over
             setFeedback("Game Over! 💔");
+            recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
             setCurrentQuestion(null);

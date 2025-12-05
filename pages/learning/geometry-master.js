@@ -23,6 +23,7 @@ import {
   getTheorySummary,
 } from "../../utils/geometry-explanations";
 import { trackGeometryTopicTime } from "../../utils/math-time-tracking";
+import { addSessionProgress } from "../../utils/progress-storage";
 
 export default function GeometryMaster() {
   useIOSViewportFix();
@@ -32,6 +33,8 @@ export default function GeometryMaster() {
   const gameRef = useRef(null);
   const controlsRef = useRef(null);
   const topicSelectRef = useRef(null);
+  const sessionStartRef = useRef(null);
+  const solvedCountRef = useRef(0);
 
   // פונקציה עזר לקבלת מפתח תאריך
   const getTodayKey = () => {
@@ -215,6 +218,12 @@ export default function GeometryMaster() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      recordSessionProgress();
+    };
   }, []);
 
   const generateNewQuestion = () => {
@@ -403,6 +412,21 @@ export default function GeometryMaster() {
     setErrorExplanation("");
   };
 
+  const recordSessionProgress = () => {
+    if (!sessionStartRef.current) return;
+    const elapsedMs = Date.now() - sessionStartRef.current;
+    if (elapsedMs <= 0) {
+      sessionStartRef.current = null;
+      solvedCountRef.current = 0;
+      return;
+    }
+    const durationMinutes = Math.max(1, Math.round(elapsedMs / 60000));
+    const exercises = Math.max(solvedCountRef.current, totalQuestions);
+    addSessionProgress(durationMinutes, exercises);
+    sessionStartRef.current = null;
+    solvedCountRef.current = 0;
+  };
+
   const handleAnswer = (answer) => {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
     setTotalQuestions((prevCount) => {
@@ -417,6 +441,7 @@ export default function GeometryMaster() {
     });
 
     setSelectedAnswer(answer);
+    solvedCountRef.current += 1;
     const isCorrect = answer === currentQuestion.correctAnswer;
 
     if (isCorrect) {
@@ -633,6 +658,7 @@ export default function GeometryMaster() {
           if (nextLives <= 0) {
             // Game Over
             setFeedback("Game Over! 💔");
+            recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
             setCurrentQuestion(null);
@@ -741,6 +767,9 @@ export default function GeometryMaster() {
 
 
   function startGame() {
+    recordSessionProgress();
+    sessionStartRef.current = Date.now();
+    solvedCountRef.current = 0;
     setRecentQuestions(new Set());
     setGameActive(true);
     setScore(0);
@@ -770,6 +799,7 @@ export default function GeometryMaster() {
   }
 
   function stopGame() {
+    recordSessionProgress();
     setGameActive(false);
     setCurrentQuestion(null);
     setFeedback(null);
@@ -778,6 +808,7 @@ export default function GeometryMaster() {
   }
 
   function handleTimeUp() {
+    recordSessionProgress();
     setWrong((prev) => prev + 1);
     setStreak(0);
     setFeedback("הזמן נגמר! המשחק נגמר! ⏰");

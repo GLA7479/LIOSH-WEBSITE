@@ -8,6 +8,7 @@ import {
   SCIENCE_GRADE_ORDER,
 } from "../../data/science-curriculum";
 import { trackScienceTopicTime } from "../../utils/science-time-tracking";
+import { addSessionProgress } from "../../utils/progress-storage";
 
 // ================== CONFIG ==================
 
@@ -269,6 +270,8 @@ export default function ScienceMaster() {
 
   const questionPoolRef = useRef([]);
   const questionIndexRef = useRef(0);
+  const sessionStartRef = useRef(null);
+  const solvedCountRef = useRef(0);
 
   const [playerName, setPlayerName] = useState(() => {
     if (typeof window === "undefined") return "";
@@ -323,6 +326,12 @@ export default function ScienceMaster() {
 
   useEffect(() => {
     refreshMistakesList();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      recordSessionProgress();
+    };
   }, []);
 
   useEffect(() => {
@@ -514,6 +523,21 @@ export default function ScienceMaster() {
     trackScienceTopicTime(currentQuestion.topic, qGrade, qLevel, duration);
   }
 
+function recordSessionProgress() {
+  if (!sessionStartRef.current) return;
+  const elapsedMs = Date.now() - sessionStartRef.current;
+  if (elapsedMs <= 0) {
+    sessionStartRef.current = null;
+    solvedCountRef.current = 0;
+    return;
+  }
+  const durationMinutes = Math.max(1, Math.round(elapsedMs / 60000));
+  const exercises = Math.max(solvedCountRef.current, totalQuestions);
+  addSessionProgress(durationMinutes, exercises);
+  sessionStartRef.current = null;
+  solvedCountRef.current = 0;
+}
+
   function logScienceMistakeEntry(question, wrongAnswer) {
     if (typeof window === "undefined" || !question) return;
     try {
@@ -664,6 +688,9 @@ export default function ScienceMaster() {
   }
 
   function startGame() {
+    recordSessionProgress();
+    sessionStartRef.current = Date.now();
+    solvedCountRef.current = 0;
     setGameActive(true);
     setScore(0);
     setStreak(0);
@@ -687,6 +714,7 @@ export default function ScienceMaster() {
   }
 
   function stopGame() {
+    recordSessionProgress();
     saveRunToStorage();
     setGameActive(false);
     setCurrentQuestion(null);
@@ -696,6 +724,7 @@ export default function ScienceMaster() {
 
   function handleTimeUp() {
     trackCurrentQuestionTime();
+    recordSessionProgress();
     setWrong((prev) => prev + 1);
     setStreak(0);
     setFeedback("הזמן נגמר! ⏰");
@@ -723,6 +752,7 @@ export default function ScienceMaster() {
       return newTotal;
     });
     setSelectedAnswer(idx);
+    solvedCountRef.current += 1;
     const isCorrect = idx === currentQuestion.correctIndex;
     if (isCorrect) {
       let points = 10 + streak;
@@ -819,6 +849,7 @@ export default function ScienceMaster() {
           const next = prev - 1;
           if (next <= 0) {
             setFeedback("Game Over! 💔");
+            recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
             setCurrentQuestion(null);

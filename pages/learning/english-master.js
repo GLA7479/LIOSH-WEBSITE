@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { trackEnglishTopicTime } from "../../utils/english-time-tracking";
+import { addSessionProgress } from "../../utils/progress-storage";
 import {
   ENGLISH_GRADES,
   ENGLISH_GRADE_ORDER,
@@ -1324,6 +1325,8 @@ export default function EnglishMaster() {
   const gameRef = useRef(null);
   const controlsRef = useRef(null);
   const topicSelectRef = useRef(null);
+  const sessionStartRef = useRef(null);
+  const solvedCountRef = useRef(0);
 
   const [mounted, setMounted] = useState(false);
   const [grade, setGrade] = useState("g3");
@@ -1539,6 +1542,21 @@ export default function EnglishMaster() {
     }
   }
 
+  function recordSessionProgress() {
+    if (!sessionStartRef.current) return;
+    const elapsedMs = Date.now() - sessionStartRef.current;
+    if (elapsedMs <= 0) {
+      sessionStartRef.current = null;
+      solvedCountRef.current = 0;
+      return;
+    }
+    const durationMinutes = Math.max(1, Math.round(elapsedMs / 60000));
+    const exercises = Math.max(solvedCountRef.current, totalQuestions);
+    addSessionProgress(durationMinutes, exercises);
+    sessionStartRef.current = null;
+    solvedCountRef.current = 0;
+  }
+
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
@@ -1581,6 +1599,12 @@ export default function EnglishMaster() {
       } catch {}
     }
   }, [level, topic, playerName]);
+
+  useEffect(() => {
+    return () => {
+      recordSessionProgress();
+    };
+  }, []);
 
   useEffect(() => {
     if (showMixedSelector) return;
@@ -1819,6 +1843,9 @@ export default function EnglishMaster() {
   }
 
   function startGame() {
+    recordSessionProgress();
+    sessionStartRef.current = Date.now();
+    solvedCountRef.current = 0;
     setRecentQuestions(new Set());
     setGameActive(true);
     setScore(0);
@@ -1850,6 +1877,7 @@ export default function EnglishMaster() {
 
   function stopGame() {
     trackCurrentQuestionTime();
+    recordSessionProgress();
     setGameActive(false);
     setCurrentQuestion(null);
     setFeedback(null);
@@ -1859,6 +1887,7 @@ export default function EnglishMaster() {
 
   function handleTimeUp() {
     trackCurrentQuestionTime();
+    recordSessionProgress();
     setWrong((prev) => prev + 1);
     setStreak(0);
     setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
@@ -1884,6 +1913,7 @@ export default function EnglishMaster() {
       return newCount;
     });
     setSelectedAnswer(answer);
+    solvedCountRef.current += 1;
     const normalize = (v) => String(v).trim().toLowerCase();
     const isCorrect =
       normalize(answer) === normalize(currentQuestion.correctAnswer);
@@ -2040,6 +2070,7 @@ export default function EnglishMaster() {
           if (nextLives <= 0) {
             trackCurrentQuestionTime();
             setFeedback("Game Over! 💔");
+            recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
             setCurrentQuestion(null);
