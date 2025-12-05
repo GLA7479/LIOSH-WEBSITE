@@ -7,31 +7,24 @@ import {
   LEVELS,
   GRADE_LEVELS,
   GRADES,
-  OPERATIONS,
+  TOPICS,
   MODES,
   STORAGE_KEY,
-} from "../../utils/math-constants";
+} from "../../utils/moledet-geography-constants";
 import {
   getLevelConfig,
   getLevelForGrade,
   buildTop10ByScore,
   saveScoreEntry,
-} from "../../utils/math-storage";
-import { generateQuestion } from "../../utils/math-question-generator";
+} from "../../utils/moledet-geography-storage";
+import { generateQuestion } from "../../utils/moledet-geography-question-generator";
 import {
   getHint,
   getSolutionSteps,
   getErrorExplanation,
-  getAdditionStepsColumn,
   buildStepExplanation,
-} from "../../utils/math-explanations";
-import { trackOperationTime } from "../../utils/math-time-tracking";
-import {
-  buildVerticalOperation,
-  convertMissingNumberEquation,
-  buildAdditionOrSubtractionAnimation,
-  buildAnimationForOperation,
-} from "../../utils/math-animations";
+} from "../../utils/moledet-geography-explanations";
+import { trackMoledetGeographyTopicTime } from "../../utils/moledet-geography-time-tracking";
 import {
   addSessionProgress,
   loadMonthlyProgress,
@@ -65,7 +58,7 @@ export default function MoledetGeographyMaster() {
   const [mode, setMode] = useState("learning");
 
   const [level, setLevel] = useState("easy");
-  const [operation, setOperation] = useState("addition"); // לא mixed כברירת מחדל כדי שה-modal לא יפתח אוטומטית
+  const [operation, setOperation] = useState("homeland"); // לא mixed כברירת מחדל כדי שה-modal לא יפתח אוטומטית
   const [gameActive, setGameActive] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [score, setScore] = useState(0);
@@ -136,20 +129,12 @@ export default function MoledetGeographyMaster() {
 
   // מערכת התקדמות אישית
   const [progress, setProgress] = useState({
-    addition: { total: 0, correct: 0 },
-    subtraction: { total: 0, correct: 0 },
-    multiplication: { total: 0, correct: 0 },
-    division: { total: 0, correct: 0 },
-    fractions: { total: 0, correct: 0 },
-    percentages: { total: 0, correct: 0 },
-    sequences: { total: 0, correct: 0 },
-    decimals: { total: 0, correct: 0 },
-    rounding: { total: 0, correct: 0 },
-    equations: { total: 0, correct: 0 },
-    compare: { total: 0, correct: 0 },
-    number_sense: { total: 0, correct: 0 },
-    factors_multiples: { total: 0, correct: 0 },
-    word_problems: { total: 0, correct: 0 },
+    homeland: { total: 0, correct: 0 },
+    community: { total: 0, correct: 0 },
+    citizenship: { total: 0, correct: 0 },
+    geography: { total: 0, correct: 0 },
+    values: { total: 0, correct: 0 },
+    maps: { total: 0, correct: 0 },
   });
 
   // תחרויות יומיות
@@ -290,41 +275,20 @@ export default function MoledetGeographyMaster() {
     [showSolution, currentQuestion]
   );
 
-  // בניית צעדי אנימציה
+  // בניית צעדי הסבר (לא אנימציות - שאלות טקסטואליות)
   const animationSteps = useMemo(() => {
     if (!showSolution || !currentQuestion) return null;
     
-    const p = currentQuestion.params || {};
-    const op = currentQuestion.operation;
-    let effectiveOp = op;
-    let top = p.a ?? currentQuestion.a;
-    let bottom = p.b ?? currentQuestion.b;
+    // עבור שאלות טקסטואליות, נחזיר את צעדי ההסבר
+    const steps = getSolutionSteps(currentQuestion, currentQuestion.topic || currentQuestion.operation, grade);
+    if (!steps || steps.length === 0) return null;
     
-    const answer = currentQuestion.correctAnswer !== undefined
-      ? currentQuestion.correctAnswer
-      : currentQuestion.answer;
-    
-    // טיפול כללי בתרגילי השלמה
-    const missingConversion = convertMissingNumberEquation(op, p.kind, p);
-    if (missingConversion) {
-      effectiveOp = missingConversion.effectiveOp;
-      top = missingConversion.top;
-      bottom = missingConversion.bottom;
-    }
-    // טיפול במספר שלילי בחיבור (רק אם זה לא תרגיל השלמה)
-    else if (op === "addition" && typeof bottom === "number" && bottom < 0) {
-      effectiveOp = "subtraction";
-      bottom = Math.abs(bottom);
-    }
-    
-    // חיבור וחיסור - אנימציה מיוחדת עם תרגיל בעמודה (קוד מקורי - לא לשנות!)
-    if ((effectiveOp === "addition" || effectiveOp === "subtraction") && 
-        typeof top === "number" && typeof bottom === "number") {
-      return buildAdditionOrSubtractionAnimation(top, bottom, answer, effectiveOp);
-    }
-    
-    // שאר הנושאים - אנימציה כללית (רק אם זה לא חיבור/חיסור)
-    return buildAnimationForOperation(currentQuestion, op, grade);
+    // נחזיר מערך של צעדים פשוטים
+    return steps.map((step, index) => ({
+      step: index + 1,
+      text: step,
+      highlights: []
+    }));
   }, [showSolution, currentQuestion, grade]);
 
   // אנימציה אוטומטית - עם ניקוי תקין של timeouts
@@ -420,11 +384,10 @@ export default function MoledetGeographyMaster() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardLevel, setLeaderboardLevel] = useState("easy");
   const [leaderboardData, setLeaderboardData] = useState([]);
+  // No word problems for Moledet & Geography - all topics are text-based
   useEffect(() => {
-    if (!GRADES[grade].operations.includes("word_problems")) {
-      setUseStoryQuestions(false);
-      setStoryOnly(false);
-    }
+    setUseStoryQuestions(false);
+    setStoryOnly(false);
   }, [grade]);
   const [playerName, setPlayerName] = useState(() => {
     if (typeof window !== "undefined") {
@@ -511,35 +474,23 @@ export default function MoledetGeographyMaster() {
     // אל תשנה אם ה-modal פתוח
     if (showMixedSelector) return;
     
-    const allowed = GRADES[grade].operations;
+    const allowed = GRADES[grade].topics;
     if (!allowed.includes(operation)) {
-      // מצא את הפעולה הראשונה שזמינה (לא mixed)
-      const firstAllowed = allowed.find(op => op !== "mixed") || allowed[0];
+      // מצא את הנושא הראשון שזמין (לא mixed)
+      const firstAllowed = allowed.find(topic => topic !== "mixed") || allowed[0];
       setOperation(firstAllowed);
     }
   }, [grade]); // רק כשהכיתה משתנה, לא כשהפעולה משתנה
 
   // עדכון mixedOperations לפי הכיתה
   useEffect(() => {
-    const availableOps = GRADES[grade].operations.filter(
-      (op) => op !== "mixed"
+    const availableTopics = GRADES[grade].topics.filter(
+      (topic) => topic !== "mixed"
     );
-    const newMixedOps = {
-      addition: availableOps.includes("addition"),
-      subtraction: availableOps.includes("subtraction"),
-      multiplication: availableOps.includes("multiplication"),
-      division: availableOps.includes("division"),
-      fractions: availableOps.includes("fractions"),
-      percentages: availableOps.includes("percentages"),
-      sequences: availableOps.includes("sequences"),
-      decimals: availableOps.includes("decimals"),
-      rounding: availableOps.includes("rounding"),
-      equations: availableOps.includes("equations"),
-      compare: availableOps.includes("compare"),
-      number_sense: availableOps.includes("number_sense"),
-      factors_multiples: availableOps.includes("factors_multiples"),
-      word_problems: availableOps.includes("word_problems"),
-    };
+    const newMixedOps = {};
+    availableTopics.forEach(topic => {
+      newMixedOps[topic] = true;
+    });
     setMixedOperations(newMixedOps);
   }, [grade]);
 
@@ -700,7 +651,8 @@ export default function MoledetGeographyMaster() {
     let attempts = 0;
     const maxAttempts = 50; // מקסימום ניסיונות למצוא שאלה חדשה
 
-    const supportsWordProblems = GRADES[grade].operations.includes("word_problems");
+    // No word problems for Moledet & Geography - all topics are text-based
+    const supportsWordProblems = false;
 
     // ✅ התאמה לפי מצב תרגול ממוקד (Practice)
     let operationForState = operation;
@@ -805,17 +757,7 @@ export default function MoledetGeographyMaster() {
     }
 
     // מעקב זמן - סיום שאלה קודמת (אם יש)
-    if (questionStartTime && currentQuestion) {
-      const duration = (Date.now() - questionStartTime) / 1000; // שניות
-      if (duration > 0 && duration < 300) { // רק אם זמן סביר (פחות מ-5 דקות)
-        trackOperationTime(
-          currentQuestion.operation,
-          grade,
-          level,
-          duration
-        );
-      }
-    }
+    trackCurrentQuestionTime();
     
     setCurrentQuestion(question);
     setSelectedAnswer(null);
@@ -963,8 +905,23 @@ export default function MoledetGeographyMaster() {
     }
   };
 
+  // מעקב זמן לשאלה
+  function trackCurrentQuestionTime() {
+    if (!questionStartTime || !currentQuestion) return;
+    const duration = (Date.now() - questionStartTime) / 1000;
+    if (duration > 0 && duration < 300) {
+      const qGrade = currentQuestion.gradeKey || `g${grade}`;
+      const qLevel = currentQuestion.levelKey || level;
+      const topic = currentQuestion.topic || currentQuestion.operation || "mixed";
+      trackMoledetGeographyTopicTime(topic, qGrade, qLevel, duration);
+    }
+  }
+
   function handleAnswer(answer) {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
+
+    // מעקב זמן לשאלה הנוכחית
+    trackCurrentQuestionTime();
 
     // סטטיסטיקה – ספירת שאלה וזמן
     setTotalQuestions((prevCount) => {
@@ -1295,56 +1252,7 @@ export default function MoledetGeographyMaster() {
   };
 
   const getOperationName = (op) => {
-    switch (op) {
-      case "addition":
-        return "חיבור";
-      case "subtraction":
-        return "חיסור";
-      case "multiplication":
-        return "כפל";
-      case "division":
-        return "חילוק";
-      case "fractions":
-        return "שברים";
-      case "percentages":
-        return "אחוזים";
-      case "sequences":
-        return "סדרות";
-      case "decimals":
-        return "עשרוניים";
-      case "rounding":
-        return "עיגול";
-      case "divisibility":
-        return "סימני התחלקות";
-      case "prime_composite":
-        return "מספרים ראשוניים ופריקים";
-      case "powers":
-        return "חזקות";
-      case "ratio":
-        return "יחס";
-      case "equations":
-        return "משוואות";
-      case "order_of_operations":
-        return "סדר פעולות";
-      case "zero_one_properties":
-        return "תכונות ה-0 וה-1";
-      case "estimation":
-        return "אומדן";
-      case "scale":
-        return "קנה מידה";
-      case "compare":
-        return "השוואה";
-      case "number_sense":
-        return "חוש מספרים";
-      case "factors_multiples":
-        return "גורמים וכפולות";
-      case "word_problems":
-        return "בעיות מילוליות";
-      case "mixed":
-        return "ערבוב";
-      default:
-        return op;
-    }
+    return TOPICS[op]?.name || op;
   };
 
   if (!mounted)
@@ -1356,7 +1264,7 @@ export default function MoledetGeographyMaster() {
 
   const accuracy =
     totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
-  const gradeSupportsWordProblems = GRADES[grade].operations.includes("word_problems");
+  // No word problems for Moledet & Geography - all topics are text-based
 
   // ✅ טקסט רמז והסבר מלא לשאלה הנוכחית
   const hintText =
@@ -1900,9 +1808,9 @@ export default function MoledetGeographyMaster() {
                     }}
                     className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold flex-1"
                   >
-                    {GRADES[grade].operations.map((op) => (
-                      <option key={op} value={op}>
-                        {getOperationName(op)}
+                    {GRADES[grade].topics.map((topic) => (
+                      <option key={topic} value={topic}>
+                        {getOperationName(topic)}
                       </option>
                     ))}
                   </select>
@@ -2509,42 +2417,11 @@ export default function MoledetGeographyMaster() {
 
                       {/* חלון הסבר מלא - Modal גדול ומרכזי - רק במצב למידה */}
                       {mode === "learning" && showSolution && currentQuestion && (() => {
-                        const p = currentQuestion.params || {};
-                        const op = currentQuestion.operation;
-                        let effectiveOp = op;
-                        let aEff = p.a ?? currentQuestion.a;
-                        let bEff = p.b ?? currentQuestion.b;
+                        // עבור שאלות טקסטואליות - נציג הסבר פשוט
+                        const info = stepExplanation;
+                        if (!info) return null;
                         
-                        // טיפול כללי בתרגילי השלמה
-                        const missingConversion = convertMissingNumberEquation(op, p.kind, p);
-                        if (missingConversion) {
-                          effectiveOp = missingConversion.effectiveOp;
-                          aEff = missingConversion.top;
-                          bEff = missingConversion.bottom;
-                        }
-                        // טיפול במספר שלילי בחיבור (רק אם זה לא תרגיל השלמה)
-                        else if (op === "addition" && typeof bEff === "number" && bEff < 0) {
-                          effectiveOp = "subtraction";
-                          bEff = Math.abs(bEff);
-                        }
-                        
-                        const answer = currentQuestion.correctAnswer !== undefined
-                          ? currentQuestion.correctAnswer
-                          : currentQuestion.answer;
-                        
-                        // בדיקה אם יש תצוגה מאונכת - חיבור, חיסור, כפל, חילוק, עשרוניים
-                        const hasAnimation = (effectiveOp === "addition" || effectiveOp === "subtraction" || 
-                                             effectiveOp === "multiplication" || effectiveOp === "division" ||
-                                             op === "decimals") && 
-                                            typeof aEff === "number" && typeof bEff === "number";
-                        
-                        // מודל עם אנימציה - בדיקה ראשונית
-                        if (!animationSteps || !Array.isArray(animationSteps) || animationSteps.length === 0) {
-                          // אין אנימציה - חזרה למודל הישן
-                          const info = stepExplanation;
-                          if (!info) return null;
-                          
-                          return (
+                        return (
                             <div
                               className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
                               onClick={() => setShowSolution(false)}
@@ -2611,341 +2488,6 @@ export default function MoledetGeographyMaster() {
                               </div>
                             </div>
                           );
-                        }
-                        
-                        // וודא ש-animationStep בטווח תקין
-                        const safeStepIndex = Math.max(0, Math.min(animationStep || 0, animationSteps.length - 1));
-                        const activeStep = animationSteps[safeStepIndex];
-                        
-                        if (!activeStep) {
-                          return null;
-                        }
-                        
-                        // תצוגה מאונכת - חיבור, חיסור, כפל, חילוק, עשרוניים
-                        if (hasAnimation) {
-                          // קביעת הערכים לפי סוג הפעולה
-                          let aVal = aEff;
-                          let bVal = bEff;
-                          let answerVal = answer;
-                          let opSymbol = effectiveOp === "addition" ? "+" : 
-                                        effectiveOp === "subtraction" ? "−" : 
-                                        effectiveOp === "multiplication" ? "×" : 
-                                        effectiveOp === "division" ? "÷" : "";
-                          
-                          // טיפול בעשרוניים
-                          if (op === "decimals" && currentQuestion.params) {
-                            const p = currentQuestion.params;
-                            aVal = p.a;
-                            bVal = p.b;
-                            answerVal = answer;
-                            opSymbol = p.kind === "dec_add" ? "+" : "−";
-                          }
-                          
-                          // טיפול בכפל
-                          if (effectiveOp === "multiplication" && currentQuestion.params) {
-                            aVal = currentQuestion.params.a;
-                            bVal = currentQuestion.params.b;
-                            answerVal = answer;
-                            opSymbol = "×";
-                          }
-                          
-                          // טיפול בחילוק
-                          if (effectiveOp === "division" && currentQuestion.params) {
-                            aVal = currentQuestion.params.dividend;
-                            bVal = currentQuestion.params.divisor;
-                            answerVal = currentQuestion.params.quotient || answer;
-                            opSymbol = "÷";
-                          }
-                          
-                          // פונקציה לפיצול ספרות עם padding
-                          const splitDigits = (num, minLength = 1) => {
-                            const s = String(Math.abs(num)).padStart(minLength, " ");
-                            return s.split("");
-                          };
-                          
-                          // טיפול בעשרוניים - צריך לטפל בנקודה העשרונית
-                          const isDecimal = op === "decimals";
-                          let aStr = isDecimal ? aVal.toFixed(2) : String(aVal);
-                          let bStr = isDecimal ? bVal.toFixed(2) : String(bVal);
-                          let answerStr = isDecimal ? answerVal.toFixed(2) : String(answerVal);
-                          
-                          // חישוב אורך מקסימלי (כולל נקודה עשרונית)
-                          const maxLen = Math.max(
-                            aStr.length,
-                            bStr.length,
-                            answerStr.length
-                          );
-                          
-                          const aDigits = aStr.padStart(maxLen, " ").split("");
-                          const bDigits = bStr.padStart(maxLen, " ").split("");
-                          const resDigitsFull = answerStr.padStart(maxLen, " ").split("");
-                          
-                          // חישוב כמה ספרות לחשוף לפי הצעד הנוכחי
-                          const revealCount = (activeStep && typeof activeStep.revealDigits === "number") 
-                            ? activeStep.revealDigits 
-                            : 0;
-                          
-                          // יצירת מערך ספרות תוצאה חלקי - רק הספרות החשופות
-                          const visibleResultDigits = resDigitsFull.map((d, idx) => {
-                            const fromRight = maxLen - 1 - idx; // 0 = ספרת אחדות (מימין)
-                            if (fromRight < revealCount) {
-                              return d.trim() || "\u00A0";
-                            }
-                            // ספרות לא חשופות - רווח
-                            return "\u00A0";
-                          });
-                          
-                          const isHighlighted = (key) => {
-                            if (!activeStep || !activeStep.highlights || !Array.isArray(activeStep.highlights)) {
-                              return false;
-                            }
-                            return activeStep.highlights.includes(key);
-                          };
-                          
-                          // חיבור וחיסור - הקוד המקורי בדיוק כמו שהיה
-                          return (
-                            <div
-                              className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
-                              onClick={() => setShowSolution(false)}
-                              dir="rtl"
-                            >
-                              <div
-                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
-                                onClick={(e) => e.stopPropagation()}
-                                style={{ maxWidth: "90vw", maxHeight: "90vh" }}
-                              >
-                                {/* כותרת - קבועה */}
-                                <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
-                                  <button
-                                    onClick={() => setShowSolution(false)}
-                                    className="text-emerald-200 hover:text-white text-xl leading-none px-2"
-                                  >
-                                    ✖
-                                  </button>
-                                  <h3 className="text-lg font-bold text-emerald-100">
-                                    {"\u200Fאיך פותרים את התרגיל?"}
-                                  </h3>
-                                </div>
-                                
-                                {/* תוכן - גלילה */}
-                                <div className="flex-1 overflow-y-auto px-4 pb-2">
-                                  {/* תצוגת התרגיל המאונך עם הדגשות - טבלה */}
-                                  <div className="mb-4 flex flex-col items-center font-mono text-2xl leading-[1.8]" style={{ direction: "ltr" }}>
-                                    {/* שורה 1 – המספר הראשון (תא ריק במקום סימן הפעולה) */}
-                                    <div 
-                                      className="grid gap-x-1 mb-1"
-                                      style={{ 
-                                        gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
-                                      }}
-                                    >
-                                      <span className="w-4" /> {/* תא ריק במקום סימן הפעולה */}
-                                      {aDigits.map((d, idx) => {
-                                        const pos = maxLen - idx - 1; // מיקום מהסוף (0 = אחדות, 1 = עשרות וכו')
-                                        const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
-                                        const shouldHighlight = isHighlighted("aAll") || 
-                                                              (pos === 0 && isHighlighted("aUnits")) ||
-                                                              (pos === 1 && isHighlighted("aTens")) ||
-                                                              (pos === 2 && isHighlighted("aHundreds"));
-                                        return (
-                                          <span
-                                            key={`a-${idx}`}
-                                            className={`text-center font-bold ${
-                                              shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
-                                            }`}
-                                          >
-                                            {d.trim() || "\u00A0"}
-                                          </span>
-                                        );
-                                      })}
-                                    </div>
-                                    
-                                    {/* שורה 2 – סימן הפעולה והמספר השני */}
-                                    <div 
-                                      className="grid gap-x-1 mb-1"
-                                      style={{ 
-                                        gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
-                                      }}
-                                    >
-                                      <span className="w-4 text-center text-2xl font-bold">
-                                        {opSymbol}
-                                      </span>
-                                      {bDigits.map((d, idx) => {
-                                        const pos = maxLen - idx - 1;
-                                        const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
-                                        const shouldHighlight = isHighlighted("bAll") || 
-                                                              (pos === 0 && isHighlighted("bUnits")) ||
-                                                              (pos === 1 && isHighlighted("bTens")) ||
-                                                              (pos === 2 && isHighlighted("bHundreds"));
-                                        return (
-                                          <span
-                                            key={`b-${idx}`}
-                                            className={`text-center font-bold ${
-                                              shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
-                                            }`}
-                                          >
-                                            {d.trim() || "\u00A0"}
-                                          </span>
-                                        );
-                                      })}
-                                    </div>
-                                    
-                                    {/* קו תחתון */}
-                                    <div 
-                                      className="h-[2px] bg-white my-2"
-                                      style={{ width: `${(maxLen + 1) * 1.5}ch` }}
-                                    />
-                                    
-                                    {/* שורה 3 – התוצאה (חשיפה הדרגתית) */}
-                                    <div 
-                                      className="grid gap-x-1"
-                                      style={{ 
-                                        gridTemplateColumns: `auto repeat(${maxLen}, 1.5ch)`
-                                      }}
-                                    >
-                                      <span className="w-4" /> {/* תא ריק */}
-                                      {visibleResultDigits.map((d, idx) => {
-                                        const pos = maxLen - idx - 1;
-                                        const fromRight = pos; // 0 = אחדות, 1 = עשרות וכו'
-                                        const isVisible = fromRight < revealCount;
-                                        const highlightKey = pos === 0 ? "Units" : pos === 1 ? "Tens" : "Hundreds";
-                                        const shouldHighlight = isVisible && (
-                                          isHighlighted("resultAll") || 
-                                          (pos === 0 && isHighlighted("resultUnits")) ||
-                                          (pos === 1 && isHighlighted("resultTens")) ||
-                                          (pos === 2 && isHighlighted("resultHundreds"))
-                                        );
-                                        return (
-                                          <span
-                                            key={`r-${idx}`}
-                                            className={`text-center font-bold ${
-                                              shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""
-                                            }`}
-                                          >
-                                            {d}
-                                          </span>
-                                        );
-                                      })}
-                                    </div>
-                                  </div>
-                                  
-                                  {/* טקסט ההסבר */}
-                                  <div className="mb-4 text-sm text-emerald-50" dir="rtl">
-                                    <h4 className="font-bold text-base mb-1">{activeStep.title}</h4>
-                                    <p className="leading-relaxed">{activeStep.text}</p>
-                                  </div>
-                                </div>
-                                
-                                {/* כפתורים ואינדיקטור - קבועים בתחתית */}
-                                <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
-                                  {/* שליטה באנימציה */}
-                                  <div className="flex gap-2 justify-center items-center" dir="rtl">
-                                    <button
-                                      onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
-                                      disabled={animationStep === 0}
-                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
-                                    >
-                                      קודם
-                                    </button>
-                                    <button
-                                      onClick={() => setAutoPlay((p) => !p)}
-                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
-                                    >
-                                      {autoPlay ? "עצור" : "נגן"}
-                                    </button>
-                                    <button
-                                      onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
-                                      disabled={animationStep >= animationSteps.length - 1}
-                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
-                                    >
-                                      הבא
-                                    </button>
-                                  </div>
-                                  
-                                  {/* אינדיקטור צעדים */}
-                                  <div className="text-center text-xs text-emerald-300">
-                                    צעד {animationStep + 1} מתוך {animationSteps.length}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        }
-                        
-                        // שאר הנושאים - אנימציה כללית עם כפתורי ניווט
-                        return (
-                          <div
-                            className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
-                            onClick={() => setShowSolution(false)}
-                            dir="rtl"
-                          >
-                            <div
-                              className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
-                              onClick={(e) => e.stopPropagation()}
-                              style={{ maxWidth: "90vw", maxHeight: "90vh" }}
-                            >
-                              {/* כותרת - קבועה */}
-                              <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
-                                <button
-                                  onClick={() => setShowSolution(false)}
-                                  className="text-emerald-200 hover:text-white text-xl leading-none px-2"
-                                >
-                                  ✖
-                                </button>
-                                <h3 className="text-lg font-bold text-emerald-100">
-                                  {"\u200Fאיך פותרים את התרגיל?"}
-                                </h3>
-                              </div>
-                              
-                              {/* תוכן - גלילה */}
-                              <div className="flex-1 overflow-y-auto px-4 pb-2">
-                                {/* הצגת התרגיל/שאלה */}
-                                <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2" dir="rtl">
-                                  <div className="text-sm text-emerald-100 font-semibold mb-1 break-words overflow-wrap-anywhere max-w-full">
-                                    {currentQuestion.exerciseText || currentQuestion.question}
-                                  </div>
-                                </div>
-                                
-                                {/* טקסט ההסבר */}
-                                <div className="mb-4 text-sm text-emerald-50" dir="rtl">
-                                  <h4 className="font-bold text-base mb-1">{activeStep.title || "הסבר"}</h4>
-                                  <p className="leading-relaxed">{activeStep.text || ""}</p>
-                                </div>
-                              </div>
-                              
-                              {/* כפתורים ואינדיקטור - קבועים בתחתית */}
-                              <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
-                                {/* שליטה באנימציה */}
-                                <div className="flex gap-2 justify-center items-center" dir="rtl">
-                                  <button
-                                    onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
-                                    disabled={animationStep === 0}
-                                    className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
-                                  >
-                                    קודם
-                                  </button>
-                                  <button
-                                    onClick={() => setAutoPlay((p) => !p)}
-                                    className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
-                                  >
-                                    {autoPlay ? "עצור" : "נגן"}
-                                  </button>
-                                  <button
-                                    onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
-                                    disabled={animationStep >= animationSteps.length - 1}
-                                    className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
-                                  >
-                                    הבא
-                                  </button>
-                                </div>
-                                
-                                {/* אינדיקטור צעדים */}
-                                <div className="text-center text-xs text-emerald-300">
-                                  צעד {animationStep + 1} מתוך {animationSteps.length}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
                       })()}
 
                       {/* למה טעיתי? – רק אחרי טעות */}
@@ -3699,8 +3241,8 @@ export default function MoledetGeographyMaster() {
                   (selected) => selected
                 );
                 if (!hasSelected && operation === "mixed") {
-                  const allowed = GRADES[grade].operations;
-                  setOperation(allowed.find(op => op !== "mixed") || allowed[0]);
+                  const allowed = GRADES[grade].topics;
+                  setOperation(allowed.find(topic => topic !== "mixed") || allowed[0]);
                 }
               }}
               dir="rtl"
@@ -3719,26 +3261,26 @@ export default function MoledetGeographyMaster() {
                 </div>
 
                 <div className="space-y-3 mb-4 overflow-y-auto flex-1 min-h-0">
-                  {GRADES[grade].operations
-                    .filter((op) => op !== "mixed")
-                    .map((op) => (
+                  {GRADES[grade].topics
+                    .filter((topic) => topic !== "mixed")
+                    .map((topic) => (
                       <label
-                        key={op}
+                        key={topic}
                         className="flex items-center gap-3 p-3 rounded-lg bg-black/30 border border-white/10 hover:bg-black/40 cursor-pointer transition-all"
                       >
                         <input
                           type="checkbox"
-                          checked={mixedOperations[op] || false}
+                          checked={mixedOperations[topic] || false}
                           onChange={(e) => {
                             setMixedOperations((prev) => ({
                               ...prev,
-                              [op]: e.target.checked,
+                              [topic]: e.target.checked,
                             }));
                           }}
                           className="w-5 h-5 rounded"
                         />
                         <span className="text-white font-semibold text-lg">
-                          {getOperationName(op)}
+                          {getOperationName(topic)}
                         </span>
                       </label>
                     ))}
@@ -3764,12 +3306,12 @@ export default function MoledetGeographyMaster() {
                   <button
                     onClick={() => {
                       // בטל הכל
-                      const availableOps = GRADES[grade].operations.filter(
-                        (op) => op !== "mixed"
+                      const availableTopics = GRADES[grade].topics.filter(
+                        (topic) => topic !== "mixed"
                       );
                       const noneSelected = {};
-                      availableOps.forEach((op) => {
-                        noneSelected[op] = false;
+                      availableTopics.forEach((topic) => {
+                        noneSelected[topic] = false;
                       });
                       setMixedOperations(noneSelected);
                     }}
@@ -3780,12 +3322,12 @@ export default function MoledetGeographyMaster() {
                   <button
                     onClick={() => {
                       // בחר הכל
-                      const availableOps = GRADES[grade].operations.filter(
-                        (op) => op !== "mixed"
+                      const availableTopics = GRADES[grade].topics.filter(
+                        (topic) => topic !== "mixed"
                       );
                       const allSelected = {};
-                      availableOps.forEach((op) => {
-                        allSelected[op] = true;
+                      availableTopics.forEach((topic) => {
+                        allSelected[topic] = true;
                       });
                       setMixedOperations(allSelected);
                     }}

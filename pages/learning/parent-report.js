@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
-import { generateParentReport, getOperationName, getTopicName, getEnglishTopicName, getScienceTopicName, exportReportToPDF } from "../../utils/math-report-generator";
+import { generateParentReport, getOperationName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { useRouter } from "next/router";
 import {
   BarChart,
@@ -405,7 +405,7 @@ export default function ParentReport() {
           </div>
 
           {/* סיכום לפי מקצוע */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 mb-3 md:mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 mb-3 md:mb-6">
             <div className="bg-blue-500/20 border border-blue-400/50 rounded-lg p-2 md:p-4 text-center">
               <div className="text-xs md:text-sm text-white/60 mb-1">🧮 חשבון</div>
               <div className="text-base md:text-lg font-bold text-blue-400">
@@ -443,6 +443,26 @@ export default function ParentReport() {
               </div>
               <div className="text-xs text-white/80">
                 {report.summary.scienceCorrect || 0} נכון • {report.summary.scienceAccuracy || 0}% דיוק
+              </div>
+            </div>
+            
+            <div className="bg-orange-500/20 border border-orange-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="text-xs md:text-sm text-white/60 mb-1">📚 עברית</div>
+              <div className="text-base md:text-lg font-bold text-orange-300">
+                {report.summary.hebrewQuestions || 0} שאלות
+              </div>
+              <div className="text-xs text-white/80">
+                {report.summary.hebrewCorrect || 0} נכון • {report.summary.hebrewAccuracy || 0}% דיוק
+              </div>
+            </div>
+            
+            <div className="bg-cyan-500/20 border border-cyan-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="text-xs md:text-sm text-white/60 mb-1">🗺️ מולדת וגאוגרפיה</div>
+              <div className="text-base md:text-lg font-bold text-cyan-300">
+                {report.summary.moledetGeographyQuestions || 0} שאלות
+              </div>
+              <div className="text-xs text-white/80">
+                {report.summary.moledetGeographyCorrect || 0} נכון • {report.summary.moledetGeographyAccuracy || 0}% דיוק
               </div>
             </div>
           </div>
@@ -711,6 +731,144 @@ export default function ParentReport() {
             </div>
           )}
 
+          {/* טבלת נושאים עברית */}
+          {Object.keys(report.hebrewTopics || {}).length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">📚 התקדמות בעברית</h2>
+              <div className="overflow-x-auto -mx-2 md:mx-0">
+                <table className="w-full text-xs md:text-sm min-w-[800px]">
+                  <thead>
+                    <tr className="border-b border-white/20">
+                      <th className="text-right py-2 px-1 md:px-2">נושא</th>
+                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
+                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
+                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
+                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
+                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
+                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
+                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(report.hebrewTopics)
+                      .sort(([_, a], [__, b]) => b.questions - a.questions)
+                      .map(([topic, data]) => (
+                        <tr key={topic} className="border-b border-white/10">
+                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
+                            {getHebrewTopicName(topic)}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.level || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.grade || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.timeMinutes} דק'
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.questions}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                            {data.correct}
+                          </td>
+                          <td
+                            className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                              data.accuracy >= 90
+                                ? "text-emerald-400"
+                                : data.accuracy >= 70
+                                ? "text-yellow-400"
+                                : "text-red-400"
+                            }`}
+                          >
+                            {data.accuracy}%
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                            {data.excellent ? (
+                              <span className="text-emerald-400">✅</span>
+                            ) : data.needsPractice ? (
+                              <span className="text-red-400">⚠️</span>
+                            ) : (
+                              <span className="text-yellow-400">👍</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* טבלת נושאים מולדת וגאוגרפיה */}
+          {Object.keys(report.moledetGeographyTopics || {}).length > 0 && (
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🗺️ התקדמות במולדת וגאוגרפיה</h2>
+              <div className="overflow-x-auto -mx-2 md:mx-0">
+                <table className="w-full text-xs md:text-sm min-w-[800px]">
+                  <thead>
+                    <tr className="border-b border-white/20">
+                      <th className="text-right py-2 px-1 md:px-2">נושא</th>
+                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
+                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
+                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
+                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
+                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
+                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
+                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(report.moledetGeographyTopics)
+                      .sort(([_, a], [__, b]) => b.questions - a.questions)
+                      .map(([topic, data]) => (
+                        <tr key={topic} className="border-b border-white/10">
+                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
+                            {getMoledetGeographyTopicName(topic)}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.level || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.grade || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.timeMinutes} דק'
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.questions}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                            {data.correct}
+                          </td>
+                          <td
+                            className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                              data.accuracy >= 90
+                                ? "text-emerald-400"
+                                : data.accuracy >= 70
+                                ? "text-yellow-400"
+                                : "text-red-400"
+                            }`}
+                          >
+                            {data.accuracy}%
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                            {data.excellent ? (
+                              <span className="text-emerald-400">✅</span>
+                            ) : data.needsPractice ? (
+                              <span className="text-red-400">⚠️</span>
+                            ) : (
+                              <span className="text-yellow-400">👍</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           {/* המלצות */}
           {report.analysis.recommendations.length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
@@ -811,6 +969,22 @@ export default function ParentReport() {
                       name="נושאי אנגלית"
                       dot={{ fill: "#a855f7", r: 3 }}
                     />
+                    <Line
+                      type="monotone"
+                      dataKey="hebrewTopics"
+                      stroke="#f97316"
+                      strokeWidth={2}
+                      name="נושאי עברית"
+                      dot={{ fill: "#f97316", r: 3 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="moledetGeographyTopics"
+                      stroke="#06b6d4"
+                      strokeWidth={2}
+                      name="נושאי מולדת וגאוגרפיה"
+                      dot={{ fill: "#06b6d4", r: 3 }}
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -831,6 +1005,12 @@ export default function ParentReport() {
                         ? getTopicName(key.replace('geometry_', ''))
                         : key.startsWith('english_')
                         ? getEnglishTopicName(key.replace('english_', ''))
+                        : key.startsWith('science_')
+                        ? getScienceTopicName(key.replace('science_', ''))
+                        : key.startsWith('hebrew_')
+                        ? getHebrewTopicName(key.replace('hebrew_', ''))
+                        : key.startsWith('moledet-geography_')
+                        ? getMoledetGeographyTopicName(key.replace('moledet-geography_', ''))
                         : key;
                       return {
                         name,
@@ -878,6 +1058,12 @@ export default function ParentReport() {
                         ? getTopicName(key.replace('geometry_', ''))
                         : key.startsWith('english_')
                         ? getEnglishTopicName(key.replace('english_', ''))
+                        : key.startsWith('science_')
+                        ? getScienceTopicName(key.replace('science_', ''))
+                        : key.startsWith('hebrew_')
+                        ? getHebrewTopicName(key.replace('hebrew_', ''))
+                        : key.startsWith('moledet-geography_')
+                        ? getMoledetGeographyTopicName(key.replace('moledet-geography_', ''))
                         : key;
                       return {
                         name,
@@ -928,6 +1114,12 @@ export default function ParentReport() {
                         ? getTopicName(key.replace('geometry_', ''))
                         : key.startsWith('english_')
                         ? getEnglishTopicName(key.replace('english_', ''))
+                        : key.startsWith('science_')
+                        ? getScienceTopicName(key.replace('science_', ''))
+                        : key.startsWith('hebrew_')
+                        ? getHebrewTopicName(key.replace('hebrew_', ''))
+                        : key.startsWith('moledet-geography_')
+                        ? getMoledetGeographyTopicName(key.replace('moledet-geography_', ''))
                         : key;
                           return {
                             name,
