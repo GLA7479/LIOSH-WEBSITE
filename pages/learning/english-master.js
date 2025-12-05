@@ -2442,6 +2442,24 @@ const refreshMonthlyProgress = useCallback(() => {
           {!gameActive ? (
             <>
               <div className="flex items-center justify-center gap-2 mb-3 flex-wrap w-full max-w-3xl">
+                <input
+                  type="text"
+                  value={playerName}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    setPlayerName(newName);
+                    if (typeof window !== "undefined") {
+                      try {
+                        localStorage.setItem("mleo_player_name", newName);
+                      } catch {}
+                    }
+                  }}
+                  placeholder="שם שחקן"
+                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[110px]"
+                  maxLength={15}
+                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
+                  style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
+                />
                 <select
                   value={gradeNumber}
                   onChange={(e) => handleGradeNumberChange(e.target.value)}
@@ -2500,39 +2518,7 @@ const refreshMonthlyProgress = useCallback(() => {
                     </button>
                   )}
                 </div>
-                <input
-                  type="text"
-                  value={playerName}
-                  onChange={(e) => {
-                    const newName = e.target.value;
-                    setPlayerName(newName);
-                    if (typeof window !== "undefined") {
-                      try {
-                        localStorage.setItem("mleo_player_name", newName);
-                      } catch {}
-                    }
-                  }}
-                  placeholder="שם שחקן"
-                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[110px]"
-                  maxLength={15}
-                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
-                  style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
-                />
               </div>
-
-              {mode === "practice" && (
-                <select
-                  value={practiceFocus}
-                  onChange={(e) => setPracticeFocus(e.target.value)}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold w-full max-w-md mb-2"
-                >
-                  {PRACTICE_FOCUS_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              )}
 
               <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
@@ -2553,33 +2539,6 @@ const refreshMonthlyProgress = useCallback(() => {
                     {accuracy}%
                   </div>
                 </div>
-              </div>
-
-              <div className="flex items-center justify-center gap-4 mb-2 w-full max-w-md flex-wrap">
-                <label className="flex items-center gap-2 text-white text-xs">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4"
-                    checked={useStoryQuestions}
-                    onChange={(e) => {
-                      setUseStoryQuestions(e.target.checked);
-                      if (!e.target.checked) {
-                        setStoryOnly(false);
-                      }
-                    }}
-                  />
-                  <span>📘 שלב שאלות תרגום/סיפור</span>
-                </label>
-                <label className="flex items-center gap-2 text-white text-xs">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4"
-                    checked={storyOnly}
-                    disabled={!useStoryQuestions}
-                    onChange={(e) => setStoryOnly(e.target.checked)}
-                  />
-                  <span>📖 רק שאלות תרגום</span>
-                </label>
               </div>
 
               {(stars > 0 || playerLevel > 1 || badges.length > 0) && (
@@ -2705,18 +2664,26 @@ const refreshMonthlyProgress = useCallback(() => {
                 >
                   📚 לוח מילים
                 </button>
+                {mistakes.length > 0 && (
+                  <button
+                    onClick={() => setShowPracticeOptions(true)}
+                    className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-sm"
+                  >
+                    🎯 תרגול ממוקד ({mistakes.length})
+                  </button>
+                )}
                 <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
                 >
                   🏆 לוח תוצאות
                 </button>
-                {bestScore > 0 && (
+                {badges.length > 0 && (
                   <button
-                    onClick={resetStats}
-                    className="h-10 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-sm"
+                    onClick={() => setShowBadgeGallery(true)}
+                    className="h-10 px-4 rounded-lg bg-yellow-500/80 hover:bg-yellow-500 font-bold text-sm"
                   >
-                    🧹 איפוס
+                    🏅 תגים ({badges.length})
                   </button>
                 )}
               </div>
@@ -2734,26 +2701,14 @@ const refreshMonthlyProgress = useCallback(() => {
                 >
                   📊 דוח להורים
                 </button>
-                <button
-                  onClick={() => setShowPracticeOptions(true)}
-                  className="px-4 py-2 rounded-lg bg-gray-500/70 hover:bg-gray-500 text-xs font-bold text-white shadow-sm"
-                >
-                  🎛️ הגדרות תרגול
-                </button>
                 {mistakes.length > 0 && (
                   <button
-                    onClick={() => setShowPracticeModal(true)}
+                    onClick={() => setShowPracticeOptions(true)}
                     className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
                   >
-                    🎯 תרגול טעויות ({mistakes.length})
+                    🎯 תרגול ממוקד ({mistakes.length})
                   </button>
                 )}
-                <button
-                  onClick={() => router.push("/learning/curriculum?subject=english")}
-                  className="px-4 py-2 rounded-lg bg-amber-500/80 hover:bg-amber-500 text-xs font-bold text-white shadow-sm"
-                >
-                  📋 תוכנית לימודים
-                </button>
               </div>
 
               {!playerName.trim() && (

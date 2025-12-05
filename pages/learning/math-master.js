@@ -1848,77 +1848,6 @@ export default function MathMaster() {
           {!gameActive ? (
             <>
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md" dir="rtl">
-                <div className="flex items-center gap-1">
-                  {/* כפתור לפתיחת modal אם operation הוא mixed */}
-                  {operation === "mixed" && (
-                    <button
-                      onClick={() => {
-                        setShowMixedSelector(true);
-                      }}
-                      className="h-9 w-9 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-xs font-bold flex items-center justify-center"
-                      title="ערוך פעולות למיקס"
-                    >
-                      ⚙️
-                    </button>
-                  )}
-                  <select
-                    ref={operationSelectRef}
-                    value={operation}
-                    onChange={(e) => {
-                      const newOp = e.target.value;
-                      setGameActive(false);
-                      // אם בוחרים mixed, פתח את ה-modal לבחירת פעולות
-                      if (newOp === "mixed") {
-                        // עדכן את operation
-                        setOperation(newOp);
-                        // פתח את ה-modal מיד
-                        setShowMixedSelector(true);
-                      } else {
-                        setOperation(newOp);
-                        // סגור את ה-modal אם הוא היה פתוח
-                        setShowMixedSelector(false);
-                      }
-                    }}
-                    className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold flex-1"
-                  >
-                    {GRADES[grade].operations.map((op) => (
-                      <option key={op} value={op}>
-                        {getOperationName(op)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <select
-                  value={level}
-                  onChange={(e) => {
-                    setLevel(e.target.value);
-                    setGameActive(false);
-                  }}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
-                >
-                  {Object.keys(LEVELS).map((lvl) => (
-                    <option key={lvl} value={lvl}>
-                      {LEVELS[lvl].name}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={gradeNumber}
-                  onChange={(e) => {
-                    const newGradeNum = Number(e.target.value);
-                    setGradeNumber(newGradeNum);
-                    // עדכן גם את grade לפי gradeNumber - 6 כיתות נפרדות
-                    setGrade(`g${newGradeNum}`);
-                    setGameActive(false);
-                  }}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
-                >
-                  {[1, 2, 3, 4, 5, 6].map((g) => (
-                    <option key={g} value={g}>
-                      {`כיתה ${["א","ב","ג","ד","ה","ו"][g - 1]}`}
-                    </option>
-                  ))}
-                </select>
                 <input
                   type="text"
                   value={playerName}
@@ -1937,20 +1866,70 @@ export default function MathMaster() {
                   dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
                   style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
                 />
-              </div>
-
-              {/* בחירת נושא תרגול ממוקד – רק במצב Practice */}
-              {mode === "practice" && (
                 <select
-                  value={practiceFocus}
-                  onChange={(e) => setPracticeFocus(e.target.value)}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold w-full max-w-md mb-2"
+                  value={gradeNumber}
+                  onChange={(e) => {
+                    const newGradeNum = Number(e.target.value);
+                    setGradeNumber(newGradeNum);
+                    setGrade(`g${newGradeNum}`);
+                    setGameActive(false);
+                  }}
+                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
                 >
-                  <option value="default">📚 כל התרגילים</option>
-                  <option value="add_to_20">➕ חיבור עד 20</option>
-                  <option value="times_6_8">✖️ טבלת כפל 6–8</option>
+                  {[1, 2, 3, 4, 5, 6].map((g) => (
+                    <option key={g} value={g}>
+                      {`כיתה ${["א","ב","ג","ד","ה","ו"][g - 1]}`}
+                    </option>
+                  ))}
                 </select>
-              )}
+                <select
+                  value={level}
+                  onChange={(e) => {
+                    setLevel(e.target.value);
+                    setGameActive(false);
+                  }}
+                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
+                >
+                  {Object.keys(LEVELS).map((lvl) => (
+                    <option key={lvl} value={lvl}>
+                      {LEVELS[lvl].name}
+                    </option>
+                  ))}
+                </select>
+                <div className="flex items-center gap-1 min-w-[180px]">
+                  <select
+                    ref={operationSelectRef}
+                    value={operation}
+                    onChange={(e) => {
+                      const newOp = e.target.value;
+                      setGameActive(false);
+                      if (newOp === "mixed") {
+                        setOperation(newOp);
+                        setShowMixedSelector(true);
+                      } else {
+                        setOperation(newOp);
+                        setShowMixedSelector(false);
+                      }
+                    }}
+                    className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold flex-1"
+                  >
+                    {GRADES[grade].operations.map((op) => (
+                      <option key={op} value={op}>
+                        {getOperationName(op)}
+                      </option>
+                    ))}
+                  </select>
+                  {operation === "mixed" && (
+                    <button
+                      onClick={() => setShowMixedSelector(true)}
+                      className="h-9 w-9 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-xs font-bold flex items-center justify-center"
+                      title="ערוך פעולות למיקס"
+                    >
+                      ⚙️
+                    </button>
+                  )}
+                </div>
+              </div>
 
               <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
@@ -2086,37 +2065,6 @@ export default function MathMaster() {
                 )}
               </div>
               
-              {/* אפשרות לשאלות עם סיפור */}
-              {/* אפשרות לשאלות עם סיפור */}
-              {gradeSupportsWordProblems && (
-              <div className="flex items-center justify-center gap-4 mb-2 w-full max-w-md flex-wrap">
-                  <label className="flex items-center gap-2 text-white text-xs">
-                  <input
-                    type="checkbox"
-                      className="w-4 h-4"
-                    checked={useStoryQuestions}
-                    onChange={(e) => {
-                      setUseStoryQuestions(e.target.checked);
-                        if (!e.target.checked) {
-                          setStoryOnly(false);
-                        }
-                    }}
-                  />
-                    <span>📘 לשלב שאלות מילוליות בתוך המשחק</span>
-                </label>
-                  <label className="flex items-center gap-2 text-white text-xs">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4"
-                      checked={storyOnly}
-                      disabled={!useStoryQuestions}
-                      onChange={(e) => setStoryOnly(e.target.checked)}
-                    />
-                    <span>📖 רק שאלות מילוליות</span>
-                  </label>
-              </div>
-              )}
-
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
                 <button
                   onClick={startGame}
@@ -2129,20 +2077,28 @@ export default function MathMaster() {
                   onClick={() => setShowMultiplicationTable(true)}
                   className="h-10 px-4 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
                 >
-                  📊 לוח הכפל
+                  📊 לוח כפל
                 </button>
+                {mistakes.length > 0 && (
+                  <button
+                    onClick={() => setShowPracticeOptions(true)}
+                    className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-sm"
+                  >
+                    🎯 תרגול ממוקד ({mistakes.length})
+                  </button>
+                )}
                 <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
                 >
                   🏆 לוח תוצאות
                 </button>
-                {bestScore > 0 && (
+                {badges.length > 0 && (
                   <button
-                    onClick={resetStats}
-                    className="h-10 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-sm"
+                    onClick={() => setShowBadgeGallery(true)}
+                    className="h-10 px-4 rounded-lg bg-yellow-500/80 hover:bg-yellow-500 font-bold text-sm"
                   >
-                    🧹 Reset
+                    🏅 תגים ({badges.length})
                   </button>
                 )}
               </div>

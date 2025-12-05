@@ -1165,6 +1165,29 @@ function recordSessionProgress() {
             <>
               {/* PLAYER & SETTINGS */}
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
+                <input
+                  type="text"
+                  value={playerName}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setPlayerName(val);
+                    if (typeof window !== "undefined") {
+                      try {
+                        localStorage.setItem("mleo_player_name", val);
+                      } catch {
+                        // ignore
+                      }
+                    }
+                  }}
+                  placeholder="שם שחקן"
+                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[110px]"
+                  maxLength={15}
+                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
+                  style={{
+                    textAlign:
+                      playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left",
+                  }}
+                />
                 <select
                   value={grade}
                   onChange={(e) => {
@@ -1207,47 +1230,7 @@ function recordSessionProgress() {
                     </option>
                   ))}
                 </select>
-                <input
-                  type="text"
-                  value={playerName}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setPlayerName(val);
-                    if (typeof window !== "undefined") {
-                      try {
-                        localStorage.setItem("mleo_player_name", val);
-                      } catch {
-                        // ignore
-                      }
-                    }
-                  }}
-                  placeholder="שם שחקן"
-                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[110px]"
-                  maxLength={15}
-                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
-                  style={{
-                    textAlign:
-                      playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left",
-                  }}
-                />
               </div>
-              {mode === "practice" && (
-                <select
-                  value={practiceFocus}
-                  onChange={(e) => {
-                    setPracticeFocus(e.target.value);
-                    setGameActive(false);
-                  }}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold w-full max-w-md mb-2"
-                >
-                  {PRACTICE_FOCUS_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              )}
-
               {/* BEST / ACCURACY */}
               <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
@@ -1351,7 +1334,6 @@ function recordSessionProgress() {
                 )}
               </div>
 
-              {/* BUTTONS */}
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
                 <button
                   onClick={startGame}
@@ -1364,8 +1346,16 @@ function recordSessionProgress() {
                   onClick={() => setShowReferenceModal(true)}
                   className="h-10 px-4 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
                 >
-                  📚 לוח מדעים
+                  📚 לוח מונחים
                 </button>
+                {mistakes.length > 0 && (
+                  <button
+                    onClick={() => setShowPracticeOptions(true)}
+                    className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-sm"
+                  >
+                    🎯 תרגול ממוקד ({mistakes.length})
+                  </button>
+                )}
                 <button
                   onClick={openLeaderboard}
                   className="h-10 px-4 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
@@ -1377,7 +1367,7 @@ function recordSessionProgress() {
                     onClick={resetStats}
                     className="h-10 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-sm"
                   >
-                    🧹 איפוס
+                    🧹 Reset
                   </button>
                 )}
               </div>
@@ -1388,7 +1378,6 @@ function recordSessionProgress() {
                 </p>
               )}
 
-              {/* כפתורי עזרה נוספים */}
               <div className="mb-2 w-full max-w-md flex flex-wrap justify-center gap-2">
                 <button
                   onClick={() => setShowHowTo(true)}
@@ -1402,26 +1391,14 @@ function recordSessionProgress() {
                 >
                   📊 דוח להורים
                 </button>
-                <button
-                  onClick={() => setShowPracticeOptions(true)}
-                  className="px-4 py-2 rounded-lg bg-gray-500/70 hover:bg-gray-500 text-xs font-bold text-white shadow-sm"
-                >
-                  🎛️ הגדרות תרגול
-                </button>
                 {mistakes.length > 0 && (
                   <button
-                    onClick={() => setShowPracticeModal(true)}
+                    onClick={() => setShowPracticeOptions(true)}
                     className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
                   >
-                    🎯 תרגול טעויות ({mistakes.length})
+                    🎯 תרגול ממוקד ({mistakes.length})
                   </button>
                 )}
-                <button
-                  onClick={() => router.push("/learning/curriculum?subject=science")}
-                  className="px-4 py-2 rounded-lg bg-amber-500/80 hover:bg-amber-500 text-xs font-bold text-white shadow-sm"
-                >
-                  📋 תוכנית לימודים
-                </button>
               </div>
             </>
           ) : (
