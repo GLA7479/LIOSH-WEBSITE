@@ -679,15 +679,59 @@ export default function ParentReport() {
                   </tbody>
                 </table>
               </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                {Object.entries(report.geometryTopics)
+                  .sort(([_, a], [__, b]) => b.questions - a.questions)
+                  .map(([topic, data]) => (
+                    <div key={topic} className="bg-black/40 border border-white/20 rounded-lg p-3">
+                      <div className="font-semibold text-sm mb-2 text-emerald-400">{getTopicName(topic)}</div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">שאלות:</span> <span className="text-white/90">{data.questions}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">נכון:</span> <span className="text-emerald-400">{data.correct}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">דיוק:</span> <span className={`font-bold ${
+                            data.accuracy >= 90 ? "text-emerald-400" :
+                            data.accuracy >= 70 ? "text-yellow-400" :
+                            "text-red-400"
+                          }`}>{data.accuracy}%</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-center">
+                        {data.excellent ? (
+                          <span className="text-emerald-400 text-xs">✅ מצוין</span>
+                        ) : data.needsPractice ? (
+                          <span className="text-red-400 text-xs">⚠️ דורש תרגול</span>
+                        ) : (
+                          <span className="text-yellow-400 text-xs">👍 טוב</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
           
           {/* טבלת נושאים אנגלית */}
           {Object.keys(report.englishTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">📘 התקדמות באנגלית</h2>
-              <div className="overflow-x-auto -mx-2 md:mx-0">
-                <table className="w-full text-xs md:text-sm min-w-[800px]">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📘 התקדמות באנגלית</h2>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/20">
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
@@ -744,15 +788,59 @@ export default function ParentReport() {
                   </tbody>
                 </table>
               </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                {Object.entries(report.englishTopics)
+                  .sort(([_, a], [__, b]) => b.questions - a.questions)
+                  .map(([topic, data]) => (
+                    <div key={topic} className="bg-black/40 border border-white/20 rounded-lg p-3">
+                      <div className="font-semibold text-sm mb-2 text-purple-400">{getEnglishTopicName(topic)}</div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">שאלות:</span> <span className="text-white/90">{data.questions}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">נכון:</span> <span className="text-emerald-400">{data.correct}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">דיוק:</span> <span className={`font-bold ${
+                            data.accuracy >= 90 ? "text-emerald-400" :
+                            data.accuracy >= 70 ? "text-yellow-400" :
+                            "text-red-400"
+                          }`}>{data.accuracy}%</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-center">
+                        {data.excellent ? (
+                          <span className="text-emerald-400 text-xs">✅ מצוין</span>
+                        ) : data.needsPractice ? (
+                          <span className="text-red-400 text-xs">⚠️ דורש תרגול</span>
+                        ) : (
+                          <span className="text-yellow-400 text-xs">👍 טוב</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
 
           {/* טבלת נושאים מדעים */}
           {Object.keys(report.scienceTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🔬 התקדמות במדעים</h2>
-              <div className="overflow-x-auto -mx-2 md:mx-0">
-                <table className="w-full text-xs md:text-sm min-w-[800px]">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🔬 התקדמות במדעים</h2>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/20">
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
@@ -813,15 +901,59 @@ export default function ParentReport() {
                   </tbody>
                 </table>
               </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                {Object.entries(report.scienceTopics)
+                  .sort(([_, a], [__, b]) => b.questions - a.questions)
+                  .map(([topic, data]) => (
+                    <div key={topic} className="bg-black/40 border border-white/20 rounded-lg p-3">
+                      <div className="font-semibold text-sm mb-2 text-green-400">{getScienceTopicName(topic)}</div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">שאלות:</span> <span className="text-white/90">{data.questions}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">נכון:</span> <span className="text-emerald-400">{data.correct}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">דיוק:</span> <span className={`font-bold ${
+                            data.accuracy >= 90 ? "text-emerald-400" :
+                            data.accuracy >= 70 ? "text-yellow-400" :
+                            "text-red-400"
+                          }`}>{data.accuracy}%</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-center">
+                        {data.excellent ? (
+                          <span className="text-emerald-400 text-xs">✅ מצוין</span>
+                        ) : data.needsPractice ? (
+                          <span className="text-red-400 text-xs">⚠️ דורש תרגול</span>
+                        ) : (
+                          <span className="text-yellow-400 text-xs">👍 טוב</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
 
           {/* טבלת נושאים עברית */}
           {Object.keys(report.hebrewTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">📚 התקדמות בעברית</h2>
-              <div className="overflow-x-auto -mx-2 md:mx-0">
-                <table className="w-full text-xs md:text-sm min-w-[800px]">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📚 התקדמות בעברית</h2>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/20">
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
@@ -882,15 +1014,59 @@ export default function ParentReport() {
                   </tbody>
                 </table>
               </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                {Object.entries(report.hebrewTopics)
+                  .sort(([_, a], [__, b]) => b.questions - a.questions)
+                  .map(([topic, data]) => (
+                    <div key={topic} className="bg-black/40 border border-white/20 rounded-lg p-3">
+                      <div className="font-semibold text-sm mb-2 text-orange-400">{getHebrewTopicName(topic)}</div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">שאלות:</span> <span className="text-white/90">{data.questions}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">נכון:</span> <span className="text-emerald-400">{data.correct}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">דיוק:</span> <span className={`font-bold ${
+                            data.accuracy >= 90 ? "text-emerald-400" :
+                            data.accuracy >= 70 ? "text-yellow-400" :
+                            "text-red-400"
+                          }`}>{data.accuracy}%</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-center">
+                        {data.excellent ? (
+                          <span className="text-emerald-400 text-xs">✅ מצוין</span>
+                        ) : data.needsPractice ? (
+                          <span className="text-red-400 text-xs">⚠️ דורש תרגול</span>
+                        ) : (
+                          <span className="text-yellow-400 text-xs">👍 טוב</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
 
           {/* טבלת נושאים מולדת וגאוגרפיה */}
           {Object.keys(report.moledetGeographyTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🗺️ התקדמות במולדת וגאוגרפיה</h2>
-              <div className="overflow-x-auto -mx-2 md:mx-0">
-                <table className="w-full text-xs md:text-sm min-w-[800px]">
+              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🗺️ התקדמות במולדת וגאוגרפיה</h2>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/20">
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
@@ -950,6 +1126,49 @@ export default function ParentReport() {
                       ))}
                   </tbody>
                 </table>
+              </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                {Object.entries(report.moledetGeographyTopics)
+                  .sort(([_, a], [__, b]) => b.questions - a.questions)
+                  .map(([topic, data]) => (
+                    <div key={topic} className="bg-black/40 border border-white/20 rounded-lg p-3">
+                      <div className="font-semibold text-sm mb-2 text-cyan-400">{getMoledetGeographyTopicName(topic)}</div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">שאלות:</span> <span className="text-white/90">{data.questions}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">נכון:</span> <span className="text-emerald-400">{data.correct}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">דיוק:</span> <span className={`font-bold ${
+                            data.accuracy >= 90 ? "text-emerald-400" :
+                            data.accuracy >= 70 ? "text-yellow-400" :
+                            "text-red-400"
+                          }`}>{data.accuracy}%</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-center">
+                        {data.excellent ? (
+                          <span className="text-emerald-400 text-xs">✅ מצוין</span>
+                        ) : data.needsPractice ? (
+                          <span className="text-red-400 text-xs">⚠️ דורש תרגול</span>
+                        ) : (
+                          <span className="text-yellow-400 text-xs">👍 טוב</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
               </div>
             </div>
           )}
@@ -1312,8 +1531,8 @@ export default function ParentReport() {
           {Object.keys(report.allItems || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🥧 חלוקת זמן תרגול</h2>
-              <div className="h-72 md:h-96">
-                <ResponsiveContainer width="100%" height={isMobile ? 280 : 380}>
+              <div className="h-80 md:h-[500px]">
+                <ResponsiveContainer width="100%" height={isMobile ? 320 : 480}>
                   <PieChart>
                     <Pie
                       data={Object.entries(report.allItems)
@@ -1333,26 +1552,24 @@ export default function ParentReport() {
                             ? getMoledetGeographyTopicName(key.replace('moledet-geography_', ''))
                             : key;
                           return {
-                            name: name.length > 12 ? name.substring(0, 12) + '...' : name,
+                            name: name.length > 15 ? name.substring(0, 15) + '...' : name,
                             fullName: name,
                             value: data.timeMinutes,
+                            percentage: ((data.timeMinutes / Object.values(report.allItems).reduce((sum, item) => sum + (item.timeMinutes || 0), 0)) * 100).toFixed(1)
                           };
                         })
                         .sort((a, b) => b.value - a.value)
                         .slice(0, 8)
                       }
                       cx="50%"
-                      cy="50%"
-                      labelLine={true}
-                      label={({ name, percent }) => {
-                        const percentage = (percent * 100).toFixed(0);
-                        return percentage >= 5 ? `${name}\n${percentage}%` : '';
-                      }}
-                      outerRadius={isMobile ? 70 : 90}
-                      innerRadius={isMobile ? 30 : 40}
+                      cy={isMobile ? "45%" : "42%"}
+                      labelLine={false}
+                      label={false}
+                      outerRadius={isMobile ? 80 : 110}
+                      innerRadius={isMobile ? 40 : 55}
                       fill="#8884d8"
                       dataKey="value"
-                      style={{ fontSize: isMobile ? '10px' : '11px' }}
+                      paddingAngle={2}
                     >
                       {Object.entries(report.allItems)
                         .filter(([_, data]) => data.timeMinutes > 0)
@@ -1381,17 +1598,25 @@ export default function ParentReport() {
                         borderRadius: "8px",
                         color: "#ffffff",
                         direction: 'rtl',
+                        fontSize: isMobile ? '12px' : '14px',
                       }}
                       formatter={(value, name, props) => {
                         const fullName = props.payload.fullName || name;
-                        return [`${value} דקות`, fullName];
+                        const percentage = props.payload.percentage || ((value / Object.values(report.allItems).reduce((sum, item) => sum + (item.timeMinutes || 0), 0)) * 100).toFixed(1);
+                        return [`${value} דקות (${percentage}%)`, fullName];
                       }}
                     />
                     <Legend 
-                      wrapperStyle={{ paddingTop: '10px' }}
+                      verticalAlign="bottom"
+                      height={isMobile ? 120 : 140}
+                      iconType="circle"
+                      iconSize={10}
+                      wrapperStyle={{ paddingTop: '20px' }}
                       formatter={(value, entry) => {
                         const fullName = entry.payload?.fullName || value;
-                        return <span style={{ fontSize: isMobile ? '10px' : '11px', color: '#ffffff90' }}>{fullName}</span>;
+                        const percentage = entry.payload?.percentage || '';
+                        const displayText = percentage ? `${fullName} (${percentage}%)` : fullName;
+                        return <span style={{ fontSize: isMobile ? '11px' : '12px', color: '#ffffff90', marginRight: '8px' }}>{displayText}</span>;
                       }}
                     />
                   </PieChart>
