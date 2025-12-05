@@ -1368,8 +1368,8 @@ export default function ParentReport() {
           {Object.keys(report.allItems || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📊 דיוק לפי פעולות ונושאים</h2>
-              <div className="h-64 md:h-80">
-                <ResponsiveContainer width="100%" height={isMobile ? 240 : 320}>
+              <div className="h-72 md:h-96">
+                <ResponsiveContainer width="100%" height={isMobile ? 288 : 384}>
                   <BarChart 
                     data={Object.entries(report.allItems)
                       .map(([key, data]) => {
@@ -1401,11 +1401,12 @@ export default function ParentReport() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
                     <XAxis
                       dataKey="name"
-                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 11 }}
+                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 9 : 10 }}
                       angle={isMobile ? -45 : -45}
                       textAnchor="end"
-                      height={isMobile ? 70 : 90}
+                      height={isMobile ? 100 : 120}
                       interval={0}
+                      dy={isMobile ? 25 : 30}
                     />
                     <YAxis 
                       tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 12 }}
@@ -1458,8 +1459,8 @@ export default function ParentReport() {
           {Object.keys(report.allItems || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
-              <div className="h-64 md:h-80">
-                <ResponsiveContainer width="100%" height={isMobile ? 240 : 320}>
+              <div className="h-72 md:h-96">
+                <ResponsiveContainer width="100%" height={isMobile ? 288 : 384}>
                   <BarChart 
                     data={Object.entries(report.allItems)
                       .map(([key, data]) => {
@@ -1490,11 +1491,12 @@ export default function ParentReport() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
                     <XAxis
                       dataKey="name"
-                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 11 }}
+                      tick={{ fill: "#ffffff90", fontSize: isMobile ? 9 : 10 }}
                       angle={isMobile ? -45 : -45}
                       textAnchor="end"
-                      height={isMobile ? 70 : 90}
+                      height={isMobile ? 100 : 120}
                       interval={0}
+                      dy={isMobile ? 25 : 30}
                     />
                     <YAxis 
                       tick={{ fill: "#ffffff90", fontSize: isMobile ? 10 : 12 }}
@@ -1531,8 +1533,8 @@ export default function ParentReport() {
           {Object.keys(report.allItems || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🥧 חלוקת זמן תרגול</h2>
-              <div className="h-80 md:h-[500px]">
-                <ResponsiveContainer width="100%" height={isMobile ? 320 : 480}>
+              <div className="h-72 md:h-96">
+                <ResponsiveContainer width="100%" height={isMobile ? 280 : 380}>
                   <PieChart>
                     <Pie
                       data={Object.entries(report.allItems)
@@ -1562,11 +1564,11 @@ export default function ParentReport() {
                         .slice(0, 8)
                       }
                       cx="50%"
-                      cy={isMobile ? "45%" : "42%"}
+                      cy="50%"
                       labelLine={false}
                       label={false}
-                      outerRadius={isMobile ? 80 : 110}
-                      innerRadius={isMobile ? 40 : 55}
+                      outerRadius={isMobile ? 70 : 90}
+                      innerRadius={isMobile ? 30 : 40}
                       fill="#8884d8"
                       dataKey="value"
                       paddingAngle={2}
@@ -1617,15 +1619,16 @@ export default function ParentReport() {
                     />
                     <Legend 
                       verticalAlign="bottom"
-                      height={isMobile ? 120 : 140}
+                      align="center"
+                      height={isMobile ? 100 : 120}
                       iconType="circle"
-                      iconSize={10}
-                      wrapperStyle={{ paddingTop: '20px' }}
+                      iconSize={8}
+                      wrapperStyle={{ paddingTop: '15px' }}
                       formatter={(value, entry) => {
                         const fullName = entry.payload?.fullName || value;
                         const percentage = entry.payload?.percentage || '';
                         const displayText = percentage ? `${fullName} (${percentage}%)` : fullName;
-                        return <span style={{ fontSize: isMobile ? '11px' : '12px', color: '#ffffff90', marginRight: '8px' }}>{displayText}</span>;
+                        return <span style={{ fontSize: isMobile ? '9px' : '10px', color: '#ffffff90', marginRight: '6px' }}>{displayText}</span>;
                       }}
                     />
                   </PieChart>
