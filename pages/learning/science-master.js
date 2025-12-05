@@ -990,32 +990,36 @@ export default function ScienceMaster() {
           {/* TOP STATS */}
           <div
             ref={controlsRef}
-            className="grid grid-cols-6 gap-1 mb-2 w-full max-w-md text-center"
+            className="grid grid-cols-7 gap-0.5 mb-1 w-full max-w-md"
           >
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1">
-              <div className="text-[10px] text-white/60">ניקוד</div>
-              <div className="text-sm font-bold text-emerald-400">{score}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">ניקוד</div>
+              <div className="text-sm font-bold text-emerald-400 leading-tight">{score}</div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1">
-              <div className="text-[10px] text-white/60">רצף</div>
-              <div className="text-sm font-bold text-amber-400">🔥{streak}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">רצף</div>
+              <div className="text-sm font-bold text-amber-400 leading-tight">🔥{streak}</div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1">
-              <div className="text-[10px] text-white/60">✅ נכונות</div>
-              <div className="text-sm font-bold text-green-400">{correct}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">כוכבים</div>
+              <div className="text-sm font-bold text-yellow-400 leading-tight">⭐{stars}</div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1">
-              <div className="text-[10px] text-white/60">❌ שגיאות</div>
-              <div className="text-sm font-bold text-rose-400">{wrong}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">רמה</div>
+              <div className="text-sm font-bold text-purple-400 leading-tight">Lv.{playerLevel}</div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg p-1">
-              <div className="text-[10px] text-white/60">מדעים Lv.</div>
-              <div className="text-sm font-bold text-purple-400">
-                {playerLevel}
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">✅</div>
+              <div className="text-sm font-bold text-green-400 leading-tight">{correct}</div>
+            </div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">חיים</div>
+              <div className="text-sm font-bold text-rose-400 leading-tight">
+                {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
             </div>
             <div
-              className={`rounded-lg p-1 ${
+              className={`rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] ${
                 gameActive &&
                 (mode === "challenge" || mode === "speed") &&
                 timeLeft != null &&
@@ -1024,15 +1028,17 @@ export default function ScienceMaster() {
                   : "bg-black/30 border border-white/10"
               }`}
             >
-              <div className="text-[10px] text-white/60">⏰ טיימר</div>
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">⏰ טיימר</div>
               <div
-                className={`text-lg font-black ${
+                className={`text-sm font-black leading-tight ${
                   gameActive &&
                   (mode === "challenge" || mode === "speed") &&
                   timeLeft != null &&
                   timeLeft <= 5
                     ? "text-red-400"
-                    : "text-yellow-300"
+                    : gameActive && (mode === "challenge" || mode === "speed")
+                    ? "text-yellow-300"
+                    : "text-white/60"
                 }`}
               >
                 {gameActive
@@ -1088,29 +1094,6 @@ export default function ScienceMaster() {
             <>
               {/* PLAYER & SETTINGS */}
               <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
-                <input
-                  type="text"
-                  value={playerName}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setPlayerName(val);
-                    if (typeof window !== "undefined") {
-                      try {
-                        localStorage.setItem("mleo_player_name", val);
-                      } catch {
-                        // ignore
-                      }
-                    }
-                  }}
-                  placeholder="שם שחקן"
-                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[110px]"
-                  maxLength={15}
-                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
-                  style={{
-                    textAlign:
-                      playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left",
-                  }}
-                />
                 <select
                   value={grade}
                   onChange={(e) => {
@@ -1153,8 +1136,30 @@ export default function ScienceMaster() {
                     </option>
                   ))}
                 </select>
+                <input
+                  type="text"
+                  value={playerName}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setPlayerName(val);
+                    if (typeof window !== "undefined") {
+                      try {
+                        localStorage.setItem("mleo_player_name", val);
+                      } catch {
+                        // ignore
+                      }
+                    }
+                  }}
+                  placeholder="שם שחקן"
+                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[110px]"
+                  maxLength={15}
+                  dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
+                  style={{
+                    textAlign:
+                      playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left",
+                  }}
+                />
               </div>
-
               {mode === "practice" && (
                 <select
                   value={practiceFocus}
@@ -1194,26 +1199,42 @@ export default function ScienceMaster() {
                 </div>
               </div>
 
-              {/* DAILY + XP */}
-              <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">כוכבים</div>
-                  <div className="text-lg font-bold text-yellow-400">
-                    ⭐ {stars}
+              {/* PROGRESS */}
+              {(stars > 0 || playerLevel > 1 || avgTime > 0) && (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-2 w-full max-w-md">
+                  <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
+                    <div className="text-xs text-white/60">כוכבים</div>
+                    <div className="text-lg font-bold text-yellow-400">
+                      ⭐ {stars}
+                    </div>
+                  </div>
+                  <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
+                    <div className="text-xs text-white/60">רמת מדען</div>
+                    <div className="text-xs font-bold text-purple-300">
+                      Lv.{playerLevel} ({xp}/{playerLevel * 100} XP)
+                    </div>
+                  </div>
+                  <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
+                    <div className="text-xs text-white/60">⏱ ממוצע</div>
+                    <div className="text-lg font-bold text-blue-400">
+                      {avgTime.toFixed(1)}ש״
+                    </div>
                   </div>
                 </div>
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">רמת מדען</div>
-                  <div className="text-xs font-bold text-purple-300">
-                    Lv.{playerLevel} ({xp}/{playerLevel * 100} XP)
-                  </div>
-                </div>
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
+              )}
+
+              <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
+                <div className="flex items-center justify-between mb-1">
                   <div className="text-xs text-white/60">אתגר יומי</div>
-                  <div className="text-xs text-white">
-                    שיא: {dailyChallenge.bestScore} • שאלות:{" "}
-                    {dailyChallenge.questions}
-                  </div>
+                  <div className="text-xs text-white/60">שיא: {dailyChallenge.bestScore}</div>
+                </div>
+                <div className="text-sm text-white mb-1">
+                  {dailyChallenge.questions > 0
+                    ? `פתרת ${dailyChallenge.questions} שאלות במדעים היום`
+                    : "עוד לא התחלת את אתגר המדעים להיום"}
+                </div>
+                <div className="text-xs text-white/60">
+                  שמור על רצף תרגול כדי לפתוח הישגים חדשים.
                 </div>
               </div>
 
@@ -1246,14 +1267,6 @@ export default function ScienceMaster() {
                     🧹 איפוס
                   </button>
                 )}
-                {mistakes.length > 0 && (
-                  <button
-                    onClick={() => setShowPracticeModal(true)}
-                    className="h-10 px-4 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-white font-bold text-sm"
-                  >
-                    🎯 תרגול טעויות ({mistakes.length})
-                  </button>
-                )}
               </div>
 
               {!playerName.trim() && (
@@ -1262,7 +1275,7 @@ export default function ScienceMaster() {
                 </p>
               )}
 
-              {/* כפתור "איך לומדים מדעים כאן?" */}
+              {/* כפתורי עזרה נוספים */}
               <div className="mb-2 w-full max-w-md flex flex-wrap justify-center gap-2">
                 <button
                   onClick={() => setShowHowTo(true)}
@@ -1271,16 +1284,30 @@ export default function ScienceMaster() {
                   ❓ איך לומדים מדעים כאן?
                 </button>
                 <button
+                  onClick={goToParentReport}
+                  className="px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-xs font-bold text-white shadow-sm"
+                >
+                  📊 דוח להורים
+                </button>
+                <button
                   onClick={() => setShowPracticeOptions(true)}
                   className="px-4 py-2 rounded-lg bg-gray-500/70 hover:bg-gray-500 text-xs font-bold text-white shadow-sm"
                 >
                   🎛️ הגדרות תרגול
                 </button>
+                {mistakes.length > 0 && (
+                  <button
+                    onClick={() => setShowPracticeModal(true)}
+                    className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
+                  >
+                    🎯 תרגול טעויות ({mistakes.length})
+                  </button>
+                )}
                 <button
-                  onClick={goToParentReport}
-                  className="px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-xs font-bold text-white shadow-sm"
+                  onClick={() => router.push("/learning/curriculum?subject=science")}
+                  className="px-4 py-2 rounded-lg bg-amber-500/80 hover:bg-amber-500 text-xs font-bold text-white shadow-sm"
                 >
-                  📊 דוח להורים
+                  📋 תוכנית לימודים
                 </button>
               </div>
             </>
