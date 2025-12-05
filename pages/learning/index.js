@@ -31,6 +31,20 @@ const LEARNING_GAMES = [
     grades: "Grades 1–8",
     blurb: "Body, animals, plants, space, matter, weather, forces and more with explanations.",
   },
+  {
+    slug: "hebrew-master",
+    title: "Hebrew Master",
+    emoji: "📚",
+    grades: "Grades 1–6",
+    blurb: "Practice Hebrew language, vocabulary, grammar, reading comprehension and more by grade.",
+  },
+  {
+    slug: "moledet-geography-master",
+    title: "Moledet & Geography Master",
+    emoji: "🗺️",
+    grades: "Grades 1–6",
+    blurb: "Learn about homeland, society, citizenship and geography with interactive exercises.",
+  },
 ];
 
 export default function LearningHub() {
