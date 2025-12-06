@@ -13,6 +13,36 @@ export default function MyApp({ Component, pageProps }) {
           .then((registration) => {
             console.log("[SW] Registered successfully:", registration.scope);
             
+            // Pre-cache דפים חשובים אחרי שהדף נטען (רק במצב online)
+            if (registration.active && navigator.onLine) {
+              // המתין שהדף נטען לגמרי לפני pre-caching
+              setTimeout(() => {
+                const essentialPages = [
+                  '/',
+                  '/game',
+                  '/learning',
+                ];
+                registration.active.postMessage({
+                  type: 'PRE_CACHE_PAGES',
+                  pages: essentialPages
+                });
+                console.log('[App] Sent pre-cache request for essential pages');
+              }, 3000);
+            }
+            
+            // Pre-cache הדף הנוכחי
+            if (registration.active && navigator.onLine) {
+              setTimeout(() => {
+                const currentPath = window.location.pathname;
+                if (currentPath && currentPath !== '/') {
+                  registration.active.postMessage({
+                    type: 'PRE_CACHE_PAGES',
+                    pages: [currentPath]
+                  });
+                }
+              }, 4000);
+            }
+            
             // בדיקה לעדכונים כל שעה
             setInterval(() => {
               registration.update();

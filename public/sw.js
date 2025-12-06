@@ -1,38 +1,13 @@
 // Service Worker for LEO K PWA - Full Offline Support
-const CACHE_NAME = 'leo-k-v3';
-const STATIC_CACHE = 'leo-k-static-v3';
-const DYNAMIC_CACHE = 'leo-k-dynamic-v3';
+const CACHE_NAME = 'leo-k-v4';
+const STATIC_CACHE = 'leo-k-static-v4';
+const DYNAMIC_CACHE = 'leo-k-dynamic-v4';
 
-// Essential pages and assets to cache on install
+// רק קבצים סטטיים אמיתיים (לא דפי Next.js שנוצרים דינמית)
 const STATIC_ASSETS = [
-  '/',
-  '/game',
-  '/offline',
-  '/learning',
-  '/styles/globals.css',
   '/manifest.json',
-  // Main game pages
-  '/mleo-runner',
-  '/mleo-flyer',
-  '/mleo-catcher',
-  '/mleo-puzzle',
-  '/mleo-memory',
-  '/mleo-penalty',
-  // Offline games
-  '/offline/tic-tac-toe',
-  '/offline/rock-paper-scissors',
-  '/offline/tap-battle',
-  '/offline/memory-match',
-  // Learning games
-  '/learning/math-master',
-  '/learning/geometry-master',
-  '/learning/english-master',
-  '/learning/science-master',
-  '/learning/hebrew-master',
-  '/learning/moledet-geography-master',
-  '/learning/index',
-  '/learning/curriculum',
-  '/learning/parent-report',
+  '/offline',
+  '/styles/globals.css',
   // Essential images
   '/images/leo-intro.png',
   '/images/leo-icons/android-chrome-192x192.png',
@@ -99,6 +74,15 @@ const SOUND_PATTERNS = [
   /^\/sounds\/.*\.(mp3|wav|ogg)$/i,
 ];
 
+// Pre-cache essential pages after first visit
+const ESSENTIAL_PAGES = [
+  '/',
+  '/game',
+  '/learning',
+  '/learning/index',
+  '/offline',
+];
+
 // Install event - cache static resources
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker...');
@@ -106,10 +90,9 @@ self.addEventListener('install', (event) => {
     caches.open(STATIC_CACHE)
       .then((cache) => {
         console.log('[SW] Caching static assets');
-        // Cache in batches to avoid timeout
+        // Cache רק קבצים סטטיים אמיתיים
         return cache.addAll(STATIC_ASSETS).catch((err) => {
           console.log('[SW] Some assets failed to cache:', err);
-          // Continue even if some assets fail
           return Promise.resolve();
         });
       })
@@ -200,7 +183,7 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then((response) => {
           // Cache successful responses
-          if (response && response.status === 200) {
+          if (response && response.status === 200 && response.type === 'basic') {
             const responseToCache = response.clone();
             caches.open(DYNAMIC_CACHE).then((cache) => {
               cache.put(request, responseToCache);
@@ -209,16 +192,55 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => {
-          // Network failed, try cache
+          // Network failed - try cache with multiple fallback strategies
+          // Strategy 1: Try exact match
           return caches.match(request).then((cachedResponse) => {
             if (cachedResponse) {
               return cachedResponse;
             }
-            // If no cache, return offline page
-            return caches.match('/offline').then((offlinePage) => {
-              return offlinePage || new Response('Offline', { 
-                status: 503,
-                headers: { 'Content-Type': 'text/html; charset=utf-8' }
+            
+            // Strategy 2: Try URL without query params
+            const urlWithoutParams = request.url.split('?')[0];
+            return caches.match(urlWithoutParams).then((cachedResponse) => {
+              if (cachedResponse) {
+                return cachedResponse;
+              }
+              
+              // Strategy 3: Try parent route (for nested pages)
+              if (url.pathname.startsWith('/learning/')) {
+                return caches.match('/learning').then((cachedResponse) => {
+                  if (cachedResponse) {
+                    return cachedResponse;
+                  }
+                });
+              }
+              
+              // Strategy 4: Try home page as ultimate fallback
+              if (url.pathname !== '/') {
+                return caches.match('/').then((cachedResponse) => {
+                  if (cachedResponse) {
+                    return cachedResponse;
+                  }
+                });
+              }
+              
+              // Strategy 5: Return offline page
+              return caches.match('/offline').then((offlinePage) => {
+                if (offlinePage) {
+                  return offlinePage;
+                }
+                
+                // Final fallback - generate basic HTML response inline
+                return new Response(
+                  '<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline - LEO K</title><style>body{font-family:system-ui;text-align:center;padding:50px;background:#0a0f1d;color:#fff;margin:0}h1{font-size:2rem;margin-bottom:1rem}p{font-size:1.1rem;margin-bottom:2rem;color:#aaa}button{padding:12px 24px;margin-top:20px;background:#10b981;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:1rem}button:hover{background:#059669}</style></head><body><h1>🔌 אתה במצב Offline</h1><p>אנא התחבר לאינטרנט כדי להמשיך.</p><button onclick="location.reload()">נסה שוב</button></body></html>',
+                  { 
+                    status: 503,
+                    headers: { 
+                      'Content-Type': 'text/html; charset=utf-8',
+                      'Cache-Control': 'no-cache'
+                    }
+                  }
+                );
               });
             });
           });
@@ -227,8 +249,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Handle Next.js static chunks - Cache First
-  if (url.pathname.startsWith('/_next/static')) {
+  // Handle Next.js static chunks and scripts - Cache First
+  // These are critical for the app to work offline
+  if (
+    url.pathname.startsWith('/_next/static') ||
+    (request.destination === 'script' && url.pathname.startsWith('/_next'))
+  ) {
     event.respondWith(
       caches.match(request)
         .then((cachedResponse) => {
@@ -244,6 +270,7 @@ self.addEventListener('fetch', (event) => {
             }
             return response;
           }).catch(() => {
+            // Don't fail completely - return empty response
             return new Response('', { status: 404 });
           });
         })
@@ -331,4 +358,39 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(
     clients.openWindow('/')
   );
+});
+
+// Message handler - לקבל הודעות מהדף כדי לעשות pre-cache
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'PRE_CACHE_PAGES') {
+    const pages = event.data.pages || ESSENTIAL_PAGES;
+    console.log('[SW] Pre-caching pages:', pages);
+    event.waitUntil(
+      Promise.all(
+        pages.map((url) => {
+          // יצירת Request object עבור ה-URL
+          const request = new Request(url, { credentials: 'same-origin' });
+          return fetch(request)
+            .then((response) => {
+              if (response && response.status === 200 && response.type === 'basic') {
+                const responseToCache = response.clone();
+                return caches.open(DYNAMIC_CACHE).then((cache) => {
+                  cache.put(request, responseToCache);
+                  console.log(`[SW] Pre-cached: ${url}`);
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(`[SW] Failed to pre-cache ${url}:`, err);
+            });
+        })
+      ).then(() => {
+        console.log('[SW] Pre-caching completed');
+      })
+    );
+  }
+  
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
