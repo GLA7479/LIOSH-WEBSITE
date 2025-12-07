@@ -571,6 +571,16 @@ export default function MathMaster() {
     } catch {}
   }, []);
 
+  // שמירת progress ל-localStorage בכל עדכון
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+      saved.progress = progress;
+      localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+    } catch {}
+  }, [progress]);
+
   // Load leaderboard data when modal opens or level changes
   useEffect(() => {
     if (showLeaderboard && typeof window !== "undefined") {

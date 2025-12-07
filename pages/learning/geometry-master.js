@@ -241,6 +241,16 @@ const refreshMonthlyProgress = useCallback(() => {
     } catch {}
   }, []);
 
+  // שמירת progress ל-localStorage בכל עדכון
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+      saved.progress = progress;
+      localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+    } catch {}
+  }, [progress]);
+
   useEffect(() => {
     if (showLeaderboard && typeof window !== "undefined") {
       try {
