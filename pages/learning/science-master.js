@@ -440,6 +440,16 @@ export default function ScienceMaster() {
     }
   }, []);
 
+  // שמירת progress ל-localStorage בכל עדכון
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+      saved.progress = progress;
+      localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+    } catch {}
+  }, [progress]);
+
   // ----- DAILY CHALLENGE RESET -----
   useEffect(() => {
     const today = new Date().toDateString();
