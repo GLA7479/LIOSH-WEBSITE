@@ -44,6 +44,12 @@ import {
   MONTHLY_MINUTES_TARGET,
   getRewardLabel,
 } from "../../data/reward-options";
+import {
+  loadDailyStreak,
+  updateDailyStreak,
+  getStreakReward,
+} from "../../utils/daily-streak";
+import { useSound } from "../../hooks/useSound";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -228,6 +234,13 @@ export default function MathMaster() {
   });
 
   const [showDailyChallenge, setShowDailyChallenge] = useState(false);
+  
+  // Daily Streak
+  const [dailyStreak, setDailyStreak] = useState(() => loadDailyStreak("mleo_math_daily_streak"));
+  const [showStreakReward, setShowStreakReward] = useState(null);
+  
+  // Sound system
+  const sound = useSound();
   
   // תרגול ממוקד - שמירת שגיאות ותרגול מדורג
   const [mistakes, setMistakes] = useState(() => {
@@ -715,6 +728,8 @@ export default function MathMaster() {
   }
 
   function hardResetGame() {
+    // Stop background music when game ends
+    sound.stopBackgroundMusic();
     setGameActive(false);
     setCurrentQuestion(null);
     setScore(0);
@@ -908,6 +923,10 @@ export default function MathMaster() {
     setHintUsed(false);
     setShowBadge(null);
     setShowLevelUp(false);
+    
+    // Start background music and play game start sound
+    sound.playBackgroundMusic();
+    sound.playSound("game-start");
     setShowSolution(false);
     setErrorExplanation("");
 
@@ -929,6 +948,10 @@ export default function MathMaster() {
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    
+    // Stop background music when game stops
+    sound.stopBackgroundMusic();
+    
     saveRunToStorage();
   }
 
@@ -938,6 +961,7 @@ export default function MathMaster() {
     setWrong((prev) => prev + 1);
     setStreak(0);
       setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
+    sound.playSound("game-over");
     setGameActive(false);
     setCurrentQuestion(null);
     setTimeLeft(0);
@@ -1076,24 +1100,28 @@ export default function MathMaster() {
         const newBadge = "🔥 רצף חם";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
       } else if (newStreak === 25 && !badges.includes("⚡ מהיר כברק")) {
         const newBadge = "⚡ מהיר כברק";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
       } else if (newStreak === 50 && !badges.includes("🌟 מאסטר")) {
         const newBadge = "🌟 מאסטר";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
       } else if (newStreak === 100 && !badges.includes("👑 מלך החשבון")) {
         const newBadge = "👑 מלך החשבון";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
       }
@@ -1104,12 +1132,14 @@ export default function MathMaster() {
         const newBadge = `🧮 מלך ה${opName}`;
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
       } else if (newOpCorrect === 100 && !badges.includes(`🏆 גאון ה${opName}`)) {
         const newBadge = `🏆 גאון ה${opName}`;
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
       }
@@ -1119,12 +1149,14 @@ export default function MathMaster() {
         const newBadge = "💎 אלף נקודות";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
       } else if (newScore >= 5000 && newScore - points < 5000 && !badges.includes("🎯 חמשת אלפים")) {
         const newBadge = "🎯 חמשת אלפים";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
       }
@@ -1134,12 +1166,14 @@ export default function MathMaster() {
         const newBadge = "⭐ מאה תשובות נכונות";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
       } else if (newCorrect === 500 && correct < 500 && !badges.includes("🌟 חמש מאות תשובות")) {
         const newBadge = "🌟 חמש מאות תשובות";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
       }
@@ -1154,6 +1188,7 @@ export default function MathMaster() {
           setPlayerLevel((prevLevel) => {
             const newLevel = prevLevel + 1;
             setShowLevelUp(true);
+            sound.playSound("level-up");
             setTimeout(() => setShowLevelUp(false), 3000);
             if (typeof window !== "undefined") {
               try {
@@ -1204,6 +1239,24 @@ export default function MathMaster() {
         feedbackText = `יופי! רצף של ${streak + 1}! `;
       }
       setFeedback(`${feedbackText}${randomEmoji}`);
+      
+      // Play sound - different sound for streak milestones
+      if ((streak + 1) % 5 === 0 && streak + 1 >= 5) {
+        sound.playSound("streak");
+      } else {
+        sound.playSound("correct");
+      }
+      
+      // Update daily streak
+      const updatedStreak = updateDailyStreak("mleo_math_daily_streak");
+      setDailyStreak(updatedStreak);
+      
+      // Show streak reward if applicable
+      const reward = getStreakReward(updatedStreak.streak);
+      if (reward && updatedStreak.streak > (dailyStreak.streak || 0)) {
+        setShowStreakReward(reward);
+        setTimeout(() => setShowStreakReward(null), 3000);
+      }
       
       if ("vibrate" in navigator) navigator.vibrate?.(50);
 
@@ -1262,6 +1315,9 @@ export default function MathMaster() {
       setShowWrongAnimation(true);
       setTimeout(() => setShowWrongAnimation(false), 1000);
       
+      // Play sound
+      sound.playSound("wrong");
+      
       if ("vibrate" in navigator) navigator.vibrate?.(200);
 
       if (mode === "learning") {
@@ -1287,6 +1343,7 @@ export default function MathMaster() {
           if (nextLives <= 0) {
             // Game Over
             setFeedback("Game Over! 💔");
+            sound.playSound("game-over");
             recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
@@ -1508,7 +1565,7 @@ export default function MathMaster() {
 
           <div
             ref={controlsRef}
-            className="grid grid-cols-7 gap-0.5 mb-1 w-full max-w-md"
+            className="grid grid-cols-8 gap-0.5 mb-1 w-full max-w-md"
           >
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">ניקוד</div>
@@ -1535,6 +1592,10 @@ export default function MathMaster() {
               <div className="text-sm font-bold text-rose-400 leading-tight">
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
+            </div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">🔥 רצף יומי</div>
+              <div className="text-sm font-bold text-orange-400 leading-tight">{dailyStreak.streak || 0}</div>
             </div>
             <div
               className={`rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] ${
@@ -1591,6 +1652,20 @@ export default function MathMaster() {
             >
               {playerAvatar}
             </button>
+            <button
+              onClick={() => {
+                sound.toggleSounds();
+                sound.toggleMusic();
+              }}
+              className={`h-8 w-8 rounded-lg border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all ${
+                sound.soundsEnabled && sound.musicEnabled
+                  ? "bg-green-500/80 hover:bg-green-500"
+                  : "bg-red-500/80 hover:bg-red-500"
+              }`}
+              title={sound.soundsEnabled && sound.musicEnabled ? "השתק צלילים" : "הפעל צלילים"}
+            >
+              {sound.soundsEnabled && sound.musicEnabled ? "🔊" : "🔇"}
+            </button>
           </div>
 
           {/* הודעות מיוחדות */}
@@ -1600,6 +1675,15 @@ export default function MathMaster() {
                 <div className="text-4xl mb-2">🎉</div>
                 <div className="text-2xl font-bold">תג חדש!</div>
                 <div className="text-xl">{showBadge}</div>
+              </div>
+            </div>
+          )}
+
+          {showStreakReward && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none" dir="rtl">
+              <div className="bg-gradient-to-br from-orange-400 to-red-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-bounce">
+                <div className="text-4xl mb-2">{showStreakReward.emoji}</div>
+                <div className="text-xl font-bold">{showStreakReward.message}</div>
               </div>
             </div>
           )}
@@ -1692,7 +1776,55 @@ export default function MathMaster() {
                     <div className="bg-black/30 border border-white/10 rounded-lg p-3">
                       <div className="text-xs text-white/60 mb-1">רמה</div>
                       <div className="text-xl font-bold text-purple-400">Lv.{playerLevel}</div>
+                      {/* XP Progress Bar */}
+                      <div className="mt-2">
+                        <div className="flex justify-between text-xs text-white/60 mb-1">
+                          <span>XP</span>
+                          <span>{xp} / {playerLevel * 100}</span>
+                        </div>
+                        <div className="w-full bg-black/50 rounded-full h-2">
+                          <div
+                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${Math.min(100, (xp / (playerLevel * 100)) * 100)}%` }}
+                          />
+                        </div>
+                      </div>
                     </div>
+                  </div>
+                  
+                  {/* Daily Streak */}
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-2">🔥 רצף יומי</div>
+                    <div className="text-2xl font-bold text-orange-400">{dailyStreak.streak || 0} ימים</div>
+                    {dailyStreak.streak >= 3 && (
+                      <div className="text-xs text-white/60 mt-1">
+                        {dailyStreak.streak >= 30 ? "👑 אלוף!" : dailyStreak.streak >= 14 ? "🌟 מצוין!" : dailyStreak.streak >= 7 ? "⭐ יופי!" : "🔥 המשך כך!"}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Monthly Progress */}
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-2">התקדמות חודשית</div>
+                    <div className="flex justify-between text-xs text-white/60 mb-1">
+                      <span>{monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳</span>
+                      <span>{goalPercent}%</span>
+                    </div>
+                    <div className="w-full bg-black/50 rounded-full h-3 mb-2">
+                      <div
+                        className="bg-gradient-to-r from-emerald-500 to-blue-500 h-3 rounded-full transition-all duration-300"
+                        style={{ width: `${goalPercent}%` }}
+                      />
+                    </div>
+                    {minutesRemaining > 0 ? (
+                      <div className="text-xs text-white/60">
+                        נותרו עוד {minutesRemaining} דק׳ (~{Math.ceil(minutesRemaining / 60)} שעות)
+                      </div>
+                    ) : (
+                      <div className="text-xs text-emerald-400 font-bold">
+                        🎉 השלמת את היעד החודשי!
+                      </div>
+                    )}
                   </div>
 
                   <div className="bg-black/30 border border-white/10 rounded-lg p-3">

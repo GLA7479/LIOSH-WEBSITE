@@ -9,6 +9,12 @@ import {
 } from "../../data/science-curriculum";
 import { trackScienceTopicTime } from "../../utils/science-time-tracking";
 import {
+  loadDailyStreak,
+  updateDailyStreak,
+  getStreakReward,
+} from "../../utils/daily-streak";
+import { useSound } from "../../hooks/useSound";
+import {
   addSessionProgress,
   loadMonthlyProgress,
   loadRewardChoice,
@@ -331,7 +337,17 @@ export default function ScienceMaster() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardLevel, setLeaderboardLevel] = useState("easy");
   const [leaderboardData, setLeaderboardData] = useState([]);
+  
+  // Daily Streak
+  const [dailyStreak, setDailyStreak] = useState(() => loadDailyStreak("mleo_science_daily_streak"));
+  const [showStreakReward, setShowStreakReward] = useState(null);
+  
+  // Sound system
+  const sound = useSound();
+  
   const [stars, setStars] = useState(0);
+  const [badges, setBadges] = useState([]);
+  const [showBadge, setShowBadge] = useState(null);
   const [playerLevel, setPlayerLevel] = useState(1);
   const [xp, setXp] = useState(0);
   const [showLevelUp, setShowLevelUp] = useState(false);
@@ -345,7 +361,6 @@ export default function ScienceMaster() {
     environment: { total: 0, correct: 0 },
     experiments: { total: 0, correct: 0 },
   });
-  const badges = [];
   
   const getTodayKey = () => {
     const today = new Date();
@@ -474,6 +489,7 @@ export default function ScienceMaster() {
       if (!raw) return;
       const saved = JSON.parse(raw);
       if (saved.stars) setStars(saved.stars);
+      if (saved.badges) setBadges(saved.badges);
       if (saved.playerLevel) setPlayerLevel(saved.playerLevel);
       if (saved.xp) setXp(saved.xp);
       if (saved.progress) setProgress(saved.progress);
@@ -778,6 +794,8 @@ function recordSessionProgress() {
   }
 
   function hardResetGame() {
+    // Stop background music when game resets
+    sound.stopBackgroundMusic();
     setGameActive(false);
     setCurrentQuestion(null);
     setScore(0);
@@ -862,6 +880,8 @@ function recordSessionProgress() {
   }
 
   function stopGame() {
+    // Stop background music when game stops
+    sound.stopBackgroundMusic();
     recordSessionProgress();
     saveRunToStorage();
     setGameActive(false);
@@ -948,11 +968,101 @@ function recordSessionProgress() {
         if (changed) {
           setPlayerLevel(lv);
           setShowLevelUp(true);
+          sound.playSound("level-up");
           setTimeout(() => setShowLevelUp(false), 2500);
         }
         persistProgress(null, null, lv, newXp);
         return newXp;
       });
+      
+      // Badges
+      const newStreak = streak + 1;
+      if (newStreak === 10 && !badges.includes("🔥 רצף חם")) {
+        const newBadge = "🔥 רצף חם";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        sound.playSound("badge-earned");
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      } else if (newStreak === 25 && !badges.includes("⚡ מהיר כברק")) {
+        const newBadge = "⚡ מהיר כברק";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        sound.playSound("badge-earned");
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      } else if (newStreak === 50 && !badges.includes("🌟 מאסטר מדעים")) {
+        const newBadge = "🌟 מאסטר מדעים";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        sound.playSound("badge-earned");
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      } else if (newStreak === 100 && !badges.includes("👑 מלך המדעים")) {
+        const newBadge = "👑 מלך המדעים";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        sound.playSound("badge-earned");
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      }
+      
+      // Badges לפי נושא
+      const topicKey = currentQuestion.topic;
+      const topicProgress = progress[topicKey] || { total: 0, correct: 0 };
+      const newTopicCorrect = topicProgress.correct + 1;
+      const topicName = TOPICS[topicKey]?.name || topicKey;
+      if (newTopicCorrect === 50 && !badges.includes(`🔬 מומחה ${topicName}`)) {
+        const newBadge = `🔬 מומחה ${topicName}`;
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        sound.playSound("badge-earned");
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      } else if (newTopicCorrect === 100 && !badges.includes(`🏆 גאון ${topicName}`)) {
+        const newBadge = `🏆 גאון ${topicName}`;
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        sound.playSound("badge-earned");
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      }
+      
+      // Badges לפי ניקוד
+      const newScore = score + points;
+      if (newScore >= 1000 && newScore - points < 1000 && !badges.includes("💎 אלף נקודות")) {
+        const newBadge = "💎 אלף נקודות";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        sound.playSound("badge-earned");
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      } else if (newScore >= 5000 && newScore - points < 5000 && !badges.includes("🎯 חמשת אלפים")) {
+        const newBadge = "🎯 חמשת אלפים";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        sound.playSound("badge-earned");
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      }
+      
+      // Badges לפי תשובות נכונות
+      if (newCorrect === 100 && correct < 100 && !badges.includes("⭐ מאה תשובות נכונות")) {
+        const newBadge = "⭐ מאה תשובות נכונות";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        sound.playSound("badge-earned");
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      } else if (newCorrect === 500 && correct < 500 && !badges.includes("🌟 חמש מאות תשובות")) {
+        const newBadge = "🌟 חמש מאות תשובות";
+        setBadges((prev) => [...prev, newBadge]);
+        setShowBadge(newBadge);
+        sound.playSound("badge-earned");
+        setTimeout(() => setShowBadge(null), 3000);
+        saveBadge(newBadge);
+      }
+      
       // daily challenge
       const todayKey = getTodayKey();
       setDailyChallenge((prev) => {
@@ -991,6 +1101,25 @@ function recordSessionProgress() {
       });
       
       setFeedback("מצוין! ✅");
+      
+      // Play sound - different sound for streak milestones
+      if ((streak + 1) % 5 === 0 && streak + 1 >= 5) {
+        sound.playSound("streak");
+      } else {
+        sound.playSound("correct");
+      }
+      
+      // Update daily streak
+      const updatedStreak = updateDailyStreak("mleo_science_daily_streak");
+      setDailyStreak(updatedStreak);
+      
+      // Show streak reward if applicable
+      const reward = getStreakReward(updatedStreak.streak);
+      if (reward && updatedStreak.streak > (dailyStreak.streak || 0)) {
+        setShowStreakReward(reward);
+        setTimeout(() => setShowStreakReward(null), 3000);
+      }
+      
       if ("vibrate" in navigator) navigator.vibrate?.(50);
       setTimeout(() => {
         if (!gameActive) return;
@@ -1001,6 +1130,10 @@ function recordSessionProgress() {
     } else {
       setWrong((prev) => prev + 1);
       setStreak(0);
+      
+      // Play sound for wrong answer
+      sound.playSound("wrong");
+      
       setErrorExplanation(getErrorExplanationScience(currentQuestion, answerText));
       logScienceMistakeEntry(currentQuestion, answerText);
       setProgress((prev) => {
@@ -1028,6 +1161,7 @@ function recordSessionProgress() {
           const next = prev - 1;
           if (next <= 0) {
             setFeedback("Game Over! 💔");
+            sound.playSound("game-over");
             recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
@@ -1049,6 +1183,15 @@ function recordSessionProgress() {
       }
     }
   }
+
+  const saveBadge = (badge) => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+      saved.badges = [...badges, badge];
+      localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+    } catch {}
+  };
 
   function persistProgress(newProgress, newStars, newLevel, newXp) {
     if (typeof window === "undefined") return;
@@ -1201,7 +1344,7 @@ function recordSessionProgress() {
           {/* TOP STATS */}
           <div
             ref={controlsRef}
-            className="grid grid-cols-7 gap-0.5 mb-1 w-full max-w-md"
+            className="grid grid-cols-8 gap-0.5 mb-1 w-full max-w-md"
           >
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">ניקוד</div>
@@ -1228,6 +1371,10 @@ function recordSessionProgress() {
               <div className="text-sm font-bold text-rose-400 leading-tight">
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
+            </div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">🔥 רצף יומי</div>
+              <div className="text-sm font-bold text-orange-400 leading-tight">{dailyStreak.streak || 0}</div>
             </div>
             <div
               className={`rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] ${
@@ -1287,7 +1434,30 @@ function recordSessionProgress() {
             >
               {playerAvatar}
             </button>
+            <button
+              onClick={() => {
+                sound.toggleSounds();
+                sound.toggleMusic();
+              }}
+              className={`h-8 w-8 rounded-lg border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all ${
+                sound.soundsEnabled && sound.musicEnabled
+                  ? "bg-green-500/80 hover:bg-green-500"
+                  : "bg-red-500/80 hover:bg-red-500"
+              }`}
+              title={sound.soundsEnabled && sound.musicEnabled ? "השתק צלילים" : "הפעל צלילים"}
+            >
+              {sound.soundsEnabled && sound.musicEnabled ? "🔊" : "🔇"}
+            </button>
           </div>
+
+          {showStreakReward && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none" dir="rtl">
+              <div className="bg-gradient-to-br from-orange-400 to-red-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-bounce">
+                <div className="text-4xl mb-2">{showStreakReward.emoji}</div>
+                <div className="text-xl font-bold">{showStreakReward.message}</div>
+              </div>
+            </div>
+          )}
 
           {/* LEVEL-UP POPUP */}
           {showLevelUp && (
@@ -2088,7 +2258,55 @@ function recordSessionProgress() {
                     <div className="bg-black/30 border border-white/10 rounded-lg p-3">
                       <div className="text-xs text-white/60 mb-1">רמת מדען</div>
                       <div className="text-xl font-bold text-purple-400">Lv.{playerLevel}</div>
+                      {/* XP Progress Bar */}
+                      <div className="mt-2">
+                        <div className="flex justify-between text-xs text-white/60 mb-1">
+                          <span>XP</span>
+                          <span>{xp} / {playerLevel * 100}</span>
+                        </div>
+                        <div className="w-full bg-black/50 rounded-full h-2">
+                          <div
+                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${Math.min(100, (xp / (playerLevel * 100)) * 100)}%` }}
+                          />
+                        </div>
+                      </div>
                     </div>
+                  </div>
+                  
+                  {/* Daily Streak */}
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-2">🔥 רצף יומי</div>
+                    <div className="text-2xl font-bold text-orange-400">{dailyStreak.streak || 0} ימים</div>
+                    {dailyStreak.streak >= 3 && (
+                      <div className="text-xs text-white/60 mt-1">
+                        {dailyStreak.streak >= 30 ? "👑 אלוף!" : dailyStreak.streak >= 14 ? "🌟 מצוין!" : dailyStreak.streak >= 7 ? "⭐ יופי!" : "🔥 המשך כך!"}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Monthly Progress */}
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-2">התקדמות חודשית</div>
+                    <div className="flex justify-between text-xs text-white/60 mb-1">
+                      <span>{monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳</span>
+                      <span>{goalPercent}%</span>
+                    </div>
+                    <div className="w-full bg-black/50 rounded-full h-3 mb-2">
+                      <div
+                        className="bg-gradient-to-r from-emerald-500 to-blue-500 h-3 rounded-full transition-all duration-300"
+                        style={{ width: `${goalPercent}%` }}
+                      />
+                    </div>
+                    {minutesRemaining > 0 ? (
+                      <div className="text-xs text-white/60">
+                        נותרו עוד {minutesRemaining} דק׳ (~{Math.ceil(minutesRemaining / 60)} שעות)
+                      </div>
+                    ) : (
+                      <div className="text-xs text-emerald-400 font-bold">
+                        🎉 השלמת את היעד החודשי!
+                      </div>
+                    )}
                   </div>
 
                   <div className="bg-black/30 border border-white/10 rounded-lg p-3">

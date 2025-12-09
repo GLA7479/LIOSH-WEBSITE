@@ -16,6 +16,12 @@ import {
   getRewardLabel,
 } from "../../data/reward-options";
 import {
+  loadDailyStreak,
+  updateDailyStreak,
+  getStreakReward,
+} from "../../utils/daily-streak";
+import { useSound } from "../../hooks/useSound";
+import {
   ENGLISH_GRADES,
   ENGLISH_GRADE_ORDER,
 } from "../../data/english-curriculum";
@@ -798,6 +804,14 @@ export default function EnglishMaster() {
   const [badges, setBadges] = useState([]);
   const [showBadge, setShowBadge] = useState(null);
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
+  
+  // Daily Streak
+  const [dailyStreak, setDailyStreak] = useState(() => loadDailyStreak("mleo_english_daily_streak"));
+  const [showStreakReward, setShowStreakReward] = useState(null);
+  
+  // Sound system
+  const sound = useSound();
+  
   const [playerLevel, setPlayerLevel] = useState(1);
   const [xp, setXp] = useState(0);
   const [showLevelUp, setShowLevelUp] = useState(false);
@@ -1207,6 +1221,8 @@ const refreshMonthlyProgress = useCallback(() => {
   }
 
   function hardResetGame() {
+    // Stop background music when game resets
+    sound.stopBackgroundMusic();
     setGameActive(false);
     setCurrentQuestion(null);
     setScore(0);
@@ -1339,6 +1355,10 @@ const refreshMonthlyProgress = useCallback(() => {
     setShowBadge(null);
     setShowLevelUp(false);
     setShowSolution(false);
+    
+    // Start background music and play game start sound
+    sound.playBackgroundMusic();
+    sound.playSound("game-start");
     setErrorExplanation("");
     if (mode === "challenge") {
       setTimeLeft(20);
@@ -1351,6 +1371,8 @@ const refreshMonthlyProgress = useCallback(() => {
   }
 
   function stopGame() {
+    // Stop background music when game stops
+    sound.stopBackgroundMusic();
     trackCurrentQuestionTime();
     recordSessionProgress();
     setGameActive(false);
@@ -1426,6 +1448,7 @@ const refreshMonthlyProgress = useCallback(() => {
         const newBadge = "🔥 Hot Streak";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         if (typeof window !== "undefined") {
           try {
@@ -1438,6 +1461,7 @@ const refreshMonthlyProgress = useCallback(() => {
         const newBadge = "⚡ Lightning Fast";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         if (typeof window !== "undefined") {
           try {
@@ -1450,6 +1474,7 @@ const refreshMonthlyProgress = useCallback(() => {
         const newBadge = "🌟 Master";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
+        sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         if (typeof window !== "undefined") {
           try {
@@ -1467,6 +1492,7 @@ const refreshMonthlyProgress = useCallback(() => {
           setPlayerLevel((prevLevel) => {
             const newLevel = prevLevel + 1;
             setShowLevelUp(true);
+            sound.playSound("level-up");
             setTimeout(() => setShowLevelUp(false), 3000);
             if (typeof window !== "undefined") {
               try {
@@ -1490,6 +1516,25 @@ const refreshMonthlyProgress = useCallback(() => {
         return newXp;
       });
       setFeedback("Correct! 🎉");
+      
+      // Play sound - different sound for streak milestones
+      if ((streak + 1) % 5 === 0 && streak + 1 >= 5) {
+        sound.playSound("streak");
+      } else {
+        sound.playSound("correct");
+      }
+      
+      // Update daily streak
+      const updatedStreak = updateDailyStreak("mleo_english_daily_streak");
+      setDailyStreak(updatedStreak);
+      
+      // Show streak reward if applicable
+      const reward = getStreakReward(updatedStreak.streak);
+      if (reward && updatedStreak.streak > (dailyStreak.streak || 0)) {
+        setShowStreakReward(reward);
+        setTimeout(() => setShowStreakReward(null), 3000);
+      }
+      
       if ("vibrate" in navigator) navigator.vibrate?.(50);
       setTimeout(() => {
         generateNewQuestion();
@@ -1504,6 +1549,9 @@ const refreshMonthlyProgress = useCallback(() => {
     } else {
       setWrong((prev) => prev + 1);
       setStreak(0);
+      
+      // Play sound for wrong answer
+      sound.playSound("wrong");
       
       const questionGradeKey = currentQuestion.gradeKey || grade;
       setErrorExplanation(
@@ -1545,6 +1593,7 @@ const refreshMonthlyProgress = useCallback(() => {
           if (nextLives <= 0) {
             trackCurrentQuestionTime();
             setFeedback("Game Over! 💔");
+            sound.playSound("game-over");
             recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
