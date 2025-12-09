@@ -45,6 +45,35 @@ import {
   getRewardLabel,
 } from "../../data/reward-options";
 
+const AVATAR_OPTIONS = [
+  "👤",
+  "🧑",
+  "👦",
+  "👧",
+  "🦁",
+  "🐱",
+  "🐶",
+  "🐰",
+  "🐻",
+  "🐼",
+  "🦊",
+  "🐸",
+  "🦄",
+  "🌟",
+  "🎮",
+  "🏆",
+  "⭐",
+  "💫",
+];
+
+const REFERENCE_CATEGORIES = {
+  operations: { label: "פעולות חשבון", icon: "➕" },
+  formulas: { label: "נוסחאות", icon: "📐" },
+  terms: { label: "מונחים", icon: "📚" },
+};
+
+const REFERENCE_CATEGORY_KEYS = Object.keys(REFERENCE_CATEGORIES);
+
 export default function MathMaster() {
   useIOSViewportFix();
   const router = useRouter();
@@ -212,6 +241,8 @@ export default function MathMaster() {
   });
   const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal"); // "normal", "mistakes", "graded"
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
+  const [showReferenceModal, setShowReferenceModal] = useState(false);
+  const [referenceCategory, setReferenceCategory] = useState(REFERENCE_CATEGORY_KEYS[0]);
 
   // רמזים
   const [showHint, setShowHint] = useState(false);
@@ -1617,7 +1648,7 @@ export default function MathMaster() {
                   <div className="text-6xl mb-3">{playerAvatar}</div>
                   <div className="text-sm text-white/60 mb-3">בחר אווטר:</div>
                   <div className="grid grid-cols-6 gap-2 mb-4">
-                    {["👤", "🧑", "👦", "👧", "🦁", "🐱", "🐶", "🐰", "🐻", "🐼", "🦊", "🐸", "🦄", "🌟", "🎮", "🏆", "⭐", "💫"].map((avatar) => (
+                    {AVATAR_OPTIONS.map((avatar) => (
                       <button
                         key={avatar}
                         onClick={() => {
@@ -2058,6 +2089,12 @@ export default function MathMaster() {
                   className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
                 >
                   ❓ איך לומדים חשבון כאן?
+                </button>
+                <button
+                  onClick={() => setShowReferenceModal(true)}
+                  className="px-4 py-2 rounded-lg bg-indigo-500/80 hover:bg-indigo-500 text-xs font-bold text-white shadow-sm"
+                >
+                  📚 לוח עזרה
                 </button>
                 <button
                   onClick={() => router.push("/learning/parent-report")}
@@ -3900,6 +3937,157 @@ export default function MathMaster() {
               </div>
             </div>
           )}
+          {/* Reference Modal - לוח עזרה */}
+          {showReferenceModal && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[185] p-4"
+              onClick={() => setShowReferenceModal(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-blue-400/60 rounded-2xl p-5 w-full max-w-lg max-h-[85vh] overflow-y-auto text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-2xl font-extrabold">📚 לוח עזרה בחשבון</h2>
+                  <button
+                    onClick={() => setShowReferenceModal(false)}
+                    className="text-white/80 hover:text-white text-xl px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                <p className="text-sm text-white/70 mb-3">
+                  בחר קטגוריה כדי לראות פעולות, נוסחאות ומונחים חשובים בחשבון.
+                </p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {REFERENCE_CATEGORY_KEYS.map((key) => (
+                    <button
+                      key={key}
+                      onClick={() => setReferenceCategory(key)}
+                      className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                        referenceCategory === key
+                          ? "bg-blue-500/80 border-blue-300 text-white"
+                          : "bg-white/5 border-white/20 text-white/70 hover:bg-white/10"
+                      }`}
+                    >
+                      {REFERENCE_CATEGORIES[key].icon} {REFERENCE_CATEGORIES[key].label}
+                    </button>
+                  ))}
+                </div>
+                <div className="space-y-3">
+                  {referenceCategory === "operations" && (
+                    <>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">➕ חיבור</div>
+                        <div className="text-sm text-white/80">חיבור מספרים: a + b = c</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: 5 + 3 = 8</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">➖ חיסור</div>
+                        <div className="text-sm text-white/80">חיסור מספרים: a - b = c</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: 8 - 3 = 5</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">✖️ כפל</div>
+                        <div className="text-sm text-white/80">כפל מספרים: a × b = c</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: 4 × 3 = 12</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">➗ חילוק</div>
+                        <div className="text-sm text-white/80">חילוק מספרים: a ÷ b = c</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: 12 ÷ 3 = 4</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🔢 שברים</div>
+                        <div className="text-sm text-white/80">מספר המייצג חלק משלם: 1/2, 3/4</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: 1/2 = 0.5</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">% אחוזים</div>
+                        <div className="text-sm text-white/80">חלק מתוך 100: % = חלק/שלם × 100</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: 50% = 0.5</div>
+                      </div>
+                    </>
+                  )}
+                  {referenceCategory === "formulas" && (
+                    <>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 שטח ריבוע</div>
+                        <div className="text-sm text-white/80">צלע × צלע</div>
+                        <div className="text-xs text-white/60 mt-1">S = a²</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 שטח מלבן</div>
+                        <div className="text-sm text-white/80">אורך × רוחב</div>
+                        <div className="text-xs text-white/60 mt-1">S = a × b</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">📐 שטח משולש</div>
+                        <div className="text-sm text-white/80">(בסיס × גובה) ÷ 2</div>
+                        <div className="text-xs text-white/60 mt-1">S = (b × h) ÷ 2</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">⭕ היקף מעגל</div>
+                        <div className="text-sm text-white/80">2 × π × רדיוס</div>
+                        <div className="text-xs text-white/60 mt-1">P = 2πr</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">⭕ שטח מעגל</div>
+                        <div className="text-sm text-white/80">π × רדיוס²</div>
+                        <div className="text-xs text-white/60 mt-1">S = πr²</div>
+                      </div>
+                    </>
+                  )}
+                  {referenceCategory === "terms" && (
+                    <>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">➕ סכום</div>
+                        <div className="text-sm text-white/80">תוצאת החיבור של מספרים</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">➖ הפרש</div>
+                        <div className="text-sm text-white/80">תוצאת החיסור של מספרים</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">✖️ מכפלה</div>
+                        <div className="text-sm text-white/80">תוצאת הכפל של מספרים</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">➗ מנה</div>
+                        <div className="text-sm text-white/80">תוצאת החילוק של מספרים</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🔢 מספר זוגי</div>
+                        <div className="text-sm text-white/80">מספר המתחלק ב-2 ללא שארית (2, 4, 6, 8...)</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🔢 מספר אי-זוגי</div>
+                        <div className="text-sm text-white/80">מספר שלא מתחלק ב-2 ללא שארית (1, 3, 5, 7...)</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🔢 מספר ראשוני</div>
+                        <div className="text-sm text-white/80">מספר המתחלק רק ב-1 ובעצמו (2, 3, 5, 7, 11...)</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🔢 מספר שלם</div>
+                        <div className="text-sm text-white/80">מספר ללא שבר (0, 1, 2, 3, -1, -2...)</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🔢 שבר</div>
+                        <div className="text-sm text-white/80">מספר המייצג חלק משלם (1/2, 3/4, 2/3...)</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">% אחוז</div>
+                        <div className="text-sm text-white/80">חלק מתוך 100 (50% = חצי, 25% = רבע)</div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
     </Layout>

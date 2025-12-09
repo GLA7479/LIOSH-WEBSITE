@@ -38,6 +38,35 @@ import {
   getRewardLabel,
 } from "../../data/reward-options";
 
+const AVATAR_OPTIONS = [
+  "👤",
+  "🧑",
+  "👦",
+  "👧",
+  "🦁",
+  "🐱",
+  "🐶",
+  "🐰",
+  "🐻",
+  "🐼",
+  "🦊",
+  "🐸",
+  "🦄",
+  "🌟",
+  "🎮",
+  "🏆",
+  "⭐",
+  "💫",
+];
+
+const REFERENCE_CATEGORIES = {
+  homeland: { label: "מולדת", icon: "🏠" },
+  geography: { label: "גאוגרפיה", icon: "🗺️" },
+  citizenship: { label: "אזרחות", icon: "👥" },
+};
+
+const REFERENCE_CATEGORY_KEYS = Object.keys(REFERENCE_CATEGORIES);
+
 export default function MoledetGeographyMaster() {
   useIOSViewportFix();
   const router = useRouter();
@@ -197,6 +226,8 @@ export default function MoledetGeographyMaster() {
   });
   const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal"); // "normal", "mistakes", "graded"
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
+  const [showReferenceModal, setShowReferenceModal] = useState(false);
+  const [referenceCategory, setReferenceCategory] = useState(REFERENCE_CATEGORY_KEYS[0]);
 
   // רמזים
   const [showHint, setShowHint] = useState(false);
@@ -1548,7 +1579,7 @@ export default function MoledetGeographyMaster() {
                   <div className="text-6xl mb-3">{playerAvatar}</div>
                   <div className="text-sm text-white/60 mb-3">בחר אווטר:</div>
                   <div className="grid grid-cols-6 gap-2 mb-4">
-                    {["👤", "🧑", "👦", "👧", "🦁", "🐱", "🐶", "🐰", "🐻", "🐼", "🦊", "🐸", "🦄", "🌟", "🎮", "🏆", "⭐", "💫"].map((avatar) => (
+                    {AVATAR_OPTIONS.map((avatar) => (
                       <button
                         key={avatar}
                         onClick={() => {
@@ -1969,19 +2000,13 @@ export default function MoledetGeographyMaster() {
                   ▶️ התחל
                 </button>
                 <button
-                  onClick={() => setShowMultiplicationTable(true)}
-                  className="h-9 px-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-xs"
-                >
-                  📊 לוח כפל
-                </button>
-                <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-9 px-3 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-xs"
                 >
                   🏆 לוח תוצאות
                 </button>
               </div>
-
+              
               {/* כפתורים עזרה ותרגול ממוקד */}
               <div className="mb-2 w-full max-w-md flex justify-center gap-2 flex-wrap">
                 <button
@@ -1989,6 +2014,12 @@ export default function MoledetGeographyMaster() {
                   className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
                 >
                   ❓ איך לומדים מולדת וגאוגרפיה כאן?
+                </button>
+                <button
+                  onClick={() => setShowReferenceModal(true)}
+                  className="px-4 py-2 rounded-lg bg-indigo-500/80 hover:bg-indigo-500 text-xs font-bold text-white shadow-sm"
+                >
+                  📚 לוח עזרה
                 </button>
                 <button
                   onClick={() => router.push("/learning/parent-report")}
@@ -2397,48 +2428,6 @@ export default function MoledetGeographyMaster() {
                         </button>
                   </div>
 
-                  {/* כפתור חיבור לטבלת כפל/חילוק – רק במצב למידה */}
-                  {mode === "learning" &&
-                    (currentQuestion.operation === "multiplication" ||
-                      currentQuestion.operation === "division") && (
-                          <div className="flex justify-center">
-                      <button
-                        onClick={() => {
-                          setShowMultiplicationTable(true);
-                          setTableMode(
-                            currentQuestion.operation === "multiplication"
-                              ? "multiplication"
-                              : "division"
-                          );
-                          if (currentQuestion.operation === "multiplication") {
-                            const a = currentQuestion.a;
-                            const b = currentQuestion.b;
-                            if (a >= 1 && a <= 12 && b >= 1 && b <= 12) {
-                              const value = a * b;
-                              setSelectedCell({ row: a, col: b, value });
-                              setSelectedRow(null);
-                              setSelectedCol(null);
-                              setSelectedResult(null);
-                              setSelectedDivisor(null);
-                            }
-                          } else {
-                            const { a, b } = currentQuestion;
-                            const value = a;
-                            if (b >= 1 && b <= 12) {
-                              setSelectedCell({ row: 1, col: b, value });
-                              setSelectedResult(value);
-                              setSelectedDivisor(b);
-                              setSelectedRow(null);
-                              setSelectedCol(null);
-                            }
-                          }
-                        }}
-                              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white"
-                      >
-                              📊 הצג בטבלה
-                      </button>
-                          </div>
-                        )}
 
                       {/* תיבת רמז */}
                       {showHint && hintText && (
@@ -2546,586 +2535,6 @@ export default function MoledetGeographyMaster() {
             </>
           )}
 
-          {/* Multiplication Table Modal */}
-          {showMultiplicationTable && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" dir="rtl">
-              <div
-                className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-                onClick={() => {
-                  setShowMultiplicationTable(false);
-                  setSelectedRow(null);
-                  setSelectedCol(null);
-                  setHighlightedAnswer(null);
-                  setTableMode("multiplication");
-                  setSelectedResult(null);
-                  setSelectedDivisor(null);
-                  setSelectedCell(null);
-                }}
-              />
-              <div className="relative w-full max-w-md max-h-[80svh] overflow-y-auto bg-gradient-to-b from-[#0a0f1d] to-[#141928] rounded-2xl border-2 border-white/20 shadow-2xl">
-                <div className="sticky top-0 bg-gradient-to-b from-[#0a0f1d] to-[#141928] border-b border-white/10 px-4 py-3 flex items-center justify-between z-10">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => {
-                        setShowMultiplicationTable(false);
-                        setSelectedRow(null);
-                        setSelectedCol(null);
-                        setHighlightedAnswer(null);
-                        setTableMode("multiplication");
-                        setSelectedResult(null);
-                        setSelectedDivisor(null);
-                        setSelectedCell(null);
-                      }}
-                      className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-lg flex items-center justify-center"
-                    >
-                      ×
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSelectedRow(null);
-                        setSelectedCol(null);
-                        setHighlightedAnswer(null);
-                        setSelectedResult(null);
-                        setSelectedDivisor(null);
-                        setSelectedCell(null);
-                      }}
-                      className="px-2 py-1 rounded text-xs font-bold bg-white/10 hover:bg-white/20 text-white"
-                    >
-                      איפוס
-                    </button>
-                  </div>
-                  <h2 className="text-xl font-bold text-white">
-                    📊 לוח הכפל
-                  </h2>
-                </div>
-                <div className="p-4">
-                  {/* Mode toggle */}
-                  <div className="mb-4 flex gap-2 justify-center flex-wrap" dir="rtl">
-                    <button
-                      onClick={() => {
-                        setTableMode("division");
-                        setSelectedRow(null);
-                        setSelectedCol(null);
-                        setHighlightedAnswer(null);
-                        setSelectedResult(null);
-                        setSelectedDivisor(null);
-                        setSelectedCell(null);
-                        setPracticeMode(false);
-                        setPracticeQuestion(null);
-                        setPracticeAnswer("");
-                      }}
-                      className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                        tableMode === "division"
-                          ? "bg-purple-500/80 text-white"
-                          : "bg-white/10 text-white/70 hover:bg-white/20"
-                      }`}
-                    >
-                      ÷ חילוק
-                    </button>
-                    <button
-                      onClick={() => {
-                        setTableMode("multiplication");
-                        setSelectedRow(null);
-                        setSelectedCol(null);
-                        setHighlightedAnswer(null);
-                        setSelectedResult(null);
-                        setSelectedDivisor(null);
-                        setSelectedCell(null);
-                        setPracticeMode(false);
-                        setPracticeQuestion(null);
-                        setPracticeAnswer("");
-                      }}
-                      className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                        tableMode === "multiplication"
-                          ? "bg-blue-500/80 text-white"
-                          : "bg-white/10 text-white/70 hover:bg-white/20"
-                      }`}
-                    >
-                      × כפל
-                    </button>
-                    <button
-                      onClick={() => {
-                        setPracticeMode(!practiceMode);
-                        if (!practiceMode) {
-                          generatePracticeQuestion();
-                        } else {
-                          setPracticeQuestion(null);
-                          setPracticeAnswer("");
-                          setPracticeRow(null);
-                          setPracticeCol(null);
-                        }
-                      }}
-                      className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                        practiceMode
-                          ? "bg-emerald-500/80 text-white"
-                          : "bg-white/10 text-white/70 hover:bg-white/20"
-                      }`}
-                    >
-                      🎯 תרגול
-                    </button>
-                  </div>
-
-                  {/* מצב תרגול */}
-                  {practiceMode && practiceQuestion && (
-                    <div className="mb-4 p-4 rounded-lg bg-emerald-500/20 border border-emerald-400/50">
-                      <div className="text-center mb-3">
-                        <div className="text-2xl font-bold text-white mb-2">
-                          {practiceQuestion.row} × {practiceQuestion.col} = ?
-                        </div>
-                        <input
-                          type="number"
-                          value={practiceAnswer}
-                          onChange={(e) => setPracticeAnswer(e.target.value)}
-                          onKeyPress={(e) => {
-                            if (e.key === "Enter") {
-                              checkPracticeAnswer();
-                            }
-                          }}
-                          placeholder="הכנס תשובה"
-                          className="w-full max-w-[200px] px-4 py-2 rounded-lg bg-black/40 border border-white/20 text-white text-xl font-bold text-center"
-                          autoFocus
-                        />
-                      </div>
-                      <div className="flex gap-2 justify-center">
-                        <button
-                          onClick={checkPracticeAnswer}
-                          className="px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
-                        >
-                          בדוק
-                        </button>
-                        <button
-                          onClick={() => generatePracticeQuestion()}
-                          className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
-                        >
-                          שאלה חדשה
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* בחירת שורה/עמודה לתרגול ממוקד */}
-                  {practiceMode && !practiceQuestion && (
-                    <div className="mb-4 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
-                      <div className="text-center mb-3">
-                        <div className="text-sm text-white/80 mb-2">בחר שורה או עמודה לתרגול:</div>
-                        <div className="flex gap-2 justify-center flex-wrap">
-                          {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
-                            <button
-                              key={num}
-                              onClick={() => {
-                                setPracticeRow(num);
-                                setPracticeCol(null);
-                                generatePracticeQuestion(num, null);
-                              }}
-                              className={`px-3 py-1 rounded-lg text-sm font-bold transition-all ${
-                                practiceRow === num
-                                  ? "bg-yellow-500/80 text-white"
-                                  : "bg-white/10 text-white/70 hover:bg-white/20"
-                              }`}
-                            >
-                              שורה {num}
-                            </button>
-                          ))}
-                        </div>
-                        <div className="flex gap-2 justify-center flex-wrap mt-2">
-                          {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
-                            <button
-                              key={num}
-                              onClick={() => {
-                                setPracticeCol(num);
-                                setPracticeRow(null);
-                                generatePracticeQuestion(null, num);
-                              }}
-                              className={`px-3 py-1 rounded-lg text-sm font-bold transition-all ${
-                                practiceCol === num
-                                  ? "bg-yellow-500/80 text-white"
-                                  : "bg-white/10 text-white/70 hover:bg-white/20"
-                              }`}
-                            >
-                              עמודה {num}
-                            </button>
-                          ))}
-                        </div>
-                        <button
-                          onClick={() => {
-                            setPracticeRow(null);
-                            setPracticeCol(null);
-                            generatePracticeQuestion();
-                          }}
-                          className="mt-2 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
-                        >
-                          תרגול אקראי
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Result window */}
-                  <div className="mb-3 min-h-[30px] w-full flex items-center justify-center">
-                    {tableMode === "division" &&
-                      selectedCell &&
-                      (selectedRow || selectedCol) &&
-                      selectedResult &&
-                      selectedDivisor &&
-                      selectedResult % selectedDivisor !== 0 && (
-                        <div className="w-full px-4 py-1 rounded-lg bg-red-500/20 border border-red-400/50 text-center flex items-center justify-center gap-2">
-                          <span className="text-sm text-red-200 font-semibold">
-                            ⚠️ שגיאה: {selectedResult} ÷ {selectedDivisor} הוא
-                            לא מספר שלם!
-                          </span>
-                          <span className="text-xs text-red-300">
-                            (
-                            {Math.floor(selectedResult / selectedDivisor)}{" "}
-                            שארית {selectedResult % selectedDivisor})
-                          </span>
-                        </div>
-                      )}
-
-                    {tableMode === "multiplication" &&
-                      selectedCell &&
-                      (selectedRow || selectedCol) && (
-                        <div
-                          className={`w-full px-4 py-1 rounded-lg border text-center flex items-center justify-center gap-3 ${
-                            (selectedRow || selectedCell.row) *
-                              (selectedCol || selectedCell.col) ===
-                            selectedCell.value
-                              ? "bg-emerald-500/20 border-emerald-400/50"
-                              : "bg-red-500/20 border-red-400/50"
-                          }`}
-                        >
-                          <span className="text-base text-white/80">
-                            {selectedRow || selectedCell.row} ×{" "}
-                            {selectedCol || selectedCell.col} =
-                          </span>
-                          <span
-                            className={`text-xl font-bold ${
-                              (selectedRow || selectedCell.row) *
-                                (selectedCol || selectedCell.col) ===
-                              selectedCell.value
-                                ? "text-emerald-300"
-                                : "text-red-300"
-                            }`}
-                          >
-                            {selectedCell.value}
-                          </span>
-                          {(selectedRow || selectedCell.row) *
-                            (selectedCol || selectedCell.col) !==
-                            selectedCell.value && (
-                            <span className="text-xs text-red-300 font-semibold">
-                              ⚠️ Should be{" "}
-                              {(selectedRow || selectedCell.row) *
-                                (selectedCol || selectedCell.col)}
-                            </span>
-                          )}
-                        </div>
-                      )}
-
-                    {tableMode === "division" &&
-                      selectedResult &&
-                      selectedDivisor &&
-                      selectedResult % selectedDivisor === 0 && (
-                        <div className="w-full px-4 py-1 rounded-lg bg-purple-500/20 border border-purple-400/50 text-center flex items-center justify-center gap-3">
-                          <span className="text-base text-white/80">
-                            {selectedResult} ÷ {selectedDivisor} =
-                          </span>
-                          <span className="text-xl font-bold text-purple-300">
-                            {selectedResult / selectedDivisor}
-                          </span>
-                        </div>
-                      )}
-                  </div>
-
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse text-center">
-                      <thead>
-                        <tr>
-                          <th className="font-bold text-white/80 p-2 bg-black/30 rounded">
-                            ×
-                          </th>
-                          {Array.from({ length: 12 }, (_, i) => i + 1).map(
-                            (num) => {
-                              const isColSelected =
-                                (tableMode === "multiplication" &&
-                                  selectedCol &&
-                                  num === selectedCol) ||
-                                (tableMode === "multiplication" &&
-                                  selectedCell &&
-                                  selectedRow &&
-                                  num === selectedCell.col);
-                              const isColInvalid =
-                                tableMode === "division" &&
-                                selectedCell &&
-                                selectedResult &&
-                                selectedResult % num !== 0;
-                              return (
-                                <th
-                                  key={num}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    if (tableMode === "multiplication") {
-                                      if (selectedCol === num) {
-                                        setSelectedCol(null);
-                                      } else {
-                                        setSelectedCol(num);
-                                      }
-                                    } else {
-                                      if (selectedResult && selectedCell) {
-                                        const quotient =
-                                          selectedResult / num;
-                                        if (
-                                          quotient ===
-                                            Math.floor(quotient) &&
-                                          quotient > 0
-                                        ) {
-                                          if (selectedDivisor === num) {
-                                            setSelectedDivisor(null);
-                                            setSelectedCol(null);
-                                          } else {
-                                            setSelectedDivisor(num);
-                                            setSelectedRow(null);
-                                            setSelectedCol(num);
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }}
-                                  className={`font-bold text-white/80 p-2 rounded min-w-[40px] cursor-pointer transition-all ${
-                                    isColSelected
-                                      ? tableMode === "multiplication"
-                                        ? "bg-yellow-500/40 border-2 border-yellow-400"
-                                        : "bg-purple-500/40 border-2 border-purple-400"
-                                      : isColInvalid
-                                      ? "bg-red-500/20 border border-red-400/30 opacity-50 cursor-not-allowed"
-                                      : "bg-black/30 hover:bg-black/40"
-                                  }`}
-                                  style={{ pointerEvents: "auto", zIndex: 10 }}
-                                >
-                                  {num}
-                                </th>
-                              );
-                            }
-                          )}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {Array.from({ length: 12 }, (_, i) => i + 1).map(
-                          (row) => (
-                            <tr key={row}>
-                              <td
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  if (tableMode === "multiplication") {
-                                    if (selectedRow === row) {
-                                      setSelectedRow(null);
-                                    } else {
-                                      setSelectedRow(row);
-                                    }
-                                  } else {
-                                    if (selectedResult && selectedCell) {
-                                      const quotient =
-                                        selectedResult / row;
-                                      if (
-                                        quotient ===
-                                          Math.floor(quotient) &&
-                                        quotient > 0
-                                      ) {
-                                        if (selectedDivisor === row) {
-                                          setSelectedDivisor(null);
-                                          setSelectedRow(null);
-                                        } else {
-                                          setSelectedDivisor(row);
-                                          setSelectedCol(null);
-                                          setSelectedRow(row);
-                                        }
-                                      }
-                                    }
-                                  }
-                                }}
-                                className={`font-bold text-white/80 p-2 rounded cursor-pointer transition-all ${
-                                  (tableMode === "multiplication" &&
-                                    selectedRow &&
-                                    row === selectedRow) ||
-                                  (tableMode === "multiplication" &&
-                                    selectedCell &&
-                                    selectedCol &&
-                                    row === selectedCell.row)
-                                    ? "bg-yellow-500/40 border-2 border-yellow-400"
-                                    : tableMode === "division" &&
-                                      selectedCell &&
-                                      selectedResult &&
-                                      selectedResult % row !== 0
-                                    ? "bg-red-500/20 border border-red-400/30 opacity-50 cursor-not-allowed"
-                                    : "bg-black/30 hover:bg-black/40"
-                                }`}
-                                style={{ pointerEvents: "auto", zIndex: 10 }}
-                              >
-                                {row}
-                              </td>
-                              {Array.from({ length: 12 }, (_, i) => i + 1).map(
-                                (col) => {
-                                  const value = row * col;
-                                  const isCellSelected =
-                                    selectedCell &&
-                                    selectedCell.row === row &&
-                                    selectedCell.col === col;
-
-                                  const isRowSelected =
-                                    tableMode === "multiplication" &&
-                                    selectedRow &&
-                                    row === selectedRow;
-                                  const isColSelected =
-                                    tableMode === "multiplication" &&
-                                    selectedCol &&
-                                    col === selectedCol;
-
-                                  const isAnswerCellMultiplication =
-                                    tableMode === "multiplication" &&
-                                    selectedRow &&
-                                    selectedCol &&
-                                    row === selectedRow &&
-                                    col === selectedCol;
-
-                                  const isDivisionIntersection =
-                                    tableMode === "division" &&
-                                    selectedCell &&
-                                    selectedResult &&
-                                    selectedDivisor &&
-                                    ((selectedRow &&
-                                      row === selectedRow &&
-                                      col === selectedCell.col) ||
-                                      (selectedCol &&
-                                        row === selectedCell.row &&
-                                        col === selectedCol));
-
-                                  let isAnswerCell = false;
-                                  if (
-                                    tableMode === "division" &&
-                                    selectedCell &&
-                                    selectedResult &&
-                                    selectedDivisor &&
-                                    selectedResult % selectedDivisor === 0
-                                  ) {
-                                    const answer =
-                                      selectedResult / selectedDivisor;
-                                    if (answer >= 1 && answer <= 12) {
-                                      if (
-                                        selectedRow &&
-                                        selectedRow === selectedDivisor &&
-                                        row === selectedDivisor &&
-                                        col === answer
-                                      ) {
-                                        isAnswerCell = true;
-                                      }
-                                      if (
-                                        selectedCol &&
-                                        selectedCol === selectedDivisor &&
-                                        col === selectedDivisor &&
-                                        row === answer
-                                      ) {
-                                        isAnswerCell = true;
-                                      }
-                                      if (
-                                        value === answer &&
-                                        ((selectedRow &&
-                                          row === selectedDivisor) ||
-                                          (selectedCol &&
-                                            col === selectedDivisor))
-                                      ) {
-                                        isAnswerCell = true;
-                                      }
-                                    }
-                                  }
-
-                                  return (
-                                    <td
-                                      key={`${row}-${col}`}
-                                      onClick={() => {
-                                        if (practiceMode) {
-                                          // במצב תרגול - לא ניתן ללחוץ על תאים
-                                          return;
-                                        }
-                                        if (tableMode === "multiplication") {
-                                          setSelectedCell({
-                                            row,
-                                            col,
-                                            value,
-                                          });
-                                          setSelectedRow(null);
-                                          setSelectedCol(null);
-                                          setHighlightedAnswer(null);
-                                        } else {
-                                          setSelectedResult(value);
-                                          setSelectedDivisor(null);
-                                          setSelectedRow(null);
-                                          setSelectedCol(null);
-                                          setSelectedCell({
-                                            row,
-                                            col,
-                                            value,
-                                          });
-                                        }
-                                      }}
-                                      className={`p-2 rounded border text-white text-sm min-w-[40px] transition-all ${
-                                        practiceMode && practiceQuestion && 
-                                        row === practiceQuestion.row && col === practiceQuestion.col
-                                          ? "bg-yellow-500/60 border-2 border-yellow-400 animate-pulse cursor-default"
-                                          : "cursor-pointer"
-                                      } ${
-                                        isCellSelected
-                                          ? tableMode === "multiplication"
-                                            ? "bg-emerald-500/40 border-2 border-emerald-400 text-emerald-200 font-bold text-base"
-                                            : "bg-purple-500/40 border-2 border-purple-400 text-purple-200 font-bold text-base"
-                                          : isAnswerCellMultiplication
-                                          ? "bg-emerald-500/40 border-2 border-emerald-400 text-emerald-200 font-bold text-base"
-                                          : isAnswerCell
-                                          ? "bg-purple-500/40 border-2 border-purple-400 text-purple-200 font-bold text-base"
-                                          : isRowSelected || isColSelected
-                                          ? "bg-yellow-500/20 border border-yellow-400/30"
-                                          : isDivisionIntersection &&
-                                            !isCellSelected
-                                          ? "bg-purple-500/30 border border-purple-400/50"
-                                          : "bg-black/20 border border-white/5 hover:bg-black/30"
-                                      }`}
-                                      style={{ pointerEvents: "auto" }}
-                                    >
-                                      {value}
-                                    </td>
-                                  );
-                                }
-                              )}
-                            </tr>
-                          )
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="mt-4 text-center space-y-2">
-                    <div className="text-xs text-white/60 mb-2 text-center">
-                      {tableMode === "multiplication"
-                        ? "לחץ על מספר מהטבלה, ואז על מספר שורה או עמודה"
-                        : "לחץ על מספר תוצאה, ואז על מספר שורה/עמודה כדי לראות את החילוק"}
-                    </div>
-                    <button
-                      onClick={() => {
-                        setShowMultiplicationTable(false);
-                        setSelectedRow(null);
-                        setSelectedCol(null);
-                        setHighlightedAnswer(null);
-                        setSelectedResult(null);
-                        setSelectedDivisor(null);
-                        setSelectedCell(null);
-                      }}
-                      className="px-6 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
-                    >
-                      סגור
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Leaderboard Modal */}
           {showLeaderboard && (
@@ -3465,6 +2874,117 @@ export default function MoledetGeographyMaster() {
               </div>
             </div>
           )}
+          {/* Reference Modal - לוח עזרה */}
+          {showReferenceModal && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[185] p-4"
+              onClick={() => setShowReferenceModal(false)}
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-blue-400/60 rounded-2xl p-5 w-full max-w-lg max-h-[85vh] overflow-y-auto text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-2xl font-extrabold">📚 לוח עזרה במולדת וגאוגרפיה</h2>
+                  <button
+                    onClick={() => setShowReferenceModal(false)}
+                    className="text-white/80 hover:text-white text-xl px-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+                <p className="text-sm text-white/70 mb-3">
+                  בחר קטגוריה כדי לראות מושגים, עובדות וטיפים חשובים במולדת וגאוגרפיה.
+                </p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {REFERENCE_CATEGORY_KEYS.map((key) => (
+                    <button
+                      key={key}
+                      onClick={() => setReferenceCategory(key)}
+                      className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                        referenceCategory === key
+                          ? "bg-blue-500/80 border-blue-300 text-white"
+                          : "bg-white/5 border-white/20 text-white/70 hover:bg-white/10"
+                      }`}
+                    >
+                      {REFERENCE_CATEGORIES[key].icon} {REFERENCE_CATEGORIES[key].label}
+                    </button>
+                  ))}
+                </div>
+                <div className="space-y-3">
+                  {referenceCategory === "homeland" && (
+                    <>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🏠 מולדת</div>
+                        <div className="text-sm text-white/80">הארץ שבה נולדנו וחיים בה</div>
+                        <div className="text-xs text-white/60 mt-1">ישראל היא המולדת שלנו</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🏠 סמלים לאומיים</div>
+                        <div className="text-sm text-white/80">דגל, המנון, סמל המדינה</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: דגל ישראל, המנון התקווה</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🏠 חגים לאומיים</div>
+                        <div className="text-sm text-white/80">חגים שמציינים אירועים חשובים במדינה</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: יום העצמאות, יום הזיכרון</div>
+                      </div>
+                    </>
+                  )}
+                  {referenceCategory === "geography" && (
+                    <>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🗺️ יבשות</div>
+                        <div className="text-sm text-white/80">שטחי יבשה גדולים על פני כדור הארץ</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: אסיה, אירופה, אפריקה</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🗺️ אוקיינוסים</div>
+                        <div className="text-sm text-white/80">גופי מים גדולים בין היבשות</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: האוקיינוס השקט, האוקיינוס האטלנטי</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🗺️ אקלים</div>
+                        <div className="text-sm text-white/80">תנאי מזג האוויר באזור מסוים</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: אקלים ים תיכוני, אקלים מדברי</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">🗺️ תבליט</div>
+                        <div className="text-sm text-white/80">צורת פני השטח של האזור</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: הרים, עמקים, מישורים</div>
+                      </div>
+                    </>
+                  )}
+                  {referenceCategory === "citizenship" && (
+                    <>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">👥 אזרחות</div>
+                        <div className="text-sm text-white/80">הזכויות והחובות של תושבי המדינה</div>
+                        <div className="text-xs text-white/60 mt-1">כל אזרח זכאי לזכויות וחייב בחובות</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">👥 דמוקרטיה</div>
+                        <div className="text-sm text-white/80">שיטת ממשל שבה העם בוחר את נציגיו</div>
+                        <div className="text-xs text-white/60 mt-1">בישראל יש דמוקרטיה</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">👥 זכויות</div>
+                        <div className="text-sm text-white/80">מה שמגיע לכל אדם</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: זכות לחינוך, זכות לבריאות</div>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                        <div className="font-bold text-lg mb-2">👥 חובות</div>
+                        <div className="text-sm text-white/80">מה שכל אזרח חייב לעשות</div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: חובת שירות צבאי, תשלום מיסים</div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
     </Layout>

@@ -36,6 +36,27 @@ import {
   getRewardLabel,
 } from "../../data/reward-options";
 
+const AVATAR_OPTIONS = [
+  "👤",
+  "🧑",
+  "👦",
+  "👧",
+  "🦁",
+  "🐱",
+  "🐶",
+  "🐰",
+  "🐻",
+  "🐼",
+  "🦊",
+  "🐸",
+  "🦄",
+  "🌟",
+  "🎮",
+  "🏆",
+  "⭐",
+  "💫",
+];
+
 export default function GeometryMaster() {
   useIOSViewportFix();
   const router = useRouter();
@@ -1950,7 +1971,7 @@ const refreshMonthlyProgress = useCallback(() => {
                   <div className="text-6xl mb-3">{playerAvatar}</div>
                   <div className="text-sm text-white/60 mb-3">בחר אווטר:</div>
                   <div className="grid grid-cols-6 gap-2 mb-4">
-                    {["👤", "🧑", "👦", "👧", "🦁", "🐱", "🐶", "🐰", "🐻", "🐼", "🦊", "🐸", "🦄", "🌟", "🎮", "🏆", "⭐", "💫"].map((avatar) => (
+                    {AVATAR_OPTIONS.map((avatar) => (
                       <button
                         key={avatar}
                         onClick={() => {

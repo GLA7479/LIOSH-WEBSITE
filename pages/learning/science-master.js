@@ -328,7 +328,8 @@ export default function ScienceMaster() {
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   const [showReferenceModal, setShowReferenceModal] = useState(false);
   const [referenceCategory, setReferenceCategory] = useState("life_science");
-  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboardLevel, setLeaderboardLevel] = useState("easy");
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [stars, setStars] = useState(0);
   const [playerLevel, setPlayerLevel] = useState(1);
@@ -345,11 +346,52 @@ export default function ScienceMaster() {
     experiments: { total: 0, correct: 0 },
   });
   const badges = [];
-  const [dailyChallenge, setDailyChallenge] = useState({
-    date: new Date().toDateString(),
-    bestScore: 0,
-    questions: 0,
+  
+  const getTodayKey = () => {
+    const today = new Date();
+    return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+  };
+  
+  const [dailyChallenge, setDailyChallenge] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_science_daily_challenge") || "{}");
+        const todayKey = getTodayKey();
+        if (saved.date === todayKey) {
+          return saved;
+        }
+      } catch {}
+    }
+    return {
+      date: getTodayKey(),
+      questions: 0,
+      correct: 0,
+      bestScore: 0,
+      completed: false,
+    };
   });
+  
+  const [weeklyChallenge, setWeeklyChallenge] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = JSON.parse(localStorage.getItem("mleo_science_weekly_challenge") || "{}");
+        const today = new Date();
+        const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+        const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
+        if (saved.week === weekKey) {
+          return saved;
+        }
+      } catch {}
+    }
+    return {
+      week: getTodayKey().split('-').slice(0, 2).join('-'),
+      target: 100,
+      current: 0,
+      completed: false,
+    };
+  });
+  
+  const [showDailyChallenge, setShowDailyChallenge] = useState(false);
   const [monthlyProgress, setMonthlyProgress] = useState({
     totalMinutes: 0,
     totalExercises: 0,
@@ -452,11 +494,30 @@ export default function ScienceMaster() {
 
   // ----- DAILY CHALLENGE RESET -----
   useEffect(() => {
-    const today = new Date().toDateString();
-    if (dailyChallenge.date !== today) {
-      setDailyChallenge({ date: today, bestScore: 0, questions: 0 });
+    const todayKey = getTodayKey();
+    if (dailyChallenge.date !== todayKey) {
+      setDailyChallenge({ 
+        date: todayKey, 
+        bestScore: 0, 
+        questions: 0,
+        correct: 0,
+        completed: false,
+      });
     }
-  }, [dailyChallenge.date]);
+    
+    // Check weekly challenge reset
+    const today = new Date();
+    const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+    const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
+    if (weeklyChallenge.week !== weekKey) {
+      setWeeklyChallenge({
+        week: weekKey,
+        target: 100,
+        current: 0,
+        completed: false,
+      });
+    }
+  }, [dailyChallenge.date, weeklyChallenge.week]);
 
   // ----- TIMER -----
   useEffect(() => {
@@ -765,7 +826,7 @@ function recordSessionProgress() {
       );
       setBestScore(top.bestScore);
       setBestStreak(top.bestStreak);
-      if (leaderboardOpen) {
+      if (showLeaderboard) {
         const all = buildTop10(saved);
         setLeaderboardData(all);
       }
@@ -893,11 +954,42 @@ function recordSessionProgress() {
         return newXp;
       });
       // daily challenge
-      setDailyChallenge((prev) => ({
-        date: prev.date,
-        bestScore: Math.max(prev.bestScore, score + points),
-        questions: prev.questions + 1,
-      }));
+      const todayKey = getTodayKey();
+      setDailyChallenge((prev) => {
+        const updated = {
+          date: prev.date === todayKey ? prev.date : todayKey,
+          bestScore: prev.date === todayKey ? Math.max(prev.bestScore, score + points) : score + points,
+          questions: prev.date === todayKey ? prev.questions + 1 : 1,
+          correct: prev.date === todayKey ? (prev.correct || 0) + 1 : 1,
+          completed: false,
+        };
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem("mleo_science_daily_challenge", JSON.stringify(updated));
+          } catch {}
+        }
+        return updated;
+      });
+      
+      // weekly challenge
+      setWeeklyChallenge((prev) => {
+        const today = new Date();
+        const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+        const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
+        const updated = {
+          week: prev.week === weekKey ? prev.week : weekKey,
+          target: 100,
+          current: prev.week === weekKey ? prev.current + 1 : 1,
+          completed: prev.week === weekKey ? (prev.current + 1 >= 100) : false,
+        };
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem("mleo_science_weekly_challenge", JSON.stringify(updated));
+          } catch {}
+        }
+        return updated;
+      });
+      
       setFeedback("מצוין! ✅");
       if ("vibrate" in navigator) navigator.vibrate?.(50);
       setTimeout(() => {
@@ -993,7 +1085,7 @@ function recordSessionProgress() {
   }
 
   function openLeaderboard() {
-    setLeaderboardOpen(true);
+    setShowLeaderboard(true);
     if (typeof window === "undefined") {
       setLeaderboardData([]);
       return;
@@ -1318,6 +1410,28 @@ function recordSessionProgress() {
                 </div>
               </div>
 
+              <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="text-xs text-white/60">אתגר שבועי</div>
+                  <div className="text-xs text-white/60">
+                    {weeklyChallenge.current} / {weeklyChallenge.target} שאלות נכונות
+                  </div>
+                </div>
+                <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden mb-1">
+                  <div
+                    className={`h-2 rounded-full transition-all ${
+                      weeklyChallenge.completed ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
+                    style={{ width: `${Math.min(100, (weeklyChallenge.current / weeklyChallenge.target) * 100)}%` }}
+                  />
+                </div>
+                {weeklyChallenge.completed && (
+                  <div className="text-xs text-yellow-400 font-bold text-center">
+                    🎉 סיימת את האתגר השבועי!
+                  </div>
+                )}
+              </div>
+
               <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
                 <div className="flex items-center justify-between text-[11px] text-white/70 mb-1">
                   <span>🎁 מסע פרס חודשי</span>
@@ -1387,16 +1501,8 @@ function recordSessionProgress() {
                 >
                   🏆 לוח תוצאות
                 </button>
-                {bestScore > 0 && (
-                  <button
-                    onClick={resetStats}
-                    className="h-10 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-sm"
-                  >
-                    🧹 Reset
-                  </button>
-                )}
               </div>
-
+              
               {!playerName.trim() && (
                 <p className="text-xs text-white/60 text-center mb-2">
                   הכנס שם שחקן כדי להתחיל.
@@ -1602,10 +1708,10 @@ function recordSessionProgress() {
           )}
 
           {/* LEADERBOARD MODAL */}
-          {leaderboardOpen && (
+          {showLeaderboard && (
             <div
               className="fixed inset-0 bg-black/80 flex items-center justify-center z-[140] p-4"
-              onClick={() => setLeaderboardOpen(false)}
+              onClick={() => setShowLeaderboard(false)}
             >
               <div
                 className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-4 max-w-md w-full max-h-[85svh] overflow-y-auto"
@@ -1686,7 +1792,7 @@ function recordSessionProgress() {
                 </div>
                 <div className="mt-4 text-center">
                   <button
-                    onClick={() => setLeaderboardOpen(false)}
+                    onClick={() => setShowLeaderboard(false)}
                     className="px-6 py-2 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-sm"
                   >
                     סגור
