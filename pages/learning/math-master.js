@@ -3980,33 +3980,33 @@ export default function MathMaster() {
                     <>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">➕ חיבור</div>
-                        <div className="text-sm text-white/80">חיבור מספרים: a + b = c</div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: 5 + 3 = 8</div>
+                        <div className="text-sm text-white/80">חיבור מספרים: <span dir="ltr" style={{ display: 'inline-block' }}>a + b = c</span></div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>דוגמה: 5 + 3 = 8</div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">➖ חיסור</div>
-                        <div className="text-sm text-white/80">חיסור מספרים: a - b = c</div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: 8 - 3 = 5</div>
+                        <div className="text-sm text-white/80">חיסור מספרים: <span dir="ltr" style={{ display: 'inline-block' }}>a - b = c</span></div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>דוגמה: 8 - 3 = 5</div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">✖️ כפל</div>
-                        <div className="text-sm text-white/80">כפל מספרים: a × b = c</div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: 4 × 3 = 12</div>
+                        <div className="text-sm text-white/80">כפל מספרים: <span dir="ltr" style={{ display: 'inline-block' }}>a × b = c</span></div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>דוגמה: 4 × 3 = 12</div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">➗ חילוק</div>
-                        <div className="text-sm text-white/80">חילוק מספרים: a ÷ b = c</div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: 12 ÷ 3 = 4</div>
+                        <div className="text-sm text-white/80">חילוק מספרים: <span dir="ltr" style={{ display: 'inline-block' }}>a ÷ b = c</span></div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>דוגמה: 12 ÷ 3 = 4</div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">🔢 שברים</div>
-                        <div className="text-sm text-white/80">מספר המייצג חלק משלם: 1/2, 3/4</div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: 1/2 = 0.5</div>
+                        <div className="text-sm text-white/80">מספר המייצג חלק משלם: <span dir="ltr" style={{ display: 'inline-block' }}>1/2, 3/4</span></div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>דוגמה: 1/2 = 0.5</div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">% אחוזים</div>
-                        <div className="text-sm text-white/80">חלק מתוך 100: % = חלק/שלם × 100</div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: 50% = 0.5</div>
+                        <div className="text-sm text-white/80">חלק מתוך 100: <span dir="ltr" style={{ display: 'inline-block' }}>% = חלק/שלם × 100</span></div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>דוגמה: 50% = 0.5</div>
                       </div>
                     </>
                   )}
@@ -4015,27 +4015,27 @@ export default function MathMaster() {
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">📐 שטח ריבוע</div>
                         <div className="text-sm text-white/80">צלע × צלע</div>
-                        <div className="text-xs text-white/60 mt-1">S = a²</div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>S = a²</div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">📐 שטח מלבן</div>
                         <div className="text-sm text-white/80">אורך × רוחב</div>
-                        <div className="text-xs text-white/60 mt-1">S = a × b</div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>S = a × b</div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">📐 שטח משולש</div>
                         <div className="text-sm text-white/80">(בסיס × גובה) ÷ 2</div>
-                        <div className="text-xs text-white/60 mt-1">S = (b × h) ÷ 2</div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>S = (b × h) ÷ 2</div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">⭕ היקף מעגל</div>
                         <div className="text-sm text-white/80">2 × π × רדיוס</div>
-                        <div className="text-xs text-white/60 mt-1">P = 2πr</div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>P = 2πr</div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">⭕ שטח מעגל</div>
                         <div className="text-sm text-white/80">π × רדיוס²</div>
-                        <div className="text-xs text-white/60 mt-1">S = πr²</div>
+                        <div className="text-xs text-white/60 mt-1" dir="ltr" style={{ textAlign: 'left' }}>S = πr²</div>
                       </div>
                     </>
                   )}
