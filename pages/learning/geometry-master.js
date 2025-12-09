@@ -2313,47 +2313,47 @@ const refreshMonthlyProgress = useCallback(() => {
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">📐 שטח ריבוע</div>
                         <div className="text-sm text-white/80">צלע × צלע</div>
-                        <div className="text-xs text-white/60 mt-1">S = a²</div>
+                        <div className="text-xs text-white/60 mt-1"><span dir="ltr" style={{ display: 'inline-block' }}>S = a²</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">📐 שטח מלבן</div>
                         <div className="text-sm text-white/80">אורך × רוחב</div>
-                        <div className="text-xs text-white/60 mt-1">S = a × b</div>
+                        <div className="text-xs text-white/60 mt-1"><span dir="ltr" style={{ display: 'inline-block' }}>S = a × b</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">📐 שטח משולש</div>
                         <div className="text-sm text-white/80">(בסיס × גובה) ÷ 2</div>
-                        <div className="text-xs text-white/60 mt-1">S = (b × h) ÷ 2</div>
+                        <div className="text-xs text-white/60 mt-1"><span dir="ltr" style={{ display: 'inline-block' }}>S = (b × h) ÷ 2</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">📏 היקף ריבוע</div>
                         <div className="text-sm text-white/80">4 × צלע</div>
-                        <div className="text-xs text-white/60 mt-1">P = 4a</div>
+                        <div className="text-xs text-white/60 mt-1"><span dir="ltr" style={{ display: 'inline-block' }}>P = 4a</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">📏 היקף מלבן</div>
                         <div className="text-sm text-white/80">2 × (אורך + רוחב)</div>
-                        <div className="text-xs text-white/60 mt-1">P = 2(a + b)</div>
+                        <div className="text-xs text-white/60 mt-1"><span dir="ltr" style={{ display: 'inline-block' }}>P = 2(a + b)</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">📦 נפח תיבה</div>
                         <div className="text-sm text-white/80">אורך × רוחב × גובה</div>
-                        <div className="text-xs text-white/60 mt-1">V = a × b × c</div>
+                        <div className="text-xs text-white/60 mt-1"><span dir="ltr" style={{ display: 'inline-block' }}>V = a × b × c</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">📦 נפח קובייה</div>
                         <div className="text-sm text-white/80">צלע × צלע × צלע</div>
-                        <div className="text-xs text-white/60 mt-1">V = a³</div>
+                        <div className="text-xs text-white/60 mt-1"><span dir="ltr" style={{ display: 'inline-block' }}>V = a³</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">⭕ היקף מעגל</div>
                         <div className="text-sm text-white/80">2 × π × רדיוס</div>
-                        <div className="text-xs text-white/60 mt-1">P = 2πr</div>
+                        <div className="text-xs text-white/60 mt-1"><span dir="ltr" style={{ display: 'inline-block' }}>P = 2πr</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">⭕ שטח מעגל</div>
                         <div className="text-sm text-white/80">π × רדיוס²</div>
-                        <div className="text-xs text-white/60 mt-1">S = πr²</div>
+                        <div className="text-xs text-white/60 mt-1"><span dir="ltr" style={{ display: 'inline-block' }}>S = πr²</span></div>
                       </div>
                     </>
                   )}

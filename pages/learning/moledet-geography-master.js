@@ -1247,7 +1247,7 @@ export default function MoledetGeographyMaster() {
       if (mode === "learning") {
         // במצב למידה – אין Game Over, רק הצגת תשובה והמשך
         setFeedback(
-          `לא נכון 😔 התשובה הנכונה: ${currentQuestion.correctAnswer} ✅`
+          `לא נכון 😔 התשובה הנכונה: \u2066${currentQuestion.correctAnswer}\u2069 ✅`
         );
         setTimeout(() => {
           generateNewQuestion();
@@ -1259,7 +1259,7 @@ export default function MoledetGeographyMaster() {
       } else {
         // מצב Challenge – עובדים עם חיים
         setFeedback(
-          `לא נכון 😔 התשובה: ${currentQuestion.correctAnswer} ❌ (-1 ❤️)`
+          `לא נכון 😔 התשובה: \u2066${currentQuestion.correctAnswer}\u2069 ❌ (-1 ❤️)`
         );
         setLives((prevLives) => {
           const nextLives = prevLives - 1;
@@ -1775,7 +1775,7 @@ export default function MoledetGeographyMaster() {
                     <div className="space-y-1 max-h-[150px] overflow-y-auto">
                       {mistakes.slice(-5).reverse().map((mistake, idx) => (
                         <div key={idx} className="text-xs text-white/80">
-                          {mistake.question} = {mistake.wrongAnswer} ❌ (נכון: {mistake.correctAnswer})
+                          <span dir="ltr" style={{ display: 'inline-block' }}>{mistake.question} = {mistake.wrongAnswer}</span> ❌ (נכון: <span dir="ltr" style={{ display: 'inline-block' }}>{mistake.correctAnswer}</span>)
                         </div>
                       ))}
                     </div>
