@@ -1492,7 +1492,7 @@ export default function HebrewMaster() {
 
           <div
             ref={controlsRef}
-            className="grid grid-cols-7 gap-0.5 mb-1 w-full max-w-md"
+            className="grid grid-cols-8 gap-0.5 mb-1 w-full max-w-md"
           >
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">ניקוד</div>
@@ -1519,6 +1519,10 @@ export default function HebrewMaster() {
               <div className="text-sm font-bold text-rose-400 leading-tight">
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
+            </div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">🔥 רצף יומי</div>
+              <div className="text-sm font-bold text-orange-400 leading-tight">{dailyStreak.streak || 0}</div>
             </div>
             <div
               className={`rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] ${
@@ -1575,9 +1579,32 @@ export default function HebrewMaster() {
             >
               {playerAvatar}
             </button>
+            <button
+              onClick={() => {
+                sound.toggleSounds();
+                sound.toggleMusic();
+              }}
+              className={`h-8 w-8 rounded-lg border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all ${
+                sound.soundsEnabled && sound.musicEnabled
+                  ? "bg-green-500/80 hover:bg-green-500"
+                  : "bg-red-500/80 hover:bg-red-500"
+              }`}
+              title={sound.soundsEnabled && sound.musicEnabled ? "השתק צלילים" : "הפעל צלילים"}
+            >
+              {sound.soundsEnabled && sound.musicEnabled ? "🔊" : "🔇"}
+            </button>
           </div>
 
           {/* הודעות מיוחדות */}
+          {showStreakReward && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none" dir="rtl">
+              <div className="bg-gradient-to-br from-orange-400 to-red-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-bounce">
+                <div className="text-4xl mb-2">{showStreakReward.emoji}</div>
+                <div className="text-xl font-bold">{showStreakReward.message}</div>
+              </div>
+            </div>
+          )}
+
           {showBadge && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none" dir="rtl">
               <div className="bg-gradient-to-br from-yellow-400 to-orange-500 text-white px-8 py-6 rounded-2xl shadow-2xl text-center animate-bounce">
@@ -1676,7 +1703,55 @@ export default function HebrewMaster() {
                     <div className="bg-black/30 border border-white/10 rounded-lg p-3">
                       <div className="text-xs text-white/60 mb-1">רמה</div>
                       <div className="text-xl font-bold text-purple-400">Lv.{playerLevel}</div>
+                      {/* XP Progress Bar */}
+                      <div className="mt-2">
+                        <div className="flex justify-between text-xs text-white/60 mb-1">
+                          <span>XP</span>
+                          <span>{xp} / {playerLevel * 100}</span>
+                        </div>
+                        <div className="w-full bg-black/50 rounded-full h-2">
+                          <div
+                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${Math.min(100, (xp / (playerLevel * 100)) * 100)}%` }}
+                          />
+                        </div>
+                      </div>
                     </div>
+                  </div>
+                  
+                  {/* Daily Streak */}
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-2">🔥 רצף יומי</div>
+                    <div className="text-2xl font-bold text-orange-400">{dailyStreak.streak || 0} ימים</div>
+                    {dailyStreak.streak >= 3 && (
+                      <div className="text-xs text-white/60 mt-1">
+                        {dailyStreak.streak >= 30 ? "👑 אלוף!" : dailyStreak.streak >= 14 ? "🌟 מצוין!" : dailyStreak.streak >= 7 ? "⭐ יופי!" : "🔥 המשך כך!"}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Monthly Progress */}
+                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="text-sm text-white/60 mb-2">התקדמות חודשית</div>
+                    <div className="flex justify-between text-xs text-white/60 mb-1">
+                      <span>{monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳</span>
+                      <span>{goalPercent}%</span>
+                    </div>
+                    <div className="w-full bg-black/50 rounded-full h-3 mb-2">
+                      <div
+                        className="bg-gradient-to-r from-emerald-500 to-blue-500 h-3 rounded-full transition-all duration-300"
+                        style={{ width: `${goalPercent}%` }}
+                      />
+                    </div>
+                    {minutesRemaining > 0 ? (
+                      <div className="text-xs text-white/60">
+                        נותרו עוד {minutesRemaining} דק׳ (~{Math.ceil(minutesRemaining / 60)} שעות)
+                      </div>
+                    ) : (
+                      <div className="text-xs text-emerald-400 font-bold">
+                        🎉 השלמת את היעד החודשי!
+                      </div>
+                    )}
                   </div>
 
                   <div className="bg-black/30 border border-white/10 rounded-lg p-3">
