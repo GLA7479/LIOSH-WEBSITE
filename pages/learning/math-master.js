@@ -2769,7 +2769,7 @@ export default function MathMaster() {
                                       </pre>
                                     </div>
                                   )}
-                                  <div className="space-y-1.5 text-sm" style={{ direction: "rtl", unicodeBidi: "plaintext" }}>
+                                  <div className="space-y-1.5 text-sm" dir="rtl">
                                     {info.steps.map((step, idx) => (
                                       <div key={idx} className="text-emerald-50 leading-relaxed">
                                         {step}
@@ -4112,33 +4112,33 @@ export default function MathMaster() {
                     <>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">➕ חיבור</div>
-                        <div className="text-sm text-white/80">חיבור מספרים: <span dir="ltr" style={{ display: 'inline-block' }}>a + b = c</span></div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block' }}>5 + 3 = 8</span></div>
+                        <div className="text-sm text-white/80">חיבור מספרים: <span style={{ direction: 'ltr', unicodeBidi: 'bidi-override', display: 'inline-block' }}>a + b = c</span></div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>5 + 3 = 8</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">➖ חיסור</div>
-                        <div className="text-sm text-white/80">חיסור מספרים: <span dir="ltr" style={{ display: 'inline-block' }}>a - b = c</span></div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block' }}>8 - 3 = 5</span></div>
+                        <div className="text-sm text-white/80">חיסור מספרים: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>a - b = c</span></div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>8 - 3 = 5</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">✖️ כפל</div>
-                        <div className="text-sm text-white/80">כפל מספרים: <span dir="ltr" style={{ display: 'inline-block' }}>a × b = c</span></div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block' }}>4 × 3 = 12</span></div>
+                        <div className="text-sm text-white/80">כפל מספרים: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>a × b = c</span></div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>4 × 3 = 12</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">➗ חילוק</div>
-                        <div className="text-sm text-white/80">חילוק מספרים: <span dir="ltr" style={{ display: 'inline-block' }}>a ÷ b = c</span></div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block' }}>12 ÷ 3 = 4</span></div>
+                        <div className="text-sm text-white/80">חילוק מספרים: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>a ÷ b = c</span></div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>12 ÷ 3 = 4</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">🔢 שברים</div>
-                        <div className="text-sm text-white/80">מספר המייצג חלק משלם: <span dir="ltr" style={{ display: 'inline-block' }}>1/2, 3/4</span></div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block' }}>1/2 = 0.5</span></div>
+                        <div className="text-sm text-white/80">מספר המייצג חלק משלם: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>1/2, 3/4</span></div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>1/2 = 0.5</span></div>
                       </div>
                       <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                         <div className="font-bold text-lg mb-2">% אחוזים</div>
-                        <div className="text-sm text-white/80">חלק מתוך 100: <span dir="ltr" style={{ display: 'inline-block' }}>% = חלק/שלם × 100</span></div>
-                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block' }}>50% = 0.5</span></div>
+                        <div className="text-sm text-white/80">חלק מתוך 100: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>% = חלק/שלם × 100</span></div>
+                        <div className="text-xs text-white/60 mt-1">דוגמה: <span dir="ltr" style={{ display: 'inline-block', textAlign: 'left', unicodeBidi: 'isolate' }}>50% = 0.5</span></div>
                       </div>
                     </>
                   )}
