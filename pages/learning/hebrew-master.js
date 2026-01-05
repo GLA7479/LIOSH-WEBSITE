@@ -2140,7 +2140,7 @@ useEffect(() => {
                       )} ש׳)`
                     : "🎉 יעד הושלם! בקשו מההורה לבחור פרס."}
                 </p>
-                <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                   {REWARD_OPTIONS.map((option) => (
                     <button
                       key={option.key}

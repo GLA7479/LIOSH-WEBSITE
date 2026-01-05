@@ -20,6 +20,12 @@ export const REWARD_OPTIONS = [
     label: "3000 CLASH ROYALE",
     description: "3000 Gems למשחק Clash Royale",
   },
+  {
+    key: "MINECOINS",
+    icon: "🪙",
+    label: "1700 MINECOINS",
+    description: "1700 Minecoins למשחק Minecraft",
+  },
 ];
 
 export function getRewardLabel(key) {
