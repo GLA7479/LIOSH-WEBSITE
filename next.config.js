@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false, // זמנית - כדי למנוע רענון אינסופי בפיתוח
   // PWA support
   async headers() {
     return [

@@ -1,24 +1,24 @@
-export const MONTHLY_MINUTES_TARGET = 1800; // 30 שעות
+export const MONTHLY_MINUTES_TARGET = 600; // 10 שעות
 export const MONTHLY_EXERCISES_TARGET = 300;
 
 export const REWARD_OPTIONS = [
   {
     key: "ROBUX",
     icon: "🎮",
-    label: "400 ROBUX",
-    description: "400 Robux למשחק Roblox",
+    label: "1000 ROBUX",
+    description: "1000 Robux למשחק Roblox",
   },
   {
     key: "VBUCKS",
     icon: "👑",
-    label: "1000 V-BUCKS",
-    description: "1000 V-Bucks למשחק Fortnite",
+    label: "2500 V-BUCKS",
+    description: "2500 V-Bucks למשחק Fortnite",
   },
   {
     key: "CLASH_ROYALE",
     icon: "💎",
-    label: "1200 CLASH ROYALE",
-    description: "1200 Gems למשחק Clash Royale",
+    label: "3000 CLASH ROYALE",
+    description: "3000 Gems למשחק Clash Royale",
   },
 ];
 

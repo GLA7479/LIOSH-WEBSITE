@@ -9,34 +9,21 @@ export function useSound() {
 
   const audioRefs = useRef({});
   const backgroundMusicRef = useRef(null);
+  const hasLoadedSettings = useRef(false); // עוקב אחרי טעינה ראשונית
 
   // טעינת הגדרות מ-localStorage
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (hasLoadedSettings.current) return; // אל תטען פעמיים
     try {
       const saved = JSON.parse(localStorage.getItem("mleo_sound_settings") || "{}");
       setSoundsEnabled(saved.soundsEnabled !== false); // default true
       setMusicEnabled(saved.musicEnabled !== false); // default true
       setMusicVolume(saved.musicVolume ?? 0.3);
       setSoundVolume(saved.soundVolume ?? 0.7);
+      hasLoadedSettings.current = true; // סמן שטענו את ההגדרות
     } catch {}
   }, []);
-
-  // שמירת הגדרות ל-localStorage
-  const saveSettings = useCallback(() => {
-    if (typeof window === "undefined") return;
-    try {
-      localStorage.setItem(
-        "mleo_sound_settings",
-        JSON.stringify({
-          soundsEnabled,
-          musicEnabled,
-          musicVolume,
-          soundVolume,
-        })
-      );
-    } catch {}
-  }, [soundsEnabled, musicEnabled, musicVolume, soundVolume]);
 
   // עדכון volume של מוזיקת רקע
   useEffect(() => {
@@ -185,17 +172,38 @@ export function useSound() {
     setSoundVolume(Math.max(0, Math.min(1, vol)));
   }, []);
 
-  // שמירה אוטומטית כשההגדרות משתנות
+  // שמירה אוטומטית כשההגדרות משתנות - תיקון: שמירה רק אחרי טעינה ראשונית
   useEffect(() => {
-    saveSettings();
-  }, [saveSettings]);
+    if (typeof window === "undefined") return;
+    if (!hasLoadedSettings.current) return; // אל תשמור לפני שהטעינה הראשונית הסתיימה
+    try {
+      localStorage.setItem(
+        "mleo_sound_settings",
+        JSON.stringify({
+          soundsEnabled,
+          musicEnabled,
+          musicVolume,
+          soundVolume,
+        })
+      );
+    } catch {}
+  }, [soundsEnabled, musicEnabled, musicVolume, soundVolume]);
 
-  // ניקוי כשהקומפוננטה נסגרת
+  // ניקוי כשהקומפוננטה נסגרת - תיקון: הסר תלות ב-stopAll
   useEffect(() => {
     return () => {
-      stopAll();
+      if (backgroundMusicRef.current) {
+        backgroundMusicRef.current.pause();
+        backgroundMusicRef.current.currentTime = 0;
+      }
+      Object.values(audioRefs.current).forEach((audio) => {
+        if (audio && !audio.paused) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      });
     };
-  }, [stopAll]);
+  }, []); // ריק - רק cleanup
 
   return {
     // State

@@ -43,6 +43,7 @@ export function addSessionProgress(durationMinutes, exercisesSolved, date = new 
 }
 
 const REWARD_CHOICE_KEY = "LEO_REWARD_CHOICE";
+const REWARD_CELEBRATION_KEY = "LEO_REWARD_CELEBRATION";
 
 export function loadRewardChoice(yearMonth) {
   if (typeof window === "undefined") return null;
@@ -70,5 +71,29 @@ export function saveRewardChoice(yearMonth, choiceKey) {
 
 export function getCurrentYearMonth() {
   return getYearMonth();
+}
+
+export function hasRewardCelebrationShown(yearMonth) {
+  if (typeof window === "undefined") return false;
+  try {
+    const raw = localStorage.getItem(REWARD_CELEBRATION_KEY);
+    if (!raw) return false;
+    const all = JSON.parse(raw);
+    return Boolean(all[yearMonth]);
+  } catch {
+    return false;
+  }
+}
+
+export function markRewardCelebrationShown(yearMonth) {
+  if (typeof window === "undefined") return;
+  try {
+    const raw = localStorage.getItem(REWARD_CELEBRATION_KEY);
+    const all = raw ? JSON.parse(raw) : {};
+    all[yearMonth] = true;
+    localStorage.setItem(REWARD_CELEBRATION_KEY, JSON.stringify(all));
+  } catch {
+    // ignore
+  }
 }
 

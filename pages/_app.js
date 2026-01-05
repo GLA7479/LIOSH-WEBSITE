@@ -5,9 +5,25 @@ import OfflineIndicator from "../components/OfflineIndicator";
 
 export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    // רישום Service Worker עבור תמיכה offline ו-PWA
-    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-      const registerSW = () => {
+    if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
+      return;
+    }
+
+    // בסביבת פיתוח – דאג להסיר Service Workers קיימים כדי שלא ישפיעו על Fast Refresh
+    if (process.env.NODE_ENV !== "production") {
+      // הסר כל Service Worker רשום והסר קבצים מה-cache כדי למנוע שליטה על dev server
+      navigator.serviceWorker.getRegistrations?.().then((registrations) => {
+        registrations.forEach((registration) => registration.unregister());
+      });
+      if (window.caches?.keys) {
+        caches.keys().then((keys) => {
+          keys.forEach((key) => caches.delete(key));
+        });
+      }
+      return;
+    }
+
+    const registerSW = () => {
         navigator.serviceWorker
           .register("/sw.js", { scope: "/" })
           .then((registration) => {
@@ -62,14 +78,15 @@ export default function MyApp({ Component, pageProps }) {
           .catch((registrationError) => {
             console.error("[SW] Registration failed:", registrationError);
           });
-      };
+    };
 
-      if (document.readyState === 'complete') {
-        registerSW();
-      } else {
-        window.addEventListener("load", registerSW);
-      }
+    if (document.readyState === "complete") {
+      registerSW();
+      return;
     }
+
+    window.addEventListener("load", registerSW);
+    return () => window.removeEventListener("load", registerSW);
   }, []);
 
 

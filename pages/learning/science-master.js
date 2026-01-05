@@ -20,6 +20,8 @@ import {
   loadRewardChoice,
   saveRewardChoice,
   getCurrentYearMonth,
+  hasRewardCelebrationShown,
+  markRewardCelebrationShown,
 } from "../../utils/progress-storage";
 import {
   REWARD_OPTIONS,
@@ -379,7 +381,7 @@ export default function ScienceMaster() {
     }
     return {
       date: getTodayKey(),
-      questions: 0,
+    questions: 0,
       correct: 0,
       bestScore: 0,
       completed: false,
@@ -414,6 +416,8 @@ export default function ScienceMaster() {
   const [goalPercent, setGoalPercent] = useState(0);
   const [minutesRemaining, setMinutesRemaining] = useState(MONTHLY_MINUTES_TARGET);
   const [rewardChoice, setRewardChoice] = useState(null);
+  const [showRewardCelebration, setShowRewardCelebration] = useState(false);
+  const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   const refreshMonthlyProgress = useCallback(() => {
     if (typeof window === "undefined") return;
     try {
@@ -440,6 +444,19 @@ export default function ScienceMaster() {
   useEffect(() => {
     refreshMonthlyProgress();
   }, [refreshMonthlyProgress]);
+
+useEffect(() => {
+  if (typeof window === "undefined") return;
+  if (monthlyProgress.totalMinutes < MONTHLY_MINUTES_TARGET) return;
+  if (hasRewardCelebrationShown(yearMonthRef.current)) return;
+
+  const label = rewardChoice ? getRewardLabel(rewardChoice) : "";
+  setRewardCelebrationLabel(label);
+  setShowRewardCelebration(true);
+  markRewardCelebrationShown(yearMonthRef.current);
+  sound.playSound("badge-earned");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [monthlyProgress.totalMinutes, rewardChoice]);
 
   useEffect(() => {
     refreshMistakesList();
@@ -1470,6 +1487,31 @@ function recordSessionProgress() {
             </div>
           )}
 
+          {showRewardCelebration && (
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[130] p-4" dir="rtl">
+              <div className="bg-gradient-to-br from-emerald-500 to-emerald-700 text-white rounded-2xl p-6 w-full max-w-md text-center relative shadow-2xl">
+                <div className="text-4xl mb-3">🎁</div>
+                <div className="text-2xl font-bold mb-2">השלמת את מסע הפרס החודשי!</div>
+                {rewardCelebrationLabel ? (
+                  <p className="text-base mb-4">
+                    הפרס שבחרת:{" "}
+                    <span dir="ltr" className="font-bold">
+                      {rewardCelebrationLabel}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="text-base mb-4">בחרו עכשיו את הפרס שאתם רוצים לקבל החודש!</p>
+                )}
+                <button
+                  onClick={() => setShowRewardCelebration(false)}
+                  className="mt-2 px-5 py-2 rounded-lg bg-white/90 text-emerald-700 font-bold hover:bg-white"
+                >
+                  הבנתי, תודה!
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* SETUP / GAME */}
           {!gameActive ? (
             <>
@@ -1672,7 +1714,7 @@ function recordSessionProgress() {
                   🏆 לוח תוצאות
                 </button>
               </div>
-              
+
               {!playerName.trim() && (
                 <p className="text-xs text-white/60 text-center mb-2">
                   הכנס שם שחקן כדי להתחיל.

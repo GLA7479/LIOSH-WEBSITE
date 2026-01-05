@@ -38,6 +38,8 @@ import {
   loadRewardChoice,
   saveRewardChoice,
   getCurrentYearMonth,
+  hasRewardCelebrationShown,
+  markRewardCelebrationShown,
 } from "../../utils/progress-storage";
 import {
   REWARD_OPTIONS,
@@ -150,6 +152,8 @@ export default function MathMaster() {
   const [goalPercent, setGoalPercent] = useState(0);
   const [minutesRemaining, setMinutesRemaining] = useState(MONTHLY_MINUTES_TARGET);
   const [rewardChoice, setRewardChoice] = useState(null);
+  const [showRewardCelebration, setShowRewardCelebration] = useState(false);
+  const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
   const refreshMonthlyProgress = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -170,6 +174,8 @@ export default function MathMaster() {
   }, []);
 
   // מערכת התקדמות אישית
+  const progressLoadedRef = useRef(false); // עוקב אחרי טעינת progress
+  const progressStringRef = useRef(""); // עוקב אחרי הגרסה האחרונה שנשמרה
   const [progress, setProgress] = useState({
     addition: { total: 0, correct: 0 },
     subtraction: { total: 0, correct: 0 },
@@ -419,7 +425,21 @@ export default function MathMaster() {
 
   useEffect(() => {
     refreshMonthlyProgress();
-  }, [refreshMonthlyProgress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // רק פעם אחת בטעינה
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (monthlyProgress.totalMinutes < MONTHLY_MINUTES_TARGET) return;
+    if (hasRewardCelebrationShown(yearMonthRef.current)) return;
+
+    const label = rewardChoice ? getRewardLabel(rewardChoice) : "";
+    setRewardCelebrationLabel(label);
+    setShowRewardCelebration(true);
+    markRewardCelebrationShown(yearMonthRef.current);
+    sound.playSound("badge-earned");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [monthlyProgress.totalMinutes, rewardChoice]);
 
   // הסבר לטעות אחרונה
   const [errorExplanation, setErrorExplanation] = useState("");
@@ -605,19 +625,32 @@ export default function MathMaster() {
   // טעינת נתונים מ-localStorage
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (progressLoadedRef.current) return; // אל תטען פעמיים
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
       if (saved.stars) setStars(saved.stars);
       if (saved.badges) setBadges(saved.badges);
       if (saved.playerLevel) setPlayerLevel(saved.playerLevel);
       if (saved.xp) setXp(saved.xp);
-      if (saved.progress) setProgress(saved.progress);
+      if (saved.progress) {
+        setProgress(saved.progress);
+        // שמור את הגרסה הראשונית כדי למנוע שמירה מיותרת
+        progressStringRef.current = JSON.stringify(saved.progress);
+      }
+      progressLoadedRef.current = true; // סמן שטענו את progress
     } catch {}
   }, []);
 
-  // שמירת progress ל-localStorage בכל עדכון
+  // שמירת progress ל-localStorage בכל עדכון - רק אחרי טעינה ראשונית
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (!progressLoadedRef.current) return; // אל תשמור לפני שהטעינה הראשונית הסתיימה
+    
+    const currentProgressStr = JSON.stringify(progress);
+    // אם לא השתנה, אל תשמור - זה מונע לולאה אינסופית
+    if (currentProgressStr === progressStringRef.current) return;
+    progressStringRef.current = currentProgressStr;
+    
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
       saved.progress = progress;
@@ -1694,6 +1727,31 @@ export default function MathMaster() {
                 <div className="text-4xl mb-2">🌟</div>
                 <div className="text-2xl font-bold">עלית רמה!</div>
                 <div className="text-base">עכשיו אתה ברמה {playerLevel}!</div>
+              </div>
+            </div>
+          )}
+
+          {showRewardCelebration && (
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[210] p-4" dir="rtl">
+              <div className="bg-gradient-to-br from-emerald-500 to-emerald-700 text-white rounded-2xl p-6 w-full max-w-md text-center relative shadow-2xl">
+                <div className="text-4xl mb-3">🎁</div>
+                <div className="text-2xl font-bold mb-2">השלמת את מסע הפרס החודשי!</div>
+                {rewardCelebrationLabel ? (
+                  <p className="text-base mb-4">
+                    הפרס שבחרת:{" "}
+                    <span dir="ltr" className="font-bold">
+                      {rewardCelebrationLabel}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="text-base mb-4">בחרו עכשיו את הפרס שאתם רוצים לקבל החודש!</p>
+                )}
+                <button
+                  onClick={() => setShowRewardCelebration(false)}
+                  className="mt-2 px-5 py-2 rounded-lg bg-white/90 text-emerald-700 font-bold hover:bg-white"
+                >
+                  הבנתי, תודה!
+                </button>
               </div>
             </div>
           )}

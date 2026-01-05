@@ -91,7 +91,7 @@ export default function ParentRewards() {
                       {progress.totalMinutes} דק׳
                     </p>
                     <p className="text-xs text-white/60">
-                      יעד: {MONTHLY_MINUTES_TARGET} דק׳ (≈30 שעות)
+                      יעד: {MONTHLY_MINUTES_TARGET} דק׳ (≈10 שעות)
                     </p>
                   </div>
                   <div className="bg-black/30 rounded-xl p-4 text-center">
