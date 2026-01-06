@@ -3076,6 +3076,60 @@ const refreshMonthlyProgress = useCallback(() => {
               </div>
             </div>
           )}
+
+          {showDailyChallenge && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4"
+              onClick={() => setShowDailyChallenge(false)}
+              dir="rtl"
+            >
+              <div
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-blue-400/60 rounded-2xl p-6 max-w-md w-full text-sm text-white"
+                dir="rtl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 className="text-2xl font-extrabold mb-4 text-center">
+                  📅 אתגר יומי
+                </h2>
+                <div className="space-y-3 mb-4">
+                  <div className="bg-black/30 rounded-lg p-3">
+                    <div className="text-xs text-white/60 mb-1">שאלות היום</div>
+                    <div className="text-2xl font-bold text-white">
+                      {dailyChallenge.questions || 0}
+                    </div>
+                  </div>
+                  <div className="bg-black/30 rounded-lg p-3">
+                    <div className="text-xs text-white/60 mb-1">תשובות נכונות</div>
+                    <div className="text-2xl font-bold text-emerald-400">
+                      {dailyChallenge.correct || 0}
+                    </div>
+                  </div>
+                  <div className="bg-black/30 rounded-lg p-3">
+                    <div className="text-xs text-white/60 mb-1">ניקוד שיא</div>
+                    <div className="text-2xl font-bold text-yellow-400">
+                      {dailyChallenge.bestScore || 0}
+                    </div>
+                  </div>
+                  {(dailyChallenge.questions || 0) > 0 && (
+                    <div className="bg-black/30 rounded-lg p-3">
+                      <div className="text-xs text-white/60 mb-1">דיוק</div>
+                      <div className="text-2xl font-bold text-blue-400">
+                        {Math.round(((dailyChallenge.correct || 0) / (dailyChallenge.questions || 1)) * 100)}%
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="text-center">
+                  <button
+                    onClick={() => setShowDailyChallenge(false)}
+                    className="px-6 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
+                  >
+                    סגור
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Layout>
