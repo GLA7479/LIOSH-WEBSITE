@@ -1613,7 +1613,7 @@ function recordSessionProgress() {
                 </select>
               </div>
               {/* BEST / ACCURACY */}
-              <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2 w-full max-w-md">
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
                   <div className="text-xs text-white/60">שיא ניקוד</div>
                   <div className="text-lg font-bold text-emerald-400">
@@ -1632,10 +1632,20 @@ function recordSessionProgress() {
                     {accuracy}%
                   </div>
                 </div>
+                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center flex flex-col items-center justify-center">
+                  <div className="text-xs text-white/60 mb-1">אתגרים</div>
+                  <button
+                    onClick={() => setShowDailyChallenge(true)}
+                    className="h-7 px-3 rounded bg-blue-500/80 hover:bg-blue-500 text-white text-xs font-bold"
+                  >
+                    פתיחה
+                  </button>
+                </div>
               </div>
 
               
 
+              {false && (
               <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
                 <div className="flex items-center justify-between mb-1">
                   <div className="text-xs text-white/60">אתגר יומי</div>
@@ -1650,6 +1660,7 @@ function recordSessionProgress() {
                   שמור על רצף תרגול כדי לפתוח הישגים חדשים.
                 </div>
               </div>
+              )}
 
               <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
                 <div className="flex items-center justify-between mb-1">

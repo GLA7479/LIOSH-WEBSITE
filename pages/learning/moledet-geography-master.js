@@ -2087,7 +2087,7 @@ useEffect(() => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 mb-2 w-full max-w-md">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2 w-full max-w-md">
                 <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
                   <div className="text-xs text-white/60">שיא ניקוד</div>
                   <div className="text-lg font-bold text-emerald-400">
@@ -2106,45 +2106,15 @@ useEffect(() => {
                     {accuracy}%
                   </div>
                 </div>
-              </div>
-              
-              
-              
-              {/* אתגרים יומיים ושבועיים */}
-              <div className="bg-black/20 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs text-white/60">אתגר יומי</div>
+                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center flex flex-col items-center justify-center">
+                  <div className="text-xs text-white/60 mb-1">אתגרים</div>
                   <button
                     onClick={() => setShowDailyChallenge(true)}
-                    className="text-xs text-blue-400 hover:text-blue-300"
+                    className="h-7 px-3 rounded bg-blue-500/80 hover:bg-blue-500 text-white text-xs font-bold"
                   >
-                    פרטים
+                    פתיחה
                   </button>
                 </div>
-                <div className="text-sm text-white mb-2">
-                  {dailyChallenge.correct} נכון מתוך {dailyChallenge.questions} שאלות
-                </div>
-                {dailyChallenge.questions > 0 && (
-                  <div className="w-full bg-black/30 rounded-full h-2 mb-2">
-                    <div
-                      className="bg-emerald-500 h-2 rounded-full transition-all"
-                      style={{ width: `${Math.min(100, (dailyChallenge.correct / dailyChallenge.questions) * 100)}%` }}
-                    />
-                  </div>
-                )}
-                <div className="text-xs text-white/60 mb-2">אתגר שבועי</div>
-                <div className="text-sm text-white mb-1">
-                  {weeklyChallenge.current} / {weeklyChallenge.target} שאלות נכונות
-                </div>
-                <div className="w-full bg-black/30 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full transition-all ${weeklyChallenge.completed ? "bg-yellow-500" : "bg-blue-500"}`}
-                    style={{ width: `${Math.min(100, (weeklyChallenge.current / weeklyChallenge.target) * 100)}%` }}
-                  />
-                </div>
-                {weeklyChallenge.completed && (
-                  <div className="text-xs text-yellow-400 mt-1">🎉 השלמת את האתגר השבועי!</div>
-                )}
               </div>
               
               <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
