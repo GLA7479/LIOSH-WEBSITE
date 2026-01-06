@@ -3942,25 +3942,25 @@ export default function MathMaster() {
               dir="rtl"
             >
               <div
-                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-2xl p-6 max-w-md w-full max-h-[90vh] flex flex-col"
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-xl p-4 w-[210px] max-h-[90vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="text-center mb-4 flex-shrink-0">
-                  <h2 className="text-2xl font-extrabold text-white mb-2">
+                <div className="text-center mb-3 flex-shrink-0">
+                  <h2 className="text-xl font-extrabold text-white mb-1">
                     🎲 בחר פעולות למיקס
                   </h2>
-                  <p className="text-white/70 text-sm">
+                  <p className="text-white/70 text-xs">
                     בחר אילו פעולות לכלול במיקס
                   </p>
                 </div>
 
-                <div className="space-y-3 mb-4 overflow-y-auto flex-1 min-h-0">
+                <div className="space-y-2 mb-3 overflow-y-auto flex-1 min-h-0">
                   {GRADES[grade].operations
                     .filter((op) => op !== "mixed")
                     .map((op) => (
                       <label
                         key={op}
-                        className="flex items-center gap-3 p-3 rounded-lg bg-black/30 border border-white/10 hover:bg-black/40 cursor-pointer transition-all"
+                        className="flex items-center gap-2 p-2 rounded-lg bg-black/30 border border-white/10 hover:bg-black/40 cursor-pointer transition-all"
                       >
                         <input
                           type="checkbox"
@@ -3971,9 +3971,9 @@ export default function MathMaster() {
                               [op]: e.target.checked,
                             }));
                           }}
-                          className="w-5 h-5 rounded"
+                          className="w-4 h-4 rounded"
                         />
-                        <span className="text-white font-semibold text-lg">
+                        <span className="text-white font-semibold text-base">
                           {getOperationName(op)}
                         </span>
                       </label>
@@ -3993,7 +3993,7 @@ export default function MathMaster() {
                         alert("אנא בחר לפחות פעולה אחת");
                       }
                     }}
-                    className="flex-1 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                    className="flex-1 px-3 py-1.5 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-xs"
                   >
                     שמור
                   </button>
@@ -4009,7 +4009,7 @@ export default function MathMaster() {
                       });
                       setMixedOperations(noneSelected);
                     }}
-                    className="flex-1 px-4 py-2 rounded-lg bg-gray-500/80 hover:bg-gray-500 font-bold text-sm"
+                    className="flex-1 px-3 py-1.5 rounded-lg bg-gray-500/80 hover:bg-gray-500 font-bold text-xs"
                   >
                     בטל הכל
                   </button>
@@ -4025,7 +4025,7 @@ export default function MathMaster() {
                       });
                       setMixedOperations(allSelected);
                     }}
-                    className="flex-1 px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm"
+                    className="flex-1 px-3 py-1.5 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-xs"
                   >
                     הכל
                   </button>
