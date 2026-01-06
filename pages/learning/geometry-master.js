@@ -74,6 +74,7 @@ export default function GeometryMaster() {
   const controlsRef = useRef(null);
   const topicSelectRef = useRef(null);
   const sessionStartRef = useRef(null);
+  const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
@@ -330,7 +331,15 @@ useEffect(() => {
     };
   }, []);
 
+  const accumulateQuestionTime = useCallback(() => {
+    if (!questionStartTime) return;
+    const elapsed = Date.now() - questionStartTime;
+    if (elapsed <= 0) return;
+    sessionSecondsRef.current += Math.min(elapsed, 60000);
+  }, [questionStartTime]);
+
   const generateNewQuestion = () => {
+    accumulateQuestionTime();
     // בדיקה שהכיתה קיימת
     if (!GRADES[grade]) {
       console.error("כיתה לא תקינה:", grade);
@@ -518,19 +527,23 @@ useEffect(() => {
 
   const recordSessionProgress = () => {
     if (!sessionStartRef.current) return;
+    accumulateQuestionTime();
     const elapsedMs = Date.now() - sessionStartRef.current;
     if (elapsedMs <= 0) {
       sessionStartRef.current = null;
       solvedCountRef.current = 0;
+      sessionSecondsRef.current = 0;
+      return;
+    }
+    const totalSeconds = sessionSecondsRef.current;
+    if (totalSeconds <= 0) {
+      sessionStartRef.current = null;
+      solvedCountRef.current = 0;
+      sessionSecondsRef.current = 0;
       return;
     }
     const answered = Math.max(solvedCountRef.current, totalQuestions);
-    if (answered <= 0) {
-      sessionStartRef.current = null;
-      solvedCountRef.current = 0;
-      return;
-    }
-    const durationMinutes = answered; // דקה אחת לכל שאלה שנפתרה
+    const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
     addSessionProgress(durationMinutes, answered, {
       subject: "geometry",
       topic,
@@ -542,6 +555,8 @@ useEffect(() => {
     refreshMonthlyProgress();
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
+    setQuestionStartTime(null);
   };
 
   const handleAnswer = (answer) => {
@@ -891,6 +906,7 @@ useEffect(() => {
   }
 
   function hardResetGame() {
+    accumulateQuestionTime();
     // Stop background music when game resets
     sound.stopBackgroundMusic();
     setGameActive(false);
@@ -913,6 +929,7 @@ useEffect(() => {
     recordSessionProgress();
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
     setRecentQuestions(new Set());
     setGameActive(true);
     setScore(0);

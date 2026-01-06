@@ -44,6 +44,12 @@ function RewardCard({ option, selected, onSelect }) {
 export default function ParentRewards() {
   useIOSViewportFix();
   const yearMonth = getCurrentYearMonth();
+
+  const formatMinutes = (value) =>
+    Number(value || 0).toLocaleString("he-IL", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
   const [progress, setProgress] = useState(null);
   const [reached, setReached] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -137,7 +143,7 @@ export default function ParentRewards() {
                   <div className="bg-black/30 rounded-xl p-4 text-center">
                     <p className="text-white/60 text-sm">זמן למידה החודש</p>
                     <p className="text-2xl font-bold text-emerald-300">
-                      {progress.totalMinutes} דק׳
+                      {formatMinutes(progress.totalMinutes)} דק׳
                     </p>
                     <p className="text-xs text-white/60">
                       יעד: {MONTHLY_MINUTES_TARGET} דק׳ (≈10 שעות)
@@ -193,7 +199,9 @@ export default function ParentRewards() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="bg-black/30 rounded-xl p-4 text-center">
                 <p className="text-white/60 text-sm">סה״כ דקות בטווח</p>
-                <p className="text-2xl font-bold text-emerald-300">{totalMinutesRange}</p>
+                <p className="text-2xl font-bold text-emerald-300">
+                  {formatMinutes(totalMinutesRange)}
+                </p>
               </div>
               <div className="bg-black/30 rounded-xl p-4 text-center">
                 <p className="text-white/60 text-sm">סה״כ תרגילים בטווח</p>
@@ -223,7 +231,7 @@ export default function ParentRewards() {
                         </p>
                       </div>
                       <div className="text-emerald-300 font-bold text-lg">
-                        {data.minutes} דק׳
+                        {formatMinutes(data.minutes)} דק׳
                       </div>
                     </div>
                   ))}
@@ -260,7 +268,9 @@ export default function ParentRewards() {
                         <td className="px-3 py-2">{session.subject || "—"}</td>
                         <td className="px-3 py-2">{session.topic || "—"}</td>
                         <td className="px-3 py-2">{session.mode || "—"}</td>
-                        <td className="px-3 py-2 text-center">{session.minutes}</td>
+                        <td className="px-3 py-2 text-center">
+                          {formatMinutes(session.minutes)}
+                        </td>
                         <td className="px-3 py-2 text-center">{session.exercises}</td>
                       </tr>
                     ))

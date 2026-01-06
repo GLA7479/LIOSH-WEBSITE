@@ -309,6 +309,7 @@ export default function ScienceMaster() {
   const questionPoolRef = useRef([]);
   const questionIndexRef = useRef(0);
   const sessionStartRef = useRef(null);
+  const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
@@ -673,35 +674,45 @@ useEffect(() => {
   };
 
   function trackCurrentQuestionTime() {
-    if (!questionStartTime || !currentQuestion) return;
-    const duration = (Date.now() - questionStartTime) / 1000;
-    if (duration <= 0 || duration > 300) return;
-    const qGrade =
-      currentQuestion.assignedGrade ||
-      currentQuestion.gradeKey ||
-      grade;
-    const qLevel =
-      currentQuestion.assignedLevel ||
-      currentQuestion.levelKey ||
-      level;
-    trackScienceTopicTime(currentQuestion.topic, qGrade, qLevel, duration);
+    if (!questionStartTime) return;
+    const elapsedMs = Date.now() - questionStartTime;
+    if (elapsedMs <= 0) return;
+    const cappedMs = Math.min(elapsedMs, 60000);
+    sessionSecondsRef.current += cappedMs;
+    const duration = cappedMs / 1000;
+    if (duration > 0 && duration <= 300 && currentQuestion) {
+      const qGrade =
+        currentQuestion.assignedGrade ||
+        currentQuestion.gradeKey ||
+        grade;
+      const qLevel =
+        currentQuestion.assignedLevel ||
+        currentQuestion.levelKey ||
+        level;
+      trackScienceTopicTime(currentQuestion.topic, qGrade, qLevel, duration);
+    }
+    setQuestionStartTime(null);
   }
 
 function recordSessionProgress() {
   if (!sessionStartRef.current) return;
+  trackCurrentQuestionTime();
   const elapsedMs = Date.now() - sessionStartRef.current;
   if (elapsedMs <= 0) {
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
+    return;
+  }
+  const totalSeconds = sessionSecondsRef.current;
+  if (totalSeconds <= 0) {
+    sessionStartRef.current = null;
+    solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
     return;
   }
   const answered = Math.max(solvedCountRef.current, totalQuestions);
-  if (answered <= 0) {
-    sessionStartRef.current = null;
-    solvedCountRef.current = 0;
-    return;
-  }
-  const durationMinutes = answered; // דקה אחת לכל שאלה שנפתרה
+  const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
   const lastTopic = currentQuestion?.topic || topic;
   addSessionProgress(durationMinutes, answered, {
     subject: "science",
@@ -714,6 +725,7 @@ function recordSessionProgress() {
   refreshMonthlyProgress();
   sessionStartRef.current = null;
   solvedCountRef.current = 0;
+  sessionSecondsRef.current = 0;
 }
 
   function logScienceMistakeEntry(question, wrongAnswer) {
@@ -767,6 +779,7 @@ function recordSessionProgress() {
   }
 
   function generateNewQuestion(resetPool = false) {
+    trackCurrentQuestionTime();
     const pool = filterQuestionsForCurrentSettings();
 
     if (pool.length === 0) {
@@ -824,6 +837,7 @@ function recordSessionProgress() {
   }
 
   function hardResetGame() {
+    trackCurrentQuestionTime();
     // Stop background music when game resets
     sound.stopBackgroundMusic();
     setGameActive(false);
@@ -887,6 +901,7 @@ function recordSessionProgress() {
     recordSessionProgress();
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
     setGameActive(true);
     setScore(0);
     setStreak(0);
@@ -894,6 +909,7 @@ function recordSessionProgress() {
     setWrong(0);
     setTotalQuestions(0);
     setAvgTime(0);
+    setQuestionStartTime(null);
     setFeedback(null);
     setSelectedAnswer(null);
     setShowHint(false);

@@ -84,6 +84,7 @@ export default function HebrewMaster() {
   const controlsRef = useRef(null);
   const operationSelectRef = useRef(null);
   const sessionStartRef = useRef(null);
+  const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
@@ -696,6 +697,7 @@ useEffect(() => {
   }
 
   function hardResetGame() {
+    accumulateQuestionTime();
     // Stop background music when game resets
     sound.stopBackgroundMusic();
     setGameActive(false);
@@ -713,7 +715,15 @@ useEffect(() => {
     setQuestionStartTime(null);
   }
 
+  const accumulateQuestionTime = useCallback(() => {
+    if (!questionStartTime) return;
+    const elapsed = Date.now() - questionStartTime;
+    if (elapsed <= 0) return;
+    sessionSecondsRef.current += Math.min(elapsed, 60000);
+  }, [questionStartTime]);
+
   function generateNewQuestion() {
+    accumulateQuestionTime();
     const levelConfig = getLevelConfig(gradeNumber, level);
     if (!levelConfig) {
       console.error("Invalid level config for grade", gradeNumber, "level", level);
@@ -848,19 +858,23 @@ useEffect(() => {
 
   function recordSessionProgress() {
     if (!sessionStartRef.current) return;
+    accumulateQuestionTime();
     const elapsedMs = Date.now() - sessionStartRef.current;
     if (elapsedMs <= 0) {
       sessionStartRef.current = null;
       solvedCountRef.current = 0;
+      sessionSecondsRef.current = 0;
+      return;
+    }
+    const totalSeconds = sessionSecondsRef.current;
+    if (totalSeconds <= 0) {
+      sessionStartRef.current = null;
+      solvedCountRef.current = 0;
+      sessionSecondsRef.current = 0;
       return;
     }
     const answered = Math.max(solvedCountRef.current, totalQuestions);
-    if (answered <= 0) {
-      sessionStartRef.current = null;
-      solvedCountRef.current = 0;
-      return;
-    }
-    const durationMinutes = answered; // דקה אחת לכל שאלה שנפתרה
+    const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
     addSessionProgress(durationMinutes, answered, {
       subject: "hebrew",
       topic: operation,
@@ -872,12 +886,15 @@ useEffect(() => {
     refreshMonthlyProgress();
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
+    setQuestionStartTime(null);
   }
 
   function startGame() {
     recordSessionProgress();
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
     setRecentQuestions(new Set()); // איפוס ההיסטוריה
     setGameActive(true);
     setScore(0);

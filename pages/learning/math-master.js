@@ -92,6 +92,7 @@ export default function MathMaster() {
   const operationSelectRef = useRef(null);
   const sessionStartRef = useRef(null);
   const solvedCountRef = useRef(0);
+  const sessionSecondsRef = useRef(0);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [mounted, setMounted] = useState(false);
@@ -240,7 +241,7 @@ export default function MathMaster() {
   });
 
   const [showDailyChallenge, setShowDailyChallenge] = useState(false);
-  
+
   // Daily Streak
   const [dailyStreak, setDailyStreak] = useState(() => loadDailyStreak("mleo_math_daily_streak"));
   const [showStreakReward, setShowStreakReward] = useState(null);
@@ -761,6 +762,7 @@ export default function MathMaster() {
   }
 
   function hardResetGame() {
+    accumulateQuestionTime();
     // Stop background music when game ends
     sound.stopBackgroundMusic();
     setGameActive(false);
@@ -778,7 +780,15 @@ export default function MathMaster() {
     setQuestionStartTime(null);
   }
 
+  const accumulateQuestionTime = useCallback(() => {
+    if (!questionStartTime) return;
+    const elapsed = Date.now() - questionStartTime;
+    if (elapsed <= 0) return;
+    sessionSecondsRef.current += Math.min(elapsed, 60000);
+  }, [questionStartTime]);
+
   function generateNewQuestion() {
+    accumulateQuestionTime();
     const levelConfig = getLevelConfig(gradeNumber, level);
     if (!levelConfig) {
       console.error("Invalid level config for grade", gradeNumber, "level", level);
@@ -922,19 +932,23 @@ export default function MathMaster() {
 
   function recordSessionProgress() {
     if (!sessionStartRef.current) return;
+    accumulateQuestionTime();
     const elapsedMs = Date.now() - sessionStartRef.current;
     if (elapsedMs <= 0) {
       sessionStartRef.current = null;
       solvedCountRef.current = 0;
+      sessionSecondsRef.current = 0;
+      return;
+    }
+    const totalSeconds = sessionSecondsRef.current;
+    if (totalSeconds <= 0) {
+      sessionStartRef.current = null;
+      solvedCountRef.current = 0;
+      sessionSecondsRef.current = 0;
       return;
     }
     const answered = Math.max(solvedCountRef.current, totalQuestions);
-    if (answered <= 0) {
-      sessionStartRef.current = null;
-      solvedCountRef.current = 0;
-      return;
-    }
-    const totalMinutes = answered; // דקה אחת לכל שאלה שנפתרה
+    const totalMinutes = Number((totalSeconds / 60000).toFixed(2));
     addSessionProgress(totalMinutes, answered, {
       subject: "math",
       topic: currentQuestion?.topic || operation,
@@ -946,12 +960,15 @@ export default function MathMaster() {
     refreshMonthlyProgress();
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
+    setQuestionStartTime(null);
   }
 
   function startGame() {
     recordSessionProgress();
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
     setRecentQuestions(new Set()); // איפוס ההיסטוריה
     setGameActive(true);
     setScore(0);

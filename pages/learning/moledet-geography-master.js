@@ -84,6 +84,7 @@ export default function MoledetGeographyMaster() {
   const controlsRef = useRef(null);
   const operationSelectRef = useRef(null);
   const sessionStartRef = useRef(null);
+  const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
@@ -696,6 +697,7 @@ useEffect(() => {
   }
 
   function hardResetGame() {
+    accumulateQuestionTime();
     setGameActive(false);
     setCurrentQuestion(null);
     setScore(0);
@@ -846,19 +848,23 @@ useEffect(() => {
 
   function recordSessionProgress() {
     if (!sessionStartRef.current) return;
+    accumulateQuestionTime();
     const elapsedMs = Date.now() - sessionStartRef.current;
     if (elapsedMs <= 0) {
       sessionStartRef.current = null;
       solvedCountRef.current = 0;
+      sessionSecondsRef.current = 0;
+      return;
+    }
+    const totalSeconds = sessionSecondsRef.current;
+    if (totalSeconds <= 0) {
+      sessionStartRef.current = null;
+      solvedCountRef.current = 0;
+      sessionSecondsRef.current = 0;
       return;
     }
     const answered = Math.max(solvedCountRef.current, totalQuestions);
-    if (answered <= 0) {
-      sessionStartRef.current = null;
-      solvedCountRef.current = 0;
-      return;
-    }
-    const durationMinutes = answered; // דקה אחת לכל שאלה שנפתרה
+    const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
     addSessionProgress(durationMinutes, answered, {
       subject: "moledet",
       topic,
@@ -870,12 +876,15 @@ useEffect(() => {
     refreshMonthlyProgress();
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
+    setQuestionStartTime(null);
   }
 
   function startGame() {
     recordSessionProgress();
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
+    sessionSecondsRef.current = 0;
     setRecentQuestions(new Set()); // איפוס ההיסטוריה
     setGameActive(true);
     setScore(0);
@@ -996,14 +1005,21 @@ useEffect(() => {
 
   // מעקב זמן לשאלה
   function trackCurrentQuestionTime() {
-    if (!questionStartTime || !currentQuestion) return;
-    const duration = (Date.now() - questionStartTime) / 1000;
-    if (duration > 0 && duration < 300) {
-      const qGrade = currentQuestion.gradeKey || `g${grade}`;
-      const qLevel = currentQuestion.levelKey || level;
-      const topic = currentQuestion.topic || currentQuestion.operation || "mixed";
-      trackMoledetGeographyTopicTime(topic, qGrade, qLevel, duration);
+    if (!questionStartTime) return;
+    const elapsedMs = Date.now() - questionStartTime;
+    if (elapsedMs <= 0) return;
+    const cappedMs = Math.min(elapsedMs, 60000);
+    sessionSecondsRef.current += cappedMs;
+    if (currentQuestion) {
+      const duration = Math.min(cappedMs / 1000, 300);
+      if (duration > 0) {
+        const qGrade = currentQuestion.gradeKey || `g${grade}`;
+        const qLevel = currentQuestion.levelKey || level;
+        const topic = currentQuestion.topic || currentQuestion.operation || "mixed";
+        trackMoledetGeographyTopicTime(topic, qGrade, qLevel, duration);
+      }
     }
+    setQuestionStartTime(null);
   }
 
   function handleAnswer(answer) {
