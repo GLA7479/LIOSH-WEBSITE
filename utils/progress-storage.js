@@ -1,4 +1,5 @@
 const PROGRESS_STORAGE_KEY = "LEO_MONTHLY_PROGRESS";
+const PROGRESS_LOG_KEY = "LEO_PROGRESS_LOG";
 
 function getYearMonth(date = new Date()) {
   const year = date.getFullYear();
@@ -26,11 +27,12 @@ export function saveMonthlyProgress(data) {
   }
 }
 
-export function addSessionProgress(durationMinutes, exercisesSolved, date = new Date()) {
+export function addSessionProgress(durationMinutes, exercisesSolved, meta = {}) {
   if (!durationMinutes || durationMinutes <= 0) return;
   if (typeof window === "undefined") return;
 
-  const ym = getYearMonth(date);
+  const sessionDate = meta.date ? new Date(meta.date) : new Date();
+  const ym = getYearMonth(sessionDate);
   const allProgress = loadMonthlyProgress();
   const prev = allProgress[ym] || { totalMinutes: 0, totalExercises: 0 };
 
@@ -40,6 +42,17 @@ export function addSessionProgress(durationMinutes, exercisesSolved, date = new 
   };
 
   saveMonthlyProgress(allProgress);
+  appendProgressLog({
+    id: Date.now(),
+    date: sessionDate.toISOString(),
+    minutes: durationMinutes,
+    exercises: exercisesSolved || 0,
+    subject: meta.subject || "general",
+    topic: meta.topic || "",
+    grade: meta.grade || "",
+    mode: meta.mode || "",
+    game: meta.game || "",
+  });
 }
 
 const REWARD_CHOICE_KEY = "LEO_REWARD_CHOICE";
@@ -71,6 +84,38 @@ export function saveRewardChoice(yearMonth, choiceKey) {
 
 export function getCurrentYearMonth() {
   return getYearMonth();
+}
+
+export function loadProgressLog() {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(PROGRESS_LOG_KEY);
+    if (!raw) return [];
+    const list = JSON.parse(raw);
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
+
+function appendProgressLog(entry) {
+  if (typeof window === "undefined") return;
+  try {
+    const raw = localStorage.getItem(PROGRESS_LOG_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(list)) {
+      list.push(entry);
+      // שמירה על היסטוריה בגודל סביר
+      while (list.length > 1000) {
+        list.shift();
+      }
+      localStorage.setItem(PROGRESS_LOG_KEY, JSON.stringify(list));
+    } else {
+      localStorage.setItem(PROGRESS_LOG_KEY, JSON.stringify([entry]));
+    }
+  } catch {
+    // ignore
+  }
 }
 
 export function hasRewardCelebrationShown(yearMonth) {

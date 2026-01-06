@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Layout from "../../components/Layout";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import {
   getCurrentYearMonth,
   loadMonthlyProgress,
   loadRewardChoice,
+  loadProgressLog,
   saveRewardChoice,
 } from "../../utils/progress-storage";
 import {
@@ -47,6 +48,15 @@ export default function ParentRewards() {
   const [reached, setReached] = useState(false);
   const [selected, setSelected] = useState(null);
   const [message, setMessage] = useState("");
+  const [sessions, setSessions] = useState([]);
+  const [fromDate, setFromDate] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+  });
+  const [toDate, setToDate] = useState(() => {
+    const now = new Date();
+    return now.toISOString().slice(0, 10);
+  });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -62,6 +72,9 @@ export default function ParentRewards() {
     if (storedChoice) {
       setSelected(storedChoice);
     }
+
+    const log = loadProgressLog();
+    setSessions(Array.isArray(log) ? log : []);
   }, [yearMonth]);
 
   function handleSave() {
@@ -69,6 +82,42 @@ export default function ParentRewards() {
     saveRewardChoice(yearMonth, selected);
     setMessage("הפרס נבחר בהצלחה! נחזור אליכם לתיאום הפרס.");
   }
+
+  const filteredSessions = useMemo(() => {
+    if (!sessions.length) return [];
+    const fromTs = fromDate ? new Date(fromDate).getTime() : -Infinity;
+    const toTs = toDate
+      ? new Date(new Date(toDate).setHours(23, 59, 59, 999)).getTime()
+      : Infinity;
+    return sessions
+      .filter((session) => {
+        const ts = new Date(session.date).getTime();
+        return ts >= fromTs && ts <= toTs;
+      })
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [sessions, fromDate, toDate]);
+
+  const summaryBySubject = useMemo(() => {
+    const summary = {};
+    filteredSessions.forEach((session) => {
+      const key = session.subject || "אחר";
+      if (!summary[key]) {
+        summary[key] = { minutes: 0, exercises: 0 };
+      }
+      summary[key].minutes += session.minutes || 0;
+      summary[key].exercises += session.exercises || 0;
+    });
+    return summary;
+  }, [filteredSessions]);
+
+  const totalMinutesRange = filteredSessions.reduce(
+    (sum, session) => sum + (session.minutes || 0),
+    0
+  );
+  const totalExercisesRange = filteredSessions.reduce(
+    (sum, session) => sum + (session.exercises || 0),
+    0
+  );
 
   return (
     <Layout>
@@ -117,6 +166,108 @@ export default function ParentRewards() {
             ) : (
               <p className="text-center text-white/70">אין עדיין נתונים לחודש הזה.</p>
             )}
+          </section>
+
+          <section className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-4" dir="rtl">
+            <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+              <div className="flex-1">
+                <label className="block text-sm text-white/70 mb-1">תאריך התחלה</label>
+                <input
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  className="w-full bg-black/30 border border-white/20 rounded-lg px-3 py-2 text-white"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm text-white/70 mb-1">תאריך סיום</label>
+                <input
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  className="w-full bg-black/30 border border-white/20 rounded-lg px-3 py-2 text-white"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-black/30 rounded-xl p-4 text-center">
+                <p className="text-white/60 text-sm">סה״כ דקות בטווח</p>
+                <p className="text-2xl font-bold text-emerald-300">{totalMinutesRange}</p>
+              </div>
+              <div className="bg-black/30 rounded-xl p-4 text-center">
+                <p className="text-white/60 text-sm">סה״כ תרגילים בטווח</p>
+                <p className="text-2xl font-bold text-amber-300">{totalExercisesRange}</p>
+              </div>
+              <div className="bg-black/30 rounded-xl p-4 text-center">
+                <p className="text-white/60 text-sm">מספר סשנים</p>
+                <p className="text-2xl font-bold text-blue-300">{filteredSessions.length}</p>
+              </div>
+            </div>
+
+            <div className="bg-black/20 rounded-xl p-4">
+              <h3 className="font-bold mb-3">חלוקה לפי מקצועות</h3>
+              {Object.keys(summaryBySubject).length === 0 ? (
+                <p className="text-white/60 text-sm">אין נתונים בטווח שנבחר.</p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {Object.entries(summaryBySubject).map(([subject, data]) => (
+                    <div
+                      key={subject}
+                      className="bg-white/10 rounded-lg px-4 py-3 flex items-center justify-between"
+                    >
+                      <div>
+                        <p className="font-bold">{subject}</p>
+                        <p className="text-xs text-white/60">
+                          {data.exercises} תרגילים
+                        </p>
+                      </div>
+                      <div className="text-emerald-300 font-bold text-lg">
+                        {data.minutes} דק׳
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-right border-separate border-spacing-y-2">
+                <thead className="text-white/70">
+                  <tr>
+                    <th className="px-3 py-2">תאריך</th>
+                    <th className="px-3 py-2">מקצוע</th>
+                    <th className="px-3 py-2">נושא</th>
+                    <th className="px-3 py-2">מצב משחק</th>
+                    <th className="px-3 py-2 text-center">דקות</th>
+                    <th className="px-3 py-2 text-center">תרגילים</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSessions.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="text-center text-white/60 py-4">
+                        אין נתונים לטווח שנבחר.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredSessions.map((session) => (
+                      <tr
+                        key={session.id}
+                        className="bg-white/5 border border-white/10 rounded-lg text-white"
+                      >
+                        <td className="px-3 py-2">{new Date(session.date).toLocaleDateString("he-IL")}</td>
+                        <td className="px-3 py-2">{session.subject || "—"}</td>
+                        <td className="px-3 py-2">{session.topic || "—"}</td>
+                        <td className="px-3 py-2">{session.mode || "—"}</td>
+                        <td className="px-3 py-2 text-center">{session.minutes}</td>
+                        <td className="px-3 py-2 text-center">{session.exercises}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </section>
 
           {reached && (

@@ -1045,9 +1045,21 @@ const refreshMonthlyProgress = useCallback(() => {
       solvedCountRef.current = 0;
       return;
     }
-    const durationMinutes = Math.max(1, Math.round(elapsedMs / 60000));
-    const exercises = Math.max(solvedCountRef.current, totalQuestions);
-    addSessionProgress(durationMinutes, exercises);
+    const answered = Math.max(solvedCountRef.current, totalQuestions);
+    if (answered <= 0) {
+      sessionStartRef.current = null;
+      solvedCountRef.current = 0;
+      return;
+    }
+    const durationMinutes = answered; // דקה אחת לכל שאלה שנפתרה
+    addSessionProgress(durationMinutes, answered, {
+      subject: "english",
+      topic,
+      grade: gradeNumber,
+      mode,
+      game: "EnglishMaster",
+      date: new Date(),
+    });
     refreshMonthlyProgress();
     sessionStartRef.current = null;
     solvedCountRef.current = 0;

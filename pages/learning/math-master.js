@@ -928,9 +928,21 @@ export default function MathMaster() {
       solvedCountRef.current = 0;
       return;
     }
-    const durationMinutes = Math.max(1, Math.round(elapsedMs / 60000));
-    const exercises = Math.max(solvedCountRef.current, totalQuestions);
-    addSessionProgress(durationMinutes, exercises);
+    const answered = Math.max(solvedCountRef.current, totalQuestions);
+    if (answered <= 0) {
+      sessionStartRef.current = null;
+      solvedCountRef.current = 0;
+      return;
+    }
+    const totalMinutes = answered; // דקה אחת לכל שאלה שנפתרה
+    addSessionProgress(totalMinutes, answered, {
+      subject: "math",
+      topic: currentQuestion?.topic || operation,
+      grade,
+      mode,
+      game: "MathMaster",
+      date: new Date(),
+    });
     refreshMonthlyProgress();
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
