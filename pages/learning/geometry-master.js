@@ -1194,7 +1194,7 @@ useEffect(() => {
           </div>
 
           <div
-            className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-wrap px-1"
+            className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-nowrap overflow-x-auto px-1"
             dir="rtl"
           >
             {Object.keys(MODES).map((m) => (
@@ -1205,7 +1205,7 @@ useEffect(() => {
                   setGameActive(false);
                   setFeedback(null);
                 }}
-                className={`h-8 px-3 rounded-lg text-xs font-bold transition-all ${
+                className={`h-8 px-3 rounded-lg text-xs font-bold transition-all flex-shrink-0 ${
                   mode === m
                     ? "bg-emerald-500/80 text-white"
                     : "bg-white/10 text-white/70 hover:bg-white/20"
@@ -1219,7 +1219,7 @@ useEffect(() => {
                 sound.toggleSounds();
                 sound.toggleMusic();
               }}
-              className={`h-8 w-8 rounded-lg border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all ${
+              className={`h-8 w-8 rounded-lg border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all flex-shrink-0 ${
                 sound.soundsEnabled && sound.musicEnabled
                   ? "bg-green-500/80 hover:bg-green-500"
                   : "bg-red-500/80 hover:bg-red-500"
@@ -1489,28 +1489,23 @@ useEffect(() => {
                 >
                   📐 לוח צורות
                 </button>
-                {mistakes.length > 0 && (
-                  <button
-                    onClick={() => setShowPracticeOptions(true)}
-                    className="h-9 px-3 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-xs"
-                  >
-                    🎯 תרגול ממוקד ({mistakes.length})
-                  </button>
-                )}
+                <button
+                  onClick={() => setShowPracticeOptions(true)}
+                  className={`h-9 px-3 rounded-lg font-bold text-xs ${
+                    mistakes.length > 0
+                      ? "bg-purple-500/80 hover:bg-purple-500"
+                      : "bg-gray-500/50 cursor-not-allowed opacity-50"
+                  }`}
+                  disabled={mistakes.length === 0}
+                >
+                  🎯 תרגול {mistakes.length > 0 && `(${mistakes.length})`}
+                </button>
                 <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-9 px-3 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-xs"
                 >
                   🏆 לוח תוצאות
                 </button>
-                {bestScore > 0 && (
-                  <button
-                    onClick={resetStats}
-                    className="h-10 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-sm"
-                  >
-                    🧹 Reset
-                  </button>
-                )}
               </div>
 
               {/* כפתורים עזרה ותרגול ממוקד */}

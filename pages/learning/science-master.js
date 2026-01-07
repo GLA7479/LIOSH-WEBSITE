@@ -1475,7 +1475,7 @@ function recordSessionProgress() {
                   setGameActive(false);
                   setFeedback(null);
                 }}
-                className={`h-8 px-3 rounded-lg text-xs font-bold transition-all ${
+                className={`h-8 px-3 rounded-lg text-xs font-bold transition-all flex-shrink-0 ${
                   mode === m
                     ? "bg-emerald-500/80 text-white"
                     : "bg-white/10 text-white/70 hover:bg-white/20"
@@ -1489,7 +1489,7 @@ function recordSessionProgress() {
                 sound.toggleSounds();
                 sound.toggleMusic();
               }}
-              className={`h-8 w-8 rounded-lg border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all ${
+              className={`h-8 w-8 rounded-lg border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all flex-shrink-0 ${
                 sound.soundsEnabled && sound.musicEnabled
                   ? "bg-green-500/80 hover:bg-green-500"
                   : "bg-red-500/80 hover:bg-red-500"
