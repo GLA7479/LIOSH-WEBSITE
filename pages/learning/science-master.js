@@ -1320,12 +1320,19 @@ function recordSessionProgress() {
 
   return (
     <Layout>
-      <div
-        ref={wrapRef}
-        className="relative w-full overflow-hidden bg-gradient-to-b from-[#050816] to-[#0b1121] game-page-mobile"
-        style={{ height: "100vh", height: "100dvh" }}
-        dir="rtl"
-      >
+      <div className="min-h-screen bg-gradient-to-b from-[#050816] to-[#0b1121]" dir="rtl">
+        <div
+          ref={wrapRef}
+          className="relative overflow-hidden game-page-mobile"
+          style={{
+            minHeight: "100vh",
+            height: "100dvh",
+            maxWidth: "1200px",
+            width: "min(1200px, 100vw)",
+            padding: "clamp(12px, 3vw, 32px)",
+            margin: "0 auto"
+          }}
+        >
         {/* רקע עדין */}
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
@@ -2524,6 +2531,7 @@ function recordSessionProgress() {
           )}
         </div>
       </div>
+    </div>
     </Layout>
   );
 }
