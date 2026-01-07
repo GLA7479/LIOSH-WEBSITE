@@ -2517,33 +2517,36 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   )}
                   
                   {/* הפרדה בין שורת השאלה לשורת התרגיל */}
-                  {currentQuestion.questionLabel && currentQuestion.exerciseText ? (
-                    <>
-                      <p
-                        className="text-2xl text-center text-white mb-1 break-words overflow-wrap-anywhere max-w-full px-2"
-                        style={{
-                          direction: currentQuestion.isStory ? "rtl" : "rtl",
-                          unicodeBidi: "plaintext",
-                          wordBreak: "break-word",
-                          overflowWrap: "break-word",
-                        }}
-                      >
-                        {currentQuestion.questionLabel}
-                      </p>
-                      
-                      {/* כפתור החלפה מאוזן/מאונך - רק אם התרגיל יכול להיות מאונך */}
+                  {currentQuestion.exerciseText ? (
+                    <div
+                      className={`relative w-full mb-2 pr-2 ${
+                        canDisplayVertically ? "pl-16 pt-8" : "pl-2 pt-0"
+                      }`}
+                    >
                       {canDisplayVertically && (
-                        <div className="flex justify-center mb-2">
-                          <button
-                            onClick={() => setIsVerticalDisplay((prev) => !prev)}
-                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/80 hover:bg-purple-500 text-white transition-all"
-                            title={isVerticalDisplay ? "הצג מאוזן" : "הצג מאונך"}
-                          >
-                            {isVerticalDisplay ? "↔️ מאוזן" : "↕️ מאונך"}
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => setIsVerticalDisplay((prev) => !prev)}
+                          className="absolute top-2 left-2 z-10 px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/80 hover:bg-purple-500 text-white transition-all pointer-events-auto shadow-lg"
+                          title={isVerticalDisplay ? "הצג מאוזן" : "הצג מאונך"}
+                        >
+                          {isVerticalDisplay ? "↔️ מאוזן" : "↕️ מאונך"}
+                        </button>
                       )}
-                      
+
+                      {currentQuestion.questionLabel && (
+                        <p
+                          className="text-2xl text-center text-white mb-2 break-words overflow-wrap-anywhere max-w-full"
+                          style={{
+                            direction: currentQuestion.isStory ? "rtl" : "rtl",
+                            unicodeBidi: "plaintext",
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                          }}
+                        >
+                          {currentQuestion.questionLabel}
+                        </p>
+                      )}
+
                       {/* תצוגת התרגיל - מאוזן או מאונך */}
                       {isVerticalDisplay && canDisplayVertically ? (
                         <div className="mb-4 flex justify-center w-full max-w-full px-2">
@@ -2574,51 +2577,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           {currentQuestion.exerciseText}
                         </p>
                       )}
-                    </>
-                  ) : currentQuestion.exerciseText ? (
-                    <>
-                      {/* כפתור החלפה מאוזן/מאונך - רק אם התרגיל יכול להיות מאונך */}
-                      {canDisplayVertically && (
-                        <div className="flex justify-center mb-2">
-                          <button
-                            onClick={() => setIsVerticalDisplay((prev) => !prev)}
-                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/80 hover:bg-purple-500 text-white transition-all"
-                            title={isVerticalDisplay ? "הצג מאוזן" : "הצג מאונך"}
-                          >
-                            {isVerticalDisplay ? "↔️ מאוזן" : "↕️ מאונך"}
-                          </button>
-                        </div>
-                      )}
-                      
-                      {/* תצוגת התרגיל - מאוזן או מאונך */}
-                      {isVerticalDisplay && canDisplayVertically ? (
-                        <div className="mb-4 flex justify-center w-full max-w-full px-2">
-                          <pre
-                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
-                            style={{
-                              direction: "ltr",
-                              unicodeBidi: "plaintext",
-                              wordBreak: "break-word",
-                              overflowWrap: "break-word",
-                            }}
-                          >
-                            {getVerticalExercise() || currentQuestion.exerciseText}
-                          </pre>
-                        </div>
-                      ) : (
-                        <p
-                          className="text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2"
-                          style={{
-                            direction: "ltr",
-                            unicodeBidi: "plaintext",
-                            wordBreak: "break-word",
-                            overflowWrap: "break-word",
-                          }}
-                        >
-                          {currentQuestion.exerciseText}
-                        </p>
-                      )}
-                    </>
+                    </div>
                   ) : (
                     <div
                       className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
