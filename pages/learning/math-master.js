@@ -2199,27 +2199,27 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 </div>
               </div>
               
-              <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
-                <div className="flex items-center justify-between text-[11px] text-white/70 mb-1">
+              <div className="bg-white/5 border border-white/10 rounded-lg p-2 mb-2 w-full max-w-md">
+                <div className="flex items-center justify-between text-[11px] text-white/70 mb-0.5">
                   <span>🎁 מסע פרס חודשי</span>
                   <span>
                     {monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳
                   </span>
                 </div>
-                <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                  <div
-                    className="h-2 bg-emerald-400 rounded-full transition-all"
-                    style={{ width: `${goalPercent}%` }}
-                  />
-                </div>
-                <p className="text-[11px] text-white/70 mt-1 text-center">
+                <p className="text-[11px] text-white/70 mb-0.5 text-center">
                   {minutesRemaining > 0
                     ? `נותרו עוד ${minutesRemaining} דק׳ (~${Math.ceil(
                         minutesRemaining / 60
                       )} ש׳)`
                     : "🎉 יעד הושלם! בקשו מההורה לבחור פרס."}
                 </p>
-                <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                  <div
+                    className="h-1.5 bg-emerald-400 rounded-full transition-all"
+                    style={{ width: `${goalPercent}%` }}
+                  />
+                </div>
+                <div className="mt-1.5 grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center">
                   {REWARD_OPTIONS.map((option) => (
                     <button
                       key={option.key}
@@ -2232,6 +2232,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           ? "border-emerald-400 text-emerald-200 bg-emerald-500/20"
                           : "border-white/15 text-white/70 hover:border-white/30"
                       }`}
+                      style={{ transform: "scaleY(0.75)", transformOrigin: "center" }}
                     >
                       <div className="text-xl">{option.icon}</div>
                       <div className="font-bold leading-tight" dir="ltr">{option.label}</div>
