@@ -2143,7 +2143,7 @@ useEffect(() => {
                     style={{ width: `${goalPercent}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 text-center">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center">
                   {REWARD_OPTIONS.map((option) => (
                     <button
                       key={option.key}
@@ -2151,14 +2151,14 @@ useEffect(() => {
                         saveRewardChoice(yearMonthRef.current, option.key);
                         setRewardChoice(option.key);
                       }}
-                      className={`rounded-lg border p-2 text-[11px] bg-black/30 flex flex-col items-center gap-1 transition-all hover:scale-105 ${
+                      className={`rounded-lg border p-2.5 text-xs bg-black/30 flex flex-col items-center gap-1.5 transition-all hover:scale-105 ${
                         rewardChoice === option.key
                           ? "border-emerald-400 text-emerald-200 bg-emerald-500/20"
                           : "border-white/15 text-white/70 hover:border-white/30"
                       }`}
-                      style={{ transform: "scaleY(0.75)", transformOrigin: "center" }}
+                      style={{ transform: "scaleY(0.85)", transformOrigin: "center" }}
                     >
-                      <div className="text-xl">{option.icon}</div>
+                      <div className="text-2xl">{option.icon}</div>
                       <div className="font-bold leading-tight" dir="ltr">{option.label}</div>
                     </button>
                   ))}
