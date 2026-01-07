@@ -81,6 +81,8 @@ const REFERENCE_CATEGORIES = {
 };
 
 const REFERENCE_CATEGORY_KEYS = Object.keys(REFERENCE_CATEGORIES);
+const BASE_CANVAS_WIDTH = 480;
+const BASE_CANVAS_HEIGHT = 860;
 
 export default function MathMaster() {
   useIOSViewportFix();
@@ -153,8 +155,9 @@ export default function MathMaster() {
   const [goalPercent, setGoalPercent] = useState(0);
   const [minutesRemaining, setMinutesRemaining] = useState(MONTHLY_MINUTES_TARGET);
   const [rewardChoice, setRewardChoice] = useState(null);
-  const [showRewardCelebration, setShowRewardCelebration] = useState(false);
-  const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
+const [showRewardCelebration, setShowRewardCelebration] = useState(false);
+const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
+const [layoutScale, setLayoutScale] = useState(1);
 
   const refreshMonthlyProgress = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -620,6 +623,21 @@ export default function MathMaster() {
       return prev;
     });
   }, []); // רק פעם אחת בטעינה
+
+  useEffect(() => {
+    const updateScale = () => {
+      if (typeof window === "undefined") return;
+      const widthScale = window.innerWidth / BASE_CANVAS_WIDTH;
+      const heightScale = window.innerHeight / BASE_CANVAS_HEIGHT;
+      const idealScale = Math.min(widthScale, heightScale);
+      const clampedScale = Math.max(0.65, Math.min(idealScale, 1.5));
+      setLayoutScale(clampedScale);
+    };
+
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   // לא צריך event listener - ה-modal נפתח רק ב-onChange או דרך כפתור ⚙️
 
@@ -1560,12 +1578,45 @@ export default function MathMaster() {
           100% { opacity: 1; transform: scale(1); }
         }
       `}</style>
-      <div
-        ref={wrapRef}
-        className="relative w-full overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928] game-page-mobile"
-        style={{ height: "100vh", height: "100dvh" }}
-        dir="rtl"
-      >
+      <style jsx global>{`
+        .math-fixed-shell {
+          width: 100vw;
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: #03050b;
+          overflow: hidden;
+          padding: 12px;
+          box-sizing: border-box;
+        }
+        .math-fixed-scale {
+          width: ${BASE_CANVAS_WIDTH}px;
+          height: ${BASE_CANVAS_HEIGHT}px;
+          transform-origin: center center;
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+        }
+        .math-fixed-canvas {
+          width: 100%;
+          height: 100%;
+          border-radius: 24px;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+        }
+      `}</style>
+      <div className="math-fixed-shell">
+        <div
+          className="math-fixed-scale"
+          style={{ transform: `scale(${layoutScale})` }}
+        >
+          <div
+            ref={wrapRef}
+            className="math-fixed-canvas relative w-full overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928] game-page-mobile"
+            dir="rtl"
+          >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
             className="absolute inset-0"
@@ -4263,10 +4314,11 @@ export default function MathMaster() {
               </div>
             </div>
           )}
-
+          </div>
         </div>
       </div>
-    </Layout>
+    </div>
+  </Layout>
   );
 }
 
