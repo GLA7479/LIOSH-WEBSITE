@@ -146,6 +146,7 @@ export default function MathMaster() {
   const [celebrationEmoji, setCelebrationEmoji] = useState("🎉");
   const [showPlayerProfile, setShowPlayerProfile] = useState(false);
   const [playerAvatar, setPlayerAvatar] = useState("👤"); // אווטר ברירת מחדל
+  const [playerAvatarImage, setPlayerAvatarImage] = useState(null); // תמונת אווטר מותאמת אישית
   const [monthlyProgress, setMonthlyProgress] = useState({
     totalMinutes: 0,
     totalExercises: 0,
@@ -513,11 +514,59 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   useEffect(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("mleo_player_avatar");
-      if (saved) {
+      const savedImage = localStorage.getItem("mleo_player_avatar_image");
+      
+      if (savedImage) {
+        setPlayerAvatarImage(savedImage);
+        setPlayerAvatar(null);
+      } else if (saved) {
         setPlayerAvatar(saved);
+        setPlayerAvatarImage(null);
       }
     }
   }, []);
+
+  // טיפול בהעלאת תמונת אווטר
+  const handleAvatarImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // בדוק גודל קובץ (מקסימום 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      alert("התמונה גדולה מדי. נא לבחור תמונה עד 2MB");
+      return;
+    }
+    
+    // בדוק סוג קובץ
+    if (!file.type.startsWith("image/")) {
+      alert("נא לבחור קובץ תמונה בלבד");
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const imageUrl = reader.result;
+      setPlayerAvatarImage(imageUrl);
+      setPlayerAvatar(null);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("mleo_player_avatar_image", imageUrl);
+        localStorage.removeItem("mleo_player_avatar"); // הסר אמוג'י אם נבחרה תמונה
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // טיפול במחיקת תמונת אווטר
+  const handleRemoveAvatarImage = () => {
+    setPlayerAvatarImage(null);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("mleo_player_avatar_image");
+      // החזר אמוג'י ברירת מחדל
+      const defaultAvatar = "👤";
+      setPlayerAvatar(defaultAvatar);
+      localStorage.setItem("mleo_player_avatar", defaultAvatar);
+    }
+  };
 
   useEffect(() => {
     return () => {
@@ -1708,7 +1757,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               title="פרופיל שחקן"
             >
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">אווטר</div>
-              <div className="text-lg font-bold leading-tight">{playerAvatar}</div>
+              <div className="text-lg font-bold leading-tight">
+                {playerAvatarImage ? (
+                  <img 
+                    src={playerAvatarImage} 
+                    alt="אווטר" 
+                    className="w-6 h-6 rounded-full object-cover mx-auto"
+                  />
+                ) : (
+                  playerAvatar
+                )}
+              </div>
             </button>
           </div>
 
@@ -1823,7 +1882,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 {/* אווטר ונתונים בשורה */}
                 <div className="bg-black/30 border border-white/10 rounded-lg p-3">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="text-4xl">{playerAvatar}</div>
+                      <div className="text-4xl">
+                        {playerAvatarImage ? (
+                          <img 
+                            src={playerAvatarImage} 
+                            alt="אווטר" 
+                            className="w-16 h-16 rounded-full object-cover"
+                          />
+                        ) : (
+                          playerAvatar
+                        )}
+                      </div>
                       <div className="flex-1">
                         <div className="text-sm text-white/60 mb-1">שם שחקן</div>
                         <div className="text-lg font-bold text-white">{playerName || "שחקן"}</div>
@@ -1861,18 +1930,57 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     </div>
                     <div className="mt-3">
                       <div className="text-xs text-white/60 mb-2">בחר אווטר:</div>
+                      
+                      {/* כפתור לבחירת תמונה */}
+                      <div className="mb-3">
+                        <label className="block w-full">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAvatarImageUpload}
+                            className="hidden"
+                            id="avatar-image-upload"
+                          />
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => document.getElementById("avatar-image-upload").click()}
+                              className="px-3 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-white text-xs font-bold transition-all flex-1"
+                            >
+                              📷 בחר תמונה
+                            </button>
+                            {playerAvatarImage && (
+                              <button
+                                type="button"
+                                onClick={handleRemoveAvatarImage}
+                                className="px-3 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition-all"
+                              >
+                                🗑️ מחק תמונה
+                              </button>
+                            )}
+                          </div>
+                        </label>
+                        {playerAvatarImage && (
+                          <div className="mt-2 text-xs text-white/60 text-center">
+                            תמונה נבחרה ✓
+                          </div>
+                        )}
+                      </div>
+                      
                       <div className="grid grid-cols-6 gap-2">
                         {AVATAR_OPTIONS.map((avatar) => (
                           <button
                             key={avatar}
                             onClick={() => {
                               setPlayerAvatar(avatar);
+                              setPlayerAvatarImage(null);
                               if (typeof window !== "undefined") {
                                 localStorage.setItem("mleo_player_avatar", avatar);
+                                localStorage.removeItem("mleo_player_avatar_image");
                               }
                             }}
                             className={`text-2xl p-1.5 rounded-lg transition-all ${
-                              playerAvatar === avatar
+                              !playerAvatarImage && playerAvatar === avatar
                                 ? "bg-yellow-500/40 border-2 border-yellow-400 scale-110"
                                 : "bg-black/30 border border-white/10 hover:bg-black/40"
                             }`}
