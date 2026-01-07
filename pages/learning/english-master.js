@@ -1813,9 +1813,25 @@ const refreshMonthlyProgress = useCallback(() => {
           }}
         >
           <div className="text-center mb-1">
-            <h1 className="text-2xl font-extrabold text-white mb-0.5">
-              🇬🇧 English Master
-            </h1>
+            <div className="flex items-center justify-center gap-2 mb-0.5">
+              <h1 className="text-2xl font-extrabold text-white">
+                🇬🇧 English Master
+              </h1>
+              <button
+                onClick={() => {
+                  sound.toggleSounds();
+                  sound.toggleMusic();
+                }}
+                className={`h-7 w-7 rounded-lg border border-white/20 text-white text-sm font-bold flex items-center justify-center transition-all flex-shrink-0 ${
+                  sound.soundsEnabled && sound.musicEnabled
+                    ? "bg-green-500/80 hover:bg-green-500"
+                    : "bg-red-500/80 hover:bg-red-500"
+                }`}
+                title={sound.soundsEnabled && sound.musicEnabled ? "השתק צלילים" : "הפעל צלילים"}
+              >
+                {sound.soundsEnabled && sound.musicEnabled ? "🔊" : "🔇"}
+              </button>
+            </div>
             <p className="text-white/70 text-xs">
               {playerName || "שחקן"} • {gradeInfo.name} •{" "}
               {LEVELS[level].name} • {getTopicName(topic)} • {MODES[mode].name}
@@ -1904,20 +1920,6 @@ const refreshMonthlyProgress = useCallback(() => {
                 {MODES[m].name}
               </button>
             ))}
-            <button
-              onClick={() => {
-                sound.toggleSounds();
-                sound.toggleMusic();
-              }}
-              className={`h-8 w-8 rounded-lg border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all flex-shrink-0 ${
-                sound.soundsEnabled && sound.musicEnabled
-                  ? "bg-green-500/80 hover:bg-green-500"
-                  : "bg-red-500/80 hover:bg-red-500"
-              }`}
-              title={sound.soundsEnabled && sound.musicEnabled ? "השתק צלילים" : "הפעל צלילים"}
-            >
-              {sound.soundsEnabled && sound.musicEnabled ? "🔊" : "🔇"}
-            </button>
           </div>
 
           {showStreakReward && (
@@ -2090,13 +2092,13 @@ const refreshMonthlyProgress = useCallback(() => {
                 <div className="flex items-center justify-between text-[10px] text-white/70 mb-0.5">
                   <span>🎁 מסע פרס חודשי</span>
                   <span>
-                    {monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳
+                    {Math.round(monthlyProgress.totalMinutes)} / {MONTHLY_MINUTES_TARGET} דק׳
                   </span>
                 </div>
                 <p className="text-[10px] text-white/70 mb-0.5 text-center">
                   {minutesRemaining > 0
-                    ? `נותרו עוד ${minutesRemaining} דק׳ (~${Math.ceil(
-                        minutesRemaining / 60
+                    ? `נותרו עוד ${Math.round(minutesRemaining)} דק׳ (~${Math.ceil(
+                        Math.round(minutesRemaining) / 60
                       )} ש׳)`
                     : "🎉 יעד הושלם! בקשו מההורה לבחור פרס."}
                 </p>
@@ -2887,7 +2889,7 @@ const refreshMonthlyProgress = useCallback(() => {
                   <div className="bg-black/30 border border-white/10 rounded-lg p-3">
                     <div className="text-sm text-white/60 mb-2">התקדמות חודשית</div>
                     <div className="flex justify-between text-xs text-white/60 mb-1">
-                      <span>{monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳</span>
+                      <span>{Math.round(monthlyProgress.totalMinutes)} / {MONTHLY_MINUTES_TARGET} דק׳</span>
                       <span>{goalPercent}%</span>
                     </div>
                     <div className="w-full bg-black/50 rounded-full h-3 mb-2">
@@ -2898,7 +2900,7 @@ const refreshMonthlyProgress = useCallback(() => {
                     </div>
                     {minutesRemaining > 0 ? (
                       <div className="text-xs text-white/60">
-                        נותרו עוד {minutesRemaining} דק׳ (~{Math.ceil(minutesRemaining / 60)} שעות)
+                        נותרו עוד {Math.round(minutesRemaining)} דק׳ (~{Math.ceil(Math.round(minutesRemaining) / 60)} שעות)
                       </div>
                     ) : (
                       <div className="text-xs text-emerald-400 font-bold">
