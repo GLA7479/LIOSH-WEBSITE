@@ -1655,10 +1655,6 @@ export default function MathMaster() {
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[9px] text-white/60 leading-tight mb-0.5">🔥 רצף יומי</div>
-              <div className="text-sm font-bold text-orange-400 leading-tight">{dailyStreak.streak || 0}</div>
-            </div>
             <div
               className={`rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] ${
                 gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
@@ -1683,6 +1679,14 @@ export default function MathMaster() {
                   : "--"}
               </div>
             </div>
+            <button
+              onClick={() => setShowPlayerProfile(true)}
+              className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] hover:bg-purple-500/20 transition-all cursor-pointer"
+              title="פרופיל שחקן"
+            >
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">אווטר</div>
+              <div className="text-lg font-bold leading-tight">{playerAvatar}</div>
+            </button>
           </div>
 
           {/* בחירת מצב (Learning / Challenge) */}
@@ -1707,13 +1711,6 @@ export default function MathMaster() {
                 {MODES[m].name}
               </button>
             ))}
-            <button
-              onClick={() => setShowPlayerProfile(true)}
-              className="h-8 w-8 rounded-lg bg-purple-500/80 hover:bg-purple-500 border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all"
-              title="פרופיל שחקן"
-            >
-              {playerAvatar}
-            </button>
             <button
               onClick={() => {
                 sound.toggleSounds();
@@ -1814,80 +1811,68 @@ export default function MathMaster() {
                   </h2>
                 </div>
 
-                {/* אווטר */}
-                <div className="text-center mb-4">
-                  <div className="text-6xl mb-3">{playerAvatar}</div>
-                  <div className="text-sm text-white/60 mb-3">בחר אווטר:</div>
-                  <div className="grid grid-cols-6 gap-2 mb-4">
-                    {AVATAR_OPTIONS.map((avatar) => (
-                      <button
-                        key={avatar}
-                        onClick={() => {
-                          setPlayerAvatar(avatar);
-                          if (typeof window !== "undefined") {
-                            localStorage.setItem("mleo_player_avatar", avatar);
-                          }
-                        }}
-                        className={`text-3xl p-2 rounded-lg transition-all ${
-                          playerAvatar === avatar
-                            ? "bg-yellow-500/40 border-2 border-yellow-400 scale-110"
-                            : "bg-black/30 border border-white/10 hover:bg-black/40"
-                        }`}
-                      >
-                        {avatar}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* סטטיסטיקות */}
-                <div className="space-y-3 mb-4">
-                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
-                    <div className="text-sm text-white/60 mb-1">שם שחקן</div>
-                    <div className="text-lg font-bold text-white">{playerName || "שחקן"}</div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
-                      <div className="text-xs text-white/60 mb-1">ניקוד שיא</div>
-                      <div className="text-xl font-bold text-emerald-400">{bestScore}</div>
-                    </div>
-                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
-                      <div className="text-xs text-white/60 mb-1">רצף שיא</div>
-                      <div className="text-xl font-bold text-amber-400">{bestStreak}</div>
-                    </div>
-                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
-                      <div className="text-xs text-white/60 mb-1">כוכבים</div>
-                      <div className="text-xl font-bold text-yellow-400">⭐ {stars}</div>
-                    </div>
-                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
-                      <div className="text-xs text-white/60 mb-1">רמה</div>
-                      <div className="text-xl font-bold text-purple-400">Lv.{playerLevel}</div>
-                      {/* XP Progress Bar */}
-                      <div className="mt-2">
-                        <div className="flex justify-between text-xs text-white/60 mb-1">
-                          <span>XP</span>
-                          <span>{xp} / {playerLevel * 100}</span>
-                        </div>
-                        <div className="w-full bg-black/50 rounded-full h-2">
-                          <div
-                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${Math.min(100, (xp / (playerLevel * 100)) * 100)}%` }}
-                          />
-                        </div>
+                {/* אווטר ונתונים בשורה */}
+                <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="text-4xl">{playerAvatar}</div>
+                      <div className="flex-1">
+                        <div className="text-sm text-white/60 mb-1">שם שחקן</div>
+                        <div className="text-lg font-bold text-white">{playerName || "שחקן"}</div>
                       </div>
                     </div>
-                  </div>
-                  
-                  {/* Daily Streak */}
-                  <div className="bg-black/30 border border-white/10 rounded-lg p-3">
-                    <div className="text-sm text-white/60 mb-2">🔥 רצף יומי</div>
-                    <div className="text-2xl font-bold text-orange-400">{dailyStreak.streak || 0} ימים</div>
-                    {dailyStreak.streak >= 3 && (
-                      <div className="text-xs text-white/60 mt-1">
-                        {dailyStreak.streak >= 30 ? "👑 אלוף!" : dailyStreak.streak >= 14 ? "🌟 מצוין!" : dailyStreak.streak >= 7 ? "⭐ יופי!" : "🔥 המשך כך!"}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-black/40 border border-white/10 rounded-lg p-2">
+                        <div className="text-xs text-white/60 mb-1">ניקוד שיא</div>
+                        <div className="text-lg font-bold text-emerald-400">{bestScore}</div>
                       </div>
-                    )}
+                      <div className="bg-black/40 border border-white/10 rounded-lg p-2">
+                        <div className="text-xs text-white/60 mb-1">רצף שיא</div>
+                        <div className="text-lg font-bold text-amber-400">{bestStreak}</div>
+                      </div>
+                      <div className="bg-black/40 border border-white/10 rounded-lg p-2">
+                        <div className="text-xs text-white/60 mb-1">כוכבים</div>
+                        <div className="text-lg font-bold text-yellow-400">⭐ {stars}</div>
+                      </div>
+                      <div className="bg-black/40 border border-white/10 rounded-lg p-2">
+                        <div className="text-xs text-white/60 mb-1">רמה</div>
+                        <div className="text-lg font-bold text-purple-400">Lv.{playerLevel}</div>
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <div className="flex justify-between text-xs text-white/60 mb-1">
+                        <span>XP</span>
+                        <span>{xp} / {playerLevel * 100}</span>
+                      </div>
+                      <div className="w-full bg-black/50 rounded-full h-2">
+                        <div
+                          className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${Math.min(100, (xp / (playerLevel * 100)) * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <div className="text-xs text-white/60 mb-2">בחר אווטר:</div>
+                      <div className="grid grid-cols-6 gap-2">
+                        {AVATAR_OPTIONS.map((avatar) => (
+                          <button
+                            key={avatar}
+                            onClick={() => {
+                              setPlayerAvatar(avatar);
+                              if (typeof window !== "undefined") {
+                                localStorage.setItem("mleo_player_avatar", avatar);
+                              }
+                            }}
+                            className={`text-2xl p-1.5 rounded-lg transition-all ${
+                              playerAvatar === avatar
+                                ? "bg-yellow-500/40 border-2 border-yellow-400 scale-110"
+                                : "bg-black/30 border border-white/10 hover:bg-black/40"
+                            }`}
+                          >
+                            {avatar}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                   
                   {/* Monthly Progress */}
@@ -1970,11 +1955,10 @@ export default function MathMaster() {
                       </div>
                     )}
                   </div>
-                </div>
 
                 <button
                   onClick={() => setShowPlayerProfile(false)}
-                  className="w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm"
+                  className="w-full px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-sm mt-4"
                 >
                   סגור
                 </button>
@@ -3942,25 +3926,26 @@ export default function MathMaster() {
               dir="rtl"
             >
               <div
-                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-xl p-4 w-[210px] max-h-[90vh] flex flex-col"
+                className="bg-gradient-to-br from-[#080c16] to-[#0a0f1d] border-2 border-white/20 rounded-lg p-2 max-h-[90vh] flex flex-col"
                 onClick={(e) => e.stopPropagation()}
+                style={{ width: '130px', maxWidth: '130px', minWidth: '130px' }}
               >
-                <div className="text-center mb-3 flex-shrink-0">
-                  <h2 className="text-xl font-extrabold text-white mb-1">
-                    🎲 בחר פעולות למיקס
+                <div className="text-center mb-2 flex-shrink-0">
+                  <h2 className="text-base font-extrabold text-white mb-0.5">
+                    🎲 בחר פעולות
                   </h2>
-                  <p className="text-white/70 text-xs">
-                    בחר אילו פעולות לכלול במיקס
+                  <p className="text-white/70 text-[10px] leading-tight">
+                    בחר פעולות
                   </p>
                 </div>
 
-                <div className="space-y-2 mb-3 overflow-y-auto flex-1 min-h-0">
+                <div className="space-y-1.5 mb-2 overflow-y-auto flex-1 min-h-0">
                   {GRADES[grade].operations
                     .filter((op) => op !== "mixed")
                     .map((op) => (
                       <label
                         key={op}
-                        className="flex items-center gap-2 p-2 rounded-lg bg-black/30 border border-white/10 hover:bg-black/40 cursor-pointer transition-all"
+                        className="flex items-center gap-1.5 p-1.5 rounded bg-black/30 border border-white/10 hover:bg-black/40 cursor-pointer transition-all"
                       >
                         <input
                           type="checkbox"
@@ -3971,16 +3956,16 @@ export default function MathMaster() {
                               [op]: e.target.checked,
                             }));
                           }}
-                          className="w-4 h-4 rounded"
+                          className="w-3.5 h-3.5 rounded flex-shrink-0"
                         />
-                        <span className="text-white font-semibold text-base">
+                        <span className="text-white font-semibold text-xs leading-tight">
                           {getOperationName(op)}
                         </span>
                       </label>
                     ))}
                 </div>
 
-                <div className="flex gap-2 flex-shrink-0" dir="rtl">
+                <div className="flex flex-col gap-1.5 flex-shrink-0" dir="rtl">
                   <button
                     onClick={() => {
                       // בדוק שיש לפחות פעולה אחת נבחרת
@@ -3993,42 +3978,44 @@ export default function MathMaster() {
                         alert("אנא בחר לפחות פעולה אחת");
                       }
                     }}
-                    className="flex-1 px-3 py-1.5 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-xs"
+                    className="w-full px-2 py-1 rounded bg-emerald-500/80 hover:bg-emerald-500 font-bold text-[10px]"
                   >
                     שמור
                   </button>
-                  <button
-                    onClick={() => {
-                      // בטל הכל
-                      const availableOps = GRADES[grade].operations.filter(
-                        (op) => op !== "mixed"
-                      );
-                      const noneSelected = {};
-                      availableOps.forEach((op) => {
-                        noneSelected[op] = false;
-                      });
-                      setMixedOperations(noneSelected);
-                    }}
-                    className="flex-1 px-3 py-1.5 rounded-lg bg-gray-500/80 hover:bg-gray-500 font-bold text-xs"
-                  >
-                    בטל הכל
-                  </button>
-                  <button
-                    onClick={() => {
-                      // בחר הכל
-                      const availableOps = GRADES[grade].operations.filter(
-                        (op) => op !== "mixed"
-                      );
-                      const allSelected = {};
-                      availableOps.forEach((op) => {
-                        allSelected[op] = true;
-                      });
-                      setMixedOperations(allSelected);
-                    }}
-                    className="flex-1 px-3 py-1.5 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-xs"
-                  >
-                    הכל
-                  </button>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => {
+                        // בטל הכל
+                        const availableOps = GRADES[grade].operations.filter(
+                          (op) => op !== "mixed"
+                        );
+                        const noneSelected = {};
+                        availableOps.forEach((op) => {
+                          noneSelected[op] = false;
+                        });
+                        setMixedOperations(noneSelected);
+                      }}
+                      className="flex-1 px-1.5 py-1 rounded bg-gray-500/80 hover:bg-gray-500 font-bold text-[10px]"
+                    >
+                      בטל
+                    </button>
+                    <button
+                      onClick={() => {
+                        // בחר הכל
+                        const availableOps = GRADES[grade].operations.filter(
+                          (op) => op !== "mixed"
+                        );
+                        const allSelected = {};
+                        availableOps.forEach((op) => {
+                          allSelected[op] = true;
+                        });
+                        setMixedOperations(allSelected);
+                      }}
+                      className="flex-1 px-1.5 py-1 rounded bg-blue-500/80 hover:bg-blue-500 font-bold text-[10px]"
+                    >
+                      הכל
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

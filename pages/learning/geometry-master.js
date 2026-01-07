@@ -1152,10 +1152,6 @@ useEffect(() => {
                 {mode === "challenge" ? `${lives} ❤️` : "∞"}
               </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[9px] text-white/60 leading-tight mb-0.5">🔥 רצף יומי</div>
-              <div className="text-sm font-bold text-orange-400 leading-tight">{dailyStreak.streak || 0}</div>
-            </div>
             <div
               className={`rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] ${
                 gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
@@ -1180,6 +1176,14 @@ useEffect(() => {
                   : "--"}
               </div>
             </div>
+            <button
+              onClick={() => setShowPlayerProfile(true)}
+              className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] hover:bg-purple-500/20 transition-all cursor-pointer"
+              title="פרופיל שחקן"
+            >
+              <div className="text-[9px] text-white/60 leading-tight mb-0.5">אווטר</div>
+              <div className="text-lg font-bold leading-tight">{playerAvatar}</div>
+            </button>
           </div>
 
           <div
@@ -1203,13 +1207,6 @@ useEffect(() => {
                 {MODES[m].name}
               </button>
             ))}
-            <button
-              onClick={() => setShowPlayerProfile(true)}
-              className="h-8 w-8 rounded-lg bg-purple-500/80 hover:bg-purple-500 border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all"
-              title="פרופיל שחקן"
-            >
-              {playerAvatar}
-            </button>
             <button
               onClick={() => {
                 sound.toggleSounds();
