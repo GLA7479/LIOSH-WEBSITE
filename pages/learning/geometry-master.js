@@ -1433,14 +1433,14 @@ useEffect(() => {
                 </div>
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-lg p-2 mb-2 w-full max-w-md">
-                <div className="flex items-center justify-between text-[11px] text-white/70 mb-0.5">
+              <div className="bg-white/5 border border-white/10 rounded-lg px-1.5 pt-1.5 pb-0 mb-1 w-full max-w-md">
+                <div className="flex items-center justify-between text-[10px] text-white/70 mb-0.5">
                   <span>🎁 מסע פרס חודשי</span>
                   <span>
                     {monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳
                   </span>
                 </div>
-                <p className="text-[11px] text-white/70 mb-0.5 text-center">
+                <p className="text-[10px] text-white/70 mb-0.5 text-center">
                   {minutesRemaining > 0
                     ? `נותרו עוד ${minutesRemaining} דק׳ (~${Math.ceil(
                         minutesRemaining / 60
@@ -1453,7 +1453,7 @@ useEffect(() => {
                     style={{ width: `${goalPercent}%` }}
                   />
                 </div>
-                <div className="mt-1.5 grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 text-center">
                   {REWARD_OPTIONS.map((option) => (
                     <button
                       key={option.key}
