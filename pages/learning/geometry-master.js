@@ -1269,7 +1269,7 @@ useEffect(() => {
           </div>
 
           <div
-            className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-nowrap overflow-x-auto px-1"
+            className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-wrap px-1"
             dir="rtl"
           >
             {Object.keys(MODES).map((m) => (
@@ -1536,30 +1536,13 @@ useEffect(() => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md">
+              <div className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-wrap px-1">
                 <button
                   onClick={startGame}
                   disabled={!playerName.trim()}
-                  className="h-10 px-6 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-sm"
+                  className="h-9 px-4 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-xs"
                 >
                   ▶️ התחל
-                </button>
-                <button
-                  onClick={() => setShowReferenceModal(true)}
-                  className="h-9 px-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-xs"
-                >
-                  📐 לוח צורות
-                </button>
-                <button
-                  onClick={() => setShowPracticeOptions(true)}
-                  className={`h-9 px-3 rounded-lg font-bold text-xs ${
-                    mistakes.length > 0
-                      ? "bg-purple-500/80 hover:bg-purple-500"
-                      : "bg-gray-500/50 cursor-not-allowed opacity-50"
-                  }`}
-                  disabled={mistakes.length === 0}
-                >
-                  🎯 תרגול {mistakes.length > 0 && `(${mistakes.length})`}
                 </button>
                 <button
                   onClick={() => setShowLeaderboard(true)}
@@ -1578,19 +1561,28 @@ useEffect(() => {
                   ❓ איך לומדים גאומטריה כאן?
                 </button>
                 <button
+                  onClick={() => setShowReferenceModal(true)}
+                  className="px-4 py-2 rounded-lg bg-indigo-500/80 hover:bg-indigo-500 text-xs font-bold text-white shadow-sm"
+                >
+                  📚 לוח עזרה
+                </button>
+                <button
                   onClick={() => router.push("/learning/parent-report")}
                   className="px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-xs font-bold text-white shadow-sm"
                 >
                   📊 דוח להורים
                 </button>
-                {mistakes.length > 0 && (
-                  <button
-                    onClick={() => setShowPracticeOptions(true)}
-                    className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
-                  >
-                    🎯 תרגול ממוקד ({mistakes.length})
-                  </button>
-                )}
+                <button
+                  onClick={() => setShowPracticeOptions(true)}
+                  disabled={mistakes.length === 0}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold text-white shadow-sm ${
+                    mistakes.length > 0
+                      ? "bg-purple-500/80 hover:bg-purple-500"
+                      : "bg-gray-500/50 cursor-not-allowed opacity-50"
+                  }`}
+                >
+                  🎯 תרגול ממוקד {mistakes.length > 0 && `(${mistakes.length})`}
+                </button>
               </div>
 
               {!playerName.trim() && (

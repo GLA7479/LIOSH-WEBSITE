@@ -1974,7 +1974,7 @@ const refreshMonthlyProgress = useCallback(() => {
             </button>
           </div>
 
-          <div className="flex items-center justify-center gap-2 mb-2 w-full max-w-md overflow-x-auto flex-nowrap px-1 whitespace-nowrap">
+          <div className="flex items-center justify-center gap-2 mb-2 w-full max-w-md flex-wrap px-1">
             {Object.keys(MODES).map((m) => (
               <button
                 key={m}
@@ -2206,24 +2206,10 @@ const refreshMonthlyProgress = useCallback(() => {
                 <button
                   onClick={startGame}
                   disabled={!playerName.trim()}
-                  className="h-10 px-6 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-sm"
+                  className="h-9 px-4 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-xs"
                 >
                   ▶️ התחל
                 </button>
-                <button
-                  onClick={() => setShowReferenceModal(true)}
-                  className="h-9 px-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-xs"
-                >
-                  📚 לוח מילים
-                </button>
-                {mistakes.length > 0 && (
-                  <button
-                    onClick={() => setShowPracticeOptions(true)}
-                    className="h-9 px-3 rounded-lg bg-purple-500/80 hover:bg-purple-500 font-bold text-xs"
-                  >
-                    🎯 תרגול ({mistakes.length})
-                  </button>
-                )}
                 <button
                   onClick={() => setShowLeaderboard(true)}
                   className="h-9 px-3 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-xs"
@@ -2232,12 +2218,19 @@ const refreshMonthlyProgress = useCallback(() => {
                 </button>
               </div>
 
+              {/* כפתורים עזרה ותרגול ממוקד */}
               <div className="mb-2 w-full max-w-md flex justify-center gap-2 flex-wrap">
                 <button
                   onClick={() => setShowHowTo(true)}
                   className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
                 >
                   ❓ איך לומדים אנגלית כאן?
+                </button>
+                <button
+                  onClick={() => setShowReferenceModal(true)}
+                  className="px-4 py-2 rounded-lg bg-indigo-500/80 hover:bg-indigo-500 text-xs font-bold text-white shadow-sm"
+                >
+                  📚 לוח עזרה
                 </button>
                 <button
                   onClick={goToParentReport}
@@ -2250,10 +2243,16 @@ const refreshMonthlyProgress = useCallback(() => {
                     onClick={() => setShowPracticeOptions(true)}
                     className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
                   >
-                    🎯 תרגול ({mistakes.length})
+                    🎯 תרגול ממוקד ({mistakes.length})
                   </button>
                 )}
               </div>
+
+              {!playerName.trim() && (
+                <p className="text-xs text-white/60 text-center mb-2">
+                  הכנס את שמך כדי להתחיל
+                </p>
+              )}
 
               {!playerName.trim() && (
                 <p className="text-xs text-white/60 text-center mb-2">

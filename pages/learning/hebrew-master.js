@@ -1684,7 +1684,7 @@ useEffect(() => {
 
           {/* בחירת מצב (Learning / Challenge) */}
           <div
-            className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-nowrap overflow-x-auto px-1"
+            className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-wrap px-1"
             dir="rtl"
           >
             {["learning", "challenge", "speed", "marathon", "practice"].map((m) => (
