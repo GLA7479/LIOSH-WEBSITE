@@ -1815,14 +1815,6 @@ function recordSessionProgress() {
                 >
                   📊 דוח להורים
                 </button>
-                {mistakes.length > 0 && (
-                  <button
-                    onClick={() => setShowPracticeOptions(true)}
-                    className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
-                  >
-                    🎯 תרגול ({mistakes.length})
-                  </button>
-                )}
               </div>
             </>
           ) : (
