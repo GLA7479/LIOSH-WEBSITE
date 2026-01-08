@@ -531,9 +531,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     const file = e.target.files[0];
     if (!file) return;
     
-    // בדוק גודל קובץ (מקסימום 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      alert("התמונה גדולה מדי. נא לבחור תמונה עד 2MB");
+    // בדוק גודל קובץ (מקסימום 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("התמונה גדולה מדי. נא לבחור תמונה עד 5MB");
       return;
     }
     
