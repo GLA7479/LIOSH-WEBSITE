@@ -325,7 +325,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     if (op === "division") {
       const dividend = params.dividend || currentQuestion.a;
       const divisor = params.divisor || currentQuestion.b;
-      return buildVerticalOperation(dividend, divisor, "÷");
+      // בחילוק ארוך: המחלק משמאל, המחולק מימין - אז מעבירים הפוך
+      return buildVerticalOperation(divisor, dividend, "÷");
     }
     if (op === "decimals") {
       const a = params.a;

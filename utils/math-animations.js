@@ -1,6 +1,34 @@
 export function buildVerticalOperation(topNumber, bottomNumber, operator = "-") {
   const top = String(topNumber);
   const bottom = String(bottomNumber);
+  
+  // טיפול מיוחד לחילוק ארוך - המחולק משמאל עם סוגר, המחלק מימין
+  if (operator === "÷") {
+    // בחילוק ארוך התצוגה הנכונה היא:
+    // ____
+    // 1320│6
+    // הקו האופקי הוא קו תחתון (underscore) בשורה הראשונה, בתחתית השורה
+    // הפרמטרים מועברים כך: topNumber = divisor (מחלק), bottomNumber = dividend (מחולק)
+    
+    const divisor = String(topNumber); // המחלק (6)
+    const dividend = String(bottomNumber); // המחולק (1320)
+    const dividendLen = dividend.length;
+    
+    // שורה 1: קו תחתון (underscore) - בשורה הראשונה, בתחתית השורה, באורך המחולק
+    // הקו התחתון מיושר בדיוק מעל המחולק, מסתיים בדיוק מעל הסוגר האנכי
+    const line1 = "_".repeat(dividendLen);
+    
+    // שורה 2: המחולק (dividend) + סוגר אנכי (│) + המחלק (divisor)
+    // הקו התחתון בשורה 1 מיושר בדיוק מעל המחולק בשורה 2
+    const line2 = dividend + "│" + divisor;
+    
+    // יצירת הפורמט המדויק - הקו התחתון בשורה הראשונה בתחתית השורה
+    const raw = line1 + "\n" + line2;
+    // עוטפים את כל הבלוק בסימון LTR כדי שלא יתבלגן בתוך טקסט עברי
+    return `\u2066${raw}\u2069`;
+  }
+  
+  // לפעולות אחרות - התצוגה המקורית
   const maxLen = Math.max(top.length, bottom.length);
   const width = maxLen + 2; // 2 לתו הפעולה ולרווח
 
