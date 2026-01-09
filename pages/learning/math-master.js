@@ -1159,29 +1159,50 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       return newCount;
     });
 
-    // התאמה לתשובה מספרית (גם מהכפתורים וגם מהקלט הטקסט)
+    // התאמה לתשובה - טיפול במספרים ומחרוזות (כמו שברים)
     let numericAnswer;
+    let isStringAnswer = false;
+    
+    // בדיקה אם התשובה היא מחרוזת שאינה מספר (כמו שברים: "3/4", "2 1/2")
     if (typeof answer === "string") {
-      const parsed = parseFloat(answer.trim());
-      if (isNaN(parsed)) {
-        setFeedback("נא להזין מספר תקין");
-        setTimeout(() => setFeedback(null), 2000);
-        return;
+      const trimmed = answer.trim();
+      // אם המחרוזת מכילה שבר או תווים שאינם מספרים
+      if (trimmed.includes("/") || trimmed.includes(" ") || isNaN(parseFloat(trimmed))) {
+        isStringAnswer = true;
+        numericAnswer = trimmed;
+      } else {
+        // מחרוזת מספרית - המר למספר
+        const parsed = parseFloat(trimmed);
+        if (isNaN(parsed)) {
+          setFeedback("נא להזין מספר תקין");
+          setTimeout(() => setFeedback(null), 2000);
+          return;
+        }
+        numericAnswer = parsed;
       }
-      numericAnswer = parsed;
     } else {
       numericAnswer = answer;
     }
     
-    const correctNumericAnswer = typeof currentQuestion.correctAnswer === "string" 
-      ? parseFloat(currentQuestion.correctAnswer.trim()) 
-      : currentQuestion.correctAnswer;
-    
-    // בדיקה של שוויון מספרי (גם למספרים וגם למחרוזות מספריות)
-    const isCorrect = numericAnswer === correctNumericAnswer || 
-                      (typeof numericAnswer === "number" && typeof correctNumericAnswer === "number" &&
-                       !isNaN(numericAnswer) && !isNaN(correctNumericAnswer) &&
-                       Math.abs(numericAnswer - correctNumericAnswer) < 0.01);
+    // בדיקת שוויון
+    let isCorrect;
+    if (isStringAnswer || (typeof currentQuestion.correctAnswer === "string" && 
+        (currentQuestion.correctAnswer.includes("/") || 
+         currentQuestion.correctAnswer.includes(" ") || 
+         isNaN(parseFloat(currentQuestion.correctAnswer))))) {
+      // השוואה מחרוזת ישירה (לשברים ותשובות טקסט)
+      isCorrect = String(numericAnswer).trim() === String(currentQuestion.correctAnswer).trim();
+    } else {
+      // השוואה מספרית
+      const correctNumericAnswer = typeof currentQuestion.correctAnswer === "string" 
+        ? parseFloat(currentQuestion.correctAnswer.trim()) 
+        : currentQuestion.correctAnswer;
+      
+      isCorrect = numericAnswer === correctNumericAnswer || 
+                  (typeof numericAnswer === "number" && typeof correctNumericAnswer === "number" &&
+                   !isNaN(numericAnswer) && !isNaN(correctNumericAnswer) &&
+                   Math.abs(numericAnswer - correctNumericAnswer) < 0.01);
+    }
 
     setSelectedAnswer(numericAnswer);
 
@@ -2739,82 +2760,160 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   )}
                   
 
-                  {/* מצב למידה או תרגול - קלט טקסט */}
-                  {(mode === "learning" || mode === "practice") && !practiceMode ? (
-                    <div className="mb-4 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
-                      <div className="text-center mb-3">
-                        <input
-                          type="number"
-                          value={textAnswer}
-                          onChange={(e) => setTextAnswer(e.target.value)}
-                          onKeyPress={(e) => {
-                            if (e.key === "Enter" && !selectedAnswer && textAnswer.trim() !== "") {
-                              handleAnswer(textAnswer);
-                            }
-                          }}
-                          placeholder="תשובה"
-                          disabled={!!selectedAnswer}
-                          className="w-full max-w-[300px] px-4 py-4 rounded-lg bg-black/40 border border-white/20 text-white text-2xl font-bold text-center disabled:opacity-50"
-                          autoFocus
-                        />
-                      </div>
-                      <div className="flex gap-2 justify-center">
-                        <button
-                          onClick={() => {
-                            if (!selectedAnswer && textAnswer.trim() !== "") {
-                              handleAnswer(textAnswer);
-                            }
-                          }}
-                          disabled={!!selectedAnswer || textAnswer.trim() === ""}
-                          className="px-6 py-3 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          בדוק
-                        </button>
-                        {selectedAnswer && (
-                          <button
-                            onClick={() => {
-                              setSelectedAnswer(null);
-                              setTextAnswer("");
-                              setFeedback(null);
-                              generateNewQuestion();
-                            }}
-                            className="px-6 py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-lg"
-                          >
-                            שאלה הבאה
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    /* מצבים אחרים (challenge, speed, marathon) - כפתורי בחירה */
-                    <div className="grid grid-cols-2 gap-3 w-full mb-3">
-                      {currentQuestion.answers.map((answer, idx) => {
-                        const isSelected = selectedAnswer === answer;
-                        const isCorrect = answer === currentQuestion.correctAnswer;
-                        const isWrong = isSelected && !isCorrect;
+                  {/* בדיקה אם צריך להציג כפתורי בחירה או שדה קלט */}
+                  {(() => {
+                    // נושאים שצריכים כפתורי בחירה: שברים, יחס, השוואה, קנה מידה, גורמים וכפולות
+                    const needsChoiceButtons = 
+                      currentQuestion.operation === "fractions" ||
+                      currentQuestion.operation === "ratio" ||
+                      currentQuestion.operation === "scale" ||
+                      currentQuestion.operation === "compare" ||
+                      currentQuestion.operation === "factors_multiples" ||
+                      // בדיקה אם יש תשובות שאינן מספרים
+                      (currentQuestion.answers && currentQuestion.answers.some(ans => {
+                        if (typeof ans === "string") {
+                          // בדיקה אם המחרוזת מכילה שבר או תווים שאינם מספרים
+                          return ans.includes("/") || ans.includes(" ") || isNaN(parseFloat(ans));
+                        }
+                        return false;
+                      })) ||
+                      // בדיקה אם התשובה הנכונה היא מחרוזת שאינה מספר
+                      (typeof currentQuestion.correctAnswer === "string" && 
+                       (currentQuestion.correctAnswer.includes("/") || 
+                        currentQuestion.correctAnswer.includes(" ") || 
+                        isNaN(parseFloat(currentQuestion.correctAnswer))));
 
-                        return (
-                          <button
-                            key={idx}
-                            onClick={() => handleAnswer(answer)}
-                            disabled={!!selectedAnswer}
-                            className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                              isCorrect && isSelected
-                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                                : isWrong
-                                ? "bg-red-500/30 border-red-400 text-red-200"
-                                : selectedAnswer &&
-                                  answer === currentQuestion.correctAnswer
-                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                                : "bg-black/30 border-white/15 text-white hover:border-white/40"
-                            }`}
-                          >
-                            {answer}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
+                    // מצבים שצריכים כפתורי בחירה: challenge, speed, marathon, או נושאים מיוחדים
+                    const shouldShowChoiceButtons = 
+                      mode === "challenge" || 
+                      mode === "speed" || 
+                      mode === "marathon" || 
+                      needsChoiceButtons;
+
+                    if (shouldShowChoiceButtons) {
+                      // כפתורי בחירה
+                      // בנושא השוואה - 3 עמודות, כפתורים קטנים יותר
+                      const isCompare = currentQuestion.operation === "compare";
+                      const gridCols = isCompare ? "grid-cols-3" : "grid-cols-2";
+                      const buttonPadding = isCompare ? "px-3 py-3" : "px-6 py-6";
+                      const buttonText = isCompare ? "text-lg" : "text-2xl";
+                      
+                      return (
+                        <div className={`grid ${gridCols} gap-3 w-full mb-3`}>
+                          {currentQuestion.answers.map((answer, idx) => {
+                            const isSelected = selectedAnswer === answer;
+                            const isCorrect = answer === currentQuestion.correctAnswer;
+                            const isWrong = isSelected && !isCorrect;
+
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => handleAnswer(answer)}
+                                disabled={!!selectedAnswer}
+                                className={`rounded-xl border-2 ${buttonPadding} ${buttonText} font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                                  isCorrect && isSelected
+                                    ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                    : isWrong
+                                    ? "bg-red-500/30 border-red-400 text-red-200"
+                                    : selectedAnswer &&
+                                      answer === currentQuestion.correctAnswer
+                                    ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                    : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                                }`}
+                              >
+                                {answer}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      );
+                    } else if ((mode === "learning" || mode === "practice") && !practiceMode) {
+                      // שדה קלט טקסט למצבי למידה ותרגול
+                      return (
+                        <div className="mb-4 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
+                          <div className="text-center mb-3">
+                            <input
+                              type="number"
+                              value={textAnswer}
+                              onChange={(e) => setTextAnswer(e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter" && !selectedAnswer && textAnswer.trim() !== "") {
+                                  handleAnswer(textAnswer);
+                                }
+                              }}
+                              placeholder="תשובה"
+                              disabled={!!selectedAnswer}
+                              className="w-full max-w-[300px] px-4 py-4 rounded-lg bg-black/40 border border-white/20 text-white text-2xl font-bold text-center disabled:opacity-50"
+                              autoFocus
+                            />
+                          </div>
+                          <div className="flex gap-2 justify-center">
+                            <button
+                              onClick={() => {
+                                if (!selectedAnswer && textAnswer.trim() !== "") {
+                                  handleAnswer(textAnswer);
+                                }
+                              }}
+                              disabled={!!selectedAnswer || textAnswer.trim() === ""}
+                              className="px-6 py-3 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              בדוק
+                            </button>
+                            {selectedAnswer && (
+                              <button
+                                onClick={() => {
+                                  setSelectedAnswer(null);
+                                  setTextAnswer("");
+                                  setFeedback(null);
+                                  generateNewQuestion();
+                                }}
+                                className="px-6 py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-lg"
+                              >
+                                שאלה הבאה
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    } else {
+                      // ברירת מחדל - כפתורי בחירה
+                      // בנושא השוואה - 3 עמודות, כפתורים קטנים יותר
+                      const isCompare = currentQuestion.operation === "compare";
+                      const gridCols = isCompare ? "grid-cols-3" : "grid-cols-2";
+                      const buttonPadding = isCompare ? "px-3 py-3" : "px-6 py-6";
+                      const buttonText = isCompare ? "text-lg" : "text-2xl";
+                      
+                      return (
+                        <div className={`grid ${gridCols} gap-3 w-full mb-3`}>
+                          {currentQuestion.answers.map((answer, idx) => {
+                            const isSelected = selectedAnswer === answer;
+                            const isCorrect = answer === currentQuestion.correctAnswer;
+                            const isWrong = isSelected && !isCorrect;
+
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => handleAnswer(answer)}
+                                disabled={!!selectedAnswer}
+                                className={`rounded-xl border-2 ${buttonPadding} ${buttonText} font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                                  isCorrect && isSelected
+                                    ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                    : isWrong
+                                    ? "bg-red-500/30 border-red-400 text-red-200"
+                                    : selectedAnswer &&
+                                      answer === currentQuestion.correctAnswer
+                                    ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                    : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                                }`}
+                              >
+                                {answer}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      );
+                    }
+                  })()}
 
                   {/* רמז + הסבר + למה טעיתי */}
                   {currentQuestion && (
