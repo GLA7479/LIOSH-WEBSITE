@@ -1298,29 +1298,87 @@ export function buildStepExplanation(question) {
     };
   }
 
-  // חילוק
+  // חילוק ארוך - צעד אחר צעד כמו בחיבור וחיסור
   if (effectiveOp === "division" && typeof aEff === "number" && typeof bEff === "number") {
+    // שימוש בפרמטרים של השאלה לחילוק (dividend, divisor, quotient)
+    const dividend = p.dividend || aEff;
+    const divisor = p.divisor || bEff;
+    const quotient = p.quotient || answer;
+    
+    vertical = buildVerticalOperation(divisor, dividend, "÷");
+    
+    const dividendStr = String(dividend);
+    const divisorNum = divisor;
+    
     steps.push(
-      `1. חלוקה היא בעצם הפוך מהכפל: כמה פעמים המספר ${bEff} נכנס ב-${aEff}?`
+      `1. כותבים את המחולק (${dividend}) והמחלק (${divisor}) בצורת חילוק ארוך.`
     );
-    if (typeof answer === "number") {
-      const q = Math.floor(answer);
-      const r = aEff - q * bEff;
+    
+    // ביצוע חילוק ארוך צעד אחר צעד
+    let workingNumber = 0;
+    let stepIndex = 2;
+    let quotientDigits = [];
+    let divisionSteps = [];
+    
+    for (let i = 0; i < dividendStr.length; i++) {
+      workingNumber = workingNumber * 10 + parseInt(dividendStr[i]);
+      
+      if (workingNumber >= divisorNum) {
+        const qDigit = Math.floor(workingNumber / divisorNum);
+        const product = qDigit * divisorNum;
+        const remainder = workingNumber - product;
+        
+        quotientDigits.push(qDigit);
+        divisionSteps.push({
+          position: i,
+          workingNumber,
+          quotientDigit: qDigit,
+          product,
+          remainder,
+        });
+        
+        workingNumber = remainder;
+      }
+    }
+    
+    // יצירת צעדים מפורטים
+    for (let idx = 0; idx < divisionSteps.length; idx++) {
+      const step = divisionSteps[idx];
+      const { position, workingNumber: wNum, quotientDigit: qDigit, product, remainder } = step;
+      
+      // צעד: כתיבה במנה
       steps.push(
-        `2. בודקים: ${LTR(`${bEff} × ${q} = ${bEff * q}`)}. זה נותן לנו ${
-          bEff * q
-        } מתוך ${aEff}.`
+        `${stepIndex}. ${divisorNum} נכנס ב-${wNum} בדיוק ${qDigit} פעמים. כותבים ${qDigit} במנה מעל הספרה ${dividendStr[position]}.`
       );
-
-      if (r > 0) {
+      stepIndex++;
+      
+      // צעד: כפל וחיסור
+      steps.push(
+        `${stepIndex}. מכפילים: ${LTR(`${qDigit} × ${divisorNum} = ${product}`)}. מחסרים: ${LTR(`${wNum} - ${product} = ${remainder}`)}. ${remainder === 0 ? 'אין שארית.' : `השארית היא ${remainder}.`}`
+      );
+      stepIndex++;
+      
+      // אם לא זה הצעד האחרון, מורידים את הספרה הבאה
+      if (idx < divisionSteps.length - 1 && position < dividendStr.length - 1) {
+        const nextPos = divisionSteps[idx + 1].position;
+        const nextDigit = parseInt(dividendStr[nextPos]);
         steps.push(
-          `3. נשאר שארית: ${LTR(
-            `${aEff} - ${bEff * q} = ${r}`
-          )}. כלומר התשובה היא ${q} עם שארית ${r}.`
+          `${stepIndex}. מורידים את הספרה הבאה (${nextDigit}). המספר החדש לחלוקה הוא ${remainder * 10 + nextDigit}.`
+        );
+        stepIndex++;
+      }
+    }
+    
+    // צעד אחרון
+    const finalRemainder = divisionSteps.length > 0 ? divisionSteps[divisionSteps.length - 1].remainder : 0;
+    if (typeof quotient === "number") {
+      if (finalRemainder > 0) {
+        steps.push(
+          `${stepIndex}. סיימנו! המנה היא ${quotient} והשארית היא ${finalRemainder}.`
         );
       } else {
         steps.push(
-          `3. אין שארית ולכן ${aEff} מתחלק ב-${bEff} בדיוק ${q} פעמים (ללא שארית).`
+          `${stepIndex}. סיימנו! המנה היא ${quotient} בלי שארית.`
         );
       }
     }
