@@ -146,6 +146,7 @@ export default function MathMaster() {
   const [celebrationEmoji, setCelebrationEmoji] = useState("🎉");
   const [showPlayerProfile, setShowPlayerProfile] = useState(false);
   const [playerAvatar, setPlayerAvatar] = useState("👤"); // אווטר ברירת מחדל
+  const [playerAvatarImage, setPlayerAvatarImage] = useState(null); // תמונת אווטר מותאמת אישית
   const [monthlyProgress, setMonthlyProgress] = useState({
     totalMinutes: 0,
     totalExercises: 0,
@@ -513,11 +514,59 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   useEffect(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("mleo_player_avatar");
-      if (saved) {
+      const savedImage = localStorage.getItem("mleo_player_avatar_image");
+      
+      if (savedImage) {
+        setPlayerAvatarImage(savedImage);
+        setPlayerAvatar(null);
+      } else if (saved) {
         setPlayerAvatar(saved);
+        setPlayerAvatarImage(null);
       }
     }
   }, []);
+
+  // טיפול בהעלאת תמונת אווטר
+  const handleAvatarImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // בדוק גודל קובץ (מקסימום 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("התמונה גדולה מדי. נא לבחור תמונה עד 5MB");
+      return;
+    }
+    
+    // בדוק סוג קובץ
+    if (!file.type.startsWith("image/")) {
+      alert("נא לבחור קובץ תמונה בלבד");
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const imageUrl = reader.result;
+      setPlayerAvatarImage(imageUrl);
+      setPlayerAvatar(null);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("mleo_player_avatar_image", imageUrl);
+        localStorage.removeItem("mleo_player_avatar"); // הסר אמוג'י אם נבחרה תמונה
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // טיפול במחיקת תמונת אווטר
+  const handleRemoveAvatarImage = () => {
+    setPlayerAvatarImage(null);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("mleo_player_avatar_image");
+      // החזר אמוג'י ברירת מחדל
+      const defaultAvatar = "👤";
+      setPlayerAvatar(defaultAvatar);
+      localStorage.setItem("mleo_player_avatar", defaultAvatar);
+    }
+  };
 
   useEffect(() => {
     return () => {
@@ -1560,12 +1609,19 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           100% { opacity: 1; transform: scale(1); }
         }
       `}</style>
-      <div
-        ref={wrapRef}
-        className="relative w-full overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928] game-page-mobile"
-        style={{ height: "100vh", height: "100dvh" }}
-        dir="rtl"
-      >
+      <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928]" dir="rtl">
+        <div
+          ref={wrapRef}
+          className="relative overflow-hidden game-page-mobile"
+          style={{
+            minHeight: "100vh",
+            height: "100dvh",
+            maxWidth: "1200px",
+            width: "min(1200px, 100vw)",
+            padding: "clamp(12px, 3vw, 32px)",
+            margin: "0 auto"
+          }}
+        >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div
             className="absolute inset-0"
@@ -1615,9 +1671,25 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           }}
         >
           <div className="text-center mb-1">
-            <h1 className="text-2xl font-extrabold text-white mb-0.5">
-              🧮 Math Master
-            </h1>
+            <div className="flex items-center justify-center gap-2 mb-0.5">
+              <h1 className="text-2xl font-extrabold text-white">
+                🧮 Math Master
+              </h1>
+              <button
+                onClick={() => {
+                  sound.toggleSounds();
+                  sound.toggleMusic();
+                }}
+                className={`h-7 w-7 rounded-lg border border-white/20 text-white text-sm font-bold flex items-center justify-center transition-all flex-shrink-0 ${
+                  sound.soundsEnabled && sound.musicEnabled
+                    ? "bg-green-500/80 hover:bg-green-500"
+                    : "bg-red-500/80 hover:bg-red-500"
+                }`}
+                title={sound.soundsEnabled && sound.musicEnabled ? "השתק צלילים" : "הפעל צלילים"}
+              >
+                {sound.soundsEnabled && sound.musicEnabled ? "🔊" : "🔇"}
+              </button>
+            </div>
             <p className="text-white/70 text-xs">
               {playerName || "שחקן"} • {GRADES[grade].name} •{" "}
               {LEVELS[level].name} • {getOperationName(operation)} •{" "}
@@ -1685,7 +1757,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               title="פרופיל שחקן"
             >
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">אווטר</div>
-              <div className="text-lg font-bold leading-tight">{playerAvatar}</div>
+              <div className="text-lg font-bold leading-tight">
+                {playerAvatarImage ? (
+                  <img 
+                    src={playerAvatarImage} 
+                    alt="אווטר" 
+                    className="w-6 h-6 rounded-full object-cover mx-auto"
+                  />
+                ) : (
+                  playerAvatar
+                )}
+              </div>
             </button>
           </div>
 
@@ -1702,7 +1784,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   setGameActive(false);
                   setFeedback(null);
                 }}
-                className={`h-8 px-3 rounded-lg text-xs font-bold transition-all ${
+                className={`h-8 px-3 rounded-lg text-xs font-bold transition-all flex-shrink-0 ${
                   mode === m
                     ? "bg-emerald-500/80 text-white"
                     : "bg-white/10 text-white/70 hover:bg-white/20"
@@ -1711,20 +1793,6 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 {MODES[m].name}
               </button>
             ))}
-            <button
-              onClick={() => {
-                sound.toggleSounds();
-                sound.toggleMusic();
-              }}
-              className={`h-8 w-8 rounded-lg border border-white/20 text-white text-lg font-bold flex items-center justify-center transition-all ${
-                sound.soundsEnabled && sound.musicEnabled
-                  ? "bg-green-500/80 hover:bg-green-500"
-                  : "bg-red-500/80 hover:bg-red-500"
-              }`}
-              title={sound.soundsEnabled && sound.musicEnabled ? "השתק צלילים" : "הפעל צלילים"}
-            >
-              {sound.soundsEnabled && sound.musicEnabled ? "🔊" : "🔇"}
-            </button>
           </div>
 
           {/* הודעות מיוחדות */}
@@ -1814,7 +1882,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 {/* אווטר ונתונים בשורה */}
                 <div className="bg-black/30 border border-white/10 rounded-lg p-3">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="text-4xl">{playerAvatar}</div>
+                      <div className="text-4xl">
+                        {playerAvatarImage ? (
+                          <img 
+                            src={playerAvatarImage} 
+                            alt="אווטר" 
+                            className="w-16 h-16 rounded-full object-cover"
+                          />
+                        ) : (
+                          playerAvatar
+                        )}
+                      </div>
                       <div className="flex-1">
                         <div className="text-sm text-white/60 mb-1">שם שחקן</div>
                         <div className="text-lg font-bold text-white">{playerName || "שחקן"}</div>
@@ -1852,18 +1930,57 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     </div>
                     <div className="mt-3">
                       <div className="text-xs text-white/60 mb-2">בחר אווטר:</div>
+                      
+                      {/* כפתור לבחירת תמונה */}
+                      <div className="mb-3">
+                        <label className="block w-full">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAvatarImageUpload}
+                            className="hidden"
+                            id="avatar-image-upload"
+                          />
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => document.getElementById("avatar-image-upload").click()}
+                              className="px-3 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-white text-xs font-bold transition-all flex-1"
+                            >
+                              📷 בחר תמונה
+                            </button>
+                            {playerAvatarImage && (
+                              <button
+                                type="button"
+                                onClick={handleRemoveAvatarImage}
+                                className="px-3 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition-all"
+                              >
+                                🗑️ מחק תמונה
+                              </button>
+                            )}
+                          </div>
+                        </label>
+                        {playerAvatarImage && (
+                          <div className="mt-2 text-xs text-white/60 text-center">
+                            תמונה נבחרה ✓
+                          </div>
+                        )}
+                      </div>
+                      
                       <div className="grid grid-cols-6 gap-2">
                         {AVATAR_OPTIONS.map((avatar) => (
                           <button
                             key={avatar}
                             onClick={() => {
                               setPlayerAvatar(avatar);
+                              setPlayerAvatarImage(null);
                               if (typeof window !== "undefined") {
                                 localStorage.setItem("mleo_player_avatar", avatar);
+                                localStorage.removeItem("mleo_player_avatar_image");
                               }
                             }}
                             className={`text-2xl p-1.5 rounded-lg transition-all ${
-                              playerAvatar === avatar
+                              !playerAvatarImage && playerAvatar === avatar
                                 ? "bg-yellow-500/40 border-2 border-yellow-400 scale-110"
                                 : "bg-black/30 border border-white/10 hover:bg-black/40"
                             }`}
@@ -1879,7 +1996,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   <div className="bg-black/30 border border-white/10 rounded-lg p-3">
                     <div className="text-sm text-white/60 mb-2">התקדמות חודשית</div>
                     <div className="flex justify-between text-xs text-white/60 mb-1">
-                      <span>{monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳</span>
+                      <span>{Math.round(monthlyProgress.totalMinutes)} / {MONTHLY_MINUTES_TARGET} דק׳</span>
                       <span>{goalPercent}%</span>
                     </div>
                     <div className="w-full bg-black/50 rounded-full h-3 mb-2">
@@ -1890,7 +2007,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     </div>
                     {minutesRemaining > 0 ? (
                       <div className="text-xs text-white/60">
-                        נותרו עוד {minutesRemaining} דק׳ (~{Math.ceil(minutesRemaining / 60)} שעות)
+                        נותרו עוד {Math.round(minutesRemaining)} דק׳ (~{Math.ceil(Math.round(minutesRemaining) / 60)} שעות)
                       </div>
                     ) : (
                       <div className="text-xs text-emerald-400 font-bold">
@@ -2192,27 +2309,27 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 </div>
               </div>
               
-              <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-2 w-full max-w-md">
-                <div className="flex items-center justify-between text-[11px] text-white/70 mb-1">
+              <div className="bg-white/5 border border-white/10 rounded-lg px-1.5 pt-1.5 pb-0 mb-1 w-full max-w-md">
+                <div className="flex items-center justify-between text-[10px] text-white/70 mb-0.5">
                   <span>🎁 מסע פרס חודשי</span>
                   <span>
-                    {monthlyProgress.totalMinutes} / {MONTHLY_MINUTES_TARGET} דק׳
+                    {Math.round(monthlyProgress.totalMinutes)} / {MONTHLY_MINUTES_TARGET} דק׳
                   </span>
                 </div>
-                <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                  <div
-                    className="h-2 bg-emerald-400 rounded-full transition-all"
-                    style={{ width: `${goalPercent}%` }}
-                  />
-                </div>
-                <p className="text-[11px] text-white/70 mt-1 text-center">
+                <p className="text-[10px] text-white/70 mb-0.5 text-center">
                   {minutesRemaining > 0
-                    ? `נותרו עוד ${minutesRemaining} דק׳ (~${Math.ceil(
-                        minutesRemaining / 60
+                    ? `נותרו עוד ${Math.round(minutesRemaining)} דק׳ (~${Math.ceil(
+                        Math.round(minutesRemaining) / 60
                       )} ש׳)`
                     : "🎉 יעד הושלם! בקשו מההורה לבחור פרס."}
                 </p>
-                <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                  <div
+                    className="h-1.5 bg-emerald-400 rounded-full transition-all"
+                    style={{ width: `${goalPercent}%` }}
+                  />
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center">
                   {REWARD_OPTIONS.map((option) => (
                     <button
                       key={option.key}
@@ -2220,13 +2337,14 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                         saveRewardChoice(yearMonthRef.current, option.key);
                         setRewardChoice(option.key);
                       }}
-                      className={`rounded-lg border p-2 text-[11px] bg-black/30 flex flex-col items-center gap-1 transition-all hover:scale-105 ${
+                      className={`rounded-lg border p-2.5 text-xs bg-black/30 flex flex-col items-center gap-1.5 transition-all hover:scale-105 ${
                         rewardChoice === option.key
                           ? "border-emerald-400 text-emerald-200 bg-emerald-500/20"
                           : "border-white/15 text-white/70 hover:border-white/30"
                       }`}
+                      style={{ transform: "scaleY(0.85)", transformOrigin: "center" }}
                     >
-                      <div className="text-xl">{option.icon}</div>
+                      <div className="text-2xl">{option.icon}</div>
                       <div className="font-bold leading-tight" dir="ltr">{option.label}</div>
                     </button>
                   ))}
@@ -2510,33 +2628,36 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   )}
                   
                   {/* הפרדה בין שורת השאלה לשורת התרגיל */}
-                  {currentQuestion.questionLabel && currentQuestion.exerciseText ? (
-                    <>
-                      <p
-                        className="text-2xl text-center text-white mb-1 break-words overflow-wrap-anywhere max-w-full px-2"
-                        style={{
-                          direction: currentQuestion.isStory ? "rtl" : "rtl",
-                          unicodeBidi: "plaintext",
-                          wordBreak: "break-word",
-                          overflowWrap: "break-word",
-                        }}
-                      >
-                        {currentQuestion.questionLabel}
-                      </p>
-                      
-                      {/* כפתור החלפה מאוזן/מאונך - רק אם התרגיל יכול להיות מאונך */}
+                  {currentQuestion.exerciseText ? (
+                    <div
+                      className={`relative w-full mb-2 pr-2 ${
+                        canDisplayVertically ? "pl-16 pt-8" : "pl-2 pt-0"
+                      }`}
+                    >
                       {canDisplayVertically && (
-                        <div className="flex justify-center mb-2">
-                          <button
-                            onClick={() => setIsVerticalDisplay((prev) => !prev)}
-                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/80 hover:bg-purple-500 text-white transition-all"
-                            title={isVerticalDisplay ? "הצג מאוזן" : "הצג מאונך"}
-                          >
-                            {isVerticalDisplay ? "↔️ מאוזן" : "↕️ מאונך"}
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => setIsVerticalDisplay((prev) => !prev)}
+                          className="absolute top-2 left-2 z-10 px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/80 hover:bg-purple-500 text-white transition-all pointer-events-auto shadow-lg"
+                          title={isVerticalDisplay ? "הצג מאוזן" : "הצג מאונך"}
+                        >
+                          {isVerticalDisplay ? "↔️ מאוזן" : "↕️ מאונך"}
+                        </button>
                       )}
-                      
+
+                      {currentQuestion.questionLabel && (
+                        <p
+                          className="text-2xl text-center text-white mb-2 break-words overflow-wrap-anywhere max-w-full"
+                          style={{
+                            direction: currentQuestion.isStory ? "rtl" : "rtl",
+                            unicodeBidi: "plaintext",
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                          }}
+                        >
+                          {currentQuestion.questionLabel}
+                        </p>
+                      )}
+
                       {/* תצוגת התרגיל - מאוזן או מאונך */}
                       {isVerticalDisplay && canDisplayVertically ? (
                         <div className="mb-4 flex justify-center w-full max-w-full px-2">
@@ -2567,51 +2688,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           {currentQuestion.exerciseText}
                         </p>
                       )}
-                    </>
-                  ) : currentQuestion.exerciseText ? (
-                    <>
-                      {/* כפתור החלפה מאוזן/מאונך - רק אם התרגיל יכול להיות מאונך */}
-                      {canDisplayVertically && (
-                        <div className="flex justify-center mb-2">
-                          <button
-                            onClick={() => setIsVerticalDisplay((prev) => !prev)}
-                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/80 hover:bg-purple-500 text-white transition-all"
-                            title={isVerticalDisplay ? "הצג מאוזן" : "הצג מאונך"}
-                          >
-                            {isVerticalDisplay ? "↔️ מאוזן" : "↕️ מאונך"}
-                          </button>
-                        </div>
-                      )}
-                      
-                      {/* תצוגת התרגיל - מאוזן או מאונך */}
-                      {isVerticalDisplay && canDisplayVertically ? (
-                        <div className="mb-4 flex justify-center w-full max-w-full px-2">
-                          <pre
-                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
-                            style={{
-                              direction: "ltr",
-                              unicodeBidi: "plaintext",
-                              wordBreak: "break-word",
-                              overflowWrap: "break-word",
-                            }}
-                          >
-                            {getVerticalExercise() || currentQuestion.exerciseText}
-                          </pre>
-                        </div>
-                      ) : (
-                        <p
-                          className="text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2"
-                          style={{
-                            direction: "ltr",
-                            unicodeBidi: "plaintext",
-                            wordBreak: "break-word",
-                            overflowWrap: "break-word",
-                          }}
-                        >
-                          {currentQuestion.exerciseText}
-                        </p>
-                      )}
-                    </>
+                    </div>
                   ) : (
                     <div
                       className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
@@ -4265,6 +4342,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           )}
         </div>
       </div>
+    </div>
   </Layout>
 );
 }

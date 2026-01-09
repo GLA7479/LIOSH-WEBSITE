@@ -112,6 +112,7 @@ export default function MathMaster() {
   const [wrong, setWrong] = useState(0);
   const [timeLeft, setTimeLeft] = useState(20);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [textAnswer, setTextAnswer] = useState(""); // תשובה בקלט טקסט למצבי למידה ותרגול
   const [feedback, setFeedback] = useState(null);
   const [bestScore, setBestScore] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
@@ -822,6 +823,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setWrong(0);
     setTimeLeft(20);
     setSelectedAnswer(null);
+    setTextAnswer("");
     setFeedback(null);
     setLives(3);
     setTotalQuestions(0);
@@ -967,6 +969,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     
     setCurrentQuestion(question);
     setSelectedAnswer(null);
+    setTextAnswer("");
     setFeedback(null);
     setQuestionStartTime(Date.now());
     setShowHint(false);
@@ -1029,6 +1032,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setQuestionStartTime(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    setTextAnswer("");
     setLives(mode === "challenge" ? 3 : 0);
     setShowHint(false);
     setHintUsed(false);
@@ -1059,6 +1063,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    setTextAnswer("");
     
     // Stop background music when game stops
     sound.stopBackgroundMusic();
@@ -1154,8 +1159,31 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       return newCount;
     });
 
-    setSelectedAnswer(answer);
-    const isCorrect = answer === currentQuestion.correctAnswer;
+    // התאמה לתשובה מספרית (גם מהכפתורים וגם מהקלט הטקסט)
+    let numericAnswer;
+    if (typeof answer === "string") {
+      const parsed = parseFloat(answer.trim());
+      if (isNaN(parsed)) {
+        setFeedback("נא להזין מספר תקין");
+        setTimeout(() => setFeedback(null), 2000);
+        return;
+      }
+      numericAnswer = parsed;
+    } else {
+      numericAnswer = answer;
+    }
+    
+    const correctNumericAnswer = typeof currentQuestion.correctAnswer === "string" 
+      ? parseFloat(currentQuestion.correctAnswer.trim()) 
+      : currentQuestion.correctAnswer;
+    
+    // בדיקה של שוויון מספרי (גם למספרים וגם למחרוזות מספריות)
+    const isCorrect = numericAnswer === correctNumericAnswer || 
+                      (typeof numericAnswer === "number" && typeof correctNumericAnswer === "number" &&
+                       !isNaN(numericAnswer) && !isNaN(correctNumericAnswer) &&
+                       Math.abs(numericAnswer - correctNumericAnswer) < 0.01);
+
+    setSelectedAnswer(numericAnswer);
 
     if (isCorrect) {
       // חישוב נקודות לפי מצב
@@ -1370,6 +1398,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       }
       
       if ("vibrate" in navigator) navigator.vibrate?.(50);
+      
+      // איפוס השדה הטקסט מיד אחרי תשובה נכונה
+      if (mode === "learning" || mode === "practice") {
+        setTextAnswer("");
+      }
 
       setTimeout(() => {
         generateNewQuestion();
@@ -1390,7 +1423,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
         operation: currentQuestion.operation,
         question: currentQuestion.exerciseText || `${currentQuestion.a} ${currentQuestion.operation === "addition" ? "+" : currentQuestion.operation === "subtraction" ? "-" : currentQuestion.operation === "multiplication" ? "×" : "÷"} ${currentQuestion.b}`,
         correctAnswer: currentQuestion.correctAnswer,
-        wrongAnswer: answer,
+        wrongAnswer: numericAnswer,
         grade: grade,
         level: level,
         timestamp: Date.now(),
@@ -1407,7 +1440,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
         getErrorExplanation(
           currentQuestion,
           currentQuestion.operation,
-          answer,
+          numericAnswer,
           grade
         )
       );
@@ -1439,7 +1472,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
         setTimeout(() => {
           generateNewQuestion();
           setSelectedAnswer(null);
-    solvedCountRef.current += 1;
+          setTextAnswer("");
+          solvedCountRef.current += 1;
           setFeedback(null);
           setTimeLeft(null);
         }, 2000);
@@ -1467,6 +1501,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
             setTimeout(() => {
               generateNewQuestion();
               setSelectedAnswer(null);
+              setTextAnswer("");
               setFeedback(null);
               setTimeLeft(20);
             }, 1500);
@@ -2704,33 +2739,82 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   )}
                   
 
-                  <div className="grid grid-cols-2 gap-3 w-full mb-3">
-                    {currentQuestion.answers.map((answer, idx) => {
-                      const isSelected = selectedAnswer === answer;
-                      const isCorrect = answer === currentQuestion.correctAnswer;
-                      const isWrong = isSelected && !isCorrect;
-
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => handleAnswer(answer)}
+                  {/* מצב למידה או תרגול - קלט טקסט */}
+                  {(mode === "learning" || mode === "practice") && !practiceMode ? (
+                    <div className="mb-4 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
+                      <div className="text-center mb-3">
+                        <input
+                          type="number"
+                          value={textAnswer}
+                          onChange={(e) => setTextAnswer(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.key === "Enter" && !selectedAnswer && textAnswer.trim() !== "") {
+                              handleAnswer(textAnswer);
+                            }
+                          }}
+                          placeholder="תשובה"
                           disabled={!!selectedAnswer}
-                          className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                            isCorrect && isSelected
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : isWrong
-                              ? "bg-red-500/30 border-red-400 text-red-200"
-                              : selectedAnswer &&
-                                answer === currentQuestion.correctAnswer
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : "bg-black/30 border-white/15 text-white hover:border-white/40"
-                          }`}
+                          className="w-full max-w-[300px] px-4 py-4 rounded-lg bg-black/40 border border-white/20 text-white text-2xl font-bold text-center disabled:opacity-50"
+                          autoFocus
+                        />
+                      </div>
+                      <div className="flex gap-2 justify-center">
+                        <button
+                          onClick={() => {
+                            if (!selectedAnswer && textAnswer.trim() !== "") {
+                              handleAnswer(textAnswer);
+                            }
+                          }}
+                          disabled={!!selectedAnswer || textAnswer.trim() === ""}
+                          className="px-6 py-3 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {answer}
+                          בדוק
                         </button>
-                      );
-                    })}
-                  </div>
+                        {selectedAnswer && (
+                          <button
+                            onClick={() => {
+                              setSelectedAnswer(null);
+                              setTextAnswer("");
+                              setFeedback(null);
+                              generateNewQuestion();
+                            }}
+                            className="px-6 py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-lg"
+                          >
+                            שאלה הבאה
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    /* מצבים אחרים (challenge, speed, marathon) - כפתורי בחירה */
+                    <div className="grid grid-cols-2 gap-3 w-full mb-3">
+                      {currentQuestion.answers.map((answer, idx) => {
+                        const isSelected = selectedAnswer === answer;
+                        const isCorrect = answer === currentQuestion.correctAnswer;
+                        const isWrong = isSelected && !isCorrect;
+
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => handleAnswer(answer)}
+                            disabled={!!selectedAnswer}
+                            className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                              isCorrect && isSelected
+                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                : isWrong
+                                ? "bg-red-500/30 border-red-400 text-red-200"
+                                : selectedAnswer &&
+                                  answer === currentQuestion.correctAnswer
+                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                            }`}
+                          >
+                            {answer}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
 
                   {/* רמז + הסבר + למה טעיתי */}
                   {currentQuestion && (
