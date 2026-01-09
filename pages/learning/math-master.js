@@ -3183,7 +3183,244 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                             return activeStep.highlights.includes(key);
                           };
                           
-                          // חיבור וחיסור - הקוד המקורי בדיוק כמו שהיה
+                          // טיפול מיוחד בחילוק ארוך - תצוגה שונה עם כל השלבים
+                          if (effectiveOp === "division") {
+                            // חישוב כל השלבים בחילוק ארוך (בדיוק כמו ב-buildDivisionAnimation)
+                            const divSteps = [];
+                            let wNum = 0;
+                            let qPos = 0;
+                            const divStr = String(aVal);
+                            
+                            let startPos = 0;
+                            for (let i = 0; i < divStr.length; i++) {
+                              if (wNum === 0) {
+                                startPos = i;
+                              }
+                              wNum = wNum * 10 + parseInt(divStr[i]);
+                              if (wNum >= bVal) {
+                                const qDig = Math.floor(wNum / bVal);
+                                const prod = qDig * bVal;
+                                const rem = wNum - prod;
+                                divSteps.push({
+                                  pos: i, // מיקום הספרה האחרונה
+                                  startPos: startPos, // מיקום הספרה הראשונה
+                                  wNum,
+                                  qDig,
+                                  prod,
+                                  rem,
+                                  qPos: qPos++,
+                                  wNumLen: String(wNum).length,
+                                });
+                                wNum = rem;
+                                startPos = rem > 0 ? i : i + 1;
+                              }
+                            }
+                            
+                            // בניית תצוגת חילוק ארוך עם כל השלבים
+                            const quotientDigits = divSteps.map(s => s.qDig);
+                            const quotientStrFull = quotientDigits.join("");
+                            const quotientDigitsArray = quotientStrFull.split("");
+                            const dividendDigitsArray = divStr.split("");
+                            const divisorStr = String(bVal);
+                            
+                            // קביעת מה להציג לפי הצעד הנוכחי
+                            const currentStepIndex = activeStep?.stepIndex ?? -1;
+                            const revealQuotientCount = activeStep?.revealDigits ?? 0;
+                            const isSubtractStep = activeStep?.id?.includes("subtract");
+                            const isBringDownStep = activeStep?.id?.includes("bring-down");
+                            
+                            // חישוב מיקום המחלק והמחולק
+                            const divisorPadding = divisorStr.length + 2; // מקום למחלק + "│" + רווח
+                            
+                            return (
+                              <div
+                                className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                                onClick={() => setShowSolution(false)}
+                                dir="rtl"
+                              >
+                                <div
+                                  className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[600px] shadow-2xl flex flex-col"
+                                  onClick={(e) => e.stopPropagation()}
+                                  style={{ maxWidth: "90vw", maxHeight: "90vh" }}
+                                >
+                                  {/* כותרת */}
+                                  <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
+                                    <button
+                                      onClick={() => setShowSolution(false)}
+                                      className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                                    >
+                                      ✖
+                                    </button>
+                                    <h3 className="text-lg font-bold text-emerald-100">
+                                      {"\u200Fאיך פותרים את התרגיל?"}
+                                    </h3>
+                                  </div>
+                                  
+                                  {/* תוכן */}
+                                  <div className="flex-1 overflow-y-auto px-4 pb-2">
+                                    {/* תצוגת חילוק ארוך */}
+                                    <div className="mb-4 flex flex-col items-start font-mono text-xl leading-[1.6]" style={{ direction: "ltr", minWidth: "300px" }}>
+                                      {/* שורה 1: המנה (quotient) - מעל, מיושרת לימין של המחולק */}
+                                      <div className="mb-1 flex" style={{ paddingLeft: `${divisorPadding * 1.5}ch` }}>
+                                        <div className="grid gap-x-1" style={{ gridTemplateColumns: `repeat(${quotientDigitsArray.length}, 1.5ch)` }}>
+                                          {quotientDigitsArray.map((d, idx) => {
+                                            const shouldHighlight = isHighlighted(`result${idx}`);
+                                            return (
+                                              <span
+                                                key={`q-${idx}`}
+                                                className={`text-center font-bold ${shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""}`}
+                                              >
+                                                {idx < revealQuotientCount ? d : "\u00A0"}
+                                              </span>
+                                            );
+                                          })}
+                                        </div>
+                                      </div>
+                                      
+                                      {/* שורה 2: קו תחתון מעל המחולק */}
+                                      <div className="mb-1 flex" style={{ paddingLeft: `${divisorPadding * 1.5}ch` }}>
+                                        <div className="h-[2px] bg-white" style={{ width: `${dividendDigitsArray.length * 1.5}ch` }} />
+                                      </div>
+                                      
+                                      {/* שורה 3: המחלק משמאל + סוגר + המחולק */}
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xl font-bold">{bVal}</span>
+                                        <span className="text-xl font-bold">│</span>
+                                        <div className="grid gap-x-1" style={{ gridTemplateColumns: `repeat(${dividendDigitsArray.length}, 1.5ch)` }}>
+                                          {dividendDigitsArray.map((d, idx) => {
+                                            const shouldHighlight = isHighlighted(`a${idx}`) || isHighlighted("aAll");
+                                            return (
+                                              <span
+                                                key={`d-${idx}`}
+                                                className={`text-center font-bold ${shouldHighlight ? "bg-yellow-500/30 rounded px-1 animate-pulse" : ""}`}
+                                              >
+                                                {d}
+                                              </span>
+                                            );
+                                          })}
+                                        </div>
+                                      </div>
+                                      
+                                      {/* הצגת שלבי החילוק לפי הצעד הנוכחי */}
+                                      {currentStepIndex >= 0 && divSteps[currentStepIndex] && (() => {
+                                        const step = divSteps[currentStepIndex];
+                                        const showWorkingNum = isSubtractStep || isHighlighted(`workingNum${currentStepIndex}`);
+                                        const showProduct = isSubtractStep || isHighlighted(`product${currentStepIndex}`);
+                                        const showRemainder = isSubtractStep || isHighlighted(`remainder${currentStepIndex}`);
+                                        
+                                        // חישוב מיקום - המספר צריך להיות מיושר מעל החלק הרלוונטי של המחולק
+                                        // step.pos הוא המיקום במחולק (משמאל, החל מ-0)
+                                        // צריך לחשב כמה מקום יש מהמחלק ועד למיקום הנכון
+                                        // workingNumber מתחיל מהמיקום step.pos, אבל יכול להיות מספר ספרות
+                                        const wNumStr = String(step.wNum);
+                                        const prodStr = String(step.prod);
+                                        const remStr = String(step.rem);
+                                        
+                                        // המיקום הוא: divisorPadding + מיקום התחלה של המספר במחולק
+                                        // step.startPos הוא המיקום של הספרה הראשונה (השמאלית ביותר) של workingNumber
+                                        const alignmentOffset = divisorPadding + (step.startPos || 0);
+                                        
+                                        return (
+                                          <div className="mt-2 flex flex-col gap-1">
+                                            {/* שורה עם המספר שמחלקים (workingNumber) - אם צריך להציג */}
+                                            {showWorkingNum && (
+                                              <div className="flex" style={{ paddingLeft: `${alignmentOffset * 1.5}ch` }}>
+                                                <div className="grid gap-x-1" style={{ gridTemplateColumns: `repeat(${wNumStr.length}, 1.5ch)` }}>
+                                                  {wNumStr.split("").map((d, idx) => (
+                                                    <span key={`wn-${idx}`} className="text-center font-bold text-emerald-300">
+                                                      {d}
+                                                    </span>
+                                                  ))}
+                                                </div>
+                                              </div>
+                                            )}
+                                            
+                                            {/* שורה עם התוצאה של הכפל (product) - מיושר לימין של workingNumber */}
+                                            {showProduct && (
+                                              <div className="flex" style={{ paddingLeft: `${(alignmentOffset + wNumStr.length - prodStr.length) * 1.5}ch` }}>
+                                                <div className="grid gap-x-1" style={{ gridTemplateColumns: `repeat(${prodStr.length}, 1.5ch)` }}>
+                                                  {prodStr.split("").map((d, idx) => (
+                                                    <span key={`prod-${idx}`} className="text-center font-bold text-red-300">
+                                                      {d}
+                                                    </span>
+                                                  ))}
+                                                </div>
+                                              </div>
+                                            )}
+                                            
+                                            {/* קו חיסור - מיושר כמו product */}
+                                            {showProduct && (
+                                              <div className="flex" style={{ paddingLeft: `${(alignmentOffset + wNumStr.length - prodStr.length) * 1.5}ch` }}>
+                                                <div className="h-[1px] bg-white" style={{ width: `${Math.max(prodStr.length, wNumStr.length) * 1.5}ch` }} />
+                                              </div>
+                                            )}
+                                            
+                                            {/* שורה עם השארית (remainder) - מיושר לימין של product */}
+                                            {showRemainder && step.rem >= 0 && (
+                                              <div className="flex" style={{ paddingLeft: `${(alignmentOffset + wNumStr.length - remStr.length) * 1.5}ch` }}>
+                                                <div className="grid gap-x-1" style={{ gridTemplateColumns: `repeat(${remStr.length}, 1.5ch)` }}>
+                                                  {remStr.split("").map((d, idx) => (
+                                                    <span key={`rem-${idx}`} className="text-center font-bold text-blue-300">
+                                                      {d}
+                                                    </span>
+                                                  ))}
+                                                </div>
+                                              </div>
+                                            )}
+                                            
+                                            {/* אם זה צעד של הורדת ספרה, הצג את הספרה הבאה */}
+                                            {isBringDownStep && currentStepIndex < divSteps.length - 1 && activeStep?.nextDigit !== undefined && (
+                                              <div className="flex items-center gap-1 mt-1" style={{ paddingLeft: `${(divisorPadding + (step.pos + 1)) * 1.5}ch` }}>
+                                                <span className="text-blue-300 font-bold text-sm">↓</span>
+                                                <span className="text-emerald-300 font-bold">{activeStep.nextDigit}</span>
+                                              </div>
+                                            )}
+                                          </div>
+                                        );
+                                      })()}
+                                    </div>
+                                    
+                                    {/* טקסט ההסבר */}
+                                    <div className="mb-4 text-sm text-emerald-50" dir="rtl">
+                                      <h4 className="font-bold text-base mb-1">{activeStep?.title || ""}</h4>
+                                      <p className="leading-relaxed">{activeStep?.text || ""}</p>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* כפתורים ואינדיקטור */}
+                                  <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
+                                    <div className="flex gap-2 justify-center items-center" dir="rtl">
+                                      <button
+                                        onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
+                                        disabled={animationStep === 0}
+                                        className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                      >
+                                        קודם
+                                      </button>
+                                      <button
+                                        onClick={() => setAutoPlay((p) => !p)}
+                                        className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
+                                      >
+                                        {autoPlay ? "עצור" : "נגן"}
+                                      </button>
+                                      <button
+                                        onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
+                                        disabled={animationStep >= animationSteps.length - 1}
+                                        className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                      >
+                                        הבא
+                                      </button>
+                                    </div>
+                                    <div className="text-center text-xs text-emerald-300">
+                                      צעד {animationStep + 1} מתוך {animationSteps.length}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
+                          
+                          // חיבור, חיסור, כפל - הקוד המקורי בדיוק כמו שהיה
                           return (
                             <div
                               className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"

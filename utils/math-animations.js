@@ -333,47 +333,136 @@ export function buildMultiplicationAnimation(a, b, answer) {
   return steps;
 }
 
-// פונקציה לבניית צעדי אנימציה לחילוק (עם תרגיל מאונך)
+// פונקציה לבניית צעדי אנימציה לחילוק ארוך (עם תרגיל מאונך)
 export function buildDivisionAnimation(dividend, divisor, quotient) {
   const steps = [];
   const dividendStr = String(dividend);
   const divisorStr = String(divisor);
   const quotientStr = String(quotient);
   
-  // צעד 1: מיישרים את הספרות
+  // חישוב חילוק ארוך צעד אחר צעד
+  const divisionSteps = [];
+  let workingNumber = 0;
+  let quotientPos = 0;
+  let startPos = 0; // מיקום ההתחלה של workingNumber
+  
+  for (let i = 0; i < dividendStr.length; i++) {
+    // אם workingNumber הוא 0, זה תחילת מספר חדש
+    if (workingNumber === 0) {
+      startPos = i;
+    }
+    
+    workingNumber = workingNumber * 10 + parseInt(dividendStr[i]);
+    
+    if (workingNumber >= divisor) {
+      const qDigit = Math.floor(workingNumber / divisor);
+      const product = qDigit * divisor;
+      const remainder = workingNumber - product;
+      const wNumLen = String(workingNumber).length;
+      
+      divisionSteps.push({
+        position: i, // מיקום הספרה האחרונה (הימנית ביותר)
+        startPosition: startPos, // מיקום הספרה הראשונה (השמאלית ביותר)
+        workingNumber,
+        quotientDigit: qDigit,
+        product,
+        remainder,
+        quotientPosition: quotientPos,
+        workingNumberLength: wNumLen,
+      });
+      
+      quotientPos++;
+      workingNumber = remainder;
+      // אם יש שארית, המיקום הבא יתחיל מהמיקום הנוכחי + 1
+      startPos = remainder > 0 ? i : i + 1;
+    }
+  }
+  
+  // צעד 1: הצגת השאלה
   steps.push({
     id: "place-value",
-    title: "מיישרים את הספרות",
-    text: "כותבים את המחלק והמחולק כך שסַפְרות היחידות נמצאות באותה עמודה.",
+    title: "הצגת השאלה",
+    text: `נחלק ${dividend} ב-${divisor}. נכתוב את המחולק והמחלק בצורת חילוק ארוך.`,
     highlights: ["aAll", "bAll"],
     revealDigits: 0,
+    type: "division",
+    dividend,
+    divisor,
+    quotient,
   });
   
-  // צעד 2: הסבר על חילוק
-  steps.push({
-    id: "explain",
-    title: "מה זה חילוק?",
-    text: `חילוק שואל: כמה פעמים ${divisor} נכנס בתוך ${dividend}?`,
-    highlights: ["aAll", "bAll"],
-    revealDigits: 0,
-  });
+  // יצירת צעדים מפורטים לכל שלב בחילוק
+  for (let stepIndex = 0; stepIndex < divisionSteps.length; stepIndex++) {
+    const step = divisionSteps[stepIndex];
+    const { position, workingNumber: wNum, quotientDigit: qDigit, product, remainder, quotientPosition } = step;
+    
+    // צעד: כתיבה במנה
+    steps.push({
+      id: `step-${stepIndex + 1}-write`,
+      title: `צעד ${stepIndex + 1}: כתיבה במנה`,
+      text: `${divisor} נכנס ב-${wNum} בדיוק ${qDigit} פעמים. כותבים ${qDigit} במנה מעל הספרה ${dividendStr[position]}.`,
+      highlights: [`result${quotientPosition}`, `a${position}`],
+      revealDigits: quotientPosition + 1,
+      type: "division",
+      dividend,
+      divisor,
+      quotient,
+      stepIndex,
+      quotientDigit: qDigit,
+      workingNumber: wNum,
+    });
+    
+    // צעד: כפל וחיסור
+    steps.push({
+      id: `step-${stepIndex + 1}-subtract`,
+      title: `צעד ${stepIndex + 1}: כפל וחיסור`,
+      text: `מכפילים: ${qDigit} × ${divisor} = ${product}. מחסרים: ${wNum} - ${product} = ${remainder}. ${remainder === 0 ? 'אין שארית.' : `השארית היא ${remainder}.`}`,
+      highlights: [`a${position}`, "bAll", `result${quotientPosition}`, `product${stepIndex}`, `remainder${stepIndex}`],
+      revealDigits: quotientPosition + 1,
+      type: "division",
+      dividend,
+      divisor,
+      quotient,
+      stepIndex,
+      product,
+      remainder,
+      workingNumber: wNum,
+    });
+    
+    // אם לא זה הצעד האחרון, מורידים את הספרה הבאה
+    if (stepIndex < divisionSteps.length - 1 && position < dividendStr.length - 1) {
+      const nextStep = divisionSteps[stepIndex + 1];
+      const nextDigitPos = nextStep.position;
+      steps.push({
+        id: `step-${stepIndex + 1}-bring-down`,
+        title: `צעד ${stepIndex + 1}: הורדת ספרה`,
+        text: `מורידים את הספרה הבאה (${dividendStr[nextDigitPos]}). המספר החדש לחלוקה הוא ${nextStep.workingNumber}.`,
+        highlights: [`a${nextDigitPos}`],
+        revealDigits: quotientPosition + 1,
+        type: "division",
+        dividend,
+        divisor,
+        quotient,
+        stepIndex,
+        nextDigit: parseInt(dividendStr[nextDigitPos]),
+        newNum: nextStep.workingNumber,
+      });
+    }
+  }
   
-  // צעד 3: בדיקה
-  steps.push({
-    id: "check",
-    title: "בדיקה",
-    text: `נבדוק: ${divisor} × ${quotient} = ${dividend}. אם כן – זה המספר הנכון.`,
-    highlights: ["aAll", "bAll", "resultAll"],
-    revealDigits: quotientStr.length,
-  });
-  
-  // צעד 4: התוצאה הסופית
+  // צעד אחרון: התוצאה הסופית
+  const finalRemainder = divisionSteps.length > 0 ? divisionSteps[divisionSteps.length - 1].remainder : 0;
   steps.push({
     id: "final",
     title: "התוצאה הסופית",
-    text: `לכן התשובה היא ${quotient}`,
+    text: `סיימנו! המנה היא ${quotient}${finalRemainder > 0 ? ` והשארית היא ${finalRemainder}` : ' בלי שארית'}.`,
     highlights: ["resultAll"],
     revealDigits: quotientStr.length,
+    type: "division",
+    dividend,
+    divisor,
+    quotient,
+    remainder: finalRemainder,
   });
   
   return steps;

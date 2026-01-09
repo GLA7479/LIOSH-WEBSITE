@@ -267,7 +267,6 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
   } else if (selectedOp === "division") {
     const maxD = levelConfig.division.max || 100;
     const maxDivisor = levelConfig.division.maxDivisor || 12;
-    const allowRemainder = levelConfig.division.allowRemainder || false; // כיתה ג' ומעלה
     
     // כיתה ד' - חילוק ארוך (המחלק הוא חד-ספרתי או עשרת שלמה)
     if (gradeKey === "g4" && levelConfig.division?.longDivision && Math.random() < 0.5) {
@@ -298,34 +297,17 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       operandA = dividend;
       operandB = divisor;
     } else {
-      // חילוק רגיל
+      // חילוק רגיל - רק ללא שארית
       const divisor = randInt(2, maxDivisor);
-      
-      let quotient, dividend, remainder = 0;
-      if (allowRemainder && Math.random() < 0.3) {
-        // חילוק עם שארית - רק לכיתה ג' ומעלה
-        quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
-        remainder = randInt(1, divisor - 1); // שארית בין 1 ל-divisor-1
-        dividend = divisor * quotient + remainder;
-      } else {
-        // חילוק ללא שארית
-        quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
-        dividend = divisor * quotient;
-      }
+      const quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
+      const dividend = divisor * quotient;
 
       // חילוק - רק תרגיל ישיר (ללא נעלם) - נעלמים רק במשוואות
-      // צורה רגילה: dividend ÷ divisor = __ (או עם שארית)
-      if (remainder > 0) {
-        correctAnswer = `${quotient} ושארית ${remainder}`;
-        const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
-        question = exerciseText;
-        params = { kind: "div_with_remainder", dividend, divisor, quotient, remainder, exerciseText };
-      } else {
-        correctAnswer = round(quotient);
-        const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
-        question = exerciseText;
-        params = { kind: "div", dividend, divisor, exerciseText };
-      }
+      // צורה רגילה: dividend ÷ divisor = __
+      correctAnswer = round(quotient);
+      const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
+      question = exerciseText;
+      params = { kind: "div", dividend, divisor, exerciseText };
 
       operandA = dividend;
       operandB = divisor;
@@ -1225,20 +1207,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         params = { kind: "wp_coins_spent", total, spent };
       }
     } else if (t === "division_simple") {
-      // שאלות חילוק פשוטות (כיתה ב')
-      const total = randInt(6, 20);
+      // שאלות חילוק פשוטות (כיתה ב') - רק ללא שארית
       const perGroup = randInt(2, 5);
-      const groups = Math.floor(total / perGroup);
-      const remainder = total % perGroup;
-      if (remainder === 0) {
-        correctAnswer = groups;
-        question = `יש ${total} תפוחים. מחלקים אותם לקבוצות של ${perGroup} תפוחים בכל קבוצה. כמה קבוצות יש?`;
-        params = { kind: "wp_division_simple", total, perGroup, groups };
-      } else {
-        correctAnswer = groups;
-        question = `יש ${total} תפוחים. מחלקים אותם לקבוצות של ${perGroup} תפוחים בכל קבוצה. כמה קבוצות מלאות יש?`;
-        params = { kind: "wp_division_simple_remainder", total, perGroup, groups, remainder };
-      }
+      const groups = randInt(2, 10);
+      const total = perGroup * groups; // וודא שאין שארית
+      correctAnswer = groups;
+      question = `יש ${total} תפוחים. מחלקים אותם לקבוצות של ${perGroup} תפוחים בכל קבוצה. כמה קבוצות יש?`;
+      params = { kind: "wp_division_simple", total, perGroup, groups };
     } else if (t === "leftover") {
       const total = randInt(40, 100);
       const groupSize = randInt(4, 8);
