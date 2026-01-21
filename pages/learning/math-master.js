@@ -262,6 +262,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     return [];
   });
   const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal"); // "normal", "mistakes", "graded"
+  const [remainingMistakes, setRemainingMistakes] = useState([]); // שגיאות שנותרו לתיקון
+  const [currentMistakeIndex, setCurrentMistakeIndex] = useState(0); // אינדקס השגיאה הנוכחית
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   const [showReferenceModal, setShowReferenceModal] = useState(false);
   const [referenceCategory, setReferenceCategory] = useState(REFERENCE_CATEGORY_KEYS[0]);
@@ -868,20 +870,53 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     const levelConfigCopy = { ...levelConfig }; // עותק כדי לא לשנות את המקורי
 
     // תרגול ממוקד - חזרה על שגיאות
-    if (focusedPracticeMode === "mistakes" && mistakes.length > 0) {
-      // בחר שגיאה אקראית מהרשימה
-      const randomMistake = mistakes[Math.floor(Math.random() * mistakes.length)];
-      operationForState = randomMistake.operation;
-      // נסה ליצור שאלה דומה
-      if (randomMistake.grade) {
-        const mistakeGrade = randomMistake.grade;
-        const mistakeLevel = randomMistake.level || "easy";
-        const mistakeLevelConfig = getLevelConfig(
-          parseInt(mistakeGrade.replace("g", "")) || gradeNumber,
-          mistakeLevel
-        );
-        if (mistakeLevelConfig) {
-          Object.assign(levelConfigCopy, mistakeLevelConfig);
+    if (focusedPracticeMode === "mistakes" && remainingMistakes.length > 0) {
+      // הצג את השגיאה הנוכחית - השתמש בשאלה המקורית
+      const currentMistake = remainingMistakes[currentMistakeIndex];
+      if (currentMistake) {
+        // אם יש שאלה מקורית - השתמש בה
+        if (currentMistake.originalQuestion) {
+          question = currentMistake.originalQuestion;
+          // עדכן את ה-grade וה-level לפי השגיאה
+          if (currentMistake.grade) {
+            const mistakeGrade = currentMistake.grade;
+            const mistakeLevel = currentMistake.level || "easy";
+            const mistakeLevelConfig = getLevelConfig(
+              parseInt(mistakeGrade.replace("g", "")) || gradeNumber,
+              mistakeLevel
+            );
+            if (mistakeLevelConfig) {
+              Object.assign(levelConfigCopy, mistakeLevelConfig);
+            }
+          }
+          // דלג על יצירת שאלה חדשה - השתמש בשאלה המקורית
+          setCurrentQuestion(question);
+          setSelectedAnswer(null);
+          setTextAnswer("");
+          setFeedback(null);
+          setQuestionStartTime(Date.now());
+          setShowHint(false);
+          setHintUsed(false);
+          setShowSolution(false);
+          setErrorExplanation("");
+          setIsVerticalDisplay(false);
+          setMovedCirclesA(0);
+          setMovedCirclesB(0);
+          return; // יציאה מוקדמת - לא צריך ליצור שאלה חדשה
+        } else {
+          // שגיאה ישנה ללא originalQuestion - נסה ליצור שאלה דומה
+          operationForState = currentMistake.operation;
+          if (currentMistake.grade) {
+            const mistakeGrade = currentMistake.grade;
+            const mistakeLevel = currentMistake.level || "easy";
+            const mistakeLevelConfig = getLevelConfig(
+              parseInt(mistakeGrade.replace("g", "")) || gradeNumber,
+              mistakeLevel
+            );
+            if (mistakeLevelConfig) {
+              Object.assign(levelConfigCopy, mistakeLevelConfig);
+            }
+          }
         }
       }
     }
@@ -1239,6 +1274,37 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       
       setErrorExplanation("");
 
+      // אם במצב תרגול שגיאות - הסר את השגיאה מהרשימה
+      if (focusedPracticeMode === "mistakes" && remainingMistakes.length > 0) {
+        const updatedRemaining = remainingMistakes.filter((_, idx) => idx !== currentMistakeIndex);
+        setRemainingMistakes(updatedRemaining);
+        
+        // אם אין עוד שגיאות - אפס את הרשימה
+        if (updatedRemaining.length === 0) {
+          setMistakes([]);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("mleo_mistakes", JSON.stringify([]));
+          }
+          setFocusedPracticeMode("normal");
+          setFeedback("🎉 כל השגיאות תוקנו! מעולה!");
+          setTimeout(() => {
+            setFeedback(null);
+            setGameActive(false);
+          }, 3000);
+          return;
+        }
+        
+        // עבור לשגיאה הבאה (או הראשונה אם הגענו לסוף)
+        const nextIndex = currentMistakeIndex < updatedRemaining.length ? currentMistakeIndex : 0;
+        setCurrentMistakeIndex(nextIndex);
+        
+        // עבור לשגיאה הבאה אחרי 1.5 שניות
+        setTimeout(() => {
+          generateNewQuestion();
+        }, 1500);
+        return; // אל תמשיך עם generateNewQuestion הרגיל
+      }
+
       // עדכון התקדמות אישית
       const op = currentQuestion.operation;
       setProgress((prev) => ({
@@ -1458,7 +1524,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       setWrong((prev) => prev + 1);
       setStreak(0);
       
-      // שמירת שגיאה לתרגול ממוקד
+      // שמירת שגיאה לתרגול ממוקד - שמירת כל השאלה המקורית
       const mistake = {
         operation: currentQuestion.operation,
         question: currentQuestion.exerciseText || `${currentQuestion.a} ${currentQuestion.operation === "addition" ? "+" : currentQuestion.operation === "subtraction" ? "-" : currentQuestion.operation === "multiplication" ? "×" : "÷"} ${currentQuestion.b}`,
@@ -1467,6 +1533,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
         grade: grade,
         level: level,
         timestamp: Date.now(),
+        // שמירת כל השאלה המקורית כדי שנוכל לשחזר אותה
+        originalQuestion: {
+          ...currentQuestion,
+          a: currentQuestion.a,
+          b: currentQuestion.b,
+          params: currentQuestion.params,
+          question: currentQuestion.question,
+          questionLabel: currentQuestion.questionLabel,
+          exerciseText: currentQuestion.exerciseText,
+          answers: currentQuestion.answers,
+        },
       };
       setMistakes((prev) => {
         const updated = [...prev, mistake].slice(-50); // שמור רק 50 שגיאות אחרונות
@@ -2181,6 +2258,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       setFocusedPracticeMode("mistakes");
                       setShowPracticeOptions(false);
                       if (mistakes.length > 0) {
+                        // התחל עם כל השגיאות
+                        setRemainingMistakes([...mistakes]);
+                        setCurrentMistakeIndex(0);
                         setGameActive(true);
                         startGame();
                       }
