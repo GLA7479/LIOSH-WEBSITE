@@ -2321,7 +2321,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     <div className="space-y-1 max-h-[150px] overflow-y-auto">
                       {mistakes.slice(-5).reverse().map((mistake, idx) => (
                         <div key={idx} className="text-xs text-white/80">
-                          <span dir="ltr" style={{ display: 'inline-block' }}>{mistake.question} = {mistake.wrongAnswer}</span> ❌ (נכון: <span dir="ltr" style={{ display: 'inline-block' }}>{mistake.correctAnswer}</span>)
+                          <span dir="ltr" style={{ display: 'inline-block' }}>{mistake.question}</span>
                         </div>
                       ))}
                     </div>
