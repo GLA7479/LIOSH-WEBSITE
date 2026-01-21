@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -322,7 +322,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       const b = currentQuestion.b;
       return buildVerticalOperation(a, b, "×");
     }
-    if (op === "division") {
+    if (op === "division" || op === "division_with_remainder") {
       const dividend = params.dividend || currentQuestion.a;
       const divisor = params.divisor || currentQuestion.b;
       // בחילוק ארוך: המחלק משמאל, המחולק מימין - אז מעבירים הפוך
@@ -331,7 +331,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     if (op === "decimals") {
       const a = params.a;
       const b = params.b;
-      // לעשרוניים נצטרך לוגיקה מיוחדת - בינתיים נחזיר null
+      const kind = params.kind;
+      const places = params.places || 2;
+      
+      // רק חיבור וחיסור יכולים להיות מאונכים
+      // נשמור על הפורמט העשרוני עם toFixed
+      if (kind === "dec_add") {
+        return buildVerticalOperation(a.toFixed(places), b.toFixed(places), "+");
+      } else if (kind === "dec_sub") {
+        return buildVerticalOperation(a.toFixed(places), b.toFixed(places), "-");
+      }
+      
       return null;
     }
     
@@ -1164,11 +1174,15 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     let numericAnswer;
     let isStringAnswer = false;
     
-    // בדיקה אם התשובה היא מחרוזת שאינה מספר (כמו שברים: "3/4", "2 1/2")
+    // בדיקה אם התשובה היא מחרוזת שאינה מספר (כמו שברים: "3/4", "2 1/2", או סימני השוואה: "<", ">", "=")
     if (typeof answer === "string") {
       const trimmed = answer.trim();
-      // אם המחרוזת מכילה שבר או תווים שאינם מספרים
-      if (trimmed.includes("/") || trimmed.includes(" ") || isNaN(parseFloat(trimmed))) {
+      // אם המחרוזת היא סימן השוואה (<, >, =) - זה תמיד מחרוזת
+      if (trimmed === "<" || trimmed === ">" || trimmed === "=") {
+        isStringAnswer = true;
+        numericAnswer = trimmed;
+      } else if (trimmed.includes("/") || trimmed.includes(" ") || isNaN(parseFloat(trimmed))) {
+        // אם המחרוזת מכילה שבר או תווים שאינם מספרים
         isStringAnswer = true;
         numericAnswer = trimmed;
       } else {
@@ -1187,11 +1201,15 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     
     // בדיקת שוויון
     let isCorrect;
-    if (isStringAnswer || (typeof currentQuestion.correctAnswer === "string" && 
+    // בדיקה אם התשובה הנכונה היא סימן השוואה
+    const correctAnswerStr = String(currentQuestion.correctAnswer).trim();
+    const isComparisonAnswer = correctAnswerStr === "<" || correctAnswerStr === ">" || correctAnswerStr === "=";
+    
+    if (isStringAnswer || isComparisonAnswer || (typeof currentQuestion.correctAnswer === "string" && 
         (currentQuestion.correctAnswer.includes("/") || 
          currentQuestion.correctAnswer.includes(" ") || 
          isNaN(parseFloat(currentQuestion.correctAnswer))))) {
-      // השוואה מחרוזת ישירה (לשברים ותשובות טקסט)
+      // השוואה מחרוזת ישירה (לשברים, תשובות טקסט, וסימני השוואה)
       isCorrect = String(numericAnswer).trim() === String(currentQuestion.correctAnswer).trim();
     } else {
       // השוואה מספרית
@@ -1570,6 +1588,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
         return "כפל";
       case "division":
         return "חילוק";
+      case "division_with_remainder":
+        return "חילוק עם שארית";
       case "fractions":
         return "שברים";
       case "percentages":
@@ -2763,13 +2783,14 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
                   {/* בדיקה אם צריך להציג כפתורי בחירה או שדה קלט */}
                   {(() => {
-                    // נושאים שצריכים כפתורי בחירה: שברים, יחס, השוואה, קנה מידה, גורמים וכפולות
+                    // נושאים שצריכים כפתורי בחירה: שברים, יחס, השוואה, קנה מידה, גורמים וכפולות, חילוק עם שארית
                     const needsChoiceButtons = 
                       currentQuestion.operation === "fractions" ||
                       currentQuestion.operation === "ratio" ||
                       currentQuestion.operation === "scale" ||
                       currentQuestion.operation === "compare" ||
                       currentQuestion.operation === "factors_multiples" ||
+                      currentQuestion.operation === "division_with_remainder" ||
                       // בדיקה אם יש תשובות שאינן מספרים
                       (currentQuestion.answers && currentQuestion.answers.some(ans => {
                         if (typeof ans === "string") {
@@ -3015,7 +3036,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                         
                         // בדיקה אם יש תצוגה מאונכת - חיבור, חיסור, כפל, חילוק, עשרוניים
                         const hasAnimation = (effectiveOp === "addition" || effectiveOp === "subtraction" || 
-                                             effectiveOp === "multiplication" || effectiveOp === "division" ||
+                                             effectiveOp === "multiplication" || effectiveOp === "division" || effectiveOp === "division_with_remainder" ||
                                              op === "decimals") && 
                                             typeof aEff === "number" && typeof bEff === "number";
                         
@@ -3111,7 +3132,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           let opSymbol = effectiveOp === "addition" ? "+" : 
                                         effectiveOp === "subtraction" ? "−" : 
                                         effectiveOp === "multiplication" ? "×" : 
-                                        effectiveOp === "division" ? "÷" : "";
+                                        (effectiveOp === "division" || effectiveOp === "division_with_remainder") ? "÷" : "";
                           
                           // טיפול בעשרוניים
                           if (op === "decimals" && currentQuestion.params) {
@@ -3131,7 +3152,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           }
                           
                           // טיפול בחילוק
-                          if (effectiveOp === "division" && currentQuestion.params) {
+                          if ((effectiveOp === "division" || effectiveOp === "division_with_remainder") && currentQuestion.params) {
                             aVal = currentQuestion.params.dividend;
                             bVal = currentQuestion.params.divisor;
                             answerVal = currentQuestion.params.quotient || answer;
@@ -3184,7 +3205,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           };
                           
                           // טיפול מיוחד בחילוק ארוך - תצוגה שונה עם כל השלבים
-                          if (effectiveOp === "division") {
+                          if (effectiveOp === "division" || effectiveOp === "division_with_remainder") {
                             // חישוב כל השלבים בחילוק ארוך (בדיוק כמו ב-buildDivisionAnimation)
                             const divSteps = [];
                             let wNum = 0;

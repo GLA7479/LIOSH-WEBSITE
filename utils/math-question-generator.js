@@ -312,6 +312,119 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       operandA = dividend;
       operandB = divisor;
     }
+  } else if (selectedOp === "division_with_remainder") {
+    // חילוק עם שארית - כולל גם עם שארית וגם בלי שארית
+    const maxD = levelConfig.division_with_remainder?.max || 100;
+    const maxDivisor = levelConfig.division_with_remainder?.maxDivisor || 12;
+    const divisor = randInt(2, maxDivisor);
+    
+    // 50% עם שארית, 50% בלי שארית
+    const hasRemainder = Math.random() < 0.5;
+    
+    let quotient, dividend, remainder = 0;
+    if (hasRemainder) {
+      // חילוק עם שארית
+      quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
+      remainder = randInt(1, divisor - 1); // שארית בין 1 ל-divisor-1
+      dividend = divisor * quotient + remainder;
+      correctAnswer = `${quotient} ושארית ${remainder}`;
+    } else {
+      // חילוק ללא שארית
+      quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
+      dividend = divisor * quotient;
+      correctAnswer = quotient;
+    }
+
+    const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
+    question = exerciseText;
+    
+    if (hasRemainder) {
+      params = { kind: "div_with_remainder", dividend, divisor, quotient, remainder, exerciseText };
+    } else {
+      params = { kind: "div", dividend, divisor, quotient, exerciseText };
+    }
+
+    operandA = dividend;
+    operandB = divisor;
+    
+    // יצירת תשובות שגויות - 4 תשובות כולל הנכונה
+    // עבור חילוק עם שארית, התשובות הן מחרוזות
+    // עבור חילוק בלי שארית, התשובות הן מספרים
+    const wrongAnswers = new Set();
+    
+    if (hasRemainder) {
+      // יצירת תשובות שגויות לחילוק עם שארית
+      while (wrongAnswers.size < 3) {
+        // אפשרויות שגויות: מנה שונה עם שארית שונה
+        const wrongQuotient = quotient + randInt(-2, 2);
+        const wrongRemainder = randInt(0, divisor);
+        
+        // וודא שהמנה לא שלילית
+        if (wrongQuotient > 0 && wrongQuotient !== quotient) {
+          const wrongAnswer = `${wrongQuotient} ושארית ${wrongRemainder}`;
+          if (wrongAnswer !== correctAnswer && !wrongAnswers.has(wrongAnswer)) {
+            wrongAnswers.add(wrongAnswer);
+          }
+        } else if (wrongQuotient === quotient && wrongRemainder !== remainder && wrongRemainder < divisor) {
+          const wrongAnswer = `${wrongQuotient} ושארית ${wrongRemainder}`;
+          if (wrongAnswer !== correctAnswer && !wrongAnswers.has(wrongAnswer)) {
+            wrongAnswers.add(wrongAnswer);
+          }
+        }
+        
+        // אם לא הצלחנו, ננסה תשובות פשוטות יותר
+        if (wrongAnswers.size < 3) {
+          const altQuotient = quotient + (wrongAnswers.size + 1);
+          const altRemainder = (remainder + wrongAnswers.size) % divisor;
+          const altAnswer = `${altQuotient} ושארית ${altRemainder}`;
+          if (altAnswer !== correctAnswer && !wrongAnswers.has(altAnswer) && altQuotient > 0) {
+            wrongAnswers.add(altAnswer);
+          }
+        }
+      }
+    } else {
+      // יצירת תשובות שגויות לחילוק בלי שארית
+      while (wrongAnswers.size < 3) {
+        const delta = randInt(1, 3);
+        const sign = Math.random() > 0.5 ? 1 : -1;
+        const wrong = quotient + sign * delta;
+        
+        if (wrong !== quotient && wrong > 0 && !wrongAnswers.has(wrong)) {
+          wrongAnswers.add(wrong);
+        }
+      }
+      
+      // אם עדיין אין 3 תשובות, נוסיף תשובות פשוטות
+      const attempts = [
+        quotient + 1,
+        quotient - 1,
+        quotient + 2,
+        quotient - 2,
+        quotient + Math.max(1, Math.round(quotient * 0.1)),
+        quotient - Math.max(1, Math.round(quotient * 0.1)),
+      ];
+      
+      for (const attempt of attempts) {
+        if (wrongAnswers.size >= 3) break;
+        if (attempt !== quotient && attempt > 0 && !wrongAnswers.has(attempt)) {
+          wrongAnswers.add(attempt);
+        }
+      }
+    }
+    
+    // הוספת התשובות ל-params כדי שיהיו זמינות
+    const allAnswers = [correctAnswer, ...Array.from(wrongAnswers).slice(0, 3)];
+    
+    // ערבוב התשובות
+    for (let i = allAnswers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
+    }
+    
+    // החזרת התשובות במקום standard processing
+    // נצטרך לטפל בזה אחר כך בקוד - אבל בינתיים נשמור את זה ב-params
+    params.answers = allAnswers;
+    params.isChoiceOnly = true; // סמן שזה רק בחירה מרובה
   } else if (selectedOp === "fractions" && levelConfig.allowFractions) {
     const densSmall = [2, 4, 5, 10];
     const densBig = [2, 3, 4, 5, 6, 8, 10, 12];
@@ -839,8 +952,8 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     const b = isLowGrade ? randInt(0, 100) : randInt(-20, maxVal);
 
     let symbol = "=";
-    if (a < b) symbol = "<";
-    else if (a > b) symbol = ">";
+    if (a < b) symbol = ">";
+    else if (a > b) symbol = "<";
 
     correctAnswer = symbol;
     const questionLabel = "השלם את הסימן:";
@@ -848,12 +961,8 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     question = `${questionLabel} ${exerciseText}`;
     params = { kind: "cmp", a, b, questionLabel, exerciseText };
 
-    const baseOptions = ["<", ">", "="];
-    const answers = [symbol, ...baseOptions.filter((s) => s !== symbol)];
-    for (let i = answers.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [answers[i], answers[j]] = [answers[j], answers[i]];
-    }
+    // כפתורי השוואה תמיד באותו סדר: <, =, > (שווה באמצע)
+    const answers = ["<", "=", ">"];
 
     return {
       question,
@@ -1560,6 +1669,25 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     params = { kind: "add_two", a, b, exerciseText };
     operandA = a;
     operandB = b;
+  }
+
+  // אם יש תשובות מוכנות ב-params (למשל עבור division_with_remainder), נשתמש בהן
+  if (params?.answers && Array.isArray(params.answers) && params.answers.length >= 4) {
+    const finalQuestionText = question && question.trim().length > 0 ? question : `תרגיל ${selectedOp}`;
+    const finalExerciseText = params.exerciseText || finalQuestionText;
+
+    return {
+      question: finalQuestionText,
+      questionLabel: params.questionLabel,
+      exerciseText: finalExerciseText,
+      correctAnswer,
+      answers: params.answers,
+      operation: selectedOp,
+      params,
+      a: operandA,
+      b: operandB,
+      isStory,
+    };
   }
 
   const wrongAnswers = new Set();

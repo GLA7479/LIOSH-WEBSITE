@@ -109,6 +109,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 200 },
         multiplication: { max: 10 },
         division: { max: 100, maxDivisor: 10, allowRemainder: true }, // חילוק עם שארית
+        division_with_remainder: { max: 100, maxDivisor: 10 },
         fractions: { maxDen: 4 },
         sequences: { maxStart: 20, maxStep: 3 },
         decimals: { maxBase: 50, places: 1 },
@@ -123,6 +124,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 500 },
         multiplication: { max: 12 },
         division: { max: 144, maxDivisor: 12, allowRemainder: true },
+        division_with_remainder: { max: 144, maxDivisor: 12 },
         fractions: { maxDen: 6 },
         sequences: { maxStart: 50, maxStep: 9 },
         decimals: { maxBase: 50, places: 1 },
@@ -137,6 +139,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 1000 },
         multiplication: { max: 12 },
         division: { max: 200, maxDivisor: 12, allowRemainder: true },
+        division_with_remainder: { max: 200, maxDivisor: 12 },
         fractions: { maxDen: 6 },
         sequences: { maxStart: 50, maxStep: 9 },
         decimals: { maxBase: 50, places: 1 },
@@ -156,6 +159,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 1000 },
         multiplication: { max: 20, multiDigit: true },  // עד 20×20 = 400, כפל במאונך
         division: { max: 200, maxDivisor: 12, longDivision: true }, // חילוק ארוך
+        division_with_remainder: { max: 200, maxDivisor: 12 },
         fractions: { maxDen: 6 },
         sequences: { maxStart: 100, maxStep: 9 },
         decimals: { maxBase: 100, places: 1 },
@@ -175,6 +179,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 5000 },
         multiplication: { max: 30 },  // עד 30×30 = 900
         division: { max: 500, maxDivisor: 12 },
+        division_with_remainder: { max: 500, maxDivisor: 12 },
         fractions: { maxDen: 8 },
         sequences: { maxStart: 200, maxStep: 9 },
         decimals: { maxBase: 200, places: 2 },
@@ -194,6 +199,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 10000 },
         multiplication: { max: 50 },  // עד 50×50 = 2500
         division: { max: 1000, maxDivisor: 12 },
+        division_with_remainder: { max: 1000, maxDivisor: 12 },
         fractions: { maxDen: 8 },
         sequences: { maxStart: 200, maxStep: 9 },
         decimals: { maxBase: 200, places: 2 },
@@ -218,6 +224,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 10000 },
         multiplication: { max: 50 },  // עד 50×50 = 2500
         division: { max: 1000, maxDivisor: 12 },
+        division_with_remainder: { max: 1000, maxDivisor: 12 },
         fractions: { maxDen: 8 },
         percentages: { maxBase: 400, maxPercent: 50 },
         sequences: { maxStart: 500, maxStep: 9 },
@@ -235,6 +242,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 50000 },
         multiplication: { max: 100 },  // עד 100×100 = 10000
         division: { max: 2000, maxDivisor: 12 },
+        division_with_remainder: { max: 2000, maxDivisor: 12 },
         fractions: { maxDen: 10 },
         percentages: { maxBase: 1000, maxPercent: 50 },
         sequences: { maxStart: 1000, maxStep: 9 },
@@ -251,6 +259,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 100000 },
         multiplication: { max: 200 },  // עד 200×200 = 40000
         division: { max: 5000, maxDivisor: 12 },
+        division_with_remainder: { max: 5000, maxDivisor: 12 },
         fractions: { maxDen: 12 },
         percentages: { maxBase: 2000, maxPercent: 50 },
         sequences: { maxStart: 1000, maxStep: 9 },
@@ -272,6 +281,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 50000 },
         multiplication: { max: 100 },  // עד 100×100 = 10000
         division: { max: 2000, maxDivisor: 12 },
+        division_with_remainder: { max: 2000, maxDivisor: 12 },
         fractions: { maxDen: 10, multiply: true, divide: true }, // כפל וחילוק שברים
         percentages: { maxBase: 1000, maxPercent: 50 },
         sequences: { maxStart: 1000, maxStep: 9 },
@@ -289,6 +299,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 100000 },
         multiplication: { max: 200 },  // עד 200×200 = 40000
         division: { max: 10000, maxDivisor: 12 },
+        division_with_remainder: { max: 10000, maxDivisor: 12 },
         fractions: { maxDen: 12 },
         percentages: { maxBase: 2000, maxPercent: 50 },
         sequences: { maxStart: 2000, maxStep: 9 },
@@ -306,6 +317,7 @@ export const GRADE_LEVELS = {
         subtraction: { min: 0, max: 200000 },
         multiplication: { max: 500 },  // עד 500×500 = 250000
         division: { max: 20000, maxDivisor: 12 },
+        division_with_remainder: { max: 20000, maxDivisor: 12 },
         fractions: { maxDen: 20 },
         percentages: { maxBase: 5000, maxPercent: 50 },
         sequences: { maxStart: 2000, maxStep: 9 },
@@ -360,7 +372,8 @@ export const GRADES = {
       "addition",
       "subtraction",
       "multiplication",
-      "division",       // חילוק עם שארית
+      "division",       // חילוק פשוט
+      "division_with_remainder", // חילוק עם שארית
       "fractions",      // היכרות עם שבר כחלק משלם
       "sequences",
       "decimals",       // עשרוניים בסיסיים
@@ -381,6 +394,7 @@ export const GRADES = {
       "subtraction",
       "multiplication",
       "division",
+      "division_with_remainder", // חילוק עם שארית
       "fractions",      // שברים פשוטים – משמעות והשוואה
       "decimals",
       "sequences",
@@ -406,6 +420,7 @@ export const GRADES = {
       "subtraction",
       "multiplication",
       "division",
+      "division_with_remainder", // חילוק עם שארית
       "fractions",      // כולל צמצום, הרחבה, חיבור וחיסור
       "percentages",
       "sequences",
@@ -429,6 +444,7 @@ export const GRADES = {
       "subtraction",
       "multiplication",
       "division",
+      "division_with_remainder", // חילוק עם שארית
       "fractions",      // כולל כפל וחילוק שברים
       "percentages",
       "ratio",          // יחס
@@ -453,6 +469,7 @@ export const OPERATIONS = [
   "subtraction",
   "multiplication",
   "division",
+  "division_with_remainder",
   "fractions",
   "percentages",
   "sequences",

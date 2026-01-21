@@ -29,6 +29,43 @@ export function buildVerticalOperation(topNumber, bottomNumber, operator = "-") 
   }
   
   // לפעולות אחרות - התצוגה המקורית
+  // טיפול מיוחד בעשרוניים - יישור לפי הנקודה העשרונית
+  const topHasDecimal = top.includes(".");
+  const bottomHasDecimal = bottom.includes(".");
+  
+  if (topHasDecimal || bottomHasDecimal) {
+    // יישור לפי הנקודה העשרונית
+    const topParts = top.split(".");
+    const bottomParts = bottom.split(".");
+    const topInt = topParts[0] || "";
+    const topDec = topParts[1] || "";
+    const bottomInt = bottomParts[0] || "";
+    const bottomDec = bottomParts[1] || "";
+    
+    // אורך החלק השלם והחלק העשרוני
+    const maxIntLen = Math.max(topInt.length, bottomInt.length);
+    const maxDecLen = Math.max(topDec.length, bottomDec.length);
+    
+    // יישור החלק השלם (מימין) והחלק העשרוני (משמאל)
+    const topIntPadded = topInt.padStart(maxIntLen, " ");
+    const bottomIntPadded = bottomInt.padStart(maxIntLen, " ");
+    const topDecPadded = topDec.padEnd(maxDecLen, "0");
+    const bottomDecPadded = bottomDec.padEnd(maxDecLen, "0");
+    
+    const topFormatted = topHasDecimal ? `${topIntPadded}.${topDecPadded}` : topIntPadded;
+    const bottomFormatted = bottomHasDecimal ? `${bottomIntPadded}.${bottomDecPadded}` : bottomIntPadded;
+    
+    const totalWidth = maxIntLen + 1 + maxDecLen + 2; // 1 לנקודה, 2 לתו הפעולה ולרווח
+    
+    const line1 = " ".repeat(totalWidth - topFormatted.length) + topFormatted;
+    const line2 = operator + " " + " ".repeat(maxIntLen + 1 + maxDecLen - bottomFormatted.length) + bottomFormatted;
+    const line3 = "-".repeat(totalWidth);
+    
+    const raw = `${line1}\n${line2}\n${line3}`;
+    return `\u2066${raw}\u2069`;
+  }
+  
+  // לפעולות רגילות (ללא עשרוניים)
   const maxLen = Math.max(top.length, bottom.length);
   const width = maxLen + 2; // 2 לתו הפעולה ולרווח
 
@@ -970,9 +1007,9 @@ export function buildCompareAnimation(params, answer) {
   // צעד 3: החישוב
   let comparison = "";
   if (a < b) {
-    comparison = `${a} קטן מ-${b}, לכן הסימן הוא <`;
+    comparison = `${a} קטן מ-${b}, לכן הסימן הוא >`;
   } else if (a > b) {
-    comparison = `${a} גדול מ-${b}, לכן הסימן הוא >`;
+    comparison = `${a} גדול מ-${b}, לכן הסימן הוא <`;
   } else {
     comparison = `${a} שווה ל-${b}, לכן הסימן הוא =`;
   }
@@ -1525,6 +1562,7 @@ export function buildAnimationForOperation(question, operation, gradeKey) {
       break;
       
     case "division":
+    case "division_with_remainder":
       if (params.dividend && params.divisor && params.quotient) {
         return buildDivisionAnimation(params.dividend, params.divisor, params.quotient);
       }
