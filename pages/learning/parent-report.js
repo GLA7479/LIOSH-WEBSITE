@@ -296,8 +296,8 @@ export default function ParentReport() {
         }}
       >
         <div id="parent-report-pdf" className="max-w-4xl mx-auto w-full">
-          {/* כפתור BACK */}
-          <div className="mb-4 text-left">
+          {/* כפתור BACK (לא נכנס ל-PDF) */}
+          <div className="mb-4 text-left no-pdf">
             <button
               onClick={() => {
                 if (typeof window !== "undefined" && window.history.length > 1) {
@@ -317,8 +317,8 @@ export default function ParentReport() {
             <h1 className="text-2xl md:text-3xl font-extrabold mb-2">📊 דוח להורים</h1>
             <p className="text-white/70 text-sm md:text-base">{report.playerName}</p>
             
-            {/* בחירת תקופה */}
-            <div className="flex flex-wrap gap-2 justify-center mt-2 md:mt-4 mb-2 md:mb-3">
+            {/* בחירת תקופה (לא נכנס ל-PDF) */}
+            <div className="flex flex-wrap gap-2 justify-center mt-2 md:mt-4 mb-2 md:mb-3 no-pdf">
               <button
                 onClick={() => {
                   setCustomDates(false);
@@ -360,9 +360,9 @@ export default function ParentReport() {
               </button>
             </div>
             
-            {/* בחירת תאריכים מותאמת אישית */}
+            {/* בחירת תאריכים מותאמת אישית (לא נכנס ל-PDF) */}
             {customDates && (
-              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-3 mb-3 p-3 bg-black/20 rounded-lg">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-3 mb-3 p-3 bg-black/20 rounded-lg no-pdf">
                 <div className="flex flex-col sm:flex-row items-center gap-2">
                   <label className="text-xs md:text-sm text-white/70 whitespace-nowrap">מתאריך:</label>
                   <input
