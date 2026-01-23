@@ -1290,6 +1290,7 @@ export function exportReportToPDF(report, options = {}) {
   
   const elementId = options.elementId || "parent-report-pdf";
   const filename = options.filename || `דוח-${report?.playerName || "שחקן"}-${report?.endDate || ""}.pdf`;
+  const method = options.method || "print"; // "print" (מומלץ) | "canvas" (fallback)
 
   try {
     const el = document.getElementById(elementId);
@@ -1297,6 +1298,81 @@ export function exportReportToPDF(report, options = {}) {
       alert("שגיאה בייצוא PDF: לא נמצא תוכן להדפסה.");
       return;
     }
+
+    // הדרך המקצועית: הדפסה ל-PDF (וקטורי, חלוקת עמודים נכונה, ללא "צילום מסך")
+    if (method === "print") {
+      if (window.__mleoPdfExportInProgress) return;
+      window.__mleoPdfExportInProgress = true;
+
+      const overlay = document.createElement("div");
+      overlay.setAttribute("data-pdf-overlay", "1");
+      overlay.classList.add("no-pdf");
+      overlay.style.cssText = `
+        position: fixed; inset: 0; z-index: 99999;
+        background: rgba(0,0,0,0.45);
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font: 600 16px/1.4 system-ui, -apple-system, Segoe UI, Arial;
+        direction: rtl; text-align: center;
+        backdrop-filter: blur(2px);
+      `;
+      overlay.textContent = "פותח הדפסה… בחר 'Save as PDF'";
+      document.body.appendChild(overlay);
+
+      // הרבה דפדפנים משתמשים ב-title לשם ברירת מחדל של ה-PDF
+      const prevTitle = document.title;
+      document.title = filename;
+
+      // מצב הדפסה (ה-CSS בדף יתפוס ב-@media print)
+      document.documentElement.classList.add("pdf-print-mode");
+
+      const cleanup = () => {
+        try { overlay.remove(); } catch {}
+        document.documentElement.classList.remove("pdf-print-mode");
+        document.title = prevTitle;
+        window.__mleoPdfExportInProgress = false;
+      };
+
+      // לנקות אחרי הדפסה
+      const prevAfterPrint = window.onafterprint;
+      window.onafterprint = () => {
+        try { prevAfterPrint?.(); } catch {}
+        cleanup();
+        window.onafterprint = prevAfterPrint || null;
+      };
+
+      // להבטיח שה-overlay נצבע לפני פתיחת print dialog
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          try {
+            window.print();
+          } catch (e) {
+            console.error("Print failed:", e);
+            cleanup();
+            alert("שגיאה בפתיחת הדפסה. אנא נסה שוב.");
+          }
+        });
+      });
+
+      return;
+    }
+
+    // תיעוד גדלים של גרפים (Recharts ResponsiveContainer) כדי שלא יתאפסו ב-clone
+    const chartEls = Array.from(el.querySelectorAll(".recharts-responsive-container"));
+    const chartSizes = [];
+    chartEls.forEach((node, idx) => {
+      const rect = node.getBoundingClientRect();
+      const w = Math.max(0, Math.round(rect.width));
+      const h = Math.max(0, Math.round(rect.height));
+      const id = `pdfchart-${idx}`;
+      node.setAttribute("data-pdf-chart-id", id);
+      // אם הגובה/רוחב יצאו 0 (לפעמים), ננסה מה-parent
+      const pRect = node.parentElement?.getBoundingClientRect?.() || { width: 0, height: 0 };
+      chartSizes.push({
+        id,
+        w: w || Math.round(pRect.width) || 600,
+        h: h || Math.round(pRect.height) || 280,
+      });
+    });
 
     // מניעת יצוא כפול שגורם לתקיעה/זיכרון
     if (window.__mleoPdfExportInProgress) return;
@@ -1352,6 +1428,21 @@ export function exportReportToPDF(report, options = {}) {
                 try {
                   const root = clonedDoc.getElementById(elementId);
                   if (!root) return;
+
+                  // החלת גדלים לגרפים כדי ש-ResponsiveContainer לא ייצא 0x0
+                  chartSizes.forEach(({ id, w, h }) => {
+                    const c = root.querySelector(`[data-pdf-chart-id="${id}"]`);
+                    if (c) {
+                      c.style.setProperty("width", `${w}px`, "important");
+                      c.style.setProperty("height", `${h}px`, "important");
+                      // לפעמים ה-parent wrapper קובע – נוודא גם אותו
+                      const parent = c.parentElement;
+                      if (parent) {
+                        parent.style.setProperty("width", `${w}px`, "important");
+                        parent.style.setProperty("height", `${h}px`, "important");
+                      }
+                    }
+                  });
 
                   // עיצוב "ידידותי ל-PDF" רק בתוך ה-clone (לא משנה את העיצוב באתר!)
                   root.setAttribute("dir", "rtl");
@@ -1423,7 +1514,11 @@ export function exportReportToPDF(report, options = {}) {
                     }
 
                     /* שבירת עמוד חכמה */
-                    #${elementId} .rounded-lg, #${elementId} table, #${elementId} tr {
+                    #${elementId} .avoid-break,
+                    #${elementId} .rounded-lg,
+                    #${elementId} table,
+                    #${elementId} .recharts-wrapper,
+                    #${elementId} .recharts-responsive-container {
                       break-inside: avoid !important;
                       page-break-inside: avoid !important;
                     }
@@ -1468,7 +1563,15 @@ export function exportReportToPDF(report, options = {}) {
               ignoreElements: (node) => node?.classList?.contains("no-pdf"),
             },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-            pagebreak: { mode: ["css", "legacy"] },
+            // חלוקת עמודים טובה יותר:
+            // - css: משתמש ב-break rules
+            // - legacy: fallback
+            // - avoid-all: מנסה להימנע מחיתוך בלוקים (לפעמים)
+            pagebreak: {
+              mode: ["avoid-all", "css", "legacy"],
+              avoid: [".avoid-break", ".recharts-wrapper", ".recharts-responsive-container", "table"],
+              before: [".pdf-page-break"],
+            },
           };
 
           return html2pdf().set(opt).from(el).save();
@@ -1480,6 +1583,10 @@ export function exportReportToPDF(report, options = {}) {
         .finally(() => {
           try {
             overlay.remove();
+          } catch {}
+          // ניקוי attributes זמניים מה-DOM
+          try {
+            chartEls.forEach((n) => n.removeAttribute("data-pdf-chart-id"));
           } catch {}
           window.__mleoPdfExportInProgress = false;
         });

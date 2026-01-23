@@ -247,10 +247,33 @@ export default function ParentReport() {
     <Layout>
       <Head>
         <style>{`
+          /* מצב הדפסה (לייצוא PDF) */
+          .pdf-print-mode .no-pdf {
+            display: none !important;
+          }
+          .pdf-print-mode [data-pdf-overlay="1"] {
+            display: none !important;
+          }
+
           @media print {
             body {
               background: white !important;
               color: black !important;
+            }
+
+            /* להדפיס רק את הדוח עצמו */
+            body * {
+              visibility: hidden !important;
+            }
+            #parent-report-pdf,
+            #parent-report-pdf * {
+              visibility: visible !important;
+            }
+            #parent-report-pdf {
+              position: absolute !important;
+              left: 0 !important;
+              top: 0 !important;
+              width: 100% !important;
             }
             .bg-gradient-to-b,
             .bg-black\\/30,
@@ -273,6 +296,9 @@ export default function ParentReport() {
             .text-white\\/90 {
               color: #333 !important;
             }
+            /* להסתיר רק מה שמסומן (וגם כפתורים) */
+            .no-pdf,
+            [data-pdf-overlay="1"],
             button {
               display: none !important;
             }
@@ -281,6 +307,10 @@ export default function ParentReport() {
             }
             .recharts-wrapper {
               page-break-inside: avoid;
+            }
+            .avoid-break {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
             }
           }
         `}</style>
@@ -406,7 +436,7 @@ export default function ParentReport() {
           </div>
 
           {/* סיכום כללי */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-3 md:mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-3 md:mb-6 avoid-break">
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
               <div className="text-[10px] md:text-xs text-white/60 mb-1">זמן כולל</div>
               <div className="text-lg md:text-2xl font-bold text-blue-400">
@@ -446,7 +476,7 @@ export default function ParentReport() {
           </div>
 
           {/* סיכום לפי מקצוע */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 mb-3 md:mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 mb-3 md:mb-6 avoid-break">
             <div className="bg-blue-500/20 border border-blue-400/50 rounded-lg p-2 md:p-4 text-center">
               <div className="text-xs md:text-sm text-white/60 mb-1">🧮 חשבון</div>
               <div className="text-base md:text-lg font-bold text-blue-400">
@@ -510,7 +540,7 @@ export default function ParentReport() {
 
           {/* טבלת פעולות חשבון */}
           {Object.keys(report.mathOperations || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🧮 התקדמות בחשבון</h2>
               {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
@@ -619,7 +649,7 @@ export default function ParentReport() {
 
           {/* טבלת נושאים גאומטריה */}
           {Object.keys(report.geometryTopics || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📐 התקדמות בגאומטריה</h2>
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm">
@@ -727,7 +757,7 @@ export default function ParentReport() {
           
           {/* טבלת נושאים אנגלית */}
           {Object.keys(report.englishTopics || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📘 התקדמות באנגלית</h2>
               {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
@@ -836,7 +866,7 @@ export default function ParentReport() {
 
           {/* טבלת נושאים מדעים */}
           {Object.keys(report.scienceTopics || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🔬 התקדמות במדעים</h2>
               {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
@@ -949,7 +979,7 @@ export default function ParentReport() {
 
           {/* טבלת נושאים עברית */}
           {Object.keys(report.hebrewTopics || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📚 התקדמות בעברית</h2>
               {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
@@ -1062,7 +1092,7 @@ export default function ParentReport() {
 
           {/* טבלת נושאים מולדת וגאוגרפיה */}
           {Object.keys(report.moledetGeographyTopics || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🗺️ התקדמות במולדת וגאוגרפיה</h2>
               {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
@@ -1175,7 +1205,7 @@ export default function ParentReport() {
 
           {/* המלצות */}
           {report.analysis.recommendations.length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">💡 המלצות</h2>
               <div className="space-y-2 md:space-y-3">
                 {report.analysis.recommendations.map((rec, idx) => (
@@ -1206,7 +1236,7 @@ export default function ParentReport() {
 
           {/* גרף פעילות יומית */}
           {report.dailyActivity.length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📅 פעילות יומית</h2>
               <div className="h-56 md:h-80">
                 <ResponsiveContainer width="100%" height={isMobile ? 220 : 320}>
@@ -1275,7 +1305,7 @@ export default function ParentReport() {
 
           {/* גרף פעילות לפי נושאים */}
           {report.dailyActivity.length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📚 פעילות לפי נושאים (יומי)</h2>
               <div className="h-56 md:h-80">
                 <ResponsiveContainer width="100%" height={isMobile ? 220 : 320}>
@@ -1366,7 +1396,7 @@ export default function ParentReport() {
 
           {/* גרף דיוק לפי פעולות */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-8 md:mb-10 text-center">📊 דיוק לפי פעולות ונושאים</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 288 : 384}>
@@ -1457,7 +1487,7 @@ export default function ParentReport() {
 
           {/* גרף זמן לפי פעולות */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-8 md:mb-10 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 288 : 384}>
@@ -1531,7 +1561,7 @@ export default function ParentReport() {
 
           {/* גרף עוגה - חלוקת זמן */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6">
+            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-8 md:mb-10 text-center">🥧 חלוקת זמן תרגול</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 280 : 380}>
