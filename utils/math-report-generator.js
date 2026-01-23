@@ -1284,402 +1284,86 @@ function generateRecommendations(operations, mistakes) {
   return recommendations;
 }
 
-// יצירת דוח PDF (דורש jsPDF ו-jspdf-autotable)
-export function exportReportToPDF(report) {
+// יצירת דוח PDF (HTML → PDF) כדי לשמור עברית/RTL בצורה קריאה
+export function exportReportToPDF(report, options = {}) {
   if (typeof window === "undefined") return;
-  
+
+  const elementId = options.elementId || "parent-report-pdf";
+  const filename = options.filename || `דוח-${report?.playerName || "שחקן"}-${report?.endDate || ""}.pdf`;
+
   try {
-    // Dynamic import של jsPDF ו-jspdf-autotable
-    Promise.all([
-      import('jspdf'),
-      import('jspdf-autotable')
-    ]).then(([{ default: jsPDF }, autoTableModule]) => {
-      // יישום הפלאגין autoTable ל-jsPDF
-      if (autoTableModule && autoTableModule.applyPlugin) {
-        autoTableModule.applyPlugin(jsPDF);
-      }
-      
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-        
-        // הערה: jsPDF תומך בעברית חלקית. עבור תמיכה מלאה, מומלץ להשתמש ב-html2pdf.js
-        // כותרת
-        doc.setFontSize(20);
-        doc.text('דוח להורים', 105, 20, { align: 'center' });
-        
-        // פרטים בסיסיים
-        doc.setFontSize(12);
-        let y = 35;
-        doc.text(`שם: ${report.playerName}`, 20, y);
-        y += 8;
-        doc.text(`תקופה: ${report.period === 'week' ? 'שבוע' : report.period === 'month' ? 'חודש' : 'שנה'}`, 20, y);
-        y += 8;
-        doc.text(`תאריכים: ${report.startDate} - ${report.endDate}`, 20, y);
-        y += 15;
-        
-        // סיכום כללי
-        doc.setFontSize(14);
-        doc.text('סיכום כללי', 20, y);
-        y += 10;
-        doc.setFontSize(11);
-        doc.text(`זמן כולל: ${report.summary.totalTimeMinutes} דקות (${report.summary.totalTimeHours} שעות)`, 20, y);
-        y += 7;
-        doc.text(`שאלות: ${report.summary.totalQuestions} (${report.summary.totalCorrect} נכון)`, 20, y);
-        y += 7;
-        doc.text(`דיוק כללי: ${report.summary.overallAccuracy}%`, 20, y);
-        y += 7;
-        doc.text(`רמה: ${report.summary.playerLevel} | כוכבים: ${report.summary.stars} | הישגים: ${report.summary.achievements}`, 20, y);
-        y += 15;
-        
-        // פעולות חשבון
-        if (Object.keys(report.mathOperations || {}).length > 0) {
-          if (y > 200) {
-            doc.addPage();
-            y = 20;
-          }
-          doc.setFontSize(14);
-          doc.text('התקדמות בחשבון', 20, y);
-          y += 10;
-          
-          const mathData = Object.entries(report.mathOperations)
-            .sort(([_, a], [__, b]) => b.questions - a.questions)
-            .slice(0, 15)
-            .map(([op, data]) => [
-              getOperationName(op),
-              data.level || '-',
-              data.grade || '-',
-              `${data.timeMinutes} דק'`,
-              data.questions.toString(),
-              data.correct.toString(),
-              `${data.accuracy}%`,
-              data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
-            ]);
-          
-          doc.autoTable({
-            head: [['פעולה', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
-            body: mathData,
-            startY: y,
-            styles: { fontSize: 9, halign: 'right' },
-            headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: 'bold', halign: 'right' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            columnStyles: {
-              0: { cellWidth: 40 },
-              1: { cellWidth: 25, halign: 'center' },
-              2: { cellWidth: 25, halign: 'center' },
-              3: { cellWidth: 25, halign: 'center' },
-              4: { cellWidth: 20, halign: 'center' },
-              5: { cellWidth: 20, halign: 'center' },
-              6: { cellWidth: 25, halign: 'center' },
-              7: { cellWidth: 35, halign: 'center' }
+    const el = document.getElementById(elementId);
+    if (!el) {
+      alert("שגיאה בייצוא PDF: לא נמצא תוכן להדפסה.");
+      return;
+    }
+
+    // Dynamic import כדי לא להעמיס על SSR / build
+    import("html2pdf.js/dist/html2pdf.js")
+      .then((mod) => {
+        const candidates = [mod, mod?.default, mod?.default?.default];
+        const html2pdf = candidates.find((c) => typeof c === "function");
+        if (!html2pdf) {
+          throw new Error("html2pdf import did not return a function");
+        }
+
+        const opt = {
+          margin: [10, 10, 10, 10],
+          filename,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            onclone: (clonedDoc) => {
+              try {
+                const root = clonedDoc.getElementById(elementId);
+                if (!root) return;
+
+                // עיצוב "ידידותי ל-PDF" רק בתוך ה-clone (לא משנה את העיצוב באתר!)
+                root.setAttribute("dir", "rtl");
+
+                // הכי חשוב: html2canvas לא תומך ב-oklab/oklch. נזריק CSS עם !important כדי לאלץ צבעים פשוטים.
+                const style = clonedDoc.createElement("style");
+                style.textContent = `
+                  #${elementId}, #${elementId} * {
+                    color: #000 !important;
+                    border-color: #d1d5db !important;
+                    background-image: none !important;
+                    background: transparent !important;
+                    background-color: transparent !important;
+                    box-shadow: none !important;
+                    text-shadow: none !important;
+                    filter: none !important;
+                    backdrop-filter: none !important;
+                  }
+                  #${elementId} {
+                    background-color: #fff !important;
+                  }
+                `;
+                clonedDoc.head.appendChild(style);
+
+                // בנוסף, נוודא במפורש על ה-root (עם important) – למקרה שיש !important מהמקור
+                root.style.setProperty("background-color", "#ffffff", "important");
+                root.style.setProperty("color", "#000000", "important");
+                root.style.setProperty("background-image", "none", "important");
+              } catch (e) {
+                // לא להפיל יצוא בגלל onclone
+                console.warn("PDF onclone styling failed:", e);
+              }
             },
-            margin: { left: 20, right: 20 }
-          });
-          y = doc.lastAutoTable.finalY + 10;
-        }
-        
-        // נושאי גאומטריה
-        if (Object.keys(report.geometryTopics || {}).length > 0) {
-          if (y > 200) {
-            doc.addPage();
-            y = 20;
-          }
-          doc.setFontSize(14);
-          doc.text('התקדמות בגאומטריה', 20, y);
-          y += 10;
-          
-          const geometryData = Object.entries(report.geometryTopics)
-            .sort(([_, a], [__, b]) => b.questions - a.questions)
-            .slice(0, 15)
-            .map(([topic, data]) => [
-              getTopicName(topic),
-              data.level || '-',
-              data.grade || '-',
-              `${data.timeMinutes} דק'`,
-              data.questions.toString(),
-              data.correct.toString(),
-              `${data.accuracy}%`,
-              data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
-            ]);
-          
-          doc.autoTable({
-            head: [['נושא', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
-            body: geometryData,
-            startY: y,
-            styles: { fontSize: 9, halign: 'right' },
-            headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold', halign: 'right' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            columnStyles: {
-              0: { cellWidth: 45 },
-              1: { cellWidth: 25, halign: 'center' },
-              2: { cellWidth: 25, halign: 'center' },
-              3: { cellWidth: 25, halign: 'center' },
-              4: { cellWidth: 20, halign: 'center' },
-              5: { cellWidth: 20, halign: 'center' },
-              6: { cellWidth: 25, halign: 'center' },
-              7: { cellWidth: 35, halign: 'center' }
-            },
-            margin: { left: 20, right: 20 }
-          });
-          y = doc.lastAutoTable.finalY + 10;
-        }
-        
-        if (Object.keys(report.englishTopics || {}).length > 0) {
-          if (y > 200) {
-            doc.addPage();
-            y = 20;
-          }
-          doc.setFontSize(14);
-          doc.text('התקדמות באנגלית', 20, y);
-          y += 10;
-          
-          const englishData = Object.entries(report.englishTopics)
-            .sort(([_, a], [__, b]) => b.questions - a.questions)
-            .slice(0, 15)
-            .map(([topic, data]) => [
-              getEnglishTopicName(topic),
-              data.level || '-',
-              data.grade || '-',
-              `${data.timeMinutes} דק'`,
-              data.questions.toString(),
-              data.correct.toString(),
-              `${data.accuracy}%`,
-              data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
-            ]);
-          
-          doc.autoTable({
-            head: [['נושא', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
-            body: englishData,
-            startY: y,
-            styles: { fontSize: 9, halign: 'right' },
-            headStyles: { fillColor: [168, 85, 247], textColor: 255, fontStyle: 'bold', halign: 'right' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            columnStyles: {
-              0: { cellWidth: 45 },
-              1: { cellWidth: 25, halign: 'center' },
-              2: { cellWidth: 25, halign: 'center' },
-              3: { cellWidth: 25, halign: 'center' },
-              4: { cellWidth: 20, halign: 'center' },
-              5: { cellWidth: 20, halign: 'center' },
-              6: { cellWidth: 25, halign: 'center' },
-              7: { cellWidth: 35, halign: 'center' }
-            },
-            margin: { left: 20, right: 20 }
-          });
-          y = doc.lastAutoTable.finalY + 10;
-        }
-        
-        if (Object.keys(report.scienceTopics || {}).length > 0) {
-          if (y > 200) {
-            doc.addPage();
-            y = 20;
-          }
-          doc.setFontSize(14);
-          doc.text('התקדמות במדעים', 20, y);
-          y += 10;
-          
-          const scienceData = Object.entries(report.scienceTopics)
-            .sort(([_, a], [__, b]) => b.questions - a.questions)
-            .slice(0, 15)
-            .map(([topic, data]) => [
-              getScienceTopicName(topic),
-              data.level || '-',
-              data.grade || '-',
-              `${data.timeMinutes} דק'`,
-              data.questions.toString(),
-              data.correct.toString(),
-              `${data.accuracy}%`,
-              data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
-            ]);
-          
-          doc.autoTable({
-            head: [['נושא', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
-            body: scienceData,
-            startY: y,
-            styles: { fontSize: 9, halign: 'right' },
-            headStyles: { fillColor: [34, 197, 94], textColor: 255, fontStyle: 'bold', halign: 'right' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            columnStyles: {
-              0: { cellWidth: 45 },
-              1: { cellWidth: 25, halign: 'center' },
-              2: { cellWidth: 25, halign: 'center' },
-              3: { cellWidth: 25, halign: 'center' },
-              4: { cellWidth: 20, halign: 'center' },
-              5: { cellWidth: 20, halign: 'center' },
-              6: { cellWidth: 25, halign: 'center' },
-              7: { cellWidth: 35, halign: 'center' }
-            },
-            margin: { left: 20, right: 20 }
-          });
-          y = doc.lastAutoTable.finalY + 10;
-        }
-        
-        if (Object.keys(report.hebrewTopics || {}).length > 0) {
-          if (y > 200) {
-            doc.addPage();
-            y = 20;
-          }
-          doc.setFontSize(14);
-          doc.text('התקדמות בעברית', 20, y);
-          y += 10;
-          
-          const hebrewData = Object.entries(report.hebrewTopics)
-            .sort(([_, a], [__, b]) => b.questions - a.questions)
-            .slice(0, 15)
-            .map(([topic, data]) => [
-              getHebrewTopicName(topic),
-              data.level || '-',
-              data.grade || '-',
-              `${data.timeMinutes} דק'`,
-              data.questions.toString(),
-              data.correct.toString(),
-              `${data.accuracy}%`,
-              data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
-            ]);
-          
-          doc.autoTable({
-            head: [['נושא', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
-            body: hebrewData,
-            startY: y,
-            styles: { fontSize: 9, halign: 'right' },
-            headStyles: { fillColor: [249, 115, 22], textColor: 255, fontStyle: 'bold', halign: 'right' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            columnStyles: {
-              0: { cellWidth: 45 },
-              1: { cellWidth: 25, halign: 'center' },
-              2: { cellWidth: 25, halign: 'center' },
-              3: { cellWidth: 25, halign: 'center' },
-              4: { cellWidth: 20, halign: 'center' },
-              5: { cellWidth: 20, halign: 'center' },
-              6: { cellWidth: 25, halign: 'center' },
-              7: { cellWidth: 35, halign: 'center' }
-            },
-            margin: { left: 20, right: 20 }
-          });
-          y = doc.lastAutoTable.finalY + 10;
-        }
-        
-        if (Object.keys(report.moledetGeographyTopics || {}).length > 0) {
-          if (y > 200) {
-            doc.addPage();
-            y = 20;
-          }
-          doc.setFontSize(14);
-          doc.text('התקדמות במולדת וגאוגרפיה', 20, y);
-          y += 10;
-          
-          const moledetData = Object.entries(report.moledetGeographyTopics)
-            .sort(([_, a], [__, b]) => b.questions - a.questions)
-            .slice(0, 15)
-            .map(([topic, data]) => [
-              getMoledetGeographyTopicName(topic),
-              data.level || '-',
-              data.grade || '-',
-              `${data.timeMinutes} דק'`,
-              data.questions.toString(),
-              data.correct.toString(),
-              `${data.accuracy}%`,
-              data.excellent ? 'מצוין' : data.needsPractice ? 'דורש תרגול' : 'טוב'
-            ]);
-          
-          doc.autoTable({
-            head: [['נושא', 'רמה', 'כיתה', 'זמן', 'שאלות', 'נכון', 'דיוק', 'סטטוס']],
-            body: moledetData,
-            startY: y,
-            styles: { fontSize: 9, halign: 'right' },
-            headStyles: { fillColor: [6, 182, 212], textColor: 255, fontStyle: 'bold', halign: 'right' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            columnStyles: {
-              0: { cellWidth: 45 },
-              1: { cellWidth: 25, halign: 'center' },
-              2: { cellWidth: 25, halign: 'center' },
-              3: { cellWidth: 25, halign: 'center' },
-              4: { cellWidth: 20, halign: 'center' },
-              5: { cellWidth: 20, halign: 'center' },
-              6: { cellWidth: 25, halign: 'center' },
-              7: { cellWidth: 35, halign: 'center' }
-            },
-            margin: { left: 20, right: 20 }
-          });
-          y = doc.lastAutoTable.finalY + 10;
-        }
-        
-        // המלצות
-        if (report.analysis.recommendations.length > 0) {
-          if (y > 200) {
-            doc.addPage();
-            y = 20;
-          }
-          doc.setFontSize(14);
-          doc.text('המלצות', 20, y);
-          y += 10;
-          
-          const recommendationsData = report.analysis.recommendations.slice(0, 15).map(rec => [
-            rec.operationName || '-',
-            rec.priority === 'high' ? 'גבוה' : rec.priority === 'medium' ? 'בינוני' : 'נמוך',
-            rec.message.length > 60 ? rec.message.substring(0, 60) + '...' : rec.message
-          ]);
-          
-          doc.autoTable({
-            head: [['נושא', 'עדיפות', 'המלצה']],
-            body: recommendationsData,
-            startY: y,
-            styles: { fontSize: 9, halign: 'right' },
-            headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: 'bold', halign: 'right' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            columnStyles: {
-              0: { cellWidth: 40, halign: 'right' },
-              1: { cellWidth: 30, halign: 'center' },
-              2: { cellWidth: 120, halign: 'right' }
-            },
-            margin: { left: 20, right: 20 }
-          });
-          y = doc.lastAutoTable.finalY + 10;
-        }
-        
-        // סיכום לפי מקצועות
-        if (y > 200) {
-          doc.addPage();
-          y = 20;
-        }
-        doc.setFontSize(14);
-        doc.text('סיכום לפי מקצועות', 20, y);
-        y += 10;
-        
-        const subjectSummary = [
-          ['חשבון', `${report.summary.mathQuestions || 0}`, `${report.summary.mathCorrect || 0}`, `${report.summary.mathAccuracy || 0}%`],
-          ['גאומטריה', `${report.summary.geometryQuestions || 0}`, `${report.summary.geometryCorrect || 0}`, `${report.summary.geometryAccuracy || 0}%`],
-          ['אנגלית', `${report.summary.englishQuestions || 0}`, `${report.summary.englishCorrect || 0}`, `${report.summary.englishAccuracy || 0}%`],
-          ['מדעים', `${report.summary.scienceQuestions || 0}`, `${report.summary.scienceCorrect || 0}`, `${report.summary.scienceAccuracy || 0}%`],
-          ['עברית', `${report.summary.hebrewQuestions || 0}`, `${report.summary.hebrewCorrect || 0}`, `${report.summary.hebrewAccuracy || 0}%`],
-          ['מולדת וגאוגרפיה', `${report.summary.moledetGeographyQuestions || 0}`, `${report.summary.moledetGeographyCorrect || 0}`, `${report.summary.moledetGeographyAccuracy || 0}%`]
-        ];
-        
-        doc.autoTable({
-          head: [['מקצוע', 'שאלות', 'נכון', 'דיוק']],
-          body: subjectSummary,
-          startY: y,
-          styles: { fontSize: 10, halign: 'right' },
-          headStyles: { fillColor: [59, 130, 246], textColor: 255, fontStyle: 'bold', halign: 'right' },
-          alternateRowStyles: { fillColor: [245, 245, 245] },
-          columnStyles: {
-            0: { cellWidth: 60, halign: 'right' },
-            1: { cellWidth: 40, halign: 'center' },
-            2: { cellWidth: 40, halign: 'center' },
-            3: { cellWidth: 40, halign: 'center' }
+            ignoreElements: (node) => node?.classList?.contains("no-pdf"),
           },
-          margin: { left: 20, right: 20 }
-        });
-        
-        // שמירה
-        doc.save(`דוח-${report.playerName}-${report.endDate}.pdf`);
-    }).catch(error => {
-      console.error("Error loading PDF libraries:", error);
-      console.error("Error details:", error.message, error.stack);
-      alert("שגיאה בייצוא PDF. אנא נסה שוב. שגיאה: " + (error.message || "לא ידוע"));
-    });
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ["css", "legacy"] },
+        };
+
+        return html2pdf().set(opt).from(el).save();
+      })
+      .catch((error) => {
+        console.error("Error loading/creating PDF:", error);
+        alert("שגיאה בייצוא PDF. אנא נסה שוב. פרטים: " + (error?.message || "לא ידוע"));
+      });
   } catch (error) {
     console.error("Error exporting to PDF:", error);
     alert("שגיאה בייצוא PDF. אנא נסה שוב.");

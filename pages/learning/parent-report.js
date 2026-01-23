@@ -295,7 +295,7 @@ export default function ParentReport() {
           WebkitOverflowScrolling: "touch"
         }}
       >
-        <div className="max-w-4xl mx-auto w-full">
+        <div id="parent-report-pdf" className="max-w-4xl mx-auto w-full">
           {/* כפתור BACK */}
           <div className="mb-4 text-left">
             <button
@@ -1684,7 +1684,7 @@ export default function ParentReport() {
           )}
 
           {/* כפתורים */}
-          <div className="flex gap-2 md:gap-3 justify-center flex-wrap mb-3 md:mb-6">
+          <div className="flex gap-2 md:gap-3 justify-center flex-wrap mb-3 md:mb-6 no-pdf">
             <button
               onClick={() => window.print()}
               className="px-4 md:px-6 py-2 md:py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-sm md:text-base"
