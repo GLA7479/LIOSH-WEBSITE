@@ -1298,75 +1298,121 @@ export function exportReportToPDF(report, options = {}) {
       return;
     }
 
+    // מניעת יצוא כפול שגורם לתקיעה/זיכרון
+    if (window.__mleoPdfExportInProgress) return;
+    window.__mleoPdfExportInProgress = true;
+
+    // Overlay קטן כדי שהמשתמש יבין שהפעולה בעבודה (לא משנה עיצוב הדף עצמו)
+    const overlay = document.createElement("div");
+    overlay.setAttribute("data-pdf-overlay", "1");
+    overlay.style.cssText = `
+      position: fixed; inset: 0; z-index: 99999;
+      background: rgba(0,0,0,0.45);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font: 600 16px/1.4 system-ui, -apple-system, Segoe UI, Arial;
+      direction: rtl; text-align: center;
+      backdrop-filter: blur(2px);
+    `;
+    overlay.textContent = "מכין PDF… זה יכול לקחת כמה שניות";
+    document.body.appendChild(overlay);
+
+    // תן לדפדפן “לנשום” ולצייר את ה-overlay לפני העבודה הכבדה
+    const deferStart = (fn) => {
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(fn, { timeout: 300 });
+      } else {
+        setTimeout(fn, 50);
+      }
+    };
+
     // Dynamic import כדי לא להעמיס על SSR / build
-    import("html2pdf.js/dist/html2pdf.js")
-      .then((mod) => {
-        const candidates = [mod, mod?.default, mod?.default?.default];
-        const html2pdf = candidates.find((c) => typeof c === "function");
-        if (!html2pdf) {
-          throw new Error("html2pdf import did not return a function");
-        }
+    deferStart(() => {
+      import("html2pdf.js/dist/html2pdf.js")
+        .then((mod) => {
+          const candidates = [mod, mod?.default, mod?.default?.default];
+          const html2pdf = candidates.find((c) => typeof c === "function");
+          if (!html2pdf) {
+            throw new Error("html2pdf import did not return a function");
+          }
 
-        const opt = {
-          margin: [10, 10, 10, 10],
-          filename,
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: "#ffffff",
-            onclone: (clonedDoc) => {
-              try {
-                const root = clonedDoc.getElementById(elementId);
-                if (!root) return;
+          // אופטימיזציות לביצועים:
+          // - scale נמוך יותר => הרבה פחות עבודה (ועדיין נראה טוב)
+          // - איכות תמונה מעט נמוכה יותר => PDF קטן ומהיר יותר
+          const dpr = window.devicePixelRatio || 1;
+          const scale = Math.min(1.4, dpr); // היה 2
 
-                // עיצוב "ידידותי ל-PDF" רק בתוך ה-clone (לא משנה את העיצוב באתר!)
-                root.setAttribute("dir", "rtl");
+          const opt = {
+            margin: [10, 10, 10, 10],
+            filename,
+            image: { type: "jpeg", quality: 0.9 },
+            html2canvas: {
+              scale,
+              useCORS: true,
+              backgroundColor: "#ffffff",
+              logging: false,
+              onclone: (clonedDoc) => {
+                try {
+                  const root = clonedDoc.getElementById(elementId);
+                  if (!root) return;
 
-                // הכי חשוב: html2canvas לא תומך ב-oklab/oklch. נזריק CSS עם !important כדי לאלץ צבעים פשוטים.
-                const style = clonedDoc.createElement("style");
-                style.textContent = `
-                  #${elementId}, #${elementId} * {
-                    color: #000 !important;
-                    border-color: #d1d5db !important;
-                    background-image: none !important;
-                    background: transparent !important;
-                    background-color: transparent !important;
-                    box-shadow: none !important;
-                    text-shadow: none !important;
-                    filter: none !important;
-                    backdrop-filter: none !important;
-                  }
-                  #${elementId} {
-                    background-color: #fff !important;
-                  }
-                `;
-                clonedDoc.head.appendChild(style);
+                  // עיצוב "ידידותי ל-PDF" רק בתוך ה-clone (לא משנה את העיצוב באתר!)
+                  root.setAttribute("dir", "rtl");
 
-                // בנוסף, נוודא במפורש על ה-root (עם important) – למקרה שיש !important מהמקור
-                root.style.setProperty("background-color", "#ffffff", "important");
-                root.style.setProperty("color", "#000000", "important");
-                root.style.setProperty("background-image", "none", "important");
-              } catch (e) {
-                // לא להפיל יצוא בגלל onclone
-                console.warn("PDF onclone styling failed:", e);
-              }
+                  // הכי חשוב: html2canvas לא תומך ב-oklab/oklch. נזריק CSS עם !important כדי לאלץ צבעים פשוטים.
+                  const style = clonedDoc.createElement("style");
+                  style.textContent = `
+                    #${elementId}, #${elementId} * {
+                      color: #000 !important;
+                      border-color: #d1d5db !important;
+                      background-image: none !important;
+                      background: transparent !important;
+                      background-color: transparent !important;
+                      box-shadow: none !important;
+                      text-shadow: none !important;
+                      filter: none !important;
+                      backdrop-filter: none !important;
+                    }
+                    #${elementId} {
+                      background-color: #fff !important;
+                    }
+                  `;
+                  clonedDoc.head.appendChild(style);
+
+                  // בנוסף, נוודא במפורש על ה-root (עם important) – למקרה שיש !important מהמקור
+                  root.style.setProperty("background-color", "#ffffff", "important");
+                  root.style.setProperty("color", "#000000", "important");
+                  root.style.setProperty("background-image", "none", "important");
+                } catch (e) {
+                  console.warn("PDF onclone styling failed:", e);
+                }
+              },
+              ignoreElements: (node) => node?.classList?.contains("no-pdf"),
             },
-            ignoreElements: (node) => node?.classList?.contains("no-pdf"),
-          },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          pagebreak: { mode: ["css", "legacy"] },
-        };
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+            pagebreak: { mode: ["css", "legacy"] },
+          };
 
-        return html2pdf().set(opt).from(el).save();
-      })
-      .catch((error) => {
-        console.error("Error loading/creating PDF:", error);
-        alert("שגיאה בייצוא PDF. אנא נסה שוב. פרטים: " + (error?.message || "לא ידוע"));
-      });
+          return html2pdf().set(opt).from(el).save();
+        })
+        .catch((error) => {
+          console.error("Error loading/creating PDF:", error);
+          alert("שגיאה בייצוא PDF. אנא נסה שוב. פרטים: " + (error?.message || "לא ידוע"));
+        })
+        .finally(() => {
+          try {
+            overlay.remove();
+          } catch {}
+          window.__mleoPdfExportInProgress = false;
+        });
+    });
   } catch (error) {
     console.error("Error exporting to PDF:", error);
     alert("שגיאה בייצוא PDF. אנא נסה שוב.");
+    try {
+      const existing = document.querySelector('[data-pdf-overlay="1"]');
+      existing?.remove?.();
+    } catch {}
+    window.__mleoPdfExportInProgress = false;
   }
 }
 
