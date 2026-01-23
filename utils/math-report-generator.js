@@ -1287,7 +1287,7 @@ function generateRecommendations(operations, mistakes) {
 // יצירת דוח PDF (HTML → PDF) כדי לשמור עברית/RTL בצורה קריאה
 export function exportReportToPDF(report, options = {}) {
   if (typeof window === "undefined") return;
-
+  
   const elementId = options.elementId || "parent-report-pdf";
   const filename = options.filename || `דוח-${report?.playerName || "שחקן"}-${report?.endDate || ""}.pdf`;
 
@@ -1335,16 +1335,14 @@ export function exportReportToPDF(report, options = {}) {
             throw new Error("html2pdf import did not return a function");
           }
 
-          // אופטימיזציות לביצועים:
-          // - scale נמוך יותר => הרבה פחות עבודה (ועדיין נראה טוב)
-          // - איכות תמונה מעט נמוכה יותר => PDF קטן ומהיר יותר
+          // ברירת מחדל: איכות קריאה (טקסט חד יותר) – עדיין לא "וקטורי", אבל הרבה יותר ברור
           const dpr = window.devicePixelRatio || 1;
-          const scale = Math.min(1.4, dpr); // היה 2
+          const scale = Math.min(2, Math.max(1.8, dpr)); // חדות טקסט טובה יותר
 
           const opt = {
             margin: [10, 10, 10, 10],
             filename,
-            image: { type: "jpeg", quality: 0.9 },
+            image: { type: "jpeg", quality: 0.98 },
             html2canvas: {
               scale,
               useCORS: true,
@@ -1361,6 +1359,26 @@ export function exportReportToPDF(report, options = {}) {
                   // הכי חשוב: html2canvas לא תומך ב-oklab/oklch. נזריק CSS עם !important כדי לאלץ צבעים פשוטים.
                   const style = clonedDoc.createElement("style");
                   style.textContent = `
+                    /* תבנית PDF לקריאות */
+                    #${elementId} {
+                      background: #fff !important;
+                      color: #111 !important;
+                      font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif !important;
+                      font-size: 14px !important;
+                      line-height: 1.55 !important;
+                      -webkit-font-smoothing: antialiased !important;
+                      text-rendering: geometricPrecision !important;
+                      padding: 14px !important;
+                      max-width: 780px !important;
+                      margin: 0 auto !important;
+                      direction: rtl !important;
+                      text-align: right !important;
+                      unicode-bidi: plaintext !important;
+                    }
+                    #${elementId} h1 { font-size: 22px !important; margin-bottom: 6px !important; }
+                    #${elementId} h2 { font-size: 16px !important; margin: 10px 0 8px !important; }
+                    #${elementId} p { margin: 4px 0 !important; }
+
                     #${elementId}, #${elementId} * {
                       color: #000 !important;
                       border-color: #d1d5db !important;
@@ -1371,9 +1389,63 @@ export function exportReportToPDF(report, options = {}) {
                       text-shadow: none !important;
                       filter: none !important;
                       backdrop-filter: none !important;
+                      direction: rtl !important;
+                      text-align: right !important;
+                      unicode-bidi: plaintext !important;
                     }
                     #${elementId} {
                       background-color: #fff !important;
+                    }
+
+                    /* כרטיסים/בלוקים – להפוך למסודר ונקי */
+                    #${elementId} .rounded-lg {
+                      background-color: #fff !important;
+                      border: 1px solid #e5e7eb !important;
+                    }
+
+                    /* טבלאות – ריווחים וגבולות לקריאות */
+                    #${elementId} table { width: 100% !important; border-collapse: collapse !important; }
+                    #${elementId} th, #${elementId} td {
+                      padding: 6px 8px !important;
+                      border: 1px solid #e5e7eb !important;
+                      vertical-align: top !important;
+                      font-size: 12.5px !important;
+                      text-align: right !important;
+                      direction: rtl !important;
+                    }
+                    #${elementId} thead th { background: #f3f4f6 !important; font-weight: 700 !important; }
+
+                    /* אלמנטים שמסומנים LTR (כמו שורת תאריכים) – נשאיר LTR */
+                    #${elementId} [dir="ltr"], #${elementId} [style*="direction: ltr"] {
+                      direction: ltr !important;
+                      unicode-bidi: isolate !important;
+                      text-align: center !important;
+                    }
+
+                    /* שבירת עמוד חכמה */
+                    #${elementId} .rounded-lg, #${elementId} table, #${elementId} tr {
+                      break-inside: avoid !important;
+                      page-break-inside: avoid !important;
+                    }
+
+                    /* גרפים – כן להציג ב-PDF, אבל בצורה מסודרת וקריאה */
+                    #${elementId} .recharts-wrapper,
+                    #${elementId} .recharts-responsive-container {
+                      display: block !important;
+                    }
+                    #${elementId} .recharts-wrapper {
+                      margin: 0 auto !important;
+                    }
+                    /* למסגר את אזור הגרף כדי שייראה כמו בדוח */
+                    #${elementId} .recharts-wrapper,
+                    #${elementId} svg.recharts-surface {
+                      background: #fff !important;
+                    }
+                    /* לא לשבור עמוד באמצע גרף */
+                    #${elementId} .recharts-wrapper,
+                    #${elementId} .recharts-responsive-container {
+                      break-inside: avoid !important;
+                      page-break-inside: avoid !important;
                     }
                   `;
                   clonedDoc.head.appendChild(style);
@@ -1382,6 +1454,13 @@ export function exportReportToPDF(report, options = {}) {
                   root.style.setProperty("background-color", "#ffffff", "important");
                   root.style.setProperty("color", "#000000", "important");
                   root.style.setProperty("background-image", "none", "important");
+
+                  // חיזוק לגרפים: לפעמים RTL משפיע על SVG; נוודא שה-SVG נשאר LTR
+                  const svgs = root.querySelectorAll("svg");
+                  svgs.forEach((svg) => {
+                    svg.setAttribute("direction", "ltr");
+                    svg.style.setProperty("direction", "ltr", "important");
+                  });
                 } catch (e) {
                   console.warn("PDF onclone styling failed:", e);
                 }
