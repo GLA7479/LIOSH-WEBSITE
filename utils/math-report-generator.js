@@ -1289,17 +1289,21 @@ export function exportReportToPDF(report) {
   if (typeof window === "undefined") return;
   
   try {
-    // Dynamic import של jsPDF ו-autoTable
+    // Dynamic import של jsPDF ו-jspdf-autotable
     Promise.all([
       import('jspdf'),
       import('jspdf-autotable')
-    ]).then(([{ default: jsPDF }]) => {
-      // jspdf-autotable מוסיף את autoTable ל-jsPDF אוטומטית
+    ]).then(([{ default: jsPDF }, autoTableModule]) => {
+      // יישום הפלאגין autoTable ל-jsPDF
+      if (autoTableModule && autoTableModule.applyPlugin) {
+        autoTableModule.applyPlugin(jsPDF);
+      }
+      
       const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4'
-        });
+      });
         
         // הערה: jsPDF תומך בעברית חלקית. עבור תמיכה מלאה, מומלץ להשתמש ב-html2pdf.js
         // כותרת
