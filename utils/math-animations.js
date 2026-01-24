@@ -1934,8 +1934,15 @@ export function buildAnimationForOperation(question, operation, gradeKey) {
       
     case "division":
     case "division_with_remainder":
-      if (params.dividend && params.divisor && params.quotient) {
-        return buildDivisionAnimation(params.dividend, params.divisor, params.quotient);
+      // בחלק מהתרגילים אין params.quotient (הוא פשוט התשובה). עדיין נרצה אנימציה.
+      if (params.dividend != null && params.divisor != null) {
+        const q =
+          params.quotient != null
+            ? params.quotient
+            : (typeof answer === "number" ? answer : null);
+        if (q != null) {
+          return buildDivisionAnimation(params.dividend, params.divisor, q);
+        }
       }
       break;
       

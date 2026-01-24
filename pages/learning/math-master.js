@@ -3238,8 +3238,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           // טיפול בעשרוניים
                           if (op === "decimals" && currentQuestion.params) {
                             const p = currentQuestion.params;
-                            aVal = p.a;
-                            bVal = p.b;
+                            aVal = (p.a ?? aEff);
+                            bVal = (p.b ?? bEff);
                             answerVal = answer;
                             opSymbol = p.kind === "dec_add" ? "+" : "−";
                           }
@@ -3254,9 +3254,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           
                           // טיפול בחילוק
                           if ((effectiveOp === "division" || effectiveOp === "division_with_remainder") && currentQuestion.params) {
-                            aVal = currentQuestion.params.dividend;
-                            bVal = currentQuestion.params.divisor;
-                            answerVal = currentQuestion.params.quotient || answer;
+                            aVal = (currentQuestion.params.dividend ?? aEff);
+                            bVal = (currentQuestion.params.divisor ?? bEff);
+                            answerVal = (currentQuestion.params.quotient ?? answer);
                             opSymbol = "÷";
                           }
                           
@@ -3268,9 +3268,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           
                           // טיפול בעשרוניים - צריך לטפל בנקודה העשרונית
                           const isDecimal = op === "decimals";
-                          let aStr = isDecimal ? aVal.toFixed(2) : String(aVal);
-                          let bStr = isDecimal ? bVal.toFixed(2) : String(bVal);
-                          let answerStr = isDecimal ? answerVal.toFixed(2) : String(answerVal);
+                          const safeToFixed2 = (v) => (typeof v === "number" ? v.toFixed(2) : String(v ?? ""));
+                          let aStr = isDecimal ? safeToFixed2(aVal) : String(aVal);
+                          let bStr = isDecimal ? safeToFixed2(bVal) : String(bVal);
+                          let answerStr = isDecimal ? safeToFixed2(answerVal) : String(answerVal);
                           
                           // חישוב אורך מקסימלי (כולל נקודה עשרונית)
                           const maxLen = Math.max(
@@ -3307,7 +3308,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           
                           // טיפול מיוחד בחילוק ארוך - תצוגה שונה עם כל השלבים
                           // אם יש לנו pre (ASCII) מהאנימציה – נשתמש במודל הרגיל כמו בכפל (בלי המסך המיוחד).
-                          if ((effectiveOp === "division" || effectiveOp === "division_with_remainder") && !activeStep?.pre) {
+                          if ((effectiveOp === "division" || effectiveOp === "division_with_remainder") && activeStep?.type === "division" && !activeStep?.pre) {
                             // חישוב כל השלבים בחילוק ארוך (בדיוק כמו ב-buildDivisionAnimation)
                             const divSteps = [];
                             let wNum = 0;
