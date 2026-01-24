@@ -2903,7 +2903,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                             wordBreak: "break-word",
                             overflowWrap: "break-word",
                             // מקטין רק את האותיות, בלי לשנות את השטח/מיקום כפתורים (transform לא משנה layout)
-                            transform: isWordyQuestion ? "scale(0.5)" : undefined,
+                            transform: isWordyQuestion ? "scale(0.55)" : undefined,
                             transformOrigin: "top center",
                           }}
                         >
@@ -2936,7 +2936,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                             unicodeBidi: "plaintext",
                             wordBreak: "break-word",
                             overflowWrap: "break-word",
-                            transform: isWordyQuestion ? "scale(0.5)" : undefined,
+                            transform: isWordyQuestion ? "scale(0.55)" : undefined,
                             transformOrigin: "top center",
                           }}
                         >
@@ -2952,7 +2952,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                         unicodeBidi: "plaintext",
                         wordBreak: "break-word",
                         overflowWrap: "break-word",
-                        transform: isWordyQuestion ? "scale(0.5)" : undefined,
+                        transform: isWordyQuestion ? "scale(0.55)" : undefined,
                         transformOrigin: "top center",
                       }}
                     >
