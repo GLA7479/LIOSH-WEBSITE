@@ -390,7 +390,28 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     }
     
     // שאר הנושאים - אנימציה כללית (רק אם זה לא חיבור/חיסור)
-    return buildAnimationForOperation(currentQuestion, op, grade);
+    const built = buildAnimationForOperation(currentQuestion, op, grade);
+    if (built && Array.isArray(built) && built.length > 0) return built;
+
+    // Fallback: אם אין אנימציה מובנית לנושא - עדיין נותנים "צעדים" עם ניווט,
+    // על בסיס getSolutionSteps (React nodes) כדי שכל הנושאים יעבדו כמו בכפל.
+    try {
+      const fallbackSteps = getSolutionSteps(
+        currentQuestion,
+        currentQuestion.params?.op || op,
+        grade
+      );
+      if (fallbackSteps && Array.isArray(fallbackSteps) && fallbackSteps.length > 0) {
+        return fallbackSteps.map((node, idx) => ({
+          id: `fallback-${idx + 1}`,
+          title: `שלב ${idx + 1}`,
+          content: node,
+          text: "",
+        }));
+      }
+    } catch {}
+
+    return null;
   }, [showSolution, currentQuestion, grade]);
 
   // אנימציה אוטומטית - עם ניקוי תקין של timeouts
@@ -3285,7 +3306,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           };
                           
                           // טיפול מיוחד בחילוק ארוך - תצוגה שונה עם כל השלבים
-                          if (effectiveOp === "division" || effectiveOp === "division_with_remainder") {
+                          // אם יש לנו pre (ASCII) מהאנימציה – נשתמש במודל הרגיל כמו בכפל (בלי המסך המיוחד).
+                          if ((effectiveOp === "division" || effectiveOp === "division_with_remainder") && !activeStep?.pre) {
                             // חישוב כל השלבים בחילוק ארוך (בדיוק כמו ב-buildDivisionAnimation)
                             const divSteps = [];
                             let wNum = 0;
@@ -3548,8 +3570,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                 
                                 {/* תוכן - גלילה */}
                                 <div className="flex-1 overflow-y-auto px-4 pb-2">
-                                  {/* בכפל ארוך: מציגים רק בלוק מונוספייס אחד (כדי למנוע כפילות) */}
-                                  {effectiveOp === "multiplication" && activeStep.pre ? (
+                                  {/* אם יש בלוק מונוספייס מהאנימציה: מציגים אותו במקום הטבלה (כדי למנוע כפילות) */}
+                                  {activeStep.pre ? (
                                     <div className="mb-4 w-full">
                                       <div className="rounded-lg bg-emerald-900/50 px-3 py-2 overflow-x-auto">
                                         <pre
@@ -3665,7 +3687,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                   {/* טקסט ההסבר */}
                                   <div className="mb-4 text-sm text-emerald-50" dir="rtl">
                                     <h4 className="font-bold text-base mb-1">{activeStep.title}</h4>
-                                    <p className="leading-relaxed">{activeStep.text}</p>
+                                    {activeStep.content ? (
+                                      <div className="leading-relaxed">{activeStep.content}</div>
+                                    ) : (
+                                      <p className="leading-relaxed">{activeStep.text}</p>
+                                    )}
                                   </div>
                                 </div>
                                 
@@ -3742,7 +3768,22 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                 {/* טקסט ההסבר */}
                                 <div className="mb-4 text-sm text-emerald-50" dir="rtl">
                                   <h4 className="font-bold text-base mb-1">{activeStep.title || "הסבר"}</h4>
-                                  <p className="leading-relaxed">{activeStep.text || ""}</p>
+                                  {activeStep.pre && (
+                                    <div className="mt-2 mb-3 rounded-lg bg-emerald-900/50 px-3 py-2 overflow-x-auto">
+                                      <pre
+                                        dir="ltr"
+                                        className="text-center font-mono text-base leading-relaxed whitespace-pre text-emerald-100"
+                                        style={{ unicodeBidi: "plaintext" }}
+                                      >
+                                        {activeStep.pre}
+                                      </pre>
+                                    </div>
+                                  )}
+                                  {activeStep.content ? (
+                                    <div className="leading-relaxed">{activeStep.content}</div>
+                                  ) : (
+                                    <p className="leading-relaxed">{activeStep.text || ""}</p>
+                                  )}
                                 </div>
                               </div>
                               

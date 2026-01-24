@@ -183,9 +183,47 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
   const pa = aStr.padStart(maxLen, "0");
   const pb = bStr.padStart(maxLen, "0");
 
+  const padLeft = (s, w) => String(s).padStart(w, " ");
+  const repeat = (ch, n) => Array(Math.max(0, n)).fill(ch).join("");
+  const maskAnswerRight = (full, revealDigits) => {
+    const s = String(full);
+    let out = s.split("");
+    let seenDigits = 0;
+    for (let i = out.length - 1; i >= 0; i--) {
+      const ch = out[i];
+      if (/\d/.test(ch)) {
+        if (seenDigits < revealDigits) {
+          seenDigits++;
+        } else {
+          out[i] = " ";
+        }
+      }
+    }
+    return out.join("");
+  };
+  const makeVerticalSnapshot = ({ operator, top, bottom, answerFull, revealDigits, carryRow = null }) => {
+    const topS = String(top);
+    const bottomS = String(bottom);
+    const ansS = String(answerFull);
+    const maxDigits = Math.max(topS.replace(/\D/g, "").length, bottomS.replace(/\D/g, "").length, ansS.replace(/\D/g, "").length);
+    const w = Math.max(maxDigits, ansS.length, topS.length, bottomS.length) + 2;
+
+    const line1 = padLeft(topS, w);
+    const line2 = operator + " " + padLeft(bottomS, w - 2);
+    const line3 = repeat("-", w);
+    const masked = maskAnswerRight(padLeft(ansS, w), revealDigits);
+    const lines = [];
+    if (carryRow && carryRow.trim()) {
+      lines.push(padLeft(carryRow, w));
+    }
+    lines.push(line1, line2, line3, masked);
+    return lines.join("\n");
+  };
+
   if (op === "addition") {
     const answerStr = String(answer);
     const answerLen = answerStr.length;
+    const carryMarks = []; // positions in printable width where carry should appear
     
     // צעד 1: מיישרים את הספרות
     steps.push({
@@ -194,12 +232,29 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
       text: "כותבים את המספרים אחד מעל השני כך שסַפְרות היחידות נמצאות באותה עמודה.",
       highlights: ["aAll", "bAll"],
       revealDigits: 0, // עדיין לא מראים כלום
+      pre: makeVerticalSnapshot({
+        operator: "+",
+        top: a,
+        bottom: Math.abs(b),
+        answerFull: answer,
+        revealDigits: 0,
+        carryRow: "",
+      }),
     });
 
     // חישוב ספרה ספרה
     let carry = 0;
     let stepIndex = 2;
     let revealedCount = 0; // כמה ספרות כבר נחשפו
+
+    // הכנה: רוחב הציור (כדי שנוכל למקם נשיאות)
+    const topS = String(a);
+    const bottomS = String(Math.abs(b));
+    const ansS = String(answer);
+    const maxDigits = Math.max(topS.length, bottomS.length, ansS.length);
+    const w = maxDigits + 2;
+    const digitsStart = w - maxLen; // איפה מתחילים הספרות (ימין-מיושר)
+    const carryRowArr = Array(w).fill(" ");
 
     for (let i = maxLen - 1; i >= 0; i--) {
       const da = Number(pa[i]);
@@ -218,6 +273,17 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
       const highlightKey = i === maxLen - 1 ? "Units" : i === maxLen - 2 ? "Tens" : "Hundreds";
 
       revealedCount++; // חושפים ספרה נוספת
+
+      // עדכון שורת נשיאות: הנשיאה עוברת לעמודה שמשמאל (i-1)
+      if (newCarry) {
+        const targetDigitIndex = i - 1;
+        const pos = targetDigitIndex >= 0 ? digitsStart + targetDigitIndex : digitsStart - 1;
+        if (pos >= 0 && pos < carryRowArr.length) {
+          carryRowArr[pos] = "1";
+        }
+      }
+
+      const carryRowStr = carryRowArr.join("");
       steps.push({
         id: `step-${stepIndex}`,
         title: `ספרת ה${placeName}`,
@@ -225,6 +291,14 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
         highlights: [`a${highlightKey}`, `b${highlightKey}`, `result${highlightKey}`],
         carry: newCarry,
         revealDigits: revealedCount, // כמה ספרות מימין חשופות
+        pre: makeVerticalSnapshot({
+          operator: "+",
+          top: a,
+          bottom: Math.abs(b),
+          answerFull: answer,
+          revealDigits: revealedCount,
+          carryRow: carryRowStr,
+        }),
       });
 
       carry = newCarry;
@@ -239,6 +313,14 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
         text: "בסוף החיבור נשאר לנו 1 נוסף, כותבים אותו משמאל כמספר חדש בעמודת המאות/אלפים.",
         highlights: ["resultAll"],
         revealDigits: revealedCount,
+        pre: makeVerticalSnapshot({
+          operator: "+",
+          top: a,
+          bottom: Math.abs(b),
+          answerFull: answer,
+          revealDigits: revealedCount,
+          carryRow: carryRowArr.join(""),
+        }),
       });
     }
 
@@ -249,6 +331,14 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
       text: `המספר שנוצר הוא ${answer}. זהו התשובה הסופית לתרגיל.`,
       highlights: ["resultAll"],
       revealDigits: answerLen, // מראים את כל הספרות
+      pre: makeVerticalSnapshot({
+        operator: "+",
+        top: a,
+        bottom: Math.abs(b),
+        answerFull: answer,
+        revealDigits: answerStr.replace(/\D/g, "").length,
+        carryRow: carryRowArr.join(""),
+      }),
     });
   } else if (op === "subtraction") {
     const answerStr = String(answer);
@@ -261,6 +351,13 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
       text: "כותבים את המספרים אחד מעל השני כך שסַפְרות היחידות, העשרות וכו' נמצאות באותו טור.",
       highlights: ["aAll", "bAll"],
       revealDigits: 0, // עדיין לא מראים כלום
+      pre: makeVerticalSnapshot({
+        operator: "−",
+        top: a,
+        bottom: Math.abs(b),
+        answerFull: answer,
+        revealDigits: 0,
+      }),
     });
 
     // חישוב ספרה ספרה
@@ -289,6 +386,13 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
           text: `בעמודת ה${placeName} ${da} קטן מ-${db}, לכן לוקחים "השאלה" מהעמודה הבאה (מוסיפים 10 לספרה הזו ומפחיתים 1 בעמודה הבאה).`,
           highlights: [`a${highlightKey}`, `b${highlightKey}`],
           revealDigits: revealedCount, // לא חושפים ספרה חדשה בשלב ההשאלה
+          pre: makeVerticalSnapshot({
+            operator: "−",
+            top: a,
+            bottom: Math.abs(b),
+            answerFull: answer,
+            revealDigits: revealedCount,
+          }),
         });
         da += 10;
         borrow = 1;
@@ -305,6 +409,13 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
         text: `כעת מחשבים בעמודת ה${placeName}: ${da} - ${db} = ${diff} וכותבים ${diff} בעמודה זו.`,
         highlights: [`a${highlightKey}`, `b${highlightKey}`, `result${highlightKey}`],
         revealDigits: revealedCount, // כמה ספרות מימין חשופות
+        pre: makeVerticalSnapshot({
+          operator: "−",
+          top: a,
+          bottom: Math.abs(b),
+          answerFull: answer,
+          revealDigits: revealedCount,
+        }),
       });
 
       stepIndex++;
@@ -317,6 +428,13 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
       text: `המספר שקיבלנו בסוף הוא ${answer}. זו התוצאה של החיסור.`,
       highlights: ["resultAll"],
       revealDigits: answerLen, // מראים את כל הספרות
+      pre: makeVerticalSnapshot({
+        operator: "−",
+        top: a,
+        bottom: Math.abs(b),
+        answerFull: answer,
+        revealDigits: answerStr.replace(/\D/g, "").length,
+      }),
     });
   }
 
@@ -574,6 +692,42 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
   const dividendStr = String(dividend);
   const divisorStr = String(divisor);
   const quotientStr = String(quotient);
+  const dividendLen = dividendStr.length;
+  const repeat = (ch, n) => Array(Math.max(0, n)).fill(ch).join("");
+
+  // בניית ASCII של חילוק ארוך (LTR) בצורה יציבה וברורה:
+  // [מנה מעל המחולק]│
+  // ________│
+  // 1320│6
+  //   12│
+  //   --│
+  //   12│
+  //   12│
+  //   --│
+  //    0│
+  const suffix = "│" + repeat(" ", divisorStr.length);
+  const makeWorkLineAt = (position, text) => {
+    const t = String(text);
+    const line = Array(dividendLen).fill(" ");
+    const end = Math.min(position, dividendLen - 1);
+    const start = Math.max(0, end - t.length + 1);
+    for (let i = 0; i < t.length; i++) {
+      const idx = start + i;
+      if (idx >= 0 && idx < dividendLen) line[idx] = t[i];
+    }
+    return line.join("") + suffix;
+  };
+
+  const quotientLineArr = Array(dividendLen).fill(" ");
+  const workLines = [];
+  const makePre = () => {
+    const qLine = quotientLineArr.join("") + suffix;
+    const line1 = qLine;
+    const line2 = repeat("_", dividendLen) + suffix;
+    const line3 = dividendStr + "│" + divisorStr;
+    // עוטפים ב-LTR markers כדי שלא יתבלגן בתוך טקסט עברי
+    return `\u2066${[line1, line2, line3, ...workLines].join("\n")}\u2069`;
+  };
   
   // חישוב חילוק ארוך צעד אחר צעד
   const divisionSteps = [];
@@ -624,6 +778,7 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
     dividend,
     divisor,
     quotient,
+    pre: makePre(),
   });
   
   // יצירת צעדים מפורטים לכל שלב בחילוק
@@ -632,6 +787,7 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
     const { position, workingNumber: wNum, quotientDigit: qDigit, product, remainder, quotientPosition } = step;
     
     // צעד: כתיבה במנה
+    quotientLineArr[position] = String(qDigit);
     steps.push({
       id: `step-${stepIndex + 1}-write`,
       title: `צעד ${stepIndex + 1}: כתיבה במנה`,
@@ -645,9 +801,14 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
       stepIndex,
       quotientDigit: qDigit,
       workingNumber: wNum,
+      pre: makePre(),
     });
     
     // צעד: כפל וחיסור
+    // מוסיפים שורות עבודה: מכפלה, קו, שארית (מיושר מתחת לחלק הרלוונטי במחולק)
+    workLines.push(makeWorkLineAt(position, product));
+    workLines.push(makeWorkLineAt(position, repeat("-", String(product).length)));
+    workLines.push(makeWorkLineAt(position, remainder));
     steps.push({
       id: `step-${stepIndex + 1}-subtract`,
       title: `צעד ${stepIndex + 1}: כפל וחיסור`,
@@ -662,12 +823,15 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
       product,
       remainder,
       workingNumber: wNum,
+      pre: makePre(),
     });
     
     // אם לא זה הצעד האחרון, מורידים את הספרה הבאה
     if (stepIndex < divisionSteps.length - 1 && position < dividendStr.length - 1) {
       const nextStep = divisionSteps[stepIndex + 1];
       const nextDigitPos = nextStep.position;
+      // שורת עבודה: המספר החדש לחלוקה (השארית + הספרה שהורדנו)
+      workLines.push(makeWorkLineAt(nextDigitPos, nextStep.workingNumber));
       steps.push({
         id: `step-${stepIndex + 1}-bring-down`,
         title: `צעד ${stepIndex + 1}: הורדת ספרה`,
@@ -681,6 +845,7 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
         stepIndex,
         nextDigit: parseInt(dividendStr[nextDigitPos]),
         newNum: nextStep.workingNumber,
+        pre: makePre(),
       });
     }
   }
@@ -698,6 +863,7 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
     divisor,
     quotient,
     remainder: finalRemainder,
+    pre: makePre(),
   });
   
   return steps;
@@ -828,6 +994,9 @@ export function buildDecimalsAnimation(params, answer) {
   const aStr = a.toFixed(2);
   const bStr = b.toFixed(2);
   const answerStr = answer.toFixed(2);
+  const opSymbol = kind === "dec_add" ? "+" : "−";
+  const answerDigitsCount = answerStr.replace(/\D/g, "").length;
+  const preBase = buildVerticalOperation(aStr, bStr, opSymbol);
   
   // צעד 1: מיישרים את הנקודות העשרוניות
   steps.push({
@@ -836,24 +1005,27 @@ export function buildDecimalsAnimation(params, answer) {
     text: "כותבים את המספרים אחד מעל השני כך שהנקודות העשרוניות נמצאות באותה עמודה.",
     highlights: ["aAll", "bAll"],
     revealDigits: 0,
+    pre: preBase + "\n" + "\n", // מקום לתוצאה
   });
   
   // צעד 2: הסבר
   steps.push({
     id: "explain",
     title: "חישוב עשרוניים",
-    text: `מבצעים ${kind === "dec_add" ? "חיבור" : "חיסור"} רגיל בין המספרים אחרי היישור.`,
+    text: `מבצעים ${kind === "dec_add" ? "חיבור" : "חיסור"} רגיל בין המספרים אחרי היישור. חשוב: הנקודה העשרונית נשארת באותה עמודה בתוצאה.`,
     highlights: ["aAll", "bAll"],
     revealDigits: 0,
+    pre: preBase + "\n" + "\n",
   });
   
   // צעד 3: החישוב - חשיפה הדרגתית
   steps.push({
     id: "calculate",
     title: "החישוב",
-    text: `מחשבים: ${aStr} ${kind === "dec_add" ? "+" : "−"} ${bStr} = ${answerStr}`,
+    text: `מחשבים עמודה-עמודה כמו במספרים רגילים: ${aStr} ${opSymbol} ${bStr} = ${answerStr}`,
     highlights: ["aAll", "bAll", "resultAll"],
-    revealDigits: answerStr.length,
+    revealDigits: answerDigitsCount,
+    pre: preBase + "\n" + `  ${answerStr}`,
   });
   
   // צעד 4: התוצאה הסופית
@@ -862,7 +1034,8 @@ export function buildDecimalsAnimation(params, answer) {
     title: "התוצאה הסופית",
     text: `התשובה היא ${answerStr}`,
     highlights: ["resultAll"],
-    revealDigits: answerStr.length,
+    revealDigits: answerDigitsCount,
+    pre: preBase + "\n" + `  ${answerStr}`,
   });
   
   return steps;
