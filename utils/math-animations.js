@@ -326,47 +326,245 @@ export function buildAdditionOrSubtractionAnimation(a, b, answer, op) {
 // פונקציה לבניית צעדי אנימציה לכפל (עם תרגיל מאונך)
 export function buildMultiplicationAnimation(a, b, answer) {
   const steps = [];
-  const aStr = String(a);
-  const bStr = String(b);
+
+  const toInt = (x) => (typeof x === "number" ? x : Number(x));
+  const A = Math.abs(toInt(a));
+  const B = Math.abs(toInt(b));
+  const ansNum = typeof answer === "number" ? answer : Number(answer);
   const answerStr = String(answer);
-  const maxLen = Math.max(aStr.length, bStr.length, answerStr.length);
-  
-  // צעד 1: מיישרים את הספרות
+
+  // helpers
+  const digitsRev = (n) => String(n).split("").reverse().map((d) => Number(d));
+  const padLeft = (s, w) => String(s).padStart(w, " ");
+  const repeat = (ch, n) => Array(Math.max(0, n)).fill(ch).join("");
+
+  const makeSnapshot = ({ partialRows = [], inProgressRow = null, sumRow = null }) => {
+    const aStr = String(A);
+    const bStr = String(B);
+    // width: result width or max of rows
+    const baseWidth = Math.max(
+      aStr.length,
+      bStr.length + 2,
+      String(ansNum || answerStr).length,
+      ...partialRows.map((r) => String(r).length),
+      inProgressRow ? String(inProgressRow).length : 0
+    );
+    const w = Math.max(baseWidth, 6);
+
+    const lines = [];
+    lines.push(padLeft(aStr, w));
+    lines.push("× " + padLeft(bStr, w - 2));
+    lines.push(repeat("-", w));
+    if (partialRows.length === 0) {
+      // show blank area
+    } else {
+      partialRows.forEach((row) => lines.push(padLeft(row, w)));
+    }
+    if (inProgressRow) {
+      lines.push(padLeft(inProgressRow, w));
+    }
+    if (sumRow != null) {
+      lines.push(repeat("-", w));
+      lines.push(padLeft(sumRow, w));
+    }
+    return lines.join("\n");
+  };
+
+  const formatInProgressRow = (digitsSoFarRev, totalDigitsNoCarry, shiftZeros) => {
+    const known = digitsSoFarRev.slice().reverse().join("");
+    const blanks = repeat(" ", Math.max(0, totalDigitsNoCarry - digitsSoFarRev.length));
+    return `${blanks}${known}${repeat("0", shiftZeros)}`;
+  };
+
+  // צעד 1: סידור בעמודות
   steps.push({
     id: "place-value",
     title: "מיישרים את הספרות",
-    text: "כותבים את המספרים אחד מעל השני כך שסַפְרות היחידות נמצאות באותה עמודה.",
+    text: "כותבים את שני המספרים אחד מתחת לשני, כך שסַפְרות היחידות נמצאות באותה עמודה.",
     highlights: ["aAll", "bAll"],
     revealDigits: 0,
+    pre: makeSnapshot({ partialRows: [] }),
   });
-  
-  // צעד 2: הסבר על כפל
+
+  // אם זה חד-ספרתי×חד-ספרתי: עדיין נפרט אבל קצר
+  if (A < 10 && B < 10) {
+    steps.push({
+      id: "single-digit",
+      title: "כפל חד-ספרתי",
+      text: `מכפילים: ${A} × ${B} = ${ansNum}.`,
+      highlights: ["aAll", "bAll", "resultAll"],
+      revealDigits: answerStr.length,
+      pre: makeSnapshot({ partialRows: [], sumRow: String(ansNum) }),
+    });
+    steps.push({
+      id: "final",
+      title: "התוצאה הסופית",
+      text: `התשובה היא ${ansNum}.`,
+      highlights: ["resultAll"],
+      revealDigits: answerStr.length,
+      pre: makeSnapshot({ partialRows: [], sumRow: String(ansNum) }),
+    });
+    return steps;
+  }
+
   steps.push({
     id: "explain",
-    title: "מה זה כפל?",
-    text: `כפל הוא חיבור חוזר: ${a} × ${b} זה כמו לחבר את ${a} לעצמו ${b} פעמים.`,
+    title: "מה עושים בכפל ארוך?",
+    text: "נכפיל קודם את המספר העליון בכל ספרה של המספר התחתון (מימין לשמאל). כל שורה היא 'מכפלה חלקית'. אחר כך נחבר את כל המכפלות החלקיות.",
     highlights: ["aAll", "bAll"],
     revealDigits: 0,
+    pre: makeSnapshot({ partialRows: [] }),
   });
-  
-  // צעד 3: החישוב - חשיפה הדרגתית
+
+  const aDigits = digitsRev(A); // יחידות קודם
+  const bDigits = digitsRev(B);
+
+  const partials = []; // numbers as strings already shifted
+  const rawPartials = []; // numeric partials without shift (for explanation)
+
+  let globalStep = 1;
+
+  for (let j = 0; j < bDigits.length; j++) {
+    const bd = bDigits[j];
+    let carry = 0;
+    const rowDigits = [];
+
+    steps.push({
+      id: `row-${j}-start`,
+      title: `שורה ${j + 1}: כופלים ב-${bd}${j === 0 ? " (יחידות)" : j === 1 ? " (עשרות)" : " (מקום גבוה)"}`,
+      text: `כופלים את ${A} בספרה ${bd} של ${B}. מתחילים מימין (יחידות).`,
+      highlights: ["aAll", "bAll"],
+      revealDigits: 0,
+      pre: makeSnapshot({ partialRows: partials.map((p) => p) }),
+    });
+
+    for (let i = 0; i < aDigits.length; i++) {
+      const ad = aDigits[i];
+      const prod = ad * bd + carry;
+      const digit = prod % 10;
+      const nextCarry = Math.floor(prod / 10);
+      const place =
+        i === 0 ? "ספרת היחידות" : i === 1 ? "ספרת העשרות" : i === 2 ? "ספרת המאות" : `ספרה במקום ${i + 1} מימין`;
+
+      rowDigits.push(digit);
+
+      const carryText = carry ? ` + נשיאה ${carry}` : "";
+      const inProgressRow = formatInProgressRow(rowDigits, aDigits.length + 1, j);
+      steps.push({
+        id: `row-${j}-mul-${i}`,
+        title: `כפל ${place}`,
+        text: `מכפילים ${ad} × ${bd}${carryText} = ${prod}. כותבים ${digit} במקום הזה${nextCarry ? ` ונושאים ${nextCarry} לשלב הבא.` : " (אין נשיאה)."
+          }`,
+        highlights: ["aAll", "bAll"],
+        revealDigits: 0,
+        pre: makeSnapshot({ partialRows: partials.map((p) => p), inProgressRow }),
+      });
+
+      carry = nextCarry;
+      globalStep++;
+    }
+
+    if (carry) {
+      rowDigits.push(carry);
+      const inProgressRow = formatInProgressRow(rowDigits, aDigits.length + 1, j);
+      steps.push({
+        id: `row-${j}-carry-end`,
+        title: "נשיאה אחרונה",
+        text: `בסוף השורה נשארה נשיאה ${carry}. כותבים אותה משמאל לשורה.`,
+        highlights: ["aAll", "bAll"],
+        revealDigits: 0,
+        pre: makeSnapshot({ partialRows: partials.map((p) => p), inProgressRow }),
+      });
+    }
+
+    const rowValue = Number(rowDigits.slice().reverse().join("") || "0");
+    rawPartials.push(rowValue);
+
+    const shifted = String(rowValue) + repeat("0", j);
+    partials.push(shifted);
+
+    steps.push({
+      id: `row-${j}-done`,
+      title: `מכפלה חלקית ${j + 1}`,
+      text:
+        j === 0
+          ? `קיבלנו מכפלה חלקית: ${rowValue}.`
+          : `קיבלנו ${rowValue}. כי כפלנו בספרת מקום גבוה (×${repeat("10", j).replace(/10/g, "10") || 10}), מוסיפים ${j} אפסים בסוף ⇒ ${shifted}.`,
+      highlights: ["aAll", "bAll"],
+      revealDigits: 0,
+      pre: makeSnapshot({ partialRows: partials.map((p) => p) }),
+    });
+  }
+
+  // חיבור מכפלות חלקיות
   steps.push({
-    id: "calculate",
-    title: "החישוב",
-    text: `מחשבים: ${a} × ${b} = ${answer}`,
-    highlights: ["aAll", "bAll", "resultAll"],
-    revealDigits: answerStr.length,
+    id: "sum-start",
+    title: "מחברים את המכפלות החלקיות",
+    text: "עכשיו מחברים את כל השורות שקיבלנו כדי לקבל את התוצאה הסופית.",
+    highlights: ["resultAll"],
+    revealDigits: 0,
+    pre: makeSnapshot({ partialRows: partials.map((p) => p) }),
   });
-  
-  // צעד 4: התוצאה הסופית
+
+  // פירוט חיבור עמודות (כמו חיבור ארוך), על בסיס מספרים מיושרים
+  const maxW = Math.max(...partials.map((p) => p.length), String(ansNum || answerStr).length);
+  const padded = partials.map((p) => p.padStart(maxW, "0").split("").reverse().map((d) => Number(d)));
+  const resDigits = [];
+  let carryAdd = 0;
+  for (let col = 0; col < maxW; col++) {
+    const colSum = padded.reduce((s, row) => s + (row[col] || 0), 0) + carryAdd;
+    const digit = colSum % 10;
+    const nextCarry = Math.floor(colSum / 10);
+    resDigits[col] = digit;
+
+    const place =
+      col === 0 ? "יחידות" : col === 1 ? "עשרות" : col === 2 ? "מאות" : `מקום ${col + 1} מימין`;
+    steps.push({
+      id: `sum-col-${col}`,
+      title: `חיבור בעמודת ה${place}`,
+      text: `מחברים בעמודת ה${place}: סכום הספרות בעמודה${carryAdd ? ` + נשיאה ${carryAdd}` : ""} = ${colSum}. כותבים ${digit}${nextCarry ? ` ונושאים ${nextCarry}.` : "."}`,
+      highlights: ["resultAll"],
+      revealDigits: 0,
+      pre: makeSnapshot({ partialRows: partials.map((p) => p), sumRow: padLeft(String(resDigits.slice().reverse().join("")).replace(/^0+/, "") || "0", maxW) }),
+    });
+
+    carryAdd = nextCarry;
+  }
+  if (carryAdd) {
+    resDigits.push(carryAdd);
+    steps.push({
+      id: "sum-carry-end",
+      title: "נשיאה אחרונה בחיבור",
+      text: `נשארה נשיאה ${carryAdd} בסוף, כותבים אותה משמאל.`,
+      highlights: ["resultAll"],
+      revealDigits: 0,
+      pre: makeSnapshot({ partialRows: partials.map((p) => p), sumRow: String(resDigits.slice().reverse().join("")).replace(/^0+/, "") || "0" }),
+    });
+  }
+
+  const sumStr = String(resDigits.slice().reverse().join("")).replace(/^0+/, "") || "0";
+
   steps.push({
     id: "final",
     title: "התוצאה הסופית",
-    text: `התשובה היא ${answer}`,
+    text: `אחרי שחיברנו את כל המכפלות החלקיות קיבלנו: ${A} × ${B} = ${sumStr}.`,
     highlights: ["resultAll"],
     revealDigits: answerStr.length,
+    pre: makeSnapshot({ partialRows: partials.map((p) => p), sumRow: sumStr }),
   });
-  
+
+  // בדיקה קצרה (אם יש תשובה צפויה)
+  if (!Number.isNaN(ansNum) && sumStr !== String(ansNum)) {
+    steps.push({
+      id: "note",
+      title: "בדיקה",
+      text: `שימו לב: לפי השלבים יצא ${sumStr} אבל התשובה השמורה לשאלה היא ${ansNum}. אם זה קורה, כנראה שיש פרמטרים מיוחדים בשאלה (למשל מספרים עם סימן/המרה).`,
+      highlights: ["resultAll"],
+      revealDigits: answerStr.length,
+      pre: makeSnapshot({ partialRows: partials.map((p) => p), sumRow: sumStr }),
+    });
+  }
+
   return steps;
 }
 

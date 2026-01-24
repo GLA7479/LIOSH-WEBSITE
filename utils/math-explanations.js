@@ -273,15 +273,29 @@ export function getSolutionSteps(question, operation, gradeKey) {
       ];
 
     case "multiplication":
+      if (typeof p.a === "number" && typeof p.b === "number") {
+        const A = p.a;
+        const B = p.b;
+        const aStr = String(A);
+        const bStr = String(B);
+        const isSmall = Math.abs(A) < 10 && Math.abs(B) < 10;
+        if (isSmall) {
+          return [
+            toSpan(`1. זה כפל חד-ספרתי: ${ltr(`${A} × ${B}`)}.`, "1"),
+            toSpan(`2. מחשבים: ${ltr(`${A} × ${B} = ${ans}`)}.`, "2"),
+            toSpan(`3. התשובה: ${ans}.`, "3"),
+          ];
+        }
         return [
-        toSpan(
-          `1. נכיר שכפל הוא חיבור חוזר: ${ltr(`${p.a} × ${p.b}`)} = ${ltr(
-            `${p.a} + ${p.a} + ...`
-          )} (${p.b} פעמים).`,
-          "1"
-        ),
-        toSpan(`2. נחשב: ${ltr(`${p.a} × ${p.b} = ${ans}`)}.`, "2"),
-        toSpan(`3. התשובה: ${ans}.`, "3"),
+          toSpan(`1. בכפל ארוך כופלים את ${A} בכל ספרה של ${B} מימין לשמאל.`, "1"),
+          toSpan(`2. כל שורה היא מכפלה חלקית (ולפעמים מוסיפים 0 בסוף בגלל עשרות/מאות).`, "2"),
+          toSpan(`3. בסוף מחברים את כל המכפלות החלקיות.`, "3"),
+          toSpan(`4. התוצאה הסופית: ${ltr(`${A} × ${B} = ${ans}`)}.`, "4"),
+        ];
+      }
+      return [
+        toSpan("1. בכפל ארוך: כפל ספרה-ספרה + נשיאות, אחר כך חיבור מכפלות חלקיות.", "1"),
+        toSpan(`2. התשובה: ${ans}.`, "2"),
       ];
 
     case "division":

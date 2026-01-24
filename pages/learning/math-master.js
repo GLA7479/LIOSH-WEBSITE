@@ -3548,8 +3548,22 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                 
                                 {/* תוכן - גלילה */}
                                 <div className="flex-1 overflow-y-auto px-4 pb-2">
-                                  {/* תצוגת התרגיל המאונך עם הדגשות - טבלה */}
-                                  <div className="mb-4 flex flex-col items-center font-mono text-2xl leading-[1.8]" style={{ direction: "ltr" }}>
+                                  {/* בכפל ארוך: מציגים רק בלוק מונוספייס אחד (כדי למנוע כפילות) */}
+                                  {effectiveOp === "multiplication" && activeStep.pre ? (
+                                    <div className="mb-4 w-full">
+                                      <div className="rounded-lg bg-emerald-900/50 px-3 py-2 overflow-x-auto">
+                                        <pre
+                                          dir="ltr"
+                                          className="text-center font-mono text-lg leading-relaxed whitespace-pre text-emerald-100"
+                                          style={{ unicodeBidi: "plaintext" }}
+                                        >
+                                          {activeStep.pre}
+                                        </pre>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    /* תצוגת התרגיל המאונך עם הדגשות - טבלה */
+                                    <div className="mb-4 flex flex-col items-center font-mono text-2xl leading-[1.8]" style={{ direction: "ltr" }}>
                                     {/* שורה 1 – המספר הראשון (תא ריק במקום סימן הפעולה) */}
                                     <div 
                                       className="grid gap-x-1 mb-1"
@@ -3646,6 +3660,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                       })}
                                     </div>
                                   </div>
+                                  )}
                                   
                                   {/* טקסט ההסבר */}
                                   <div className="mb-4 text-sm text-emerald-50" dir="rtl">
