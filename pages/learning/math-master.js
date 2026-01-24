@@ -417,7 +417,18 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           ? String(currentQuestion.correctAnswer)
           : (currentQuestion.answer !== undefined ? String(currentQuestion.answer) : "");
       return [
-        { id: "fallback-basic-1", title: "שלב 1: נבין את השאלה", content: qText ? <span>{qText}</span> : <span>נסתכל על התרגיל.</span>, text: "" },
+        {
+          id: "fallback-basic-1",
+          title: "שלב 1: נבין את השאלה",
+          content: qText ? (
+            <span dir="ltr" style={{ unicodeBidi: "plaintext" }}>
+              {qText}
+            </span>
+          ) : (
+            <span>נסתכל על התרגיל.</span>
+          ),
+          text: "",
+        },
         { id: "fallback-basic-2", title: "שלב 2: איך ניגשים?", content: <span>{getHint(currentQuestion, currentQuestion.params?.op || op, grade) || "נפתור לפי הכללים של הנושא."}</span>, text: "" },
         { id: "fallback-basic-3", title: "שלב 3: התשובה", content: ansText ? <span>התשובה היא: {ansText}</span> : <span>נבדוק את התשובה.</span>, text: "" },
       ];
@@ -1753,6 +1764,30 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   const accuracy =
     totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
   const gradeSupportsWordProblems = GRADES[grade].operations.includes("word_problems");
+
+  // עוטף ביטויים מתמטיים (עם אופרטורים) בתוך טקסט עברי כדי שיוצגו משמאל לימין.
+  // לדוגמה: "12 = 1 + 6 + 5" אחרת זה מתהפך בגלל RTL.
+  const renderMathLTRInText = (text) => {
+    if (!text || typeof text !== "string") return text;
+
+    // רצף שמכיל ספרות + לפחות אופרטור אחד (כולל / או %), כדי להציג אותו ב-LTR.
+    const re =
+      /(\d[\d\s.,]*\s*(?:%|(?:\/\s*\d)|[+\-−×÷=])\s*[\d\s.,]+(?:\s*(?:%|(?:\/\s*\d)|[+\-−×÷=])\s*[\d\s.,]+)*)/g;
+
+    const parts = text.split(re);
+    if (parts.length === 1) return text;
+
+    return parts.map((part, idx) => {
+      if (idx % 2 === 1) {
+        return (
+          <span key={`m-${idx}`} dir="ltr" style={{ unicodeBidi: "plaintext" }}>
+            {part}
+          </span>
+        );
+      }
+      return <span key={`t-${idx}`}>{part}</span>;
+    });
+  };
 
   // ✅ טקסט רמז והסבר מלא לשאלה הנוכחית
   const hintText =
@@ -3732,7 +3767,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                     {activeStep.content ? (
                                       <div className="leading-relaxed">{activeStep.content}</div>
                                     ) : (
-                                      <p className="leading-relaxed">{activeStep.text}</p>
+                                      <p className="leading-relaxed">{renderMathLTRInText(activeStep.text)}</p>
                                     )}
                                   </div>
                                 </div>
@@ -3800,9 +3835,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                               
                               {/* תוכן - גלילה */}
                               <div className="flex-1 overflow-y-auto px-4 pb-2">
-                                {/* הצגת התרגיל/שאלה */}
-                                <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2" dir="rtl">
-                                  <div className="text-sm text-emerald-100 font-semibold mb-1 break-words overflow-wrap-anywhere max-w-full">
+                                {/* הצגת התרגיל/שאלה (תמיד LTR כמו תרגיל חשבון) */}
+                                <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2" dir="ltr">
+                                  <div
+                                    className="text-sm text-emerald-100 font-semibold mb-1 break-words overflow-wrap-anywhere max-w-full"
+                                    style={{ unicodeBidi: "plaintext" }}
+                                  >
                                     {currentQuestion.exerciseText || currentQuestion.question}
                                   </div>
                                 </div>
@@ -3853,7 +3891,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                   {activeStep.content ? (
                                     <div className="leading-relaxed">{activeStep.content}</div>
                                   ) : (
-                                    <p className="leading-relaxed">{activeStep.text || ""}</p>
+                                    <p className="leading-relaxed">{renderMathLTRInText(activeStep.text || "")}</p>
                                   )}
                                 </div>
                               </div>
