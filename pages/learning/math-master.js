@@ -2934,7 +2934,16 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     </div>
                   ) : (
                     <div
-                      className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
+                      className={`font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2 ${
+                        (currentQuestion.isStory ||
+                          currentQuestion.operation === "word_problems" ||
+                          // גם נושאים אחרים יכולים להיות "מילוליים" (למשל אחוזים) — נזהה לפי טקסט עברי ארוך
+                          (typeof currentQuestion.question === "string" &&
+                            /[א-ת]/.test(currentQuestion.question) &&
+                            currentQuestion.question.length > 25))
+                          ? "text-xl"
+                          : "text-4xl"
+                      }`}
                       style={{
                         direction: currentQuestion.isStory ? "rtl" : "ltr",
                         unicodeBidi: "plaintext",

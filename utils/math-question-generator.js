@@ -658,18 +658,39 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
   } else if (selectedOp === "percentages") {
     const maxBase = levelConfig.percentages?.maxBase || 400;
     const maxPercent = levelConfig.percentages?.maxPercent || 50;
-    const base = randInt(40, maxBase);
-    const percOptions = [10, 20, 25, maxPercent].filter(p => p <= maxPercent);
+    // חשוב: בשאלות אחוזים אנחנו רוצים תוצאה מדויקת ושלמה (בלי שארית ובלי אומדן),
+    // לכן בוחרים base שמתאים ל-p כך ש-(base * p) / 100 יוצא מספר שלם.
+    const gcd = (x, y) => {
+      let a = Math.abs(x);
+      let b = Math.abs(y);
+      while (b !== 0) {
+        const t = a % b;
+        a = b;
+        b = t;
+      }
+      return a || 1;
+    };
+    const chooseBaseForPercent = (pVal) => {
+      // base must be multiple of step = 100 / gcd(p,100)
+      const step = 100 / gcd(pVal, 100);
+      const minMul = Math.ceil(40 / step);
+      const maxMul = Math.floor(maxBase / step);
+      const mul = randInt(Math.max(1, minMul), Math.max(1, maxMul));
+      return step * mul;
+    };
+
+    const percOptions = [10, 20, 25, maxPercent].filter((pp) => pp <= maxPercent);
     const p = percOptions[Math.floor(Math.random() * percOptions.length)];
+    const base = chooseBaseForPercent(p);
 
     const t = Math.random() < 0.5 ? "part_of" : "discount";
 
     if (t === "part_of") {
-      correctAnswer = round((base * p) / 100);
+      correctAnswer = (base * p) / 100; // תמיד שלם לפי בחירת base
       question = `כמה זה ${p}% מתוך ${base}? = ${BLANK}`;
       params = { kind: "perc_part_of", base, p };
       } else {
-      const discount = round((base * p) / 100);
+      const discount = (base * p) / 100; // תמיד שלם
       const finalPrice = base - discount;
       correctAnswer = finalPrice;
       question = `מחיר מוצר הוא ${base}₪ ויש הנחה של ${p}%. מה המחיר אחרי ההנחה? = ${BLANK}`;
@@ -1332,9 +1353,23 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       question = `יש ${total} תלמידים והם מתחלקים לקבוצות של ${groupSize} תלמידים בכל קבוצה. כמה תלמידים יישארו בלי קבוצה מלאה?`;
       params = { kind: "wp_leftover", total, groupSize, groups, leftover };
     } else if (t === "shop_discount") {
-      const price = randInt(50, 400);
       const discPerc = [10, 20, 25, 50][randInt(0, 3)];
-      const discount = Math.round((price * discPerc) / 100);
+      // חשוב: תשובה מדויקת ושלמה (בלי שברים ובלי עיגול)
+      const gcd = (x, y) => {
+        let a = Math.abs(x);
+        let b = Math.abs(y);
+        while (b !== 0) {
+          const t = a % b;
+          a = b;
+          b = t;
+        }
+        return a || 1;
+      };
+      const step = 100 / gcd(discPerc, 100); // המחיר חייב להיות כפולה של step כדי שההנחה תהיה שלמה
+      const minMul = Math.ceil(50 / step);
+      const maxMul = Math.floor(400 / step);
+      const price = step * randInt(Math.max(1, minMul), Math.max(1, maxMul));
+      const discount = (price * discPerc) / 100; // תמיד שלם לפי בחירת price
       const finalPrice = price - discount;
       correctAnswer = finalPrice;
       question = `חולצה עולה ${price}₪ ויש עליה הנחה של ${discPerc}%. כמה תשלם אחרי ההנחה?`;
