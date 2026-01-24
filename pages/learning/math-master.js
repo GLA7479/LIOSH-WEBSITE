@@ -1777,11 +1777,29 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     const parts = text.split(re);
     if (parts.length === 1) return text;
 
+    const needsLeadingSpace = (prevText) => {
+      if (!prevText) return false;
+      return !/[\s([\u200f\u200e]$/.test(prevText) && !/[—–-]$/.test(prevText);
+    };
+    const needsTrailingSpace = (nextText) => {
+      if (!nextText) return false;
+      return !/^[\s).,;:!?]/.test(nextText);
+    };
+
     return parts.map((part, idx) => {
       if (idx % 2 === 1) {
+        const prev = parts[idx - 1] ?? "";
+        const next = parts[idx + 1] ?? "";
+        const addBefore = needsLeadingSpace(prev);
+        const addAfter = needsTrailingSpace(next);
+
         return (
-          <span key={`m-${idx}`} dir="ltr" style={{ unicodeBidi: "plaintext" }}>
-            {part}
+          <span key={`mwrap-${idx}`}>
+            {addBefore ? " " : ""}
+            <span dir="ltr" style={{ unicodeBidi: "plaintext" }}>
+              {part}
+            </span>
+            {addAfter ? " " : ""}
           </span>
         );
       }
