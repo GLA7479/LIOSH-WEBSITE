@@ -972,13 +972,16 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     const a = isLowGrade ? randInt(0, 100) : randInt(-20, maxVal);
     const b = isLowGrade ? randInt(0, 100) : randInt(-20, maxVal);
 
+    // חשוב: הסימן צריך להיות מתמטי נכון. כדי למנוע היפוך בתצוגת RTL,
+    // נעטוף את התרגיל עצמו ב-LTR markers (LRI/PDI).
     let symbol = "=";
-    if (a < b) symbol = ">";
-    else if (a > b) symbol = "<";
+    if (a < b) symbol = "<";
+    else if (a > b) symbol = ">";
 
     correctAnswer = symbol;
     const questionLabel = "השלם את הסימן:";
-    const exerciseText = `${a} ${BLANK} ${b}`;
+    const rawExerciseText = `${a} ${BLANK} ${b}`;
+    const exerciseText = `\u2066${rawExerciseText}\u2069`;
     question = `${questionLabel} ${exerciseText}`;
     params = { kind: "cmp", a, b, questionLabel, exerciseText };
 
