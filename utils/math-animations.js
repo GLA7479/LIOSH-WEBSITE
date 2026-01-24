@@ -998,53 +998,185 @@ export function buildFractionsAnimation(params, answer) {
 export function buildDecimalsAnimation(params, answer) {
   const steps = [];
   const { a, b, kind } = params;
-  const aStr = a.toFixed(2);
-  const bStr = b.toFixed(2);
-  const answerStr = answer.toFixed(2);
+  const places = params.places ?? 2;
   const opSymbol = kind === "dec_add" ? "+" : "−";
+
+  const aStr = Number(a).toFixed(places);
+  const bStr = Number(b).toFixed(places);
+  const answerStr = Number(answer).toFixed(places);
+
+  const stripDot = (s) => s.replace(".", "");
+  const intA = parseInt(stripDot(aStr), 10);
+  const intB = parseInt(stripDot(bStr), 10);
+  const intAnswer = parseInt(stripDot(answerStr), 10);
+
+  const aIntStr = String(intA);
+  const bIntStr = String(intB);
+  const ansIntStr = String(intAnswer);
+  const maxLen = Math.max(aIntStr.length, bIntStr.length, ansIntStr.length);
+  const pa = aIntStr.padStart(maxLen, "0");
+  const pb = bIntStr.padStart(maxLen, "0");
+
   const answerDigitsCount = answerStr.replace(/\D/g, "").length;
-  const preBase = buildVerticalOperation(aStr, bStr, opSymbol);
-  
-  // צעד 1: מיישרים את הנקודות העשרוניות
+
+  const ltrWrap = (raw) => `\u2066${raw}\u2069`;
+  const padLeft = (s, w) => String(s).padStart(w, " ");
+  const maskAnswerRight = (full, revealDigits) => {
+    const s = String(full);
+    const out = s.split("");
+    let seen = 0;
+    for (let i = out.length - 1; i >= 0; i--) {
+      if (/\d/.test(out[i])) {
+        if (seen < revealDigits) {
+          seen++;
+        } else {
+          out[i] = " ";
+        }
+      }
+    }
+    return out.join("");
+  };
+
+  const makePre = (revealDigits) => {
+    const base = buildVerticalOperation(aStr, bStr, opSymbol);
+    const baseRaw = String(base).replace(/\u2066|\u2069/g, "");
+    const baseLines = baseRaw.split("\n");
+    const width = Math.max(
+      ...baseLines.map((l) => l.length),
+      answerStr.length + 2
+    );
+    const maskedAns = maskAnswerRight(padLeft(answerStr, width), revealDigits);
+    const out = [...baseLines.map((l) => padLeft(l, width)), maskedAns].join("\n");
+    return ltrWrap(out);
+  };
+
+  const placeName = (idxFromRight) => {
+    // idxFromRight=0 הוא המקום הקטן ביותר (למשל מאיות כשיש 2 ספרות אחרי נקודה)
+    if (idxFromRight < places) {
+      if (places === 1) return "עשיריות";
+      if (places === 2) return idxFromRight === 0 ? "מאיות" : "עשיריות";
+      // כללי
+      return `מקום ${idxFromRight + 1} אחרי הנקודה`;
+    }
+    const k = idxFromRight - places; // 0=יחידות, 1=עשרות...
+    if (k === 0) return "יחידות";
+    if (k === 1) return "עשרות";
+    if (k === 2) return "מאות";
+    return `מקום ${k + 1} משמאל לנקודה`;
+  };
+
+  // צעד 1: יישור נקודות
   steps.push({
     id: "place-value",
     title: "מיישרים את הנקודות העשרוניות",
     text: "כותבים את המספרים אחד מעל השני כך שהנקודות העשרוניות נמצאות באותה עמודה.",
     highlights: ["aAll", "bAll"],
     revealDigits: 0,
-    pre: preBase + "\n" + "\n", // מקום לתוצאה
+    pre: makePre(0),
   });
-  
-  // צעד 2: הסבר
+
+  // צעד 2: מסבירים מה עושים עם הנקודה
+  const mul = Math.pow(10, places);
   steps.push({
-    id: "explain",
-    title: "חישוב עשרוניים",
-    text: `מבצעים ${kind === "dec_add" ? "חיבור" : "חיסור"} רגיל בין המספרים אחרי היישור. חשוב: הנקודה העשרונית נשארת באותה עמודה בתוצאה.`,
+    id: "dot-note",
+    title: "מה עושים עם הנקודה?",
+    text: `כדי שיהיה קל לחשב בעמודות, מדמיינים שמזיזים את הנקודה ${places} מקומות ימינה (כופלים ב-${mul}). מחשבים עם מספרים שלמים, ובסוף מחזירים את הנקודה ${places} מקומות שמאלה.`,
     highlights: ["aAll", "bAll"],
     revealDigits: 0,
-    pre: preBase + "\n" + "\n",
+    pre: makePre(0),
   });
-  
-  // צעד 3: החישוב - חשיפה הדרגתית
-  steps.push({
-    id: "calculate",
-    title: "החישוב",
-    text: `מחשבים עמודה-עמודה כמו במספרים רגילים: ${aStr} ${opSymbol} ${bStr} = ${answerStr}`,
-    highlights: ["aAll", "bAll", "resultAll"],
-    revealDigits: answerDigitsCount,
-    pre: preBase + "\n" + `  ${answerStr}`,
-  });
-  
-  // צעד 4: התוצאה הסופית
+
+  // צעד 3+: חישוב ספרה-ספרה (כמו חיבור/חיסור)
+  let revealedCount = 0;
+  let stepIndex = 3;
+
+  if (kind === "dec_add") {
+    let carry = 0;
+    for (let i = maxLen - 1; i >= 0; i--) {
+      const da = Number(pa[i]);
+      const db = Number(pb[i]);
+      const sum = da + db + carry;
+      const digit = sum % 10;
+      const newCarry = sum >= 10 ? 1 : 0;
+
+      const idxFromRight = maxLen - 1 - i;
+      const place = placeName(idxFromRight);
+
+      revealedCount++;
+      steps.push({
+        id: `step-${stepIndex}`,
+        title: `עמודת ה${place}`,
+        text: `מחברים בעמודת ה${place}: ${da} + ${db}${carry ? " + " + carry : ""} = ${sum}. כותבים ${digit}${newCarry ? " ונושאים 1 לעמודה הבאה." : "."}`,
+        highlights: ["aAll", "bAll", "resultAll"],
+        revealDigits: revealedCount,
+        pre: makePre(revealedCount),
+      });
+
+      carry = newCarry;
+      stepIndex++;
+    }
+
+    if (carry) {
+      revealedCount++;
+      steps.push({
+        id: "final-carry",
+        title: "נשיאה אחרונה",
+        text: "נשארה נשיאה 1 בסוף, כותבים אותה משמאל.",
+        highlights: ["resultAll"],
+        revealDigits: revealedCount,
+        pre: makePre(revealedCount),
+      });
+    }
+  } else {
+    // dec_sub
+    let borrow = 0;
+    for (let i = maxLen - 1; i >= 0; i--) {
+      let da = Number(pa[i]);
+      const db = Number(pb[i]);
+      da -= borrow;
+
+      const idxFromRight = maxLen - 1 - i;
+      const place = placeName(idxFromRight);
+
+      if (da < db) {
+        steps.push({
+          id: `borrow-${stepIndex}`,
+          title: `השאלה בעמודת ה${place}`,
+          text: `בעמודת ה${place} ${da} קטן מ-${db}, לכן מוסיפים 10 לעמודה הזו ולוקחים 1 מהעמודה הבאה (השאלה).`,
+          highlights: ["aAll", "bAll"],
+          revealDigits: revealedCount,
+          pre: makePre(revealedCount),
+        });
+        da += 10;
+        borrow = 1;
+        stepIndex++;
+      } else {
+        borrow = 0;
+      }
+
+      const diff = da - db;
+      revealedCount++;
+      steps.push({
+        id: `step-${stepIndex}`,
+        title: `עמודת ה${place}`,
+        text: `מחסרים בעמודת ה${place}: ${da} − ${db} = ${diff}. כותבים ${diff}.`,
+        highlights: ["aAll", "bAll", "resultAll"],
+        revealDigits: revealedCount,
+        pre: makePre(revealedCount),
+      });
+      stepIndex++;
+    }
+  }
+
   steps.push({
     id: "final",
-    title: "התוצאה הסופית",
-    text: `התשובה היא ${answerStr}`,
+    title: "מחזירים את הנקודה למקום",
+    text: `זוכרים: מחזירים את הנקודה לאותה עמודה. התוצאה הסופית היא ${answerStr}.`,
     highlights: ["resultAll"],
     revealDigits: answerDigitsCount,
-    pre: preBase + "\n" + `  ${answerStr}`,
+    pre: makePre(answerDigitsCount),
   });
-  
+
   return steps;
 }
 
