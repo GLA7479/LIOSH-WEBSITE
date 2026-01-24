@@ -3592,7 +3592,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                           className="text-center font-mono text-lg whitespace-pre text-emerald-100"
                                           style={{
                                             unicodeBidi: "plaintext",
-                                            lineHeight: activeStep?.type === "division" ? "1.05" : undefined,
+                                            lineHeight: activeStep?.type === "division" ? "0.9" : undefined,
                                           }}
                                         >
                                           {activeStep.pre}
@@ -3791,7 +3791,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                         className="text-center font-mono text-base whitespace-pre text-emerald-100"
                                         style={{
                                           unicodeBidi: "plaintext",
-                                          lineHeight: activeStep?.type === "division" ? "1.05" : undefined,
+                                          lineHeight: activeStep?.type === "division" ? "0.9" : undefined,
                                         }}
                                       >
                                         {activeStep.pre}
