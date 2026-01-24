@@ -1818,6 +1818,13 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       ? getSolutionSteps(currentQuestion, currentQuestion.params?.op || currentQuestion.operation, grade)
       : [];
 
+  // זיהוי "שאלה מילולית" גם אם היא לא תחת operation=word_problems (למשל wp_shop_discount)
+  const isWordyQuestion =
+    !!currentQuestion?.isStory ||
+    currentQuestion?.operation === "word_problems" ||
+    (typeof currentQuestion?.params?.kind === "string" &&
+      currentQuestion.params.kind.startsWith("wp_"));
+
   return (
     <Layout>
       <style jsx>{`
@@ -2895,6 +2902,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                             unicodeBidi: "plaintext",
                             wordBreak: "break-word",
                             overflowWrap: "break-word",
+                            // מקטין רק את האותיות, בלי לשנות את השטח/מיקום כפתורים (transform לא משנה layout)
+                            transform: isWordyQuestion ? "scale(0.5)" : undefined,
+                            transformOrigin: "top center",
                           }}
                         >
                           {currentQuestion.questionLabel}
@@ -2926,6 +2936,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                             unicodeBidi: "plaintext",
                             wordBreak: "break-word",
                             overflowWrap: "break-word",
+                            transform: isWordyQuestion ? "scale(0.5)" : undefined,
+                            transformOrigin: "top center",
                           }}
                         >
                           {currentQuestion.exerciseText}
@@ -2934,21 +2946,14 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     </div>
                   ) : (
                     <div
-                      className={`font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2 ${
-                        (currentQuestion.isStory ||
-                          currentQuestion.operation === "word_problems" ||
-                          // גם נושאים אחרים יכולים להיות "מילוליים" (למשל אחוזים) — נזהה לפי טקסט עברי ארוך
-                          (typeof currentQuestion.question === "string" &&
-                            /[א-ת]/.test(currentQuestion.question) &&
-                            currentQuestion.question.length > 25))
-                          ? "text-xl"
-                          : "text-4xl"
-                      }`}
+                      className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
                       style={{
                         direction: currentQuestion.isStory ? "rtl" : "ltr",
                         unicodeBidi: "plaintext",
                         wordBreak: "break-word",
                         overflowWrap: "break-word",
+                        transform: isWordyQuestion ? "scale(0.5)" : undefined,
+                        transformOrigin: "top center",
                       }}
                     >
                       {currentQuestion.question}
