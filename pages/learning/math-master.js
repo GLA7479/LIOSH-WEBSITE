@@ -2895,20 +2895,23 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       )}
 
                       {currentQuestion.questionLabel && (
-                        <p
-                          className="text-2xl text-center text-white mb-2 break-words overflow-wrap-anywhere max-w-full"
-                          style={{
-                            direction: currentQuestion.isStory ? "rtl" : "rtl",
-                            unicodeBidi: "plaintext",
-                            wordBreak: "break-word",
-                            overflowWrap: "break-word",
-                            // מקטין רק את האותיות, בלי לשנות את השטח/מיקום כפתורים (transform לא משנה layout)
-                            transform: isWordyQuestion ? "scale(0.55)" : undefined,
-                            transformOrigin: "top center",
-                          }}
-                        >
-                          {currentQuestion.questionLabel}
-                        </p>
+                        <div className="w-full flex justify-center">
+                          <p
+                            className="text-2xl text-center text-white mb-2 break-words overflow-wrap-anywhere max-w-full"
+                            style={{
+                              direction: "rtl",
+                              unicodeBidi: "plaintext",
+                              wordBreak: "break-word",
+                              overflowWrap: "break-word",
+                              // מקטין/מגדיל רק את האותיות, בלי לשנות את השטח/מיקום כפתורים (transform לא משנה layout)
+                              transform: isWordyQuestion ? "scale(0.605)" : undefined,
+                              transformOrigin: "center center",
+                              display: "inline-block",
+                            }}
+                          >
+                            {currentQuestion.questionLabel}
+                          </p>
+                        </div>
                       )}
 
                       {/* תצוגת התרגיל - מאוזן או מאונך */}
@@ -2927,36 +2930,42 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           </pre>
                         </div>
                       ) : (
-                        <p
-                          className={`text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2 ${
-                            currentQuestion.operation === "sequences" ? "whitespace-normal" : ""
-                          }`}
-                          style={{
-                            direction: "ltr",
-                            unicodeBidi: "plaintext",
-                            wordBreak: "break-word",
-                            overflowWrap: "break-word",
-                            transform: isWordyQuestion ? "scale(0.55)" : undefined,
-                            transformOrigin: "top center",
-                          }}
-                        >
-                          {currentQuestion.exerciseText}
-                        </p>
+                        <div className="w-full flex justify-center">
+                          <p
+                            className={`text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2 ${
+                              currentQuestion.operation === "sequences" ? "whitespace-normal" : ""
+                            }`}
+                            style={{
+                              direction: "ltr",
+                              unicodeBidi: "plaintext",
+                              wordBreak: "break-word",
+                              overflowWrap: "break-word",
+                              transform: isWordyQuestion ? "scale(0.605)" : undefined,
+                              transformOrigin: "center center",
+                              display: "inline-block",
+                            }}
+                          >
+                            {currentQuestion.exerciseText}
+                          </p>
+                        </div>
                       )}
                     </div>
                   ) : (
-                    <div
-                      className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
-                      style={{
-                        direction: currentQuestion.isStory ? "rtl" : "ltr",
-                        unicodeBidi: "plaintext",
-                        wordBreak: "break-word",
-                        overflowWrap: "break-word",
-                        transform: isWordyQuestion ? "scale(0.55)" : undefined,
-                        transformOrigin: "top center",
-                      }}
-                    >
-                      {currentQuestion.question}
+                    <div className="w-full flex justify-center">
+                      <div
+                        className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
+                        style={{
+                          direction: currentQuestion.isStory ? "rtl" : "ltr",
+                          unicodeBidi: "plaintext",
+                          wordBreak: "break-word",
+                          overflowWrap: "break-word",
+                          transform: isWordyQuestion ? "scale(0.605)" : undefined,
+                          transformOrigin: "center center",
+                          display: "inline-block",
+                        }}
+                      >
+                        {currentQuestion.question}
+                      </div>
                     </div>
                   )}
                   
