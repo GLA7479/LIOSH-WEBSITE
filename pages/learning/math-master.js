@@ -3589,8 +3589,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                       <div className="rounded-lg bg-emerald-900/50 px-3 py-2 overflow-x-auto">
                                         <pre
                                           dir="ltr"
-                                          className="text-center font-mono text-lg leading-relaxed whitespace-pre text-emerald-100"
-                                          style={{ unicodeBidi: "plaintext" }}
+                                          className="text-center font-mono text-lg whitespace-pre text-emerald-100"
+                                          style={{
+                                            unicodeBidi: "plaintext",
+                                            lineHeight: activeStep?.type === "division" ? "1.05" : undefined,
+                                          }}
                                         >
                                           {activeStep.pre}
                                         </pre>
@@ -3785,8 +3788,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                     <div className="mt-2 mb-3 rounded-lg bg-emerald-900/50 px-3 py-2 overflow-x-auto">
                                       <pre
                                         dir="ltr"
-                                        className="text-center font-mono text-base leading-relaxed whitespace-pre text-emerald-100"
-                                        style={{ unicodeBidi: "plaintext" }}
+                                        className="text-center font-mono text-base whitespace-pre text-emerald-100"
+                                        style={{
+                                          unicodeBidi: "plaintext",
+                                          lineHeight: activeStep?.type === "division" ? "1.05" : undefined,
+                                        }}
                                       >
                                         {activeStep.pre}
                                       </pre>
