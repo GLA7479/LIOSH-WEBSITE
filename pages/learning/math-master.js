@@ -3587,16 +3587,42 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                   {activeStep.pre ? (
                                     <div className="mb-4 w-full">
                                       <div className="rounded-lg bg-emerald-900/50 px-3 py-2 overflow-x-auto">
-                                        <pre
-                                          dir="ltr"
-                                          className="text-center font-mono text-lg whitespace-pre text-emerald-100"
-                                          style={{
-                                            unicodeBidi: "plaintext",
-                                            lineHeight: activeStep?.type === "division" ? "0.9" : undefined,
-                                          }}
-                                        >
-                                          {activeStep.pre}
-                                        </pre>
+                                        {activeStep?.type === "division" && typeof activeStep.pre === "string" ? (() => {
+                                          const raw = activeStep.pre.replace(/\u2066|\u2069/g, "");
+                                          const lines = raw.split("\n");
+                                          const firstLine = lines[0] ?? "";
+                                          const rest = lines.slice(1).join("\n");
+                                          return (
+                                            <div className="flex flex-col items-center">
+                                              <pre
+                                                dir="ltr"
+                                                className="text-center font-mono text-lg whitespace-pre text-emerald-100"
+                                                style={{
+                                                  unicodeBidi: "plaintext",
+                                                  margin: 0,
+                                                  transform: "translateY(6px)", // מקרב רק את שורת המנה לקו, בלי להזיז את הקו
+                                                }}
+                                              >
+                                                {`\u2066${firstLine}\u2069`}
+                                              </pre>
+                                              <pre
+                                                dir="ltr"
+                                                className="text-center font-mono text-lg leading-relaxed whitespace-pre text-emerald-100"
+                                                style={{ unicodeBidi: "plaintext", margin: 0 }}
+                                              >
+                                                {`\u2066${rest}\u2069`}
+                                              </pre>
+                                            </div>
+                                          );
+                                        })() : (
+                                          <pre
+                                            dir="ltr"
+                                            className="text-center font-mono text-lg leading-relaxed whitespace-pre text-emerald-100"
+                                            style={{ unicodeBidi: "plaintext" }}
+                                          >
+                                            {activeStep.pre}
+                                          </pre>
+                                        )}
                                       </div>
                                     </div>
                                   ) : (
@@ -3786,16 +3812,42 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                   <h4 className="font-bold text-base mb-1">{activeStep.title || "הסבר"}</h4>
                                   {activeStep.pre && (
                                     <div className="mt-2 mb-3 rounded-lg bg-emerald-900/50 px-3 py-2 overflow-x-auto">
-                                      <pre
-                                        dir="ltr"
-                                        className="text-center font-mono text-base whitespace-pre text-emerald-100"
-                                        style={{
-                                          unicodeBidi: "plaintext",
-                                          lineHeight: activeStep?.type === "division" ? "0.9" : undefined,
-                                        }}
-                                      >
-                                        {activeStep.pre}
-                                      </pre>
+                                      {activeStep?.type === "division" && typeof activeStep.pre === "string" ? (() => {
+                                        const raw = activeStep.pre.replace(/\u2066|\u2069/g, "");
+                                        const lines = raw.split("\n");
+                                        const firstLine = lines[0] ?? "";
+                                        const rest = lines.slice(1).join("\n");
+                                        return (
+                                          <div className="flex flex-col items-center">
+                                            <pre
+                                              dir="ltr"
+                                              className="text-center font-mono text-base whitespace-pre text-emerald-100"
+                                              style={{
+                                                unicodeBidi: "plaintext",
+                                                margin: 0,
+                                                transform: "translateY(6px)",
+                                              }}
+                                            >
+                                              {`\u2066${firstLine}\u2069`}
+                                            </pre>
+                                            <pre
+                                              dir="ltr"
+                                              className="text-center font-mono text-base leading-relaxed whitespace-pre text-emerald-100"
+                                              style={{ unicodeBidi: "plaintext", margin: 0 }}
+                                            >
+                                              {`\u2066${rest}\u2069`}
+                                            </pre>
+                                          </div>
+                                        );
+                                      })() : (
+                                        <pre
+                                          dir="ltr"
+                                          className="text-center font-mono text-base leading-relaxed whitespace-pre text-emerald-100"
+                                          style={{ unicodeBidi: "plaintext" }}
+                                        >
+                                          {activeStep.pre}
+                                        </pre>
+                                      )}
                                     </div>
                                   )}
                                   {activeStep.content ? (
