@@ -409,6 +409,18 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           text: "",
         }));
       }
+
+      // fallback נוסף אם אין params/אין צעדים מפורטים: לפחות שיהיה תמיד הסבר בסיסי עם ניווט
+      const qText = currentQuestion.exerciseText || currentQuestion.question || "";
+      const ansText =
+        currentQuestion.correctAnswer !== undefined
+          ? String(currentQuestion.correctAnswer)
+          : (currentQuestion.answer !== undefined ? String(currentQuestion.answer) : "");
+      return [
+        { id: "fallback-basic-1", title: "שלב 1: נבין את השאלה", content: qText ? <span>{qText}</span> : <span>נסתכל על התרגיל.</span>, text: "" },
+        { id: "fallback-basic-2", title: "שלב 2: איך ניגשים?", content: <span>{getHint(currentQuestion, currentQuestion.params?.op || op, grade) || "נפתור לפי הכללים של הנושא."}</span>, text: "" },
+        { id: "fallback-basic-3", title: "שלב 3: התשובה", content: ansText ? <span>התשובה היא: {ansText}</span> : <span>נבדוק את התשובה.</span>, text: "" },
+      ];
     } catch {}
 
     return null;

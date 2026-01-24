@@ -695,17 +695,22 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
   const dividendLen = dividendStr.length;
   const repeat = (ch, n) => Array(Math.max(0, n)).fill(ch).join("");
 
-  // בניית ASCII של חילוק ארוך (LTR) בצורה יציבה וברורה:
-  // [מנה מעל המחולק]│
-  // ________│
-  // 1320│6
-  //   12│
-  //   --│
-  //   12│
-  //   12│
-  //   --│
-  //    0│
-  const suffix = "│" + repeat(" ", divisorStr.length);
+  // בניית ASCII של חילוק ארוך (LTR) כשהמחולק משמאל כמו שהיה אצלך:
+  //    31
+  //   ____
+  // 94│3
+  //  9
+  // --
+  // 04
+  //  3
+  // --
+  //  1
+  // שימו לב: יש קו אנכי (│) רק בשורת הבסיס "מחולק│מחלק" — בלי קווים מיותרים בשאר השורות.
+  // כדי שהמנה והקו יהיו בדיוק מעל המחולק (גם כשמיישרים למרכז), כל השורות חייבות להיות באותו רוחב:
+  // רוחב = אורך המחולק + "│" + אורך המחלק
+  const totalWidth = dividendLen + 1 + divisorStr.length;
+  const padToWidth = (s) => String(s).padEnd(totalWidth, " ");
+
   const makeWorkLineAt = (position, text) => {
     const t = String(text);
     const line = Array(dividendLen).fill(" ");
@@ -715,16 +720,17 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
       const idx = start + i;
       if (idx >= 0 && idx < dividendLen) line[idx] = t[i];
     }
-    return line.join("") + suffix;
+    return padToWidth(line.join(""));
   };
 
   const quotientLineArr = Array(dividendLen).fill(" ");
   const workLines = [];
   const makePre = () => {
-    const qLine = quotientLineArr.join("") + suffix;
-    const line1 = qLine;
-    const line2 = repeat("_", dividendLen) + suffix;
-    const line3 = dividendStr + "│" + divisorStr;
+    // מנה מעל המחולק (רק מעל אזור המחולק)
+    const line1 = padToWidth(quotientLineArr.join(""));
+    // קו המנה - אותו אורך כמו המחולק, ומרופד לרוחב מלא כדי שלא "יזוז" במרכז
+    const line2 = padToWidth(repeat("_", dividendLen));
+    const line3 = padToWidth(dividendStr + "│" + divisorStr);
     // עוטפים ב-LTR markers כדי שלא יתבלגן בתוך טקסט עברי
     return `\u2066${[line1, line2, line3, ...workLines].join("\n")}\u2069`;
   };
@@ -830,12 +836,13 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
     if (stepIndex < divisionSteps.length - 1 && position < dividendStr.length - 1) {
       const nextStep = divisionSteps[stepIndex + 1];
       const nextDigitPos = nextStep.position;
-      // שורת עבודה: המספר החדש לחלוקה (השארית + הספרה שהורדנו)
-      workLines.push(makeWorkLineAt(nextDigitPos, nextStep.workingNumber));
+      // שורת עבודה: המספר החדש לחלוקה (השארית + הספרה שהורדנו) — מציגים גם 0 מוביל כשצריך (למשל 04)
+      const bringDownStr = `${remainder}${dividendStr[nextDigitPos]}`;
+      workLines.push(makeWorkLineAt(nextDigitPos, bringDownStr));
       steps.push({
         id: `step-${stepIndex + 1}-bring-down`,
         title: `צעד ${stepIndex + 1}: הורדת ספרה`,
-        text: `מורידים את הספרה הבאה (${dividendStr[nextDigitPos]}). המספר החדש לחלוקה הוא ${nextStep.workingNumber}.`,
+        text: `מורידים את הספרה הבאה (${dividendStr[nextDigitPos]}). המספר החדש לחלוקה הוא ${bringDownStr}.`,
         highlights: [`a${nextDigitPos}`],
         revealDigits: quotientPosition + 1,
         type: "division",
