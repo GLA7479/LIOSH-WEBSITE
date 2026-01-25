@@ -1825,6 +1825,38 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     (typeof currentQuestion?.params?.kind === "string" &&
       currentQuestion.params.kind.startsWith("wp_"));
 
+  // התאמת גודל האותיות בשאלה (בכל הנושאים) בדיוק כמו בשאלות מילוליות:
+  // מקטינים רק טקסט שיש בו אותיות, בלי להזיז Layout (transform לא משפיע על שטח).
+  const hasLetters = (t) => typeof t === "string" && /[A-Za-z\u0590-\u05FF]/.test(t);
+  const shouldScaleQuestionText =
+    isWordyQuestion ||
+    hasLetters(currentQuestion?.questionLabel) ||
+    hasLetters(currentQuestion?.question) ||
+    hasLetters(currentQuestion?.exerciseText);
+  const QUESTION_TEXT_SCALE = 0.605;
+
+  // חלונות תשובה (כפתורים/קלט) – מקטינים ב-20% רק ויזואלית, בלי להזיז layout
+  const ANSWER_AREA_SCALE = 0.8;
+
+  // תשובות עם מלל – מקטינים את האותיות בתוך הכפתור כמו בשאלות מילוליות
+  const renderAnswerLabel = (ans) => {
+    const s = typeof ans === "string" ? ans : String(ans ?? "");
+    if (hasLetters(s)) {
+      return (
+        <span
+          style={{
+            display: "inline-block",
+            transform: `scale(${QUESTION_TEXT_SCALE})`,
+            transformOrigin: "center center",
+          }}
+        >
+          {s}
+        </span>
+      );
+    }
+    return ans;
+  };
+
   return (
     <Layout>
       <style jsx>{`
@@ -2904,7 +2936,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                               wordBreak: "break-word",
                               overflowWrap: "break-word",
                               // מקטין/מגדיל רק את האותיות, בלי לשנות את השטח/מיקום כפתורים (transform לא משנה layout)
-                              transform: isWordyQuestion ? "scale(0.605)" : undefined,
+                              transform: shouldScaleQuestionText ? `scale(${QUESTION_TEXT_SCALE})` : undefined,
                               transformOrigin: "center center",
                               display: "inline-block",
                             }}
@@ -2940,7 +2972,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                               unicodeBidi: "plaintext",
                               wordBreak: "break-word",
                               overflowWrap: "break-word",
-                              transform: isWordyQuestion ? "scale(0.605)" : undefined,
+                              transform: shouldScaleQuestionText ? `scale(${QUESTION_TEXT_SCALE})` : undefined,
                               transformOrigin: "center center",
                               display: "inline-block",
                             }}
@@ -2959,7 +2991,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           unicodeBidi: "plaintext",
                           wordBreak: "break-word",
                           overflowWrap: "break-word",
-                          transform: isWordyQuestion ? "scale(0.605)" : undefined,
+                          transform: shouldScaleQuestionText ? `scale(${QUESTION_TEXT_SCALE})` : undefined,
                           transformOrigin: "center center",
                           display: "inline-block",
                         }}
@@ -3010,38 +3042,52 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       const buttonText = isCompare ? "text-lg" : "text-2xl";
                       
                       return (
-                        <div className={`grid ${gridCols} gap-3 w-full mb-3`}>
-                          {currentQuestion.answers.map((answer, idx) => {
-                            const isSelected = selectedAnswer === answer;
-                            const isCorrect = answer === currentQuestion.correctAnswer;
-                            const isWrong = isSelected && !isCorrect;
+                        <div
+                          className="w-full mb-3"
+                          style={{
+                            transform: `scale(${ANSWER_AREA_SCALE})`,
+                            transformOrigin: "top center",
+                          }}
+                        >
+                          <div className={`grid ${gridCols} gap-3 w-full`}>
+                            {currentQuestion.answers.map((answer, idx) => {
+                              const isSelected = selectedAnswer === answer;
+                              const isCorrect = answer === currentQuestion.correctAnswer;
+                              const isWrong = isSelected && !isCorrect;
 
-                            return (
-                              <button
-                                key={idx}
-                                onClick={() => handleAnswer(answer)}
-                                disabled={!!selectedAnswer}
-                                className={`rounded-xl border-2 ${buttonPadding} ${buttonText} font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                                  isCorrect && isSelected
-                                    ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                                    : isWrong
-                                    ? "bg-red-500/30 border-red-400 text-red-200"
-                                    : selectedAnswer &&
-                                      answer === currentQuestion.correctAnswer
-                                    ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                                    : "bg-black/30 border-white/15 text-white hover:border-white/40"
-                                }`}
-                              >
-                                {answer}
-                              </button>
-                            );
-                          })}
+                              return (
+                                <button
+                                  key={idx}
+                                  onClick={() => handleAnswer(answer)}
+                                  disabled={!!selectedAnswer}
+                                  className={`rounded-xl border-2 ${buttonPadding} ${buttonText} font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                                    isCorrect && isSelected
+                                      ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                      : isWrong
+                                      ? "bg-red-500/30 border-red-400 text-red-200"
+                                      : selectedAnswer &&
+                                        answer === currentQuestion.correctAnswer
+                                      ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                      : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                                  }`}
+                                >
+                                  {renderAnswerLabel(answer)}
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
                       );
                     } else if ((mode === "learning" || mode === "practice") && !practiceMode) {
                       // שדה קלט טקסט למצבי למידה ותרגול
                       return (
-                        <div className="mb-4 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
+                        <div
+                          className="mb-4 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50"
+                          style={{
+                            transform: `scale(${ANSWER_AREA_SCALE})`,
+                            transformOrigin: "top center",
+                          }}
+                        >
                           <div className="text-center mb-3">
                             <input
                               type="number"
@@ -3095,32 +3141,40 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       const buttonText = isCompare ? "text-lg" : "text-2xl";
                       
                       return (
-                        <div className={`grid ${gridCols} gap-3 w-full mb-3`}>
-                          {currentQuestion.answers.map((answer, idx) => {
-                            const isSelected = selectedAnswer === answer;
-                            const isCorrect = answer === currentQuestion.correctAnswer;
-                            const isWrong = isSelected && !isCorrect;
+                        <div
+                          className="w-full mb-3"
+                          style={{
+                            transform: `scale(${ANSWER_AREA_SCALE})`,
+                            transformOrigin: "top center",
+                          }}
+                        >
+                          <div className={`grid ${gridCols} gap-3 w-full`}>
+                            {currentQuestion.answers.map((answer, idx) => {
+                              const isSelected = selectedAnswer === answer;
+                              const isCorrect = answer === currentQuestion.correctAnswer;
+                              const isWrong = isSelected && !isCorrect;
 
-                            return (
-                              <button
-                                key={idx}
-                                onClick={() => handleAnswer(answer)}
-                                disabled={!!selectedAnswer}
-                                className={`rounded-xl border-2 ${buttonPadding} ${buttonText} font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                                  isCorrect && isSelected
-                                    ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                                    : isWrong
-                                    ? "bg-red-500/30 border-red-400 text-red-200"
-                                    : selectedAnswer &&
-                                      answer === currentQuestion.correctAnswer
-                                    ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                                    : "bg-black/30 border-white/15 text-white hover:border-white/40"
-                                }`}
-                              >
-                                {answer}
-                              </button>
-                            );
-                          })}
+                              return (
+                                <button
+                                  key={idx}
+                                  onClick={() => handleAnswer(answer)}
+                                  disabled={!!selectedAnswer}
+                                  className={`rounded-xl border-2 ${buttonPadding} ${buttonText} font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                                    isCorrect && isSelected
+                                      ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                      : isWrong
+                                      ? "bg-red-500/30 border-red-400 text-red-200"
+                                      : selectedAnswer &&
+                                        answer === currentQuestion.correctAnswer
+                                      ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                      : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                                  }`}
+                                >
+                                  {renderAnswerLabel(answer)}
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
                       );
                     }
