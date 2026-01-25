@@ -1558,6 +1558,21 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     const divisor = gcd(a, b);
     const simplifiedA = a / divisor;
     const simplifiedB = b / divisor;
+
+    const simplifyRatio = (x, y) => {
+      const g = gcd(x, y);
+      const nx = x / g;
+      const ny = y / g;
+      return `${nx}:${ny}`;
+    };
+    const shuffle = (arr) => {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
     
     const variant = Math.random();
     if (variant < 0.33) {
@@ -1565,6 +1580,38 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       correctAnswer = `${simplifiedA}:${simplifiedB}`;
       question = `מה היחס בין ${a} ל-${b}? (בצורה מצומצמת)`;
       params = { kind: "ratio_find", a, b, simplifiedA, simplifiedB };
+
+      // ✅ יחס הוא תשובה טקסטואלית ("a:b") ולכן יצירת התשובות הכללית עלולה להחזיר אופציה אחת בלבד.
+      // כאן אנחנו מייצרים מראש 4 אופציות (1 נכונה + 3 שגויות), כולן "מצומצמות".
+      const wrong = new Set();
+      const addWrong = (x, y) => {
+        if (x <= 0 || y <= 0) return;
+        const r = simplifyRatio(x, y);
+        if (r !== correctAnswer) wrong.add(r);
+      };
+
+      // הצעות שגויות שכיחות (לא שקולות ליחס הנכון)
+      addWrong(simplifiedB, simplifiedA); // היפוך יחס
+      addWrong(simplifiedA + 1, simplifiedB); // שינוי מספר ראשון
+      addWrong(simplifiedA, simplifiedB + 1); // שינוי מספר שני
+      if (simplifiedA > 1) addWrong(simplifiedA - 1, simplifiedB);
+      if (simplifiedB > 1) addWrong(simplifiedA, simplifiedB - 1);
+
+      let guard = 0;
+      while (wrong.size < 3 && guard < 50) {
+        guard++;
+        const x = randInt(1, 20);
+        const y = randInt(1, 20);
+        addWrong(x, y);
+      }
+
+      const answers = shuffle([correctAnswer, ...Array.from(wrong).slice(0, 3)]);
+      // אם משום מה עדיין חסר, נשלים בפולבק פשוט
+      while (answers.length < 4) {
+        const fallback = simplifyRatio(randInt(1, 20), randInt(1, 20));
+        if (!answers.includes(fallback) && fallback !== correctAnswer) answers.push(fallback);
+      }
+      params.answers = answers;
     } else if (variant < 0.66) {
       // מציאת המספר הראשון
       const ratio = simplifiedA / simplifiedB;
