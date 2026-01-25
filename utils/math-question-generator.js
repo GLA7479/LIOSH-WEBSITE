@@ -318,19 +318,31 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     const maxDivisor = levelConfig.division_with_remainder?.maxDivisor || 12;
     const divisor = randInt(2, maxDivisor);
     
-    // 50% עם שארית, 50% בלי שארית
-    const hasRemainder = Math.random() < 0.5;
+    // לפחות 80% עם שארית (כמו שביקשת)
+    // אם אין טווח חוקי ליצור שארית (למשל maxD קטן מדי) ניפול אוטומטית לללא שארית.
+    const minQuotient = maxD >= divisor * 2 ? 2 : 1;
+    const maxQuotientForRemainder = Math.floor((maxD - 1) / divisor); // כדי שיהיה מקום לשארית >= 1
+    const canMakeRemainder = maxQuotientForRemainder >= minQuotient && divisor > 1;
+    const hasRemainder = canMakeRemainder && Math.random() < 0.8;
     
     let quotient, dividend, remainder = 0;
     if (hasRemainder) {
       // חילוק עם שארית
-      quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
+      const quotientMax = Math.max(minQuotient, maxQuotientForRemainder);
+      quotient = randInt(minQuotient, quotientMax);
       remainder = randInt(1, divisor - 1); // שארית בין 1 ל-divisor-1
       dividend = divisor * quotient + remainder;
+
+      // בטיחות: אם יצא מעבר למקסימום (במקרה קצה), נקטין מנה עד שנכנס.
+      while (dividend > maxD && quotient > 1) {
+        quotient -= 1;
+        dividend = divisor * quotient + remainder;
+      }
       correctAnswer = `${quotient} ושארית ${remainder}`;
     } else {
       // חילוק ללא שארית
-      quotient = randInt(2, Math.max(2, Math.floor(maxD / divisor)));
+      const quotientMax = Math.max(minQuotient, Math.floor(maxD / divisor));
+      quotient = randInt(minQuotient, quotientMax);
       dividend = divisor * quotient;
       correctAnswer = quotient;
     }

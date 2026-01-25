@@ -692,6 +692,7 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
   const dividendStr = String(dividend);
   const divisorStr = String(divisor);
   const quotientStr = String(quotient);
+  const ltr = (expr) => `\u2066${expr}\u2069`;
   const dividendLen = dividendStr.length;
   const repeat = (ch, n) => Array(Math.max(0, n)).fill(ch).join("");
 
@@ -709,7 +710,7 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
   // כדי שהמנה והקו יהיו בדיוק מעל המחולק (גם כשמיישרים למרכז), כל השורות חייבות להיות באותו רוחב:
   // רוחב = אורך המחולק + "│" + אורך המחלק
   const totalWidth = dividendLen + 1 + divisorStr.length;
-  const padToWidth = (s) => String(s).padEnd(totalWidth, " ");
+  const padToWidth = (s, width = totalWidth) => String(s).padEnd(width, " ");
 
   const makeWorkLineAt = (position, text) => {
     const t = String(text);
@@ -725,14 +726,18 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
 
   const quotientLineArr = Array(dividendLen).fill(" ");
   const workLines = [];
-  const makePre = () => {
-    // מנה מעל המחולק (רק מעל אזור המחולק)
-    const line1 = padToWidth(quotientLineArr.join(""));
+  const makePre = (opts = {}) => {
+    const remainderSuffix = opts.remainderSuffix || "";
+    // אם מוסיפים "(שארית)" ליד המנה, נרחיב את הרוחב כדי שכל השורות יישארו מיושרות
+    const width = totalWidth + (remainderSuffix ? remainderSuffix.length : 0);
+    // מנה מעל המחולק (רק מעל אזור המחולק) + שארית בסוגריים ליד הספרה האחרונה במנה
+    const line1 = padToWidth(quotientLineArr.join("") + remainderSuffix, width);
     // קו המנה - אותו אורך כמו המחולק, ומרופד לרוחב מלא כדי שלא "יזוז" במרכז
-    const line2 = padToWidth(repeat("_", dividendLen));
-    const line3 = padToWidth(dividendStr + "│" + divisorStr);
+    const line2 = padToWidth(repeat("_", dividendLen), width);
+    const line3 = padToWidth(dividendStr + "│" + divisorStr, width);
+    const paddedWork = workLines.map((l) => padToWidth(l, width));
     // עוטפים ב-LTR markers כדי שלא יתבלגן בתוך טקסט עברי
-    return `\u2066${[line1, line2, line3, ...workLines].join("\n")}\u2069`;
+    return `\u2066${[line1, line2, line3, ...paddedWork].join("\n")}\u2069`;
   };
   
   // חישוב חילוק ארוך צעד אחר צעד
@@ -859,10 +864,14 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
   
   // צעד אחרון: התוצאה הסופית
   const finalRemainder = divisionSteps.length > 0 ? divisionSteps[divisionSteps.length - 1].remainder : 0;
+  const remainderSuffix = finalRemainder > 0 ? `(${finalRemainder})` : "";
   steps.push({
     id: "final",
     title: "התוצאה הסופית",
-    text: `סיימנו! המנה היא ${quotient}${finalRemainder > 0 ? ` והשארית היא ${finalRemainder}` : ' בלי שארית'}.`,
+    text:
+      finalRemainder > 0
+        ? `סיימנו! התשובה היא ${ltr(`${quotient}${remainderSuffix}`)}.`
+        : `סיימנו! המנה היא ${quotient} בלי שארית.`,
     highlights: ["resultAll"],
     revealDigits: quotientStr.length,
     type: "division",
@@ -870,7 +879,8 @@ export function buildDivisionAnimation(dividend, divisor, quotient) {
     divisor,
     quotient,
     remainder: finalRemainder,
-    pre: makePre(),
+    // מוסיפים את השארית ליד המנה (ליד הספרה האחרונה), כמו בתמונה
+    pre: makePre({ remainderSuffix }),
   });
   
   return steps;
