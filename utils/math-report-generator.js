@@ -121,6 +121,46 @@ export function getMoledetGeographyTopicName(topic) {
   return MOLEDET_GEOGRAPHY_TOPIC_NAMES[topic] || topic;
 }
 
+const GRADE_LABELS = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
+const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
+
+function getMostCommonGradeAndLevel(savedTracking, containerKey, itemKey) {
+  let gradeKey = null;
+  let levelKey = null;
+
+  try {
+    const itemData = savedTracking?.[containerKey]?.[itemKey];
+    if (itemData?.sessions && itemData.sessions.length > 0) {
+      const gradeCounts = {};
+      const levelCounts = {};
+
+      itemData.sessions.forEach((session) => {
+        if (session.grade) gradeCounts[session.grade] = (gradeCounts[session.grade] || 0) + 1;
+        if (session.level) levelCounts[session.level] = (levelCounts[session.level] || 0) + 1;
+      });
+
+      if (Object.keys(gradeCounts).length > 0) {
+        const entries = Object.entries(gradeCounts).sort((a, b) => b[1] - a[1]);
+        gradeKey = entries[0][0];
+      }
+
+      if (Object.keys(levelCounts).length > 0) {
+        const entries = Object.entries(levelCounts).sort((a, b) => b[1] - a[1]);
+        levelKey = entries[0][0];
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  return {
+    gradeKey,
+    levelKey,
+    gradeLabel: gradeKey ? (GRADE_LABELS[gradeKey] || gradeKey) : "לא זמין",
+    levelLabel: levelKey ? (LEVEL_LABELS[levelKey] || levelKey) : "לא זמין",
+  };
+}
+
 // יצירת דוח להורים
 export function generateParentReport(playerName, period = 'week', customStartDate = null, customEndDate = null) {
   if (typeof window === "undefined") return null;
@@ -214,49 +254,15 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;
       const timeMinutes = mathTimeData.operations?.[op]?.minutes || 0;
       
-      // מציאת הכיתה והרמה הנפוצים ביותר מהנתונים שנשמרו
-      let mostCommonGrade = "לא זמין";
-      let mostCommonLevel = "לא זמין";
-      
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_time_tracking") || "{}");
-        const opData = saved.operations?.[op];
-        
-        if (opData?.sessions && opData.sessions.length > 0) {
-          // סיכום לפי כיתה
-          const gradeCounts = {};
-          const levelCounts = {};
-          
-          opData.sessions.forEach(session => {
-            if (session.grade) {
-              gradeCounts[session.grade] = (gradeCounts[session.grade] || 0) + 1;
-            }
-            if (session.level) {
-              levelCounts[session.level] = (levelCounts[session.level] || 0) + 1;
-            }
-          });
-          
-          // מציאת הכיתה הנפוצה ביותר
-          if (Object.keys(gradeCounts).length > 0) {
-            const gradeEntries = Object.entries(gradeCounts);
-            gradeEntries.sort((a, b) => b[1] - a[1]);
-            const gradeKey = gradeEntries[0][0];
-            const gradeNames = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
-            mostCommonGrade = gradeNames[gradeKey] || gradeKey;
-          }
-          
-          // מציאת הרמה הנפוצה ביותר
-          if (Object.keys(levelCounts).length > 0) {
-            const levelEntries = Object.entries(levelCounts);
-            levelEntries.sort((a, b) => b[1] - a[1]);
-            const levelKey = levelEntries[0][0];
-            const levelNames = { easy: "קל", medium: "בינוני", hard: "קשה" };
-            mostCommonLevel = levelNames[levelKey] || levelKey;
-          }
+      const mathTrackingSaved = (() => {
+        try {
+          return JSON.parse(localStorage.getItem("mleo_time_tracking") || "{}");
+        } catch {
+          return {};
         }
-      } catch (e) {
-        // אם יש שגיאה, נשאיר את הערכים ברירת המחדל
-      }
+      })();
+      const { gradeKey: mostCommonGradeKey, levelKey: mostCommonLevelKey, gradeLabel: mostCommonGrade, levelLabel: mostCommonLevel } =
+        getMostCommonGradeAndLevel(mathTrackingSaved, "operations", op);
       
       // אם יש זמן בתקופה, נכלול את הנתונים
       if (timeMinutes > 0 || questions > 0) {
@@ -275,7 +281,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
           excellent: accuracy >= 90,
           improvement: calculateImprovement(op, mathProgressData, period),
           grade: mostCommonGrade,
-          level: mostCommonLevel
+          gradeKey: mostCommonGradeKey,
+          level: mostCommonLevel,
+          levelKey: mostCommonLevelKey
         };
       }
     });
@@ -305,49 +313,15 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;
       const timeMinutes = geometryTimeData.topics?.[topic]?.minutes || 0;
       
-      // מציאת הכיתה והרמה הנפוצים ביותר מהנתונים שנשמרו
-      let mostCommonGrade = "לא זמין";
-      let mostCommonLevel = "לא זמין";
-      
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_geometry_time_tracking") || "{}");
-        const topicData = saved.topics?.[topic];
-        
-        if (topicData?.sessions && topicData.sessions.length > 0) {
-          // סיכום לפי כיתה
-          const gradeCounts = {};
-          const levelCounts = {};
-          
-          topicData.sessions.forEach(session => {
-            if (session.grade) {
-              gradeCounts[session.grade] = (gradeCounts[session.grade] || 0) + 1;
-            }
-            if (session.level) {
-              levelCounts[session.level] = (levelCounts[session.level] || 0) + 1;
-            }
-          });
-          
-          // מציאת הכיתה הנפוצה ביותר
-          if (Object.keys(gradeCounts).length > 0) {
-            const gradeEntries = Object.entries(gradeCounts);
-            gradeEntries.sort((a, b) => b[1] - a[1]);
-            const gradeKey = gradeEntries[0][0];
-            const gradeNames = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
-            mostCommonGrade = gradeNames[gradeKey] || gradeKey;
-          }
-          
-          // מציאת הרמה הנפוצה ביותר
-          if (Object.keys(levelCounts).length > 0) {
-            const levelEntries = Object.entries(levelCounts);
-            levelEntries.sort((a, b) => b[1] - a[1]);
-            const levelKey = levelEntries[0][0];
-            const levelNames = { easy: "קל", medium: "בינוני", hard: "קשה" };
-            mostCommonLevel = levelNames[levelKey] || levelKey;
-          }
+      const geoTrackingSaved = (() => {
+        try {
+          return JSON.parse(localStorage.getItem("mleo_geometry_time_tracking") || "{}");
+        } catch {
+          return {};
         }
-      } catch (e) {
-        // אם יש שגיאה, נשאיר את הערכים ברירת המחדל
-      }
+      })();
+      const { gradeKey: mostCommonGradeKey, levelKey: mostCommonLevelKey, gradeLabel: mostCommonGrade, levelLabel: mostCommonLevel } =
+        getMostCommonGradeAndLevel(geoTrackingSaved, "topics", topic);
       
       // אם יש זמן בתקופה, נכלול את הנתונים
       if (timeMinutes > 0 || questions > 0) {
@@ -365,7 +339,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
           needsPractice: accuracy < 70,
           excellent: accuracy >= 90,
           grade: mostCommonGrade,
-          level: mostCommonLevel
+          gradeKey: mostCommonGradeKey,
+          level: mostCommonLevel,
+          levelKey: mostCommonLevelKey
         };
       }
     });
@@ -391,43 +367,15 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;
       const timeMinutes = englishTimeData.topics?.[topic]?.minutes || 0;
       
-      let mostCommonGrade = "לא זמין";
-      let mostCommonLevel = "לא זמין";
-      
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_english_time_tracking") || "{}");
-        const topicData = saved.topics?.[topic];
-        
-        if (topicData?.sessions && topicData.sessions.length > 0) {
-          const gradeCounts = {};
-          const levelCounts = {};
-          
-          topicData.sessions.forEach(session => {
-            if (session.grade) {
-              gradeCounts[session.grade] = (gradeCounts[session.grade] || 0) + 1;
-            }
-            if (session.level) {
-              levelCounts[session.level] = (levelCounts[session.level] || 0) + 1;
-            }
-          });
-          
-          if (Object.keys(gradeCounts).length > 0) {
-            const gradeEntries = Object.entries(gradeCounts);
-            gradeEntries.sort((a, b) => b[1] - a[1]);
-            const gradeKey = gradeEntries[0][0];
-            const gradeNames = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
-            mostCommonGrade = gradeNames[gradeKey] || gradeKey;
-          }
-          
-          if (Object.keys(levelCounts).length > 0) {
-            const levelEntries = Object.entries(levelCounts);
-            levelEntries.sort((a, b) => b[1] - a[1]);
-            const levelKey = levelEntries[0][0];
-            const levelNames = { easy: "קל", medium: "בינוני", hard: "קשה" };
-            mostCommonLevel = levelNames[levelKey] || levelKey;
-          }
+      const engTrackingSaved = (() => {
+        try {
+          return JSON.parse(localStorage.getItem("mleo_english_time_tracking") || "{}");
+        } catch {
+          return {};
         }
-      } catch {}
+      })();
+      const { gradeKey: mostCommonGradeKey, levelKey: mostCommonLevelKey, gradeLabel: mostCommonGrade, levelLabel: mostCommonLevel } =
+        getMostCommonGradeAndLevel(engTrackingSaved, "topics", topic);
       
       if (timeMinutes > 0 || questions > 0) {
         englishTotalQuestions += questions;
@@ -444,7 +392,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
           needsPractice: accuracy < 70 && questions > 0,
           excellent: accuracy >= 90 && questions >= 10,
           grade: mostCommonGrade,
+          gradeKey: mostCommonGradeKey,
           level: mostCommonLevel,
+          levelKey: mostCommonLevelKey,
           displayName: getEnglishTopicName(topic)
         };
       }
@@ -471,42 +421,15 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;
       const timeMinutes = scienceTimeData.topics?.[topic]?.minutes || 0;
       
-      let mostCommonGrade = "לא זמין";
-      let mostCommonLevel = "לא זמין";
-      
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_science_time_tracking") || "{}");
-        const topicData = saved.topics?.[topic];
-        if (topicData?.sessions && topicData.sessions.length > 0) {
-          const gradeCounts = {};
-          const levelCounts = {};
-          
-          topicData.sessions.forEach((session) => {
-            if (session.grade) {
-              gradeCounts[session.grade] = (gradeCounts[session.grade] || 0) + 1;
-            }
-            if (session.level) {
-              levelCounts[session.level] = (levelCounts[session.level] || 0) + 1;
-            }
-          });
-          
-          if (Object.keys(gradeCounts).length > 0) {
-            const gradeEntries = Object.entries(gradeCounts);
-            gradeEntries.sort((a, b) => b[1] - a[1]);
-            const gradeKey = gradeEntries[0][0];
-            const gradeNames = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
-            mostCommonGrade = gradeNames[gradeKey] || gradeKey;
-          }
-          
-          if (Object.keys(levelCounts).length > 0) {
-            const levelEntries = Object.entries(levelCounts);
-            levelEntries.sort((a, b) => b[1] - a[1]);
-            const levelKey = levelEntries[0][0];
-            const levelNames = { easy: "קל", medium: "בינוני", hard: "קשה" };
-            mostCommonLevel = levelNames[levelKey] || levelKey;
-          }
+      const sciTrackingSaved = (() => {
+        try {
+          return JSON.parse(localStorage.getItem("mleo_science_time_tracking") || "{}");
+        } catch {
+          return {};
         }
-      } catch {}
+      })();
+      const { gradeKey: mostCommonGradeKey, levelKey: mostCommonLevelKey, gradeLabel: mostCommonGrade, levelLabel: mostCommonLevel } =
+        getMostCommonGradeAndLevel(sciTrackingSaved, "topics", topic);
       
       if (timeMinutes > 0 || questions > 0) {
         scienceTotalQuestions += questions;
@@ -523,7 +446,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
           needsPractice: accuracy < 70 && questions > 0,
           excellent: accuracy >= 90 && questions >= 10,
           grade: mostCommonGrade,
+          gradeKey: mostCommonGradeKey,
           level: mostCommonLevel,
+          levelKey: mostCommonLevelKey,
           displayName: getScienceTopicName(topic)
         };
       }
@@ -550,43 +475,15 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;
       const timeMinutes = hebrewTimeData.topics?.[topic]?.minutes || 0;
       
-      let mostCommonGrade = "לא זמין";
-      let mostCommonLevel = "לא זמין";
-      
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_hebrew_time_tracking") || "{}");
-        const topicData = saved.topics?.[topic];
-        
-        if (topicData?.sessions && topicData.sessions.length > 0) {
-          const gradeCounts = {};
-          const levelCounts = {};
-          
-          topicData.sessions.forEach(session => {
-            if (session.grade) {
-              gradeCounts[session.grade] = (gradeCounts[session.grade] || 0) + 1;
-            }
-            if (session.level) {
-              levelCounts[session.level] = (levelCounts[session.level] || 0) + 1;
-            }
-          });
-          
-          if (Object.keys(gradeCounts).length > 0) {
-            const gradeEntries = Object.entries(gradeCounts);
-            gradeEntries.sort((a, b) => b[1] - a[1]);
-            const gradeKey = gradeEntries[0][0];
-            const gradeNames = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
-            mostCommonGrade = gradeNames[gradeKey] || gradeKey;
-          }
-          
-          if (Object.keys(levelCounts).length > 0) {
-            const levelEntries = Object.entries(levelCounts);
-            levelEntries.sort((a, b) => b[1] - a[1]);
-            const levelKey = levelEntries[0][0];
-            const levelNames = { easy: "קל", medium: "בינוני", hard: "קשה" };
-            mostCommonLevel = levelNames[levelKey] || levelKey;
-          }
+      const hebTrackingSaved = (() => {
+        try {
+          return JSON.parse(localStorage.getItem("mleo_hebrew_time_tracking") || "{}");
+        } catch {
+          return {};
         }
-      } catch {}
+      })();
+      const { gradeKey: mostCommonGradeKey, levelKey: mostCommonLevelKey, gradeLabel: mostCommonGrade, levelLabel: mostCommonLevel } =
+        getMostCommonGradeAndLevel(hebTrackingSaved, "topics", topic);
       
       if (timeMinutes > 0 || questions > 0) {
         hebrewTotalQuestions += questions;
@@ -603,7 +500,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
           needsPractice: accuracy < 70 && questions > 0,
           excellent: accuracy >= 90 && questions >= 10,
           grade: mostCommonGrade,
+          gradeKey: mostCommonGradeKey,
           level: mostCommonLevel,
+          levelKey: mostCommonLevelKey,
           displayName: getHebrewTopicName(topic)
         };
       }
@@ -630,43 +529,15 @@ export function generateParentReport(playerName, period = 'week', customStartDat
       const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;
       const timeMinutes = moledetGeographyTimeData.topics?.[topic]?.minutes || 0;
       
-      let mostCommonGrade = "לא זמין";
-      let mostCommonLevel = "לא זמין";
-      
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_moledet_geography_time_tracking") || "{}");
-        const topicData = saved.topics?.[topic];
-        
-        if (topicData?.sessions && topicData.sessions.length > 0) {
-          const gradeCounts = {};
-          const levelCounts = {};
-          
-          topicData.sessions.forEach(session => {
-            if (session.grade) {
-              gradeCounts[session.grade] = (gradeCounts[session.grade] || 0) + 1;
-            }
-            if (session.level) {
-              levelCounts[session.level] = (levelCounts[session.level] || 0) + 1;
-            }
-          });
-          
-          if (Object.keys(gradeCounts).length > 0) {
-            const gradeEntries = Object.entries(gradeCounts);
-            gradeEntries.sort((a, b) => b[1] - a[1]);
-            const gradeKey = gradeEntries[0][0];
-            const gradeNames = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
-            mostCommonGrade = gradeNames[gradeKey] || gradeKey;
-          }
-          
-          if (Object.keys(levelCounts).length > 0) {
-            const levelEntries = Object.entries(levelCounts);
-            levelEntries.sort((a, b) => b[1] - a[1]);
-            const levelKey = levelEntries[0][0];
-            const levelNames = { easy: "קל", medium: "בינוני", hard: "קשה" };
-            mostCommonLevel = levelNames[levelKey] || levelKey;
-          }
+      const mgTrackingSaved = (() => {
+        try {
+          return JSON.parse(localStorage.getItem("mleo_moledet_geography_time_tracking") || "{}");
+        } catch {
+          return {};
         }
-      } catch {}
+      })();
+      const { gradeKey: mostCommonGradeKey, levelKey: mostCommonLevelKey, gradeLabel: mostCommonGrade, levelLabel: mostCommonLevel } =
+        getMostCommonGradeAndLevel(mgTrackingSaved, "topics", topic);
       
       if (timeMinutes > 0 || questions > 0) {
         moledetGeographyTotalQuestions += questions;
@@ -683,7 +554,9 @@ export function generateParentReport(playerName, period = 'week', customStartDat
           needsPractice: accuracy < 70 && questions > 0,
           excellent: accuracy >= 90 && questions >= 10,
           grade: mostCommonGrade,
+          gradeKey: mostCommonGradeKey,
           level: mostCommonLevel,
+          levelKey: mostCommonLevelKey,
           displayName: getMoledetGeographyTopicName(topic)
         };
       }
@@ -1225,62 +1098,183 @@ function getDisplayNameForEntry(op, data) {
 // יצירת המלצות
 function generateRecommendations(operations, mistakes) {
   const recommendations = [];
-  
-  // המלצות לפי דיוק
+
+  // ספי "היברידי" (דיוק+שאלות מהכללי, זמן מהתקופה הנבחרת)
+  const TH = {
+    promoteAccuracy: 92,
+    promoteQuestions: 40,
+    promoteTimeMinutes: 20,
+    superAccuracy: 97,
+    superQuestions: 80,
+    superTimeMinutes: 30,
+    minDataQuestions: 10,
+    minDataTimeMinutes: 5,
+    // כדי לקבל "המלצה כחולה" (טוב) חייבים גם זמן וגם מספיק שאלות
+    goodAccuracy: 85,
+    goodQuestions: 15,
+    goodTimeMinutes: 10,
+  };
+
+  const gradeOrder = ["g1", "g2", "g3", "g4", "g5", "g6"];
+  const nextGradeKey = (g) => {
+    const idx = gradeOrder.indexOf(g);
+    if (idx < 0 || idx >= gradeOrder.length - 1) return null;
+    return gradeOrder[idx + 1];
+  };
+  const nextLevelKey = (l) => {
+    if (l === "easy") return "medium";
+    if (l === "medium") return "hard";
+    return null;
+  };
+
   Object.entries(operations).forEach(([op, data]) => {
-    if (data.needsPractice && data.questions > 0) {
-      const priority = data.accuracy < 50 ? 'high' : data.accuracy < 70 ? 'medium' : 'low';
-      const operationName = getDisplayNameForEntry(op, data);
+    const operationName = getDisplayNameForEntry(op, data);
+
+    const questions = data.questions || 0;
+    const accuracy = data.accuracy || 0;
+    const timeMinutes = data.timeMinutes || 0;
+    const mistakesCount = mistakes?.[op]?.count || 0;
+    const hasQuestions = questions > 0;
+
+    // נייצר המלצה לכל נושא/פעולה שנלמדו (יש זמן או יש שאלות)
+    if (questions <= 0 && timeMinutes <= 0) return;
+
+    const baseReasons = hasQuestions
+      ? `דיוק ${accuracy}% על ${questions} שאלות, ${timeMinutes} דקות בתקופה`
+      : `אין נתוני שאלות (רק ${timeMinutes} דקות תרגול בתקופה)`;
+
+    // כדי להוציא "כחול" חייבים גם זמן מינימלי וגם מינימום שאלות
+    const hasEnoughDataForStableRecommendation =
+      questions >= TH.minDataQuestions && timeMinutes >= TH.minDataTimeMinutes;
+
+    // המלצה ירוקה לעלייה (רמה/כיתה/שניהם)
+    const meetsPromotionBase =
+      accuracy >= TH.promoteAccuracy &&
+      questions >= TH.promoteQuestions &&
+      timeMinutes >= TH.promoteTimeMinutes;
+
+    let promoteLevelToKey = null;
+    let promoteGradeToKey = null;
+
+    if (meetsPromotionBase) {
+      if (data.levelKey && data.levelKey !== "hard") {
+        promoteLevelToKey = nextLevelKey(data.levelKey);
+      }
+
+      const meetsSuper =
+        accuracy >= TH.superAccuracy &&
+        questions >= TH.superQuestions &&
+        timeMinutes >= TH.superTimeMinutes;
+
+      if (data.gradeKey && data.gradeKey !== "g6" && (data.levelKey === "hard" || meetsSuper)) {
+        promoteGradeToKey = nextGradeKey(data.gradeKey);
+      }
+    }
+
+    if (promoteLevelToKey || promoteGradeToKey) {
+      const parts = [];
+      if (promoteLevelToKey) parts.push(`לעלות רמה ל־${LEVEL_LABELS[promoteLevelToKey] || promoteLevelToKey}`);
+      if (promoteGradeToKey) parts.push(`לעלות כיתה ל־${GRADE_LABELS[promoteGradeToKey] || promoteGradeToKey}`);
+
       recommendations.push({
-        type: 'accuracy',
+        type: "promotion",
         operation: op,
         operationName,
-        message: `מומלץ לתרגל יותר ${operationName} - דיוק ${data.accuracy}%`,
-        priority,
-        currentAccuracy: data.accuracy,
-        targetAccuracy: 80
+        message: `מצוין! מומלץ ${parts.join(" וגם ")}. (${baseReasons})`,
+        priority: "success",
+        promoteLevelToKey,
+        promoteGradeToKey,
       });
+      return;
     }
-  });
-  
-  // המלצות לפי שגיאות
-  Object.entries(mistakes).forEach(([op, data]) => {
-    if (data.count > 10) {
-      const sample = operations[op];
-      const operationName = sample ? getDisplayNameForEntry(op, sample) : getOperationName(op);
+
+    // אין מספיק נתונים (מעט זמן ו/או מעט שאלות) — לא כחול.
+    // נשאיר את זה בצהוב כדי שלא תהיה תחושה ש"הכל טוב" כשאין זמן/נתונים.
+    if (!hasEnoughDataForStableRecommendation) {
       recommendations.push({
-        type: 'mistakes',
+        type: "insufficient_data",
         operation: op,
         operationName,
-        message: `${operationName} - ${data.count} שגיאות. מומלץ לחזור על הנושא`,
-        priority: 'high',
-        mistakeCount: data.count
+        message: `צריך עוד תרגול (בעיקר זמן/כמות שאלות) כדי לתת המלצה חזקה. (${baseReasons})`,
+        priority: "medium",
       });
+      return;
     }
-  });
-  
-  // המלצות לפי זמן
-  Object.entries(operations).forEach(([op, data]) => {
-    if (data.timeMinutes < 5 && data.questions > 0) {
-      const opName = getDisplayNameForEntry(op, data);
+
+    // המלצות "לא טובות" (אדום) — דיוק נמוך או הרבה טעויות בתקופה
+    if ((hasQuestions && accuracy < 65 && questions >= TH.minDataQuestions) || mistakesCount >= 10) {
+      const msgParts = [];
+      if (accuracy < 65) msgParts.push(`דיוק נמוך (${accuracy}%) — מומלץ לחזור על הבסיס ולעבוד לאט`);
+      if (mistakesCount >= 10) msgParts.push(`${mistakesCount} טעויות בתקופה — כדאי לתרגל את הנושא באופן ממוקד`);
+      if (timeMinutes < 10) msgParts.push("מומלץ גם להגדיל את זמן התרגול לנושא הזה");
+
       recommendations.push({
-        type: 'time',
+        type: "needs_practice",
         operation: op,
-        operationName: opName,
-        message: `${opName} - רק ${data.timeMinutes} דקות תרגול. מומלץ להגדיל זמן תרגול`,
-        priority: 'medium',
-        currentTime: data.timeMinutes,
-        recommendedTime: 15
+        operationName,
+        message: `${msgParts.join(". ")}. (${baseReasons})`,
+        priority: "high",
+        mistakeCount: mistakesCount,
       });
+      return;
     }
+
+    // ביניים (צהוב)
+    if (hasQuestions && accuracy < 80) {
+      recommendations.push({
+        type: "improve",
+        operation: op,
+        operationName,
+        message: `יש התקדמות, אבל כדאי לחזק לפני שמעלים קושי. (${baseReasons})`,
+        priority: "medium",
+      });
+      return;
+    }
+
+    // טוב (כחול) – רק אם עומדים גם ביעד זמן וגם בכמות שאלות + דיוק טוב
+    if (
+      hasQuestions &&
+      accuracy >= TH.goodAccuracy &&
+      questions >= TH.goodQuestions &&
+      timeMinutes >= TH.goodTimeMinutes
+    ) {
+      const hint =
+        data.levelKey && data.levelKey !== "hard"
+          ? `אפשר לנסות בהדרגה רמה ${LEVEL_LABELS[nextLevelKey(data.levelKey)] || "גבוהה יותר"}`
+          : "להמשיך לתרגל כדי לשמור על יציבות";
+      recommendations.push({
+        type: "good",
+        operation: op,
+        operationName,
+        message: `מצב טוב. ${hint}. (${baseReasons})`,
+        priority: "low",
+      });
+      return;
+    }
+
+    // ברירת מחדל: צהוב (לא כחול) — יש דיוק טוב אבל עדיין חסר זמן/שאלות כדי להגדיר כ"טוב מאוד"
+    if (hasQuestions) {
+      recommendations.push({
+        type: "improve_more",
+        operation: op,
+        operationName,
+        message: `הדיוק טוב, אבל צריך עוד תרגול (זמן/כמות שאלות) לפני שמעלים קושי. (${baseReasons})`,
+        priority: "medium",
+      });
+      return;
+    }
+
+    recommendations.push({
+      type: "ok",
+      operation: op,
+      operationName,
+      message: `מומלץ להמשיך לתרגל כדי לקבל גם נתוני דיוק. (${baseReasons})`,
+      priority: "medium",
+    });
   });
-  
-  // מיון לפי עדיפות
-  const priorityOrder = { high: 3, medium: 2, low: 1 };
-  recommendations.sort((a, b) => 
-    priorityOrder[b.priority] - priorityOrder[a.priority]
-  );
-  
+
+  const priorityOrder = { success: 4, high: 3, medium: 2, low: 1 };
+  recommendations.sort((a, b) => (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0));
   return recommendations;
 }
 

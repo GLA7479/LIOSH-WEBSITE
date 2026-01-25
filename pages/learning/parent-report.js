@@ -1212,7 +1212,9 @@ export default function ParentReport() {
                   <div
                     key={idx}
                     className={`p-2 md:p-3 rounded-lg border ${
-                      rec.priority === 'high'
+                      rec.priority === 'success'
+                        ? "bg-green-500/20 border-green-400/50"
+                        : rec.priority === 'high'
                         ? "bg-red-500/20 border-red-400/50"
                         : rec.priority === 'medium'
                         ? "bg-yellow-500/20 border-yellow-400/50"
@@ -1221,7 +1223,13 @@ export default function ParentReport() {
                   >
                     <div className="flex items-start gap-2">
                       <span className="text-lg md:text-xl">
-                        {rec.priority === 'high' ? '🔴' : rec.priority === 'medium' ? '🟡' : '🔵'}
+                        {rec.priority === 'success'
+                          ? '🟢'
+                          : rec.priority === 'high'
+                          ? '🔴'
+                          : rec.priority === 'medium'
+                          ? '🟡'
+                          : '🔵'}
                       </span>
                       <div className="flex-1">
                         <div className="font-semibold mb-1 text-sm md:text-base">{rec.operationName}</div>
