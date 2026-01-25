@@ -3295,9 +3295,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                               onClick={() => setShowSolution(false)}
                             >
                               <div
-                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
+                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[88vh] max-h-[780px] shadow-2xl flex flex-col"
                                 onClick={(e) => e.stopPropagation()}
-                                style={{ maxWidth: "90vw", maxHeight: "90vh" }}
+                                style={{ maxWidth: "90vw" }}
                               >
                                 {/* כותרת - קבועה */}
                                 <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
@@ -3505,9 +3505,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                 dir="rtl"
                               >
                                 <div
-                                  className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[600px] shadow-2xl flex flex-col"
+                                  className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[88vh] max-h-[860px] shadow-2xl flex flex-col"
                                   onClick={(e) => e.stopPropagation()}
-                                  style={{ maxWidth: "90vw", maxHeight: "90vh" }}
+                                  style={{ maxWidth: "90vw" }}
                                 >
                                   {/* כותרת */}
                                   <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
@@ -3694,9 +3694,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                               dir="rtl"
                             >
                               <div
-                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
+                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[88vh] max-h-[780px] shadow-2xl flex flex-col"
                                 onClick={(e) => e.stopPropagation()}
-                                style={{ maxWidth: "90vw", maxHeight: "90vh" }}
+                                style={{ maxWidth: "90vw" }}
                               >
                                 {/* כותרת - קבועה */}
                                 <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
@@ -3911,9 +3911,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                             dir="rtl"
                           >
                             <div
-                              className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
+                              className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[88vh] max-h-[780px] shadow-2xl flex flex-col"
                               onClick={(e) => e.stopPropagation()}
-                              style={{ maxWidth: "90vw", maxHeight: "90vh" }}
+                              style={{ maxWidth: "90vw" }}
                             >
                               {/* כותרת - קבועה */}
                               <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
