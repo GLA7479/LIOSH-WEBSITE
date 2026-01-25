@@ -296,6 +296,22 @@ export default function ParentReport() {
             .text-white\\/90 {
               color: #333 !important;
             }
+
+            /* Recharts (SVG) – טקסט של צירים/תוויות/מקרא יוצא לבן כברירת מחדל; בהדפסה חייב להיות שחור */
+            #parent-report-pdf svg text {
+              fill: #000 !important;
+            }
+            #parent-report-pdf .recharts-cartesian-axis-tick-value,
+            #parent-report-pdf .recharts-text,
+            #parent-report-pdf .recharts-label,
+            #parent-report-pdf .recharts-legend-item-text {
+              fill: #000 !important;
+              color: #000 !important;
+            }
+            #parent-report-pdf .recharts-cartesian-grid line,
+            #parent-report-pdf .recharts-cartesian-grid path {
+              stroke: #d1d5db !important;
+            }
             /* להסתיר רק מה שמסומן (וגם כפתורים) */
             .no-pdf,
             [data-pdf-overlay="1"],
