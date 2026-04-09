@@ -25,6 +25,7 @@ import {
   buildStepExplanation,
 } from "../../utils/moledet-geography-explanations";
 import { trackMoledetGeographyTopicTime } from "../../utils/moledet-geography-time-tracking";
+import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   addSessionProgress,
   loadMonthlyProgress,
@@ -90,6 +91,7 @@ export default function MoledetGeographyMaster() {
   const sessionStartRef = useRef(null);
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
+  const pendingMoledetGeographyTrackMetaRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [mounted, setMounted] = useState(false);
@@ -1069,7 +1071,21 @@ useEffect(() => {
         const qGrade = currentQuestion.gradeKey || `g${grade}`;
         const qLevel = currentQuestion.levelKey || level;
         const topic = currentQuestion.topic || currentQuestion.operation || "mixed";
-        trackMoledetGeographyTopicTime(topic, qGrade, qLevel, duration);
+        const meta = pendingMoledetGeographyTrackMetaRef.current;
+        pendingMoledetGeographyTrackMetaRef.current = null;
+        trackMoledetGeographyTopicTime(
+          topic,
+          qGrade,
+          qLevel,
+          duration,
+          meta && meta.mode != null
+            ? { mode: meta.mode, correct: meta.correct, total: meta.total }
+            : {
+                mode: reportModeFromGameState(mode, focusedPracticeMode),
+                total: 1,
+                correct: undefined,
+              }
+        );
       }
     }
     setQuestionStartTime(null);
@@ -1077,9 +1093,6 @@ useEffect(() => {
 
   function handleAnswer(answer) {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
-
-    // מעקב זמן לשאלה הנוכחית
-    trackCurrentQuestionTime();
 
     // סטטיסטיקה – ספירת שאלה וזמן
     setTotalQuestions((prevCount) => {
@@ -1095,6 +1108,11 @@ useEffect(() => {
 
     setSelectedAnswer(answer);
     const isCorrect = answer === currentQuestion.correctAnswer;
+    pendingMoledetGeographyTrackMetaRef.current = {
+      correct: isCorrect ? 1 : 0,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
 
     if (isCorrect) {
       // חישוב נקודות לפי מצב

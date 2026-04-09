@@ -4,7 +4,7 @@ const HEBREW_TIME_TRACKING_KEY = "mleo_hebrew_time_tracking";
  * Track time spent on a Hebrew topic (in seconds).
  * Stores aggregates per topic, grade, level and per-day totals.
  */
-export function trackHebrewTopicTime(topic, grade, level, duration) {
+export function trackHebrewTopicTime(topic, grade, level, duration, meta = {}) {
   if (typeof window === "undefined" || !topic || !duration) return;
 
   try {
@@ -45,11 +45,15 @@ export function trackHebrewTopicTime(topic, grade, level, duration) {
       duration,
       grade,
       level,
+      topic,
       timestamp: Date.now(),
+      mode: meta.mode != null ? String(meta.mode) : "learning",
+      total: meta.total !== undefined ? Number(meta.total) : 1,
+      correct:
+        meta.correct !== undefined && meta.correct !== null
+          ? Number(meta.correct)
+          : undefined,
     });
-    if (saved.topics[topic].sessions.length > 1000) {
-      saved.topics[topic].sessions = saved.topics[topic].sessions.slice(-1000);
-    }
 
     saved.daily[today].total += duration;
     saved.daily[today].topics[topic] =

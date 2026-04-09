@@ -35,6 +35,7 @@ import {
   buildStepExplanation,
 } from "../../utils/math-explanations";
 import { trackOperationTime } from "../../utils/math-time-tracking";
+import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   buildVerticalOperation,
   convertMissingNumberEquation,
@@ -307,6 +308,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   });
   const [learningIntel, setLearningIntel] = useState(() => loadMathIntel());
   const correctRef = useRef(0);
+  /** Parent Report V2: last-answer meta consumed when logging time for the previous question */
+  const pendingTimeTrackMetaRef = useRef(null);
   const mistakesRef = useRef([]);
   const remainingMistakesRef = useRef([]);
   const focusedPracticeModeRef = useRef("normal");
@@ -1080,7 +1083,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 currentQuestion.operation,
                 grade,
                 level,
-                duration
+                duration,
+                { mode: "practice_mistakes", total: 1, correct: undefined }
               );
             }
           }
@@ -1185,12 +1189,25 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     // מעקב זמן - סיום שאלה קודמת (אם יש)
     if (questionStartTime && currentQuestion) {
       const duration = (Date.now() - questionStartTime) / 1000; // שניות
-      if (duration > 0 && duration < 300) { // רק אם זמן סביר (פחות מ-5 דקות)
+      if (duration > 0 && duration < 300) {
+        const meta = pendingTimeTrackMetaRef.current;
+        pendingTimeTrackMetaRef.current = null;
         trackOperationTime(
           currentQuestion.operation,
           grade,
           level,
-          duration
+          duration,
+          meta && meta.mode != null
+            ? {
+                mode: meta.mode,
+                correct: meta.correct,
+                total: meta.total,
+              }
+            : {
+                mode: reportModeFromGameState(mode, focusedPracticeMode),
+                total: 1,
+                correct: undefined,
+              }
         );
       }
     }
@@ -1456,6 +1473,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     }
 
     setSelectedAnswer(numericAnswer);
+
+    pendingTimeTrackMetaRef.current = {
+      correct: isCorrect ? 1 : 0,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
 
     if (isCorrect) {
       // חישוב נקודות לפי מצב

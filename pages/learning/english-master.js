@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { trackEnglishTopicTime } from "../../utils/english-time-tracking";
+import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   addSessionProgress,
   loadMonthlyProgress,
@@ -772,6 +773,7 @@ export default function EnglishMaster() {
   const sessionStartRef = useRef(null);
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
+  const pendingEnglishTrackMetaRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [mounted, setMounted] = useState(false);
@@ -1097,7 +1099,21 @@ const refreshMonthlyProgress = useCallback(() => {
     if (duration > 0 && duration < 300) {
       const qGrade = currentQuestion.gradeKey || grade;
       const qLevel = currentQuestion.levelKey || level;
-      trackEnglishTopicTime(currentQuestion.topic, qGrade, qLevel, duration);
+      const meta = pendingEnglishTrackMetaRef.current;
+      pendingEnglishTrackMetaRef.current = null;
+      trackEnglishTopicTime(
+        currentQuestion.topic,
+        qGrade,
+        qLevel,
+        duration,
+        meta && meta.mode != null
+          ? { mode: meta.mode, correct: meta.correct, total: meta.total }
+          : {
+              mode: reportModeFromGameState(mode, focusedPracticeMode),
+              total: 1,
+              correct: undefined,
+            }
+      );
     }
   }
 
@@ -1482,6 +1498,11 @@ const refreshMonthlyProgress = useCallback(() => {
   function stopGame() {
     // Stop background music when game stops
     sound.stopBackgroundMusic();
+    pendingEnglishTrackMetaRef.current = {
+      correct: undefined,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
     trackCurrentQuestionTime();
     recordSessionProgress();
     setGameActive(false);
@@ -1492,6 +1513,11 @@ const refreshMonthlyProgress = useCallback(() => {
   }
 
   function handleTimeUp() {
+    pendingEnglishTrackMetaRef.current = {
+      correct: 0,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
     trackCurrentQuestionTime();
     recordSessionProgress();
     setWrong((prev) => prev + 1);
@@ -1523,6 +1549,11 @@ const refreshMonthlyProgress = useCallback(() => {
     const normalize = (v) => String(v).trim().toLowerCase();
     const isCorrect =
       normalize(answer) === normalize(currentQuestion.correctAnswer);
+    pendingEnglishTrackMetaRef.current = {
+      correct: isCorrect ? 1 : 0,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
     let awardedPoints = 0;
     if (isCorrect) {
       awardedPoints = 10 + streak;
@@ -1700,6 +1731,11 @@ const refreshMonthlyProgress = useCallback(() => {
         setLives((prevLives) => {
           const nextLives = prevLives - 1;
           if (nextLives <= 0) {
+            pendingEnglishTrackMetaRef.current = {
+              correct: 0,
+              total: 1,
+              mode: reportModeFromGameState(mode, focusedPracticeMode),
+            };
             trackCurrentQuestionTime();
             setFeedback("Game Over! 💔");
             sound.playSound("game-over");

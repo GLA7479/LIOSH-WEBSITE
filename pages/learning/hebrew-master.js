@@ -25,6 +25,7 @@ import {
   buildStepExplanation,
 } from "../../utils/hebrew-explanations";
 import { trackHebrewTopicTime } from "../../utils/hebrew-time-tracking";
+import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   addSessionProgress,
   loadMonthlyProgress,
@@ -90,6 +91,7 @@ export default function HebrewMaster() {
   const sessionStartRef = useRef(null);
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
+  const pendingHebrewTrackMetaRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [mounted, setMounted] = useState(false);
@@ -894,7 +896,7 @@ useEffect(() => {
 
     // מעקב זמן - סיום שאלה קודמת (אם יש)
     trackCurrentQuestionTime();
-    
+
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setFeedback(null);
@@ -1074,15 +1076,26 @@ useEffect(() => {
       const qGrade = currentQuestion.gradeKey || `g${grade}`;
       const qLevel = currentQuestion.levelKey || level;
       const topic = currentQuestion.topic || currentQuestion.operation || "mixed";
-      trackHebrewTopicTime(topic, qGrade, qLevel, duration);
+      const meta = pendingHebrewTrackMetaRef.current;
+      pendingHebrewTrackMetaRef.current = null;
+      trackHebrewTopicTime(
+        topic,
+        qGrade,
+        qLevel,
+        duration,
+        meta && meta.mode != null
+          ? { mode: meta.mode, correct: meta.correct, total: meta.total }
+          : {
+              mode: reportModeFromGameState(mode, focusedPracticeMode),
+              total: 1,
+              correct: undefined,
+            }
+      );
     }
   }
 
   function handleAnswer(answer) {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
-
-    // מעקב זמן לשאלה הנוכחית
-    trackCurrentQuestionTime();
 
     // סטטיסטיקה – ספירת שאלה וזמן
     setTotalQuestions((prevCount) => {
@@ -1098,6 +1111,11 @@ useEffect(() => {
 
     setSelectedAnswer(answer);
     const isCorrect = answer === currentQuestion.correctAnswer;
+    pendingHebrewTrackMetaRef.current = {
+      correct: isCorrect ? 1 : 0,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
 
     if (isCorrect) {
       // חישוב נקודות לפי מצב

@@ -1095,8 +1095,8 @@ function getDisplayNameForEntry(op, data) {
   return getOperationName(op);
 }
 
-// יצירת המלצות
-function generateRecommendations(operations, mistakes) {
+// יצירת המלצות (משותף לדוח V1 ול־V2)
+export function generateRecommendations(operations, mistakes) {
   const recommendations = [];
 
   // ספי "היברידי" (דיוק+שאלות מהכללי, זמן מהתקופה הנבחרת)

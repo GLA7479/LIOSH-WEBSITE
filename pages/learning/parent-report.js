@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
-import { generateParentReport, getOperationName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
+import { getOperationName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
+import { generateParentReportV2 } from "../../utils/parent-report-v2";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import {
@@ -70,7 +71,7 @@ export default function ParentReport() {
       setAppliedStartDate(defaultStartDate);
       
       if (name) {
-        const data = generateParentReport(name, period);
+        const data = generateParentReportV2(name, period);
         setReport(data);
       }
       setLoading(false);
@@ -90,9 +91,9 @@ export default function ParentReport() {
     if (typeof window !== "undefined" && playerName && !loading) {
       let data;
       if (customDates && appliedStartDate && appliedEndDate) {
-        data = generateParentReport(playerName, 'custom', appliedStartDate, appliedEndDate);
+        data = generateParentReportV2(playerName, 'custom', appliedStartDate, appliedEndDate);
       } else if (!customDates) {
-        data = generateParentReport(playerName, period);
+        data = generateParentReportV2(playerName, period);
       }
       if (data) {
         setReport(data);
@@ -566,6 +567,7 @@ export default function ParentReport() {
                       <th className="text-right py-2 px-1 md:px-2">פעולה</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
+                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
                       <th className="text-center py-2 px-1 md:px-2">זמן</th>
                       <th className="text-center py-2 px-1 md:px-2">שאלות</th>
                       <th className="text-center py-2 px-1 md:px-2">נכון</th>
@@ -586,6 +588,9 @@ export default function ParentReport() {
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.grade || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.mode ?? "לא זמין"}
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.timeMinutes} דק'
@@ -632,6 +637,9 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
                         </div>
                         <div>
@@ -674,6 +682,7 @@ export default function ParentReport() {
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
+                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
                       <th className="text-center py-2 px-1 md:px-2">זמן</th>
                       <th className="text-center py-2 px-1 md:px-2">שאלות</th>
                       <th className="text-center py-2 px-1 md:px-2">נכון</th>
@@ -694,6 +703,9 @@ export default function ParentReport() {
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.grade || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.mode ?? "לא זמין"}
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.timeMinutes} דק'
@@ -740,6 +752,9 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
                         </div>
                         <div>
@@ -783,6 +798,7 @@ export default function ParentReport() {
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
+                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
                       <th className="text-center py-2 px-1 md:px-2">זמן</th>
                       <th className="text-center py-2 px-1 md:px-2">שאלות</th>
                       <th className="text-center py-2 px-1 md:px-2">נכון</th>
@@ -803,6 +819,9 @@ export default function ParentReport() {
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.grade || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.mode ?? "לא זמין"}
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.timeMinutes} דק'
@@ -849,6 +868,9 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
                         </div>
                         <div>
@@ -892,6 +914,7 @@ export default function ParentReport() {
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
+                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
                       <th className="text-center py-2 px-1 md:px-2">זמן</th>
                       <th className="text-center py-2 px-1 md:px-2">שאלות</th>
                       <th className="text-center py-2 px-1 md:px-2">נכון</th>
@@ -912,6 +935,9 @@ export default function ParentReport() {
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.grade || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.mode ?? "לא זמין"}
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.timeMinutes} דק'
@@ -962,6 +988,9 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
                         </div>
                         <div>
@@ -1005,6 +1034,7 @@ export default function ParentReport() {
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
+                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
                       <th className="text-center py-2 px-1 md:px-2">זמן</th>
                       <th className="text-center py-2 px-1 md:px-2">שאלות</th>
                       <th className="text-center py-2 px-1 md:px-2">נכון</th>
@@ -1025,6 +1055,9 @@ export default function ParentReport() {
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.grade || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.mode ?? "לא זמין"}
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.timeMinutes} דק'
@@ -1075,6 +1108,9 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
                         </div>
                         <div>
@@ -1118,6 +1154,7 @@ export default function ParentReport() {
                       <th className="text-right py-2 px-1 md:px-2">נושא</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
+                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
                       <th className="text-center py-2 px-1 md:px-2">זמן</th>
                       <th className="text-center py-2 px-1 md:px-2">שאלות</th>
                       <th className="text-center py-2 px-1 md:px-2">נכון</th>
@@ -1138,6 +1175,9 @@ export default function ParentReport() {
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.grade || "לא זמין"}
+                          </td>
+                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                            {data.mode ?? "לא זמין"}
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.timeMinutes} דק'
@@ -1186,6 +1226,9 @@ export default function ParentReport() {
                         </div>
                         <div>
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
                         </div>
                         <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>

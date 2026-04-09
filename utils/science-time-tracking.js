@@ -1,6 +1,6 @@
 const SCIENCE_TIME_TRACKING_KEY = "mleo_science_time_tracking";
 
-export function trackScienceTopicTime(topic, grade, level, durationSeconds) {
+export function trackScienceTopicTime(topic, grade, level, durationSeconds, meta = {}) {
   if (typeof window === "undefined" || !topic || !durationSeconds) return;
 
   try {
@@ -44,11 +44,15 @@ export function trackScienceTopicTime(topic, grade, level, durationSeconds) {
       duration: durationSeconds,
       grade,
       level,
+      topic,
       timestamp: Date.now(),
+      mode: meta.mode != null ? String(meta.mode) : "learning",
+      total: meta.total !== undefined ? Number(meta.total) : 1,
+      correct:
+        meta.correct !== undefined && meta.correct !== null
+          ? Number(meta.correct)
+          : undefined,
     });
-    if (saved.topics[topic].sessions.length > 1000) {
-      saved.topics[topic].sessions = saved.topics[topic].sessions.slice(-1000);
-    }
 
     saved.daily[today].total += durationSeconds;
     saved.daily[today].topics[topic] =
@@ -150,37 +154,9 @@ export function getScienceTimeByPeriod(period = "week") {
   }
 }
 
+/** Retained for API compatibility. Does not trim sessions or daily — full history preserved. */
 export function cleanOldScienceTimeTracking() {
   if (typeof window === "undefined") return;
-  try {
-    const saved = JSON.parse(
-      localStorage.getItem(SCIENCE_TIME_TRACKING_KEY) || "{}"
-    );
-    const now = new Date();
-    const cutoff = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-
-    if (saved.daily) {
-      Object.keys(saved.daily).forEach((date) => {
-        if (new Date(date) < cutoff) {
-          delete saved.daily[date];
-        }
-      });
-    }
-
-    if (saved.topics) {
-      Object.values(saved.topics).forEach((topicData) => {
-        if (Array.isArray(topicData.sessions)) {
-          topicData.sessions = topicData.sessions.filter(
-            (session) => new Date(session.date) >= cutoff
-          );
-        }
-      });
-    }
-
-    localStorage.setItem(SCIENCE_TIME_TRACKING_KEY, JSON.stringify(saved));
-  } catch (error) {
-    console.error("Error cleaning science time tracking:", error);
-  }
 }
 
 

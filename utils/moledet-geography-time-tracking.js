@@ -4,7 +4,7 @@ const MOLEDET_GEOGRAPHY_TIME_TRACKING_KEY = "mleo_moledet_geography_time_trackin
  * Track time spent on a Moledet & Geography topic (in seconds).
  * Stores aggregates per topic, grade, level and per-day totals.
  */
-export function trackMoledetGeographyTopicTime(topic, grade, level, duration) {
+export function trackMoledetGeographyTopicTime(topic, grade, level, duration, meta = {}) {
   if (typeof window === "undefined" || !topic || !duration) return;
 
   try {
@@ -45,11 +45,15 @@ export function trackMoledetGeographyTopicTime(topic, grade, level, duration) {
       duration,
       grade,
       level,
+      topic,
       timestamp: Date.now(),
+      mode: meta.mode != null ? String(meta.mode) : "learning",
+      total: meta.total !== undefined ? Number(meta.total) : 1,
+      correct:
+        meta.correct !== undefined && meta.correct !== null
+          ? Number(meta.correct)
+          : undefined,
     });
-    if (saved.topics[topic].sessions.length > 1000) {
-      saved.topics[topic].sessions = saved.topics[topic].sessions.slice(-1000);
-    }
 
     saved.daily[today].total += duration;
     saved.daily[today].topics[topic] =

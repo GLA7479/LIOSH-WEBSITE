@@ -8,6 +8,7 @@ import {
   SCIENCE_GRADE_ORDER,
 } from "../../data/science-curriculum";
 import { trackScienceTopicTime } from "../../utils/science-time-tracking";
+import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   loadDailyStreak,
   updateDailyStreak,
@@ -638,6 +639,7 @@ export default function ScienceMaster() {
   const sessionStartRef = useRef(null);
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
+  const pendingScienceTrackMetaRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [playerName, setPlayerName] = useState(() => {
@@ -1268,7 +1270,21 @@ useEffect(() => {
         currentQuestion.assignedLevel ||
         currentQuestion.levelKey ||
         level;
-      trackScienceTopicTime(currentQuestion.topic, qGrade, qLevel, duration);
+      const meta = pendingScienceTrackMetaRef.current;
+      pendingScienceTrackMetaRef.current = null;
+      trackScienceTopicTime(
+        currentQuestion.topic,
+        qGrade,
+        qLevel,
+        duration,
+        meta && meta.mode != null
+          ? { mode: meta.mode, correct: meta.correct, total: meta.total }
+          : {
+              mode: reportModeFromGameState(mode, focusedPracticeMode),
+              total: 1,
+              correct: undefined,
+            }
+      );
     }
     setQuestionStartTime(null);
   }
@@ -1532,6 +1548,11 @@ function recordSessionProgress() {
   function stopGame() {
     // Stop background music when game stops
     sound.stopBackgroundMusic();
+    pendingScienceTrackMetaRef.current = {
+      correct: undefined,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
     recordSessionProgress();
     saveRunToStorage();
     setGameActive(false);
@@ -1541,7 +1562,11 @@ function recordSessionProgress() {
   }
 
   function handleTimeUp() {
-    trackCurrentQuestionTime();
+    pendingScienceTrackMetaRef.current = {
+      correct: 0,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
     recordSessionProgress();
     setWrong((prev) => prev + 1);
     setStreak(0);
@@ -1555,7 +1580,6 @@ function recordSessionProgress() {
   }
 
   function handleAnswer(idx) {
-    trackCurrentQuestionTime();
     if (!gameActive || !currentQuestion || selectedAnswer != null) return;
     const answerText = currentQuestion.options?.[idx];
     // update time stats
@@ -1572,6 +1596,12 @@ function recordSessionProgress() {
     setSelectedAnswer(idx);
     solvedCountRef.current += 1;
     const isCorrect = idx === currentQuestion.correctIndex;
+    pendingScienceTrackMetaRef.current = {
+      correct: isCorrect ? 1 : 0,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
+    trackCurrentQuestionTime();
     bumpTopicIntel(currentQuestion.topic, !isCorrect);
     applyAdaptiveDifficulty(isCorrect, isCorrect ? null : currentQuestion.id);
     if (isCorrect) {

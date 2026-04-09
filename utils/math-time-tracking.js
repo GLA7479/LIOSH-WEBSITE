@@ -3,8 +3,13 @@
 const TIME_TRACKING_KEY = "mleo_time_tracking";
 const GEOMETRY_TIME_TRACKING_KEY = "mleo_geometry_time_tracking";
 
+/**
+ * Optional session metadata for Parent Report V2 (backward compatible).
+ * @typedef {{ mode?: string, correct?: number, total?: number }} TrackSessionMeta
+ */
+
 // שמירת זמן עבודה על פעולה ספציפית (חשבון)
-export function trackOperationTime(operation, grade, level, duration) {
+export function trackOperationTime(operation, grade, level, duration, meta = {}) {
   if (typeof window === "undefined") return;
   
   try {
@@ -47,19 +52,21 @@ export function trackOperationTime(operation, grade, level, duration) {
     }
     saved.operations[operation].byLevel[level] += duration;
     
-    // הוספת סשן
+    // הוספת סשן (כולל mode / ניקוד לשורת דוח מסוננת) — מערך מלא, ללא קיצוץ
     saved.operations[operation].sessions.push({
       date: today,
       duration,
       grade,
       level,
-      timestamp: Date.now()
+      operation,
+      timestamp: Date.now(),
+      mode: meta.mode != null ? String(meta.mode) : "learning",
+      total: meta.total !== undefined ? Number(meta.total) : 1,
+      correct:
+        meta.correct !== undefined && meta.correct !== null
+          ? Number(meta.correct)
+          : undefined,
     });
-    
-    // שמירת רק 1000 סשנים אחרונים לכל פעולה
-    if (saved.operations[operation].sessions.length > 1000) {
-      saved.operations[operation].sessions = saved.operations[operation].sessions.slice(-1000);
-    }
     
     // עדכון יומי
     saved.daily[today].total += duration;
@@ -196,47 +203,17 @@ export function getAllTimeTracking() {
   }
 }
 
-// ניקוי נתונים ישנים (יותר מ-90 יום)
+/**
+ * נשמר לתאימות לאחור. אין מחיקת סשנים/ימים — היסטוריה מלאה; סינון לפי טווח בדוח בלבד.
+ */
 export function cleanOldTimeTracking() {
   if (typeof window === "undefined") return;
-  
-  try {
-    const saved = JSON.parse(localStorage.getItem(TIME_TRACKING_KEY) || "{}");
-    const now = new Date();
-    const cutoffDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-    
-    // ניקוי ימים ישנים
-    if (saved.daily) {
-      Object.keys(saved.daily).forEach(date => {
-        const dateObj = new Date(date);
-        if (dateObj < cutoffDate) {
-          delete saved.daily[date];
-        }
-      });
-    }
-    
-    // ניקוי סשנים ישנים
-    if (saved.operations) {
-      Object.keys(saved.operations).forEach(op => {
-        if (saved.operations[op].sessions) {
-          saved.operations[op].sessions = saved.operations[op].sessions.filter(session => {
-            const sessionDate = new Date(session.date);
-            return sessionDate >= cutoffDate;
-          });
-        }
-      });
-    }
-    
-    localStorage.setItem(TIME_TRACKING_KEY, JSON.stringify(saved));
-  } catch (error) {
-    console.error("Error cleaning old time tracking:", error);
-  }
 }
 
 // ========== גאומטריה ==========
 
 // שמירת זמן עבודה על נושא ספציפי (גאומטריה)
-export function trackGeometryTopicTime(topic, grade, level, duration) {
+export function trackGeometryTopicTime(topic, grade, level, duration, meta = {}) {
   if (typeof window === "undefined") return;
   
   try {
@@ -279,19 +256,20 @@ export function trackGeometryTopicTime(topic, grade, level, duration) {
     }
     saved.topics[topic].byLevel[level] += duration;
     
-    // הוספת סשן
     saved.topics[topic].sessions.push({
       date: today,
       duration,
       grade,
       level,
-      timestamp: Date.now()
+      topic,
+      timestamp: Date.now(),
+      mode: meta.mode != null ? String(meta.mode) : "learning",
+      total: meta.total !== undefined ? Number(meta.total) : 1,
+      correct:
+        meta.correct !== undefined && meta.correct !== null
+          ? Number(meta.correct)
+          : undefined,
     });
-    
-    // שמירת רק 1000 סשנים אחרונים לכל נושא
-    if (saved.topics[topic].sessions.length > 1000) {
-      saved.topics[topic].sessions = saved.topics[topic].sessions.slice(-1000);
-    }
     
     // עדכון יומי
     saved.daily[today].total += duration;

@@ -32,6 +32,7 @@ import {
   getTheorySummary,
 } from "../../utils/geometry-explanations";
 import { trackGeometryTopicTime } from "../../utils/math-time-tracking";
+import { reportModeFromGameState } from "../../utils/report-track-meta";
 import { learningMixedHebrewMathStyle } from "../../utils/learning-mixed-hebrew-math";
 import { getGeometryDiagramSpec } from "../../utils/geometry-diagram-spec";
 import GeometryExplanationDiagram from "../../components/learning/geometry/GeometryExplanationDiagram";
@@ -170,6 +171,7 @@ export default function GeometryMaster() {
   const mistakeQueueRef = useRef([]);
   const mistakeCursorRef = useRef(0);
   const correctRef = useRef(0);
+  const pendingGeometryTimeTrackMetaRef = useRef(null);
   const gameActiveRef = useRef(false);
   const focusedPracticeModeRef = useRef("normal");
   const mistakesRef = useRef([]);
@@ -505,7 +507,8 @@ useEffect(() => {
               currentQuestion.topic,
               grade,
               level,
-              duration
+              duration,
+              { mode: "practice_mistakes", total: 1, correct: undefined }
             );
           }
         }
@@ -696,11 +699,24 @@ useEffect(() => {
     if (questionStartTime && currentQuestion) {
       const duration = (Date.now() - questionStartTime) / 1000; // שניות
       if (duration > 0 && duration < 300) { // רק אם זמן סביר (פחות מ-5 דקות)
+        const meta = pendingGeometryTimeTrackMetaRef.current;
+        pendingGeometryTimeTrackMetaRef.current = null;
         trackGeometryTopicTime(
           currentQuestion.topic,
           grade,
           level,
-          duration
+          duration,
+          meta && meta.mode != null
+            ? {
+                mode: meta.mode,
+                correct: meta.correct,
+                total: meta.total,
+              }
+            : {
+                mode: reportModeFromGameState(mode, focusedPracticeMode),
+                total: 1,
+                correct: undefined,
+              }
         );
       }
     }
@@ -765,6 +781,12 @@ useEffect(() => {
     setSelectedAnswer(answer);
     solvedCountRef.current += 1;
     const isCorrect = answer === currentQuestion.correctAnswer;
+
+    pendingGeometryTimeTrackMetaRef.current = {
+      correct: isCorrect ? 1 : 0,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
 
     if (isCorrect) {
       if (currentQuestion._fromMistakeReplay && currentQuestion._mistakeId) {
