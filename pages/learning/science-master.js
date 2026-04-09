@@ -28,6 +28,7 @@ import {
   MONTHLY_MINUTES_TARGET,
   getRewardLabel,
 } from "../../data/reward-options";
+import { learningMixedHebrewMathStyle } from "../../utils/learning-mixed-hebrew-math";
 
 // ================== CONFIG ==================
 
@@ -97,12 +98,13 @@ const AVATAR_OPTIONS = [
 ];
 
 const SCIENCE_MISTAKES_KEY = "mleo_science_mistakes";
+const SCIENCE_MISTAKES_MAX = 80;
 const SCIENCE_INTEL_KEY = "mleo_science_learning_intel";
 const INTEL_FORMAT_VERSION = 2;
 const INSIGHT_ANSWER_TAIL_MAX = 20;
 const INSIGHT_TOPIC_TAIL_MAX = 8;
 const INSIGHT_MIN_TOPIC_ATTEMPTS = 4;
-const INTEL_RECENT_MAX = 15;
+const INTEL_RECENT_MAX = 28;
 const RETRY_QUEUE_MAX = 28;
 /** Max extra weight from mistake rate (1 + this). Lower = less topic lock-in. */
 const TOPIC_WEIGHT_MAX_BOOST = 0.72;
@@ -539,7 +541,7 @@ function getErrorExplanationScience(question, wrongAnswer) {
       break;
   }
   return correct
-    ? `נסה לחשוב שוב. רמז: התשובה הנכונה קשורה ל-"${correct}".`
+    ? 'נסה לחשוב שוב לפי ניסוח השאלה והנקודות ברשימה "מה חשוב לזכור?" למעלה — בלי לנחש מהר מדי.'
     : "בדוק שוב את הנתונים ואת ההסבר שלמדת.";
 }
 
@@ -557,8 +559,9 @@ function getSolutionStepsScience(question) {
       ? question.options[question.correctIndex]
       : "";
   if (correctText) {
+    const quoted = `\u2066${correctText}\u2069`;
     lines.push(
-      `${lines.length + 1}. מתוך כל האפשרויות, רק "${correctText}" מתאים להסבר.`
+      `${lines.length + 1}. מתוך כל האפשרויות, רק "${quoted}" מתאים להסבר.`
     );
   }
   if (question.explanation) {
@@ -586,6 +589,7 @@ export default function ScienceMaster() {
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [correct, setCorrect] = useState(0);
+  const correctRef = useRef(0);
   const [wrong, setWrong] = useState(0);
   const [timeLeft, setTimeLeft] = useState(20);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -831,6 +835,10 @@ useEffect(() => {
 }, [monthlyProgress.totalMinutes, rewardChoice]);
 
   useEffect(() => {
+    correctRef.current = correct;
+  }, [correct]);
+
+  useEffect(() => {
     refreshMistakesList();
   }, []);
 
@@ -1044,11 +1052,12 @@ useEffect(() => {
       levelOverride !== undefined && levelOverride !== null
         ? levelOverride
         : level;
+    const sessionCorrect = correctRef.current;
     const levelForFilter =
       focusedPracticeMode === "graded"
-        ? correct < 5
+        ? sessionCorrect < 5
           ? "easy"
-          : correct < 15
+          : sessionCorrect < 15
           ? "medium"
           : level
         : baseLevel;
@@ -1225,7 +1234,7 @@ useEffect(() => {
 
   const refreshMistakesList = () => {
     const stored = loadScienceMistakesFromStorage();
-    setMistakes(stored.slice(-50).reverse());
+    setMistakes(stored.slice(-SCIENCE_MISTAKES_MAX).reverse());
   };
 
   function trackCurrentQuestionTime() {
@@ -1298,7 +1307,7 @@ function recordSessionProgress() {
       };
       const stored = loadScienceMistakesFromStorage();
       stored.push(entry);
-      const trimmed = stored.slice(-50);
+      const trimmed = stored.slice(-SCIENCE_MISTAKES_MAX);
       localStorage.setItem(SCIENCE_MISTAKES_KEY, JSON.stringify(trimmed));
       setMistakes(trimmed.slice().reverse());
     } catch {
@@ -1418,6 +1427,7 @@ function recordSessionProgress() {
     setScore(0);
     setStreak(0);
     setCorrect(0);
+    correctRef.current = 0;
     setWrong(0);
     setTimeLeft(20);
     setSelectedAnswer(null);
@@ -1484,6 +1494,7 @@ function recordSessionProgress() {
     setScore(0);
     setStreak(0);
     setCorrect(0);
+    correctRef.current = 0;
     setWrong(0);
     setTotalQuestions(0);
     setAvgTime(0);
@@ -1555,7 +1566,11 @@ function recordSessionProgress() {
       }
       setScore((prev) => prev + points);
       setStreak((prev) => prev + 1);
-      setCorrect((prev) => prev + 1);
+      setCorrect((prev) => {
+        const next = prev + 1;
+        correctRef.current = next;
+        return next;
+      });
       setErrorExplanation("");
       // progress by topic
       setProgress((prev) => {
@@ -1838,6 +1853,7 @@ function recordSessionProgress() {
     setScore(0);
     setStreak(0);
     setCorrect(0);
+    correctRef.current = 0;
     setWrong(0);
     setBestScore(0);
     setBestStreak(0);
@@ -2281,7 +2297,7 @@ function recordSessionProgress() {
                         </span>
                       </div>
                       <div>
-                        רשומות ביומן טעויות:{" "}
+                        רשומות ביומן שגיאות:{" "}
                         <span className="font-bold text-rose-300">
                           {progressInsights.mistakeLogCount}
                         </span>
@@ -2309,7 +2325,7 @@ function recordSessionProgress() {
                       {progressInsights.base.strongest &&
                         TOPICS[progressInsights.base.strongest.key] && (
                           <span>
-                            חזק יחסית:{" "}
+                            חזק ביחס:{" "}
                             <span className="text-white/90">
                               {TOPICS[progressInsights.base.strongest.key].name}
                             </span>
@@ -2318,13 +2334,16 @@ function recordSessionProgress() {
                       {progressInsights.base.weakest &&
                         TOPICS[progressInsights.base.weakest.key] && (
                           <span>
-                            לחיזוק:{" "}
+                            לחזק:{" "}
                             <span className="text-white/90">
                               {TOPICS[progressInsights.base.weakest.key].name}
                             </span>
                           </span>
                         )}
                     </div>
+                    <p className="text-[10px] text-white/55 mb-1">
+                      לפחות {INSIGHT_MIN_TOPIC_ATTEMPTS} ניסיונות לנושא; נשמר בדפדפן בלבד.
+                    </p>
                     {progressInsights.base.recentN >= 10 &&
                       progressInsights.base.trend && (
                         <p className="text-[10px] text-white/60 mb-1">
@@ -2339,7 +2358,12 @@ function recordSessionProgress() {
                     {progressInsights.feedback.length > 0 && (
                       <ul className="list-disc list-inside space-y-0.5 text-white/80 leading-snug border-t border-white/10 pt-1.5 mt-0.5">
                         {progressInsights.feedback.map((line, i) => (
-                          <li key={`${i}-${line.slice(0, 32)}`}>{line}</li>
+                          <li
+                            key={`${i}-${line.slice(0, 32)}`}
+                            style={learningMixedHebrewMathStyle}
+                          >
+                            {line}
+                          </li>
                         ))}
                       </ul>
                     )}
@@ -2425,14 +2449,13 @@ function recordSessionProgress() {
                 >
                   📊 דוח להורים
                 </button>
-                {mistakes.length > 0 && (
-                  <button
-                    onClick={() => setShowPracticeOptions(true)}
-                    className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
-                  >
-                    🎯 תרגול ממוקד ({mistakes.length})
-                  </button>
-                )}
+                <button
+                  onClick={() => setShowPracticeOptions(true)}
+                  className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
+                >
+                  🎯 תרגול ממוקד
+                  {mistakes.length > 0 ? ` (${mistakes.length})` : ""}
+                </button>
               </div>
 
               {!playerName.trim() && (
@@ -2452,9 +2475,12 @@ function recordSessionProgress() {
                       : "bg-red-500/20 text-red-200"
                   }`}
                 >
-                  <div>{feedback}</div>
+                  <div style={learningMixedHebrewMathStyle}>{feedback}</div>
                   {errorExplanation && (
-                    <div className="mt-1 text-xs text-red-100/90 font-normal">
+                    <div
+                      className="mt-1 text-xs text-red-100/90 font-normal"
+                      style={learningMixedHebrewMathStyle}
+                    >
                       {errorExplanation}
                     </div>
                   )}
@@ -2467,7 +2493,9 @@ function recordSessionProgress() {
                   <div className="font-bold mb-1">📘 מה חשוב לזכור?</div>
                   <ul className="list-disc pr-4 space-y-0.5">
                     {(currentQuestion.theoryLines || []).map((line, i) => (
-                      <li key={i}>{line}</li>
+                      <li key={i} style={learningMixedHebrewMathStyle}>
+                        {line}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -2516,7 +2544,10 @@ function recordSessionProgress() {
                 </div>
 
                 {showHint && currentQuestion && (
-                  <div className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100 text-xs sm:text-sm text-right w-full max-w-xl sm:max-w-2xl leading-relaxed">
+                  <div
+                    className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100 text-xs sm:text-sm text-right w-full max-w-xl sm:max-w-2xl leading-relaxed"
+                    style={learningMixedHebrewMathStyle}
+                  >
                     {getHintForQuestion(currentQuestion)}
                   </div>
                 )}
@@ -2596,7 +2627,10 @@ function recordSessionProgress() {
                         })()}
                       </p>
                       {/* כאן הצעדים */}
-                      <div className="space-y-1 text-sm" style={{ direction: "rtl" }}>
+                      <div
+                        className="space-y-1 text-sm"
+                        style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                      >
                         {getSolutionStepsScience(currentQuestion).map(
                           (line, idx) => (
                             <div key={idx}>{line}</div>
@@ -2782,7 +2816,7 @@ function recordSessionProgress() {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-2xl font-extrabold">🎯 תרגול טעויות</h2>
+                  <h2 className="text-2xl font-extrabold">🎯 חזרה על שגיאות</h2>
                   <button
                     onClick={() => setShowPracticeModal(false)}
                     className="text-white/80 hover:text-white text-xl px-2"
@@ -2792,7 +2826,7 @@ function recordSessionProgress() {
                 </div>
                 {mistakes.length === 0 ? (
                   <p className="text-sm text-white/70 text-center py-4">
-                    עדיין אין טעויות לשמור. תרגל, טעה ולחץ כאן כדי לחזור בדיוק על מה שצריך.
+                    עדיין אין שגיאות לשמור. תרגל, טעה ולחץ כאן כדי לחזור בדיוק על מה שצריך.
                   </p>
                 ) : (
                   <div className="space-y-3">
@@ -2838,7 +2872,7 @@ function recordSessionProgress() {
                       onClick={clearScienceMistakes}
                       className="flex-1 px-4 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 text-sm font-bold"
                     >
-                      🧹 איפוס טעויות
+                      🧹 נקה שגיאות
                     </button>
                   )}
                 </div>
@@ -2866,14 +2900,14 @@ function recordSessionProgress() {
                   </button>
                 </div>
                 <p className="text-sm text-white/70 mb-3">
-                  שלוט באימון שלך: אפשר להתרכז בטעויות, לעבור רמות באופן מדורג או לבחור קטגוריה מדעית.
+                  שלוט באימון שלך: חזרה על שגיאות אחרונות, תרגול מדורג (קל ואז מתקדם לרמה שבחרת), או בחירת קטגוריה מדעית.
                 </p>
                 <div className="space-y-2 mb-4">
                   <p className="text-xs text-white/60 font-semibold">מצב תרגול</p>
                   {[
-                    { value: "normal", label: "ברירת מחדל" },
-                    { value: "mistakes", label: "חזרה על טעויות אחרונות" },
-                    { value: "graded", label: "תרגול מדורג (קל → בינוני → רמתך)" },
+                    { value: "normal", label: "תרגול רגיל" },
+                    { value: "mistakes", label: "חזרה על שגיאות" },
+                    { value: "graded", label: "תרגול מדורג" },
                   ].map((opt) => (
                     <label key={opt.value} className="flex items-center gap-2 text-sm">
                       <input
@@ -2896,11 +2930,11 @@ function recordSessionProgress() {
                       PRACTICE_FOCUS_OPTIONS[0].label}
                   </p>
                   <p>
-                    רגישות טעויות:{" "}
+                    מצב תרגול ממוקד:{" "}
                     {focusedPracticeMode === "normal"
                       ? "רגיל"
                       : focusedPracticeMode === "mistakes"
-                      ? "חזרה על טעויות"
+                      ? "חזרה על שגיאות"
                       : "מדורג"}
                   </p>
                 </div>
@@ -3203,7 +3237,7 @@ function recordSessionProgress() {
                   <li>בחר כיתה, רמה ונושא (לדוגמה: גוף האדם, צמחים, בעלי חיים ועוד).</li>
                   <li>בחר מצב משחק: למידה, אתגר עם טיימר וחיים, מהירות או מרתון.</li>
                   <li>ענה על שאלות בחירה, נכון/לא נכון ותסריטי ניסוי.</li>
-                  <li>לחץ על 💡 Hint להסבר קצר, ועל "📘 הסבר מלא" כדי לראות פתרון צעד־אחר־צעד.</li>
+                  <li>לחץ על 💡 רמז לקבלת רמז קצר, ועל "📘 הסבר מלא" לפתרון צעד־אחר־צעד.</li>
                   <li>נסה להגיע לרצף תשובות נכון ולקבל כוכבים ו־XP.</li>
                 </ul>
 

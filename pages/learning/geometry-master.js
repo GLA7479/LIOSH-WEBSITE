@@ -27,11 +27,14 @@ import {
 import { generateQuestion } from "../../utils/geometry-question-generator";
 import {
   getHint,
-  getSolutionSteps,
+  buildGeometryAnimationSteps,
   getErrorExplanation,
   getTheorySummary,
 } from "../../utils/geometry-explanations";
 import { trackGeometryTopicTime } from "../../utils/math-time-tracking";
+import { learningMixedHebrewMathStyle } from "../../utils/learning-mixed-hebrew-math";
+import { getGeometryDiagramSpec } from "../../utils/geometry-diagram-spec";
+import GeometryExplanationDiagram from "../../components/learning/geometry/GeometryExplanationDiagram";
 import {
   addSessionProgress,
   loadMonthlyProgress,
@@ -200,6 +203,9 @@ export default function GeometryMaster() {
   const [showHint, setShowHint] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
+  const [animationStep, setAnimationStep] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
+  const animationTimeoutsRef = useRef([]);
   const [showHowTo, setShowHowTo] = useState(false);
   const [errorExplanation, setErrorExplanation] = useState("");
   const [showMixedSelector, setShowMixedSelector] = useState(false);
@@ -1252,6 +1258,67 @@ useEffect(() => {
     return TOPICS[t]?.icon + " " + TOPICS[t]?.name || t;
   };
 
+  const geometryAnimationSteps = useMemo(() => {
+    if (!showSolution || !currentQuestion) return null;
+    let steps = buildGeometryAnimationSteps(
+      currentQuestion,
+      currentQuestion.topic,
+      grade
+    );
+    if (!steps.length) {
+      steps = [
+        {
+          id: "geometry-fallback",
+          title: "הסבר",
+          content: (
+            <span
+              style={{
+                ...learningMixedHebrewMathStyle,
+                display: "block",
+              }}
+            >
+              אין כאן פירוט צעדים לשאלה זו. השתמשו ברמז או בלוח הנוסחאות.
+            </span>
+          ),
+          text: "",
+          diagramEmphasis: "neutral",
+        },
+      ];
+    }
+    return steps;
+  }, [showSolution, currentQuestion, grade]);
+
+  useEffect(() => {
+    animationTimeoutsRef.current.forEach(clearTimeout);
+    animationTimeoutsRef.current = [];
+    if (!showSolution || !autoPlay || !geometryAnimationSteps) return;
+    if (animationStep >= geometryAnimationSteps.length - 1) return;
+    const id = setTimeout(() => {
+      setAnimationStep((s) => s + 1);
+    }, 2000);
+    animationTimeoutsRef.current.push(id);
+    return () => {
+      animationTimeoutsRef.current.forEach(clearTimeout);
+      animationTimeoutsRef.current = [];
+    };
+  }, [showSolution, autoPlay, animationStep, geometryAnimationSteps]);
+
+  useEffect(() => {
+    animationTimeoutsRef.current.forEach(clearTimeout);
+    animationTimeoutsRef.current = [];
+    if (showSolution && geometryAnimationSteps && geometryAnimationSteps.length > 0) {
+      setAnimationStep(0);
+      setAutoPlay(true);
+    } else if (!showSolution) {
+      setAnimationStep(0);
+      setAutoPlay(true);
+    }
+    return () => {
+      animationTimeoutsRef.current.forEach(clearTimeout);
+      animationTimeoutsRef.current = [];
+    };
+  }, [showSolution, geometryAnimationSteps, currentQuestion]);
+
   if (!mounted)
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center">
@@ -1802,9 +1869,12 @@ useEffect(() => {
                       : "bg-red-500/20 text-red-200"
                   }`}
                 >
-                  <div>{feedback}</div>
+                  <div style={learningMixedHebrewMathStyle}>{feedback}</div>
                   {errorExplanation && (
-                    <div className="mt-1 text-xs text-red-100/90 font-normal" dir="ltr">
+                    <div
+                      className="mt-1 text-xs text-red-100/90 font-normal"
+                      style={learningMixedHebrewMathStyle}
+                    >
                       {errorExplanation}
                     </div>
                   )}
@@ -1871,7 +1941,7 @@ useEffect(() => {
                       }}
                       className="mb-2 px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-sm font-bold"
                     >
-                      💡 Hint
+                      💡 רמז
                     </button>
                   )}
 
@@ -1895,65 +1965,143 @@ useEffect(() => {
                       </button>
 
                       {/* חלון הסבר מלא - Modal גדול ומרכזי */}
-                      {showSolution && currentQuestion && (
-                        <div
-                          className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
-                          onClick={() => setShowSolution(false)}
-                          dir="rtl"
-                        >
-                          <div
-                            className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <div className="flex items-center justify-between mb-2">
-                              <h3
-                                className="text-lg font-bold text-emerald-100"
-                                dir="rtl"
-                              >
-                                {"\u200Fאיך פותרים את התרגיל?"}
-                              </h3>
-                              <button
-                                onClick={() => setShowSolution(false)}
-                                className="text-emerald-200 hover:text-white text-xl leading-none px-2"
-                              >
-                                ✖
-                              </button>
-                            </div>
-                            <div className="mb-2 text-sm text-emerald-50" dir="rtl">
-                              {/* מציגים שוב את התרגיל */}
+                      {showSolution &&
+                        currentQuestion &&
+                        geometryAnimationSteps &&
+                        geometryAnimationSteps.length > 0 &&
+                        (() => {
+                          const safeStepIndex = Math.max(
+                            0,
+                            Math.min(
+                              animationStep || 0,
+                              geometryAnimationSteps.length - 1
+                            )
+                          );
+                          const activeStep = geometryAnimationSteps[safeStepIndex];
+                          if (!activeStep) return null;
+                          return (
+                            <div
+                              className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                              onClick={() => setShowSolution(false)}
+                              dir="rtl"
+                            >
                               <div
-                                className="mb-2 font-semibold text-base text-center text-white"
-                                dir="ltr"
+                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[88vh] max-h-[780px] shadow-2xl flex flex-col"
+                                onClick={(e) => e.stopPropagation()}
+                                style={{ maxWidth: "90vw" }}
                               >
-                                {currentQuestion.question}
-                              </div>
-                              {/* כאן הצעדים */}
-                              <div className="space-y-1 text-sm" style={{ direction: "rtl", unicodeBidi: "plaintext" }}>
-                          {getSolutionSteps(
-                            currentQuestion,
-                            currentQuestion.topic,
-                            grade
-                                ).map((step, idx) =>
-                                  typeof step === "string" ? (
-                                    <div key={idx}>{step}</div>
-                                  ) : (
-                                    <div key={idx}>{step}</div>
-                                  )
-                                )}
+                                <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowSolution(false)}
+                                    className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                                    aria-label="סגור"
+                                  >
+                                    ✖
+                                  </button>
+                                  <h3 className="text-lg font-bold text-emerald-100">
+                                    {"\u200Fאיך פותרים את התרגיל?"}
+                                  </h3>
+                                </div>
+
+                                <div className="flex-1 overflow-y-auto px-4 pb-2">
+                                  <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2">
+                                    <div
+                                      className="text-sm text-emerald-100 font-semibold break-words overflow-wrap-anywhere max-w-full"
+                                      style={learningMixedHebrewMathStyle}
+                                    >
+                                      {currentQuestion.question}
+                                    </div>
+                                  </div>
+
+                                  {(() => {
+                                    const diagramSpec =
+                                      getGeometryDiagramSpec(currentQuestion);
+                                    if (!diagramSpec) return null;
+                                    return (
+                                      <GeometryExplanationDiagram
+                                        spec={diagramSpec}
+                                        emphasis={
+                                          activeStep.diagramEmphasis ||
+                                          "neutral"
+                                        }
+                                      />
+                                    );
+                                  })()}
+
+                                  <div
+                                    className="mb-4 text-sm text-emerald-50"
+                                    dir="rtl"
+                                  >
+                                    <h4 className="font-bold text-base mb-1">
+                                      {activeStep.title || "הסבר"}
+                                    </h4>
+                                    {activeStep.content ? (
+                                      <div className="leading-relaxed">
+                                        {activeStep.content}
+                                      </div>
+                                    ) : (
+                                      <p
+                                        className="leading-relaxed"
+                                        style={learningMixedHebrewMathStyle}
+                                      >
+                                        {activeStep.text || ""}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
+                                  <div
+                                    className="flex gap-2 justify-center items-center"
+                                    dir="rtl"
+                                  >
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        setAnimationStep((s) =>
+                                          s > 0 ? s - 1 : 0
+                                        )
+                                      }
+                                      disabled={animationStep === 0}
+                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                    >
+                                      קודם
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setAutoPlay((p) => !p)}
+                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
+                                    >
+                                      {autoPlay ? "עצור" : "נגן"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        setAnimationStep((s) =>
+                                          s < geometryAnimationSteps.length - 1
+                                            ? s + 1
+                                            : s
+                                        )
+                                      }
+                                      disabled={
+                                        animationStep >=
+                                        geometryAnimationSteps.length - 1
+                                      }
+                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                    >
+                                      הבא
+                                    </button>
+                                  </div>
+                                  <div className="text-center text-xs text-emerald-300">
+                                    צעד {animationStep + 1} מתוך{" "}
+                                    {geometryAnimationSteps.length}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                            <div className="mt-3 flex justify-center">
-                              <button
-                                onClick={() => setShowSolution(false)}
-                                className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
-                                dir="rtl"
-                              >
-                                {"\u200Fסגור"}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                          );
+                        })()}
                     </>
                   )}
 
@@ -2501,7 +2649,7 @@ useEffect(() => {
 
                   {geometryInsights.weakest && geometryInsights.strongest && (
                     <div className="bg-black/30 border border-white/10 rounded-lg p-3">
-                      <div className="text-sm text-white/60 mb-2">תובנות מבוססות־ניסיון (מקומי)</div>
+                      <div className="text-sm text-white/60 mb-2">תובנות מהתרגול (מקומי)</div>
                       <div className="text-xs text-white/85 space-y-1">
                         <div>
                           <span className="text-amber-300 font-semibold">לחזק:</span>{" "}
@@ -2512,7 +2660,7 @@ useEffect(() => {
                           {getTopicName(geometryInsights.strongest)}
                         </div>
                         <p className="text-[11px] text-white/50 mt-2">
-                          לפחות 2 ניסיונות לנושא; נשמר בדפדפן בלבד.
+                          לפחות 2 ניסיונות; נשמר בדפדפן בלבד.
                         </p>
                       </div>
                     </div>
@@ -2684,7 +2832,7 @@ useEffect(() => {
                   <li>בחר כיתה, רמת קושי ונושא (שטח, היקף, נפח, זוויות, פיתגורס ועוד).</li>
                   <li>בחר מצב משחק: למידה, אתגר עם טיימר וחיים, מהירות או מרתון.</li>
                   <li>קרא היטב את השאלה – לפעמים יש תרגילי מילים על גינות, גדרות וארגזים.</li>
-                  <li>לחץ על 💡 Hint כדי לקבל רמז, ועל "📘 הסבר מלא" כדי לראות פתרון צעד־אחר־צעד.</li>
+                  <li>לחץ על 💡 רמז לקבלת רמז, ועל "📘 הסבר מלא" לפתרון צעד־אחר־צעד.</li>
                   <li>ניקוד גבוה, רצף תשובות נכון, כוכבים ו־Badges עוזרים לך לעלות רמה כשחקן.</li>
                 </ul>
 

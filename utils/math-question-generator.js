@@ -1,5 +1,263 @@
 import { GRADES, BLANK } from './math-constants';
 
+function shuffleMcqList(items) {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/**
+ * מסיחים לפי סוג תרגיל — טעויות תלמידים סבירות, לא רק ±אחוז אקראי
+ */
+export function buildMathMcqAnswerList(correctAnswer, selectedOp, params, randInt, roundFn) {
+  const kind = params?.kind || "";
+
+  if (
+    typeof correctAnswer === "string" &&
+    correctAnswer.includes("/") &&
+    !correctAnswer.includes("ושארית")
+  ) {
+    const [cnRaw, cdRaw] = String(correctAnswer).split("/");
+    const cn = Number(cnRaw);
+    const cd = Number(cdRaw) || 1;
+    const wrong = new Set();
+    const add = (s) => {
+      if (s && s !== correctAnswer && !wrong.has(s)) wrong.add(s);
+    };
+    add(`${cd}/${Math.max(1, cn)}`);
+    add(`${cn + 1}/${cd}`);
+    add(`${Math.max(1, cn - 1)}/${cd}`);
+    add(`${cn}/${cd + 1}`);
+    add(`${Math.max(1, cn - 1)}/${Math.max(1, cd - 1)}`);
+    add(`${cn + cd}/${cd}`);
+    let g = 0;
+    while (wrong.size < 3 && g < 40) {
+      g++;
+      const d = randInt(1, 3);
+      const sign = Math.random() < 0.5 ? 1 : -1;
+      const nn = Math.max(1, cn + sign * d);
+      add(`${nn}/${cd}`);
+    }
+    return shuffleMcqList([correctAnswer, ...Array.from(wrong).slice(0, 3)]);
+  }
+
+  if (selectedOp === "decimals" || kind.startsWith("dec_")) {
+    const places =
+      params?.places != null ? Math.max(1, Math.min(3, params.places)) : 1;
+    const cn = Number(correctAnswer);
+    if (Number.isNaN(cn)) return null;
+    const step = Math.pow(10, -places);
+    const fmt = (x) => roundFn(x, places);
+    const target = fmt(cn);
+    const wrong = new Set();
+    const addN = (x) => {
+      const s = fmt(x);
+      if (s !== target) wrong.add(s);
+    };
+    addN(cn + step);
+    addN(cn - step);
+    addN(cn + 2 * step);
+    if (params?.a != null && params?.b != null) {
+      addN(Number(params.a) + Number(params.b));
+      addN(Math.abs(Number(params.a) - Number(params.b)));
+    }
+    addN(cn * 10);
+    if (cn !== 0) addN(cn / 10);
+    let guard = 0;
+    while (wrong.size < 3 && guard < 35) {
+      guard++;
+      addN(cn + (Math.random() < 0.5 ? 1 : -1) * step * randInt(1, 4));
+    }
+    return shuffleMcqList([target, ...Array.from(wrong).slice(0, 3)]);
+  }
+
+  if (typeof correctAnswer !== "number" || !Number.isFinite(correctAnswer)) {
+    return null;
+  }
+
+  const isInt = Number.isInteger(correctAnswer);
+  const wrongN = new Set();
+  const decPlaces =
+    params?.places != null ? Math.max(1, Math.min(4, params.places)) : 2;
+  const addI = (n) => {
+    if (typeof n !== "number" || !Number.isFinite(n)) return;
+    const v = isInt ? Math.round(n) : roundFn(n, decPlaces);
+    if (
+      v !== correctAnswer &&
+      v >= -200 &&
+      v <= 50000 &&
+      !Number.isNaN(v)
+    ) {
+      wrongN.add(v);
+    }
+  };
+
+  if (
+    kind === "add_two" ||
+    kind === "add_vertical" ||
+    kind === "add_second_decade" ||
+    kind === "add_tens_only"
+  ) {
+    const x = params?.a;
+    const y = params?.b;
+    if (x != null && y != null) {
+      const s = x + y;
+      addI(x * y);
+      addI(Math.abs(x - y));
+      addI(x + y + 10);
+      if ((x % 10) + (y % 10) >= 10) addI(s - 10);
+      addI(10 * (Math.floor(x / 10) + Math.floor(y / 10)) + ((x % 10) + (y % 10)) % 10);
+    }
+  } else if (kind === "add_three") {
+    const x = params?.a;
+    const y = params?.b;
+    const z = params?.c;
+    if (x != null && y != null && z != null) {
+      addI(x + y);
+      addI(y + z);
+      addI(x + z);
+      addI(x + y + z + 10);
+      if ((x % 10) + (y % 10) + (z % 10) >= 10) addI(x + y + z - 10);
+    }
+  } else if (kind === "sub_two" || kind === "sub_vertical") {
+    const x = params?.a;
+    const y = params?.b;
+    if (x != null && y != null) {
+      addI(x + y);
+      addI(Math.abs(x - y));
+      if (x > y) addI(y - x);
+      addI(x - y + 1);
+      addI(x - y - 1);
+    }
+  } else if (
+    kind === "mul" ||
+    kind === "mul_vertical" ||
+    kind === "mul_tens" ||
+    kind === "mul_hundreds"
+  ) {
+    let x;
+    let y;
+    if (kind === "mul_tens") {
+      x = params?.tens;
+      y = params?.multiplier;
+    } else if (kind === "mul_hundreds") {
+      x = params?.hundreds;
+      y = params?.multiplier;
+    } else if (kind === "mul_vertical") {
+      x = params?.twoDigit;
+      y = params?.oneDigit;
+    } else {
+      x = params?.a;
+      y = params?.b;
+    }
+    if (x != null && y != null) {
+      addI(x + y);
+      addI(x * y + x);
+      addI(x * y + y);
+      addI((x + 1) * y);
+      addI(x * (y + 1));
+      addI(Math.floor(x / 10) * y + (x % 10) * y);
+    }
+  } else if (
+    kind === "div" ||
+    kind === "div_long" ||
+    kind === "div_two_digit"
+  ) {
+    const dividend = params?.dividend;
+    const divisor = params?.divisor;
+    const quot = params?.quotient ?? correctAnswer;
+    if (dividend != null && divisor != null) {
+      addI(divisor);
+      addI(dividend - divisor);
+      addI(quot + 1);
+      addI(Math.max(1, quot - 1));
+      addI(Math.floor(dividend / (divisor + 1)));
+    }
+  } else if (kind.startsWith("wp_")) {
+    if (kind === "wp_simple_add" && params?.a != null && params?.b != null) {
+      addI(params.a * params.b);
+      addI(Math.abs(params.a - params.b));
+      addI(params.a + params.b + params.a);
+    } else if (kind === "wp_simple_sub" || kind === "wp_pocket_money" || kind === "wp_coins_spent") {
+      const total = params.total ?? params.money;
+      const sub = params.give ?? params.toy ?? params.spent;
+      if (total != null && sub != null) {
+        addI(total + sub);
+        addI(sub);
+        addI(total);
+        addI(total - sub + 1);
+      }
+    } else if (kind === "wp_groups" && params?.per != null && params?.groups != null) {
+      addI(params.per + params.groups);
+      addI(params.per + params.groups + params.per);
+      addI(params.per * params.groups + params.groups);
+    } else if (kind === "wp_division_simple") {
+      addI(params.perGroup);
+      addI(params.total);
+      addI(Math.floor(params.total / params.perGroup) + 1);
+    } else if (kind === "wp_shop_discount") {
+      addI(params.price);
+      addI(params.discount);
+      addI(Math.round(params.price * (1 - params.discPerc / 200)));
+    } else if (kind === "wp_multi_step") {
+      addI(params.money - params.totalQty);
+      addI(params.totalCost);
+      addI(params.money - params.price);
+    } else if (kind === "wp_average") {
+      addI(Math.floor((params.s1 + params.s2 + params.s3) / 3));
+      addI(params.s1);
+    } else if (
+      kind === "wp_distance_time" &&
+      params?.speed != null &&
+      params?.hours != null
+    ) {
+      addI(params.speed + params.hours);
+      addI(Math.abs(params.speed - params.hours));
+    }
+  } else if (kind.startsWith("est_")) {
+    if (params?.exact != null) {
+      addI(params.exact);
+      addI(params.exact + 10);
+      addI(params.exact - 10);
+    }
+    if (params?.estimate != null) {
+      addI(params.estimate + (kind === "est_mul" ? 100 : 10));
+    }
+  } else if (kind.startsWith("scale_")) {
+    if (params?.realLength != null && params?.scale != null) {
+      addI(params.realLength + params.scale);
+      addI(params.realLength - params.scale);
+    }
+  } else if (selectedOp === "equations" && params?.left != null) {
+    addI(params.left + params.right);
+  }
+
+  let guard = 0;
+  while (wrongN.size < 3 && guard < 60) {
+    guard++;
+    const base = Math.max(
+      1,
+      Math.round(Math.abs(correctAnswer) * 0.12) || 1
+    );
+    const delta = randInt(1, Math.min(5, base + 2));
+    const sign = Math.random() < 0.5 ? 1 : -1;
+    addI(correctAnswer + sign * delta * randInt(1, 2));
+  }
+
+  while (wrongN.size < 3) {
+    const bump = wrongN.size + 2;
+    addI(correctAnswer + bump);
+    addI(correctAnswer - bump);
+    if (wrongN.size >= 3) break;
+    break;
+  }
+
+  return shuffleMcqList([correctAnswer, ...Array.from(wrongN).slice(0, 3)]);
+}
+
 export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
   const gradeCfg = GRADES[gradeKey] || GRADES.g3;
 
@@ -365,34 +623,25 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     const wrongAnswers = new Set();
     
     if (hasRemainder) {
-      // יצירת תשובות שגויות לחילוק עם שארית
-      while (wrongAnswers.size < 3) {
-        // אפשרויות שגויות: מנה שונה עם שארית שונה
-        const wrongQuotient = quotient + randInt(-2, 2);
-        const wrongRemainder = randInt(0, divisor);
-        
-        // וודא שהמנה לא שלילית
-        if (wrongQuotient > 0 && wrongQuotient !== quotient) {
-          const wrongAnswer = `${wrongQuotient} ושארית ${wrongRemainder}`;
-          if (wrongAnswer !== correctAnswer && !wrongAnswers.has(wrongAnswer)) {
-            wrongAnswers.add(wrongAnswer);
-          }
-        } else if (wrongQuotient === quotient && wrongRemainder !== remainder && wrongRemainder < divisor) {
-          const wrongAnswer = `${wrongQuotient} ושארית ${wrongRemainder}`;
-          if (wrongAnswer !== correctAnswer && !wrongAnswers.has(wrongAnswer)) {
-            wrongAnswers.add(wrongAnswer);
-          }
-        }
-        
-        // אם לא הצלחנו, ננסה תשובות פשוטות יותר
-        if (wrongAnswers.size < 3) {
-          const altQuotient = quotient + (wrongAnswers.size + 1);
-          const altRemainder = (remainder + wrongAnswers.size) % divisor;
-          const altAnswer = `${altQuotient} ושארית ${altRemainder}`;
-          if (altAnswer !== correctAnswer && !wrongAnswers.has(altAnswer) && altQuotient > 0) {
-            wrongAnswers.add(altAnswer);
-          }
-        }
+      const addRemStr = (q, r) => {
+        if (q <= 0 || r < 0 || r >= divisor) return;
+        const s = `${q} ושארית ${r}`;
+        if (s !== correctAnswer) wrongAnswers.add(s);
+      };
+      addRemStr(quotient, (remainder + 1) % divisor || divisor - 1);
+      addRemStr(quotient + 1, remainder);
+      addRemStr(Math.max(1, quotient - 1), remainder);
+      addRemStr(quotient, Math.max(1, remainder - 1));
+      addRemStr(quotient + 1, 0);
+      if (String(quotient) !== String(correctAnswer)) {
+        wrongAnswers.add(String(quotient));
+      }
+      let guard = 0;
+      while (wrongAnswers.size < 3 && guard < 40) {
+        guard++;
+        const wq = Math.max(1, quotient + randInt(-1, 2));
+        const wr = randInt(0, divisor - 1);
+        addRemStr(wq, wr);
       }
     } else {
       // יצירת תשובות שגויות לחילוק בלי שארית
@@ -1787,243 +2036,40 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     };
   }
 
-  const wrongAnswers = new Set();
-  const isDecimalsOp = selectedOp === "decimals";
-  const correctIsFraction =
-    typeof correctAnswer === "string" && correctAnswer.includes("/");
-  const isNumericAnswer = typeof correctAnswer === "number";
-
-  if (isDecimalsOp) {
-    const places =
-      params?.places != null ? Math.max(1, Math.min(3, params.places)) : 1;
-    const correctNum = Number(correctAnswer);
-    const fmt = (x) => x.toFixed(places);
-
-    let guard = 0;
-    while (wrongAnswers.size < 3 && guard < 50) {
-      guard++;
-      const deltaBase = Math.max(0.1, Math.abs(correctNum) * 0.1);
-      const sign = Math.random() < 0.5 ? 1 : -1;
-      const step = Math.random() < 0.5 ? 0.1 : 0.2;
-      const wrongNum = correctNum + sign * deltaBase * step;
-      const wrong = fmt(wrongNum);
-      if (wrong !== correctAnswer && !wrongAnswers.has(wrong)) {
-        wrongAnswers.add(wrong);
+  let allAnswers = buildMathMcqAnswerList(
+    correctAnswer,
+    selectedOp,
+    params,
+    randInt,
+    round
+  );
+  if (!allAnswers || allAnswers.length < 4) {
+    const fill = new Set();
+    if (typeof correctAnswer === "number" && Number.isFinite(correctAnswer)) {
+      let g = 0;
+      while (fill.size < 3 && g < 40) {
+        g++;
+        const d = randInt(1, Math.max(2, Math.round(Math.abs(correctAnswer) * 0.1) || 1));
+        fill.add(correctAnswer + d);
+        fill.add(correctAnswer - d);
       }
-    }
-    if (guard >= 50) {
-      console.warn("Failed to generate enough wrong answers for decimals");
-    }
-  } else if (correctIsFraction) {
-    const [cnRaw, cdRaw] = String(correctAnswer).split("/");
-    const cn = Number(cnRaw);
-    const cd = Number(cdRaw) || 1;
-
-    let guard = 0;
-    while (wrongAnswers.size < 3 && guard < 50) {
-      guard++;
-      const delta = randInt(1, 3);
-      const sign = Math.random() > 0.5 ? 1 : -1;
-      const nWrong = cn + sign * delta;
-      const wrong = `${nWrong}/${cd}`;
-      if (wrong !== correctAnswer && !wrongAnswers.has(wrong) && nWrong > 0) {
-        wrongAnswers.add(wrong);
+    } else if (typeof correctAnswer === "string") {
+      const base = correctAnswer.replace(/\.\.\.$/, "");
+      const n = Number(base);
+      if (!Number.isNaN(n)) {
+        fill.add(`${(n + 0.01).toFixed(3)}...`);
+        fill.add(`${(n - 0.01).toFixed(3)}...`);
+        fill.add(n.toFixed(2));
       }
+      fill.add(`${base}1`);
     }
-    if (guard >= 50) {
-      console.warn("Failed to generate enough wrong answers for fractions");
-    }
-  } else if (isNumericAnswer) {
-    let guard = 0;
-    while (wrongAnswers.size < 3 && guard < 50) {
-      guard++;
-      const baseDelta = Math.max(
-        1,
-        Math.round(Math.abs(correctAnswer) * 0.15)
-      );
-      const variation = randInt(1, 3);
-      const sign = Math.random() > 0.5 ? 1 : -1;
-      const wrong = correctAnswer + sign * baseDelta * variation;
-
-      if (
-        wrong !== correctAnswer &&
-        !wrongAnswers.has(wrong) &&
-        wrong >= -200 &&
-        wrong <= 5000
-      ) {
-        wrongAnswers.add(wrong);
-      }
-    }
-    if (guard >= 50) {
-      console.warn("Failed to generate enough wrong answers for numeric");
-    }
-  } else {
-    // תשובות לא מספריות (כמו סימני השוואה) כבר טופלו ב-return מוקדם
+    allAnswers = shuffleMcqList([
+      correctAnswer,
+      ...Array.from(fill)
+        .filter((x) => x !== correctAnswer)
+        .slice(0, 3),
+    ]);
   }
-
-  // וודא שיש תמיד 3 תשובות שגויות (4 כולל התשובה הנכונה)
-  // אם הלולאות הקודמות לא הצליחו ליצור 3 תשובות, נוסיף תשובות פשוטות
-  if (wrongAnswers.size < 3) {
-    if (isNumericAnswer && typeof correctAnswer === "number") {
-      // יצירת תשובות שגויות פשוטות למספרים
-      const attempts = [
-        correctAnswer + 1,
-        correctAnswer - 1,
-        correctAnswer + 2,
-        correctAnswer - 2,
-        correctAnswer + Math.max(1, Math.round(Math.abs(correctAnswer) * 0.1)),
-        correctAnswer - Math.max(1, Math.round(Math.abs(correctAnswer) * 0.1)),
-        correctAnswer * 2,
-        correctAnswer + 5,
-        correctAnswer - 5,
-      ];
-      
-      for (const attempt of attempts) {
-        if (wrongAnswers.size >= 3) break;
-        if (
-          attempt !== correctAnswer &&
-          !wrongAnswers.has(attempt) &&
-          attempt >= -200 &&
-          attempt <= 5000 &&
-          !Number.isNaN(attempt)
-        ) {
-          wrongAnswers.add(attempt);
-        }
-      }
-    } else if (correctIsFraction) {
-      const [cnRaw, cdRaw] = String(correctAnswer).split("/");
-      const cn = Number(cnRaw);
-      const cd = Number(cdRaw) || 1;
-      
-      // יצירת תשובות שגויות פשוטות לשברים
-      const attempts = [
-        `${cn + 1}/${cd}`,
-        `${Math.max(1, cn - 1)}/${cd}`,
-        `${cn}/${cd + 1}`,
-        `${cn + 2}/${cd}`,
-        `${cn}/${Math.max(1, cd - 1)}`,
-      ];
-      
-      for (const attempt of attempts) {
-        if (wrongAnswers.size >= 3) break;
-        if (attempt !== correctAnswer && !wrongAnswers.has(attempt)) {
-          wrongAnswers.add(attempt);
-        }
-      }
-    } else if (isDecimalsOp) {
-      const correctNum = Number(correctAnswer);
-      const places = params?.places != null ? Math.max(1, Math.min(3, params.places)) : 1;
-      const fmt = (x) => x.toFixed(places);
-      
-      // יצירת תשובות שגויות פשוטות לעשרוניים
-      const attempts = [
-        fmt(correctNum + 0.1),
-        fmt(correctNum - 0.1),
-        fmt(correctNum + 0.2),
-        fmt(correctNum - 0.2),
-        fmt(correctNum * 1.1),
-        fmt(correctNum * 0.9),
-      ];
-      
-      for (const attempt of attempts) {
-        if (wrongAnswers.size >= 3) break;
-        if (attempt !== correctAnswer && !wrongAnswers.has(attempt)) {
-          wrongAnswers.add(attempt);
-        }
-      }
-    } else if (typeof correctAnswer === "number") {
-      // למקרים אחרים עם מספרים
-      const attempts = [
-        correctAnswer + 1,
-        correctAnswer - 1,
-        correctAnswer + 2,
-        correctAnswer - 2,
-        correctAnswer * 2,
-      ];
-      
-      for (const attempt of attempts) {
-        if (wrongAnswers.size >= 3) break;
-        if (attempt !== correctAnswer && !wrongAnswers.has(attempt)) {
-          wrongAnswers.add(attempt);
-        }
-      }
-    }
-  }
-
-  // וודא שיש בדיוק 3 תשובות שגויות (אם עדיין לא, נוסיף תשובות ברירת מחדל)
-  const wrongAnswersArray = Array.from(wrongAnswers);
-  while (wrongAnswersArray.length < 3 && typeof correctAnswer === "number") {
-    const fallback = correctAnswer + wrongAnswersArray.length + 10;
-    if (fallback !== correctAnswer && !wrongAnswersArray.includes(fallback)) {
-      wrongAnswersArray.push(fallback);
-      } else {
-      // ננסה ערכים אחרים
-      const altFallback = correctAnswer - (wrongAnswersArray.length + 10);
-      if (altFallback !== correctAnswer && !wrongAnswersArray.includes(altFallback)) {
-        wrongAnswersArray.push(altFallback);
-      } else {
-        break; // הגנה מפני לולאה אינסופית
-      }
-    }
-  }
-  
-  // וודא שיש בדיוק 4 תשובות (1 נכונה + 3 שגויות)
-  // נוסיף את התשובה הנכונה לרשימה בצורה אקראית, לא תמיד ראשונה
-  const allAnswers = [...wrongAnswersArray.slice(0, 3)];
-  
-  // אם עדיין אין 4 תשובות, נוסיף תשובות ברירת מחדל
-  while (allAnswers.length < 3) {
-    if (typeof correctAnswer === "number") {
-      const defaultWrong = correctAnswer + (allAnswers.length + 1) * 5;
-      if (defaultWrong !== correctAnswer && !allAnswers.includes(defaultWrong)) {
-        allAnswers.push(defaultWrong);
-      } else {
-        break; // הגנה מפני לולאה אינסופית
-      }
-    } else {
-      // למקרים לא מספריים, נסיים כאן
-      break;
-    }
-  }
-
-  
-  // וודא שיש בדיוק 3 תשובות שגויות לפני הוספת התשובה הנכונה
-  if (allAnswers.length < 3) {
-    console.warn(`Expected 3 wrong answers but got ${allAnswers.length} for question: ${question}`);
-    // אם יש פחות מ-3, נמלא עם תשובות ברירת מחדל
-    while (allAnswers.length < 3 && typeof correctAnswer === "number") {
-      const fallback = correctAnswer + (allAnswers.length + 1) * 10;
-      if (fallback !== correctAnswer && !allAnswers.includes(fallback)) {
-        allAnswers.push(fallback);
-      } else {
-        break;
-      }
-    }
-  }
-  
-  // הוספת התשובה הנכונה לרשימה במקום אקראי, לא תמיד בסוף
-  const randomInsertPos = Math.floor(Math.random() * (allAnswers.length + 1));
-  allAnswers.splice(randomInsertPos, 0, correctAnswer);
-  
-  // ערבוב התשובות - Fisher-Yates shuffle משופר
-  // נערבב מספר פעמים כדי להבטיח ערבוב טוב יותר
-  for (let shuffleRound = 0; shuffleRound < 3; shuffleRound++) {
-    for (let i = allAnswers.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
-    }
-  }
-  
-  // ערבוב נוסף - שיטה נוספת לערבוב טוב יותר
-  const shuffledAnswers = [...allAnswers];
-  for (let i = 0; i < shuffledAnswers.length; i++) {
-    const randomIndex = Math.floor(Math.random() * shuffledAnswers.length);
-    [shuffledAnswers[i], shuffledAnswers[randomIndex]] = [shuffledAnswers[randomIndex], shuffledAnswers[i]];
-  }
-  
-  // נשתמש ברשימה המעורבבת
-  allAnswers.length = 0;
-  allAnswers.push(...shuffledAnswers);
 
   // וודא שיש טקסט לשאלה
   const finalQuestionText = question && question.trim().length > 0 ? question : `תרגיל ${selectedOp}`;

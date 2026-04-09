@@ -1,110 +1,156 @@
+import { getDiagramEmphasisForStep } from "./geometry-diagram-spec";
+
 // פונקציות הסבר ורמזים לדף ההנדסה
 
+function toNum(x) {
+  const n = Number(x);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+/** רמזים: אסטרטגיה בלי צבירת מספרים מלאה ובלי חשיפת תשובת MCQ */
 export function getHint(question, topic, gradeKey) {
   if (!question || !question.params) return "";
+  const M = (expr) => `\u2066${expr}\u2069`;
+  const p = question.params;
+  const sh = question.shape;
+
   switch (topic) {
     case "area":
-      if (question.shape === "square") {
-        return `שטח ריבוע = צלע × צלע = ${question.params.side} × ${question.params.side}`;
-      } else if (question.shape === "rectangle") {
-        return `שטח מלבן = אורך × רוחב = ${question.params.length} × ${question.params.width}`;
-      } else if (question.shape === "circle") {
-        return `שטח עיגול = π × רדיוס² = 3.14 × ${question.params.radius}²`;
-      } else if (question.shape === "triangle") {
-        return `שטח משולש = (בסיס × גובה) ÷ 2 = (${question.params.base} × ${question.params.height}) ÷ 2`;
-      } else if (question.shape === "parallelogram") {
-        return `שטח מקבילית = בסיס × גובה = ${question.params.base} × ${question.params.height}`;
-      } else if (question.shape === "trapezoid") {
-        return `שטח טרפז = ((בסיס1 + בסיס2) × גובה) ÷ 2 = ((${question.params.base1} + ${question.params.base2}) × ${question.params.height}) ÷ 2`;
+      if (sh === "square") {
+        return "שטח ריבוע = צלע × צלע. קח את אורך הצלע מהשאלה והכפל בערך שלו — זה גודל השטח, לא היקף.";
+      }
+      if (sh === "rectangle") {
+        return "שטח מלבן = אורך × רוחב. ודא שאתה מכפיל שני ממדים שונים של אותה צורה, ולא מחבר (זה דומה יותר להיקף).";
+      }
+      if (sh === "circle") {
+        return `שטח מעגל = ${M("π × רדיוס²")} (כאן ${M("π ≈ 3.14")}). קודם רדיוס בריבוע, ואז הכפלה ב‑π — לא לבלבל עם ${M("2πr")} שהוא היקף.`;
+      }
+      if (sh === "triangle") {
+        return "שטח משולש = (בסיס × גובה לבסיס) ÷ 2. אחרי המכפלה חלק ב‑2 — טעות נפוצה: לשכוח את החילוק.";
+      }
+      if (sh === "parallelogram") {
+        return "שטח מקבילית = בסיס × הגובה האנך אליו (לא אלכסון).";
+      }
+      if (sh === "trapezoid") {
+        return "שטח טרפז = ((בסיס1 + בסיס2) × גובה) ÷ 2. קודם חבר את שני הבסיסים המקבילים, כפול גובה, ואז חלקי 2.";
       }
       break;
+
     case "perimeter":
-      if (question.shape === "square") {
-        return `היקף ריבוע = צלע × 4 = ${question.params.side} × 4`;
-      } else if (question.shape === "rectangle") {
-        return `היקף מלבן = (אורך + רוחב) × 2 = (${question.params.length} + ${question.params.width}) × 2`;
-      } else if (question.shape === "circle") {
-        return `היקף עיגול = 2 × π × רדיוס = 2 × 3.14 × ${question.params.radius}`;
-      } else if (question.shape === "triangle") {
-        return `היקף משולש = צלע1 + צלע2 + צלע3 = ${question.params.side1} + ${question.params.side2} + ${question.params.side3}`;
+      if (sh === "square") {
+        return "היקף ריבוע = צלע × 4 (סכום ארבע הצלעות השוות). אם חישבת צלע² — זו נוסחת שטח.";
+      }
+      if (sh === "rectangle") {
+        return "היקף מלבן = (אורך + רוחב) × 2 — סכום כל הצלעות. אל תכפול אורך × רוחב; זה שטח.";
+      }
+      if (sh === "circle") {
+        return `היקף מעגל = ${M("2 × π × רדיוס")}. זה סיבוב שלם סביב — לא ${M("πr²")}.`;
+      }
+      if (sh === "triangle") {
+        return "היקף משולש = סכום שלוש הצלעות. בלי חלוקה ב‑2.";
       }
       break;
-    case "volume":
-      if (question.shape === "cube") {
-        return `נפח קובייה = צלע³ = ${question.params.side}³`;
-      } else if (question.shape === "cylinder") {
-        return `נפח גליל = π × רדיוס² × גובה = 3.14 × ${question.params.radius}² × ${question.params.height}`;
-      } else if (question.shape === "sphere") {
-        return `נפח כדור = (4/3) × π × רדיוס³ = (4/3) × 3.14 × ${question.params.radius}³`;
-      } else if (question.shape === "rectangular_prism") {
-        return `נפח תיבה = אורך × רוחב × גובה = ${question.params.length} × ${question.params.width} × ${question.params.height}`;
-      } else if (question.params.kind === "pyramid_volume_square" || question.params.kind === "pyramid_volume_rectangular") {
-        const baseArea = question.params.baseArea || (question.params.baseSide * (question.params.baseWidth || question.params.baseSide));
-        return `נפח פירמידה = (1/3) × שטח בסיס × גובה = (1/3) × ${baseArea} × ${question.params.height}`;
-      } else if (question.params.kind === "cone_volume") {
-        return `נפח חרוט = (1/3) × π × רדיוס² × גובה = (1/3) × 3.14 × ${question.params.radius}² × ${question.params.height}`;
-      } else if (question.params.kind === "prism_volume_triangle" || question.params.kind === "prism_volume_rectangular") {
-        const baseArea = question.params.baseArea || (question.params.base * question.params.baseHeight / 2) || (question.params.baseLength * question.params.baseWidth);
-        return `נפח מנסרה = שטח בסיס × גובה = ${baseArea} × ${question.params.height}`;
+
+    case "volume": {
+      if (p.kind === "pyramid_volume_square" || p.kind === "pyramid_volume_rectangular") {
+        return "נפח פירמידה = (1/3) × שטח בסיס × גובה. קודם שטח הבסיס, ואז כפול גובה ושליש — לא לשכוח הגורם 1/3.";
+      }
+      if (p.kind === "cone_volume") {
+        return "נפח חרוט = (1/3) × π × רדיוס² × גובה — כמו פירמידה עם בסיס עגול; שוב: שליש מנפח הגליל עם אותו בסיס.";
+      }
+      if (p.kind === "prism_volume_triangle" || p.kind === "prism_volume_rectangular") {
+        return "נפח מנסרה = שטח החתך (בסיס) × גובה המנסרה. אם הבסיס משולש — חשב קודם שטח המשולש.";
+      }
+      if (sh === "cube") {
+        return "נפח קובייה = צלע³ (אותה צלע שלוש פעמים).";
+      }
+      if (sh === "rectangular_prism") {
+        return "נפח תיבה = אורך × רוחב × גובה — שלושת הממדים, בלי גורם 1/3.";
+      }
+      if (sh === "cylinder") {
+        return "נפח גליל = π × רדיוס² × גובה. שטח מעגל הבסיס כפול גובה הגליל.";
+      }
+      if (sh === "sphere") {
+        return "נפח כדור = (4/3) × π × רדיוס³ — הרדיוס מועלה לחזקה שלוש, לא רק בריבוע.";
       }
       break;
+    }
+
     case "angles":
-      return `סכום זוויות במשולש = 180°. אם יש ${question.params?.angle1 || 0}° ו-${question.params?.angle2 || 0}°, אז השלישית = 180° - (שתי הזוויות)`;
+      return `בכל משולש סכום זוויות פנימיות = ${M("180°")}. חברי את שתי הזוויות הנתונות, ואז הפחיתי מהתוצאה מ‑${M("180°")}.`;
+
     case "pythagoras":
-      return `משפט פיתגורס: a² + b² = c². כאן: ${question.params?.a || 0}² + ${question.params?.b || 0}² = c²`;
+      return `במשולש ישר־זווית: ${M("a² + b² = c²")}. זהה מי היתר (הצלע מול הזווית הישרה) ומה מבקשים — ניצב או יתר — ואז פעולה הפוכה (שורש או הפרש ריבועים).`;
+
     case "shapes_basic":
-      if (question.params.kind === "shapes_basic_square" || question.params.kind === "shapes_basic_rectangle") {
-        return `זהה את הצורה: ${question.params?.shape || "ריבוע"} - ריבוע יש לו 4 צלעות שוות, מלבן יש לו 2 זוגות של צלעות שוות`;
-      } else if (question.params.kind === "shapes_basic_properties_square") {
-        return `ריבוע: כל 4 הצלעות שוות באורכן. לכן התשובה היא 4.`;
-      } else if (question.params.kind === "shapes_basic_properties_rectangle") {
-        return `מלבן: יש 2 זוגות של צלעות שוות (זוג אחד ארוך וזוג אחד קצר). לכן התשובה היא 2.`;
-      } else if (question.params.kind === "shapes_basic_properties_angles") {
-        return `${question.params.shape || "ריבוע"}: כל 4 הזוויות הן זוויות ישרות (90°). לכן התשובה היא 4.`;
+      if (p.kind === "shapes_basic_square" || p.kind === "shapes_basic_rectangle") {
+        return "השוו אורכי צלעות: כשכל ארבע השוות — ריבוע; כשיש שני אורכים שונים לזוגות — מלבן.";
       }
-      return `זהה את הצורה לפי התכונות: ריבוע יש לו 4 צלעות שוות, מלבן יש לו 2 זוגות של צלעות שוות`;
+      if (p.kind === "shapes_basic_properties_square") {
+        return "שואלים על מספר צלעות שוות בריבוע. חשבו: כמה צלעות יש במצולע סגור, ומה ייחודי בריבוע לגבי אורכן?";
+      }
+      if (p.kind === "shapes_basic_properties_rectangle") {
+        return "שואלים כמה זוגות של צלעות שוות יש במלבן — לא כמה צלעות בסך הכל.";
+      }
+      if (p.kind === "shapes_basic_properties_angles") {
+        return "ריבוע ומלבן הם מרובעים עם זוויות פנימיות ישרות. כמה פינות כאלה יש במצולע עם ארבע צלעות?";
+      }
+      return "התמקדו בתכונות צלעות וזוויות של הריבוע לעומת המלבן.";
+
     case "parallel_perpendicular":
-      return `קווים ${question.params?.type || "מקבילות"} - מקבילות לא נפגשות, מאונכות יוצרות זווית ישרה`;
+      return `מקבילים: לא נפגשים ומרחק קבוע ביניהם. מאונחים: נפגשים בזווית ישרה (${M("90°")}). איזה תיאור מתאים לשם שבשאלה?`;
+
     case "triangles":
-      return `מיון משולשים: ${question.params?.type || "שווה צלעות"} - לפי אורך הצלעות`;
+      return "מיינו לפי שוויון אורכי צלעות: שלוש שוות / שתיים שוות / כולן שונות — והתאימו לשם שבשאלה.";
+
     case "quadrilaterals":
-      return `מיון מרובעים: ${question.params?.type || "ריבוע"} - לפי תכונות הצלעות והזוויות`;
+      return "התאימו את השם לכללי הצלעות והזוויות: כל הצלעות שוות? זוגות מקבילים? בסיס אחד בלבד מקביל?";
+
     case "transformations":
-      return `טרנספורמציה: ${question.params?.type || "הזזה"} - הזזה מעתיקה את הצורה, שיקוף הופך אותה`;
+      return "הזזה מזיזה בלי לשנות כיוון קריאה של הצורה; שיקוף יוצר 'תמונת מראה' לציר. איזה תיאור מתאים לפעולה בשאלה?";
+
     case "rotation":
-      return `סיבוב: ${question.params?.angle || 90}° - סיבוב סביב נקודה`;
+      return `סיבוב נמדד במעלות סביב נקודה. חשבו אם מדובר ברבע, חצי או שלושת רבעי סיבוב מלא (${M("360°")}).`;
+
     case "symmetry":
-      return `סימטרייה: ${question.params?.shape || "ריבוע"} - כמה צירי סימטרייה יש לצורה?`;
+      return "ציר סימטרייה מחלק את הצורה לשני חצאים משקפים. חשבו כמה קווים כאלה עוברים דרך הצורה לפי סוגה (ריבוע / מלבן / משולש שווה צלעות).";
+
     case "diagonal":
-      if (question.params.kind === "diagonal_square") {
-        return `אלכסון בריבוע: אלכסון = צלע × √2 = ${question.params.side} × √2`;
-      } else if (question.params.kind === "diagonal_rectangle") {
-        return `אלכסון במלבן: אלכסון = √(אורך² + רוחב²) = √(${question.params.side}² + ${question.params.width}²)`;
-      } else if (question.params.kind === "diagonal_parallelogram") {
-        return `אלכסון במקבילית: אלכסון = √(צלע1² + צלע2²) = √(${question.params.side}² + ${question.params.width}²)`;
+      if (p.kind === "diagonal_square") {
+        return `בריבוע האלכסון יוצר משולש ישר־זווית עם שתי צלעות שוות — אפשר ${M("√2 × צלע")}.`;
       }
-      return `אלכסון: קטע המחבר שני קדקודים שאינם על אותה צלע. חשב לפי משפט פיתגורס.`;
+      if (p.kind === "diagonal_rectangle" || p.kind === "diagonal_parallelogram") {
+        return "אלכסון הוא יתר במשולש ישר־זווית שצלעותיו שני הצלעות הנתונות — השתמשו בפיתגרור.";
+      }
+      return "חשבו אלכסון כיתר במשולש ישר־זווית שנבנה משני הצלעות הנתונות.";
+
     case "heights":
-      if (question.params.shape === "triangle") {
-        return `גובה במשולש: שטח = (בסיס × גובה) ÷ 2, אז גובה = (שטח × 2) ÷ בסיס = (${question.params.area} × 2) ÷ ${question.params.base}`;
-      } else if (question.params.shape === "parallelogram") {
-        return `גובה במקבילית: שטח = בסיס × גובה, אז גובה = שטח ÷ בסיס = ${question.params.area} ÷ ${question.params.base}`;
-      } else if (question.params.shape === "trapezoid") {
-        return `גובה בטרפז: שטח = ((בסיס1 + בסיס2) × גובה) ÷ 2, אז גובה = (שטח × 2) ÷ (בסיס1 + בסיס2) = (${question.params.area} × 2) ÷ (${question.params.base1} + ${question.params.base2})`;
+      if (p.shape === "triangle") {
+        return `מהנוסחה לשטח משולש הפכו גובה: גובה = ${M("(שטח × 2) ÷ בסיס")}.`;
       }
-      return `גובה: המרחק מהקדקוד לבסיס. חשב לפי הנוסחה המתאימה לצורה.`;
+      if (p.shape === "parallelogram") {
+        return `במקבילית שטח = ${M("בסיס × גובה")}; לכן גובה = ${M("שטח ÷ בסיס")}.`;
+      }
+      if (p.shape === "trapezoid") {
+        return `בטרפז קודם ${M("(בסיס1 + בסיס2)")}, אחר כך קשרו לשטח וחלקו — גובה = ${M("(שטח × 2) ÷ (סכום הבסיסים)")}.`;
+      }
+      return "בודדים גובה מהנוסחה לשטח של אותה צורה.";
+
     case "tiling":
-      return `ריצוף: ${question.params?.shape || "ריבוע"} - צורות המשמשות לריצוף ללא רווחים`;
+      return `בריצוף סביב נקודה סכום הזוויות החוצות חייב להסתדר ל‑${M("360°")}. מה הזווית הפנימית הבולטת של הצורה בשאלה?`;
+
     case "circles":
-      return question.params?.askArea 
-        ? `שטח עיגול = π × רדיוס² = 3.14 × ${question.params?.radius || 0}²`
-        : `היקף מעגל = 2 × π × רדיוס = 2 × 3.14 × ${question.params?.radius || 0}`;
+      return p.askArea
+        ? `שואלים שטח: ${M("π × רדיוס²")}. שואלים היקף: ${M("2 × π × רדיוס")}. בדקו מה המילה בשאלה.`
+        : `שואלים היקף (ליניארי ברדיוס): ${M("2πr")}. שטח משתמש ברדיוס בריבוע: ${M("πr²")}.`;
+
     case "solids":
-      return `גוף תלת-מימדי: ${question.params?.solid || "קובייה"} - זהה את הגוף לפי תכונותיו`;
+      return "קשרו את התיאור (פאות, בסיס עגול, קודקוד) לרשימת הגופים — לא לפי שם אחד בלבד.";
+
     default:
-      return "נסה לחשוב על הנוסחה המתאימה";
+      return "נסה לזהות איזו נוסחה או תכונה מתאימה לניסוח השאלה.";
   }
-  return "נסה לחשוב על הנוסחה המתאימה";
+  return "נסה לזהות איזו נוסחה או תכונה מתאימה לניסוח השאלה.";
 }
 
 // הסבר מפורט צעד-אחר-צעד לפי נושא וכיתה
@@ -238,6 +284,92 @@ export function getSolutionSteps(question, topic, gradeKey) {
     }
 
     case "volume": {
+      if (p.kind === "pyramid_volume_square") {
+        const bs = p.baseSide;
+        const h = p.height;
+        const baseArea = bs * bs;
+        const volRaw = (baseArea * h) / 3;
+        return [
+          toSpan("1. נוסחה: נפח פירמידה = (1/3) × שטח בסיס × גובה.", "1"),
+          toSpan("2. בסיס ריבועי: שטח בסיס = צלע × צלע.", "2"),
+          toSpan(
+            `3. נציב: ${ltr(`שטח בסיס = ${bs} × ${bs} = ${baseArea}`)}, גובה ${ltr(String(h))}.`,
+            "3"
+          ),
+          toSpan(
+            `4. נחשב: ${ltr(`(1/3) × ${baseArea} × ${h} = ${volRaw}`)} → מעוגל לפי השאלה: ${ltr(String(correctAnswer))}.`,
+            "4"
+          ),
+          toSpan(`5. התוצאה: ${correctAnswer} יחידות נפח.`, "5"),
+        ];
+      }
+      if (p.kind === "pyramid_volume_rectangular") {
+        const b1 = p.baseSide;
+        const b2 = p.baseWidth;
+        const h = p.height;
+        const baseArea = b1 * b2;
+        const volRaw = (baseArea * h) / 3;
+        return [
+          toSpan("1. נוסחה: נפח פירמידה = (1/3) × שטח בסיס × גובה.", "1"),
+          toSpan("2. בסיס מלבני: שטח בסיס = אורך × רוחב.", "2"),
+          toSpan(
+            `3. נציב: ${ltr(`${b1} × ${b2} = ${baseArea}`)}, גובה ${ltr(String(h))}.`,
+            "3"
+          ),
+          toSpan(
+            `4. נחשב: ${ltr(`(1/3) × ${baseArea} × ${h} = ${volRaw}`)} → ${ltr(String(correctAnswer))}.`,
+            "4"
+          ),
+          toSpan(`5. התוצאה: ${correctAnswer} יחידות נפח.`, "5"),
+        ];
+      }
+      if (p.kind === "cone_volume") {
+        const r = p.radius;
+        const h = p.height;
+        const r2 = r * r;
+        const volRaw = (3.14 * r2 * h) / 3;
+        return [
+          toSpan("1. נוסחה: נפח חרוט = (1/3) × π × רדיוס² × גובה (π ≈ 3.14).", "1"),
+          toSpan(`2. נציב: ${ltr(`(1/3) × 3.14 × ${r}² × ${h}`)}.`, "2"),
+          toSpan(
+            `3. נחשב: ${ltr(`${r}² = ${r2}`)}, ${ltr(`3.14 × ${r2} × ${h} = ${3.14 * r2 * h}`)}, חלקי 3 ≈ ${ltr(String(volRaw))}.`,
+            "3"
+          ),
+          toSpan(`4. התוצאה המעוגלת: ${correctAnswer} יחידות נפח.`, "4"),
+        ];
+      }
+      if (p.kind === "prism_volume_triangle") {
+        const b = p.base;
+        const bh = p.baseHeight;
+        const h = p.height;
+        const baseArea = (b * bh) / 2;
+        const prod = baseArea * h;
+        return [
+          toSpan("1. נוסחה: נפח מנסרה = שטח בסיס × גובה המנסרה.", "1"),
+          toSpan("2. בסיס משולש: שטח = (בסיס × גובה לבסיס) ÷ 2.", "2"),
+          toSpan(
+            `3. שטח בסיס: ${ltr(`(${b} × ${bh}) ÷ 2 = ${baseArea}`)}.`,
+            "3"
+          ),
+          toSpan(
+            `4. נפח: ${ltr(`${baseArea} × ${h} = ${prod}`)} → ${correctAnswer} יחידות נפח.`,
+            "4"
+          ),
+        ];
+      }
+      if (p.kind === "prism_volume_rectangular") {
+        const L = p.baseLength;
+        const W = p.baseWidth;
+        const h = p.height;
+        const baseArea = L * W;
+        const prod = baseArea * h;
+        return [
+          toSpan("1. נוסחה: נפח מנסרה = שטח בסיס × גובה.", "1"),
+          toSpan(`2. בסיס מלבני: ${ltr(`${L} × ${W} = ${baseArea}`)}.`, "2"),
+          toSpan(`3. נפח: ${ltr(`${baseArea} × ${h} = ${prod}`)}.`, "3"),
+          toSpan(`4. התוצאה: ${correctAnswer} יחידות נפח.`, "4"),
+        ];
+      }
       if (shape === "cube") {
         return [
           toSpan("1. נוסחה: נפח קובייה = צלע³.", "1"),
@@ -341,91 +473,167 @@ export function getSolutionSteps(question, topic, gradeKey) {
 
     case "shapes_basic": {
       if (p.kind === "shapes_basic_square" || p.kind === "shapes_basic_rectangle") {
-        // כיתה א' - זיהוי
-        const shape = p.shape || "ריבוע";
+        const shapeName = p.shape || "ריבוע";
+        const num = shapeName === "ריבוע" ? 1 : 2;
         return [
-          toSpan(`1. ${shape} הוא מצולע.`, "1"),
-          toSpan(shape === "ריבוע" ? "2. לריבוע יש 4 צלעות שוות ו-4 זוויות ישרות." : "2. למלבן יש 2 זוגות של צלעות שוות ו-4 זוויות ישרות.", "2"),
-          toSpan(`3. זהה את הצורה לפי התכונות.`, "3"),
+          toSpan(`1. בודקים את אורכי הצלעות מהנתונים — מופיעה הצורה "${shapeName}".`, "1"),
+          toSpan(
+            shapeName === "ריבוע"
+              ? "2. בריבוע ארבע הצלעות באותו אורך."
+              : "2. במלבן יש שני אורכים שונים, כל אחד מופיע בזוג נגדי.",
+            "2"
+          ),
+          toSpan("3. במפתח התשובות: 1 = ריבוע, 2 = מלבן.", "3"),
+          toSpan(`4. לכן האפשרות הנכונה היא ${num}.`, "4"),
         ];
-      } else {
-        // כיתה ד' - תכונות
-        if (p.kind === "shapes_basic_properties_square") {
-          return [
-            toSpan("1. ריבוע הוא מצולע עם 4 צלעות.", "1"),
-            toSpan("2. כל 4 הצלעות של ריבוע שוות באורכן.", "2"),
-            toSpan("3. לכן התשובה היא 4 צלעות שוות.", "3"),
-          ];
-        } else if (p.kind === "shapes_basic_properties_rectangle") {
-          return [
-            toSpan("1. מלבן הוא מצולע עם 4 צלעות.", "1"),
-            toSpan("2. למלבן יש 2 זוגות של צלעות שוות: זוג אחד של צלעות ארוכות וזוג אחד של צלעות קצרות.", "2"),
-            toSpan("3. לכן התשובה היא 2 זוגות של צלעות שוות.", "3"),
-          ];
-        } else if (p.kind === "shapes_basic_properties_angles") {
-          const shape = p.shape || "ריבוע";
-          return [
-            toSpan(`1. ${shape} הוא מצולע עם 4 זוויות.`, "1"),
-            toSpan(`2. כל 4 הזוויות של ${shape} הן זוויות ישרות (90°).`, "2"),
-            toSpan("3. לכן התשובה היא 4 זוויות ישרות.", "3"),
-          ];
-        }
+      }
+      if (p.kind === "shapes_basic_properties_square") {
+        return [
+          toSpan("1. שואלים כמה צלעות שוות יש בריבוע — לא היקף ולא שטח.", "1"),
+          toSpan("2. בריבוע כל ארבע הצלעות באותו אורך.", "2"),
+          toSpan(
+            `3. מספר הצלעות השוות הוא ${correctAnswer} — בוחרים את ערך התשובה הזה מבין האפשרויות.`,
+            "3"
+          ),
+        ];
+      }
+      if (p.kind === "shapes_basic_properties_rectangle") {
+        return [
+          toSpan("1. שואלים כמה זוגות של צלעות שוות יש במלבן.", "1"),
+          toSpan("2. במלבן שני אורכים שונים; כל אורך מופיע בדיוק בזוג נגדי.", "2"),
+          toSpan(
+            `3. נוצרים בדיוק שני זוגות שווים — התשובה המספרית היא ${correctAnswer}.`,
+            "3"
+          ),
+        ];
+      }
+      if (p.kind === "shapes_basic_properties_angles") {
+        const shapeName = p.shape || "ריבוע";
+        return [
+          toSpan(`1. ${shapeName} מרובע עם ארבע זוויות פנימיות.`, "1"),
+          toSpan("2. בריבוע ובמלבן כל ארבע הזוויות ישרות (90°).", "2"),
+          toSpan(
+            `3. מספר הזוויות הישרות: ${correctAnswer} — בוחרים ערך זה בתשובות.`,
+            "3"
+          ),
+        ];
       }
       return [];
     }
 
     case "parallel_perpendicular": {
       const type = p.type || "מקבילות";
+      const opt = type === "מקבילות" ? "1 (מקבילות)" : "2 (מאונכות)";
       return [
-        toSpan(`1. קווים ${type} הם קווים מיוחדים.`, "1"),
-        toSpan(type === "מקבילות" ? "2. קווים מקבילים לא נפגשים לעולם." : "2. קווים מאונכים יוצרים זווית ישרה (90°).", "2"),
-        toSpan(`3. זהה את סוג הקווים לפי התכונות.`, "3"),
+        toSpan(`1. בשאלה מופיע השם: "${type}".`, "1"),
+        toSpan(
+          type === "מקבילות"
+            ? "2. קווים מקבילים באותו מישור לא נחתכים ומרחקם קבוע."
+            : "2. קווים מאונכים נחתכים בזווית ישרה (90°).",
+          "2"
+        ),
+        toSpan(
+          "3. לפי מפתח התשובות בשאלה: 1 = מקבילות, 2 = מאונכות.",
+          "3"
+        ),
+        toSpan(`4. התאמה: ${opt}.`, "4"),
       ];
     }
 
     case "triangles": {
       const type = p.type || "שווה צלעות";
+      const idx =
+        type === "שווה צלעות" ? 1 : type === "שווה שוקיים" ? 2 : 3;
       return [
-        toSpan(`1. משולש ${type} מסווג לפי אורך הצלעות.`, "1"),
-        toSpan(type === "שווה צלעות" ? "2. כל 3 הצלעות שוות." : type === "שווה שוקיים" ? "2. יש 2 צלעות שוות." : "2. כל הצלעות שונות.", "2"),
-        toSpan(`3. זהה את סוג המשולש לפי התכונות.`, "3"),
+        toSpan(`1. מסווגים את המשולש לפי שוויון אורכי צלעות — השם בשאלה: "${type}".`, "1"),
+        toSpan(
+          type === "שווה צלעות"
+            ? "2. בשווה־צלעות כל שלוש הצלעות באותו אורך."
+            : type === "שווה שוקיים"
+            ? "2. בשווה־שוקיים בדיוק שתי צלעות שוות."
+            : "2. בשונה־צלעות כל שלושת האורכים שונים.",
+          "2"
+        ),
+        toSpan(
+          "3. מפתח בשאלה: 1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות.",
+          "3"
+        ),
+        toSpan(`4. לכן האפשרות הנכונה היא ${idx}.`, "4"),
       ];
     }
 
     case "quadrilaterals": {
       const type = p.type || "ריבוע";
+      const types = ["ריבוע", "מלבן", "מקבילית", "טרפז"];
+      const idx = Math.max(1, types.indexOf(type) + 1);
       return [
-        toSpan(`1. ${type} הוא סוג של מרובע.`, "1"),
-        toSpan(`2. כל מרובע יש לו תכונות מיוחדות של צלעות וזוויות.`, "2"),
-        toSpan(`3. זהה את סוג המרובע לפי התכונות.`, "3"),
+        toSpan(`1. מזהים מרובע לפי צלעות וזוויות — כאן: "${type}".`, "1"),
+        toSpan(
+          type === "ריבוע"
+            ? "2. ריבוע: ארבע צלעות שוות וארבע זוויות ישרות."
+            : type === "מלבן"
+            ? "2. מלבן: שני זוגות צלעות שוות וארבע זוויות ישרות."
+            : type === "מקבילית"
+            ? "2. מקבילית: כל צלע מקבילה לצלע נגדית (לא בהכרח ישרות בפינות)."
+            : "2. טרפז: זוג אחד של צלעות מקבילות (הבסיסים).",
+          "2"
+        ),
+        toSpan(
+          "3. מפתח: 1 = ריבוע, 2 = מלבן, 3 = מקבילית, 4 = טרפז.",
+          "3"
+        ),
+        toSpan(`4. המספר שמתאים ל־"${type}" הוא ${idx}.`, "4"),
       ];
     }
 
     case "transformations": {
       const type = p.type || "הזזה";
+      const opt = type === "הזזה" ? "1 (הזזה)" : "2 (שיקוף)";
       return [
-        toSpan(`1. ${type} היא טרנספורמציה גאומטרית.`, "1"),
-        toSpan(type === "הזזה" ? "2. הזזה מעתיקה את הצורה באותו כיוון ובאותו מרחק." : "2. שיקוף הופך את הצורה סביב קו (ציר).", "2"),
-        toSpan(`3. זהה את סוג הטרנספורמציה לפי התכונות.`, "3"),
+        toSpan(`1. סוג הטרנספורמציה בשאלה: "${type}".`, "1"),
+        toSpan(
+          type === "הזזה"
+            ? "2. הזזה: כל נקודה זזה באותו וקטור — הצורה לא מתהפכת."
+            : "2. שיקוף: צורה 'מתהפכת' ביחס לקו — כמו מראה.",
+          "2"
+        ),
+        toSpan("3. במפתח: 1 = הזזה, 2 = שיקוף.", "3"),
+        toSpan(`4. לכן בוחרים ${opt}.`, "4"),
       ];
     }
 
     case "rotation": {
       const angle = p.angle || 90;
       return [
-        toSpan(`1. סיבוב הוא טרנספורמציה סביב נקודה.`, "1"),
-        toSpan(`2. סיבוב של ${angle}° מעביר את הצורה סביב מרכז הסיבוב.`, "2"),
-        toSpan(`3. זהה את זווית הסיבוב.`, "3"),
+        toSpan("1. סיבוב נמדד במעלות סביב נקודת מרכז.", "1"),
+        toSpan(`2. בשאלה מבקשים את זווית הסיבוב — כאן ${angle}°.`, "2"),
+        toSpan(
+          angle === 90
+            ? "3. 90° = רבע סיבוב מלא."
+            : angle === 180
+            ? "3. 180° = חצי סיבוב."
+            : "3. 270° = שלושת רבעי סיבוב.",
+          "3"
+        ),
+        toSpan(`4. התשובה במעלות: ${angle}.`, "4"),
       ];
     }
 
     case "symmetry": {
-      const shape = p.shape || "ריבוע";
-      const axes = p.axes || 4;
+      const shapeName = p.shape || "ריבוע";
+      const axes = p.axes ?? 4;
       return [
-        toSpan(`1. סימטרייה היא תכונה של צורות.`, "1"),
-        toSpan(`2. ${shape} יש לו ${axes} צירי סימטרייה.`, "2"),
-        toSpan(`3. ציר סימטרייה הוא קו שמחלק את הצורה לשני חלקים זהים.`, "3"),
+        toSpan(`1. ציר סימטרייה: קו שמחלק את הצורה לשני חצאים מתאימים (כמו מראה).`, "1"),
+        toSpan(
+          shapeName === "ריבוע"
+            ? "2. בריבוע: 4 צירים — 2 דרך אמצעי צלעות נגדיות ו-2 אלכסונים."
+            : shapeName === "מלבן"
+            ? "2. במלבן שאינו ריבוע: 2 צירים דרך אמצעי צלעות נגדיות."
+            : "2. במשולש שווה־צלעות: 3 צירים — מכל קודקוד לאמצע הצלע הנגדית.",
+          "2"
+        ),
+        toSpan(`3. ספירה זהירה לפי סוג הצורה "${shapeName}".`, "3"),
+        toSpan(`4. מספר צירי הסימטרייה: ${axes}.`, "4"),
       ];
     }
 
@@ -495,9 +703,17 @@ export function getSolutionSteps(question, topic, gradeKey) {
       const shape = p.shape || "ריבוע";
       const angle = p.angle || 90;
       return [
-        toSpan("1. ריצוף הוא כיסוי של משטח ללא רווחים.", "1"),
-        toSpan(`2. ${shape} משמש לריצוף כי הזוויות שלו מתאימות.`, "2"),
-        toSpan(`3. זווית של ${shape} היא ${angle}°.`, "3"),
+        toSpan("1. בריצוף סביב כל קודקוד סכום הזוויות החוצות צריך להסתדר ל־360°.", "1"),
+        toSpan(
+          shape === "ריבוע"
+            ? "2. לריבוע זווית פנימית 90° — 4 × 90° = 360°."
+            : shape === "משולש שווה צלעות"
+            ? "2. במשולש שווה־צלעות זווית בסיס 60°."
+            : "2. במשושה זווית פנימית 120°.",
+          "2"
+        ),
+        toSpan(`3. בצורה "${shape}" הזווית הרלוונטית לריצוף היא ${angle}°.`, "3"),
+        toSpan(`4. לכן התשובה: ${angle}°.`, "4"),
       ];
     }
 
@@ -522,10 +738,29 @@ export function getSolutionSteps(question, topic, gradeKey) {
 
     case "solids": {
       const solid = p.solid || "קובייה";
+      const desc = p.desc || "";
+      const key =
+        solid === "קובייה"
+          ? "6 פאות ריבוע זהות — מפתח 1."
+          : solid === "תיבה"
+          ? "6 פאות מלבן (לא בהכרח ריבועים) — מפתח 2."
+          : solid === "גליל"
+          ? "2 בסיסים עגולים ומעטפת מעוקמת — מפתח 3."
+          : solid === "פירמידה"
+          ? "בסיס מצולע ופאות משולשות הפוגשות קודקוד — מפתח 4."
+          : solid === "חרוט"
+          ? "בסיס עגול וקודקוד יחיד — מפתח 5."
+          : solid === "כדור"
+          ? "כל הנקודות על פני השטח במרחק קבוע מהמרכז — מפתח 6."
+          : "התאימו תיאור לגוף.";
       return [
-        toSpan(`1. ${solid} הוא גוף תלת-מימדי.`, "1"),
-        toSpan(`2. כל גוף יש לו תכונות מיוחדות של פאות, צלעות וקדקודים.`, "2"),
-        toSpan(`3. זהה את הגוף לפי התכונות.`, "3"),
+        toSpan(`1. בתיאור: "${desc}".`, "1"),
+        toSpan(`2. מזהים לפי פאות ובסיס: ${key}`, "2"),
+        toSpan(`3. שם הגוף בשאלה: ${solid}.`, "3"),
+        toSpan(
+          "4. לפי מפתח התשובות (1–6) בוחרים את המספר המתאים לתיאור.",
+          "4"
+        ),
       ];
     }
 
@@ -536,104 +771,288 @@ export function getSolutionSteps(question, topic, gradeKey) {
   return [];
 }
 
-// "למה טעיתי?" – הסבר קצר לטעות נפוצה
+// "למה טעיתי?" – טעויות נפוצות לפי נושא / צורה / פרמטרים
 export function getErrorExplanation(question, topic, wrongAnswer, gradeKey) {
   if (!question) return "";
+  const iso = (expr) => `\u2066${expr}\u2069`;
   const userAnsNum = Number(wrongAnswer);
   const correctNum = Number(question.correctAnswer);
+  const sh = question.shape;
+  const p = question.params || {};
 
   switch (topic) {
-    case "area":
+    case "area": {
+      const side = toNum(p.side);
+      const L = toNum(p.length);
+      const W = toNum(p.width);
+      const base = toNum(p.base);
+      const ht = toNum(p.height);
+      const r = toNum(p.radius);
+      if (sh === "square" && side > 0 && userAnsNum === 4 * side) {
+        return `נראה שחישבת היקף (${iso("4 ×")}צלע) במקום שטח (${iso("צלע × צלע")}).`;
+      }
+      if (sh === "rectangle" && L > 0 && W > 0 && userAnsNum === 2 * (L + W)) {
+        return `נראה שחישבת היקף במקום שטח — כפל ${iso("אורך × רוחב")}, לא סכום כפול.`;
+      }
+      if (sh === "triangle" && base > 0 && ht > 0 && userAnsNum === base * ht) {
+        return `נראה שכפלת ${iso("בסיס × גובה")} אבל שכחת לחלק ב־${iso("2")} (נוסחת שטח משולש).`;
+      }
+      if (sh === "parallelogram" && base > 0 && ht > 0 && userAnsNum === (base * ht) / 2) {
+        return `במקבילית שטח הבסיס הוא ${iso("בסיס × גובה")} — בלי חלוקה ב־${iso("2")} (זה נוהג במשולש).`;
+      }
+      if (sh === "circle" && r > 0 && !Number.isNaN(userAnsNum)) {
+        const circ = Math.round(2 * 3.14 * r);
+        if (userAnsNum === circ) {
+          return `נראה שחישבת היקף (${iso("2πr")}) במקום שטח (${iso("π × רדיוס²")}).`;
+        }
+        if (userAnsNum === Math.round(3.14 * r)) {
+          return `בשטח צריך רדיוס בריבוע (${iso("πr²")}), לא רק ${iso("π × r")}.`;
+        }
+      }
       if (!Number.isNaN(userAnsNum) && userAnsNum < correctNum) {
-        return "נראה ששכחת לכפול או לחלק. בדוק שוב את הנוסחה – האם כפלת/חלקת את כל המספרים?";
+        return "תוצאה קטנה מדי: אולי חיסרת כפל, חילקת יותר מדי, או השתמשת בנוסחת היקף.";
       }
       if (!Number.isNaN(userAnsNum) && userAnsNum > correctNum) {
-        return "נראה שהוספת במקום לכפול, או שכחת לחלק. בדוק שוב את הנוסחה.";
+        return "תוצאה גדולה מדי: אולי שכחת לחלק ב־2 במשולש/טרפז, או כפלת פעמיים במקום פעם אחת.";
       }
-      return "בדוק שוב: האם השתמשת בנוסחה הנכונה? זכור: שטח ריבוע = \u2066צלע × צלע\u2069, שטח מלבן = \u2066אורך × רוחב\u2069, שטח משולש = \u2066(בסיס × גובה) ÷ 2\u2069.";
+      return "בדוק שזו נוסחת שטח (ולא היקף): ריבוע \u2066צלע²\u2069, מלבן \u2066אורך×רוחב\u2069, משולש \u2066(בסיס×גובה)/2\u2069, עיגול \u2066πr²\u2069.";
+    }
 
-    case "perimeter":
+    case "perimeter": {
+      const side = toNum(p.side);
+      const L = toNum(p.length);
+      const W = toNum(p.width);
+      const r = toNum(p.radius);
+      if (sh === "square" && side > 0 && userAnsNum === side * side) {
+        return `נראה שחישבת שטח (${iso("צלע²")}) במקום היקף (${iso("4 ×")}צלע).`;
+      }
+      if (sh === "rectangle" && L > 0 && W > 0 && userAnsNum === L * W) {
+        return `נראה שחישבת שטח (${iso("אורך × רוחב")}) במקום היקף (${iso("סכום הצלעות × 2")}).`;
+      }
+      if (sh === "circle" && r > 0) {
+        const ar = Math.round(3.14 * r * r);
+        if (userAnsNum === ar) {
+          return `נראה שחישבת שטח מעגל במקום היקף (${iso("2πr")}).`;
+        }
+      }
       if (!Number.isNaN(userAnsNum) && userAnsNum < correctNum) {
-        return "נראה ששכחת לכפול ב-2 (במלבן) או ב-4 (בריבוע), או ששכחת צלע אחת. בדוק שוב.";
+        return "היקף קטן מדי: אולי שכחת לכפול ב־2 במלבן או ב־4 בריבוע, או צלע אחת בסכום.";
       }
-      return "בדוק שוב: האם חיברת את כל הצלעות? זכור: היקף ריבוע = \u2066צלע × 4\u2069, היקף מלבן = \u2066(אורך + רוחב) × 2\u2069.";
+      return `היקף = סכום כל הצלעות (או ${iso("2πr")} במעגל) — לא כפל כמו בשטח.`;
+    }
 
-    case "volume":
+    case "volume": {
+      const k = p.kind || "";
+      if (
+        (k === "pyramid_volume_square" || k === "pyramid_volume_rectangular" || k === "cone_volume") &&
+        !Number.isNaN(userAnsNum) &&
+        !Number.isNaN(correctNum) &&
+        correctNum > 0 &&
+        Math.abs(userAnsNum - 3 * correctNum) <= 1
+      ) {
+        return "נראה ששכחת את הגורם ⅓ בפירמידה או בחרוט — הנפח הוא שליש מנפח \"העמוד\" עם אותו בסיס וגובה.";
+      }
+      if (k === "prism_volume_triangle" || k === "prism_volume_rectangular") {
+        const baseA = toNum(p.baseArea);
+        const h = toNum(p.height);
+        if (baseA > 0 && h > 0 && userAnsNum === Math.round(baseA + h)) {
+          return `נפח מנסרה = ${iso("שטח בסיס × גובה")}, לא סכום שטח + גובה.`;
+        }
+      }
+      if (sh === "cube" && toNum(p.side) > 0 && userAnsNum === toNum(p.side) * toNum(p.side)) {
+        return `נראה שחישבת ${iso("צלע²")} (שטח פאה) במקום ${iso("צלע³")} לנפח.`;
+      }
       if (!Number.isNaN(userAnsNum) && userAnsNum < correctNum) {
-        return "נראה ששכחת לכפול באחד הממדים. בדוק שוב את הנוסחה – האם כפלת את כל הממדים?";
+        return "נפח קטן מדי: אולי שכחת ממד אחד בכפל, או יישמת ⅓ כשלא היה צריך (תיבה/מנסרה).";
       }
-      return "בדוק שוב: האם השתמשת בנוסחה הנכונה? זכור: נפח קובייה = \u2066צלע³\u2069, נפח תיבה = \u2066אורך × רוחב × גובה\u2069.";
-
-    case "angles":
       if (!Number.isNaN(userAnsNum) && userAnsNum > correctNum) {
-        return "נראה שהוספת במקום לחסר. זכור: סכום הזוויות במשולש = \u2066180°\u2069, אז הזווית השלישית = \u2066180° - (זווית1 + זווית2)\u2069.";
+        return "נפח גדול מדי: אולי שכחת ⅓ בפירמידה/חרוט, או כפלת ממד פעמיים שלא לצורך.";
       }
-      return "בדוק שוב: סכום הזוויות במשולש תמיד שווה ל-180°. חסר את שתי הזוויות מ-180° כדי למצוא את השלישית.";
+      return `נפח תיבה/מנסרה: שלושה ממדים בכפל. פירמידה/חרוט: ${iso("(⅓)×שטח בסיס×גובה")} (ועם ${iso("π")} בחרוט).`;
+    }
 
-    case "pythagoras":
+    case "angles": {
+      const a1 = toNum(p.angle1);
+      const a2 = toNum(p.angle2);
+      if (!Number.isNaN(userAnsNum) && !Number.isNaN(a1) && !Number.isNaN(a2)) {
+        if (userAnsNum === a1 + a2) {
+          return `חיברת את שתי הזוויות — צריך לחסר את הסכום מ־${iso("180°")}.`;
+        }
+        if (userAnsNum === 180 - Math.abs(a1 - a2)) {
+          return `בדוק: הזווית השלישית היא ${iso("180°")} מינוס סכום שתי הזוויות הנתונות.`;
+        }
+      }
+      if (!Number.isNaN(userAnsNum) && userAnsNum > correctNum) {
+        return `תוצאה גדולה מדי: אולי חיברת במקום לחסר מ־${iso("180°")}.`;
+      }
+      return `במשולש סכום זוויות = ${iso("180°")}. הזווית החסרה = ${iso("180° − (זווית1 + זווית2)")}.`;
+    }
+
+    case "pythagoras": {
+      const a = toNum(p.a);
+      const b = toNum(p.b);
+      const c = toNum(p.c);
+      if (!Number.isNaN(userAnsNum) && userAnsNum === a + b && p.kind !== "pythagoras_leg") {
+        return `לא מחברים ניצבים לקבל יתר — צריך ${iso("a² + b²")} ואז שורש.`;
+      }
+      if (p.kind === "pythagoras_leg" && !Number.isNaN(userAnsNum) && userAnsNum === c) {
+        return `מבקשים ניצב חסר — לרוב ${iso("√(c² − ניצב²)")}, לא את אורך היתר עצמו.`;
+      }
       if (!Number.isNaN(userAnsNum) && userAnsNum < correctNum) {
-        return "נראה ששכחת להוציא שורש, או שכחת לכפול אחד המספרים בעצמו. זכור: \u2066a² + b² = c²\u2069, אז \u2066c = √(a² + b²)\u2069.";
+        return "תשובה קטנה מדי: אולי שכחת שורש אחרי סכום הריבועים, או שכחת להעלות לריבוע.";
       }
-      return "בדוק שוב: משפט פיתגורס אומר \u2066a² + b² = c²\u2069. חשב את \u2066a²\u2069 ו-\u2066b²\u2069, חבר אותם, ואז הוצא שורש.";
-
-    case "shapes_basic":
-      if (question.params.kind === "shapes_basic_properties_square") {
-        return "בדוק שוב: ריבוע יש לו 4 צלעות שוות. לכן התשובה היא 4.";
-      } else if (question.params.kind === "shapes_basic_properties_rectangle") {
-        return "בדוק שוב: מלבן יש לו 2 זוגות של צלעות שוות (זוג אחד ארוך וזוג אחד קצר). לכן התשובה היא 2.";
-      } else if (question.params.kind === "shapes_basic_properties_angles") {
-        return `בדוק שוב: ${question.params.shape || "ריבוע"} יש לו 4 זוויות ישרות (90°). לכן התשובה היא 4.`;
+      if (!Number.isNaN(userAnsNum) && userAnsNum > correctNum) {
+        return `תשובה גדולה מדי: אולי שכפת ריבוע במקום שורש, או חיברת ${iso("a+b")} במקום ${iso("√(a²+b²)")}.`;
       }
-      return "בדוק שוב: ריבוע יש לו 4 צלעות שוות, מלבן יש לו 2 זוגות של צלעות שוות.";
+      return "משולש ישר־זווית: \u2066a² + b² = c²\u2069. יתר מול הזווית הישרה, ניצבים כותפיים.";
+    }
 
-    case "parallel_perpendicular":
-      return "בדוק שוב: קווים מקבילים לא נפגשים, קווים מאונכים יוצרים זווית ישרה.";
+    case "shapes_basic": {
+      if (p.kind === "shapes_basic_square" || p.kind === "shapes_basic_rectangle") {
+        if (userAnsNum === 2 && p.shape === "ריבוע") {
+          return "כל ארבע הצלעות בריבוע שוות — לא מלבן עם שני אורכים שונים.";
+        }
+        if (userAnsNum === 1 && p.shape === "מלבן") {
+          return "מלבן נקבע כשיש שני אורכי צלע שונים (שני זוגות) — לא ריבוע.";
+        }
+        return "השוו בין כל הצלעות: ארבע שוות ⇒ ריבוע; שני אורכים שונים לזוגות ⇒ מלבן.";
+      }
+      if (p.kind === "shapes_basic_properties_square") {
+        return "שואלים כמה צלעות שוות — בריבוע ארבע. אל תערבב עם מספר זוגות או זוויות.";
+      }
+      if (p.kind === "shapes_basic_properties_rectangle") {
+        return "שואלים כמה זוגות צלעות שוות — במלבן יש שני זוגות (ארוך/קצר), לא ארבע צלעות נפרדות.";
+      }
+      if (p.kind === "shapes_basic_properties_angles") {
+        return "בריבוע ומלבן יש ארבע זוויות ישרות — לא שתיים או שלוש.";
+      }
+      return "הבחנו בין תכונות צלעות לבין זוויות, ובין ריבוע למלבן.";
+    }
+
+    case "parallel_perpendicular": {
+      if (p.isParallel === true && userAnsNum === 2) {
+        return "בשאלה מדובר במקבילים — קווים שלא נפגשים; 2 מסמן כאן מאונכים.";
+      }
+      if (p.isParallel === false && userAnsNum === 1) {
+        return "בשאלה מדובר במאונחים — חיתוך בזווית ישרה; 1 מסמן כאן מקבילים.";
+      }
+      return `מקבילים: לא נפגשים באותו מישור. מאונחים: חיתוך ב־${iso("90°")}.`;
+    }
 
     case "triangles":
-      return "בדוק שוב: משולש שווה צלעות = כל הצלעות שוות, שווה שוקיים = 2 צלעות שוות, שונה צלעות = כל הצלעות שונות.";
+      return `המספר בשאלה חייב להתאים לשם המשפחה: ${iso("1 שווה־צלעות (כולן שוות), 2 שווה־שוקיים (שתיים שוות), 3 שונה־צלעות")}.`;
 
     case "quadrilaterals":
-      return "בדוק שוב: זהה את המרובע לפי תכונות הצלעות והזוויות.";
+      return "בדקו זוגות צלעות מקבילות וזוויות: ריבוע/מלבן — ארבע ישרות; מקבילית — שני זוגות מקבילים; טרפז — זוג בסיסים מקבילים אחד.";
 
     case "transformations":
-      return "בדוק שוב: הזזה מעתיקה את הצורה, שיקוף הופך אותה.";
+      if (!Number.isNaN(userAnsNum) && userAnsNum === 2 && p.isTranslation) {
+        return "הזזה היא אפשרות 1 בשאלה — לא שיקוף.";
+      }
+      if (!Number.isNaN(userAnsNum) && userAnsNum === 1 && p.isTranslation === false) {
+        return "שיקוף הוא אפשרות 2 — לא הזזה.";
+      }
+      return "הזזה שומרת כיוון קריאת צורה; שיקוף יוצר תמונת מראה.";
 
     case "rotation":
-      return "בדוק שוב: סיבוב הוא טרנספורמציה סביב נקודה.";
+      if (!Number.isNaN(userAnsNum) && [90, 180, 270].includes(userAnsNum) && userAnsNum !== correctNum) {
+        return `בדקו אם נדרש רבע סיבוב (${iso("90°")}), חצי (${iso("180°")}) או שלושת רבעים (${iso("270°")}).`;
+      }
+      return "סיבוב נמדד במעלות מלאות סביב נקודה — התאימו לניסוח השאלה.";
 
-    case "symmetry":
-      return "בדוק שוב: ציר סימטרייה מחלק את הצורה לשני חלקים זהים.";
+    case "symmetry": {
+      const ax = toNum(p.axes);
+      if (!Number.isNaN(userAnsNum) && !Number.isNaN(ax) && userAnsNum === ax + 1) {
+        return "אולי ספרת ציר אחד כפול — ספרו רק צירי סימטרייה אמיתיים לצורה.";
+      }
+      return `ריבוע ${iso("4")}, מלבן (לא ריבוע) ${iso("2")}, משולש שווה־צלעות ${iso("3")} — לפי צורת השאלה.`;
+    }
 
     case "diagonal":
-      if (question.params.kind === "diagonal_square") {
-        return "בדוק שוב: אלכסון בריבוע = \u2066צלע × √2\u2069.";
-      } else if (question.params.kind === "diagonal_rectangle" || question.params.kind === "diagonal_parallelogram") {
-        return "בדוק שוב: אלכסון מחושב לפי משפט פיתגורס: \u2066√(צלע1² + צלע2²)\u2069.";
+      if (p.kind === "diagonal_square") {
+        const s = toNum(p.side);
+        if (s > 0 && userAnsNum === 2 * s) {
+          return `אולי הכפלת צלע ב־${iso("2")} — באלכסון ריבוע משתמשים ב־${iso("√2 × צלע")}.`;
+        }
+        if (s > 0 && userAnsNum === s * s) {
+          return `אלכסון אינו שטח הצלע — נסו ${iso("√(צלע²+צלע²)")} או ${iso("צלע×√2")}.`;
+        }
+        return `אלכסון בריבוע: ${iso("צלע × √2")} (משולש ישר־זווית עם שני ניצבים שווים).`;
       }
-      return "בדוק שוב: אלכסון מחושב לפי משפט פיתגורס.";
-
-    case "heights":
-      if (question.params.shape === "triangle") {
-        return "בדוק שוב: גובה במשולש מחושב לפי שטח = \u2066(בסיס × גובה) ÷ 2\u2069, אז גובה = \u2066(שטח × 2) ÷ בסיס\u2069.";
-      } else if (question.params.shape === "parallelogram") {
-        return "בדוק שוב: גובה במקבילית מחושב לפי שטח = \u2066בסיס × גובה\u2069, אז גובה = \u2066שטח ÷ בסיס\u2069.";
-      } else if (question.params.shape === "trapezoid") {
-        return "בדוק שוב: גובה בטרפז מחושב לפי שטח = \u2066((בסיס1 + בסיס2) × גובה) ÷ 2\u2069, אז גובה = \u2066(שטח × 2) ÷ (בסיס1 + בסיס2)\u2069.";
+      if (p.kind === "diagonal_rectangle" || p.kind === "diagonal_parallelogram") {
+        return `השתמשו בפיתגורס עם שני הניצבים מהשאלה — ${iso("√(אורך² + רוחב²)")}.`;
       }
-      return "בדוק שוב: גובה מחושב לפי הנוסחה המתאימה לצורה.";
+      return "אלכסון כיתר במשולש ישר־זווית שנבנה מהצלעות.";
 
-    case "tiling":
-      return "בדוק שוב: ריצוף דורש שהזוויות יתאימו.";
+    case "heights": {
+      if (p.shape === "triangle") {
+        const ba = toNum(p.base);
+        const ar = toNum(p.area);
+        if (ba > 0 && ar > 0 && userAnsNum === Math.round(ar / ba)) {
+          return "אולי חילקת שטח בבסיס בלי להכפיל קודם את השטח ב־2 (נוסחת המשולש).";
+        }
+        return `גובה במשולש: ${iso("(שטח × 2) ÷ בסיס")}.`;
+      }
+      if (p.shape === "parallelogram") {
+        const ba = toNum(p.base);
+        const ar = toNum(p.area);
+        if (ba > 0 && ar > 0 && userAnsNum === Math.round((ar * 2) / ba)) {
+          return `במקבילית אין חלוקה ב־${iso("2")} בשטח — גובה = ${iso("שטח ÷ בסיס")}.`;
+        }
+        return `גובה במקבילית: ${iso("שטח ÷ בסיס")}.`;
+      }
+      if (p.shape === "trapezoid") {
+        return "בטרפז חייבים לחבר תחילה את שני הבסיסים בשטח לפני שמבודדים גובה.";
+      }
+      return "בודדים גובה מהיפוך נוסחת השטח של אותה צורה.";
+    }
 
-    case "circles":
-      return "בדוק שוב: שטח עיגול = \u2066π × רדיוס²\u2069, היקף מעגל = \u20662 × π × רדיוס\u2069.";
+    case "tiling": {
+      if (!Number.isNaN(userAnsNum) && userAnsNum === 360) {
+        return `${iso("360°")} הוא סכום סביב נקודה — לא גודל זווית הבסיס של צורת הריצוף.`;
+      }
+      return `זווית הריצוף היא הזווית הפנימית של צורת האריח (ריבוע ${iso("90°")}, משולש שווה־צלעות ${iso("60°")}, משושה ${iso("120°")}).`;
+    }
+
+    case "circles": {
+      if (p.askArea) {
+        const r = toNum(p.radius);
+        const circ = Math.round(2 * 3.14 * r);
+        if (userAnsNum === circ) {
+          return `נתון שטח אך חישבת כמו היקף — השתמשו ב־${iso("π × רדיוס²")}.`;
+        }
+        return `שטח: ${iso("πr²")}. אם קיבלתם קטן מדי — אולי שכחתם להעלות את ${iso("r")} בריבוע.`;
+      }
+      const r = toNum(p.radius);
+      const ar = Math.round(3.14 * r * r);
+      if (userAnsNum === ar) {
+        return `נתון היקף אך חישבת כמו שטח — השתמשו ב־${iso("2πr")}.`;
+      }
+      return `הבחנה: ${iso("שטח ∝ r², היקף ∝ r")} — אל תבלבלו בין הנוסחאות.`;
+    }
 
     case "solids":
-      return "בדוק שוב: זהה את הגוף לפי תכונות הפאות והצלעות.";
+      return "התאימו את תיאור הפאות והבסיס בשאלה לגוף ברשימה — קובייה (6 ריבועים זהים), תיבה (מלבנים), גליל (2 עיגולים), פירמידה (בסיס+משולשים), חרוט (עיגול+קודקוד), כדור.";
 
     default:
       return "";
   }
+}
+
+/**
+ * שלבים ל־UI של נגן ההסבר (כמו math animationSteps): כל פריט = צעד אחד עם כותרת ותוכן.
+ */
+export function buildGeometryAnimationSteps(question, topic, gradeKey) {
+  const slides = getSolutionSteps(question, topic, gradeKey);
+  if (!Array.isArray(slides) || slides.length === 0) return [];
+  const n = slides.length;
+  return slides.map((content, idx) => ({
+    id: `geometry-step-${idx + 1}`,
+    title: `שלב ${idx + 1}`,
+    content,
+    text: "",
+    diagramEmphasis: getDiagramEmphasisForStep(question, idx, n),
+  }));
 }
 
 // תקציר תיאורטי קצר לפי נושא וכיתה – מוצג לפני השאלה במצב Learning

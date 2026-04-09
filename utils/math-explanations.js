@@ -3,28 +3,29 @@ import { convertMissingNumberEquation, buildVerticalOperation } from './math-ani
 
 export function getHint(question, operation, gradeKey) {
   if (!question || !question.params) return "";
+  const M = (expr) => `\u2066${expr}\u2069`;
 
   const p = question.params;
 
   switch (operation) {
     case "addition":
       if (p.kind === "add_three") {
-        return "חבר שני מספרים ואז הוסף את השלישי: (a + b) + c.";
+        return `חבר שני מספרים ואז הוסף את השלישי: ${M("(a + b) + c")}.`;
       }
       if (p.kind === "add_complement10" || p.kind === "add_complement_round10") {
         return "חפש כמה חסר כדי להגיע לעשר/מספר עגול – לא צריך לחשב את כל החיבור הארוך.";
       }
       if (p.kind === "add_missing_first" || p.kind === "add_missing_second") {
-        return "אם יש לך __ + b = c, אז המספר החסר הוא c - b. אם יש לך a + __ = c, אז המספר החסר הוא c - a.";
+        return `אם יש לך __ + b = c, אז המספר החסר הוא ${M("c - b")}. אם יש לך a + __ = c, אז המספר החסר הוא ${M("c - a")}.`;
       }
       return "השתמש בשיטת \"עמודות\" או בקפיצות על ציר המספרים: חיבור = הוספה.";
     case "subtraction":
       if (p.kind === "sub_missing_first" || p.kind === "sub_missing_second") {
-        return "אם יש לך __ - b = c, אז המספר החסר הוא c + b. אם יש לך a - __ = c, אז המספר החסר הוא a - c.";
+        return `אם יש לך __ - b = c, אז המספר החסר הוא ${M("c + b")}. אם יש לך a - __ = c, אז המספר החסר הוא ${M("a - c")}.`;
       }
       return "בדוק מי המספר הגדול יותר. חיסור = כמה חסר מהקטן לגדול או כמה מורידים מהגדול.";
     case "multiplication":
-      return "מחשבים כפל כמו חיבור חוזר: a × b זה כמו לחבר את a לעצמו b פעמים.";
+      return `מחשבים כפל כמו חיבור חוזר: ${M("a × b")} זה כמו לחבר את ${M("a")} לעצמו ${M("b")} פעמים.`;
     case "division":
       return "חילוק = כמה פעמים המספר הקטן נכנס בגדול, או כמה יש בכל קבוצה כשמחלקים שווה בשווה.";
     case "fractions":
@@ -33,29 +34,29 @@ export function getHint(question, operation, gradeKey) {
       }
       return "כשיש מכנים שונים – מוצאים מכנה משותף, מעבירים את השברים ואז מחברים או מחסרים.";
     case "percentages":
-      return "אחוזים הם חלק מ-100. 10% זה עשירית, 25% זה רבע, 50% זה חצי. נסה לתרגם לחלק פשוט.";
+      return `אחוזים הם חלק מ-${M("100")}. ${M("10%")} זה עשירית, ${M("25%")} זה רבע, ${M("50%")} זה חצי. נסה לתרגם לחלק פשוט.`;
     case "sequences":
       return "בדוק מה קורה בין כל שני מספרים סמוכים – מה מוסיפים או מחסרים בכל צעד.";
     case "decimals":
       return "יישר את הנקודות העשרוניות וחשב כאילו היו מספרים רגילים, ואז החזר את הנקודה למקום הנכון.";
     case "rounding":
-      return "חפש את הספרה שמקיפים (עשרות/מאות) והסתכל על הספרה שאחריה: 0–4 עיגול למטה, 5–9 למעלה.";
+      return `חפש את הספרה שמקיפים (עשרות/מאות) והסתכל על הספרה שאחריה: ${M("0–4")} עיגול למטה, ${M("5–9")} למעלה.`;
     case "equations":
       return "במשוואות עם מספר חסר משתמשים בפעולה ההפוכה: בחיבור נעזרים בחיסור, בכפל – בחילוק וכדומה.";
     case "compare":
       return "דמיין את המספרים על ציר מספרים: מי שמימין גדול יותר. במספרים עשרוניים משווים קודם את החלק השלם.";
     case "number_sense":
       if (p.kind?.startsWith("ns_place")) {
-        return "פרק את המספר לעשרות/מאות/יחידות: למשל 57 זה 5 עשרות ו-7 יחידות.";
+        return `פרק את המספר לעשרות/מאות/יחידות: למשל ${M("57")} זה ${M("5")} עשרות ו-${M("7")} יחידות.`;
       }
       if (p.kind === "ns_neighbors") {
-        return "מספר אחד לפני – מורידים 1. מספר אחד אחרי – מוסיפים 1.";
+        return `מספר אחד לפני – מורידים ${M("1")}. מספר אחד אחרי – מוסיפים ${M("1")}.`;
       }
       if (p.kind === "ns_complement10" || p.kind === "ns_complement100") {
         return "חפש כמה חסר כדי להשלים לעשר/מאה – זה ההפרש בין שני המספרים.";
       }
       if (p.kind === "ns_even_odd") {
-        return "הסתכל על ספרת היחידות: 0,2,4,6,8 – זוגי. 1,3,5,7,9 – אי-זוגי.";
+        return `הסתכל על ספרת היחידות: ${M("0,2,4,6,8")} – זוגי. ${M("1,3,5,7,9")} – אי-זוגי.`;
       }
       return "נסה לחשוב על \"תחושת מספר\" – עשרות, יחידות, שכנים, זוגי/אי-זוגי.";
     case "factors_multiples":
@@ -763,6 +764,8 @@ export function getSolutionSteps(question, operation, gradeKey) {
 // "למה טעיתי?" – הסבר קצר לטעות נפוצה
 // פונקציה להסבר מותאם לגיל - הסברים פשוטים יותר לכיתות נמוכות
 function getAgeAppropriateExplanation(operation, gradeKey, question, correctAnswer) {
+  const LTR = (expr) => `\u2066${expr}\u2069`;
+
   // לכיתות א'-ב' - הסברים פשוטים מאוד עם דוגמאות ויזואליות
   if (gradeKey === "g1" || gradeKey === "g2") {
     const a = question.a || question.params?.a;
@@ -770,15 +773,15 @@ function getAgeAppropriateExplanation(operation, gradeKey, question, correctAnsw
     
     switch (operation) {
       case "addition":
-        return `💡 נסה לחשוב על זה כך: יש לך ${a} עיגולים, ואתה מוסיף ${b} עיגולים נוספים. כמה עיגולים יש לך עכשיו? נסה לספור: ${a}... ${a + 1}... ${a + 2}... עד ${correctAnswer}!`;
+        return `💡 נסה לחשוב על זה כך: יש לך ${LTR(String(a))} עיגולים, ואתה מוסיף ${LTR(String(b))} עיגולים נוספים. כמה עיגולים יש לך עכשיו? נסה לספור: ${LTR(`${a}... ${a + 1}... ${a + 2}...`)} עד ${LTR(String(correctAnswer))}!`;
       case "subtraction":
-        return `💡 נסה לחשוב על זה כך: יש לך ${a} עיגולים, ואתה לוקח ${b} עיגולים. כמה עיגולים נשארו? נסה לספור לאחור: ${a}... ${a - 1}... ${a - 2}... עד ${correctAnswer}!`;
+        return `💡 נסה לחשוב על זה כך: יש לך ${LTR(String(a))} עיגולים, ואתה לוקח ${LTR(String(b))} עיגולים. כמה עיגולים נשארו? נסה לספור לאחור: ${LTR(`${a}... ${a - 1}... ${a - 2}...`)} עד ${LTR(String(correctAnswer))}!`;
       case "multiplication":
-        return `💡 כפל זה כמו חיבור חוזר! ${a} × ${b} זה כמו ${a} + ${a} + ${a}... (${b} פעמים). נסה לספור: ${a}, ${a * 2}, ${a * 3}... עד ${correctAnswer}!`;
+        return `💡 כפל זה כמו חיבור חוזר! ${LTR(`${a} × ${b}`)} זה כמו ${LTR(`${a} + ${a} + ${a}`)}... (${LTR(String(b))} פעמים). נסה לספור: ${LTR(`${a}, ${a * 2}, ${a * 3}...`)} עד ${LTR(String(correctAnswer))}!`;
       case "division":
-        return `💡 חילוק זה כמו חלוקה לקבוצות! ${a} ÷ ${b} זה כמו לקחת ${a} עיגולים ולחלק אותם ל-${b} קבוצות שוות. כמה עיגולים בכל קבוצה? ${correctAnswer}!`;
+        return `💡 חילוק זה כמו חלוקה לקבוצות! ${LTR(`${a} ÷ ${b}`)} זה כמו לקחת ${LTR(String(a))} עיגולים ולחלק אותם ל-${LTR(String(b))} קבוצות שוות. כמה עיגולים בכל קבוצה? ${LTR(String(correctAnswer))}!`;
       default:
-        return `💡 נסה לחשוב על התרגיל בצורה פשוטה. התשובה הנכונה היא ${correctAnswer}.`;
+        return `💡 נסה לחשוב על התרגיל בצורה פשוטה. התשובה הנכונה היא ${LTR(String(correctAnswer))}.`;
     }
   }
   
@@ -792,18 +795,18 @@ function getAgeAppropriateExplanation(operation, gradeKey, question, correctAnsw
         if (a && b) {
           const tens = Math.floor(b / 10) * 10;
           const ones = b % 10;
-          return `💡 נסה לחשוב על חיבור: ${a} + ${b} = ${correctAnswer}. אם קשה, נסה לפרק: ${a} + ${b} = ${a} + ${tens} + ${ones} = ${a + tens} + ${ones} = ${correctAnswer}`;
+          return `💡 נסה לחשוב על חיבור: ${LTR(`${a} + ${b} = ${correctAnswer}`)}. אם קשה, נסה לפרק: ${LTR(`${a} + ${b} = ${a} + ${tens} + ${ones} = ${a + tens} + ${ones} = ${correctAnswer}`)}`;
         }
-        return `💡 נסה לחשוב על התרגיל בצורה שיטתית. התשובה הנכונה היא ${correctAnswer}.`;
+        return `💡 נסה לחשוב על התרגיל בצורה שיטתית. התשובה הנכונה היא ${LTR(String(correctAnswer))}.`;
       case "subtraction":
         if (a && b) {
           const tens = Math.floor(b / 10) * 10;
           const ones = b % 10;
-          return `💡 נסה לחשוב על חיסור: ${a} - ${b} = ${correctAnswer}. אם קשה, נסה לפרק: ${a} - ${b} = ${a} - ${tens} - ${ones} = ${a - tens} - ${ones} = ${correctAnswer}`;
+          return `💡 נסה לחשוב על חיסור: ${LTR(`${a} - ${b} = ${correctAnswer}`)}. אם קשה, נסה לפרק: ${LTR(`${a} - ${b} = ${a} - ${tens} - ${ones} = ${a - tens} - ${ones} = ${correctAnswer}`)}`;
         }
-        return `💡 נסה לחשוב על התרגיל בצורה שיטתית. התשובה הנכונה היא ${correctAnswer}.`;
+        return `💡 נסה לחשוב על התרגיל בצורה שיטתית. התשובה הנכונה היא ${LTR(String(correctAnswer))}.`;
       default:
-        return `💡 נסה לחשוב על התרגיל בצורה שיטתית. התשובה הנכונה היא ${correctAnswer}.`;
+        return `💡 נסה לחשוב על התרגיל בצורה שיטתית. התשובה הנכונה היא ${LTR(String(correctAnswer))}.`;
     }
   }
   

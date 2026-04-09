@@ -2,7 +2,7 @@
 
 const STORAGE_KEY = "mleo_geometry_learning_intel";
 const VERSION = 1;
-const TAIL_MAX = 24;
+const TAIL_MAX = 28;
 
 export function loadGeometryIntel() {
   if (typeof window === "undefined") {

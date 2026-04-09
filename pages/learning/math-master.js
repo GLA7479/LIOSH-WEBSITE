@@ -19,6 +19,15 @@ import {
 } from "../../utils/math-storage";
 import { generateQuestion } from "../../utils/math-question-generator";
 import {
+  loadMathIntel,
+  persistMathIntel,
+  recordMathAnswerIntel,
+  getMathOperationInsights,
+  mathQuestionFingerprint,
+  newMathMistakeId,
+  buildMathQuestionSnapshot,
+} from "../../utils/math-learning-intel";
+import {
   getHint,
   getSolutionSteps,
   getErrorExplanation,
@@ -32,6 +41,7 @@ import {
   buildAdditionOrSubtractionAnimation,
   buildAnimationForOperation,
 } from "../../utils/math-animations";
+import { learningMixedHebrewMathStyle } from "../../utils/learning-mixed-hebrew-math";
 import {
   addSessionProgress,
   loadMonthlyProgress,
@@ -81,6 +91,20 @@ const REFERENCE_CATEGORIES = {
 };
 
 const REFERENCE_CATEGORY_KEYS = Object.keys(REFERENCE_CATEGORIES);
+
+function normalizeMistakeQueue(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(
+      (m) =>
+        m.snapshot &&
+        Array.isArray(m.snapshot.answers) &&
+        m.snapshot.answers.length > 0 &&
+        m.id
+    )
+    .map((m) => ({ ...m }))
+    .sort(() => Math.random() - 0.5);
+}
 
 export default function MathMaster() {
   useIOSViewportFix();
@@ -256,11 +280,16 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     if (typeof window !== "undefined") {
       try {
         const saved = JSON.parse(localStorage.getItem("mleo_mistakes") || "[]");
-        return saved;
+        return Array.isArray(saved) ? saved : [];
       } catch {}
     }
     return [];
   });
+  const [learningIntel, setLearningIntel] = useState(() => loadMathIntel());
+  const correctRef = useRef(0);
+  const mistakesRef = useRef([]);
+  const remainingMistakesRef = useRef([]);
+  const focusedPracticeModeRef = useRef("normal");
   const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal"); // "normal", "mistakes", "graded"
   const [remainingMistakes, setRemainingMistakes] = useState([]); // שגיאות שנותרו לתיקון
   const [currentMistakeIndex, setCurrentMistakeIndex] = useState(0); // אינדקס השגיאה הנוכחית
@@ -766,6 +795,71 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     } catch {}
   }, [progress]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    persistMathIntel(learningIntel);
+  }, [learningIntel]);
+
+  useEffect(() => {
+    correctRef.current = correct;
+  }, [correct]);
+
+  useEffect(() => {
+    focusedPracticeModeRef.current = focusedPracticeMode;
+  }, [focusedPracticeMode]);
+
+  useEffect(() => {
+    mistakesRef.current = mistakes;
+  }, [mistakes]);
+
+  useEffect(() => {
+    remainingMistakesRef.current = remainingMistakes;
+  }, [remainingMistakes]);
+
+  const mistakesMigratedRef = useRef(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || mistakesMigratedRef.current) return;
+    mistakesMigratedRef.current = true;
+    setMistakes((prev) => {
+      if (!prev?.length) return prev;
+      let changed = false;
+      const next = prev
+        .map((m, i) => {
+          const snap =
+            m.snapshot ||
+            (m.originalQuestion
+              ? buildMathQuestionSnapshot({
+                  ...m.originalQuestion,
+                  operation:
+                    m.originalQuestion.operation || m.operation,
+                })
+              : null);
+          const id = m.id || `legacy_${m.timestamp || m.storedAt || 0}_${i}`;
+          if (!m.snapshot && snap) changed = true;
+          if (!m.id) changed = true;
+          return { ...m, id, snapshot: snap || m.snapshot };
+        })
+        .filter(
+          (m) =>
+            m.snapshot &&
+            Array.isArray(m.snapshot.answers) &&
+            m.snapshot.answers.length > 0
+        );
+      if (changed || next.length !== prev.length) {
+        try {
+          localStorage.setItem("mleo_mistakes", JSON.stringify(next));
+        } catch {}
+        return next;
+      }
+      return prev;
+    });
+  }, []);
+
+  const mathInsights = useMemo(
+    () => getMathOperationInsights(learningIntel.opStats),
+    [learningIntel.opStats]
+  );
+
   // Load leaderboard data when modal opens or level changes
   useEffect(() => {
     if (showLeaderboard && typeof window !== "undefined") {
@@ -913,28 +1007,65 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     let operationForState = operation;
     const levelConfigCopy = { ...levelConfig }; // עותק כדי לא לשנות את המקורי
 
-    // תרגול ממוקד - חזרה על שגיאות
-    if (focusedPracticeMode === "mistakes" && remainingMistakes.length > 0) {
-      // הצג את השגיאה הנוכחית - השתמש בשאלה המקורית
-      const currentMistake = remainingMistakes[currentMistakeIndex];
+    // תרגול ממוקד — רק שחזור מלא מ-snapshot (לא יוצרים שאלה דומה)
+    const mistakeList =
+      remainingMistakesRef.current.length > 0
+        ? remainingMistakesRef.current
+        : remainingMistakes;
+    if (focusedPracticeModeRef.current === "mistakes" && mistakeList.length > 0) {
+      const idx =
+        currentMistakeIndex >= 0 && currentMistakeIndex < mistakeList.length
+          ? currentMistakeIndex
+          : 0;
+      const currentMistake = mistakeList[idx];
       if (currentMistake) {
-        // אם יש שאלה מקורית - השתמש בה
-        if (currentMistake.originalQuestion) {
-          question = currentMistake.originalQuestion;
-          // עדכן את ה-grade וה-level לפי השגיאה
-          if (currentMistake.grade) {
-            const mistakeGrade = currentMistake.grade;
-            const mistakeLevel = currentMistake.level || "easy";
-            const mistakeLevelConfig = getLevelConfig(
-              parseInt(mistakeGrade.replace("g", "")) || gradeNumber,
-              mistakeLevel
-            );
-            if (mistakeLevelConfig) {
-              Object.assign(levelConfigCopy, mistakeLevelConfig);
+        const snap =
+          currentMistake.snapshot ||
+          (currentMistake.originalQuestion
+            ? buildMathQuestionSnapshot({
+                ...currentMistake.originalQuestion,
+                operation:
+                  currentMistake.originalQuestion.operation ||
+                  currentMistake.operation,
+              })
+            : null);
+        if (snap && Array.isArray(snap.answers) && snap.answers.length > 0) {
+          const replay = {
+            question: snap.question,
+            questionLabel: snap.questionLabel,
+            exerciseText: snap.exerciseText,
+            correctAnswer: snap.correctAnswer,
+            answers: [...snap.answers],
+            operation: snap.operation,
+            params: { ...snap.params },
+            a: snap.a,
+            b: snap.b,
+            isStory: snap.isStory,
+            _fromMistakeReplay: true,
+            _mistakeId: currentMistake.id,
+          };
+          const fp = mathQuestionFingerprint(replay);
+          const localRecent = new Set(recentQuestions);
+          if (fp) localRecent.add(fp);
+          if (localRecent.size > 60) {
+            const first = Array.from(localRecent)[0];
+            localRecent.delete(first);
+          }
+          setRecentQuestions(localRecent);
+
+          if (questionStartTime && currentQuestion) {
+            const duration = (Date.now() - questionStartTime) / 1000;
+            if (duration > 0 && duration < 300) {
+              trackOperationTime(
+                currentQuestion.operation,
+                grade,
+                level,
+                duration
+              );
             }
           }
-          // דלג על יצירת שאלה חדשה - השתמש בשאלה המקורית
-          setCurrentQuestion(question);
+
+          setCurrentQuestion(replay);
           setSelectedAnswer(null);
           setTextAnswer("");
           setFeedback(null);
@@ -946,29 +1077,15 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           setIsVerticalDisplay(false);
           setMovedCirclesA(0);
           setMovedCirclesB(0);
-          return; // יציאה מוקדמת - לא צריך ליצור שאלה חדשה
-        } else {
-          // שגיאה ישנה ללא originalQuestion - נסה ליצור שאלה דומה
-          operationForState = currentMistake.operation;
-          if (currentMistake.grade) {
-            const mistakeGrade = currentMistake.grade;
-            const mistakeLevel = currentMistake.level || "easy";
-            const mistakeLevelConfig = getLevelConfig(
-              parseInt(mistakeGrade.replace("g", "")) || gradeNumber,
-              mistakeLevel
-            );
-            if (mistakeLevelConfig) {
-              Object.assign(levelConfigCopy, mistakeLevelConfig);
-            }
-          }
+          return;
         }
       }
     }
-    
-    // תרגול מדורג - התחלה קל והתקדמות
-    if (focusedPracticeMode === "graded") {
-      // התחל עם רמה קלה יותר
-      const gradedLevel = correct < 5 ? "easy" : correct < 15 ? "medium" : level;
+
+    // תרגול מדורג — לפי מונה נכונות בסשן (לא סגירה על state ישן)
+    if (focusedPracticeModeRef.current === "graded") {
+      const c = correctRef.current;
+      const gradedLevel = c < 5 ? "easy" : c < 15 ? "medium" : level;
       const gradedLevelConfig = getLevelConfig(gradeNumber, gradedLevel);
       if (gradedLevelConfig) {
         Object.assign(levelConfigCopy, gradedLevelConfig);
@@ -1020,8 +1137,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       );
       attempts++;
 
-      // יצירת מפתח ייחודי לשאלה
-      const questionKey = question.question;
+      const questionKey =
+        mathQuestionFingerprint(question) ||
+        `fallback|${question.question}|${question.correctAnswer}`;
 
       // אם השאלה לא הייתה לאחרונה, נשתמש בה
       if (!localRecentQuestions.has(questionKey)) {
@@ -1106,7 +1224,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setQuestionStartTime(null);
   }
 
-  function startGame() {
+  function startGame(opts = {}) {
+    if (opts.focusedPracticeMode != null) {
+      setFocusedPracticeMode(opts.focusedPracticeMode);
+      focusedPracticeModeRef.current = opts.focusedPracticeMode;
+    }
     recordSessionProgress();
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
@@ -1134,6 +1256,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     sound.playSound("game-start");
     setShowSolution(false);
     setErrorExplanation("");
+
+    if (focusedPracticeModeRef.current === "mistakes") {
+      const q = normalizeMistakeQueue(mistakesRef.current);
+      remainingMistakesRef.current = q;
+      setRemainingMistakes(q);
+      setCurrentMistakeIndex(0);
+    } else {
+      remainingMistakesRef.current = [];
+      setRemainingMistakes([]);
+      setCurrentMistakeIndex(0);
+    }
 
     // הגדרת טיימר לפי מצב
     if (mode === "challenge") {
@@ -1318,10 +1451,25 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       
       setErrorExplanation("");
 
-      // אם במצב תרגול שגיאות - הסר את השגיאה מהרשימה
-      if (focusedPracticeMode === "mistakes" && remainingMistakes.length > 0) {
-        const updatedRemaining = remainingMistakes.filter((_, idx) => idx !== currentMistakeIndex);
+      // אם במצב תרגול שגיאות — הסר לפי מזהה + סנכרון localStorage
+      if (
+        focusedPracticeMode === "mistakes" &&
+        remainingMistakes.length > 0 &&
+        currentQuestion._mistakeId
+      ) {
+        const mid = currentQuestion._mistakeId;
+        const updatedRemaining = remainingMistakes.filter((m) => m.id !== mid);
+        remainingMistakesRef.current = updatedRemaining;
         setRemainingMistakes(updatedRemaining);
+        setMistakes((prev) => {
+          const next = prev.filter((m) => m.id !== mid);
+          if (typeof window !== "undefined") {
+            try {
+              localStorage.setItem("mleo_mistakes", JSON.stringify(next));
+            } catch {}
+          }
+          return next;
+        });
         
         // אם אין עוד שגיאות - אפס את הרשימה
         if (updatedRemaining.length === 0) {
@@ -1330,6 +1478,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
             localStorage.setItem("mleo_mistakes", JSON.stringify([]));
           }
           setFocusedPracticeMode("normal");
+          focusedPracticeModeRef.current = "normal";
           setFeedback("🎉 כל השגיאות תוקנו! מעולה!");
           setTimeout(() => {
             setFeedback(null);
@@ -1338,8 +1487,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           return;
         }
         
-        // עבור לשגיאה הבאה (או הראשונה אם הגענו לסוף)
-        const nextIndex = currentMistakeIndex < updatedRemaining.length ? currentMistakeIndex : 0;
+        const nextIndex = Math.min(
+          currentMistakeIndex,
+          Math.max(0, updatedRemaining.length - 1)
+        );
         setCurrentMistakeIndex(nextIndex);
         
         // עבור לשגיאה הבאה אחרי 1.5 שניות
@@ -1358,6 +1509,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           correct: (prev[op]?.correct || 0) + 1,
         },
       }));
+
+      setLearningIntel((prev) => recordMathAnswerIntel(prev, op, true));
 
       // משתנים משותפים למערכת תגים וכוכבים
       const newCorrect = correct + 1;
@@ -1568,34 +1721,44 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       setWrong((prev) => prev + 1);
       setStreak(0);
       
-      // שמירת שגיאה לתרגול ממוקד - שמירת כל השאלה המקורית
-      const mistake = {
-        operation: currentQuestion.operation,
-        question: currentQuestion.exerciseText || `${currentQuestion.a} ${currentQuestion.operation === "addition" ? "+" : currentQuestion.operation === "subtraction" ? "-" : currentQuestion.operation === "multiplication" ? "×" : "÷"} ${currentQuestion.b}`,
-        correctAnswer: currentQuestion.correctAnswer,
-        wrongAnswer: numericAnswer,
-        grade: grade,
-        level: level,
-        timestamp: Date.now(),
-        // שמירת כל השאלה המקורית כדי שנוכל לשחזר אותה
-        originalQuestion: {
-          ...currentQuestion,
-          a: currentQuestion.a,
-          b: currentQuestion.b,
-          params: currentQuestion.params,
-          question: currentQuestion.question,
-          questionLabel: currentQuestion.questionLabel,
-          exerciseText: currentQuestion.exerciseText,
-          answers: currentQuestion.answers,
-        },
-      };
-      setMistakes((prev) => {
-        const updated = [...prev, mistake].slice(-50); // שמור רק 50 שגיאות אחרונות
-        if (typeof window !== "undefined") {
-          localStorage.setItem("mleo_mistakes", JSON.stringify(updated));
+      if (!currentQuestion._fromMistakeReplay) {
+        const snap = buildMathQuestionSnapshot(currentQuestion);
+        if (
+          snap &&
+          snap.answers?.length > 0 &&
+          currentQuestion.params?.kind !== "no_question"
+        ) {
+          const fp = mathQuestionFingerprint(currentQuestion);
+          const entry = {
+            id: newMathMistakeId(),
+            storedAt: Date.now(),
+            operation: currentQuestion.operation,
+            question:
+              currentQuestion.exerciseText ||
+              currentQuestion.question ||
+              "",
+            correctAnswer: currentQuestion.correctAnswer,
+            wrongAnswer: numericAnswer,
+            grade,
+            level,
+            snapshot: snap,
+          };
+          setMistakes((prev) => {
+            const filtered = prev.filter(
+              (m) => mathQuestionFingerprint(m.snapshot) !== fp
+            );
+            const updated = [...filtered, entry].slice(-80);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("mleo_mistakes", JSON.stringify(updated));
+            }
+            return updated;
+          });
         }
-        return updated;
-      });
+      }
+
+      setLearningIntel((prev) =>
+        recordMathAnswerIntel(prev, currentQuestion.operation, false)
+      );
       
       setErrorExplanation(
         getErrorExplanation(
@@ -1841,6 +2004,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   // תשובות עם מלל – מקטינים את האותיות בתוך הכפתור כמו בשאלות מילוליות
   const renderAnswerLabel = (ans) => {
     const s = typeof ans === "string" ? ans : String(ans ?? "");
+    const mathyPlain =
+      typeof ans === "string" &&
+      (/^\d+\s*\/\s*\d+/.test(s) ||
+        /\d\s*\/\s*\d/.test(s) ||
+        (/[0-9]/.test(s) && /[+\-×÷*/=√π²³]/.test(s)));
     if (hasLetters(s)) {
       return (
         <span
@@ -1848,6 +2016,20 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
             display: "inline-block",
             transform: `scale(${QUESTION_TEXT_SCALE})`,
             transformOrigin: "center center",
+            ...learningMixedHebrewMathStyle,
+          }}
+        >
+          {s}
+        </span>
+      );
+    }
+    if (mathyPlain) {
+      return (
+        <span
+          style={{
+            display: "inline-block",
+            direction: "ltr",
+            unicodeBidi: "isolate",
           }}
         >
           {s}
@@ -2329,6 +2511,25 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     </div>
                   )}
 
+                  {mathInsights.weakest && mathInsights.strongest && (
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-sm text-white/60 mb-2">תובנות מהתרגול (מקומי)</div>
+                      <div className="text-xs text-white/85 space-y-1">
+                        <div>
+                          <span className="text-amber-300 font-semibold">לחזק:</span>{" "}
+                          {getOperationName(mathInsights.weakest)}
+                        </div>
+                        <div>
+                          <span className="text-emerald-300 font-semibold">חזק ביחס:</span>{" "}
+                          {getOperationName(mathInsights.strongest)}
+                        </div>
+                        <p className="text-[11px] text-white/50 mt-2">
+                          לפחות 2 ניסיונות; נשמר בדפדפן בלבד.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="bg-black/30 border border-white/10 rounded-lg p-3">
                     <div className="text-sm text-white/60 mb-2">תגים</div>
                     {badges.length > 0 ? (
@@ -2380,14 +2581,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 <div className="space-y-3 mb-4">
                   <button
                     onClick={() => {
-                      setFocusedPracticeMode("mistakes");
                       setShowPracticeOptions(false);
                       if (mistakes.length > 0) {
-                        // התחל עם כל השגיאות
-                        setRemainingMistakes([...mistakes]);
-                        setCurrentMistakeIndex(0);
-                        setGameActive(true);
-                        startGame();
+                        startGame({ focusedPracticeMode: "mistakes" });
                       }
                     }}
                     disabled={mistakes.length === 0}
@@ -2409,10 +2605,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
                   <button
                     onClick={() => {
-                      setFocusedPracticeMode("graded");
                       setShowPracticeOptions(false);
-                      setGameActive(true);
-                      startGame();
+                      startGame({ focusedPracticeMode: "graded" });
                     }}
                     className="w-full p-4 rounded-lg bg-blue-500/20 border border-blue-400/50 hover:bg-blue-500/30 transition-all text-right"
                   >
@@ -2427,6 +2621,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   <button
                     onClick={() => {
                       setFocusedPracticeMode("normal");
+                      focusedPracticeModeRef.current = "normal";
                       setShowPracticeOptions(false);
                     }}
                     className="w-full p-4 rounded-lg bg-emerald-500/20 border border-emerald-400/50 hover:bg-emerald-500/30 transition-all text-right"
@@ -2445,7 +2640,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     <div className="text-sm text-white/60 mb-2">שגיאות אחרונות:</div>
                     <div className="space-y-1 max-h-[150px] overflow-y-auto">
                       {mistakes.slice(-5).reverse().map((mistake, idx) => (
-                        <div key={idx} className="text-xs text-white/80">
+                        <div key={mistake.id || idx} className="text-xs text-white/80">
                           <span dir="ltr" style={{ display: 'inline-block' }}>{mistake.question}</span>
                         </div>
                       ))}
@@ -2675,14 +2870,13 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 >
                   📊 דוח להורים
                 </button>
-                {mistakes.length > 0 && (
-                  <button
-                    onClick={() => setShowPracticeOptions(true)}
-                    className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
-                  >
-                    🎯 תרגול ממוקד ({mistakes.length})
-                  </button>
-                )}
+                <button
+                  onClick={() => setShowPracticeOptions(true)}
+                  className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
+                >
+                  🎯 תרגול ממוקד
+                  {mistakes.length > 0 ? ` (${mistakes.length})` : ""}
+                </button>
               </div>
 
               {!playerName.trim() && (
@@ -2730,9 +2924,14 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       : "bg-red-500/20 text-red-200"
                   }`}
                 >
-                  <div className="text-lg">{feedback}</div>
+                  <div className="text-lg" style={learningMixedHebrewMathStyle}>
+                    {feedback}
+                  </div>
                   {errorExplanation && (
-                    <div className="mt-1 text-xs text-red-100/90 font-normal">
+                    <div
+                      className="mt-1 text-xs text-red-100/90 font-normal"
+                      style={learningMixedHebrewMathStyle}
+                    >
                       {errorExplanation}
                     </div>
                   )}
@@ -3248,7 +3447,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       {showHint && hintText && (
                         <div className="w-full max-w-md mx-auto bg-blue-500/10 border border-blue-400/50 rounded-lg p-2 text-right">
                           <div className="text-[11px] text-blue-300 mb-1">רמז</div>
-                          <div className="text-xs text-blue-100 leading-relaxed">{hintText}</div>
+                          <div
+                            className="text-xs text-blue-100 leading-relaxed"
+                            style={learningMixedHebrewMathStyle}
+                          >
+                            {hintText}
+                          </div>
                         </div>
                       )}
 
@@ -3335,7 +3539,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                       </pre>
                                     </div>
                                   )}
-                                  <div className="space-y-1.5 text-sm" dir="rtl">
+                                  <div
+                                    className="space-y-1.5 text-sm"
+                                    style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                                  >
                                     {info.steps.map((step, idx) => (
                                       <div key={idx} className="text-emerald-50 leading-relaxed">
                                         {step}
@@ -4031,7 +4238,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       {errorExplanation && (
                         <div className="w-full max-w-md mx-auto bg-rose-500/10 border border-rose-400/50 rounded-lg p-2 text-right">
                           <div className="text-[11px] text-rose-300 mb-1">למה הטעות קרתה?</div>
-                          <div className="text-xs text-rose-100 leading-relaxed">
+                          <div
+                            className="text-xs text-rose-100 leading-relaxed"
+                            style={learningMixedHebrewMathStyle}
+                          >
                             {errorExplanation}
                           </div>
                         </div>
@@ -4957,7 +5167,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   <li>בחר כיתה, רמת קושי ופעולה (חיבור, חיסור, כפל, חילוק, שברים, אחוזים ועוד).</li>
                   <li>בחר מצב משחק: למידה, אתגר עם טיימר וחיים, מהירות או מרתון.</li>
                   <li>קרא היטב את השאלה – לפעמים יש תרגילי מילים שצריך להבין את הסיפור.</li>
-                  <li>לחץ על 💡 Hint כדי לקבל רמז, ועל "📘 הסבר מלא" כדי לראות פתרון צעד־אחר־צעד.</li>
+                  <li>לחץ על 💡 רמז לקבלת רמז, ועל "📘 הסבר מלא" לפתרון צעד־אחר־צעד.</li>
                   <li>ניקוד גבוה, רצף תשובות נכון, כוכבים ו־Badges עוזרים לך לעלות רמה כשחקן.</li>
                 </ul>
 
