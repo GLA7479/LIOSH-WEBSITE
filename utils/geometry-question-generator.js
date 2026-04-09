@@ -2,6 +2,305 @@
 
 import { GRADES, PI, getShapesForTopic } from "./geometry-constants";
 
+function shuffleMcqList(answers) {
+  const arr = [...answers];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/**
+ * מסיחים סבירים לפי סוג שאלה — לא לולאת 1..10 אקראית כשהקשר הוא שטח/נפח וכו'.
+ */
+export function buildGeometryMcqAnswers({
+  correctAnswer,
+  params,
+  level,
+  round,
+  selectedTopic,
+  shape,
+}) {
+  const ca = Number(correctAnswer);
+  const kind = params?.kind || "";
+  const baseKind = kind.replace(/^story_/, "");
+  const wrong = new Set();
+  const r = (n) => round(n);
+
+  const add = (x) => {
+    if (x == null || Number.isNaN(Number(x))) return;
+    const v = r(Number(x));
+    const c = r(ca);
+    if (v === c || v <= 0) return;
+    if (wrong.size < 3) wrong.add(v);
+  };
+
+  const takeFromPool = (pool) => {
+    const p = pool.filter((n) => r(n) !== r(ca));
+    shuffleMcqList(p);
+    for (const n of p) {
+      add(n);
+      if (wrong.size >= 3) break;
+    }
+  };
+
+  if (baseKind === "solids") {
+    takeFromPool([1, 2, 3, 4, 5, 6]);
+  } else if (baseKind === "tiling") {
+    takeFromPool([60, 90, 120]);
+  } else if (baseKind === "rotation") {
+    takeFromPool([90, 180, 270]);
+  } else if (
+    baseKind === "shapes_basic_square" ||
+    baseKind === "shapes_basic_rectangle"
+  ) {
+    takeFromPool([1, 2]);
+  } else if (
+    baseKind === "shapes_basic_properties_square" ||
+    baseKind === "shapes_basic_properties_rectangle" ||
+    baseKind === "shapes_basic_properties_angles"
+  ) {
+    takeFromPool([1, 2, 3, 4]);
+  } else if (baseKind === "parallel_perpendicular") {
+    takeFromPool([1, 2]);
+  } else if (baseKind === "triangles") {
+    takeFromPool([1, 2, 3]);
+  } else if (baseKind === "quadrilaterals") {
+    takeFromPool([1, 2, 3, 4]);
+  } else if (baseKind === "transformations") {
+    takeFromPool([1, 2]);
+  } else if (baseKind === "triangle_angles") {
+    const { angle1, angle2, angle3 } = params;
+    add(angle1);
+    add(angle2);
+    add(r(angle1 + angle2));
+    add(90);
+    add(180 - angle1);
+    add(180 - angle2);
+  } else if (baseKind === "pythagoras_hyp" || baseKind === "pythagoras_leg") {
+    const { a, b, c } = params;
+    add(r(a + b));
+    add(r(Math.abs(a - b)));
+    add(r((a * a + b * b) ** 0.5 * 0.85));
+    if (c) add(r(c + 2));
+    if (c) add(r(Math.max(1, c - 3)));
+    if (a) add(r(a * a));
+    if (b) add(r(b * b));
+  } else if (
+    baseKind === "square_area" ||
+    (selectedTopic === "area" && shape === "square")
+  ) {
+    const side = params.side;
+    if (side != null) {
+      add(side * 4);
+      add(side + side);
+      add(r((side + 1) * (side + 1)));
+      add(r((side - 1) * (side - 1)));
+      add(2 * side * side);
+    }
+  } else if (
+    baseKind === "rectangle_area" ||
+    (selectedTopic === "area" && shape === "rectangle")
+  ) {
+    const L = params.length;
+    const W = params.width;
+    if (L != null && W != null) {
+      add(L + W);
+      add(2 * (L + W));
+      add(L * W + L);
+      add(r((L + 1) * W));
+      add(r(L * (W + 1)));
+    }
+  } else if (
+    baseKind === "triangle_area" ||
+    (selectedTopic === "area" && shape === "triangle")
+  ) {
+    const base = params.base;
+    const height = params.height;
+    if (base != null && height != null) {
+      add(base * height);
+      add(base + height);
+      add(r((base * height) / 4));
+    }
+  } else if (
+    baseKind === "parallelogram_area" ||
+    (selectedTopic === "area" && shape === "parallelogram")
+  ) {
+    const base = params.base;
+    const height = params.height;
+    if (base != null && height != null) {
+      add(r((base * height) / 2));
+      add(base + height);
+      add(2 * base + height);
+    }
+  } else if (
+    baseKind === "trapezoid_area" ||
+    (selectedTopic === "area" && shape === "trapezoid")
+  ) {
+    const b1 = params.base1;
+    const b2 = params.base2;
+    const h = params.height;
+    if (b1 != null && b2 != null && h != null) {
+      add(r(((b1 + b2) * h)));
+      add(r(((b1 + b2) * h) / 4));
+      add(b1 * b2);
+    }
+  } else if (baseKind === "circle_area") {
+    const rad = params.radius;
+    if (rad != null) {
+      add(r(2 * PI * rad));
+      add(r(2 * rad));
+      add(r(PI * rad * rad * 1.15));
+      add(r(PI * (rad + 1) * (rad + 1)));
+    }
+  } else if (baseKind === "circle_perimeter") {
+    const rad = params.radius;
+    if (rad != null) {
+      add(r(PI * rad * rad));
+      add(r(PI * rad));
+      add(r(2 * PI * rad * 1.12));
+    }
+  } else if (baseKind === "square_perimeter" || baseKind.endsWith("square_perimeter")) {
+    const side = params.side;
+    if (side != null) {
+      add(side * side);
+      add(3 * side);
+      add(2 * side);
+    }
+  } else if (baseKind === "rectangle_perimeter" || baseKind.endsWith("rectangle_perimeter")) {
+    const L = params.length;
+    const W = params.width;
+    if (L != null && W != null) {
+      add(L * W);
+      add(L + W);
+      add(2 * L + W);
+    }
+  } else if (baseKind === "triangle_perimeter") {
+    const { side1, side2, side3 } = params;
+    if (side1 != null && side2 != null && side3 != null) {
+      add(side1 + side2);
+      add(side2 + side3);
+      add(side1 + side3);
+    }
+  } else if (baseKind === "cube_volume" || baseKind.endsWith("cube_volume")) {
+    const side = params.side;
+    if (side != null) {
+      add(side * side);
+      add(6 * side * side);
+      add(side * side * side + side);
+    }
+  } else if (baseKind === "rectangular_prism_volume" || baseKind.endsWith("box_volume") || baseKind.endsWith("rectangular_prism_volume")) {
+    const { length: L, width: W, height: H } = params;
+    if (L != null && W != null && H != null) {
+      add(L * W + H);
+      add(L + W + H);
+      add(L * W);
+      add(r(L * W * H * 0.75));
+    }
+  } else if (baseKind === "cylinder_volume") {
+    const { radius, height } = params;
+    if (radius != null && height != null) {
+      add(r(PI * radius * radius));
+      add(r(PI * radius * height));
+      add(r(2 * PI * radius * height));
+    }
+  } else if (baseKind === "sphere_volume") {
+    const { radius } = params;
+    if (radius != null) {
+      add(r(PI * radius * radius * radius));
+      add(r((4 / 3) * PI * radius * radius * radius * 0.7));
+    }
+  } else if (baseKind === "cone_volume") {
+    const { radius, height } = params;
+    if (radius != null && height != null) {
+      add(r(PI * radius * radius * height));
+      add(r((1 / 2) * PI * radius * radius * height));
+    }
+  } else if (baseKind === "pyramid_volume_square" || baseKind === "pyramid_volume_rectangular") {
+    const h = params.height;
+    const baseArea = params.baseArea;
+    if (baseArea != null && h != null) {
+      add(r(baseArea * h));
+      add(r((baseArea * h) / 2));
+    }
+  } else if (baseKind === "prism_volume_triangle" || baseKind === "prism_volume_rectangular") {
+    const baseArea = params.baseArea;
+    const h = params.height;
+    if (baseArea != null && h != null) {
+      add(r((baseArea * h) / 2));
+      add(baseArea + h);
+    }
+  } else if (
+    baseKind === "heights_triangle" ||
+    baseKind === "heights_parallelogram" ||
+    baseKind === "heights_trapezoid"
+  ) {
+    const base = params.base ?? params.base1;
+    const area = params.area;
+    const b2 = params.base2;
+    if (base != null && area != null) {
+      add(r(area / base));
+      add(r((area * 2) / base + 1));
+    }
+    if (b2 != null && base != null && area != null) {
+      add(r(area / (base + b2)));
+    }
+  } else if (baseKind === "diagonal_square") {
+    const side = params.side;
+    if (side != null) {
+      add(side * 2);
+      add(side * side);
+      add(r(side * Math.sqrt(3)));
+    }
+  } else if (
+    baseKind === "diagonal_rectangle" ||
+    baseKind === "diagonal_parallelogram"
+  ) {
+    const { side, width } = params;
+    if (side != null && width != null) {
+      add(side + width);
+      add(Math.abs(side - width));
+      add(r(Math.sqrt(side * side + width * width) * 0.85));
+    }
+  } else if (baseKind === "symmetry") {
+    const axes = params.axes;
+    if (axes != null) {
+      takeFromPool([1, 2, 3, 4, 5, 6].filter((n) => n !== axes));
+    }
+  }
+
+  let tries = 0;
+  while (wrong.size < 3 && tries < 80) {
+    tries++;
+    const jitter = 1 + Math.floor(Math.random() * Math.max(2, Math.abs(ca) * 0.08));
+    const sign = Math.random() < 0.5 ? -1 : 1;
+    add(ca + sign * jitter);
+  }
+
+  let pad = 1;
+  while (wrong.size < 3) {
+    add(Math.max(1, ca + pad * 3));
+    pad++;
+    if (pad > 50) break;
+  }
+
+  const wrongArr = Array.from(wrong).slice(0, 3);
+  const merged = shuffleMcqList([r(ca), ...wrongArr.map((x) => r(x))]);
+  const uniq = [];
+  for (const x of merged) {
+    if (!uniq.includes(x)) uniq.push(x);
+  }
+  let bump = 1;
+  while (uniq.length < 4) {
+    const v = r(ca + bump * (Math.abs(ca) > 50 ? 7 : 3));
+    bump++;
+    if (v > 0 && !uniq.includes(v)) uniq.push(v);
+    if (bump > 100) break;
+  }
+  return shuffleMcqList(uniq.slice(0, 4));
+}
+
 export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   // בדיקה שהכיתה קיימת
   if (!GRADES[gradeKey]) {
@@ -699,84 +998,15 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
   }
 
-  // ===== יצירת תשובות =====
-  const wrongAnswers = new Set();
-  let attempts = 0;
-  const maxWrongAttempts = 100; // מקסימום ניסיונות ליצירת תשובות שגויות
-  
-  // אם התשובה הנכונה היא מספר קטן (1-10), נשתמש בלוגיקה שונה
-  const isSmallAnswer = correctAnswer >= 1 && correctAnswer <= 10 && Number.isInteger(correctAnswer);
-  
-  if (isSmallAnswer) {
-    // עבור תשובות קטנות, ניצור תשובות שגויות מהטווח 1-10
-    const possibleAnswers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const shuffled = [...possibleAnswers].sort(() => Math.random() - 0.5);
-    for (const ans of shuffled) {
-      if (ans !== correctAnswer && wrongAnswers.size < 3) {
-        wrongAnswers.add(ans);
-      }
-      if (wrongAnswers.size >= 3) break;
-    }
-  } else {
-    // עבור תשובות גדולות יותר, נשתמש בלוגיקה המקורית
-    while (wrongAnswers.size < 3 && attempts < maxWrongAttempts) {
-      attempts++;
-      const variation = Math.floor(Math.random() * 3) + 1;
-      const sign = Math.random() > 0.5 ? 1 : -1;
-      const delta = Math.max(
-        1,
-        Math.abs(correctAnswer) * 0.1 * variation
-      );
-      const wrong = round(correctAnswer + sign * delta);
-      if (
-        wrong !== correctAnswer &&
-        wrong > 0 &&
-        !Number.isNaN(wrong) &&
-        !wrongAnswers.has(wrong)
-      ) {
-        wrongAnswers.add(wrong);
-      }
-    }
-  }
-  
-  // אם עדיין אין מספיק תשובות שגויות, נוסיף תשובות ברירת מחדל
-  let defaultAttempts = 0;
-  while (wrongAnswers.size < 3 && defaultAttempts < 20) {
-    defaultAttempts++;
-    const defaultWrong = correctAnswer + wrongAnswers.size + 1;
-    if (defaultWrong !== correctAnswer && defaultWrong > 0) {
-      wrongAnswers.add(defaultWrong);
-    } else {
-      // ננסה תשובה אחרת
-      const altWrong = Math.max(1, correctAnswer - wrongAnswers.size - 1);
-      if (altWrong !== correctAnswer && altWrong > 0 && !wrongAnswers.has(altWrong)) {
-        wrongAnswers.add(altWrong);
-      } else {
-        break; // נמנע מלולאה אינסופית
-      }
-    }
-  }
-
-  // הוספת התשובה הנכונה לרשימה במקום אקראי, לא תמיד ראשונה
-  const wrongAnswersArray = Array.from(wrongAnswers);
-  const randomInsertPos = Math.floor(Math.random() * (wrongAnswersArray.length + 1));
-  wrongAnswersArray.splice(randomInsertPos, 0, correctAnswer);
-  
-  // ערבוב התשובות - Fisher-Yates shuffle משופר
-  // נערבב מספר פעמים כדי להבטיח ערבוב טוב יותר
-  for (let shuffleRound = 0; shuffleRound < 3; shuffleRound++) {
-    for (let i = wrongAnswersArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [wrongAnswersArray[i], wrongAnswersArray[j]] = [wrongAnswersArray[j], wrongAnswersArray[i]];
-    }
-  }
-  
-  // ערבוב נוסף - שיטה נוספת לערבוב טוב יותר
-  const shuffledAnswers = [...wrongAnswersArray];
-  for (let i = 0; i < shuffledAnswers.length; i++) {
-    const randomIndex = Math.floor(Math.random() * shuffledAnswers.length);
-    [shuffledAnswers[i], shuffledAnswers[randomIndex]] = [shuffledAnswers[randomIndex], shuffledAnswers[i]];
-  }
+  // ===== יצירת תשובות (מסיחים הקשריים) =====
+  const shuffledAnswers = buildGeometryMcqAnswers({
+    correctAnswer,
+    params,
+    level,
+    round,
+    selectedTopic,
+    shape,
+  });
 
   return {
     question,

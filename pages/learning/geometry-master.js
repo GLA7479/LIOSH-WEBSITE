@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -15,6 +15,15 @@ import {
   buildTop10ByScore,
   saveScoreEntry,
 } from "../../utils/geometry-storage";
+import {
+  loadGeometryIntel,
+  persistGeometryIntel,
+  recordGeometryAnswerIntel,
+  getGeometryTopicInsights,
+  geometryQuestionFingerprint,
+  newGeometryMistakeId,
+  buildGeometryQuestionSnapshot,
+} from "../../utils/geometry-learning-intel";
 import { generateQuestion } from "../../utils/geometry-question-generator";
 import {
   getHint,
@@ -135,6 +144,13 @@ export default function GeometryMaster() {
     }
     return [];
   });
+  const [learningIntel, setLearningIntel] = useState(() => loadGeometryIntel());
+  const mistakeQueueRef = useRef([]);
+  const mistakeCursorRef = useRef(0);
+  const correctRef = useRef(0);
+  const gameActiveRef = useRef(false);
+  const focusedPracticeModeRef = useRef("normal");
+  const mistakesRef = useRef([]);
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   const [progress, setProgress] = useState({
     area: { total: 0, correct: 0 },
@@ -341,6 +357,32 @@ const refreshMonthlyProgress = useCallback(() => {
   }, [progress]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    persistGeometryIntel(learningIntel);
+  }, [learningIntel]);
+
+  useEffect(() => {
+    correctRef.current = correct;
+  }, [correct]);
+
+  useEffect(() => {
+    mistakesRef.current = mistakes;
+  }, [mistakes]);
+
+  useEffect(() => {
+    gameActiveRef.current = gameActive;
+  }, [gameActive]);
+
+  useEffect(() => {
+    focusedPracticeModeRef.current = focusedPracticeMode;
+  }, [focusedPracticeMode]);
+
+  const geometryInsights = useMemo(
+    () => getGeometryTopicInsights(learningIntel.topicStats),
+    [learningIntel.topicStats]
+  );
+
+  useEffect(() => {
     if (showLeaderboard && typeof window !== "undefined") {
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
@@ -400,7 +442,70 @@ useEffect(() => {
       });
       return;
     }
-    
+
+    if (
+      gameActiveRef.current &&
+      focusedPracticeModeRef.current === "mistakes" &&
+      mistakeQueueRef.current.length > 0
+    ) {
+      const queue = mistakeQueueRef.current;
+      const idx = mistakeCursorRef.current % queue.length;
+      mistakeCursorRef.current += 1;
+      const entry = queue[idx];
+      const snap = entry?.snapshot;
+      if (snap && Array.isArray(snap.answers) && snap.answers.length > 0) {
+        const replayQ = {
+          question: snap.question,
+          correctAnswer: snap.correctAnswer,
+          answers: [...snap.answers],
+          topic: snap.topic,
+          shape: snap.shape,
+          params: { ...snap.params },
+          _fromMistakeReplay: true,
+          _mistakeId: entry.id,
+        };
+        const fpKey = geometryQuestionFingerprint(replayQ);
+        const localRecent = new Set(recentQuestions);
+        localRecent.add(fpKey);
+        if (localRecent.size > 60) {
+          const first = Array.from(localRecent)[0];
+          localRecent.delete(first);
+        }
+        setRecentQuestions(localRecent);
+
+        if (questionStartTime && currentQuestion) {
+          const duration = (Date.now() - questionStartTime) / 1000;
+          if (duration > 0 && duration < 300) {
+            trackGeometryTopicTime(
+              currentQuestion.topic,
+              grade,
+              level,
+              duration
+            );
+          }
+        }
+
+        setCurrentQuestion(replayQ);
+        setSelectedAnswer(null);
+        setFeedback(null);
+        setQuestionStartTime(Date.now());
+        setShowHint(false);
+        setHintUsed(false);
+        setShowSolution(false);
+        setErrorExplanation("");
+        return;
+      }
+    }
+
+    if (
+      gameActiveRef.current &&
+      focusedPracticeModeRef.current === "mistakes" &&
+      mistakeQueueRef.current.length === 0
+    ) {
+      setFocusedPracticeMode("normal");
+      focusedPracticeModeRef.current = "normal";
+    }
+
     const allowedTopics = GRADES[grade].topics || [];
     
     // בדיקה שיש נושאים זמינים
@@ -450,7 +555,16 @@ useEffect(() => {
       return;
     }
     
-    const levelConfig = getLevelForGrade(level, grade);
+    const correctSoFar = correctRef.current;
+    const effectiveLevelKey =
+      focusedPracticeModeRef.current === "graded"
+        ? correctSoFar < 5
+          ? "easy"
+          : correctSoFar < 15
+            ? "medium"
+            : level
+        : level;
+    const levelConfig = getLevelForGrade(effectiveLevelKey, grade);
     let question;
     let attempts = 0;
     const maxAttempts = 50;
@@ -511,8 +625,10 @@ useEffect(() => {
         continue; // ננסה שוב
       }
       
-      const questionKey = question.question;
-      
+      const questionKey =
+        geometryQuestionFingerprint(question) ||
+        `fallback|${question.question}|${question.correctAnswer}`;
+
       // אם השאלה לא הייתה לאחרונה, נשתמש בה
       if (!localRecentQuestions.has(questionKey)) {
         localRecentQuestions.add(questionKey);
@@ -626,6 +742,21 @@ useEffect(() => {
     const isCorrect = answer === currentQuestion.correctAnswer;
 
     if (isCorrect) {
+      if (currentQuestion._fromMistakeReplay && currentQuestion._mistakeId) {
+        setMistakes((prev) => {
+          const next = prev.filter((m) => m.id !== currentQuestion._mistakeId);
+          if (typeof window !== "undefined") {
+            try {
+              localStorage.setItem("mleo_geometry_mistakes", JSON.stringify(next));
+            } catch {}
+          }
+          return next;
+        });
+        mistakeQueueRef.current = mistakeQueueRef.current.filter(
+          (m) => m.id !== currentQuestion._mistakeId
+        );
+      }
+
       // חישוב נקודות לפי מצב
       let points = 10 + streak;
       if (mode === "speed") {
@@ -648,6 +779,8 @@ useEffect(() => {
           correct: (prev[top]?.correct || 0) + 1,
         },
       }));
+
+      setLearningIntel((prev) => recordGeometryAnswerIntel(prev, top, true));
 
       // מערכת כוכבים - כוכב כל 5 תשובות נכונות
       const newCorrect = correct + 1;
@@ -837,6 +970,36 @@ useEffect(() => {
           correct: prev[top]?.correct || 0,
         },
       }));
+
+      if (!currentQuestion._fromMistakeReplay) {
+        const snap = buildGeometryQuestionSnapshot(currentQuestion);
+        if (snap && currentQuestion.params?.kind !== "no_question") {
+          const fp = geometryQuestionFingerprint(currentQuestion);
+          setMistakes((prev) => {
+            const filtered = prev.filter(
+              (m) => geometryQuestionFingerprint(m.snapshot) !== fp
+            );
+            const entry = {
+              id: newGeometryMistakeId(),
+              storedAt: Date.now(),
+              grade,
+              level,
+              wrongAnswer: answer,
+              correctAnswer: currentQuestion.correctAnswer,
+              question: currentQuestion.question,
+              snapshot: snap,
+            };
+            const next = [...filtered, entry].slice(-80);
+            if (typeof window !== "undefined") {
+              try {
+                localStorage.setItem("mleo_geometry_mistakes", JSON.stringify(next));
+              } catch {}
+            }
+            return next;
+          });
+        }
+      }
+      setLearningIntel((prev) => recordGeometryAnswerIntel(prev, top, false));
       
       if ("vibrate" in navigator) navigator.vibrate?.(200);
 
@@ -865,6 +1028,7 @@ useEffect(() => {
             sound.playSound("game-over");
             recordSessionProgress();
             saveRunToStorage();
+            gameActiveRef.current = false;
             setGameActive(false);
             setCurrentQuestion(null);
             setTimeLeft(0);
@@ -958,6 +1122,7 @@ useEffect(() => {
     accumulateQuestionTime();
     // Stop background music when game resets
     sound.stopBackgroundMusic();
+    gameActiveRef.current = false;
     setGameActive(false);
     setCurrentQuestion(null);
     setScore(0);
@@ -974,13 +1139,31 @@ useEffect(() => {
   }
 
 
-  function startGame() {
+  function startGame(opts = {}) {
+    if (opts.focusedPracticeMode != null) {
+      setFocusedPracticeMode(opts.focusedPracticeMode);
+      focusedPracticeModeRef.current = opts.focusedPracticeMode;
+    }
     recordSessionProgress();
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
     setRecentQuestions(new Set());
     setGameActive(true);
+    gameActiveRef.current = true;
+
+    if (
+      focusedPracticeModeRef.current === "mistakes" &&
+      mistakesRef.current.length > 0
+    ) {
+      mistakeQueueRef.current = [...mistakesRef.current].sort(
+        () => Math.random() - 0.5
+      );
+      mistakeCursorRef.current = 0;
+    } else {
+      mistakeQueueRef.current = [];
+      mistakeCursorRef.current = 0;
+    }
     setScore(0);
     setStreak(0);
     setCorrect(0);
@@ -1016,6 +1199,7 @@ useEffect(() => {
     // Stop background music when game stops
     sound.stopBackgroundMusic();
     recordSessionProgress();
+    gameActiveRef.current = false;
     setGameActive(false);
     setCurrentQuestion(null);
     setFeedback(null);
@@ -1029,6 +1213,7 @@ useEffect(() => {
     setStreak(0);
     setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
     sound.playSound("game-over");
+    gameActiveRef.current = false;
     setGameActive(false);
     setCurrentQuestion(null);
     setTimeLeft(0);
@@ -1574,14 +1759,10 @@ useEffect(() => {
                 </button>
                 <button
                   onClick={() => setShowPracticeOptions(true)}
-                  disabled={mistakes.length === 0}
-                  className={`px-4 py-2 rounded-lg text-xs font-bold text-white shadow-sm ${
-                    mistakes.length > 0
-                      ? "bg-purple-500/80 hover:bg-purple-500"
-                      : "bg-gray-500/50 cursor-not-allowed opacity-50"
-                  }`}
+                  className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
                 >
-                  🎯 תרגול ממוקד {mistakes.length > 0 && `(${mistakes.length})`}
+                  🎯 תרגול ממוקד
+                  {mistakes.length > 0 ? ` (${mistakes.length})` : ""}
                 </button>
               </div>
 
@@ -2317,6 +2498,25 @@ useEffect(() => {
                       </div>
                     </div>
                   )}
+
+                  {geometryInsights.weakest && geometryInsights.strongest && (
+                    <div className="bg-black/30 border border-white/10 rounded-lg p-3">
+                      <div className="text-sm text-white/60 mb-2">תובנות מבוססות־ניסיון (מקומי)</div>
+                      <div className="text-xs text-white/85 space-y-1">
+                        <div>
+                          <span className="text-amber-300 font-semibold">לחזק:</span>{" "}
+                          {getTopicName(geometryInsights.weakest)}
+                        </div>
+                        <div>
+                          <span className="text-emerald-300 font-semibold">חזק ביחס:</span>{" "}
+                          {getTopicName(geometryInsights.strongest)}
+                        </div>
+                        <p className="text-[11px] text-white/50 mt-2">
+                          לפחות 2 ניסיונות לנושא; נשמר בדפדפן בלבד.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="bg-black/30 border border-white/10 rounded-lg p-3 mt-4">
@@ -2372,11 +2572,9 @@ useEffect(() => {
                 <div className="space-y-3 mb-4">
                   <button
                     onClick={() => {
-                      setFocusedPracticeMode("mistakes");
                       setShowPracticeOptions(false);
                       if (mistakes.length > 0) {
-                        setGameActive(true);
-                        startGame();
+                        startGame({ focusedPracticeMode: "mistakes" });
                       }
                     }}
                     disabled={mistakes.length === 0}
@@ -2398,10 +2596,8 @@ useEffect(() => {
 
                   <button
                     onClick={() => {
-                      setFocusedPracticeMode("graded");
                       setShowPracticeOptions(false);
-                      setGameActive(true);
-                      startGame();
+                      startGame({ focusedPracticeMode: "graded" });
                     }}
                     className="w-full p-4 rounded-lg bg-blue-500/20 border border-blue-400/50 hover:bg-blue-500/30 transition-all text-right"
                   >
@@ -2416,6 +2612,7 @@ useEffect(() => {
                   <button
                     onClick={() => {
                       setFocusedPracticeMode("normal");
+                      focusedPracticeModeRef.current = "normal";
                       setShowPracticeOptions(false);
                     }}
                     className="w-full p-4 rounded-lg bg-emerald-500/20 border border-emerald-400/50 hover:bg-emerald-500/30 transition-all text-right"
