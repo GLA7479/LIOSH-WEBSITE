@@ -17,6 +17,7 @@ import {
   MONTHLY_MINUTES_TARGET,
   getRewardLabel,
 } from "../../data/reward-options";
+import { splitRewardAmountLabel } from "../../utils/dashboard-setup-ui";
 import {
   loadDailyStreak,
   updateDailyStreak,
@@ -1816,7 +1817,7 @@ const refreshMonthlyProgress = useCallback(() => {
       <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928]" dir="rtl">
         <div
           ref={wrapRef}
-          className="relative overflow-hidden game-page-mobile"
+          className="relative overflow-hidden game-page-mobile flex flex-col"
           style={{
             minHeight: "100vh",
             height: "100dvh",
@@ -1865,7 +1866,7 @@ const refreshMonthlyProgress = useCallback(() => {
         </div>
 
         <div
-          className="relative flex flex-col items-center justify-start px-4 overflow-hidden"
+          className="relative flex flex-1 min-h-0 flex-col items-center justify-start px-4 overflow-hidden"
           style={{
             height: "100%",
             maxHeight: "100%",
@@ -2050,8 +2051,11 @@ const refreshMonthlyProgress = useCallback(() => {
           )}
 
           {!gameActive ? (
-            <>
-              <div className="flex items-center justify-center gap-2 mb-3 flex-wrap w-full max-w-3xl">
+            <div className="flex flex-col flex-1 min-h-0 w-full max-w-md items-center self-stretch">
+              <div
+                className="flex flex-nowrap items-center gap-2 mb-2.5 w-full max-w-md px-0.5 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
+                dir="rtl"
+              >
                 <input
                   type="text"
                   value={playerName}
@@ -2065,15 +2069,16 @@ const refreshMonthlyProgress = useCallback(() => {
                     }
                   }}
                   placeholder="שם שחקן"
-                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[55px]"
+                  className="h-10 shrink-0 w-[3.25rem] px-1.5 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 box-border"
                   maxLength={15}
                   dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
                   style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
                 />
                 <select
                   value={gradeNumber}
+                  title={`כיתה ${gradeLabels[gradeNumber - 1]}`}
                   onChange={(e) => handleGradeNumberChange(e.target.value)}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
+                  className="h-10 shrink-0 min-w-0 w-[5.25rem] max-w-[5.5rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                 >
                   {GRADE_ORDER.map((_, idx) => (
                     <option key={`grade-${idx + 1}`} value={idx + 1}>
@@ -2083,11 +2088,12 @@ const refreshMonthlyProgress = useCallback(() => {
                 </select>
                 <select
                   value={level}
+                  title={LEVELS[level]?.name}
                   onChange={(e) => {
                     setLevel(e.target.value);
                     setGameActive(false);
                   }}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
+                  className="h-10 shrink-0 min-w-0 w-[5.25rem] max-w-[5.5rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                 >
                   {Object.keys(LEVELS).map((lvl) => (
                     <option key={lvl} value={lvl}>
@@ -2095,10 +2101,11 @@ const refreshMonthlyProgress = useCallback(() => {
                     </option>
                   ))}
                 </select>
-                <div className="flex items-center gap-1 min-w-[180px]">
+                <div className="flex flex-1 min-w-0 items-center gap-1.5 shrink">
                   <select
                     ref={topicSelectRef}
                     value={topic}
+                    title={getTopicName(topic)}
                     onChange={(e) => {
                       const newTopic = e.target.value;
                       setGameActive(false);
@@ -2110,7 +2117,7 @@ const refreshMonthlyProgress = useCallback(() => {
                         setShowMixedSelector(false);
                       }
                     }}
-                    className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold flex-1"
+                    className="h-10 min-w-0 flex-1 max-w-[12rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                   >
                     {GRADES[grade].topics.map((t) => (
                       <option key={t} value={t}>
@@ -2120,8 +2127,9 @@ const refreshMonthlyProgress = useCallback(() => {
                   </select>
                   {topic === "mixed" && (
                     <button
+                      type="button"
                       onClick={() => setShowMixedSelector(true)}
-                      className="h-9 w-9 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-xs font-bold flex items-center justify-center"
+                      className="h-10 w-10 shrink-0 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-sm font-bold flex items-center justify-center box-border"
                       title="ערוך נושאים למיקס"
                     >
                       ⚙️
@@ -2130,79 +2138,87 @@ const refreshMonthlyProgress = useCallback(() => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2 w-full max-w-md">
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">שיא ניקוד</div>
-                  <div className="text-lg font-bold text-emerald-400">
-                    {bestScore}
-                  </div>
+              <div className="grid grid-cols-4 gap-1.5 mb-2 w-full max-w-md" dir="rtl">
+                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
+                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">שיא ניקוד</span>
+                  <span className="text-base font-bold text-emerald-400 tabular-nums leading-tight">{bestScore}</span>
                 </div>
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">שיא רצף</div>
-                  <div className="text-lg font-bold text-amber-400">
-                    {bestStreak}
-                  </div>
+                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
+                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">שיא רצף</span>
+                  <span className="text-base font-bold text-amber-400 tabular-nums leading-tight">{bestStreak}</span>
                 </div>
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">דיוק</div>
-                  <div className="text-lg font-bold text-blue-400">
-                    {accuracy}%
-                  </div>
+                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
+                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">דיוק</span>
+                  <span className="text-base font-bold text-blue-400 tabular-nums leading-tight">{accuracy}%</span>
                 </div>
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center flex flex-col items-center justify-center">
-                  <div className="text-xs text-white/60 mb-1">אתגרים</div>
+                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1.5 min-w-0 shadow-sm">
+                  <span className="text-[10px] text-white/60 text-center leading-tight">אתגרים</span>
                   <button
+                    type="button"
                     onClick={() => setShowDailyChallenge(true)}
-                    className="h-7 px-3 rounded bg-blue-500/80 hover:bg-blue-500 text-white text-xs font-bold"
+                    className="h-8 w-full max-w-[4rem] px-2 rounded-md bg-blue-500/85 hover:bg-blue-500 text-white text-xs font-bold"
                   >
                     פתיחה
                   </button>
                 </div>
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-lg px-1.5 pt-1.5 pb-0 mb-1 w-full max-w-md">
-                <div className="flex items-center justify-between text-[10px] text-white/70 mb-0.5">
+              <div className="bg-white/5 border border-white/10 rounded-md px-1 pt-1 pb-1 mb-2 w-full max-w-md opacity-90">
+                <div className="flex items-center justify-between text-[9px] text-white/55 mb-0.5 leading-tight">
                   <span>🎁 מסע פרס חודשי</span>
                   <span>
                     {Math.round(monthlyProgress.totalMinutes)} / {MONTHLY_MINUTES_TARGET} דק׳
                   </span>
                 </div>
-                <p className="text-[10px] text-white/70 mb-0.5 text-center">
+                <p className="text-[9px] text-white/55 mb-0.5 text-center leading-tight">
                   {minutesRemaining > 0
                     ? `נותרו עוד ${Math.round(minutesRemaining)} דק׳ (~${Math.ceil(
                         Math.round(minutesRemaining) / 60
                       )} ש׳)`
                     : "🎉 יעד הושלם! בקשו מההורה לבחור פרס."}
                 </p>
-                <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden mb-2">
                   <div
                     className="h-1.5 bg-emerald-400 rounded-full transition-all"
                     style={{ width: `${goalPercent}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center">
-                  {REWARD_OPTIONS.map((option) => (
+                <div className="grid grid-cols-4 gap-1.5 w-full">
+                  {REWARD_OPTIONS.map((option) => {
+                    const rewardParts = splitRewardAmountLabel(option.label);
+                    return (
                     <button
+                      type="button"
                       key={option.key}
                       onClick={() => {
                         saveRewardChoice(yearMonthRef.current, option.key);
                         setRewardChoice(option.key);
                       }}
-                      className={`rounded-lg border p-2.5 text-xs bg-black/30 flex flex-col items-center gap-1.5 transition-all hover:scale-105 ${
+                      className={`rounded-lg border py-2 px-1 min-h-[4.25rem] bg-black/35 flex flex-col items-center justify-center gap-1 min-w-0 transition-colors ${
                         rewardChoice === option.key
                           ? "border-emerald-400 text-emerald-200 bg-emerald-500/20"
                           : "border-white/15 text-white/70 hover:border-white/30"
                       }`}
-                      style={{ transform: "scaleY(0.85)", transformOrigin: "center" }}
                     >
-                      <div className="text-2xl">{option.icon}</div>
-                      <div className="font-bold leading-tight" dir="ltr">{option.label}</div>
+                      <span className="text-lg leading-none shrink-0">{option.icon}</span>
+                      {rewardParts.amount != null ? (
+                        <>
+                          <span className="text-xs font-extrabold tabular-nums leading-none text-emerald-100" dir="ltr">{rewardParts.amount}</span>
+                          <span className="text-[9px] font-semibold leading-snug text-center text-white/90 px-0.5 line-clamp-2" dir="ltr">{rewardParts.name}</span>
+                        </>
+                      ) : (
+                        <span className="text-[10px] font-semibold leading-snug text-center px-0.5" dir="ltr">{rewardParts.full}</span>
+                      )}
                     </button>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-wrap px-1">
+              <div className="flex-1 min-h-[36px] w-full shrink-0" aria-hidden />
+
+              <div className="w-full border-t border-white/10 pt-6 mt-4 flex flex-col items-center gap-2">
+              <div className="flex items-center justify-center gap-1.5 w-full max-w-md flex-wrap px-1">
                 <button
                   onClick={startGame}
                   disabled={!playerName.trim()}
@@ -2219,7 +2235,7 @@ const refreshMonthlyProgress = useCallback(() => {
               </div>
 
               {/* כפתורים עזרה ותרגול ממוקד */}
-              <div className="mb-2 w-full max-w-md flex justify-center gap-2 flex-wrap">
+              <div className="w-full max-w-md flex justify-center gap-2 flex-wrap">
                 <button
                   onClick={() => setShowHowTo(true)}
                   className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
@@ -2249,17 +2265,12 @@ const refreshMonthlyProgress = useCallback(() => {
               </div>
 
               {!playerName.trim() && (
-                <p className="text-xs text-white/60 text-center mb-2">
+                <p className="text-xs text-white/60 text-center mb-1">
                   הכנס את שמך כדי להתחיל
                 </p>
               )}
-
-              {!playerName.trim() && (
-                <p className="text-xs text-white/60 text-center mb-2">
-                  הכנס את שמך כדי להתחיל
-                </p>
-              )}
-            </>
+              </div>
+            </div>
           ) : (
             <>
               {feedback && (

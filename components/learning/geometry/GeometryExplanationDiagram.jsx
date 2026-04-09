@@ -98,7 +98,7 @@ function SvgText({ x, y, children, variant = "caption", anchor = "middle" }) {
 
 function DiagramFrame({ children }) {
   return (
-    <div className="w-full max-w-[min(100%,400px)] mx-auto mb-2 sm:mb-3 rounded-xl bg-emerald-950/55 border border-emerald-400/35 px-1.5 py-3 sm:px-3 sm:py-4 min-h-[min(42svh,260px)] sm:min-h-[280px] flex items-center justify-center shadow-inner shadow-black/20">
+    <div className="w-full max-w-[min(100%,400px)] mx-auto mb-1 sm:mb-2 rounded-xl bg-emerald-950/50 border border-emerald-400/25 px-2 py-3 sm:px-3 sm:py-3.5 min-h-[min(42svh,260px)] sm:min-h-[280px] flex items-center justify-center shadow-inner shadow-black/15 ring-1 ring-emerald-500/10">
       <div className="w-full flex items-center justify-center [&>svg]:w-full [&>svg]:max-w-full [&>svg]:h-auto [&>svg]:max-h-[min(42svh,300px)] sm:[&>svg]:max-h-[min(48svh,320px)]">
         {children}
       </div>

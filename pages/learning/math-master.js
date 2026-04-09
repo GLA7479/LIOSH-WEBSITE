@@ -43,6 +43,25 @@ import {
 } from "../../utils/math-animations";
 import { learningMixedHebrewMathStyle } from "../../utils/learning-mixed-hebrew-math";
 import {
+  learningModalOverlay,
+  learningModalPanel,
+  learningModalHeader,
+  learningModalCloseBtn,
+  learningModalTitle,
+  learningModalFooter,
+  learningStepNavRow,
+  learningStepNavBtn,
+  learningStepNavBtnPlay,
+  learningStepCounter,
+  learningQuestionBox,
+  learningQuestionText,
+  learningExplTitle,
+  learningExplBody,
+  learningPrimaryCloseBtn,
+  learningHintTriggerBtn,
+  learningExplainOpenBtn,
+} from "../../utils/learning-ui-classes";
+import {
   addSessionProgress,
   loadMonthlyProgress,
   loadRewardChoice,
@@ -56,6 +75,7 @@ import {
   MONTHLY_MINUTES_TARGET,
   getRewardLabel,
 } from "../../data/reward-options";
+import { splitRewardAmountLabel } from "../../utils/dashboard-setup-ui";
 import {
   loadDailyStreak,
   updateDailyStreak,
@@ -2073,7 +2093,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928]" dir="rtl">
         <div
           ref={wrapRef}
-          className="relative overflow-hidden game-page-mobile"
+          className="relative overflow-hidden game-page-mobile flex flex-col"
           style={{
             minHeight: "100vh",
             height: "100dvh",
@@ -2122,7 +2142,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
         </div>
 
         <div
-          className="relative flex flex-col items-center justify-start px-4 overflow-hidden"
+          className="relative flex flex-1 min-h-0 flex-col items-center justify-start px-4 overflow-hidden"
           style={{
             height: "100%",
             maxHeight: "100%",
@@ -2671,8 +2691,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           )}
 
           {!gameActive ? (
-            <>
-              <div className="flex items-center justify-center gap-2 mb-2 flex-wrap w-full max-w-md" dir="rtl">
+            <div className="flex flex-col flex-1 min-h-0 w-full max-w-md items-center self-stretch">
+              <div
+                className="flex flex-nowrap items-center gap-2 mb-2.5 w-full max-w-md px-0.5 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
+                dir="rtl"
+              >
                 <input
                   type="text"
                   value={playerName}
@@ -2686,20 +2709,21 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     }
                   }}
                   placeholder="שם שחקן"
-                  className="h-9 px-2 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 w-[55px]"
+                  className="h-10 shrink-0 w-[3.25rem] px-1.5 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 box-border"
                   maxLength={15}
                   dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
                   style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
                 />
                 <select
                   value={gradeNumber}
+                  title={`כיתה ${["א", "ב", "ג", "ד", "ה", "ו"][gradeNumber - 1]}`}
                   onChange={(e) => {
                     const newGradeNum = Number(e.target.value);
                     setGradeNumber(newGradeNum);
                     setGrade(`g${newGradeNum}`);
                     setGameActive(false);
                   }}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
+                  className="h-10 shrink-0 min-w-0 w-[5.25rem] max-w-[5.5rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                 >
                   {[1, 2, 3, 4, 5, 6].map((g) => (
                     <option key={g} value={g}>
@@ -2709,11 +2733,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 </select>
                 <select
                   value={level}
+                  title={LEVELS[level]?.name}
                   onChange={(e) => {
                     setLevel(e.target.value);
                     setGameActive(false);
                   }}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
+                  className="h-10 shrink-0 min-w-0 w-[5.25rem] max-w-[5.5rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                 >
                   {Object.keys(LEVELS).map((lvl) => (
                     <option key={lvl} value={lvl}>
@@ -2721,10 +2746,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     </option>
                   ))}
                 </select>
-                <div className="flex items-center gap-1 min-w-[180px]">
+                <div className="flex flex-1 min-w-0 items-center gap-1.5 shrink">
                   <select
                     ref={operationSelectRef}
                     value={operation}
+                    title={getOperationName(operation)}
                     onChange={(e) => {
                       const newOp = e.target.value;
                       setGameActive(false);
@@ -2736,7 +2762,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                         setShowMixedSelector(false);
                       }
                     }}
-                    className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold flex-1"
+                    className="h-10 min-w-0 flex-1 max-w-[12rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                   >
                     {GRADES[grade].operations.map((op) => (
                       <option key={op} value={op}>
@@ -2746,8 +2772,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   </select>
                   {operation === "mixed" && (
                     <button
+                      type="button"
                       onClick={() => setShowMixedSelector(true)}
-                      className="h-9 w-9 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-xs font-bold flex items-center justify-center"
+                      className="h-10 w-10 shrink-0 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-sm font-bold flex items-center justify-center box-border"
                       title="ערוך פעולות למיקס"
                     >
                       ⚙️
@@ -2756,79 +2783,87 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2 w-full max-w-md">
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">שיא ניקוד</div>
-                  <div className="text-lg font-bold text-emerald-400">
-                    {bestScore}
-                  </div>
+              <div className="grid grid-cols-4 gap-1.5 mb-2 w-full max-w-md" dir="rtl">
+                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
+                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">שיא ניקוד</span>
+                  <span className="text-base font-bold text-emerald-400 tabular-nums leading-tight">{bestScore}</span>
                 </div>
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">שיא רצף</div>
-                  <div className="text-lg font-bold text-amber-400">
-                    {bestStreak}
-                  </div>
+                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
+                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">שיא רצף</span>
+                  <span className="text-base font-bold text-amber-400 tabular-nums leading-tight">{bestStreak}</span>
                 </div>
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center">
-                  <div className="text-xs text-white/60">Accuracy</div>
-                  <div className="text-lg font-bold text-blue-400">
-                    {accuracy}%
-                  </div>
+                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
+                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">Accuracy</span>
+                  <span className="text-base font-bold text-blue-400 tabular-nums leading-tight">{accuracy}%</span>
                 </div>
-                <div className="bg-black/20 border border-white/10 rounded-lg p-2 text-center flex flex-col items-center justify-center">
-                  <div className="text-xs text-white/60 mb-1">אתגרים</div>
+                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1.5 min-w-0 shadow-sm">
+                  <span className="text-[10px] text-white/60 text-center leading-tight">אתגרים</span>
                   <button
+                    type="button"
                     onClick={() => setShowDailyChallenge(true)}
-                    className="h-7 px-3 rounded bg-blue-500/80 hover:bg-blue-500 text-white text-xs font-bold"
+                    className="h-8 w-full max-w-[4rem] px-2 rounded-md bg-blue-500/85 hover:bg-blue-500 text-white text-xs font-bold"
                   >
                     פתיחה
                   </button>
                 </div>
               </div>
               
-              <div className="bg-white/5 border border-white/10 rounded-lg px-1.5 pt-1.5 pb-0 mb-1 w-full max-w-md">
-                <div className="flex items-center justify-between text-[10px] text-white/70 mb-0.5">
+              <div className="bg-white/5 border border-white/10 rounded-md px-1 pt-1 pb-1 mb-2 w-full max-w-md opacity-90">
+                <div className="flex items-center justify-between text-[9px] text-white/55 mb-0.5 leading-tight">
                   <span>🎁 מסע פרס חודשי</span>
                   <span>
                     {Math.round(monthlyProgress.totalMinutes)} / {MONTHLY_MINUTES_TARGET} דק׳
                   </span>
                 </div>
-                <p className="text-[10px] text-white/70 mb-0.5 text-center">
+                <p className="text-[9px] text-white/55 mb-0.5 text-center leading-tight">
                   {minutesRemaining > 0
                     ? `נותרו עוד ${Math.round(minutesRemaining)} דק׳ (~${Math.ceil(
                         Math.round(minutesRemaining) / 60
                       )} ש׳)`
                     : "🎉 יעד הושלם! בקשו מההורה לבחור פרס."}
                 </p>
-                <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden mb-2">
                   <div
                     className="h-1.5 bg-emerald-400 rounded-full transition-all"
                     style={{ width: `${goalPercent}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center">
-                  {REWARD_OPTIONS.map((option) => (
+                <div className="grid grid-cols-4 gap-1.5 w-full">
+                  {REWARD_OPTIONS.map((option) => {
+                    const rewardParts = splitRewardAmountLabel(option.label);
+                    return (
                     <button
+                      type="button"
                       key={option.key}
                       onClick={() => {
                         saveRewardChoice(yearMonthRef.current, option.key);
                         setRewardChoice(option.key);
                       }}
-                      className={`rounded-lg border p-2.5 text-xs bg-black/30 flex flex-col items-center gap-1.5 transition-all hover:scale-105 ${
+                      className={`rounded-lg border py-2 px-1 min-h-[4.25rem] bg-black/35 flex flex-col items-center justify-center gap-1 min-w-0 transition-colors ${
                         rewardChoice === option.key
                           ? "border-emerald-400 text-emerald-200 bg-emerald-500/20"
                           : "border-white/15 text-white/70 hover:border-white/30"
                       }`}
-                      style={{ transform: "scaleY(0.85)", transformOrigin: "center" }}
                     >
-                      <div className="text-2xl">{option.icon}</div>
-                      <div className="font-bold leading-tight" dir="ltr">{option.label}</div>
+                      <span className="text-lg leading-none shrink-0">{option.icon}</span>
+                      {rewardParts.amount != null ? (
+                        <>
+                          <span className="text-xs font-extrabold tabular-nums leading-none text-emerald-100" dir="ltr">{rewardParts.amount}</span>
+                          <span className="text-[9px] font-semibold leading-snug text-center text-white/90 px-0.5 line-clamp-2" dir="ltr">{rewardParts.name}</span>
+                        </>
+                      ) : (
+                        <span className="text-[10px] font-semibold leading-snug text-center px-0.5" dir="ltr">{rewardParts.full}</span>
+                      )}
                     </button>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
               
-              <div className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-wrap px-1">
+              <div className="flex-1 min-h-[36px] w-full shrink-0" aria-hidden />
+
+              <div className="w-full border-t border-white/10 pt-6 mt-4 flex flex-col items-center gap-2">
+              <div className="flex items-center justify-center gap-1.5 w-full max-w-md flex-wrap px-1">
                 <button
                   onClick={startGame}
                   disabled={!playerName.trim()}
@@ -2851,7 +2886,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               </div>
 
               {/* כפתורים עזרה ותרגול ממוקד */}
-              <div className="mb-2 w-full max-w-md flex justify-center gap-2 flex-wrap">
+              <div className="w-full max-w-md flex justify-center gap-2 flex-wrap">
                 <button
                   onClick={() => setShowHowTo(true)}
                   className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
@@ -2880,11 +2915,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               </div>
 
               {!playerName.trim() && (
-                <p className="text-xs text-white/60 text-center mb-2">
+                <p className="text-xs text-white/60 text-center mb-1">
                   הכנס את שמך כדי להתחיל
                 </p>
               )}
-            </>
+              </div>
+            </div>
           ) : (
             <>
               {/* אנימציה לתשובה נכונה */}
@@ -3386,15 +3422,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       <div className="flex gap-2 justify-center flex-wrap" dir="rtl">
                         {mode === "learning" && (
                           <button
+                            type="button"
                             onClick={() => setShowSolution((prev) => !prev)}
-                            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/80 hover:bg-emerald-500 text-white"
+                            className={learningExplainOpenBtn}
                           >
                             📖 הסבר צעד־אחר־צעד
                           </button>
                         )}
                         <button
+                          type="button"
                           onClick={() => setShowHint((prev) => !prev)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white"
+                          className={learningHintTriggerBtn}
                         >
                           💡 רמז
                         </button>
@@ -3445,10 +3483,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
                       {/* תיבת רמז */}
                       {showHint && hintText && (
-                        <div className="w-full max-w-md mx-auto bg-blue-500/10 border border-blue-400/50 rounded-lg p-2 text-right">
-                          <div className="text-[11px] text-blue-300 mb-1">רמז</div>
+                        <div className="w-full max-w-md mx-auto bg-blue-500/10 border border-blue-400/50 rounded-lg p-3 text-right">
+                          <div className="text-xs font-semibold text-blue-200/95 mb-1.5 tracking-tight">
+                            רמז
+                          </div>
                           <div
-                            className="text-xs text-blue-100 leading-relaxed"
+                            className="text-sm text-blue-100/95 leading-relaxed"
                             style={learningMixedHebrewMathStyle}
                           >
                             {hintText}
@@ -3495,42 +3535,44 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           
                           return (
                             <div
-                              className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                              className={learningModalOverlay}
                               onClick={() => setShowSolution(false)}
                             >
                               <div
-                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[88vh] max-h-[780px] shadow-2xl flex flex-col"
+                                className={learningModalPanel}
                                 onClick={(e) => e.stopPropagation()}
-                                style={{ maxWidth: "90vw" }}
                               >
-                                {/* כותרת - קבועה */}
-                                <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
-                                  <h3 className="text-lg font-bold text-emerald-100" dir="rtl">
-                                    {"\u200Fאיך פותרים את התרגיל?"}
-                                  </h3>
+                                <div className={learningModalHeader}>
                                   <button
+                                    type="button"
                                     onClick={() => setShowSolution(false)}
-                                    className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                                    className={learningModalCloseBtn}
+                                    aria-label="סגור"
                                   >
                                     ✖
                                   </button>
+                                  <h3 className={learningModalTitle} dir="rtl">
+                                    {"\u200Fאיך פותרים את התרגיל?"}
+                                  </h3>
+                                  <span className="w-10 shrink-0" aria-hidden />
                                 </div>
                                 
-                                {/* תוכן - גלילה */}
-                                <div className="flex-1 overflow-y-auto px-4 pb-2 text-sm text-emerald-50" dir="rtl">
-                                  <div
-                                    className="mb-2 font-semibold text-base text-center text-white break-words overflow-wrap-anywhere max-w-full px-2"
-                                    style={{ 
-                                      direction: "ltr", 
-                                      unicodeBidi: "plaintext",
-                                      wordBreak: "break-word",
-                                      overflowWrap: "break-word",
-                                    }}
-                                  >
-                                    {info.exercise || currentQuestion.exerciseText || currentQuestion.question}
+                                <div className="flex-1 overflow-y-auto px-4 pb-2 min-h-0" dir="rtl">
+                                  <div className={`mb-3 ${learningQuestionBox}`} dir="ltr">
+                                    <div
+                                      className={`${learningQuestionText} text-center`}
+                                      style={{
+                                        direction: "ltr",
+                                        unicodeBidi: "plaintext",
+                                        wordBreak: "break-word",
+                                        overflowWrap: "break-word",
+                                      }}
+                                    >
+                                      {info.exercise || currentQuestion.exerciseText || currentQuestion.question}
+                                    </div>
                                   </div>
                                   {info.vertical && (
-                                    <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2">
+                                    <div className="mb-3 rounded-lg bg-emerald-900/50 border border-emerald-500/15 px-3 py-2">
                                       <pre
                                         dir="ltr"
                                         className="text-center font-mono text-base leading-relaxed whitespace-pre text-emerald-100"
@@ -3540,25 +3582,27 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                     </div>
                                   )}
                                   <div
-                                    className="space-y-1.5 text-sm"
+                                    className="space-y-2"
                                     style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                                   >
                                     {info.steps.map((step, idx) => (
-                                      <div key={idx} className="text-emerald-50 leading-relaxed">
+                                      <div key={idx} className={learningExplBody}>
                                         {step}
                                       </div>
                                     ))}
                                   </div>
                                 </div>
                                 
-                                {/* כפתורים - קבועים בתחתית */}
-                                <div className="p-4 pt-2 flex justify-center flex-shrink-0 border-t border-emerald-400/20">
-                                  <button
-                                    onClick={() => setShowSolution(false)}
-                                    className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
-                                  >
-                                    סגור
-                                  </button>
+                                <div className={learningModalFooter}>
+                                  <div className="flex justify-center">
+                                    <button
+                                      type="button"
+                                      onClick={() => setShowSolution(false)}
+                                      className={learningPrimaryCloseBtn}
+                                    >
+                                      סגור
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -3707,30 +3751,32 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                             
                             return (
                               <div
-                                className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                                className={learningModalOverlay}
                                 onClick={() => setShowSolution(false)}
                                 dir="rtl"
                               >
                                 <div
-                                  className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[88vh] max-h-[860px] shadow-2xl flex flex-col"
+                                  className={learningModalPanel}
                                   onClick={(e) => e.stopPropagation()}
-                                  style={{ maxWidth: "90vw" }}
                                 >
                                   {/* כותרת */}
-                                  <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
+                                  <div className={learningModalHeader}>
                                     <button
+                                      type="button"
                                       onClick={() => setShowSolution(false)}
-                                      className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                                      className={learningModalCloseBtn}
+                                      aria-label="סגור"
                                     >
                                       ✖
                                     </button>
-                                    <h3 className="text-lg font-bold text-emerald-100">
+                                    <h3 className={learningModalTitle}>
                                       {"\u200Fאיך פותרים את התרגיל?"}
                                     </h3>
+                                    <span className="w-10 shrink-0" aria-hidden />
                                   </div>
                                   
                                   {/* תוכן */}
-                                  <div className="flex-1 overflow-y-auto px-4 pb-2">
+                                  <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-2">
                                     {/* תצוגת חילוק ארוך */}
                                     <div className="mb-4 flex flex-col items-start font-mono text-xl leading-[1.6]" style={{ direction: "ltr", minWidth: "300px" }}>
                                       {/* שורה 1: המנה (quotient) - מעל, מיושרת לימין של המחולק */}
@@ -3854,37 +3900,37 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                     </div>
                                     
                                     {/* טקסט ההסבר */}
-                                    <div className="mb-4 text-sm text-emerald-50" dir="rtl">
-                                      <h4 className="font-bold text-base mb-1">{activeStep?.title || ""}</h4>
-                                      <p className="leading-relaxed">{activeStep?.text || ""}</p>
+                                    <div className="mb-4 text-emerald-50" dir="rtl">
+                                      <h4 className={learningExplTitle}>{activeStep?.title || ""}</h4>
+                                      <p className={learningExplBody}>{activeStep?.text || ""}</p>
                                     </div>
                                   </div>
                                   
                                   {/* כפתורים ואינדיקטור */}
-                                  <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
-                                    <div className="flex gap-2 justify-center items-center" dir="rtl">
+                                  <div className={learningModalFooter}>
+                                    <div className={learningStepNavRow} dir="rtl">
                                       <button
                                         onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
                                         disabled={animationStep === 0}
-                                        className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                        className={learningStepNavBtn}
                                       >
                                         קודם
                                       </button>
                                       <button
                                         onClick={() => setAutoPlay((p) => !p)}
-                                        className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
+                                        className={learningStepNavBtnPlay}
                                       >
                                         {autoPlay ? "עצור" : "נגן"}
                                       </button>
                                       <button
                                         onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
                                         disabled={animationStep >= animationSteps.length - 1}
-                                        className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                        className={learningStepNavBtn}
                                       >
                                         הבא
                                       </button>
                                     </div>
-                                    <div className="text-center text-xs text-emerald-300">
+                                    <div className={learningStepCounter}>
                                       צעד {animationStep + 1} מתוך {animationSteps.length}
                                     </div>
                                   </div>
@@ -3896,30 +3942,32 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           // חיבור, חיסור, כפל - הקוד המקורי בדיוק כמו שהיה
                           return (
                             <div
-                              className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                              className={learningModalOverlay}
                               onClick={() => setShowSolution(false)}
                               dir="rtl"
                             >
                               <div
-                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[88vh] max-h-[780px] shadow-2xl flex flex-col"
+                                className={learningModalPanel}
                                 onClick={(e) => e.stopPropagation()}
-                                style={{ maxWidth: "90vw" }}
                               >
                                 {/* כותרת - קבועה */}
-                                <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
+                                <div className={learningModalHeader}>
                                   <button
+                                    type="button"
                                     onClick={() => setShowSolution(false)}
-                                    className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                                    className={learningModalCloseBtn}
+                                    aria-label="סגור"
                                   >
                                     ✖
                                   </button>
-                                  <h3 className="text-lg font-bold text-emerald-100">
+                                  <h3 className={learningModalTitle}>
                                     {"\u200Fאיך פותרים את התרגיל?"}
                                   </h3>
+                                  <span className="w-10 shrink-0" aria-hidden />
                                 </div>
                                 
                                 {/* תוכן - גלילה */}
-                                <div className="flex-1 overflow-y-auto px-4 pb-2">
+                                <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-2">
                                   {/* אם יש בלוק מונוספייס מהאנימציה: מציגים אותו במקום הטבלה (כדי למנוע כפילות) */}
                                   {activeStep.pre ? (
                                     <div className="mb-4 w-full">
@@ -4064,44 +4112,44 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                   )}
                                   
                                   {/* טקסט ההסבר */}
-                                  <div className="mb-4 text-sm text-emerald-50" dir="rtl">
-                                    <h4 className="font-bold text-base mb-1">{activeStep.title}</h4>
+                                  <div className="mb-4 text-emerald-50" dir="rtl">
+                                    <h4 className={learningExplTitle}>{activeStep.title}</h4>
                                     {activeStep.content ? (
-                                      <div className="leading-relaxed">{activeStep.content}</div>
+                                      <div className={learningExplBody}>{activeStep.content}</div>
                                     ) : (
-                                      <p className="leading-relaxed">{renderMathLTRInText(activeStep.text)}</p>
+                                      <p className={learningExplBody}>{renderMathLTRInText(activeStep.text)}</p>
                                     )}
                                   </div>
                                 </div>
                                 
                                 {/* כפתורים ואינדיקטור - קבועים בתחתית */}
-                                <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
+                                <div className={learningModalFooter}>
                                   {/* שליטה באנימציה */}
-                                  <div className="flex gap-2 justify-center items-center" dir="rtl">
+                                  <div className={learningStepNavRow} dir="rtl">
                                     <button
                                       onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
                                       disabled={animationStep === 0}
-                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                      className={learningStepNavBtn}
                                     >
                                       קודם
                                     </button>
                                     <button
                                       onClick={() => setAutoPlay((p) => !p)}
-                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
+                                      className={learningStepNavBtnPlay}
                                     >
                                       {autoPlay ? "עצור" : "נגן"}
                                     </button>
                                     <button
                                       onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
                                       disabled={animationStep >= animationSteps.length - 1}
-                                      className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                      className={learningStepNavBtn}
                                     >
                                       הבא
                                     </button>
                                   </div>
                                   
                                   {/* אינדיקטור צעדים */}
-                                  <div className="text-center text-xs text-emerald-300">
+                                  <div className={learningStepCounter}>
                                     צעד {animationStep + 1} מתוך {animationSteps.length}
                                   </div>
                                 </div>
@@ -4113,34 +4161,36 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                         // שאר הנושאים - אנימציה כללית עם כפתורי ניווט
                         return (
                           <div
-                            className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
+                            className={learningModalOverlay}
                             onClick={() => setShowSolution(false)}
                             dir="rtl"
                           >
                             <div
-                              className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[88vh] max-h-[780px] shadow-2xl flex flex-col"
+                              className={learningModalPanel}
                               onClick={(e) => e.stopPropagation()}
-                              style={{ maxWidth: "90vw" }}
                             >
                               {/* כותרת - קבועה */}
-                              <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
+                              <div className={learningModalHeader}>
                                 <button
+                                  type="button"
                                   onClick={() => setShowSolution(false)}
-                                  className="text-emerald-200 hover:text-white text-xl leading-none px-2"
+                                  className={learningModalCloseBtn}
+                                  aria-label="סגור"
                                 >
                                   ✖
                                 </button>
-                                <h3 className="text-lg font-bold text-emerald-100">
+                                <h3 className={learningModalTitle}>
                                   {"\u200Fאיך פותרים את התרגיל?"}
                                 </h3>
+                                <span className="w-10 shrink-0" aria-hidden />
                               </div>
                               
                               {/* תוכן - גלילה */}
-                              <div className="flex-1 overflow-y-auto px-4 pb-2">
+                              <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-2">
                                 {/* הצגת התרגיל/שאלה (תמיד LTR כמו תרגיל חשבון) */}
-                                <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2" dir="ltr">
+                                <div className={`mb-3 ${learningQuestionBox}`} dir="ltr">
                                   <div
-                                    className="text-sm text-emerald-100 font-semibold mb-1 break-words overflow-wrap-anywhere max-w-full"
+                                    className={`${learningQuestionText} mb-0`}
                                     style={{ unicodeBidi: "plaintext" }}
                                   >
                                     {currentQuestion.exerciseText || currentQuestion.question}
@@ -4148,10 +4198,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                 </div>
                                 
                                 {/* טקסט ההסבר */}
-                                <div className="mb-4 text-sm text-emerald-50" dir="rtl">
-                                  <h4 className="font-bold text-base mb-1">{activeStep.title || "הסבר"}</h4>
+                                <div className="mb-4 text-emerald-50" dir="rtl">
+                                  <h4 className={learningExplTitle}>{activeStep.title || "הסבר"}</h4>
                                   {activeStep.pre && (
-                                    <div className="mt-2 mb-3 rounded-lg bg-emerald-900/50 px-3 py-2 overflow-x-auto">
+                                    <div className="mt-2 mb-3 rounded-lg bg-emerald-900/50 border border-emerald-500/15 px-3 py-2 overflow-x-auto">
                                       {activeStep?.type === "division" && typeof activeStep.pre === "string" ? (() => {
                                         const raw = activeStep.pre.replace(/\u2066|\u2069/g, "");
                                         const lines = raw.split("\n");
@@ -4191,41 +4241,41 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                     </div>
                                   )}
                                   {activeStep.content ? (
-                                    <div className="leading-relaxed">{activeStep.content}</div>
+                                    <div className={learningExplBody}>{activeStep.content}</div>
                                   ) : (
-                                    <p className="leading-relaxed">{renderMathLTRInText(activeStep.text || "")}</p>
+                                    <p className={learningExplBody}>{renderMathLTRInText(activeStep.text || "")}</p>
                                   )}
                                 </div>
                               </div>
                               
                               {/* כפתורים ואינדיקטור - קבועים בתחתית */}
-                              <div className="p-4 pt-2 flex flex-col gap-2 flex-shrink-0 border-t border-emerald-400/20">
+                              <div className={learningModalFooter}>
                                 {/* שליטה באנימציה */}
-                                <div className="flex gap-2 justify-center items-center" dir="rtl">
+                                <div className={learningStepNavRow} dir="rtl">
                                   <button
                                     onClick={() => setAnimationStep((s) => (s > 0 ? s - 1 : 0))}
                                     disabled={animationStep === 0}
-                                    className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                    className={learningStepNavBtn}
                                   >
                                     קודם
                                   </button>
                                   <button
                                     onClick={() => setAutoPlay((p) => !p)}
-                                    className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-sm font-bold"
+                                    className={learningStepNavBtnPlay}
                                   >
                                     {autoPlay ? "עצור" : "נגן"}
                                   </button>
                                   <button
                                     onClick={() => setAnimationStep((s) => (s < animationSteps.length - 1 ? s + 1 : s))}
                                     disabled={animationStep >= animationSteps.length - 1}
-                                    className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold"
+                                    className={learningStepNavBtn}
                                   >
                                     הבא
                                   </button>
                                 </div>
                                 
                                 {/* אינדיקטור צעדים */}
-                                <div className="text-center text-xs text-emerald-300">
+                                <div className={learningStepCounter}>
                                   צעד {animationStep + 1} מתוך {animationSteps.length}
                                 </div>
                               </div>
@@ -4236,10 +4286,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
                       {/* למה טעיתי? – רק אחרי טעות */}
                       {errorExplanation && (
-                        <div className="w-full max-w-md mx-auto bg-rose-500/10 border border-rose-400/50 rounded-lg p-2 text-right">
-                          <div className="text-[11px] text-rose-300 mb-1">למה הטעות קרתה?</div>
+                        <div className="w-full max-w-md mx-auto bg-rose-500/10 border border-rose-400/50 rounded-lg p-3 text-right">
+                          <div className="text-xs font-semibold text-rose-200/95 mb-1.5 tracking-tight">
+                            למה הטעות קרתה?
+                          </div>
                           <div
-                            className="text-xs text-rose-100 leading-relaxed"
+                            className="text-sm text-rose-100/95 leading-relaxed"
                             style={learningMixedHebrewMathStyle}
                           >
                             {errorExplanation}
