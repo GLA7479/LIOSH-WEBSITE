@@ -2333,7 +2333,7 @@ function recordSessionProgress() {
 
               {/* סיכום התקדמות — נתונים מקומיים בלבד */}
               <div
-                className="w-full max-w-md mb-1.5 rounded-md border border-white/10 bg-black/20 px-2 py-1.5 text-[9px] sm:text-[10px] leading-tight text-white/85 shrink-0"
+                className="w-full max-w-md mb-2 rounded-md border border-white/10 bg-black/20 px-1.5 py-1 text-[8px] sm:text-[9px] leading-tight text-white/85 shrink-0"
                 dir="rtl"
               >
                 <div className="font-semibold text-emerald-200/90 mb-0.5 flex justify-between gap-2 items-baseline">
@@ -2348,85 +2348,89 @@ function recordSessionProgress() {
                 {!progressInsights.base ||
                 progressInsights.base.totalAttempts < 1 ? (
                   <p className="text-white/55 leading-tight">
-                    אחרי מענה על שאלות יוצגו כאן דיוק כולל, נושאים חלשים/חזקים
-                    ומגמה אמיתית לפי הרצף האחרון.
+                    אחרי מענה על שאלות: דיוק מעקב, נושאים חזקים/חלשים ומגמה לפי הרצף האחרון.
                   </p>
                 ) : (
                   <>
-                    <div className="grid grid-cols-2 gap-x-1.5 gap-y-0.5 mb-1 text-white/85">
-                      <div>
-                        דיוק כללי:{" "}
-                        <span className="font-bold text-emerald-300">
-                          {progressInsights.base.overallPct}%
-                        </span>
-                      </div>
-                      <div>
-                        רמה נוכחית:{" "}
-                        <span className="font-bold text-amber-200">
-                          {progressInsights.currentLevelLabel}
-                        </span>
-                      </div>
-                      <div>
-                        רשומות ביומן שגיאות:{" "}
-                        <span className="font-bold text-rose-300">
-                          {progressInsights.mistakeLogCount}
-                        </span>
-                      </div>
-                      <div>
-                        {progressInsights.base.recentN > 0 ? (
-                          <>
-                            ב־{progressInsights.base.recentN} האחרונות:{" "}
-                            <span className="font-bold text-sky-200">
-                              {progressInsights.base.recentPct}%
-                            </span>
-                          </>
-                        ) : (
-                          <span className="text-white/45">אין רצף אחרון</span>
-                        )}
-                      </div>
-                    </div>
-                    <p className="text-[9px] text-white/58 mb-0.5 leading-tight">
-                      סה״כ שגויים במעקב (לפי נושאים):{" "}
-                      <span className="text-white/85 font-semibold">
+                    <p className="text-white/82 leading-tight mb-0.5">
+                      רמה:{" "}
+                      <span className="font-bold text-amber-200">
+                        {progressInsights.currentLevelLabel}
+                      </span>
+                      {" · "}
+                      יומן שגיאות:{" "}
+                      <span className="font-bold text-rose-300">
+                        {progressInsights.mistakeLogCount}
+                      </span>
+                      {" · "}
+                      שגויים במעקב:{" "}
+                      <span className="font-bold text-white/90">
                         {progressInsights.base.totalWrong}
                       </span>
                     </p>
-                    <div className="flex flex-wrap gap-x-1.5 gap-y-0 text-[9px] text-white/72 mb-0.5 leading-tight">
-                      {progressInsights.base.strongest &&
-                        TOPICS[progressInsights.base.strongest.key] && (
-                          <span>
-                            חזק ביחס:{" "}
-                            <span className="text-white/90">
-                              {TOPICS[progressInsights.base.strongest.key].name}
-                            </span>
+                    <p className="text-white/82 leading-tight mb-0.5">
+                      דיוק במעקב:{" "}
+                      <span className="font-bold text-emerald-300">
+                        {progressInsights.base.overallPct}%
+                      </span>
+                      {progressInsights.base.recentN > 0 ? (
+                        <>
+                          {" · "}
+                          {progressInsights.base.recentN} אחרונות:{" "}
+                          <span className="font-bold text-sky-200">
+                            {progressInsights.base.recentPct}%
                           </span>
-                        )}
-                      {progressInsights.base.weakest &&
-                        TOPICS[progressInsights.base.weakest.key] && (
-                          <span>
-                            לחזק:{" "}
-                            <span className="text-white/90">
-                              {TOPICS[progressInsights.base.weakest.key].name}
-                            </span>
-                          </span>
-                        )}
-                    </div>
-                    <p className="text-[9px] text-white/52 mb-0.5 leading-tight">
-                      לפחות {INSIGHT_MIN_TOPIC_ATTEMPTS} ניסיונות לנושא; נשמר בדפדפן בלבד.
-                    </p>
-                    {progressInsights.base.recentN >= 10 &&
-                      progressInsights.base.trend && (
-                        <p className="text-[9px] text-white/58 mb-0.5 leading-tight">
-                          {progressInsights.base.trend === "up" &&
-                            "מגמת הרצף האחרון: עולה."}
-                          {progressInsights.base.trend === "down" &&
-                            "מגמת הרצף האחרון: יורדת."}
-                          {progressInsights.base.trend === "stable" &&
-                            "מגמת הרצף האחרון: יציבה."}
-                        </p>
+                          {progressInsights.base.recentN >= 10 &&
+                            progressInsights.base.trend && (
+                              <>
+                                {" · "}
+                                <span className="text-white/65">
+                                  {progressInsights.base.trend === "up" && "מגמה ↑"}
+                                  {progressInsights.base.trend === "down" && "מגמה ↓"}
+                                  {progressInsights.base.trend === "stable" && "מגמה →"}
+                                </span>
+                              </>
+                            )}
+                        </>
+                      ) : (
+                        <span className="text-white/45"> · אין רצף אחרון</span>
                       )}
+                    </p>
+                    {(progressInsights.base.strongest &&
+                      TOPICS[progressInsights.base.strongest.key]) ||
+                    (progressInsights.base.weakest &&
+                      TOPICS[progressInsights.base.weakest.key]) ? (
+                      <p className="text-white/75 leading-tight mb-0.5">
+                        {progressInsights.base.strongest &&
+                          TOPICS[progressInsights.base.strongest.key] && (
+                            <>
+                              חזק:{" "}
+                              <span className="text-white/90 font-semibold">
+                                {TOPICS[progressInsights.base.strongest.key].name}
+                              </span>
+                            </>
+                          )}
+                        {progressInsights.base.strongest &&
+                          TOPICS[progressInsights.base.strongest.key] &&
+                          progressInsights.base.weakest &&
+                          TOPICS[progressInsights.base.weakest.key] &&
+                          " · "}
+                        {progressInsights.base.weakest &&
+                          TOPICS[progressInsights.base.weakest.key] && (
+                            <>
+                              לחזק:{" "}
+                              <span className="text-white/90 font-semibold">
+                                {TOPICS[progressInsights.base.weakest.key].name}
+                              </span>
+                            </>
+                          )}
+                      </p>
+                    ) : null}
+                    <p className="text-[8px] text-white/48 leading-tight mb-0.5">
+                      מינ׳ {INSIGHT_MIN_TOPIC_ATTEMPTS} ניסיונות/נושא · נשמר מקומית בלבד
+                    </p>
                     {progressInsights.feedback.length > 0 && (
-                      <ul className="list-disc list-inside space-y-0 text-white/78 leading-tight border-t border-white/10 pt-1 mt-0.5">
+                      <ul className="list-disc list-inside space-y-0 text-white/76 leading-tight border-t border-white/10 pt-0.5 mt-0.5">
                         {progressInsights.feedback.map((line, i) => (
                           <li
                             key={`${i}-${line.slice(0, 32)}`}
