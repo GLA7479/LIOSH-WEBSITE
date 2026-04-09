@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -97,6 +97,16 @@ const AVATAR_OPTIONS = [
 ];
 
 const SCIENCE_MISTAKES_KEY = "mleo_science_mistakes";
+const SCIENCE_INTEL_KEY = "mleo_science_learning_intel";
+const INTEL_FORMAT_VERSION = 2;
+const INSIGHT_ANSWER_TAIL_MAX = 20;
+const INSIGHT_TOPIC_TAIL_MAX = 8;
+const INSIGHT_MIN_TOPIC_ATTEMPTS = 4;
+const INTEL_RECENT_MAX = 15;
+const RETRY_QUEUE_MAX = 28;
+/** Max extra weight from mistake rate (1 + this). Lower = less topic lock-in. */
+const TOPIC_WEIGHT_MAX_BOOST = 0.72;
+const ADAPTIVE_LEVEL_ORDER = ["easy", "medium", "hard"];
 
 const REFERENCE_SECTIONS = {
   life_science: {
@@ -146,6 +156,292 @@ function loadScienceMistakesFromStorage() {
   } catch {
     return [];
   }
+}
+
+function sanitizeTopicStats(raw) {
+  const out = {};
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return out;
+  for (const [k, v] of Object.entries(raw)) {
+    if (typeof k !== "string" || k.length === 0 || k.length > 80) continue;
+    if (!v || typeof v !== "object" || Array.isArray(v)) continue;
+    let attempts = Math.floor(Number(v.attempts));
+    let wrong = Math.floor(Number(v.wrong));
+    if (!Number.isFinite(attempts) || attempts < 0) attempts = 0;
+    if (!Number.isFinite(wrong) || wrong < 0) wrong = 0;
+    attempts = Math.min(attempts, 500000);
+    wrong = Math.min(wrong, attempts);
+    out[k] = { attempts, wrong };
+  }
+  return out;
+}
+
+function sanitizeRecentIds(arr) {
+  if (!Array.isArray(arr)) return [];
+  return arr
+    .filter((id) => typeof id === "string" && id.length > 0 && id.length < 140)
+    .slice(-INTEL_RECENT_MAX);
+}
+
+function sanitizeAnswerTail(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((x) => x === true || x === 1 || x === "1")
+    .slice(-INSIGHT_ANSWER_TAIL_MAX);
+}
+
+function sanitizeTopicAnswerTails(raw) {
+  const out = {};
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return out;
+  for (const [k, v] of Object.entries(raw)) {
+    if (!TOPICS[k]) continue;
+    if (!Array.isArray(v)) continue;
+    out[k] = v
+      .map((x) => x === true || x === 1 || x === "1")
+      .slice(-INSIGHT_TOPIC_TAIL_MAX);
+  }
+  return out;
+}
+
+function loadScienceIntel() {
+  if (typeof window === "undefined") {
+    return {
+      topicStats: {},
+      recentIds: [],
+      answerTail: [],
+      topicAnswerTails: {},
+    };
+  }
+  try {
+    const raw = localStorage.getItem(SCIENCE_INTEL_KEY);
+    if (!raw) {
+      return {
+        topicStats: {},
+        recentIds: [],
+        answerTail: [],
+        topicAnswerTails: {},
+      };
+    }
+    const p = JSON.parse(raw);
+    if (p === null || typeof p !== "object" || Array.isArray(p)) {
+      return {
+        topicStats: {},
+        recentIds: [],
+        answerTail: [],
+        topicAnswerTails: {},
+      };
+    }
+    const topicStats = sanitizeTopicStats(p.topicStats);
+    const recentIds = sanitizeRecentIds(p.recentIds);
+    const answerTail = sanitizeAnswerTail(p.answerTail);
+    const topicAnswerTails = sanitizeTopicAnswerTails(p.topicAnswerTails);
+    return { topicStats, recentIds, answerTail, topicAnswerTails };
+  } catch {
+    return {
+      topicStats: {},
+      recentIds: [],
+      answerTail: [],
+      topicAnswerTails: {},
+    };
+  }
+}
+
+function persistScienceIntel(intel) {
+  if (typeof window === "undefined") return;
+  try {
+    const payload = {
+      v: INTEL_FORMAT_VERSION,
+      topicStats: sanitizeTopicStats(intel.topicStats),
+      recentIds: sanitizeRecentIds(intel.recentIds),
+      answerTail: sanitizeAnswerTail(intel.answerTail),
+      topicAnswerTails: sanitizeTopicAnswerTails(intel.topicAnswerTails),
+    };
+    localStorage.setItem(SCIENCE_INTEL_KEY, JSON.stringify(payload));
+  } catch {
+    // ignore
+  }
+}
+
+function topicMistakeWeight(topicKey, topicStats) {
+  const s = topicStats[topicKey];
+  if (!s || typeof s !== "object") return 1;
+  const attempts = Math.max(Number(s.attempts) || 0, 1);
+  const wrong = Math.min(Number(s.wrong) || 0, attempts);
+  const rate = wrong / attempts;
+  return 1 + Math.min(TOPIC_WEIGHT_MAX_BOOST, rate * 1.85);
+}
+
+function weightedPickQuestions(eligible, topicStats) {
+  if (eligible.length === 0) return null;
+  if (eligible.length === 1) return eligible[0];
+  let total = 0;
+  const weights = eligible.map((q) => {
+    const w = topicMistakeWeight(q.topic, topicStats);
+    total += w;
+    return w;
+  });
+  let r = Math.random() * total;
+  for (let i = 0; i < eligible.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return eligible[i];
+  }
+  return eligible[eligible.length - 1];
+}
+
+/** Drops due, ineligible retries; returns first due question still in pool, or null. */
+function dequeueEligibleRetry(queue, pool, askCounter) {
+  if (!queue.length || !pool.length) return null;
+  queue.sort((a, b) => a.dueAt - b.dueAt);
+  const maxSteps = queue.length + 3;
+  for (let step = 0; step < maxSteps; step++) {
+    const dueIdx = queue.findIndex((r) => r.dueAt <= askCounter);
+    if (dueIdx < 0) return null;
+    const item = queue.splice(dueIdx, 1)[0];
+    const candidate = QUESTIONS.find((q) => q.id === item.id);
+    if (candidate && pool.some((p) => p.id === item.id)) {
+      return candidate;
+    }
+  }
+  return null;
+}
+
+function stepAdaptiveLevel(curKey, delta) {
+  const idx = ADAPTIVE_LEVEL_ORDER.indexOf(curKey);
+  const base = idx >= 0 ? idx : 0;
+  const next = Math.max(0, Math.min(ADAPTIVE_LEVEL_ORDER.length - 1, base + delta));
+  return ADAPTIVE_LEVEL_ORDER[next];
+}
+
+function computeScienceProgressInsights(topicStats, answerTail) {
+  const rows = [];
+  let totalAttempts = 0;
+  let totalWrong = 0;
+  for (const [key, s] of Object.entries(topicStats || {})) {
+    const att = Number(s.attempts) || 0;
+    const wr = Math.min(Number(s.wrong) || 0, att);
+    totalAttempts += att;
+    totalWrong += wr;
+    const acc = att > 0 ? (att - wr) / att : 0;
+    rows.push({ key, attempts: att, acc });
+  }
+  const totalCorrect = totalAttempts - totalWrong;
+  const overallPct =
+    totalAttempts > 0
+      ? Math.round((totalCorrect / totalAttempts) * 100)
+      : null;
+
+  const eligible = rows.filter(
+    (r) => r.attempts >= INSIGHT_MIN_TOPIC_ATTEMPTS
+  );
+  const eligibleTopicCount = eligible.length;
+  let strongest = null;
+  let weakest = null;
+  if (eligibleTopicCount >= 1) {
+    const byAcc = [...eligible].sort((a, b) => a.acc - b.acc);
+    weakest = byAcc[0];
+    strongest = byAcc[byAcc.length - 1];
+    if (eligibleTopicCount === 1) {
+      weakest = null;
+    } else if (strongest && weakest && strongest.key === weakest.key) {
+      weakest = null;
+    }
+  }
+
+  const tail = Array.isArray(answerTail) ? answerTail : [];
+  let trend = null;
+  if (tail.length >= 10) {
+    const mid = Math.floor(tail.length / 2);
+    const first = tail.slice(0, mid);
+    const second = tail.slice(mid);
+    const r1 = first.filter(Boolean).length / first.length;
+    const r2 = second.filter(Boolean).length / second.length;
+    const d = r2 - r1;
+    if (d >= 0.2) trend = "up";
+    else if (d <= -0.2) trend = "down";
+    else trend = "stable";
+  }
+
+  const recentN = tail.length;
+  const recentPct =
+    recentN > 0
+      ? Math.round((tail.filter(Boolean).length / recentN) * 100)
+      : null;
+
+  return {
+    totalAttempts,
+    totalCorrect,
+    totalWrong,
+    overallPct,
+    strongest,
+    weakest,
+    eligibleTopicCount,
+    trend,
+    recentN,
+    recentPct,
+  };
+}
+
+function buildInsightFeedbackLines(insights, topicAnswerTails) {
+  const lines = [];
+  const tailMap =
+    topicAnswerTails && typeof topicAnswerTails === "object"
+      ? topicAnswerTails
+      : {};
+
+  if (!insights || (insights.totalAttempts || 0) < 1) return lines;
+
+  const w = insights.weakest;
+  if (
+    w &&
+    w.attempts >= INSIGHT_MIN_TOPIC_ATTEMPTS &&
+    w.acc <= 0.55 &&
+    TOPICS[w.key]
+  ) {
+    lines.push(
+      `כדאי חיזוק בנושא ${TOPICS[w.key].name} (דיוק ~${Math.round(
+        w.acc * 100
+      )}%).`
+    );
+  }
+
+  const s = insights.strongest;
+  if (
+    s &&
+    insights.eligibleTopicCount >= 2 &&
+    s.attempts >= INSIGHT_MIN_TOPIC_ATTEMPTS &&
+    s.acc >= 0.72 &&
+    TOPICS[s.key] &&
+    (!w || s.key !== w.key)
+  ) {
+    const t = `חוזק יחסי בנושא ${TOPICS[s.key].name}.`;
+    if (!lines.includes(t)) lines.push(t);
+  }
+
+  for (const key of Object.keys(tailMap)) {
+    const t = tailMap[key];
+    if (!Array.isArray(t) || t.length < 6 || !TOPICS[key]) continue;
+    const mid = Math.floor(t.length / 2);
+    if (mid < 1) continue;
+    const first = t.slice(0, mid);
+    const second = t.slice(mid);
+    const a = first.filter(Boolean).length / first.length;
+    const b = second.filter(Boolean).length / second.length;
+    if (b - a >= 0.25) {
+      const t2 = `יש שיפור יפה בנושא ${TOPICS[key].name}.`;
+      if (!lines.includes(t2)) lines.push(t2);
+      break;
+    }
+  }
+
+  if (insights.trend === "up") {
+    const t3 = "מגמת הדיוק ברצף האחרון עולה.";
+    if (!lines.includes(t3)) lines.push(t3);
+  } else if (insights.trend === "down") {
+    const t4 =
+      "מגמת הדיוק ברצף האחרון יורדת — כדאי לחזור על החומר.";
+    if (!lines.includes(t4)) lines.push(t4);
+  }
+
+  return lines.slice(0, 3);
 }
 
 // ================== QUESTION BANK ==================
@@ -308,6 +604,18 @@ export default function ScienceMaster() {
 
   const questionPoolRef = useRef([]);
   const questionIndexRef = useRef(0);
+  const scienceIntelRef = useRef({
+    topicStats: {},
+    recentIds: [],
+    answerTail: [],
+    topicAnswerTails: {},
+  });
+  const adaptiveLevelRef = useRef("easy");
+  const correctAdaptiveStreakRef = useRef(0);
+  const wrongAdaptiveStreakRef = useRef(0);
+  const askCounterRef = useRef(0);
+  /** @type {React.MutableRefObject<{ id: string; dueAt: number }[]>} */
+  const retryQueueRef = useRef([]);
   const sessionStartRef = useRef(null);
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
@@ -334,6 +642,7 @@ export default function ScienceMaster() {
   const [practiceFocus, setPracticeFocus] = useState("balanced");
   const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal");
   const [mistakes, setMistakes] = useState([]);
+  const [insightRevision, setInsightRevision] = useState(0);
   const [showPracticeModal, setShowPracticeModal] = useState(false);
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   const [showReferenceModal, setShowReferenceModal] = useState(false);
@@ -526,6 +835,54 @@ useEffect(() => {
   }, []);
 
   useEffect(() => {
+    if (!mounted || typeof window === "undefined") return;
+    const loaded = loadScienceIntel();
+    scienceIntelRef.current = {
+      topicStats: { ...loaded.topicStats },
+      recentIds: [...loaded.recentIds],
+      answerTail: [...loaded.answerTail],
+      topicAnswerTails: { ...loaded.topicAnswerTails },
+    };
+    setInsightRevision((n) => n + 1);
+  }, [mounted]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || process.env.NODE_ENV !== "development") {
+      return undefined;
+    }
+    window.__SCIENCE_INTEL_DEBUG = () => ({
+      adaptiveLevel: adaptiveLevelRef.current,
+      correctStreak: correctAdaptiveStreakRef.current,
+      wrongStreak: wrongAdaptiveStreakRef.current,
+      retryQueueLength: retryQueueRef.current.length,
+      retryQueue: retryQueueRef.current.map((r) => ({ ...r })),
+      recentIdsLength: scienceIntelRef.current.recentIds.length,
+      insightTailLength: (scienceIntelRef.current.answerTail || []).length,
+      askCounter: askCounterRef.current,
+      topicStatsSummary: Object.fromEntries(
+        Object.entries(scienceIntelRef.current.topicStats).map(([k, v]) => [
+          k,
+          {
+            wrong: v.wrong,
+            attempts: v.attempts,
+            rate:
+              v.attempts > 0
+                ? Number((v.wrong / v.attempts).toFixed(3))
+                : 0,
+          },
+        ])
+      ),
+    });
+    return () => {
+      try {
+        delete window.__SCIENCE_INTEL_DEBUG;
+      } catch {
+        window.__SCIENCE_INTEL_DEBUG = undefined;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     return () => {
       recordSessionProgress();
     };
@@ -679,10 +1036,14 @@ useEffect(() => {
 
   // ================== GAME LOGIC ==================
 
-  function filterQuestionsForCurrentSettings() {
+  function filterQuestionsForCurrentSettings(levelOverride) {
     const gradeKey = grade;
     const allowedTopicsForGrade =
       GRADES[gradeKey]?.topics || Object.keys(TOPICS);
+    const baseLevel =
+      levelOverride !== undefined && levelOverride !== null
+        ? levelOverride
+        : level;
     const levelForFilter =
       focusedPracticeMode === "graded"
         ? correct < 5
@@ -690,16 +1051,17 @@ useEffect(() => {
           : correct < 15
           ? "medium"
           : level
-        : level;
+        : baseLevel;
 
     if (focusedPracticeMode === "mistakes" && mistakes.length > 0) {
       const ids = new Set(mistakes.map((m) => m.id));
-      const mistakePool = QUESTIONS.filter(
+      const byLevel = QUESTIONS.filter(
         (q) => ids.has(q.id) && levelAllowed(q, levelForFilter)
       );
-      if (mistakePool.length > 0) {
-        return mistakePool;
-      }
+      if (byLevel.length > 0) return byLevel;
+      const anyLevel = QUESTIONS.filter((q) => ids.has(q.id));
+      if (anyLevel.length > 0) return anyLevel;
+      return [];
     }
 
     let topicsList;
@@ -728,6 +1090,137 @@ useEffect(() => {
         levelAllowed(q, levelForFilter)
     );
     return pool;
+  }
+
+  function getLevelOverrideForFilter() {
+    if (
+      !gameActive ||
+      focusedPracticeMode === "mistakes" ||
+      focusedPracticeMode === "graded"
+    ) {
+      return undefined;
+    }
+    return adaptiveLevelRef.current;
+  }
+
+  function getAssignedLevelForQuestion() {
+    if (
+      gameActive &&
+      focusedPracticeMode !== "mistakes" &&
+      focusedPracticeMode !== "graded"
+    ) {
+      return adaptiveLevelRef.current;
+    }
+    return level;
+  }
+
+  function bumpTopicIntel(topicKey, isWrong) {
+    const intel = scienceIntelRef.current;
+    const prev = intel.topicStats[topicKey];
+    const cur =
+      prev && typeof prev === "object"
+        ? {
+            attempts: Number(prev.attempts) || 0,
+            wrong: Number(prev.wrong) || 0,
+          }
+        : { attempts: 0, wrong: 0 };
+    cur.attempts += 1;
+    if (isWrong) cur.wrong += 1;
+    intel.topicStats = { ...intel.topicStats, [topicKey]: cur };
+    const ok = !isWrong;
+    intel.answerTail = [...(intel.answerTail || []), ok].slice(
+      -INSIGHT_ANSWER_TAIL_MAX
+    );
+    intel.topicAnswerTails = { ...(intel.topicAnswerTails || {}) };
+    if (TOPICS[topicKey]) {
+      const tPrev = intel.topicAnswerTails[topicKey] || [];
+      intel.topicAnswerTails[topicKey] = [...tPrev, ok].slice(
+        -INSIGHT_TOPIC_TAIL_MAX
+      );
+    }
+    persistScienceIntel(intel);
+    setInsightRevision((n) => n + 1);
+  }
+
+  function pushRecentQuestionId(qid) {
+    if (!qid) return;
+    const intel = scienceIntelRef.current;
+    const next = [...intel.recentIds.filter((x) => x !== qid), qid].slice(
+      -INTEL_RECENT_MAX
+    );
+    intel.recentIds = next;
+    persistScienceIntel(intel);
+  }
+
+  const progressInsights = useMemo(() => {
+    if (!mounted) {
+      return {
+        base: null,
+        feedback: [],
+        currentLevelLabel: LEVELS[level]?.name ?? level,
+        mistakeLogCount: 0,
+      };
+    }
+    const intel = scienceIntelRef.current;
+    const base = computeScienceProgressInsights(
+      intel.topicStats,
+      intel.answerTail
+    );
+    const feedback = buildInsightFeedbackLines(base, intel.topicAnswerTails);
+    return {
+      base,
+      feedback,
+      currentLevelLabel: LEVELS[level]?.name ?? level,
+      mistakeLogCount: mistakes.length,
+    };
+  }, [mounted, level, mistakes.length, insightRevision]);
+
+  function applyAdaptiveDifficulty(isCorrect, questionId) {
+    if (!gameActive) return;
+
+    const canShiftLevel =
+      focusedPracticeMode !== "mistakes" &&
+      focusedPracticeMode !== "graded";
+
+    if (canShiftLevel) {
+      if (isCorrect) {
+        wrongAdaptiveStreakRef.current = 0;
+        correctAdaptiveStreakRef.current += 1;
+        if (correctAdaptiveStreakRef.current >= 3) {
+          correctAdaptiveStreakRef.current = 0;
+          const cur = adaptiveLevelRef.current;
+          const next = stepAdaptiveLevel(cur, 1);
+          if (next !== cur) {
+            adaptiveLevelRef.current = next;
+            setLevel(next);
+          }
+        }
+      } else {
+        correctAdaptiveStreakRef.current = 0;
+        wrongAdaptiveStreakRef.current += 1;
+        if (wrongAdaptiveStreakRef.current >= 2) {
+          wrongAdaptiveStreakRef.current = 0;
+          const cur = adaptiveLevelRef.current;
+          const next = stepAdaptiveLevel(cur, -1);
+          if (next !== cur) {
+            adaptiveLevelRef.current = next;
+            setLevel(next);
+          }
+        }
+      }
+    }
+
+    if (!isCorrect && questionId) {
+      const delay = 3 + Math.floor(Math.random() * 3);
+      retryQueueRef.current.push({
+        id: questionId,
+        dueAt: askCounterRef.current + delay,
+      });
+      if (retryQueueRef.current.length > RETRY_QUEUE_MAX) {
+        retryQueueRef.current.sort((a, b) => a.dueAt - b.dueAt);
+        retryQueueRef.current = retryQueueRef.current.slice(0, RETRY_QUEUE_MAX);
+      }
+    }
   }
 
   const refreshMistakesList = () => {
@@ -842,7 +1335,16 @@ function recordSessionProgress() {
 
   function generateNewQuestion(resetPool = false) {
     trackCurrentQuestionTime();
-    const pool = filterQuestionsForCurrentSettings();
+
+    if (resetPool) {
+      askCounterRef.current = 0;
+      retryQueueRef.current = [];
+    }
+    askCounterRef.current += 1;
+    const askCounter = askCounterRef.current;
+
+    const levelForPool = getLevelOverrideForFilter();
+    const pool = filterQuestionsForCurrentSettings(levelForPool);
 
     if (pool.length === 0) {
       questionPoolRef.current = [];
@@ -854,20 +1356,29 @@ function recordSessionProgress() {
       return;
     }
 
-    // אם צריך לבנות מאפס את המאגר (התחלת משחק / שינוי הגדרות)
-    if (resetPool || questionPoolRef.current.length === 0) {
-      questionPoolRef.current = shuffleArray(pool);
-      questionIndexRef.current = 0;
+    const intel = scienceIntelRef.current;
+    const recentSet = new Set(intel.recentIds);
+    const smartPicking = focusedPracticeMode !== "mistakes";
+
+    let q = dequeueEligibleRetry(retryQueueRef.current, pool, askCounter);
+
+    if (!q) {
+      const avoidRecent = pool.filter((item) => !recentSet.has(item.id));
+      const usedRecentFallback = avoidRecent.length === 0;
+      const eligible = usedRecentFallback ? pool : avoidRecent;
+
+      if (smartPicking && !usedRecentFallback) {
+        q = weightedPickQuestions(eligible, intel.topicStats);
+      } else {
+        q = randomItem(eligible);
+      }
     }
 
-    // אם עברנו על כל השאלות – מערבבים מחדש לסיבוב הבא
-    if (questionIndexRef.current >= questionPoolRef.current.length) {
-      questionPoolRef.current = shuffleArray(questionPoolRef.current);
-      questionIndexRef.current = 0;
+    if (!q) {
+      q = randomItem(pool);
     }
 
-    const q = questionPoolRef.current[questionIndexRef.current];
-    questionIndexRef.current += 1;
+    pushRecentQuestionId(q.id);
 
     // ערבוב התשובות (options) - Fisher-Yates shuffle
     let shuffledOptions = [...(q.options || [])];
@@ -888,7 +1399,7 @@ function recordSessionProgress() {
       options: shuffledOptions,
       correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : originalCorrectIndex,
       assignedGrade: grade,
-      assignedLevel: level,
+      assignedLevel: getAssignedLevelForQuestion(),
     });
     setSelectedAnswer(null);
     setShowHint(false);
@@ -916,6 +1427,8 @@ function recordSessionProgress() {
     // איפוס מאגר השאלות
     questionPoolRef.current = [];
     questionIndexRef.current = 0;
+    retryQueueRef.current = [];
+    askCounterRef.current = 0;
     setTotalQuestions(0);
     setAvgTime(0);
     setQuestionStartTime(null);
@@ -964,6 +1477,9 @@ function recordSessionProgress() {
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
+    adaptiveLevelRef.current = level;
+    correctAdaptiveStreakRef.current = 0;
+    wrongAdaptiveStreakRef.current = 0;
     setGameActive(true);
     setScore(0);
     setStreak(0);
@@ -1030,6 +1546,8 @@ function recordSessionProgress() {
     setSelectedAnswer(idx);
     solvedCountRef.current += 1;
     const isCorrect = idx === currentQuestion.correctIndex;
+    bumpTopicIntel(currentQuestion.topic, !isCorrect);
+    applyAdaptiveDifficulty(isCorrect, isCorrect ? null : currentQuestion.id);
     if (isCorrect) {
       let points = 10 + streak;
       if (mode === "speed" && timeLeft != null) {
@@ -1663,11 +2181,17 @@ function recordSessionProgress() {
                 </select>
                 <select
                   value={level}
+                  disabled={gameActive}
+                  title={
+                    gameActive
+                      ? "רמת קושי מתעדכנת אוטומטית במהלך המשחק"
+                      : undefined
+                  }
                   onChange={(e) => {
                     setLevel(e.target.value);
                     setGameActive(false);
                   }}
-                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold"
+                  className="h-9 px-3 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold disabled:opacity-50"
                 >
                   {Object.keys(LEVELS).map((l) => (
                     <option key={l} value={l}>
@@ -1721,8 +2245,107 @@ function recordSessionProgress() {
                 </div>
               </div>
 
-              
-
+              {/* סיכום התקדמות — נתונים מקומיים בלבד */}
+              <div
+                className="w-full max-w-md mb-2 rounded-lg border border-emerald-500/25 bg-emerald-950/20 px-2.5 py-2 text-[10px] sm:text-xs text-white/90"
+                dir="rtl"
+              >
+                <div className="font-bold text-emerald-200/95 mb-1 flex justify-between gap-2">
+                  <span>📊 סיכום למידה (שמור מקומית)</span>
+                  {progressInsights.base &&
+                    progressInsights.base.totalAttempts > 0 && (
+                      <span className="text-white/55 font-normal">
+                        {progressInsights.base.totalAttempts} תשובות
+                      </span>
+                    )}
+                </div>
+                {!progressInsights.base ||
+                progressInsights.base.totalAttempts < 1 ? (
+                  <p className="text-white/55 leading-snug">
+                    אחרי מענה על שאלות יוצגו כאן דיוק כולל, נושאים חלשים/חזקים
+                    ומגמה אמיתית לפי הרצף האחרון.
+                  </p>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 mb-1.5 text-white/88">
+                      <div>
+                        דיוק כללי:{" "}
+                        <span className="font-bold text-emerald-300">
+                          {progressInsights.base.overallPct}%
+                        </span>
+                      </div>
+                      <div>
+                        רמה נוכחית:{" "}
+                        <span className="font-bold text-amber-200">
+                          {progressInsights.currentLevelLabel}
+                        </span>
+                      </div>
+                      <div>
+                        רשומות ביומן טעויות:{" "}
+                        <span className="font-bold text-rose-300">
+                          {progressInsights.mistakeLogCount}
+                        </span>
+                      </div>
+                      <div>
+                        {progressInsights.base.recentN > 0 ? (
+                          <>
+                            ב־{progressInsights.base.recentN} האחרונות:{" "}
+                            <span className="font-bold text-sky-200">
+                              {progressInsights.base.recentPct}%
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-white/45">אין רצף אחרון</span>
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-white/60 mb-1">
+                      סה״כ שגויים במעקב (לפי נושאים):{" "}
+                      <span className="text-white/85 font-semibold">
+                        {progressInsights.base.totalWrong}
+                      </span>
+                    </p>
+                    <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-[10px] text-white/75 mb-1">
+                      {progressInsights.base.strongest &&
+                        TOPICS[progressInsights.base.strongest.key] && (
+                          <span>
+                            חזק יחסית:{" "}
+                            <span className="text-white/90">
+                              {TOPICS[progressInsights.base.strongest.key].name}
+                            </span>
+                          </span>
+                        )}
+                      {progressInsights.base.weakest &&
+                        TOPICS[progressInsights.base.weakest.key] && (
+                          <span>
+                            לחיזוק:{" "}
+                            <span className="text-white/90">
+                              {TOPICS[progressInsights.base.weakest.key].name}
+                            </span>
+                          </span>
+                        )}
+                    </div>
+                    {progressInsights.base.recentN >= 10 &&
+                      progressInsights.base.trend && (
+                        <p className="text-[10px] text-white/60 mb-1">
+                          {progressInsights.base.trend === "up" &&
+                            "מגמת הרצף האחרון: עולה."}
+                          {progressInsights.base.trend === "down" &&
+                            "מגמת הרצף האחרון: יורדת."}
+                          {progressInsights.base.trend === "stable" &&
+                            "מגמת הרצף האחרון: יציבה."}
+                        </p>
+                      )}
+                    {progressInsights.feedback.length > 0 && (
+                      <ul className="list-disc list-inside space-y-0.5 text-white/80 leading-snug border-t border-white/10 pt-1.5 mt-0.5">
+                        {progressInsights.feedback.map((line, i) => (
+                          <li key={`${i}-${line.slice(0, 32)}`}>{line}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                )}
+              </div>
 
               <div className="bg-white/5 border border-white/10 rounded-lg px-1.5 pt-1.5 pb-0 mb-1 w-full max-w-md">
                 <div className="flex items-center justify-between text-[10px] text-white/70 mb-0.5">
@@ -1840,7 +2463,7 @@ function recordSessionProgress() {
 
               {/* מה חשוב לזכור - מחוץ ל-container */}
               {mode === "learning" && currentQuestion && (
-                <div className="mb-3 px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 text-right w-full max-w-md" dir="rtl">
+                <div className="mb-3 px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 text-right w-full max-w-xl sm:max-w-2xl" dir="rtl">
                   <div className="font-bold mb-1">📘 מה חשוב לזכור?</div>
                   <ul className="list-disc pr-4 space-y-0.5">
                     {(currentQuestion.theoryLines || []).map((line, i) => (
@@ -1853,7 +2476,7 @@ function recordSessionProgress() {
               {/* QUESTION AREA */}
               <div
                 ref={gameRef}
-                className="w-full max-w-md flex flex-col items-center justify-center mb-2 flex-1"
+                className="w-full max-w-xl sm:max-w-2xl flex flex-col items-center justify-center mb-2 flex-1 px-1"
                 style={{
                   height: "var(--game-h, 400px)",
                   minHeight: "300px",
@@ -1861,7 +2484,7 @@ function recordSessionProgress() {
               >
                 {/* STEM */}
                 <div
-                  className="text-4xl font-black text-white mb-6 text-center -mt-12"
+                  className="text-base sm:text-lg md:text-xl font-bold text-white mb-4 sm:mb-5 text-center leading-snug max-w-xl mx-auto -mt-8 sm:-mt-10"
                   style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                 >
                   {currentQuestion
@@ -1893,32 +2516,35 @@ function recordSessionProgress() {
                 </div>
 
                 {showHint && currentQuestion && (
-                  <div className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100 text-xs text-right w-full max-w-md">
+                  <div className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100 text-xs sm:text-sm text-right w-full max-w-xl sm:max-w-2xl leading-relaxed">
                     {getHintForQuestion(currentQuestion)}
                   </div>
                 )}
 
                 {/* ANSWERS */}
                 {currentQuestion && (
-                  <div className="grid grid-cols-2 gap-3 w-full mb-3">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5 w-full max-w-xl mb-3 auto-rows-fr">
                     {currentQuestion.options?.map((opt, idx) => {
                       const isSelected = selectedAnswer === idx;
                       const isCorrect = idx === currentQuestion.correctIndex;
                       const isWrong = isSelected && !isCorrect;
+                      const showResult = selectedAnswer != null;
 
                       return (
                         <button
                           key={idx}
                           onClick={() => handleAnswer(idx)}
-                          disabled={selectedAnswer != null}
-                          className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                          disabled={showResult}
+                          className={`rounded-xl border-2 px-2.5 py-2.5 sm:px-3 sm:py-3 text-sm font-semibold leading-snug min-h-[5.25rem] sm:min-h-[5.5rem] h-full w-full flex items-center justify-center text-center transition-all duration-150 shadow-sm active:scale-[0.98] disabled:active:scale-100 disabled:cursor-default ${
                             isCorrect && isSelected
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-100 ring-2 ring-emerald-400/50 ring-offset-2 ring-offset-[#0b1121]"
                               : isWrong
-                              ? "bg-red-500/30 border-red-400 text-red-200"
-                              : selectedAnswer != null && isCorrect
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                              ? "bg-red-500/30 border-red-400 text-red-100 ring-2 ring-red-400/50 ring-offset-2 ring-offset-[#0b1121]"
+                              : showResult && isCorrect
+                              ? "bg-emerald-500/25 border-emerald-400/80 text-emerald-100"
+                              : !showResult
+                              ? "bg-black/30 border-white/15 text-white hover:border-white/40 hover:bg-white/5 hover:shadow"
+                              : "bg-black/25 border-white/10 text-white/80"
                           }`}
                           style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                         >
