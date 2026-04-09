@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -74,6 +74,9 @@ const REFERENCE_CATEGORIES = {
 };
 
 const REFERENCE_CATEGORY_KEYS = Object.keys(REFERENCE_CATEGORIES);
+
+/** Matches `utils/math-report-generator.js` and parent-report mistake readers. */
+const MOLEDET_GEOGRAPHY_MISTAKES_KEY = "mleo_moledet_geography_mistakes";
 
 export default function MoledetGeographyMaster() {
   useIOSViewportFix();
@@ -237,7 +240,7 @@ export default function MoledetGeographyMaster() {
   const [mistakes, setMistakes] = useState(() => {
     if (typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem("mleo_mistakes") || "[]");
+        const saved = JSON.parse(localStorage.getItem(MOLEDET_GEOGRAPHY_MISTAKES_KEY) || "[]");
         return saved;
       } catch {}
     }
@@ -1349,7 +1352,7 @@ useEffect(() => {
       setMistakes((prev) => {
         const updated = [...prev, mistake].slice(-50); // שמור רק 50 שגיאות אחרונות
         if (typeof window !== "undefined") {
-          localStorage.setItem("mleo_moledet_geography_mistakes", JSON.stringify(updated));
+          localStorage.setItem(MOLEDET_GEOGRAPHY_MISTAKES_KEY, JSON.stringify(updated));
         }
         return updated;
       });
@@ -2097,7 +2100,7 @@ useEffect(() => {
                   onClick={() => {
                     setMistakes([]);
                     if (typeof window !== "undefined") {
-                      localStorage.setItem("mleo_mistakes", JSON.stringify([]));
+                      localStorage.setItem(MOLEDET_GEOGRAPHY_MISTAKES_KEY, JSON.stringify([]));
                     }
                   }}
                   className="w-full px-4 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm mb-2"

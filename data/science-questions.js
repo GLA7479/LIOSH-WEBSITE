@@ -1,3 +1,7 @@
+// grades[] must list only grades where topic appears in SCIENCE_GRADES[g].topics (data/science-curriculum.js).
+// Maintainer realignment: node scripts/fix-science-grades-metadata.mjs
+import { SCIENCE_QUESTIONS_PHASE3 } from "./science-questions-phase3.js";
+
 export const SCIENCE_QUESTIONS = [
   // ========= גוף האדם =========
   {
@@ -244,7 +248,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -261,7 +265,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_3",
     topic: "plants",
-    grades: ["g3", "g4", "g5", "g6"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -283,7 +287,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_4",
     topic: "plants",
-    grades: ["g5", "g6"],
+    grades: ["g1", "g2", "g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "true_false",
@@ -300,7 +304,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_5",
     topic: "plants",
-    grades: ["g6"],
+    grades: ["g3"],
     minLevel: "hard",
     maxLevel: "hard",
     type: "mcq",
@@ -1095,7 +1099,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_5",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -1111,7 +1115,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_6",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -1127,7 +1131,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_7",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -1148,7 +1152,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_8",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "true_false",
@@ -1221,7 +1225,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "exp_5",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -1242,7 +1246,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "exp_6",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -1411,7 +1415,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_11",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -1432,7 +1436,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_12",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -1453,7 +1457,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_13",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "hard",
     maxLevel: "hard",
     type: "mcq",
@@ -1824,7 +1828,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_14",
     topic: "plants",
-    grades: ["g5", "g6"],
+    grades: ["g3"],
     minLevel: "hard",
     maxLevel: "hard",
     type: "mcq",
@@ -1845,7 +1849,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_15",
     topic: "plants",
-    grades: ["g5", "g6"],
+    grades: ["g3"],
     minLevel: "hard",
     maxLevel: "hard",
     type: "mcq",
@@ -2493,7 +2497,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_21",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -2514,7 +2518,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_22",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -2535,7 +2539,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_23",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "hard",
     maxLevel: "hard",
     type: "mcq",
@@ -2556,7 +2560,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_24",
     topic: "plants",
-    grades: ["g4", "g5"],
+    grades: ["g2", "g3"],
     minLevel: "hard",
     maxLevel: "hard",
     type: "mcq",
@@ -2577,7 +2581,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_25",
     topic: "plants",
-    grades: ["g4", "g5"],
+    grades: ["g3"],
     minLevel: "hard",
     maxLevel: "hard",
     type: "mcq",
@@ -2598,7 +2602,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_26",
     topic: "plants",
-    grades: ["g5", "g6"],
+    grades: ["g2", "g3"],
     minLevel: "hard",
     maxLevel: "hard",
     type: "mcq",
@@ -2813,7 +2817,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_14",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -2829,7 +2833,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_15",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -2845,7 +2849,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_16",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "true_false",
@@ -2861,7 +2865,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_17",
     topic: "earth_space",
-    grades: ["g2", "g3"],
+    grades: ["g3"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -2882,7 +2886,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_18",
     topic: "earth_space",
-    grades: ["g2", "g3"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -3222,7 +3226,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "exp_10",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -3243,7 +3247,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "exp_11",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -3539,7 +3543,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_27",
     topic: "plants",
-    grades: ["g5", "g6"],
+    grades: ["g2", "g3"],
     minLevel: "hard",
     maxLevel: "hard",
     type: "mcq",
@@ -3560,7 +3564,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "plants_28",
     topic: "plants",
-    grades: ["g5", "g6"],
+    grades: ["g2", "g3"],
     minLevel: "hard",
     maxLevel: "hard",
     type: "mcq",
@@ -3919,7 +3923,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_26",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -3940,7 +3944,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "earth_27",
     topic: "earth_space",
-    grades: ["g2", "g3"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -4003,7 +4007,7 @@ export const SCIENCE_QUESTIONS = [
   {
     id: "exp_23",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -4043,7 +4047,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "body_25",
+    id: "body_25__v2",
     topic: "body",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4064,7 +4068,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_26",
+    id: "animals_26__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4085,7 +4089,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_15",
+    id: "plants_15__v2",
     topic: "plants",
     grades: ["g2", "g3"],
     minLevel: "medium",
@@ -4106,7 +4110,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_12",
+    id: "materials_12__v2",
     topic: "materials",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -4171,7 +4175,7 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - גוף האדם (כיתות א'-ב') =========
   {
-    id: "body_31",
+    id: "body_31__v2",
     topic: "body",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4187,7 +4191,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "body_32",
+    id: "body_32__v2",
     topic: "body",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4203,7 +4207,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "body_33",
+    id: "body_33__v2",
     topic: "body",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4219,7 +4223,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "body_34",
+    id: "body_34__v2",
     topic: "body",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4235,7 +4239,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "body_35",
+    id: "body_35__v2",
     topic: "body",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4251,7 +4255,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "body_36",
+    id: "body_36__v2",
     topic: "body",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4267,7 +4271,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "body_37",
+    id: "body_37__v2",
     topic: "body",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4283,7 +4287,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "body_38",
+    id: "body_38__v2",
     topic: "body",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4333,7 +4337,7 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - בעלי חיים (כיתות א'-ב') =========
   {
-    id: "animals_11",
+    id: "animals_11__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4349,7 +4353,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_12",
+    id: "animals_12__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4365,7 +4369,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_13",
+    id: "animals_13__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4381,7 +4385,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_14",
+    id: "animals_14__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4397,7 +4401,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_15",
+    id: "animals_15__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4413,7 +4417,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_16",
+    id: "animals_16__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4429,7 +4433,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_17",
+    id: "animals_17__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4445,7 +4449,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_18",
+    id: "animals_18__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4461,7 +4465,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_19",
+    id: "animals_19__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4477,7 +4481,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_20",
+    id: "animals_20__v2",
     topic: "animals",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4495,7 +4499,7 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - צמחים (כיתות א'-ב') =========
   {
-    id: "plants_11",
+    id: "plants_11__v2",
     topic: "plants",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4511,7 +4515,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_12",
+    id: "plants_12__v2",
     topic: "plants",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4527,7 +4531,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_13",
+    id: "plants_13__v2",
     topic: "plants",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4543,7 +4547,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_14",
+    id: "plants_14__v2",
     topic: "plants",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4559,7 +4563,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_15",
+    id: "plants_15__v3",
     topic: "plants",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4575,7 +4579,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_16",
+    id: "plants_16__v2",
     topic: "plants",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4591,7 +4595,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_17",
+    id: "plants_17__v2",
     topic: "plants",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4607,7 +4611,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_18",
+    id: "plants_18__v2",
     topic: "plants",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4623,7 +4627,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_19",
+    id: "plants_19__v2",
     topic: "plants",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4639,7 +4643,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_20",
+    id: "plants_20__v2",
     topic: "plants",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4657,7 +4661,7 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - חומרים (כיתות א'-ב') =========
   {
-    id: "materials_10",
+    id: "materials_10__v2",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4673,7 +4677,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_11",
+    id: "materials_11__v2",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4689,7 +4693,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_12",
+    id: "materials_12__v3",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4705,7 +4709,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_13",
+    id: "materials_13__v2",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4721,7 +4725,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_14",
+    id: "materials_14__v2",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4737,7 +4741,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_15",
+    id: "materials_15__v2",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4753,7 +4757,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_16",
+    id: "materials_16__v2",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4769,7 +4773,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_17",
+    id: "materials_17__v2",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4785,7 +4789,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_18",
+    id: "materials_18__v2",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4801,7 +4805,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_19",
+    id: "materials_19__v2",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4817,7 +4821,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_20",
+    id: "materials_20__v2",
     topic: "materials",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -4835,9 +4839,9 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - כדור הארץ וחלל (כיתות א'-ב') =========
   {
-    id: "earth_9",
+    id: "earth_9__v2",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -4851,9 +4855,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_10",
+    id: "earth_10__v2",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -4867,9 +4871,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_11",
+    id: "earth_11__v2",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -4883,9 +4887,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_12",
+    id: "earth_12__v2",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -4899,9 +4903,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_13",
+    id: "earth_13__v2",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "true_false",
@@ -4915,9 +4919,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_14",
+    id: "earth_14__v2",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -4931,9 +4935,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_15",
+    id: "earth_15__v2",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -4947,9 +4951,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_16",
+    id: "earth_16__v2",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -4963,9 +4967,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_17",
+    id: "earth_17__v2",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -4979,9 +4983,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_18",
+    id: "earth_18__v2",
     topic: "earth_space",
-    grades: ["g1", "g2"],
+    grades: ["g1"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -4997,7 +5001,7 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - סביבה (כיתות א'-ב') =========
   {
-    id: "env_8",
+    id: "env_8__v2",
     topic: "environment",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -5013,7 +5017,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_9",
+    id: "env_9__v2",
     topic: "environment",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -5034,7 +5038,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_10",
+    id: "env_10__v2",
     topic: "environment",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -5050,7 +5054,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_11",
+    id: "env_11__v2",
     topic: "environment",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -5071,7 +5075,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_12",
+    id: "env_12__v2",
     topic: "environment",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -5092,7 +5096,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_13",
+    id: "env_13__v2",
     topic: "environment",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -5113,7 +5117,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_14",
+    id: "env_14__v2",
     topic: "environment",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -5134,7 +5138,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_15",
+    id: "env_15__v2",
     topic: "environment",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -5155,7 +5159,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_16",
+    id: "env_16__v2",
     topic: "environment",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -5176,7 +5180,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_17",
+    id: "env_17__v2",
     topic: "environment",
     grades: ["g1", "g2"],
     minLevel: "easy",
@@ -5199,9 +5203,9 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - ניסויים (כיתות א'-ב') =========
   {
-    id: "exp_7",
+    id: "exp_7__v2",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -5220,9 +5224,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_8",
+    id: "exp_8__v2",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -5241,9 +5245,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_9",
+    id: "exp_9__v2",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -5262,9 +5266,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_10",
+    id: "exp_10__v2",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -5283,9 +5287,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_11",
+    id: "exp_11__v2",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -5304,9 +5308,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_12",
+    id: "exp_12__v2",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -5325,9 +5329,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_13",
+    id: "exp_13__v2",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -5346,9 +5350,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_14",
+    id: "exp_14__v2",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -5367,9 +5371,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_15",
+    id: "exp_15__v2",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -5388,9 +5392,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_16",
+    id: "exp_16__v2",
     topic: "experiments",
-    grades: ["g1", "g2"],
+    grades: ["g2"],
     minLevel: "easy",
     maxLevel: "easy",
     type: "mcq",
@@ -5623,7 +5627,7 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - בעלי חיים (כיתות ג'-ד') =========
   {
-    id: "animals_21",
+    id: "animals_21__v2",
     topic: "animals",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -5644,7 +5648,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_22",
+    id: "animals_22__v2",
     topic: "animals",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -5665,7 +5669,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_23",
+    id: "animals_23__v2",
     topic: "animals",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -5686,7 +5690,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_24",
+    id: "animals_24__v2",
     topic: "animals",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -5707,7 +5711,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_25",
+    id: "animals_25__v2",
     topic: "animals",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -5728,7 +5732,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_26",
+    id: "animals_26__v3",
     topic: "animals",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -5749,7 +5753,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_27",
+    id: "animals_27__v2",
     topic: "animals",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -5770,7 +5774,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_28",
+    id: "animals_28__v2",
     topic: "animals",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -5791,7 +5795,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_29",
+    id: "animals_29__v2",
     topic: "animals",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -5812,7 +5816,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "animals_30",
+    id: "animals_30__v2",
     topic: "animals",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -5835,9 +5839,9 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - צמחים (כיתות ג'-ד') =========
   {
-    id: "plants_21",
+    id: "plants_21__v2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -5856,9 +5860,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_22",
+    id: "plants_22__v2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -5877,9 +5881,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_23",
+    id: "plants_23__v2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -5898,9 +5902,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_24",
+    id: "plants_24__v2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -5919,9 +5923,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_25",
+    id: "plants_25__v2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -5940,9 +5944,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_26",
+    id: "plants_26__v2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -5961,9 +5965,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_27",
+    id: "plants_27__v2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -5982,9 +5986,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_28",
+    id: "plants_28__v2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -6003,9 +6007,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_29",
+    id: "plants_29__v2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -6024,9 +6028,9 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "plants_30",
+    id: "plants_30__v2",
     topic: "plants",
-    grades: ["g3", "g4"],
+    grades: ["g3"],
     minLevel: "medium",
     maxLevel: "medium",
     type: "mcq",
@@ -6047,7 +6051,7 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - חומרים (כיתות ג'-ד') =========
   {
-    id: "materials_21",
+    id: "materials_21__v2",
     topic: "materials",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6068,7 +6072,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_22",
+    id: "materials_22__v2",
     topic: "materials",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6089,7 +6093,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_23",
+    id: "materials_23__v2",
     topic: "materials",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6110,7 +6114,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_24",
+    id: "materials_24__v2",
     topic: "materials",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6131,7 +6135,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_25",
+    id: "materials_25__v2",
     topic: "materials",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6152,7 +6156,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_26",
+    id: "materials_26__v2",
     topic: "materials",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6173,7 +6177,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_27",
+    id: "materials_27__v2",
     topic: "materials",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6194,7 +6198,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "materials_28",
+    id: "materials_28__v2",
     topic: "materials",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6259,7 +6263,7 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - כדור הארץ וחלל (כיתות ג'-ד') =========
   {
-    id: "earth_19",
+    id: "earth_19__v2",
     topic: "earth_space",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6280,7 +6284,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_20",
+    id: "earth_20__v2",
     topic: "earth_space",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6301,7 +6305,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_21",
+    id: "earth_21__v2",
     topic: "earth_space",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6322,7 +6326,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_22",
+    id: "earth_22__v2",
     topic: "earth_space",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6343,7 +6347,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_23",
+    id: "earth_23__v2",
     topic: "earth_space",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6364,7 +6368,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_24",
+    id: "earth_24__v2",
     topic: "earth_space",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6385,7 +6389,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_25",
+    id: "earth_25__v2",
     topic: "earth_space",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6406,7 +6410,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_26",
+    id: "earth_26__v2",
     topic: "earth_space",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6427,7 +6431,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "earth_27",
+    id: "earth_27__v2",
     topic: "earth_space",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6471,7 +6475,7 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - סביבה (כיתות ג'-ד') =========
   {
-    id: "env_18",
+    id: "env_18__v2",
     topic: "environment",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6492,7 +6496,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_19",
+    id: "env_19__v2",
     topic: "environment",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6513,7 +6517,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_20",
+    id: "env_20__v2",
     topic: "environment",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6534,7 +6538,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_21",
+    id: "env_21__v2",
     topic: "environment",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6555,7 +6559,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_22",
+    id: "env_22__v2",
     topic: "environment",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6576,7 +6580,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_23",
+    id: "env_23__v2",
     topic: "environment",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6597,7 +6601,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "env_24",
+    id: "env_24__v2",
     topic: "environment",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6683,7 +6687,7 @@ export const SCIENCE_QUESTIONS = [
 
   // ========= שאלות נוספות רבות - ניסויים (כיתות ג'-ד') =========
   {
-    id: "exp_17",
+    id: "exp_17__v2",
     topic: "experiments",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6704,7 +6708,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_18",
+    id: "exp_18__v2",
     topic: "experiments",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6725,7 +6729,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_19",
+    id: "exp_19__v2",
     topic: "experiments",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6746,7 +6750,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_20",
+    id: "exp_20__v2",
     topic: "experiments",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6767,7 +6771,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_21",
+    id: "exp_21__v2",
     topic: "experiments",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6788,7 +6792,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_22",
+    id: "exp_22__v2",
     topic: "experiments",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6809,7 +6813,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_23",
+    id: "exp_23__v2",
     topic: "experiments",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6830,7 +6834,7 @@ export const SCIENCE_QUESTIONS = [
     ],
   },
   {
-    id: "exp_24",
+    id: "exp_24__v2",
     topic: "experiments",
     grades: ["g3", "g4"],
     minLevel: "medium",
@@ -6892,4 +6896,4 @@ export const SCIENCE_QUESTIONS = [
       "תמיד צריך מבוגר שיעזור.",
     ],
   },
-];
+].concat(SCIENCE_QUESTIONS_PHASE3);

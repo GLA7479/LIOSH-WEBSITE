@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -74,6 +74,9 @@ const REFERENCE_CATEGORIES = {
 };
 
 const REFERENCE_CATEGORY_KEYS = Object.keys(REFERENCE_CATEGORIES);
+
+/** Matches `utils/math-report-generator.js` and parent-report mistake readers. */
+const HEBREW_MISTAKES_KEY = "mleo_hebrew_mistakes";
 
 export default function HebrewMaster() {
   useIOSViewportFix();
@@ -237,7 +240,7 @@ export default function HebrewMaster() {
   const [mistakes, setMistakes] = useState(() => {
     if (typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem("mleo_mistakes") || "[]");
+        const saved = JSON.parse(localStorage.getItem(HEBREW_MISTAKES_KEY) || "[]");
         return saved;
       } catch {}
     }
@@ -1351,7 +1354,7 @@ useEffect(() => {
       setMistakes((prev) => {
         const updated = [...prev, mistake].slice(-50); // שמור רק 50 שגיאות אחרונות
         if (typeof window !== "undefined") {
-          localStorage.setItem("mleo_hebrew_mistakes", JSON.stringify(updated));
+          localStorage.setItem(HEBREW_MISTAKES_KEY, JSON.stringify(updated));
         }
         return updated;
       });
@@ -2099,7 +2102,7 @@ useEffect(() => {
                   onClick={() => {
                     setMistakes([]);
                     if (typeof window !== "undefined") {
-                      localStorage.setItem("mleo_mistakes", JSON.stringify([]));
+                      localStorage.setItem(HEBREW_MISTAKES_KEY, JSON.stringify([]));
                     }
                   }}
                   className="w-full px-4 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm mb-2"

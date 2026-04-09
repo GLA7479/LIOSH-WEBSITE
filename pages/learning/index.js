@@ -28,7 +28,7 @@ const LEARNING_GAMES = [
     slug: "science-master",
     title: "Science Master",
     emoji: "🔬",
-    grades: "Grades 1–8",
+    grades: "Grades 1–6",
     blurb: "Body, animals, plants, space, matter, weather, forces and more with explanations.",
   },
   {
