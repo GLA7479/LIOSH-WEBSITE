@@ -1986,9 +1986,8 @@ useEffect(() => {
                               dir="rtl"
                             >
                               <div
-                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[88vh] max-h-[780px] shadow-2xl flex flex-col"
+                                className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[min(100vw-1rem,430px)] h-[88vh] max-h-[800px] shadow-2xl flex flex-col"
                                 onClick={(e) => e.stopPropagation()}
-                                style={{ maxWidth: "90vw" }}
                               >
                                 <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
                                   <button
@@ -2004,10 +2003,10 @@ useEffect(() => {
                                   </h3>
                                 </div>
 
-                                <div className="flex-1 overflow-y-auto px-4 pb-2">
-                                  <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2">
+                                <div className="flex-1 flex flex-col min-h-0 overflow-hidden px-3 sm:px-4 pb-2">
+                                  <div className="flex-shrink-0 mb-2 rounded-lg bg-emerald-900/50 px-3 py-2">
                                     <div
-                                      className="text-sm text-emerald-100 font-semibold break-words overflow-wrap-anywhere max-w-full"
+                                      className="text-xs sm:text-sm text-emerald-100 font-semibold break-words overflow-wrap-anywhere max-w-full leading-snug"
                                       style={learningMixedHebrewMathStyle}
                                     >
                                       {currentQuestion.question}
@@ -2019,21 +2018,24 @@ useEffect(() => {
                                       getGeometryDiagramSpec(currentQuestion);
                                     if (!diagramSpec) return null;
                                     return (
-                                      <GeometryExplanationDiagram
-                                        spec={diagramSpec}
-                                        emphasis={
-                                          activeStep.diagramEmphasis ||
-                                          "neutral"
-                                        }
-                                      />
+                                      <div className="flex-shrink-0 w-full flex justify-center items-stretch min-h-[min(36svh,240px)] max-h-[min(48svh,340px)] py-1">
+                                        <GeometryExplanationDiagram
+                                          spec={diagramSpec}
+                                          question={currentQuestion}
+                                          emphasis={
+                                            activeStep.diagramEmphasis ||
+                                            "neutral"
+                                          }
+                                        />
+                                      </div>
                                     );
                                   })()}
 
                                   <div
-                                    className="mb-4 text-sm text-emerald-50"
+                                    className="flex-1 min-h-0 overflow-y-auto mb-2 text-sm sm:text-[0.9375rem] text-emerald-50"
                                     dir="rtl"
                                   >
-                                    <h4 className="font-bold text-base mb-1">
+                                    <h4 className="font-bold text-base mb-1 sticky top-0 bg-gradient-to-b from-emerald-950/95 to-transparent pb-1">
                                       {activeStep.title || "הסבר"}
                                     </h4>
                                     {activeStep.content ? (

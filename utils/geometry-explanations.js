@@ -1,4 +1,12 @@
 import { getDiagramEmphasisForStep } from "./geometry-diagram-spec";
+import {
+  resultPhraseArea,
+  resultPhraseLength,
+  resultPhraseVolume,
+  resultPhraseVolumeRounded,
+  geometryVolumeSuffix,
+  geometryLengthSuffix,
+} from "./geometry-units";
 
 // פונקציות הסבר ורמזים לדף ההנדסה
 
@@ -174,61 +182,83 @@ export function getSolutionSteps(question, topic, gradeKey) {
     case "area": {
       if (shape === "square") {
         return [
-          toSpan("1. נכתוב את הנוסחה: שטח ריבוע = צלע × צלע.", "1"),
+          toSpan(
+            "1. זיהוי: ריבוע — כל הצלעות באותו אורך. שטח = כמה מרחב בפנים (לא היקף סביב). נוסחה: שטח = צלע × צלע.",
+            "1"
+          ),
           toSpan(`2. נציב: ${ltr(`שטח = ${p.side} × ${p.side}`)}.`, "2"),
           toSpan(`3. נחשב: ${ltr(`${p.side} × ${p.side} = ${correctAnswer}`)}.`, "3"),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
+          toSpan(`4. ${resultPhraseArea(question, correctAnswer)}`, "4"),
         ];
       }
       if (shape === "rectangle") {
         return [
-          toSpan("1. נכתוב את הנוסחה: שטח מלבן = אורך × רוחב.", "1"),
-          toSpan(`2. נציב: ${ltr(`שטח = ${p.length} × ${p.width}`)}.`, "2"),
-          toSpan(`3. נחשב: ${ltr(`${p.length} × ${p.width} = ${correctAnswer}`)}.`, "3"),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
+          toSpan(
+            "1. זיהוי: מלבן — שני זוגות צלעות שוות. השטח תלוי בשני הממדים השונים (אורך ורוחב), לא בסכום צלעות.",
+            "1"
+          ),
+          toSpan("2. נוסחה: שטח מלבן = אורך × רוחב.", "2"),
+          toSpan(`3. נציב ונחשב: ${ltr(`${p.length} × ${p.width} = ${correctAnswer}`)}.`, "3"),
+          toSpan(`4. ${resultPhraseArea(question, correctAnswer)}`, "4"),
         ];
       }
       if (shape === "triangle") {
         return [
-          toSpan("1. נכתוב את הנוסחה: שטח משולש = (בסיס × גובה) ÷ 2.", "1"),
-          toSpan(`2. נציב: ${ltr(`(${p.base} × ${p.height}) ÷ 2`)}.`, "2"),
           toSpan(
-            `3. נחשב: ${ltr(`${p.base} × ${p.height} = ${p.base * p.height}`)}, ואז ${ltr(`${p.base * p.height} ÷ 2 = ${correctAnswer}`)}.`,
-            "3"
+            "1. זיהוי: גובה לבסיס הוא קטע ניצב מהקודקוד אל הבסיס (או המשכו). בלי גובה אנך — לא מחליפים בצלע אחרת.",
+            "1"
           ),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
+          toSpan("2. נוסחה: שטח משולש = (בסיס × גובה לבסיס) ÷ 2.", "2"),
+          toSpan(`3. נציב: ${ltr(`(${p.base} × ${p.height}) ÷ 2`)}.`, "3"),
+          toSpan(
+            `4. נחשב: ${ltr(`${p.base} × ${p.height} = ${p.base * p.height}`)}, ואז ${ltr(`${p.base * p.height} ÷ 2 = ${correctAnswer}`)}.`,
+            "4"
+          ),
+          toSpan(`5. ${resultPhraseArea(question, correctAnswer)}`, "5"),
         ];
       }
       if (shape === "parallelogram") {
         return [
-          toSpan("1. נכתוב את הנוסחה: שטח מקבילית = בסיס × גובה.", "1"),
-          toSpan(`2. נציב: ${ltr(`${p.base} × ${p.height}`)}.`, "2"),
-          toSpan(`3. נחשב: ${ltr(`${p.base} × ${p.height} = ${correctAnswer}`)}.`, "3"),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
+          toSpan(
+            "1. זיהוי: הגובה במקבילית הוא המרחק האנך בין הבסיס לצלע הנגדית — לא אורך הצלע המוסטת.",
+            "1"
+          ),
+          toSpan("2. נוסחה: שטח מקבילית = בסיס × גובה (אנך).", "2"),
+          toSpan(`3. נציב: ${ltr(`${p.base} × ${p.height}`)}.`, "3"),
+          toSpan(`4. נחשב: ${ltr(`${p.base} × ${p.height} = ${correctAnswer}`)}.`, "4"),
+          toSpan(`5. ${resultPhraseArea(question, correctAnswer)}`, "5"),
         ];
       }
       if (shape === "trapezoid") {
         const sumBases = p.base1 + p.base2;
         return [
-          toSpan("1. נכתוב את הנוסחה: שטח טרפז = ((בסיס1 + בסיס2) × גובה) ÷ 2.", "1"),
-          toSpan(`2. נציב: ${ltr(`((${p.base1} + ${p.base2}) × ${p.height}) ÷ 2`)}.`, "2"),
           toSpan(
-            `3. נחשב: ${ltr(`${p.base1} + ${p.base2} = ${sumBases}`)}, ואז ${ltr(`(${sumBases} × ${p.height}) ÷ 2 = ${correctAnswer}`)}.`,
-            "3"
+            "1. זיהוי: בטרפז שני בסיסים מקבילים; הגובה הוא המרחק האנך ביניהם. קודם ממוצע של הבסיסים, כפול גובה, חלקי 2.",
+            "1"
           ),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
+          toSpan("2. נוסחה: שטח טרפז = ((בסיס1 + בסיס2) × גובה) ÷ 2.", "2"),
+          toSpan(`3. נציב: ${ltr(`((${p.base1} + ${p.base2}) × ${p.height}) ÷ 2`)}.`, "3"),
+          toSpan(
+            `4. נחשב: ${ltr(`${p.base1} + ${p.base2} = ${sumBases}`)}, ואז ${ltr(`(${sumBases} × ${p.height}) ÷ 2 = ${correctAnswer}`)}.`,
+            "4"
+          ),
+          toSpan(`5. ${resultPhraseArea(question, correctAnswer)}`, "5"),
         ];
       }
       if (shape === "circle") {
         const r2 = p.radius * p.radius;
         return [
-          toSpan("1. נכתוב את הנוסחה: שטח עיגול = π × רדיוס².", "1"),
-          toSpan(`2. נציב: ${ltr(`שטח = 3.14 × ${p.radius}²`)}.`, "2"),
           toSpan(
-            `3. נחשב: ${ltr(`${p.radius}² = ${r2}`)}, ואז ${ltr(`3.14 × ${r2} = ${correctAnswer}`)}.`,
-            "3"
+            "1. זיהוי: רדיוס מהמרכז לשפה. שטח משתמש ב־r² (ריבוע), היקף ב־r בלי ריבוע — לא לבלבל ביניהם.",
+            "1"
           ),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות שטח.`, "4"),
+          toSpan("2. נוסחה: שטח עיגול = π × רדיוס² (כאן π ≈ 3.14).", "2"),
+          toSpan(`3. נציב: ${ltr(`שטח = 3.14 × ${p.radius}²`)}.`, "3"),
+          toSpan(
+            `4. נחשב: ${ltr(`${p.radius}² = ${r2}`)}, ואז ${ltr(`3.14 × ${r2} = ${correctAnswer}`)}.`,
+            "4"
+          ),
+          toSpan(`5. ${resultPhraseArea(question, correctAnswer)}`, "5"),
         ];
       }
       break;
@@ -240,7 +270,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
           toSpan("1. נוסחה: היקף ריבוע = צלע × 4.", "1"),
           toSpan(`2. נציב: ${ltr(`${p.side} × 4`)}.`, "2"),
           toSpan(`3. נחשב: ${ltr(`${p.side} × 4 = ${correctAnswer}`)}.`, "3"),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות אורך.`, "4"),
+          toSpan(`4. ${resultPhraseLength(question, correctAnswer)}`, "4"),
         ];
       }
       if (shape === "rectangle") {
@@ -252,7 +282,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
             `3. נחשב: ${ltr(`${p.length} + ${p.width} = ${sum}`)}, ואז ${ltr(`${sum} × 2 = ${correctAnswer}`)}.`,
             "3"
           ),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות אורך.`, "4"),
+          toSpan(`4. ${resultPhraseLength(question, correctAnswer)}`, "4"),
         ];
       }
       if (shape === "triangle") {
@@ -266,7 +296,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
             `3. נחשב: ${ltr(`${p.side1} + ${p.side2} + ${p.side3} = ${correctAnswer}`)}.`,
             "3"
           ),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות אורך.`, "4"),
+          toSpan(`4. ${resultPhraseLength(question, correctAnswer)}`, "4"),
         ];
       }
       if (shape === "circle") {
@@ -277,7 +307,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
             `3. נחשב: ${ltr(`2 × 3.14 = 6.28`)}, ואז ${ltr(`6.28 × ${p.radius} = ${correctAnswer}`)}.`,
             "3"
           ),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות אורך.`, "4"),
+          toSpan(`4. ${resultPhraseLength(question, correctAnswer)}`, "4"),
         ];
       }
       break;
@@ -300,7 +330,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
             `4. נחשב: ${ltr(`(1/3) × ${baseArea} × ${h} = ${volRaw}`)} → מעוגל לפי השאלה: ${ltr(String(correctAnswer))}.`,
             "4"
           ),
-          toSpan(`5. התוצאה: ${correctAnswer} יחידות נפח.`, "5"),
+          toSpan(`5. ${resultPhraseVolume(question, correctAnswer)}`, "5"),
         ];
       }
       if (p.kind === "pyramid_volume_rectangular") {
@@ -320,7 +350,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
             `4. נחשב: ${ltr(`(1/3) × ${baseArea} × ${h} = ${volRaw}`)} → ${ltr(String(correctAnswer))}.`,
             "4"
           ),
-          toSpan(`5. התוצאה: ${correctAnswer} יחידות נפח.`, "5"),
+          toSpan(`5. ${resultPhraseVolume(question, correctAnswer)}`, "5"),
         ];
       }
       if (p.kind === "cone_volume") {
@@ -335,7 +365,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
             `3. נחשב: ${ltr(`${r}² = ${r2}`)}, ${ltr(`3.14 × ${r2} × ${h} = ${3.14 * r2 * h}`)}, חלקי 3 ≈ ${ltr(String(volRaw))}.`,
             "3"
           ),
-          toSpan(`4. התוצאה המעוגלת: ${correctAnswer} יחידות נפח.`, "4"),
+          toSpan(`4. ${resultPhraseVolumeRounded(question, correctAnswer)}`, "4"),
         ];
       }
       if (p.kind === "prism_volume_triangle") {
@@ -352,7 +382,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
             "3"
           ),
           toSpan(
-            `4. נפח: ${ltr(`${baseArea} × ${h} = ${prod}`)} → ${correctAnswer} יחידות נפח.`,
+            `4. נפח: ${ltr(`${baseArea} × ${h} = ${prod}`)} → ${correctAnswer}${geometryVolumeSuffix(question)}.`,
             "4"
           ),
         ];
@@ -367,18 +397,22 @@ export function getSolutionSteps(question, topic, gradeKey) {
           toSpan("1. נוסחה: נפח מנסרה = שטח בסיס × גובה.", "1"),
           toSpan(`2. בסיס מלבני: ${ltr(`${L} × ${W} = ${baseArea}`)}.`, "2"),
           toSpan(`3. נפח: ${ltr(`${baseArea} × ${h} = ${prod}`)}.`, "3"),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות נפח.`, "4"),
+          toSpan(`4. ${resultPhraseVolume(question, correctAnswer)}`, "4"),
         ];
       }
       if (shape === "cube") {
         return [
-          toSpan("1. נוסחה: נפח קובייה = צלע³.", "1"),
-          toSpan(`2. נציב: ${ltr(`${p.side}³`)}.`, "2"),
           toSpan(
-            `3. נחשב: ${ltr(`${p.side} × ${p.side} × ${p.side} = ${correctAnswer}`)}.`,
-            "3"
+            "1. זיהוי: קובייה — שלושה ממדים זהים. נפח = כמה 'קוביות יחידה' נכנסות בפנים; לא שטח של פאה ולא היקף.",
+            "1"
           ),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות נפח.`, "4"),
+          toSpan("2. נוסחה: נפח קובייה = צלע × צלע × צלע = צלע³.", "2"),
+          toSpan(`3. נציב: ${ltr(`${p.side}³`)}.`, "3"),
+          toSpan(
+            `4. נחשב: ${ltr(`${p.side} × ${p.side} × ${p.side} = ${correctAnswer}`)}.`,
+            "4"
+          ),
+          toSpan(`5. ${resultPhraseVolume(question, correctAnswer)}`, "5"),
         ];
       }
       if (shape === "rectangular_prism") {
@@ -387,7 +421,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
           toSpan("1. נוסחה: נפח תיבה = אורך × רוחב × גובה.", "1"),
           toSpan(`2. נציב: ${ltr(`${p.length} × ${p.width} × ${p.height}`)}.`, "2"),
           toSpan(`3. נחשב: ${ltr(`${p.length} × ${p.width} × ${p.height} = ${product}`)}.`, "3"),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות נפח.`, "4"),
+          toSpan(`4. ${resultPhraseVolume(question, correctAnswer)}`, "4"),
         ];
       }
       if (shape === "cylinder") {
@@ -399,7 +433,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
             `3. נחשב: ${ltr(`${p.radius}² = ${r2}`)}, ואז ${ltr(`3.14 × ${r2} × ${p.height} = ${correctAnswer}`)}.`,
             "3"
           ),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות נפח.`, "4"),
+          toSpan(`4. ${resultPhraseVolume(question, correctAnswer)}`, "4"),
         ];
       }
       if (shape === "sphere") {
@@ -411,7 +445,7 @@ export function getSolutionSteps(question, topic, gradeKey) {
             `3. נחשב: ${ltr(`${p.radius}³ = ${r3}`)}, ואז ${ltr(`(4/3) × 3.14 × ${r3} = ${correctAnswer}`)}.`,
             "3"
           ),
-          toSpan(`4. התוצאה: ${correctAnswer} יחידות נפח.`, "4"),
+          toSpan(`4. ${resultPhraseVolume(question, correctAnswer)}`, "4"),
         ];
       }
       break;
@@ -422,13 +456,19 @@ export function getSolutionSteps(question, topic, gradeKey) {
       const angle2 = p.angle2 || 0;
       const sum = angle1 + angle2;
       return [
-        toSpan("1. נזכור: סכום הזוויות במשולש = 180°.", "1"),
-        toSpan(`2. נציב: ${ltr(`זווית1 = ${angle1}°`)} ו-${ltr(`זווית2 = ${angle2}°`)}.`, "2"),
         toSpan(
-          `3. נחשב: ${ltr(`זווית3 = 180° - (${angle1}° + ${angle2}°) = 180° - ${sum}° = ${correctAnswer}°`)}.`,
+          "1. נזכור: סכום שלוש הזוויות הפנימיות במשולש תמיד 180° — לא לבלבל עם זווית ישרה בודדת (90°).",
+          "1"
+        ),
+        toSpan(
+          `2. מה מצוין בשאלה: ${ltr(`זווית1 = ${angle1}°`)} ו-${ltr(`זווית2 = ${angle2}°`)} — מחפשים את הזווית השלישית.`,
+          "2"
+        ),
+        toSpan(
+          `3. נחשב: ${ltr(`180° - (${angle1}° + ${angle2}°) = 180° - ${sum}° = ${correctAnswer}°`)}.`,
           "3"
         ),
-        toSpan(`4. הזווית השלישית היא ${correctAnswer}°.`, "4"),
+        toSpan(`4. הזווית החסרה היא ${correctAnswer}°.`, "4"),
       ];
     }
 
@@ -444,11 +484,17 @@ export function getSolutionSteps(question, topic, gradeKey) {
         const b2 = b * b;
         const sum = a2 + b2;
         return [
-          toSpan("1. משפט פיתגורס: a² + b² = c².", "1"),
-          toSpan(`2. נציב: ${ltr(`${a}² + ${b}² = c²`)}.`, "2"),
-          toSpan(`3. נחשב: ${ltr(`${a}² = ${a2}`)} ו-${ltr(`${b}² = ${b2}`)}.`, "3"),
+          toSpan(
+            "1. במשולש ישר־זווית: שתי הצלעות שליד הזווית הישרה הן ניצבים; היתר נגד הזווית הישרה והוא הצלע הארוכה ביותר. נוסחה: a² + b² = c².",
+            "1"
+          ),
+          toSpan(`2. נציב את הניצבים: ${ltr(`${a}² + ${b}² = c²`)}.`, "2"),
+          toSpan(`3. נחשב ריבועים: ${ltr(`${a}² = ${a2}`)} ו-${ltr(`${b}² = ${b2}`)}.`, "3"),
           toSpan(`4. נחבר: ${ltr(`${a2} + ${b2} = ${sum}`)}.`, "4"),
-          toSpan(`5. נוציא שורש: ${ltr(`c = √${sum} = ${correctAnswer}`)}.`, "5"),
+          toSpan(
+            `5. נוציא שורש ליתר: ${ltr(`c = √${sum} = ${correctAnswer}`)}${geometryLengthSuffix(question)}.`,
+            "5"
+          ),
         ];
       }
 
@@ -460,14 +506,20 @@ export function getSolutionSteps(question, topic, gradeKey) {
       const diff = c2 - known2;
 
       return [
-        toSpan("1. משפט פיתגורס: a² + b² = c².", "1"),
         toSpan(
-          `2. כאן מחפשים ניצב חסר, ולכן נשתמש ב-${missingLeg}² = c² - (הניצב הידוע)².`,
+          "1. אותה נוסחה a² + b² = c² — כשמחפשים ניצב, מבודדים את הריבוע שלו: ריבוע היתר מינוס ריבוע הניצב הידוע.",
+          "1"
+        ),
+        toSpan(
+          `2. כאן מחפשים את ${missingLeg}, לכן ${ltr(`${missingLeg}² = c² - ${knownLegValue}²`)} (לא לחבר את הניצבים אם חסר צלע אחת).`,
           "2"
         ),
-        toSpan(`3. נחשב: ${ltr(`${c}² = ${c2}`)} ו-${ltr(`${knownLegValue}² = ${known2}`)}.`, "3"),
+        toSpan(`3. נחשב ריבועים: ${ltr(`${c}² = ${c2}`)} ו-${ltr(`${knownLegValue}² = ${known2}`)}.`, "3"),
         toSpan(`4. נחסיר: ${ltr(`${c2} - ${known2} = ${diff}`)}.`, "4"),
-        toSpan(`5. נוציא שורש: ${ltr(`${missingLeg} = √${diff} = ${correctAnswer}`)}.`, "5"),
+        toSpan(
+          `5. ניצב חסר: ${ltr(`${missingLeg} = √${diff} = ${correctAnswer}`)}${geometryLengthSuffix(question)}.`,
+          "5"
+        ),
       ];
     }
 

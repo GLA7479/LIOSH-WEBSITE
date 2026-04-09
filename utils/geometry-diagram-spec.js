@@ -73,6 +73,43 @@ export function getGeometryDiagramSpec(question) {
     }
   }
 
+  if (topic === "volume" && shape === "cube") {
+    if (typeof p.side !== "number") return null;
+    return { kind: "square", mode: "volume", side: p.side };
+  }
+
+  if (topic === "angles" && p.kind === "triangle_angles") {
+    if (typeof p.angle1 !== "number" || typeof p.angle2 !== "number") return null;
+    const a3 =
+      typeof p.angle3 === "number" ? p.angle3 : 180 - p.angle1 - p.angle2;
+    return {
+      kind: "triangle_angles",
+      angle1: p.angle1,
+      angle2: p.angle2,
+      angle3: a3,
+    };
+  }
+
+  if (
+    topic === "pythagoras" &&
+    (p.kind === "pythagoras_hyp" || p.kind === "pythagoras_leg") &&
+    typeof p.a === "number" &&
+    typeof p.b === "number" &&
+    typeof p.c === "number"
+  ) {
+    return {
+      kind: "pythagoras",
+      mode: p.kind === "pythagoras_hyp" ? "hyp" : "leg",
+      which:
+        p.kind === "pythagoras_leg" && (p.which === "leg_a" || p.which === "leg_b")
+          ? p.which
+          : null,
+      a: p.a,
+      b: p.b,
+      c: p.c,
+    };
+  }
+
   return null;
 }
 
@@ -89,41 +126,72 @@ export function getDiagramEmphasisForStep(question, stepIndex, totalSteps) {
 
   switch (spec.kind) {
     case "square":
+      if (spec.mode === "volume") {
+        if (i <= 1) return "formula";
+        if (i === 2 || i === 3) return "side";
+        if (i >= last) return "result";
+        return "neutral";
+      }
       if (i === 0) return "formula";
       if (i === 1 || i === 2) return "side";
       if (i >= last) return "result";
       return "neutral";
     case "rectangle":
-      if (i === 0) return "formula";
-      if (i === 1) return "length_width";
+      if (i <= 1) return "formula";
       if (i === 2) return "length_width";
       if (i >= last) return "result";
       return "neutral";
     case "triangle":
-      if (i === 0) return "formula";
-      if (i === 1) return "base_height";
-      if (i === 2) return "base_height";
+      if (i <= 1) return "formula";
+      if (i === 2 || i === 3) return "base_height";
       if (i >= last) return "result";
       return "neutral";
     case "parallelogram":
-      if (i === 0) return "formula";
-      if (i === 1 || i === 2) return "base_height";
+      if (i <= 1) return "formula";
+      if (i === 2 || i === 3) return "base_height";
       if (i >= last) return "result";
       return "neutral";
     case "trapezoid":
-      if (i === 0) return "formula";
-      if (i === 1 || i === 2) return "bases_height";
+      if (i <= 1) return "formula";
+      if (i === 2 || i === 3) return "bases_height";
       if (i >= last) return "result";
       return "neutral";
     case "circle":
-      if (i === 0) return "formula";
-      if (i === 1 || i === 2) return "radius";
-      if (i === last) return spec.mode === "perimeter" ? "rim" : "result";
+      if (spec.mode === "perimeter") {
+        if (i === 0) return "formula";
+        if (i === 1 || i === 2) return "radius";
+        if (i >= last) return "rim";
+        return "neutral";
+      }
+      if (i <= 1) return "formula";
+      if (i === 2 || i === 3) return "radius";
+      if (i >= last) return "result";
       return "neutral";
     case "triangle_perimeter":
       if (i === 0) return "formula";
       if (i === 1 || i === 2) return "all_sides";
       if (i >= last) return "result";
+      return "neutral";
+    case "triangle_angles":
+      if (i === 0) return "angles_sum";
+      if (i === 1) return "given_two";
+      if (i === 2) return "angles_compute";
+      if (i >= last) return "third_angle";
+      return "neutral";
+    case "pythagoras":
+      if (spec.mode === "hyp") {
+        if (i === 0) return "formula";
+        if (i === 1) return "legs";
+        if (i === 2) return "squares_legs";
+        if (i === 3) return "sum";
+        if (i >= last) return "hyp";
+        return "neutral";
+      }
+      if (i === 0) return "formula";
+      if (i === 1) return "rearrange";
+      if (i === 2) return "squares_legs";
+      if (i === 3) return "diff";
+      if (i >= last) return "missing_leg";
       return "neutral";
     default:
       return "neutral";
