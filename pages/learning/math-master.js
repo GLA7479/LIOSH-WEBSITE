@@ -2930,7 +2930,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 </div>
               </div>
               
-              <div className="mb-2 w-full pt-3 flex flex-col items-center gap-2 shrink-0">
+              <div className="mt-auto mb-2 w-full pt-3 flex flex-col items-center gap-2">
               <div className="flex items-center justify-center gap-1.5 w-full max-w-md flex-wrap px-1">
                 <button
                   onClick={startGame}
