@@ -58,7 +58,7 @@ export function scopeHebrewStemForGrade(topic, question, gradeKey) {
   if (
     g >= 5 &&
     g <= 6 &&
-    ["reading", "writing", "speaking", "comprehension", "grammar"].includes(
+    ["reading", "writing", "speaking", "comprehension", "grammar", "vocabulary"].includes(
       topic
     )
   ) {

@@ -134,27 +134,41 @@ function applyMathLevelPresentation(question, ctx) {
   if (selectedOp === "divisibility" || kind === "divisibility") {
     const num = params?.num;
     const div = params?.divisor;
+    const pv = Math.abs(Number(params?.presentationVariant) || 0) % 2;
     if (num != null && div != null) {
       if (mathLevelKey === "easy") {
-        return `התחלקות (קל): האם ${num} מתחלק ב-${div} בלי שארית?`;
+        return pv === 0
+          ? `התחלקות (קל): האם ${num} מתחלק ב-${div} בלי שארית?`
+          : `בדיקת יחס: האם ${num} כפולה של ${div} (בלי שארית)?`;
       }
       if (mathLevelKey === "medium") {
-        return `סימני התחלקות — האם ${num} מתחלק ב-${div}?`;
+        return pv === 0
+          ? `סימני התחלקות — האם ${num} מתחלק ב-${div}?`
+          : `חלוקה שלמה: ${num} ÷ ${div} — האם יוצא שלם?`;
       }
-      return `בדיקת התחלקות (אתגר): האם ${num} יתחלק ב-${div}?`;
+      return pv === 0
+        ? `בדיקת התחלקות (אתגר): האם ${num} יתחלק ב-${div}?`
+        : `ניתוח מחלקים: האם ${div} מחלק את ${num} בדיוק?`;
     }
   }
 
   if (selectedOp === "prime_composite" || kind === "prime_composite") {
     const num = params?.num;
+    const pv = Math.abs(Number(params?.presentationVariant) || 0) % 2;
     if (num != null) {
       if (mathLevelKey === "easy") {
-        return `מספרים ראשוניים (קל): האם ${num} ראשוני או פריק?`;
+        return pv === 0
+          ? `מספרים ראשוניים (קל): האם ${num} ראשוני או פריק?`
+          : `סיווג בסיסי: ${num} — ראשוני או פריק?`;
       }
       if (mathLevelKey === "medium") {
-        return `סיווג מספר: ${num} — ראשוני או פריק?`;
+        return pv === 0
+          ? `סיווג מספר: ${num} — ראשוני או פריק?`
+          : `זיהוי סוג: האם ל-${num} יש בדיוק שני מחלקים טבעיים שונים?`;
       }
-      return `אתגר — האם ${num} הוא מספר ראשוני או פריק? הסבירו לעצמכם לפני שבוחרים.`;
+      return pv === 0
+        ? `אתגר — האם ${num} הוא מספר ראשוני או פריק? הסבירו לעצמכם לפני שבוחרים.`
+        : `הוכחה קצרה בראש: האם ${num} מתפרק לשני גורמים > 1?`;
     }
   }
 
@@ -262,22 +276,81 @@ function applyMathLevelPresentation(question, ctx) {
   if (kind === "round" && params?.n != null && params?.toWhat != null) {
     const { n, toWhat } = params;
     const gSuf = gradeBandSuffix;
+    const pv = Math.abs(Number(params?.presentationVariant) || 0) % 2;
     if (toWhat === 10) {
       if (mathLevelKey === "easy") {
-        return `עיגול לעשרות (קל): למה מתעגלים את ${n}? = ${BLANK}${gSuf}`;
+        return pv === 0
+          ? `עיגול לעשרות (קל): למה מתעגלים את ${n}? = ${BLANK}${gSuf}`
+          : `קירוב לעשרתיות קרובה: ${n} → ? = ${BLANK}${gSuf}`;
       }
       if (mathLevelKey === "medium") {
-        return `עגלו את ${n} לעשרות הקרובות — מה התוצאה? = ${BLANK}${gSuf}`;
+        return pv === 0
+          ? `עגלו את ${n} לעשרות הקרובות — מה התוצאה? = ${BLANK}${gSuf}`
+          : `עיגול לפי כלל עשרות: ${n} = ${BLANK}${gSuf}`;
       }
-      return `אתגר עיגול לעשרות: בחרו את המספר המתאים אחרי עיגול ${n} = ${BLANK}${gSuf}`;
+      return pv === 0
+        ? `אתגר עיגול לעשרות: בחרו את המספר המתאים אחרי עיגול ${n} = ${BLANK}${gSuf}`
+        : `בחירה נכונה אחרי עיגול ${n} לעשרות — ? = ${BLANK}${gSuf}`;
     }
     if (mathLevelKey === "easy") {
-      return `עיגול למאות (קל): למה מתעגלים את ${n}? = ${BLANK}${gSuf}`;
+      return pv === 0
+        ? `עיגול למאות (קל): למה מתעגלים את ${n}? = ${BLANK}${gSuf}`
+        : `קירוב למאה הקרובה: ${n} = ${BLANK}${gSuf}`;
     }
     if (mathLevelKey === "medium") {
-      return `עגלו את ${n} למאות הקרובות — מה התוצאה? = ${BLANK}${gSuf}`;
+      return pv === 0
+        ? `עגלו את ${n} למאות הקרובות — מה התוצאה? = ${BLANK}${gSuf}`
+        : `עיגול למאות לפי כלל: ${n} → ? = ${BLANK}${gSuf}`;
     }
-    return `אתגר עיגול למאות: ${n} → ? = ${BLANK}${gSuf}`;
+    return pv === 0
+      ? `אתגר עיגול למאות: ${n} → ? = ${BLANK}${gSuf}`
+      : `מספר מתאים אחרי עיגול ${n} למאות = ${BLANK}${gSuf}`;
+  }
+
+  if (kind === "dec_add" || kind === "dec_sub") {
+    const pv = Math.abs(Number(params?.presentationVariant) || 0) % 2;
+    const gSuf = gradeBandSuffix;
+    const a = params?.a;
+    const b = params?.b;
+    const pl = params?.places ?? 1;
+    if (a != null && b != null) {
+      const af = Number(a).toFixed(pl);
+      const bf = Number(b).toFixed(pl);
+      const lev =
+        mathLevelKey === "easy"
+          ? "קל"
+          : mathLevelKey === "medium"
+            ? "בינוני"
+            : "אתגר";
+      if (kind === "dec_add") {
+        if (mathLevelKey === "easy") {
+          return pv === 0
+            ? `חיבור עשרוניים (${lev}): ${af} + ${bf} = ${BLANK}${gSuf}`
+            : `סכום ישר (${lev}): ${af} + ${bf} = ${BLANK}${gSuf}`;
+        }
+        if (mathLevelKey === "medium") {
+          return pv === 0
+            ? `חיבור מיושר נקודה (${lev}): ${af} + ${bf} = ${BLANK}${gSuf}`
+            : `השלימו סכום (${lev}): ${af} + ${bf} = ${BLANK}${gSuf}`;
+        }
+        return pv === 0
+          ? `חיבור עשרוניים (${lev}) — בדקו ספרות: ${af} + ${bf} = ${BLANK}${gSuf}`
+          : `ניתוח סכום (${lev}): ${af} + ${bf} = ${BLANK}${gSuf}`;
+      }
+      if (mathLevelKey === "easy") {
+        return pv === 0
+          ? `חיסור עשרוניים (${lev}): ${af} − ${bf} = ${BLANK}${gSuf}`
+          : `הפרש ישר (${lev}): ${af} − ${bf} = ${BLANK}${gSuf}`;
+      }
+      if (mathLevelKey === "medium") {
+        return pv === 0
+          ? `חיסור מיושר (${lev}): ${af} − ${bf} = ${BLANK}${gSuf}`
+          : `השלימו הפרש (${lev}): ${af} − ${bf} = ${BLANK}${gSuf}`;
+      }
+      return pv === 0
+        ? `חיסור עשרוניים (${lev}) — בדקו לפני בחירה: ${af} − ${bf} = ${BLANK}${gSuf}`
+        : `ניתוח הפרש (${lev}): ${af} − ${bf} = ${BLANK}${gSuf}`;
+    }
   }
 
   if (selectedOp === "sequences") {
@@ -1620,7 +1693,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       if (t === "add") {
         correctAnswer = round(a + b, places);
         question = `${a.toFixed(places)} + ${b.toFixed(places)} = ${BLANK}`;
-        params = { kind: "dec_add", a, b, places };
+        params = {
+          kind: "dec_add",
+          a,
+          b,
+          places,
+          presentationVariant: randInt(0, 3),
+        };
         operandA = a;
         operandB = b;
       } else {
@@ -1628,7 +1707,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         const small = Math.min(a, b);
         correctAnswer = round(big - small, places);
         question = `${big.toFixed(places)} - ${small.toFixed(places)} = ${BLANK}`;
-        params = { kind: "dec_sub", a: big, b: small, places };
+        params = {
+          kind: "dec_sub",
+          a: big,
+          b: small,
+          places,
+          presentationVariant: randInt(0, 3),
+        };
         operandA = big;
         operandB = small;
       }
@@ -1645,7 +1730,12 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       toWhat === 10
         ? `עגל את ${n} לעשרות הקרובות = ${BLANK}`
         : `עגל את ${n} למאות הקרובות = ${BLANK}`;
-    params = { kind: "round", n, toWhat };
+    params = {
+      kind: "round",
+      n,
+      toWhat,
+      presentationVariant: randInt(0, 3),
+    };
   } else if (selectedOp === "equations" || (selectedOp === "order_of_operations" && gradeKey === "g3")) {
     if (mathForce === "eq_add_simple" || mathForce === "eq_sub_simple") {
       const eqType = mathForce === "eq_add_simple" ? "add" : "sub";
@@ -2556,7 +2646,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     
     correctAnswer = isDivisible ? "כן" : "לא";
     question = `האם המספר ${num} מתחלק ב-${divisor}?`;
-    params = { kind: "divisibility", num, divisor, isDivisible };
+    params = {
+      kind: "divisibility",
+      num,
+      divisor,
+      isDivisible,
+      presentationVariant: randInt(0, 3),
+    };
     operandA = num;
     operandB = divisor;
     
@@ -2608,7 +2704,12 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     const isNumPrime = isPrime(num);
     correctAnswer = isNumPrime ? "ראשוני" : "פריק";
     question = `האם המספר ${num} הוא ראשוני או פריק?`;
-    params = { kind: "prime_composite", num, isPrime: isNumPrime };
+    params = {
+      kind: "prime_composite",
+      num,
+      isPrime: isNumPrime,
+      presentationVariant: randInt(0, 3),
+    };
     operandA = num;
     operandB = null;
     

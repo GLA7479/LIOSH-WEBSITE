@@ -59,7 +59,11 @@ export function pickGeometryConceptualQuestion(ctx) {
       : lv === "medium"
         ? "מושגים (בינוני)"
         : "מושגים (אתגר)";
-  const qText = `${levelFr}: ${row.question}`;
+  const gNum = parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
+  const hebG = ["", "א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"];
+  const gCue =
+    gNum >= 1 && gNum <= 6 ? `(כיתה ${hebG[gNum]}) ` : "";
+  const qText = `${gCue}${levelFr}: ${row.question}`;
 
   return {
     question: qText,

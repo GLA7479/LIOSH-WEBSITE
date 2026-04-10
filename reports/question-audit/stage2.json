@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-10T21:42:36.822Z",
+  "generatedAt": "2026-04-10T21:54:44.423Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -74,1191 +74,7 @@
       "coverageNote": "דגימת אודיט דטרמיניסטית + harness נוסחתי וקונספטואלי + כפיית צורה (prism / parallelogram) בקובץ harness."
     }
   },
-  "withinBandClassPairOverlaps": [
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "geometry",
-      "patternFamily": "solid_faces_band_early",
-      "stemHash": "8cbe7715335814e35d33a897",
-      "subtopic": "cube_faces"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "geometry",
-      "patternFamily": "prism_vs_pyramid_band_early",
-      "stemHash": "c39533b3bd87ffc547df2ff1",
-      "subtopic": "apex"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "geometry",
-      "patternFamily": "polygon_sides",
-      "stemHash": "8edaebe435ee79ae1d73530c",
-      "subtopic": "square_4_equal"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "geometry",
-      "patternFamily": "binary_property_band_early_rect90",
-      "stemHash": "270e43e15f4b47a1a61ed9d5",
-      "subtopic": "rect_all_90"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "geometry",
-      "patternFamily": "slide_vs_flip",
-      "stemHash": "892fce3f237e9b35adbe413f",
-      "subtopic": "slide"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "geometry",
-      "patternFamily": "slide_vs_flip",
-      "stemHash": "6836c1ef145185b83080305a",
-      "subtopic": "mirror_flip"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "geometry",
-      "patternFamily": "area_as_covering",
-      "stemHash": "834513d581c028bc9003b7eb",
-      "subtopic": "unit_squares"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "passage_explicit",
-      "stemHash": "26eb67baa882a0708a18f281",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "passage_inference",
-      "stemHash": "1aa9a8d66804ead9b979becd",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "cause_effect",
-      "stemHash": "1135e914a211167df55f100c",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "completion",
-      "stemHash": "d926165bb2931423a4a919bb",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "binary_fact_mid_grammar",
-      "stemHash": "f07b7314ab3f225e396ee8ee",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "gender_number",
-      "stemHash": "074ff943b55fc229e41f5b4c",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "prep_choice",
-      "stemHash": "aa574bbd5e8854ee8edf901b",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "part_of_speech",
-      "stemHash": "6a2ad9857e86dff48e858111",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "synonym",
-      "stemHash": "da37a5314178ed76542fda0b",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "antonym",
-      "stemHash": "0ec045a82811fa8a310f7927",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "precision",
-      "stemHash": "826be299e3b427c278a74f00",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "sentence_read",
-      "stemHash": "cdf008e5d4f15b5cd67a6c71",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "structured_completion",
-      "stemHash": "c04754a184986189a40939e8",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "logic_completion",
-      "stemHash": "52dc1d2cd2c01bbbd6c60d66",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "social_reply_mid_help",
-      "stemHash": "66b9c746ea637db24013c7ed",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "analogy_reasoning",
-      "stemHash": "fc28241b872907c379e234da",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "morphology",
-      "stemHash": "8883e640b6f4ce786f35c7d3",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "hebrew",
-      "patternFamily": "semantic_field",
-      "stemHash": "d4661209298d073b68d1745a",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "perimeter_vs_area",
-      "stemHash": "07aedea8d9bdc00b0040437c",
-      "subtopic": "pv_area"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "perimeter_vs_area",
-      "stemHash": "ad2025a95d3b06ed321d9d7c",
-      "subtopic": "pv_perimeter"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "plan_then_compute",
-      "stemHash": "26a89e467e09049620c69623",
-      "subtopic": "plan_area_rect"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "triangle_angle_sum",
-      "stemHash": "9161fe1ff3f5325bcbca7abc",
-      "subtopic": "tri_sum_180"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "right_angle",
-      "stemHash": "08d2c6b51c7eee016cbea466",
-      "subtopic": "right_90"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "triangle_by_sides",
-      "stemHash": "4650de131ceb061982f87b7d",
-      "subtopic": "equilateral"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "quadrilateral_props",
-      "stemHash": "678f7e89f1db1e412b435866",
-      "subtopic": "para_parallel"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "hierarchy",
-      "stemHash": "d41644c6bd31e0b4f1da20f8",
-      "subtopic": "square_special"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "reflection",
-      "stemHash": "1da4a1130b7b97252ea616bd",
-      "subtopic": "mirror"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "parallel_perpendicular",
-      "stemHash": "2cc52af547eb4e7523f0c18f",
-      "subtopic": "perp_meeting"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "parallel_perpendicular",
-      "stemHash": "078c12a8e3bba24cd14fd635",
-      "subtopic": "parallel_never_meet"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "volume_space",
-      "stemHash": "5a60ff4c7296cef304d85cf2",
-      "subtopic": "volume_3d"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "rectangle_diagonal",
-      "stemHash": "109f84a0e9dd2b823bce2795",
-      "subtopic": "diag_equal_rect"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "quarter_turn",
-      "stemHash": "074e2ebedd542a0bd1e82f5a",
-      "subtopic": "quarter_90"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "polygon_sides",
-      "stemHash": "7e217088be858e32a43c038b",
-      "subtopic": "square_4_equal_mid"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "binary_property_band_mid_rect90",
-      "stemHash": "9fdd9d84b0445ff6829cf8a2",
-      "subtopic": "rect_all_90_mid"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "geometry",
-      "patternFamily": "binary_property_band_mid_rhombus_rect",
-      "stemHash": "47221181d7bd5c4247782d4c",
-      "subtopic": "not_always_both"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "vocabulary_typed",
-      "stemHash": "67896186392d1f45166a2066",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "sequence",
-      "stemHash": "84e223a5922743f1d11d7a80",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "reference",
-      "stemHash": "da6619e7587165fc79840b03",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "main_idea",
-      "stemHash": "453ec8757b98350c03136d3c",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "compare_statements",
-      "stemHash": "8bbed894472c308de3622b3e",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "tense_shift",
-      "stemHash": "37e7037da668504ff33543d6",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "sentence_correction",
-      "stemHash": "6cbab1e1865511d21807383f",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "transform",
-      "stemHash": "783dff40552f725071ae8482",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "binary_grammar",
-      "stemHash": "2ba0538b85ed2a5ec5cb13d3",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "context_fit",
-      "stemHash": "b5b0f104f36af44a37800ab7",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "category_exclusion",
-      "stemHash": "a25f1e14e63cd06340950f6a",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "rephrase",
-      "stemHash": "9bb273f6e0ee68a816efbccd",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "implicit_tone",
-      "stemHash": "1e818e598517ea5380f83953",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "supporting_detail",
-      "stemHash": "71a97fec43ae213bc60e9805",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "sentence_correction",
-      "stemHash": "42682abfc4af20a01f81d36a",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "verb_agreement",
-      "stemHash": "42682abfc4af20a01f81d36a",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "collocation",
-      "stemHash": "ad4b531737604021084585a5",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "structural",
-      "stemHash": "0755dab1d0b6bbdaa7561382",
-      "subtopic": ""
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "255155b90da6217e787bf6b3",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "c79fc1c2891dbcff1f8e856c",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "60c079f117661a0b3c894184",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "f270ff95ebf67d2b5d02067e",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "9fef117df86fc13840d6be6b",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "26af30e0e649a84e1f75242e",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "e5522e51a2903e408494a648",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "db591b2271d7fbee4be5e9db",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "0b4ed9ca1ad5620598edb6b1",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "03294083e9e5d680e0037a20",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "ef8d47ed5a311ad10b1c70be",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "9d7eb8808b92bc71865fe045",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "255af1bfabc376fe88ffb5b0",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "14e277c007ee8c004aca59de",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "25a73c87e5810cc36e4eb17f",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "e2172c04b7e681635c0b7edc",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "97d6d667c66db9751b7699eb",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "599d369b19d0f4396957b2e9",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "d5bba7119d07ee30c3550dd5",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "e78ddfd86a521d14e24b0d4c",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "6f6f36e736f639e8c103c9bc",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "e9aa1edc3e58a87257aa5cad",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "5055a690f1c9d71602e762d6",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "a4767209f178c938e38cdd41",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "8f9545ff6d31e78113cc1057",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "69ee44c766607ea9a37800fb",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "5eb090471e26603f09dbd273",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "e3ac13301488f52c3646c10e",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "af7552d2bcc8f65d861abb45",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "fb1af25d60fde476d4afb060",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "e8daaf28b2193212eb455ac1",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "00653a21356444fda9e534cd",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "2f86ccadf52a3284e14e4682",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "1d7b47aadc2816c770146a6a",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "f4501cff9aabaa2aeb392068",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "6eb357320e8dd0d012e4a965",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "5f50958f49fd91e9e8598e58",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "7b9ef8fd6f5826ce851f4342",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "117a53780543c8c3422e9154",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "ec9770672a9fa90828c2f8ec",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "0a0f0db9a0de18e2ab307715",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "b6a9c5cf3fc73c53104c8c43",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "6b6b813e635e1a525f662677",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "5c90c6cdea4a3865bf9f987b",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "b8c3ffdc40884d3589a16303",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "d59ff9cbfa289f292c8b1cd2",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "148e3f90982d3ff81a6d194f",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "modals",
-      "stemHash": "551be8ebe2c3e1f05491fb03",
-      "subtopic": "modals"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "b84504456036361772742170",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "6794775d71d6331fbc875823",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "dcd389dc7f9ed8a5668a23a6",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "9cc769a604f51c2bcb8f20d0",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "e106eaed9d4cb8ca41895f6f",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "26af51fa6fe1a09956d8a623",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "a0ec14f0e78a7c1cc389ab07",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "74b7d33c765bab9db1d424d2",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "a179408eae7bc3ea60685c7c",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "5ff624055485677f57f8230f",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "1dc2ba9cc133d3df59807596",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "bb35ea9696455d773427bd29",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "4677c4dded35b9db40d45d78",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "2cecacb82c256eef03bd96c3",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "2a384328139194146426cb66",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "c14e09b84f785d090fef90bb",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "7f9fea6986f38349a8f1eb34",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "9d6008fe4be29fb6d48b04df",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "7826cddd2878cc3c73a92ae3",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "ded312fdb3ed2bf886aedaa5",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "7228c2766b443ad0795b6a99",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "6592c357f717abb3c1c10e30",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "52538df875933261b4bfcd5e",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "8ac9435909207d82bf87a198",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "2d4ee65ab6e9f245adf9010f",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "21cc1d688f50c626bf08e04a",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "3336797ea124b51095b77b07",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "4cc990c2c256e4495f4bbef9",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "0748ce1ab10c39e8aebb9350",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "0597fb9f5c419e14afca0cf2",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "9ebc0c35d922ef5a77c61b4e",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "e1f0e30d010ca2065868eefc",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "283240e3d7e3e18a61e5b4b0",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "c495b564bb644cf2c64495b6",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "596bfec4e51cc6bbd4bf37bb",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "e8c57c4af40bb4b5deb29fd2",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "comparatives",
-      "stemHash": "dfe0de6c06141e8291c017cd",
-      "subtopic": "comparatives"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "perimeter_vs_area",
-      "stemHash": "1b249bb64a87ffee42e6e9fd",
-      "subtopic": "pv_area_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "perimeter_vs_area",
-      "stemHash": "846a6c315ade06cc805f26a0",
-      "subtopic": "pv_perimeter_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "plan_then_compute",
-      "stemHash": "addc118d3dab0c76044df849",
-      "subtopic": "plan_area_rect_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "shape_comparison",
-      "stemHash": "7314106adb6e15ec651ce990",
-      "subtopic": "compare_area"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "triangle_angle_sum",
-      "stemHash": "1dac3e0ee38121904401fabe",
-      "subtopic": "tri_sum_180_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "right_angle",
-      "stemHash": "f2d1fa9ff9884d7f6561c08a",
-      "subtopic": "right_90_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "parallel_lines",
-      "stemHash": "30bf7c869d5d55ba18329615",
-      "subtopic": "corresponding"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "triangle_by_sides",
-      "stemHash": "d1e2c617addb9220e08402a2",
-      "subtopic": "equilateral_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "quadrilateral_props",
-      "stemHash": "48e5e5b4bc50104a13a3506d",
-      "subtopic": "para_parallel_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "hierarchy",
-      "stemHash": "a6cf616fe06c2a6f0575efff",
-      "subtopic": "square_special_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "reflection",
-      "stemHash": "043a99a540e49509b4a66bc1",
-      "subtopic": "mirror_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "congruence",
-      "stemHash": "59abd8f7f204928852a87565",
-      "subtopic": "congruent_def"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "parallel_perpendicular",
-      "stemHash": "71d9b81eb499fb28039bbf48",
-      "subtopic": "perp_meeting_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "parallel_perpendicular",
-      "stemHash": "4d29658e694adc64d799ff48",
-      "subtopic": "parallel_never_meet_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "volume_space",
-      "stemHash": "4db7c78e7507951afc3f8c91",
-      "subtopic": "volume_3d_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "volume_prism_plan",
-      "stemHash": "a60192fe2f8e95c5e2cdab5a",
-      "subtopic": "vol_box"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "solid_faces_band_late",
-      "stemHash": "cdc3dd35a0775f2c67815614",
-      "subtopic": "cube_faces_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "prism_vs_pyramid_band_late",
-      "stemHash": "621bfc03e893c85cfc684439",
-      "subtopic": "apex_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "regular_tiling",
-      "stemHash": "833570e1740795331fd13c1a",
-      "subtopic": "360_at_vertex"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "height_definition",
-      "stemHash": "20a586a642bfc9d74451e68a",
-      "subtopic": "perpendicular_to_base"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "rectangle_diagonal",
-      "stemHash": "5f76e2c65fcd31a9774f9400",
-      "subtopic": "diag_equal_rect_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "binary_property_band_late_rhombus_rect",
-      "stemHash": "53c8ee7e8cb7803cccf5a65a",
-      "subtopic": "not_always_both_late"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "binary_property_band_late_obtuse_triangle",
-      "stemHash": "c9877a2d46f1b2d791048111",
-      "subtopic": "one_obtuse_max"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "geometry",
-      "patternFamily": "infer_missing",
-      "stemHash": "57f8b7a6caea89108a62e709",
-      "subtopic": "perim_to_side"
-    }
-  ],
+  "withinBandClassPairOverlaps": [],
   "weakLevelSeparationCombos": [
     {
       "comboKey": "geometry|area|square_area|2",
@@ -1277,16 +93,6 @@
         "easy": 7,
         "medium": 7,
         "hard": 14
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "geometry|diagonal|diagonal_square|4",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 13,
-        "medium": 8,
-        "hard": 8
       },
       "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
     },
@@ -1401,46 +207,6 @@
       "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
     },
     {
-      "comboKey": "math|divisibility|divisibility|2",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 16,
-        "medium": 16,
-        "hard": 16
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "math|decimals|dec_add|3",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 9,
-        "medium": 8,
-        "hard": 7
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "math|decimals|dec_sub|3",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 7,
-        "medium": 8,
-        "hard": 9
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "math|divisibility|divisibility|3",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 16,
-        "medium": 16,
-        "hard": 16
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
       "comboKey": "math|order_of_operations|order_mul_sub|3",
       "uniqueStemHashesAcrossLevels": 3,
       "samplesPerLevel": {
@@ -1457,46 +223,6 @@
         "easy": 5,
         "medium": 6,
         "hard": 6
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "math|decimals|dec_add|4",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 9,
-        "medium": 7,
-        "hard": 8
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "math|decimals|dec_sub|4",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 7,
-        "medium": 9,
-        "hard": 8
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "math|rounding|round|4",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 16,
-        "medium": 16,
-        "hard": 16
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "math|divisibility|divisibility|4",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 16,
-        "medium": 16,
-        "hard": 16
       },
       "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
     },
@@ -1587,36 +313,6 @@
         "easy": 8,
         "medium": 9,
         "hard": 8
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "math|decimals|dec_add|5",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 9,
-        "medium": 8,
-        "hard": 8
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "math|decimals|dec_sub|5",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 7,
-        "medium": 8,
-        "hard": 8
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "math|rounding|round|5",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 16,
-        "medium": 16,
-        "hard": 16
       },
       "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
     },
@@ -1721,16 +417,6 @@
       "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
     },
     {
-      "comboKey": "math|rounding|round|6",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 16,
-        "medium": 16,
-        "hard": 16
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
       "comboKey": "math|number_sense|ns_complement100|6",
       "uniqueStemHashesAcrossLevels": 3,
       "samplesPerLevel": {
@@ -1764,55 +450,55 @@
   "topicMetadataCoverage": {
     "hebrew": {
       "reading": {
-        "rows": 72,
-        "staticRows": 72,
+        "rows": 74,
+        "staticRows": 74,
         "sampleRows": 0,
-        "withSubtype": 72,
-        "withPatternFamily": 72
+        "withSubtype": 74,
+        "withPatternFamily": 74
       },
       "comprehension": {
-        "rows": 79,
-        "staticRows": 79,
+        "rows": 91,
+        "staticRows": 91,
         "sampleRows": 0,
-        "withSubtype": 66,
-        "withPatternFamily": 79
+        "withSubtype": 78,
+        "withPatternFamily": 91
       },
       "writing": {
+        "rows": 73,
+        "staticRows": 73,
+        "sampleRows": 0,
+        "withSubtype": 48,
+        "withPatternFamily": 73
+      },
+      "grammar": {
+        "rows": 81,
+        "staticRows": 81,
+        "sampleRows": 0,
+        "withSubtype": 81,
+        "withPatternFamily": 81
+      },
+      "vocabulary": {
         "rows": 70,
         "staticRows": 70,
         "sampleRows": 0,
-        "withSubtype": 45,
+        "withSubtype": 50,
         "withPatternFamily": 70
       },
-      "grammar": {
-        "rows": 71,
-        "staticRows": 71,
-        "sampleRows": 0,
-        "withSubtype": 71,
-        "withPatternFamily": 71
-      },
-      "vocabulary": {
-        "rows": 63,
-        "staticRows": 63,
+      "speaking": {
+        "rows": 49,
+        "staticRows": 49,
         "sampleRows": 0,
         "withSubtype": 43,
-        "withPatternFamily": 63
-      },
-      "speaking": {
-        "rows": 48,
-        "staticRows": 48,
-        "sampleRows": 0,
-        "withSubtype": 42,
-        "withPatternFamily": 48
+        "withPatternFamily": 49
       }
     },
     "english": {
       "grammar": {
-        "rows": 537,
-        "staticRows": 537,
+        "rows": 634,
+        "staticRows": 634,
         "sampleRows": 0,
         "withSubtype": 0,
-        "withPatternFamily": 537
+        "withPatternFamily": 634
       },
       "translation": {
         "rows": 36,
@@ -1831,67 +517,67 @@
     },
     "geometry": {
       "area|perimeter": {
-        "rows": 6,
-        "staticRows": 6,
+        "rows": 12,
+        "staticRows": 12,
         "sampleRows": 0,
-        "withSubtype": 6,
-        "withPatternFamily": 6
+        "withSubtype": 12,
+        "withPatternFamily": 12
       },
       "area": {
-        "rows": 363,
-        "staticRows": 3,
+        "rows": 366,
+        "staticRows": 6,
         "sampleRows": 360,
-        "withSubtype": 195,
-        "withPatternFamily": 363
+        "withSubtype": 198,
+        "withPatternFamily": 366
       },
       "angles": {
-        "rows": 221,
-        "staticRows": 5,
+        "rows": 226,
+        "staticRows": 10,
         "sampleRows": 216,
-        "withSubtype": 105,
-        "withPatternFamily": 221
+        "withSubtype": 110,
+        "withPatternFamily": 226
       },
       "triangles": {
-        "rows": 74,
-        "staticRows": 2,
+        "rows": 76,
+        "staticRows": 4,
         "sampleRows": 72,
-        "withSubtype": 74,
-        "withPatternFamily": 74
+        "withSubtype": 76,
+        "withPatternFamily": 76
       },
       "quadrilaterals": {
-        "rows": 148,
-        "staticRows": 4,
+        "rows": 152,
+        "staticRows": 8,
         "sampleRows": 144,
-        "withSubtype": 67,
-        "withPatternFamily": 148
+        "withSubtype": 71,
+        "withPatternFamily": 152
       },
       "symmetry": {
-        "rows": 74,
-        "staticRows": 2,
+        "rows": 76,
+        "staticRows": 4,
         "sampleRows": 72,
-        "withSubtype": 34,
-        "withPatternFamily": 74
+        "withSubtype": 36,
+        "withPatternFamily": 76
       },
       "symmetry|transformations": {
-        "rows": 1,
-        "staticRows": 1,
+        "rows": 2,
+        "staticRows": 2,
         "sampleRows": 0,
-        "withSubtype": 1,
-        "withPatternFamily": 1
+        "withSubtype": 2,
+        "withPatternFamily": 2
       },
       "parallel_perpendicular": {
-        "rows": 148,
-        "staticRows": 4,
+        "rows": 152,
+        "staticRows": 8,
         "sampleRows": 144,
-        "withSubtype": 148,
-        "withPatternFamily": 148
+        "withSubtype": 152,
+        "withPatternFamily": 152
       },
       "volume": {
-        "rows": 219,
-        "staticRows": 3,
+        "rows": 222,
+        "staticRows": 6,
         "sampleRows": 216,
-        "withSubtype": 89,
-        "withPatternFamily": 219
+        "withSubtype": 92,
+        "withPatternFamily": 222
       },
       "circles": {
         "rows": 73,
@@ -1915,67 +601,67 @@
         "withPatternFamily": 74
       },
       "solids": {
-        "rows": 148,
-        "staticRows": 4,
+        "rows": 152,
+        "staticRows": 8,
         "sampleRows": 144,
-        "withSubtype": 42,
-        "withPatternFamily": 148
+        "withSubtype": 46,
+        "withPatternFamily": 152
       },
       "tiling": {
-        "rows": 73,
-        "staticRows": 1,
+        "rows": 74,
+        "staticRows": 2,
         "sampleRows": 72,
-        "withSubtype": 37,
-        "withPatternFamily": 73
+        "withSubtype": 38,
+        "withPatternFamily": 74
       },
       "heights": {
-        "rows": 73,
-        "staticRows": 1,
+        "rows": 74,
+        "staticRows": 2,
         "sampleRows": 72,
-        "withSubtype": 23,
-        "withPatternFamily": 73
+        "withSubtype": 24,
+        "withPatternFamily": 74
       },
       "diagonal": {
-        "rows": 146,
-        "staticRows": 2,
-        "sampleRows": 144,
-        "withSubtype": 44,
-        "withPatternFamily": 146
-      },
-      "rotation": {
-        "rows": 73,
-        "staticRows": 1,
-        "sampleRows": 72,
-        "withSubtype": 18,
-        "withPatternFamily": 73
-      },
-      "shapes_basic": {
         "rows": 148,
         "staticRows": 4,
         "sampleRows": 144,
-        "withSubtype": 43,
+        "withSubtype": 46,
         "withPatternFamily": 148
       },
+      "rotation": {
+        "rows": 74,
+        "staticRows": 2,
+        "sampleRows": 72,
+        "withSubtype": 19,
+        "withPatternFamily": 74
+      },
+      "shapes_basic": {
+        "rows": 152,
+        "staticRows": 8,
+        "sampleRows": 144,
+        "withSubtype": 47,
+        "withPatternFamily": 152
+      },
       "quadrilaterals|triangles": {
+        "rows": 4,
+        "staticRows": 4,
+        "sampleRows": 0,
+        "withSubtype": 4,
+        "withPatternFamily": 4
+      },
+      "angles|triangles": {
         "rows": 2,
         "staticRows": 2,
         "sampleRows": 0,
         "withSubtype": 2,
         "withPatternFamily": 2
       },
-      "angles|triangles": {
-        "rows": 1,
-        "staticRows": 1,
-        "sampleRows": 0,
-        "withSubtype": 1,
-        "withPatternFamily": 1
-      },
       "transformations": {
-        "rows": 146,
-        "staticRows": 2,
+        "rows": 148,
+        "staticRows": 4,
         "sampleRows": 144,
-        "withSubtype": 35,
-        "withPatternFamily": 146
+        "withSubtype": 37,
+        "withPatternFamily": 148
       },
       "perimeter": {
         "rows": 288,

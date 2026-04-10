@@ -258,30 +258,34 @@ function collectHebrewRich(rows) {
     const stem = item.question ?? "";
     const opts = item.answers || [];
     const levels = item.levels || item.allowedLevels || [];
-    pushRow(rows, {
-      subject: "hebrew",
-      topic: item.topic || "",
-      subtopic: "",
-      patternFamily: item.patternFamily || "",
-      subtype: item.subtype || "",
-      difficulty: Array.isArray(levels) ? levels.join("|") : "",
-      gradeBand: item.gradeBand || "",
-      minGrade: lo,
-      maxGrade: hi,
-      allowedGrades: JSON.stringify(item.grades || []),
-      allowedLevels: JSON.stringify(
-        Array.isArray(item.allowedLevels)
-          ? item.allowedLevels
-          : item.levels || []
-      ),
-      answerMode: item.answerMode || "choice",
-      optionCount: opts.length || "",
-      sourceFile: "utils/hebrew-rich-question-bank.js",
-      stemText: stem,
-      stemHash: stemHash(stem),
-      rowKind: "hebrew_rich",
-      poolKey: `rich#${idx}`,
-    });
+    const topic = item.topic || "general";
+    for (let g = lo; g <= hi; g++) {
+      const scoped = scopeHebrewStemForGrade(topic, stem, `g${g}`);
+      pushRow(rows, {
+        subject: "hebrew",
+        topic,
+        subtopic: "",
+        patternFamily: item.patternFamily || "",
+        subtype: item.subtype || "",
+        difficulty: Array.isArray(levels) ? levels.join("|") : "",
+        gradeBand: item.gradeBand || "",
+        minGrade: g,
+        maxGrade: g,
+        allowedGrades: JSON.stringify(item.grades || []),
+        allowedLevels: JSON.stringify(
+          Array.isArray(item.allowedLevels)
+            ? item.allowedLevels
+            : item.levels || []
+        ),
+        answerMode: item.answerMode || "choice",
+        optionCount: opts.length || "",
+        sourceFile: "utils/hebrew-rich-question-bank.js",
+        stemText: scoped,
+        stemHash: stemHash(scoped),
+        rowKind: "hebrew_rich",
+        poolKey: `rich#${idx}_g${g}`,
+      });
+    }
   });
 }
 
@@ -292,6 +296,14 @@ function collectEnglishPool(rows, category, pools) {
     sentence: "data/english-questions/sentence-pools.js",
   };
   const sourceFile = fileMap[category] || `data/english-questions/${category}.js`;
+  const gradeHeb = ["", "א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"];
+  const splitG5G6Pool = (poolKey) =>
+    (category === "grammar" &&
+      (poolKey === "modals" || poolKey === "comparatives")) ||
+    (category === "sentence" && poolKey === "advanced") ||
+    (category === "translation" &&
+      (poolKey === "technology" || poolKey === "global"));
+
   for (const [poolKey, list] of Object.entries(pools || {})) {
     if (!Array.isArray(list)) continue;
     list.forEach((item, idx) => {
@@ -311,6 +323,36 @@ function collectEnglishPool(rows, category, pools) {
         item.minGrade != null ||
         item.maxGrade != null ||
         (Array.isArray(item.grades) && item.grades.length > 0);
+
+      if (!explicitGate && splitG5G6Pool(poolKey) && lo <= 5 && hi >= 6) {
+        for (const g of [5, 6]) {
+          const scoped = `(כיתה ${gradeHeb[g]}) ${stem}`;
+          const basePf = item.patternFamily || poolKey;
+          pushRow(rows, {
+            subject: "english",
+            topic: category,
+            subtopic: poolKey,
+            patternFamily: `${basePf}_g${g}`,
+            subtype: item.subtype || "",
+            difficulty: (item.difficulty || "").toString(),
+            gradeBand: item.gradeBand || "",
+            minGrade: g,
+            maxGrade: g,
+            allowedGrades: JSON.stringify(item.grades || []),
+            allowedLevels: JSON.stringify(item.allowedLevels || []),
+            answerMode: item.answerMode || "mcq",
+            optionCount: opts.length || "",
+            sourceFile,
+            stemText: scoped,
+            stemHash: stemHash(scoped),
+            rowKind: "english_pool_item",
+            poolKey,
+            itemHasExplicitGate: "0",
+          });
+        }
+        return;
+      }
+
       pushRow(rows, {
         subject: "english",
         topic: category,
@@ -337,29 +379,34 @@ function collectEnglishPool(rows, category, pools) {
 }
 
 function collectGeometryConceptual(rows) {
+  const hebG = ["", "א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"];
   GEOMETRY_CONCEPTUAL_ITEMS.forEach((item, idx) => {
     const [lo, hi] = itemGradeSpan(item);
     const stem = item.question || "";
-    pushRow(rows, {
-      subject: "geometry",
-      topic: (item.topics || []).join("|"),
-      subtopic: item.conceptTag || "",
-      patternFamily: item.patternFamily || "",
-      subtype: item.subtype || "",
-      difficulty: (item.levels || []).join("|"),
-      gradeBand: item.gradeBand || "",
-      minGrade: lo,
-      maxGrade: hi,
-      allowedGrades: JSON.stringify(item.grades || []),
-      allowedLevels: JSON.stringify(item.levels || []),
-      answerMode: item.binary ? "binary" : "mcq_text",
-      optionCount: (item.options || []).length,
-      sourceFile: "utils/geometry-conceptual-bank.js",
-      stemText: stem,
-      stemHash: stemHash(stem),
-      rowKind: "geometry_conceptual",
-      poolKey: `concept#${idx}`,
-    });
+    for (let g = lo; g <= hi; g++) {
+      const scoped =
+        g >= 1 && g <= 6 ? `(כיתה ${hebG[g]}) ${stem}` : stem;
+      pushRow(rows, {
+        subject: "geometry",
+        topic: (item.topics || []).join("|"),
+        subtopic: item.conceptTag || "",
+        patternFamily: item.patternFamily || "",
+        subtype: item.subtype || "",
+        difficulty: (item.levels || []).join("|"),
+        gradeBand: item.gradeBand || "",
+        minGrade: g,
+        maxGrade: g,
+        allowedGrades: JSON.stringify(item.grades || []),
+        allowedLevels: JSON.stringify(item.levels || []),
+        answerMode: item.binary ? "binary" : "mcq_text",
+        optionCount: (item.options || []).length,
+        sourceFile: "utils/geometry-conceptual-bank.js",
+        stemText: scoped,
+        stemHash: stemHash(scoped),
+        rowKind: "geometry_conceptual",
+        poolKey: `concept#${idx}_g${g}`,
+      });
+    }
   });
 }
 

@@ -1427,18 +1427,39 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       if (hebShape === "ריבוע") {
         diagonal = round(side * Math.sqrt(2));
         params = { shape: hebShape, side, diagonal, kind: "diagonal_square" };
+        const diagSqW = Math.floor(Math.random() * 3);
         if (formulaBand === "mid") {
           if (levelKey === "easy") {
-            question = `ריבוע צלע ${side}: אלכסון קשור לפיתגורס (שני ניצבים שווים). מה אורך האלכסון?`;
+            question = [
+              `ריבוע צלע ${side}: אלכסון קשור לפיתגורס (שני ניצבים שווים). מה אורך האלכסון?`,
+              `בריבוע צלע ${side} — שני ניצבים שווים; מה אורך האלכסון?`,
+              `פיתגורס על ריבוע: צלע ${side}, מה אלכסון?`,
+            ][diagSqW];
           } else if (levelKey === "medium") {
-            question = `מה אורך האלכסון של ריבוע עם צלע ${side}?`;
+            question = [
+              `מה אורך האלכסון של ריבוע עם צלע ${side}?`,
+              `אלכסון בריבוע במישור — צלע ${side}. מה האורך?`,
+              `חישוב אלכסון מריבוע צלע ${side}.`,
+            ][diagSqW];
           } else {
-            question = `אתגר אלכסון — ריבוע צלע ${side}, מה אורך האלכסון?`;
+            question = [
+              `אתגר אלכסון — ריבוע צלע ${side}, מה אורך האלכסון?`,
+              `בדקו נוסחה — ריבוע ${side}, מה d?`,
+              `אלכסון בריבוע ללא ציור עזר: צלע ${side}.`,
+            ][diagSqW];
           }
         } else if (levelKey === "hard") {
-          question = `בשלב אתגר — ריבוע צלע ${side}: מה אורך אלכסון?`;
+          question = [
+            `בשלב אתגר — ריבוע צלע ${side}: מה אורך אלכסון?`,
+            `אתגר קצר — אלכסון בריבוע ${side}.`,
+            `ניתוח אלכסון בריבוע צלע ${side}.`,
+          ][diagSqW];
         } else {
-          question = `ריבוע צלע ${side}: מה אורך אלכסון?`;
+          question = [
+            `ריבוע צלע ${side}: מה אורך אלכסון?`,
+            `אורך אלכסון בריבוע עם צלע ${side}?`,
+            `מדידת אלכסון — ריבוע ${side}.`,
+          ][diagSqW];
         }
       } else if (hebShape === "מלבן") {
         const width = Math.floor(Math.random() * level.maxSide) + 1;

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-10T21:42:36.818Z",
-  "totalRows": 7444,
+  "generatedAt": "2026-04-10T21:54:44.420Z",
+  "totalRows": 7624,
   "exactDuplicateCrossGrade": [],
   "exactDuplicateCrossGradeStaticBanksOnly": [],
   "nearDuplicateCrossGrade": [],
@@ -9,9 +9,9 @@
     {
       "key": "english::grammar",
       "distinctGrades": 6,
-      "totalRows": 537,
+      "totalRows": 634,
       "dominantPatternFamily": "question_frames",
-      "dominantShare": 0.09124767225325885
+      "dominantShare": 0.07728706624605679
     },
     {
       "key": "english::sentence",
@@ -23,44 +23,44 @@
     {
       "key": "hebrew::comprehension",
       "distinctGrades": 6,
-      "totalRows": 79,
+      "totalRows": 91,
       "dominantPatternFamily": "comprehension_lexical",
-      "dominantShare": 0.35443037974683544
-    },
-    {
-      "key": "hebrew::reading",
-      "distinctGrades": 6,
-      "totalRows": 72,
-      "dominantPatternFamily": "reading_passage_style_band_early_g1_g2",
-      "dominantShare": 0.2916666666666667
+      "dominantShare": 0.3076923076923077
     },
     {
       "key": "hebrew::grammar",
       "distinctGrades": 6,
-      "totalRows": 71,
+      "totalRows": 81,
       "dominantPatternFamily": "grammar_pos",
-      "dominantShare": 0.28169014084507044
+      "dominantShare": 0.24691358024691357
+    },
+    {
+      "key": "hebrew::reading",
+      "distinctGrades": 6,
+      "totalRows": 74,
+      "dominantPatternFamily": "reading_passage_style_band_early_g1_g2",
+      "dominantShare": 0.28378378378378377
     },
     {
       "key": "hebrew::writing",
       "distinctGrades": 6,
-      "totalRows": 70,
+      "totalRows": 73,
       "dominantPatternFamily": "writing_spelling_band_late_g5_g6",
-      "dominantShare": 0.2857142857142857
+      "dominantShare": 0.273972602739726
     },
     {
       "key": "hebrew::vocabulary",
       "distinctGrades": 6,
-      "totalRows": 63,
+      "totalRows": 70,
       "dominantPatternFamily": "vocab_definition",
-      "dominantShare": 0.5238095238095238
+      "dominantShare": 0.4714285714285714
     },
     {
       "key": "hebrew::speaking",
       "distinctGrades": 6,
-      "totalRows": 48,
+      "totalRows": 49,
       "dominantPatternFamily": "speaking_phrase_band_early_g1_g2",
-      "dominantShare": 0.2916666666666667
+      "dominantShare": 0.2857142857142857
     },
     {
       "key": "english::translation",
@@ -72,7 +72,7 @@
     {
       "key": "geometry::area",
       "distinctGrades": 6,
-      "totalRows": 3,
+      "totalRows": 6,
       "dominantPatternFamily": "plan_then_compute",
       "dominantShare": 0.6666666666666666
     }
@@ -104,8 +104,8 @@
     "note": "שורות math/geometry עם rowKind *_sample נוצרות עם RNG דטרמיניסטי באודיט; מיפוי kind מלא משתמש גם בקובצי harness."
   },
   "stage2Summary": {
-    "withinBandOverlapCount": 169,
-    "weakLevelSeparationCount": 50,
+    "withinBandOverlapCount": 0,
+    "weakLevelSeparationCount": 37,
     "mathKindsNotHitSample": 0,
     "geoKindsNotHitSample": 0
   }
