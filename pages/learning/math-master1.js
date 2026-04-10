@@ -34,7 +34,7 @@ import {
   getAdditionStepsColumn,
   buildStepExplanation,
 } from "../../utils/math-explanations";
-import { trackOperationTime } from "../../utils/math-time-tracking";
+import { trackOperationTime, buildMathReportStorageKey } from "../../utils/math-time-tracking";
 import { applyLearningShellLayoutVars } from "../../utils/learning-shell-layout";
 import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
@@ -1079,15 +1079,22 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           if (questionStartTime) {
             const duration = (Date.now() - questionStartTime) / 1000;
             if (duration > 0 && duration < 300) {
-              const opKey =
+              const baseOp =
                 mathTrackingOperationKeyRef.current ?? currentQuestion?.operation;
-              if (opKey) {
+              const storageKey = buildMathReportStorageKey(baseOp, currentQuestion);
+              if (storageKey) {
                 trackOperationTime(
-                  opKey,
+                  storageKey,
                   grade,
                   level,
                   duration,
-                  { mode: "practice_mistakes", total: 1, correct: undefined }
+                  {
+                    mode: "practice_mistakes",
+                    total: 1,
+                    correct: undefined,
+                    baseOperation: baseOp,
+                    kind: currentQuestion?.params?.kind,
+                  }
                 );
               }
             }
@@ -1197,11 +1204,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       if (duration > 0 && duration < 300) {
         const meta = pendingTimeTrackMetaRef.current;
         pendingTimeTrackMetaRef.current = null;
-        const opKey =
+        const baseOp =
           mathTrackingOperationKeyRef.current ?? currentQuestion?.operation;
-        if (opKey) {
+        const storageKey = buildMathReportStorageKey(baseOp, currentQuestion);
+        if (storageKey) {
           trackOperationTime(
-            opKey,
+            storageKey,
             grade,
             level,
             duration,
@@ -1210,11 +1218,15 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   mode: meta.mode,
                   correct: meta.correct,
                   total: meta.total,
+                  baseOperation: baseOp,
+                  kind: currentQuestion?.params?.kind,
                 }
               : {
                   mode: reportModeFromGameState(mode, focusedPracticeMode),
                   total: 1,
                   correct: undefined,
+                  baseOperation: baseOp,
+                  kind: currentQuestion?.params?.kind,
                 }
           );
         }
@@ -1239,9 +1251,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
   function trackCurrentQuestionTime() {
     if (!questionStartTime) return;
-    const opKey =
+    const baseOp =
       mathTrackingOperationKeyRef.current ?? currentQuestion?.operation;
-    if (!opKey) return;
+    const storageKey = buildMathReportStorageKey(baseOp, currentQuestion);
+    if (!storageKey) return;
     const elapsedMs = Date.now() - questionStartTime;
     if (elapsedMs <= 0) return;
     sessionSecondsRef.current += Math.min(elapsedMs, 60000);
@@ -1250,16 +1263,24 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       const meta = pendingTimeTrackMetaRef.current;
       pendingTimeTrackMetaRef.current = null;
       trackOperationTime(
-        opKey,
+        storageKey,
         grade,
         level,
         duration,
         meta && meta.mode != null
-          ? { mode: meta.mode, correct: meta.correct, total: meta.total }
+          ? {
+              mode: meta.mode,
+              correct: meta.correct,
+              total: meta.total,
+              baseOperation: baseOp,
+              kind: currentQuestion?.params?.kind,
+            }
           : {
               mode: reportModeFromGameState(mode, focusedPracticeMode),
               total: 1,
               correct: undefined,
+              baseOperation: baseOp,
+              kind: currentQuestion?.params?.kind,
             }
       );
     }

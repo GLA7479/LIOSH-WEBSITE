@@ -6,7 +6,7 @@
 import { STORAGE_KEY } from "./math-constants";
 import {
   generateRecommendations,
-  getOperationName,
+  getMathReportBucketDisplayName,
   getTopicName,
   getEnglishTopicName,
   getScienceTopicName,
@@ -22,6 +22,7 @@ const MODE_LABELS = {
   practice: "תרגול",
   challenge: "אתגר",
   speed: "מהירות",
+  marathon: "מרתון",
   graded: "מדורג",
   normal: "רגיל",
   mistakes: "טעויות",
@@ -131,7 +132,13 @@ function buildMapFromBucket({
     const sessions = map[itemKey];
     if (!sessions.length) continue;
     const { bucketKey } = splitBucketModeRowKey(itemKey);
-    const legacy = progressData[bucketKey] || { total: 0, correct: 0 };
+    const progressLookupKey =
+      subject === "math" &&
+      typeof bucketKey === "string" &&
+      bucketKey.includes("::")
+        ? bucketKey.split("::")[0]
+        : bucketKey;
+    const legacy = progressData[progressLookupKey] || { total: 0, correct: 0 };
     out[itemKey] = buildRowSummary({
       subject,
       itemKey,
@@ -198,6 +205,24 @@ function dominantKey(counts) {
   return keys.sort((a, b) => counts[b] - counts[a])[0];
 }
 
+/** כיתה/רמה לתצוגה: הערך מהסשן העדכני ביותר בטווח (לא שכיחות היסטורית). */
+function latestSessionFieldValue(sessions, field) {
+  let bestT = -Infinity;
+  let bestVal = null;
+  if (!Array.isArray(sessions)) return null;
+  for (const s of sessions) {
+    const t = parseSessionTime(s);
+    if (!Number.isFinite(t)) continue;
+    const v = s[field];
+    if (v == null || v === "") continue;
+    if (t >= bestT) {
+      bestT = t;
+      bestVal = v;
+    }
+  }
+  return bestVal;
+}
+
 function countDistribution(sessions, field) {
   const c = {};
   sessions.forEach((s) => {
@@ -246,8 +271,16 @@ function buildRowSummary({
   const gradeDist = countDistribution(sessions, "grade");
   const levelDist = countDistribution(sessions, "level");
   const modeDist = countDistribution(sessions, "mode");
-  const gradeKey = dominantKey(gradeDist);
-  const levelKey = dominantKey(levelDist);
+  const gradeKeyLatest = latestSessionFieldValue(sessions, "grade");
+  const levelKeyLatest = latestSessionFieldValue(sessions, "level");
+  const gradeKey =
+    gradeKeyLatest != null && gradeKeyLatest !== ""
+      ? gradeKeyLatest
+      : dominantKey(gradeDist);
+  const levelKey =
+    levelKeyLatest != null && levelKeyLatest !== ""
+      ? levelKeyLatest
+      : dominantKey(levelDist);
   const modeKey =
     modeFromKey && modeFromKey !== ""
       ? modeFromKey
@@ -292,7 +325,7 @@ const SUBJECTS = [
     mistakesKey: "mleo_mistakes",
     mistakeKeyField: "operation",
     topicKey: (m) => m.operation,
-    displayName: getOperationName,
+    displayName: getMathReportBucketDisplayName,
   },
   {
     id: "geometry",
@@ -695,7 +728,10 @@ export function generateParentReportV2(
   const needsPractice = [
     ...Object.entries(mathOperations)
       .filter(([_, d]) => d.needsPractice)
-      .map(([_, d]) => `חשבון: ${d.displayName || getOperationName(d.bucketKey)}`),
+      .map(
+        ([_, d]) =>
+          `חשבון: ${d.displayName || getMathReportBucketDisplayName(d.bucketKey)}`
+      ),
     ...Object.entries(geometryTopics)
       .filter(([_, d]) => d.needsPractice)
       .map(([_, d]) => `גאומטריה: ${d.displayName || getTopicName(d.bucketKey)}`),
@@ -719,7 +755,10 @@ export function generateParentReportV2(
   const excellent = [
     ...Object.entries(mathOperations)
       .filter(([_, d]) => d.excellent && d.questions >= 10)
-      .map(([_, d]) => `חשבון: ${d.displayName || getOperationName(d.bucketKey)}`),
+      .map(
+        ([_, d]) =>
+          `חשבון: ${d.displayName || getMathReportBucketDisplayName(d.bucketKey)}`
+      ),
     ...Object.entries(geometryTopics)
       .filter(([_, d]) => d.excellent && d.questions >= 10)
       .map(([_, d]) => `גאומטריה: ${d.displayName || getTopicName(d.bucketKey)}`),

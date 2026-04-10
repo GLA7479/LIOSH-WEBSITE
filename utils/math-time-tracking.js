@@ -10,25 +10,55 @@ const GEOMETRY_TIME_TRACKING_KEY = "mleo_geometry_time_tracking";
 
 /**
  * Optional session metadata for Parent Report V2 (backward compatible).
- * @typedef {{ mode?: string, correct?: number, total?: number }} TrackSessionMeta
+ * @typedef {{ mode?: string, correct?: number, total?: number, baseOperation?: string, kind?: string }} TrackSessionMeta
  */
 
-// שמירת זמן עבודה על פעולה ספציפית (חשבון)
-export function trackOperationTime(operation, grade, level, duration, meta = {}) {
+/**
+ * מפתח אחסון לדוח הורים: פעולה בסיסית, או פעולה::סוג שאלה (params.kind) כשקיים.
+ * תאימות לאחור: בלי kind נשאר המפתח הישן (למשל addition).
+ */
+export function buildMathReportStorageKey(baseOperation, questionLike) {
+  const base =
+    baseOperation != null && String(baseOperation).trim()
+      ? String(baseOperation).trim()
+      : "";
+  if (!base) return base;
+  const rawKind = questionLike?.params?.kind;
+  const kind =
+    rawKind != null && String(rawKind).trim()
+      ? String(rawKind).trim().replace(/::/g, "_")
+      : "";
+  if (!kind || kind === base) return base;
+  return `${base}::${kind}`;
+}
+
+// שמירת זמן עבודה על פעולה ספציפית (חשבון) — המפתח הראשון הוא מפתח bucket ב־saved.operations (יכול להיות מורכב לדוח)
+export function trackOperationTime(storageBucketKey, grade, level, duration, meta = {}) {
   if (typeof window === "undefined") return;
 
   if (isTrackingDebugEnabled()) {
-    trackingDebugRecordTrack(operation, duration, meta?.mode, "trackOperationTime");
+    trackingDebugRecordTrack(
+      storageBucketKey,
+      duration,
+      meta?.mode,
+      "trackOperationTime"
+    );
   }
 
   try {
     const saved = JSON.parse(localStorage.getItem(TIME_TRACKING_KEY) || "{}");
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const baseOperationForSession =
+      meta.baseOperation != null && String(meta.baseOperation).trim() !== ""
+        ? String(meta.baseOperation).trim()
+        : String(storageBucketKey).includes("::")
+          ? String(storageBucketKey).split("::")[0]
+          : String(storageBucketKey);
     
     // אתחול מבנה הנתונים
     if (!saved.operations) saved.operations = {};
-    if (!saved.operations[operation]) {
-      saved.operations[operation] = {
+    if (!saved.operations[storageBucketKey]) {
+      saved.operations[storageBucketKey] = {
         total: 0, // סך הכל בשניות
         sessions: [],
         byGrade: {},
@@ -47,27 +77,29 @@ export function trackOperationTime(operation, grade, level, duration, meta = {})
     }
     
     // עדכון סך הכל
-    saved.operations[operation].total += duration;
+    saved.operations[storageBucketKey].total += duration;
     
     // עדכון לפי כיתה
-    if (!saved.operations[operation].byGrade[grade]) {
-      saved.operations[operation].byGrade[grade] = 0;
+    if (!saved.operations[storageBucketKey].byGrade[grade]) {
+      saved.operations[storageBucketKey].byGrade[grade] = 0;
     }
-    saved.operations[operation].byGrade[grade] += duration;
+    saved.operations[storageBucketKey].byGrade[grade] += duration;
     
     // עדכון לפי רמה
-    if (!saved.operations[operation].byLevel[level]) {
-      saved.operations[operation].byLevel[level] = 0;
+    if (!saved.operations[storageBucketKey].byLevel[level]) {
+      saved.operations[storageBucketKey].byLevel[level] = 0;
     }
-    saved.operations[operation].byLevel[level] += duration;
+    saved.operations[storageBucketKey].byLevel[level] += duration;
     
     // הוספת סשן (כולל mode / ניקוד לשורת דוח מסוננת) — מערך מלא, ללא קיצוץ
-    saved.operations[operation].sessions.push({
+    saved.operations[storageBucketKey].sessions.push({
       date: today,
       duration,
       grade,
       level,
-      operation,
+      operation: baseOperationForSession,
+      mathReportBucket: storageBucketKey,
+      kind: meta.kind !== undefined && meta.kind !== null ? String(meta.kind) : undefined,
       timestamp: Date.now(),
       mode: meta.mode != null ? String(meta.mode) : "learning",
       total: meta.total !== undefined ? Number(meta.total) : 1,
@@ -79,10 +111,10 @@ export function trackOperationTime(operation, grade, level, duration, meta = {})
     
     // עדכון יומי
     saved.daily[today].total += duration;
-    if (!saved.daily[today].operations[operation]) {
-      saved.daily[today].operations[operation] = 0;
+    if (!saved.daily[today].operations[storageBucketKey]) {
+      saved.daily[today].operations[storageBucketKey] = 0;
     }
-    saved.daily[today].operations[operation] += duration;
+    saved.daily[today].operations[storageBucketKey] += duration;
     
     if (!saved.daily[today].byGrade[grade]) {
       saved.daily[today].byGrade[grade] = 0;

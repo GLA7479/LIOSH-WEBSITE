@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
-import { getOperationName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
+import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -20,6 +20,47 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+
+function parentReportChartLabelFromAllItemKey(key, data) {
+  if (data?.displayName) return data.displayName;
+  if (key.startsWith("math_")) {
+    const rest = key.slice("math_".length);
+    const sep = rest.indexOf("\u0001");
+    const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
+    return getMathReportBucketDisplayName(data.bucketKey ?? fallbackBucket);
+  }
+  if (key.startsWith("geometry_")) {
+    const rest = key.slice("geometry_".length);
+    const sep = rest.indexOf("\u0001");
+    const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
+    return getTopicName(data.bucketKey ?? fallbackBucket);
+  }
+  if (key.startsWith("english_")) {
+    const rest = key.slice("english_".length);
+    const sep = rest.indexOf("\u0001");
+    const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
+    return getEnglishTopicName(data.bucketKey ?? fallbackBucket);
+  }
+  if (key.startsWith("science_")) {
+    const rest = key.slice("science_".length);
+    const sep = rest.indexOf("\u0001");
+    const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
+    return getScienceTopicName(data.bucketKey ?? fallbackBucket);
+  }
+  if (key.startsWith("hebrew_")) {
+    const rest = key.slice("hebrew_".length);
+    const sep = rest.indexOf("\u0001");
+    const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
+    return getHebrewTopicName(data.bucketKey ?? fallbackBucket);
+  }
+  if (key.startsWith("moledet-geography_")) {
+    const rest = key.slice("moledet-geography_".length);
+    const sep = rest.indexOf("\u0001");
+    const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
+    return getMoledetGeographyTopicName(data.bucketKey ?? fallbackBucket);
+  }
+  return key;
+}
 
 export default function ParentReport() {
   useIOSViewportFix();
@@ -629,7 +670,7 @@ export default function ParentReport() {
                         <tr key={op} className="border-b border-white/10">
                           <td className="text-right align-top py-1.5 px-1 min-w-0">
                             <span className="text-right break-words">
-                              {data.displayName || getOperationName(data.bucketKey ?? op)}
+                              {data.displayName || getMathReportBucketDisplayName(data.bucketKey ?? op)}
                             </span>
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
@@ -680,7 +721,7 @@ export default function ParentReport() {
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([op, data]) => (
                     <div key={op} className="bg-black/40 border border-white/20 rounded-lg p-3">
-                      <div className="font-semibold text-sm mb-2 text-blue-400">{data.displayName || getOperationName(data.bucketKey ?? op)}</div>
+                      <div className="font-semibold text-sm mb-2 text-blue-400">{data.displayName || getMathReportBucketDisplayName(data.bucketKey ?? op)}</div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
@@ -1628,52 +1669,31 @@ export default function ParentReport() {
           )}
 
           {/* גרף דיוק לפי פעולות */}
-          {Object.keys(report.allItems || {}).length > 0 && (
+          {Object.keys(report.allItems || {}).length > 0 &&
+            (() => {
+              const accRows = Object.entries(report.allItems)
+                .map(([key, data]) => {
+                  const fullName = parentReportChartLabelFromAllItemKey(key, data);
+                  return {
+                    chartKey: key,
+                    name:
+                      fullName.length > 15
+                        ? fullName.substring(0, 15) + "..."
+                        : fullName,
+                    fullName,
+                    דיוק: data.accuracy,
+                    שאלות: data.questions,
+                    accuracy: data.accuracy,
+                  };
+                })
+                .sort((a, b) => b.דיוק - a.דיוק);
+              return (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📊 דיוק לפי פעולות ונושאים</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 288 : 384}>
                   <BarChart 
-                    data={Object.entries(report.allItems)
-                      .map(([key, data]) => {
-                        const name =
-                          data.displayName ||
-                          (key.startsWith("math_")
-                            ? getOperationName(
-                                data.bucketKey ?? key.replace("math_", "")
-                              )
-                            : key.startsWith("geometry_")
-                              ? getTopicName(
-                                  data.bucketKey ?? key.replace("geometry_", "")
-                                )
-                              : key.startsWith("english_")
-                                ? getEnglishTopicName(
-                                    data.bucketKey ?? key.replace("english_", "")
-                                  )
-                                : key.startsWith("science_")
-                                  ? getScienceTopicName(
-                                      data.bucketKey ?? key.replace("science_", "")
-                                    )
-                                  : key.startsWith("hebrew_")
-                                    ? getHebrewTopicName(
-                                        data.bucketKey ?? key.replace("hebrew_", "")
-                                      )
-                                    : key.startsWith("moledet-geography_")
-                                      ? getMoledetGeographyTopicName(
-                                          data.bucketKey ??
-                                            key.replace("moledet-geography_", "")
-                                        )
-                                      : key);
-                        return {
-                          name: name.length > 15 ? name.substring(0, 15) + '...' : name,
-                          fullName: name,
-                          דיוק: data.accuracy,
-                          שאלות: data.questions,
-                        };
-                      })
-                      .sort((a, b) => b.דיוק - a.דיוק)
-                      .slice(0, 10)
-                    }
+                    data={accRows}
                     margin={{ top: 5, right: 20, left: -10, bottom: isMobile ? 60 : 80 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
@@ -1715,13 +1735,12 @@ export default function ParentReport() {
                       fill="#10b981"
                       radius={[4, 4, 0, 0]}
                     >
-                      {Object.entries(report.allItems)
-                        .map(([_, data], index) => (
+                      {accRows.map((row) => (
                           <Cell
-                            key={`cell-${index}`}
+                            key={row.chartKey}
                             fill={
-                              data.accuracy >= 90 ? "#10b981" :
-                              data.accuracy >= 70 ? "#f59e0b" :
+                              row.accuracy >= 90 ? "#10b981" :
+                              row.accuracy >= 70 ? "#f59e0b" :
                               "#ef4444"
                             }
                           />
@@ -1731,54 +1750,33 @@ export default function ParentReport() {
                 </ResponsiveContainer>
               </div>
             </div>
-          )}
+              );
+            })()}
 
           {/* גרף זמן לפי פעולות */}
-          {Object.keys(report.allItems || {}).length > 0 && (
+          {Object.keys(report.allItems || {}).length > 0 &&
+            (() => {
+              const timeRows = Object.entries(report.allItems)
+                .map(([key, data]) => {
+                  const fullName = parentReportChartLabelFromAllItemKey(key, data);
+                  return {
+                    chartKey: key,
+                    name:
+                      fullName.length > 15
+                        ? fullName.substring(0, 15) + "..."
+                        : fullName,
+                    fullName,
+                    זמן: data.timeMinutes,
+                  };
+                })
+                .sort((a, b) => b.זמן - a.זמן);
+              return (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 288 : 384}>
                   <BarChart 
-                    data={Object.entries(report.allItems)
-                      .map(([key, data]) => {
-                        const name =
-                          data.displayName ||
-                          (key.startsWith("math_")
-                            ? getOperationName(
-                                data.bucketKey ?? key.replace("math_", "")
-                              )
-                            : key.startsWith("geometry_")
-                              ? getTopicName(
-                                  data.bucketKey ?? key.replace("geometry_", "")
-                                )
-                              : key.startsWith("english_")
-                                ? getEnglishTopicName(
-                                    data.bucketKey ?? key.replace("english_", "")
-                                  )
-                                : key.startsWith("science_")
-                                  ? getScienceTopicName(
-                                      data.bucketKey ?? key.replace("science_", "")
-                                    )
-                                  : key.startsWith("hebrew_")
-                                    ? getHebrewTopicName(
-                                        data.bucketKey ?? key.replace("hebrew_", "")
-                                      )
-                                    : key.startsWith("moledet-geography_")
-                                      ? getMoledetGeographyTopicName(
-                                          data.bucketKey ??
-                                            key.replace("moledet-geography_", "")
-                                        )
-                                      : key);
-                        return {
-                          name: name.length > 15 ? name.substring(0, 15) + '...' : name,
-                          fullName: name,
-                          זמן: data.timeMinutes,
-                        };
-                      })
-                      .sort((a, b) => b.זמן - a.זמן)
-                      .slice(0, 10)
-                    }
+                    data={timeRows}
                     margin={{ top: 5, right: 20, left: -10, bottom: isMobile ? 60 : 80 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
@@ -1820,57 +1818,43 @@ export default function ParentReport() {
                 </ResponsiveContainer>
               </div>
             </div>
-          )}
+              );
+            })()}
 
           {/* גרף עוגה - חלוקת זמן */}
-          {Object.keys(report.allItems || {}).length > 0 && (
+          {Object.keys(report.allItems || {}).length > 0 &&
+            (() => {
+              const totalMin = Object.values(report.allItems).reduce(
+                (sum, item) => sum + (item.timeMinutes || 0),
+                0
+              );
+              const pieRows = Object.entries(report.allItems)
+                .filter(([_, data]) => data.timeMinutes > 0)
+                .map(([key, data]) => {
+                  const fullName = parentReportChartLabelFromAllItemKey(key, data);
+                  return {
+                    chartKey: key,
+                    name:
+                      fullName.length > 15
+                        ? fullName.substring(0, 15) + "..."
+                        : fullName,
+                    fullName,
+                    value: data.timeMinutes,
+                    percentage:
+                      totalMin > 0
+                        ? ((data.timeMinutes / totalMin) * 100).toFixed(1)
+                        : "0",
+                  };
+                })
+                .sort((a, b) => b.value - a.value);
+              return (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🥧 חלוקת זמן תרגול</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 280 : 380}>
                   <PieChart>
                     <Pie
-                      data={Object.entries(report.allItems)
-                        .filter(([_, data]) => data.timeMinutes > 0)
-                        .map(([key, data]) => {
-                          const name =
-                            data.displayName ||
-                            (key.startsWith("math_")
-                              ? getOperationName(
-                                  data.bucketKey ?? key.replace("math_", "")
-                                )
-                              : key.startsWith("geometry_")
-                                ? getTopicName(
-                                    data.bucketKey ?? key.replace("geometry_", "")
-                                  )
-                                : key.startsWith("english_")
-                                  ? getEnglishTopicName(
-                                      data.bucketKey ?? key.replace("english_", "")
-                                    )
-                                  : key.startsWith("science_")
-                                    ? getScienceTopicName(
-                                        data.bucketKey ?? key.replace("science_", "")
-                                      )
-                                    : key.startsWith("hebrew_")
-                                      ? getHebrewTopicName(
-                                          data.bucketKey ?? key.replace("hebrew_", "")
-                                        )
-                                      : key.startsWith("moledet-geography_")
-                                        ? getMoledetGeographyTopicName(
-                                            data.bucketKey ??
-                                              key.replace("moledet-geography_", "")
-                                          )
-                                        : key);
-                          return {
-                            name: name.length > 15 ? name.substring(0, 15) + '...' : name,
-                            fullName: name,
-                            value: data.timeMinutes,
-                            percentage: ((data.timeMinutes / Object.values(report.allItems).reduce((sum, item) => sum + (item.timeMinutes || 0), 0)) * 100).toFixed(1)
-                          };
-                        })
-                        .sort((a, b) => b.value - a.value)
-                        .slice(0, 8)
-                      }
+                      data={pieRows}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
@@ -1881,13 +1865,9 @@ export default function ParentReport() {
                       dataKey="value"
                       paddingAngle={2}
                     >
-                      {Object.entries(report.allItems)
-                        .filter(([_, data]) => data.timeMinutes > 0)
-                        .sort(([_, a], [__, b]) => b.timeMinutes - a.timeMinutes)
-                        .slice(0, 8)
-                        .map(([_, data], index) => (
+                      {pieRows.map((row, index) => (
                           <Cell
-                            key={`cell-${index}`}
+                            key={row.chartKey}
                             fill={[
                               "#3b82f6",
                               "#10b981",
@@ -1943,7 +1923,8 @@ export default function ParentReport() {
                 </ResponsiveContainer>
               </div>
             </div>
-          )}
+              );
+            })()}
 
           {/* אתגרים */}
           <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
