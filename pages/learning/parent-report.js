@@ -329,6 +329,13 @@ export default function ParentReport() {
               break-inside: avoid !important;
               page-break-inside: avoid !important;
             }
+            /* נושאים: בהדפסה תמיד פריסת שולחן עבודה; כרטיסי מובייל מוסתרים */
+            #parent-report-pdf .parent-report-desktop-only {
+              display: block !important;
+            }
+            #parent-report-pdf .parent-report-mobile-only {
+              display: none !important;
+            }
           }
         `}</style>
       </Head>
@@ -560,7 +567,7 @@ export default function ParentReport() {
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🧮 התקדמות בחשבון</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block mt-2">
+              <div className="parent-report-desktop-only hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
                     <col style={{ width: "15%" }} />
@@ -641,7 +648,7 @@ export default function ParentReport() {
                 </table>
               </div>
               {/* Mobile Cards */}
-              <div className="md:hidden space-y-3">
+              <div className="parent-report-mobile-only md:hidden space-y-3">
                 {Object.entries(report.mathOperations)
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([op, data]) => (
@@ -697,7 +704,7 @@ export default function ParentReport() {
           {Object.keys(report.geometryTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📐 התקדמות בגאומטריה</h2>
-              <div className="hidden md:block mt-2">
+              <div className="parent-report-desktop-only hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
                     <col style={{ width: "15%" }} />
@@ -778,7 +785,7 @@ export default function ParentReport() {
                 </table>
               </div>
               {/* Mobile Cards */}
-              <div className="md:hidden space-y-3">
+              <div className="parent-report-mobile-only md:hidden space-y-3">
                 {Object.entries(report.geometryTopics)
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([topic, data]) => (
@@ -835,7 +842,7 @@ export default function ParentReport() {
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📘 התקדמות באנגלית</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block mt-2">
+              <div className="parent-report-desktop-only hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
                     <col style={{ width: "15%" }} />
@@ -916,7 +923,7 @@ export default function ParentReport() {
                 </table>
               </div>
               {/* Mobile Cards */}
-              <div className="md:hidden space-y-3">
+              <div className="parent-report-mobile-only md:hidden space-y-3">
                 {Object.entries(report.englishTopics)
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([topic, data]) => (
@@ -973,7 +980,7 @@ export default function ParentReport() {
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🔬 התקדמות במדעים</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block mt-2">
+              <div className="parent-report-desktop-only hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
                     <col style={{ width: "15%" }} />
@@ -1058,7 +1065,7 @@ export default function ParentReport() {
                 </table>
               </div>
               {/* Mobile Cards */}
-              <div className="md:hidden space-y-3">
+              <div className="parent-report-mobile-only md:hidden space-y-3">
                 {Object.entries(report.scienceTopics)
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([topic, data]) => (
@@ -1115,7 +1122,7 @@ export default function ParentReport() {
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📚 התקדמות בעברית</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block mt-2">
+              <div className="parent-report-desktop-only hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
                     <col style={{ width: "15%" }} />
@@ -1200,7 +1207,7 @@ export default function ParentReport() {
                 </table>
               </div>
               {/* Mobile Cards */}
-              <div className="md:hidden space-y-3">
+              <div className="parent-report-mobile-only md:hidden space-y-3">
                 {Object.entries(report.hebrewTopics)
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([topic, data]) => (
@@ -1257,7 +1264,7 @@ export default function ParentReport() {
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🗺️ התקדמות במולדת וגאוגרפיה</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block mt-2">
+              <div className="parent-report-desktop-only hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
                     <col style={{ width: "15%" }} />
@@ -1342,7 +1349,7 @@ export default function ParentReport() {
                 </table>
               </div>
               {/* Mobile Cards */}
-              <div className="md:hidden space-y-3">
+              <div className="parent-report-mobile-only md:hidden space-y-3">
                 {Object.entries(report.moledetGeographyTopics)
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([topic, data]) => (
