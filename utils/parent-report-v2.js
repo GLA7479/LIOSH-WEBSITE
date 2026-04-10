@@ -59,8 +59,24 @@ function normalizeSessionsArray(sessions) {
 }
 
 /**
+ * Duration in seconds for aggregation. Uses session.duration when present; if duration is
+ * undefined/null, estimates (session.total || 0) * 30 seconds per question (geometry/math trackers store seconds).
+ */
+function sessionDurationSeconds(session) {
+  if (!session || typeof session !== "object") return 0;
+  if (session.duration !== undefined && session.duration !== null) {
+    const n = Number(session.duration);
+    if (Number.isFinite(n) && n >= 0) return n;
+    return 0;
+  }
+  const total = session.total !== undefined && session.total !== null ? Number(session.total) : 0;
+  const t = Number.isFinite(total) ? total : 0;
+  return t * 30;
+}
+
+/**
  * Build per-key rows from a tracking bucket (operations/topics) without key overwrite.
- * Optional sessionField: if set, sessions may be re-grouped by session[sessionField] (migration / mis-bucket recovery).
+ * Group key: session.operation || session.topic || storage bucket key.
  */
 function buildMapFromBucket({
   bucket,
@@ -69,7 +85,6 @@ function buildMapFromBucket({
   endMs,
   subject,
   displayNameFn,
-  sessionField,
 }) {
   const map = {};
   const raw = bucket && typeof bucket === "object" && !Array.isArray(bucket) ? bucket : {};
@@ -80,14 +95,13 @@ function buildMapFromBucket({
     const list = normalizeSessionsArray(item.sessions);
     for (const s of list) {
       if (!sessionInRange(s, startMs, endMs)) continue;
-      const key =
-        sessionField && s[sessionField] != null && String(s[sessionField]) !== ""
-          ? String(s[sessionField])
-          : String(bucketKey);
+      const key = String(s.operation || s.topic || bucketKey);
       if (!map[key]) map[key] = [];
       map[key].push(s);
     }
   }
+
+  // TEMP validation (remove after QA): expect map key count > 1 when multiple bucket keys have in-range sessions; if stuck at 1, verify session.operation / session.topic on each row and bucketKey fallback above.
 
   const out = {};
   for (const itemKey of Object.keys(map)) {
@@ -353,7 +367,7 @@ function buildDailyActivityFromSessions(startMs, endMs) {
         const d = new Date(tMs);
         const dateStr = d.toISOString().split("T")[0];
         const row = ensure(dateStr);
-        const durMin = Math.round((Number(s.duration) || 0) / 60);
+        const durMin = Math.round(sessionDurationSeconds(s) / 60);
         row.timeMinutes += durMin;
         const tq = s.total !== undefined ? Number(s.total) : 1;
         row.questions += tq;
@@ -455,7 +469,6 @@ export function generateParentReportV2(
     const bucket = saved[def.container] || {};
     const targetMap = maps[def.id];
 
-    const sessionField = def.id === "math" ? "operation" : "topic";
     const built = buildMapFromBucket({
       bucket,
       progressData,
@@ -463,7 +476,6 @@ export function generateParentReportV2(
       endMs,
       subject: def.id === "moledet-geography" ? "moledet-geography" : def.id,
       displayNameFn: def.displayName,
-      sessionField,
     });
 
     Object.assign(targetMap, built);

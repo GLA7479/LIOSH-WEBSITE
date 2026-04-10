@@ -558,13 +558,24 @@ export default function ParentReport() {
           {/* טבלת פעולות חשבון */}
           {Object.keys(report.mathOperations || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🧮 התקדמות בחשבון</h2>
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🧮 התקדמות בחשבון</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="hidden md:block mt-2">
+                <table className="w-full table-fixed text-sm">
+                  <colgroup>
+                    <col style={{ width: "18%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "12%" }} />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-1 md:px-2">פעולה</th>
+                      <th className="text-right py-2 px-2 whitespace-nowrap">פעולה</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
                       <th className="text-center py-2 px-1 md:px-2">מצב</th>
@@ -580,8 +591,10 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([op, data]) => (
                         <tr key={op} className="border-b border-white/10">
-                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
-                            {getOperationName(op)}
+                          <td className="px-2 py-2 whitespace-nowrap">
+                            <span className="inline-block">
+                              {getOperationName(op)}
+                            </span>
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.level || "לא זמין"}
@@ -674,12 +687,23 @@ export default function ParentReport() {
           {/* טבלת נושאים גאומטריה */}
           {Object.keys(report.geometryTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📐 התקדמות בגאומטריה</h2>
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-sm">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📐 התקדמות בגאומטריה</h2>
+              <div className="hidden md:block mt-2">
+                <table className="w-full table-fixed text-sm">
+                  <colgroup>
+                    <col style={{ width: "18%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "12%" }} />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-1 md:px-2">נושא</th>
+                      <th className="text-right py-2 px-2 whitespace-nowrap">נושא</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
                       <th className="text-center py-2 px-1 md:px-2">מצב</th>
@@ -695,8 +719,10 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([topic, data]) => (
                         <tr key={topic} className="border-b border-white/10">
-                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
-                            {getTopicName(topic)}
+                          <td className="px-2 py-2 whitespace-nowrap">
+                            <span className="inline-block">
+                              {getTopicName(topic)}
+                            </span>
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.level || "לא זמין"}
@@ -789,13 +815,24 @@ export default function ParentReport() {
           {/* טבלת נושאים אנגלית */}
           {Object.keys(report.englishTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📘 התקדמות באנגלית</h2>
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📘 התקדמות באנגלית</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="hidden md:block mt-2">
+                <table className="w-full table-fixed text-sm">
+                  <colgroup>
+                    <col style={{ width: "18%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "12%" }} />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-1 md:px-2">נושא</th>
+                      <th className="text-right py-2 px-2 whitespace-nowrap">נושא</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
                       <th className="text-center py-2 px-1 md:px-2">מצב</th>
@@ -811,8 +848,10 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([topic, data]) => (
                         <tr key={topic} className="border-b border-white/10">
-                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
-                            {getEnglishTopicName(topic)}
+                          <td className="px-2 py-2 whitespace-nowrap">
+                            <span className="inline-block">
+                              {getEnglishTopicName(topic)}
+                            </span>
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.level || "לא זמין"}
@@ -905,13 +944,24 @@ export default function ParentReport() {
           {/* טבלת נושאים מדעים */}
           {Object.keys(report.scienceTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🔬 התקדמות במדעים</h2>
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🔬 התקדמות במדעים</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="hidden md:block mt-2">
+                <table className="w-full table-fixed text-sm">
+                  <colgroup>
+                    <col style={{ width: "18%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "12%" }} />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-1 md:px-2">נושא</th>
+                      <th className="text-right py-2 px-2 whitespace-nowrap">נושא</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
                       <th className="text-center py-2 px-1 md:px-2">מצב</th>
@@ -927,8 +977,10 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([topic, data]) => (
                         <tr key={topic} className="border-b border-white/10">
-                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
-                            {getScienceTopicName(topic)}
+                          <td className="px-2 py-2 whitespace-nowrap">
+                            <span className="inline-block">
+                              {getScienceTopicName(topic)}
+                            </span>
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.level || "לא זמין"}
@@ -1025,13 +1077,24 @@ export default function ParentReport() {
           {/* טבלת נושאים עברית */}
           {Object.keys(report.hebrewTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📚 התקדמות בעברית</h2>
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📚 התקדמות בעברית</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="hidden md:block mt-2">
+                <table className="w-full table-fixed text-sm">
+                  <colgroup>
+                    <col style={{ width: "18%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "12%" }} />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-1 md:px-2">נושא</th>
+                      <th className="text-right py-2 px-2 whitespace-nowrap">נושא</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
                       <th className="text-center py-2 px-1 md:px-2">מצב</th>
@@ -1047,8 +1110,10 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([topic, data]) => (
                         <tr key={topic} className="border-b border-white/10">
-                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
-                            {getHebrewTopicName(topic)}
+                          <td className="px-2 py-2 whitespace-nowrap">
+                            <span className="inline-block">
+                              {getHebrewTopicName(topic)}
+                            </span>
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.level || "לא זמין"}
@@ -1145,13 +1210,24 @@ export default function ParentReport() {
           {/* טבלת נושאים מולדת וגאוגרפיה */}
           {Object.keys(report.moledetGeographyTopics || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">🗺️ התקדמות במולדת וגאוגרפיה</h2>
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🗺️ התקדמות במולדת וגאוגרפיה</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="hidden md:block mt-2">
+                <table className="w-full table-fixed text-sm">
+                  <colgroup>
+                    <col style={{ width: "18%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "9%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "12%" }} />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-1 md:px-2">נושא</th>
+                      <th className="text-right py-2 px-2 whitespace-nowrap">נושא</th>
                       <th className="text-center py-2 px-1 md:px-2">רמה</th>
                       <th className="text-center py-2 px-1 md:px-2">כיתה</th>
                       <th className="text-center py-2 px-1 md:px-2">מצב</th>
@@ -1167,8 +1243,10 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([topic, data]) => (
                         <tr key={topic} className="border-b border-white/10">
-                          <td className="py-2 px-1 md:px-2 font-semibold text-[11px] md:text-sm">
-                            {getMoledetGeographyTopicName(topic)}
+                          <td className="px-2 py-2 whitespace-nowrap">
+                            <span className="inline-block">
+                              {getMoledetGeographyTopicName(topic)}
+                            </span>
                           </td>
                           <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
                             {data.level || "לא זמין"}
@@ -1265,7 +1343,7 @@ export default function ParentReport() {
           {/* המלצות */}
           {report.analysis.recommendations.length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">💡 המלצות</h2>
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">💡 המלצות</h2>
               <div className="space-y-2 md:space-y-3">
                 {report.analysis.recommendations.map((rec, idx) => (
                   <div
@@ -1303,8 +1381,8 @@ export default function ParentReport() {
 
           {/* גרף פעילות יומית */}
           {report.dailyActivity.length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📅 פעילות יומית</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📅 פעילות יומית</h2>
               <div className="h-56 md:h-80">
                 <ResponsiveContainer width="100%" height={isMobile ? 220 : 320}>
                   <LineChart data={report.dailyActivity} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
@@ -1372,8 +1450,8 @@ export default function ParentReport() {
 
           {/* גרף פעילות לפי נושאים */}
           {report.dailyActivity.length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-3 md:mb-4 text-center">📚 פעילות לפי נושאים (יומי)</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📚 פעילות לפי נושאים (יומי)</h2>
               <div className="h-56 md:h-80">
                 <ResponsiveContainer width="100%" height={isMobile ? 220 : 320}>
                   <LineChart data={report.dailyActivity} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
@@ -1463,8 +1541,8 @@ export default function ParentReport() {
 
           {/* גרף דיוק לפי פעולות */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-8 md:mb-10 text-center">📊 דיוק לפי פעולות ונושאים</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📊 דיוק לפי פעולות ונושאים</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 288 : 384}>
                   <BarChart 
@@ -1554,8 +1632,8 @@ export default function ParentReport() {
 
           {/* גרף זמן לפי פעולות */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-8 md:mb-10 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">⏰ זמן תרגול לפי פעולות ונושאים</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 288 : 384}>
                   <BarChart 
@@ -1628,8 +1706,8 @@ export default function ParentReport() {
 
           {/* גרף עוגה - חלוקת זמן */}
           {Object.keys(report.allItems || {}).length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-3 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-8 md:mb-10 text-center">🥧 חלוקת זמן תרגול</h2>
+            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
+              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🥧 חלוקת זמן תרגול</h2>
               <div className="h-72 md:h-96">
                 <ResponsiveContainer width="100%" height={isMobile ? 280 : 380}>
                   <PieChart>
