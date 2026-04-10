@@ -1622,7 +1622,7 @@ useEffect(() => {
             overflow: "hidden"
           }}
         >
-          <div className="text-center mb-1">
+          <div className="text-center mb-3">
             <div className="flex items-center justify-center gap-2 mb-0.5">
               <h1 className="text-2xl font-extrabold text-white">
                 📚 Hebrew Master
@@ -1651,7 +1651,7 @@ useEffect(() => {
 
           <div
             ref={controlsRef}
-            className="grid grid-cols-8 gap-0.5 mb-1 w-full max-w-md"
+            className="grid grid-cols-8 gap-0.5 mb-3 w-full max-w-md"
           >
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">ניקוד</div>
@@ -1725,7 +1725,7 @@ useEffect(() => {
 
           {/* בחירת מצב (Learning / Challenge) */}
           <div
-            className="flex items-center justify-center gap-1.5 mb-2 w-full max-w-md flex-wrap px-1"
+            className="flex items-center justify-center gap-1.5 mb-3 w-full max-w-md flex-wrap px-1"
             dir="rtl"
           >
             {["learning", "challenge", "speed", "marathon", "practice"].map((m) => (
@@ -2161,7 +2161,7 @@ useEffect(() => {
           {!gameActive ? (
             <div className="flex flex-col flex-1 min-h-0 w-full max-w-md items-center justify-start">
               <div
-                className="flex flex-nowrap items-center gap-2 mb-2.5 w-full max-w-md px-0.5 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
+                className="flex flex-nowrap items-center gap-2 mb-3 w-full max-w-md px-0.5 overflow-x-auto [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
                 dir="rtl"
               >
                 <input
@@ -2251,7 +2251,7 @@ useEffect(() => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-4 gap-1.5 mb-2 w-full max-w-md" dir="rtl">
+              <div className="grid grid-cols-4 gap-1.5 mb-3 w-full max-w-md" dir="rtl">
                 <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
                   <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">שיא ניקוד</span>
                   <span className="text-base font-bold text-emerald-400 tabular-nums leading-tight">{bestScore}</span>
@@ -2261,7 +2261,7 @@ useEffect(() => {
                   <span className="text-base font-bold text-amber-400 tabular-nums leading-tight">{bestStreak}</span>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
-                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">Accuracy</span>
+                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">דיוק</span>
                   <span className="text-base font-bold text-blue-400 tabular-nums leading-tight">{accuracy}%</span>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1.5 min-w-0 shadow-sm">
@@ -2276,7 +2276,7 @@ useEffect(() => {
                 </div>
               </div>
               
-              <div className="bg-white/5 border border-white/10 rounded-md px-1 pt-1 pb-1 mb-2 w-full max-w-md opacity-90">
+              <div className="bg-white/5 border border-white/10 rounded-md px-1 pt-1 pb-1 mb-3 w-full max-w-md opacity-90">
                 <div className="flex items-center justify-between text-[9px] text-white/55 mb-0.5 leading-tight">
                   <span>🎁 מסע פרס חודשי</span>
                   <span>
@@ -2328,7 +2328,7 @@ useEffect(() => {
                 </div>
               </div>
               
-              <div className="mt-auto mb-2 w-full pt-4 flex flex-col items-center gap-2">
+              <div className="mt-auto mb-2 w-full pt-3 flex flex-col items-center gap-2">
               <div className="flex items-center justify-center gap-1.5 w-full max-w-md flex-wrap px-1">
                 <button
                   onClick={startGame}
@@ -2339,7 +2339,7 @@ useEffect(() => {
                 </button>
                 <button
                   onClick={() => setShowLeaderboard(true)}
-                  className="h-9 px-3 rounded-lg bg-amber-500/80 hover:bg-amber-500 font-bold text-xs"
+                  className="h-9 px-3 rounded-lg bg-orange-500/80 hover:bg-orange-500 font-bold text-xs"
                 >
                   🏆 לוח תוצאות
                 </button>
@@ -2349,26 +2349,26 @@ useEffect(() => {
               <div className="w-full max-w-md flex justify-center gap-2 flex-wrap">
                 <button
                   onClick={() => setShowHowTo(true)}
-                  className="px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-xs font-bold text-white shadow-sm"
+                  className="px-4 py-2 rounded-lg bg-cyan-500/80 hover:bg-cyan-500 text-xs font-bold text-white shadow-sm"
                 >
                   ❓ איך לומדים עברית כאן?
                 </button>
                 <button
                   onClick={() => setShowReferenceModal(true)}
-                  className="px-4 py-2 rounded-lg bg-indigo-500/80 hover:bg-indigo-500 text-xs font-bold text-white shadow-sm"
+                  className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
                 >
                   📚 לוח עזרה
                 </button>
                 <button
                   onClick={() => router.push("/learning/parent-report")}
-                  className="px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-xs font-bold text-white shadow-sm"
+                  className="px-4 py-2 rounded-lg bg-teal-500/80 hover:bg-teal-500 text-xs font-bold text-white shadow-sm"
                 >
                   📊 דוח להורים
                 </button>
                 {mistakes.length > 0 && (
                   <button
                     onClick={() => setShowPracticeOptions(true)}
-                    className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
+                    className="px-4 py-2 rounded-lg bg-pink-500/80 hover:bg-pink-500 text-xs font-bold text-white shadow-sm"
                   >
                     🎯 תרגול ממוקד ({mistakes.length})
                   </button>

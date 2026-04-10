@@ -2763,7 +2763,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           {!gameActive ? (
             <div className="flex flex-col flex-1 min-h-0 w-full max-w-md items-center justify-start">
               <div
-                className="flex flex-nowrap items-center gap-2 mb-3 w-full max-w-md px-0.5 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
+                className="flex flex-nowrap items-center gap-2 mb-3 w-full max-w-md px-0.5 overflow-x-auto [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
                 dir="rtl"
               >
                 <input
@@ -2863,7 +2863,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   <span className="text-base font-bold text-amber-400 tabular-nums leading-tight">{bestStreak}</span>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
-                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">Accuracy</span>
+                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">דיוק</span>
                   <span className="text-base font-bold text-blue-400 tabular-nums leading-tight">{accuracy}%</span>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1.5 min-w-0 shadow-sm">
