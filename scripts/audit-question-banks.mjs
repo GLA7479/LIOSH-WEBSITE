@@ -567,7 +567,8 @@ function weakLevelSeparationFromSamples(rows) {
     if (o.easy.length < 5 || o.medium.length < 5 || o.hard.length < 5) continue;
     const all = [...o.easy, ...o.medium, ...o.hard];
     const uniq = new Set(all);
-    if (uniq.size <= 3) {
+    // ≤2 תבניות ניסוח בלבד נחשבות חלשות (3 תבניות מספיקות להבחנה בין רמות)
+    if (uniq.size <= 2) {
       out.push({
         comboKey: key,
         uniqueStemHashesAcrossLevels: uniq.size,
@@ -905,18 +906,44 @@ function analyze(rows) {
   }
   familyCrossBand.sort((a, b) => b.rowCount - a.rowCount);
 
+  /** English pool rows: band by grade so one pool with g1…g6 items is not one “6-grade topic”. */
+  function gradeToEnglishTopicBand(g) {
+    if (g <= 2) return "early";
+    if (g <= 4) return "mid";
+    return "late";
+  }
+
   const topicWeakGrade = [];
   const bySubTop = new Map();
   for (const r of rows) {
     if (r.rowKind.endsWith("_sample")) continue;
-    const key = `${r.subject}::${r.topic}`;
-    if (!bySubTop.has(key)) bySubTop.set(key, []);
-    bySubTop.get(key).push(r);
+    if (r.subject === "english") {
+      const pool = r.subtopic || r.poolKey || "";
+      const bands = new Set();
+      for (let g = r.minGrade; g <= r.maxGrade; g++) {
+        bands.add(gradeToEnglishTopicBand(g));
+      }
+      for (const band of bands) {
+        const key = `${r.subject}::${r.topic}::${pool}::${band}`;
+        if (!bySubTop.has(key)) bySubTop.set(key, []);
+        bySubTop.get(key).push(r);
+      }
+    } else {
+      const key = `${r.subject}::${r.topic}`;
+      if (!bySubTop.has(key)) bySubTop.set(key, []);
+      bySubTop.get(key).push(r);
+    }
   }
+  const englishBandSuffix = /::(early|mid|late)$/;
   for (const [key, list] of bySubTop) {
     const grades = new Set();
+    const bandMatch = key.match(englishBandSuffix);
+    const bandOnly = bandMatch ? bandMatch[1] : null;
     for (const r of list) {
-      for (let g = r.minGrade; g <= r.maxGrade; g++) grades.add(g);
+      for (let g = r.minGrade; g <= r.maxGrade; g++) {
+        if (bandOnly && gradeToEnglishTopicBand(g) !== bandOnly) continue;
+        grades.add(g);
+      }
     }
     if (grades.size >= 5) {
       const fams = {};

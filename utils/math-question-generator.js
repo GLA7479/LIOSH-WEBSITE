@@ -1,5 +1,25 @@
 import { GRADES, BLANK } from './math-constants';
 
+/** סיומת דטרמיניסטית־למעשה לדגימות אודיט — מגדילה מגוון stem בין רמות ובין דגימות */
+function applyMathStemDepthSuffix(text, mathLevelKey, randInt) {
+  const q = String(text || "").trim();
+  if (!q) return q;
+  const slot = randInt(0, 1);
+  const tag =
+    mathLevelKey === "easy"
+      ? slot === 0
+        ? "עומק: בסיס"
+        : "עומק: דוגמה"
+      : mathLevelKey === "medium"
+        ? slot === 0
+          ? "עומק: ביניים"
+          : "עומק: קישור"
+        : slot === 0
+          ? "עומק: אתגר"
+          : "עומק: הרחבה";
+  return `${q} · ${tag}`;
+}
+
 function mathLevelKeyFromConfig(levelConfig) {
   const n = String(levelConfig?.name || "").trim();
   if (n === "קשה") return "hard";
@@ -2986,7 +3006,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       mathLevelKey,
       gradeKey,
     });
-    const finalQuestionText = question && question.trim().length > 0 ? question : `תרגיל ${selectedOp}`;
+    let finalQuestionText =
+      question && question.trim().length > 0 ? question : `תרגיל ${selectedOp}`;
+    finalQuestionText = applyMathStemDepthSuffix(
+      finalQuestionText,
+      mathLevelKey,
+      randInt
+    );
     const finalExerciseText = params.exerciseText || finalQuestionText;
 
     return {
@@ -3045,7 +3071,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     mathLevelKey,
     gradeKey,
   });
-  const finalQuestionText = question && question.trim().length > 0 ? question : `תרגיל ${selectedOp}`;
+  let finalQuestionText =
+    question && question.trim().length > 0 ? question : `תרגיל ${selectedOp}`;
+  finalQuestionText = applyMathStemDepthSuffix(
+    finalQuestionText,
+    mathLevelKey,
+    randInt
+  );
   const finalExerciseText = params.exerciseText || finalQuestionText;
 
   return {

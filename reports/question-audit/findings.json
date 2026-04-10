@@ -1,25 +1,11 @@
 {
-  "generatedAt": "2026-04-10T21:54:44.420Z",
+  "generatedAt": "2026-04-10T22:13:49.861Z",
   "totalRows": 7624,
   "exactDuplicateCrossGrade": [],
   "exactDuplicateCrossGradeStaticBanksOnly": [],
   "nearDuplicateCrossGrade": [],
   "patternFamilyWideGradeSpan": [],
   "topicsSpanManyGrades": [
-    {
-      "key": "english::grammar",
-      "distinctGrades": 6,
-      "totalRows": 634,
-      "dominantPatternFamily": "question_frames",
-      "dominantShare": 0.07728706624605679
-    },
-    {
-      "key": "english::sentence",
-      "distinctGrades": 6,
-      "totalRows": 128,
-      "dominantPatternFamily": "narrative_past_simple_g4",
-      "dominantShare": 0.0546875
-    },
     {
       "key": "hebrew::comprehension",
       "distinctGrades": 6,
@@ -63,13 +49,6 @@
       "dominantShare": 0.2857142857142857
     },
     {
-      "key": "english::translation",
-      "distinctGrades": 6,
-      "totalRows": 36,
-      "dominantPatternFamily": "translation_classroom_g1",
-      "dominantShare": 0.05555555555555555
-    },
-    {
       "key": "geometry::area",
       "distinctGrades": 6,
       "totalRows": 6,
@@ -105,7 +84,7 @@
   },
   "stage2Summary": {
     "withinBandOverlapCount": 0,
-    "weakLevelSeparationCount": 37,
+    "weakLevelSeparationCount": 0,
     "mathKindsNotHitSample": 0,
     "geoKindsNotHitSample": 0
   }
