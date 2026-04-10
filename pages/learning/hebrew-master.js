@@ -49,6 +49,7 @@ import {
   getStreakReward,
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
+import { getQuestionFontStyle } from "../../utils/learning-question-font";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -115,6 +116,7 @@ export default function HebrewMaster() {
   const [wrong, setWrong] = useState(0);
   const [timeLeft, setTimeLeft] = useState(20);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [typedAnswer, setTypedAnswer] = useState("");
   const [feedback, setFeedback] = useState(null);
   const [bestScore, setBestScore] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
@@ -264,6 +266,8 @@ export default function HebrewMaster() {
 
   // הסבר מפורט לשאלה
   const [showSolution, setShowSolution] = useState(false);
+  const [showPreviousSolution, setShowPreviousSolution] = useState(false);
+  const [previousExplanationQuestion, setPreviousExplanationQuestion] = useState(null);
   const [animationStep, setAnimationStep] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
   
@@ -759,11 +763,15 @@ useEffect(() => {
     setWrong(0);
     setTimeLeft(20);
     setSelectedAnswer(null);
+    setTypedAnswer("");
     setFeedback(null);
     setLives(3);
     setTotalQuestions(0);
     setAvgTime(0);
     setQuestionStartTime(null);
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
   }
 
   const accumulateQuestionTime = useCallback(() => {
@@ -893,15 +901,20 @@ useEffect(() => {
     // מעקב זמן - סיום שאלה קודמת (אם יש)
     trackCurrentQuestionTime();
 
+    if (currentQuestion) {
+      setPreviousExplanationQuestion(currentQuestion);
+    }
     hebrewTrackingTopicKeyRef.current =
       question.topic || question.operation || "mixed";
     setCurrentQuestion(question);
     setSelectedAnswer(null);
+    setTypedAnswer("");
     setFeedback(null);
     setQuestionStartTime(Date.now());
     setShowHint(false);
     setHintUsed(false);
     setShowSolution(false);
+    setShowPreviousSolution(false);
     setErrorExplanation("");
     setIsVerticalDisplay(false); // איפוס למצב מאוזן בכל שאלה חדשה
     // איפוס עיגולים שעברו כשמשנים שאלה
@@ -964,12 +977,15 @@ useEffect(() => {
     setQuestionStartTime(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    setTypedAnswer("");
     setLives(mode === "challenge" ? 3 : 0);
     setShowHint(false);
     setHintUsed(false);
     setShowBadge(null);
     setShowLevelUp(false);
     setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
     setErrorExplanation("");
 
     // הגדרת טיימר לפי מצב
@@ -997,6 +1013,10 @@ useEffect(() => {
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    setTypedAnswer("");
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
     saveRunToStorage();
   }
 
@@ -1120,7 +1140,19 @@ useEffect(() => {
     });
 
     setSelectedAnswer(answer);
-    const isCorrect = answer === currentQuestion.correctAnswer;
+    const normalize = (value) =>
+      String(value ?? "")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase();
+    const acceptedAnswers =
+      Array.isArray(currentQuestion.acceptedAnswers) &&
+      currentQuestion.acceptedAnswers.length > 0
+        ? currentQuestion.acceptedAnswers
+        : [currentQuestion.correctAnswer];
+    const isCorrect = acceptedAnswers.some(
+      (candidate) => normalize(candidate) === normalize(answer)
+    );
     pendingHebrewTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
       total: 1,
@@ -1431,11 +1463,11 @@ useEffect(() => {
         setTimeout(() => {
           generateNewQuestion();
           setSelectedAnswer(null);
-    solvedCountRef.current += 1;
+          setTypedAnswer("");
           setFeedback(null);
           setTimeLeft(null);
         }, 2000);
-      } else {
+      } else if (mode === "challenge") {
         // מצב Challenge – עובדים עם חיים
         setFeedback(
           `לא נכון 😔 התשובה: ${currentQuestion.correctAnswer} ❌ (-1 ❤️)`
@@ -1460,6 +1492,7 @@ useEffect(() => {
             setTimeout(() => {
               generateNewQuestion();
               setSelectedAnswer(null);
+              setTypedAnswer("");
               setFeedback(null);
               setTimeLeft(20);
             }, 1500);
@@ -1467,9 +1500,36 @@ useEffect(() => {
 
           return nextLives;
         });
+      } else {
+        // speed / marathon / practice stay active on wrong answers
+        setFeedback(`לא נכון 😔 התשובה הנכונה: ${currentQuestion.correctAnswer} ✅`);
+        setTimeout(() => {
+          generateNewQuestion();
+          setSelectedAnswer(null);
+          setTypedAnswer("");
+          setFeedback(null);
+          if (mode === "speed") setTimeLeft(10);
+          else setTimeLeft(null);
+        }, 1600);
       }
     }
   }
+
+  const isShowingAnySolution = showSolution || showPreviousSolution;
+  const explanationQuestion = showPreviousSolution
+    ? previousExplanationQuestion
+    : currentQuestion;
+
+  const closeExplanationModal = () => {
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+  };
+
+  const openPreviousExplanation = () => {
+    if (!previousExplanationQuestion) return;
+    setShowSolution(false);
+    setShowPreviousSolution(true);
+  };
 
   function resetStats() {
     setScore(0);
@@ -1521,6 +1581,86 @@ useEffect(() => {
     currentQuestion && currentQuestion.operation
       ? getSolutionSteps(currentQuestion, currentQuestion.params?.op || currentQuestion.operation, grade)
       : [];
+
+  const questionTextForPressure = (
+    currentQuestion?.questionLabel ||
+    currentQuestion?.exerciseText ||
+    currentQuestion?.question ||
+    ""
+  )
+    .toString()
+    .trim();
+  const answerTextsForPressure = Array.isArray(currentQuestion?.answers)
+    ? currentQuestion.answers.map((a) => String(a || "").trim())
+    : [];
+  const questionWordCount = questionTextForPressure
+    ? questionTextForPressure.split(/\s+/).filter(Boolean).length
+    : 0;
+  const questionCharCount = questionTextForPressure.length;
+  const longestAnswerChars = answerTextsForPressure.length
+    ? Math.max(...answerTextsForPressure.map((a) => a.length))
+    : 0;
+  const totalAnswerChars = answerTextsForPressure.reduce((sum, a) => sum + a.length, 0);
+
+  const questionPressureScore = questionCharCount + questionWordCount * 2;
+  const answerPressureScore = longestAnswerChars * 2 + totalAnswerChars;
+
+  const questionPressureBucket =
+    questionPressureScore >= 170
+      ? "veryLong"
+      : questionPressureScore >= 120
+      ? "long"
+      : questionPressureScore >= 70
+      ? "medium"
+      : "short";
+
+  const answerPressureBucket =
+    answerPressureScore >= 260
+      ? "veryLong"
+      : answerPressureScore >= 190
+      ? "long"
+      : answerPressureScore >= 120
+      ? "medium"
+      : "short";
+
+  const questionSlotClassByPressure =
+    questionPressureBucket === "veryLong"
+      ? "w-full shrink-0 min-h-[170px] md:min-h-[210px] flex flex-col items-center justify-center px-1"
+      : questionPressureBucket === "long"
+      ? "w-full shrink-0 min-h-[190px] md:min-h-[230px] flex flex-col items-center justify-center px-1.5"
+      : questionPressureBucket === "medium"
+      ? "w-full shrink-0 min-h-[210px] md:min-h-[245px] flex flex-col items-center justify-center px-2"
+      : "w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2";
+
+  const questionLineHeightByPressure =
+    questionPressureBucket === "veryLong"
+      ? 1.22
+      : questionPressureBucket === "long"
+      ? 1.28
+      : questionPressureBucket === "medium"
+      ? 1.34
+      : 1.4;
+
+  const questionBottomSpacingClass =
+    questionPressureBucket === "veryLong"
+      ? "mb-2"
+      : questionPressureBucket === "long"
+      ? "mb-2.5"
+      : "mb-4";
+
+  const answerCardTextClass =
+    answerPressureBucket === "veryLong"
+      ? "text-base leading-snug px-3 py-3 min-h-[5rem]"
+      : answerPressureBucket === "long"
+      ? "text-lg leading-snug px-4 py-4 min-h-[5.25rem]"
+      : answerPressureBucket === "medium"
+      ? "text-xl leading-snug px-5 py-5 min-h-[5.5rem]"
+      : "text-2xl leading-snug px-6 py-6";
+
+  const useNarrowMobileAnswerFallback =
+    answerPressureBucket === "veryLong" ||
+    (answerPressureBucket === "long" && questionPressureBucket !== "short");
+  const isTypingQuestion = currentQuestion?.answerMode === "typing";
 
   return (
     <Layout>
@@ -2397,35 +2537,50 @@ useEffect(() => {
                 </div>
               )}
 
-              {feedback && (
-                <div
-                  className={`mb-2 px-4 py-2 rounded-lg text-sm font-semibold text-center transition-all duration-300 ${
-                    showCorrectAnimation
-                      ? "bg-emerald-500/40 text-emerald-100 scale-110 shadow-lg shadow-emerald-500/50"
-                      : showWrongAnimation
-                      ? "bg-red-500/40 text-red-100 scale-105 shadow-lg shadow-red-500/50"
-                      : feedback.includes("נכון") ||
-                        feedback.includes("∞") ||
-                        feedback.includes("Start")
-                      ? "bg-emerald-500/20 text-emerald-200"
-                      : "bg-red-500/20 text-red-200"
-                  }`}
-                >
-                  <div className="text-lg">{feedback}</div>
-                  {errorExplanation && (
-                    <div className="mt-1 text-xs text-red-100/90 font-normal">
-                      {errorExplanation}
-                    </div>
-                  )}
-                </div>
-              )}
-
               {currentQuestion && (
                 <div
                   ref={gameRef}
-                  className="w-full max-w-lg flex flex-col items-center justify-center mb-2 flex-1"
+                  className="relative w-full max-w-lg flex flex-col items-center justify-start mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
+                  {(feedback || (showHint && hintText) || errorExplanation) && (
+                    <div className="absolute top-0 left-0 right-0 z-[5] px-2 pt-1 pointer-events-none">
+                      <div className="flex flex-col gap-2">
+                        {feedback && (
+                          <div
+                            className={`px-4 py-2 rounded-lg text-sm font-semibold text-center ${
+                              showCorrectAnimation
+                                ? "bg-emerald-500/40 text-emerald-100 shadow-lg shadow-emerald-500/50"
+                                : showWrongAnimation
+                                ? "bg-red-500/40 text-red-100 shadow-lg shadow-red-500/50"
+                                : feedback.includes("נכון")
+                                ? "bg-emerald-500/20 text-emerald-200"
+                                : "bg-red-500/20 text-red-200"
+                            }`}
+                          >
+                            <div className="text-base">{feedback}</div>
+                          </div>
+                        )}
+                        {showHint && hintText && (
+                          <div className="px-4 py-3 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100/95 text-sm text-right leading-relaxed">
+                            {hintText}
+                          </div>
+                        )}
+                        {errorExplanation && (
+                          <div className="px-4 py-3 rounded-lg bg-[#060b16]/98 border border-rose-200/70 shadow-xl backdrop-blur-sm text-sm text-right leading-relaxed text-rose-50">
+                            <div className="text-xs font-semibold text-rose-100 mb-1.5 tracking-tight">
+                              למה הטעות קרתה?
+                            </div>
+                            <div className="text-rose-50/95">
+                              {errorExplanation}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={questionSlotClassByPressure}>
                   {/* ויזואליזציה של מספרים (כיתות א'-ג') */}
                   {(grade === "g1" || grade === "g2" || grade === "g3") && (currentQuestion.operation === "addition" || currentQuestion.operation === "subtraction") && (
                     <div className="mb-4 flex gap-6 items-center justify-center flex-wrap" style={{ direction: "ltr" }}>
@@ -2594,12 +2749,16 @@ useEffect(() => {
                   {currentQuestion.questionLabel && currentQuestion.exerciseText ? (
                     <>
                       <p
-                        className="text-2xl text-center text-white mb-1 break-words overflow-wrap-anywhere max-w-full px-2"
+                        className={`text-2xl text-center text-white ${questionBottomSpacingClass} break-words overflow-wrap-anywhere max-w-full px-2`}
                         style={{
                           direction: currentQuestion.isStory ? "rtl" : "rtl",
                           unicodeBidi: "plaintext",
                           wordBreak: "break-word",
                           overflowWrap: "break-word",
+                          lineHeight: questionLineHeightByPressure,
+                          ...getQuestionFontStyle({
+                            text: currentQuestion.questionLabel || "",
+                          }),
                         }}
                       >
                         {currentQuestion.questionLabel}
@@ -2620,7 +2779,7 @@ useEffect(() => {
                       
                       {/* תצוגת התרגיל - מאוזן או מאונך */}
                       {isVerticalDisplay && canDisplayVertically ? (
-                        <div className="mb-4 flex justify-center w-full max-w-full px-2">
+                        <div className={`${questionBottomSpacingClass} flex justify-center w-full max-w-full px-2`}>
                           <pre
                             className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
                             style={{
@@ -2643,6 +2802,10 @@ useEffect(() => {
                             unicodeBidi: "plaintext",
                             wordBreak: "break-word",
                             overflowWrap: "break-word",
+                            lineHeight: questionLineHeightByPressure,
+                            ...getQuestionFontStyle({
+                              text: currentQuestion.exerciseText || "",
+                            }),
                           }}
                         >
                           {currentQuestion.exerciseText}
@@ -2666,7 +2829,7 @@ useEffect(() => {
                       
                       {/* תצוגת התרגיל - מאוזן או מאונך */}
                       {isVerticalDisplay && canDisplayVertically ? (
-                        <div className="mb-4 flex justify-center w-full max-w-full px-2">
+                        <div className={`${questionBottomSpacingClass} flex justify-center w-full max-w-full px-2`}>
                           <pre
                             className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
                             style={{
@@ -2681,12 +2844,16 @@ useEffect(() => {
                         </div>
                       ) : (
                         <p
-                          className="text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2"
+                          className={`text-4xl text-center text-white font-bold ${questionBottomSpacingClass} break-words overflow-wrap-anywhere max-w-full px-2`}
                           style={{
                             direction: "ltr",
                             unicodeBidi: "plaintext",
                             wordBreak: "break-word",
                             overflowWrap: "break-word",
+                            lineHeight: questionLineHeightByPressure,
+                            ...getQuestionFontStyle({
+                              text: currentQuestion.exerciseText || "",
+                            }),
                           }}
                         >
                           {currentQuestion.exerciseText}
@@ -2695,12 +2862,16 @@ useEffect(() => {
                     </>
                   ) : (
                     <div
-                      className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
+                      className={`text-4xl font-black text-white ${questionBottomSpacingClass} text-center break-words overflow-wrap-anywhere max-w-full px-2`}
                       style={{
                         direction: currentQuestion.isStory ? "rtl" : "ltr",
                         unicodeBidi: "plaintext",
                         wordBreak: "break-word",
                         overflowWrap: "break-word",
+                        lineHeight: questionLineHeightByPressure,
+                        ...getQuestionFontStyle({
+                          text: currentQuestion.question || "",
+                        }),
                       }}
                     >
                       {currentQuestion.question}
@@ -2708,74 +2879,131 @@ useEffect(() => {
                   )}
                   
 
-                  <div className="grid grid-cols-2 gap-3 w-full mb-3">
-                    {currentQuestion.answers.map((answer, idx) => {
-                      const isSelected = selectedAnswer === answer;
-                      const isCorrect = answer === currentQuestion.correctAnswer;
-                      const isWrong = isSelected && !isCorrect;
-
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => handleAnswer(answer)}
-                          disabled={!!selectedAnswer}
-                          className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                            isCorrect && isSelected
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : isWrong
-                              ? "bg-red-500/30 border-red-400 text-red-200"
-                              : selectedAnswer &&
-                                answer === currentQuestion.correctAnswer
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : "bg-black/30 border-white/15 text-white hover:border-white/40"
-                          }`}
-                        >
-                          {answer}
-                        </button>
-                      );
-                    })}
                   </div>
 
-                  {/* רמז + הסבר + למה טעיתי */}
-                  {currentQuestion && (
-                    <div className="mt-3 flex flex-col gap-2 w-full">
-                      {/* כפתורי רמז/הסבר */}
-                      <div className="flex gap-2 justify-center flex-wrap" dir="rtl">
-                        {mode === "learning" && (
+                  <div className="w-full flex-1 min-h-0 mt-2 flex flex-col items-center justify-end">
+                  {isTypingQuestion ? (
+                    <div className="w-full mb-3 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
+                      <div className="text-center mb-3">
+                        <input
+                          dir="rtl"
+                          type="text"
+                          value={typedAnswer}
+                          onChange={(e) => setTypedAnswer(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (
+                              e.key === "Enter" &&
+                              !selectedAnswer &&
+                              typedAnswer.trim() !== ""
+                            ) {
+                              handleAnswer(typedAnswer.trim());
+                            }
+                          }}
+                          disabled={!!selectedAnswer || !gameActive}
+                          placeholder="כתוב את התשובה שלך כאן..."
+                          className="w-full max-w-[320px] px-4 py-4 rounded-lg bg-black/40 border border-white/20 text-white text-2xl font-bold text-center disabled:opacity-50"
+                        />
+                      </div>
+                      <div className="flex gap-2 justify-center">
+                        <button
+                          onClick={() => {
+                            if (!typedAnswer.trim()) return;
+                            handleAnswer(typedAnswer.trim());
+                          }}
+                          disabled={
+                            !!selectedAnswer || !gameActive || !typedAnswer.trim()
+                          }
+                          className="px-6 py-3 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/60 font-bold text-lg"
+                        >
+                          ✅ בדוק תשובה
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className={`grid gap-3 w-full mb-3 ${
+                        useNarrowMobileAnswerFallback
+                          ? "grid-cols-2 max-[420px]:grid-cols-1"
+                          : "grid-cols-2"
+                      }`}
+                    >
+                      {currentQuestion.answers.map((answer, idx) => {
+                        const isSelected = selectedAnswer === answer;
+                        const isCorrect = answer === currentQuestion.correctAnswer;
+                        const isWrong = isSelected && !isCorrect;
+
+                        return (
                           <button
-                            onClick={() => setShowSolution((prev) => !prev)}
+                            key={idx}
+                            onClick={() => handleAnswer(answer)}
+                            disabled={!!selectedAnswer}
+                            className={`rounded-xl border-2 font-bold transition-all active:scale-95 disabled:opacity-50 ${answerCardTextClass} ${
+                              isCorrect && isSelected
+                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                : isWrong
+                                ? "bg-red-500/30 border-red-400 text-red-200"
+                                : selectedAnswer &&
+                                  answer === currentQuestion.correctAnswer
+                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                            }`}
+                          >
+                            {answer}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {currentQuestion && (
+                    <div className="w-full flex justify-center gap-2 flex-wrap mb-2 min-h-[2.75rem]" dir="rtl">
+                        {mode === "learning" && currentQuestion && (
+                          <button
+                            type="button"
+                            onClick={() => setShowSolution(true)}
                             className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/80 hover:bg-emerald-500 text-white"
                           >
-                            📖 הסבר צעד־אחר־צעד
+                            📘 הסבר מלא
                           </button>
                         )}
                         <button
-                          onClick={() => setShowHint((prev) => !prev)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white"
+                          type="button"
+                          onClick={() => {
+                            if (hintUsed || selectedAnswer) return;
+                            setShowHint(true);
+                            setHintUsed(true);
+                          }}
+                          disabled={hintUsed || !!selectedAnswer}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white ${
+                            hintUsed || selectedAnswer ? "opacity-60 cursor-not-allowed" : ""
+                          }`}
                         >
                           💡 רמז
                         </button>
+                        {(mode === "learning" || mode === "practice") &&
+                          previousExplanationQuestion && (
+                            <button
+                              type="button"
+                              onClick={openPreviousExplanation}
+                              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/80 hover:bg-cyan-500 text-white"
+                            >
+                              🕘 תרגיל קודם
+                            </button>
+                          )}
+                  </div>
+                  )}
                   </div>
 
-
-                      {/* תיבת רמז */}
-                      {showHint && hintText && (
-                        <div className="w-full max-w-lg mx-auto bg-blue-500/10 border border-blue-400/50 rounded-lg p-2 text-right">
-                          <div className="text-[11px] text-blue-300 mb-1">רמז</div>
-                          <div className="text-xs text-blue-100 leading-relaxed">{hintText}</div>
-                        </div>
-                      )}
-
-                      {/* חלון הסבר מלא - Modal גדול ומרכזי - רק במצב למידה */}
-                      {mode === "learning" && showSolution && currentQuestion && (() => {
+                      {/* חלון הסבר מלא - Modal גדול ומרכזי */}
+                      {isShowingAnySolution && explanationQuestion && (() => {
                         // עבור שאלות טקסטואליות - נציג הסבר פשוט
-                        const info = stepExplanation;
+                        const info = buildStepExplanation(explanationQuestion);
                         if (!info) return null;
                           
                           return (
                             <div
                               className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
-                              onClick={() => setShowSolution(false)}
+                              onClick={closeExplanationModal}
                             >
                               <div
                                 className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
@@ -2785,10 +3013,12 @@ useEffect(() => {
                                 {/* כותרת - קבועה */}
                                 <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
                                   <h3 className="text-lg font-bold text-emerald-100" dir="rtl">
-                                    {"\u200Fאיך פותרים את התרגיל?"}
+                                    {showPreviousSolution
+                                      ? "פתרון התרגיל הקודם"
+                                      : "\u200Fאיך פותרים את התרגיל?"}
                                   </h3>
                                   <button
-                                    onClick={() => setShowSolution(false)}
+                                    onClick={closeExplanationModal}
                                     className="text-emerald-200 hover:text-white text-xl leading-none px-2"
                                   >
                                     ✖
@@ -2806,7 +3036,9 @@ useEffect(() => {
                                       overflowWrap: "break-word",
                                     }}
                                   >
-                                    {info.exercise || currentQuestion.exerciseText || currentQuestion.question}
+                                    {info.exercise ||
+                                      explanationQuestion.exerciseText ||
+                                      explanationQuestion.question}
                                   </div>
                                   {info.vertical && (
                                     <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2">
@@ -2830,7 +3062,7 @@ useEffect(() => {
                                 {/* כפתורים - קבועים בתחתית */}
                                 <div className="p-4 pt-2 flex justify-center flex-shrink-0 border-t border-emerald-400/20">
                                   <button
-                                    onClick={() => setShowSolution(false)}
+                                    onClick={closeExplanationModal}
                                     className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
                                   >
                                     סגור
@@ -2840,18 +3072,6 @@ useEffect(() => {
                             </div>
                           );
                       })()}
-
-                      {/* למה טעיתי? – רק אחרי טעות */}
-                      {errorExplanation && (
-                        <div className="w-full max-w-lg mx-auto bg-rose-500/10 border border-rose-400/50 rounded-lg p-2 text-right">
-                          <div className="text-[11px] text-rose-300 mb-1">למה הטעות קרתה?</div>
-                          <div className="text-xs text-rose-100 leading-relaxed">
-                            {errorExplanation}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
               )}
 

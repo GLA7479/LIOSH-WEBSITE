@@ -698,6 +698,32 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   // קבלת שאלות מהמאגר המתאים
   const topicQuestions = getQuestionsForGradeAndLevel(gradeKey, levelKey, selectedTopic);
   
+  const resolveAnswerMode = (selectedTopicKey, questionText) => {
+    const q = String(questionText || "").trim();
+    const hasBlankPattern = q.includes("_") || q.includes(BLANK);
+    if (selectedTopicKey === "writing" || selectedTopicKey === "speaking") {
+      return "typing";
+    }
+    if (selectedTopicKey === "comprehension") {
+      return "choice";
+    }
+    if (selectedTopicKey === "grammar") {
+      if (hasBlankPattern || q.includes("איך כותבים")) return "typing";
+      return "choice";
+    }
+    if (selectedTopicKey === "reading") {
+      if (hasBlankPattern || q.includes("איזה אות חסרה") || q.includes("מה המילה הנכונה")) {
+        return "typing";
+      }
+      return "choice";
+    }
+    if (selectedTopicKey === "vocabulary") {
+      if (q.includes("מה המילה המתאימה") || q.includes("השלם")) return "typing";
+      return "choice";
+    }
+    return "choice";
+  };
+
   if (!topicQuestions || topicQuestions.length === 0) {
     // נסיגה למאגר בסיסי אם אין שאלות
     const fallbackQuestions = G1_EASY_QUESTIONS[selectedTopic] || G1_EASY_QUESTIONS.reading;
@@ -714,12 +740,15 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     const correctAnswer = randomQ.answers[randomQ.correct];
     const newCorrectIndex = shuffledAnswers.findIndex(ans => ans === correctAnswer);
     
+    const answerMode = resolveAnswerMode(selectedTopic, randomQ.question);
     return {
       question: randomQ.question,
       questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
       exerciseText: randomQ.question,
       answers: shuffledAnswers,
       correctAnswer: correctAnswer,
+      acceptedAnswers: [correctAnswer],
+      answerMode,
       correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : 0,
       topic: selectedTopic,
       operation: selectedTopic,
@@ -747,12 +776,15 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   const correctAnswer = randomQ.answers[randomQ.correct];
   const newCorrectIndex = shuffledAnswers.findIndex(ans => ans === correctAnswer);
 
+  const answerMode = resolveAnswerMode(selectedTopic, randomQ.question);
   return {
     question: randomQ.question,
     questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
     exerciseText: randomQ.question,
     answers: shuffledAnswers,
     correctAnswer: correctAnswer,
+    acceptedAnswers: [correctAnswer],
+    answerMode,
     correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : 0,
     topic: selectedTopic,
     operation: selectedTopic,
