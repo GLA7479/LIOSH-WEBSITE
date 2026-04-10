@@ -231,6 +231,7 @@ export default function GeometryMaster() {
   const animationTimeoutsRef = useRef([]);
   const [showHowTo, setShowHowTo] = useState(false);
   const [errorExplanation, setErrorExplanation] = useState("");
+  const [showTheoryHelp, setShowTheoryHelp] = useState(false);
   const [showMixedSelector, setShowMixedSelector] = useState(false);
   const [mixedTopics, setMixedTopics] = useState({
     area: true,
@@ -522,6 +523,7 @@ useEffect(() => {
         setShowHint(false);
         setHintUsed(false);
         setShowSolution(false);
+        setShowTheoryHelp(false);
         setErrorExplanation("");
         return;
       }
@@ -730,6 +732,7 @@ useEffect(() => {
     setShowHint(false);
     setHintUsed(false);
     setShowSolution(false);
+    setShowTheoryHelp(false);
     setErrorExplanation("");
   };
 
@@ -1063,7 +1066,7 @@ useEffect(() => {
           setFeedback(null);
           setTimeLeft(null);
         }, 1500);
-      } else {
+      } else if (mode === "challenge") {
         // מצב Challenge – עובדים עם חיים
         setFeedback(
           `Wrong! Correct: ${currentQuestion.correctAnswer} ❌ (-1 ❤️)`
@@ -1095,6 +1098,19 @@ useEffect(() => {
 
           return nextLives;
         });
+      } else {
+        // מצבי speed / marathon / practice - לא יוצאים מהמשחק על טעות
+        setFeedback(`Wrong! Correct answer: ${currentQuestion.correctAnswer} ❌`);
+        setTimeout(() => {
+          generateNewQuestion();
+          setSelectedAnswer(null);
+          setFeedback(null);
+          if (mode === "speed") {
+            setTimeLeft(10);
+          } else {
+            setTimeLeft(null);
+          }
+        }, 1500);
       }
     }
   };
@@ -1230,6 +1246,7 @@ useEffect(() => {
     setShowBadge(null);
     setShowLevelUp(false);
     setShowSolution(false);
+    setShowTheoryHelp(false);
     setErrorExplanation("");
     
     // Start background music and play game start sound
@@ -1915,14 +1932,16 @@ useEffect(() => {
               {currentQuestion && (
                 <div
                   ref={gameRef}
-                  className="w-full max-w-lg flex flex-col items-center justify-start mb-2 flex-1 min-h-0"
+                  className="relative w-full max-w-lg flex flex-col items-center justify-start mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
-                  {/* אזור קבוע להודעות/רמז/הסבר כדי למנוע קפיצות פריסה */}
-                  <div className="w-full shrink-0 mb-2" style={{ height: "124px" }}>
-                    <div className="h-full w-full overflow-y-auto overflow-x-hidden rounded-lg">
-                      <div className="flex flex-col gap-2">
-                        {feedback ? (
+                  {/* שכבת הודעות לא דוחפת פריסה */}
+                  {(feedback ||
+                    (showHint && currentQuestion.params?.kind !== "no_question") ||
+                    errorExplanation) && (
+                    <div className="absolute top-0 left-0 right-0 z-[5] px-2 pt-1 pointer-events-none">
+                      <div className="flex flex-col gap-2 items-stretch">
+                        {feedback && (
                           <div
                             className={`px-4 py-2 rounded-lg text-sm font-semibold text-center ${
                               feedback.includes("Correct") ||
@@ -1935,44 +1954,39 @@ useEffect(() => {
                           >
                             <div style={learningMixedHebrewMathStyle}>{feedback}</div>
                           </div>
-                        ) : (
-                          <div className="px-4 py-2 rounded-lg opacity-0 select-none" aria-hidden>
-                            placeholder
-                          </div>
                         )}
 
-                        {mode === "learning" && currentQuestion.params?.kind !== "no_question" ? (
-                          <div
-                            className="px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 w-full"
-                            style={{ direction: "rtl", unicodeBidi: "plaintext" }}
-                          >
-                            {getTheorySummary(currentQuestion, currentQuestion.topic, grade)}
-                          </div>
-                        ) : null}
-
-                        {showHint && currentQuestion.params?.kind !== "no_question" ? (
+                        {showHint && currentQuestion.params?.kind !== "no_question" && (
                           <div
                             className="px-4 py-3 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100/95 text-sm leading-relaxed text-center w-full"
                             style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                           >
                             {getHint(currentQuestion, currentQuestion.topic, grade)}
                           </div>
-                        ) : null}
+                        )}
 
-                        {errorExplanation ? (
+                        {errorExplanation && (
                           <div
                             className="px-4 py-2 rounded-lg bg-rose-500/10 border border-rose-400/50 text-rose-100/95 text-sm leading-relaxed text-center w-full"
                             style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                           >
                             {errorExplanation}
                           </div>
-                        ) : null}
+                        )}
                       </div>
                     </div>
-                  </div>
+                  )}
 
-                  <div className="w-full flex-1 min-h-0 flex flex-col items-center justify-start">
-                    <div className="w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden [-webkit-overflow-scrolling:touch] flex flex-col items-center justify-start">
+                  <div className="relative w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2">
+                  {mode === "learning" && currentQuestion.params?.kind !== "no_question" && (
+                    <button
+                      type="button"
+                      onClick={() => setShowTheoryHelp(true)}
+                      className="absolute top-2 left-2 z-[6] h-7 px-2.5 rounded-lg text-[11px] font-bold bg-white/10 text-white/80 border border-white/20 hover:bg-white/20"
+                    >
+                      🧠 מה חשוב לזכור?
+                    </button>
+                  )}
 
                   {/* בדיקה אם יש שאלה תקינה */}
                   {currentQuestion.params?.kind === "no_question" ? (
@@ -1994,7 +2008,7 @@ useEffect(() => {
                             {currentQuestion.questionLabel}
                           </p>
                           <p
-                            className="text-4xl text-center text-white font-bold mb-4 whitespace-nowrap"
+                            className="text-4xl text-center text-white font-bold whitespace-nowrap"
                             style={{ direction: "ltr", unicodeBidi: "plaintext" }}
                           >
                             {currentQuestion.exerciseText}
@@ -2002,7 +2016,7 @@ useEffect(() => {
                         </>
                       ) : (
                         <div
-                          className="text-4xl font-black text-white mb-4 text-center"
+                          className="text-4xl font-black text-white text-center"
                           style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                         >
                           {currentQuestion.question}
@@ -2010,10 +2024,41 @@ useEffect(() => {
                       )}
                     </>
                   )}
-                    </div>
+                  </div>
+                    <div className="w-full shrink-0 mt-2 flex flex-col items-center justify-start">
+                      {currentQuestion.params?.kind !== "no_question" &&
+                        currentQuestion.answers && (
+                          <div className="grid grid-cols-2 gap-3 w-full mb-3">
+                            {currentQuestion.answers.map((answer, idx) => {
+                              const isSelected = selectedAnswer === answer;
+                              const isCorrect =
+                                answer === currentQuestion.correctAnswer;
+                              const isWrong = isSelected && !isCorrect;
 
-                    <div className="w-full shrink-0 flex flex-col items-center justify-start">
-                      {/* שורת כפתורים קבועה (שומרת גובה גם כשכפתור נעלם) */}
+                              return (
+                                <button
+                                  key={idx}
+                                  onClick={() => handleAnswer(answer)}
+                                  disabled={!!selectedAnswer}
+                                  className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                                    isCorrect && isSelected
+                                      ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                      : isWrong
+                                      ? "bg-red-500/30 border-red-400 text-red-200"
+                                      : selectedAnswer &&
+                                        answer === currentQuestion.correctAnswer
+                                      ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                      : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                                  }`}
+                                >
+                                  {answer}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                      {/* שורת כפתורים קבועה (מתחת לאזור התשובות, כמו Math) */}
                       <div className="w-full flex justify-center gap-2 flex-wrap mb-2 min-h-[2.75rem]" dir="rtl">
                         {!hintUsed && !selectedAnswer && currentQuestion.params?.kind !== "no_question" ? (
                           <button
@@ -2194,40 +2239,42 @@ useEffect(() => {
                         </>
                       )}
 
-                      {currentQuestion.params?.kind !== "no_question" &&
-                        currentQuestion.answers && (
-                          <div className="grid grid-cols-2 gap-3 w-full mb-3">
-                            {currentQuestion.answers.map((answer, idx) => {
-                              const isSelected = selectedAnswer === answer;
-                              const isCorrect =
-                                answer === currentQuestion.correctAnswer;
-                              const isWrong = isSelected && !isCorrect;
-
-                              return (
+                      {showTheoryHelp &&
+                        mode === "learning" &&
+                        currentQuestion.params?.kind !== "no_question" && (
+                          <div
+                            className={learningModalOverlay}
+                            onClick={() => setShowTheoryHelp(false)}
+                            dir="rtl"
+                          >
+                            <div
+                              className="w-full max-w-md rounded-2xl border border-white/20 bg-[#0a1222]/95 shadow-2xl p-4"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div className="flex items-center justify-between gap-2 mb-2">
+                                <h3 className="text-base font-extrabold text-white">
+                                  מה חשוב לזכור?
+                                </h3>
                                 <button
-                                  key={idx}
-                                  onClick={() => handleAnswer(answer)}
-                                  disabled={!!selectedAnswer}
-                                  className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                                    isCorrect && isSelected
-                                      ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                                      : isWrong
-                                      ? "bg-red-500/30 border-red-400 text-red-200"
-                                      : selectedAnswer &&
-                                        answer === currentQuestion.correctAnswer
-                                      ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                                      : "bg-black/30 border-white/15 text-white hover:border-white/40"
-                                  }`}
+                                  type="button"
+                                  onClick={() => setShowTheoryHelp(false)}
+                                  className="px-2 py-1 rounded-md bg-white/10 text-white/80 hover:bg-white/20 text-xs font-bold"
+                                  aria-label="סגור"
                                 >
-                                  {answer}
+                                  ✖
                                 </button>
-                              );
-                            })}
+                              </div>
+                              <div
+                                className="text-sm text-white/90 leading-relaxed"
+                                style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                              >
+                                {getTheorySummary(currentQuestion, currentQuestion.topic, grade)}
+                              </div>
+                            </div>
                           </div>
                         )}
                     </div>
                   </div>
-                </div>
               )}
 
               <button
