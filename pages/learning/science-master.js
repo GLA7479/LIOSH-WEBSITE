@@ -47,6 +47,7 @@ import {
   learningHintTriggerBtn,
   learningExplainOpenBtn,
 } from "../../utils/learning-ui-classes";
+import { getQuestionFontStyle } from "../../utils/learning-question-font";
 
 // ================== CONFIG ==================
 
@@ -621,6 +622,9 @@ export default function ScienceMaster() {
   const [showHint, setShowHint] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
+  const [showPreviousSolution, setShowPreviousSolution] = useState(false);
+  const [previousExplanationQuestion, setPreviousExplanationQuestion] = useState(null);
+  const [showTheoryHelp, setShowTheoryHelp] = useState(false);
   const [showHowTo, setShowHowTo] = useState(false);
   const [errorExplanation, setErrorExplanation] = useState("");
 
@@ -1453,10 +1457,15 @@ function recordSessionProgress() {
       assignedGrade: grade,
       assignedLevel: getAssignedLevelForQuestion(),
     });
+    if (currentQuestion) {
+      setPreviousExplanationQuestion(currentQuestion);
+    }
     setSelectedAnswer(null);
     setShowHint(false);
     setHintUsed(false);
     setShowSolution(false);
+    setShowPreviousSolution(false);
+    setShowTheoryHelp(false);
     setErrorExplanation("");
     setQuestionStartTime(Date.now());
   }
@@ -1476,6 +1485,10 @@ function recordSessionProgress() {
     setTimeLeft(20);
     setSelectedAnswer(null);
     setFeedback(null);
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
+    setShowTheoryHelp(false);
     setLives(3);
 
     // איפוס מאגר השאלות
@@ -1548,6 +1561,9 @@ function recordSessionProgress() {
     setShowHint(false);
     setHintUsed(false);
     setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
+    setShowTheoryHelp(false);
     setErrorExplanation("");
     setLives(mode === "challenge" ? 3 : 0);
     if (mode === "challenge") setTimeLeft(25);
@@ -1573,6 +1589,10 @@ function recordSessionProgress() {
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
+    setShowTheoryHelp(false);
   }
 
   function handleTimeUp() {
@@ -1855,8 +1875,9 @@ function recordSessionProgress() {
           generateNewQuestion();
           setSelectedAnswer(null);
           setFeedback(null);
+          setTimeLeft(null);
         }, 1600);
-      } else {
+      } else if (mode === "challenge") {
         setFeedback("טעות! ❌ (-1 ❤️)");
         setLives((prev) => {
           const next = prev - 1;
@@ -1882,9 +1903,35 @@ function recordSessionProgress() {
           }
           return next;
         });
+      } else {
+        // speed / marathon / practice stay in active gameplay on wrong answers
+        setFeedback("לא מדויק... ❌");
+        setTimeout(() => {
+          generateNewQuestion();
+          setSelectedAnswer(null);
+          setFeedback(null);
+          if (mode === "speed") setTimeLeft(12);
+          else setTimeLeft(null);
+        }, 1600);
       }
     }
   }
+
+  const isShowingAnySolution = showSolution || showPreviousSolution;
+  const explanationQuestion = showPreviousSolution
+    ? previousExplanationQuestion
+    : currentQuestion;
+
+  const closeExplanationModal = () => {
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+  };
+
+  const openPreviousExplanation = () => {
+    if (!previousExplanationQuestion) return;
+    setShowSolution(false);
+    setShowPreviousSolution(true);
+  };
 
   const saveBadge = (badge) => {
     if (typeof window === "undefined") return;
@@ -2543,127 +2590,152 @@ function recordSessionProgress() {
             </div>
           ) : (
             <>
-              {/* FEEDBACK */}
-              {feedback && (
-                <div
-                  className={`mb-2 px-4 py-2 rounded-lg text-sm font-semibold text-center ${
-                    feedback.includes("מצוין") || feedback.includes("Game Over") === false
-                      ? "bg-emerald-500/20 text-emerald-200"
-                      : "bg-red-500/20 text-red-200"
-                  }`}
-                >
-                  <div style={learningMixedHebrewMathStyle}>{feedback}</div>
-                  {errorExplanation && (
-                    <div
-                      className="mt-2 text-sm text-red-100/95 font-normal leading-relaxed max-w-prose mx-auto"
-                      style={learningMixedHebrewMathStyle}
-                    >
-                      {errorExplanation}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* מה חשוב לזכור - מחוץ ל-container */}
-              {mode === "learning" && currentQuestion && (
-                <div className="mb-3 px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 text-right w-full max-w-xl sm:max-w-2xl" dir="rtl">
-                  <div className="font-bold mb-1">📘 מה חשוב לזכור?</div>
-                  <ul className="list-disc pr-4 space-y-0.5">
-                    {(currentQuestion.theoryLines || []).map((line, i) => (
-                      <li key={i} style={learningMixedHebrewMathStyle}>
-                        {line}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* QUESTION AREA */}
               <div
                 ref={gameRef}
-                className="w-full max-w-xl sm:max-w-2xl flex flex-col items-center justify-center mb-2 flex-1 px-1"
+                className="relative w-full max-w-xl sm:max-w-2xl flex flex-col items-center justify-start mb-2 flex-1 px-1"
                 style={{
                   height: "var(--game-h, 400px)",
                   minHeight: "300px",
                 }}
               >
-                {/* STEM */}
-                <div
-                  className="text-base sm:text-lg md:text-xl font-bold text-white mb-4 sm:mb-5 text-center leading-snug max-w-xl mx-auto -mt-8 sm:-mt-10"
-                  style={{ direction: "rtl", unicodeBidi: "plaintext" }}
-                >
-                  {currentQuestion
-                    ? currentQuestion.stem
-                    : "אין שאלה זמינה להגדרה זו."}
+                {(feedback || (showHint && currentQuestion) || errorExplanation) && (
+                  <div className="absolute top-0 left-0 right-0 z-[5] px-2 pt-1 pointer-events-none">
+                    <div className="flex flex-col gap-2 items-stretch">
+                      {feedback && (
+                        <div
+                          className={`px-4 py-2 rounded-lg text-sm font-semibold text-center ${
+                            feedback.includes("מצוין")
+                              ? "bg-emerald-500/20 text-emerald-200"
+                              : "bg-red-500/20 text-red-200"
+                          }`}
+                        >
+                          <div style={learningMixedHebrewMathStyle}>{feedback}</div>
+                        </div>
+                      )}
+                      {showHint && currentQuestion && (
+                        <div
+                          className="px-4 py-3 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100/95 text-sm text-right leading-relaxed"
+                          style={learningMixedHebrewMathStyle}
+                        >
+                          {getHintForQuestion(currentQuestion)}
+                        </div>
+                      )}
+                      {errorExplanation && (
+                        <div
+                          className="px-4 py-3 rounded-lg bg-[#0a1222]/95 border border-rose-300/60 shadow-xl backdrop-blur-sm text-sm leading-relaxed text-right"
+                          style={learningMixedHebrewMathStyle}
+                        >
+                          <div className="text-xs font-semibold text-rose-100 mb-1.5 tracking-tight">
+                            למה הטעות קרתה?
+                          </div>
+                          <div className="text-rose-50">{errorExplanation}</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div className="relative w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2">
+                  {mode === "learning" &&
+                    currentQuestion &&
+                    Array.isArray(currentQuestion.theoryLines) &&
+                    currentQuestion.theoryLines.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setShowTheoryHelp(true)}
+                        className="absolute top-2 left-2 z-[6] h-7 px-2.5 rounded-lg text-[11px] font-bold bg-white/10 text-white/80 border border-white/20 hover:bg-white/20"
+                      >
+                        🧠 מה חשוב לזכור?
+                      </button>
+                    )}
+                  <div
+                    className="text-base sm:text-lg md:text-xl font-bold text-white text-center leading-snug max-w-xl mx-auto"
+                    style={{
+                      direction: "rtl",
+                      unicodeBidi: "plaintext",
+                      ...getQuestionFontStyle({
+                        text: currentQuestion?.stem || "אין שאלה זמינה להגדרה זו.",
+                      }),
+                    }}
+                  >
+                    {currentQuestion
+                      ? currentQuestion.stem
+                      : "אין שאלה זמינה להגדרה זו."}
+                  </div>
                 </div>
 
-                {/* HINT + SOLUTION BUTTONS */}
-                <div className="flex flex-wrap gap-2 justify-center mb-2" dir="rtl">
-                  {!hintUsed && !selectedAnswer && currentQuestion && (
+                <div className="w-full flex-1 min-h-0 mt-2 flex flex-col items-center justify-end">
+                  {currentQuestion && (
+                    <div className="grid grid-cols-2 gap-2 sm:gap-2.5 w-full max-w-xl mb-3 auto-rows-fr">
+                      {currentQuestion.options?.map((opt, idx) => {
+                        const isSelected = selectedAnswer === idx;
+                        const isCorrect = idx === currentQuestion.correctIndex;
+                        const isWrong = isSelected && !isCorrect;
+                        const showResult = selectedAnswer != null;
+
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => handleAnswer(idx)}
+                            disabled={showResult}
+                            className={`rounded-xl border-2 px-2.5 py-2.5 sm:px-3 sm:py-3 text-sm font-semibold leading-snug min-h-[5.25rem] sm:min-h-[5.5rem] h-full w-full flex items-center justify-center text-center transition-all duration-150 shadow-sm active:scale-[0.98] disabled:active:scale-100 disabled:cursor-default ${
+                              isCorrect && isSelected
+                                ? "bg-emerald-500/30 border-emerald-400 text-emerald-100 ring-2 ring-emerald-400/50 ring-offset-2 ring-offset-[#0b1121]"
+                                : isWrong
+                                ? "bg-red-500/30 border-red-400 text-red-100 ring-2 ring-red-400/50 ring-offset-2 ring-offset-[#0b1121]"
+                                : showResult && isCorrect
+                                ? "bg-emerald-500/25 border-emerald-400/80 text-emerald-100"
+                                : !showResult
+                                ? "bg-black/30 border-white/15 text-white hover:border-white/40 hover:bg-white/5 hover:shadow"
+                                : "bg-black/25 border-white/10 text-white/80"
+                            }`}
+                            style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  <div className="w-full flex justify-center gap-2 flex-wrap mb-2 min-h-[2.75rem]" dir="rtl">
+                    {mode === "learning" && currentQuestion && (
+                      <button
+                        type="button"
+                        onClick={() => setShowSolution(true)}
+                        className={learningExplainOpenBtn}
+                      >
+                        📘 הסבר מלא
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => {
+                        if (hintUsed || selectedAnswer || !currentQuestion) return;
                         setShowHint(true);
                         setHintUsed(true);
                       }}
-                      className={learningHintTriggerBtn}
+                      disabled={hintUsed || !!selectedAnswer || !currentQuestion}
+                      className={`${learningHintTriggerBtn} ${
+                        hintUsed || selectedAnswer || !currentQuestion
+                          ? "opacity-60 cursor-not-allowed"
+                          : ""
+                      }`}
                     >
                       💡 רמז
                     </button>
-                  )}
-                  {mode === "learning" && currentQuestion && (
-                    <button
-                      type="button"
-                      onClick={() => setShowSolution(true)}
-                      className={learningExplainOpenBtn}
-                    >
-                      📘 הסבר מלא
-                    </button>
-                  )}
+                    {(mode === "learning" || mode === "practice") &&
+                      previousExplanationQuestion && (
+                      <button
+                        type="button"
+                        onClick={openPreviousExplanation}
+                        className={learningExplainOpenBtn}
+                      >
+                        🕘 תרגיל קודם
+                      </button>
+                    )}
+                  </div>
                 </div>
-
-                {showHint && currentQuestion && (
-                  <div
-                    className="mb-2 px-4 py-3 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100/95 text-sm text-right w-full max-w-xl sm:max-w-2xl leading-relaxed"
-                    style={learningMixedHebrewMathStyle}
-                  >
-                    {getHintForQuestion(currentQuestion)}
-                  </div>
-                )}
-
-                {/* ANSWERS */}
-                {currentQuestion && (
-                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5 w-full max-w-xl mb-3 auto-rows-fr">
-                    {currentQuestion.options?.map((opt, idx) => {
-                      const isSelected = selectedAnswer === idx;
-                      const isCorrect = idx === currentQuestion.correctIndex;
-                      const isWrong = isSelected && !isCorrect;
-                      const showResult = selectedAnswer != null;
-
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => handleAnswer(idx)}
-                          disabled={showResult}
-                          className={`rounded-xl border-2 px-2.5 py-2.5 sm:px-3 sm:py-3 text-sm font-semibold leading-snug min-h-[5.25rem] sm:min-h-[5.5rem] h-full w-full flex items-center justify-center text-center transition-all duration-150 shadow-sm active:scale-[0.98] disabled:active:scale-100 disabled:cursor-default ${
-                            isCorrect && isSelected
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-100 ring-2 ring-emerald-400/50 ring-offset-2 ring-offset-[#0b1121]"
-                              : isWrong
-                              ? "bg-red-500/30 border-red-400 text-red-100 ring-2 ring-red-400/50 ring-offset-2 ring-offset-[#0b1121]"
-                              : showResult && isCorrect
-                              ? "bg-emerald-500/25 border-emerald-400/80 text-emerald-100"
-                              : !showResult
-                              ? "bg-black/30 border-white/15 text-white hover:border-white/40 hover:bg-white/5 hover:shadow"
-                              : "bg-black/25 border-white/10 text-white/80"
-                          }`}
-                          style={{ direction: "rtl", unicodeBidi: "plaintext" }}
-                        >
-                          {opt}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
               </div>
 
               <button
@@ -2674,10 +2746,10 @@ function recordSessionProgress() {
               </button>
 
               {/* SOLUTION MODAL */}
-              {showSolution && currentQuestion && (
+              {isShowingAnySolution && explanationQuestion && (
                 <div
                   className={learningModalOverlay}
-                  onClick={() => setShowSolution(false)}
+                  onClick={closeExplanationModal}
                   dir="rtl"
                 >
                   <div
@@ -2687,14 +2759,16 @@ function recordSessionProgress() {
                     <div className={learningModalHeader}>
                       <button
                         type="button"
-                        onClick={() => setShowSolution(false)}
+                        onClick={closeExplanationModal}
                         className={learningModalCloseBtn}
                         aria-label="סגור"
                       >
                         ✖
                       </button>
                       <h3 className={learningModalTitle}>
-                        {"\u200Fאיך פותרים את השאלה?"}
+                        {showPreviousSolution
+                          ? "פתרון התרגיל הקודם"
+                          : "\u200Fאיך פותרים את השאלה?"}
                       </h3>
                       <span className="w-10 shrink-0" aria-hidden />
                     </div>
@@ -2711,7 +2785,7 @@ function recordSessionProgress() {
                           }}
                         >
                           {(() => {
-                            const q = (currentQuestion.stem || "")
+                            const q = (explanationQuestion.stem || "")
                               .trim()
                               .replace(/^\?+/, "");
                             return q.endsWith("?") ? q : `${q}?`;
@@ -2722,7 +2796,7 @@ function recordSessionProgress() {
                         className="space-y-2.5"
                         style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                       >
-                        {getSolutionStepsScience(currentQuestion).map(
+                        {getSolutionStepsScience(explanationQuestion).map(
                           (line, idx) => (
                             <div key={idx} className={learningExplBody}>
                               {line}
@@ -2735,7 +2809,7 @@ function recordSessionProgress() {
                       <div className="flex justify-center">
                         <button
                           type="button"
-                          onClick={() => setShowSolution(false)}
+                          onClick={closeExplanationModal}
                           className={learningPrimaryCloseBtn}
                           dir="rtl"
                         >
@@ -2746,6 +2820,44 @@ function recordSessionProgress() {
                   </div>
                 </div>
               )}
+
+              {showTheoryHelp &&
+                mode === "learning" &&
+                currentQuestion &&
+                Array.isArray(currentQuestion.theoryLines) &&
+                currentQuestion.theoryLines.length > 0 && (
+                  <div
+                    className={learningModalOverlay}
+                    onClick={() => setShowTheoryHelp(false)}
+                    dir="rtl"
+                  >
+                    <div
+                      className="w-full max-w-md rounded-2xl border border-white/20 bg-[#0a1222]/95 shadow-2xl p-4"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <h3 className="text-base font-extrabold text-white">
+                          מה חשוב לזכור?
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={() => setShowTheoryHelp(false)}
+                          className="px-2 py-1 rounded-md bg-white/10 text-white/80 hover:bg-white/20 text-xs font-bold"
+                          aria-label="סגור"
+                        >
+                          ✖
+                        </button>
+                      </div>
+                      <ul className="list-disc pr-4 space-y-1 text-sm text-white/90">
+                        {currentQuestion.theoryLines.map((line, i) => (
+                          <li key={i} style={learningMixedHebrewMathStyle}>
+                            {line}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
             </>
           )}
 
