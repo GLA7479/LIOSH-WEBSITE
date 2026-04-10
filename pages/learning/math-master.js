@@ -3813,7 +3813,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                     ✖
                                   </button>
                                   <h3 className={learningModalTitle} dir="rtl">
-                                    {"\u200Fאיך פותרים את התרגיל?"}
+                                    {showPreviousSolution
+                                      ? "פתרון התרגיל הקודם"
+                                      : "\u200Fאיך פותרים את התרגיל?"}
                                   </h3>
                                   <span className="w-10 shrink-0" aria-hidden />
                                 </div>
@@ -4031,7 +4033,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                       ✖
                                     </button>
                                     <h3 className={learningModalTitle}>
-                                      {"\u200Fאיך פותרים את התרגיל?"}
+                                      {showPreviousSolution
+                                        ? "פתרון התרגיל הקודם"
+                                        : "\u200Fאיך פותרים את התרגיל?"}
                                     </h3>
                                     <span className="w-10 shrink-0" aria-hidden />
                                   </div>
@@ -4222,7 +4226,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                     ✖
                                   </button>
                                   <h3 className={learningModalTitle}>
-                                    {"\u200Fאיך פותרים את התרגיל?"}
+                                    {showPreviousSolution
+                                      ? "פתרון התרגיל הקודם"
+                                      : "\u200Fאיך פותרים את התרגיל?"}
                                   </h3>
                                   <span className="w-10 shrink-0" aria-hidden />
                                 </div>
@@ -4441,7 +4447,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                   ✖
                                 </button>
                                 <h3 className={learningModalTitle}>
-                                  {"\u200Fאיך פותרים את התרגיל?"}
+                                  {showPreviousSolution
+                                    ? "פתרון התרגיל הקודם"
+                                    : "\u200Fאיך פותרים את התרגיל?"}
                                 </h3>
                                 <span className="w-10 shrink-0" aria-hidden />
                               </div>
