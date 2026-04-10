@@ -25,6 +25,7 @@ import {
   buildStepExplanation,
 } from "../../utils/moledet-geography-explanations";
 import { trackMoledetGeographyTopicTime } from "../../utils/moledet-geography-time-tracking";
+import { applyLearningShellLayoutVars } from "../../utils/learning-shell-layout";
 import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
@@ -673,36 +674,27 @@ useEffect(() => {
     }
   }, [showLeaderboard, leaderboardLevel]);
 
-  // Dynamic layout calculation - optimized to prevent performance issues
   useEffect(() => {
     if (!wrapRef.current || !mounted) return;
-    
     let resizeTimer = null;
     const calc = () => {
-      // Debounce resize events to prevent excessive recalculations
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        const rootH = window.innerHeight; // Use innerHeight instead of visualViewport
-      const headH = headerRef.current?.offsetHeight || 0;
-      document.documentElement.style.setProperty("--head-h", headH + "px");
-
-      const controlsH = controlsRef.current?.offsetHeight || 40;
-        const used = headH + controlsH + 120 + 40;
-      const freeH = Math.max(300, rootH - used);
-      document.documentElement.style.setProperty("--game-h", freeH + "px");
-      }, 150); // Debounce 150ms
+        applyLearningShellLayoutVars({
+          wrapRef,
+          headerRef,
+          controlsRef,
+        });
+      }, 150);
     };
-    
-    // Initial calculation
     const timer = setTimeout(calc, 100);
-    
-    // Only listen to window resize, not visualViewport (causes too many events)
     window.addEventListener("resize", calc, { passive: true });
-    
+    window.visualViewport?.addEventListener("resize", calc);
     return () => {
       clearTimeout(timer);
       if (resizeTimer) clearTimeout(resizeTimer);
       window.removeEventListener("resize", calc);
+      window.visualViewport?.removeEventListener("resize", calc);
     };
   }, [mounted]);
 
@@ -1560,16 +1552,15 @@ useEffect(() => {
           100% { opacity: 1; transform: scale(1); }
         }
       `}</style>
-      <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928]" dir="rtl">
+      <div className="flex flex-col h-dvh max-h-dvh min-h-0 overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928]" dir="rtl">
         <div
           ref={wrapRef}
-          className="relative overflow-hidden game-page-mobile flex flex-col"
+          className="relative overflow-hidden game-page-mobile learning-master-fill flex flex-col flex-1 min-h-0 w-full max-md:pl-0 max-md:pr-0 md:pl-[clamp(8px,2vw,32px)] md:pr-[clamp(8px,2vw,32px)]"
           style={{
-            minHeight: "100vh",
-            height: "100dvh",
             maxWidth: "1200px",
             width: "min(1200px, 100vw)",
-            padding: "clamp(12px, 3vw, 32px)",
+            paddingTop: "clamp(12px, 3vw, 32px)",
+            paddingBottom: 0,
             margin: "0 auto"
           }}
         >
@@ -1612,13 +1603,12 @@ useEffect(() => {
         </div>
 
         <div
-          className="relative flex flex-1 min-h-0 flex-col items-center justify-start px-4 overflow-hidden"
+          className="relative flex flex-1 min-h-0 flex-col items-center justify-start px-2 md:px-4 overflow-y-auto overflow-x-hidden [-webkit-overflow-scrolling:touch]"
           style={{
             height: "100%",
             maxHeight: "100%",
             paddingTop: "calc(var(--head-h, 56px) + 8px)",
             paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
-            overflow: "hidden"
           }}
         >
           <div className="text-center mb-3">
@@ -1650,7 +1640,7 @@ useEffect(() => {
 
           <div
             ref={controlsRef}
-            className="grid grid-cols-8 gap-0.5 mb-3 w-full max-w-md"
+            className="grid grid-cols-8 gap-0.5 mb-3 w-full max-w-lg"
           >
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">ניקוד</div>
@@ -1724,7 +1714,7 @@ useEffect(() => {
 
           {/* בחירת מצב (Learning / Challenge) */}
           <div
-            className="flex items-center justify-center gap-1.5 mb-3 w-full max-w-md flex-wrap px-1"
+            className="flex items-center justify-center gap-1.5 mb-3 w-full max-w-lg flex-wrap px-1"
             dir="rtl"
           >
             {["learning", "challenge", "speed", "marathon", "practice"].map((m) => (
@@ -2158,9 +2148,9 @@ useEffect(() => {
           )}
 
           {!gameActive ? (
-            <div className="flex flex-col flex-1 min-h-0 w-full max-w-md items-center justify-start">
+            <div className="flex flex-col flex-1 min-h-0 w-full max-w-lg items-center justify-start">
               <div
-                className="flex flex-nowrap items-center gap-2 mb-3 w-full max-w-md px-0.5 overflow-x-auto [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
+                className="flex flex-nowrap items-center gap-2 mb-3 w-full max-w-lg px-0.5 overflow-x-auto [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
                 dir="rtl"
               >
                 <input
@@ -2176,7 +2166,7 @@ useEffect(() => {
                     }
                   }}
                   placeholder="שם שחקן"
-                  className="h-10 shrink-0 w-[3.25rem] px-1.5 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 box-border"
+                  className="h-10 shrink-0 w-[3.5rem] px-1.5 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 box-border"
                   maxLength={15}
                   dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
                   style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
@@ -2205,7 +2195,7 @@ useEffect(() => {
                     setLevel(e.target.value);
                     setGameActive(false);
                   }}
-                  className="h-10 shrink-0 min-w-0 w-[5.25rem] max-w-[5.5rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
+                  className="h-10 shrink-0 min-w-0 w-[5rem] max-w-[5.5rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                 >
                   {Object.keys(LEVELS).map((lvl) => (
                     <option key={lvl} value={lvl}>
@@ -2229,7 +2219,7 @@ useEffect(() => {
                         setShowMixedSelector(false);
                       }
                     }}
-                    className="h-10 min-w-0 flex-1 max-w-[12rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
+                    className="h-10 min-w-0 flex-1 max-w-[18rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                   >
                     {GRADES[grade].topics.map((topic) => (
                       <option key={topic} value={topic}>
@@ -2250,7 +2240,7 @@ useEffect(() => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-4 gap-1.5 mb-3 w-full max-w-md" dir="rtl">
+              <div className="grid grid-cols-4 gap-1.5 mb-3 w-full max-w-lg" dir="rtl">
                 <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
                   <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">שיא ניקוד</span>
                   <span className="text-base font-bold text-emerald-400 tabular-nums leading-tight">{bestScore}</span>
@@ -2275,7 +2265,7 @@ useEffect(() => {
                 </div>
               </div>
               
-              <div className="bg-white/5 border border-white/10 rounded-md px-1 pt-1 pb-1 mb-3 w-full max-w-md opacity-90">
+              <div className="bg-white/5 border border-white/10 rounded-md px-1 pt-1 pb-1 mb-3 w-full max-w-lg opacity-90">
                 <div className="flex items-center justify-between text-[9px] text-white/55 mb-0.5 leading-tight">
                   <span>🎁 מסע פרס חודשי</span>
                   <span>
@@ -2328,7 +2318,7 @@ useEffect(() => {
               </div>
               
               <div className="mt-auto mb-2 w-full pt-3 flex flex-col items-center gap-2">
-              <div className="flex items-center justify-center gap-1.5 w-full max-w-md flex-wrap px-1">
+              <div className="flex items-center justify-center gap-1.5 w-full max-w-lg flex-wrap px-1">
                 <button
                   onClick={startGame}
                   disabled={!playerName.trim()}
@@ -2345,7 +2335,7 @@ useEffect(() => {
               </div>
               
               {/* כפתורים עזרה ותרגול ממוקד */}
-              <div className="w-full max-w-md flex justify-center gap-2 flex-wrap">
+              <div className="w-full max-w-lg flex justify-center gap-2 flex-wrap">
                 <button
                   onClick={() => setShowHowTo(true)}
                   className="px-4 py-2 rounded-lg bg-cyan-500/80 hover:bg-cyan-500 text-xs font-bold text-white shadow-sm"
@@ -2432,7 +2422,7 @@ useEffect(() => {
               {currentQuestion && (
                 <div
                   ref={gameRef}
-                  className="w-full max-w-md flex flex-col items-center justify-center mb-2 flex-1"
+                  className="w-full max-w-lg flex flex-col items-center justify-center mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
                   {/* ויזואליזציה של מספרים (כיתות א'-ג') */}
@@ -2769,7 +2759,7 @@ useEffect(() => {
 
                       {/* תיבת רמז */}
                       {showHint && hintText && (
-                        <div className="w-full max-w-md mx-auto bg-blue-500/10 border border-blue-400/50 rounded-lg p-2 text-right">
+                        <div className="w-full max-w-lg mx-auto bg-blue-500/10 border border-blue-400/50 rounded-lg p-2 text-right">
                           <div className="text-[11px] text-blue-300 mb-1">רמז</div>
                           <div className="text-xs text-blue-100 leading-relaxed">{hintText}</div>
                         </div>
@@ -2852,7 +2842,7 @@ useEffect(() => {
 
                       {/* למה טעיתי? – רק אחרי טעות */}
                       {errorExplanation && (
-                        <div className="w-full max-w-md mx-auto bg-rose-500/10 border border-rose-400/50 rounded-lg p-2 text-right">
+                        <div className="w-full max-w-lg mx-auto bg-rose-500/10 border border-rose-400/50 rounded-lg p-2 text-right">
                           <div className="text-[11px] text-rose-300 mb-1">למה הטעות קרתה?</div>
                           <div className="text-xs text-rose-100 leading-relaxed">
                             {errorExplanation}
