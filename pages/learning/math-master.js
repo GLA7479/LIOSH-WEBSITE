@@ -2761,7 +2761,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           )}
 
           {!gameActive ? (
-            <div className="flex flex-col flex-1 min-h-0 w-full max-w-md items-center justify-start">
+            <div className="flex flex-col flex-1 min-h-0 w-full max-w-md items-center justify-start overflow-y-auto overflow-x-hidden [-webkit-overflow-scrolling:touch]">
               <div
                 className="flex flex-nowrap items-center gap-2 mb-3 w-full max-w-md px-0.5 overflow-x-auto [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
                 dir="rtl"
@@ -2930,7 +2930,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 </div>
               </div>
               
-              <div className="mt-auto mb-2 w-full pt-3 flex flex-col items-center gap-2">
+              <div className="mb-2 w-full pt-3 flex flex-col items-center gap-2 shrink-0">
               <div className="flex items-center justify-center gap-1.5 w-full max-w-md flex-wrap px-1">
                 <button
                   onClick={startGame}
