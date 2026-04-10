@@ -1,25 +1,6 @@
 // יצירת שאלות גיאומטריה
 
 import { GRADES, PI, getShapesForTopic } from "./geometry-constants";
-
-function applyGeoStemDepthSuffix(text, levelKey) {
-  const q = String(text || "").trim();
-  if (!q) return q;
-  const slot = Math.floor(Math.random() * 2);
-  const tag =
-    levelKey === "easy"
-      ? slot === 0
-        ? "מסלול: בסיס"
-        : "מסלול: פשוט"
-      : levelKey === "medium"
-        ? slot === 0
-          ? "מסלול: חשיבה"
-          : "מסלול: פירוט"
-        : slot === 0
-          ? "מסלול: אתגר"
-          : "מסלול: ניתוח";
-  return `${q} · ${tag}`;
-}
 import {
   pickGeometryConceptualQuestion,
   geometryConceptualProbability,
@@ -445,7 +426,7 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     });
     if (conceptual) {
       return {
-        question: applyGeoStemDepthSuffix(conceptual.question, levelKey),
+        question: conceptual.question,
         correctAnswer: conceptual.correctAnswer,
         answers: conceptual.answers,
         topic: selectedTopic,
@@ -1691,7 +1672,7 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   });
 
   return {
-    question: applyGeoStemDepthSuffix(question, levelKey),
+    question,
     correctAnswer,
     answers: shuffledAnswers,
     topic: selectedTopic,
