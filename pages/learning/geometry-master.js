@@ -1998,10 +1998,15 @@ useEffect(() => {
 
                         {errorExplanation && (
                           <div
-                            className="px-4 py-2 rounded-lg bg-rose-500/10 border border-rose-400/50 text-rose-100/95 text-sm leading-relaxed text-center w-full"
+                            className="px-4 py-3 rounded-lg bg-[#0a1222]/95 border border-rose-300/60 shadow-xl backdrop-blur-sm text-sm leading-relaxed text-center w-full"
                             style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                           >
-                            {errorExplanation}
+                            <div className="text-xs font-semibold text-rose-100 mb-1.5 tracking-tight">
+                              למה הטעות קרתה?
+                            </div>
+                            <div className="text-rose-50">
+                              {errorExplanation}
+                            </div>
                           </div>
                         )}
                       </div>
