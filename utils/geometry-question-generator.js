@@ -767,7 +767,13 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
               question = `אתגר נפח — תיבה ממדים ${length}×${width}×${height} (יחידות עקביות). מה הנפח?`;
             }
           } else if (gradeKey === "g4") {
-            question = `כיתה ד׳ — תיבה ממדים ${length}×${width}×${height} ס"מ. מה הנפח במעוקב?`;
+            if (levelKey === "easy") {
+              question = `כיתה ד׳ (קל): תיבה ${length}×${width}×${height} ס"מ — נפח = אורך×רוחב×גובה. כמה ס"מ מעוקב?`;
+            } else if (levelKey === "medium") {
+              question = `כיתה ד׳: תיבה מלבנית בממדים ${length} × ${width} × ${height} ס"מ. מה הנפח?`;
+            } else {
+              question = `כיתה ד׳ (מאתגר): תיבה ${length}×${width}×${height} ס"מ — ודאו יחידות ואז חשבו נפח.`;
+            }
           } else if (gradeKey === "g5") {
             question = `תיבה מלבנית במדידה ${length}×${width}×${height}: חשבו נפח (ס"מ מעוקב).`;
           } else {
@@ -939,21 +945,37 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       if (!askLeg) {
         params = { a, b, c, which: "hypotenuse", kind: "pythagoras_hyp" };
         correctAnswer = round(c);
-        question =
-          gradeKey === "g6" && Math.random() < 0.5
-            ? `משולש ישר־זווית: ניצבים ${a} ו-${b}. מה אורך היתר (c)?`
-            : `במשולש ישר זווית, הניצבים הם ${a} ו-${b}. מה אורך היתר?`;
+        if (levelKey === "easy") {
+          question = `פיתגורס (קל): ניצבים ${a} ו-${b} — מה אורך היתר?`;
+        } else if (levelKey === "medium") {
+          question =
+            gradeKey === "g6" && Math.random() < 0.5
+              ? `משולש ישר־זווית: ניצבים ${a} ו-${b}. מה אורך היתר (c)?`
+              : `במשולש ישר זווית, הניצבים הם ${a} ו-${b}. מה אורך היתר?`;
+        } else {
+          question = `אתגר פיתגורס — ניצבים ${a} ו-${b}: חשבו היתר והסבירו לעצמכם את הנוסחה.`;
+        }
       } else {
         // נשאל על ניצב חסר
         const missing = Math.random() < 0.5 ? "a" : "b";
         if (missing === "a") {
           params = { a, b, c, which: "leg_a", kind: "pythagoras_leg" };
           correctAnswer = round(a);
-          question = `במשולש ישר זווית, היתר הוא ${c} והניצב השני הוא ${b}. מה אורך הניצב החסר?`;
+          question =
+            levelKey === "easy"
+              ? `ניצב חסר (קל): היתר ${c}, ניצב ידוע ${b}. מה הניצב השני?`
+              : levelKey === "medium"
+                ? `במשולש ישר זווית, היתר הוא ${c} והניצב השני הוא ${b}. מה אורך הניצב החסר?`
+                : `פיתגורס הפוך (אתגר): היתר ${c}, ניצב ${b} — מצאו את הניצב השני.`;
         } else {
           params = { a, b, c, which: "leg_b", kind: "pythagoras_leg" };
           correctAnswer = round(b);
-          question = `במשולש ישר זווית, היתר הוא ${c} והניצב השני הוא ${a}. מה אורך הניצב החסר?`;
+          question =
+            levelKey === "easy"
+              ? `ניצב חסר (קל): היתר ${c}, ניצב ידוע ${a}. מה הניצב השני?`
+              : levelKey === "medium"
+                ? `במשולש ישר זווית, היתר הוא ${c} והניצב השני הוא ${a}. מה אורך הניצב החסר?`
+                : `פיתגורס הפוך (אתגר): היתר ${c}, ניצב ${a} — מצאו את הניצב השני.`;
         }
       }
       break;
@@ -1031,13 +1053,41 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       const types = ["מקבילות", "מאונכות"];
       const selectedType = types[Math.floor(Math.random() * types.length)];
       const isParallel = selectedType === "מקבילות";
-      
-      params = { type: selectedType, isParallel, kind: "parallel_perpendicular" };
+      const gN = parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
+      const gradeTag =
+        gN === 3
+          ? "כיתה ג׳"
+          : gN === 4
+            ? "כיתה ד׳"
+            : gN === 5
+              ? "כיתה ה׳"
+              : gN === 6
+                ? "כיתה ו׳"
+                : "";
+
+      params = {
+        type: selectedType,
+        isParallel,
+        kind: "parallel_perpendicular",
+        patternFamily: `parallel_perpendicular_${levelKey}`,
+        subtype: formulaBand === "mid" ? "mid_band" : "late_band",
+      };
       correctAnswer = isParallel ? 1 : 2; // 1 = מקבילות, 2 = מאונכות
-      question =
-        formulaBand === "mid"
-          ? `איזה סוג קווים הם ${selectedType}? (1 = מקבילות, 2 = מאונכות)`
-          : `סיווג ישרים במישור: ${selectedType} — (1 = מקבילות, 2 = מאונכות)`;
+      if (formulaBand === "mid") {
+        question =
+          levelKey === "easy"
+            ? `${gradeTag ? `${gradeTag}: ` : ""}המילה "${selectedType}" מתארת זוג קווים. סמנו: (1 = מקבילות, 2 = מאונכות)`
+            : levelKey === "medium"
+              ? `${gradeTag ? `${gradeTag} — ` : ""}סיווג ישרים: "${selectedType}" מתאים לאיזה מספר? (1 = מקבילות, 2 = מאונכות)`
+              : `${gradeTag ? `${gradeTag} | ` : ""}הגדרה "${selectedType}" — איזה יחס בין שני ישרים במישור? (1 = מקבילות, 2 = מאונכות)`;
+      } else {
+        question =
+          levelKey === "easy"
+            ? `זיהוי מהיר: "${selectedType}" במישור — (1 = מקבילות, 2 = מאונכות)`
+            : levelKey === "medium"
+              ? `בחירה מדויקת: "${selectedType}" מתאר מצב של שני ישרים. (1 = מקבילות, 2 = מאונכות)`
+              : `ניסוח פורמלי: "${selectedType}" כיחס גיאומטרי בין ישרים. (1 = מקבילות, 2 = מאונכות)`;
+      }
       break;
     }
 
@@ -1045,13 +1095,29 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     case "triangles": {
       const types = ["שווה צלעות", "שווה שוקיים", "שונה צלעות"];
       const selectedType = types[Math.floor(Math.random() * types.length)];
-      
-      params = { type: selectedType, kind: "triangles" };
+
+      params = {
+        type: selectedType,
+        kind: "triangles",
+        patternFamily: `triangles_classify_${levelKey}`,
+        subtype: formulaBand === "mid" ? "mid_band" : "late_band",
+      };
       correctAnswer = types.indexOf(selectedType) + 1;
-      question =
-        formulaBand === "mid"
-          ? `איזה סוג משולש הוא ${selectedType}? (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`
-          : `סיווג משולשים: ${selectedType} — (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`;
+      if (formulaBand === "mid") {
+        question =
+          levelKey === "easy"
+            ? `לפי השם "${selectedType}" — איזה מספר מתאים? (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`
+            : levelKey === "medium"
+              ? `סיווג משולש לפי תיאור: "${selectedType}". (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`
+              : `אתגר סיווג: "${selectedType}" כשם סוג משולש. (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`;
+      } else {
+        question =
+          levelKey === "easy"
+            ? `בחרו סוג למשולש בשם "${selectedType}": (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`
+            : levelKey === "medium"
+              ? `התאמת מונח: "${selectedType}" = איזה סוג משולש? (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`
+              : `ניסוח מדויק: "${selectedType}" מתאר משולש מסוג — (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`;
+      }
       break;
     }
 
@@ -1187,7 +1253,14 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       } else if (hebShape === "מלבן") {
         const width = Math.floor(Math.random() * level.maxSide) + 1;
         diagonal = round(Math.sqrt(side * side + width * width));
-        params = { shape: hebShape, side, width, diagonal, kind: "diagonal_rectangle" };
+        params = {
+          shape: hebShape,
+          side,
+          width,
+          diagonal,
+          kind: "diagonal_rectangle",
+          patternFamily: `diagonal_rectangle_${levelKey}`,
+        };
         if (formulaBand === "mid") {
           if (levelKey === "easy") {
             question = `מלבן ${side}×${width}: השתמשו בפיתגורס (ניצבים ${side} ו-${width}). מה אלכסון?`;
@@ -1195,6 +1268,14 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
             question = `מה אורך האלכסון של מלבן עם אורך ${side} ורוחב ${width}?`;
           } else {
             question = `אתגר אלכסון — מלבן ${side}×${width}. מה אורך האלכסון?`;
+          }
+        } else if (formulaBand === "late") {
+          if (levelKey === "easy") {
+            question = `במלבן ישר־זווית: ניצבים ${side} ו־${width}. מה אורך האלכסון (פיתגורס)?`;
+          } else if (levelKey === "medium") {
+            question = `חישוב אלכסון — מלבן עם צלעות ניצבות ${side} ו־${width}. מה d?`;
+          } else {
+            question = `בשלב אתגר — מלבן ${side}×${width}: הוכיחו בראש ואז חשבו את אלכסון.`;
           }
         } else if (levelKey === "hard") {
           question = `בשלב אתגר — מלבן ${side}×${width}: מה אורך אלכסון?`;
@@ -1259,10 +1340,21 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       
       params = { shape: selectedShape, angle, kind: "tiling" };
       correctAnswer = angle;
-      question =
-        formulaBand === "late"
-          ? `ריצוף במישור: זווית פנימית טיפוסית ב${selectedShape}?`
-          : `איזו זווית יש ב${selectedShape} המשמש לריצוף?`;
+      if (formulaBand === "late") {
+        if (levelKey === "easy") {
+          question = `ריצוף (קל): זווית פנימית ב${selectedShape} — מה גודל הזווית?`;
+        } else if (levelKey === "medium") {
+          question = `ריצוף במישור: זווית פנימית טיפוסית ב${selectedShape}?`;
+        } else {
+          question = `ריצוף (אתגר): הסיקו זווית פנימית ב${selectedShape} לפני שבוחרים.`;
+        }
+      } else if (levelKey === "easy") {
+        question = `ב${selectedShape} המשמש לריצוף — מה זווית הפנים?`;
+      } else if (levelKey === "medium") {
+        question = `איזו זווית יש ב${selectedShape} המשמש לריצוף?`;
+      } else {
+        question = `זיהוי זווית לריצוף — ${selectedShape}: מה הזווית הפנימית?`;
+      }
       break;
     }
 
@@ -1274,10 +1366,21 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       if (askArea) {
         params = { radius, kind: "circle_area", askArea: true };
         correctAnswer = round(PI * radius * radius);
-        question =
-          gradeKey === "g6"
-            ? `דיסק: רדיוס ${radius}. מה השטח? (π = 3.14)`
-            : `מה שטח העיגול עם רדיוס ${radius}? (π = 3.14)`;
+        if (gradeKey === "g6") {
+          if (levelKey === "easy") {
+            question = `שטח דיסק (קל): רדיוס ${radius}, השתמשו ב־πr² (π = 3.14). מה השטח?`;
+          } else if (levelKey === "medium") {
+            question = `דיסק במישור, רדיוס ${radius}. מה השטח? (π = 3.14)`;
+          } else {
+            question = `אתגר שטח — עיגול רדיוס ${radius}: חשבו שטח מדויק (π = 3.14).`;
+          }
+        } else if (levelKey === "easy") {
+          question = `עיגול קטן: רדיוס ${radius}. מה השטח? (π = 3.14)`;
+        } else if (levelKey === "medium") {
+          question = `מה שטח העיגול עם רדיוס ${radius}? (π = 3.14)`;
+        } else {
+          question = `שטח מעגל — רדיוס ${radius}, בדקו נוסחה לפני החישוב (π = 3.14).`;
+        }
       } else {
         params = { radius, kind: "circle_perimeter", askArea: false };
         correctAnswer = round(2 * PI * radius);

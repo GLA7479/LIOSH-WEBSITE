@@ -53,11 +53,19 @@ export function pickGeometryConceptualQuestion(ctx) {
     params.optionCount = answers.length;
   }
 
+  const levelFr =
+    lv === "easy"
+      ? "מושגים (קל)"
+      : lv === "medium"
+        ? "מושגים (בינוני)"
+        : "מושגים (אתגר)";
+  const qText = `${levelFr}: ${row.question}`;
+
   return {
-    question: row.question,
+    question: qText,
     correctAnswer: correct,
     answers,
-    params,
+    params: { ...params, conceptualLevelFraming: levelFr },
   };
 }
 
@@ -661,7 +669,7 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     topics: ["solids"],
     levels: ["easy", "medium"],
     kind: "concept_solids",
-    patternFamily: "solid_faces",
+    patternFamily: "solid_faces_band_early",
     subtype: "cube",
     conceptTag: "cube_faces",
     distractorFamily: "solid_confusion",
@@ -674,7 +682,7 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     topics: ["solids"],
     levels: ["easy", "medium"],
     kind: "concept_solids",
-    patternFamily: "solid_faces",
+    patternFamily: "solid_faces_band_late",
     subtype: "cube_faces_late",
     conceptTag: "cube_faces_late",
     distractorFamily: "solid_confusion",
@@ -687,7 +695,7 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     topics: ["solids"],
     levels: ["easy", "medium"],
     kind: "concept_solids",
-    patternFamily: "prism_vs_pyramid",
+    patternFamily: "prism_vs_pyramid_band_early",
     subtype: "compare",
     conceptTag: "apex",
     distractorFamily: "solid_confusion",
@@ -705,7 +713,7 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     topics: ["solids"],
     levels: ["easy", "medium"],
     kind: "concept_solids",
-    patternFamily: "prism_vs_pyramid",
+    patternFamily: "prism_vs_pyramid_band_late",
     subtype: "compare_late",
     conceptTag: "apex_late",
     distractorFamily: "solid_confusion",
@@ -835,7 +843,7 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     topics: ["shapes_basic"],
     levels: ["easy", "medium"],
     kind: "concept_tf",
-    patternFamily: "binary_property",
+    patternFamily: "binary_property_band_early_rect90",
     subtype: "rectangle_angles",
     conceptTag: "rect_all_90",
     distractorFamily: "polar",
@@ -849,7 +857,7 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     topics: ["shapes_basic"],
     levels: ["easy", "medium"],
     kind: "concept_tf",
-    patternFamily: "binary_property",
+    patternFamily: "binary_property_band_mid_rect90",
     subtype: "rectangle_angles_mid",
     conceptTag: "rect_all_90_mid",
     distractorFamily: "polar",
@@ -863,7 +871,7 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     topics: ["quadrilaterals", "triangles"],
     levels: ["hard"],
     kind: "concept_tf",
-    patternFamily: "binary_property",
+    patternFamily: "binary_property_band_mid_rhombus_rect",
     subtype: "rhombus_rectangle",
     conceptTag: "not_always_both",
     distractorFamily: "polar",
@@ -877,7 +885,7 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     topics: ["quadrilaterals", "triangles"],
     levels: ["hard"],
     kind: "concept_tf",
-    patternFamily: "binary_property",
+    patternFamily: "binary_property_band_late_rhombus_rect",
     subtype: "rhombus_rectangle_late",
     conceptTag: "not_always_both_late",
     distractorFamily: "polar",
@@ -891,7 +899,7 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     topics: ["angles", "triangles"],
     levels: ["hard"],
     kind: "concept_tf",
-    patternFamily: "binary_property",
+    patternFamily: "binary_property_band_late_obtuse_triangle",
     subtype: "obtuse_count",
     conceptTag: "one_obtuse_max",
     distractorFamily: "polar",

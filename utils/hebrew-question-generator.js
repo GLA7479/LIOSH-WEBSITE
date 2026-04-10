@@ -1,6 +1,9 @@
 import { GRADES, BLANK, TOPICS, GRADE_LEVELS } from './hebrew-constants';
 import { filterRichHebrewPool } from './hebrew-rich-question-bank';
-import { inferHebrewLegacyMeta } from './hebrew-legacy-metadata';
+import {
+  inferHebrewLegacyMeta,
+  scopeHebrewStemForGrade,
+} from './hebrew-legacy-metadata';
 
 // ========== מאגר שאלות לפי כיתה ורמה ==========
 // הקובץ כולל מאות שאלות מותאמות לכל כיתה (א'-ו'), רמה (קל/בינוני/קשה) ונושא
@@ -196,7 +199,7 @@ const G1_HARD_QUESTIONS = {
   ],
   speaking: [
     { question: "איך אומרים 'אני אוהב לקרוא'?", answers: ["אני אוהב לקרוא", "אני אוהבת לקרוא", "אני אוהבים לקרוא", "אני אוהבות לקרוא"], correct: 0 },
-    { question: "איך אומרים 'אני צריך עזרה'?", answers: ["אני צריך עזרה", "אני צריך ספר", "אני צריך כלב", "אני צריך בית"], correct: 0 },
+    { question: "מה נאמר כשרוצים לבקש עזרה בשיעור?", answers: ["אני צריך עזרה", "אני צריך ספר", "אני צריך כלב", "אני צריך בית"], correct: 0 },
     { question: "איך אומרים 'אני רוצה לשחק'?", answers: ["אני רוצה לשחק", "אני רוצה לקרוא", "אני רוצה לאכול", "אני רוצה לישון"], correct: 0 },
     { question: "איך מתארים משהו שאני רואה?", answers: ["אני אומר מה אני רואה", "אני שותק", "אני בוכה", "אני צוחק"], correct: 0 },
   ],
@@ -272,7 +275,7 @@ const G2_MEDIUM_QUESTIONS = {
     { question: "מה המשמעות של המילה 'חצר'?", answers: ["חצר", "כיתה", "בית", "חדר"], correct: 0 },
   ],
   speaking: [
-    { question: "איך אומרים 'אני צריך עזרה'?", answers: ["אני צריך עזרה", "אני צריך ספר", "אני צריך כלב", "אני צריך בית"], correct: 0 },
+    { question: "בחרו ניסוח נכון לבקשת עזרה מילולית:", answers: ["אני צריך עזרה", "אני צריך ספר", "אני צריך כלב", "אני צריך בית"], correct: 0 },
     { question: "איך אומרים 'אני מבין'?", answers: ["אני מבין", "אני מבינה", "אני מבינים", "אני מבינות"], correct: 0 },
   ],
 };
@@ -656,35 +659,29 @@ function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
     const g = parseInt(String(gradeKey).replace(/\D/g, ""), 10);
     if (g >= 1 && g <= 6) {
       const heb = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][g - 1];
-      q.question = `בהתאם לכיתה ${heb}: ${stem}`;
+      const levFr =
+        levelKey === "easy"
+          ? "רמה קלה — התאמת גוף פשוטה"
+          : levelKey === "medium"
+            ? "רמה בינונית — דיוק תחבירי"
+            : "רמה קשה — משפט מורכב יותר";
+      q.question = `בהתאם לכיתה ${heb} (${levFr}): איזה משפט נכון מבחינה דקדוקית?`;
       stem = String(q.question || "").trim();
       if (!q.patternFamily || q.patternFamily === "grammar_correct_sentence") {
         q.patternFamily = "grammar_correct_sentence_scoped";
       }
+      q.subtype = `${q.subtype || "level_scoped"}_${levelKey}`;
     }
   }
   const gNumScope = parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
-  if (
-    gNumScope >= 1 &&
-    gNumScope <= 2 &&
-    ["comprehension", "vocabulary", "grammar", "speaking"].includes(
-      selectedTopic
-    ) &&
-    !/^\(כיתה|בהתאם לכיתה/.test(String(q.question || "").trim())
-  ) {
-    const heb = gNumScope === 1 ? "א׳" : "ב׳";
-    q.question = `(כיתה ${heb}) ${q.question}`;
-    stem = String(q.question || "").trim();
-  }
-  if (
-    gNumScope >= 3 &&
-    gNumScope <= 4 &&
-    ["vocabulary", "speaking"].includes(selectedTopic) &&
-    !/^\(כיתה|בהתאם לכיתה/.test(String(q.question || "").trim())
-  ) {
-    const heb = gNumScope === 3 ? "ג׳" : "ד׳";
-    q.question = `(כיתה ${heb}) ${q.question}`;
-    stem = String(q.question || "").trim();
+  const scoped = scopeHebrewStemForGrade(
+    selectedTopic,
+    String(q.question || "").trim(),
+    gradeKey
+  );
+  if (scoped !== String(q.question || "").trim()) {
+    q.question = scoped;
+    stem = scoped;
   }
   const binaryStem =
     q.binary === true ||
@@ -710,7 +707,7 @@ function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
   }
   const inferred = inferHebrewLegacyMeta(
     selectedTopic,
-    raw.question,
+    stem,
     levelKey,
     gradeKey
   );

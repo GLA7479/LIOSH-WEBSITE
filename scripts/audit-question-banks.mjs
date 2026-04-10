@@ -93,7 +93,7 @@ const { generateQuestion: genMath } = await import(
 );
 const { GRADES: MATH_GRADES } = await import(modUrl("utils/math-constants.js"));
 const { getLevelConfig } = await import(modUrl("utils/math-storage.js"));
-const { inferHebrewLegacyMeta } = await import(
+const { inferHebrewLegacyMeta, scopeHebrewStemForGrade } = await import(
   modUrl("utils/hebrew-legacy-metadata.js")
 );
 
@@ -212,6 +212,12 @@ function collectHebrewLegacy(rows) {
           if (!item.patternFamily || item.patternFamily === "grammar_correct_sentence") {
             pf = "grammar_correct_sentence_scoped";
           }
+        } else {
+          stem = scopeHebrewStemForGrade(
+            topic,
+            String(item.question || item.exerciseText || "").trim(),
+            `g${gNum}`
+          );
         }
         const inf = inferHebrewLegacyMeta(topic, stem, levelKey, `g${gNum}`);
         if (!pf) {
@@ -793,6 +799,34 @@ function analyze(rows) {
   exactCrossGrade.sort((a, b) => b.count - a.count);
   exactCrossGradeStaticBanks.sort((a, b) => b.count - a.count);
 
+  const exactCrossGradeClassification = {
+    note:
+      "רוב המקרים עם דגימות math ונרמול ספרות ל-# משקפים אותה תבנית ניסוח עם מספרים שונים — מוצדק פדגוגית. מקרים סטטיים או לא־מתמטיים דורשים סקירה.",
+    totalListed: exactCrossGrade.length,
+    justifiedMathGeneratorTemplate: exactCrossGrade.filter(
+      (x) =>
+        x.includesGeneratorSample &&
+        x.subjects.length === 1 &&
+        x.subjects[0] === "math"
+    ).length,
+    flaggedForReview: exactCrossGrade.filter(
+      (x) =>
+        !x.includesGeneratorSample ||
+        x.subjects.some((s) => s !== "math") ||
+        x.subjects.length !== 1
+    ).length,
+    topExamples: exactCrossGrade.slice(0, 12).map((x) => ({
+      stemHash: x.stemHash,
+      sampleStem: x.sampleStem,
+      classification:
+        x.includesGeneratorSample &&
+        x.subjects.length === 1 &&
+        x.subjects[0] === "math"
+          ? "justified_same_template_normalized_digits"
+          : "review_non_math_or_static",
+    })),
+  };
+
   const familyCrossBand = [];
   const byFam = new Map();
   for (const r of rows) {
@@ -897,6 +931,7 @@ function analyze(rows) {
     topicsSpanManyGrades: topicWeakGrade.slice(0, 80),
     englishItemsRelyingOnPoolGateOnly: englishUngatedWidePool.slice(0, 300),
     hebrewLegacySameStemThreeLevels: hebrewLevelFake.slice(0, 100),
+    exactCrossGradeClassification,
     fallbackNotes: [
       {
         where: "utils/hebrew-question-generator.js",

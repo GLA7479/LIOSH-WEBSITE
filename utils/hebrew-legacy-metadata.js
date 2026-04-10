@@ -24,6 +24,47 @@ function inferAnswerMode(topic, stem) {
 }
 
 /**
+ * קידומת כיתה לטקסט שאלה — מיושר ל־audit (אותו טקסט כמו בזמן ריצה אחרי finalize).
+ */
+export function scopeHebrewStemForGrade(topic, question, gradeKey) {
+  const q0 = String(question || "").trim();
+  const g = parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
+  if (!g || /^\(כיתה|בהתאם לכיתה/.test(q0)) return q0;
+  if (
+    g >= 1 &&
+    g <= 2 &&
+    [
+      "comprehension",
+      "vocabulary",
+      "grammar",
+      "speaking",
+      "reading",
+      "writing",
+    ].includes(topic)
+  ) {
+    const heb = g === 1 ? "א׳" : "ב׳";
+    return `(כיתה ${heb}) ${q0}`;
+  }
+  if (
+    g >= 3 &&
+    g <= 4 &&
+    ["vocabulary", "speaking", "reading", "writing"].includes(topic)
+  ) {
+    const heb = g === 3 ? "ג׳" : "ד׳";
+    return `(כיתה ${heb}) ${q0}`;
+  }
+  if (
+    g >= 5 &&
+    g <= 6 &&
+    ["reading", "writing", "speaking", "comprehension"].includes(topic)
+  ) {
+    const heb = g === 5 ? "ה׳" : "ו׳";
+    return `(כיתה ${heb}) ${q0}`;
+  }
+  return q0;
+}
+
+/**
  * @param {string} topic
  * @param {string} question
  * @param {string} levelKey easy|medium|hard
@@ -157,6 +198,19 @@ export function inferHebrewLegacyMeta(topic, question, levelKey, gradeKey) {
   }
   if (g >= 5 && /אקדמי|ניתוח|מחקר|מנומקת/i.test(stem) && lev !== "hard") {
     out.difficultyBand = lev === "easy" ? "medium" : lev;
+  }
+
+  const wideFamiliesBandSplit = new Set([
+    "writing_spelling",
+    "reading_passage_style",
+    "speaking_phrase",
+    "comprehension_typed",
+    "speaking_typed",
+  ]);
+  if (wideFamiliesBandSplit.has(out.patternFamily)) {
+    const band =
+      g <= 2 ? "band_early_g1_g2" : g <= 4 ? "band_mid_g3_g4" : "band_late_g5_g6";
+    out.patternFamily = `${out.patternFamily}_${band}`;
   }
 
   return out;

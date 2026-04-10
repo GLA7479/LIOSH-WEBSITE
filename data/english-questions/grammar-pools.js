@@ -3,6 +3,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_1",
       question: `Choose the correct word: "I ___ ten years old"`,
       options: ["am", "is", "are"],
       correct: "am",
@@ -11,6 +12,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_2",
       question: `Choose the correct word: "He ___ my teacher"`,
       options: ["are", "is", "am"],
       correct: "is",
@@ -19,6 +21,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_3",
       question: `Complete the sentence: "We ___ in class"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -27,6 +30,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_4",
       question: `Choose the correct word: "They ___ happy"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -35,6 +39,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_5",
       question: `Choose the correct word: "She ___ a student"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -43,6 +48,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_6",
       question: `Complete: "You ___ my friend"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -51,6 +57,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_7",
       question: `Choose: "It ___ a book"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -59,6 +66,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_8",
       question: `Complete: "Tom and I ___ friends"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -67,6 +75,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_9",
       question: `Choose: "The cat ___ sleeping"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -75,6 +84,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_10",
       question: `Complete: "My friends ___ nice"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -83,6 +93,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_11",
       question: `Choose: "I ___ from Israel"`,
       options: ["am", "is", "are"],
       correct: "am",
@@ -91,6 +102,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_12",
       question: `Complete: "You and Sarah ___ in class"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -99,6 +111,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_13",
       question: `Choose: "The pencil ___ blue"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -107,6 +120,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_14",
       question: `Complete: "These books ___ new"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -115,6 +129,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 1,
       maxGrade: 1,
+      patternFamily: "be_basic_g1_15",
       question: `Choose: "My mother ___ a teacher"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -123,6 +138,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_1",
       question: `Complete: "The children ___ playing"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -131,6 +147,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_2",
       question: `Choose: "I ___ six years old"`,
       options: ["am", "is", "are"],
       correct: "am",
@@ -139,6 +156,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_3",
       question: `Complete: "Sara and I ___ classmates"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -147,6 +165,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_4",
       question: `Choose: "The dog ___ brown"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -155,6 +174,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_5",
       question: `Complete: "My sister and brother ___ at home"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -163,6 +183,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_6",
       question: `Choose: "I ___ a student"`,
       options: ["am", "is", "are"],
       correct: "am",
@@ -171,6 +192,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_7",
       question: `Choose: "You ___ my best friend"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -179,6 +201,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_8",
       question: `Choose: "He ___ very tall"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -187,6 +210,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_9",
       question: `Choose: "She ___ a doctor"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -195,6 +219,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_10",
       question: `Choose: "It ___ a beautiful day"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -203,6 +228,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_11",
       question: `Choose: "We ___ classmates"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -211,6 +237,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_12",
       question: `Choose: "They ___ good friends"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -219,6 +246,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_13",
       question: `Choose: "My name ___ Tom"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -227,6 +255,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_14",
       question: `Choose: "The books ___ on the table"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -235,6 +264,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_15",
       question: `Choose: "I ___ not tired"`,
       options: ["am", "is", "are"],
       correct: "am",
@@ -243,6 +273,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_16",
       question: `Choose: "She ___ not here"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -251,6 +282,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_17",
       question: `Choose: "We ___ not ready"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -259,6 +291,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_18",
       question: `Choose: "The cat ___ sleeping"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -267,6 +300,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_19",
       question: `Choose: "My parents ___ at work"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -275,6 +309,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_20",
       question: `Choose: "I ___ happy today"`,
       options: ["am", "is", "are"],
       correct: "am",
@@ -283,6 +318,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_21",
       question: `Choose: "You ___ very kind"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -291,6 +327,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_22",
       question: `Choose: "He ___ my brother"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -299,6 +336,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_23",
       question: `Choose: "She ___ a teacher"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -307,6 +345,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_24",
       question: `Choose: "It ___ cold outside"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -315,6 +354,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_25",
       question: `Choose: "We ___ students"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -323,6 +363,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_26",
       question: `Choose: "They ___ playing"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -331,6 +372,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_27",
       question: `Choose: "The dog ___ brown"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -339,6 +381,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_28",
       question: `Choose: "My friends ___ nice"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -347,6 +390,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_29",
       question: `Choose: "I ___ from Tel Aviv"`,
       options: ["am", "is", "are"],
       correct: "am",
@@ -355,6 +399,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_30",
       question: `Choose: "You ___ right"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -363,6 +408,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_31",
       question: `Choose: "He ___ wrong"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -371,6 +417,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_32",
       question: `Choose: "She ___ correct"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -379,6 +426,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_33",
       question: `Choose: "It ___ important"`,
       options: ["am", "is", "are"],
       correct: "is",
@@ -387,6 +435,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_34",
       question: `Choose: "We ___ here"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -395,6 +444,7 @@ export const GRAMMAR_POOLS = {
     {
       minGrade: 2,
       maxGrade: 2,
+      patternFamily: "be_basic_g2_35",
       question: `Choose: "They ___ there"`,
       options: ["am", "is", "are"],
       correct: "are",
@@ -703,48 +753,72 @@ export const GRAMMAR_POOLS = {
       options: ["play", "plays", "playing"],
       correct: "plays",
       explanation: "He/She/It מקבלים ‎-s‎ בזמן הווה פשוט.",
+      minGrade: 3,
+      maxGrade: 3,
+      patternFamily: "grammar_present_third_s_g3",
     },
     {
       question: `Choose the correct form: "We ___ breakfast at seven"`,
       options: ["eat", "eats", "eating"],
       correct: "eat",
       explanation: "We → צורת הבסיס ללא ‎-s.",
+      minGrade: 3,
+      maxGrade: 3,
+      patternFamily: "grammar_present_plural_g3",
     },
     {
       question: `Choose the correct negative: "He ___ like carrots"`,
       options: ["don't", "doesn't", "isn't"],
       correct: "doesn't",
       explanation: "He/she/it → doesn't + verb base.",
+      minGrade: 3,
+      maxGrade: 3,
+      patternFamily: "grammar_present_neg_g3",
     },
     {
       question: `Choose the question: "___ they play music?"`,
       options: ["Do", "Does", "Did"],
       correct: "Do",
       explanation: "They → Do בשאלות בהווה.",
+      minGrade: 3,
+      maxGrade: 3,
+      patternFamily: "grammar_present_question_g3",
     },
     {
       question: `Choose: "Tom ___ to school every day"`,
       options: ["go", "goes", "going"],
       correct: "goes",
       explanation: "Tom (he) → goes עם ‎-es‎.",
+      minGrade: 4,
+      maxGrade: 4,
+      patternFamily: "grammar_present_third_s_g4",
     },
     {
       question: `Choose: "I ___ my homework after school"`,
       options: ["do", "does", "doing"],
       correct: "do",
       explanation: "I → do (base form).",
+      minGrade: 4,
+      maxGrade: 4,
+      patternFamily: "grammar_present_first_g4",
     },
     {
       question: `Choose: "They ___ TV in the evening"`,
       options: ["watch", "watches", "watching"],
       correct: "watch",
       explanation: "They → watch (base form).",
+      minGrade: 4,
+      maxGrade: 4,
+      patternFamily: "grammar_present_plural_g4",
     },
     {
       question: `Choose: "My sister ___ English well"`,
       options: ["speak", "speaks", "speaking"],
       correct: "speaks",
       explanation: "My sister (she) → speaks עם ‎-s.",
+      minGrade: 4,
+      maxGrade: 4,
+      patternFamily: "grammar_present_third_s_g4",
     },
     {
       question: `Choose: "We ___ books from the library"`,

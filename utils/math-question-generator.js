@@ -16,6 +16,168 @@ function applyMathLevelPresentation(question, ctx) {
   const { selectedOp, params, mathLevelKey, gradeKey } = ctx;
   const kind = String(params?.kind || "");
   if (kind.startsWith("wp_") || selectedOp === "word_problems") return q0;
+
+  if (kind === "ns_complement100") {
+    const b = params?.b;
+    const c = params?.c != null ? Number(params.c) : 100;
+    if (b != null && Number.isFinite(c)) {
+      if (mathLevelKey === "easy") {
+        return `השלמה עד ${c}: מה צריך להוסיף ל-${b} כדי להגיע ל-${c}? = ${BLANK}`;
+      }
+      if (mathLevelKey === "medium") {
+        return `נתון השוויון ${b} + ${BLANK} = ${c}. מה המספר החסר?`;
+      }
+      return `בעיית מילים: "ל-${b} חסר חלק עד ${c}" — כמה להוסיף? = ${BLANK}`;
+    }
+  }
+
+  if (kind === "ns_complement10") {
+    const b = params?.b;
+    const c = params?.c != null ? Number(params.c) : 10;
+    if (b != null && Number.isFinite(c)) {
+      if (mathLevelKey === "easy") {
+        return `עד ${c}: מה מוסיפים ל-${b} כדי לסיים ל-${c}? = ${BLANK}`;
+      }
+      if (mathLevelKey === "medium") {
+        return `חסר במשוואה: ${b} + ${BLANK} = ${c}`;
+      }
+      return `בלי לחשב בטור: מה החיבור ל-${c} שמתחיל ב-${b}? = ${BLANK}`;
+    }
+  }
+
+  if (kind === "scale_find") {
+    const ml = params?.mapLength;
+    const rl = params?.realLength;
+    if (ml != null && rl != null) {
+      if (mathLevelKey === "easy") {
+        return `במפה מופיע קטע של ${ml} ס"מ, ובשטח האמיתי הוא ${rl} ס"מ. השלימו את קנה המידה בצורה 1:${BLANK}`;
+      }
+      if (mathLevelKey === "medium") {
+        return `יחס מפה–מציאות: ${ml} ס"מ על הנייר מתאימים ל-${rl} ס"מ בפועל. מצאו את n בביטוי 1:n (כתבו n) = ${BLANK}`;
+      }
+      return `שני אורכים נתונים — מפה ${ml} ס"מ מול ${rl} ס"מ במציאות. אותו יחס נכתב 1:__; מה __? = ${BLANK}`;
+    }
+  }
+
+  if (kind === "scale_map_to_real") {
+    const ml = params?.mapLength;
+    const sc = params?.scale;
+    if (ml != null && sc != null) {
+      if (mathLevelKey === "easy") {
+        return `קנה מידה 1:${sc} — כל ${ml} ס"מ במפה שווים לכמה ס"מ במציאות? = ${BLANK}`;
+      }
+      if (mathLevelKey === "medium") {
+        return `הגדלה פי ${sc}: מדידה של ${ml} ס"מ על המפה. מה האורך האמיתי בס"מ? = ${BLANK}`;
+      }
+      return `בעיית קנה מידה 1:${sc} ומדידת מפה ${ml} ס"מ — חשבו את האורך בשטח = ${BLANK}`;
+    }
+  }
+
+  if (kind === "scale_real_to_map") {
+    const rl = params?.realLength;
+    const sc = params?.scale;
+    if (rl != null && sc != null) {
+      if (mathLevelKey === "easy") {
+        return `בקנה 1:${sc}, אורך אמיתי ${rl} ס"מ — כמה ס"מ צריך למדוד על המפה? = ${BLANK}`;
+      }
+      if (mathLevelKey === "medium") {
+        return `מציאות ${rl} ס"מ, קנה 1:${sc}. מה אורך הקטע על תרשים המפה? = ${BLANK}`;
+      }
+      return `הפכו ממציאות למפה: ${rl} ס"מ בשטח ביחס 1:${sc} נותן ___ ס"מ על הדף = ${BLANK}`;
+    }
+  }
+
+  if (selectedOp === "compare" || kind === "cmp") {
+    const raw = params?.exerciseText ? String(params.exerciseText) : "";
+    const pv = Math.abs(Number(params?.presentationVariant) || 0) % 4;
+    if (mathLevelKey === "easy") {
+      const opts = [
+        `השוו בין שני המספרים והשלימו סימן (<, =, >): ${raw}`,
+        `סימן השוואה (קל) בין המספרים: ${raw}`,
+        `בחרו < , = או > — השוו: ${raw}`,
+        `השוו את שני הערכים והשלימו סימן: ${raw}`,
+      ];
+      return opts[pv].trim();
+    }
+    if (mathLevelKey === "medium") {
+      const opts = [
+        `סימן השוואה מתאים בין המספרים: ${raw}`,
+        `באיזה סימן משווים את הצמד? ${raw}`,
+        `התאימו סימן השוואה נכון: ${raw}`,
+        `השלימו סימן בין ביטויי המספרים: ${raw}`,
+      ];
+      return opts[pv].trim();
+    }
+    const opts = [
+      `השלימו סימן השוואה — בדקו לפני שבוחרים: ${raw}`,
+      `אתגר השוואה — ודאו סדר גודל לפני בחירה: ${raw}`,
+      `השוו בזהירות ובחרו סימן: ${raw}`,
+      `ניתוח מהיר: איזה סימן מתאים? ${raw}`,
+    ];
+    return opts[pv].trim();
+  }
+
+  if (selectedOp === "divisibility" || kind === "divisibility") {
+    const num = params?.num;
+    const div = params?.divisor;
+    if (num != null && div != null) {
+      if (mathLevelKey === "easy") {
+        return `התחלקות (קל): האם ${num} מתחלק ב-${div} בלי שארית?`;
+      }
+      if (mathLevelKey === "medium") {
+        return `סימני התחלקות — האם ${num} מתחלק ב-${div}?`;
+      }
+      return `בדיקת התחלקות (אתגר): האם ${num} יתחלק ב-${div}?`;
+    }
+  }
+
+  if (selectedOp === "prime_composite" || kind === "prime_composite") {
+    const num = params?.num;
+    if (num != null) {
+      if (mathLevelKey === "easy") {
+        return `מספרים ראשוניים (קל): האם ${num} ראשוני או פריק?`;
+      }
+      if (mathLevelKey === "medium") {
+        return `סיווג מספר: ${num} — ראשוני או פריק?`;
+      }
+      return `אתגר — האם ${num} הוא מספר ראשוני או פריק? הסבירו לעצמכם לפני שבוחרים.`;
+    }
+  }
+
+  if (selectedOp === "powers" && (kind === "power_base" || kind === "power_calc")) {
+    if (kind === "power_calc") {
+      if (mathLevelKey === "easy") return `חזקות (קל): ${q0}`;
+      if (mathLevelKey === "medium") return `חישוב חזקה — ${q0}`;
+      return `חזקות (אתגר): ${q0}`;
+    }
+    if (kind === "power_base") {
+      if (mathLevelKey === "easy") return `מצאו בסיס בחזקה (קל): ${q0}`;
+      if (mathLevelKey === "medium") return `חידת חזקה — ${q0}`;
+      return `בסיס חסר בחזקה (אתגר): ${q0}`;
+    }
+  }
+
+  if (selectedOp === "estimation") {
+    if (kind === "est_add") {
+      if (mathLevelKey === "easy") return q0.replace(/^אמד/, "אומדן קירוב (קל): אמדו");
+      if (mathLevelKey === "medium")
+        return q0.replace(/^אמד/, "אומדן חיבור — אמדו");
+      return q0.replace(/^אמד/, "אומדן מדויק (אתגר): אמדו ובדקו סדר גודל");
+    }
+    if (kind === "est_mul") {
+      if (mathLevelKey === "easy") return q0.replace(/^אמד/, "אומדן כפל (קל): אמדו");
+      if (mathLevelKey === "medium")
+        return q0.replace(/^אמד/, "אומדן מכפלה — אמדו");
+      return q0.replace(/^אמד/, "אומדן כפל (אתגר): אמדו לפי עיגול חכם");
+    }
+    if (kind === "est_quantity") {
+      if (mathLevelKey === "easy") return q0.replace(/^אמד/, "כמות משוערת (קל): אמדו");
+      if (mathLevelKey === "medium")
+        return q0.replace(/^אמד/, "אומדן כמות — עגלו לעשרות");
+      return q0.replace(/^אמד/, "אומדן כמות (אתגר): הסבירו את העיגול");
+    }
+  }
+
   if (
     /אמד את|במפה בקנה|קנה מידה|עיגול לעשרות|עיגול למאות|אורך של \d+ ס"מ במפה/i.test(
       q0
@@ -24,6 +186,28 @@ function applyMathLevelPresentation(question, ctx) {
     return q0;
   }
   if (/^תרגיל\s/.test(q0)) return q0;
+
+  if (
+    kind === "frac_half" ||
+    kind === "frac_half_reverse" ||
+    kind === "frac_quarter" ||
+    kind === "frac_quarter_reverse"
+  ) {
+    if (mathLevelKey === "easy") return `שברים (קל): ${q0}`;
+    if (mathLevelKey === "medium") return `חשיבה על שבר כחלק משלם: ${q0}`;
+    return `שבר חלקי (אתגר): ${q0}`;
+  }
+
+  if (kind === "fm_factor") {
+    if (mathLevelKey === "easy") return `גורמים (קל): ${q0}`;
+    if (mathLevelKey === "medium") return `זיהוי מחלק: ${q0}`;
+    return `מחלקים וגורמים (אתגר): ${q0}`;
+  }
+  if (kind === "fm_multiple") {
+    if (mathLevelKey === "easy") return `כפולות (קל): ${q0}`;
+    if (mathLevelKey === "medium") return `בדקו כפולה: ${q0}`;
+    return `כפולות (אתגר): ${q0}`;
+  }
 
   const gNum = parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
 
@@ -68,25 +252,42 @@ function applyMathLevelPresentation(question, ctx) {
     (/^\d/.test(q0.trim()) && /[+\-×÷]/.test(q0));
 
   if (looksNumericExercise && gNum >= 1) {
+    const pv = Math.abs(Number(params?.presentationVariant) || 0) % 4;
     if (gNum <= 2) {
+      const easyP = ["חישוב קל:", "מה התוצאה:", "פתרו:", "חיבור/חיסור קצר:"];
+      const medP = ["נסו לבד:", "חשבו לבד:", "מה יוצא:", "תרגיל:"];
+      const hardP = ["משחקון חשבון:", "אתגר קטן:", "בדקו:", "חידה חשבונית:"];
       if (mathLevelKey === "easy" && !/^(חישוב קל|נסו|משחקון)/.test(q0)) {
-        return `חישוב קל: ${q0}`;
+        return `${easyP[pv]} ${q0}`;
       }
       if (mathLevelKey === "medium" && !/^(חישוב קל|נסו|משחקון)/.test(q0)) {
-        return `נסו לבד: ${q0}`;
+        return `${medP[pv]} ${q0}`;
       }
       if (mathLevelKey === "hard" && !/^(חישוב קל|נסו|משחקון)/.test(q0)) {
-        return `משחקון חשבון: ${q0}`;
+        return `${hardP[pv]} ${q0}`;
       }
     } else {
+      const easyP = ["חשבו:", "סכום:", "מה התוצאה:", "פתרו:"];
+      const medP = [
+        "מצאו את הערך:",
+        "השלימו את המשוואה:",
+        "כמה יוצא בסוף:",
+        "חישוב:",
+      ];
+      const hardP = [
+        "אתגר — הערכו ואמתו:",
+        "בדקו פעמיים לפני בחירה:",
+        "שאלת אתגר:",
+        "גרסה מאתגרת —",
+      ];
       if (mathLevelKey === "easy" && !/^(חשבו|מצאו|אתגר)/.test(q0)) {
-        return `חשבו: ${q0}`;
+        return `${easyP[pv]} ${q0}`;
       }
       if (mathLevelKey === "medium" && !/^(חשבו|מצאו|אתגר)/.test(q0)) {
-        return `מצאו את הערך: ${q0}`;
+        return `${medP[pv]} ${q0}`;
       }
       if (mathLevelKey === "hard" && !/^(חשבו|מצאו|אתגר)/.test(q0)) {
-        return `אתגר — הערכו ואמתו: ${q0}`;
+        return `${hardP[pv]} ${q0}`;
       }
     }
   }
@@ -503,6 +704,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
           op: "add",
           grade: gradeKey,
           vertical: true,
+          presentationVariant: randInt(0, 3),
         };
         operandA = a;
         operandB = b;
@@ -518,6 +720,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
           exerciseText,
           op: "add",
           grade: gradeKey,
+          presentationVariant: randInt(0, 3),
         };
 
         operandA = a;
@@ -567,7 +770,15 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       correctAnswer = c;
       const exerciseText = `${a} - ${b} = ${BLANK}`;
       question = exerciseText;
-      params = { kind: "sub_vertical", a, b, c, exerciseText, vertical: true };
+      params = {
+        kind: "sub_vertical",
+        a,
+        b,
+        c,
+        exerciseText,
+        vertical: true,
+        presentationVariant: randInt(0, 3),
+      };
       operandA = a;
       operandB = b;
     } else {
@@ -575,7 +786,14 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       correctAnswer = c;
       const exerciseText = `${a} - ${b} = ${BLANK}`;
       question = exerciseText;
-      params = { kind: "sub_two", a, b, c, exerciseText };
+      params = {
+        kind: "sub_two",
+        a,
+        b,
+        c,
+        exerciseText,
+        presentationVariant: randInt(0, 3),
+      };
 
       operandA = a;
       operandB = b;
@@ -672,7 +890,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       correctAnswer = round(c);
       const exerciseText = `${a} × ${b} = ${BLANK}`;
       question = exerciseText;
-      params = { kind: "mul", a, b, exerciseText };
+      params = {
+        kind: "mul",
+        a,
+        b,
+        exerciseText,
+        presentationVariant: randInt(0, 3),
+      };
 
       operandA = a;
       operandB = b;
@@ -736,7 +960,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       correctAnswer = round(quotient);
       const exerciseText = `${dividend} ÷ ${divisor} = ${BLANK}`;
       question = exerciseText;
-      params = { kind: "div", dividend, divisor, exerciseText };
+      params = {
+        kind: "div",
+        dividend,
+        divisor,
+        exerciseText,
+        presentationVariant: randInt(0, 3),
+      };
 
       operandA = dividend;
       operandB = divisor;
@@ -1480,7 +1710,21 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     const rawExerciseText = `${a} ${BLANK} ${b}`;
     const exerciseText = `\u2066${rawExerciseText}\u2069`;
     question = `${questionLabel} ${exerciseText}`;
-    params = { kind: "cmp", a, b, questionLabel, exerciseText };
+    params = {
+      kind: "cmp",
+      a,
+      b,
+      questionLabel,
+      exerciseText,
+      presentationVariant: randInt(0, 3),
+    };
+
+    question = applyMathLevelPresentation(question, {
+      selectedOp,
+      params,
+      mathLevelKey,
+      gradeKey,
+    });
 
     // כפתורי השוואה תמיד באותו סדר: <, =, > (שווה באמצע)
     const answers = ["<", "=", ">"];
@@ -1693,6 +1937,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       question = `איזה מהמספרים הבאים הוא מחלק (גורם) של ${n}?`;
       params = { kind: "fm_factor", n, correct };
 
+      question = applyMathLevelPresentation(question, {
+        selectedOp,
+        params,
+        mathLevelKey,
+        gradeKey,
+      });
+
       return {
         question,
         correctAnswer,
@@ -1729,6 +1980,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       correctAnswer = correct;
       question = `איזה מהמספרים הבאים הוא כפולה של ${base}?`;
       params = { kind: "fm_multiple", base, correct };
+
+      question = applyMathLevelPresentation(question, {
+        selectedOp,
+        params,
+        mathLevelKey,
+        gradeKey,
+      });
 
       return {
         question,
@@ -2195,6 +2453,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       // נהפוך את הסדר ב-50% מהמקרים
       answers.reverse();
     }
+
+    question = applyMathLevelPresentation(question, {
+      selectedOp,
+      params,
+      mathLevelKey,
+      gradeKey,
+    });
     
     return {
       question,
@@ -2240,6 +2505,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       const j = Math.floor(Math.random() * (i + 1));
       [answers[i], answers[j]] = [answers[j], answers[i]];
     }
+
+    question = applyMathLevelPresentation(question, {
+      selectedOp,
+      params,
+      mathLevelKey,
+      gradeKey,
+    });
     
     return {
       question,
@@ -2478,7 +2750,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     correctAnswer = round(a + b);
     const exerciseText = `${a} + ${b} = ${BLANK}`;
     question = exerciseText;
-    params = { kind: "add_two", a, b, exerciseText };
+    params = {
+      kind: "add_two",
+      a,
+      b,
+      exerciseText,
+      presentationVariant: randInt(0, 3),
+    };
     operandA = a;
     operandB = b;
   }
