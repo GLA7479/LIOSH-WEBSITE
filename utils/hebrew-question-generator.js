@@ -751,7 +751,7 @@ function pickWeightedHebrewItem(merged, levelKey, selectedTopic, gradeKey) {
 function mergeTopicPools(gradeKey, levelKey, topic, legacyList) {
   const richRows = filterRichHebrewPool(gradeKey, levelKey, topic);
   const fromRich = richRows.map(
-    ({ grades: _g, levels: _l, topic: _tp, ...rest }) => ({
+    ({ grades: _g, gradeBand: _gb, levels: _l, topic: _tp, ...rest }) => ({
       ...rest,
       _fromRich: true,
     })
@@ -786,7 +786,13 @@ function getQuestionsForGradeAndLevel(gradeKey, levelKey, topic) {
     'G6_HARD_QUESTIONS': G6_HARD_QUESTIONS,
   };
   
-  const questionsPool = questionsMap[key] || G1_EASY_QUESTIONS;
+  const questionsPool = questionsMap[key];
+  if (!questionsPool) {
+    if (typeof console !== "undefined" && console.warn) {
+      console.warn("[hebrew] missing question pool:", key);
+    }
+    return [];
+  }
   return questionsPool[topic] || questionsPool.reading || [];
 }
 
@@ -879,11 +885,57 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   };
 
   if (!topicQuestionsMerged || topicQuestionsMerged.length === 0) {
-    // נסיגה למאגר בסיסי אם אין שאלות
-    const fallbackQuestions = G1_EASY_QUESTIONS[selectedTopic] || G1_EASY_QUESTIONS.reading;
+    let fallbackQuestions = getQuestionsForGradeAndLevel(
+      gradeKey,
+      levelKey,
+      selectedTopic
+    );
+    let fallbackTopic = selectedTopic;
+    if (!fallbackQuestions.length && selectedTopic !== "reading") {
+      fallbackQuestions = getQuestionsForGradeAndLevel(
+        gradeKey,
+        levelKey,
+        "reading"
+      );
+      fallbackTopic = "reading";
+    }
+    if (!fallbackQuestions.length) {
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[hebrew] empty merged pool and no legacy for grade", {
+          gradeKey,
+          levelKey,
+          selectedTopic,
+        });
+      }
+      return {
+        question:
+          "אין כרגע שאלות זמינות לכיתה ולרמה שנבחרו. נסו נושא אחר או רמת קושי אחרת.",
+        questionLabel: "עברית",
+        exerciseText:
+          "אין כרגע שאלות זמינות לכיתה ולרמה שנבחרו. נסו נושא אחר או רמת קושי אחרת.",
+        answers: ["הבנתי", "אנסה שוב", "אחזור לתפריט", "אבחר נושא אחר"],
+        correctAnswer: "הבנתי",
+        acceptedAnswers: ["הבנתי"],
+        answerMode: "choice",
+        optionCount: 4,
+        correctIndex: 0,
+        topic: selectedTopic,
+        operation: selectedTopic,
+        a: null,
+        b: null,
+        params: {
+          kind: "empty_pool",
+          grade: gradeKey,
+          gradeKey,
+          levelKey,
+          patternFamily: "no_questions",
+          answerMode: "choice",
+        },
+      };
+    }
     const rawPick =
       fallbackQuestions[Math.floor(Math.random() * fallbackQuestions.length)];
-    const randomQ = finalizeHebrewMcq(rawPick, selectedTopic, levelKey);
+    const randomQ = finalizeHebrewMcq(rawPick, fallbackTopic, levelKey);
 
     // ערבוב התשובות - Fisher-Yates shuffle
     const shuffledAnswers = [...randomQ.answers];
@@ -896,12 +948,12 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     const correctAnswer = randomQ.answers[randomQ.correct];
     const newCorrectIndex = shuffledAnswers.findIndex((ans) => ans === correctAnswer);
 
-    const answerMode = resolveAnswerMode(selectedTopic, randomQ.question);
+    const answerMode = resolveAnswerMode(fallbackTopic, randomQ.question);
     const acceptedAnswers = buildAcceptedAnswers(correctAnswer);
     const optionCount = shuffledAnswers.length;
     return {
       question: randomQ.question,
-      questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
+      questionLabel: `שאלה בנושא: ${TOPICS[fallbackTopic]?.name || fallbackTopic}`,
       exerciseText: randomQ.question,
       answers: shuffledAnswers,
       correctAnswer: correctAnswer,
@@ -909,12 +961,12 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
       answerMode,
       optionCount,
       correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : 0,
-      topic: selectedTopic,
-      operation: selectedTopic,
+      topic: fallbackTopic,
+      operation: fallbackTopic,
       a: null,
       b: null,
       params: {
-        kind: selectedTopic,
+        kind: fallbackTopic,
         grade: gradeKey,
         gradeKey: gradeKey,
         levelKey: levelKey,
@@ -924,6 +976,7 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
         difficultyBand: randomQ.difficultyBand,
         optionCount,
         answerMode,
+        gradeFallbackFromTopic: selectedTopic,
       },
     };
   }

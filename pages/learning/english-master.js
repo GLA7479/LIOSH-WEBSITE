@@ -43,6 +43,7 @@ import {
   TRANSLATION_POOLS,
 } from "../../data/english-questions";
 import { englishQuestionFingerprint } from "../../utils/english-learning-intel";
+import { englishPoolItemAllowed } from "../../utils/grade-gating";
 
 const LEVELS = {
   easy: { name: "קל", maxWords: 5, complexity: "basic" },
@@ -486,11 +487,27 @@ function generateQuestion(
       let pool = [];
       grammarPools.forEach((key) => {
         if (GRAMMAR_POOLS[key]) {
-          pool = pool.concat(GRAMMAR_POOLS[key]);
+          const rows = GRAMMAR_POOLS[key].filter((item) =>
+            englishPoolItemAllowed("grammar", key, item, gradeKey)
+          );
+          pool = pool.concat(rows);
         }
       });
       if (pool.length === 0) {
-        pool = Object.values(GRAMMAR_POOLS).flat();
+        if (typeof console !== "undefined" && console.warn) {
+          console.warn("[english] grammar pool empty after grade gating", gradeKey);
+        }
+        const fb =
+          gradeKey === "g1" || gradeKey === "g2"
+            ? "be_basic"
+            : gradeKey === "g3" || gradeKey === "g4"
+              ? "present_simple"
+              : "modals";
+        if (GRAMMAR_POOLS[fb]) {
+          pool = GRAMMAR_POOLS[fb].filter((item) =>
+            englishPoolItemAllowed("grammar", fb, item, gradeKey)
+          );
+        }
       }
       const grammarQ = pool[Math.floor(Math.random() * pool.length)];
       question = grammarQ.question;
@@ -511,11 +528,29 @@ function generateQuestion(
       let sentencesPool = [];
       translationPools.forEach((key) => {
         if (TRANSLATION_POOLS[key]) {
-          sentencesPool = sentencesPool.concat(TRANSLATION_POOLS[key]);
+          const rows = TRANSLATION_POOLS[key].filter((item) =>
+            englishPoolItemAllowed("translation", key, item, gradeKey)
+          );
+          sentencesPool = sentencesPool.concat(rows);
         }
       });
       if (sentencesPool.length === 0) {
-        sentencesPool = Object.values(TRANSLATION_POOLS).flat();
+        if (typeof console !== "undefined" && console.warn) {
+          console.warn("[english] translation pool empty after grade gating", gradeKey);
+        }
+        const fb =
+          gradeKey === "g1"
+            ? "classroom"
+            : gradeKey === "g2"
+              ? "routines"
+              : gradeKey === "g3" || gradeKey === "g4"
+                ? "hobbies"
+                : "technology";
+        if (TRANSLATION_POOLS[fb]) {
+          sentencesPool = TRANSLATION_POOLS[fb].filter((item) =>
+            englishPoolItemAllowed("translation", fb, item, gradeKey)
+          );
+        }
       }
       const sentence =
         sentencesPool[Math.floor(Math.random() * sentencesPool.length)];
@@ -551,11 +586,29 @@ function generateQuestion(
       let pool = [];
       sentencePools.forEach((key) => {
         if (SENTENCE_POOLS[key]) {
-          pool = pool.concat(SENTENCE_POOLS[key]);
+          const rows = SENTENCE_POOLS[key].filter((item) =>
+            englishPoolItemAllowed("sentence", key, item, gradeKey)
+          );
+          pool = pool.concat(rows);
         }
       });
       if (pool.length === 0) {
-        pool = SENTENCE_POOLS.base;
+        if (typeof console !== "undefined" && console.warn) {
+          console.warn("[english] sentence pool empty after grade gating", gradeKey);
+        }
+        const fb =
+          gradeKey === "g1"
+            ? "base"
+            : gradeKey === "g2" || gradeKey === "g3"
+              ? "routine"
+              : gradeKey === "g4"
+                ? "descriptive"
+                : "advanced";
+        if (SENTENCE_POOLS[fb]) {
+          pool = SENTENCE_POOLS[fb].filter((item) =>
+            englishPoolItemAllowed("sentence", fb, item, gradeKey)
+          );
+        }
       }
       const template =
         pool[Math.floor(Math.random() * pool.length)] || SENTENCE_POOLS.base[0];

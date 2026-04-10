@@ -5,6 +5,7 @@ import {
   pickGeometryConceptualQuestion,
   geometryConceptualProbability,
 } from "./geometry-conceptual-bank";
+import { gradeBandForKey } from "./grade-gating";
 
 function shuffleMcqList(answers) {
   const arr = [...answers];
@@ -426,8 +427,9 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   const round = (num) =>
     Math.round(num * Math.pow(10, roundTo)) / Math.pow(10, roundTo);
 
-  // לאפשר תרגילי מילים בעיקר לכיתות גבוהות יותר (ה' ו-ו')
-  const allowStory = gradeKey === "g5" || gradeKey === "g6";
+  const formulaBand = gradeBandForKey(gradeKey) || "mid";
+  // תרגילי מילים רק ב־late (ה׳–ו׳)
+  const allowStory = formulaBand === "late";
 
   switch (selectedTopic) {
     // ===================== AREA =====================
@@ -442,8 +444,12 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
           if (useStory) {
             question = `לליאו יש גינה בצורת ריבוע, אורך כל צלע הוא ${side} מטר. כמה מטרים רבועים שטח הגינה?`;
-          } else {
+          } else if (formulaBand === "early") {
+            question = `ריבוע: אורך כל צלע ${side}. כמה יחידות שטח? (חשבו: צלע × צלע)`;
+          } else if (formulaBand === "mid") {
             question = `מה השטח של ריבוע עם צלע ${side}?`;
+          } else {
+            question = `חישוב שטח ריבוע במישור: צלע ${side}. מה השטח?`;
           }
           break;
         }
@@ -462,8 +468,12 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
           if (useStory) {
             question = `רצפת חדר של ליאו היא מלבן באורך ${length} מטר וברוחב ${width} מטר. מה שטח הרצפה במטרים רבועים?`;
-          } else {
+          } else if (formulaBand === "early") {
+            question = `מלבן: אורך ${length}, רוחב ${width}. כמה יחידות שטח? (אורך × רוחב)`;
+          } else if (formulaBand === "mid") {
             question = `מה השטח של מלבן עם אורך ${length} ורוחב ${width}?`;
+          } else {
+            question = `שטח מלבן: אורך ${length}, רוחב ${width}. מה התוצאה?`;
           }
           break;
         }
@@ -482,8 +492,12 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
           if (useStory) {
             question = `גג של בית הוא משולש עם בסיס ${base} מטר וגובה ${height} מטר. מה שטח הגג בצד אחד?`;
-          } else {
+          } else if (formulaBand === "early") {
+            question = `משולש: בסיס ${base}, גובה ${height}. שטח ≈ חצי מ־(בסיס × גובה). כמה?`;
+          } else if (formulaBand === "mid") {
             question = `מה השטח של משולש עם בסיס ${base} וגובה ${height}?`;
+          } else {
+            question = `חישוב שטח משולש: בסיס ${base}, גובה ${height}. מה השטח?`;
           }
           break;
         }
@@ -520,6 +534,8 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
           if (useStory) {
             question = `מגרש משחקים עגול בעל רדיוס ${radius} מטר. מה שטח המגרש? (π = 3.14)`;
+          } else if (formulaBand === "late") {
+            question = `עיגול ברדיוס ${radius}: מה השטח? (π = 3.14)`;
           } else {
             question = `מה השטח של עיגול עם רדיוס ${radius}? (π = 3.14)`;
           }
@@ -530,7 +546,12 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const side = Math.floor(Math.random() * level.maxSide) + 1;
           params = { side, kind: "square_area" };
           correctAnswer = round(side * side);
-          question = `מה השטח של ריבוע עם צלע ${side}?`;
+          question =
+            formulaBand === "early"
+              ? `ריבוע: צלע ${side}. כמה שטח? (צלע × צלע)`
+              : formulaBand === "mid"
+                ? `מה השטח של ריבוע עם צלע ${side}?`
+                : `שטח ריבוע: צלע ${side}. מה התוצאה?`;
         }
       }
       break;
@@ -548,8 +569,12 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
           if (useStory) {
             question = `ליאו רוצה לשים גדר מסביב לגינה בצורת ריבוע, אורך כל צלע הוא ${side} מטר. מה אורך הגדר הכולל שהוא צריך?`;
-          } else {
+          } else if (formulaBand === "early") {
+            question = `ריבוע: כל צלע ${side}. מה ההיקף? (חברו את ארבע הצלעות)`;
+          } else if (formulaBand === "mid") {
             question = `מה ההיקף של ריבוע עם צלע ${side}?`;
+          } else {
+            question = `היקף ריבוע במישור: צלע ${side}. מה סכום צלעות המעטפת?`;
           }
           break;
         }
@@ -568,8 +593,12 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
           if (useStory) {
             question = `גינה מלבנית מוקפת בגדר. האורך ${length} מטר והרוחב ${width} מטר. כמה מטרים של גדר צריך בסך הכל?`;
-          } else {
+          } else if (formulaBand === "early") {
+            question = `מלבן: אורך ${length}, רוחב ${width}. מה ההיקף? (פעמיים אורך+רוחב)`;
+          } else if (formulaBand === "mid") {
             question = `מה ההיקף של מלבן עם אורך ${length} ורוחב ${width}?`;
+          } else {
+            question = `היקף מלבן: ${length} × ${width}. מה התוצאה?`;
           }
           break;
         }
@@ -623,8 +652,12 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
           if (useStory) {
             question = `קופסת משחקים בצורת קובייה, אורך הצלע שלה ${side} ס"מ. מה נפח הקופסה בס"מ מעוקב?`;
-          } else {
+          } else if (formulaBand === "early") {
+            question = `קובייה: צלע ${side}. נפח = צלע × צלע × צלע. כמה?`;
+          } else if (formulaBand === "mid") {
             question = `מה הנפח של קובייה עם צלע ${side}?`;
+          } else {
+            question = `נפח קובייה: צלע ${side}. מה הנפח?`;
           }
           break;
         }

@@ -1,4 +1,4 @@
-﻿export const G6_EASY_QUESTIONS = {
+export const G6_EASY_QUESTIONS = {
   reading: [
     { question: "קרא את הטקסט המורכב: 'הילד קרא ספר על נושא מורכב. הספר הציג דעות שונות והשווה ביניהן. במהלך הקריאה, הילד פיתח חשיבה ביקורתית והבין כמה חשוב לבדוק עובדות ולהבין נקודות מבט שונות.' מה הנושא המרכזי?", answers: ["חשיבות חשיבה ביקורתית", "רק קריאה", "רק משחק", "רק אכילה"], correct: 0 },
     { question: "קרא את הטקסט: 'השמש היא מקור החיים. מחקרים מראים שהיא נותנת אור וחום החיוניים לחיים. בלי השמש, כדור הארץ יהיה קפוא וחשוך. לכן חשוב להבין את חשיבות השמש ולשמור על הסביבה.' מה המסר והמסקנה?", answers: ["חשיבות השמש ושמירה על הסביבה", "השמש לא חשובה", "לילה", "עננים"], correct: 0 },
@@ -167,7 +167,13 @@ function getQuestionsForGradeAndLevel(gradeKey, levelKey, topic) {
     'G6_HARD_QUESTIONS': G6_HARD_QUESTIONS,
   };
   
-  const questionsPool = questionsMap[key] || G1_EASY_QUESTIONS;
+  const questionsPool = questionsMap[key];
+  if (!questionsPool) {
+    if (typeof console !== "undefined" && console.warn) {
+      console.warn("[hebrew g6 data] missing pool:", key);
+    }
+    return [];
+  }
   return questionsPool[topic] || questionsPool.reading || [];
 }
 

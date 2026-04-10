@@ -1,19 +1,16 @@
+import { itemAllowedForGrade } from "./grade-gating";
+
 /**
  * בנק שאלות עברית מובנה — משלים את המאגר הקלאסי.
- * כל פריט: נושא, כיתות, רמות, משפחת תבנית, תת-סוג, משפחת מסיחים.
+ * כל פריט: נושא, band כיתה (early/mid/late), רמות, משפחת תבנית.
  */
-
-const G_ALL = ["g1", "g2", "g3", "g4", "g5", "g6"];
-const G_LOW = ["g1", "g2", "g3"];
-const G_MID = ["g2", "g3", "g4"];
-const G_HI = ["g4", "g5", "g6"];
 
 /** @type {Array<Record<string, unknown>>} */
 export const HEBREW_RICH_POOL = [
   // ——— הבנה: מעבר לזיהוי מילה בודדת ———
   {
     topic: "comprehension",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["easy"],
     patternFamily: "passage_explicit",
     subtype: "detail",
@@ -30,7 +27,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium", "hard"],
     patternFamily: "passage_inference",
     subtype: "implied",
@@ -47,7 +44,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["easy", "medium"],
     patternFamily: "sequence",
     subtype: "order",
@@ -59,7 +56,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["medium", "hard"],
     patternFamily: "reference",
     subtype: "pronoun",
@@ -71,7 +68,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["hard"],
     patternFamily: "main_idea",
     subtype: "summary",
@@ -88,7 +85,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium"],
     patternFamily: "cause_effect",
     subtype: "because",
@@ -100,7 +97,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["medium", "hard"],
     patternFamily: "compare_statements",
     subtype: "contrast",
@@ -117,7 +114,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_LOW,
+    gradeBand: "mid",
     levels: ["easy", "medium"],
     patternFamily: "completion",
     subtype: "context_clue",
@@ -129,7 +126,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_ALL,
+    gradeBand: "early",
     levels: ["easy"],
     patternFamily: "binary_fact",
     subtype: "tf",
@@ -142,7 +139,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium"],
     patternFamily: "binary_fact",
     subtype: "tf",
@@ -157,7 +154,7 @@ export const HEBREW_RICH_POOL = [
   // ——— דקדוק: הסכמה, זמן, תיקון ———
   {
     topic: "grammar",
-    grades: G_LOW,
+    gradeBand: "early",
     levels: ["easy", "medium"],
     patternFamily: "gender_number",
     subtype: "agreement",
@@ -168,7 +165,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "grammar",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium", "hard"],
     patternFamily: "gender_number",
     subtype: "plural",
@@ -179,7 +176,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "grammar",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["medium", "hard"],
     patternFamily: "tense_shift",
     subtype: "past_present",
@@ -191,7 +188,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "grammar",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["hard"],
     patternFamily: "sentence_correction",
     subtype: "choose_correct",
@@ -207,7 +204,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "grammar",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["easy", "medium"],
     patternFamily: "prep_choice",
     subtype: "collocation",
@@ -218,7 +215,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "grammar",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["medium", "hard"],
     patternFamily: "transform",
     subtype: "negation",
@@ -229,7 +226,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "grammar",
-    grades: G_ALL,
+    gradeBand: "mid",
     levels: ["easy"],
     patternFamily: "part_of_speech",
     subtype: "verb_noun",
@@ -240,7 +237,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "grammar",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["hard"],
     patternFamily: "binary_grammar",
     subtype: "tf",
@@ -256,7 +253,7 @@ export const HEBREW_RICH_POOL = [
   // ——— אוצר מילים ———
   {
     topic: "vocabulary",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["easy", "medium"],
     patternFamily: "synonym",
     subtype: "near_meaning",
@@ -267,7 +264,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "vocabulary",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium"],
     patternFamily: "antonym",
     subtype: "opposite",
@@ -278,7 +275,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "vocabulary",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["medium", "hard"],
     patternFamily: "context_fit",
     subtype: "register",
@@ -289,7 +286,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "vocabulary",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["hard"],
     patternFamily: "category_exclusion",
     subtype: "odd_out",
@@ -300,7 +297,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "vocabulary",
-    grades: G_LOW,
+    gradeBand: "early",
     levels: ["easy"],
     patternFamily: "word_context",
     subtype: "cloze",
@@ -311,7 +308,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "vocabulary",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium", "hard"],
     patternFamily: "precision",
     subtype: "best_word",
@@ -324,7 +321,7 @@ export const HEBREW_RICH_POOL = [
   // ——— קריאה ———
   {
     topic: "reading",
-    grades: G_LOW,
+    gradeBand: "early",
     levels: ["easy", "medium"],
     patternFamily: "word_level",
     subtype: "spelling_choice",
@@ -335,7 +332,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "reading",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium"],
     patternFamily: "sentence_read",
     subtype: "meaning",
@@ -353,7 +350,7 @@ export const HEBREW_RICH_POOL = [
   // ——— כתיבה / הבעה (בחירה — לא חלופה לשדה הקלדה) ———
   {
     topic: "writing",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["easy", "medium"],
     patternFamily: "structured_completion",
     subtype: "polite_phrase",
@@ -369,7 +366,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "writing",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["medium", "hard"],
     patternFamily: "rephrase",
     subtype: "clarity",
@@ -385,7 +382,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "writing",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium"],
     patternFamily: "logic_completion",
     subtype: "conclusion",
@@ -398,7 +395,7 @@ export const HEBREW_RICH_POOL = [
   // ——— דיבור ———
   {
     topic: "speaking",
-    grades: G_LOW,
+    gradeBand: "early",
     levels: ["easy"],
     patternFamily: "social_reply",
     subtype: "greeting",
@@ -409,7 +406,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "speaking",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium"],
     patternFamily: "social_reply",
     subtype: "request",
@@ -422,7 +419,7 @@ export const HEBREW_RICH_POOL = [
   // ——— הרחבה: הבנה קשה / בינונית ———
   {
     topic: "comprehension",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["hard"],
     patternFamily: "implicit_tone",
     subtype: "attitude",
@@ -439,7 +436,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["medium", "hard"],
     patternFamily: "supporting_detail",
     subtype: "evidence",
@@ -456,7 +453,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "comprehension",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium"],
     patternFamily: "analogy_reasoning",
     subtype: "parallel",
@@ -475,7 +472,7 @@ export const HEBREW_RICH_POOL = [
   // ——— דקדוק: תיקון והסכמה ———
   {
     topic: "grammar",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["hard"],
     patternFamily: "sentence_correction",
     subtype: "sv_agreement_plural",
@@ -491,7 +488,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "grammar",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium", "hard"],
     patternFamily: "morphology",
     subtype: "binyan_fit",
@@ -502,7 +499,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "grammar",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["medium", "hard"],
     patternFamily: "verb_agreement",
     subtype: "plural_subject",
@@ -520,7 +517,7 @@ export const HEBREW_RICH_POOL = [
   // ——— אוצר מילים ———
   {
     topic: "vocabulary",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["hard"],
     patternFamily: "collocation",
     subtype: "verb_noun_fit",
@@ -531,7 +528,7 @@ export const HEBREW_RICH_POOL = [
   },
   {
     topic: "vocabulary",
-    grades: G_MID,
+    gradeBand: "mid",
     levels: ["medium", "hard"],
     patternFamily: "semantic_field",
     subtype: "education_lexicon",
@@ -544,7 +541,7 @@ export const HEBREW_RICH_POOL = [
   // ——— קריאה ———
   {
     topic: "reading",
-    grades: G_HI,
+    gradeBand: "late",
     levels: ["medium", "hard"],
     patternFamily: "structural",
     subtype: "paragraph_role",
@@ -557,13 +554,11 @@ export const HEBREW_RICH_POOL = [
 ];
 
 export function filterRichHebrewPool(gradeKey, levelKey, topic) {
-  const g = String(gradeKey || "g3").toLowerCase();
   const l = String(levelKey || "easy").toLowerCase();
   return HEBREW_RICH_POOL.filter(
     (row) =>
       row.topic === topic &&
-      Array.isArray(row.grades) &&
-      row.grades.includes(g) &&
+      itemAllowedForGrade(row, gradeKey) &&
       Array.isArray(row.levels) &&
       row.levels.includes(l)
   );

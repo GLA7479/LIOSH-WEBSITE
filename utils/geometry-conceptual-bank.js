@@ -1,3 +1,5 @@
+import { itemAllowedForGrade } from "./grade-gating";
+
 /**
  * שאלות גיאומטריה קונספטואליות — הסקה, השוואה, סיווג, בלבול שטח/היקף, רב-שלבי מושגי.
  * תשובות טקסט; בינאריות = 2 אופציות בלבד.
@@ -23,7 +25,7 @@ export function pickGeometryConceptualQuestion(ctx) {
   const lv = levelKey || "easy";
   const candidates = GEOMETRY_CONCEPTUAL_ITEMS.filter((row) => {
     if (!row.topics.includes(topic)) return false;
-    if (!row.grades.includes(g)) return false;
+    if (!itemAllowedForGrade(row, g)) return false;
     if (row.levels && !row.levels.includes(lv)) return false;
     return true;
   });
@@ -103,14 +105,15 @@ export function geometryConceptualProbability(gradeKey, topic) {
       default: 0.48,
     },
   };
-  const map = p[gradeKey] || p.g4;
-  return map[topic] ?? map.default ?? 0.45;
+  const map = p[gradeKey];
+  if (!map) return 0;
+  return map[topic] ?? map.default ?? 0;
 }
 
 const GEOMETRY_CONCEPTUAL_ITEMS = [
   // ——— שטח / היקף — בלבול מדדים והבנה ———
   {
-    grades: ["g3", "g4", "g5", "g6"],
+    gradeBand: "mid",
     topics: ["area", "perimeter"],
     levels: ["easy", "medium", "hard"],
     kind: "concept_measure_interpret",
@@ -124,7 +127,21 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     options: ["שטח", "היקף", "נפח", "אורך אלכסון בלבד"],
   },
   {
-    grades: ["g3", "g4", "g5", "g6"],
+    gradeBand: "late",
+    topics: ["area", "perimeter"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_measure_interpret",
+    patternFamily: "perimeter_vs_area",
+    subtype: "choose_measure_floor",
+    conceptTag: "pv_area_late",
+    distractorFamily: "measure_confusion",
+    question:
+      "ריצוף ריבועי לחדר: צלע הריצוף 5 מ׳. כדי לדעת כמה מ״ר צריך לרכוש — איזה מושג מחשבים?",
+    correct: "שטח",
+    options: ["שטח", "היקף", "נפח", "אורך אלכסון בלבד"],
+  },
+  {
+    gradeBand: "mid",
     topics: ["area", "perimeter"],
     levels: ["easy", "medium", "hard"],
     kind: "concept_measure_interpret",
@@ -138,7 +155,21 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     options: ["היקף", "שטח", "נפח", "זווית פנימית"],
   },
   {
-    grades: ["g4", "g5", "g6"],
+    gradeBand: "late",
+    topics: ["area", "perimeter"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_measure_interpret",
+    patternFamily: "perimeter_vs_area",
+    subtype: "fence_perimeter_project",
+    conceptTag: "pv_perimeter_late",
+    distractorFamily: "measure_confusion",
+    question:
+      "פרויקט תכנון: גדר סביב מגרש מלבני (רק החיצון). כדי להזמין אורך גדר — מה מודדים?",
+    correct: "היקף",
+    options: ["היקף", "שטח", "נפח", "זווית פנימית"],
+  },
+  {
+    gradeBand: "mid",
     topics: ["area"],
     levels: ["medium", "hard"],
     kind: "concept_multi_step_plan",
@@ -157,7 +188,26 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     ],
   },
   {
-    grades: ["g5", "g6"],
+    gradeBand: "late",
+    topics: ["area"],
+    levels: ["medium", "hard"],
+    kind: "concept_multi_step_plan",
+    patternFamily: "plan_then_compute",
+    subtype: "area_rectangle_site",
+    conceptTag: "plan_area_rect_late",
+    distractorFamily: "wrong_formula_family",
+    question:
+      "שטיח מלבני לחדר גדול: אורך 8 מ׳ ורוחב 3 מ׳. לפני חישוב שטח החלל — מה צעד ראשון מתאים?",
+    correct: "להכפיל אורך ברוחב",
+    options: [
+      "להכפיל אורך ברוחב",
+      "לחבר את כל הצלעות (כמו היקף)",
+      "להכפיל אורך ב־4",
+      "לחלק אורך ב־2 בלבד",
+    ],
+  },
+  {
+    gradeBand: "late",
     topics: ["area", "perimeter"],
     levels: ["hard"],
     kind: "concept_compare_shapes",
@@ -177,7 +227,7 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
   },
   // ——— זוויות והסקה ———
   {
-    grades: ["g3", "g4", "g5", "g6"],
+    gradeBand: "mid",
     topics: ["angles"],
     levels: ["easy", "medium"],
     kind: "concept_angle_reason",
@@ -196,7 +246,26 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     ],
   },
   {
-    grades: ["g4", "g5", "g6"],
+    gradeBand: "late",
+    topics: ["angles"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_angle_reason",
+    patternFamily: "triangle_angle_sum",
+    subtype: "inference_reasoning",
+    conceptTag: "tri_sum_180_late",
+    distractorFamily: "angle_misconception",
+    question:
+      "במשולש במישור, שתי זוויות פנימיות ידועות (למשל 50° ו־60°). לפני חישוב המספר המדויק — איזה עיקרון גיאומטרי מאפשר להסיק על השלישית?",
+    correct: "סכום שלוש הזוויות במשולש הוא 180°",
+    options: [
+      "סכום שלוש הזוויות במשולש הוא 180°",
+      "הזווית השלישית תמיד 90°",
+      "סכום הזוויות במשולש הוא 360°",
+      "אין מספיק מידע בלי לדעת אורכי צלעות",
+    ],
+  },
+  {
+    gradeBand: "mid",
     topics: ["angles"],
     levels: ["medium", "hard"],
     kind: "concept_angle_reason",
@@ -209,7 +278,20 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     options: ["90°", "180°", "45°", "360°"],
   },
   {
-    grades: ["g5", "g6"],
+    gradeBand: "late",
+    topics: ["angles"],
+    levels: ["medium", "hard"],
+    kind: "concept_angle_reason",
+    patternFamily: "right_angle",
+    subtype: "classification_late",
+    conceptTag: "right_90_late",
+    distractorFamily: "angle_type",
+    question: "במדידה מדויקת, זווית ישרת־מעשית קרובה ל:",
+    correct: "90°",
+    options: ["90°", "180°", "45°", "360°"],
+  },
+  {
+    gradeBand: "late",
     topics: ["angles"],
     levels: ["hard"],
     kind: "concept_angle_reason",
@@ -224,7 +306,7 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
   },
   // ——— סיווג צורות ———
   {
-    grades: ["g3", "g4", "g5"],
+    gradeBand: "mid",
     topics: ["triangles"],
     levels: ["easy", "medium"],
     kind: "concept_classify",
@@ -242,7 +324,25 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     ],
   },
   {
-    grades: ["g3", "g5"],
+    gradeBand: "late",
+    topics: ["triangles"],
+    levels: ["easy", "medium"],
+    kind: "concept_classify",
+    patternFamily: "triangle_by_sides",
+    subtype: "equal_sides_review",
+    conceptTag: "equilateral_late",
+    distractorFamily: "class_mislabel",
+    question: "בסיווג לפי צלעות: משולש עם שלוש צלעות שוות — השם המתאים הוא:",
+    correct: "משולש שווה צלעות",
+    options: [
+      "משולש שווה צלעות",
+      "משולש שווה שוקיים",
+      "משולש ישר זווית תמיד",
+      "ריבוע",
+    ],
+  },
+  {
+    gradeBand: "mid",
     topics: ["quadrilaterals"],
     levels: ["easy", "medium"],
     kind: "concept_classify",
@@ -261,7 +361,26 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     ],
   },
   {
-    grades: ["g4", "g5", "g6"],
+    gradeBand: "late",
+    topics: ["quadrilaterals"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_classify",
+    patternFamily: "quadrilateral_props",
+    subtype: "parallelogram_late",
+    conceptTag: "para_parallel_late",
+    distractorFamily: "shape_family",
+    question:
+      "במקבילית במישור — לגבי זוגות צלעות נגדיות נכון לומר שהם:",
+    correct: "מקבילות ושוות באורך",
+    options: [
+      "מקבילות ושוות באורך",
+      "תמיד מאונכות",
+      "תמיד באותו אורך כמו האלכסונים",
+      "יוצרות זווית ישרה בכל חיבור",
+    ],
+  },
+  {
+    gradeBand: "mid",
     topics: ["quadrilaterals"],
     levels: ["medium", "hard"],
     kind: "concept_classify",
@@ -273,9 +392,22 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     correct: "מלבן",
     options: ["מלבן", "טרפז בלבד", "מעגל", "משולש"],
   },
+  {
+    gradeBand: "late",
+    topics: ["quadrilaterals"],
+    levels: ["medium", "hard"],
+    kind: "concept_classify",
+    patternFamily: "hierarchy",
+    subtype: "square_rectangle_late",
+    conceptTag: "square_special_late",
+    distractorFamily: "hierarchy_confusion",
+    question: "במושגי הכללה: לכל ריבוע יש תכונות של:",
+    correct: "מלבן",
+    options: ["מלבן", "טרפז בלבד", "מעגל", "משולש"],
+  },
   // ——— סימטרייה / חפיפה ———
   {
-    grades: ["g4", "g5", "g6"],
+    gradeBand: "mid",
     topics: ["symmetry"],
     levels: ["easy", "medium", "hard"],
     kind: "concept_symmetry",
@@ -288,7 +420,20 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     options: ["תמונה במראה", "סיבוב סביב מרכז", "הזזה בלי סיבוב", "הגדלת הצורה"],
   },
   {
-    grades: ["g5", "g6"],
+    gradeBand: "late",
+    topics: ["symmetry"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_symmetry",
+    patternFamily: "reflection",
+    subtype: "meaning_axis",
+    conceptTag: "mirror_late",
+    distractorFamily: "transform_confusion",
+    question: "שיקוף ביחס לציר סימטרייה — הדימוי הקרוב ביותר הוא:",
+    correct: "תמונה במראה",
+    options: ["תמונה במראה", "סיבוב סביב מרכז", "הזזה בלי סיבוב", "הגדלת הצורה"],
+  },
+  {
+    gradeBand: "late",
     topics: ["symmetry", "transformations"],
     levels: ["medium", "hard"],
     kind: "concept_congruence",
@@ -307,7 +452,7 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
   },
   // ——— מקבילים / מאונכים ———
   {
-    grades: ["g3", "g5"],
+    gradeBand: "mid",
     topics: ["parallel_perpendicular"],
     levels: ["easy", "medium"],
     kind: "concept_lines",
@@ -325,7 +470,25 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     ],
   },
   {
-    grades: ["g3", "g5"],
+    gradeBand: "late",
+    topics: ["parallel_perpendicular"],
+    levels: ["easy", "medium"],
+    kind: "concept_lines",
+    patternFamily: "parallel_perpendicular",
+    subtype: "definition_late",
+    conceptTag: "perp_meeting_late",
+    distractorFamily: "line_relation",
+    question: "במישור, שני ישרים מאונכים זה לזה — מה תכונה נכונה בנקודת החיתוך?",
+    correct: "הם נפגשים בזווית של 90°",
+    options: [
+      "הם נפגשים בזווית של 90°",
+      "הם לעולם לא נפגשים",
+      "הם תמיד באותו אורך",
+      "הם תמיד מקבילים",
+    ],
+  },
+  {
+    gradeBand: "mid",
     topics: ["parallel_perpendicular"],
     levels: ["easy", "medium"],
     kind: "concept_lines",
@@ -342,9 +505,27 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
       "הם תמיד שווים באורך",
     ],
   },
+  {
+    gradeBand: "late",
+    topics: ["parallel_perpendicular"],
+    levels: ["easy", "medium"],
+    kind: "concept_lines",
+    patternFamily: "parallel_perpendicular",
+    subtype: "parallel_def_late",
+    conceptTag: "parallel_never_meet_late",
+    distractorFamily: "line_relation",
+    question: "שני ישרים מקבילים באותו מישור — לגבי חיתוך ביניהם נכון ש:",
+    correct: "אין להם נקודת חיתוך (נשארים באותו מרחק)",
+    options: [
+      "אין להם נקודת חיתוך (נשארים באותו מרחק)",
+      "הם חייבים להיפגש בנקודה אחת",
+      "הם תמיד מאונכים",
+      "הם תמיד שווים באורך",
+    ],
+  },
   // ——— נפח והבנה ———
   {
-    grades: ["g4", "g5", "g6"],
+    gradeBand: "mid",
     topics: ["volume"],
     levels: ["easy", "medium"],
     kind: "concept_volume_meaning",
@@ -362,7 +543,25 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     ],
   },
   {
-    grades: ["g5", "g6"],
+    gradeBand: "late",
+    topics: ["volume"],
+    levels: ["easy", "medium"],
+    kind: "concept_volume_meaning",
+    patternFamily: "volume_space",
+    subtype: "definition_capacity",
+    conceptTag: "volume_3d_late",
+    distractorFamily: "dimension_confusion",
+    question: "כשמדברים על נפח של תיבה סגורה — מה המשמעות הגיאומטרית העיקרית?",
+    correct: "כמה מקום תפוס בתוך התיבה (שלושה ממדים)",
+    options: [
+      "כמה מקום תפוס בתוך התיבה (שלושה ממדים)",
+      "אורך הקצה הארוך ביותר בלבד",
+      "שטח של פאה אחת בלבד",
+      "היקף הבסיס בלבד",
+    ],
+  },
+  {
+    gradeBand: "late",
     topics: ["volume"],
     levels: ["medium", "hard"],
     kind: "concept_multi_step_plan",
@@ -382,7 +581,8 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
   },
   // ——— מעגל ———
   {
-    grades: ["g6"],
+    minGrade: 6,
+    maxGrade: 6,
     topics: ["circles"],
     levels: ["easy", "medium", "hard"],
     kind: "concept_circle",
@@ -400,7 +600,8 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     ],
   },
   {
-    grades: ["g6"],
+    minGrade: 6,
+    maxGrade: 6,
     topics: ["circles", "area", "perimeter"],
     levels: ["medium", "hard"],
     kind: "concept_circle",
@@ -415,7 +616,8 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
   },
   // ——— פיתגורס מושגי ———
   {
-    grades: ["g6"],
+    minGrade: 6,
+    maxGrade: 6,
     topics: ["pythagoras"],
     levels: ["easy", "medium", "hard"],
     kind: "concept_pythagoras",
@@ -433,7 +635,8 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     ],
   },
   {
-    grades: ["g6"],
+    minGrade: 6,
+    maxGrade: 6,
     topics: ["pythagoras"],
     levels: ["medium", "hard"],
     kind: "concept_multi_step_plan",
@@ -451,9 +654,9 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
       "היקף המשולש בלבד",
     ],
   },
-  // ——— גופים / כיתה ב׳ ו׳ ———
+  // ——— גופים — early / late (לא משותף ב׳+ו׳) ———
   {
-    grades: ["g2", "g6"],
+    gradeBand: "early",
     topics: ["solids"],
     levels: ["easy", "medium"],
     kind: "concept_solids",
@@ -466,7 +669,20 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     options: ["6", "4", "8", "12"],
   },
   {
-    grades: ["g2", "g6"],
+    gradeBand: "late",
+    topics: ["solids"],
+    levels: ["easy", "medium"],
+    kind: "concept_solids",
+    patternFamily: "solid_faces",
+    subtype: "cube_faces_late",
+    conceptTag: "cube_faces_late",
+    distractorFamily: "solid_confusion",
+    question: "בגוף תלת־ממדי מסוג קובייה — כמה פאות מרובעות יש בדרך כלל?",
+    correct: "6",
+    options: ["6", "4", "8", "12"],
+  },
+  {
+    gradeBand: "early",
     topics: ["solids"],
     levels: ["easy", "medium"],
     kind: "concept_solids",
@@ -483,9 +699,27 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
       "למנסרה תמיד אין פאות",
     ],
   },
+  {
+    gradeBand: "late",
+    topics: ["solids"],
+    levels: ["easy", "medium"],
+    kind: "concept_solids",
+    patternFamily: "prism_vs_pyramid",
+    subtype: "compare_late",
+    conceptTag: "apex_late",
+    distractorFamily: "solid_confusion",
+    question: "בהשוואה גיאומטרית: פירמידה לעומת מנסרה עם אותו צורת בסיס — מה נכון?",
+    correct: "לפירמידה יש קודקוד אחד; למנסרה שתי בסיסים מקבילים דומים",
+    options: [
+      "לפירמידה יש קודקוד אחד; למנסרה שתי בסיסים מקבילים דומים",
+      "שתיהן חייבות להיות עגולות",
+      "אין הבדל בין פירמידה למנסרה",
+      "למנסרה תמיד אין פאות",
+    ],
+  },
   // ——— ריצוף ———
   {
-    grades: ["g5"],
+    gradeBand: "late",
     topics: ["tiling"],
     levels: ["easy", "medium", "hard"],
     kind: "concept_tiling",
@@ -500,7 +734,7 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
   },
   // ——— גבהים ———
   {
-    grades: ["g5"],
+    gradeBand: "late",
     topics: ["heights"],
     levels: ["medium", "hard"],
     kind: "concept_height",
@@ -519,7 +753,7 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
   },
   // ——— אלכסון ———
   {
-    grades: ["g4", "g5"],
+    gradeBand: "mid",
     topics: ["diagonal"],
     levels: ["medium", "hard"],
     kind: "concept_diagonal",
@@ -536,9 +770,27 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
       "תמיד שווים לצלע",
     ],
   },
+  {
+    gradeBand: "late",
+    topics: ["diagonal"],
+    levels: ["medium", "hard"],
+    kind: "concept_diagonal",
+    patternFamily: "rectangle_diagonal",
+    subtype: "property_late",
+    conceptTag: "diag_equal_rect_late",
+    distractorFamily: "diagonal_confusion",
+    question: "במלבן כללי במישור — לגבי שני האלכסונים נכון ש:",
+    correct: "שווים באורך וחוצים זה את זה",
+    options: [
+      "שווים באורך וחוצים זה את זה",
+      "תמיד מאונכים זה לזה בזווית 90° זה לזה במרכז בלבד במלבן כללי",
+      "תמיד שונים באורך",
+      "תמיד שווים לצלע",
+    ],
+  },
   // ——— סיבוב ———
   {
-    grades: ["g3"],
+    gradeBand: "mid",
     topics: ["rotation"],
     levels: ["easy", "medium"],
     kind: "concept_rotation",
@@ -550,9 +802,9 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     correct: "90°",
     options: ["90°", "180°", "45°", "360°"],
   },
-  // ——— צורות בסיסיות כיתה א׳ / ד׳ ———
+  // ——— צורות בסיסיות — א׳–ב׳ / ג׳–ד׳ נפרד ———
   {
-    grades: ["g1", "g4"],
+    gradeBand: "early",
     topics: ["shapes_basic"],
     levels: ["easy", "medium"],
     kind: "concept_shape_id",
@@ -565,7 +817,20 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     options: ["4", "3", "5", "6"],
   },
   {
-    grades: ["g1", "g4"],
+    gradeBand: "mid",
+    topics: ["shapes_basic"],
+    levels: ["easy", "medium"],
+    kind: "concept_shape_id",
+    patternFamily: "polygon_sides",
+    subtype: "square_count_mid",
+    conceptTag: "square_4_equal_mid",
+    distractorFamily: "count_confusion",
+    question: "בצורה מרובעת עם כל הצלעות שוות (ריבוע) — כמה צלעות יש?",
+    correct: "4",
+    options: ["4", "3", "5", "6"],
+  },
+  {
+    gradeBand: "early",
     topics: ["shapes_basic"],
     levels: ["easy", "medium"],
     kind: "concept_tf",
@@ -579,7 +844,21 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     options: ["נכון", "לא נכון"],
   },
   {
-    grades: ["g4", "g5", "g6"],
+    gradeBand: "mid",
+    topics: ["shapes_basic"],
+    levels: ["easy", "medium"],
+    kind: "concept_tf",
+    patternFamily: "binary_property",
+    subtype: "rectangle_angles_mid",
+    conceptTag: "rect_all_90_mid",
+    distractorFamily: "polar",
+    binary: true,
+    question: "במלבן במישור, כל ארבע הזוויות הפנימיות ישרות (90°). נכון או לא נכון?",
+    correct: "נכון",
+    options: ["נכון", "לא נכון"],
+  },
+  {
+    gradeBand: "mid",
     topics: ["quadrilaterals", "triangles"],
     levels: ["hard"],
     kind: "concept_tf",
@@ -593,7 +872,21 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     options: ["נכון", "לא נכון"],
   },
   {
-    grades: ["g5", "g6"],
+    gradeBand: "late",
+    topics: ["quadrilaterals", "triangles"],
+    levels: ["hard"],
+    kind: "concept_tf",
+    patternFamily: "binary_property",
+    subtype: "rhombus_rectangle_late",
+    conceptTag: "not_always_both_late",
+    distractorFamily: "polar",
+    binary: true,
+    question: "טענה: כל מעוין הוא בהכרח גם מלבן. נכון או לא נכון?",
+    correct: "לא נכון",
+    options: ["נכון", "לא נכון"],
+  },
+  {
+    gradeBand: "late",
     topics: ["angles", "triangles"],
     levels: ["hard"],
     kind: "concept_tf",
@@ -608,7 +901,7 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
   },
   // ——— טרנספורמציות כיתה א׳–ב׳ ———
   {
-    grades: ["g1", "g2"],
+    gradeBand: "early",
     topics: ["transformations"],
     levels: ["easy", "medium"],
     kind: "concept_transform",
@@ -621,7 +914,7 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
     options: ["הזזה (טרנסלציה)", "שיקוף", "הגדלה", "עיוות"],
   },
   {
-    grades: ["g1", "g2"],
+    gradeBand: "early",
     topics: ["transformations"],
     levels: ["easy", "medium"],
     kind: "concept_transform",
@@ -635,7 +928,7 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
   },
   // ——— כיתה ב׳ שטח מושגי ———
   {
-    grades: ["g2"],
+    gradeBand: "early",
     topics: ["area"],
     levels: ["easy", "medium"],
     kind: "concept_area_intro",
@@ -649,7 +942,7 @@ const GEOMETRY_CONCEPTUAL_ITEMS = [
   },
   // ——— הסקה חלקית ———
   {
-    grades: ["g5", "g6"],
+    gradeBand: "late",
     topics: ["area", "perimeter"],
     levels: ["hard"],
     kind: "concept_partial_info",

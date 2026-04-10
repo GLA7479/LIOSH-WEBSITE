@@ -1518,81 +1518,151 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
 
   // ===== תרגילי מילים (רק חשבון – בלי גאומטריה) =====
   } else if (selectedOp === "word_problems") {
-    // כיתות א' וב' - שאלות פשוטות
+    // בריכות נפרדות לפי כיתה — בלי שיתוף תבניות early ↔ mid ↔ late
+    const templatesEarlyG1 = [
+      "simple_add",
+      "simple_sub",
+      "pocket_money",
+      "time_days",
+      "coins",
+    ];
+    const templatesEarlyG2 = [
+      "simple_add_g2",
+      "simple_sub_g2",
+      "pocket_money_g2",
+      "groups_g2",
+      "time_days",
+      "coins",
+      "division_simple",
+    ];
+    const templatesMidG3 = [
+      "groups",
+      "comparison_more",
+      "part_whole",
+      "change_stack",
+      "time_sum",
+      "leftover",
+    ];
+    const templatesMidG4 = [
+      "groups",
+      "comparison_more",
+      "part_whole_g4",
+      "change_stack_g4",
+      "time_sum",
+      "leftover",
+    ];
+    const templatesLateG5 = [
+      "multi_step",
+      "groups_late",
+      "leftover",
+      "shop_discount",
+      "unit_convert",
+      "distance_time",
+      "time_sum",
+      "average",
+    ];
+    const templatesLateG6 = [
+      "multi_step_g6",
+      "groups_late_g6",
+      "leftover",
+      "shop_discount",
+      "unit_convert",
+      "distance_time",
+      "time_sum",
+      "average",
+    ];
     const templates =
       gradeKey === "g1"
-        ? ["simple_add", "simple_sub", "pocket_money", "time_days", "coins"]
+        ? templatesEarlyG1
         : gradeKey === "g2"
-        ? ["simple_add", "simple_sub", "pocket_money", "groups", "time_days", "coins", "division_simple"]
-        : gradeKey === "g5" || gradeKey === "g6"
-        ? [
-            "multi_step",
-            "groups",
-            "leftover",
-            "shop_discount",
-            "unit_convert",
-            "distance_time",
-            "simple_sub",
-            "pocket_money",
-            "time_sum",
-            "average",
-          ]
-        : gradeKey === "g3" || gradeKey === "g4"
-        ? [
-            "groups",
-            "simple_add",
-            "simple_sub",
-            "pocket_money",
-            "comparison_more",
-            "part_whole",
-            "change_stack",
-            "time_sum",
-            "leftover",
-          ]
-        : ["groups", "simple_add", "simple_sub", "pocket_money"];
+          ? templatesEarlyG2
+          : gradeKey === "g3"
+            ? templatesMidG3
+            : gradeKey === "g4"
+              ? templatesMidG4
+              : gradeKey === "g5"
+                ? templatesLateG5
+                : templatesLateG6;
 
     const t = templates[Math.floor(Math.random() * templates.length)];
 
-    if (t === "simple_add") {
+    if (t === "simple_add" || t === "simple_add_g2") {
       const a = randInt(3, 9);
       const b = randInt(2, 8);
       correctAnswer = a + b;
-      question = `לליאו יש ${a} כדורים והוא מקבל עוד ${b} כדורים. כמה כדורים יש לליאו בסך הכל?`;
+      question =
+        t === "simple_add_g2"
+          ? `בכיתה היו ${a} ילדים והצטרפו עוד ${b}. כמה ילדים יש עכשיו?`
+          : `לליאו יש ${a} כדורים והוא מקבל עוד ${b} כדורים. כמה כדורים יש לליאו בסך הכל?`;
       params = {
-        kind: "wp_simple_add",
+        kind: t === "simple_add_g2" ? "wp_simple_add_g2" : "wp_simple_add",
         semanticFamily: "combine_total",
         a,
         b,
       };
-    } else if (t === "simple_sub") {
+    } else if (t === "simple_sub" || t === "simple_sub_g2") {
       const total = randInt(8, 15);
       const give = randInt(2, total - 3);
       correctAnswer = total - give;
-      question = `לליאו יש ${total} מדבקות. הוא נותן לחבר ${give} מדבקות. כמה מדבקות נשארות לליאו?`;
+      question =
+        t === "simple_sub_g2"
+          ? `בסל יש ${total} תפוחים. ${give} נאכלו. כמה תפוחים נשארו?`
+          : `לליאו יש ${total} מדבקות. הוא נותן לחבר ${give} מדבקות. כמה מדבקות נשארות לליאו?`;
       params = {
-        kind: "wp_simple_sub",
+        kind: t === "simple_sub_g2" ? "wp_simple_sub_g2" : "wp_simple_sub",
         semanticFamily: "takeaway_remaining",
         total,
         give,
       };
-    } else if (t === "pocket_money") {
+    } else if (t === "pocket_money" || t === "pocket_money_g2") {
       const money = randInt(20, 80);
       const toy = randInt(10, money - 5);
       correctAnswer = money - toy;
-      question = `לליאו יש ${money}₪ דמי כיס. הוא קונה משחק ב-${toy}₪. כמה כסף נשאר לו?`;
+      question =
+        t === "pocket_money_g2"
+          ? `לאמה יש ${money}₪. היא קונה חטיף ב-${toy}₪. כמה כסף נשאר?`
+          : `לליאו יש ${money}₪ דמי כיס. הוא קונה משחק ב-${toy}₪. כמה כסף נשאר לו?`;
       params = {
-        kind: "wp_pocket_money",
+        kind: t === "pocket_money_g2" ? "wp_pocket_money_g2" : "wp_pocket_money",
         semanticFamily: "money_remaining",
         money,
         toy,
       };
-    } else if (t === "groups") {
+    } else if (t === "groups_g2") {
+      const per = randInt(3, 7);
+      const groups = randInt(2, 5);
+      correctAnswer = per * groups;
+      question = `בכל שורה יש ${per} כיסאות. יש ${groups} שורות כאלה. כמה כיסאות יש בסך הכל?`;
+      params = {
+        kind: "wp_groups_g2",
+        semanticFamily: "equal_groups",
+        per,
+        groups,
+      };
+    } else if (
+      t === "groups" ||
+      t === "groups_late" ||
+      t === "groups_late_g6"
+    ) {
       const per = randInt(3, 8);
       const groups = randInt(2, 6);
       correctAnswer = per * groups;
-      question = `בכל קופסה יש ${per} עפרונות. יש ${groups} קופסאות כאלה. כמה עפרונות יש בסך הכל?`;
+      let kind = "wp_groups";
+      if (gradeKey === "g3") {
+        question = `בכל קופסה יש ${per} עפרונות. יש ${groups} קופסאות כאלה. כמה עפרונות יש בסך הכל?`;
+        kind = "wp_groups_g3";
+      } else if (gradeKey === "g4") {
+        question = `בכל מדף יש ${per} ספרים. יש ${groups} מדפים כאלה. כמה ספרים יש בסך הכל?`;
+        kind = "wp_groups_g4";
+      } else if (gradeKey === "g6") {
+        question = `בכל מיכל מסודר יש ${per} חלקים. הובאו ${groups} מיכלים. כמה חלקים בסך הכל?`;
+        kind = "wp_groups_late_g6";
+      } else {
+        question = `בכל ארגז אספקה יש ${per} חבילות. הובאו ${groups} ארגזים. כמה חבילות בסך הכל?`;
+        kind = "wp_groups_late";
+      }
       params = {
-        kind: "wp_groups",
+        kind,
         semanticFamily: "equal_groups",
         per,
         groups,
@@ -1610,25 +1680,31 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         small,
         diff,
       };
-    } else if (t === "part_whole") {
+    } else if (t === "part_whole" || t === "part_whole_g4") {
       const whole = randInt(14, 48);
       const partA = randInt(3, whole - 4);
       correctAnswer = whole - partA;
-      question = `בכיתה ${whole} תלמידים. ${partA} מהם בחוג כדורגל והשאר בחוג שחמט. כמה תלמידים בחוג שחמט?`;
+      question =
+        t === "part_whole_g4"
+          ? `באולם ${whole} מקומות. ${partA} תפוסים בהצגה והשאר פנויים. כמה מקומות פנויים?`
+          : `בכיתה ${whole} תלמידים. ${partA} מהם בחוג כדורגל והשאר בחוג שחמט. כמה תלמידים בחוג שחמט?`;
       params = {
-        kind: "wp_part_whole",
+        kind: t === "part_whole_g4" ? "wp_part_whole_g4" : "wp_part_whole",
         semanticFamily: "part_whole_complement",
         whole,
         partA,
       };
-    } else if (t === "change_stack") {
+    } else if (t === "change_stack" || t === "change_stack_g4") {
       const start = randInt(12, 48);
       const gain = randInt(2, 16);
       const loss = randInt(1, Math.min(gain + start - 2, 18));
       correctAnswer = start + gain - loss;
-      question = `בספרייה היו ${start} ספרים. הוסיפו ${gain} ספרים חדשים, והוצאו להשאלה ${loss} ספרים. כמה ספרים נשארו בספרייה עכשיו?`;
+      question =
+        t === "change_stack_g4"
+          ? `במחסן היו ${start} קרטונים. הוסיפו ${gain} קרטונים חדשים, ונשלחו ${loss} לסניף אחר. כמה קרטונים נשארו במחסן?`
+          : `בספרייה היו ${start} ספרים. הוסיפו ${gain} ספרים חדשים, והוצאו להשאלה ${loss} ספרים. כמה ספרים נשארו בספרייה עכשיו?`;
       params = {
-        kind: "wp_change_stack",
+        kind: t === "change_stack_g4" ? "wp_change_stack_g4" : "wp_change_stack",
         semanticFamily: "change_over_time",
         start,
         gain,
@@ -1802,16 +1878,40 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       const s2 = randInt(60, 100);
       const s3 = randInt(60, 100);
       correctAnswer = Math.round((s1 + s2 + s3) / 3);
-      question = `לליאו ציונים ${s1}, ${s2} ו-${s3} בשלושה מבחנים. מה הממוצע שלו (מעוגל למספר שלם)?`;
+      question =
+        gradeKey === "g6"
+          ? `בפרויקט קבוצתי ניתנו ציונים ${s1}, ${s2} ו-${s3} לשלושה שלבים. מה ממוצע הציון (מעוגל למספר שלם)?`
+          : `לליאו ציונים ${s1}, ${s2} ו-${s3} בשלושה מבחנים. מה הממוצע שלו (מעוגל למספר שלם)?`;
       params = {
-        kind: "wp_average",
+        kind: gradeKey === "g6" ? "wp_average_g6" : "wp_average",
         semanticFamily: "mean_scores",
         s1,
         s2,
         s3,
       };
+    } else if (t === "multi_step" || t === "multi_step_g6") {
+      const a = randInt(2, 5);
+      const b = randInt(3, 7);
+      const price = randInt(5, 20);
+      const totalQty = a + b;
+      const totalCost = totalQty * price;
+      const money = randInt(totalCost + 10, totalCost + 50);
+      correctAnswer = money - totalCost;
+      question =
+        t === "multi_step_g6"
+          ? `לתקציב פעילות יש ${money}₪. נרכשו ${a} מחברות ו-${b} מארזי צבעים, וכל פריט עולה ${price}₪. כמה יתרה תישאר אחרי הרכישה?`
+          : `לליאו יש ${money}₪. הוא קונה ${a} עטים ו-${b} עפרונות, וכל פריט עולה ${price}₪. כמה כסף יישאר לו אחרי הקנייה?`;
+      params = {
+        kind: t === "multi_step_g6" ? "wp_multi_step_g6" : "wp_multi_step",
+        semanticFamily: "multi_step_money",
+        a,
+        b,
+        price,
+        totalQty,
+        totalCost,
+        money,
+      };
     } else {
-      // multi_step – בעיה חשבונית רב-שלבית (קנייה+עודף)
       const a = randInt(2, 5);
       const b = randInt(3, 7);
       const price = randInt(5, 20);
