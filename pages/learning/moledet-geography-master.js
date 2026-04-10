@@ -49,6 +49,7 @@ import {
   getStreakReward,
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
+import { getQuestionFontStyle } from "../../utils/learning-question-font";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -271,6 +272,8 @@ export default function MoledetGeographyMaster() {
 
   // הסבר מפורט לשאלה
   const [showSolution, setShowSolution] = useState(false);
+  const [showPreviousSolution, setShowPreviousSolution] = useState(false);
+  const [previousExplanationQuestion, setPreviousExplanationQuestion] = useState(null);
   const [animationStep, setAnimationStep] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
   
@@ -769,6 +772,9 @@ useEffect(() => {
     setTotalQuestions(0);
     setAvgTime(0);
     setQuestionStartTime(null);
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
   }
 
   function generateNewQuestion() {
@@ -891,6 +897,9 @@ useEffect(() => {
     // מעקב זמן - סיום שאלה קודמת (אם יש)
     trackCurrentQuestionTime();
 
+    if (currentQuestion) {
+      setPreviousExplanationQuestion(currentQuestion);
+    }
     moledetTrackingTopicKeyRef.current =
       question.topic || question.operation || "mixed";
     setCurrentQuestion(question);
@@ -900,6 +909,7 @@ useEffect(() => {
     setShowHint(false);
     setHintUsed(false);
     setShowSolution(false);
+    setShowPreviousSolution(false);
     setErrorExplanation("");
     setIsVerticalDisplay(false); // איפוס למצב מאוזן בכל שאלה חדשה
     // איפוס עיגולים שעברו כשמשנים שאלה
@@ -968,6 +978,8 @@ useEffect(() => {
     setShowBadge(null);
     setShowLevelUp(false);
     setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
     setErrorExplanation("");
 
     // הגדרת טיימר לפי מצב
@@ -995,6 +1007,9 @@ useEffect(() => {
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
     saveRunToStorage();
   }
 
@@ -1430,11 +1445,10 @@ useEffect(() => {
         setTimeout(() => {
           generateNewQuestion();
           setSelectedAnswer(null);
-    solvedCountRef.current += 1;
           setFeedback(null);
           setTimeLeft(null);
         }, 2000);
-      } else {
+      } else if (mode === "challenge") {
         // מצב Challenge – עובדים עם חיים
         setFeedback(
           `לא נכון 😔 התשובה: \u2066${currentQuestion.correctAnswer}\u2069 ❌ (-1 ❤️)`
@@ -1466,9 +1480,35 @@ useEffect(() => {
 
           return nextLives;
         });
+      } else {
+        // speed / marathon / practice stay active on wrong answers
+        setFeedback(`לא נכון 😔 התשובה הנכונה: \u2066${currentQuestion.correctAnswer}\u2069 ✅`);
+        setTimeout(() => {
+          generateNewQuestion();
+          setSelectedAnswer(null);
+          setFeedback(null);
+          if (mode === "speed") setTimeLeft(10);
+          else setTimeLeft(null);
+        }, 1600);
       }
     }
   }
+
+  const isShowingAnySolution = showSolution || showPreviousSolution;
+  const explanationQuestion = showPreviousSolution
+    ? previousExplanationQuestion
+    : currentQuestion;
+
+  const closeExplanationModal = () => {
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+  };
+
+  const openPreviousExplanation = () => {
+    if (!previousExplanationQuestion) return;
+    setShowSolution(false);
+    setShowPreviousSolution(true);
+  };
 
   function resetStats() {
     setScore(0);
@@ -2396,35 +2436,48 @@ useEffect(() => {
                 </div>
               )}
 
-              {feedback && (
-                <div
-                  className={`mb-2 px-4 py-2 rounded-lg text-sm font-semibold text-center transition-all duration-300 ${
-                    showCorrectAnimation
-                      ? "bg-emerald-500/40 text-emerald-100 scale-110 shadow-lg shadow-emerald-500/50"
-                      : showWrongAnimation
-                      ? "bg-red-500/40 text-red-100 scale-105 shadow-lg shadow-red-500/50"
-                      : feedback.includes("נכון") ||
-                        feedback.includes("∞") ||
-                        feedback.includes("Start")
-                      ? "bg-emerald-500/20 text-emerald-200"
-                      : "bg-red-500/20 text-red-200"
-                  }`}
-                >
-                  <div className="text-lg">{feedback}</div>
-                  {errorExplanation && (
-                    <div className="mt-1 text-xs text-red-100/90 font-normal">
-                      {errorExplanation}
-                    </div>
-                  )}
-                </div>
-              )}
-
               {currentQuestion && (
                 <div
                   ref={gameRef}
-                  className="w-full max-w-lg flex flex-col items-center justify-center mb-2 flex-1"
+                  className="relative w-full max-w-lg flex flex-col items-center justify-start mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
+                  {(feedback || (showHint && hintText) || errorExplanation) && (
+                    <div className="absolute top-0 left-0 right-0 z-[5] px-2 pt-1 pointer-events-none">
+                      <div className="flex flex-col gap-2">
+                        {feedback && (
+                          <div
+                            className={`px-4 py-2 rounded-lg text-sm font-semibold text-center ${
+                              showCorrectAnimation
+                                ? "bg-emerald-500/40 text-emerald-100 shadow-lg shadow-emerald-500/50"
+                                : showWrongAnimation
+                                ? "bg-red-500/40 text-red-100 shadow-lg shadow-red-500/50"
+                                : feedback.includes("נכון")
+                                ? "bg-emerald-500/20 text-emerald-200"
+                                : "bg-red-500/20 text-red-200"
+                            }`}
+                          >
+                            <div className="text-base">{feedback}</div>
+                          </div>
+                        )}
+                        {showHint && hintText && (
+                          <div className="px-4 py-3 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100/95 text-sm text-right leading-relaxed">
+                            {hintText}
+                          </div>
+                        )}
+                        {errorExplanation && (
+                          <div className="px-4 py-3 rounded-lg bg-[#060b16]/98 border border-rose-200/70 shadow-xl backdrop-blur-sm text-sm text-right leading-relaxed text-rose-50">
+                            <div className="text-xs font-semibold text-rose-100 mb-1.5 tracking-tight">
+                              למה הטעות קרתה?
+                            </div>
+                            <div className="text-rose-50/95">{errorExplanation}</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2">
                   {/* ויזואליזציה של מספרים (כיתות א'-ג') */}
                   {(grade === "g1" || grade === "g2" || grade === "g3") && (currentQuestion.operation === "addition" || currentQuestion.operation === "subtraction") && (
                     <div className="mb-4 flex gap-6 items-center justify-center flex-wrap" style={{ direction: "ltr" }}>
@@ -2599,6 +2652,9 @@ useEffect(() => {
                           unicodeBidi: "plaintext",
                           wordBreak: "break-word",
                           overflowWrap: "break-word",
+                          ...getQuestionFontStyle({
+                            text: currentQuestion.questionLabel || "",
+                          }),
                         }}
                       >
                         {currentQuestion.questionLabel}
@@ -2642,6 +2698,9 @@ useEffect(() => {
                             unicodeBidi: "plaintext",
                             wordBreak: "break-word",
                             overflowWrap: "break-word",
+                            ...getQuestionFontStyle({
+                              text: currentQuestion.exerciseText || "",
+                            }),
                           }}
                         >
                           {currentQuestion.exerciseText}
@@ -2686,6 +2745,9 @@ useEffect(() => {
                             unicodeBidi: "plaintext",
                             wordBreak: "break-word",
                             overflowWrap: "break-word",
+                            ...getQuestionFontStyle({
+                              text: currentQuestion.exerciseText || "",
+                            }),
                           }}
                         >
                           {currentQuestion.exerciseText}
@@ -2700,13 +2762,17 @@ useEffect(() => {
                         unicodeBidi: "plaintext",
                         wordBreak: "break-word",
                         overflowWrap: "break-word",
+                        ...getQuestionFontStyle({
+                          text: currentQuestion.question || "",
+                        }),
                       }}
                     >
                       {currentQuestion.question}
                     </div>
                   )}
-                  
+                  </div>
 
+                  <div className="w-full flex-1 min-h-0 mt-2 flex flex-col items-center justify-end">
                   <div className="grid grid-cols-2 gap-3 w-full mb-3">
                     {currentQuestion.answers.map((answer, idx) => {
                       const isSelected = selectedAnswer === answer;
@@ -2735,46 +2801,55 @@ useEffect(() => {
                     })}
                   </div>
 
-                  {/* רמז + הסבר + למה טעיתי */}
                   {currentQuestion && (
-                    <div className="mt-3 flex flex-col gap-2 w-full">
-                      {/* כפתורי רמז/הסבר */}
-                      <div className="flex gap-2 justify-center flex-wrap" dir="rtl">
-                        {mode === "learning" && (
+                    <div className="w-full flex justify-center gap-2 flex-wrap mb-2 min-h-[2.75rem]" dir="rtl">
+                        {mode === "learning" && currentQuestion && (
                           <button
-                            onClick={() => setShowSolution((prev) => !prev)}
+                            type="button"
+                            onClick={() => setShowSolution(true)}
                             className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/80 hover:bg-emerald-500 text-white"
                           >
-                            📖 הסבר צעד־אחר־צעד
+                            📘 הסבר מלא
                           </button>
                         )}
                         <button
-                          onClick={() => setShowHint((prev) => !prev)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white"
+                          type="button"
+                          onClick={() => {
+                            if (hintUsed || selectedAnswer) return;
+                            setShowHint(true);
+                            setHintUsed(true);
+                          }}
+                          disabled={hintUsed || !!selectedAnswer}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/80 hover:bg-blue-500 text-white ${
+                            hintUsed || selectedAnswer ? "opacity-60 cursor-not-allowed" : ""
+                          }`}
                         >
                           💡 רמז
                         </button>
+                        {(mode === "learning" || mode === "practice") &&
+                          previousExplanationQuestion && (
+                            <button
+                              type="button"
+                              onClick={openPreviousExplanation}
+                              className="px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/80 hover:bg-cyan-500 text-white"
+                            >
+                              🕘 תרגיל קודם
+                            </button>
+                          )}
+                  </div>
+                  )}
                   </div>
 
-
-                      {/* תיבת רמז */}
-                      {showHint && hintText && (
-                        <div className="w-full max-w-lg mx-auto bg-blue-500/10 border border-blue-400/50 rounded-lg p-2 text-right">
-                          <div className="text-[11px] text-blue-300 mb-1">רמז</div>
-                          <div className="text-xs text-blue-100 leading-relaxed">{hintText}</div>
-                        </div>
-                      )}
-
-                      {/* חלון הסבר מלא - Modal גדול ומרכזי - רק במצב למידה */}
-                      {mode === "learning" && showSolution && currentQuestion && (() => {
+                      {/* חלון הסבר מלא - Modal גדול ומרכזי */}
+                      {isShowingAnySolution && explanationQuestion && (() => {
                         // עבור שאלות טקסטואליות - נציג הסבר פשוט
-                        const info = stepExplanation;
+                        const info = buildStepExplanation(explanationQuestion);
                         if (!info) return null;
                         
                         return (
                             <div
                               className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
-                              onClick={() => setShowSolution(false)}
+                              onClick={closeExplanationModal}
                             >
                               <div
                                 className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl w-[390px] h-[450px] shadow-2xl flex flex-col"
@@ -2784,10 +2859,12 @@ useEffect(() => {
                                 {/* כותרת - קבועה */}
                                 <div className="flex items-center justify-between p-4 pb-2 flex-shrink-0">
                                   <h3 className="text-lg font-bold text-emerald-100" dir="rtl">
-                                    {"\u200Fאיך פותרים את התרגיל?"}
+                                    {showPreviousSolution
+                                      ? "פתרון התרגיל הקודם"
+                                      : "\u200Fאיך פותרים את התרגיל?"}
                                   </h3>
                                   <button
-                                    onClick={() => setShowSolution(false)}
+                                    onClick={closeExplanationModal}
                                     className="text-emerald-200 hover:text-white text-xl leading-none px-2"
                                   >
                                     ✖
@@ -2805,7 +2882,9 @@ useEffect(() => {
                                       overflowWrap: "break-word",
                                     }}
                                   >
-                                    {info.exercise || currentQuestion.exerciseText || currentQuestion.question}
+                                    {info.exercise ||
+                                      explanationQuestion.exerciseText ||
+                                      explanationQuestion.question}
                                   </div>
                                   {info.vertical && (
                                     <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2">
@@ -2829,7 +2908,7 @@ useEffect(() => {
                                 {/* כפתורים - קבועים בתחתית */}
                                 <div className="p-4 pt-2 flex justify-center flex-shrink-0 border-t border-emerald-400/20">
                                   <button
-                                    onClick={() => setShowSolution(false)}
+                                    onClick={closeExplanationModal}
                                     className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
                                   >
                                     סגור
@@ -2839,18 +2918,6 @@ useEffect(() => {
                             </div>
                           );
                       })()}
-
-                      {/* למה טעיתי? – רק אחרי טעות */}
-                      {errorExplanation && (
-                        <div className="w-full max-w-lg mx-auto bg-rose-500/10 border border-rose-400/50 rounded-lg p-2 text-right">
-                          <div className="text-[11px] text-rose-300 mb-1">למה הטעות קרתה?</div>
-                          <div className="text-xs text-rose-100 leading-relaxed">
-                            {errorExplanation}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
               )}
 
