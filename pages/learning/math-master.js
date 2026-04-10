@@ -408,33 +408,34 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     return null;
   };
   
+  const isShowingAnySolution = showSolution || showPreviousSolution;
+  const explanationQuestion =
+    showPreviousSolution && previousExplanationQuestion
+      ? previousExplanationQuestion
+      : currentQuestion;
+
   // Memoize explanation to avoid recalculating on every render
   const stepExplanation = useMemo(
-    () => showSolution && currentQuestion ? buildStepExplanation(currentQuestion) : null,
-    [showSolution, currentQuestion]
-  );
-
-  const previousStepExplanation = useMemo(
     () =>
-      showPreviousSolution && previousExplanationQuestion
-        ? buildStepExplanation(previousExplanationQuestion)
+      isShowingAnySolution && explanationQuestion
+        ? buildStepExplanation(explanationQuestion)
         : null,
-    [showPreviousSolution, previousExplanationQuestion]
+    [isShowingAnySolution, explanationQuestion]
   );
 
   // בניית צעדי אנימציה
   const animationSteps = useMemo(() => {
-    if (!showSolution || !currentQuestion) return null;
+    if (!isShowingAnySolution || !explanationQuestion) return null;
     
-    const p = currentQuestion.params || {};
-    const op = currentQuestion.operation;
+    const p = explanationQuestion.params || {};
+    const op = explanationQuestion.operation;
     let effectiveOp = op;
-    let top = p.a ?? currentQuestion.a;
-    let bottom = p.b ?? currentQuestion.b;
+    let top = p.a ?? explanationQuestion.a;
+    let bottom = p.b ?? explanationQuestion.b;
     
-    const answer = currentQuestion.correctAnswer !== undefined
-      ? currentQuestion.correctAnswer
-      : currentQuestion.answer;
+    const answer = explanationQuestion.correctAnswer !== undefined
+      ? explanationQuestion.correctAnswer
+      : explanationQuestion.answer;
     
     // טיפול כללי בתרגילי השלמה
     const missingConversion = convertMissingNumberEquation(op, p.kind, p);
@@ -456,15 +457,15 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     }
     
     // שאר הנושאים - אנימציה כללית (רק אם זה לא חיבור/חיסור)
-    const built = buildAnimationForOperation(currentQuestion, op, grade);
+    const built = buildAnimationForOperation(explanationQuestion, op, grade);
     if (built && Array.isArray(built) && built.length > 0) return built;
 
     // Fallback: אם אין אנימציה מובנית לנושא - עדיין נותנים "צעדים" עם ניווט,
     // על בסיס getSolutionSteps (React nodes) כדי שכל הנושאים יעבדו כמו בכפל.
     try {
       const fallbackSteps = getSolutionSteps(
-        currentQuestion,
-        currentQuestion.params?.op || op,
+        explanationQuestion,
+        explanationQuestion.params?.op || op,
         grade
       );
       if (fallbackSteps && Array.isArray(fallbackSteps) && fallbackSteps.length > 0) {
@@ -477,11 +478,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       }
 
       // fallback נוסף אם אין params/אין צעדים מפורטים: לפחות שיהיה תמיד הסבר בסיסי עם ניווט
-      const qText = currentQuestion.exerciseText || currentQuestion.question || "";
+      const qText = explanationQuestion.exerciseText || explanationQuestion.question || "";
       const ansText =
-        currentQuestion.correctAnswer !== undefined
-          ? String(currentQuestion.correctAnswer)
-          : (currentQuestion.answer !== undefined ? String(currentQuestion.answer) : "");
+        explanationQuestion.correctAnswer !== undefined
+          ? String(explanationQuestion.correctAnswer)
+          : (explanationQuestion.answer !== undefined ? String(explanationQuestion.answer) : "");
       return [
         {
           id: "fallback-basic-1",
@@ -495,13 +496,13 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           ),
           text: "",
         },
-        { id: "fallback-basic-2", title: "שלב 2: איך ניגשים?", content: <span>{getHint(currentQuestion, currentQuestion.params?.op || op, grade) || "נפתור לפי הכללים של הנושא."}</span>, text: "" },
+        { id: "fallback-basic-2", title: "שלב 2: איך ניגשים?", content: <span>{getHint(explanationQuestion, explanationQuestion.params?.op || op, grade) || "נפתור לפי הכללים של הנושא."}</span>, text: "" },
         { id: "fallback-basic-3", title: "שלב 3: התשובה", content: ansText ? <span>התשובה היא: {ansText}</span> : <span>נבדוק את התשובה.</span>, text: "" },
       ];
     } catch {}
 
     return null;
-  }, [showSolution, currentQuestion, grade]);
+  }, [isShowingAnySolution, explanationQuestion, grade]);
 
   // אנימציה אוטומטית - עם ניקוי תקין של timeouts
   useEffect(() => {
@@ -509,7 +510,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     animationTimeoutsRef.current.forEach(clearTimeout);
     animationTimeoutsRef.current = [];
     
-    if (!showSolution || !autoPlay || !animationSteps) return;
+    if (!isShowingAnySolution || !autoPlay || !animationSteps) return;
     if (animationStep >= animationSteps.length - 1) return;
 
     const id = setTimeout(() => {
@@ -522,7 +523,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       animationTimeoutsRef.current.forEach(clearTimeout);
       animationTimeoutsRef.current = [];
     };
-  }, [showSolution, autoPlay, animationStep, animationSteps]);
+  }, [isShowingAnySolution, autoPlay, animationStep, animationSteps]);
 
   // איפוס צעד האנימציה כשפותחים את המודל או כשהשאלה משתנה
   useEffect(() => {
@@ -530,13 +531,13 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     animationTimeoutsRef.current.forEach(clearTimeout);
     animationTimeoutsRef.current = [];
     
-    if (showSolution && animationSteps && animationSteps.length > 0) {
+    if (isShowingAnySolution && animationSteps && animationSteps.length > 0) {
       setAnimationStep(0);
       setAutoPlay(true);
-    } else if (showSolution && (!animationSteps || animationSteps.length === 0)) {
+    } else if (isShowingAnySolution && (!animationSteps || animationSteps.length === 0)) {
       // אם אין אנימציה, נאפס את הצעד
       setAnimationStep(0);
-    } else if (!showSolution) {
+    } else if (!isShowingAnySolution) {
       // כשסוגרים את המודל - ניקוי מלא
       setAnimationStep(0);
       setAutoPlay(true);
@@ -547,7 +548,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       animationTimeoutsRef.current.forEach(clearTimeout);
       animationTimeoutsRef.current = [];
     };
-  }, [showSolution, animationSteps, currentQuestion]);
+  }, [isShowingAnySolution, animationSteps, explanationQuestion]);
 
   useEffect(() => {
     refreshMonthlyProgress();
@@ -1017,6 +1018,16 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setPreviousExplanationQuestion(null);
   }
 
+  function closeExplanationModal() {
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+  }
+
+  function openPreviousExplanation() {
+    setShowSolution(false);
+    setShowPreviousSolution(true);
+  }
+
   const accumulateQuestionTime = useCallback(() => {
     if (!questionStartTime) return;
     const elapsed = Date.now() - questionStartTime;
@@ -1114,7 +1125,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           setQuestionStartTime(Date.now());
           setShowHint(false);
           setHintUsed(false);
-          setShowSolution(false);
+          closeExplanationModal();
           setErrorExplanation("");
           setIsVerticalDisplay(false);
           setMovedCirclesA(0);
@@ -1243,7 +1254,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setQuestionStartTime(Date.now());
     setShowHint(false);
     setHintUsed(false);
-    setShowSolution(false);
+    closeExplanationModal();
     setErrorExplanation("");
     setIsVerticalDisplay(false); // איפוס למצב מאוזן בכל שאלה חדשה
     // איפוס עיגולים שעברו כשמשנים שאלה
@@ -1345,7 +1356,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     // Start background music and play game start sound
     sound.playBackgroundMusic();
     sound.playSound("game-start");
-    setShowSolution(false);
+    closeExplanationModal();
     setErrorExplanation("");
 
     if (focusedPracticeModeRef.current === "mistakes") {
@@ -3675,28 +3686,28 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           <button
                             type="button"
                             onClick={() => setShowSolution((prev) => !prev)}
-                            className={learningExplainOpenBtn}
+                            className={`${learningExplainOpenBtn} bg-indigo-500/80 hover:bg-indigo-500 border-indigo-300/40`}
                           >
-                            📖 הסבר צעד־אחר־צעד
+                            📖 צעד-צעד
                           </button>
                         )}
+                        <button
+                          type="button"
+                          onClick={() => setShowHint((prev) => !prev)}
+                          className={`${learningHintTriggerBtn} bg-amber-500/80 hover:bg-amber-500 border-amber-300/40 text-white`}
+                        >
+                          💡 רמז
+                        </button>
                         {(mode === "learning" || mode === "practice") &&
                           previousExplanationQuestion && (
                             <button
                               type="button"
-                              onClick={() => setShowPreviousSolution(true)}
-                              className={learningExplainOpenBtn}
+                              onClick={openPreviousExplanation}
+                              className={`${learningExplainOpenBtn} bg-cyan-500/80 hover:bg-cyan-500 border-cyan-300/40`}
                             >
-                              🕘 הסבר לתרגיל הקודם
+                              🕘 תרגיל קודם
                             </button>
                           )}
-                        <button
-                          type="button"
-                          onClick={() => setShowHint((prev) => !prev)}
-                          className={learningHintTriggerBtn}
-                        >
-                          💡 רמז
-                        </button>
                   </div>
 
                   {/* כפתור חיבור לטבלת כפל/חילוק – רק במצב למידה */}
@@ -3742,13 +3753,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           </div>
                         )}
 
-                      {/* חלון הסבר מלא - Modal גדול ומרכזי - רק במצב למידה */}
-                      {mode === "learning" && showSolution && currentQuestion && (() => {
-                        const p = currentQuestion.params || {};
-                        const op = currentQuestion.operation;
+                      {/* חלון הסבר מלא - Modal גדול ומרכזי - למידה/תרגול קודם */}
+                      {(((mode === "learning" && showSolution && currentQuestion) ||
+                        ((mode === "learning" || mode === "practice") &&
+                          showPreviousSolution &&
+                          previousExplanationQuestion)) &&
+                        explanationQuestion) && (() => {
+                        const p = explanationQuestion.params || {};
+                        const op = explanationQuestion.operation;
                         let effectiveOp = op;
-                        let aEff = p.a ?? currentQuestion.a;
-                        let bEff = p.b ?? currentQuestion.b;
+                        let aEff = p.a ?? explanationQuestion.a;
+                        let bEff = p.b ?? explanationQuestion.b;
                         
                         // טיפול כללי בתרגילי השלמה
                         const missingConversion = convertMissingNumberEquation(op, p.kind, p);
@@ -3763,9 +3778,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           bEff = Math.abs(bEff);
                         }
                         
-                        const answer = currentQuestion.correctAnswer !== undefined
-                          ? currentQuestion.correctAnswer
-                          : currentQuestion.answer;
+                        const answer = explanationQuestion.correctAnswer !== undefined
+                          ? explanationQuestion.correctAnswer
+                          : explanationQuestion.answer;
                         
                         // בדיקה אם יש תצוגה מאונכת - חיבור, חיסור, כפל, חילוק, עשרוניים
                         const hasAnimation = (effectiveOp === "addition" || effectiveOp === "subtraction" || 
@@ -3782,7 +3797,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           return (
                             <div
                               className={learningModalOverlay}
-                              onClick={() => setShowSolution(false)}
+                              onClick={closeExplanationModal}
                             >
                               <div
                                 className={learningModalPanel}
@@ -3791,7 +3806,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                 <div className={learningModalHeader}>
                                   <button
                                     type="button"
-                                    onClick={() => setShowSolution(false)}
+                                    onClick={closeExplanationModal}
                                     className={learningModalCloseBtn}
                                     aria-label="סגור"
                                   >
@@ -3814,7 +3829,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                         overflowWrap: "break-word",
                                       }}
                                     >
-                                      {info.exercise || currentQuestion.exerciseText || currentQuestion.question}
+                                      {info.exercise || explanationQuestion.exerciseText || explanationQuestion.question}
                                     </div>
                                   </div>
                                   {info.vertical && (
@@ -3843,7 +3858,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                   <div className="flex justify-center">
                                     <button
                                       type="button"
-                                      onClick={() => setShowSolution(false)}
+                                      onClick={closeExplanationModal}
                                       className={learningPrimaryCloseBtn}
                                     >
                                       סגור
@@ -3998,7 +4013,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                             return (
                               <div
                                 className={learningModalOverlay}
-                                onClick={() => setShowSolution(false)}
+                                onClick={closeExplanationModal}
                                 dir="rtl"
                               >
                                 <div
@@ -4009,7 +4024,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                   <div className={learningModalHeader}>
                                     <button
                                       type="button"
-                                      onClick={() => setShowSolution(false)}
+                                      onClick={closeExplanationModal}
                                       className={learningModalCloseBtn}
                                       aria-label="סגור"
                                     >
@@ -4189,7 +4204,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           return (
                             <div
                               className={learningModalOverlay}
-                              onClick={() => setShowSolution(false)}
+                              onClick={closeExplanationModal}
                               dir="rtl"
                             >
                               <div
@@ -4200,7 +4215,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                 <div className={learningModalHeader}>
                                   <button
                                     type="button"
-                                    onClick={() => setShowSolution(false)}
+                                    onClick={closeExplanationModal}
                                     className={learningModalCloseBtn}
                                     aria-label="סגור"
                                   >
@@ -4408,7 +4423,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                         return (
                           <div
                             className={learningModalOverlay}
-                            onClick={() => setShowSolution(false)}
+                            onClick={closeExplanationModal}
                             dir="rtl"
                           >
                             <div
@@ -4419,7 +4434,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                               <div className={learningModalHeader}>
                                 <button
                                   type="button"
-                                  onClick={() => setShowSolution(false)}
+                                  onClick={closeExplanationModal}
                                   className={learningModalCloseBtn}
                                   aria-label="סגור"
                                 >
@@ -4439,7 +4454,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                     className={`${learningQuestionText} mb-0`}
                                     style={{ unicodeBidi: "plaintext" }}
                                   >
-                                    {currentQuestion.exerciseText || currentQuestion.question}
+                                    {explanationQuestion.exerciseText || explanationQuestion.question}
                                   </div>
                                 </div>
                                 
@@ -4529,94 +4544,6 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           </div>
                         );
                       })()}
-
-                      {/* חלון הסבר לתרגיל הקודם - במצבי למידה/תרגול */}
-                      {showPreviousSolution &&
-                        previousExplanationQuestion &&
-                        (() => {
-                          const info = previousStepExplanation;
-                          if (!info) return null;
-
-                          return (
-                            <div
-                              className={learningModalOverlay}
-                              onClick={() => setShowPreviousSolution(false)}
-                            >
-                              <div
-                                className={learningModalPanel}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <div className={learningModalHeader}>
-                                  <button
-                                    type="button"
-                                    onClick={() => setShowPreviousSolution(false)}
-                                    className={learningModalCloseBtn}
-                                    aria-label="סגור"
-                                  >
-                                    ✖
-                                  </button>
-                                  <h3 className={learningModalTitle} dir="rtl">
-                                    {"\u200Fאיך פתרנו את התרגיל הקודם?"}
-                                  </h3>
-                                  <span className="w-10 shrink-0" aria-hidden />
-                                </div>
-
-                                <div
-                                  className="flex-1 overflow-y-auto px-4 pb-2 min-h-0"
-                                  dir="rtl"
-                                >
-                                  <div className={`mb-3 ${learningQuestionBox}`} dir="ltr">
-                                    <div
-                                      className={`${learningQuestionText} text-center`}
-                                      style={{
-                                        direction: "ltr",
-                                        unicodeBidi: "plaintext",
-                                        wordBreak: "break-word",
-                                        overflowWrap: "break-word",
-                                      }}
-                                    >
-                                      {info.exercise ||
-                                        previousExplanationQuestion.exerciseText ||
-                                        previousExplanationQuestion.question}
-                                    </div>
-                                  </div>
-                                  {info.vertical && (
-                                    <div className="mb-3 rounded-lg bg-emerald-900/50 border border-emerald-500/15 px-3 py-2">
-                                      <pre
-                                        dir="ltr"
-                                        className="text-center font-mono text-base leading-relaxed whitespace-pre text-emerald-100"
-                                      >
-                                        {info.vertical}
-                                      </pre>
-                                    </div>
-                                  )}
-                                  <div
-                                    className="space-y-2"
-                                    style={{ direction: "rtl", unicodeBidi: "plaintext" }}
-                                  >
-                                    {info.steps.map((step, idx) => (
-                                      <div key={idx} className={learningExplBody}>
-                                        {step}
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-
-                                <div className={learningModalFooter}>
-                                  <div className="flex justify-center">
-                                    <button
-                                      type="button"
-                                      onClick={() => setShowPreviousSolution(false)}
-                                      className={learningPrimaryCloseBtn}
-                                    >
-                                      סגור
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })()}
                     </div>
                   )}
                   </div>
