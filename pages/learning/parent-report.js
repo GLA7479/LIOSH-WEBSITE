@@ -563,27 +563,29 @@ export default function ParentReport() {
               <div className="hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
-                    <col style={{ width: "18%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "15%" }} />
+                    <col style={{ width: "7%" }} />
+                    <col style={{ width: "7%" }} />
                     <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "11%" }} />
                     <col style={{ width: "12%" }} />
+                    <col style={{ width: "8%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
                   </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-2 whitespace-nowrap">פעולה</th>
-                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
-                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
-                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
-                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
-                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
-                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
-                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
-                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                      <th className="text-right py-1.5 px-0.5 whitespace-nowrap">פעולה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">רמה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">כיתה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">מצב</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">תאריך אחרון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">זמן</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">שאלות</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">נכון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">דיוק</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">סטטוס</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -591,37 +593,40 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([op, data]) => (
                         <tr key={op} className="border-b border-white/10">
-                          <td className="px-2 py-2 whitespace-nowrap">
-                            <span className="inline-block">
+                          <td className="text-right align-top py-1.5 px-1 min-w-0">
+                            <span className="text-right break-words">
                               {data.displayName || getOperationName(data.bucketKey ?? op)}
                             </span>
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.level || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.grade || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.mode ?? "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
+                            {data.lastSessionAt ?? "לא זמין"}
+                          </td>
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.timeMinutes} דק'
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.questions}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-emerald-400 text-[11px] md:text-sm whitespace-nowrap">
                             {data.correct}
                           </td>
-                          <td className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                          <td className={`py-1.5 px-0.5 text-center font-bold text-[11px] md:text-sm whitespace-nowrap ${
                             data.accuracy >= 90 ? "text-emerald-400" :
                             data.accuracy >= 70 ? "text-yellow-400" :
                             "text-red-400"
                           }`}>
                             {data.accuracy}%
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
                             {data.excellent ? (
                               <span className="text-emerald-400">✅</span>
                             ) : data.needsPractice ? (
@@ -651,6 +656,10 @@ export default function ParentReport() {
                         </div>
                         <div>
                           <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">תאריך אחרון:</span>{" "}
+                          <span className="text-white/90">{data.lastSessionAt ?? "לא זמין"}</span>
                         </div>
                         <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
@@ -691,27 +700,29 @@ export default function ParentReport() {
               <div className="hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
-                    <col style={{ width: "18%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "15%" }} />
+                    <col style={{ width: "7%" }} />
+                    <col style={{ width: "7%" }} />
                     <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "11%" }} />
                     <col style={{ width: "12%" }} />
+                    <col style={{ width: "8%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
                   </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-2 whitespace-nowrap">נושא</th>
-                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
-                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
-                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
-                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
-                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
-                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
-                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
-                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                      <th className="text-right py-1.5 px-0.5 whitespace-nowrap">נושא</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">רמה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">כיתה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">מצב</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">תאריך אחרון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">זמן</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">שאלות</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">נכון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">דיוק</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">סטטוס</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -719,37 +730,40 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([topic, data]) => (
                         <tr key={topic} className="border-b border-white/10">
-                          <td className="px-2 py-2 whitespace-nowrap">
-                            <span className="inline-block">
+                          <td className="text-right align-top py-1.5 px-1 min-w-0">
+                            <span className="text-right break-words">
                               {data.displayName || getTopicName(data.bucketKey ?? topic)}
                             </span>
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.level || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.grade || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.mode ?? "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
+                            {data.lastSessionAt ?? "לא זמין"}
+                          </td>
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.timeMinutes} דק'
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.questions}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-emerald-400 text-[11px] md:text-sm whitespace-nowrap">
                             {data.correct}
                           </td>
-                          <td className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                          <td className={`py-1.5 px-0.5 text-center font-bold text-[11px] md:text-sm whitespace-nowrap ${
                             data.accuracy >= 90 ? "text-emerald-400" :
                             data.accuracy >= 70 ? "text-yellow-400" :
                             "text-red-400"
                           }`}>
                             {data.accuracy}%
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
                             {data.excellent ? (
                               <span className="text-emerald-400">✅</span>
                             ) : data.needsPractice ? (
@@ -779,6 +793,10 @@ export default function ParentReport() {
                         </div>
                         <div>
                           <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">תאריך אחרון:</span>{" "}
+                          <span className="text-white/90">{data.lastSessionAt ?? "לא זמין"}</span>
                         </div>
                         <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
@@ -820,27 +838,29 @@ export default function ParentReport() {
               <div className="hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
-                    <col style={{ width: "18%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "15%" }} />
+                    <col style={{ width: "7%" }} />
+                    <col style={{ width: "7%" }} />
                     <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "11%" }} />
                     <col style={{ width: "12%" }} />
+                    <col style={{ width: "8%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
                   </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-2 whitespace-nowrap">נושא</th>
-                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
-                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
-                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
-                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
-                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
-                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
-                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
-                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                      <th className="text-right py-1.5 px-0.5 whitespace-nowrap">נושא</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">רמה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">כיתה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">מצב</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">תאריך אחרון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">זמן</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">שאלות</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">נכון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">דיוק</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">סטטוס</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -848,37 +868,40 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([topic, data]) => (
                         <tr key={topic} className="border-b border-white/10">
-                          <td className="px-2 py-2 whitespace-nowrap">
-                            <span className="inline-block">
+                          <td className="text-right align-top py-1.5 px-1 min-w-0">
+                            <span className="text-right break-words">
                               {data.displayName || getEnglishTopicName(data.bucketKey ?? topic)}
                             </span>
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.level || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.grade || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.mode ?? "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
+                            {data.lastSessionAt ?? "לא זמין"}
+                          </td>
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.timeMinutes} דק'
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.questions}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-emerald-400 text-[11px] md:text-sm whitespace-nowrap">
                             {data.correct}
                           </td>
-                          <td className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                          <td className={`py-1.5 px-0.5 text-center font-bold text-[11px] md:text-sm whitespace-nowrap ${
                             data.accuracy >= 90 ? "text-emerald-400" :
                             data.accuracy >= 70 ? "text-yellow-400" :
                             "text-red-400"
                           }`}>
                             {data.accuracy}%
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
                             {data.excellent ? (
                               <span className="text-emerald-400">✅</span>
                             ) : data.needsPractice ? (
@@ -908,6 +931,10 @@ export default function ParentReport() {
                         </div>
                         <div>
                           <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">תאריך אחרון:</span>{" "}
+                          <span className="text-white/90">{data.lastSessionAt ?? "לא זמין"}</span>
                         </div>
                         <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
@@ -949,27 +976,29 @@ export default function ParentReport() {
               <div className="hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
-                    <col style={{ width: "18%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "15%" }} />
+                    <col style={{ width: "7%" }} />
+                    <col style={{ width: "7%" }} />
                     <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "11%" }} />
                     <col style={{ width: "12%" }} />
+                    <col style={{ width: "8%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
                   </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-2 whitespace-nowrap">נושא</th>
-                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
-                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
-                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
-                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
-                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
-                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
-                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
-                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                      <th className="text-right py-1.5 px-0.5 whitespace-nowrap">נושא</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">רמה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">כיתה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">מצב</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">תאריך אחרון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">זמן</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">שאלות</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">נכון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">דיוק</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">סטטוס</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -977,31 +1006,34 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([topic, data]) => (
                         <tr key={topic} className="border-b border-white/10">
-                          <td className="px-2 py-2 whitespace-nowrap">
-                            <span className="inline-block">
+                          <td className="text-right align-top py-1.5 px-1 min-w-0">
+                            <span className="text-right break-words">
                               {data.displayName || getScienceTopicName(data.bucketKey ?? topic)}
                             </span>
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.level || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.grade || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.mode ?? "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
+                            {data.lastSessionAt ?? "לא זמין"}
+                          </td>
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.timeMinutes} דק'
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.questions}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-emerald-400 text-[11px] md:text-sm whitespace-nowrap">
                             {data.correct}
                           </td>
                           <td
-                            className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                            className={`py-1.5 px-0.5 text-center font-bold text-[11px] md:text-sm whitespace-nowrap ${
                               data.accuracy >= 90
                                 ? "text-emerald-400"
                                 : data.accuracy >= 70
@@ -1011,7 +1043,7 @@ export default function ParentReport() {
                           >
                             {data.accuracy}%
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
                             {data.excellent ? (
                               <span className="text-emerald-400">✅</span>
                             ) : data.needsPractice ? (
@@ -1041,6 +1073,10 @@ export default function ParentReport() {
                         </div>
                         <div>
                           <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">תאריך אחרון:</span>{" "}
+                          <span className="text-white/90">{data.lastSessionAt ?? "לא זמין"}</span>
                         </div>
                         <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
@@ -1082,27 +1118,29 @@ export default function ParentReport() {
               <div className="hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
-                    <col style={{ width: "18%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "15%" }} />
+                    <col style={{ width: "7%" }} />
+                    <col style={{ width: "7%" }} />
                     <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "11%" }} />
                     <col style={{ width: "12%" }} />
+                    <col style={{ width: "8%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
                   </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-2 whitespace-nowrap">נושא</th>
-                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
-                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
-                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
-                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
-                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
-                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
-                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
-                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                      <th className="text-right py-1.5 px-0.5 whitespace-nowrap">נושא</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">רמה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">כיתה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">מצב</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">תאריך אחרון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">זמן</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">שאלות</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">נכון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">דיוק</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">סטטוס</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1110,31 +1148,34 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([topic, data]) => (
                         <tr key={topic} className="border-b border-white/10">
-                          <td className="px-2 py-2 whitespace-nowrap">
-                            <span className="inline-block">
+                          <td className="text-right align-top py-1.5 px-1 min-w-0">
+                            <span className="text-right break-words">
                               {data.displayName || getHebrewTopicName(data.bucketKey ?? topic)}
                             </span>
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.level || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.grade || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.mode ?? "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
+                            {data.lastSessionAt ?? "לא זמין"}
+                          </td>
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.timeMinutes} דק'
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.questions}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-emerald-400 text-[11px] md:text-sm whitespace-nowrap">
                             {data.correct}
                           </td>
                           <td
-                            className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                            className={`py-1.5 px-0.5 text-center font-bold text-[11px] md:text-sm whitespace-nowrap ${
                               data.accuracy >= 90
                                 ? "text-emerald-400"
                                 : data.accuracy >= 70
@@ -1144,7 +1185,7 @@ export default function ParentReport() {
                           >
                             {data.accuracy}%
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
                             {data.excellent ? (
                               <span className="text-emerald-400">✅</span>
                             ) : data.needsPractice ? (
@@ -1174,6 +1215,10 @@ export default function ParentReport() {
                         </div>
                         <div>
                           <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">תאריך אחרון:</span>{" "}
+                          <span className="text-white/90">{data.lastSessionAt ?? "לא זמין"}</span>
                         </div>
                         <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>
@@ -1215,27 +1260,29 @@ export default function ParentReport() {
               <div className="hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm">
                   <colgroup>
-                    <col style={{ width: "18%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "9%" }} />
-                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "15%" }} />
+                    <col style={{ width: "7%" }} />
+                    <col style={{ width: "7%" }} />
                     <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "10%" }} />
-                    <col style={{ width: "11%" }} />
                     <col style={{ width: "12%" }} />
+                    <col style={{ width: "8%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "11%" }} />
+                    <col style={{ width: "10%" }} />
                   </colgroup>
                   <thead>
                     <tr className="border-b border-white/20">
-                      <th className="text-right py-2 px-2 whitespace-nowrap">נושא</th>
-                      <th className="text-center py-2 px-1 md:px-2">רמה</th>
-                      <th className="text-center py-2 px-1 md:px-2">כיתה</th>
-                      <th className="text-center py-2 px-1 md:px-2">מצב</th>
-                      <th className="text-center py-2 px-1 md:px-2">זמן</th>
-                      <th className="text-center py-2 px-1 md:px-2">שאלות</th>
-                      <th className="text-center py-2 px-1 md:px-2">נכון</th>
-                      <th className="text-center py-2 px-1 md:px-2">דיוק</th>
-                      <th className="text-center py-2 px-1 md:px-2">סטטוס</th>
+                      <th className="text-right py-1.5 px-0.5 whitespace-nowrap">נושא</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">רמה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">כיתה</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">מצב</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">תאריך אחרון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">זמן</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">שאלות</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">נכון</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">דיוק</th>
+                      <th className="text-center py-1.5 px-0.5 whitespace-nowrap">סטטוס</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1243,31 +1290,34 @@ export default function ParentReport() {
                       .sort(([_, a], [__, b]) => b.questions - a.questions)
                       .map(([topic, data]) => (
                         <tr key={topic} className="border-b border-white/10">
-                          <td className="px-2 py-2 whitespace-nowrap">
-                            <span className="inline-block">
+                          <td className="text-right align-top py-1.5 px-1 min-w-0">
+                            <span className="text-right break-words">
                               {data.displayName || getMoledetGeographyTopicName(data.bucketKey ?? topic)}
                             </span>
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.level || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.grade || "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.mode ?? "לא זמין"}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
+                            {data.lastSessionAt ?? "לא זמין"}
+                          </td>
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.timeMinutes} דק'
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-white/80 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
                             {data.questions}
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-emerald-400 text-[11px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-emerald-400 text-[11px] md:text-sm whitespace-nowrap">
                             {data.correct}
                           </td>
                           <td
-                            className={`py-2 px-1 md:px-2 text-center font-bold text-[11px] md:text-sm ${
+                            className={`py-1.5 px-0.5 text-center font-bold text-[11px] md:text-sm whitespace-nowrap ${
                               data.accuracy >= 90
                                 ? "text-emerald-400"
                                 : data.accuracy >= 70
@@ -1277,7 +1327,7 @@ export default function ParentReport() {
                           >
                             {data.accuracy}%
                           </td>
-                          <td className="py-2 px-1 md:px-2 text-center text-[10px] md:text-sm">
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
                             {data.excellent ? (
                               <span className="text-emerald-400">✅</span>
                             ) : data.needsPractice ? (
@@ -1307,6 +1357,10 @@ export default function ParentReport() {
                         </div>
                         <div>
                           <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/60">תאריך אחרון:</span>{" "}
+                          <span className="text-white/90">{data.lastSessionAt ?? "לא זמין"}</span>
                         </div>
                         <div>
                           <span className="text-white/60">זמן:</span> <span className="text-white/90">{data.timeMinutes} דק'</span>

@@ -50,6 +50,30 @@ function sessionInRange(session, startMs, endMs) {
   return t >= startMs && t <= endMs;
 }
 
+/** Latest session timestamp in a row's sessions (for תאריך אחרון). */
+function latestSessionMs(sessions) {
+  let max = null;
+  if (!Array.isArray(sessions)) return max;
+  for (const s of sessions) {
+    const t = parseSessionTime(s);
+    if (!Number.isFinite(t)) continue;
+    if (max === null || t > max) max = t;
+  }
+  return max;
+}
+
+/** DD/MM/YYYY HH:mm (local), matches report date style + time when available. */
+function formatLastSessionAt(ms) {
+  if (!Number.isFinite(ms)) return "לא זמין";
+  const d = new Date(ms);
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mi = String(d.getMinutes()).padStart(2, "0");
+  return `${dd}/${mm}/${yyyy} ${hh}:${mi}`;
+}
+
 /** Ensure sessions is always an array (never drop keys due to wrong shape). */
 function normalizeSessionsArray(sessions) {
   if (Array.isArray(sessions)) return sessions;
@@ -232,9 +256,12 @@ function buildRowSummary({
   const excellent = accuracy >= 90 && questions >= 10;
   const topicOpLabel = displayNameFn(bucketKey);
   const modeStr = modeLabel(modeKey);
+  const lastMs = latestSessionMs(sessions);
+  const lastSessionAt = formatLastSessionAt(lastMs);
   const base = {
     subject,
     bucketKey,
+    lastSessionAt,
     questions,
     correct,
     wrong: questions - correct,
