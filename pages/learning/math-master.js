@@ -3639,7 +3639,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   {currentQuestion && (
                     <div className="mt-2 flex flex-col gap-2 w-full">
                       {/* כפתורי רמז/הסבר */}
-                      <div className="flex gap-2 justify-center flex-wrap w-full max-w-full" dir="rtl">
+                      <div className="-mt-6 flex gap-2 justify-center flex-wrap w-full max-w-full" dir="rtl">
                         {mode === "learning" && (
                           <button
                             type="button"
