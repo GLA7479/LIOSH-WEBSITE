@@ -2214,7 +2214,7 @@ function recordSessionProgress() {
 
           {/* SETUP / GAME */}
           {!gameActive ? (
-            <div className="flex flex-col flex-1 min-h-0 min-w-0 w-full max-w-md items-center self-stretch">
+            <div className="flex flex-col flex-1 min-h-0 min-w-0 w-full max-w-md items-center justify-start">
               <div
                 className="flex flex-nowrap shrink-0 items-center gap-1.5 sm:gap-2 mb-2.5 w-full max-w-md min-w-0 px-1 py-0.5 overflow-x-auto pb-1.5 [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
                 dir="rtl"
@@ -2487,9 +2487,7 @@ function recordSessionProgress() {
                 )}
               </div>
 
-              <div className="flex-1 min-h-[36px] w-full shrink-0" aria-hidden />
-
-              <div className="w-full border-t border-white/10 pt-6 mt-4 flex flex-col items-center gap-2">
+              <div className="mt-auto mb-2 w-full pt-4 flex flex-col items-center gap-2">
               <div className="flex items-center justify-center gap-1.5 w-full max-w-md flex-wrap px-1">
                 <button
                   onClick={startGame}
