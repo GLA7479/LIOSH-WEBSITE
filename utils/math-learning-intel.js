@@ -81,12 +81,13 @@ export function getMathOperationInsights(opStats) {
 export function mathQuestionFingerprint(q) {
   if (!q || !q.operation) return "";
   const kind = q.params?.kind ?? "";
+  const sem = q.params?.semanticFamily ?? "";
   const ca = String(q.correctAnswer ?? "");
   const p = { ...(q.params || {}) };
   delete p.answers;
   const keys = Object.keys(p).sort();
   const sig = keys.map((k) => `${k}:${JSON.stringify(p[k])}`).join("|");
-  return `${q.operation}|${kind}|${ca}|${sig}`;
+  return `${q.operation}|${kind}|${sem}|${ca}|${sig}`;
 }
 
 export function newMathMistakeId() {

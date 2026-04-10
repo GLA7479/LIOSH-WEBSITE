@@ -82,12 +82,25 @@ export function geometryQuestionFingerprint(q) {
   if (!q || q.params?.kind === "no_question") return "";
   const topic = q.topic ?? "";
   const kind = q.params?.kind ?? "";
+  const patternFamily = q.params?.patternFamily ?? "";
+  const conceptTag = q.params?.conceptTag ?? "";
+  const subtype = q.params?.subtype ?? "";
   const ca = q.correctAnswer;
   const p = { ...(q.params || {}) };
   delete p.kind;
   const keys = Object.keys(p).sort();
   const paramSig = keys.map((k) => `${k}:${JSON.stringify(p[k])}`).join("|");
-  return `${topic}|${kind}|${ca}|${paramSig}`;
+  return `${topic}|${kind}|${patternFamily}|${conceptTag}|${subtype}|${ca}|${paramSig}`;
+}
+
+/** מפתח נוסף נגד חזרה על אותה תבנית קונספטואלית */
+export function geometryConceptLineageKey(q) {
+  if (!q) return "";
+  const topic = q.topic ?? "";
+  const pf = q.params?.patternFamily ?? "";
+  const ct = q.params?.conceptTag ?? "";
+  const st = q.params?.subtype ?? "";
+  return `${topic}|${pf}|${ct}|${st}`;
 }
 
 export function newGeometryMistakeId() {

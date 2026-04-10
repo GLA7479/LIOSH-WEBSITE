@@ -1,0 +1,670 @@
+/**
+ * שאלות גיאומטריה קונספטואליות — הסקה, השוואה, סיווג, בלבול שטח/היקף, רב-שלבי מושגי.
+ * תשובות טקסט; בינאריות = 2 אופציות בלבד.
+ */
+
+function shuffleOptions(correct, options) {
+  const arr = [...new Set(options.map((s) => String(s).trim()))].filter(Boolean);
+  if (!arr.includes(correct)) arr.push(correct);
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return { answers: arr, correctAnswer: correct };
+}
+
+/**
+ * @param {{ gradeKey: string, levelKey: string, topic: string }} ctx
+ * @returns {null | { question: string, correctAnswer: string, answers: string[], params: object }}
+ */
+export function pickGeometryConceptualQuestion(ctx) {
+  const { gradeKey, levelKey, topic } = ctx;
+  const g = gradeKey || "g3";
+  const lv = levelKey || "easy";
+  const candidates = GEOMETRY_CONCEPTUAL_ITEMS.filter((row) => {
+    if (!row.topics.includes(topic)) return false;
+    if (!row.grades.includes(g)) return false;
+    if (row.levels && !row.levels.includes(lv)) return false;
+    return true;
+  });
+  if (candidates.length === 0) return null;
+  const row = candidates[Math.floor(Math.random() * candidates.length)];
+  const correct = String(row.correct).trim();
+  let answers;
+  let params = {
+    kind: row.kind || "conceptual_mcq",
+    patternFamily: row.patternFamily,
+    subtype: row.subtype,
+    conceptTag: row.conceptTag,
+    distractorFamily: row.distractorFamily || "conceptual",
+    answerMode: row.binary ? "binary" : "mcq_text",
+  };
+
+  if (row.binary) {
+    const opts = row.options.length === 2 ? row.options : [correct, row.options.find((x) => x !== correct)];
+    const sh = shuffleOptions(correct, opts);
+    answers = sh.answers;
+    params.optionCount = 2;
+  } else {
+    const sh = shuffleOptions(correct, row.options);
+    answers = sh.answers;
+    params.optionCount = answers.length;
+  }
+
+  return {
+    question: row.question,
+    correctAnswer: correct,
+    answers,
+    params,
+  };
+}
+
+/** הסתברות לנסות בנק קונספטואלי לפני נוסחתית */
+export function geometryConceptualProbability(gradeKey, topic) {
+  const p = {
+    g1: { shapes_basic: 0.35, transformations: 0.35, default: 0 },
+    g2: { area: 0.45, solids: 0.4, transformations: 0.3, default: 0.25 },
+    g3: {
+      area: 0.58,
+      perimeter: 0.58,
+      angles: 0.52,
+      triangles: 0.45,
+      quadrilaterals: 0.45,
+      parallel_perpendicular: 0.4,
+      rotation: 0.35,
+      default: 0.4,
+    },
+    g4: {
+      area: 0.6,
+      perimeter: 0.6,
+      volume: 0.45,
+      shapes_basic: 0.45,
+      symmetry: 0.45,
+      diagonal: 0.4,
+      default: 0.42,
+    },
+    g5: {
+      area: 0.62,
+      perimeter: 0.55,
+      volume: 0.48,
+      heights: 0.45,
+      tiling: 0.5,
+      quadrilaterals: 0.45,
+      default: 0.45,
+    },
+    g6: {
+      area: 0.55,
+      perimeter: 0.55,
+      volume: 0.48,
+      circles: 0.5,
+      angles: 0.48,
+      pythagoras: 0.42,
+      solids: 0.45,
+      default: 0.48,
+    },
+  };
+  const map = p[gradeKey] || p.g4;
+  return map[topic] ?? map.default ?? 0.45;
+}
+
+const GEOMETRY_CONCEPTUAL_ITEMS = [
+  // ——— שטח / היקף — בלבול מדדים והבנה ———
+  {
+    grades: ["g3", "g4", "g5", "g6"],
+    topics: ["area", "perimeter"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_measure_interpret",
+    patternFamily: "perimeter_vs_area",
+    subtype: "choose_measure",
+    conceptTag: "pv_area",
+    distractorFamily: "measure_confusion",
+    question:
+      "יש ריבוע עם צלע 5 ס״מ. אם שואלים 'כמה נייר צריך לכסות את כל הפנים', איזה מושג מחפשים?",
+    correct: "שטח",
+    options: ["שטח", "היקף", "נפח", "אורך אלכסון בלבד"],
+  },
+  {
+    grades: ["g3", "g4", "g5", "g6"],
+    topics: ["area", "perimeter"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_measure_interpret",
+    patternFamily: "perimeter_vs_area",
+    subtype: "fence",
+    conceptTag: "pv_perimeter",
+    distractorFamily: "measure_confusion",
+    question:
+      "רוצים גדר סביב מגרש מלבני (רק סביב הגבול החיצוני). מה בדרך כלל מחשבים כדי לדעת כמה חומר גדר לקנות?",
+    correct: "היקף",
+    options: ["היקף", "שטח", "נפח", "זווית פנימית"],
+  },
+  {
+    grades: ["g4", "g5", "g6"],
+    topics: ["area"],
+    levels: ["medium", "hard"],
+    kind: "concept_multi_step_plan",
+    patternFamily: "plan_then_compute",
+    subtype: "area_rectangle",
+    conceptTag: "plan_area_rect",
+    distractorFamily: "wrong_formula_family",
+    question:
+      "מלבן באורך 8 מ׳ וברוחב 3 מ׳. מה השלב הנכון הראשון כדי למצוא את שטח הרצפה?",
+    correct: "להכפיל אורך ברוחב",
+    options: [
+      "להכפיל אורך ברוחב",
+      "לחבר את כל הצלעות (כמו היקף)",
+      "להכפיל אורך ב־4",
+      "לחלק אורך ב־2 בלבד",
+    ],
+  },
+  {
+    grades: ["g5", "g6"],
+    topics: ["area", "perimeter"],
+    levels: ["hard"],
+    kind: "concept_compare_shapes",
+    patternFamily: "shape_comparison",
+    subtype: "same_perimeter",
+    conceptTag: "compare_area",
+    distractorFamily: "comparison_trap",
+    question:
+      "שני מלבנים שונים עם אותו היקף. מה נכון לגבי השטח שלהם?",
+    correct: "השטחים יכולים להיות שונים",
+    options: [
+      "השטחים יכולים להיות שונים",
+      "השטחים תמיד שווים",
+      "תמיד למלבן הגבוה יותר יש שטח גדול יותר בלי קשר לרוחב",
+      "ההיקף קובע את השטח בצורה חד־משמעית",
+    ],
+  },
+  // ——— זוויות והסקה ———
+  {
+    grades: ["g3", "g4", "g5", "g6"],
+    topics: ["angles"],
+    levels: ["easy", "medium"],
+    kind: "concept_angle_reason",
+    patternFamily: "triangle_angle_sum",
+    subtype: "inference",
+    conceptTag: "tri_sum_180",
+    distractorFamily: "angle_misconception",
+    question:
+      "במשולש ידועות שתי זוויות: 50° ו־60°. מה אפשר להסיק על הזווית השלישית בלי לחשב עדיין את המספר?",
+    correct: "סכום שלוש הזוויות במשולש הוא 180°",
+    options: [
+      "סכום שלוש הזוויות במשולש הוא 180°",
+      "הזווית השלישית תמיד 90°",
+      "סכום הזוויות במשולש הוא 360°",
+      "אין מספיק מידע בלי לדעת אורכי צלעות",
+    ],
+  },
+  {
+    grades: ["g4", "g5", "g6"],
+    topics: ["angles"],
+    levels: ["medium", "hard"],
+    kind: "concept_angle_reason",
+    patternFamily: "right_angle",
+    subtype: "classification",
+    conceptTag: "right_90",
+    distractorFamily: "angle_type",
+    question: "זווית ישרה היא בערך:",
+    correct: "90°",
+    options: ["90°", "180°", "45°", "360°"],
+  },
+  {
+    grades: ["g5", "g6"],
+    topics: ["angles"],
+    levels: ["hard"],
+    kind: "concept_angle_reason",
+    patternFamily: "parallel_lines",
+    subtype: "concept_only",
+    conceptTag: "corresponding",
+    distractorFamily: "parallel_confusion",
+    question:
+      "שני ישרים מקבילים חותכים על ידי קו חוצה. זוג זוויות מתאימות (באותו מיקום יחסי) — מה הקשר ביניהן?",
+    correct: "שוות בגודל",
+    options: ["שוות בגודל", "תמיד משלימות ל־180° זו עם זו", "תמיד סכומן 90°", "אין קשר קבוע"],
+  },
+  // ——— סיווג צורות ———
+  {
+    grades: ["g3", "g4", "g5"],
+    topics: ["triangles"],
+    levels: ["easy", "medium"],
+    kind: "concept_classify",
+    patternFamily: "triangle_by_sides",
+    subtype: "equal_sides",
+    conceptTag: "equilateral",
+    distractorFamily: "class_mislabel",
+    question: "משולש שבו כל שלוש הצלעות שוות — איך נקרא?",
+    correct: "משולש שווה צלעות",
+    options: [
+      "משולש שווה צלעות",
+      "משולש שווה שוקיים",
+      "משולש ישר זווית תמיד",
+      "ריבוע",
+    ],
+  },
+  {
+    grades: ["g3", "g5"],
+    topics: ["quadrilaterals"],
+    levels: ["easy", "medium"],
+    kind: "concept_classify",
+    patternFamily: "quadrilateral_props",
+    subtype: "parallelogram",
+    conceptTag: "para_parallel",
+    distractorFamily: "shape_family",
+    question:
+      "במקבילית, כל זוג צלעות נגדיות:",
+    correct: "מקבילות ושוות באורך",
+    options: [
+      "מקבילות ושוות באורך",
+      "תמיד מאונכות",
+      "תמיד באותו אורך כמו האלכסונים",
+      "יוצרות זווית ישרה בכל חיבור",
+    ],
+  },
+  {
+    grades: ["g4", "g5", "g6"],
+    topics: ["quadrilaterals"],
+    levels: ["medium", "hard"],
+    kind: "concept_classify",
+    patternFamily: "hierarchy",
+    subtype: "square_rectangle",
+    conceptTag: "square_special",
+    distractorFamily: "hierarchy_confusion",
+    question: "כל ריבוע הוא גם:",
+    correct: "מלבן",
+    options: ["מלבן", "טרפז בלבד", "מעגל", "משולש"],
+  },
+  // ——— סימטרייה / חפיפה ———
+  {
+    grades: ["g4", "g5", "g6"],
+    topics: ["symmetry"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_symmetry",
+    patternFamily: "reflection",
+    subtype: "meaning",
+    conceptTag: "mirror",
+    distractorFamily: "transform_confusion",
+    question: "שיקוף מול ציר סימטרייה דומה בעיקר ל:",
+    correct: "תמונה במראה",
+    options: ["תמונה במראה", "סיבוב סביב מרכז", "הזזה בלי סיבוב", "הגדלת הצורה"],
+  },
+  {
+    grades: ["g5", "g6"],
+    topics: ["symmetry", "transformations"],
+    levels: ["medium", "hard"],
+    kind: "concept_congruence",
+    patternFamily: "congruence",
+    subtype: "same_size_shape",
+    conceptTag: "congruent_def",
+    distractorFamily: "congruence_vs_similar",
+    question: "שתי צורות חופפות אומרות ש:",
+    correct: "אותו צורה ואותו גודל (אפשר להניח אחת על השנייה)",
+    options: [
+      "אותו צורה ואותו גודל (אפשר להניח אחת על השנייה)",
+      "רק אותו שטח אבל צורה שונה",
+      "רק אותו היקף",
+      "רק זוויות שוות בלי קשר לצלעות",
+    ],
+  },
+  // ——— מקבילים / מאונכים ———
+  {
+    grades: ["g3", "g5"],
+    topics: ["parallel_perpendicular"],
+    levels: ["easy", "medium"],
+    kind: "concept_lines",
+    patternFamily: "parallel_perpendicular",
+    subtype: "definition",
+    conceptTag: "perp_meeting",
+    distractorFamily: "line_relation",
+    question: "שני קווים מאונכים זה לזה — מה נכון?",
+    correct: "הם נפגשים בזווית של 90°",
+    options: [
+      "הם נפגשים בזווית של 90°",
+      "הם לעולם לא נפגשים",
+      "הם תמיד באותו אורך",
+      "הם תמיד מקבילים",
+    ],
+  },
+  {
+    grades: ["g3", "g5"],
+    topics: ["parallel_perpendicular"],
+    levels: ["easy", "medium"],
+    kind: "concept_lines",
+    patternFamily: "parallel_perpendicular",
+    subtype: "parallel_def",
+    conceptTag: "parallel_never_meet",
+    distractorFamily: "line_relation",
+    question: "שני קווים מקבילים באותו מישור — מה תכונה נכונה?",
+    correct: "אין להם נקודת חיתוך (נשארים באותו מרחק)",
+    options: [
+      "אין להם נקודת חיתוך (נשארים באותו מרחק)",
+      "הם חייבים להיפגש בנקודה אחת",
+      "הם תמיד מאונכים",
+      "הם תמיד שווים באורך",
+    ],
+  },
+  // ——— נפח והבנה ———
+  {
+    grades: ["g4", "g5", "g6"],
+    topics: ["volume"],
+    levels: ["easy", "medium"],
+    kind: "concept_volume_meaning",
+    patternFamily: "volume_space",
+    subtype: "definition",
+    conceptTag: "volume_3d",
+    distractorFamily: "dimension_confusion",
+    question: "נפח של תיבה מבטא בעיקר:",
+    correct: "כמה מקום תפוס בתוך התיבה (שלושה ממדים)",
+    options: [
+      "כמה מקום תפוס בתוך התיבה (שלושה ממדים)",
+      "אורך הקצה הארוך ביותר בלבד",
+      "שטח של פאה אחת בלבד",
+      "היקף הבסיס בלבד",
+    ],
+  },
+  {
+    grades: ["g5", "g6"],
+    topics: ["volume"],
+    levels: ["medium", "hard"],
+    kind: "concept_multi_step_plan",
+    patternFamily: "volume_prism_plan",
+    subtype: "order_ops",
+    conceptTag: "vol_box",
+    distractorFamily: "formula_order",
+    question:
+      "תיבה מלבנית: קודם כל רוצים את הנפח. מה סדר חישוב סביר?",
+    correct: "אורך × רוחב × גובה",
+    options: [
+      "אורך × רוחב × גובה",
+      "אורך + רוחב + גובה",
+      "(אורך + רוחב) × 2",
+      "אורך × גובה בלבד בלי רוחב",
+    ],
+  },
+  // ——— מעגל ———
+  {
+    grades: ["g6"],
+    topics: ["circles"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_circle",
+    patternFamily: "radius_diameter",
+    subtype: "relation",
+    conceptTag: "d_2r",
+    distractorFamily: "circle_terms",
+    question: "במעגל, הקשר בין קוטר לרדיוס הוא:",
+    correct: "הקוטר פי 2 מהרדיוס",
+    options: [
+      "הקוטר פי 2 מהרדיוס",
+      "הרדיוס פי 2 מהקוטר",
+      "הם תמיד שווים",
+      "אין קשר קבוע",
+    ],
+  },
+  {
+    grades: ["g6"],
+    topics: ["circles", "area", "perimeter"],
+    levels: ["medium", "hard"],
+    kind: "concept_circle",
+    patternFamily: "circumference_vs_area",
+    subtype: "interpret",
+    conceptTag: "wheel_rotation",
+    distractorFamily: "circle_measure_confusion",
+    question:
+      "כמה מטרים עובר גלגל אופניים במסלול מעגלי אחד מלא — זה קשור בעיקר ל:",
+    correct: "היקף (היקף המעגל)",
+    options: ["היקף (היקף המעגל)", "שטח העיגול", "נפח הצמיג", "רדיוס בלבד בלי כפל"],
+  },
+  // ——— פיתגורס מושגי ———
+  {
+    grades: ["g6"],
+    topics: ["pythagoras"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_pythagoras",
+    patternFamily: "right_triangle_identify",
+    subtype: "hypotenuse_side",
+    conceptTag: "hyp_opposite_right",
+    distractorFamily: "pythagoras_misconception",
+    question: "במשולש ישר זווית, היתר הוא:",
+    correct: "הצלע שמול זווית הישר",
+    options: [
+      "הצלע שמול זווית הישר",
+      "הצלע הקצרה ביותר תמיד",
+      "כל צלע שלא נבחרה",
+      "הצלע שליד זווית הישר תמיד",
+    ],
+  },
+  {
+    grades: ["g6"],
+    topics: ["pythagoras"],
+    levels: ["medium", "hard"],
+    kind: "concept_multi_step_plan",
+    patternFamily: "pythagoras_plan",
+    subtype: "first_step",
+    conceptTag: "when_pyth",
+    distractorFamily: "strategy_error",
+    question:
+      "במשולש ישר זווית ידועים שני ניצבים ורוצים את היתר. מה הכלי המתאים?",
+    correct: "משפט פיתגורס (סכום ריבועי ניצבים = ריבוע היתר)",
+    options: [
+      "משפט פיתגורס (סכום ריבועי ניצבים = ריבוע היתר)",
+      "סכום ישר של שלוש הצלעות",
+      "שטח משולש (חצי בסיס כפול גובה) בלבד",
+      "היקף המשולש בלבד",
+    ],
+  },
+  // ——— גופים / כיתה ב׳ ו׳ ———
+  {
+    grades: ["g2", "g6"],
+    topics: ["solids"],
+    levels: ["easy", "medium"],
+    kind: "concept_solids",
+    patternFamily: "solid_faces",
+    subtype: "cube",
+    conceptTag: "cube_faces",
+    distractorFamily: "solid_confusion",
+    question: "לקובייה יש בדרך כלל כמה פאות מרובעות?",
+    correct: "6",
+    options: ["6", "4", "8", "12"],
+  },
+  {
+    grades: ["g2", "g6"],
+    topics: ["solids"],
+    levels: ["easy", "medium"],
+    kind: "concept_solids",
+    patternFamily: "prism_vs_pyramid",
+    subtype: "compare",
+    conceptTag: "apex",
+    distractorFamily: "solid_confusion",
+    question: "מה נכון לגבי פירמידה לעומת מנסרה עם אותו בסיס?",
+    correct: "לפירמידה יש קודקוד אחד; למנסרה שתי בסיסים מקבילים דומים",
+    options: [
+      "לפירמידה יש קודקוד אחד; למנסרה שתי בסיסים מקבילים דומים",
+      "שתיהן חייבות להיות עגולות",
+      "אין הבדל בין פירמידה למנסרה",
+      "למנסרה תמיד אין פאות",
+    ],
+  },
+  // ——— ריצוף ———
+  {
+    grades: ["g5"],
+    topics: ["tiling"],
+    levels: ["easy", "medium", "hard"],
+    kind: "concept_tiling",
+    patternFamily: "regular_tiling",
+    subtype: "angles_around_point",
+    conceptTag: "360_at_vertex",
+    distractorFamily: "tiling_angle",
+    question:
+      "בריצוף במישור סביב כל נקודת מפגש של צורות משוכללות, סכום הזוויות סביב הנקודה הוא:",
+    correct: "360°",
+    options: ["360°", "180°", "90°", "תלוי רק בצבע הריצוף"],
+  },
+  // ——— גבהים ———
+  {
+    grades: ["g5"],
+    topics: ["heights"],
+    levels: ["medium", "hard"],
+    kind: "concept_height",
+    patternFamily: "height_definition",
+    subtype: "triangle",
+    conceptTag: "perpendicular_to_base",
+    distractorFamily: "height_confusion",
+    question: "גובה במשולש (ביחס לבסיס נתון) הוא:",
+    correct: "קטע מאונך מהקודקוד הנגדי לבסיס (או להארכתו)",
+    options: [
+      "קטע מאונך מהקודקוד הנגדי לבסיס (או להארכתו)",
+      "תמיד אחת מצלעות המשולש",
+      "האלכסון של המשולש",
+      "הממוצע של שלוש הצלעות",
+    ],
+  },
+  // ——— אלכסון ———
+  {
+    grades: ["g4", "g5"],
+    topics: ["diagonal"],
+    levels: ["medium", "hard"],
+    kind: "concept_diagonal",
+    patternFamily: "rectangle_diagonal",
+    subtype: "property",
+    conceptTag: "diag_equal_rect",
+    distractorFamily: "diagonal_confusion",
+    question: "במלבן, שני האלכסונים:",
+    correct: "שווים באורך וחוצים זה את זה",
+    options: [
+      "שווים באורך וחוצים זה את זה",
+      "תמיד מאונכים זה לזה בזווית 90° זה לזה במרכז בלבד במלבן כללי",
+      "תמיד שונים באורך",
+      "תמיד שווים לצלע",
+    ],
+  },
+  // ——— סיבוב ———
+  {
+    grades: ["g3"],
+    topics: ["rotation"],
+    levels: ["easy", "medium"],
+    kind: "concept_rotation",
+    patternFamily: "quarter_turn",
+    subtype: "degrees",
+    conceptTag: "quarter_90",
+    distractorFamily: "rotation_confusion",
+    question: "סיבוב של רבע סיבוב מלא סביב מרכז נקרא לרוב:",
+    correct: "90°",
+    options: ["90°", "180°", "45°", "360°"],
+  },
+  // ——— צורות בסיסיות כיתה א׳ / ד׳ ———
+  {
+    grades: ["g1", "g4"],
+    topics: ["shapes_basic"],
+    levels: ["easy", "medium"],
+    kind: "concept_shape_id",
+    patternFamily: "polygon_sides",
+    subtype: "square_count",
+    conceptTag: "square_4_equal",
+    distractorFamily: "count_confusion",
+    question: "לריבוע יש כמה צלעות?",
+    correct: "4",
+    options: ["4", "3", "5", "6"],
+  },
+  {
+    grades: ["g1", "g4"],
+    topics: ["shapes_basic"],
+    levels: ["easy", "medium"],
+    kind: "concept_tf",
+    patternFamily: "binary_property",
+    subtype: "rectangle_angles",
+    conceptTag: "rect_all_90",
+    distractorFamily: "polar",
+    binary: true,
+    question: "במלבן כל ארבע הזוויות הפנימיות ישרות (90°). נכון או לא נכון?",
+    correct: "נכון",
+    options: ["נכון", "לא נכון"],
+  },
+  {
+    grades: ["g4", "g5", "g6"],
+    topics: ["quadrilaterals", "triangles"],
+    levels: ["hard"],
+    kind: "concept_tf",
+    patternFamily: "binary_property",
+    subtype: "rhombus_rectangle",
+    conceptTag: "not_always_both",
+    distractorFamily: "polar",
+    binary: true,
+    question: "כל מעוין הוא תמיד גם מלבן. נכון או לא נכון?",
+    correct: "לא נכון",
+    options: ["נכון", "לא נכון"],
+  },
+  {
+    grades: ["g5", "g6"],
+    topics: ["angles", "triangles"],
+    levels: ["hard"],
+    kind: "concept_tf",
+    patternFamily: "binary_property",
+    subtype: "obtuse_count",
+    conceptTag: "one_obtuse_max",
+    distractorFamily: "polar",
+    binary: true,
+    question: "במשולש יכולות להיות שתי זוויות כהות (גדולות מ־90°). נכון או לא נכון?",
+    correct: "לא נכון",
+    options: ["נכון", "לא נכון"],
+  },
+  // ——— טרנספורמציות כיתה א׳–ב׳ ———
+  {
+    grades: ["g1", "g2"],
+    topics: ["transformations"],
+    levels: ["easy", "medium"],
+    kind: "concept_transform",
+    patternFamily: "slide_vs_flip",
+    subtype: "translation",
+    conceptTag: "slide",
+    distractorFamily: "transform_confusion",
+    question: "הזזה של צורה בלי לסובב וללא שינוי גודל נקראת לרוב:",
+    correct: "הזזה (טרנסלציה)",
+    options: ["הזזה (טרנסלציה)", "שיקוף", "הגדלה", "עיוות"],
+  },
+  {
+    grades: ["g1", "g2"],
+    topics: ["transformations"],
+    levels: ["easy", "medium"],
+    kind: "concept_transform",
+    patternFamily: "slide_vs_flip",
+    subtype: "reflection",
+    conceptTag: "mirror_flip",
+    distractorFamily: "transform_confusion",
+    question: "שיקוף מול קו נותן תמונה כמו:",
+    correct: "מראה ליד הקו",
+    options: ["מראה ליד הקו", "סיבוב סביב מרכז הצורה", "הזזה בלבד", "מחיקת חצי מהצורה"],
+  },
+  // ——— כיתה ב׳ שטח מושגי ———
+  {
+    grades: ["g2"],
+    topics: ["area"],
+    levels: ["easy", "medium"],
+    kind: "concept_area_intro",
+    patternFamily: "area_as_covering",
+    subtype: "square_units",
+    conceptTag: "unit_squares",
+    distractorFamily: "measure_confusion",
+    question: "כשסופרים 'ריבועי יחידה' בתוך צורה, מה מודדים בערך?",
+    correct: "שטח",
+    options: ["שטח", "היקף", "זווית", "אורך בלבד"],
+  },
+  // ——— הסקה חלקית ———
+  {
+    grades: ["g5", "g6"],
+    topics: ["area", "perimeter"],
+    levels: ["hard"],
+    kind: "concept_partial_info",
+    patternFamily: "infer_missing",
+    subtype: "square_from_perimeter",
+    conceptTag: "perim_to_side",
+    distractorFamily: "algebra_misstep",
+    question:
+      "לריבוע היקף 20 ס״מ. מה נכון לגבי אורך צלע?",
+    correct: "אורך צלע הוא 5 ס״מ (כי 20 ÷ 4 = 5)",
+    options: [
+      "אורך צלע הוא 5 ס״מ (כי 20 ÷ 4 = 5)",
+      "אורך צלע הוא 20 ס״מ",
+      "אי אפשר לדעת בלי השטח",
+      "אורך צלע הוא 10 ס״מ",
+    ],
+  },
+];

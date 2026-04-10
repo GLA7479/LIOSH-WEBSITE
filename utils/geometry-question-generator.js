@@ -1,6 +1,10 @@
 // יצירת שאלות גיאומטריה
 
 import { GRADES, PI, getShapesForTopic } from "./geometry-constants";
+import {
+  pickGeometryConceptualQuestion,
+  geometryConceptualProbability,
+} from "./geometry-conceptual-bank";
 
 function shuffleMcqList(answers) {
   const arr = [...answers];
@@ -384,6 +388,34 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       answers: [0],
       params: { kind: "no_question" },
     };
+  }
+
+  const levelKey =
+    level?.name === "קשה"
+      ? "hard"
+      : level?.name === "בינוני"
+        ? "medium"
+        : "easy";
+
+  if (
+    selectedTopic !== "mixed" &&
+    Math.random() < geometryConceptualProbability(gradeKey, selectedTopic)
+  ) {
+    const conceptual = pickGeometryConceptualQuestion({
+      gradeKey,
+      levelKey,
+      topic: selectedTopic,
+    });
+    if (conceptual) {
+      return {
+        question: conceptual.question,
+        correctAnswer: conceptual.correctAnswer,
+        answers: conceptual.answers,
+        topic: selectedTopic,
+        shape,
+        params: conceptual.params,
+      };
+    }
   }
 
   let question;

@@ -19,6 +19,10 @@ import {
 } from "../../utils/hebrew-storage";
 import { generateQuestion } from "../../utils/hebrew-question-generator";
 import {
+  hebrewQuestionFingerprint,
+  hebrewNearDuplicateKey,
+} from "../../utils/hebrew-learning-intel";
+import {
   getHint,
   getSolutionSteps,
   getErrorExplanation,
@@ -97,6 +101,9 @@ export default function HebrewMaster() {
   const pendingHebrewTrackMetaRef = useRef(null);
   /** Real topic/operation bucket for the question on screen (avoids stale currentQuestion) */
   const hebrewTrackingTopicKeyRef = useRef(null);
+  /** עוצר לולאות של אותה משפחת תבנית בזו אחר זו */
+  const hebrewPatternFamilyTailRef = useRef([]);
+  const hebrewNearDuplicateTailRef = useRef([]);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [mounted, setMounted] = useState(false);
@@ -874,12 +881,25 @@ useEffect(() => {
       );
       attempts++;
 
-      // יצירת מפתח ייחודי לשאלה
-      const questionKey = question.question;
+      const questionKey = hebrewQuestionFingerprint(question);
+      const nearKey = hebrewNearDuplicateKey(question);
+      const nearTail = hebrewNearDuplicateTailRef.current;
+      const nearRepeats = nearTail.filter((x) => x === nearKey).length;
+      const nearBlock = nearRepeats >= 2;
 
-      // אם השאלה לא הייתה לאחרונה, נשתמש בה
-      if (!localRecentQuestions.has(questionKey)) {
+      const pf = question.params?.patternFamily || "";
+      const tail = hebrewPatternFamilyTailRef.current;
+      const recentSamePf = tail.filter((x) => x === pf).length;
+      const pfCooldownBlock = pf && recentSamePf >= 3;
+
+      if (
+        !localRecentQuestions.has(questionKey) &&
+        !pfCooldownBlock &&
+        !nearBlock
+      ) {
         localRecentQuestions.add(questionKey);
+        hebrewPatternFamilyTailRef.current = [...tail, pf || "gen"].slice(-12);
+        hebrewNearDuplicateTailRef.current = [...nearTail, nearKey].slice(-16);
         // שמירה רק על 60 שאלות אחרונות
         if (localRecentQuestions.size > 60) {
           const first = Array.from(localRecentQuestions)[0];
@@ -894,6 +914,8 @@ useEffect(() => {
       console.warn(`Too many attempts (${attempts}) to generate new question, resetting recent questions`);
       // איפוס ההיסטוריה כדי לאפשר שאלות חוזרות
       setRecentQuestions(new Set());
+      hebrewPatternFamilyTailRef.current = [];
+      hebrewNearDuplicateTailRef.current = [];
     } else {
       setRecentQuestions(localRecentQuestions);
     }
@@ -967,6 +989,8 @@ useEffect(() => {
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
     setRecentQuestions(new Set()); // איפוס ההיסטוריה
+    hebrewPatternFamilyTailRef.current = [];
+    hebrewNearDuplicateTailRef.current = [];
     setGameActive(true);
     setScore(0);
     setStreak(0);

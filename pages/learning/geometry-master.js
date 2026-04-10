@@ -21,6 +21,7 @@ import {
   recordGeometryAnswerIntel,
   getGeometryTopicInsights,
   geometryQuestionFingerprint,
+  geometryConceptLineageKey,
   newGeometryMistakeId,
   buildGeometryQuestionSnapshot,
 } from "../../utils/geometry-learning-intel";
@@ -178,6 +179,7 @@ export default function GeometryMaster() {
   const gameActiveRef = useRef(false);
   const focusedPracticeModeRef = useRef("normal");
   const mistakesRef = useRef([]);
+  const geometryConceptLineageTailRef = useRef([]);
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   const [progress, setProgress] = useState({
     area: { total: 0, correct: 0 },
@@ -670,9 +672,24 @@ useEffect(() => {
         geometryQuestionFingerprint(question) ||
         `fallback|${question.question}|${question.correctAnswer}`;
 
-      // אם השאלה לא הייתה לאחרונה, נשתמש בה
-      if (!localRecentQuestions.has(questionKey)) {
+      const conceptualKind =
+        typeof question.params?.kind === "string" &&
+        question.params.kind.startsWith("concept");
+      const lineageKey = geometryConceptLineageKey(question);
+      const lineageTail = geometryConceptLineageTailRef.current;
+      const lineageRepeats = conceptualKind
+        ? lineageTail.filter((x) => x === lineageKey).length
+        : 0;
+      const lineageBlock =
+        conceptualKind && lineageRepeats >= 3 && attempts < maxAttempts - 2;
+
+      if (!localRecentQuestions.has(questionKey) && !lineageBlock) {
         localRecentQuestions.add(questionKey);
+        if (conceptualKind) {
+          geometryConceptLineageTailRef.current = [...lineageTail, lineageKey].slice(
+            -14
+          );
+        }
         // שמירה רק על 60 שאלות אחרונות
         if (localRecentQuestions.size > 60) {
           const first = Array.from(localRecentQuestions)[0];
@@ -692,6 +709,7 @@ useEffect(() => {
       console.warn(`Too many attempts (${attempts}) to generate new question, resetting recent questions`);
       // איפוס ההיסטוריה כדי לאפשר שאלות חוזרות
       setRecentQuestions(new Set());
+      geometryConceptLineageTailRef.current = [];
     } else {
       setRecentQuestions(localRecentQuestions);
     }
@@ -810,9 +828,15 @@ useEffect(() => {
     };
     const answerNum = toNumeric(answer);
     const correctNum = toNumeric(currentQuestion.correctAnswer);
+    const nearlyNumericEqual = (a, b) => {
+      if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
+      const scale = Math.max(Math.abs(a), Math.abs(b), 1e-6);
+      const tol = Math.max(1e-9, scale * 1e-5);
+      return Math.abs(a - b) <= tol;
+    };
     const isCorrect =
       answerNum != null && correctNum != null
-        ? Math.abs(answerNum - correctNum) < 1e-9
+        ? nearlyNumericEqual(answerNum, correctNum)
         : normalizeText(answer) === normalizeText(currentQuestion.correctAnswer);
 
     pendingGeometryTimeTrackMetaRef.current = {
@@ -1244,6 +1268,7 @@ useEffect(() => {
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
     setRecentQuestions(new Set());
+    geometryConceptLineageTailRef.current = [];
     setGameActive(true);
     gameActiveRef.current = true;
 

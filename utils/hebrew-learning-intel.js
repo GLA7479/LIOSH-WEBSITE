@@ -1,0 +1,28 @@
+/** מפתחות נגד חזרות לשאלות עברית — מעבר לטקסט מלא */
+
+export function hebrewStemNorm(text) {
+  return String(text || "")
+    .trim()
+    .replace(/[\u0591-\u05C7]/g, "")
+    .replace(/\d+/g, "#")
+    .replace(/\s+/g, " ")
+    .slice(0, 96);
+}
+
+export function hebrewQuestionFingerprint(q) {
+  if (!q) return "";
+  const topic = q.topic || q.operation || "x";
+  const pf = q.params?.patternFamily || q.params?.subtype || "";
+  const stem = hebrewStemNorm(q.question || q.exerciseText || "");
+  const mode = q.answerMode || "";
+  return `${topic}|${pf}|${mode}|${stem}`;
+}
+
+/** מפתח לדימוי כפול — תחילת גזע + נושא (לא כל הטקסט) */
+export function hebrewNearDuplicateKey(q) {
+  if (!q) return "";
+  const topic = q.topic || q.operation || "x";
+  const stem = hebrewStemNorm(q.question || q.exerciseText || "");
+  const head = stem.split(" ").slice(0, 10).join(" ");
+  return `${topic}|${head}`;
+}

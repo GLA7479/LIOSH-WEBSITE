@@ -1,4 +1,5 @@
 import { GRADES, BLANK, TOPICS, GRADE_LEVELS } from './hebrew-constants';
+import { filterRichHebrewPool } from './hebrew-rich-question-bank';
 
 // ========== מאגר שאלות לפי כיתה ורמה ==========
 // הקובץ כולל מאות שאלות מותאמות לכל כיתה (א'-ו'), רמה (קל/בינוני/קשה) ונושא
@@ -637,6 +638,128 @@ const G6_HARD_QUESTIONS = {
   ],
 };
 
+function finalizeHebrewMcq(raw, selectedTopic, levelKey) {
+  const q = {
+    question: raw.question,
+    answers: Array.isArray(raw.answers) ? [...raw.answers] : [],
+    correct: raw.correct,
+    patternFamily: raw.patternFamily,
+    subtype: raw.subtype,
+    distractorFamily: raw.distractorFamily,
+    optionCount: raw.optionCount,
+    binary: raw.binary,
+    difficultyBand: raw.difficultyBand || levelKey,
+  };
+  const stem = String(q.question || "").trim();
+  const binaryStem =
+    q.binary === true ||
+    q.optionCount === 2 ||
+    /^האם (המשפט )?נכון\?/i.test(stem) ||
+    /אמת או שקר|נכון או לא נכון|\bכן או לא\b/.test(stem);
+  if (binaryStem && q.answers.length > 2) {
+    const correctIdx = Number(q.correct) || 0;
+    const correctText = q.answers[correctIdx];
+    const others = q.answers.filter((_, i) => i !== correctIdx);
+    const polarFirst =
+      others.find((t) => /^(לא נכון|לא)$/i.test(String(t).trim())) ||
+      others.find((t) => /^(נכון|כן)$/i.test(String(t).trim())) ||
+      others[0];
+    if (polarFirst != null && correctText != null) {
+      q.answers =
+        Math.random() < 0.5
+          ? [correctText, polarFirst]
+          : [polarFirst, correctText];
+      q.correct = q.answers.indexOf(correctText);
+      q.optionCount = 2;
+    }
+  }
+  if (!q.patternFamily) {
+    if (/קראו:|קרא את/i.test(stem)) q.patternFamily = "reading_passage_style";
+    else if (/השלימו|השלם|השלם את/i.test(stem)) q.patternFamily = "completion";
+    else if (/איזה משפט נכון/i.test(stem))
+      q.patternFamily = "grammar_correct_sentence";
+    else q.patternFamily = `${selectedTopic}_pool`;
+  }
+  if (!q.subtype) q.subtype = "general";
+  if (!q.distractorFamily) q.distractorFamily = "mixed";
+  return q;
+}
+
+function isShallowLegacyQuestion(raw, levelKey, gradeKey) {
+  const stem = String(raw.question || "");
+  const answers = (raw.answers || []).map((a) => String(a).trim());
+  const junkRe = /^(רק |ללא |רק$)/;
+  let junk = 0;
+  for (const a of answers) {
+    if (
+      junkRe.test(a) ||
+      a === "ללא מילים" ||
+      a === "ללא דקדוק" ||
+      a === "ללא מבנה" ||
+      a === "ללא הצגה"
+    ) {
+      junk++;
+    }
+  }
+  if (junk >= 2) return true;
+  if (
+    levelKey === "hard" &&
+    /מה (דקדוק|אוצר מילים|תחביר|ניתוח|הערכה|מסר|מחקר)\b/.test(stem) &&
+    stem.length < 110
+  ) {
+    return true;
+  }
+  if (
+    levelKey === "hard" &&
+    (gradeKey === "g5" || gradeKey === "g6") &&
+    /קרא את הטקסט המתקדמ|מה המסר המתקדמ/.test(stem) &&
+    answers.some((a) => /^רק /.test(a))
+  ) {
+    return true;
+  }
+  const gNum = parseInt(String(gradeKey).replace(/\D/g, ""), 10) || 1;
+  if (
+    (levelKey === "medium" || levelKey === "hard") &&
+    gNum >= 3 &&
+    /^מה (המשמעות|ההפך) של '/.test(stem) &&
+    answers.filter((a) => a.length <= 6).length >= 3
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function pickWeightedHebrewItem(merged, levelKey, selectedTopic, gradeKey) {
+  if (!merged || merged.length === 0) return null;
+  const rich = merged.filter((q) => q._fromRich === true);
+  const legacy = merged.filter((q) => !q._fromRich);
+  const legacyStrong = legacy.filter(
+    (q) => !isShallowLegacyQuestion(q, levelKey, gradeKey)
+  );
+  const ratio =
+    levelKey === "hard" ? 0.82 : levelKey === "medium" ? 0.72 : 0.58;
+  const roll = Math.random();
+  if (rich.length && roll < ratio) {
+    return rich[Math.floor(Math.random() * rich.length)];
+  }
+  if (legacyStrong.length) {
+    return legacyStrong[Math.floor(Math.random() * legacyStrong.length)];
+  }
+  return merged[Math.floor(Math.random() * merged.length)];
+}
+
+function mergeTopicPools(gradeKey, levelKey, topic, legacyList) {
+  const richRows = filterRichHebrewPool(gradeKey, levelKey, topic);
+  const fromRich = richRows.map(
+    ({ grades: _g, levels: _l, topic: _tp, ...rest }) => ({
+      ...rest,
+      _fromRich: true,
+    })
+  );
+  const base = Array.isArray(legacyList) ? [...legacyList] : [];
+  return base.concat(fromRich);
+}
+
 // ========== פונקציה לקבלת שאלות לפי כיתה ורמה ==========
 function getQuestionsForGradeAndLevel(gradeKey, levelKey, topic) {
   const key = `${gradeKey.toUpperCase()}_${levelKey.toUpperCase()}_QUESTIONS`;
@@ -695,9 +818,15 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
                    levelConfig?.name === "בינוני" ? "medium" : 
                    levelConfig?.name === "קשה" ? "hard" : "easy";
 
-  // קבלת שאלות מהמאגר המתאים
+  // קבלת שאלות מהמאגר המתאים + בנק עשיר מובנה
   const topicQuestions = getQuestionsForGradeAndLevel(gradeKey, levelKey, selectedTopic);
-  
+  const topicQuestionsMerged = mergeTopicPools(
+    gradeKey,
+    levelKey,
+    selectedTopic,
+    topicQuestions
+  );
+
   const HEBREW_NIQQUD_RE = /[\u0591-\u05C7]/g;
   const SURROUNDING_PUNCT_RE = /^[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+|[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+$/g;
   const normalizeQuotes = (value) =>
@@ -749,11 +878,13 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     return "choice";
   };
 
-  if (!topicQuestions || topicQuestions.length === 0) {
+  if (!topicQuestionsMerged || topicQuestionsMerged.length === 0) {
     // נסיגה למאגר בסיסי אם אין שאלות
     const fallbackQuestions = G1_EASY_QUESTIONS[selectedTopic] || G1_EASY_QUESTIONS.reading;
-    const randomQ = fallbackQuestions[Math.floor(Math.random() * fallbackQuestions.length)];
-    
+    const rawPick =
+      fallbackQuestions[Math.floor(Math.random() * fallbackQuestions.length)];
+    const randomQ = finalizeHebrewMcq(rawPick, selectedTopic, levelKey);
+
     // ערבוב התשובות - Fisher-Yates shuffle
     const shuffledAnswers = [...randomQ.answers];
     for (let i = shuffledAnswers.length - 1; i > 0; i--) {
@@ -763,10 +894,11 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
 
     // מציאת המיקום החדש של התשובה הנכונה
     const correctAnswer = randomQ.answers[randomQ.correct];
-    const newCorrectIndex = shuffledAnswers.findIndex(ans => ans === correctAnswer);
-    
+    const newCorrectIndex = shuffledAnswers.findIndex((ans) => ans === correctAnswer);
+
     const answerMode = resolveAnswerMode(selectedTopic, randomQ.question);
     const acceptedAnswers = buildAcceptedAnswers(correctAnswer);
+    const optionCount = shuffledAnswers.length;
     return {
       question: randomQ.question,
       questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
@@ -775,6 +907,7 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
       correctAnswer: correctAnswer,
       acceptedAnswers,
       answerMode,
+      optionCount,
       correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : 0,
       topic: selectedTopic,
       operation: selectedTopic,
@@ -785,11 +918,23 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
         grade: gradeKey,
         gradeKey: gradeKey,
         levelKey: levelKey,
+        patternFamily: randomQ.patternFamily,
+        subtype: randomQ.subtype,
+        distractorFamily: randomQ.distractorFamily,
+        difficultyBand: randomQ.difficultyBand,
+        optionCount,
+        answerMode,
       },
     };
   }
-  
-  const randomQ = topicQuestions[Math.floor(Math.random() * topicQuestions.length)];
+
+  const rawPick = pickWeightedHebrewItem(
+    topicQuestionsMerged,
+    levelKey,
+    selectedTopic,
+    gradeKey
+  );
+  const randomQ = finalizeHebrewMcq(rawPick, selectedTopic, levelKey);
 
   // ערבוב התשובות - Fisher-Yates shuffle
   const shuffledAnswers = [...randomQ.answers];
@@ -800,10 +945,11 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
 
   // מציאת המיקום החדש של התשובה הנכונה
   const correctAnswer = randomQ.answers[randomQ.correct];
-  const newCorrectIndex = shuffledAnswers.findIndex(ans => ans === correctAnswer);
+  const newCorrectIndex = shuffledAnswers.findIndex((ans) => ans === correctAnswer);
 
   const answerMode = resolveAnswerMode(selectedTopic, randomQ.question);
   const acceptedAnswers = buildAcceptedAnswers(correctAnswer);
+  const optionCount = shuffledAnswers.length;
   return {
     question: randomQ.question,
     questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
@@ -812,6 +958,7 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     correctAnswer: correctAnswer,
     acceptedAnswers,
     answerMode,
+    optionCount,
     correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : 0,
     topic: selectedTopic,
     operation: selectedTopic,
@@ -822,6 +969,12 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
       grade: gradeKey,
       gradeKey: gradeKey,
       levelKey: levelKey,
+      patternFamily: randomQ.patternFamily,
+      subtype: randomQ.subtype,
+      distractorFamily: randomQ.distractorFamily,
+      difficultyBand: randomQ.difficultyBand,
+      optionCount,
+      answerMode,
     },
   };
 }

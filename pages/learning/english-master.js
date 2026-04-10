@@ -42,6 +42,7 @@ import {
   SENTENCE_POOLS,
   TRANSLATION_POOLS,
 } from "../../data/english-questions";
+import { englishQuestionFingerprint } from "../../utils/english-learning-intel";
 
 const LEVELS = {
   easy: { name: "קל", maxWords: 5, complexity: "basic" },
@@ -289,10 +290,100 @@ function saveScoreEntry(saved, key, entry) {
   saved[key] = levelData;
 }
 
-function generateQuestion(level, topic, gradeKey, mixedOps = null) {
+function shuffleAnswerList(arr) {
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+function buildMcqFromOptionPool(correctAnswer, optionPool, targetChoices) {
+  const uniq = [
+    ...new Set(
+      (optionPool || []).map((x) => String(x ?? "").trim()).filter(Boolean)
+    ),
+  ];
+  const ca = String(correctAnswer ?? "").trim();
+  if (!uniq.includes(ca)) uniq.push(ca);
+  const target = Math.max(2, Math.min(Math.max(2, targetChoices), uniq.length));
+  if (uniq.length <= target) {
+    return shuffleAnswerList(uniq);
+  }
+  const wrongs = uniq.filter((x) => x !== ca);
+  const pickWrongs = shuffleAnswerList(wrongs).slice(0, target - 1);
+  return shuffleAnswerList([ca, ...pickWrongs]);
+}
+
+function resolveEnglishQType({
+  selectedTopic,
+  levelKey,
+  gradeKey,
+  question,
+  correctAnswer,
+  params,
+}) {
+  const isHardLevel = levelKey === "hard";
+  const isMediumUp = levelKey === "medium" || isHardLevel;
+  const gNum = parseInt(String(gradeKey).replace(/\D/g, ""), 10) || 3;
+  const wordCount = String(correctAnswer || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+
+  if (selectedTopic === "writing") return "typing";
+
+  if (selectedTopic === "vocabulary") {
+    if (params?.direction === "en_to_he") return "choice";
+    if (gNum <= 2 && levelKey === "easy") return "choice";
+    if (wordCount >= 3) return "choice";
+    if (isHardLevel || gNum >= 4) return "typing";
+    if (isMediumUp && gNum >= 3) return "typing";
+    return "choice";
+  }
+
+  if (selectedTopic === "translation") {
+    if (params?.direction === "en_to_he") return "choice";
+    if (wordCount > 6) return "choice";
+    if (isHardLevel || gNum >= 5) return "typing";
+    if (isMediumUp && gNum >= 4 && wordCount <= 4) return "typing";
+    return "choice";
+  }
+
+  if (selectedTopic === "grammar") {
+    const pl = String(question || "").toLowerCase();
+    const fillLike =
+      pl.includes("complete") ||
+      pl.includes("fill") ||
+      pl.includes("השלם") ||
+      pl.includes("__") ||
+      (pl.includes("choose") && (pl.includes("___") || pl.includes("__")));
+    if (!fillLike) return "choice";
+    if (wordCount > 3) return "choice";
+    if (isHardLevel || (isMediumUp && gNum >= 4)) return "typing";
+    return "choice";
+  }
+
+  if (selectedTopic === "sentences") {
+    if (wordCount > 3) return "choice";
+    if ((isMediumUp && gNum >= 3) || isHardLevel) return "typing";
+    return "choice";
+  }
+
+  return "choice";
+}
+
+function generateQuestion(
+  level,
+  topic,
+  gradeKey,
+  mixedOps = null,
+  levelKey = "easy"
+) {
   const isMixed = topic === "mixed";
   let selectedTopic;
-  
+
   if (isMixed) {
     let availableTopics;
     if (mixedOps) {
@@ -305,7 +396,8 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     if (availableTopics.length === 0) {
       availableTopics = GRADES[gradeKey].topics.filter((t) => t !== "mixed");
     }
-    selectedTopic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
+    selectedTopic =
+      availableTopics[Math.floor(Math.random() * availableTopics.length)];
   } else {
     selectedTopic = topic;
   }
@@ -313,7 +405,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   let question,
     correctAnswer,
     params = {};
-  let qType = "choice"; // ברירת מחדל – שאלת בחירה
+  let qType = "choice"; // ייקבע אחרי הבנייה לפי כללים דטרמיניסטיים
   const buildAcceptedAnswers = (baseAnswer) => {
     const normalizeQuotes = (value) =>
       String(value ?? "")
@@ -341,6 +433,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   };
   const gradeConfig = GRADES[gradeKey] || GRADES.g3;
   const gradeProfile = GRADE_PROFILES[gradeKey] || DEFAULT_GRADE_PROFILE;
+  const gNum = parseInt(String(gradeKey).replace(/\D/g, ""), 10) || 3;
   const gradeWordLists = (gradeConfig.wordLists || []).filter(
     (list) => WORD_LISTS[list]
   );
@@ -371,6 +464,8 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           word: randomWord[0],
           translation: randomWord[1],
           direction: "en_to_he",
+          listKey: selectedList,
+          patternFamily: "vocab_translation",
         };
       } else {
         question = `מה פירוש המילה "${randomWord[1]}"\u200F?`;
@@ -379,15 +474,9 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           word: randomWord[1],
           translation: randomWord[0],
           direction: "he_to_en",
+          listKey: selectedList,
+          patternFamily: "vocab_recall_en",
         };
-      }
-      // Hybrid: production typing for short HE->EN recall prompts only.
-      if (
-        params.direction === "he_to_en" &&
-        String(correctAnswer || "").trim().split(/\s+/).length <= 2 &&
-        Math.random() < 0.35
-      ) {
-        qType = "typing";
       }
       break;
     }
@@ -406,21 +495,14 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       const grammarQ = pool[Math.floor(Math.random() * pool.length)];
       question = grammarQ.question;
       correctAnswer = grammarQ.correct;
-      params = { explanation: grammarQ.explanation };
-      // Hybrid: typing when prompt is production-like and answer is concise.
-      const grammarPrompt = String(question || "").toLowerCase();
-      const grammarLooksProductive =
-        grammarPrompt.includes("complete") ||
-        grammarPrompt.includes("fill") ||
-        grammarPrompt.includes("השלם") ||
-        grammarPrompt.includes("__") ||
-        grammarPrompt.includes("___");
-      if (
-        grammarLooksProductive &&
-        String(correctAnswer || "").trim().split(/\s+/).length <= 3
-      ) {
-        qType = "typing";
-      }
+      params = {
+        explanation: grammarQ.explanation,
+        patternFamily: grammarQ.patternFamily || "grammar_mcq",
+        distractorFamily: grammarQ.distractorFamily || "grammar_forms",
+        grammarOptionSet: Array.isArray(grammarQ.options)
+          ? grammarQ.options
+          : null,
+      };
       break;
     }
 
@@ -437,7 +519,11 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       }
       const sentence =
         sentencesPool[Math.floor(Math.random() * sentencesPool.length)];
-      const direction = Math.random() > 0.5 ? "en_to_he" : "he_to_en";
+      const translationToEnglish =
+        levelKey === "hard" ||
+        (levelKey === "medium" && gNum >= 4) ||
+        (levelKey === "easy" && gNum >= 6);
+      const direction = translationToEnglish ? "he_to_en" : "en_to_he";
       if (direction === "en_to_he") {
         question = `תרגם: "${sentence.en}"`;
         correctAnswer = sentence.he;
@@ -445,6 +531,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           sentence: sentence.en,
           translation: sentence.he,
           direction: "en_to_he",
+          patternFamily: "translation_clause",
         };
       } else {
         question = `תרגם: "${sentence.he}"`;
@@ -453,15 +540,8 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           sentence: sentence.he,
           translation: sentence.en,
           direction: "he_to_en",
+          patternFamily: "translation_production",
         };
-      }
-      // Hybrid: prefer typing for HE->EN short translation recall.
-      if (
-        params.direction === "he_to_en" &&
-        String(correctAnswer || "").trim().split(/\s+/).length <= 6 &&
-        Math.random() < 0.6
-      ) {
-        qType = "typing";
       }
       break;
     }
@@ -481,11 +561,15 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
         pool[Math.floor(Math.random() * pool.length)] || SENTENCE_POOLS.base[0];
       question = `השלם את המשפט: "${template.template}"`;
       correctAnswer = template.correct;
-      params = { template: template.template, explanation: template.explanation };
-      // Hybrid: typing for concise sentence-completion targets.
-      if (String(correctAnswer || "").trim().split(/\s+/).length <= 3) {
-        qType = "typing";
-      }
+      params = {
+        template: template.template,
+        explanation: template.explanation,
+        patternFamily: template.patternFamily || "sentence_completion",
+        distractorFamily: template.distractorFamily || "same_slot_forms",
+        sentenceOptionSet: Array.isArray(template.options)
+          ? template.options
+          : null,
+      };
       break;
     }
 
@@ -502,6 +586,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           wordHe: he,
           wordEn: en,
           direction: "he_to_en",
+          patternFamily: "writing_word",
         };
       } else {
         let pool = WRITING_SENTENCES_BASIC;
@@ -518,6 +603,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           sentenceHe: s.he,
           sentenceEn: s.en,
           direction: "he_to_en",
+          patternFamily: "writing_sentence",
         };
         qType = "typing";
         break;
@@ -527,77 +613,120 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     }
 
     case "mixed": {
-      const availableTopics = GRADES[gradeKey].topics.filter((t) => t !== "mixed");
-      const randomTopic = availableTopics[Math.floor(Math.random() * availableTopics.length)];
-      return generateQuestion(level, randomTopic, gradeKey);
+      const availableTopics = GRADES[gradeKey].topics.filter(
+        (t) => t !== "mixed"
+      );
+      const randomTopic =
+        availableTopics[Math.floor(Math.random() * availableTopics.length)];
+      return generateQuestion(level, randomTopic, gradeKey, null, levelKey);
     }
   }
 
+  qType = resolveEnglishQType({
+    selectedTopic,
+    levelKey,
+    gradeKey,
+    question,
+    correctAnswer,
+    params,
+  });
+
   let allAnswers = [];
   if (qType === "choice") {
-    // יצירת תשובות שגויות רק לשאלות בחירה
-  const targetChoices = Math.max(2, gradeProfile.choiceCount || 4);
-  const wrongNeeded = Math.max(1, targetChoices - 1);
-  const wrongAnswers = new Set();
-  while (wrongAnswers.size < wrongNeeded) {
-    let wrong;
-    if (selectedTopic === "vocabulary") {
-      if (params.direction === "he_to_en") {
-          const allEnglishWords = Object.values(WORD_LISTS).flatMap((list) =>
-            Object.keys(list)
-          );
-          wrong =
-            allEnglishWords[Math.floor(Math.random() * allEnglishWords.length)];
-      } else {
-          const allHebrewWords = Object.values(WORD_LISTS).flatMap((list) =>
-            Object.values(list)
-          );
-          wrong =
-            allHebrewWords[Math.floor(Math.random() * allHebrewWords.length)];
-      }
-    } else if (selectedTopic === "grammar" || selectedTopic === "sentences") {
-        const allOptions = [
-          "am",
-          "is",
-          "are",
-          "go",
-          "goes",
-          "have",
-          "has",
-          "read",
-          "reads",
-          "play",
-          "plays",
-        ];
-      wrong = allOptions[Math.floor(Math.random() * allOptions.length)];
+    const targetChoices = Math.max(2, gradeProfile.choiceCount || 4);
+    const sameCategoryGrammar = [
+      "am",
+      "is",
+      "are",
+      "was",
+      "were",
+      "do",
+      "does",
+      "did",
+      "have",
+      "has",
+      "had",
+      "can",
+      "could",
+      "will",
+      "would",
+    ];
+
+    if (
+      selectedTopic === "grammar" &&
+      Array.isArray(params.grammarOptionSet) &&
+      params.grammarOptionSet.length >= 2
+    ) {
+      allAnswers = buildMcqFromOptionPool(
+        correctAnswer,
+        params.grammarOptionSet,
+        targetChoices
+      );
+    } else if (
+      selectedTopic === "sentences" &&
+      Array.isArray(params.sentenceOptionSet) &&
+      params.sentenceOptionSet.length >= 2
+    ) {
+      allAnswers = buildMcqFromOptionPool(
+        correctAnswer,
+        params.sentenceOptionSet,
+        targetChoices
+      );
+    } else if (selectedTopic === "vocabulary") {
+      const list = WORD_LISTS[params.listKey] || words;
+      const pool =
+        params.direction === "he_to_en"
+          ? Object.keys(list)
+          : Object.values(list);
+      allAnswers = buildMcqFromOptionPool(
+        correctAnswer,
+        pool,
+        targetChoices
+      );
     } else {
-      if (params.direction === "he_to_en") {
+      const wrongNeeded = Math.max(1, targetChoices - 1);
+      const wrongAnswers = new Set();
+      let guard = 0;
+      while (wrongAnswers.size < wrongNeeded && guard < 200) {
+        guard++;
+        let wrong;
+        if (selectedTopic === "grammar" || selectedTopic === "sentences") {
+          wrong =
+            sameCategoryGrammar[
+              Math.floor(Math.random() * sameCategoryGrammar.length)
+            ];
+        } else if (params.direction === "he_to_en") {
           const allEnglishWords = Object.values(WORD_LISTS).flatMap((list) =>
             Object.keys(list)
           );
           wrong =
-            allEnglishWords[Math.floor(Math.random() * allEnglishWords.length)];
-      } else {
+            allEnglishWords[
+              Math.floor(Math.random() * allEnglishWords.length)
+            ];
+        } else {
           const allHebrewWords = Object.values(WORD_LISTS).flatMap((list) =>
             Object.values(list)
           );
           wrong =
-            allHebrewWords[Math.floor(Math.random() * allHebrewWords.length)];
+            allHebrewWords[
+              Math.floor(Math.random() * allHebrewWords.length)
+            ];
+        }
+        if (wrong !== correctAnswer && !wrongAnswers.has(wrong)) {
+          wrongAnswers.add(wrong);
+        }
       }
-    }
-    if (wrong !== correctAnswer && !wrongAnswers.has(wrong)) {
-      wrongAnswers.add(wrong);
-    }
-  }
-    allAnswers = [correctAnswer, ...Array.from(wrongAnswers)].slice(
-      0,
-      targetChoices
-    );
-  for (let i = allAnswers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
+      allAnswers = shuffleAnswerList(
+        [correctAnswer, ...Array.from(wrongAnswers)].slice(0, targetChoices)
+      );
     }
   }
+
+  const mergedParams = {
+    ...params,
+    answerMode: qType,
+    levelKey,
+  };
 
   return {
     question,
@@ -605,7 +734,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     acceptedAnswers: buildAcceptedAnswers(correctAnswer),
     answers: allAnswers,
     topic: selectedTopic,
-    params,
+    params: mergedParams,
     qType,
   };
 }
@@ -1499,30 +1628,30 @@ const refreshMonthlyProgress = useCallback(() => {
     let attempts = 0;
     const maxAttempts = 50;
     trackCurrentQuestionTime();
+    const localRecentQuestions = new Set(recentQuestions);
     do {
       question = generateQuestion(
         levelConfig,
         topicForState,
         gradeForQuestion,
-        topicForState === "mixed" ? mixedConfig : null
+        topicForState === "mixed" ? mixedConfig : null,
+        levelForQuestion
       );
       attempts++;
-      const questionKey = question.question;
-      if (!recentQuestions.has(questionKey)) {
-        setRecentQuestions((prev) => {
-          const newSet = new Set(prev);
-          newSet.add(questionKey);
-          if (newSet.size > 20) {
-            const first = Array.from(newSet)[0];
-            newSet.delete(first);
-          }
-          return newSet;
-        });
+      const questionKey = englishQuestionFingerprint(question);
+      if (!localRecentQuestions.has(questionKey)) {
+        localRecentQuestions.add(questionKey);
+        if (localRecentQuestions.size > 48) {
+          const first = Array.from(localRecentQuestions)[0];
+          localRecentQuestions.delete(first);
+        }
         break;
       }
     } while (attempts < maxAttempts);
     if (attempts >= maxAttempts) {
       setRecentQuestions(new Set());
+    } else {
+      setRecentQuestions(localRecentQuestions);
     }
     question.gradeKey = gradeForQuestion;
     question.levelKey = levelForQuestion;

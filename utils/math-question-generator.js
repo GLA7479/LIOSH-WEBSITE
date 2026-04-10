@@ -1537,6 +1537,18 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
             "time_sum",
             "average",
           ]
+        : gradeKey === "g3" || gradeKey === "g4"
+        ? [
+            "groups",
+            "simple_add",
+            "simple_sub",
+            "pocket_money",
+            "comparison_more",
+            "part_whole",
+            "change_stack",
+            "time_sum",
+            "leftover",
+          ]
         : ["groups", "simple_add", "simple_sub", "pocket_money"];
 
     const t = templates[Math.floor(Math.random() * templates.length)];
@@ -1546,25 +1558,82 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       const b = randInt(2, 8);
       correctAnswer = a + b;
       question = `לליאו יש ${a} כדורים והוא מקבל עוד ${b} כדורים. כמה כדורים יש לליאו בסך הכל?`;
-      params = { kind: "wp_simple_add", a, b };
+      params = {
+        kind: "wp_simple_add",
+        semanticFamily: "combine_total",
+        a,
+        b,
+      };
     } else if (t === "simple_sub") {
       const total = randInt(8, 15);
       const give = randInt(2, total - 3);
       correctAnswer = total - give;
       question = `לליאו יש ${total} מדבקות. הוא נותן לחבר ${give} מדבקות. כמה מדבקות נשארות לליאו?`;
-      params = { kind: "wp_simple_sub", total, give };
+      params = {
+        kind: "wp_simple_sub",
+        semanticFamily: "takeaway_remaining",
+        total,
+        give,
+      };
     } else if (t === "pocket_money") {
       const money = randInt(20, 80);
       const toy = randInt(10, money - 5);
       correctAnswer = money - toy;
       question = `לליאו יש ${money}₪ דמי כיס. הוא קונה משחק ב-${toy}₪. כמה כסף נשאר לו?`;
-      params = { kind: "wp_pocket_money", money, toy };
+      params = {
+        kind: "wp_pocket_money",
+        semanticFamily: "money_remaining",
+        money,
+        toy,
+      };
     } else if (t === "groups") {
       const per = randInt(3, 8);
       const groups = randInt(2, 6);
       correctAnswer = per * groups;
       question = `בכל קופסה יש ${per} עפרונות. יש ${groups} קופסאות כאלה. כמה עפרונות יש בסך הכל?`;
-      params = { kind: "wp_groups", per, groups };
+      params = {
+        kind: "wp_groups",
+        semanticFamily: "equal_groups",
+        per,
+        groups,
+      };
+    } else if (t === "comparison_more") {
+      const small = randInt(4, 22);
+      const diff = randInt(3, 14);
+      const big = small + diff;
+      correctAnswer = diff;
+      question = `לנועה יש ${big} קלפים וליובל יש ${small} קלפים. כמה קלפים יש לנועה יותר מליובל?`;
+      params = {
+        kind: "wp_comparison_more",
+        semanticFamily: "comparison_difference",
+        big,
+        small,
+        diff,
+      };
+    } else if (t === "part_whole") {
+      const whole = randInt(14, 48);
+      const partA = randInt(3, whole - 4);
+      correctAnswer = whole - partA;
+      question = `בכיתה ${whole} תלמידים. ${partA} מהם בחוג כדורגל והשאר בחוג שחמט. כמה תלמידים בחוג שחמט?`;
+      params = {
+        kind: "wp_part_whole",
+        semanticFamily: "part_whole_complement",
+        whole,
+        partA,
+      };
+    } else if (t === "change_stack") {
+      const start = randInt(12, 48);
+      const gain = randInt(2, 16);
+      const loss = randInt(1, Math.min(gain + start - 2, 18));
+      correctAnswer = start + gain - loss;
+      question = `בספרייה היו ${start} ספרים. הוסיפו ${gain} ספרים חדשים, והוצאו להשאלה ${loss} ספרים. כמה ספרים נשארו בספרייה עכשיו?`;
+      params = {
+        kind: "wp_change_stack",
+        semanticFamily: "change_over_time",
+        start,
+        gain,
+        loss,
+      };
     } else if (t === "time_days") {
       // שאלות זמן - ימים בשבוע (כיתות א'-ב')
       const variant = Math.random();
@@ -1574,13 +1643,22 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         const endDay = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"][randInt(0, 6)];
         correctAnswer = days;
         question = `אם היום יום ${startDay}, כמה ימים יעברו עד יום ${endDay}?`;
-        params = { kind: "wp_time_days", days };
+        params = {
+          kind: "wp_time_days",
+          semanticFamily: "time_calendar",
+          days,
+        };
       } else {
         const today = randInt(1, 5);
         const daysLater = randInt(1, 7 - today);
         correctAnswer = today + daysLater;
         question = `אם היום ה-${today} לחודש, איזה תאריך יהיה בעוד ${daysLater} ימים?`;
-        params = { kind: "wp_time_date", today, daysLater };
+        params = {
+          kind: "wp_time_date",
+          semanticFamily: "time_forward",
+          today,
+          daysLater,
+        };
       }
     } else if (t === "coins") {
       // שאלות כסף - מטבעות (כיתות א'-ב')
@@ -1592,13 +1670,25 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         const value2 = coins2 * 2; // 2 שקלים
         correctAnswer = value1 + value2;
         question = `לליאו יש ${coins1} מטבעות של שקל ו-${coins2} מטבעות של 2 שקלים. כמה כסף יש לו בסך הכל?`;
-        params = { kind: "wp_coins", coins1, coins2, value1, value2 };
+        params = {
+          kind: "wp_coins",
+          semanticFamily: "money_combine",
+          coins1,
+          coins2,
+          value1,
+          value2,
+        };
       } else {
         const total = randInt(5, 15);
         const spent = randInt(2, total - 2);
         correctAnswer = total - spent;
         question = `לליאו יש ${total}₪ במטבעות. הוא קונה ממתק ב-${spent}₪. כמה כסף נשאר לו?`;
-        params = { kind: "wp_coins_spent", total, spent };
+        params = {
+          kind: "wp_coins_spent",
+          semanticFamily: "money_remaining",
+          total,
+          spent,
+        };
       }
     } else if (t === "division_simple") {
       // שאלות חילוק פשוטות (כיתה ב') - רק ללא שארית
@@ -1607,7 +1697,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       const total = perGroup * groups; // וודא שאין שארית
       correctAnswer = groups;
       question = `יש ${total} תפוחים. מחלקים אותם לקבוצות של ${perGroup} תפוחים בכל קבוצה. כמה קבוצות יש?`;
-      params = { kind: "wp_division_simple", total, perGroup, groups };
+      params = {
+        kind: "wp_division_simple",
+        semanticFamily: "equal_partition",
+        total,
+        perGroup,
+        groups,
+      };
     } else if (t === "leftover") {
       const total = randInt(40, 100);
       const groupSize = randInt(4, 8);
@@ -1615,7 +1711,14 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       const leftover = total - groups * groupSize;
       correctAnswer = leftover;
       question = `יש ${total} תלמידים והם מתחלקים לקבוצות של ${groupSize} תלמידים בכל קבוצה. כמה תלמידים יישארו בלי קבוצה מלאה?`;
-      params = { kind: "wp_leftover", total, groupSize, groups, leftover };
+      params = {
+        kind: "wp_leftover",
+        semanticFamily: "division_remainder",
+        total,
+        groupSize,
+        groups,
+        leftover,
+      };
     } else if (t === "shop_discount") {
       const discPerc = [10, 20, 25, 50][randInt(0, 3)];
       // חשוב: תשובה מדויקת ושלמה (בלי שברים ובלי עיגול)
@@ -1639,6 +1742,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       question = `חולצה עולה ${price}₪ ויש עליה הנחה של ${discPerc}%. כמה תשלם אחרי ההנחה?`;
       params = {
         kind: "wp_shop_discount",
+        semanticFamily: "percent_discount",
         price,
         discPerc,
         discount,
@@ -1651,13 +1755,23 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         const cm = meters * 100;
         correctAnswer = meters;
         question = `כמה מטרים הם ${cm} סנטימטרים? = ${BLANK}`;
-        params = { kind: "wp_unit_cm_to_m", cm, meters };
+        params = {
+          kind: "wp_unit_cm_to_m",
+          semanticFamily: "unit_conversion",
+          cm,
+          meters,
+        };
       } else {
         const kg = randInt(1, 9);
         const g = kg * 1000;
         correctAnswer = kg;
         question = `כמה קילוגרמים הם ${g} גרם? = ${BLANK}`;
-        params = { kind: "wp_unit_g_to_kg", g, kg };
+        params = {
+          kind: "wp_unit_g_to_kg",
+          semanticFamily: "unit_conversion",
+          g,
+          kg,
+        };
       }
     } else if (t === "distance_time") {
       const speed = [5, 6, 8, 10][randInt(0, 3)]; // קמ"ש
@@ -1667,6 +1781,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       question = `ילד הולך במהירות קבועה של ${speed} ק"מ בשעה במשך ${hours} שעות. כמה קילומטרים יעבור?`;
       params = {
         kind: "wp_distance_time",
+        semanticFamily: "rate_time_distance",
         speed,
         hours,
         distance,
@@ -1676,14 +1791,25 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       const l2 = randInt(10, 40);
       correctAnswer = l1 + l2;
       question = `סרט ראשון נמשך ${l1} דקות וסרטון נוסף נמשך ${l2} דקות. כמה דקות נמשך הצפייה ביחד?`;
-      params = { kind: "wp_time_sum", l1, l2 };
+      params = {
+        kind: "wp_time_sum",
+        semanticFamily: "duration_sum",
+        l1,
+        l2,
+      };
     } else if (t === "average") {
       const s1 = randInt(60, 100);
       const s2 = randInt(60, 100);
       const s3 = randInt(60, 100);
       correctAnswer = Math.round((s1 + s2 + s3) / 3);
       question = `לליאו ציונים ${s1}, ${s2} ו-${s3} בשלושה מבחנים. מה הממוצע שלו (מעוגל למספר שלם)?`;
-      params = { kind: "wp_average", s1, s2, s3 };
+      params = {
+        kind: "wp_average",
+        semanticFamily: "mean_scores",
+        s1,
+        s2,
+        s3,
+      };
     } else {
       // multi_step – בעיה חשבונית רב-שלבית (קנייה+עודף)
       const a = randInt(2, 5);
@@ -1696,6 +1822,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       question = `לליאו יש ${money}₪. הוא קונה ${a} עטים ו-${b} עפרונות, וכל פריט עולה ${price}₪. כמה כסף יישאר לו אחרי הקנייה?`;
       params = {
         kind: "wp_multi_step",
+        semanticFamily: "multi_step_money",
         a,
         b,
         price,
