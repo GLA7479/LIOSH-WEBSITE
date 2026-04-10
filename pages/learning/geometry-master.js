@@ -2033,13 +2033,13 @@ useEffect(() => {
                       {currentQuestion.questionLabel && currentQuestion.exerciseText ? (
                         <>
                           <p
-                            className="text-2xl text-center text-white mb-1"
+                            className="text-xl text-center text-white mb-1"
                             style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                           >
                             {currentQuestion.questionLabel}
                           </p>
                           <p
-                            className="text-4xl text-center text-white font-bold whitespace-nowrap"
+                            className="text-3xl text-center text-white font-bold whitespace-nowrap"
                             style={{ direction: "ltr", unicodeBidi: "plaintext" }}
                           >
                             {currentQuestion.exerciseText}
@@ -2047,7 +2047,7 @@ useEffect(() => {
                         </>
                       ) : (
                         <div
-                          className="text-4xl font-black text-white text-center"
+                          className="text-3xl font-black text-white text-center"
                           style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                         >
                           {currentQuestion.question}
@@ -2103,22 +2103,22 @@ useEffect(() => {
                             </button>
                           )}
 
-                        {!hintUsed && !selectedAnswer && currentQuestion.params?.kind !== "no_question" ? (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowHint(true);
-                              setHintUsed(true);
-                            }}
-                            className={`${learningHintTriggerBtn} bg-amber-500/80 hover:bg-amber-500 border-amber-300/40 text-white`}
-                          >
-                            💡 רמז
-                          </button>
-                        ) : (
-                          <span className="opacity-0 select-none" aria-hidden>
-                            placeholder
-                          </span>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (hintUsed || selectedAnswer || currentQuestion.params?.kind === "no_question") return;
+                            setShowHint(true);
+                            setHintUsed(true);
+                          }}
+                          disabled={hintUsed || !!selectedAnswer || currentQuestion.params?.kind === "no_question"}
+                          className={`${learningHintTriggerBtn} bg-amber-500/80 hover:bg-amber-500 border-amber-300/40 text-white ${
+                            hintUsed || selectedAnswer || currentQuestion.params?.kind === "no_question"
+                              ? "opacity-60 cursor-not-allowed"
+                              : ""
+                          }`}
+                        >
+                          💡 רמז
+                        </button>
                         {(mode === "learning" || mode === "practice") &&
                           previousExplanationQuestion &&
                           currentQuestion &&
