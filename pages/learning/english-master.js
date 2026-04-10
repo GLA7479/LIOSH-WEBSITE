@@ -26,6 +26,11 @@ import {
   getStreakReward,
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
+import { getQuestionFontStyle } from "../../utils/learning-question-font";
+import {
+  learningHintTriggerBtn,
+  learningExplainOpenBtn,
+} from "../../utils/learning-ui-classes";
 import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import {
   ENGLISH_GRADES,
@@ -844,6 +849,8 @@ export default function EnglishMaster() {
 
   // הסבר מפורט לשאלה
   const [showSolution, setShowSolution] = useState(false);
+  const [showPreviousSolution, setShowPreviousSolution] = useState(false);
+  const [previousExplanationQuestion, setPreviousExplanationQuestion] = useState(null);
 
   // הסבר לטעות אחרונה
   const [errorExplanation, setErrorExplanation] = useState("");
@@ -1364,6 +1371,9 @@ const refreshMonthlyProgress = useCallback(() => {
     setTotalQuestions(0);
     setAvgTime(0);
     setQuestionStartTime(null);
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
   }
 
   const accumulateQuestionTime = useCallback(() => {
@@ -1458,6 +1468,9 @@ const refreshMonthlyProgress = useCallback(() => {
     question.levelKey = levelForQuestion;
     question.practiceFocus = mode === "practice" ? practiceFocus : "default";
     englishTrackingTopicKeyRef.current = question.topic;
+    if (currentQuestion) {
+      setPreviousExplanationQuestion(currentQuestion);
+    }
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setTypedAnswer("");
@@ -1466,6 +1479,7 @@ const refreshMonthlyProgress = useCallback(() => {
     setShowHint(false);
     setHintUsed(false);
     setShowSolution(false);
+    setShowPreviousSolution(false);
     setErrorExplanation("");
   }
 
@@ -1492,6 +1506,8 @@ const refreshMonthlyProgress = useCallback(() => {
     setShowBadge(null);
     setShowLevelUp(false);
     setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
     
     // Start background music and play game start sound
     sound.playBackgroundMusic();
@@ -1522,8 +1538,27 @@ const refreshMonthlyProgress = useCallback(() => {
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
     saveRunToStorage();
   }
+
+  const isShowingAnySolution = showSolution || showPreviousSolution;
+  const explanationQuestion = showPreviousSolution
+    ? previousExplanationQuestion
+    : currentQuestion;
+
+  const closeExplanationModal = () => {
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+  };
+
+  const openPreviousExplanation = () => {
+    if (!previousExplanationQuestion) return;
+    setShowSolution(false);
+    setShowPreviousSolution(true);
+  };
 
   function handleTimeUp() {
     pendingEnglishTrackMetaRef.current = {
@@ -1735,10 +1770,11 @@ const refreshMonthlyProgress = useCallback(() => {
         setTimeout(() => {
           generateNewQuestion();
           setSelectedAnswer(null);
+          setTypedAnswer("");
           setFeedback(null);
           setTimeLeft(null);
         }, 1500);
-      } else {
+      } else if (mode === "challenge") {
         setFeedback(
           `Wrong! Correct: ${currentQuestion.correctAnswer} ❌ (-1 ❤️)`
         );
@@ -1766,12 +1802,27 @@ const refreshMonthlyProgress = useCallback(() => {
             setTimeout(() => {
               generateNewQuestion();
               setSelectedAnswer(null);
+              setTypedAnswer("");
               setFeedback(null);
               setTimeLeft(20);
             }, 1500);
           }
           return nextLives;
         });
+      } else {
+        // speed / marathon / practice stay in active gameplay on wrong answers
+        setFeedback(`Wrong! Correct answer: ${currentQuestion.correctAnswer} ❌`);
+        setTimeout(() => {
+          generateNewQuestion();
+          setSelectedAnswer(null);
+          setTypedAnswer("");
+          setFeedback(null);
+          if (mode === "speed") {
+            setTimeLeft(10);
+          } else {
+            setTimeLeft(null);
+          }
+        }, 1500);
       }
     }
 
@@ -2320,121 +2371,167 @@ const refreshMonthlyProgress = useCallback(() => {
             </div>
           ) : (
             <>
-              {feedback && (
-                <div
-                  className={`mb-2 px-4 py-2 rounded-lg text-sm font-semibold text-center ${
-                    feedback.includes("Correct") ||
-                    feedback.includes("∞") ||
-                    feedback.includes("Start")
-                      ? "bg-emerald-500/20 text-emerald-200"
-                      : "bg-red-500/20 text-red-200"
-                  }`}
-                >
-                  <div>{feedback}</div>
-                  {errorExplanation && (
-                    <div className="mt-1 text-xs text-red-100/90 font-normal" dir="ltr">
-                      {errorExplanation}
-                    </div>
-                  )}
-                </div>
-              )}
-
               {currentQuestion && (
                 <div
                   ref={gameRef}
-                  className="w-full max-w-lg flex flex-col items-center justify-center mb-2 flex-1"
+                  className="relative w-full max-w-lg flex flex-col items-center justify-start mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
-                  <div className="text-4xl font-black text-white mb-4 text-center" dir="auto">
-                    {currentQuestion.question}
-                  </div>
-
-                  {!hintUsed && !selectedAnswer && (
-                    <button
-                      onClick={() => {
-                        setShowHint(true);
-                        setHintUsed(true);
-                      }}
-                      className="mb-2 px-4 py-2 rounded-lg bg-blue-500/80 hover:bg-blue-500 text-sm font-bold"
-                    >
-                      💡 Hint
-                    </button>
-                  )}
-
-                  {showHint && (
-                    <div className="mb-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center max-w-lg" dir="ltr">
-                      {getHint(currentQuestion, currentQuestion.topic, grade)}
+                  {(feedback || showHint || errorExplanation) && (
+                    <div className="absolute top-0 left-0 right-0 z-[5] px-2 pt-1 pointer-events-none">
+                      <div className="flex flex-col gap-2 items-stretch">
+                        {feedback && (
+                          <div
+                            className={`px-4 py-2 rounded-lg text-sm font-semibold text-center ${
+                              feedback.includes("Correct") ||
+                              feedback.includes("∞") ||
+                              feedback.includes("Start")
+                                ? "bg-emerald-500/20 text-emerald-200"
+                                : "bg-red-500/20 text-red-200"
+                            }`}
+                          >
+                            <div>{feedback}</div>
+                          </div>
+                        )}
+                        {showHint && (
+                          <div className="px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-200 text-sm text-center" dir="ltr">
+                            {getHint(currentQuestion, currentQuestion.topic, grade)}
+                          </div>
+                        )}
+                        {errorExplanation && (
+                          <div className="px-4 py-3 rounded-lg bg-[#0a1222]/95 border border-rose-300/60 shadow-xl backdrop-blur-sm text-sm leading-relaxed text-center w-full" dir="ltr">
+                            <div className="text-xs font-semibold text-rose-100 mb-1.5 tracking-tight">
+                              Why was this wrong?
+                            </div>
+                            <div className="text-rose-50">{errorExplanation}</div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
 
-                  {/* כפתור הסבר מלא – רק במצב Learning */}
-                  {mode === "learning" && currentQuestion && (
-                    <>
-                      <button
-                        onClick={() => setShowSolution(true)}
-                        className="mb-2 px-4 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
-                      >
-                        📘 הסבר מלא
-                      </button>
-                    </>
-                  )}
+                  <div className="w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2">
+                    <div
+                      className="text-4xl font-black text-white text-center max-w-full px-2"
+                      dir="auto"
+                      style={getQuestionFontStyle({ text: currentQuestion.question })}
+                    >
+                      {currentQuestion.question}
+                    </div>
+                  </div>
 
-                  {currentQuestion.qType === "typing" ? (
-                    <div className="w-full max-w-lg mb-3 flex flex-col items-center">
-                      <input
-                        dir="ltr"
-                        type="text"
-                        value={typedAnswer}
-                        onChange={(e) => setTypedAnswer(e.target.value)}
-                        disabled={!!selectedAnswer || !gameActive}
-                        placeholder="כתוב את התשובה שלך כאן..."
-                        className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/30 text-white text-lg text-center"
-                      />
+                  <div className="w-full flex-1 min-h-0 mt-2 flex flex-col items-center justify-end">
+                    {currentQuestion.qType === "typing" ? (
+                      <div className="w-full mb-3 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
+                        <div className="text-center mb-3">
+                          <input
+                            dir="ltr"
+                            type="text"
+                            value={typedAnswer}
+                            onChange={(e) => setTypedAnswer(e.target.value)}
+                            onKeyPress={(e) => {
+                              if (e.key === "Enter" && !selectedAnswer && typedAnswer.trim() !== "") {
+                                handleAnswer(typedAnswer.trim());
+                              }
+                            }}
+                            disabled={!!selectedAnswer || !gameActive}
+                            placeholder="כתוב את התשובה שלך כאן..."
+                            className="w-full max-w-[300px] px-4 py-4 rounded-lg bg-black/40 border border-white/20 text-white text-2xl font-bold text-center disabled:opacity-50"
+                          />
+                        </div>
+                        <div className="flex gap-2 justify-center">
+                          <button
+                            onClick={() => {
+                              if (!typedAnswer.trim()) return;
+                              handleAnswer(typedAnswer.trim());
+                            }}
+                            disabled={!!selectedAnswer || !gameActive || !typedAnswer.trim()}
+                            className="px-6 py-3 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/60 font-bold text-lg"
+                          >
+                            ✅ בדוק תשובה
+                          </button>
+                          {selectedAnswer && (
+                            <button
+                              onClick={() => {
+                                setSelectedAnswer(null);
+                                setTypedAnswer("");
+                                setFeedback(null);
+                                generateNewQuestion();
+                              }}
+                              className="px-6 py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-lg"
+                            >
+                              שאלה הבאה
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-3 w-full mb-3">
+                        {currentQuestion.answers.map((answer, idx) => {
+                          const isSelected = selectedAnswer === answer;
+                          const isCorrect =
+                            String(answer).trim().toLowerCase() ===
+                            String(currentQuestion.correctAnswer).trim().toLowerCase();
+                          const isWrong = isSelected && !isCorrect;
+
+                          return (
+                            <button
+                              key={idx}
+                              onClick={() => handleAnswer(answer)}
+                              disabled={!!selectedAnswer}
+                              className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                                isCorrect && isSelected
+                                  ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                  : isWrong
+                                  ? "bg-red-500/30 border-red-400 text-red-200"
+                                  : selectedAnswer &&
+                                      String(answer).trim().toLowerCase() ===
+                                        String(currentQuestion.correctAnswer).trim().toLowerCase()
+                                  ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                  : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                              }`}
+                            >
+                              {answer}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    <div className="w-full flex justify-center gap-2 flex-wrap mb-2 min-h-[2.75rem]" dir="rtl">
+                      {mode === "learning" && currentQuestion && (
+                        <button
+                          onClick={() => setShowSolution(true)}
+                          className={learningExplainOpenBtn}
+                        >
+                          📘 הסבר מלא
+                        </button>
+                      )}
                       <button
                         onClick={() => {
-                          if (!typedAnswer.trim()) return;
-                          handleAnswer(typedAnswer);
+                          if (hintUsed || selectedAnswer) return;
+                          setShowHint(true);
+                          setHintUsed(true);
                         }}
-                        disabled={!!selectedAnswer || !gameActive || !typedAnswer.trim()}
-                        className="mt-2 px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/60 font-bold text-sm"
+                        disabled={hintUsed || !!selectedAnswer}
+                        className={`${learningHintTriggerBtn} ${
+                          hintUsed || selectedAnswer ? "opacity-60 cursor-not-allowed" : ""
+                        }`}
                       >
-                        ✅ בדוק תשובה
+                        💡 רמז
                       </button>
+                      {(mode === "learning" || mode === "practice") &&
+                        previousExplanationQuestion && (
+                          <button
+                            type="button"
+                            onClick={openPreviousExplanation}
+                            className={learningExplainOpenBtn}
+                          >
+                            🕘 תרגיל קודם
+                          </button>
+                        )}
                     </div>
-                  ) : (
-                  <div className="grid grid-cols-2 gap-3 w-full mb-3">
-                    {currentQuestion.answers.map((answer, idx) => {
-                      const isSelected = selectedAnswer === answer;
-                        const isCorrect =
-                          String(answer).trim().toLowerCase() ===
-                          String(currentQuestion.correctAnswer).trim().toLowerCase();
-                      const isWrong = isSelected && !isCorrect;
-
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => handleAnswer(answer)}
-                          disabled={!!selectedAnswer}
-                          className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                            isCorrect && isSelected
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : isWrong
-                              ? "bg-red-500/30 border-red-400 text-red-200"
-                              : selectedAnswer &&
-                                  String(answer).trim().toLowerCase() ===
-                                    String(currentQuestion.correctAnswer)
-                                      .trim()
-                                      .toLowerCase()
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : "bg-black/30 border-white/15 text-white hover:border-white/40"
-                          }`}
-                        >
-                          {answer}
-                        </button>
-                      );
-                    })}
                   </div>
-                  )}
                 </div>
               )}
 
@@ -3207,10 +3304,10 @@ const refreshMonthlyProgress = useCallback(() => {
           )}
 
           {/* חלון הסבר מלא - Modal גדול ומרכזי */}
-          {showSolution && currentQuestion && (
+          {isShowingAnySolution && explanationQuestion && (
             <div
               className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center px-4"
-              onClick={() => setShowSolution(false)}
+              onClick={closeExplanationModal}
             >
               <div
                 className="bg-gradient-to-br from-emerald-950 to-emerald-900 border border-emerald-400/60 rounded-2xl p-4 w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl"
@@ -3221,10 +3318,12 @@ const refreshMonthlyProgress = useCallback(() => {
                     className="text-lg font-bold text-emerald-100"
                     dir="rtl"
                   >
-                    {"\u200Fאיך פותרים את השאלה?"}
+                    {showPreviousSolution
+                      ? "פתרון התרגיל הקודם"
+                      : "\u200Fאיך פותרים את השאלה?"}
                   </h3>
                   <button
-                    onClick={() => setShowSolution(false)}
+                    onClick={closeExplanationModal}
                     className="text-emerald-200 hover:text-white text-xl leading-none px-2"
                   >
                     ✖
@@ -3236,13 +3335,13 @@ const refreshMonthlyProgress = useCallback(() => {
                     className="text-base font-bold text-white mb-3 text-center"
                     style={{ direction: "rtl", unicodeBidi: "plaintext" }}
                   >
-                    {currentQuestion.stem || currentQuestion.question}
+                    {explanationQuestion.stem || explanationQuestion.question}
                   </p>
                   {/* כאן הצעדים */}
                   <div className="space-y-1 text-sm" style={{ direction: "rtl" }}>
                     {getSolutionSteps(
-                      currentQuestion,
-                      currentQuestion.topic,
+                      explanationQuestion,
+                      explanationQuestion.topic,
                       grade
                     ).map((step, idx) => (
                       <div key={idx}>{step}</div>
@@ -3251,7 +3350,7 @@ const refreshMonthlyProgress = useCallback(() => {
                 </div>
                 <div className="mt-3 flex justify-center">
                   <button
-                    onClick={() => setShowSolution(false)}
+                    onClick={closeExplanationModal}
                     className="px-6 py-2 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 text-sm font-bold"
                     dir="rtl"
                   >
