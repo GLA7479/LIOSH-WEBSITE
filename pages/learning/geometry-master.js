@@ -226,6 +226,7 @@ export default function GeometryMaster() {
   const [showDailyChallenge, setShowDailyChallenge] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
+  const [textAnswer, setTextAnswer] = useState("");
   const [showSolution, setShowSolution] = useState(false);
   const [showPreviousSolution, setShowPreviousSolution] = useState(false);
   const [previousExplanationQuestion, setPreviousExplanationQuestion] = useState(null);
@@ -524,6 +525,7 @@ useEffect(() => {
         }
         setCurrentQuestion(replayQ);
         setSelectedAnswer(null);
+        setTextAnswer("");
         setFeedback(null);
         setQuestionStartTime(Date.now());
         setShowHint(false);
@@ -737,6 +739,7 @@ useEffect(() => {
     }
     setCurrentQuestion(question);
     setSelectedAnswer(null);
+    setTextAnswer("");
     setFeedback(null);
     setQuestionStartTime(Date.now());
     setShowHint(false);
@@ -796,7 +799,21 @@ useEffect(() => {
 
     setSelectedAnswer(answer);
     solvedCountRef.current += 1;
-    const isCorrect = answer === currentQuestion.correctAnswer;
+    const normalizeText = (v) => String(v ?? "").trim();
+    const toNumeric = (v) => {
+      if (typeof v === "number" && Number.isFinite(v)) return v;
+      if (typeof v !== "string") return null;
+      const cleaned = v.trim().replace(",", ".");
+      if (!cleaned) return null;
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : null;
+    };
+    const answerNum = toNumeric(answer);
+    const correctNum = toNumeric(currentQuestion.correctAnswer);
+    const isCorrect =
+      answerNum != null && correctNum != null
+        ? Math.abs(answerNum - correctNum) < 1e-9
+        : normalizeText(answer) === normalizeText(currentQuestion.correctAnswer);
 
     pendingGeometryTimeTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
@@ -1251,6 +1268,7 @@ useEffect(() => {
     setQuestionStartTime(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    setTextAnswer("");
     setLives(mode === "challenge" ? 3 : 0);
     setShowHint(false);
     setHintUsed(false);
@@ -1284,6 +1302,7 @@ useEffect(() => {
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
+    setTextAnswer("");
     saveRunToStorage();
   }
 
@@ -2083,7 +2102,52 @@ useEffect(() => {
                   </div>
                     <div className="w-full flex-1 min-h-0 mt-2 flex flex-col items-center justify-end">
                       {currentQuestion.params?.kind !== "no_question" &&
-                        currentQuestion.answers && (
+                        ((mode === "learning" || mode === "practice") ? (
+                          <div className="w-full mb-3 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
+                            <div className="text-center mb-3">
+                              <input
+                                type="text"
+                                value={textAnswer}
+                                onChange={(e) => setTextAnswer(e.target.value)}
+                                onKeyPress={(e) => {
+                                  if (e.key === "Enter" && !selectedAnswer && textAnswer.trim() !== "") {
+                                    handleAnswer(textAnswer.trim());
+                                  }
+                                }}
+                                placeholder="תשובה"
+                                disabled={!!selectedAnswer}
+                                className="w-full max-w-[300px] px-4 py-4 rounded-lg bg-black/40 border border-white/20 text-white text-2xl font-bold text-center disabled:opacity-50"
+                                autoFocus
+                              />
+                            </div>
+                            <div className="flex gap-2 justify-center">
+                              <button
+                                onClick={() => {
+                                  if (!selectedAnswer && textAnswer.trim() !== "") {
+                                    handleAnswer(textAnswer.trim());
+                                  }
+                                }}
+                                disabled={!!selectedAnswer || textAnswer.trim() === ""}
+                                className="px-6 py-3 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                בדוק
+                              </button>
+                              {selectedAnswer && (
+                                <button
+                                  onClick={() => {
+                                    setSelectedAnswer(null);
+                                    setTextAnswer("");
+                                    setFeedback(null);
+                                    generateNewQuestion();
+                                  }}
+                                  className="px-6 py-3 rounded-lg bg-blue-500/80 hover:bg-blue-500 font-bold text-lg"
+                                >
+                                  שאלה הבאה
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ) : currentQuestion.answers ? (
                           <div className="grid grid-cols-2 gap-2.5 w-full mb-3">
                             {currentQuestion.answers.map((answer, idx) => {
                               const isSelected = selectedAnswer === answer;
@@ -2112,7 +2176,7 @@ useEffect(() => {
                               );
                             })}
                           </div>
-                        )}
+                        ) : null)}
 
                       {/* שורת כפתורים קבועה (מתחת לאזור התשובות, כמו Math) */}
                       <div className="w-full flex justify-center gap-2 flex-wrap mb-2 min-h-[2.75rem]" dir="rtl">

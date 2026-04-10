@@ -3489,7 +3489,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   </div>
 
                   {/* אזור התשובות/בקרים (קבוע בתחתית) */}
-                  <div className="w-full flex-1 min-h-0 mt-2 flex flex-col justify-end">
+                  <div className="w-full flex-1 min-h-0 mt-2 flex flex-col items-center justify-end">
                     {/* בדיקה אם צריך להציג כפתורי בחירה או שדה קלט */}
                     {(() => {
                     // נושאים שצריכים כפתורי בחירה: שברים, יחס, השוואה, קנה מידה, גורמים וכפולות, חילוק עם שארית
@@ -3569,13 +3569,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     } else if ((mode === "learning" || mode === "practice") && !practiceMode) {
                       // שדה קלט טקסט למצבי למידה ותרגול
                       return (
-                        <div
-                          className="mb-4 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50"
-                          style={{
-                            transform: `scale(${ANSWER_AREA_SCALE})`,
-                            transformOrigin: "top center",
-                          }}
-                        >
+                        <div className="w-full mb-3 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
                           <div className="text-center mb-3">
                             <input
                               type="number"
