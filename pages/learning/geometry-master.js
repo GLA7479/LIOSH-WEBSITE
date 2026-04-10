@@ -77,6 +77,7 @@ import {
   getStreakReward,
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
+import { getQuestionFontStyle } from "../../utils/learning-question-font";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -2039,13 +2040,26 @@ useEffect(() => {
                         <>
                           <p
                             className="text-xl text-center text-white mb-1"
-                            style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                            style={{
+                              direction: "rtl",
+                              unicodeBidi: "plaintext",
+                              ...getQuestionFontStyle({
+                                text: currentQuestion.questionLabel,
+                                kind: "label",
+                              }),
+                            }}
                           >
                             {currentQuestion.questionLabel}
                           </p>
                           <p
                             className="text-3xl text-center text-white font-bold whitespace-nowrap"
-                            style={{ direction: "ltr", unicodeBidi: "plaintext" }}
+                            style={{
+                              direction: "ltr",
+                              unicodeBidi: "plaintext",
+                              ...getQuestionFontStyle({
+                                text: currentQuestion.exerciseText,
+                              }),
+                            }}
                           >
                             {currentQuestion.exerciseText}
                           </p>
@@ -2053,7 +2067,13 @@ useEffect(() => {
                       ) : (
                         <div
                           className="text-3xl font-black text-white text-center"
-                          style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                          style={{
+                            direction: "rtl",
+                            unicodeBidi: "plaintext",
+                            ...getQuestionFontStyle({
+                              text: currentQuestion.question,
+                            }),
+                          }}
                         >
                           {currentQuestion.question}
                         </div>

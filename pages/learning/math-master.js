@@ -85,6 +85,7 @@ import {
   getStreakReward,
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
+import { getQuestionFontStyle } from "../../utils/learning-question-font";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -3421,13 +3422,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                               style={{
                                 direction: "rtl",
                                 unicodeBidi: "plaintext",
-                                wordBreak: "break-word",
-                                overflowWrap: "break-word",
-                                transform: shouldScaleQuestionText
-                                  ? `scale(${QUESTION_TEXT_SCALE})`
-                                  : undefined,
-                                transformOrigin: "center center",
-                                display: "inline-block",
+                                ...getQuestionFontStyle({
+                                  text: currentQuestion.questionLabel,
+                                  kind: "label",
+                                }),
                               }}
                             >
                               {currentQuestion.questionLabel}
@@ -3443,8 +3441,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                               style={{
                                 direction: "ltr",
                                 unicodeBidi: "plaintext",
-                                wordBreak: "break-word",
-                                overflowWrap: "break-word",
+                                ...getQuestionFontStyle({
+                                  text: getVerticalExercise() || currentQuestion.exerciseText,
+                                }),
                               }}
                             >
                               {getVerticalExercise() || currentQuestion.exerciseText}
@@ -3461,13 +3460,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                               style={{
                                 direction: "ltr",
                                 unicodeBidi: "plaintext",
-                                wordBreak: "break-word",
-                                overflowWrap: "break-word",
-                                transform: shouldScaleQuestionText
-                                  ? `scale(${QUESTION_TEXT_SCALE})`
-                                  : undefined,
-                                transformOrigin: "center center",
-                                display: "inline-block",
+                                ...getQuestionFontStyle({
+                                  text: currentQuestion.exerciseText,
+                                }),
                               }}
                             >
                               {currentQuestion.exerciseText}
@@ -3482,13 +3477,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           style={{
                             direction: currentQuestion.isStory ? "rtl" : "ltr",
                             unicodeBidi: "plaintext",
-                            wordBreak: "break-word",
-                            overflowWrap: "break-word",
-                            transform: shouldScaleQuestionText
-                              ? `scale(${QUESTION_TEXT_SCALE})`
-                              : undefined,
-                            transformOrigin: "center center",
-                            display: "inline-block",
+                            ...getQuestionFontStyle({
+                              text: currentQuestion.question,
+                            }),
                           }}
                         >
                           {currentQuestion.question}
@@ -3498,7 +3489,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   </div>
 
                   {/* אזור התשובות/בקרים (קבוע בתחתית) */}
-                  <div className="w-full shrink-0 mt-2">
+                  <div className="w-full flex-1 min-h-0 mt-2 flex flex-col justify-end">
                     {/* בדיקה אם צריך להציג כפתורי בחירה או שדה קלט */}
                     {(() => {
                     // נושאים שצריכים כפתורי בחירה: שברים, יחס, השוואה, קנה מידה, גורמים וכפולות, חילוק עם שארית
@@ -3681,7 +3672,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   {currentQuestion && (
                     <div className="mt-2 flex flex-col gap-2 w-full">
                       {/* כפתורי רמז/הסבר */}
-                      <div className="-mt-6 flex gap-2 justify-center flex-wrap w-full max-w-full" dir="rtl">
+                      <div className="mt-0 flex gap-2 justify-center flex-wrap w-full max-w-full" dir="rtl">
                         {mode === "learning" && (
                           <button
                             type="button"
