@@ -45,6 +45,12 @@ export default function ParentReport() {
     return dateStr;
   };
 
+  const formatMode = (mode) => {
+    if (!mode) return "לא זמין";
+    if (typeof mode !== "string") return mode;
+    return mode.toLowerCase() === "marathon" ? "מרתון" : mode;
+  };
+
   // בדיקת גודל מסך
   useEffect(() => {
     const checkMobile = () => {
@@ -633,7 +639,7 @@ export default function ParentReport() {
                             {data.grade || "לא זמין"}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
-                            {data.mode ?? "לא זמין"}
+                            {formatMode(data.mode)}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
                             {data.lastSessionAt ?? "לא זמין"}
@@ -683,7 +689,7 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
-                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{formatMode(data.mode)}</span>
                         </div>
                         <div>
                           <span className="text-white/60">תאריך אחרון:</span>{" "}
@@ -770,7 +776,7 @@ export default function ParentReport() {
                             {data.grade || "לא זמין"}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
-                            {data.mode ?? "לא זמין"}
+                            {formatMode(data.mode)}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
                             {data.lastSessionAt ?? "לא זמין"}
@@ -820,7 +826,7 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
-                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{formatMode(data.mode)}</span>
                         </div>
                         <div>
                           <span className="text-white/60">תאריך אחרון:</span>{" "}
@@ -908,7 +914,7 @@ export default function ParentReport() {
                             {data.grade || "לא זמין"}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
-                            {data.mode ?? "לא זמין"}
+                            {formatMode(data.mode)}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
                             {data.lastSessionAt ?? "לא זמין"}
@@ -958,7 +964,7 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
-                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{formatMode(data.mode)}</span>
                         </div>
                         <div>
                           <span className="text-white/60">תאריך אחרון:</span>{" "}
@@ -1046,7 +1052,7 @@ export default function ParentReport() {
                             {data.grade || "לא זמין"}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
-                            {data.mode ?? "לא זמין"}
+                            {formatMode(data.mode)}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
                             {data.lastSessionAt ?? "לא זמין"}
@@ -1100,7 +1106,7 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
-                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{formatMode(data.mode)}</span>
                         </div>
                         <div>
                           <span className="text-white/60">תאריך אחרון:</span>{" "}
@@ -1188,7 +1194,7 @@ export default function ParentReport() {
                             {data.grade || "לא זמין"}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
-                            {data.mode ?? "לא זמין"}
+                            {formatMode(data.mode)}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
                             {data.lastSessionAt ?? "לא זמין"}
@@ -1242,7 +1248,7 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
-                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{formatMode(data.mode)}</span>
                         </div>
                         <div>
                           <span className="text-white/60">תאריך אחרון:</span>{" "}
@@ -1330,7 +1336,7 @@ export default function ParentReport() {
                             {data.grade || "לא זמין"}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
-                            {data.mode ?? "לא זמין"}
+                            {formatMode(data.mode)}
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap tabular-nums">
                             {data.lastSessionAt ?? "לא זמין"}
@@ -1384,7 +1390,7 @@ export default function ParentReport() {
                           <span className="text-white/60">כיתה:</span> <span className="text-white/90">{data.grade || "לא זמין"}</span>
                         </div>
                         <div>
-                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{data.mode ?? "לא זמין"}</span>
+                          <span className="text-white/60">מצב:</span> <span className="text-white/90">{formatMode(data.mode)}</span>
                         </div>
                         <div>
                           <span className="text-white/60">תאריך אחרון:</span>{" "}
