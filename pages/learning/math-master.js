@@ -330,6 +330,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
   // הסבר מפורט לשאלה
   const [showSolution, setShowSolution] = useState(false);
+  const [showPreviousSolution, setShowPreviousSolution] = useState(false);
+  const [previousExplanationQuestion, setPreviousExplanationQuestion] = useState(null);
   const [animationStep, setAnimationStep] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
   
@@ -410,6 +412,14 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   const stepExplanation = useMemo(
     () => showSolution && currentQuestion ? buildStepExplanation(currentQuestion) : null,
     [showSolution, currentQuestion]
+  );
+
+  const previousStepExplanation = useMemo(
+    () =>
+      showPreviousSolution && previousExplanationQuestion
+        ? buildStepExplanation(previousExplanationQuestion)
+        : null,
+    [showPreviousSolution, previousExplanationQuestion]
   );
 
   // בניית צעדי אנימציה
@@ -1003,6 +1013,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setTotalQuestions(0);
     setAvgTime(0);
     setQuestionStartTime(null);
+    setShowPreviousSolution(false);
+    setPreviousExplanationQuestion(null);
   }
 
   const accumulateQuestionTime = useCallback(() => {
@@ -1094,6 +1106,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           }
 
           mathTrackingOperationKeyRef.current = replay.operation;
+          if (currentQuestion) setPreviousExplanationQuestion(currentQuestion);
           setCurrentQuestion(replay);
           setSelectedAnswer(null);
           setTextAnswer("");
@@ -1222,6 +1235,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     }
 
     mathTrackingOperationKeyRef.current = question.operation;
+    if (currentQuestion) setPreviousExplanationQuestion(currentQuestion);
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setTextAnswer("");
@@ -1362,6 +1376,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setGameActive(false);
     mathTrackingOperationKeyRef.current = null;
     setCurrentQuestion(null);
+    setShowPreviousSolution(false);
     setFeedback(null);
     setSelectedAnswer(null);
     setTextAnswer("");
@@ -3069,12 +3084,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                         )}
 
                         {errorExplanation && (
-                          <div className="bg-rose-500/10 border border-rose-400/50 rounded-lg p-3 text-right">
-                            <div className="text-xs font-semibold text-rose-200/95 mb-1.5 tracking-tight">
+                          <div className="bg-[#0a1222]/95 border border-rose-300/60 rounded-lg p-3 text-right shadow-xl backdrop-blur-sm">
+                            <div className="text-xs font-semibold text-rose-100 mb-1.5 tracking-tight">
                               למה הטעות קרתה?
                             </div>
                             <div
-                              className="text-sm text-rose-100/95 leading-relaxed"
+                              className="text-sm text-rose-50 leading-relaxed"
                               style={learningMixedHebrewMathStyle}
                             >
                               {errorExplanation}
@@ -3665,6 +3680,16 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                             📖 הסבר צעד־אחר־צעד
                           </button>
                         )}
+                        {(mode === "learning" || mode === "practice") &&
+                          previousExplanationQuestion && (
+                            <button
+                              type="button"
+                              onClick={() => setShowPreviousSolution(true)}
+                              className={learningExplainOpenBtn}
+                            >
+                              🕘 הסבר לתרגיל הקודם
+                            </button>
+                          )}
                         <button
                           type="button"
                           onClick={() => setShowHint((prev) => !prev)}
@@ -4504,6 +4529,94 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           </div>
                         );
                       })()}
+
+                      {/* חלון הסבר לתרגיל הקודם - במצבי למידה/תרגול */}
+                      {showPreviousSolution &&
+                        previousExplanationQuestion &&
+                        (() => {
+                          const info = previousStepExplanation;
+                          if (!info) return null;
+
+                          return (
+                            <div
+                              className={learningModalOverlay}
+                              onClick={() => setShowPreviousSolution(false)}
+                            >
+                              <div
+                                className={learningModalPanel}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <div className={learningModalHeader}>
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowPreviousSolution(false)}
+                                    className={learningModalCloseBtn}
+                                    aria-label="סגור"
+                                  >
+                                    ✖
+                                  </button>
+                                  <h3 className={learningModalTitle} dir="rtl">
+                                    {"\u200Fאיך פתרנו את התרגיל הקודם?"}
+                                  </h3>
+                                  <span className="w-10 shrink-0" aria-hidden />
+                                </div>
+
+                                <div
+                                  className="flex-1 overflow-y-auto px-4 pb-2 min-h-0"
+                                  dir="rtl"
+                                >
+                                  <div className={`mb-3 ${learningQuestionBox}`} dir="ltr">
+                                    <div
+                                      className={`${learningQuestionText} text-center`}
+                                      style={{
+                                        direction: "ltr",
+                                        unicodeBidi: "plaintext",
+                                        wordBreak: "break-word",
+                                        overflowWrap: "break-word",
+                                      }}
+                                    >
+                                      {info.exercise ||
+                                        previousExplanationQuestion.exerciseText ||
+                                        previousExplanationQuestion.question}
+                                    </div>
+                                  </div>
+                                  {info.vertical && (
+                                    <div className="mb-3 rounded-lg bg-emerald-900/50 border border-emerald-500/15 px-3 py-2">
+                                      <pre
+                                        dir="ltr"
+                                        className="text-center font-mono text-base leading-relaxed whitespace-pre text-emerald-100"
+                                      >
+                                        {info.vertical}
+                                      </pre>
+                                    </div>
+                                  )}
+                                  <div
+                                    className="space-y-2"
+                                    style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                                  >
+                                    {info.steps.map((step, idx) => (
+                                      <div key={idx} className={learningExplBody}>
+                                        {step}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                <div className={learningModalFooter}>
+                                  <div className="flex justify-center">
+                                    <button
+                                      type="button"
+                                      onClick={() => setShowPreviousSolution(false)}
+                                      className={learningPrimaryCloseBtn}
+                                    >
+                                      סגור
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })()}
                     </div>
                   )}
                   </div>
