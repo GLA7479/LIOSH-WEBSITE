@@ -8,6 +8,7 @@ import {
   SCIENCE_GRADE_ORDER,
 } from "../../data/science-curriculum";
 import { trackScienceTopicTime } from "../../utils/science-time-tracking";
+import { applyLearningShellLayoutVars } from "../../utils/learning-shell-layout";
 import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
@@ -927,20 +928,23 @@ useEffect(() => {
   // ----- LAYOUT HEIGHT -----
   useEffect(() => {
     if (!wrapRef.current || !mounted) return;
+    let resizeTimer = null;
     const calc = () => {
-      const rootH = window.visualViewport?.height ?? window.innerHeight;
-      const headH = headerRef.current?.offsetHeight || 0;
-      const controlsH = controlsRef.current?.offsetHeight || 40;
-      document.documentElement.style.setProperty("--head-h", headH + "px");
-      const used = headH + controlsH + 160;
-      const freeH = Math.max(260, rootH - used);
-      document.documentElement.style.setProperty("--game-h", freeH + "px");
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        applyLearningShellLayoutVars({
+          wrapRef,
+          headerRef,
+          controlsRef,
+        });
+      }, 150);
     };
     const timer = setTimeout(calc, 100);
-    window.addEventListener("resize", calc);
+    window.addEventListener("resize", calc, { passive: true });
     window.visualViewport?.addEventListener("resize", calc);
     return () => {
       clearTimeout(timer);
+      if (resizeTimer) clearTimeout(resizeTimer);
       window.removeEventListener("resize", calc);
       window.visualViewport?.removeEventListener("resize", calc);
     };
@@ -1973,16 +1977,17 @@ function recordSessionProgress() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-b from-[#050816] to-[#0b1121]" dir="rtl">
+      <div className="flex flex-col h-dvh max-h-dvh min-h-0 overflow-hidden bg-gradient-to-b from-[#050816] to-[#0b1121]" dir="rtl">
         <div
           ref={wrapRef}
-          className="relative overflow-hidden game-page-mobile flex flex-col"
+          className="relative overflow-hidden game-page-mobile learning-master-fill flex flex-col flex-1 min-h-0 w-full"
           style={{
-            minHeight: "100vh",
-            height: "100dvh",
             maxWidth: "1200px",
             width: "min(1200px, 100vw)",
-            padding: "clamp(12px, 3vw, 32px)",
+            paddingTop: "clamp(12px, 3vw, 32px)",
+            paddingLeft: "clamp(12px, 3vw, 32px)",
+            paddingRight: "clamp(12px, 3vw, 32px)",
+            paddingBottom: 0,
             margin: "0 auto"
           }}
         >
@@ -2028,9 +2033,7 @@ function recordSessionProgress() {
 
         {/* CONTENT */}
         <div
-          className={`relative flex flex-1 min-h-0 flex-col items-center justify-start px-4 min-w-0 ${
-            gameActive ? "overflow-hidden" : "overflow-y-auto overflow-x-hidden"
-          }`}
+          className="relative flex flex-1 min-h-0 flex-col items-center justify-start px-4 min-w-0 overflow-y-auto overflow-x-hidden [-webkit-overflow-scrolling:touch]"
           style={{
             height: "100%",
             maxHeight: "100%",

@@ -25,6 +25,7 @@ import {
   buildStepExplanation,
 } from "../../utils/hebrew-explanations";
 import { trackHebrewTopicTime } from "../../utils/hebrew-time-tracking";
+import { applyLearningShellLayoutVars } from "../../utils/learning-shell-layout";
 import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
@@ -666,36 +667,27 @@ useEffect(() => {
     }
   }, [showLeaderboard, leaderboardLevel]);
 
-  // Dynamic layout calculation - optimized to prevent performance issues
   useEffect(() => {
     if (!wrapRef.current || !mounted) return;
-    
     let resizeTimer = null;
     const calc = () => {
-      // Debounce resize events to prevent excessive recalculations
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        const rootH = window.innerHeight; // Use innerHeight instead of visualViewport
-      const headH = headerRef.current?.offsetHeight || 0;
-      document.documentElement.style.setProperty("--head-h", headH + "px");
-
-      const controlsH = controlsRef.current?.offsetHeight || 40;
-        const used = headH + controlsH + 120 + 40;
-      const freeH = Math.max(300, rootH - used);
-      document.documentElement.style.setProperty("--game-h", freeH + "px");
-      }, 150); // Debounce 150ms
+        applyLearningShellLayoutVars({
+          wrapRef,
+          headerRef,
+          controlsRef,
+        });
+      }, 150);
     };
-    
-    // Initial calculation
     const timer = setTimeout(calc, 100);
-    
-    // Only listen to window resize, not visualViewport (causes too many events)
     window.addEventListener("resize", calc, { passive: true });
-    
+    window.visualViewport?.addEventListener("resize", calc);
     return () => {
       clearTimeout(timer);
       if (resizeTimer) clearTimeout(resizeTimer);
       window.removeEventListener("resize", calc);
+      window.visualViewport?.removeEventListener("resize", calc);
     };
   }, [mounted]);
 
@@ -1561,16 +1553,17 @@ useEffect(() => {
           100% { opacity: 1; transform: scale(1); }
         }
       `}</style>
-      <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928]" dir="rtl">
+      <div className="flex flex-col h-dvh max-h-dvh min-h-0 overflow-hidden bg-gradient-to-b from-[#0a0f1d] to-[#141928]" dir="rtl">
         <div
           ref={wrapRef}
-          className="relative overflow-hidden game-page-mobile flex flex-col"
+          className="relative overflow-hidden game-page-mobile learning-master-fill flex flex-col flex-1 min-h-0 w-full"
           style={{
-            minHeight: "100vh",
-            height: "100dvh",
             maxWidth: "1200px",
             width: "min(1200px, 100vw)",
-            padding: "clamp(12px, 3vw, 32px)",
+            paddingTop: "clamp(12px, 3vw, 32px)",
+            paddingLeft: "clamp(12px, 3vw, 32px)",
+            paddingRight: "clamp(12px, 3vw, 32px)",
+            paddingBottom: 0,
             margin: "0 auto"
           }}
         >
@@ -1613,13 +1606,12 @@ useEffect(() => {
         </div>
 
         <div
-          className="relative flex flex-1 min-h-0 flex-col items-center justify-start px-4 overflow-hidden"
+          className="relative flex flex-1 min-h-0 flex-col items-center justify-start px-4 overflow-y-auto overflow-x-hidden [-webkit-overflow-scrolling:touch]"
           style={{
             height: "100%",
             maxHeight: "100%",
             paddingTop: "calc(var(--head-h, 56px) + 8px)",
             paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
-            overflow: "hidden"
           }}
         >
           <div className="text-center mb-3">
