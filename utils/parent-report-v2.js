@@ -249,7 +249,8 @@ function buildRowSummary({
     levelKey,
     mode: modeStr,
     modeKey,
-    displayName: `${topicOpLabel} | ${modeStr}`,
+    // Topic/op only — mode appears in the dedicated מצב column in parent-report UI.
+    displayName: topicOpLabel,
   };
   if (subject === "math") base.improvement = null;
   return base;
