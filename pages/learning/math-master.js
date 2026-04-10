@@ -1886,7 +1886,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           setFeedback(null);
           setTimeLeft(null);
         }, 2000);
-      } else {
+      } else if (mode === "challenge") {
         // מצב Challenge – עובדים עם חיים
         setFeedback(
           `לא נכון 😔 התשובה: \u2066${currentQuestion.correctAnswer}\u2069 ❌ (-1 ❤️)`
@@ -1919,6 +1919,22 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
           return nextLives;
         });
+      } else {
+        // מצבי speed / marathon / practice - לא יוצאים מהמשחק על טעות
+        setFeedback(
+          `לא נכון 😔 התשובה הנכונה: \u2066${currentQuestion.correctAnswer}\u2069 ❌`
+        );
+        setTimeout(() => {
+          generateNewQuestion();
+          setSelectedAnswer(null);
+          setTextAnswer("");
+          setFeedback(null);
+          if (mode === "speed") {
+            setTimeLeft(10);
+          } else {
+            setTimeLeft(null);
+          }
+        }, 1500);
       }
     }
   }
