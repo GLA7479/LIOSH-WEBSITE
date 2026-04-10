@@ -3011,7 +3011,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               {currentQuestion && (
                 <div
                   ref={gameRef}
-                  className="relative w-full max-w-lg flex flex-col items-center justify-start mb-2 flex-1"
+                  className="relative w-full max-w-lg flex flex-col items-center justify-center mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
                   {/* שכבת הודעות שלא משנה פריסה (אין מקום שמור / אין מיקרו-סק롤) */}
@@ -3080,8 +3080,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     </button>
                   )}
 
-                  {/* אזור שאלה יציב למניעת קפיצות בפריסת התשובות */}
-                  <div className="w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2">
+                  {/* אזור השאלה (גמיש) סופג שינויי גובה בין מאוזן/מאונך כדי למנוע קפיצות בתשובות */}
+                  <div className="w-full flex-1 min-h-0 flex flex-col items-center justify-center">
                     {/* ויזואליזציה של מספרים (כיתות א'-ג') */}
                     {(grade === "g1" || grade === "g2" || grade === "g3") &&
                       (currentQuestion.operation === "addition" ||
@@ -3371,7 +3371,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
                     {/* הפרדה בין שורת השאלה לשורת התרגיל */}
                     {currentQuestion.exerciseText ? (
-                      <div className="relative w-full pr-2 pl-2 pt-0">
+                      <div className="relative w-full mb-2 pr-2 pl-2 pt-0">
                         {currentQuestion.questionLabel && (
                           <div className="w-full flex justify-center">
                             <p
@@ -3395,7 +3395,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
                         {/* תצוגת התרגיל - מאוזן או מאונך */}
                         {isVerticalDisplay && canDisplayVertically ? (
-                          <div className="flex justify-center w-full max-w-full px-2">
+                          <div className="mb-4 flex justify-center w-full max-w-full px-2">
                             <pre
                               className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
                               style={{
@@ -3411,7 +3411,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                         ) : (
                           <div className="w-full flex justify-center">
                             <p
-                              className={`text-4xl text-center text-white font-bold break-words overflow-wrap-anywhere max-w-full px-2 ${
+                              className={`text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2 ${
                                 currentQuestion.operation === "sequences"
                                   ? "whitespace-normal"
                                   : ""
@@ -3436,7 +3436,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     ) : (
                       <div className="w-full flex justify-center">
                         <div
-                          className="text-4xl font-black text-white text-center break-words overflow-wrap-anywhere max-w-full px-2"
+                          className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
                           style={{
                             direction: currentQuestion.isStory ? "rtl" : "ltr",
                             unicodeBidi: "plaintext",
@@ -3455,10 +3455,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                     )}
                   </div>
 
-                  {/* אזור התשובות/בקרים (קבוע בתחתית) */}
-                  <div className="w-full shrink-0 mt-2">
-                    {/* בדיקה אם צריך להציג כפתורי בחירה או שדה קלט */}
-                    {(() => {
+                  {/* בדיקה אם צריך להציג כפתורי בחירה או שדה קלט */}
+                  {(() => {
                     // נושאים שצריכים כפתורי בחירה: שברים, יחס, השוואה, קנה מידה, גורמים וכפולות, חילוק עם שארית
                     const needsChoiceButtons = 
                       currentQuestion.operation === "fractions" ||
@@ -3529,7 +3527,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                   {renderAnswerLabel(answer)}
                                 </button>
                               );
-                            })}
+                  })}
                           </div>
                         </div>
                       );
@@ -3700,6 +3698,21 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       </button>
                           </div>
                         )}
+
+                      {/* תיבת רמז */}
+                      {showHint && hintText && (
+                        <div className="w-full max-w-lg mx-auto bg-blue-500/10 border border-blue-400/50 rounded-lg p-3 text-right">
+                          <div className="text-xs font-semibold text-blue-200/95 mb-1.5 tracking-tight">
+                            רמז
+                          </div>
+                          <div
+                            className="text-sm text-blue-100/95 leading-relaxed"
+                            style={learningMixedHebrewMathStyle}
+                          >
+                            {hintText}
+                          </div>
+                        </div>
+                      )}
 
                       {/* חלון הסבר מלא - Modal גדול ומרכזי - רק במצב למידה */}
                       {mode === "learning" && showSolution && currentQuestion && (() => {
@@ -4488,9 +4501,23 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           </div>
                         );
                       })()}
+
+                      {/* למה טעיתי? – רק אחרי טעות */}
+                      {errorExplanation && (
+                        <div className="w-full max-w-lg mx-auto bg-rose-500/10 border border-rose-400/50 rounded-lg p-3 text-right">
+                          <div className="text-xs font-semibold text-rose-200/95 mb-1.5 tracking-tight">
+                            למה הטעות קרתה?
+                          </div>
+                          <div
+                            className="text-sm text-rose-100/95 leading-relaxed"
+                            style={learningMixedHebrewMathStyle}
+                          >
+                            {errorExplanation}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
-                  </div>
                 </div>
               )}
 
