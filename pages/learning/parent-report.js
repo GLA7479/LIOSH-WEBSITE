@@ -336,6 +336,27 @@ export default function ParentReport() {
             #parent-report-pdf .parent-report-mobile-only {
               display: none !important;
             }
+
+            /* טבלאות נושאים — הפרדה עדינה בלבד (ללא הדגשת תא נושא) */
+            #parent-report-pdf .parent-report-subject-table {
+              border-collapse: collapse !important;
+            }
+            #parent-report-pdf .parent-report-subject-table thead th {
+              font-weight: 600 !important;
+              border-bottom: 1px solid #9ca3af !important;
+            }
+            #parent-report-pdf .parent-report-subject-table tbody td {
+              border-bottom: 1px solid #d1d5db !important;
+            }
+            #parent-report-pdf .parent-report-subject-table tbody td:first-child {
+              font-weight: 600 !important;
+            }
+
+            /* המלצות — מניעת שבירת פריט באמצע עמוד בלבד */
+            #parent-report-pdf .parent-report-recommendations-print .parent-report-rec-item {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
           }
         `}</style>
       </Head>
@@ -568,7 +589,7 @@ export default function ParentReport() {
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🧮 התקדמות בחשבון</h2>
               {/* Desktop Table */}
               <div className="parent-report-desktop-only hidden md:block mt-2">
-                <table className="w-full table-fixed text-sm">
+                <table className="w-full table-fixed text-sm parent-report-subject-table">
                   <colgroup>
                     <col style={{ width: "15%" }} />
                     <col style={{ width: "8%" }} />
@@ -705,7 +726,7 @@ export default function ParentReport() {
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📐 התקדמות בגאומטריה</h2>
               <div className="parent-report-desktop-only hidden md:block mt-2">
-                <table className="w-full table-fixed text-sm">
+                <table className="w-full table-fixed text-sm parent-report-subject-table">
                   <colgroup>
                     <col style={{ width: "15%" }} />
                     <col style={{ width: "8%" }} />
@@ -843,7 +864,7 @@ export default function ParentReport() {
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📘 התקדמות באנגלית</h2>
               {/* Desktop Table */}
               <div className="parent-report-desktop-only hidden md:block mt-2">
-                <table className="w-full table-fixed text-sm">
+                <table className="w-full table-fixed text-sm parent-report-subject-table">
                   <colgroup>
                     <col style={{ width: "15%" }} />
                     <col style={{ width: "8%" }} />
@@ -981,7 +1002,7 @@ export default function ParentReport() {
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🔬 התקדמות במדעים</h2>
               {/* Desktop Table */}
               <div className="parent-report-desktop-only hidden md:block mt-2">
-                <table className="w-full table-fixed text-sm">
+                <table className="w-full table-fixed text-sm parent-report-subject-table">
                   <colgroup>
                     <col style={{ width: "15%" }} />
                     <col style={{ width: "8%" }} />
@@ -1123,7 +1144,7 @@ export default function ParentReport() {
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">📚 התקדמות בעברית</h2>
               {/* Desktop Table */}
               <div className="parent-report-desktop-only hidden md:block mt-2">
-                <table className="w-full table-fixed text-sm">
+                <table className="w-full table-fixed text-sm parent-report-subject-table">
                   <colgroup>
                     <col style={{ width: "15%" }} />
                     <col style={{ width: "8%" }} />
@@ -1265,7 +1286,7 @@ export default function ParentReport() {
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🗺️ התקדמות במולדת וגאוגרפיה</h2>
               {/* Desktop Table */}
               <div className="parent-report-desktop-only hidden md:block mt-2">
-                <table className="w-full table-fixed text-sm">
+                <table className="w-full table-fixed text-sm parent-report-subject-table">
                   <colgroup>
                     <col style={{ width: "15%" }} />
                     <col style={{ width: "8%" }} />
@@ -1403,13 +1424,13 @@ export default function ParentReport() {
 
           {/* המלצות */}
           {report.analysis.recommendations.length > 0 && (
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
+            <div className="parent-report-recommendations-print bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">💡 המלצות</h2>
               <div className="space-y-2 md:space-y-3">
                 {report.analysis.recommendations.map((rec, idx) => (
                   <div
                     key={idx}
-                    className={`p-2 md:p-3 rounded-lg border ${
+                    className={`parent-report-rec-item p-2 md:p-3 rounded-lg border ${
                       rec.priority === 'success'
                         ? "bg-green-500/20 border-green-400/50"
                         : rec.priority === 'high'
