@@ -191,7 +191,7 @@ function buildRowSummary({
   legacyProgress,
   displayNameFn,
 }) {
-  const timeSeconds = sessions.reduce((s, x) => s + (Number(x.duration) || 0), 0);
+  const timeSeconds = sessions.reduce((s, x) => s + sessionDurationSeconds(x), 0);
   const timeMinutes = Math.round(timeSeconds / 60);
   const { questions, correct } = sumQuestionsCorrect(sessions, legacyProgress);
   const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;

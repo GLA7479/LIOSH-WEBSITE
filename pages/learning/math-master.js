@@ -1227,8 +1227,35 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setMovedCirclesB(0);
   }
 
+  function trackCurrentQuestionTime() {
+    if (!questionStartTime || !currentQuestion) return;
+    const elapsedMs = Date.now() - questionStartTime;
+    if (elapsedMs <= 0) return;
+    sessionSecondsRef.current += Math.min(elapsedMs, 60000);
+    const duration = (Date.now() - questionStartTime) / 1000;
+    if (duration > 0 && duration < 300) {
+      const meta = pendingTimeTrackMetaRef.current;
+      pendingTimeTrackMetaRef.current = null;
+      trackOperationTime(
+        currentQuestion.operation,
+        grade,
+        level,
+        duration,
+        meta && meta.mode != null
+          ? { mode: meta.mode, correct: meta.correct, total: meta.total }
+          : {
+              mode: reportModeFromGameState(mode, focusedPracticeMode),
+              total: 1,
+              correct: undefined,
+            }
+      );
+    }
+    setQuestionStartTime(null);
+  }
+
   function recordSessionProgress() {
     if (!sessionStartRef.current) return;
+    trackCurrentQuestionTime();
     accumulateQuestionTime();
     const elapsedMs = Date.now() - sessionStartRef.current;
     if (elapsedMs <= 0) {
