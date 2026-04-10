@@ -226,6 +226,8 @@ export default function GeometryMaster() {
   const [showHint, setShowHint] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
+  const [showPreviousSolution, setShowPreviousSolution] = useState(false);
+  const [previousExplanationQuestion, setPreviousExplanationQuestion] = useState(null);
   const [animationStep, setAnimationStep] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
   const animationTimeoutsRef = useRef([]);
@@ -516,6 +518,9 @@ useEffect(() => {
           }
         }
 
+        if (currentQuestion && currentQuestion.params?.kind !== "no_question") {
+          setPreviousExplanationQuestion(currentQuestion);
+        }
         setCurrentQuestion(replayQ);
         setSelectedAnswer(null);
         setFeedback(null);
@@ -523,6 +528,7 @@ useEffect(() => {
         setShowHint(false);
         setHintUsed(false);
         setShowSolution(false);
+        setShowPreviousSolution(false);
         setShowTheoryHelp(false);
         setErrorExplanation("");
         return;
@@ -725,6 +731,9 @@ useEffect(() => {
       }
     }
     
+    if (currentQuestion && currentQuestion.params?.kind !== "no_question") {
+      setPreviousExplanationQuestion(currentQuestion);
+    }
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setFeedback(null);
@@ -732,6 +741,7 @@ useEffect(() => {
     setShowHint(false);
     setHintUsed(false);
     setShowSolution(false);
+    setShowPreviousSolution(false);
     setShowTheoryHelp(false);
     setErrorExplanation("");
   };
@@ -1246,6 +1256,7 @@ useEffect(() => {
     setShowBadge(null);
     setShowLevelUp(false);
     setShowSolution(false);
+    setShowPreviousSolution(false);
     setShowTheoryHelp(false);
     setErrorExplanation("");
     
@@ -1320,11 +1331,16 @@ useEffect(() => {
     return TOPICS[t]?.icon + " " + TOPICS[t]?.name || t;
   };
 
+  const isShowingAnySolution = showSolution || showPreviousSolution;
+  const explanationQuestion = showPreviousSolution
+    ? previousExplanationQuestion
+    : currentQuestion;
+
   const geometryAnimationSteps = useMemo(() => {
-    if (!showSolution || !currentQuestion) return null;
+    if (!isShowingAnySolution || !explanationQuestion) return null;
     let steps = buildGeometryAnimationSteps(
-      currentQuestion,
-      currentQuestion.topic,
+      explanationQuestion,
+      explanationQuestion.topic,
       grade
     );
     if (!steps.length) {
@@ -1348,12 +1364,12 @@ useEffect(() => {
       ];
     }
     return steps;
-  }, [showSolution, currentQuestion, grade]);
+  }, [isShowingAnySolution, explanationQuestion, grade]);
 
   useEffect(() => {
     animationTimeoutsRef.current.forEach(clearTimeout);
     animationTimeoutsRef.current = [];
-    if (!showSolution || !autoPlay || !geometryAnimationSteps) return;
+    if (!isShowingAnySolution || !autoPlay || !geometryAnimationSteps) return;
     if (animationStep >= geometryAnimationSteps.length - 1) return;
     const id = setTimeout(() => {
       setAnimationStep((s) => s + 1);
@@ -1363,15 +1379,19 @@ useEffect(() => {
       animationTimeoutsRef.current.forEach(clearTimeout);
       animationTimeoutsRef.current = [];
     };
-  }, [showSolution, autoPlay, animationStep, geometryAnimationSteps]);
+  }, [isShowingAnySolution, autoPlay, animationStep, geometryAnimationSteps]);
 
   useEffect(() => {
     animationTimeoutsRef.current.forEach(clearTimeout);
     animationTimeoutsRef.current = [];
-    if (showSolution && geometryAnimationSteps && geometryAnimationSteps.length > 0) {
+    if (
+      isShowingAnySolution &&
+      geometryAnimationSteps &&
+      geometryAnimationSteps.length > 0
+    ) {
       setAnimationStep(0);
       setAutoPlay(true);
-    } else if (!showSolution) {
+    } else if (!isShowingAnySolution) {
       setAnimationStep(0);
       setAutoPlay(true);
     }
@@ -1379,7 +1399,18 @@ useEffect(() => {
       animationTimeoutsRef.current.forEach(clearTimeout);
       animationTimeoutsRef.current = [];
     };
-  }, [showSolution, geometryAnimationSteps, currentQuestion]);
+  }, [isShowingAnySolution, geometryAnimationSteps, explanationQuestion]);
+
+  const closeExplanationModal = () => {
+    setShowSolution(false);
+    setShowPreviousSolution(false);
+  };
+
+  const openPreviousExplanation = () => {
+    if (!previousExplanationQuestion) return;
+    setShowSolution(false);
+    setShowPreviousSolution(true);
+  };
 
   if (!mounted)
     return (
@@ -2060,6 +2091,18 @@ useEffect(() => {
 
                       {/* שורת כפתורים קבועה (מתחת לאזור התשובות, כמו Math) */}
                       <div className="w-full flex justify-center gap-2 flex-wrap mb-2 min-h-[2.75rem]" dir="rtl">
+                        {mode === "learning" &&
+                          currentQuestion &&
+                          currentQuestion.params?.kind !== "no_question" && (
+                            <button
+                              type="button"
+                              onClick={() => setShowSolution((prev) => !prev)}
+                              className={`${learningExplainOpenBtn} bg-indigo-500/80 hover:bg-indigo-500 border-indigo-300/40`}
+                            >
+                              📘 צעד-צעד
+                            </button>
+                          )}
+
                         {!hintUsed && !selectedAnswer && currentQuestion.params?.kind !== "no_question" ? (
                           <button
                             type="button"
@@ -2067,7 +2110,7 @@ useEffect(() => {
                               setShowHint(true);
                               setHintUsed(true);
                             }}
-                            className={learningHintTriggerBtn}
+                            className={`${learningHintTriggerBtn} bg-amber-500/80 hover:bg-amber-500 border-amber-300/40 text-white`}
                           >
                             💡 רמז
                           </button>
@@ -2076,26 +2119,28 @@ useEffect(() => {
                             placeholder
                           </span>
                         )}
-
-                        {mode === "learning" &&
+                        {(mode === "learning" || mode === "practice") &&
+                          previousExplanationQuestion &&
                           currentQuestion &&
                           currentQuestion.params?.kind !== "no_question" && (
                             <button
                               type="button"
-                              onClick={() => setShowSolution((prev) => !prev)}
-                              className={learningExplainOpenBtn}
+                              onClick={openPreviousExplanation}
+                              className={`${learningExplainOpenBtn} bg-cyan-500/80 hover:bg-cyan-500 border-cyan-300/40`}
                             >
-                              📘 הסבר מלא
+                              🕘 תרגיל קודם
                             </button>
                           )}
                       </div>
 
-                      {mode === "learning" && currentQuestion && currentQuestion.params?.kind !== "no_question" && (
+                      {(mode === "learning" || mode === "practice") &&
+                        currentQuestion &&
+                        currentQuestion.params?.kind !== "no_question" && (
                         <>
 
                       {/* חלון הסבר מלא - Modal גדול ומרכזי */}
-                      {showSolution &&
-                        currentQuestion &&
+                      {isShowingAnySolution &&
+                        explanationQuestion &&
                         geometryAnimationSteps &&
                         geometryAnimationSteps.length > 0 &&
                         (() => {
@@ -2111,7 +2156,7 @@ useEffect(() => {
                           return (
                             <div
                               className={learningModalOverlay}
-                              onClick={() => setShowSolution(false)}
+                              onClick={closeExplanationModal}
                               dir="rtl"
                             >
                               <div
@@ -2121,14 +2166,16 @@ useEffect(() => {
                                 <div className={learningModalHeader}>
                                   <button
                                     type="button"
-                                    onClick={() => setShowSolution(false)}
+                                    onClick={closeExplanationModal}
                                     className={learningModalCloseBtn}
                                     aria-label="סגור"
                                   >
                                     ✖
                                   </button>
                                   <h3 className={learningModalTitle}>
-                                    {"\u200Fאיך פותרים את התרגיל?"}
+                                    {showPreviousSolution
+                                      ? "פתרון התרגיל הקודם"
+                                      : "\u200Fאיך פותרים את התרגיל?"}
                                   </h3>
                                   <span className="w-10 shrink-0" aria-hidden />
                                 </div>
@@ -2139,19 +2186,19 @@ useEffect(() => {
                                       className={learningQuestionText}
                                       style={learningMixedHebrewMathStyle}
                                     >
-                                      {currentQuestion.question}
+                                      {explanationQuestion.question}
                                     </div>
                                   </div>
 
                                   {(() => {
                                     const diagramSpec =
-                                      getGeometryDiagramSpec(currentQuestion);
+                                      getGeometryDiagramSpec(explanationQuestion);
                                     if (!diagramSpec) return null;
                                     return (
                                       <div className="flex-shrink-0 w-full flex justify-center items-stretch min-h-[min(36svh,240px)] max-h-[min(48svh,340px)] py-2">
                                         <GeometryExplanationDiagram
                                           spec={diagramSpec}
-                                          question={currentQuestion}
+                                          question={explanationQuestion}
                                           emphasis={
                                             activeStep.diagramEmphasis ||
                                             "neutral"
