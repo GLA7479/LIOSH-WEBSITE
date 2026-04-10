@@ -3008,299 +3008,457 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 </div>
               )}
 
-              {feedback && (
-                <div
-                  className={`mb-2 px-4 py-2 rounded-lg text-sm font-semibold text-center transition-all duration-300 ${
-                    showCorrectAnimation
-                      ? "bg-emerald-500/40 text-emerald-100 scale-110 shadow-lg shadow-emerald-500/50"
-                      : showWrongAnimation
-                      ? "bg-red-500/40 text-red-100 scale-105 shadow-lg shadow-red-500/50"
-                      : feedback.includes("נכון") ||
-                        feedback.includes("∞") ||
-                        feedback.includes("Start")
-                      ? "bg-emerald-500/20 text-emerald-200"
-                      : "bg-red-500/20 text-red-200"
-                  }`}
-                >
-                  <div className="text-lg" style={learningMixedHebrewMathStyle}>
-                    {feedback}
-                  </div>
-                  {errorExplanation && (
-                    <div
-                      className="mt-1 text-xs text-red-100/90 font-normal"
-                      style={learningMixedHebrewMathStyle}
-                    >
-                      {errorExplanation}
-                    </div>
-                  )}
-                </div>
-              )}
-
               {currentQuestion && (
                 <div
                   ref={gameRef}
-                  className="w-full max-w-lg flex flex-col items-center justify-center mb-2 flex-1"
+                  className="relative w-full max-w-lg flex flex-col items-center justify-center mb-2 flex-1"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
-                  {/* ויזואליזציה של מספרים (כיתות א'-ג') */}
-                  {(grade === "g1" || grade === "g2" || grade === "g3") && (currentQuestion.operation === "addition" || currentQuestion.operation === "subtraction") && (
-                    <div className="mb-4 flex gap-6 items-center justify-center flex-wrap" style={{ direction: "ltr" }}>
-                      {/* הגדרת מגבלות לפי כיתה */}
-                      {(() => {
-                        const maxVisual = grade === "g1" ? 10 : grade === "g2" ? 20 : 30;
-                        const showVisual = currentQuestion.a <= maxVisual && currentQuestion.b <= maxVisual;
-                        if (!showVisual) return null;
-                        
-                        const maxA = Math.min(currentQuestion.a, maxVisual);
-                        const maxB = Math.min(currentQuestion.b, maxVisual);
-                        let remainingA;
-                        
-                        if (currentQuestion.operation === "subtraction") {
-                          // בחיסור - העיגולים הכחולים שנותרו (לפני שעברו לאחר הסימן שווה)
-                          if (movedCirclesB >= maxB) {
-                            // כל ה-b הורדו, אז כל העיגולים הכחולים עברו לאחר הסימן שווה
-                            remainingA = 0;
-                          } else {
-                            // עדיין יש עיגולים ירוקים, אז העיגולים הכחולים שנותרו = a - movedCirclesB
-                            remainingA = Math.max(0, maxA - movedCirclesB);
-                          }
-                        } else {
-                          // בחיבור - העיגולים שנותרו אחרי שעברו
-                          remainingA = maxA - movedCirclesA;
-                        }
-                        
-                        return (
-                          <>
-                            <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
-                              {Array(remainingA)
-                                .fill(0)
-                                .map((_, i) => (
-                                  <span
-                                    key={`a-${i}`}
-                                    onClick={() => {
-                                      if (currentQuestion.operation === "addition") {
-                                        // בחיבור - עיגול עובר לאחר הסימן שווה
-                                        if (movedCirclesA < maxA) {
-                                          setMovedCirclesA(prev => prev + 1);
-                                        }
-                                      } else {
-                                        // בחיסור - לחיצה על עיגול מ-a מורידה עיגול מ-b (והעיגול הכחול עצמו נמחק)
-                                        if (movedCirclesB < maxB) {
-                                          setMovedCirclesB(prev => prev + 1);
-                                        }
-                                      }
-                                    }}
-                                    className="inline-block bg-blue-500 rounded-full cursor-pointer hover:bg-blue-400 active:bg-blue-600 transition-all duration-300 touch-manipulation hover:scale-110 active:scale-95 animate-pulse-glow ring-2 ring-blue-300 ring-opacity-75"
-                                    style={{ 
-                                      userSelect: "none", 
-                                      width: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                      height: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                      minWidth: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                      minHeight: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                      animation: "none"
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.currentTarget.style.animation = "bounce 0.3s ease";
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.currentTarget.style.animation = "none";
-                                    }}
-                                  />
-                                ))}
-                            </div>
-                            <span className="text-white text-3xl font-bold min-w-[40px] text-center">
-                              {currentQuestion.operation === "addition" ? "+" : "−"}
-                            </span>
-                            <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
-                              {Array(Math.min(currentQuestion.b, maxVisual) - movedCirclesB)
-                                .fill(0)
-                                .map((_, i) => (
-                                  <span
-                                    key={`b-${i}`}
-                                    onClick={() => {
-                                      if (currentQuestion.operation === "addition") {
-                                        // בחיבור - עיגול עובר לאחר הסימן שווה
-                                        if (movedCirclesB < Math.min(currentQuestion.b, maxVisual)) {
-                                          setMovedCirclesB(prev => prev + 1);
-                                        }
-                                      }
-                                      // בחיסור - לא ניתן ללחוץ על עיגולים מ-b
-                                    }}
-                                    className={`inline-block rounded-full ${
-                                      currentQuestion.operation === "addition" 
-                                        ? "bg-green-500 cursor-pointer hover:bg-green-400 active:bg-green-600 transition-all duration-300 hover:scale-110 active:scale-95 animate-pulse-glow-green ring-2 ring-green-300 ring-opacity-75" 
-                                        : "bg-green-500"
-                                    } touch-manipulation`}
-                                    style={{ 
-                                      userSelect: "none",
-                                      width: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                      height: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                      minWidth: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                      minHeight: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                      animation: currentQuestion.operation === "addition" ? "none" : "none"
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      if (currentQuestion.operation === "addition") {
-                                        e.currentTarget.style.animation = "bounce 0.3s ease";
-                                      }
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.currentTarget.style.animation = "none";
-                                    }}
-                                  />
-                                ))}
-                            </div>
-                            <span className="text-white text-3xl font-bold min-w-[40px] text-center">=</span>
-                            {/* עיגולים שעברו מאחורי הסימן שווה */}
-                            {(() => {
-                              const maxVisual = grade === "g1" ? 10 : grade === "g2" ? 20 : 30;
-                              const showResult = (movedCirclesA > 0 || movedCirclesB > 0 || (currentQuestion.operation === "subtraction" && movedCirclesB >= Math.min(currentQuestion.b, maxVisual)));
-                              if (!showResult) return null;
-                              
-                              return (
-                                <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
-                                  {currentQuestion.operation === "addition" ? (
-                                    // בחיבור - כל העיגולים שעברו
-                                    Array(movedCirclesA + movedCirclesB)
-                                      .fill(0)
-                                      .map((_, i) => (
-                                        <span
-                                          key={`result-${i}`}
-                                          className={`inline-block rounded-full transition-all duration-300 ${
-                                            i < movedCirclesA ? "bg-blue-500" : "bg-green-500"
-                                          }`}
-                                          style={{ 
-                                            width: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                            height: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                            minWidth: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                            minHeight: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                            animation: "fadeIn 0.5s ease-in"
-                                          }}
-                                        />
-                                      ))
-                                  ) : (
-                                    // בחיסור - העיגולים שנותרו מ-a אחרי שהורידנו את כל ה-b
-                                    movedCirclesB >= Math.min(currentQuestion.b, maxVisual) && 
-                                    Array(Math.max(0, Math.min(currentQuestion.a, maxVisual) - movedCirclesB))
-                                      .fill(0)
-                                      .map((_, i) => (
-                                        <span
-                                          key={`result-${i}`}
-                                          className="inline-block bg-blue-500 rounded-full transition-all duration-300"
-                                          style={{ 
-                                            width: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                            height: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                            minWidth: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                            minHeight: grade === "g1" ? "24px" : grade === "g2" ? "20px" : "18px",
-                                            animation: "fadeIn 0.5s ease-in"
-                                          }}
-                                        />
-                                      ))
-                                  )}
-                                </div>
-                              );
-                            })()}
-                          </>
-                        );
-                      })()}
-                    </div>
-                  )}
-                  
-                  {/* הפרדה בין שורת השאלה לשורת התרגיל */}
-                  {currentQuestion.exerciseText ? (
-                    <div
-                      className={`relative w-full mb-2 pr-2 ${
-                        canDisplayVertically ? "pl-16 pt-8" : "pl-2 pt-0"
-                      }`}
-                    >
-                      {canDisplayVertically && (
-                        <button
-                          onClick={() => setIsVerticalDisplay((prev) => !prev)}
-                          className="absolute top-2 left-2 z-10 px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/80 hover:bg-purple-500 text-white transition-all pointer-events-auto shadow-lg"
-                          title={isVerticalDisplay ? "הצג מאוזן" : "הצג מאונך"}
-                        >
-                          {isVerticalDisplay ? "↔️ מאוזן" : "↕️ מאונך"}
-                        </button>
-                      )}
-
-                      {currentQuestion.questionLabel && (
-                        <div className="w-full flex justify-center">
-                          <p
-                            className="text-2xl text-center text-white mb-2 break-words overflow-wrap-anywhere max-w-full"
-                            style={{
-                              direction: "rtl",
-                              unicodeBidi: "plaintext",
-                              wordBreak: "break-word",
-                              overflowWrap: "break-word",
-                              // מקטין/מגדיל רק את האותיות, בלי לשנות את השטח/מיקום כפתורים (transform לא משנה layout)
-                              transform: shouldScaleQuestionText ? `scale(${QUESTION_TEXT_SCALE})` : undefined,
-                              transformOrigin: "center center",
-                              display: "inline-block",
-                            }}
-                          >
-                            {currentQuestion.questionLabel}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* תצוגת התרגיל - מאוזן או מאונך */}
-                      {isVerticalDisplay && canDisplayVertically ? (
-                        <div className="mb-4 flex justify-center w-full max-w-full px-2">
-                          <pre
-                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
-                            style={{
-                              direction: "ltr",
-                              unicodeBidi: "plaintext",
-                              wordBreak: "break-word",
-                              overflowWrap: "break-word",
-                            }}
-                          >
-                            {getVerticalExercise() || currentQuestion.exerciseText}
-                          </pre>
-                        </div>
-                      ) : (
-                        <div className="w-full flex justify-center">
-                          <p
-                            className={`text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2 ${
-                              currentQuestion.operation === "sequences" ? "whitespace-normal" : ""
+                  {/* שכבת הודעות שלא משנה פריסה (אין מקום שמור / אין מיקרו-סק롤) */}
+                  {(feedback || (showHint && hintText) || errorExplanation) && (
+                    <div className="absolute top-0 left-0 right-0 z-[5] px-2 pt-1 pointer-events-none">
+                      <div className="flex flex-col gap-2 items-stretch">
+                        {feedback && (
+                          <div
+                            className={`px-4 py-2 rounded-lg text-sm font-semibold text-center transition-all duration-300 ${
+                              showCorrectAnimation
+                                ? "bg-emerald-500/40 text-emerald-100 scale-110 shadow-lg shadow-emerald-500/50"
+                                : showWrongAnimation
+                                ? "bg-red-500/40 text-red-100 scale-105 shadow-lg shadow-red-500/50"
+                                : feedback.includes("נכון") ||
+                                  feedback.includes("∞") ||
+                                  feedback.includes("Start")
+                                ? "bg-emerald-500/20 text-emerald-200"
+                                : "bg-red-500/20 text-red-200"
                             }`}
-                            style={{
-                              direction: "ltr",
-                              unicodeBidi: "plaintext",
-                              wordBreak: "break-word",
-                              overflowWrap: "break-word",
-                              transform: shouldScaleQuestionText ? `scale(${QUESTION_TEXT_SCALE})` : undefined,
-                              transformOrigin: "center center",
-                              display: "inline-block",
-                            }}
                           >
-                            {currentQuestion.exerciseText}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="w-full flex justify-center">
-                      <div
-                        className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
-                        style={{
-                          direction: currentQuestion.isStory ? "rtl" : "ltr",
-                          unicodeBidi: "plaintext",
-                          wordBreak: "break-word",
-                          overflowWrap: "break-word",
-                          transform: shouldScaleQuestionText ? `scale(${QUESTION_TEXT_SCALE})` : undefined,
-                          transformOrigin: "center center",
-                          display: "inline-block",
-                        }}
-                      >
-                        {currentQuestion.question}
+                            <div className="text-lg" style={learningMixedHebrewMathStyle}>
+                              {feedback}
+                            </div>
+                          </div>
+                        )}
+
+                        {showHint && hintText && (
+                          <div className="bg-blue-500/10 border border-blue-400/50 rounded-lg p-3 text-right">
+                            <div className="text-xs font-semibold text-blue-200/95 mb-1.5 tracking-tight">
+                              רמז
+                            </div>
+                            <div
+                              className="text-sm text-blue-100/95 leading-relaxed"
+                              style={learningMixedHebrewMathStyle}
+                            >
+                              {hintText}
+                            </div>
+                          </div>
+                        )}
+
+                        {errorExplanation && (
+                          <div className="bg-rose-500/10 border border-rose-400/50 rounded-lg p-3 text-right">
+                            <div className="text-xs font-semibold text-rose-200/95 mb-1.5 tracking-tight">
+                              למה הטעות קרתה?
+                            </div>
+                            <div
+                              className="text-sm text-rose-100/95 leading-relaxed"
+                              style={learningMixedHebrewMathStyle}
+                            >
+                              {errorExplanation}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
-                  
 
-                  {/* בדיקה אם צריך להציג כפתורי בחירה או שדה קלט */}
-                  {(() => {
+                  {/* כפתור מאוזן/מאונך מעוגן למעלה (לא מזיז פריסה) */}
+                  {canDisplayVertically && (
+                    <button
+                      onClick={() => setIsVerticalDisplay((prev) => !prev)}
+                      className="absolute top-2 left-2 z-10 px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/80 hover:bg-purple-500 text-white transition-all pointer-events-auto shadow-lg"
+                      title={isVerticalDisplay ? "הצג מאוזן" : "הצג מאונך"}
+                    >
+                      {isVerticalDisplay ? "↔️ מאוזן" : "↕️ מאונך"}
+                    </button>
+                  )}
+
+                  {/* אזור השאלה (גמיש) סופג שינויי גובה בין מאוזן/מאונך כדי למנוע קפיצות בתשובות */}
+                  <div className="w-full flex-1 min-h-0 flex flex-col items-center justify-center">
+                    {/* ויזואליזציה של מספרים (כיתות א'-ג') */}
+                    {(grade === "g1" || grade === "g2" || grade === "g3") &&
+                      (currentQuestion.operation === "addition" ||
+                        currentQuestion.operation === "subtraction") && (
+                        <div
+                          className="mb-4 flex gap-6 items-center justify-center flex-wrap"
+                          style={{ direction: "ltr" }}
+                        >
+                          {/* הגדרת מגבלות לפי כיתה */}
+                          {(() => {
+                            const maxVisual =
+                              grade === "g1" ? 10 : grade === "g2" ? 20 : 30;
+                            const showVisual =
+                              currentQuestion.a <= maxVisual &&
+                              currentQuestion.b <= maxVisual;
+                            if (!showVisual) return null;
+
+                            const maxA = Math.min(currentQuestion.a, maxVisual);
+                            const maxB = Math.min(currentQuestion.b, maxVisual);
+                            let remainingA;
+
+                            if (currentQuestion.operation === "subtraction") {
+                              // בחיסור - העיגולים הכחולים שנותרו (לפני שעברו לאחר הסימן שווה)
+                              if (movedCirclesB >= maxB) {
+                                remainingA = 0;
+                              } else {
+                                remainingA = Math.max(0, maxA - movedCirclesB);
+                              }
+                            } else {
+                              remainingA = maxA - movedCirclesA;
+                            }
+
+                            return (
+                              <>
+                                <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
+                                  {Array(remainingA)
+                                    .fill(0)
+                                    .map((_, i) => (
+                                      <span
+                                        key={`a-${i}`}
+                                        onClick={() => {
+                                          if (
+                                            currentQuestion.operation ===
+                                            "addition"
+                                          ) {
+                                            if (movedCirclesA < maxA) {
+                                              setMovedCirclesA((prev) => prev + 1);
+                                            }
+                                          } else {
+                                            if (movedCirclesB < maxB) {
+                                              setMovedCirclesB((prev) => prev + 1);
+                                            }
+                                          }
+                                        }}
+                                        className="inline-block bg-blue-500 rounded-full cursor-pointer hover:bg-blue-400 active:bg-blue-600 transition-all duration-300 touch-manipulation hover:scale-110 active:scale-95 animate-pulse-glow ring-2 ring-blue-300 ring-opacity-75"
+                                        style={{
+                                          userSelect: "none",
+                                          width:
+                                            grade === "g1"
+                                              ? "24px"
+                                              : grade === "g2"
+                                              ? "20px"
+                                              : "18px",
+                                          height:
+                                            grade === "g1"
+                                              ? "24px"
+                                              : grade === "g2"
+                                              ? "20px"
+                                              : "18px",
+                                          minWidth:
+                                            grade === "g1"
+                                              ? "24px"
+                                              : grade === "g2"
+                                              ? "20px"
+                                              : "18px",
+                                          minHeight:
+                                            grade === "g1"
+                                              ? "24px"
+                                              : grade === "g2"
+                                              ? "20px"
+                                              : "18px",
+                                          animation: "none",
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          e.currentTarget.style.animation =
+                                            "bounce 0.3s ease";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                          e.currentTarget.style.animation = "none";
+                                        }}
+                                      />
+                                    ))}
+                                </div>
+                                <span className="text-white text-3xl font-bold min-w-[40px] text-center">
+                                  {currentQuestion.operation === "addition"
+                                    ? "+"
+                                    : "−"}
+                                </span>
+                                <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
+                                  {Array(
+                                    Math.min(currentQuestion.b, maxVisual) -
+                                      movedCirclesB
+                                  )
+                                    .fill(0)
+                                    .map((_, i) => (
+                                      <span
+                                        key={`b-${i}`}
+                                        onClick={() => {
+                                          if (
+                                            currentQuestion.operation ===
+                                            "addition"
+                                          ) {
+                                            if (
+                                              movedCirclesB <
+                                              Math.min(
+                                                currentQuestion.b,
+                                                maxVisual
+                                              )
+                                            ) {
+                                              setMovedCirclesB((prev) => prev + 1);
+                                            }
+                                          }
+                                        }}
+                                        className={`inline-block rounded-full ${
+                                          currentQuestion.operation === "addition"
+                                            ? "bg-green-500 cursor-pointer hover:bg-green-400 active:bg-green-600 transition-all duration-300 hover:scale-110 active:scale-95 animate-pulse-glow-green ring-2 ring-green-300 ring-opacity-75"
+                                            : "bg-green-500"
+                                        } touch-manipulation`}
+                                        style={{
+                                          userSelect: "none",
+                                          width:
+                                            grade === "g1"
+                                              ? "24px"
+                                              : grade === "g2"
+                                              ? "20px"
+                                              : "18px",
+                                          height:
+                                            grade === "g1"
+                                              ? "24px"
+                                              : grade === "g2"
+                                              ? "20px"
+                                              : "18px",
+                                          minWidth:
+                                            grade === "g1"
+                                              ? "24px"
+                                              : grade === "g2"
+                                              ? "20px"
+                                              : "18px",
+                                          minHeight:
+                                            grade === "g1"
+                                              ? "24px"
+                                              : grade === "g2"
+                                              ? "20px"
+                                              : "18px",
+                                          animation: "none",
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          if (
+                                            currentQuestion.operation ===
+                                            "addition"
+                                          ) {
+                                            e.currentTarget.style.animation =
+                                              "bounce 0.3s ease";
+                                          }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                          e.currentTarget.style.animation = "none";
+                                        }}
+                                      />
+                                    ))}
+                                </div>
+                                <span className="text-white text-3xl font-bold min-w-[40px] text-center">
+                                  =
+                                </span>
+                                {/* עיגולים שעברו מאחורי הסימן שווה */}
+                                {(() => {
+                                  const maxVisual =
+                                    grade === "g1"
+                                      ? 10
+                                      : grade === "g2"
+                                      ? 20
+                                      : 30;
+                                  const showResult =
+                                    movedCirclesA > 0 ||
+                                    movedCirclesB > 0 ||
+                                    (currentQuestion.operation ===
+                                      "subtraction" &&
+                                      movedCirclesB >=
+                                        Math.min(currentQuestion.b, maxVisual));
+                                  if (!showResult) return null;
+
+                                  return (
+                                    <div className="flex flex-wrap gap-3 justify-center max-w-[200px] min-w-[120px]">
+                                      {currentQuestion.operation === "addition" ? (
+                                        Array(movedCirclesA + movedCirclesB)
+                                          .fill(0)
+                                          .map((_, i) => (
+                                            <span
+                                              key={`result-${i}`}
+                                              className={`inline-block rounded-full transition-all duration-300 ${
+                                                i < movedCirclesA
+                                                  ? "bg-blue-500"
+                                                  : "bg-green-500"
+                                              }`}
+                                              style={{
+                                                width:
+                                                  grade === "g1"
+                                                    ? "24px"
+                                                    : grade === "g2"
+                                                    ? "20px"
+                                                    : "18px",
+                                                height:
+                                                  grade === "g1"
+                                                    ? "24px"
+                                                    : grade === "g2"
+                                                    ? "20px"
+                                                    : "18px",
+                                                minWidth:
+                                                  grade === "g1"
+                                                    ? "24px"
+                                                    : grade === "g2"
+                                                    ? "20px"
+                                                    : "18px",
+                                                minHeight:
+                                                  grade === "g1"
+                                                    ? "24px"
+                                                    : grade === "g2"
+                                                    ? "20px"
+                                                    : "18px",
+                                                animation: "fadeIn 0.5s ease-in",
+                                              }}
+                                            />
+                                          ))
+                                      ) : (
+                                        movedCirclesB >=
+                                          Math.min(currentQuestion.b, maxVisual) &&
+                                        Array(
+                                          Math.max(
+                                            0,
+                                            Math.min(currentQuestion.a, maxVisual) -
+                                              movedCirclesB
+                                          )
+                                        )
+                                          .fill(0)
+                                          .map((_, i) => (
+                                            <span
+                                              key={`result-${i}`}
+                                              className="inline-block bg-blue-500 rounded-full transition-all duration-300"
+                                              style={{
+                                                width:
+                                                  grade === "g1"
+                                                    ? "24px"
+                                                    : grade === "g2"
+                                                    ? "20px"
+                                                    : "18px",
+                                                height:
+                                                  grade === "g1"
+                                                    ? "24px"
+                                                    : grade === "g2"
+                                                    ? "20px"
+                                                    : "18px",
+                                                minWidth:
+                                                  grade === "g1"
+                                                    ? "24px"
+                                                    : grade === "g2"
+                                                    ? "20px"
+                                                    : "18px",
+                                                minHeight:
+                                                  grade === "g1"
+                                                    ? "24px"
+                                                    : grade === "g2"
+                                                    ? "20px"
+                                                    : "18px",
+                                                animation: "fadeIn 0.5s ease-in",
+                                              }}
+                                            />
+                                          ))
+                                      )}
+                                    </div>
+                                  );
+                                })()}
+                              </>
+                            );
+                          })()}
+                        </div>
+                      )}
+
+                    {/* הפרדה בין שורת השאלה לשורת התרגיל */}
+                    {currentQuestion.exerciseText ? (
+                      <div className="relative w-full mb-2 pr-2 pl-2 pt-0">
+                        {currentQuestion.questionLabel && (
+                          <div className="w-full flex justify-center">
+                            <p
+                              className="text-2xl text-center text-white mb-2 break-words overflow-wrap-anywhere max-w-full"
+                              style={{
+                                direction: "rtl",
+                                unicodeBidi: "plaintext",
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                                transform: shouldScaleQuestionText
+                                  ? `scale(${QUESTION_TEXT_SCALE})`
+                                  : undefined,
+                                transformOrigin: "center center",
+                                display: "inline-block",
+                              }}
+                            >
+                              {currentQuestion.questionLabel}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* תצוגת התרגיל - מאוזן או מאונך */}
+                        {isVerticalDisplay && canDisplayVertically ? (
+                          <div className="mb-4 flex justify-center w-full max-w-full px-2">
+                            <pre
+                              className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
+                              style={{
+                                direction: "ltr",
+                                unicodeBidi: "plaintext",
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                              }}
+                            >
+                              {getVerticalExercise() || currentQuestion.exerciseText}
+                            </pre>
+                          </div>
+                        ) : (
+                          <div className="w-full flex justify-center">
+                            <p
+                              className={`text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2 ${
+                                currentQuestion.operation === "sequences"
+                                  ? "whitespace-normal"
+                                  : ""
+                              }`}
+                              style={{
+                                direction: "ltr",
+                                unicodeBidi: "plaintext",
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                                transform: shouldScaleQuestionText
+                                  ? `scale(${QUESTION_TEXT_SCALE})`
+                                  : undefined,
+                                transformOrigin: "center center",
+                                display: "inline-block",
+                              }}
+                            >
+                              {currentQuestion.exerciseText}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="w-full flex justify-center">
+                        <div
+                          className="text-4xl font-black text-white mb-4 text-center break-words overflow-wrap-anywhere max-w-full px-2"
+                          style={{
+                            direction: currentQuestion.isStory ? "rtl" : "ltr",
+                            unicodeBidi: "plaintext",
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                            transform: shouldScaleQuestionText
+                              ? `scale(${QUESTION_TEXT_SCALE})`
+                              : undefined,
+                            transformOrigin: "center center",
+                            display: "inline-block",
+                          }}
+                        >
+                          {currentQuestion.question}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* אזור התשובות/בקרים (קבוע בתחתית) */}
+                  <div className="w-full shrink-0">
+                    {/* בדיקה אם צריך להציג כפתורי בחירה או שדה קלט */}
+                    {(() => {
                     // נושאים שצריכים כפתורי בחירה: שברים, יחס, השוואה, קנה מידה, גורמים וכפולות, חילוק עם שארית
                     const needsChoiceButtons = 
                       currentQuestion.operation === "fractions" ||
@@ -3542,21 +3700,6 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       </button>
                           </div>
                         )}
-
-                      {/* תיבת רמז */}
-                      {showHint && hintText && (
-                        <div className="w-full max-w-lg mx-auto bg-blue-500/10 border border-blue-400/50 rounded-lg p-3 text-right">
-                          <div className="text-xs font-semibold text-blue-200/95 mb-1.5 tracking-tight">
-                            רמז
-                          </div>
-                          <div
-                            className="text-sm text-blue-100/95 leading-relaxed"
-                            style={learningMixedHebrewMathStyle}
-                          >
-                            {hintText}
-                          </div>
-                        </div>
-                      )}
 
                       {/* חלון הסבר מלא - Modal גדול ומרכזי - רק במצב למידה */}
                       {mode === "learning" && showSolution && currentQuestion && (() => {
@@ -4345,23 +4488,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           </div>
                         );
                       })()}
-
-                      {/* למה טעיתי? – רק אחרי טעות */}
-                      {errorExplanation && (
-                        <div className="w-full max-w-lg mx-auto bg-rose-500/10 border border-rose-400/50 rounded-lg p-3 text-right">
-                          <div className="text-xs font-semibold text-rose-200/95 mb-1.5 tracking-tight">
-                            למה הטעות קרתה?
-                          </div>
-                          <div
-                            className="text-sm text-rose-100/95 leading-relaxed"
-                            style={learningMixedHebrewMathStyle}
-                          >
-                            {errorExplanation}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   )}
+                  </div>
                 </div>
               )}
 
