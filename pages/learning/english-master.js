@@ -604,6 +604,11 @@ function generateQuestion(
         (levelKey === "medium" && gNum >= 4) ||
         (levelKey === "easy" && gNum >= 6);
       const direction = translationToEnglish ? "he_to_en" : "en_to_he";
+      const trFam =
+        sentence.patternFamily ||
+        (direction === "en_to_he"
+          ? "translation_clause"
+          : "translation_production");
       if (direction === "en_to_he") {
         question = `תרגם: "${sentence.en}"`;
         correctAnswer = sentence.he;
@@ -611,7 +616,7 @@ function generateQuestion(
           sentence: sentence.en,
           translation: sentence.he,
           direction: "en_to_he",
-          patternFamily: "translation_clause",
+          patternFamily: trFam,
         };
       } else {
         question = `תרגם: "${sentence.he}"`;
@@ -620,7 +625,7 @@ function generateQuestion(
           sentence: sentence.he,
           translation: sentence.en,
           direction: "he_to_en",
-          patternFamily: "translation_production",
+          patternFamily: trFam,
         };
       }
       break;

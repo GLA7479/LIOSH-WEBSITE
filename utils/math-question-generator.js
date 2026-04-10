@@ -15,81 +15,95 @@ function applyMathLevelPresentation(question, ctx) {
   if (!q0.trim()) return q0;
   const { selectedOp, params, mathLevelKey, gradeKey } = ctx;
   const kind = String(params?.kind || "");
+  const gNum =
+    parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
+  const gradeHeb =
+    gNum >= 1 && gNum <= 6
+      ? ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][gNum - 1]
+      : "";
+  const gradeBandSuffix =
+    gradeHeb && !/כיתה [אבגדהו]׳/.test(q0) ? ` · כיתה ${gradeHeb}` : "";
   if (kind.startsWith("wp_") || selectedOp === "word_problems") return q0;
 
   if (kind === "ns_complement100") {
     const b = params?.b;
     const c = params?.c != null ? Number(params.c) : 100;
+    const gSuf = gradeBandSuffix;
     if (b != null && Number.isFinite(c)) {
       if (mathLevelKey === "easy") {
-        return `השלמה עד ${c}: מה צריך להוסיף ל-${b} כדי להגיע ל-${c}? = ${BLANK}`;
+        return `השלמה עד ${c}: מה צריך להוסיף ל-${b} כדי להגיע ל-${c}? = ${BLANK}${gSuf}`;
       }
       if (mathLevelKey === "medium") {
-        return `נתון השוויון ${b} + ${BLANK} = ${c}. מה המספר החסר?`;
+        return `נתון השוויון ${b} + ${BLANK} = ${c}. מה המספר החסר?${gSuf}`;
       }
-      return `בעיית מילים: "ל-${b} חסר חלק עד ${c}" — כמה להוסיף? = ${BLANK}`;
+      return `בעיית מילים: "ל-${b} חסר חלק עד ${c}" — כמה להוסיף? = ${BLANK}${gSuf}`;
     }
   }
 
   if (kind === "ns_complement10") {
     const b = params?.b;
     const c = params?.c != null ? Number(params.c) : 10;
+    const gSuf = gradeBandSuffix;
     if (b != null && Number.isFinite(c)) {
       if (mathLevelKey === "easy") {
-        return `עד ${c}: מה מוסיפים ל-${b} כדי לסיים ל-${c}? = ${BLANK}`;
+        return `עד ${c}: מה מוסיפים ל-${b} כדי לסיים ל-${c}? = ${BLANK}${gSuf}`;
       }
       if (mathLevelKey === "medium") {
-        return `חסר במשוואה: ${b} + ${BLANK} = ${c}`;
+        return `חסר במשוואה: ${b} + ${BLANK} = ${c}${gSuf}`;
       }
-      return `בלי לחשב בטור: מה החיבור ל-${c} שמתחיל ב-${b}? = ${BLANK}`;
+      return `בלי לחשב בטור: מה החיבור ל-${c} שמתחיל ב-${b}? = ${BLANK}${gSuf}`;
     }
   }
 
   if (kind === "scale_find") {
     const ml = params?.mapLength;
     const rl = params?.realLength;
+    const gSuf = gradeBandSuffix;
     if (ml != null && rl != null) {
       if (mathLevelKey === "easy") {
-        return `במפה מופיע קטע של ${ml} ס"מ, ובשטח האמיתי הוא ${rl} ס"מ. השלימו את קנה המידה בצורה 1:${BLANK}`;
+        return `במפה מופיע קטע של ${ml} ס"מ, ובשטח האמיתי הוא ${rl} ס"מ. השלימו את קנה המידה בצורה 1:${BLANK}${gSuf}`;
       }
       if (mathLevelKey === "medium") {
-        return `יחס מפה–מציאות: ${ml} ס"מ על הנייר מתאימים ל-${rl} ס"מ בפועל. מצאו את n בביטוי 1:n (כתבו n) = ${BLANK}`;
+        return `יחס מפה–מציאות: ${ml} ס"מ על הנייר מתאימים ל-${rl} ס"מ בפועל. מצאו את n בביטוי 1:n (כתבו n) = ${BLANK}${gSuf}`;
       }
-      return `שני אורכים נתונים — מפה ${ml} ס"מ מול ${rl} ס"מ במציאות. אותו יחס נכתב 1:__; מה __? = ${BLANK}`;
+      return `שני אורכים נתונים — מפה ${ml} ס"מ מול ${rl} ס"מ במציאות. אותו יחס נכתב 1:__; מה __? = ${BLANK}${gSuf}`;
     }
   }
 
   if (kind === "scale_map_to_real") {
     const ml = params?.mapLength;
     const sc = params?.scale;
+    const gSuf = gradeBandSuffix;
     if (ml != null && sc != null) {
       if (mathLevelKey === "easy") {
-        return `קנה מידה 1:${sc} — כל ${ml} ס"מ במפה שווים לכמה ס"מ במציאות? = ${BLANK}`;
+        return `קנה מידה 1:${sc} — כל ${ml} ס"מ במפה שווים לכמה ס"מ במציאות? = ${BLANK}${gSuf}`;
       }
       if (mathLevelKey === "medium") {
-        return `הגדלה פי ${sc}: מדידה של ${ml} ס"מ על המפה. מה האורך האמיתי בס"מ? = ${BLANK}`;
+        return `הגדלה פי ${sc}: מדידה של ${ml} ס"מ על המפה. מה האורך האמיתי בס"מ? = ${BLANK}${gSuf}`;
       }
-      return `בעיית קנה מידה 1:${sc} ומדידת מפה ${ml} ס"מ — חשבו את האורך בשטח = ${BLANK}`;
+      return `בעיית קנה מידה 1:${sc} ומדידת מפה ${ml} ס"מ — חשבו את האורך בשטח = ${BLANK}${gSuf}`;
     }
   }
 
   if (kind === "scale_real_to_map") {
     const rl = params?.realLength;
     const sc = params?.scale;
+    const gSuf = gradeBandSuffix;
     if (rl != null && sc != null) {
       if (mathLevelKey === "easy") {
-        return `בקנה 1:${sc}, אורך אמיתי ${rl} ס"מ — כמה ס"מ צריך למדוד על המפה? = ${BLANK}`;
+        return `בקנה 1:${sc}, אורך אמיתי ${rl} ס"מ — כמה ס"מ צריך למדוד על המפה? = ${BLANK}${gSuf}`;
       }
       if (mathLevelKey === "medium") {
-        return `מציאות ${rl} ס"מ, קנה 1:${sc}. מה אורך הקטע על תרשים המפה? = ${BLANK}`;
+        return `מציאות ${rl} ס"מ, קנה 1:${sc}. מה אורך הקטע על תרשים המפה? = ${BLANK}${gSuf}`;
       }
-      return `הפכו ממציאות למפה: ${rl} ס"מ בשטח ביחס 1:${sc} נותן ___ ס"מ על הדף = ${BLANK}`;
+      return `הפכו ממציאות למפה: ${rl} ס"מ בשטח ביחס 1:${sc} נותן ___ ס"מ על הדף = ${BLANK}${gSuf}`;
     }
   }
 
   if (selectedOp === "compare" || kind === "cmp") {
     const raw = params?.exerciseText ? String(params.exerciseText) : "";
     const pv = Math.abs(Number(params?.presentationVariant) || 0) % 4;
+    const gSuf = gradeBandSuffix;
     if (mathLevelKey === "easy") {
       const opts = [
         `השוו בין שני המספרים והשלימו סימן (<, =, >): ${raw}`,
@@ -97,7 +111,7 @@ function applyMathLevelPresentation(question, ctx) {
         `בחרו < , = או > — השוו: ${raw}`,
         `השוו את שני הערכים והשלימו סימן: ${raw}`,
       ];
-      return opts[pv].trim();
+      return `${opts[pv].trim()}${gSuf}`;
     }
     if (mathLevelKey === "medium") {
       const opts = [
@@ -106,7 +120,7 @@ function applyMathLevelPresentation(question, ctx) {
         `התאימו סימן השוואה נכון: ${raw}`,
         `השלימו סימן בין ביטויי המספרים: ${raw}`,
       ];
-      return opts[pv].trim();
+      return `${opts[pv].trim()}${gSuf}`;
     }
     const opts = [
       `השלימו סימן השוואה — בדקו לפני שבוחרים: ${raw}`,
@@ -114,7 +128,7 @@ function applyMathLevelPresentation(question, ctx) {
       `השוו בזהירות ובחרו סימן: ${raw}`,
       `ניתוח מהיר: איזה סימן מתאים? ${raw}`,
     ];
-    return opts[pv].trim();
+    return `${opts[pv].trim()}${gSuf}`;
   }
 
   if (selectedOp === "divisibility" || kind === "divisibility") {
@@ -209,42 +223,110 @@ function applyMathLevelPresentation(question, ctx) {
     return `כפולות (אתגר): ${q0}`;
   }
 
-  const gNum = parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
-
   if (selectedOp === "percentages") {
     const p = params?.p;
     const base = params?.base;
+    const gSuf = gradeBandSuffix;
     if (kind === "perc_part_of" && p != null && base != null) {
       if (mathLevelKey === "easy") {
-        return `אחוזים (קל): כמה זה ${p}% מתוך ${base}? = ${BLANK}`;
+        return `אחוזים (קל): כמה זה ${p}% מתוך ${base}? = ${BLANK}${gSuf}`;
       }
       if (mathLevelKey === "medium") {
-        return `חישוב חלק מהשלם: ${p}% × ${base} (תוצאה שלמה) = ${BLANK}`;
+        return `חישוב חלק מהשלם: ${p}% × ${base} (תוצאה שלמה) = ${BLANK}${gSuf}`;
       }
-      return `אתגר אחוזים: חישוב מדויק של ${p}% ממספר ${base} (תוצאה שלמה) = ${BLANK}`;
+      return `אתגר אחוזים: חישוב מדויק של ${p}% ממספר ${base} (תוצאה שלמה) = ${BLANK}${gSuf}`;
     }
     if (kind === "perc_discount" && p != null && base != null) {
       if (mathLevelKey === "easy") {
-        return `מחיר לפני הנחה ${base}₪, הנחה ${p}% — מה המחיר הסופי? = ${BLANK}`;
+        return `מחיר לפני הנחה ${base}₪, הנחה ${p}% — מה המחיר הסופי? = ${BLANK}${gSuf}`;
       }
       if (mathLevelKey === "medium") {
-        return `${base}₪ אחרי הנחה של ${p}% — מה המחיר החדש? = ${BLANK}`;
+        return `${base}₪ אחרי הנחה של ${p}% — מה המחיר החדש? = ${BLANK}${gSuf}`;
       }
-      return `בעיית אחוזים: ירידת מחיר ${p}% מ־${base}₪ — מה המחיר אחרי ההנחה? = ${BLANK}`;
+      return `בעיית אחוזים: ירידת מחיר ${p}% מ־${base}₪ — מה המחיר אחרי ההנחה? = ${BLANK}${gSuf}`;
     }
   }
 
-  if (selectedOp === "sequences") {
+  if (kind === "fm_gcd" && params?.a != null && params?.b != null) {
+    const { a, b } = params;
+    const gSuf = gradeBandSuffix;
     if (mathLevelKey === "easy") {
-      return q0.replace(/^השלם את הסדרה\b/, "המשיכו את רצף המספרים");
+      return `מ.א.ח (קל): מה המחלק המשותף הגדול ביותר של ${a} ו-${b}? = ${BLANK}${gSuf}`;
     }
     if (mathLevelKey === "medium") {
-      return q0.replace(/^השלם את הסדרה\b/, "זיהוי דפוס — השלימו את הסדרה");
+      return `גורם משותף מקסימלי (GCD) לזוג ${a}, ${b} — מהו? = ${BLANK}${gSuf}`;
     }
-    return q0.replace(
-      /^השלם את הסדרה\b/,
-      "בשלב אתגר — השלימו את הסדרה (דרוש ניתוח דפוס)"
+    return `אתגר מ.א.ח: הוכיחו בראש לפני בחירה — GCD(${a}, ${b}) = ${BLANK}${gSuf}`;
+  }
+
+  if (kind === "round" && params?.n != null && params?.toWhat != null) {
+    const { n, toWhat } = params;
+    const gSuf = gradeBandSuffix;
+    if (toWhat === 10) {
+      if (mathLevelKey === "easy") {
+        return `עיגול לעשרות (קל): למה מתעגלים את ${n}? = ${BLANK}${gSuf}`;
+      }
+      if (mathLevelKey === "medium") {
+        return `עגלו את ${n} לעשרות הקרובות — מה התוצאה? = ${BLANK}${gSuf}`;
+      }
+      return `אתגר עיגול לעשרות: בחרו את המספר המתאים אחרי עיגול ${n} = ${BLANK}${gSuf}`;
+    }
+    if (mathLevelKey === "easy") {
+      return `עיגול למאות (קל): למה מתעגלים את ${n}? = ${BLANK}${gSuf}`;
+    }
+    if (mathLevelKey === "medium") {
+      return `עגלו את ${n} למאות הקרובות — מה התוצאה? = ${BLANK}${gSuf}`;
+    }
+    return `אתגר עיגול למאות: ${n} → ? = ${BLANK}${gSuf}`;
+  }
+
+  if (selectedOp === "sequences") {
+    const gSuf = gradeBandSuffix;
+    if (mathLevelKey === "easy") {
+      return (
+        q0.replace(/^השלם את הסדרה\b/, "המשיכו את רצף המספרים") + gSuf
+      );
+    }
+    if (mathLevelKey === "medium") {
+      return (
+        q0.replace(/^השלם את הסדרה\b/, "זיהוי דפוס — השלימו את הסדרה") + gSuf
+      );
+    }
+    return (
+      q0.replace(
+        /^השלם את הסדרה\b/,
+        "בשלב אתגר — השלימו את הסדרה (דרוש ניתוח דפוס)"
+      ) + gSuf
     );
+  }
+
+  // משוואות: הניסוח "__ - # = #" לא נכנס ל-heuristic של תרגיל מספרי (החסר לא אחרי '=')
+  if (
+    selectedOp === "equations" ||
+    /^eq_/.test(kind) ||
+    (selectedOp === "order_of_operations" && /^order_/.test(kind))
+  ) {
+    const raw =
+      params?.exerciseText != null && String(params.exerciseText).trim()
+        ? String(params.exerciseText).trim()
+        : q0.trim();
+    const gSuf = gradeBandSuffix;
+    const levelCue =
+      mathLevelKey === "easy"
+        ? "רמה קלה —"
+        : mathLevelKey === "medium"
+          ? "רמה בינונית —"
+          : "רמה מאתגרת —";
+    const openers = {
+      g1: `${levelCue} חידת משוואה קצרה:`,
+      g2: `${levelCue} השלימו את החסר במשוואה:`,
+      g3: `${levelCue} משוואה, מצאו את הנעלם:`,
+      g4: `${levelCue} משוואה עם נעלם אחד:`,
+      g5: `${levelCue} אלגברה בסיסית, ערך הנעלם:`,
+      g6: `${levelCue} משוואה לינארית, מצאו x:`,
+    };
+    const opener = openers[gradeKey] || `${levelCue} השלימו את המשוואה:`;
+    return `${opener} ${raw}${gSuf}`;
   }
 
   const looksNumericExercise =
@@ -253,18 +335,29 @@ function applyMathLevelPresentation(question, ctx) {
 
   if (looksNumericExercise && gNum >= 1) {
     const pv = Math.abs(Number(params?.presentationVariant) || 0) % 4;
+    const mathGradeTag =
+      gNum >= 1 && gNum <= 6
+        ? `(כיתה ${["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][gNum - 1]}) `
+        : "";
+    const tagNumeric = (s) =>
+      mathGradeTag && !/\(כיתה [אבגדהו]׳\)/.test(s)
+        ? `${mathGradeTag}${s}`
+        : s;
     if (gNum <= 2) {
       const easyP = ["חישוב קל:", "מה התוצאה:", "פתרו:", "חיבור/חיסור קצר:"];
       const medP = ["נסו לבד:", "חשבו לבד:", "מה יוצא:", "תרגיל:"];
       const hardP = ["משחקון חשבון:", "אתגר קטן:", "בדקו:", "חידה חשבונית:"];
       if (mathLevelKey === "easy" && !/^(חישוב קל|נסו|משחקון)/.test(q0)) {
-        return `${easyP[pv]} ${q0}`;
+        return tagNumeric(`${easyP[pv]} ${q0}`);
       }
       if (mathLevelKey === "medium" && !/^(חישוב קל|נסו|משחקון)/.test(q0)) {
-        return `${medP[pv]} ${q0}`;
+        return tagNumeric(`${medP[pv]} ${q0}`);
       }
       if (mathLevelKey === "hard" && !/^(חישוב קל|נסו|משחקון)/.test(q0)) {
-        return `${hardP[pv]} ${q0}`;
+        return tagNumeric(`${hardP[pv]} ${q0}`);
+      }
+      if (mathGradeTag && !/\(כיתה [אבגדהו]׳\)/.test(q0)) {
+        return tagNumeric(q0);
       }
     } else {
       const easyP = ["חשבו:", "סכום:", "מה התוצאה:", "פתרו:"];
@@ -281,26 +374,33 @@ function applyMathLevelPresentation(question, ctx) {
         "גרסה מאתגרת —",
       ];
       if (mathLevelKey === "easy" && !/^(חשבו|מצאו|אתגר)/.test(q0)) {
-        return `${easyP[pv]} ${q0}`;
+        return tagNumeric(`${easyP[pv]} ${q0}`);
       }
       if (mathLevelKey === "medium" && !/^(חשבו|מצאו|אתגר)/.test(q0)) {
-        return `${medP[pv]} ${q0}`;
+        return tagNumeric(`${medP[pv]} ${q0}`);
       }
       if (mathLevelKey === "hard" && !/^(חשבו|מצאו|אתגר)/.test(q0)) {
-        return `${hardP[pv]} ${q0}`;
+        return tagNumeric(`${hardP[pv]} ${q0}`);
+      }
+      if (mathGradeTag && !/\(כיתה [אבגדהו]׳\)/.test(q0)) {
+        return tagNumeric(q0);
       }
     }
   }
 
   if (selectedOp === "ratio" && gNum >= 4) {
+    const rSuf = gradeBandSuffix;
     if (mathLevelKey === "easy" && !/^יחס \(קל\)|^אתגר יחסים/.test(q0)) {
-      return `יחס (קל): ${q0}`;
+      return `יחס (קל): ${q0}${rSuf}`;
     }
-    if (mathLevelKey === "medium" && !/^יחס \(קל\)|^אתגר יחסים|^בעיית יחסים/.test(q0)) {
-      return `בעיית יחסים: ${q0}`;
+    if (
+      mathLevelKey === "medium" &&
+      !/^יחס \(קל\)|^אתגר יחסים|^בעיית יחסים/.test(q0)
+    ) {
+      return `בעיית יחסים: ${q0}${rSuf}`;
     }
     if (mathLevelKey === "hard" && !/^אתגר יחסים/.test(q0)) {
-      return `אתגר יחסים — ${q0}`;
+      return `אתגר יחסים — ${q0}${rSuf}`;
     }
   }
 
@@ -611,6 +711,12 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
   let operandB = null;
   let isStory = false;
   const mathLevelKey = mathLevelKeyFromConfig(levelConfig);
+  const gNumForScope =
+    parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
+  const gradeHebrewScope =
+    gNumForScope >= 1 && gNumForScope <= 6
+      ? ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][gNumForScope - 1]
+      : "";
   const mathForce =
     typeof globalThis !== "undefined" && globalThis.__LIOSH_MATH_FORCE
       ? String(globalThis.__LIOSH_MATH_FORCE)
@@ -2283,7 +2389,9 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       const groups = Math.floor(total / groupSize);
       const leftover = total - groups * groupSize;
       correctAnswer = leftover;
-      question = `יש ${total} תלמידים והם מתחלקים לקבוצות של ${groupSize} תלמידים בכל קבוצה. כמה תלמידים יישארו בלי קבוצה מלאה?`;
+      question = `יש ${total} תלמידים והם מתחלקים לקבוצות של ${groupSize} תלמידים בכל קבוצה. כמה תלמידים יישארו בלי קבוצה מלאה?${
+        gradeHebrewScope ? ` · כיתה ${gradeHebrewScope}` : ""
+      }`;
       params = {
         kind: "wp_leftover",
         semanticFamily: "division_remainder",
@@ -2363,7 +2471,15 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       const l1 = randInt(20, 60);
       const l2 = randInt(10, 40);
       correctAnswer = l1 + l2;
-      question = `סרט ראשון נמשך ${l1} דקות וסרטון נוסף נמשך ${l2} דקות. כמה דקות נמשך הצפייה ביחד?`;
+      const timeSumByGrade =
+        gradeKey === "g3" || gradeKey === "g4"
+          ? `שני קטעי וידאו נמשכים ${l1} דקות ו-${l2} דקות. מה סה״כ זמן הצפייה?`
+          : gradeKey === "g5"
+          ? `אורך סרטון אחד ${l1} דק׳ וסרטון שני ${l2} דק׳ — חשבו את משך הצפייה המצטבר.`
+          : `סכום זמני צפייה: קטע ראשון ${l1} דק׳, קטע שני ${l2} דק׳. מה האורך הכולל?`;
+      question = `${timeSumByGrade}${
+        gradeHebrewScope ? ` · כיתה ${gradeHebrewScope}` : ""
+      }`;
       params = {
         kind: "wp_time_sum",
         semanticFamily: "duration_sum",

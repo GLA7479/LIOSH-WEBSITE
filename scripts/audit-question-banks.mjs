@@ -208,7 +208,7 @@ function collectHebrewLegacy(rows) {
           (topic === "grammar" || topic === "writing")
         ) {
           const heb = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][gNum - 1];
-          stem = `בהתאם לכיתה ${heb}: ${String(item.question || "").trim()}`;
+          stem = `בהתאם לכיתה ${heb} [רמה ${levelKey}]: ${String(item.question || "").trim()}`;
           if (!item.patternFamily || item.patternFamily === "grammar_correct_sentence") {
             pf = "grammar_correct_sentence_scoped";
           }
@@ -301,6 +301,9 @@ function collectEnglishPool(rows, category, pools) {
         item.sentence ??
         item.prompt ??
         item.template ??
+        (category === "translation"
+          ? String(item.en || item.he || "").trim()
+          : "") ??
         "";
       const opts = item.options || item.answers || [];
       const explicitGate =

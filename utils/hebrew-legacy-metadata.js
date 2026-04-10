@@ -48,7 +48,9 @@ export function scopeHebrewStemForGrade(topic, question, gradeKey) {
   if (
     g >= 3 &&
     g <= 4 &&
-    ["vocabulary", "speaking", "reading", "writing"].includes(topic)
+    ["vocabulary", "speaking", "reading", "writing", "grammar", "comprehension"].includes(
+      topic
+    )
   ) {
     const heb = g === 3 ? "ג׳" : "ד׳";
     return `(כיתה ${heb}) ${q0}`;
@@ -56,7 +58,9 @@ export function scopeHebrewStemForGrade(topic, question, gradeKey) {
   if (
     g >= 5 &&
     g <= 6 &&
-    ["reading", "writing", "speaking", "comprehension"].includes(topic)
+    ["reading", "writing", "speaking", "comprehension", "grammar"].includes(
+      topic
+    )
   ) {
     const heb = g === 5 ? "ה׳" : "ו׳";
     return `(כיתה ${heb}) ${q0}`;
@@ -153,6 +157,29 @@ export function inferHebrewLegacyMeta(topic, question, levelKey, gradeKey) {
     } else if (/מה חלק הדיבר/i.test(stem)) {
       out.patternFamily = "grammar_pos";
       out.subtype = "part_of_speech";
+    } else if (/מה חלקי דיבר|חלקי דיבר\?/i.test(stem)) {
+      out.patternFamily = "grammar_pos_inventory";
+      out.subtype = "pos_list";
+    } else if (/מילת הקישור|קישור במשפט/i.test(stem)) {
+      out.patternFamily = "grammar_connective";
+      out.subtype = "linking_word";
+    } else if (/נטיית הפועל|נטיות פועל|מה נטיית/i.test(stem)) {
+      out.patternFamily = "grammar_verb_conjugation";
+      out.subtype = "verb_form";
+    } else if (/מה הכתבה|כללי כתיב/i.test(stem)) {
+      out.patternFamily = "grammar_spelling_meta";
+      out.subtype = "orthography";
+    } else if (/מה התאמה|צורות פועל/i.test(stem)) {
+      out.patternFamily = "grammar_agreement_forms";
+      out.subtype = "agreement";
+    } else if (/שייכות|מילות יחס מורכבות|התאמה של פועל/i.test(stem)) {
+      out.patternFamily = "grammar_relation_agreement";
+      out.subtype = "syntax_relation";
+    } else if (/דקדוק אקדמי|דקדוק ברמת חטיבה|שפה פורמלית|מבנים מורכבים/i.test(
+      stem
+    )) {
+      out.patternFamily = "grammar_academic_register";
+      out.subtype = g >= 6 ? "secondary_meta" : "formal_style";
     } else if (/זמן|הטיה|התאמה בין גוף לפועל|ציווי|שאלה/i.test(stem)) {
       out.patternFamily = "grammar_tense_agreement";
       out.subtype = "verb_syntax";
@@ -211,6 +238,11 @@ export function inferHebrewLegacyMeta(topic, question, levelKey, gradeKey) {
     const band =
       g <= 2 ? "band_early_g1_g2" : g <= 4 ? "band_mid_g3_g4" : "band_late_g5_g6";
     out.patternFamily = `${out.patternFamily}_${band}`;
+  }
+
+  if (topic === "grammar" && out.patternFamily === "grammar_typed") {
+    out.patternFamily = `grammar_typed_g${g}_${lev}`;
+    out.subtype = out.subtype === "general" ? `legacy_${lev}` : out.subtype;
   }
 
   return out;

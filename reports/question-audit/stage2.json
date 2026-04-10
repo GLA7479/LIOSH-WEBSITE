@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-10T21:16:01.604Z",
+  "generatedAt": "2026-04-10T21:42:36.822Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -75,48 +75,6 @@
     }
   },
   "withinBandClassPairOverlaps": [
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "english",
-      "patternFamily": "base_be_have_g1_g2",
-      "stemHash": "0daad5772c8e8cbb04f263b1",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "english",
-      "patternFamily": "base_be_plural_g1_g2",
-      "stemHash": "13661d3841bef8485d0223b4",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "english",
-      "patternFamily": "base_be_it_g1_g2",
-      "stemHash": "c7ea4eb13f32b753e50dfeaf",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "english",
-      "patternFamily": "base_be_she_g1_g2",
-      "stemHash": "9dbd69d7c817f0fd4572fa32",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "english",
-      "patternFamily": "base_be_you_g1_g3",
-      "stemHash": "997ce7e67fd3249e49aa7429",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g1_vs_g2_early_band",
-      "subject": "english",
-      "patternFamily": "base_be_they_g1_g3",
-      "stemHash": "3d93de9276eac63c6ecaa1bd",
-      "subtopic": "base"
-    },
     {
       "bandPair": "g1_vs_g2_early_band",
       "subject": "geometry",
@@ -294,363 +252,6 @@
     },
     {
       "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "f9792892d26a3bad7e4705e8",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "567310cd563d2575387f4b00",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "3b5b46c7f870c3c11cd50bd5",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "ac113f6423319115d305604f",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "cc528b9944073f943096c2dd",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "a850a976ce893593a3feea96",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "8d10c6a8885add3d81d1addf",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "921f14316adef674de2e33a5",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "b62c9e8d5f66733159b4e35b",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "7be58e62effca69b5dee6529",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "f18f1145562992719f2ade24",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "8907b00dfdc0bc90965cd1a1",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "d1c0a8473e0e8013f7357a0b",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "ce62a3180d38e817d5a827f7",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "93460b44dd6fa905fc819597",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "6847392e29ec1aae8fea7c7f",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "27dc3827f8e1a8f38f3cd7c2",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "0a338eba78443f3198934707",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "2b1e20911fdc99804c5ebdb4",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "e8d69c99de1d1b738523d7bc",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "c5aaf3307a62d38a7c49527b",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "464393c248eb65174b9f8343",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "9953e1188571a6276f224f96",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "f704f9f2f2c8239026542ae5",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "7bf7959b9a74ed5e62b9860a",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "7441333a7db4784039c6f6cc",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "a6f1ee48618944a67e9e2501",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "320adf2b2c0e919f9aeb0976",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "54b8b2748ac3360baa92da46",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "2245233408b681fdab43e3f3",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "70f3c92051351049dcc6b23e",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "dbe661b8190bbc49ac5a7916",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "884a62a39b9e88a3e67ecd21",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "8b4785d19678f24fb72dd7f4",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "18ff46904ea5684d09822c07",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "21c26fc155a5707eddec8248",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "59cd7c35585965c73f1668d2",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "513db032f156bc6b9f91a1fd",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "present_simple",
-      "stemHash": "d3288a4f4823853b560fb59f",
-      "subtopic": "present_simple"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "base_be_i_state_g3_g4",
-      "stemHash": "c37f064e2ab8a19ff747285d",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "base_be_it_adj_g3_g4",
-      "stemHash": "f691199dd4e826acc63e1886",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "base_be_they_adj_g3_g4",
-      "stemHash": "ea664dfe4af86eaed42783b2",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "base_be_i_from_g3_g4",
-      "stemHash": "9ca6bc95e704a7d308e0d128",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "routine_present_g3_g4",
-      "stemHash": "c0095febfa54fc8d82c8b7b8",
-      "subtopic": "routine"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "routine_present_g3_g4",
-      "stemHash": "b269bba1865d4c02d2e730c7",
-      "subtopic": "routine"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "routine_present_g3_g4",
-      "stemHash": "42bd96cd314529116d6f6ee3",
-      "subtopic": "routine"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "routine_present_g3_g4",
-      "stemHash": "6ddd606cf1a303b6dfd9be4a",
-      "subtopic": "routine"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "routine_present_g3_g4",
-      "stemHash": "77842e273da58c487c7d110b",
-      "subtopic": "routine"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "descriptive_place_g3_g4",
-      "stemHash": "59548cdb735dfeb1090bc433",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "descriptive_compare_g3_g4",
-      "stemHash": "5a49d1258913dd24b4c3bb06",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
-      "subject": "english",
-      "patternFamily": "descriptive_sense_g3_g4",
-      "stemHash": "e4afaa0251cbe9be79f30c97",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g3_vs_g4_mid_band",
       "subject": "geometry",
       "patternFamily": "perimeter_vs_area",
       "stemHash": "07aedea8d9bdc00b0040437c",
@@ -767,13 +368,6 @@
       "patternFamily": "binary_property_band_mid_rhombus_rect",
       "stemHash": "47221181d7bd5c4247782d4c",
       "subtopic": "not_always_both"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "hebrew",
-      "patternFamily": "grammar_morphology",
-      "stemHash": "25f5bcaa0a536c02a9b8b69e",
-      "subtopic": ""
     },
     {
       "bandPair": "g5_vs_g6_late_band",
@@ -1498,132 +1092,6 @@
     },
     {
       "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "base_be_he_g5_g6",
-      "stemHash": "488643c26a7bcb0f99a9e578",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "base_be_we_g5_g6",
-      "stemHash": "6b5ccef95013b32625ecd0a6",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "base_be_it_place_g5_g6",
-      "stemHash": "eb9a682f732b873a5cd65dbe",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "base_be_i_age_g5_g6",
-      "stemHash": "ab9dae4c484e267997627325",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "base_be_compound_subject_g5_g6",
-      "stemHash": "1037121ced5ad0e30729f54e",
-      "subtopic": "base"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "routine_present_g5_g6",
-      "stemHash": "e671f1fbc12692b5847bfe2c",
-      "subtopic": "routine"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "routine_present_g5_g6",
-      "stemHash": "79da3feb9dffcb9f2ee0aa89",
-      "subtopic": "routine"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "routine_present_g5_g6",
-      "stemHash": "37a9e55d23b84ee50de1bde6",
-      "subtopic": "routine"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "descriptive_compare_g5_g6",
-      "stemHash": "ddf153cb71e06f9e44f228fd",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "descriptive_place_g5_g6",
-      "stemHash": "549c0b952489349bf32f2b6f",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "descriptive_superlative_g5_g6",
-      "stemHash": "919fe954533bc84bce33cf0c",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "descriptive_sense_g5_g6",
-      "stemHash": "f7daac3c5b577f7e30021842",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "descriptive_compare_g5_g6",
-      "stemHash": "20e7eec23919a282274d7a42",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "descriptive_place_g5_g6",
-      "stemHash": "eb4857fc2bab1c21a29aa448",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "descriptive_superlative_g5_g6",
-      "stemHash": "53cc50cb08750bfbe1fb9f88",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "descriptive_sense_g5_g6",
-      "stemHash": "c5c9fc7938c4851e9c293d2a",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "descriptive_compare_g5_g6",
-      "stemHash": "6ab91c76de8172bd4a9d2c27",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
-      "subject": "english",
-      "patternFamily": "descriptive_place_g5_g6",
-      "stemHash": "146a28203db1943997cdf56a",
-      "subtopic": "descriptive"
-    },
-    {
-      "bandPair": "g5_vs_g6_late_band",
       "subject": "geometry",
       "patternFamily": "perimeter_vs_area",
       "stemHash": "1b249bb64a87ffee42e6e9fd",
@@ -1793,26 +1261,6 @@
   ],
   "weakLevelSeparationCombos": [
     {
-      "comboKey": "geometry|shapes_basic|shapes_basic_square|1",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 8,
-        "medium": 9,
-        "hard": 11
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "geometry|shapes_basic|shapes_basic_rectangle|1",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 8,
-        "medium": 7,
-        "hard": 13
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
       "comboKey": "geometry|area|square_area|2",
       "uniqueStemHashesAcrossLevels": 3,
       "samplesPerLevel": {
@@ -1829,46 +1277,6 @@
         "easy": 7,
         "medium": 7,
         "hard": 14
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "geometry|angles|triangle_angles|3",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 11,
-        "medium": 12,
-        "hard": 12
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "geometry|rotation|rotation|3",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 16,
-        "medium": 15,
-        "hard": 24
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "geometry|shapes_basic|shapes_basic_properties_rectangle|4",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 5,
-        "medium": 5,
-        "hard": 5
-      },
-      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
-    },
-    {
-      "comboKey": "geometry|diagonal|diagonal_rectangle|4",
-      "uniqueStemHashesAcrossLevels": 3,
-      "samplesPerLevel": {
-        "easy": 11,
-        "medium": 6,
-        "hard": 6
       },
       "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
     },
@@ -2380,7 +1788,7 @@
         "rows": 71,
         "staticRows": 71,
         "sampleRows": 0,
-        "withSubtype": 52,
+        "withSubtype": 71,
         "withPatternFamily": 71
       },
       "vocabulary": {
@@ -2400,11 +1808,11 @@
     },
     "english": {
       "grammar": {
-        "rows": 539,
-        "staticRows": 539,
+        "rows": 537,
+        "staticRows": 537,
         "sampleRows": 0,
         "withSubtype": 0,
-        "withPatternFamily": 539
+        "withPatternFamily": 537
       },
       "translation": {
         "rows": 36,
@@ -2414,11 +1822,11 @@
         "withPatternFamily": 36
       },
       "sentence": {
-        "rows": 79,
-        "staticRows": 79,
+        "rows": 128,
+        "staticRows": 128,
         "sampleRows": 0,
         "withSubtype": 0,
-        "withPatternFamily": 79
+        "withPatternFamily": 128
       }
     },
     "geometry": {

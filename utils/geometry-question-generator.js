@@ -456,26 +456,45 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const side = Math.floor(Math.random() * level.maxSide) + 1;
           const useStory = allowStory && Math.random() < 0.4;
 
-          params = { side, kind: useStory ? "story_square_area" : "square_area" };
+          params = {
+            side,
+            kind: useStory ? "story_square_area" : "square_area",
+            patternFamily: useStory
+              ? "area_square_story"
+              : `area_square_${formulaBand}_${levelKey}`,
+          };
           correctAnswer = round(side * side);
 
           if (useStory) {
             question = `לליאו יש גינה בצורת ריבוע, אורך כל צלע הוא ${side} מטר. כמה מטרים רבועים שטח הגינה?`;
           } else if (formulaBand === "early") {
             if (levelKey === "easy") {
-              question = `ריבוע קטן: כל צלע ${side}. כמה יחידות שטח? (רמז: צלע × צלע)`;
+              question = `ספרו יחידות שטח על רשת: ריבוע עם צלע ${side} (כל משבצת = 1). כמה משבצות?`;
             } else if (levelKey === "medium") {
-              question = `ריבוע: אורך כל צלע ${side}. כמה יחידות שטח? (חשבו: צלע × צלע)`;
+              question = `נוסחה: שטח ריבוע = צלע × צלע. לריבוע צלע ${side} — מה השטח ביחידות?`;
             } else {
-              question = `אתגר שטח — ריבוע צלע ${side}. כמה יחידות שטח?`;
+              question = `בלי רמז חזותי — ריבוע במישור, צלע ${side}. מה שטחו?`;
             }
           } else if (formulaBand === "mid") {
+            const aw = Math.floor(Math.random() * 3);
             if (levelKey === "easy") {
-              question = `ריבוע עם צלע ${side}: חשבו שטח (כפל צלע בעצמה). מה התוצאה?`;
+              question = [
+                `ריבוע עם צלע ${side}: חשבו שטח (כפל צלע בעצמה). מה התוצאה?`,
+                `שטח במישור: ריבוע צלע ${side} — מה גודל השטח (ביחידות ריבוע)?`,
+                `כפל הצלע בעצמה: ריבוע ${side}. מה השטח?`,
+              ][aw];
             } else if (levelKey === "medium") {
-              question = `מה השטח של ריבוע עם צלע ${side}?`;
+              question = [
+                `מה השטח של ריבוע עם צלע ${side}?`,
+                `נתון ריבוע, צלע ${side}. חשבו שטח פנים.`,
+                `ביטוי לשטח ריבוע: צלע ${side}. מה הערך המספרי?`,
+              ][aw];
             } else {
-              question = `אתגר — שטח ריבוע במישור: צלע ${side}, ללא הנחיות נוספות. מה השטח?`;
+              question = [
+                `אתגר — שטח ריבוע במישור: צלע ${side}, ללא הנחיות נוספות. מה השטח?`,
+                `שטח ריבוע ללא רמזים: צלע ${side} בלבד.`,
+                `הוכיחו בראש ואז חשבו — ריבוע צלע ${side}, מה השטח?`,
+              ][aw];
             }
           } else {
             question = `חישוב שטח ריבוע במישור: צלע ${side}. מה השטח?`;
@@ -492,6 +511,9 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
             length,
             width,
             kind: useStory ? "story_rectangle_area" : "rectangle_area",
+            patternFamily: useStory
+              ? "area_rectangle_story"
+              : `area_rectangle_${formulaBand}_${levelKey}`,
           };
           correctAnswer = round(length * width);
 
@@ -499,19 +521,32 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
             question = `רצפת חדר של ליאו היא מלבן באורך ${length} מטר וברוחב ${width} מטר. מה שטח הרצפה במטרים רבועים?`;
           } else if (formulaBand === "early") {
             if (levelKey === "easy") {
-              question = `מלבן פשוט: אורך ${length}, רוחב ${width}. כמה יחידות שטח? (רמז: אורך × רוחב)`;
+              question = `מלבן על רשת: שורות ${length}, עמודות ${width} — כמה משבצות (שטח)?`;
             } else if (levelKey === "medium") {
-              question = `מלבן: אורך ${length}, רוחב ${width}. כמה יחידות שטח? (אורך × רוחב)`;
+              question = `שטח מלבן = אורך × רוחב. נתון ${length} ו-${width} — חשבו את השטח.`;
             } else {
-              question = `אתגר שטח — מלבן ${length}×${width}. כמה יחידות שטח?`;
+              question = `אתגר: מלבן ${length}×${width} במישור — מה השטח ללא ציור עזר?`;
             }
           } else if (formulaBand === "mid") {
+            const rw = Math.floor(Math.random() * 3);
             if (levelKey === "easy") {
-              question = `מלבן אורך ${length}, רוחב ${width}: שטח = אורך×רוחב. מה התוצאה?`;
+              question = [
+                `מלבן אורך ${length}, רוחב ${width}: שטח = אורך×רוחב. מה התוצאה?`,
+                `מלבן במישור: ${length} על ${width}. מה שטח הפנים?`,
+                `כפל אורך ברוחב — מלבן ${length}×${width}. מה יוצא?`,
+              ][rw];
             } else if (levelKey === "medium") {
-              question = `מה השטח של מלבן עם אורך ${length} ורוחב ${width}?`;
+              question = [
+                `מה השטח של מלבן עם אורך ${length} ורוחב ${width}?`,
+                `חישוב שטח מלבני: ${length} ו-${width} הם הניצבים. מה התוצאה?`,
+                `נתון מלבן ${length}×${width}. מה שטחו?`,
+              ][rw];
             } else {
-              question = `אתגר שטח — מלבן ${length}×${width}. מה השטח?`;
+              question = [
+                `אתגר שטח — מלבן ${length}×${width}. מה השטח?`,
+                `שטח מלבן ללא ציור: ${length} על ${width}.`,
+                `בדקו פעמיים לפני בחירה — מלבן ${length}×${width}, מה השטח?`,
+              ][rw];
             }
           } else {
             question = `שטח מלבן: אורך ${length}, רוחב ${width}. מה התוצאה?`;
@@ -880,12 +915,28 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
             Math.floor(Math.random() * (level.maxSide / 2)) + 1;
           const height =
             Math.floor(Math.random() * level.maxSide) + 1;
-          params = { length, width, height, kind: "rectangular_prism_volume" };
+          params = {
+            length,
+            width,
+            height,
+            kind: "rectangular_prism_volume",
+            patternFamily: `prism_volume_${formulaBand}_${levelKey}`,
+          };
           correctAnswer = round(length * width * height);
-          question =
-            formulaBand === "late"
-              ? `נפח גוף תיבתי: ${length} × ${width} × ${height}. מה התוצאה?`
-              : `מה הנפח של תיבה עם אורך ${length}, רוחב ${width} וגובה ${height}?`;
+          if (formulaBand === "late") {
+            question =
+              levelKey === "easy"
+                ? `תיבה במרחב — מידות ${length}×${width}×${height}. נפח = אורך×רוחב×גובה. מה הנפח?`
+                : levelKey === "medium"
+                  ? `נפח גוף תיבתי: ${length} × ${width} × ${height}. מה התוצאה?`
+                  : `אתגר נפח: תיבה ${length}×${width}×${height} — חשבו לפני שבוחרים.`;
+          } else if (levelKey === "easy") {
+            question = `כמה יחידות נפח בתיבה ${length}×${width}×${height}? (כפל שלושת המידות)`;
+          } else if (levelKey === "medium") {
+            question = `מה הנפח של תיבה עם אורך ${length}, רוחב ${width} וגובה ${height}?`;
+          } else {
+            question = `ניתוח נפח — תיבה ${length}×${width}×${height}. מה המוצא?`;
+          }
         }
       }
       break;
@@ -898,25 +949,46 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       const angle2 = Math.floor(Math.random() * (maxAngle2 - 19)) + 20;
       const angle3 = 180 - angle1 - angle2;
 
-      params = { angle1, angle2, angle3, kind: "triangle_angles" };
+      params = {
+        angle1,
+        angle2,
+        angle3,
+        kind: "triangle_angles",
+        patternFamily: `triangle_angles_${formulaBand}_${levelKey}`,
+      };
       correctAnswer = round(angle3);
       {
         const baseMid = `במשולש, זווית אחת היא ${angle1}° וזווית שנייה היא ${angle2}°. מה הזווית השלישית?`;
+        const baseMidB = `זוויות במשולש: ${angle1}° ו-${angle2}° כבר ידועות. מה נשאר לזווית השלישית?`;
+        const baseMidC = `סכום שתי זוויות ידועות הוא ${angle1}°+${angle2}° — השלימו לזווית השלישית במשולש.`;
         const baseLate = `במשולש במישור, שתי זוויות פנימיות ידועות (${angle1}° ו-${angle2}°). מה גודל הזווית השלישית?`;
+        const tw = Math.floor(Math.random() * 3);
         if (formulaBand === "mid") {
           if (levelKey === "easy") {
-            question = `זכרו: סכום זוויות במשולש 180°. ${baseMid}`;
+            question = [
+              `כלל בסיס: סכום זוויות פנימיות במשולש הוא 180°. ${baseMid}`,
+              `זכרו: במשולש סה״כ 180°. ${baseMidB}`,
+              `משולש פשוט — ${baseMidC}`,
+            ][tw];
           } else if (levelKey === "medium") {
-            question = baseMid;
+            question = [
+              `חישוב זווית שלישית במשולש — ${baseMid}`,
+              `השלמת זווית במשולש: ${baseMidB}`,
+              `אלגברה של זוויות — ${baseMidC}`,
+            ][tw];
           } else {
-            question = `הסיקו בלי לפרט את 180° במפורש — ${baseMid}`;
+            question = [
+              `ניתוח ללא ניסוח הכלל במפורש — מה הזווית החסרה אם ידועות ${angle1}° ו-${angle2}°?`,
+              `בלי לצטט את כלל 180° במפורש — מה נשאר מ-${angle1}° ו-${angle2}°?`,
+              `אתגר קצר: זווית שלישית כשידועות ${angle1}° ו-${angle2}° — מה התוצאה?`,
+            ][tw];
           }
         } else if (levelKey === "easy") {
-          question = `במשולש, ${angle1}° + ${angle2}° + ? = 180°. מה החסר?`;
+          question = `משוואת זוויות: ${angle1}° + ${angle2}° + ? = 180° — מה החסר?`;
         } else if (levelKey === "medium") {
           question = baseLate;
         } else {
-          question = `בשלב אתגר — ${baseLate}`;
+          question = `אתגר זוויות משולש — ${baseLate}`;
         }
       }
       break;
@@ -990,48 +1062,120 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
         const isSquare = Math.random() < 0.5;
         
         if (isSquare) {
-          params = { shape: "ריבוע", side, kind: "shapes_basic_square" };
+          params = {
+            shape: "ריבוע",
+            side,
+            kind: "shapes_basic_square",
+            patternFamily:
+              levelKey === "easy"
+                ? "shapes_basic_square_g1_easy"
+                : levelKey === "medium"
+                  ? "shapes_basic_square_g1_medium"
+                  : "shapes_basic_square_g1_hard",
+          };
           correctAnswer = 1; // ריבוע
+          const sqW = Math.floor(Math.random() * 3);
           question =
             levelKey === "easy"
-              ? `זיהוי צורה: 4 צלעות שוות, אורך כל צלע ${side}. מה שמה? (1 = ריבוע, 2 = מלבן)`
+              ? [
+                  `שאלת זיהוי קצרה — ריבוע: כל הצלעות באורך ${side}. מה סוג הצורה? (1 = ריבוע, 2 = מלבן)`,
+                  `בוחנים צורה סגורה: ארבע צלעות שוות (${side}) וזוויות ישרות. מה היא? (1 = ריבוע, 2 = מלבן)`,
+                  `זיהוי מהיר — מרובע עם צלע ${side} לכל צד. ריבוע או מלבן? (1 = ריבוע, 2 = מלבן)`,
+                ][sqW]
               : levelKey === "medium"
-                ? `צורה עם 4 צלעות שוות באורך ${side}. מה שמה? (1 = ריבוע, 2 = מלבן)`
-                : `בחנו תיאור צורה — 4 צלעות שוות, צלע ${side}. מה סוג הצורה? (1 = ריבוע, 2 = מלבן)`;
+                ? [
+                    `השוו בין ריבוע למלבן: היקף בסיסי עם צלע ${side} לכל הצלעות. מה מתאים? (1 = ריבוע, 2 = מלבן)`,
+                    `ארבע צלעות באורך ${side} — האם זה תיאור של ריבוע? (1 = ריבוע, 2 = מלבן)`,
+                    `סימטרייה מלאה בצלעות: כולן ${side}. איזו צורה? (1 = ריבוע, 2 = מלבן)`,
+                  ][sqW]
+                : [
+                    `ניתוח תיאור — מרובע עם ארבע צלעות שוות ${side} וזוויות ישרות. מה סוג הצורה? (1 = ריבוע, 2 = מלבן)`,
+                    `תכונות: כל הצלעות ${side}, כל הזוויות ישרות. מה סוג המרובע? (1 = ריבוע, 2 = מלבן)`,
+                    `הוכחה מילולית קצרה: מדוע זה ריבוע ולא מלבן כללי? (1 = ריבוע, 2 = מלבן)`,
+                  ][sqW];
         } else {
           const width = Math.floor(Math.random() * level.maxSide) + 1;
-          params = { shape: "מלבן", length: side, width, kind: "shapes_basic_rectangle" };
+          params = {
+            shape: "מלבן",
+            length: side,
+            width,
+            kind: "shapes_basic_rectangle",
+            patternFamily:
+              levelKey === "easy"
+                ? "shapes_basic_rect_g1_easy"
+                : levelKey === "medium"
+                  ? "shapes_basic_rect_g1_medium"
+                  : "shapes_basic_rect_g1_hard",
+          };
           correctAnswer = 2; // מלבן
+          const rectW = Math.floor(Math.random() * 3);
           question =
             levelKey === "easy"
-              ? `זיהוי צורה: אורך ${side}, רוחב ${width} (לא כל הצלעות שוות). מה שמה? (1 = ריבוע, 2 = מלבן)`
+              ? [
+                  `שאלת זיהוי קצרה — מלבן: אורך ${side}, רוחב ${width}. מה סוג הצורה? (1 = ריבוע, 2 = מלבן)`,
+                  `צורה עם זוגות נגדיים שווים: ${side} מול ${side}, ${width} מול ${width}. מה זה? (1 = ריבוע, 2 = מלבן)`,
+                  `אורך ${side} ורוחב ${width} (שונים) — ריבוע או מלבן? (1 = ריבוע, 2 = מלבן)`,
+                ][rectW]
               : levelKey === "medium"
-                ? `צורה עם אורך ${side} ורוחב ${width}. מה שמה? (1 = ריבוע, 2 = מלבן)`
-                : `בחנו תיאור — אורך ${side}, רוחב ${width}. מה סוג הצורה? (1 = ריבוע, 2 = מלבן)`;
+                ? [
+                    `השוו בין ריבוע למלבן: אורך ${side} ורוחב ${width} (לא כל הצלעות שוות). מה מתאים? (1 = ריבוע, 2 = מלבן)`,
+                    `מלבן אמיתי: צלעות ${side} ו-${width} לסירוגין. מה סוג הצורה? (1 = ריבוע, 2 = מלבן)`,
+                    `האם מדובר בריבוע כשהצלעות ${side} ו-${width}? (1 = ריבוע, 2 = מלבן)`,
+                  ][rectW]
+                : [
+                    `ניתוח תיאור — מרובע עם זוגות צלעות נגדיות שווים אך לא כל ארבע השוות; אורך ${side}, רוחב ${width}. מה סוג הצורה? (1 = ריבוע, 2 = מלבן)`,
+                    `זיהוי לפי תכונות: שני אורכי צלע שונים (${side}, ${width}). מה המשמעות? (1 = ריבוע, 2 = מלבן)`,
+                    `הסבר מילולי: למה זה מלבן ולא ריבוע? (1 = ריבוע, 2 = מלבן)`,
+                  ][rectW];
         }
       } else {
         // כיתה ד' - תכונות ריבוע ומלבן
         const questionType = Math.random();
+        const g4w = Math.floor(Math.random() * 3);
         if (questionType < 0.33) {
           // כמה צלעות שוות יש לריבוע?
           params = { shape: "ריבוע", kind: "shapes_basic_properties_square" };
           correctAnswer = 4; // 4 צלעות שוות
           question =
             levelKey === "easy"
-              ? `ריבוע: כמה צלעות שוות יש לו? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`
+              ? [
+                  `ריבוע: כמה צלעות שוות יש לו? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`,
+                  `בריבוע — כמה צלעות באותו אורך? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`,
+                  `ספירת צלעות שוות בריבוע: (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`,
+                ][g4w]
               : levelKey === "medium"
-                ? `כמה צלעות שוות יש לריבוע? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`
-                : `תכונות ריבוע — כמה צלעות באותו אורך? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`;
+                ? [
+                    `כמה צלעות שוות יש לריבוע? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`,
+                    `תכונת הצלעות בריבוע — כמה שוות? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`,
+                    `זיהוי ריבוע לפי צלעות שוות — כמה? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`,
+                  ][g4w]
+                : [
+                    `תכונות ריבוע — כמה צלעות באותו אורך? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`,
+                    `ניתוח ריבוע: כמה צלעות זהות? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`,
+                    `הוכחה מילולית — כמה צלעות שוות בריבוע? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`,
+                  ][g4w];
         } else if (questionType < 0.66) {
           // כמה זוגות של צלעות שוות יש למלבן?
           params = { shape: "מלבן", kind: "shapes_basic_properties_rectangle" };
           correctAnswer = 2; // 2 זוגות
           question =
             levelKey === "easy"
-              ? `מלבן: כמה זוגות צלעות שוות יש? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`
+              ? [
+                  `מלבן: כמה זוגות צלעות שוות יש? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`,
+                  `זוגות צלעות במלבן — כמה זוגות שווים? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`,
+                  `ספירת זוגות צלעות שוות במלבן: (1 = 1, 2 = 2, 3 = 3, 4 = 4)`,
+                ][g4w]
               : levelKey === "medium"
-                ? `כמה זוגות של צלעות שוות יש למלבן? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`
-                : `תכונות מלבן — כמה זוגות צלעות באותו אורך? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`;
+                ? [
+                    `כמה זוגות של צלעות שוות יש למלבן? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`,
+                    `תכונת המלבן — כמה זוגות צלעות זהות? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`,
+                    `זוגות נגדיים שווים במלבן — כמה זוגות? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`,
+                  ][g4w]
+                : [
+                    `תכונות מלבן — כמה זוגות צלעות באותו אורך? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`,
+                    `ניתוח מלבן: כמה זוגות צלעות שוות? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`,
+                    `הסבר מילולי — זוגות צלעות במלבן: (1 = 1, 2 = 2, 3 = 3, 4 = 4)`,
+                  ][g4w];
         } else {
           // כמה זוויות ישרות יש לריבוע/מלבן?
           const shape = Math.random() < 0.5 ? "ריבוע" : "מלבן";
@@ -1039,10 +1183,22 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           correctAnswer = 4; // 4 זוויות ישרות
           question =
             levelKey === "easy"
-              ? `${shape}: כמה זוויות ישרות יש? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`
+              ? [
+                  `${shape}: כמה זוויות ישרות יש? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`,
+                  `זוויות ישרות ב${shape} — כמה? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`,
+                  `ספירת זוויות ישרות: ${shape}. (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`,
+                ][g4w]
               : levelKey === "medium"
-                ? `כמה זוויות ישרות יש ל${shape}? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`
-                : `זוויות ב${shape} — כמה מהן ישרות? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`;
+                ? [
+                    `כמה זוויות ישרות יש ל${shape}? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`,
+                    `זוויות פנימיות ישרות ב${shape} — כמה? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`,
+                    `תכונת הזוויות ב${shape}: (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`,
+                  ][g4w]
+                : [
+                    `זוויות ב${shape} — כמה מהן ישרות? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`,
+                    `ניתוח זוויות ב${shape}: (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`,
+                    `אתגר קצר — זוויות ישרות ב${shape}: (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`,
+                  ][g4w];
         }
       }
       break;
@@ -1166,22 +1322,51 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     // ===================== ROTATION =====================
     case "rotation": {
       const angle = [90, 180, 270][Math.floor(Math.random() * 3)];
-      params = { angle, kind: "rotation" };
+      params = {
+        angle,
+        kind: "rotation",
+        patternFamily: `rotation_${formulaBand}_${levelKey}`,
+      };
       correctAnswer = angle;
+      const rotW = Math.floor(Math.random() * 3);
       if (formulaBand === "mid") {
         if (levelKey === "easy") {
-          question = `סיבוב במישור — מה גודל הסיבוב במעלות? (רמז: ${angle}°)`;
+          question = [
+            `פעולת סיבוב סביב מרכז: מה גודל הסיבוב במעלות? (רמז: ${angle}°)`,
+            `סיבוב חצי/רבע/שלוש רבעים — כמה מעלות במקרה הזה? (${angle}°)`,
+            `זווית סיבוב סטנדרטית במישור — בחרו במעלות. (${angle}°)`,
+          ][rotW];
         } else if (levelKey === "medium") {
-          question = `סיבוב של כמה מעלות? (${angle}°)`;
+          question = [
+            `בכמה מעלות מסתובבת צורה במישור סביב נקודת המרכז? (${angle}°)`,
+            `סיבוב סביב מרכז הצורה — מה גודל הסיבוב? (${angle}°)`,
+            `מעלות סיבוב במישור (סביב מרכז): (${angle}°)`,
+          ][rotW];
         } else {
-          question = `סיבוב יחסי למערכת צירים — מה המעלות? (${angle}°)`;
+          question = [
+            `סיבוב במערכת צירים — העריכו את מספר המעלות לפני בחירה. (${angle}°)`,
+            `סיבוב מדויק — אימות לפני בחירה במעלות. (${angle}°)`,
+            `אתגר סיבוב במישור — מה המעלות? (${angle}°)`,
+          ][rotW];
         }
       } else if (levelKey === "easy") {
-        question = `סיבוב פשוט במישור — כמה מעלות? (${angle}°)`;
+        question = [
+          `זווית סיבוב בסיסית במישור — כמה מעלות? (${angle}°)`,
+          `כמה מעלות בפעולת סיבוב זו? (${angle}°)`,
+          `סיבוב במישור — בחרו זווית נכונה. (${angle}°)`,
+        ][rotW];
       } else if (levelKey === "medium") {
-        question = `סיבוב במישור סביב מרכז — כמה מעלות? (${angle}°)`;
+        question = [
+          `סיבוב במישור סביב מרכז — כמה מעלות? (${angle}°)`,
+          `זווית סיבוב סביב נקודת מרכז — מה המעלות? (${angle}°)`,
+          `פעולת סיבוב במישור — מה גודל המעלות? (${angle}°)`,
+        ][rotW];
       } else {
-        question = `אתגר סיבוב — מה גודל הסיבוב במעלות? (${angle}°)`;
+        question = [
+          `אתגר סיבוב — מה גודל הסיבוב במעלות? (${angle}°)`,
+          `סיבוב מאתגר — העריכו מעלות. (${angle}°)`,
+          `ניתוח סיבוב במישור — מה המעלות? (${angle}°)`,
+        ][rotW];
       }
       break;
     }
@@ -1192,15 +1377,20 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       const selectedShape = shapes[Math.floor(Math.random() * shapes.length)];
       const axes = selectedShape === "ריבוע" ? 4 : selectedShape === "מלבן" ? 2 : 3;
       
-      params = { shape: selectedShape, axes, kind: "symmetry" };
+      params = {
+        shape: selectedShape,
+        axes,
+        kind: "symmetry",
+        patternFamily: `symmetry_${formulaBand}_${levelKey}`,
+      };
       correctAnswer = axes;
       if (formulaBand === "mid") {
         if (levelKey === "easy") {
-          question = `סימטרייה — כמה צירי סימטרייה יש ל${selectedShape}? (ספרו בזהירות)`;
+          question = `שיקוף במישור — כמה צירי סימטרייה (קווי שיקוף) יש ל${selectedShape}?`;
         } else if (levelKey === "medium") {
-          question = `כמה צירי סימטרייה יש ל${selectedShape}?`;
+          question = `ספירת צירים: כמה צירי סימטרייה יש ל${selectedShape}?`;
         } else {
-          question = `אתגר סימטרייה — כמה צירי שיקוף יש ל${selectedShape}?`;
+          question = `ניתוח סימטרייה — כמה צירי שיקוף שונים יש ל${selectedShape}?`;
         }
       } else if (levelKey === "easy") {
         question = `כמה צירי סימטרייה יש לצורה ${selectedShape}?`;
@@ -1261,13 +1451,26 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           kind: "diagonal_rectangle",
           patternFamily: `diagonal_rectangle_${levelKey}`,
         };
+        const diagW = Math.floor(Math.random() * 3);
         if (formulaBand === "mid") {
           if (levelKey === "easy") {
-            question = `מלבן ${side}×${width}: השתמשו בפיתגורס (ניצבים ${side} ו-${width}). מה אלכסון?`;
+            question = [
+              `מלבן ${side}×${width}: השתמשו בפיתגורס (ניצבים ${side} ו-${width}). מה אלכסון?`,
+              `אלכסון במלבן ישר־זווית: ניצבים ${side}, ${width} — מה d?`,
+              `ניצבים במלבן ${side} ו-${width}. חשבו אלכסון (פיתגורס).`,
+            ][diagW];
           } else if (levelKey === "medium") {
-            question = `מה אורך האלכסון של מלבן עם אורך ${side} ורוחב ${width}?`;
+            question = [
+              `מה אורך האלכסון של מלבן עם אורך ${side} ורוחב ${width}?`,
+              `מלבן ${side} על ${width} — מה אורך האלכסון הפנימי?`,
+              `חישוב אלכסון מניצבים ${side} ו-${width} במלבן.`,
+            ][diagW];
           } else {
-            question = `אתגר אלכסון — מלבן ${side}×${width}. מה אורך האלכסון?`;
+            question = [
+              `אתגר אלכסון — מלבן ${side}×${width}. מה אורך האלכסון?`,
+              `בדקו נוסחת פיתגורס — מלבן ${side}×${width}, מה d?`,
+              `אלכסון במלבן ללא ציור: ${side}, ${width}.`,
+            ][diagW];
           }
         } else if (formulaBand === "late") {
           if (levelKey === "easy") {
