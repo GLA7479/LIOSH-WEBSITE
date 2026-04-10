@@ -1140,11 +1140,18 @@ useEffect(() => {
     });
 
     setSelectedAnswer(answer);
+    const HEBREW_NIQQUD_RE = /[\u0591-\u05C7]/g;
+    const SURROUNDING_PUNCT_RE = /^[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+|[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+$/g;
     const normalize = (value) =>
       String(value ?? "")
+        .replace(/[“”״]/g, '"')
+        .replace(/[‘’׳]/g, "'")
+        .replace(HEBREW_NIQQUD_RE, "")
+        .replace(SURROUNDING_PUNCT_RE, "")
         .trim()
         .replace(/\s+/g, " ")
         .toLowerCase();
+    // Keep final-letter spelling strict (ך/ם/ן/ף/ץ) to preserve pedagogy.
     const acceptedAnswers =
       Array.isArray(currentQuestion.acceptedAnswers) &&
       currentQuestion.acceptedAnswers.length > 0
@@ -1661,6 +1668,18 @@ useEffect(() => {
     answerPressureBucket === "veryLong" ||
     (answerPressureBucket === "long" && questionPressureBucket !== "short");
   const isTypingQuestion = currentQuestion?.answerMode === "typing";
+  const typingPanelClass =
+    questionPressureBucket === "veryLong" || questionPressureBucket === "long"
+      ? "w-full mb-2.5 p-3 rounded-lg bg-blue-500/20 border border-blue-400/50"
+      : "w-full mb-3 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50";
+  const typingInputClass =
+    questionPressureBucket === "veryLong"
+      ? "w-full max-w-[320px] px-3 py-3 rounded-lg bg-black/40 border border-white/20 text-white text-lg font-bold text-center disabled:opacity-50"
+      : questionPressureBucket === "long"
+      ? "w-full max-w-[320px] px-3.5 py-3.5 rounded-lg bg-black/40 border border-white/20 text-white text-xl font-bold text-center disabled:opacity-50"
+      : "w-full max-w-[320px] px-4 py-4 rounded-lg bg-black/40 border border-white/20 text-white text-2xl font-bold text-center disabled:opacity-50";
+  const typingRowClass =
+    questionPressureBucket === "veryLong" ? "flex gap-1.5 justify-center" : "flex gap-2 justify-center";
 
   return (
     <Layout>
@@ -2883,8 +2902,8 @@ useEffect(() => {
 
                   <div className="w-full flex-1 min-h-0 mt-2 flex flex-col items-center justify-end">
                   {isTypingQuestion ? (
-                    <div className="w-full mb-3 p-4 rounded-lg bg-blue-500/20 border border-blue-400/50">
-                      <div className="text-center mb-3">
+                    <div className={typingPanelClass}>
+                      <div className={`text-center ${questionPressureBucket === "veryLong" ? "mb-2" : "mb-3"}`}>
                         <input
                           dir="rtl"
                           type="text"
@@ -2901,10 +2920,10 @@ useEffect(() => {
                           }}
                           disabled={!!selectedAnswer || !gameActive}
                           placeholder="כתוב את התשובה שלך כאן..."
-                          className="w-full max-w-[320px] px-4 py-4 rounded-lg bg-black/40 border border-white/20 text-white text-2xl font-bold text-center disabled:opacity-50"
+                          className={typingInputClass}
                         />
                       </div>
-                      <div className="flex gap-2 justify-center">
+                      <div className={typingRowClass}>
                         <button
                           onClick={() => {
                             if (!typedAnswer.trim()) return;

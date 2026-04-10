@@ -698,6 +698,31 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   // קבלת שאלות מהמאגר המתאים
   const topicQuestions = getQuestionsForGradeAndLevel(gradeKey, levelKey, selectedTopic);
   
+  const HEBREW_NIQQUD_RE = /[\u0591-\u05C7]/g;
+  const SURROUNDING_PUNCT_RE = /^[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+|[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+$/g;
+  const normalizeQuotes = (value) =>
+    String(value || "")
+      .replace(/[“”״]/g, '"')
+      .replace(/[‘’׳]/g, "'")
+      .trim();
+  const stripNiqqud = (value) => normalizeQuotes(value).replace(HEBREW_NIQQUD_RE, "");
+  const stripSurroundingPunctuation = (value) =>
+    normalizeQuotes(value).replace(SURROUNDING_PUNCT_RE, "").trim();
+  const buildAcceptedAnswers = (baseAnswer) => {
+    const base = normalizeQuotes(baseAnswer);
+    const noNiqqud = stripNiqqud(base);
+    const noPunct = stripSurroundingPunctuation(base);
+    const noPunctNoNiqqud = stripSurroundingPunctuation(noNiqqud);
+    const candidates = [base, noNiqqud, noPunct, noPunctNoNiqqud];
+    return Array.from(
+      new Set(
+        candidates
+          .map((c) => String(c || "").trim())
+          .filter(Boolean)
+      )
+    );
+  };
+
   const resolveAnswerMode = (selectedTopicKey, questionText) => {
     const q = String(questionText || "").trim();
     const hasBlankPattern = q.includes("_") || q.includes(BLANK);
@@ -741,13 +766,14 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     const newCorrectIndex = shuffledAnswers.findIndex(ans => ans === correctAnswer);
     
     const answerMode = resolveAnswerMode(selectedTopic, randomQ.question);
+    const acceptedAnswers = buildAcceptedAnswers(correctAnswer);
     return {
       question: randomQ.question,
       questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
       exerciseText: randomQ.question,
       answers: shuffledAnswers,
       correctAnswer: correctAnswer,
-      acceptedAnswers: [correctAnswer],
+      acceptedAnswers,
       answerMode,
       correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : 0,
       topic: selectedTopic,
@@ -777,13 +803,14 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   const newCorrectIndex = shuffledAnswers.findIndex(ans => ans === correctAnswer);
 
   const answerMode = resolveAnswerMode(selectedTopic, randomQ.question);
+  const acceptedAnswers = buildAcceptedAnswers(correctAnswer);
   return {
     question: randomQ.question,
     questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
     exerciseText: randomQ.question,
     answers: shuffledAnswers,
     correctAnswer: correctAnswer,
-    acceptedAnswers: [correctAnswer],
+    acceptedAnswers,
     answerMode,
     correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : 0,
     topic: selectedTopic,

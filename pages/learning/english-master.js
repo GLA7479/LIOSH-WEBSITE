@@ -314,6 +314,31 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     correctAnswer,
     params = {};
   let qType = "choice"; // ברירת מחדל – שאלת בחירה
+  const buildAcceptedAnswers = (baseAnswer) => {
+    const normalizeQuotes = (value) =>
+      String(value ?? "")
+        .replace(/[“”״]/g, '"')
+        .replace(/[‘’׳]/g, "'")
+        .trim();
+    const stripSurroundingPunctuation = (value) =>
+      normalizeQuotes(value).replace(
+        /^[\s"'`.,!?;:()[\]{}\-–—]+|[\s"'`.,!?;:()[\]{}\-–—]+$/g,
+        ""
+      );
+    const normalizeSpaces = (value) =>
+      String(value ?? "")
+        .trim()
+        .replace(/\s+/g, " ");
+
+    const base = normalizeQuotes(baseAnswer);
+    const noPunct = stripSurroundingPunctuation(base);
+    const compactSpace = normalizeSpaces(base);
+    const noPunctCompact = normalizeSpaces(noPunct);
+
+    return Array.from(
+      new Set([base, noPunct, compactSpace, noPunctCompact].filter(Boolean))
+    );
+  };
   const gradeConfig = GRADES[gradeKey] || GRADES.g3;
   const gradeProfile = GRADE_PROFILES[gradeKey] || DEFAULT_GRADE_PROFILE;
   const gradeWordLists = (gradeConfig.wordLists || []).filter(
@@ -356,6 +381,14 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           direction: "he_to_en",
         };
       }
+      // Hybrid: production typing for short HE->EN recall prompts only.
+      if (
+        params.direction === "he_to_en" &&
+        String(correctAnswer || "").trim().split(/\s+/).length <= 2 &&
+        Math.random() < 0.35
+      ) {
+        qType = "typing";
+      }
       break;
     }
 
@@ -374,6 +407,20 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       question = grammarQ.question;
       correctAnswer = grammarQ.correct;
       params = { explanation: grammarQ.explanation };
+      // Hybrid: typing when prompt is production-like and answer is concise.
+      const grammarPrompt = String(question || "").toLowerCase();
+      const grammarLooksProductive =
+        grammarPrompt.includes("complete") ||
+        grammarPrompt.includes("fill") ||
+        grammarPrompt.includes("השלם") ||
+        grammarPrompt.includes("__") ||
+        grammarPrompt.includes("___");
+      if (
+        grammarLooksProductive &&
+        String(correctAnswer || "").trim().split(/\s+/).length <= 3
+      ) {
+        qType = "typing";
+      }
       break;
     }
 
@@ -408,6 +455,14 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           direction: "he_to_en",
         };
       }
+      // Hybrid: prefer typing for HE->EN short translation recall.
+      if (
+        params.direction === "he_to_en" &&
+        String(correctAnswer || "").trim().split(/\s+/).length <= 6 &&
+        Math.random() < 0.6
+      ) {
+        qType = "typing";
+      }
       break;
     }
 
@@ -427,6 +482,10 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       question = `השלם את המשפט: "${template.template}"`;
       correctAnswer = template.correct;
       params = { template: template.template, explanation: template.explanation };
+      // Hybrid: typing for concise sentence-completion targets.
+      if (String(correctAnswer || "").trim().split(/\s+/).length <= 3) {
+        qType = "typing";
+      }
       break;
     }
 
@@ -543,6 +602,7 @@ function generateQuestion(level, topic, gradeKey, mixedOps = null) {
   return {
     question,
     correctAnswer,
+    acceptedAnswers: buildAcceptedAnswers(correctAnswer),
     answers: allAnswers,
     topic: selectedTopic,
     params,
@@ -1595,9 +1655,22 @@ const refreshMonthlyProgress = useCallback(() => {
     });
     setSelectedAnswer(answer);
     solvedCountRef.current += 1;
-    const normalize = (v) => String(v).trim().toLowerCase();
-    const isCorrect =
-      normalize(answer) === normalize(currentQuestion.correctAnswer);
+    const normalize = (v) =>
+      String(v ?? "")
+        .replace(/[“”״]/g, '"')
+        .replace(/[‘’׳]/g, "'")
+        .replace(/^[\s"'`.,!?;:()[\]{}\-–—]+|[\s"'`.,!?;:()[\]{}\-–—]+$/g, "")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase();
+    const acceptedAnswers =
+      Array.isArray(currentQuestion.acceptedAnswers) &&
+      currentQuestion.acceptedAnswers.length > 0
+        ? currentQuestion.acceptedAnswers
+        : [currentQuestion.correctAnswer];
+    const isCorrect = acceptedAnswers.some(
+      (candidate) => normalize(candidate) === normalize(answer)
+    );
     pendingEnglishTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
       total: 1,
