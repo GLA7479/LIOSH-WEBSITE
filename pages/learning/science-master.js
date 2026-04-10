@@ -8,6 +8,7 @@ import {
   SCIENCE_GRADE_ORDER,
 } from "../../data/science-curriculum";
 import { trackScienceTopicTime } from "../../utils/science-time-tracking";
+import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   loadDailyStreak,
@@ -640,6 +641,8 @@ export default function ScienceMaster() {
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
   const pendingScienceTrackMetaRef = useRef(null);
+  /** Question pool topic id for the question currently being timed (matches localStorage bucket). */
+  const scienceTrackingTopicKeyRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [playerName, setPlayerName] = useState(() => {
@@ -1261,30 +1264,34 @@ useEffect(() => {
     const cappedMs = Math.min(elapsedMs, 60000);
     sessionSecondsRef.current += cappedMs;
     const duration = cappedMs / 1000;
-    if (duration > 0 && duration <= 300 && currentQuestion) {
-      const qGrade =
-        currentQuestion.assignedGrade ||
-        currentQuestion.gradeKey ||
-        grade;
-      const qLevel =
-        currentQuestion.assignedLevel ||
-        currentQuestion.levelKey ||
-        level;
-      const meta = pendingScienceTrackMetaRef.current;
-      pendingScienceTrackMetaRef.current = null;
-      trackScienceTopicTime(
-        currentQuestion.topic,
-        qGrade,
-        qLevel,
-        duration,
-        meta && meta.mode != null
-          ? { mode: meta.mode, correct: meta.correct, total: meta.total }
-          : {
-              mode: reportModeFromGameState(mode, focusedPracticeMode),
-              total: 1,
-              correct: undefined,
-            }
-      );
+    if (duration > 0 && duration <= 300) {
+      const topicKey =
+        scienceTrackingTopicKeyRef.current ?? currentQuestion?.topic;
+      if (topicKey) {
+        const qGrade =
+          currentQuestion?.assignedGrade ||
+          currentQuestion?.gradeKey ||
+          grade;
+        const qLevel =
+          currentQuestion?.assignedLevel ||
+          currentQuestion?.levelKey ||
+          level;
+        const meta = pendingScienceTrackMetaRef.current;
+        pendingScienceTrackMetaRef.current = null;
+        trackScienceTopicTime(
+          topicKey,
+          qGrade,
+          qLevel,
+          duration,
+          meta && meta.mode != null
+            ? { mode: meta.mode, correct: meta.correct, total: meta.total }
+            : {
+                mode: reportModeFromGameState(mode, focusedPracticeMode),
+                total: 1,
+                correct: undefined,
+              }
+        );
+      }
     }
     setQuestionStartTime(null);
   }
@@ -1308,10 +1315,9 @@ function recordSessionProgress() {
   }
   const answered = Math.max(solvedCountRef.current, totalQuestions);
   const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
-  const lastTopic = currentQuestion?.topic || topic;
   addSessionProgress(durationMinutes, answered, {
     subject: "science",
-    topic: lastTopic,
+    topic: scienceTrackingTopicKeyRef.current ?? currentQuestion?.topic ?? "",
     grade,
     mode,
     game: "ScienceMaster",
@@ -1389,6 +1395,7 @@ function recordSessionProgress() {
     if (pool.length === 0) {
       questionPoolRef.current = [];
       questionIndexRef.current = 0;
+      scienceTrackingTopicKeyRef.current = null;
       setCurrentQuestion(null);
       setFeedback(
         "אין עדיין מספיק שאלות לנושא/כיתה/רמה שבחרת. נסה לשנות הגדרה."
@@ -1434,6 +1441,7 @@ function recordSessionProgress() {
     const originalCorrectAnswer = q.options?.[originalCorrectIndex];
     const newCorrectIndex = shuffledOptions.findIndex(opt => opt === originalCorrectAnswer);
 
+    scienceTrackingTopicKeyRef.current = q.topic;
     setCurrentQuestion({
       ...q,
       options: shuffledOptions,
@@ -1454,6 +1462,7 @@ function recordSessionProgress() {
     // Stop background music when game resets
     sound.stopBackgroundMusic();
     setGameActive(false);
+    scienceTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setScore(0);
     setStreak(0);
@@ -1556,6 +1565,7 @@ function recordSessionProgress() {
     recordSessionProgress();
     saveRunToStorage();
     setGameActive(false);
+    scienceTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
@@ -1572,6 +1582,7 @@ function recordSessionProgress() {
     setStreak(0);
     setFeedback("הזמן נגמר! ⏰");
     setGameActive(false);
+    scienceTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     saveRunToStorage();
     setTimeout(() => {
@@ -1851,6 +1862,7 @@ function recordSessionProgress() {
             recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
+            scienceTrackingTopicKeyRef.current = null;
             setCurrentQuestion(null);
             setTimeout(() => {
               hardResetGame();
@@ -3394,6 +3406,12 @@ function recordSessionProgress() {
         </div>
       </div>
     </div>
+    <TrackingDebugPanel
+      subjectId="science"
+      uiSelection={`topic=${topic}`}
+      currentQuestion={currentQuestion}
+      trackingRef={scienceTrackingTopicKeyRef}
+    />
     </Layout>
   );
 }

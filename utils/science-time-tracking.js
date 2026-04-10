@@ -1,7 +1,23 @@
+import {
+  isTrackingDebugEnabled,
+  trackingDebugRecordTrack,
+} from "./tracking-debug";
+
 const SCIENCE_TIME_TRACKING_KEY = "mleo_science_time_tracking";
 
 export function trackScienceTopicTime(topic, grade, level, durationSeconds, meta = {}) {
-  if (typeof window === "undefined" || !topic || !durationSeconds) return;
+  if (typeof window === "undefined") return;
+
+  if (isTrackingDebugEnabled()) {
+    trackingDebugRecordTrack(
+      topic,
+      durationSeconds,
+      meta?.mode,
+      "trackScienceTopicTime"
+    );
+  }
+
+  if (!topic || !durationSeconds) return;
 
   try {
     const saved = JSON.parse(

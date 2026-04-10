@@ -1,11 +1,10 @@
 /**
- * Parent Report V2 — date-filtered sessions, unified semantics, normalized daily activity.
- * Falls back to generateParentReport (V1) when no sessions fall in the selected range.
+ * Parent Report — date-filtered sessions only (single pipeline).
+ * One storage bucket (operations.* or topics.*) = one table row; no V1 fallback.
  */
 
 import { STORAGE_KEY } from "./math-constants";
 import {
-  generateParentReport,
   generateRecommendations,
   getOperationName,
   getTopicName,
@@ -75,8 +74,8 @@ function sessionDurationSeconds(session) {
 }
 
 /**
- * Build per-key rows from a tracking bucket (operations/topics) without key overwrite.
- * Group key: session.operation || session.topic || storage bucket key.
+ * Build rows from a tracking bucket — same rule as geometry: row key = storage bucket id only.
+ * Sessions are grouped under the bucket they were saved in; date is the only session filter.
  */
 function buildMapFromBucket({
   bucket,
@@ -93,21 +92,22 @@ function buildMapFromBucket({
     const item = raw[bucketKey];
     if (!item || typeof item !== "object") continue;
     const list = normalizeSessionsArray(item.sessions);
+    const key = String(bucketKey);
     for (const s of list) {
       if (!sessionInRange(s, startMs, endMs)) continue;
-      const key = String(s.operation || s.topic || bucketKey);
-      if (!map[key]) map[key] = [];
-      map[key].push(s);
+      const modeNorm = normalizeSessionMode(s);
+      const compositeKey = `${key}${TRACK_ROW_MODE_SEP}${modeNorm}`;
+      if (!map[compositeKey]) map[compositeKey] = [];
+      map[compositeKey].push(s);
     }
   }
-
-  // TEMP validation (remove after QA): expect map key count > 1 when multiple bucket keys have in-range sessions; if stuck at 1, verify session.operation / session.topic on each row and bucketKey fallback above.
 
   const out = {};
   for (const itemKey of Object.keys(map)) {
     const sessions = map[itemKey];
     if (!sessions.length) continue;
-    const legacy = progressData[itemKey] || { total: 0, correct: 0 };
+    const { bucketKey } = splitBucketModeRowKey(itemKey);
+    const legacy = progressData[bucketKey] || { total: 0, correct: 0 };
     out[itemKey] = buildRowSummary({
       subject,
       itemKey,
@@ -143,6 +143,29 @@ export function normalizeDailyToDateMap(daily) {
     });
   }
   return out;
+}
+
+/** Composite report row key = storage bucket id + mode (Option A: one row per bucket+mode). */
+const TRACK_ROW_MODE_SEP = "\u0001";
+
+function normalizeSessionMode(s) {
+  if (!s || typeof s !== "object") return "learning";
+  const m = s.mode;
+  if (m == null || m === "") return "learning";
+  const t = String(m).trim();
+  return t || "learning";
+}
+
+export function splitBucketModeRowKey(itemKey) {
+  if (typeof itemKey !== "string") {
+    return { bucketKey: String(itemKey), modeKey: null };
+  }
+  const i = itemKey.indexOf(TRACK_ROW_MODE_SEP);
+  if (i === -1) return { bucketKey: itemKey, modeKey: null };
+  return {
+    bucketKey: itemKey.slice(0, i),
+    modeKey: itemKey.slice(i + TRACK_ROW_MODE_SEP.length) || null,
+  };
 }
 
 function dominantKey(counts) {
@@ -191,6 +214,7 @@ function buildRowSummary({
   legacyProgress,
   displayNameFn,
 }) {
+  const { bucketKey, modeKey: modeFromKey } = splitBucketModeRowKey(itemKey);
   const timeSeconds = sessions.reduce((s, x) => s + sessionDurationSeconds(x), 0);
   const timeMinutes = Math.round(timeSeconds / 60);
   const { questions, correct } = sumQuestionsCorrect(sessions, legacyProgress);
@@ -200,11 +224,17 @@ function buildRowSummary({
   const modeDist = countDistribution(sessions, "mode");
   const gradeKey = dominantKey(gradeDist);
   const levelKey = dominantKey(levelDist);
-  const modeKey = dominantKey(modeDist) || "learning";
+  const modeKey =
+    modeFromKey && modeFromKey !== ""
+      ? modeFromKey
+      : dominantKey(modeDist) || "learning";
   const needsPractice = accuracy < 70;
   const excellent = accuracy >= 90 && questions >= 10;
+  const topicOpLabel = displayNameFn(bucketKey);
+  const modeStr = modeLabel(modeKey);
   const base = {
     subject,
+    bucketKey,
     questions,
     correct,
     wrong: questions - correct,
@@ -217,9 +247,9 @@ function buildRowSummary({
     gradeKey,
     level: levelKey ? LEVEL_LABELS[levelKey] || levelKey : "לא זמין",
     levelKey,
-    mode: modeLabel(modeKey),
+    mode: modeStr,
     modeKey,
-    displayName: displayNameFn(itemKey),
+    displayName: `${topicOpLabel} | ${modeStr}`,
   };
   if (subject === "math") base.improvement = null;
   return base;
@@ -302,21 +332,6 @@ function loadProgress(path) {
   } catch {
     return {};
   }
-}
-
-function countFilteredSessions(startMs, endMs) {
-  let n = 0;
-  SUBJECTS.forEach((def) => {
-    const saved = loadTracking(def.trackingKey);
-    const bucket = saved[def.container] || {};
-    Object.keys(bucket).forEach((key) => {
-      const item = bucket[key];
-      normalizeSessionsArray(item.sessions).forEach((s) => {
-        if (sessionInRange(s, startMs, endMs)) n += 1;
-      });
-    });
-  });
-  return n;
 }
 
 function filterMistakes(mistakes, startMs, endMs, keyField) {
@@ -428,10 +443,6 @@ export function generateParentReportV2(
 
   const startMs = startDate.getTime();
   const endMs = endDate.getTime();
-
-  if (countFilteredSessions(startMs, endMs) === 0) {
-    return generateParentReport(playerName, period, customStartDate, customEndDate);
-  }
 
   const mathOperations = {};
   const geometryTopics = {};
@@ -656,43 +667,49 @@ export function generateParentReportV2(
   const needsPractice = [
     ...Object.entries(mathOperations)
       .filter(([_, d]) => d.needsPractice)
-      .map(([op]) => `חשבון: ${getOperationName(op)}`),
+      .map(([_, d]) => `חשבון: ${d.displayName || getOperationName(d.bucketKey)}`),
     ...Object.entries(geometryTopics)
       .filter(([_, d]) => d.needsPractice)
-      .map(([t]) => `גאומטריה: ${getTopicName(t)}`),
+      .map(([_, d]) => `גאומטריה: ${d.displayName || getTopicName(d.bucketKey)}`),
     ...Object.entries(englishTopics)
       .filter(([_, d]) => d.needsPractice)
-      .map(([t]) => `אנגלית: ${getEnglishTopicName(t)}`),
+      .map(([_, d]) => `אנגלית: ${d.displayName || getEnglishTopicName(d.bucketKey)}`),
     ...Object.entries(scienceTopics)
       .filter(([_, d]) => d.needsPractice)
-      .map(([t]) => `מדעים: ${getScienceTopicName(t)}`),
+      .map(([_, d]) => `מדעים: ${d.displayName || getScienceTopicName(d.bucketKey)}`),
     ...Object.entries(hebrewTopics)
       .filter(([_, d]) => d.needsPractice)
-      .map(([t]) => `עברית: ${getHebrewTopicName(t)}`),
+      .map(([_, d]) => `עברית: ${d.displayName || getHebrewTopicName(d.bucketKey)}`),
     ...Object.entries(moledetGeographyTopics)
       .filter(([_, d]) => d.needsPractice)
-      .map(([t]) => `מולדת וגאוגרפיה: ${getMoledetGeographyTopicName(t)}`),
+      .map(
+        ([_, d]) =>
+          `מולדת וגאוגרפיה: ${d.displayName || getMoledetGeographyTopicName(d.bucketKey)}`
+      ),
   ];
 
   const excellent = [
     ...Object.entries(mathOperations)
       .filter(([_, d]) => d.excellent && d.questions >= 10)
-      .map(([op]) => `חשבון: ${getOperationName(op)}`),
+      .map(([_, d]) => `חשבון: ${d.displayName || getOperationName(d.bucketKey)}`),
     ...Object.entries(geometryTopics)
       .filter(([_, d]) => d.excellent && d.questions >= 10)
-      .map(([t]) => `גאומטריה: ${getTopicName(t)}`),
+      .map(([_, d]) => `גאומטריה: ${d.displayName || getTopicName(d.bucketKey)}`),
     ...Object.entries(englishTopics)
       .filter(([_, d]) => d.excellent && d.questions >= 10)
-      .map(([t]) => `אנגלית: ${getEnglishTopicName(t)}`),
+      .map(([_, d]) => `אנגלית: ${d.displayName || getEnglishTopicName(d.bucketKey)}`),
     ...Object.entries(scienceTopics)
       .filter(([_, d]) => d.excellent && d.questions >= 10)
-      .map(([t]) => `מדעים: ${getScienceTopicName(t)}`),
+      .map(([_, d]) => `מדעים: ${d.displayName || getScienceTopicName(d.bucketKey)}`),
     ...Object.entries(hebrewTopics)
       .filter(([_, d]) => d.excellent && d.questions >= 10)
-      .map(([t]) => `עברית: ${getHebrewTopicName(t)}`),
+      .map(([_, d]) => `עברית: ${d.displayName || getHebrewTopicName(d.bucketKey)}`),
     ...Object.entries(moledetGeographyTopics)
       .filter(([_, d]) => d.excellent && d.questions >= 10)
-      .map(([t]) => `מולדת וגאוגרפיה: ${getMoledetGeographyTopicName(t)}`),
+      .map(
+        ([_, d]) =>
+          `מולדת וגאוגרפיה: ${d.displayName || getMoledetGeographyTopicName(d.bucketKey)}`
+      ),
   ];
 
   const dailyChallenge = JSON.parse(

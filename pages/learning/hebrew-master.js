@@ -25,6 +25,7 @@ import {
   buildStepExplanation,
 } from "../../utils/hebrew-explanations";
 import { trackHebrewTopicTime } from "../../utils/hebrew-time-tracking";
+import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   addSessionProgress,
@@ -92,6 +93,8 @@ export default function HebrewMaster() {
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
   const pendingHebrewTrackMetaRef = useRef(null);
+  /** Real topic/operation bucket for the question on screen (avoids stale currentQuestion) */
+  const hebrewTrackingTopicKeyRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [mounted, setMounted] = useState(false);
@@ -756,6 +759,7 @@ useEffect(() => {
     // Stop background music when game resets
     sound.stopBackgroundMusic();
     setGameActive(false);
+    hebrewTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setScore(0);
     setStreak(0);
@@ -897,6 +901,8 @@ useEffect(() => {
     // מעקב זמן - סיום שאלה קודמת (אם יש)
     trackCurrentQuestionTime();
 
+    hebrewTrackingTopicKeyRef.current =
+      question.topic || question.operation || "mixed";
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setFeedback(null);
@@ -913,6 +919,7 @@ useEffect(() => {
 
   function recordSessionProgress() {
     if (!sessionStartRef.current) return;
+    trackCurrentQuestionTime();
     accumulateQuestionTime();
     const elapsedMs = Date.now() - sessionStartRef.current;
     if (elapsedMs <= 0) {
@@ -932,7 +939,11 @@ useEffect(() => {
     const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
     addSessionProgress(durationMinutes, answered, {
       subject: "hebrew",
-      topic: operation,
+      topic:
+        hebrewTrackingTopicKeyRef.current ??
+        currentQuestion?.topic ??
+        currentQuestion?.operation ??
+        "",
       grade,
       mode,
       game: "HebrewMaster",
@@ -990,6 +1001,7 @@ useEffect(() => {
     sound.stopBackgroundMusic();
     recordSessionProgress();
     setGameActive(false);
+    hebrewTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
@@ -1003,6 +1015,7 @@ useEffect(() => {
     setStreak(0);
       setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
     setGameActive(false);
+    hebrewTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setTimeLeft(0);
     saveRunToStorage();
@@ -1070,12 +1083,17 @@ useEffect(() => {
 
   // מעקב זמן לשאלה
   function trackCurrentQuestionTime() {
-    if (!questionStartTime || !currentQuestion) return;
+    if (!questionStartTime) return;
+    const topic =
+      hebrewTrackingTopicKeyRef.current ??
+      currentQuestion?.topic ??
+      currentQuestion?.operation ??
+      "mixed";
+    if (!topic) return;
     const duration = (Date.now() - questionStartTime) / 1000;
     if (duration > 0 && duration < 300) {
-      const qGrade = currentQuestion.gradeKey || `g${grade}`;
-      const qLevel = currentQuestion.levelKey || level;
-      const topic = currentQuestion.topic || currentQuestion.operation || "mixed";
+      const qGrade = currentQuestion?.gradeKey || `g${grade}`;
+      const qLevel = currentQuestion?.levelKey || level;
       const meta = pendingHebrewTrackMetaRef.current;
       pendingHebrewTrackMetaRef.current = null;
       trackHebrewTopicTime(
@@ -1440,6 +1458,7 @@ useEffect(() => {
             recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
+            hebrewTrackingTopicKeyRef.current = null;
             setCurrentQuestion(null);
             setTimeLeft(0);
             setTimeout(() => {
@@ -3305,6 +3324,12 @@ useEffect(() => {
         </div>
       </div>
     </div>
+    <TrackingDebugPanel
+      subjectId="hebrew"
+      uiSelection={`operation=${operation}`}
+      currentQuestion={currentQuestion}
+      trackingRef={hebrewTrackingTopicKeyRef}
+    />
     </Layout>
   );
 }

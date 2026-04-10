@@ -1,5 +1,10 @@
 // מערכת מעקב זמן לפי פעולה/נושא, כיתה ורמה (חשבון וגאומטריה)
 
+import {
+  isTrackingDebugEnabled,
+  trackingDebugRecordTrack,
+} from "./tracking-debug";
+
 const TIME_TRACKING_KEY = "mleo_time_tracking";
 const GEOMETRY_TIME_TRACKING_KEY = "mleo_geometry_time_tracking";
 
@@ -11,7 +16,11 @@ const GEOMETRY_TIME_TRACKING_KEY = "mleo_geometry_time_tracking";
 // שמירת זמן עבודה על פעולה ספציפית (חשבון)
 export function trackOperationTime(operation, grade, level, duration, meta = {}) {
   if (typeof window === "undefined") return;
-  
+
+  if (isTrackingDebugEnabled()) {
+    trackingDebugRecordTrack(operation, duration, meta?.mode, "trackOperationTime");
+  }
+
   try {
     const saved = JSON.parse(localStorage.getItem(TIME_TRACKING_KEY) || "{}");
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
@@ -215,7 +224,11 @@ export function cleanOldTimeTracking() {
 // שמירת זמן עבודה על נושא ספציפי (גאומטריה)
 export function trackGeometryTopicTime(topic, grade, level, duration, meta = {}) {
   if (typeof window === "undefined") return;
-  
+
+  if (isTrackingDebugEnabled()) {
+    trackingDebugRecordTrack(topic, duration, meta?.mode, "trackGeometryTopicTime");
+  }
+
   try {
     const saved = JSON.parse(localStorage.getItem(GEOMETRY_TIME_TRACKING_KEY) || "{}");
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD

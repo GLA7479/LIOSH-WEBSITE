@@ -1087,12 +1087,16 @@ function calculateImprovement(operation, progressData, period) {
 }
 
 function getDisplayNameForEntry(op, data) {
-  if (data.subject === 'geometry') return getTopicName(op);
-  if (data.subject === 'english') return getEnglishTopicName(op);
-  if (data.subject === 'science') return getScienceTopicName(op);
-  if (data.subject === 'hebrew') return getHebrewTopicName(op);
-  if (data.subject === 'moledet-geography') return getMoledetGeographyTopicName(op);
-  return getOperationName(op);
+  if (data?.displayName) return data.displayName;
+  const keyForLookup =
+    data?.bucketKey != null && data.bucketKey !== "" ? data.bucketKey : op;
+  if (data.subject === 'geometry') return getTopicName(keyForLookup);
+  if (data.subject === 'english') return getEnglishTopicName(keyForLookup);
+  if (data.subject === 'science') return getScienceTopicName(keyForLookup);
+  if (data.subject === 'hebrew') return getHebrewTopicName(keyForLookup);
+  if (data.subject === 'moledet-geography')
+    return getMoledetGeographyTopicName(keyForLookup);
+  return getOperationName(keyForLookup);
 }
 
 // יצירת המלצות (משותף לדוח V1 ול־V2)
@@ -1133,7 +1137,9 @@ export function generateRecommendations(operations, mistakes) {
     const questions = data.questions || 0;
     const accuracy = data.accuracy || 0;
     const timeMinutes = data.timeMinutes || 0;
-    const mistakesCount = mistakes?.[op]?.count || 0;
+    const mistakeKey =
+      data.bucketKey != null && data.bucketKey !== "" ? data.bucketKey : op;
+    const mistakesCount = mistakes?.[mistakeKey]?.count || 0;
     const hasQuestions = questions > 0;
 
     // נייצר המלצה לכל נושא/פעולה שנלמדו (יש זמן או יש שאלות)

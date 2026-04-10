@@ -35,6 +35,7 @@ import {
   buildStepExplanation,
 } from "../../utils/math-explanations";
 import { trackOperationTime } from "../../utils/math-time-tracking";
+import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   buildVerticalOperation,
@@ -310,6 +311,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   const correctRef = useRef(0);
   /** Parent Report V2: last-answer meta consumed when logging time for the previous question */
   const pendingTimeTrackMetaRef = useRef(null);
+  /** Real operation bucket for the question on screen (avoids stale currentQuestion in async / transitions) */
+  const mathTrackingOperationKeyRef = useRef(null);
   const mistakesRef = useRef([]);
   const remainingMistakesRef = useRef([]);
   const focusedPracticeModeRef = useRef("normal");
@@ -990,6 +993,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     // Stop background music when game ends
     sound.stopBackgroundMusic();
     setGameActive(false);
+    mathTrackingOperationKeyRef.current = null;
     setCurrentQuestion(null);
     setScore(0);
     setStreak(0);
@@ -1076,19 +1080,24 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           }
           setRecentQuestions(localRecent);
 
-          if (questionStartTime && currentQuestion) {
+          if (questionStartTime) {
             const duration = (Date.now() - questionStartTime) / 1000;
             if (duration > 0 && duration < 300) {
-              trackOperationTime(
-                currentQuestion.operation,
-                grade,
-                level,
-                duration,
-                { mode: "practice_mistakes", total: 1, correct: undefined }
-              );
+              const opKey =
+                mathTrackingOperationKeyRef.current ?? currentQuestion?.operation;
+              if (opKey) {
+                trackOperationTime(
+                  opKey,
+                  grade,
+                  level,
+                  duration,
+                  { mode: "practice_mistakes", total: 1, correct: undefined }
+                );
+              }
             }
           }
 
+          mathTrackingOperationKeyRef.current = replay.operation;
           setCurrentQuestion(replay);
           setSelectedAnswer(null);
           setTextAnswer("");
@@ -1187,31 +1196,36 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     }
 
     // מעקב זמן - סיום שאלה קודמת (אם יש)
-    if (questionStartTime && currentQuestion) {
+    if (questionStartTime) {
       const duration = (Date.now() - questionStartTime) / 1000; // שניות
       if (duration > 0 && duration < 300) {
         const meta = pendingTimeTrackMetaRef.current;
         pendingTimeTrackMetaRef.current = null;
-        trackOperationTime(
-          currentQuestion.operation,
-          grade,
-          level,
-          duration,
-          meta && meta.mode != null
-            ? {
-                mode: meta.mode,
-                correct: meta.correct,
-                total: meta.total,
-              }
-            : {
-                mode: reportModeFromGameState(mode, focusedPracticeMode),
-                total: 1,
-                correct: undefined,
-              }
-        );
+        const opKey =
+          mathTrackingOperationKeyRef.current ?? currentQuestion?.operation;
+        if (opKey) {
+          trackOperationTime(
+            opKey,
+            grade,
+            level,
+            duration,
+            meta && meta.mode != null
+              ? {
+                  mode: meta.mode,
+                  correct: meta.correct,
+                  total: meta.total,
+                }
+              : {
+                  mode: reportModeFromGameState(mode, focusedPracticeMode),
+                  total: 1,
+                  correct: undefined,
+                }
+          );
+        }
       }
     }
-    
+
+    mathTrackingOperationKeyRef.current = question.operation;
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setTextAnswer("");
@@ -1228,7 +1242,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   }
 
   function trackCurrentQuestionTime() {
-    if (!questionStartTime || !currentQuestion) return;
+    if (!questionStartTime) return;
+    const opKey =
+      mathTrackingOperationKeyRef.current ?? currentQuestion?.operation;
+    if (!opKey) return;
     const elapsedMs = Date.now() - questionStartTime;
     if (elapsedMs <= 0) return;
     sessionSecondsRef.current += Math.min(elapsedMs, 60000);
@@ -1237,7 +1254,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       const meta = pendingTimeTrackMetaRef.current;
       pendingTimeTrackMetaRef.current = null;
       trackOperationTime(
-        currentQuestion.operation,
+        opKey,
         grade,
         level,
         duration,
@@ -1275,7 +1292,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     const totalMinutes = Number((totalSeconds / 60000).toFixed(2));
     addSessionProgress(totalMinutes, answered, {
       subject: "math",
-      topic: currentQuestion?.topic || operation,
+      topic: mathTrackingOperationKeyRef.current ?? currentQuestion?.operation ?? "",
       grade,
       mode,
       game: "MathMaster",
@@ -1347,6 +1364,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   function stopGame() {
     recordSessionProgress();
     setGameActive(false);
+    mathTrackingOperationKeyRef.current = null;
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
@@ -1366,6 +1384,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
     sound.playSound("game-over");
     setGameActive(false);
+    mathTrackingOperationKeyRef.current = null;
     setCurrentQuestion(null);
     setTimeLeft(0);
     saveRunToStorage();
@@ -1886,6 +1905,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
             recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
+            mathTrackingOperationKeyRef.current = null;
             setCurrentQuestion(null);
             setTimeLeft(0);
             setTimeout(() => {
@@ -5437,6 +5457,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
         </div>
       </div>
     </div>
+    <TrackingDebugPanel
+      subjectId="math"
+      uiSelection={`operation=${operation}`}
+      currentQuestion={currentQuestion}
+      trackingRef={mathTrackingOperationKeyRef}
+    />
   </Layout>
 );
 }

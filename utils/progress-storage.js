@@ -1,3 +1,8 @@
+import {
+  isTrackingDebugEnabled,
+  trackingDebugRecordSession,
+} from "./tracking-debug";
+
 const PROGRESS_STORAGE_KEY = "LEO_MONTHLY_PROGRESS";
 const PROGRESS_LOG_KEY = "LEO_PROGRESS_LOG";
 
@@ -30,6 +35,10 @@ export function saveMonthlyProgress(data) {
 export function addSessionProgress(durationMinutes, exercisesSolved, meta = {}) {
   if (!durationMinutes || durationMinutes <= 0) return;
   if (typeof window === "undefined") return;
+
+  if (isTrackingDebugEnabled()) {
+    trackingDebugRecordSession(meta);
+  }
 
   const sessionDate = meta.date ? new Date(meta.date) : new Date();
   const ym = getYearMonth(sessionDate);

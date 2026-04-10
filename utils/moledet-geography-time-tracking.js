@@ -1,3 +1,8 @@
+import {
+  isTrackingDebugEnabled,
+  trackingDebugRecordTrack,
+} from "./tracking-debug";
+
 const MOLEDET_GEOGRAPHY_TIME_TRACKING_KEY = "mleo_moledet_geography_time_tracking";
 
 /**
@@ -5,7 +10,18 @@ const MOLEDET_GEOGRAPHY_TIME_TRACKING_KEY = "mleo_moledet_geography_time_trackin
  * Stores aggregates per topic, grade, level and per-day totals.
  */
 export function trackMoledetGeographyTopicTime(topic, grade, level, duration, meta = {}) {
-  if (typeof window === "undefined" || !topic || !duration) return;
+  if (typeof window === "undefined") return;
+
+  if (isTrackingDebugEnabled()) {
+    trackingDebugRecordTrack(
+      topic,
+      duration,
+      meta?.mode,
+      "trackMoledetGeographyTopicTime"
+    );
+  }
+
+  if (!topic || !duration) return;
 
   try {
     const saved = JSON.parse(

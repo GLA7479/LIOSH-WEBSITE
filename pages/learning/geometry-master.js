@@ -32,6 +32,7 @@ import {
   getTheorySummary,
 } from "../../utils/geometry-explanations";
 import { trackGeometryTopicTime } from "../../utils/math-time-tracking";
+import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import { learningMixedHebrewMathStyle } from "../../utils/learning-mixed-hebrew-math";
 import { getGeometryDiagramSpec } from "../../utils/geometry-diagram-spec";
@@ -3084,6 +3085,12 @@ useEffect(() => {
         </div>
       </div>
     </div>
+    <TrackingDebugPanel
+      subjectId="geometry"
+      uiSelection={`topic=${topic}`}
+      currentQuestion={currentQuestion}
+      trackingRef={null}
+    />
     </Layout>
   );
 }

@@ -25,6 +25,7 @@ import {
   getStreakReward,
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
+import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import {
   ENGLISH_GRADES,
   ENGLISH_GRADE_ORDER,
@@ -774,6 +775,8 @@ export default function EnglishMaster() {
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
   const pendingEnglishTrackMetaRef = useRef(null);
+  /** localStorage bucket key for the question currently being timed (same idea as geometry topic ref). */
+  const englishTrackingTopicKeyRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [mounted, setMounted] = useState(false);
@@ -1094,15 +1097,18 @@ const refreshMonthlyProgress = useCallback(() => {
   }
 
   function trackCurrentQuestionTime() {
-    if (!questionStartTime || !currentQuestion) return;
+    if (!questionStartTime) return;
+    const topicKey =
+      englishTrackingTopicKeyRef.current ?? currentQuestion?.topic;
+    if (!topicKey) return;
     const duration = (Date.now() - questionStartTime) / 1000;
     if (duration > 0 && duration < 300) {
-      const qGrade = currentQuestion.gradeKey || grade;
-      const qLevel = currentQuestion.levelKey || level;
+      const qGrade = currentQuestion?.gradeKey || grade;
+      const qLevel = currentQuestion?.levelKey || level;
       const meta = pendingEnglishTrackMetaRef.current;
       pendingEnglishTrackMetaRef.current = null;
       trackEnglishTopicTime(
-        currentQuestion.topic,
+        topicKey,
         qGrade,
         qLevel,
         duration,
@@ -1119,6 +1125,7 @@ const refreshMonthlyProgress = useCallback(() => {
 
   function recordSessionProgress() {
     if (!sessionStartRef.current) return;
+    trackCurrentQuestionTime();
     accumulateQuestionTime();
     const elapsedMs = Date.now() - sessionStartRef.current;
     if (elapsedMs <= 0) {
@@ -1138,7 +1145,7 @@ const refreshMonthlyProgress = useCallback(() => {
     const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
     addSessionProgress(durationMinutes, answered, {
       subject: "english",
-      topic,
+      topic: englishTrackingTopicKeyRef.current ?? currentQuestion?.topic ?? "",
       grade: gradeNumber,
       mode,
       game: "EnglishMaster",
@@ -1340,6 +1347,7 @@ const refreshMonthlyProgress = useCallback(() => {
     // Stop background music when game resets
     sound.stopBackgroundMusic();
     setGameActive(false);
+    englishTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setScore(0);
     setStreak(0);
@@ -1446,6 +1454,7 @@ const refreshMonthlyProgress = useCallback(() => {
     question.gradeKey = gradeForQuestion;
     question.levelKey = levelForQuestion;
     question.practiceFocus = mode === "practice" ? practiceFocus : "default";
+    englishTrackingTopicKeyRef.current = question.topic;
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setTypedAnswer("");
@@ -1506,6 +1515,7 @@ const refreshMonthlyProgress = useCallback(() => {
     trackCurrentQuestionTime();
     recordSessionProgress();
     setGameActive(false);
+    englishTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
@@ -1524,6 +1534,7 @@ const refreshMonthlyProgress = useCallback(() => {
     setStreak(0);
     setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
     setGameActive(false);
+    englishTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setTimeLeft(0);
     saveRunToStorage();
@@ -1742,6 +1753,7 @@ const refreshMonthlyProgress = useCallback(() => {
             recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
+            englishTrackingTopicKeyRef.current = null;
             setCurrentQuestion(null);
             setTimeLeft(0);
             setTimeout(() => {
@@ -3307,6 +3319,12 @@ const refreshMonthlyProgress = useCallback(() => {
         </div>
       </div>
     </div>
+    <TrackingDebugPanel
+      subjectId="english"
+      uiSelection={`topic=${topic}`}
+      currentQuestion={currentQuestion}
+      trackingRef={englishTrackingTopicKeyRef}
+    />
     </Layout>
   );
 }

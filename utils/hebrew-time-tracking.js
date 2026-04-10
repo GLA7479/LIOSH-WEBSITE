@@ -1,3 +1,8 @@
+import {
+  isTrackingDebugEnabled,
+  trackingDebugRecordTrack,
+} from "./tracking-debug";
+
 const HEBREW_TIME_TRACKING_KEY = "mleo_hebrew_time_tracking";
 
 /**
@@ -5,7 +10,13 @@ const HEBREW_TIME_TRACKING_KEY = "mleo_hebrew_time_tracking";
  * Stores aggregates per topic, grade, level and per-day totals.
  */
 export function trackHebrewTopicTime(topic, grade, level, duration, meta = {}) {
-  if (typeof window === "undefined" || !topic || !duration) return;
+  if (typeof window === "undefined") return;
+
+  if (isTrackingDebugEnabled()) {
+    trackingDebugRecordTrack(topic, duration, meta?.mode, "trackHebrewTopicTime");
+  }
+
+  if (!topic || !duration) return;
 
   try {
     const saved = JSON.parse(

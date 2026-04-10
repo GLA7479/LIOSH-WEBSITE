@@ -25,6 +25,7 @@ import {
   buildStepExplanation,
 } from "../../utils/moledet-geography-explanations";
 import { trackMoledetGeographyTopicTime } from "../../utils/moledet-geography-time-tracking";
+import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   addSessionProgress,
@@ -92,6 +93,8 @@ export default function MoledetGeographyMaster() {
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
   const pendingMoledetGeographyTrackMetaRef = useRef(null);
+  /** Real topic/operation bucket for the question on screen (avoids stale currentQuestion) */
+  const moledetTrackingTopicKeyRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [mounted, setMounted] = useState(false);
@@ -122,6 +125,13 @@ export default function MoledetGeographyMaster() {
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [avgTime, setAvgTime] = useState(0);
   const [questionStartTime, setQuestionStartTime] = useState(null);
+
+  const accumulateQuestionTime = useCallback(() => {
+    if (!questionStartTime) return;
+    const elapsed = Date.now() - questionStartTime;
+    if (elapsed <= 0) return;
+    sessionSecondsRef.current += Math.min(elapsed, 60000);
+  }, [questionStartTime]);
 
   // מניעת שאלות חוזרות
   const [recentQuestions, setRecentQuestions] = useState(new Set());
@@ -754,6 +764,7 @@ useEffect(() => {
   function hardResetGame() {
     accumulateQuestionTime();
     setGameActive(false);
+    moledetTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setScore(0);
     setStreak(0);
@@ -769,6 +780,7 @@ useEffect(() => {
   }
 
   function generateNewQuestion() {
+    accumulateQuestionTime();
     const levelConfig = getLevelConfig(gradeNumber, level);
     if (!levelConfig) {
       console.error("Invalid level config for grade", gradeNumber, "level", level);
@@ -886,7 +898,9 @@ useEffect(() => {
 
     // מעקב זמן - סיום שאלה קודמת (אם יש)
     trackCurrentQuestionTime();
-    
+
+    moledetTrackingTopicKeyRef.current =
+      question.topic || question.operation || "mixed";
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setFeedback(null);
@@ -903,6 +917,7 @@ useEffect(() => {
 
   function recordSessionProgress() {
     if (!sessionStartRef.current) return;
+    trackCurrentQuestionTime();
     accumulateQuestionTime();
     const elapsedMs = Date.now() - sessionStartRef.current;
     if (elapsedMs <= 0) {
@@ -922,7 +937,11 @@ useEffect(() => {
     const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
     addSessionProgress(durationMinutes, answered, {
       subject: "moledet",
-      topic,
+      topic:
+        moledetTrackingTopicKeyRef.current ??
+        currentQuestion?.topic ??
+        currentQuestion?.operation ??
+        "",
       grade,
       mode,
       game: "MoledetGeographyMaster",
@@ -980,6 +999,7 @@ useEffect(() => {
     sound.stopBackgroundMusic();
     recordSessionProgress();
     setGameActive(false);
+    moledetTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setFeedback(null);
     setSelectedAnswer(null);
@@ -993,6 +1013,7 @@ useEffect(() => {
     setStreak(0);
       setFeedback("הזמן נגמר! המשחק נגמר! ⏰");
     setGameActive(false);
+    moledetTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
     setTimeLeft(0);
     saveRunToStorage();
@@ -1061,34 +1082,32 @@ useEffect(() => {
   // מעקב זמן לשאלה
   function trackCurrentQuestionTime() {
     if (!questionStartTime) return;
-    const elapsedMs = Date.now() - questionStartTime;
-    if (elapsedMs <= 0) return;
-    const cappedMs = Math.min(elapsedMs, 60000);
-    sessionSecondsRef.current += cappedMs;
-    if (currentQuestion) {
-      const duration = Math.min(cappedMs / 1000, 300);
-      if (duration > 0) {
-        const qGrade = currentQuestion.gradeKey || `g${grade}`;
-        const qLevel = currentQuestion.levelKey || level;
-        const topic = currentQuestion.topic || currentQuestion.operation || "mixed";
-        const meta = pendingMoledetGeographyTrackMetaRef.current;
-        pendingMoledetGeographyTrackMetaRef.current = null;
-        trackMoledetGeographyTopicTime(
-          topic,
-          qGrade,
-          qLevel,
-          duration,
-          meta && meta.mode != null
-            ? { mode: meta.mode, correct: meta.correct, total: meta.total }
-            : {
-                mode: reportModeFromGameState(mode, focusedPracticeMode),
-                total: 1,
-                correct: undefined,
-              }
-        );
-      }
+    const topic =
+      moledetTrackingTopicKeyRef.current ??
+      currentQuestion?.topic ??
+      currentQuestion?.operation ??
+      "mixed";
+    if (!topic) return;
+    const duration = (Date.now() - questionStartTime) / 1000;
+    if (duration > 0 && duration < 300) {
+      const qGrade = currentQuestion?.gradeKey || `g${grade}`;
+      const qLevel = currentQuestion?.levelKey || level;
+      const meta = pendingMoledetGeographyTrackMetaRef.current;
+      pendingMoledetGeographyTrackMetaRef.current = null;
+      trackMoledetGeographyTopicTime(
+        topic,
+        qGrade,
+        qLevel,
+        duration,
+        meta && meta.mode != null
+          ? { mode: meta.mode, correct: meta.correct, total: meta.total }
+          : {
+              mode: reportModeFromGameState(mode, focusedPracticeMode),
+              total: 1,
+              correct: undefined,
+            }
+      );
     }
-    setQuestionStartTime(null);
   }
 
   function handleAnswer(answer) {
@@ -1438,6 +1457,7 @@ useEffect(() => {
             recordSessionProgress();
             saveRunToStorage();
             setGameActive(false);
+            moledetTrackingTopicKeyRef.current = null;
             setCurrentQuestion(null);
             setTimeLeft(0);
             setTimeout(() => {
@@ -3308,6 +3328,12 @@ useEffect(() => {
         </div>
       </div>
     </div>
+    <TrackingDebugPanel
+      subjectId="moledet"
+      uiSelection={`operation=${operation}`}
+      currentQuestion={currentQuestion}
+      trackingRef={moledetTrackingTopicKeyRef}
+    />
     </Layout>
   );
 }
