@@ -1912,43 +1912,67 @@ useEffect(() => {
                 </div>
               )}
 
-              {feedback && (
-                <div
-                  className={`mb-2 px-4 py-2 rounded-lg text-sm font-semibold text-center ${
-                    feedback.includes("Correct") ||
-                    feedback.includes("∞") ||
-                    feedback.includes("Start") ||
-                    feedback.includes("נכון")
-                      ? "bg-emerald-500/20 text-emerald-200"
-                      : "bg-red-500/20 text-red-200"
-                  }`}
-                >
-                  <div style={learningMixedHebrewMathStyle}>{feedback}</div>
-                  {errorExplanation && (
-                    <div
-                      className="mt-1 text-xs text-red-100/90 font-normal"
-                      style={learningMixedHebrewMathStyle}
-                    >
-                      {errorExplanation}
-                    </div>
-                  )}
-                </div>
-              )}
-
               {currentQuestion && (
                 <div
                   ref={gameRef}
-                  className="w-full max-w-lg flex flex-col items-center justify-center mb-2 flex-1"
+                  className="w-full max-w-lg flex flex-col items-center justify-start mb-2 flex-1 min-h-0"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
-                  {mode === "learning" && currentQuestion.params?.kind !== "no_question" && (
-                    <div
-                      className="mb-2 px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 max-w-lg"
-                      style={{ direction: "rtl", unicodeBidi: "plaintext" }}
-                    >
-                      {getTheorySummary(currentQuestion, currentQuestion.topic, grade)}
+                  {/* אזור קבוע להודעות/רמז/הסבר כדי למנוע קפיצות פריסה */}
+                  <div className="w-full shrink-0 mb-2" style={{ height: "124px" }}>
+                    <div className="h-full w-full overflow-y-auto overflow-x-hidden rounded-lg">
+                      <div className="flex flex-col gap-2">
+                        {feedback ? (
+                          <div
+                            className={`px-4 py-2 rounded-lg text-sm font-semibold text-center ${
+                              feedback.includes("Correct") ||
+                              feedback.includes("∞") ||
+                              feedback.includes("Start") ||
+                              feedback.includes("נכון")
+                                ? "bg-emerald-500/20 text-emerald-200"
+                                : "bg-red-500/20 text-red-200"
+                            }`}
+                          >
+                            <div style={learningMixedHebrewMathStyle}>{feedback}</div>
+                          </div>
+                        ) : (
+                          <div className="px-4 py-2 rounded-lg opacity-0 select-none" aria-hidden>
+                            placeholder
+                          </div>
+                        )}
+
+                        {mode === "learning" && currentQuestion.params?.kind !== "no_question" ? (
+                          <div
+                            className="px-3 py-2 rounded-lg bg-black/30 border border-white/10 text-xs text-white/80 w-full"
+                            style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                          >
+                            {getTheorySummary(currentQuestion, currentQuestion.topic, grade)}
+                          </div>
+                        ) : null}
+
+                        {showHint && currentQuestion.params?.kind !== "no_question" ? (
+                          <div
+                            className="px-4 py-3 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100/95 text-sm leading-relaxed text-center w-full"
+                            style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                          >
+                            {getHint(currentQuestion, currentQuestion.topic, grade)}
+                          </div>
+                        ) : null}
+
+                        {errorExplanation ? (
+                          <div
+                            className="px-4 py-2 rounded-lg bg-rose-500/10 border border-rose-400/50 text-rose-100/95 text-sm leading-relaxed text-center w-full"
+                            style={{ direction: "rtl", unicodeBidi: "plaintext" }}
+                          >
+                            {errorExplanation}
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
-                  )}
+                  </div>
+
+                  <div className="w-full flex-1 min-h-0 flex flex-col items-center justify-start">
+                    <div className="w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden [-webkit-overflow-scrolling:touch] flex flex-col items-center justify-start">
 
                   {/* בדיקה אם יש שאלה תקינה */}
                   {currentQuestion.params?.kind === "no_question" ? (
@@ -1986,39 +2010,43 @@ useEffect(() => {
                       )}
                     </>
                   )}
-
-                  {!hintUsed && !selectedAnswer && currentQuestion.params?.kind !== "no_question" && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowHint(true);
-                        setHintUsed(true);
-                      }}
-                      className={`mb-2 ${learningHintTriggerBtn}`}
-                    >
-                      💡 רמז
-                    </button>
-                  )}
-
-                  {showHint && currentQuestion.params?.kind !== "no_question" && (
-                    <div
-                      className="mb-2 px-4 py-3 rounded-lg bg-blue-500/20 border border-blue-400/50 text-blue-100/95 text-sm leading-relaxed text-center max-w-lg"
-                      style={{ direction: "rtl", unicodeBidi: "plaintext" }}
-                    >
-                      {getHint(currentQuestion, currentQuestion.topic, grade)}
                     </div>
-                  )}
 
-                  {/* כפתור הסבר מלא – רק במצב Learning */}
-                  {mode === "learning" && currentQuestion && currentQuestion.params?.kind !== "no_question" && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => setShowSolution((prev) => !prev)}
-                        className={`mb-2 ${learningExplainOpenBtn}`}
-                      >
-                        📘 הסבר מלא
-                      </button>
+                    <div className="w-full shrink-0 flex flex-col items-center justify-start">
+                      {/* שורת כפתורים קבועה (שומרת גובה גם כשכפתור נעלם) */}
+                      <div className="w-full flex justify-center gap-2 flex-wrap mb-2 min-h-[2.75rem]" dir="rtl">
+                        {!hintUsed && !selectedAnswer && currentQuestion.params?.kind !== "no_question" ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowHint(true);
+                              setHintUsed(true);
+                            }}
+                            className={learningHintTriggerBtn}
+                          >
+                            💡 רמז
+                          </button>
+                        ) : (
+                          <span className="opacity-0 select-none" aria-hidden>
+                            placeholder
+                          </span>
+                        )}
+
+                        {mode === "learning" &&
+                          currentQuestion &&
+                          currentQuestion.params?.kind !== "no_question" && (
+                            <button
+                              type="button"
+                              onClick={() => setShowSolution((prev) => !prev)}
+                              className={learningExplainOpenBtn}
+                            >
+                              📘 הסבר מלא
+                            </button>
+                          )}
+                      </div>
+
+                      {mode === "learning" && currentQuestion && currentQuestion.params?.kind !== "no_question" && (
+                        <>
 
                       {/* חלון הסבר מלא - Modal גדול ומרכזי */}
                       {showSolution &&
@@ -2163,38 +2191,42 @@ useEffect(() => {
                             </div>
                           );
                         })()}
-                    </>
-                  )}
+                        </>
+                      )}
 
-                  {currentQuestion.params?.kind !== "no_question" && currentQuestion.answers && (
-                  <div className="grid grid-cols-2 gap-3 w-full mb-3">
-                    {currentQuestion.answers.map((answer, idx) => {
-                      const isSelected = selectedAnswer === answer;
-                      const isCorrect = answer === currentQuestion.correctAnswer;
-                      const isWrong = isSelected && !isCorrect;
+                      {currentQuestion.params?.kind !== "no_question" &&
+                        currentQuestion.answers && (
+                          <div className="grid grid-cols-2 gap-3 w-full mb-3">
+                            {currentQuestion.answers.map((answer, idx) => {
+                              const isSelected = selectedAnswer === answer;
+                              const isCorrect =
+                                answer === currentQuestion.correctAnswer;
+                              const isWrong = isSelected && !isCorrect;
 
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => handleAnswer(answer)}
-                          disabled={!!selectedAnswer}
-                          className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                            isCorrect && isSelected
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : isWrong
-                              ? "bg-red-500/30 border-red-400 text-red-200"
-                              : selectedAnswer &&
-                                answer === currentQuestion.correctAnswer
-                              ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
-                              : "bg-black/30 border-white/15 text-white hover:border-white/40"
-                          }`}
-                        >
-                          {answer}
-                        </button>
-                      );
-                    })}
+                              return (
+                                <button
+                                  key={idx}
+                                  onClick={() => handleAnswer(answer)}
+                                  disabled={!!selectedAnswer}
+                                  className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
+                                    isCorrect && isSelected
+                                      ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                      : isWrong
+                                      ? "bg-red-500/30 border-red-400 text-red-200"
+                                      : selectedAnswer &&
+                                        answer === currentQuestion.correctAnswer
+                                      ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
+                                      : "bg-black/30 border-white/15 text-white hover:border-white/40"
+                                  }`}
+                                >
+                                  {answer}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                    </div>
                   </div>
-                  )}
                 </div>
               )}
 
