@@ -1,0 +1,3627 @@
+{
+  "generatedAt": "2026-04-10T20:32:41.792Z",
+  "harnessMerged": {
+    "mathKindsFromHarnessFiles": 107,
+    "geoKindsFromHarnessFiles": 70,
+    "note": "איחוד kind מ־harness-math.json + harness-geometry.json + harness-geometry-conceptual.json (הרץ npm run audit:harness לפני אודיט)."
+  },
+  "generatorBranchCoverage": {
+    "math": {
+      "sourceFile": "utils/math-question-generator.js",
+      "declaredKindCount": 91,
+      "observedDistinctKindsInSample": 107,
+      "kindsNotHitInRun": [],
+      "kindsHitButNotInStaticRegex": [
+        "wp_simple_sub",
+        "wp_simple_add",
+        "wp_pocket_money",
+        "wp_simple_sub_g2",
+        "wp_simple_add_g2",
+        "wp_pocket_money_g2",
+        "frac_same_den",
+        "wp_change_stack",
+        "wp_part_whole",
+        "wp_groups_g3",
+        "frac_same_den_g4",
+        "wp_groups_late",
+        "wp_average",
+        "wp_average_g6",
+        "wp_groups_late_g6",
+        "wp_multi_step_g6"
+      ],
+      "coverageNote": "דגימת אודיט דטרמיניסטית (LCG קבוע לכל צירוף) + איחוד תוצאות harness וכפיית ענפים נדירים."
+    },
+    "geometry": {
+      "sourceFile": "utils/geometry-question-generator.js",
+      "declaredKindCount": 38,
+      "observedDistinctKindsInSample": 70,
+      "kindsNotHitInRun": [],
+      "kindsHitButNotInStaticRegex": [
+        "concept_shape_id",
+        "concept_tf",
+        "concept_transform",
+        "concept_area_intro",
+        "rectangle_area",
+        "concept_solids",
+        "concept_angle_reason",
+        "concept_lines",
+        "concept_classify",
+        "triangle_area",
+        "concept_measure_interpret",
+        "concept_multi_step_plan",
+        "rectangle_perimeter",
+        "concept_rotation",
+        "concept_diagonal",
+        "concept_symmetry",
+        "concept_volume_meaning",
+        "cube_volume",
+        "concept_height",
+        "concept_tiling",
+        "story_triangle_area",
+        "story_rectangle_area",
+        "concept_compare_shapes",
+        "concept_partial_info",
+        "story_square_perimeter",
+        "story_rectangle_perimeter",
+        "story_box_volume",
+        "story_cube_volume",
+        "concept_circle",
+        "story_circle_area",
+        "story_square_area",
+        "story_circle_perimeter",
+        "concept_pythagoras"
+      ],
+      "coverageNote": "דגימת אודיט דטרמיניסטית + harness נוסחתי וקונספטואלי + כפיית צורה (prism / parallelogram) בקובץ harness."
+    }
+  },
+  "withinBandClassPairOverlaps": [
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "vocab_definition",
+      "stemHash": "94f04642a0f3fb993e9f3f87",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "reading_passage_style",
+      "stemHash": "534dab35067208be0c58977a",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "comprehension_lexical",
+      "stemHash": "b46b7d44569658ad2533c67e",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "comprehension_lexical",
+      "stemHash": "7eb530c5c024ff52c66ae38f",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "vocab_definition",
+      "stemHash": "7c4c30299fc19859a8120776",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "vocab_definition",
+      "stemHash": "86af6fdbec5afa78f2cc21f3",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "speaking_phrase",
+      "stemHash": "4d7ca4dd1335f943e71d9801",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "binary_fact",
+      "stemHash": "bf09579201d83d92066d41f1",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "gender_number",
+      "stemHash": "4eb84131748e2511843ce4f7",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "word_context",
+      "stemHash": "d291a5b0fafa16c0b5a13bde",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "word_level",
+      "stemHash": "4ed131e9410d1846476fb5cf",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "social_reply",
+      "stemHash": "fe2ce8d41945c9e4ce9ff0bb",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "english",
+      "patternFamily": "be_basic",
+      "stemHash": "a268d079196ad4ba1cccb76d",
+      "subtopic": "be_basic"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "0daad5772c8e8cbb04f263b1",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "13661d3841bef8485d0223b4",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "c7ea4eb13f32b753e50dfeaf",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "9dbd69d7c817f0fd4572fa32",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "997ce7e67fd3249e49aa7429",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "3d93de9276eac63c6ecaa1bd",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "geometry",
+      "patternFamily": "solid_faces",
+      "stemHash": "8cbe7715335814e35d33a897",
+      "subtopic": "cube_faces"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "geometry",
+      "patternFamily": "prism_vs_pyramid",
+      "stemHash": "c39533b3bd87ffc547df2ff1",
+      "subtopic": "apex"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "geometry",
+      "patternFamily": "polygon_sides",
+      "stemHash": "8edaebe435ee79ae1d73530c",
+      "subtopic": "square_4_equal"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "geometry",
+      "patternFamily": "binary_property",
+      "stemHash": "270e43e15f4b47a1a61ed9d5",
+      "subtopic": "rect_all_90"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "geometry",
+      "patternFamily": "slide_vs_flip",
+      "stemHash": "892fce3f237e9b35adbe413f",
+      "subtopic": "slide"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "geometry",
+      "patternFamily": "slide_vs_flip",
+      "stemHash": "6836c1ef145185b83080305a",
+      "subtopic": "mirror_flip"
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "geometry",
+      "patternFamily": "area_as_covering",
+      "stemHash": "834513d581c028bc9003b7eb",
+      "subtopic": "unit_squares"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "vocabulary_typed",
+      "stemHash": "b9b9c850c1733ac5043e52e0",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "speaking_phrase",
+      "stemHash": "33b396f881f25db02de41cb6",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "passage_explicit",
+      "stemHash": "26eb67baa882a0708a18f281",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "passage_inference",
+      "stemHash": "1aa9a8d66804ead9b979becd",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "cause_effect",
+      "stemHash": "1135e914a211167df55f100c",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "completion",
+      "stemHash": "d926165bb2931423a4a919bb",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "binary_fact",
+      "stemHash": "f07b7314ab3f225e396ee8ee",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "gender_number",
+      "stemHash": "074ff943b55fc229e41f5b4c",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "prep_choice",
+      "stemHash": "aa574bbd5e8854ee8edf901b",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "part_of_speech",
+      "stemHash": "6a2ad9857e86dff48e858111",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "synonym",
+      "stemHash": "da37a5314178ed76542fda0b",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "antonym",
+      "stemHash": "0ec045a82811fa8a310f7927",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "precision",
+      "stemHash": "826be299e3b427c278a74f00",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "sentence_read",
+      "stemHash": "cdf008e5d4f15b5cd67a6c71",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "structured_completion",
+      "stemHash": "c04754a184986189a40939e8",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "logic_completion",
+      "stemHash": "52dc1d2cd2c01bbbd6c60d66",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "social_reply",
+      "stemHash": "66b9c746ea637db24013c7ed",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "analogy_reasoning",
+      "stemHash": "fc28241b872907c379e234da",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "morphology",
+      "stemHash": "8883e640b6f4ce786f35c7d3",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "semantic_field",
+      "stemHash": "d4661209298d073b68d1745a",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "a43f3a5e38a47e8334d5597b",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "59d04e2fe55b096e9ce47fd1",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "d4c404df06161cde9ebdc10e",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "55c42d3ff6a210d8a54d07cd",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "a8e489cf76d6f1708fc11e85",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "fabdf2a80d231dd113ea42d8",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "0941c97c34eabe1a66e0a77f",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "59cd7c35585965c73f1668d2",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "f9792892d26a3bad7e4705e8",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "567310cd563d2575387f4b00",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "3b5b46c7f870c3c11cd50bd5",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "ac113f6423319115d305604f",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "cc528b9944073f943096c2dd",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "a850a976ce893593a3feea96",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "8d10c6a8885add3d81d1addf",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "921f14316adef674de2e33a5",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "b62c9e8d5f66733159b4e35b",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "7be58e62effca69b5dee6529",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "f18f1145562992719f2ade24",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "8907b00dfdc0bc90965cd1a1",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "d1c0a8473e0e8013f7357a0b",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "ce62a3180d38e817d5a827f7",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "93460b44dd6fa905fc819597",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "6847392e29ec1aae8fea7c7f",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "27dc3827f8e1a8f38f3cd7c2",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "0a338eba78443f3198934707",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "2b1e20911fdc99804c5ebdb4",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "e8d69c99de1d1b738523d7bc",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "c5aaf3307a62d38a7c49527b",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "464393c248eb65174b9f8343",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "9953e1188571a6276f224f96",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "f704f9f2f2c8239026542ae5",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "7bf7959b9a74ed5e62b9860a",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "7441333a7db4784039c6f6cc",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "a6f1ee48618944a67e9e2501",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "320adf2b2c0e919f9aeb0976",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "54b8b2748ac3360baa92da46",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "2245233408b681fdab43e3f3",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "70f3c92051351049dcc6b23e",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "dbe661b8190bbc49ac5a7916",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "884a62a39b9e88a3e67ecd21",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "8b4785d19678f24fb72dd7f4",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "18ff46904ea5684d09822c07",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "21c26fc155a5707eddec8248",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "513db032f156bc6b9f91a1fd",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "present_simple",
+      "stemHash": "d3288a4f4823853b560fb59f",
+      "subtopic": "present_simple"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "c37f064e2ab8a19ff747285d",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "f691199dd4e826acc63e1886",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "ea664dfe4af86eaed42783b2",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "9ca6bc95e704a7d308e0d128",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "af3609e0ef84831d4a3e05d1",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "b6108a211ff7c6b172d9ba2d",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "4b349dd3ad86d59a3ded3dcb",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "db31271c7d4c79ffb312eb3c",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "862abd9104dd654b3f2f580c",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "c0095febfa54fc8d82c8b7b8",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "b269bba1865d4c02d2e730c7",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "42bd96cd314529116d6f6ee3",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "6ddd606cf1a303b6dfd9be4a",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "77842e273da58c487c7d110b",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "d6043ef5e59c9dc2008b8d3f",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "268227d91831469656033e6f",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "8111d8425fc2ee6ec8b32a54",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "e671f1fbc12692b5847bfe2c",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "79da3feb9dffcb9f2ee0aa89",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "routine",
+      "stemHash": "37a9e55d23b84ee50de1bde6",
+      "subtopic": "routine"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "59548cdb735dfeb1090bc433",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "5a49d1258913dd24b4c3bb06",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "e4afaa0251cbe9be79f30c97",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "252f723b6315b8a3ba764b50",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "e751a1ab8c06b29c903a0139",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "46e3c5e922a1aba7d6843685",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "ddf153cb71e06f9e44f228fd",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "549c0b952489349bf32f2b6f",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "919fe954533bc84bce33cf0c",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "f7daac3c5b577f7e30021842",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "20e7eec23919a282274d7a42",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "eb4857fc2bab1c21a29aa448",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "53cc50cb08750bfbe1fb9f88",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "c5c9fc7938c4851e9c293d2a",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "6ab91c76de8172bd4a9d2c27",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "english",
+      "patternFamily": "descriptive",
+      "stemHash": "146a28203db1943997cdf56a",
+      "subtopic": "descriptive"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "perimeter_vs_area",
+      "stemHash": "07aedea8d9bdc00b0040437c",
+      "subtopic": "pv_area"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "perimeter_vs_area",
+      "stemHash": "ad2025a95d3b06ed321d9d7c",
+      "subtopic": "pv_perimeter"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "plan_then_compute",
+      "stemHash": "26a89e467e09049620c69623",
+      "subtopic": "plan_area_rect"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "triangle_angle_sum",
+      "stemHash": "9161fe1ff3f5325bcbca7abc",
+      "subtopic": "tri_sum_180"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "right_angle",
+      "stemHash": "08d2c6b51c7eee016cbea466",
+      "subtopic": "right_90"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "triangle_by_sides",
+      "stemHash": "4650de131ceb061982f87b7d",
+      "subtopic": "equilateral"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "quadrilateral_props",
+      "stemHash": "678f7e89f1db1e412b435866",
+      "subtopic": "para_parallel"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "hierarchy",
+      "stemHash": "d41644c6bd31e0b4f1da20f8",
+      "subtopic": "square_special"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "reflection",
+      "stemHash": "1da4a1130b7b97252ea616bd",
+      "subtopic": "mirror"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "parallel_perpendicular",
+      "stemHash": "2cc52af547eb4e7523f0c18f",
+      "subtopic": "perp_meeting"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "parallel_perpendicular",
+      "stemHash": "078c12a8e3bba24cd14fd635",
+      "subtopic": "parallel_never_meet"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "volume_space",
+      "stemHash": "5a60ff4c7296cef304d85cf2",
+      "subtopic": "volume_3d"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "rectangle_diagonal",
+      "stemHash": "109f84a0e9dd2b823bce2795",
+      "subtopic": "diag_equal_rect"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "quarter_turn",
+      "stemHash": "074e2ebedd542a0bd1e82f5a",
+      "subtopic": "quarter_90"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "polygon_sides",
+      "stemHash": "7e217088be858e32a43c038b",
+      "subtopic": "square_4_equal_mid"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "binary_property",
+      "stemHash": "9fdd9d84b0445ff6829cf8a2",
+      "subtopic": "rect_all_90_mid"
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "geometry",
+      "patternFamily": "binary_property",
+      "stemHash": "47221181d7bd5c4247782d4c",
+      "subtopic": "not_always_both"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "grammar_morphology",
+      "stemHash": "25f5bcaa0a536c02a9b8b69e",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "vocabulary_typed",
+      "stemHash": "67896186392d1f45166a2066",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "comprehension_infer",
+      "stemHash": "68a9da2f2c17757224d1811c",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "comprehension_typed",
+      "stemHash": "1464d31153471210d8d526a5",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "writing_spelling",
+      "stemHash": "ac17ef3c224d5be5d7d1e881",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "speaking_phrase",
+      "stemHash": "2f364c7a884f52a5d42b5fda",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "speaking_phrase",
+      "stemHash": "71d28944b66247a8ba283ae8",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "sequence",
+      "stemHash": "84e223a5922743f1d11d7a80",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "reference",
+      "stemHash": "da6619e7587165fc79840b03",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "main_idea",
+      "stemHash": "453ec8757b98350c03136d3c",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "compare_statements",
+      "stemHash": "8bbed894472c308de3622b3e",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "tense_shift",
+      "stemHash": "37e7037da668504ff33543d6",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "sentence_correction",
+      "stemHash": "6cbab1e1865511d21807383f",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "transform",
+      "stemHash": "783dff40552f725071ae8482",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "binary_grammar",
+      "stemHash": "2ba0538b85ed2a5ec5cb13d3",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "context_fit",
+      "stemHash": "b5b0f104f36af44a37800ab7",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "category_exclusion",
+      "stemHash": "a25f1e14e63cd06340950f6a",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "rephrase",
+      "stemHash": "9bb273f6e0ee68a816efbccd",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "implicit_tone",
+      "stemHash": "1e818e598517ea5380f83953",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "supporting_detail",
+      "stemHash": "71a97fec43ae213bc60e9805",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "sentence_correction",
+      "stemHash": "42682abfc4af20a01f81d36a",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "verb_agreement",
+      "stemHash": "42682abfc4af20a01f81d36a",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "collocation",
+      "stemHash": "ad4b531737604021084585a5",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "structural",
+      "stemHash": "0755dab1d0b6bbdaa7561382",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "255155b90da6217e787bf6b3",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "c79fc1c2891dbcff1f8e856c",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "60c079f117661a0b3c894184",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "f270ff95ebf67d2b5d02067e",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "9fef117df86fc13840d6be6b",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "26af30e0e649a84e1f75242e",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "e5522e51a2903e408494a648",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "db591b2271d7fbee4be5e9db",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "0b4ed9ca1ad5620598edb6b1",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "03294083e9e5d680e0037a20",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "ef8d47ed5a311ad10b1c70be",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "9d7eb8808b92bc71865fe045",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "255af1bfabc376fe88ffb5b0",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "14e277c007ee8c004aca59de",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "25a73c87e5810cc36e4eb17f",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "e2172c04b7e681635c0b7edc",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "97d6d667c66db9751b7699eb",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "599d369b19d0f4396957b2e9",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "d5bba7119d07ee30c3550dd5",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "e78ddfd86a521d14e24b0d4c",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "6f6f36e736f639e8c103c9bc",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "e9aa1edc3e58a87257aa5cad",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "5055a690f1c9d71602e762d6",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "a4767209f178c938e38cdd41",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "8f9545ff6d31e78113cc1057",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "69ee44c766607ea9a37800fb",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "5eb090471e26603f09dbd273",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "e3ac13301488f52c3646c10e",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "af7552d2bcc8f65d861abb45",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "fb1af25d60fde476d4afb060",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "e8daaf28b2193212eb455ac1",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "00653a21356444fda9e534cd",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "2f86ccadf52a3284e14e4682",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "1d7b47aadc2816c770146a6a",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "f4501cff9aabaa2aeb392068",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "6eb357320e8dd0d012e4a965",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "5f50958f49fd91e9e8598e58",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "7b9ef8fd6f5826ce851f4342",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "117a53780543c8c3422e9154",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "ec9770672a9fa90828c2f8ec",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "0a0f0db9a0de18e2ab307715",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "b6a9c5cf3fc73c53104c8c43",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "6b6b813e635e1a525f662677",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "5c90c6cdea4a3865bf9f987b",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "b8c3ffdc40884d3589a16303",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "d59ff9cbfa289f292c8b1cd2",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "148e3f90982d3ff81a6d194f",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "modals",
+      "stemHash": "551be8ebe2c3e1f05491fb03",
+      "subtopic": "modals"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "b84504456036361772742170",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "6794775d71d6331fbc875823",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "dcd389dc7f9ed8a5668a23a6",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "9cc769a604f51c2bcb8f20d0",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "e106eaed9d4cb8ca41895f6f",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "26af51fa6fe1a09956d8a623",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "a0ec14f0e78a7c1cc389ab07",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "74b7d33c765bab9db1d424d2",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "a179408eae7bc3ea60685c7c",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "5ff624055485677f57f8230f",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "1dc2ba9cc133d3df59807596",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "bb35ea9696455d773427bd29",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "4677c4dded35b9db40d45d78",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "2cecacb82c256eef03bd96c3",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "2a384328139194146426cb66",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "c14e09b84f785d090fef90bb",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "7f9fea6986f38349a8f1eb34",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "9d6008fe4be29fb6d48b04df",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "7826cddd2878cc3c73a92ae3",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "ded312fdb3ed2bf886aedaa5",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "7228c2766b443ad0795b6a99",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "6592c357f717abb3c1c10e30",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "52538df875933261b4bfcd5e",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "8ac9435909207d82bf87a198",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "2d4ee65ab6e9f245adf9010f",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "21cc1d688f50c626bf08e04a",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "3336797ea124b51095b77b07",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "4cc990c2c256e4495f4bbef9",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "0748ce1ab10c39e8aebb9350",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "0597fb9f5c419e14afca0cf2",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "9ebc0c35d922ef5a77c61b4e",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "e1f0e30d010ca2065868eefc",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "283240e3d7e3e18a61e5b4b0",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "c495b564bb644cf2c64495b6",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "596bfec4e51cc6bbd4bf37bb",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "e8c57c4af40bb4b5deb29fd2",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "comparatives",
+      "stemHash": "dfe0de6c06141e8291c017cd",
+      "subtopic": "comparatives"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "488643c26a7bcb0f99a9e578",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "6b5ccef95013b32625ecd0a6",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "eb9a682f732b873a5cd65dbe",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "ab9dae4c484e267997627325",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "base",
+      "stemHash": "1037121ced5ad0e30729f54e",
+      "subtopic": "base"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "29826b9d65b36359831d6b67",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "fb1c7f76cc4d42c56c8c3f52",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "d4046c1e39fd431ceff9a881",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "de51fc794845f0d91c3a514f",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "7a748584bca4152206d817f1",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "472c6bf0a5c462060fda5bf4",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "980a1162d4834eecb7d208a5",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "20b5f55e345c482d0446443b",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "98c08ecf0d6fb4bf9be0bca1",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "17dfde002db57ef03de18ee8",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "bfe2e47b4f980c0a9f752e3a",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "c045cad6b54bc82045244c41",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "4ba67a8b6014a7f4d3846fd7",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "b21429f1297b2297cea6a477",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "c07c46d8c9209e5fd0b89940",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "english",
+      "patternFamily": "advanced",
+      "stemHash": "399e53d516f54237ae8fd137",
+      "subtopic": "advanced"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "perimeter_vs_area",
+      "stemHash": "1b249bb64a87ffee42e6e9fd",
+      "subtopic": "pv_area_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "perimeter_vs_area",
+      "stemHash": "846a6c315ade06cc805f26a0",
+      "subtopic": "pv_perimeter_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "plan_then_compute",
+      "stemHash": "addc118d3dab0c76044df849",
+      "subtopic": "plan_area_rect_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "shape_comparison",
+      "stemHash": "7314106adb6e15ec651ce990",
+      "subtopic": "compare_area"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "triangle_angle_sum",
+      "stemHash": "1dac3e0ee38121904401fabe",
+      "subtopic": "tri_sum_180_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "right_angle",
+      "stemHash": "f2d1fa9ff9884d7f6561c08a",
+      "subtopic": "right_90_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "parallel_lines",
+      "stemHash": "30bf7c869d5d55ba18329615",
+      "subtopic": "corresponding"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "triangle_by_sides",
+      "stemHash": "d1e2c617addb9220e08402a2",
+      "subtopic": "equilateral_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "quadrilateral_props",
+      "stemHash": "48e5e5b4bc50104a13a3506d",
+      "subtopic": "para_parallel_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "hierarchy",
+      "stemHash": "a6cf616fe06c2a6f0575efff",
+      "subtopic": "square_special_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "reflection",
+      "stemHash": "043a99a540e49509b4a66bc1",
+      "subtopic": "mirror_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "congruence",
+      "stemHash": "59abd8f7f204928852a87565",
+      "subtopic": "congruent_def"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "parallel_perpendicular",
+      "stemHash": "71d9b81eb499fb28039bbf48",
+      "subtopic": "perp_meeting_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "parallel_perpendicular",
+      "stemHash": "4d29658e694adc64d799ff48",
+      "subtopic": "parallel_never_meet_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "volume_space",
+      "stemHash": "4db7c78e7507951afc3f8c91",
+      "subtopic": "volume_3d_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "volume_prism_plan",
+      "stemHash": "a60192fe2f8e95c5e2cdab5a",
+      "subtopic": "vol_box"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "solid_faces",
+      "stemHash": "cdc3dd35a0775f2c67815614",
+      "subtopic": "cube_faces_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "prism_vs_pyramid",
+      "stemHash": "621bfc03e893c85cfc684439",
+      "subtopic": "apex_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "regular_tiling",
+      "stemHash": "833570e1740795331fd13c1a",
+      "subtopic": "360_at_vertex"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "height_definition",
+      "stemHash": "20a586a642bfc9d74451e68a",
+      "subtopic": "perpendicular_to_base"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "rectangle_diagonal",
+      "stemHash": "5f76e2c65fcd31a9774f9400",
+      "subtopic": "diag_equal_rect_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "binary_property",
+      "stemHash": "53c8ee7e8cb7803cccf5a65a",
+      "subtopic": "not_always_both_late"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "binary_property",
+      "stemHash": "c9877a2d46f1b2d791048111",
+      "subtopic": "one_obtuse_max"
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "geometry",
+      "patternFamily": "infer_missing",
+      "stemHash": "57f8b7a6caea89108a62e709",
+      "subtopic": "perim_to_side"
+    }
+  ],
+  "weakLevelSeparationCombos": [
+    {
+      "comboKey": "geometry|symmetry|concept_symmetry|4",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 11,
+        "medium": 10,
+        "hard": 11
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|volume|rectangular_prism_volume|4",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 9,
+        "medium": 5,
+        "hard": 9
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|tiling|concept_tiling|5",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 12,
+        "medium": 12,
+        "hard": 12
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|circles|circle_area|6",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 6,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|pythagoras|pythagoras_leg|6",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 5,
+        "medium": 5,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|compare|cmp|1",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|fractions|frac_quarter|2",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 7,
+        "hard": 9
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|fractions|frac_half|2",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 9,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|divisibility|divisibility|2",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|compare|cmp|2",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|divisibility|divisibility|3",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|compare|cmp|3",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|divisibility|divisibility|4",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|prime_composite|prime_composite|4",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|powers|power_base|4",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 8,
+        "hard": 9
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|compare|cmp|4",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|factors_multiples|fm_factor|4",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 5,
+        "medium": 5,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|factors_multiples|fm_multiple|4",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 6,
+        "medium": 5,
+        "hard": 5
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|estimation|est_quantity|4",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 7,
+        "medium": 5,
+        "hard": 5
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|estimation|est_mul|4",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 5,
+        "medium": 5,
+        "hard": 6
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|compare|cmp|5",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|factors_multiples|fm_multiple|5",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 5,
+        "medium": 5,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|estimation|est_quantity|5",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 6,
+        "medium": 5,
+        "hard": 6
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|estimation|est_add|5",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 6,
+        "medium": 5,
+        "hard": 5
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|compare|cmp|6",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|number_sense|ns_complement100|6",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 5,
+        "medium": 7,
+        "hard": 5
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|scale|scale_find|6",
+      "uniqueStemHashesAcrossLevels": 1,
+      "samplesPerLevel": {
+        "easy": 6,
+        "medium": 5,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|angles|concept_angle_reason|3",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 13,
+        "medium": 12,
+        "hard": 12
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|parallel_perpendicular|parallel_perpendicular|3",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 15,
+        "medium": 14,
+        "hard": 24
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|quadrilaterals|concept_classify|3",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 11,
+        "medium": 10,
+        "hard": 6
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|area|concept_measure_interpret|3",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 14,
+        "medium": 9,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|perimeter|concept_measure_interpret|3",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 13,
+        "medium": 14,
+        "hard": 13
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|area|concept_measure_interpret|4",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 15,
+        "medium": 12,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|perimeter|concept_measure_interpret|4",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 14,
+        "medium": 14,
+        "hard": 14
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|parallel_perpendicular|parallel_perpendicular|5",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 12,
+        "medium": 13,
+        "hard": 24
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|quadrilaterals|concept_classify|5",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 11,
+        "medium": 10,
+        "hard": 6
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|diagonal|diagonal_rectangle|5",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 9,
+        "medium": 5,
+        "hard": 5
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|area|concept_measure_interpret|5",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 10,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|perimeter|concept_measure_interpret|5",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 12,
+        "medium": 13,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|circles|concept_circle|6",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 11,
+        "medium": 11,
+        "hard": 11
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|pythagoras|pythagoras_hyp|6",
+      "uniqueStemHashesAcrossLevels": 2,
+      "samplesPerLevel": {
+        "easy": 9,
+        "medium": 9,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|shapes_basic|shapes_basic_square|1",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 9,
+        "hard": 11
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|shapes_basic|shapes_basic_rectangle|1",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 7,
+        "hard": 13
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|area|square_area|2",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 6,
+        "medium": 6,
+        "hard": 10
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|area|rectangle_area|2",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 7,
+        "medium": 7,
+        "hard": 14
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|angles|triangle_angles|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 11,
+        "medium": 12,
+        "hard": 12
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|triangles|triangles|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 13,
+        "medium": 13,
+        "hard": 14
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|rotation|rotation|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 15,
+        "hard": 24
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|shapes_basic|shapes_basic_properties_rectangle|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 5,
+        "medium": 5,
+        "hard": 5
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|diagonal|diagonal_rectangle|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 11,
+        "medium": 6,
+        "hard": 6
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|diagonal|diagonal_square|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 13,
+        "medium": 8,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|angles|triangle_angles|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 14,
+        "medium": 15,
+        "hard": 14
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|angles|concept_angle_reason|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 10,
+        "medium": 9,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|tiling|tiling|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 12,
+        "medium": 12,
+        "hard": 12
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|circles|circle_perimeter|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 5,
+        "medium": 7,
+        "hard": 6
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|angles|concept_angle_reason|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 12,
+        "medium": 11,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "geometry|angles|triangle_angles|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 12,
+        "medium": 13,
+        "hard": 13
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|subtraction|sub_two|1",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|multiplication|mul|1",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|addition|add_two|2",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 9,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|subtraction|sub_two|2",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 9,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|multiplication|mul|2",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|division|div|2",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|addition|add_two|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|subtraction|sub_two|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|multiplication|mul|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 10,
+        "medium": 10,
+        "hard": 10
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|division|div|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|decimals|dec_add|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 9,
+        "medium": 8,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|decimals|dec_sub|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 7,
+        "medium": 8,
+        "hard": 9
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|order_of_operations|order_mul_sub|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 6,
+        "medium": 5,
+        "hard": 6
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|order_of_operations|order_parentheses|3",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 5,
+        "medium": 6,
+        "hard": 6
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|addition|add_two|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|subtraction|sub_two|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|multiplication|mul|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 9,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|division|div|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 7,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|decimals|dec_add|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 9,
+        "medium": 7,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|decimals|dec_sub|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 7,
+        "medium": 9,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|rounding|round|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|powers|power_calc|4",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 8,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|addition|add_two|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 12,
+        "hard": 10
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|subtraction|sub_two|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|multiplication|mul|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|division|div|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 10,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|percentages|perc_part_of|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 7,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|percentages|perc_discount|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 9,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|decimals|dec_add|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 9,
+        "medium": 8,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|decimals|dec_sub|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 7,
+        "medium": 8,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|rounding|round|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|factors_multiples|fm_gcd|5",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 6,
+        "medium": 5,
+        "hard": 5
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|addition|add_two|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 12,
+        "hard": 11
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|subtraction|sub_two|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|multiplication|mul|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|division|div|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|division_with_remainder|div_with_remainder|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|fractions|frac_multiply|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 9,
+        "medium": 8,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|percentages|perc_part_of|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 7,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|percentages|perc_discount|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 8,
+        "medium": 9,
+        "hard": 8
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|ratio|ratio_second|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 6,
+        "medium": 5,
+        "hard": 6
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|ratio|ratio_first|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 5,
+        "medium": 7,
+        "hard": 5
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|rounding|round|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 16,
+        "medium": 16,
+        "hard": 16
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    },
+    {
+      "comboKey": "math|factors_multiples|fm_gcd|6",
+      "uniqueStemHashesAcrossLevels": 3,
+      "samplesPerLevel": {
+        "easy": 5,
+        "medium": 5,
+        "hard": 7
+      },
+      "note": "דגימות רבות אך מעט צורות ניסוח שונות בין רמות — לרוב תבנית מספרית זהה."
+    }
+  ],
+  "topicMetadataCoverage": {
+    "hebrew": {
+      "reading": {
+        "rows": 71,
+        "staticRows": 71,
+        "sampleRows": 0,
+        "withSubtype": 71,
+        "withPatternFamily": 71
+      },
+      "comprehension": {
+        "rows": 78,
+        "staticRows": 78,
+        "sampleRows": 0,
+        "withSubtype": 65,
+        "withPatternFamily": 78
+      },
+      "writing": {
+        "rows": 70,
+        "staticRows": 70,
+        "sampleRows": 0,
+        "withSubtype": 45,
+        "withPatternFamily": 70
+      },
+      "grammar": {
+        "rows": 70,
+        "staticRows": 70,
+        "sampleRows": 0,
+        "withSubtype": 51,
+        "withPatternFamily": 70
+      },
+      "vocabulary": {
+        "rows": 62,
+        "staticRows": 62,
+        "sampleRows": 0,
+        "withSubtype": 42,
+        "withPatternFamily": 62
+      },
+      "speaking": {
+        "rows": 47,
+        "staticRows": 47,
+        "sampleRows": 0,
+        "withSubtype": 43,
+        "withPatternFamily": 47
+      }
+    },
+    "english": {
+      "grammar": {
+        "rows": 539,
+        "staticRows": 539,
+        "sampleRows": 0,
+        "withSubtype": 0,
+        "withPatternFamily": 539
+      },
+      "translation": {
+        "rows": 36,
+        "staticRows": 36,
+        "sampleRows": 0,
+        "withSubtype": 0,
+        "withPatternFamily": 36
+      },
+      "sentence": {
+        "rows": 79,
+        "staticRows": 79,
+        "sampleRows": 0,
+        "withSubtype": 0,
+        "withPatternFamily": 79
+      }
+    },
+    "geometry": {
+      "area|perimeter": {
+        "rows": 6,
+        "staticRows": 6,
+        "sampleRows": 0,
+        "withSubtype": 6,
+        "withPatternFamily": 6
+      },
+      "area": {
+        "rows": 363,
+        "staticRows": 3,
+        "sampleRows": 360,
+        "withSubtype": 195,
+        "withPatternFamily": 363
+      },
+      "angles": {
+        "rows": 221,
+        "staticRows": 5,
+        "sampleRows": 216,
+        "withSubtype": 105,
+        "withPatternFamily": 221
+      },
+      "triangles": {
+        "rows": 74,
+        "staticRows": 2,
+        "sampleRows": 72,
+        "withSubtype": 34,
+        "withPatternFamily": 74
+      },
+      "quadrilaterals": {
+        "rows": 148,
+        "staticRows": 4,
+        "sampleRows": 144,
+        "withSubtype": 67,
+        "withPatternFamily": 148
+      },
+      "symmetry": {
+        "rows": 74,
+        "staticRows": 2,
+        "sampleRows": 72,
+        "withSubtype": 34,
+        "withPatternFamily": 74
+      },
+      "symmetry|transformations": {
+        "rows": 1,
+        "staticRows": 1,
+        "sampleRows": 0,
+        "withSubtype": 1,
+        "withPatternFamily": 1
+      },
+      "parallel_perpendicular": {
+        "rows": 148,
+        "staticRows": 4,
+        "sampleRows": 144,
+        "withSubtype": 46,
+        "withPatternFamily": 148
+      },
+      "volume": {
+        "rows": 219,
+        "staticRows": 3,
+        "sampleRows": 216,
+        "withSubtype": 89,
+        "withPatternFamily": 219
+      },
+      "circles": {
+        "rows": 73,
+        "staticRows": 1,
+        "sampleRows": 72,
+        "withSubtype": 34,
+        "withPatternFamily": 73
+      },
+      "circles|area|perimeter": {
+        "rows": 1,
+        "staticRows": 1,
+        "sampleRows": 0,
+        "withSubtype": 1,
+        "withPatternFamily": 1
+      },
+      "pythagoras": {
+        "rows": 74,
+        "staticRows": 2,
+        "sampleRows": 72,
+        "withSubtype": 31,
+        "withPatternFamily": 74
+      },
+      "solids": {
+        "rows": 148,
+        "staticRows": 4,
+        "sampleRows": 144,
+        "withSubtype": 42,
+        "withPatternFamily": 148
+      },
+      "tiling": {
+        "rows": 73,
+        "staticRows": 1,
+        "sampleRows": 72,
+        "withSubtype": 37,
+        "withPatternFamily": 73
+      },
+      "heights": {
+        "rows": 73,
+        "staticRows": 1,
+        "sampleRows": 72,
+        "withSubtype": 23,
+        "withPatternFamily": 73
+      },
+      "diagonal": {
+        "rows": 146,
+        "staticRows": 2,
+        "sampleRows": 144,
+        "withSubtype": 44,
+        "withPatternFamily": 146
+      },
+      "rotation": {
+        "rows": 73,
+        "staticRows": 1,
+        "sampleRows": 72,
+        "withSubtype": 18,
+        "withPatternFamily": 73
+      },
+      "shapes_basic": {
+        "rows": 148,
+        "staticRows": 4,
+        "sampleRows": 144,
+        "withSubtype": 43,
+        "withPatternFamily": 148
+      },
+      "quadrilaterals|triangles": {
+        "rows": 2,
+        "staticRows": 2,
+        "sampleRows": 0,
+        "withSubtype": 2,
+        "withPatternFamily": 2
+      },
+      "angles|triangles": {
+        "rows": 1,
+        "staticRows": 1,
+        "sampleRows": 0,
+        "withSubtype": 1,
+        "withPatternFamily": 1
+      },
+      "transformations": {
+        "rows": 146,
+        "staticRows": 2,
+        "sampleRows": 144,
+        "withSubtype": 35,
+        "withPatternFamily": 146
+      },
+      "perimeter": {
+        "rows": 288,
+        "staticRows": 0,
+        "sampleRows": 288,
+        "withSubtype": 157,
+        "withPatternFamily": 288
+      }
+    },
+    "math": {
+      "addition": {
+        "rows": 288,
+        "staticRows": 0,
+        "sampleRows": 288,
+        "withSubtype": 0,
+        "withPatternFamily": 288
+      },
+      "subtraction": {
+        "rows": 288,
+        "staticRows": 0,
+        "sampleRows": 288,
+        "withSubtype": 0,
+        "withPatternFamily": 288
+      },
+      "multiplication": {
+        "rows": 288,
+        "staticRows": 0,
+        "sampleRows": 288,
+        "withSubtype": 0,
+        "withPatternFamily": 288
+      },
+      "compare": {
+        "rows": 288,
+        "staticRows": 0,
+        "sampleRows": 288,
+        "withSubtype": 0,
+        "withPatternFamily": 288
+      },
+      "number_sense": {
+        "rows": 288,
+        "staticRows": 0,
+        "sampleRows": 288,
+        "withSubtype": 0,
+        "withPatternFamily": 288
+      },
+      "word_problems": {
+        "rows": 240,
+        "staticRows": 0,
+        "sampleRows": 240,
+        "withSubtype": 0,
+        "withPatternFamily": 240
+      },
+      "division": {
+        "rows": 240,
+        "staticRows": 0,
+        "sampleRows": 240,
+        "withSubtype": 0,
+        "withPatternFamily": 240
+      },
+      "fractions": {
+        "rows": 240,
+        "staticRows": 0,
+        "sampleRows": 240,
+        "withSubtype": 0,
+        "withPatternFamily": 240
+      },
+      "divisibility": {
+        "rows": 144,
+        "staticRows": 0,
+        "sampleRows": 144,
+        "withSubtype": 0,
+        "withPatternFamily": 144
+      },
+      "division_with_remainder": {
+        "rows": 192,
+        "staticRows": 0,
+        "sampleRows": 192,
+        "withSubtype": 0,
+        "withPatternFamily": 192
+      },
+      "sequences": {
+        "rows": 192,
+        "staticRows": 0,
+        "sampleRows": 192,
+        "withSubtype": 0,
+        "withPatternFamily": 192
+      },
+      "decimals": {
+        "rows": 192,
+        "staticRows": 0,
+        "sampleRows": 192,
+        "withSubtype": 0,
+        "withPatternFamily": 192
+      },
+      "order_of_operations": {
+        "rows": 48,
+        "staticRows": 0,
+        "sampleRows": 48,
+        "withSubtype": 0,
+        "withPatternFamily": 48
+      },
+      "equations": {
+        "rows": 192,
+        "staticRows": 0,
+        "sampleRows": 192,
+        "withSubtype": 0,
+        "withPatternFamily": 192
+      },
+      "rounding": {
+        "rows": 144,
+        "staticRows": 0,
+        "sampleRows": 144,
+        "withSubtype": 0,
+        "withPatternFamily": 144
+      },
+      "prime_composite": {
+        "rows": 48,
+        "staticRows": 0,
+        "sampleRows": 48,
+        "withSubtype": 0,
+        "withPatternFamily": 48
+      },
+      "powers": {
+        "rows": 48,
+        "staticRows": 0,
+        "sampleRows": 48,
+        "withSubtype": 0,
+        "withPatternFamily": 48
+      },
+      "zero_one_properties": {
+        "rows": 48,
+        "staticRows": 0,
+        "sampleRows": 48,
+        "withSubtype": 0,
+        "withPatternFamily": 48
+      },
+      "factors_multiples": {
+        "rows": 144,
+        "staticRows": 0,
+        "sampleRows": 144,
+        "withSubtype": 0,
+        "withPatternFamily": 144
+      },
+      "estimation": {
+        "rows": 96,
+        "staticRows": 0,
+        "sampleRows": 96,
+        "withSubtype": 0,
+        "withPatternFamily": 96
+      },
+      "percentages": {
+        "rows": 96,
+        "staticRows": 0,
+        "sampleRows": 96,
+        "withSubtype": 0,
+        "withPatternFamily": 96
+      },
+      "ratio": {
+        "rows": 48,
+        "staticRows": 0,
+        "sampleRows": 48,
+        "withSubtype": 0,
+        "withPatternFamily": 48
+      },
+      "scale": {
+        "rows": 48,
+        "staticRows": 0,
+        "sampleRows": 48,
+        "withSubtype": 0,
+        "withPatternFamily": 48
+      }
+    }
+  },
+  "englishClassSplitPools": {
+    "note": "פיצול דטרמיניסטי בין כיתות בתוך אותה בריכה — englishPoolItemAllowedWithClassSplit ב־grade-gating.js",
+    "pools": [
+      "grammar: present_simple (g3|g4), quantifiers (g4|g5)",
+      "grammar: modals, comparatives (g5|g6)",
+      "translation: community (g4|g5), technology+global (g5|g6)",
+      "sentence: routine (g2|g3|g4), descriptive (g3|g4), narrative (g4|g5)"
+    ]
+  },
+  "fallbackMap": {
+    "hebrew": [
+      {
+        "path": "utils/hebrew-question-generator.js",
+        "steps": [
+          "מיזוג rich+legacy לפי כיתה/רמה/נושא (filterRichHebrewPool + mergeTopicPools)",
+          "אם ריק: ניסיון רמות אחרות באותו נושא (עדיין אותה כיתה)",
+          "אם עדיין ריק: ניסיון reading באותה כיתה עם סדר רמות",
+          "אם עדיין ריק: הודעת empty_pool + patternFamily no_questions"
+        ],
+        "keepsGrade": true,
+        "keepsTopic": "עד כמה שאפשר לפני מעבר ל-reading"
+      }
+    ],
+    "english": [
+      {
+        "path": "pages/learning/english-master.js",
+        "steps": [
+          "סינון בריכות עם englishPoolItemAllowedWithClassSplit (כולל פיצול כיתה בתוך טווח בריכה)",
+          "אם ריק אחרי שער: בריכת grammar/translation/sentence חלופית מותרת לכיתה",
+          "אם עדיין ריק: placeholder + english_empty_pool"
+        ],
+        "keepsGrade": true
+      }
+    ],
+    "geometry": [
+      {
+        "path": "utils/geometry-question-generator.js",
+        "steps": [
+          "נושא לא מותר לכיתה → נושא חלופי מאותה כיתה",
+          "אין צורות לנושא → הודעת no_question"
+        ],
+        "keepsGrade": true
+      }
+    ],
+    "math": [
+      {
+        "path": "utils/math-question-generator.js",
+        "notes": "אין fallback לכיתה אחרת בתוך הגנרטור; בחירת פעולה מותרת לפי GRADES",
+        "keepsGrade": true
+      }
+    ]
+  },
+  "hebrewLegacyMetadata": {
+    "note": "מיפוי patternFamily/subtype ל־legacy — inferHebrewLegacyMeta ב־utils/hebrew-legacy-metadata.js (גם בזמן ריצה ב־finalizeHebrewMcq)"
+  }
+}

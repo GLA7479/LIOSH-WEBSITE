@@ -1,0 +1,2357 @@
+{
+  "generatedAt": "2026-04-10T20:32:41.069Z",
+  "seedsPerCombo": 128,
+  "skipGeometryConceptual": true,
+  "mathForcedKinds": [
+    "dec_divide",
+    "dec_repeating",
+    "div_two_digit",
+    "eq_add_simple",
+    "eq_sub_simple",
+    "frac_half",
+    "frac_half_reverse",
+    "frac_quarter",
+    "frac_quarter_reverse",
+    "mul_hundreds",
+    "mul_tens",
+    "wp_comparison_more"
+  ],
+  "combos": {
+    "g1|easy|addition": {
+      "kinds": [
+        "add_second_decade",
+        "add_tens_only",
+        "add_two"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|easy|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|easy|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|easy|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|easy|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_counting_backward",
+        "ns_counting_forward",
+        "ns_even_odd",
+        "ns_neighbors",
+        "ns_number_line",
+        "ns_place_tens_units"
+      ],
+      "kindCount": 7,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|easy|word_problems": {
+      "kinds": [
+        "wp_coins",
+        "wp_coins_spent",
+        "wp_pocket_money",
+        "wp_simple_add",
+        "wp_simple_sub",
+        "wp_time_date",
+        "wp_time_days"
+      ],
+      "kindCount": 7,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|medium|addition": {
+      "kinds": [
+        "add_second_decade",
+        "add_tens_only",
+        "add_two"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|medium|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|medium|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|medium|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|medium|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_counting_backward",
+        "ns_counting_forward",
+        "ns_even_odd",
+        "ns_neighbors",
+        "ns_number_line",
+        "ns_place_tens_units"
+      ],
+      "kindCount": 7,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|medium|word_problems": {
+      "kinds": [
+        "wp_coins",
+        "wp_coins_spent",
+        "wp_pocket_money",
+        "wp_simple_add",
+        "wp_simple_sub",
+        "wp_time_date",
+        "wp_time_days"
+      ],
+      "kindCount": 7,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|hard|addition": {
+      "kinds": [
+        "add_second_decade",
+        "add_tens_only",
+        "add_two"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|hard|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|hard|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|hard|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|hard|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_counting_backward",
+        "ns_counting_forward",
+        "ns_even_odd",
+        "ns_neighbors",
+        "ns_number_line",
+        "ns_place_tens_units"
+      ],
+      "kindCount": 7,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|hard|word_problems": {
+      "kinds": [
+        "wp_coins",
+        "wp_coins_spent",
+        "wp_pocket_money",
+        "wp_simple_add",
+        "wp_simple_sub",
+        "wp_time_date",
+        "wp_time_days"
+      ],
+      "kindCount": 7,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|easy|addition": {
+      "kinds": [
+        "add_two",
+        "add_vertical"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|easy|subtraction": {
+      "kinds": [
+        "sub_two",
+        "sub_vertical"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|easy|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|easy|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|easy|fractions": {
+      "kinds": [
+        "frac_half",
+        "frac_half_reverse",
+        "frac_quarter",
+        "frac_quarter_reverse"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|easy|divisibility": {
+      "kinds": [
+        "divisibility"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|easy|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|easy|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_even_odd",
+        "ns_neighbors",
+        "ns_place_tens_units"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|easy|word_problems": {
+      "kinds": [
+        "wp_coins",
+        "wp_coins_spent",
+        "wp_division_simple",
+        "wp_groups_g2",
+        "wp_pocket_money_g2",
+        "wp_simple_add_g2",
+        "wp_simple_sub_g2",
+        "wp_time_date",
+        "wp_time_days"
+      ],
+      "kindCount": 9,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|medium|addition": {
+      "kinds": [
+        "add_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|medium|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|medium|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|medium|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|medium|fractions": {
+      "kinds": [
+        "frac_half",
+        "frac_half_reverse",
+        "frac_quarter",
+        "frac_quarter_reverse"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|medium|divisibility": {
+      "kinds": [
+        "divisibility"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|medium|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|medium|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_even_odd",
+        "ns_neighbors",
+        "ns_place_tens_units"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|medium|word_problems": {
+      "kinds": [
+        "wp_coins",
+        "wp_coins_spent",
+        "wp_division_simple",
+        "wp_groups_g2",
+        "wp_pocket_money_g2",
+        "wp_simple_add_g2",
+        "wp_simple_sub_g2",
+        "wp_time_date",
+        "wp_time_days"
+      ],
+      "kindCount": 9,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|hard|addition": {
+      "kinds": [
+        "add_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|hard|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|hard|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|hard|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|hard|fractions": {
+      "kinds": [
+        "frac_half",
+        "frac_half_reverse",
+        "frac_quarter",
+        "frac_quarter_reverse"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|hard|divisibility": {
+      "kinds": [
+        "divisibility"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|hard|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|hard|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_even_odd",
+        "ns_neighbors",
+        "ns_place_tens_units"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g2|hard|word_problems": {
+      "kinds": [
+        "wp_coins",
+        "wp_coins_spent",
+        "wp_division_simple",
+        "wp_groups_g2",
+        "wp_pocket_money_g2",
+        "wp_simple_add_g2",
+        "wp_simple_sub_g2",
+        "wp_time_date",
+        "wp_time_days"
+      ],
+      "kindCount": 9,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|addition": {
+      "kinds": [
+        "add_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|multiplication": {
+      "kinds": [
+        "mul",
+        "mul_hundreds",
+        "mul_tens"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|fractions": {
+      "kinds": [
+        "frac_same_den"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|divisibility": {
+      "kinds": [
+        "divisibility"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|order_of_operations": {
+      "kinds": [
+        "order_add_mul",
+        "order_mul_sub",
+        "order_parentheses"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|easy|word_problems": {
+      "kinds": [
+        "wp_change_stack",
+        "wp_comparison_more",
+        "wp_groups_g3",
+        "wp_leftover",
+        "wp_part_whole",
+        "wp_time_sum"
+      ],
+      "kindCount": 6,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|addition": {
+      "kinds": [
+        "add_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|multiplication": {
+      "kinds": [
+        "mul",
+        "mul_hundreds",
+        "mul_tens"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|fractions": {
+      "kinds": [
+        "frac_same_den"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|divisibility": {
+      "kinds": [
+        "divisibility"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|order_of_operations": {
+      "kinds": [
+        "order_add_mul",
+        "order_mul_sub",
+        "order_parentheses"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|medium|word_problems": {
+      "kinds": [
+        "wp_change_stack",
+        "wp_comparison_more",
+        "wp_groups_g3",
+        "wp_leftover",
+        "wp_part_whole",
+        "wp_time_sum"
+      ],
+      "kindCount": 6,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|addition": {
+      "kinds": [
+        "add_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|multiplication": {
+      "kinds": [
+        "mul",
+        "mul_hundreds",
+        "mul_tens"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|fractions": {
+      "kinds": [
+        "frac_same_den"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|divisibility": {
+      "kinds": [
+        "divisibility"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|order_of_operations": {
+      "kinds": [
+        "order_add_mul",
+        "order_mul_sub",
+        "order_parentheses"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g3|hard|word_problems": {
+      "kinds": [
+        "wp_change_stack",
+        "wp_comparison_more",
+        "wp_groups_g3",
+        "wp_leftover",
+        "wp_part_whole",
+        "wp_time_sum"
+      ],
+      "kindCount": 6,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|addition": {
+      "kinds": [
+        "add_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|multiplication": {
+      "kinds": [
+        "mul",
+        "mul_vertical"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|division": {
+      "kinds": [
+        "div",
+        "div_long"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|fractions": {
+      "kinds": [
+        "frac_same_den_g4"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|rounding": {
+      "kinds": [
+        "round"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|divisibility": {
+      "kinds": [
+        "divisibility"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|prime_composite": {
+      "kinds": [
+        "prime_composite"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|powers": {
+      "kinds": [
+        "power_base",
+        "power_calc"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|zero_one_properties": {
+      "kinds": [
+        "one_mul",
+        "zero_add",
+        "zero_mul",
+        "zero_sub"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|factors_multiples": {
+      "kinds": [
+        "fm_factor",
+        "fm_gcd",
+        "fm_multiple"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|easy|estimation": {
+      "kinds": [
+        "est_add",
+        "est_mul",
+        "est_quantity"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|addition": {
+      "kinds": [
+        "add_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|fractions": {
+      "kinds": [
+        "frac_same_den_g4"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|rounding": {
+      "kinds": [
+        "round"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|divisibility": {
+      "kinds": [
+        "divisibility"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|prime_composite": {
+      "kinds": [
+        "prime_composite"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|powers": {
+      "kinds": [
+        "power_base",
+        "power_calc"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|zero_one_properties": {
+      "kinds": [
+        "one_mul",
+        "zero_add",
+        "zero_mul",
+        "zero_sub"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|factors_multiples": {
+      "kinds": [
+        "fm_factor",
+        "fm_gcd",
+        "fm_multiple"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|medium|estimation": {
+      "kinds": [
+        "est_add",
+        "est_mul",
+        "est_quantity"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|addition": {
+      "kinds": [
+        "add_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|fractions": {
+      "kinds": [
+        "frac_same_den_g4"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|rounding": {
+      "kinds": [
+        "round"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|divisibility": {
+      "kinds": [
+        "divisibility"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|prime_composite": {
+      "kinds": [
+        "prime_composite"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|powers": {
+      "kinds": [
+        "power_base",
+        "power_calc"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|zero_one_properties": {
+      "kinds": [
+        "one_mul",
+        "zero_add",
+        "zero_mul",
+        "zero_sub"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|number_sense": {
+      "kinds": [
+        "ns_complement10",
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|factors_multiples": {
+      "kinds": [
+        "fm_factor",
+        "fm_gcd",
+        "fm_multiple"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g4|hard|estimation": {
+      "kinds": [
+        "est_add",
+        "est_mul",
+        "est_quantity"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|addition": {
+      "kinds": [
+        "add_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|fractions": {
+      "kinds": [
+        "frac_add_sub",
+        "frac_expand",
+        "frac_reduce",
+        "frac_to_mixed",
+        "mixed_to_frac"
+      ],
+      "kindCount": 5,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|percentages": {
+      "kinds": [
+        "perc_discount",
+        "perc_part_of"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|rounding": {
+      "kinds": [
+        "round"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_div",
+        "eq_mul",
+        "eq_sub"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|number_sense": {
+      "kinds": [
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|factors_multiples": {
+      "kinds": [
+        "fm_factor",
+        "fm_gcd",
+        "fm_multiple"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|word_problems": {
+      "kinds": [
+        "wp_average",
+        "wp_distance_time",
+        "wp_groups_late",
+        "wp_leftover",
+        "wp_multi_step",
+        "wp_shop_discount",
+        "wp_time_sum",
+        "wp_unit_cm_to_m",
+        "wp_unit_g_to_kg"
+      ],
+      "kindCount": 9,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|easy|estimation": {
+      "kinds": [
+        "est_add",
+        "est_mul",
+        "est_quantity"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|addition": {
+      "kinds": [
+        "add_three",
+        "add_two"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|division": {
+      "kinds": [
+        "div",
+        "div_two_digit"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|fractions": {
+      "kinds": [
+        "frac_add_sub",
+        "frac_expand",
+        "frac_reduce",
+        "frac_to_mixed",
+        "mixed_to_frac"
+      ],
+      "kindCount": 5,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|percentages": {
+      "kinds": [
+        "perc_discount",
+        "perc_part_of"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|rounding": {
+      "kinds": [
+        "round"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_div",
+        "eq_mul",
+        "eq_sub"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|number_sense": {
+      "kinds": [
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|factors_multiples": {
+      "kinds": [
+        "fm_factor",
+        "fm_gcd",
+        "fm_multiple"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|word_problems": {
+      "kinds": [
+        "wp_average",
+        "wp_distance_time",
+        "wp_groups_late",
+        "wp_leftover",
+        "wp_multi_step",
+        "wp_shop_discount",
+        "wp_time_sum",
+        "wp_unit_cm_to_m",
+        "wp_unit_g_to_kg"
+      ],
+      "kindCount": 9,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|medium|estimation": {
+      "kinds": [
+        "est_add",
+        "est_mul",
+        "est_quantity"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|addition": {
+      "kinds": [
+        "add_three",
+        "add_two"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|fractions": {
+      "kinds": [
+        "frac_add_sub",
+        "frac_expand",
+        "frac_reduce",
+        "frac_to_mixed",
+        "mixed_to_frac"
+      ],
+      "kindCount": 5,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|percentages": {
+      "kinds": [
+        "perc_discount",
+        "perc_part_of"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|rounding": {
+      "kinds": [
+        "round"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_div",
+        "eq_mul",
+        "eq_sub"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|number_sense": {
+      "kinds": [
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|factors_multiples": {
+      "kinds": [
+        "fm_factor",
+        "fm_gcd",
+        "fm_multiple"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|word_problems": {
+      "kinds": [
+        "wp_average",
+        "wp_distance_time",
+        "wp_groups_late",
+        "wp_leftover",
+        "wp_multi_step",
+        "wp_shop_discount",
+        "wp_time_sum",
+        "wp_unit_cm_to_m",
+        "wp_unit_g_to_kg"
+      ],
+      "kindCount": 9,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g5|hard|estimation": {
+      "kinds": [
+        "est_add",
+        "est_mul",
+        "est_quantity"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|addition": {
+      "kinds": [
+        "add_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|fractions": {
+      "kinds": [
+        "frac_as_division",
+        "frac_divide",
+        "frac_multiply"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|percentages": {
+      "kinds": [
+        "perc_discount",
+        "perc_part_of"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|ratio": {
+      "kinds": [
+        "ratio_find",
+        "ratio_first",
+        "ratio_second"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_divide_10_100",
+        "dec_multiply",
+        "dec_multiply_10_100",
+        "dec_repeating",
+        "dec_sub"
+      ],
+      "kindCount": 6,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|rounding": {
+      "kinds": [
+        "round"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_div",
+        "eq_mul",
+        "eq_sub"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|number_sense": {
+      "kinds": [
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|factors_multiples": {
+      "kinds": [
+        "fm_factor",
+        "fm_gcd",
+        "fm_multiple"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|word_problems": {
+      "kinds": [
+        "wp_average_g6",
+        "wp_distance_time",
+        "wp_groups_late_g6",
+        "wp_leftover",
+        "wp_multi_step_g6",
+        "wp_shop_discount",
+        "wp_time_sum",
+        "wp_unit_cm_to_m",
+        "wp_unit_g_to_kg"
+      ],
+      "kindCount": 9,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|easy|scale": {
+      "kinds": [
+        "scale_find",
+        "scale_map_to_real",
+        "scale_real_to_map"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|addition": {
+      "kinds": [
+        "add_three",
+        "add_two"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|fractions": {
+      "kinds": [
+        "frac_as_division",
+        "frac_divide",
+        "frac_multiply"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|percentages": {
+      "kinds": [
+        "perc_discount",
+        "perc_part_of"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|ratio": {
+      "kinds": [
+        "ratio_find",
+        "ratio_first",
+        "ratio_second"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_sub"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|rounding": {
+      "kinds": [
+        "round"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_div",
+        "eq_mul",
+        "eq_sub"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|number_sense": {
+      "kinds": [
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|factors_multiples": {
+      "kinds": [
+        "fm_factor",
+        "fm_gcd",
+        "fm_multiple"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|word_problems": {
+      "kinds": [
+        "wp_average_g6",
+        "wp_distance_time",
+        "wp_groups_late_g6",
+        "wp_leftover",
+        "wp_multi_step_g6",
+        "wp_shop_discount",
+        "wp_time_sum",
+        "wp_unit_cm_to_m",
+        "wp_unit_g_to_kg"
+      ],
+      "kindCount": 9,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|medium|scale": {
+      "kinds": [
+        "scale_find",
+        "scale_map_to_real",
+        "scale_real_to_map"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|addition": {
+      "kinds": [
+        "add_three",
+        "add_two"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|subtraction": {
+      "kinds": [
+        "sub_two"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|multiplication": {
+      "kinds": [
+        "mul"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|division": {
+      "kinds": [
+        "div"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|division_with_remainder": {
+      "kinds": [
+        "div",
+        "div_with_remainder"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|fractions": {
+      "kinds": [
+        "frac_as_division",
+        "frac_divide",
+        "frac_multiply"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|percentages": {
+      "kinds": [
+        "perc_discount",
+        "perc_part_of"
+      ],
+      "kindCount": 2,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|ratio": {
+      "kinds": [
+        "ratio_find",
+        "ratio_first",
+        "ratio_second"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|sequences": {
+      "kinds": [
+        "sequence"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|decimals": {
+      "kinds": [
+        "dec_add",
+        "dec_divide_10_100",
+        "dec_multiply",
+        "dec_multiply_10_100",
+        "dec_repeating",
+        "dec_sub"
+      ],
+      "kindCount": 6,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|rounding": {
+      "kinds": [
+        "round"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_div",
+        "eq_mul",
+        "eq_sub"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|compare": {
+      "kinds": [
+        "cmp"
+      ],
+      "kindCount": 1,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|number_sense": {
+      "kinds": [
+        "ns_complement100",
+        "ns_neighbors",
+        "ns_place_hundreds"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|factors_multiples": {
+      "kinds": [
+        "fm_factor",
+        "fm_gcd",
+        "fm_multiple"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|word_problems": {
+      "kinds": [
+        "wp_average_g6",
+        "wp_distance_time",
+        "wp_groups_late_g6",
+        "wp_leftover",
+        "wp_multi_step_g6",
+        "wp_shop_discount",
+        "wp_time_sum",
+        "wp_unit_cm_to_m",
+        "wp_unit_g_to_kg"
+      ],
+      "kindCount": 9,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g6|hard|scale": {
+      "kinds": [
+        "scale_find",
+        "scale_map_to_real",
+        "scale_real_to_map"
+      ],
+      "kindCount": 3,
+      "errors": 0,
+      "seeds": 128
+    },
+    "__forced__|dec_divide": {
+      "kinds": [
+        "dec_divide"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|dec_repeating": {
+      "kinds": [
+        "dec_repeating"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|div_two_digit": {
+      "kinds": [
+        "div_two_digit"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|eq_add_simple": {
+      "kinds": [
+        "eq_add_simple"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|eq_sub_simple": {
+      "kinds": [
+        "eq_sub_simple"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|frac_half": {
+      "kinds": [
+        "frac_half"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|frac_half_reverse": {
+      "kinds": [
+        "frac_half_reverse"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|frac_quarter": {
+      "kinds": [
+        "frac_quarter"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|frac_quarter_reverse": {
+      "kinds": [
+        "frac_quarter_reverse"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|mul_hundreds": {
+      "kinds": [
+        "mul_hundreds"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|mul_tens": {
+      "kinds": [
+        "mul_tens"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|wp_comparison_more": {
+      "kinds": [
+        "wp_comparison_more"
+      ],
+      "kindCount": 1,
+      "forced": true
+    }
+  }
+}

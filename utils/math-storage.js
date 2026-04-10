@@ -56,7 +56,12 @@ export function getLevelConfig(grade, levelKey) {
       delete result[op];
     }
   });
-  
+
+  // שדות שהגנרטור בודק ברמת השורש (לא רק תחת decimals)
+  if (result.decimals?.repeatingDecimals) {
+    result.repeatingDecimals = true;
+  }
+
   return result;
 }
 

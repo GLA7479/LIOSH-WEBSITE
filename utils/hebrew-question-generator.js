@@ -1,5 +1,6 @@
 import { GRADES, BLANK, TOPICS, GRADE_LEVELS } from './hebrew-constants';
 import { filterRichHebrewPool } from './hebrew-rich-question-bank';
+import { inferHebrewLegacyMeta } from './hebrew-legacy-metadata';
 
 // ========== מאגר שאלות לפי כיתה ורמה ==========
 // הקובץ כולל מאות שאלות מותאמות לכל כיתה (א'-ו'), רמה (קל/בינוני/קשה) ונושא
@@ -213,10 +214,10 @@ const G2_EASY_QUESTIONS = {
   ],
   comprehension: [
     { question: "מה המשמעות של 'ילד קורא ספר בכיתה'?", answers: ["ילד קורא ספר בכיתה", "ילד כותב בכיתה", "ילד משחק בכיתה", "ילד אוכל בכיתה"], correct: 0 },
-    { question: "מה ההפך של 'גדול'?", answers: ["קטן", "צבעוני", "יפה", "חכם"], correct: 0 },
+    { question: "בכיתה ב׳: ניגוד (הפוך במשמעות) ל׳גדול׳ — איזו מילה מתאימה?", answers: ["קטן", "צבעוני", "יפה", "חכם"], correct: 0 },
     { question: "מה המשמעות של 'שמש זורחת בבוקר'?", answers: ["השמש זורחת בבוקר", "השמש שוקעת בערב", "לילה", "צהריים"], correct: 0 },
     { question: "מה המשמעות של 'ילדים משחקים בחצר'?", answers: ["ילדים משחקים בחצר", "ילדים קוראים בחצר", "ילדים כותבים בחצר", "ילדים אוכלים בחצר"], correct: 0 },
-    { question: "מה ההפך של 'שמח'?", answers: ["עצוב", "שמח", "יפה", "גדול"], correct: 0 },
+    { question: "כיתה ב׳: אם מישהו לא ׳שמח׳ אלא במצב רגשי הפוך — איך קוראים לזה?", answers: ["עצוב", "שמח", "יפה", "גדול"], correct: 0 },
   ],
   writing: [
     { question: "איזה משפט נכון?", answers: ["הילדים קוראים ספר", "הילדים קורא ספר", "הילד קוראים ספר", "הילדה קוראים ספר"], correct: 0 },
@@ -226,8 +227,8 @@ const G2_EASY_QUESTIONS = {
     { question: "איך כותבים את המילה 'מחברת'?", answers: ["מחברת", "מחברתת", "מחברתי", "מחברתא"], correct: 0 },
   ],
   grammar: [
-    { question: "מה חלק הדיבר של המילה 'קורא'?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0 },
-    { question: "מה חלק הדיבר של המילה 'יפה'?", answers: ["תואר", "שם עצם", "פועל", "מספר"], correct: 0 },
+    { question: "במשפט ׳הילד קורא ספר׳ (כיתה ב׳) — מה חלק הדיבר של ׳קורא׳?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0 },
+    { question: "במשפט ׳הפרח יפה מאוד׳ — מה חלק הדיבר של ׳יפה׳?", answers: ["תואר", "שם עצם", "פועל", "מספר"], correct: 0 },
     { question: "איזה משפט נכון?", answers: ["הילדים קוראים", "הילדים קורא", "הילד קוראים", "הילדה קוראים"], correct: 0 },
     { question: "מה חלק הדיבר של המילה 'כיתה'?", answers: ["שם עצם", "פועל", "תואר", "מספר"], correct: 0 },
   ],
@@ -638,7 +639,7 @@ const G6_HARD_QUESTIONS = {
   ],
 };
 
-function finalizeHebrewMcq(raw, selectedTopic, levelKey) {
+function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
   const q = {
     question: raw.question,
     answers: Array.isArray(raw.answers) ? [...raw.answers] : [],
@@ -650,7 +651,41 @@ function finalizeHebrewMcq(raw, selectedTopic, levelKey) {
     binary: raw.binary,
     difficultyBand: raw.difficultyBand || levelKey,
   };
-  const stem = String(q.question || "").trim();
+  let stem = String(q.question || "").trim();
+  if (gradeKey && /^איזה משפט נכון\?$/i.test(stem)) {
+    const g = parseInt(String(gradeKey).replace(/\D/g, ""), 10);
+    if (g >= 1 && g <= 6) {
+      const heb = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][g - 1];
+      q.question = `בהתאם לכיתה ${heb}: ${stem}`;
+      stem = String(q.question || "").trim();
+      if (!q.patternFamily || q.patternFamily === "grammar_correct_sentence") {
+        q.patternFamily = "grammar_correct_sentence_scoped";
+      }
+    }
+  }
+  const gNumScope = parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
+  if (
+    gNumScope >= 1 &&
+    gNumScope <= 2 &&
+    ["comprehension", "vocabulary", "grammar", "speaking"].includes(
+      selectedTopic
+    ) &&
+    !/^\(כיתה|בהתאם לכיתה/.test(String(q.question || "").trim())
+  ) {
+    const heb = gNumScope === 1 ? "א׳" : "ב׳";
+    q.question = `(כיתה ${heb}) ${q.question}`;
+    stem = String(q.question || "").trim();
+  }
+  if (
+    gNumScope >= 3 &&
+    gNumScope <= 4 &&
+    ["vocabulary", "speaking"].includes(selectedTopic) &&
+    !/^\(כיתה|בהתאם לכיתה/.test(String(q.question || "").trim())
+  ) {
+    const heb = gNumScope === 3 ? "ג׳" : "ד׳";
+    q.question = `(כיתה ${heb}) ${q.question}`;
+    stem = String(q.question || "").trim();
+  }
   const binaryStem =
     q.binary === true ||
     q.optionCount === 2 ||
@@ -673,15 +708,27 @@ function finalizeHebrewMcq(raw, selectedTopic, levelKey) {
       q.optionCount = 2;
     }
   }
-  if (!q.patternFamily) {
-    if (/קראו:|קרא את/i.test(stem)) q.patternFamily = "reading_passage_style";
-    else if (/השלימו|השלם|השלם את/i.test(stem)) q.patternFamily = "completion";
-    else if (/איזה משפט נכון/i.test(stem))
-      q.patternFamily = "grammar_correct_sentence";
-    else q.patternFamily = `${selectedTopic}_pool`;
+  const inferred = inferHebrewLegacyMeta(
+    selectedTopic,
+    raw.question,
+    levelKey,
+    gradeKey
+  );
+  if (!raw.patternFamily) {
+    q.patternFamily = inferred.patternFamily;
   }
-  if (!q.subtype) q.subtype = "general";
+  if (!raw.subtype || raw.subtype === "general") {
+    q.subtype = inferred.subtype;
+  }
   if (!q.distractorFamily) q.distractorFamily = "mixed";
+  q.hebrewLegacyMeta = {
+    answerMode: inferred.answerMode,
+    allowedLevels: inferred.allowedLevels,
+    minGrade: inferred.minGrade,
+    maxGrade: inferred.maxGrade,
+    allowedGrades: inferred.allowedGrades,
+    inferredDifficultyBand: inferred.difficultyBand,
+  };
   return q;
 }
 
@@ -751,7 +798,14 @@ function pickWeightedHebrewItem(merged, levelKey, selectedTopic, gradeKey) {
 function mergeTopicPools(gradeKey, levelKey, topic, legacyList) {
   const richRows = filterRichHebrewPool(gradeKey, levelKey, topic);
   const fromRich = richRows.map(
-    ({ grades: _g, gradeBand: _gb, levels: _l, topic: _tp, ...rest }) => ({
+    ({
+      grades: _g,
+      gradeBand: _gb,
+      allowedLevels: _al,
+      levels: _l,
+      topic: _tp,
+      ...rest
+    }) => ({
       ...rest,
       _fromRich: true,
     })
@@ -759,6 +813,28 @@ function mergeTopicPools(gradeKey, levelKey, topic, legacyList) {
   const base = Array.isArray(legacyList) ? [...legacyList] : [];
   return base.concat(fromRich);
 }
+
+/** צילום מאגרי legacy לסקריפט אודיט — `scripts/audit-question-banks.mjs` */
+export const HEBREW_LEGACY_QUESTIONS_SNAPSHOT = {
+  G1_EASY_QUESTIONS,
+  G1_MEDIUM_QUESTIONS,
+  G1_HARD_QUESTIONS,
+  G2_EASY_QUESTIONS,
+  G2_MEDIUM_QUESTIONS,
+  G2_HARD_QUESTIONS,
+  G3_EASY_QUESTIONS,
+  G3_MEDIUM_QUESTIONS,
+  G3_HARD_QUESTIONS,
+  G4_EASY_QUESTIONS,
+  G4_MEDIUM_QUESTIONS,
+  G4_HARD_QUESTIONS,
+  G5_EASY_QUESTIONS,
+  G5_MEDIUM_QUESTIONS,
+  G5_HARD_QUESTIONS,
+  G6_EASY_QUESTIONS,
+  G6_MEDIUM_QUESTIONS,
+  G6_HARD_QUESTIONS,
+};
 
 // ========== פונקציה לקבלת שאלות לפי כיתה ורמה ==========
 function getQuestionsForGradeAndLevel(gradeKey, levelKey, topic) {
@@ -826,12 +902,25 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
 
   // קבלת שאלות מהמאגר המתאים + בנק עשיר מובנה
   const topicQuestions = getQuestionsForGradeAndLevel(gradeKey, levelKey, selectedTopic);
-  const topicQuestionsMerged = mergeTopicPools(
+  let topicQuestionsMerged = mergeTopicPools(
     gradeKey,
     levelKey,
     selectedTopic,
     topicQuestions
   );
+  let poolLevelKey = levelKey;
+  if (!topicQuestionsMerged.length) {
+    for (const alt of ["easy", "medium", "hard"]) {
+      if (alt === levelKey) continue;
+      const legAlt = getQuestionsForGradeAndLevel(gradeKey, alt, selectedTopic);
+      const mergedAlt = mergeTopicPools(gradeKey, alt, selectedTopic, legAlt);
+      if (mergedAlt.length) {
+        topicQuestionsMerged = mergedAlt;
+        poolLevelKey = alt;
+        break;
+      }
+    }
+  }
 
   const HEBREW_NIQQUD_RE = /[\u0591-\u05C7]/g;
   const SURROUNDING_PUNCT_RE = /^[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+|[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+$/g;
@@ -885,21 +974,27 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   };
 
   if (!topicQuestionsMerged || topicQuestionsMerged.length === 0) {
-    let fallbackQuestions = getQuestionsForGradeAndLevel(
-      gradeKey,
+    const levelTryOrder = [
       levelKey,
-      selectedTopic
-    );
-    let fallbackTopic = selectedTopic;
-    if (!fallbackQuestions.length && selectedTopic !== "reading") {
-      fallbackQuestions = getQuestionsForGradeAndLevel(
-        gradeKey,
-        levelKey,
-        "reading"
-      );
-      fallbackTopic = "reading";
+      ...["easy", "medium", "hard"].filter((x) => x !== levelKey),
+    ];
+    const tryMergedForTopic = (top) => {
+      for (const lv of levelTryOrder) {
+        const m = mergeTopicPools(
+          gradeKey,
+          lv,
+          top,
+          getQuestionsForGradeAndLevel(gradeKey, lv, top)
+        );
+        if (m.length) return { merged: m, lv, topic: top };
+      }
+      return null;
+    };
+    let got = tryMergedForTopic(selectedTopic);
+    if (!got && selectedTopic !== "reading") {
+      got = tryMergedForTopic("reading");
     }
-    if (!fallbackQuestions.length) {
+    if (!got) {
       if (typeof console !== "undefined" && console.warn) {
         console.warn("[hebrew] empty merged pool and no legacy for grade", {
           gradeKey,
@@ -933,9 +1028,20 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
         },
       };
     }
-    const rawPick =
-      fallbackQuestions[Math.floor(Math.random() * fallbackQuestions.length)];
-    const randomQ = finalizeHebrewMcq(rawPick, fallbackTopic, levelKey);
+    const fallbackTopic = got.topic;
+    const fallbackLevelKey = got.lv;
+    const rawPick = pickWeightedHebrewItem(
+      got.merged,
+      fallbackLevelKey,
+      fallbackTopic,
+      gradeKey
+    );
+    const randomQ = finalizeHebrewMcq(
+      rawPick,
+      fallbackTopic,
+      fallbackLevelKey,
+      gradeKey
+    );
 
     // ערבוב התשובות - Fisher-Yates shuffle
     const shuffledAnswers = [...randomQ.answers];
@@ -969,25 +1075,37 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
         kind: fallbackTopic,
         grade: gradeKey,
         gradeKey: gradeKey,
-        levelKey: levelKey,
+        levelKey: fallbackLevelKey,
         patternFamily: randomQ.patternFamily,
         subtype: randomQ.subtype,
         distractorFamily: randomQ.distractorFamily,
         difficultyBand: randomQ.difficultyBand,
         optionCount,
         answerMode,
-        gradeFallbackFromTopic: selectedTopic,
+        requestedLevelKey: levelKey,
+        ...(randomQ.hebrewLegacyMeta
+          ? { hebrewLegacyMeta: randomQ.hebrewLegacyMeta }
+          : {}),
+        ...(fallbackTopic !== selectedTopic
+          ? { gradeFallbackFromTopic: selectedTopic }
+          : {}),
+        ...(fallbackLevelKey !== levelKey ? { levelRelaxedFrom: levelKey } : {}),
       },
     };
   }
 
   const rawPick = pickWeightedHebrewItem(
     topicQuestionsMerged,
-    levelKey,
+    poolLevelKey,
     selectedTopic,
     gradeKey
   );
-  const randomQ = finalizeHebrewMcq(rawPick, selectedTopic, levelKey);
+  const randomQ = finalizeHebrewMcq(
+    rawPick,
+    selectedTopic,
+    poolLevelKey,
+    gradeKey
+  );
 
   // ערבוב התשובות - Fisher-Yates shuffle
   const shuffledAnswers = [...randomQ.answers];
@@ -1021,13 +1139,17 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
       kind: selectedTopic,
       grade: gradeKey,
       gradeKey: gradeKey,
-      levelKey: levelKey,
+      levelKey: poolLevelKey,
       patternFamily: randomQ.patternFamily,
       subtype: randomQ.subtype,
       distractorFamily: randomQ.distractorFamily,
       difficultyBand: randomQ.difficultyBand,
       optionCount,
       answerMode,
+      ...(randomQ.hebrewLegacyMeta
+        ? { hebrewLegacyMeta: randomQ.hebrewLegacyMeta }
+        : {}),
+      ...(poolLevelKey !== levelKey ? { levelRelaxedFrom: levelKey } : {}),
     },
   };
 }

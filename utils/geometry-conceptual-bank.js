@@ -110,7 +110,8 @@ export function geometryConceptualProbability(gradeKey, topic) {
   return map[topic] ?? map.default ?? 0;
 }
 
-const GEOMETRY_CONCEPTUAL_ITEMS = [
+/** ייצוא לסקריפט אודיט (`scripts/audit-question-banks.mjs`) */
+export const GEOMETRY_CONCEPTUAL_ITEMS = [
   // ——— שטח / היקף — בלבול מדדים והבנה ———
   {
     gradeBand: "mid",

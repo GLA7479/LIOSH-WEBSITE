@@ -376,11 +376,17 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     };
   }
   
-  const shape =
+  const geoForce =
+    typeof globalThis !== "undefined" ? globalThis.__LIOSH_GEOMETRY_FORCE : null;
+
+  let shape =
     availableShapes.length > 0
       ? availableShapes[Math.floor(Math.random() * availableShapes.length)]
       : null;
-  
+  if (geoForce?.shape && availableShapes.includes(geoForce.shape)) {
+    shape = geoForce.shape;
+  }
+
   if (!shape) {
     console.warn(`Failed to select shape from available shapes:`, availableShapes);
     return {
@@ -398,9 +404,20 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
         ? "medium"
         : "easy";
 
+  const skipConceptual =
+    typeof globalThis !== "undefined" &&
+    globalThis.__LIOSH_SKIP_GEOMETRY_CONCEPTUAL === true;
+  const forceConceptual =
+    typeof globalThis !== "undefined" &&
+    globalThis.__LIOSH_GEOMETRY_FORCE_CONCEPTUAL === true;
+  const conceptualP = forceConceptual
+    ? 1
+    : geometryConceptualProbability(gradeKey, selectedTopic);
+
   if (
+    !skipConceptual &&
     selectedTopic !== "mixed" &&
-    Math.random() < geometryConceptualProbability(gradeKey, selectedTopic)
+    Math.random() < conceptualP
   ) {
     const conceptual = pickGeometryConceptualQuestion({
       gradeKey,
@@ -445,9 +462,21 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           if (useStory) {
             question = `לליאו יש גינה בצורת ריבוע, אורך כל צלע הוא ${side} מטר. כמה מטרים רבועים שטח הגינה?`;
           } else if (formulaBand === "early") {
-            question = `ריבוע: אורך כל צלע ${side}. כמה יחידות שטח? (חשבו: צלע × צלע)`;
+            if (levelKey === "easy") {
+              question = `ריבוע קטן: כל צלע ${side}. כמה יחידות שטח? (רמז: צלע × צלע)`;
+            } else if (levelKey === "medium") {
+              question = `ריבוע: אורך כל צלע ${side}. כמה יחידות שטח? (חשבו: צלע × צלע)`;
+            } else {
+              question = `אתגר שטח — ריבוע צלע ${side}. כמה יחידות שטח?`;
+            }
           } else if (formulaBand === "mid") {
-            question = `מה השטח של ריבוע עם צלע ${side}?`;
+            if (levelKey === "easy") {
+              question = `ריבוע עם צלע ${side}: חשבו שטח (כפל צלע בעצמה). מה התוצאה?`;
+            } else if (levelKey === "medium") {
+              question = `מה השטח של ריבוע עם צלע ${side}?`;
+            } else {
+              question = `אתגר — שטח ריבוע במישור: צלע ${side}, ללא הנחיות נוספות. מה השטח?`;
+            }
           } else {
             question = `חישוב שטח ריבוע במישור: צלע ${side}. מה השטח?`;
           }
@@ -469,9 +498,21 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           if (useStory) {
             question = `רצפת חדר של ליאו היא מלבן באורך ${length} מטר וברוחב ${width} מטר. מה שטח הרצפה במטרים רבועים?`;
           } else if (formulaBand === "early") {
-            question = `מלבן: אורך ${length}, רוחב ${width}. כמה יחידות שטח? (אורך × רוחב)`;
+            if (levelKey === "easy") {
+              question = `מלבן פשוט: אורך ${length}, רוחב ${width}. כמה יחידות שטח? (רמז: אורך × רוחב)`;
+            } else if (levelKey === "medium") {
+              question = `מלבן: אורך ${length}, רוחב ${width}. כמה יחידות שטח? (אורך × רוחב)`;
+            } else {
+              question = `אתגר שטח — מלבן ${length}×${width}. כמה יחידות שטח?`;
+            }
           } else if (formulaBand === "mid") {
-            question = `מה השטח של מלבן עם אורך ${length} ורוחב ${width}?`;
+            if (levelKey === "easy") {
+              question = `מלבן אורך ${length}, רוחב ${width}: שטח = אורך×רוחב. מה התוצאה?`;
+            } else if (levelKey === "medium") {
+              question = `מה השטח של מלבן עם אורך ${length} ורוחב ${width}?`;
+            } else {
+              question = `אתגר שטח — מלבן ${length}×${width}. מה השטח?`;
+            }
           } else {
             question = `שטח מלבן: אורך ${length}, רוחב ${width}. מה התוצאה?`;
           }
@@ -495,7 +536,13 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           } else if (formulaBand === "early") {
             question = `משולש: בסיס ${base}, גובה ${height}. שטח ≈ חצי מ־(בסיס × גובה). כמה?`;
           } else if (formulaBand === "mid") {
-            question = `מה השטח של משולש עם בסיס ${base} וגובה ${height}?`;
+            if (levelKey === "easy") {
+              question = `משולש בסיס ${base}, גובה ${height}: שטח = חצי×בסיס×גובה. מה התוצאה?`;
+            } else if (levelKey === "medium") {
+              question = `מה השטח של משולש עם בסיס ${base} וגובה ${height}?`;
+            } else {
+              question = `אתגר שטח משולש — בסיס ${base}, גובה ${height}. מה השטח?`;
+            }
           } else {
             question = `חישוב שטח משולש: בסיס ${base}, גובה ${height}. מה השטח?`;
           }
@@ -507,7 +554,15 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const height = Math.floor(Math.random() * level.maxSide) + 1;
           params = { base, height, kind: "parallelogram_area" };
           correctAnswer = round(base * height);
-          question = `מה השטח של מקבילית עם בסיס ${base} וגובה ${height}?`;
+          if (formulaBand === "late") {
+            question = `מקבילית במישור: בסיס ${base}, גובה לבסיס ${height}. מה השטח?`;
+          } else if (levelKey === "easy") {
+            question = `מקבילית: בסיס ${base}, גובה ${height}. שטח = בסיס×גובה. מה התוצאה?`;
+          } else if (levelKey === "medium") {
+            question = `מה השטח של מקבילית עם בסיס ${base} וגובה ${height}?`;
+          } else {
+            question = `אתגר — מקבילית בסיס ${base}, גובה ${height}. מה השטח?`;
+          }
           break;
         }
 
@@ -517,7 +572,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const height = Math.floor(Math.random() * level.maxSide) + 1;
           params = { base1, base2, height, kind: "trapezoid_area" };
           correctAnswer = round(((base1 + base2) * height) / 2);
-          question = `מה השטח של טרפז עם בסיסים ${base1} ו-${base2} וגובה ${height}?`;
+          question =
+            formulaBand === "late"
+              ? `טרפז: בסיסים ${base1} ו-${base2}, גובה ${height}. מה השטח? (ממוצע הבסיסים × גובה)`
+              : `מה השטח של טרפז עם בסיסים ${base1} ו-${base2} וגובה ${height}?`;
           break;
         }
 
@@ -535,7 +593,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           if (useStory) {
             question = `מגרש משחקים עגול בעל רדיוס ${radius} מטר. מה שטח המגרש? (π = 3.14)`;
           } else if (formulaBand === "late") {
-            question = `עיגול ברדיוס ${radius}: מה השטח? (π = 3.14)`;
+            question =
+              gradeKey === "g6"
+                ? `דיסק במישור, רדיוס ${radius}. מה השטח? (π = 3.14)`
+                : `עיגול ברדיוס ${radius}: מה השטח? (π = 3.14)`;
           } else {
             question = `מה השטח של עיגול עם רדיוס ${radius}? (π = 3.14)`;
           }
@@ -609,7 +670,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const side3 = Math.floor(Math.random() * level.maxSide) + 1;
           params = { side1, side2, side3, kind: "triangle_perimeter" };
           correctAnswer = round(side1 + side2 + side3);
-          question = `מה ההיקף של משולש עם צלעות ${side1}, ${side2}, ${side3}?`;
+          question =
+            formulaBand === "late"
+              ? `היקף משולש במישור: צלעות ${side1}, ${side2}, ${side3}. מה סכום צלעות המעטפת?`
+              : `מה ההיקף של משולש עם צלעות ${side1}, ${side2}, ${side3}?`;
           break;
         }
 
@@ -623,6 +687,8 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
           if (useStory) {
             question = `שביל הליכה מקיף אגם עגול בעל רדיוס ${radius} מטר. כמה מטרים אורך השביל? (π = 3.14)`;
+          } else if (formulaBand === "late") {
+            question = `מעגל ברדיוס ${radius}: מה אורך המעטפת (היקף)? (π = 3.14)`;
           } else {
             question = `מה ההיקף של עיגול עם רדיוס ${radius}? (π = 3.14)`;
           }
@@ -633,7 +699,12 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const side = Math.floor(Math.random() * level.maxSide) + 1;
           params = { side, kind: "square_perimeter" };
           correctAnswer = round(side * 4);
-          question = `מה ההיקף של ריבוע עם צלע ${side}?`;
+          question =
+            formulaBand === "early"
+              ? `ריבוע: צלע ${side}. מה ההיקף?`
+              : formulaBand === "mid"
+                ? `מה ההיקף של ריבוע עם צלע ${side}?`
+                : `היקף ריבוע: צלע ${side}. מה התוצאה?`;
         }
       }
       break;
@@ -655,7 +726,13 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           } else if (formulaBand === "early") {
             question = `קובייה: צלע ${side}. נפח = צלע × צלע × צלע. כמה?`;
           } else if (formulaBand === "mid") {
-            question = `מה הנפח של קובייה עם צלע ${side}?`;
+            if (levelKey === "easy") {
+              question = `קובייה צלע ${side}: נפח = צלע³. מה הנפח?`;
+            } else if (levelKey === "medium") {
+              question = `מה הנפח של קובייה עם צלע ${side}?`;
+            } else {
+              question = `נפח קובייה במרחב — צלע ${side}. מה הנפח?`;
+            }
           } else {
             question = `נפח קובייה: צלע ${side}. מה הנפח?`;
           }
@@ -681,6 +758,18 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
           if (useStory) {
             question = `ליאו אורז צעצועים בקופסת קרטון בצורת תיבה באורך ${length} ס"מ, רוחב ${width} ס"מ וגובה ${height} ס"מ. מה נפח הקופסה בס"מ מעוקב?`;
+          } else if (formulaBand === "late") {
+            if (levelKey === "easy") {
+              question = `תיבה ${length}×${width}×${height}: נפח = אורך×רוחב×גובה. מה הנפח?`;
+            } else if (levelKey === "medium") {
+              question = `תיבה מלבנית: ${length} × ${width} × ${height}. מה הנפח?`;
+            } else {
+              question = `אתגר נפח — תיבה ממדים ${length}×${width}×${height} (יחידות עקביות). מה הנפח?`;
+            }
+          } else if (gradeKey === "g4") {
+            question = `כיתה ד׳ — תיבה ממדים ${length}×${width}×${height} ס"מ. מה הנפח במעוקב?`;
+          } else if (gradeKey === "g5") {
+            question = `תיבה מלבנית במדידה ${length}×${width}×${height}: חשבו נפח (ס"מ מעוקב).`;
           } else {
             question = `מה הנפח של תיבה עם אורך ${length}, רוחב ${width} וגובה ${height}?`;
           }
@@ -694,7 +783,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
             Math.floor(Math.random() * level.maxSide) + 1;
           params = { radius, height, kind: "cylinder_volume" };
           correctAnswer = round(PI * radius * radius * height);
-          question = `מה הנפח של גליל עם רדיוס ${radius} וגובה ${height}? (π = 3.14)`;
+          question =
+            gradeKey === "g6"
+              ? `גליל: רדיוס ${radius}, גובה ${height}. מה הנפח? (π = 3.14)`
+              : `מה הנפח של גליל עם רדיוס ${radius} וגובה ${height}? (π = 3.14)`;
           break;
         }
 
@@ -703,7 +795,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
             Math.floor(Math.random() * (level.maxSide / 3)) + 1;
           params = { radius, kind: "sphere_volume" };
           correctAnswer = round((4 / 3) * PI * radius * radius * radius);
-          question = `מה הנפח של כדור עם רדיוס ${radius}? (π = 3.14)`;
+          question =
+            gradeKey === "g6"
+              ? `כדור במרחב, רדיוס ${radius}. מה הנפח? (π = 3.14)`
+              : `מה הנפח של כדור עם רדיוס ${radius}? (π = 3.14)`;
           break;
         }
 
@@ -718,13 +813,19 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
             const baseArea = baseSide * baseSide;
             params = { baseSide, height, baseArea, kind: "pyramid_volume_square" };
             correctAnswer = round((baseArea * height) / 3);
-            question = `מה הנפח של פירמידה עם בסיס ריבועי (צלע ${baseSide}) וגובה ${height}?`;
+            question =
+              gradeKey === "g6"
+                ? `פירמידה: בסיס ריבועי צלע ${baseSide}, גובה ${height}. נפח = ⅓×שטח בסיס×גובה — כמה?`
+                : `מה הנפח של פירמידה עם בסיס ריבועי (צלע ${baseSide}) וגובה ${height}?`;
           } else {
             const baseWidth = Math.floor(Math.random() * (level.maxSide / 2)) + 1;
             const baseArea = baseSide * baseWidth;
             params = { baseSide, baseWidth, height, baseArea, kind: "pyramid_volume_rectangular" };
             correctAnswer = round((baseArea * height) / 3);
-            question = `מה הנפח של פירמידה עם בסיס מלבני (${baseSide} × ${baseWidth}) וגובה ${height}?`;
+            question =
+              gradeKey === "g6"
+                ? `פירמידה: בסיס מלבני ${baseSide}×${baseWidth}, גובה ${height}. חשבו נפח (⅓×בסיס×גובה).`
+                : `מה הנפח של פירמידה עם בסיס מלבני (${baseSide} × ${baseWidth}) וגובה ${height}?`;
           }
           break;
         }
@@ -735,7 +836,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           const height = Math.floor(Math.random() * level.maxSide) + 1;
           params = { radius, height, kind: "cone_volume" };
           correctAnswer = round((PI * radius * radius * height) / 3);
-          question = `מה הנפח של חרוט עם רדיוס ${radius} וגובה ${height}? (π = 3.14)`;
+          question =
+            gradeKey === "g6"
+              ? `חרוט: רדיוס ${radius}, גובה ${height}. נפח = ⅓πr²h (π = 3.14) — כמה?`
+              : `מה הנפח של חרוט עם רדיוס ${radius} וגובה ${height}? (π = 3.14)`;
           break;
         }
 
@@ -772,7 +876,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
             Math.floor(Math.random() * level.maxSide) + 1;
           params = { length, width, height, kind: "rectangular_prism_volume" };
           correctAnswer = round(length * width * height);
-          question = `מה הנפח של תיבה עם אורך ${length}, רוחב ${width} וגובה ${height}?`;
+          question =
+            formulaBand === "late"
+              ? `נפח גוף תיבתי: ${length} × ${width} × ${height}. מה התוצאה?`
+              : `מה הנפח של תיבה עם אורך ${length}, רוחב ${width} וגובה ${height}?`;
         }
       }
       break;
@@ -787,7 +894,25 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
 
       params = { angle1, angle2, angle3, kind: "triangle_angles" };
       correctAnswer = round(angle3);
-      question = `במשולש, זווית אחת היא ${angle1}° וזווית שנייה היא ${angle2}°. מה הזווית השלישית?`;
+      {
+        const baseMid = `במשולש, זווית אחת היא ${angle1}° וזווית שנייה היא ${angle2}°. מה הזווית השלישית?`;
+        const baseLate = `במשולש במישור, שתי זוויות פנימיות ידועות (${angle1}° ו-${angle2}°). מה גודל הזווית השלישית?`;
+        if (formulaBand === "mid") {
+          if (levelKey === "easy") {
+            question = `זכרו: סכום זוויות במשולש 180°. ${baseMid}`;
+          } else if (levelKey === "medium") {
+            question = baseMid;
+          } else {
+            question = `הסיקו בלי לפרט את 180° במפורש — ${baseMid}`;
+          }
+        } else if (levelKey === "easy") {
+          question = `במשולש, ${angle1}° + ${angle2}° + ? = 180°. מה החסר?`;
+        } else if (levelKey === "medium") {
+          question = baseLate;
+        } else {
+          question = `בשלב אתגר — ${baseLate}`;
+        }
+      }
       break;
     }
 
@@ -814,7 +939,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       if (!askLeg) {
         params = { a, b, c, which: "hypotenuse", kind: "pythagoras_hyp" };
         correctAnswer = round(c);
-        question = `במשולש ישר זווית, הניצבים הם ${a} ו-${b}. מה אורך היתר?`;
+        question =
+          gradeKey === "g6" && Math.random() < 0.5
+            ? `משולש ישר־זווית: ניצבים ${a} ו-${b}. מה אורך היתר (c)?`
+            : `במשולש ישר זווית, הניצבים הם ${a} ו-${b}. מה אורך היתר?`;
       } else {
         // נשאל על ניצב חסר
         const missing = Math.random() < 0.5 ? "a" : "b";
@@ -842,12 +970,22 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
         if (isSquare) {
           params = { shape: "ריבוע", side, kind: "shapes_basic_square" };
           correctAnswer = 1; // ריבוע
-          question = `צורה עם 4 צלעות שוות באורך ${side}. מה שמה? (1 = ריבוע, 2 = מלבן)`;
+          question =
+            levelKey === "easy"
+              ? `זיהוי צורה: 4 צלעות שוות, אורך כל צלע ${side}. מה שמה? (1 = ריבוע, 2 = מלבן)`
+              : levelKey === "medium"
+                ? `צורה עם 4 צלעות שוות באורך ${side}. מה שמה? (1 = ריבוע, 2 = מלבן)`
+                : `בחנו תיאור צורה — 4 צלעות שוות, צלע ${side}. מה סוג הצורה? (1 = ריבוע, 2 = מלבן)`;
         } else {
           const width = Math.floor(Math.random() * level.maxSide) + 1;
           params = { shape: "מלבן", length: side, width, kind: "shapes_basic_rectangle" };
           correctAnswer = 2; // מלבן
-          question = `צורה עם אורך ${side} ורוחב ${width}. מה שמה? (1 = ריבוע, 2 = מלבן)`;
+          question =
+            levelKey === "easy"
+              ? `זיהוי צורה: אורך ${side}, רוחב ${width} (לא כל הצלעות שוות). מה שמה? (1 = ריבוע, 2 = מלבן)`
+              : levelKey === "medium"
+                ? `צורה עם אורך ${side} ורוחב ${width}. מה שמה? (1 = ריבוע, 2 = מלבן)`
+                : `בחנו תיאור — אורך ${side}, רוחב ${width}. מה סוג הצורה? (1 = ריבוע, 2 = מלבן)`;
         }
       } else {
         // כיתה ד' - תכונות ריבוע ומלבן
@@ -856,18 +994,33 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
           // כמה צלעות שוות יש לריבוע?
           params = { shape: "ריבוע", kind: "shapes_basic_properties_square" };
           correctAnswer = 4; // 4 צלעות שוות
-          question = `כמה צלעות שוות יש לריבוע? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`;
+          question =
+            levelKey === "easy"
+              ? `ריבוע: כמה צלעות שוות יש לו? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`
+              : levelKey === "medium"
+                ? `כמה צלעות שוות יש לריבוע? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`
+                : `תכונות ריבוע — כמה צלעות באותו אורך? (1 = 2, 2 = 3, 3 = 4, 4 = אין צלעות שוות)`;
         } else if (questionType < 0.66) {
           // כמה זוגות של צלעות שוות יש למלבן?
           params = { shape: "מלבן", kind: "shapes_basic_properties_rectangle" };
           correctAnswer = 2; // 2 זוגות
-          question = `כמה זוגות של צלעות שוות יש למלבן? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`;
+          question =
+            levelKey === "easy"
+              ? `מלבן: כמה זוגות צלעות שוות יש? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`
+              : levelKey === "medium"
+                ? `כמה זוגות של צלעות שוות יש למלבן? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`
+                : `תכונות מלבן — כמה זוגות צלעות באותו אורך? (1 = 1, 2 = 2, 3 = 3, 4 = 4)`;
         } else {
           // כמה זוויות ישרות יש לריבוע/מלבן?
           const shape = Math.random() < 0.5 ? "ריבוע" : "מלבן";
           params = { shape, kind: "shapes_basic_properties_angles" };
           correctAnswer = 4; // 4 זוויות ישרות
-          question = `כמה זוויות ישרות יש ל${shape}? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`;
+          question =
+            levelKey === "easy"
+              ? `${shape}: כמה זוויות ישרות יש? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`
+              : levelKey === "medium"
+                ? `כמה זוויות ישרות יש ל${shape}? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`
+                : `זוויות ב${shape} — כמה מהן ישרות? (1 = 2, 2 = 3, 3 = 4, 4 = אין זוויות ישרות)`;
         }
       }
       break;
@@ -881,7 +1034,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       
       params = { type: selectedType, isParallel, kind: "parallel_perpendicular" };
       correctAnswer = isParallel ? 1 : 2; // 1 = מקבילות, 2 = מאונכות
-      question = `איזה סוג קווים הם ${selectedType}? (1 = מקבילות, 2 = מאונכות)`;
+      question =
+        formulaBand === "mid"
+          ? `איזה סוג קווים הם ${selectedType}? (1 = מקבילות, 2 = מאונכות)`
+          : `סיווג ישרים במישור: ${selectedType} — (1 = מקבילות, 2 = מאונכות)`;
       break;
     }
 
@@ -892,7 +1048,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       
       params = { type: selectedType, kind: "triangles" };
       correctAnswer = types.indexOf(selectedType) + 1;
-      question = `איזה סוג משולש הוא ${selectedType}? (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`;
+      question =
+        formulaBand === "mid"
+          ? `איזה סוג משולש הוא ${selectedType}? (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`
+          : `סיווג משולשים: ${selectedType} — (1 = שווה צלעות, 2 = שווה שוקיים, 3 = שונה צלעות)`;
       break;
     }
 
@@ -903,7 +1062,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       
       params = { type: selectedType, kind: "quadrilaterals" };
       correctAnswer = types.indexOf(selectedType) + 1;
-      question = `איזה סוג מרובע הוא ${selectedType}? (1 = ריבוע, 2 = מלבן, 3 = מקבילית, 4 = טרפז)`;
+      question =
+        formulaBand === "mid"
+          ? `איזה סוג מרובע הוא ${selectedType}? (1 = ריבוע, 2 = מלבן, 3 = מקבילית, 4 = טרפז)`
+          : `סיווג מרובעים: ${selectedType} — (1 = ריבוע, 2 = מלבן, 3 = מקבילית, 4 = טרפז)`;
       break;
     }
 
@@ -915,7 +1077,23 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       
       params = { type: selectedType, isTranslation, kind: "transformations" };
       correctAnswer = isTranslation ? 1 : 2; // 1 = הזזה, 2 = שיקוף
-      question = `איזה סוג טרנספורמציה היא ${selectedType}? (1 = הזזה, 2 = שיקוף)`;
+      if (gradeKey === "g1") {
+        question =
+          levelKey === "easy"
+            ? `טרנספורמציה (כיתה א׳): מה סוג התנועה של ${selectedType}? (1 = הזזה, 2 = שיקוף)`
+            : levelKey === "medium"
+              ? `מה סוג התנועה של ${selectedType}? (1 = הזזה, 2 = שיקוף)`
+              : `אתגר — זיהוי תנועה במישור: ${selectedType}? (1 = הזזה, 2 = שיקוף)`;
+      } else if (gradeKey === "g2") {
+        question =
+          levelKey === "easy"
+            ? `(כיתה ב׳) מה סוג הטרנספורמציה של ${selectedType}? (1 = הזזה, 2 = שיקוף)`
+            : levelKey === "medium"
+              ? `איזה סוג טרנספורמציה מתאים ל־${selectedType}? (1 = הזזה, 2 = שיקוף)`
+              : `אתגר טרנספורמציה — ${selectedType}: (1 = הזזה, 2 = שיקוף)`;
+      } else {
+        question = `איזה סוג טרנספורמציה היא ${selectedType}? (1 = הזזה, 2 = שיקוף)`;
+      }
       break;
     }
 
@@ -924,7 +1102,21 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       const angle = [90, 180, 270][Math.floor(Math.random() * 3)];
       params = { angle, kind: "rotation" };
       correctAnswer = angle;
-      question = `סיבוב של כמה מעלות? (${angle}°)`;
+      if (formulaBand === "mid") {
+        if (levelKey === "easy") {
+          question = `סיבוב במישור — מה גודל הסיבוב במעלות? (רמז: ${angle}°)`;
+        } else if (levelKey === "medium") {
+          question = `סיבוב של כמה מעלות? (${angle}°)`;
+        } else {
+          question = `סיבוב יחסי למערכת צירים — מה המעלות? (${angle}°)`;
+        }
+      } else if (levelKey === "easy") {
+        question = `סיבוב פשוט במישור — כמה מעלות? (${angle}°)`;
+      } else if (levelKey === "medium") {
+        question = `סיבוב במישור סביב מרכז — כמה מעלות? (${angle}°)`;
+      } else {
+        question = `אתגר סיבוב — מה גודל הסיבוב במעלות? (${angle}°)`;
+      }
       break;
     }
 
@@ -936,35 +1128,85 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       
       params = { shape: selectedShape, axes, kind: "symmetry" };
       correctAnswer = axes;
-      question = `כמה צירי סימטרייה יש ל${selectedShape}?`;
+      if (formulaBand === "mid") {
+        if (levelKey === "easy") {
+          question = `סימטרייה — כמה צירי סימטרייה יש ל${selectedShape}? (ספרו בזהירות)`;
+        } else if (levelKey === "medium") {
+          question = `כמה צירי סימטרייה יש ל${selectedShape}?`;
+        } else {
+          question = `אתגר סימטרייה — כמה צירי שיקוף יש ל${selectedShape}?`;
+        }
+      } else if (levelKey === "easy") {
+        question = `כמה צירי סימטרייה יש לצורה ${selectedShape}?`;
+      } else if (levelKey === "medium") {
+        question = `כמה צירי סימטרייה (התאמות) יש לצורה ${selectedShape}?`;
+      } else {
+        question = `בשלב אתגר — כמה צירי סימטרייה יש ל${selectedShape}?`;
+      }
       break;
     }
 
     // ===================== DIAGONAL =====================
     case "diagonal": {
-      // כיתה ד' - ריבוע ומלבן, כיתה ה' - גם מקבילית
-      const shapeOptions = gradeKey === "g5" 
-        ? ["ריבוע", "מלבן", "מקבילית"]
-        : ["ריבוע", "מלבן"];
-      const shape = shapeOptions[Math.floor(Math.random() * shapeOptions.length)];
+      // מסלול נוסחתי: משתמשים ב־shape שנבחר מ־TOPIC_SHAPES (כולל כפייה ל־harness)
+      const fromTopic =
+        shape === "square"
+          ? "ריבוע"
+          : shape === "rectangle"
+            ? "מלבן"
+            : shape === "parallelogram"
+              ? "מקבילית"
+              : null;
+      const shapeOptions =
+        gradeKey === "g5"
+          ? ["ריבוע", "מלבן", "מקבילית"]
+          : ["ריבוע", "מלבן"];
+      const hebShape =
+        fromTopic && shapeOptions.includes(fromTopic)
+          ? fromTopic
+          : shapeOptions[Math.floor(Math.random() * shapeOptions.length)];
       const side = Math.floor(Math.random() * level.maxSide) + 1;
       
       let diagonal;
-      if (shape === "ריבוע") {
+      if (hebShape === "ריבוע") {
         diagonal = round(side * Math.sqrt(2));
-        params = { shape, side, diagonal, kind: "diagonal_square" };
-        question = `מה אורך האלכסון של ריבוע עם צלע ${side}?`;
-      } else if (shape === "מלבן") {
+        params = { shape: hebShape, side, diagonal, kind: "diagonal_square" };
+        if (formulaBand === "mid") {
+          if (levelKey === "easy") {
+            question = `ריבוע צלע ${side}: אלכסון קשור לפיתגורס (שני ניצבים שווים). מה אורך האלכסון?`;
+          } else if (levelKey === "medium") {
+            question = `מה אורך האלכסון של ריבוע עם צלע ${side}?`;
+          } else {
+            question = `אתגר אלכסון — ריבוע צלע ${side}, מה אורך האלכסון?`;
+          }
+        } else if (levelKey === "hard") {
+          question = `בשלב אתגר — ריבוע צלע ${side}: מה אורך אלכסון?`;
+        } else {
+          question = `ריבוע צלע ${side}: מה אורך אלכסון?`;
+        }
+      } else if (hebShape === "מלבן") {
         const width = Math.floor(Math.random() * level.maxSide) + 1;
         diagonal = round(Math.sqrt(side * side + width * width));
-        params = { shape, side, width, diagonal, kind: "diagonal_rectangle" };
-        question = `מה אורך האלכסון של מלבן עם אורך ${side} ורוחב ${width}?`;
+        params = { shape: hebShape, side, width, diagonal, kind: "diagonal_rectangle" };
+        if (formulaBand === "mid") {
+          if (levelKey === "easy") {
+            question = `מלבן ${side}×${width}: השתמשו בפיתגורס (ניצבים ${side} ו-${width}). מה אלכסון?`;
+          } else if (levelKey === "medium") {
+            question = `מה אורך האלכסון של מלבן עם אורך ${side} ורוחב ${width}?`;
+          } else {
+            question = `אתגר אלכסון — מלבן ${side}×${width}. מה אורך האלכסון?`;
+          }
+        } else if (levelKey === "hard") {
+          question = `בשלב אתגר — מלבן ${side}×${width}: מה אורך אלכסון?`;
+        } else {
+          question = `מלבן ${side} × ${width}: מה אורך אלכסון?`;
+        }
       } else {
         // מקבילית - כיתה ה'
         const width = Math.floor(Math.random() * level.maxSide) + 1;
         diagonal = round(Math.sqrt(side * side + width * width));
-        params = { shape, side, width, diagonal, kind: "diagonal_parallelogram" };
-        question = `מה אורך האלכסון של מקבילית עם צלע ${side} וצלע ${width}?`;
+        params = { shape: hebShape, side, width, diagonal, kind: "diagonal_parallelogram" };
+        question = `מקבילית: צלעות ${side} ו-${width}. מה אורך אלכסון (הנחה: כמו במלבן)?`;
       }
       
       correctAnswer = diagonal;
@@ -982,7 +1224,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
         
         params = { base, area, height, shape: "triangle", kind: "heights_triangle" };
         correctAnswer = height;
-        question = `במשולש עם בסיס ${base} ושטח ${area}, מה הגובה?`;
+        question =
+          formulaBand === "late"
+            ? `גובה במשולש (לפי בסיס ${base}): אם השטח ${area}, מה הגובה?`
+            : `במשולש עם בסיס ${base} ושטח ${area}, מה הגובה?`;
       } else if (shapeType < 0.66) {
         // מקבילית
         const base = Math.floor(Math.random() * level.maxSide) + 1;
@@ -1014,7 +1259,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       
       params = { shape: selectedShape, angle, kind: "tiling" };
       correctAnswer = angle;
-      question = `איזו זווית יש ב${selectedShape} המשמש לריצוף?`;
+      question =
+        formulaBand === "late"
+          ? `ריצוף במישור: זווית פנימית טיפוסית ב${selectedShape}?`
+          : `איזו זווית יש ב${selectedShape} המשמש לריצוף?`;
       break;
     }
 
@@ -1026,11 +1274,26 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       if (askArea) {
         params = { radius, kind: "circle_area", askArea: true };
         correctAnswer = round(PI * radius * radius);
-        question = `מה שטח העיגול עם רדיוס ${radius}? (π = 3.14)`;
+        question =
+          gradeKey === "g6"
+            ? `דיסק: רדיוס ${radius}. מה השטח? (π = 3.14)`
+            : `מה שטח העיגול עם רדיוס ${radius}? (π = 3.14)`;
       } else {
         params = { radius, kind: "circle_perimeter", askArea: false };
         correctAnswer = round(2 * PI * radius);
-        question = `מה היקף המעגל עם רדיוס ${radius}? (π = 3.14)`;
+        if (gradeKey === "g6") {
+          if (levelKey === "easy") {
+            question = `מעגל רדיוס ${radius}: היקף = 2πr. מה היקף? (π = 3.14)`;
+          } else if (levelKey === "medium") {
+            question = `מעגל: רדיוס ${radius}. מה היקף המעטפת? (π = 3.14)`;
+          } else {
+            question = `אתגר היקף — מעגל רדיוס ${radius}. מה אורך המעטפת? (π = 3.14)`;
+          }
+        } else if (levelKey === "hard") {
+          question = `אתגר — מה היקף המעגל עם רדיוס ${radius}? (π = 3.14)`;
+        } else {
+          question = `מה היקף המעגל עם רדיוס ${radius}? (π = 3.14)`;
+        }
       }
       break;
     }
@@ -1050,7 +1313,10 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       
       params = { solid: selected.name, desc: selected.desc, kind: "solids" };
       correctAnswer = selected.num;
-      question = `גוף עם ${selected.desc}. מה שמו? (1 = קובייה, 2 = תיבה, 3 = גליל, 4 = פירמידה, 5 = חרוט, 6 = כדור)`;
+      question =
+        gradeKey === "g2"
+          ? `בחרו שם לגוף: ${selected.desc}. (1 = קובייה, 2 = תיבה, 3 = גליל, 4 = פירמידה, 5 = חרוט, 6 = כדור)`
+          : `גוף תלת־ממדי עם ${selected.desc}. מה שמו? (1 = קובייה, 2 = תיבה, 3 = גליל, 4 = פירמידה, 5 = חרוט, 6 = כדור)`;
       break;
     }
 
@@ -1059,7 +1325,12 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
       const side = Math.floor(Math.random() * level.maxSide) + 1;
       params = { side, kind: "square_area" };
       correctAnswer = round(side * side);
-      question = `מה השטח של ריבוע עם צלע ${side}?`;
+      question =
+        formulaBand === "early"
+          ? `ריבוע: צלע ${side}. כמה שטח?`
+          : formulaBand === "mid"
+            ? `מה השטח של ריבוע עם צלע ${side}?`
+            : `שטח ריבוע במישור: צלע ${side}. מה התוצאה?`;
     }
   }
 

@@ -107,7 +107,7 @@ export const GRADE_LEVELS = {
       easy: {
         addition: { max: 200 },
         subtraction: { min: 0, max: 200 },
-        multiplication: { max: 10 },
+        multiplication: { max: 10, tensHundreds: true },
         division: { max: 100, maxDivisor: 10, allowRemainder: true }, // חילוק עם שארית
         division_with_remainder: { max: 100, maxDivisor: 10 },
         fractions: { maxDen: 4 },
@@ -118,11 +118,12 @@ export const GRADE_LEVELS = {
         equations: { max: 200 },
         compare: { max: 10000 }, // עד רבבה
         number_sense: { max: 10000 },
+        word_problems: { max: 10000 },
       },
       medium: {
         addition: { max: 500 },
         subtraction: { min: 0, max: 500 },
-        multiplication: { max: 12 },
+        multiplication: { max: 12, tensHundreds: true },
         division: { max: 144, maxDivisor: 12, allowRemainder: true },
         division_with_remainder: { max: 144, maxDivisor: 12 },
         fractions: { maxDen: 6 },
@@ -133,11 +134,12 @@ export const GRADE_LEVELS = {
         equations: { max: 500 },
         compare: { max: 10000 },
         number_sense: { max: 10000 },
+        word_problems: { max: 10000 },
       },
       hard: {
         addition: { max: 1000 },
         subtraction: { min: 0, max: 1000 },
-        multiplication: { max: 12 },
+        multiplication: { max: 12, tensHundreds: true },
         division: { max: 200, maxDivisor: 12, allowRemainder: true },
         division_with_remainder: { max: 200, maxDivisor: 12 },
         fractions: { maxDen: 6 },
@@ -148,6 +150,7 @@ export const GRADE_LEVELS = {
         equations: { max: 1000 },
         compare: { max: 10000 },
         number_sense: { max: 10000 },
+        word_problems: { max: 10000 },
       },
     },
   },
@@ -241,7 +244,7 @@ export const GRADE_LEVELS = {
         addition: { max: 50000 },
         subtraction: { min: 0, max: 50000 },
         multiplication: { max: 100 },  // עד 100×100 = 10000
-        division: { max: 2000, maxDivisor: 12 },
+        division: { max: 2000, maxDivisor: 12, twoDigit: true },
         division_with_remainder: { max: 2000, maxDivisor: 12 },
         fractions: { maxDen: 10 },
         percentages: { maxBase: 1000, maxPercent: 50 },
@@ -321,7 +324,13 @@ export const GRADE_LEVELS = {
         fractions: { maxDen: 20 },
         percentages: { maxBase: 5000, maxPercent: 50 },
         sequences: { maxStart: 2000, maxStep: 9 },
-        decimals: { maxBase: 2000, places: 2 },
+        decimals: {
+          maxBase: 2000,
+          places: 2,
+          multiply: true,
+          divide: true,
+          repeatingDecimals: true,
+        },
         rounding: { maxN: 999999, toWhat: 100 },
         equations: { max: 200000 },
         compare: { max: 200000 },
@@ -363,7 +372,7 @@ export const GRADES = {
       "word_problems",  // שאלות חיבור, חיסור, כפל וחילוק
       "mixed",          // תרגילים מעורבים בתחום ה-1000
     ],
-    allowFractions: false,
+    allowFractions: true,
     allowNegatives: false,
   },
   g3: {
@@ -382,6 +391,7 @@ export const GRADES = {
       "compare",
       "equations",
       "number_sense",
+      "word_problems",  // שאלות מילוליות (חשבון)
       "mixed",
     ],
     allowFractions: true,

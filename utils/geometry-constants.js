@@ -66,7 +66,7 @@ export const GRADES = {
   },
   g5: {
     name: "כיתה ה'",
-    topics: ["angles", "parallel_perpendicular", "quadrilaterals", "heights", "tiling", "area", "perimeter", "volume", "mixed"], // אלכסונים, מקבילוּת, מאונכוּת, זוויות, מרובעים, גבהים, ריצוף, מדידות שטחים, ערבוב
+    topics: ["angles", "parallel_perpendicular", "quadrilaterals", "diagonal", "heights", "tiling", "area", "perimeter", "volume", "mixed"], // אלכסון (כולל מקבילית), מקבילוּת, מאונכוּת, זוויות, מרובעים, גבהים, ריצוף, שטח, היקף, נפח, ערבוב
     shapes: ["square", "rectangle", "triangle", "circle", "parallelogram", "trapezoid", "rectangular_prism", "cube"],
   },
   g6: {

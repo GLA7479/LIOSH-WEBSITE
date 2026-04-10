@@ -43,7 +43,13 @@ import {
   TRANSLATION_POOLS,
 } from "../../data/english-questions";
 import { englishQuestionFingerprint } from "../../utils/english-learning-intel";
-import { englishPoolItemAllowed } from "../../utils/grade-gating";
+import {
+  englishClassSplitBucket,
+  englishPoolItemAllowedWithClassSplit,
+  englishVocabListKeysForGrade,
+  englishWritingModeAllowed,
+  englishWritingSentenceAllowedForGrade,
+} from "../../utils/grade-gating";
 
 const LEVELS = {
   easy: { name: "קל", maxWords: 5, complexity: "basic" },
@@ -438,9 +444,20 @@ function generateQuestion(
   const gradeWordLists = (gradeConfig.wordLists || []).filter(
     (list) => WORD_LISTS[list]
   );
+  const curriculumFallbackLists = englishVocabListKeysForGrade(
+    gradeKey,
+    WORD_LISTS
+  );
   const fallbackWordLists = gradeWordLists.length
     ? gradeWordLists
-    : Object.keys(WORD_LISTS);
+    : curriculumFallbackLists.length
+      ? curriculumFallbackLists
+      : ["colors"];
+  const gradeScopedVocabKeys = (
+    gradeWordLists.length ? gradeWordLists : curriculumFallbackLists
+  ).filter((k) => WORD_LISTS[k]);
+  const vocabKeysForMcq =
+    gradeScopedVocabKeys.length > 0 ? gradeScopedVocabKeys : ["colors"];
   const selectedList =
     fallbackWordLists[Math.floor(Math.random() * fallbackWordLists.length)];
   const words = WORD_LISTS[selectedList] || WORD_LISTS.colors;
@@ -488,7 +505,7 @@ function generateQuestion(
       grammarPools.forEach((key) => {
         if (GRAMMAR_POOLS[key]) {
           const rows = GRAMMAR_POOLS[key].filter((item) =>
-            englishPoolItemAllowed("grammar", key, item, gradeKey)
+            englishPoolItemAllowedWithClassSplit("grammar", key, item, gradeKey)
           );
           pool = pool.concat(rows);
         }
@@ -505,11 +522,24 @@ function generateQuestion(
               : "modals";
         if (GRAMMAR_POOLS[fb]) {
           pool = GRAMMAR_POOLS[fb].filter((item) =>
-            englishPoolItemAllowed("grammar", fb, item, gradeKey)
+            englishPoolItemAllowedWithClassSplit("grammar", fb, item, gradeKey)
           );
         }
       }
       const grammarQ = pool[Math.floor(Math.random() * pool.length)];
+      if (!grammarQ) {
+        if (typeof console !== "undefined" && console.warn) {
+          console.warn("[english] no grammar item after gating", gradeKey);
+        }
+        question =
+          "אין כרגע שאלת דקדוק מתאימה לכיתה הזו. נסו רמה אחרת או חזרו לתפריט.";
+        correctAnswer = "הבנתי";
+        params = {
+          patternFamily: "english_empty_pool",
+          grammarOptionSet: ["הבנתי", "אנסה שוב", "אחזור לתפריט", "בחרו נושא אחר"],
+        };
+        break;
+      }
       question = grammarQ.question;
       correctAnswer = grammarQ.correct;
       params = {
@@ -529,7 +559,7 @@ function generateQuestion(
       translationPools.forEach((key) => {
         if (TRANSLATION_POOLS[key]) {
           const rows = TRANSLATION_POOLS[key].filter((item) =>
-            englishPoolItemAllowed("translation", key, item, gradeKey)
+            englishPoolItemAllowedWithClassSplit("translation", key, item, gradeKey)
           );
           sentencesPool = sentencesPool.concat(rows);
         }
@@ -548,12 +578,27 @@ function generateQuestion(
                 : "technology";
         if (TRANSLATION_POOLS[fb]) {
           sentencesPool = TRANSLATION_POOLS[fb].filter((item) =>
-            englishPoolItemAllowed("translation", fb, item, gradeKey)
+            englishPoolItemAllowedWithClassSplit("translation", fb, item, gradeKey)
           );
         }
       }
       const sentence =
-        sentencesPool[Math.floor(Math.random() * sentencesPool.length)];
+        sentencesPool.length > 0
+          ? sentencesPool[Math.floor(Math.random() * sentencesPool.length)]
+          : null;
+      if (!sentence) {
+        if (typeof console !== "undefined" && console.warn) {
+          console.warn("[english] translation pool still empty", gradeKey);
+        }
+        question =
+          "אין כרגע משפטי תרגום מתאימים לכיתה. נסו נושא אחר או רמה אחרת.";
+        correctAnswer = "הבנתי";
+        params = {
+          patternFamily: "english_empty_pool",
+          direction: "en_to_he",
+        };
+        break;
+      }
       const translationToEnglish =
         levelKey === "hard" ||
         (levelKey === "medium" && gNum >= 4) ||
@@ -587,7 +632,7 @@ function generateQuestion(
       sentencePools.forEach((key) => {
         if (SENTENCE_POOLS[key]) {
           const rows = SENTENCE_POOLS[key].filter((item) =>
-            englishPoolItemAllowed("sentence", key, item, gradeKey)
+            englishPoolItemAllowedWithClassSplit("sentence", key, item, gradeKey)
           );
           pool = pool.concat(rows);
         }
@@ -606,12 +651,27 @@ function generateQuestion(
                 : "advanced";
         if (SENTENCE_POOLS[fb]) {
           pool = SENTENCE_POOLS[fb].filter((item) =>
-            englishPoolItemAllowed("sentence", fb, item, gradeKey)
+            englishPoolItemAllowedWithClassSplit("sentence", fb, item, gradeKey)
           );
         }
       }
       const template =
-        pool[Math.floor(Math.random() * pool.length)] || SENTENCE_POOLS.base[0];
+        pool.length > 0
+          ? pool[Math.floor(Math.random() * pool.length)]
+          : null;
+      if (!template) {
+        if (typeof console !== "undefined" && console.warn) {
+          console.warn("[english] sentence pool still empty", gradeKey);
+        }
+        question =
+          "אין כרגע תבניות משפט מתאימות לכיתה. נסו נושא אחר או רמה אחרת.";
+        correctAnswer = "הבנתי";
+        params = {
+          patternFamily: "english_empty_pool",
+          sentenceOptionSet: ["הבנתי", "אנסה שוב", "אחזור לתפריט", "נושא אחר"],
+        };
+        break;
+      }
       question = `השלם את המשפט: "${template.template}"`;
       correctAnswer = template.correct;
       params = {
@@ -627,9 +687,12 @@ function generateQuestion(
     }
 
     case "writing": {
-      const writingPools = gradeProfile.writingPools || ["word"];
-      const mode =
-        writingPools[Math.floor(Math.random() * writingPools.length)] || "word";
+      const writingPoolsRaw = gradeProfile.writingPools || ["word"];
+      const writingPools = writingPoolsRaw.filter((m) =>
+        englishWritingModeAllowed(m, gradeKey)
+      );
+      const modes = writingPools.length ? writingPools : ["word"];
+      const mode = modes[Math.floor(Math.random() * modes.length)] || "word";
       if (mode === "word") {
         const [en, he] = randomWord;
         question = `כתוב באנגלית: "${he}"`;
@@ -648,7 +711,14 @@ function generateQuestion(
         } else if (mode === "sentence_master") {
           pool = WRITING_SENTENCES_MASTER;
         }
-        const s = pool[Math.floor(Math.random() * pool.length)];
+        let pickPool = pool;
+        if (mode === "sentence_extended" || mode === "sentence_master") {
+          const gated = pool.filter((s) =>
+            englishWritingSentenceAllowedForGrade(gradeKey, s)
+          );
+          if (gated.length) pickPool = gated;
+        }
+        const s = pickPool[Math.floor(Math.random() * pickPool.length)];
         question = `כתוב באנגלית: "${s.he}"`;
         correctAnswer = s.en;
         params = {
@@ -656,7 +726,14 @@ function generateQuestion(
           sentenceHe: s.he,
           sentenceEn: s.en,
           direction: "he_to_en",
-          patternFamily: "writing_sentence",
+          patternFamily:
+            mode === "sentence_master"
+              ? "writing_sentence_master"
+              : mode === "sentence_extended"
+                ? "writing_sentence_extended"
+                : "writing_sentence_basic",
+          subtype: mode,
+          contentSlot: englishClassSplitBucket(String(s.he || s.en || ""), 2),
         };
         qType = "typing";
         break;
@@ -749,21 +826,25 @@ function generateQuestion(
               Math.floor(Math.random() * sameCategoryGrammar.length)
             ];
         } else if (params.direction === "he_to_en") {
-          const allEnglishWords = Object.values(WORD_LISTS).flatMap((list) =>
-            Object.keys(list)
+          const allEnglishWords = vocabKeysForMcq.flatMap((k) =>
+            Object.keys(WORD_LISTS[k] || {})
           );
           wrong =
-            allEnglishWords[
-              Math.floor(Math.random() * allEnglishWords.length)
-            ];
+            allEnglishWords.length > 0
+              ? allEnglishWords[
+                  Math.floor(Math.random() * allEnglishWords.length)
+                ]
+              : "word";
         } else {
-          const allHebrewWords = Object.values(WORD_LISTS).flatMap((list) =>
-            Object.values(list)
+          const allHebrewWords = vocabKeysForMcq.flatMap((k) =>
+            Object.values(WORD_LISTS[k] || {})
           );
           wrong =
-            allHebrewWords[
-              Math.floor(Math.random() * allHebrewWords.length)
-            ];
+            allHebrewWords.length > 0
+              ? allHebrewWords[
+                  Math.floor(Math.random() * allHebrewWords.length)
+                ]
+              : "מילה";
         }
         if (wrong !== correctAnswer && !wrongAnswers.has(wrong)) {
           wrongAnswers.add(wrong);

@@ -1,4 +1,4 @@
-import { itemAllowedForGrade } from "./grade-gating";
+import { itemAllowedForGrade, itemAllowedForLevel } from "./grade-gating";
 
 /**
  * בנק שאלות עברית מובנה — משלים את המאגר הקלאסי.
@@ -559,6 +559,7 @@ export function filterRichHebrewPool(gradeKey, levelKey, topic) {
     (row) =>
       row.topic === topic &&
       itemAllowedForGrade(row, gradeKey) &&
+      itemAllowedForLevel(row, levelKey) &&
       Array.isArray(row.levels) &&
       row.levels.includes(l)
   );
