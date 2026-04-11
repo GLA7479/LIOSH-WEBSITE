@@ -14,12 +14,12 @@ function SectionCard({ title, children, className = "", compact = false }) {
         compact ? "pr-detailed-section--compact" : ""
       } ${className}`}
     >
-      <div className="pr-detailed-section-head px-3 md:px-5 py-2.5 md:py-3 border-b border-white/15 bg-white/[0.06]">
+      <div className="pr-detailed-section-head px-3 md:px-4 py-2.5 md:py-3 border-b border-white/15 bg-white/[0.06]">
         <h2 className="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0">
           {title}
         </h2>
       </div>
-      <div className="pr-detailed-section-inner px-3 md:px-5 py-3 md:py-4">{children}</div>
+      <div className="pr-detailed-section-inner px-3 md:px-4 py-3 md:py-4">{children}</div>
     </section>
   );
 }
@@ -32,9 +32,47 @@ function Bullets({ items, className = "" }) {
       className={`pr-detailed-body-text list-disc pr-5 space-y-1.5 text-sm md:text-base text-white/[0.88] leading-relaxed ${className}`.trim()}
     >
       {items.map((t, i) => (
-        <li key={i}>{t}</li>
+        <li key={i} className="pr-detailed-bullet-li">
+          {t}
+        </li>
       ))}
     </ul>
+  );
+}
+
+/** כרטיס לכל שורה — פעולות לבית (מסך + הדפסה) */
+function PlanItemCards({ items }) {
+  if (!items?.length)
+    return <p className="pr-detailed-muted text-sm">אין נתונים להצגה.</p>;
+  return (
+    <div className="pr-detailed-text-item-stack flex flex-col gap-2.5">
+      {items.map((text, i) => (
+        <div
+          key={i}
+          className="pr-detailed-plan-item pr-detailed-body-text rounded-lg border border-sky-400/28 bg-sky-950/20 px-3 py-2.5 text-sm leading-relaxed text-white/[0.9]"
+        >
+          {text}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** כרטיס לכל שורה — יעדי תקופה (מסך + הדפסה) */
+function GoalItemCards({ items }) {
+  if (!items?.length)
+    return <p className="pr-detailed-muted text-sm">אין נתונים להצגה.</p>;
+  return (
+    <div className="pr-detailed-text-item-stack flex flex-col gap-2.5">
+      {items.map((text, i) => (
+        <div
+          key={i}
+          className="pr-detailed-goal-item pr-detailed-body-text rounded-lg border border-violet-400/28 bg-violet-950/18 px-3 py-2.5 text-sm leading-relaxed text-white/[0.9]"
+        >
+          {text}
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -90,7 +128,7 @@ function SubjectSummaryBlock({ sp }) {
           <TierBlock tier="excellence" title="הצטיינות יציבה (עד 2)">
             <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
               {ex.map((x) => (
-                <li key={x.id} className="pr-0">
+                <li key={x.id} className="pr-0 pr-detailed-bullet-li">
                   {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
                 </li>
               ))}
@@ -101,7 +139,7 @@ function SubjectSummaryBlock({ sp }) {
           <TierBlock tier="attention" title="תחומים הדורשים תשומת לב (עד 2)">
             <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
               {weak.map((w) => (
-                <li key={w.id} className="pr-0">
+                <li key={w.id} className="pr-0 pr-detailed-bullet-li">
                   {w.labelHe}
                   {typeof w.mistakeCount === "number" ? ` (${w.mistakeCount} טעויות דומות)` : ""}
                 </li>
@@ -418,6 +456,11 @@ export default function ParentReportDetailedPage() {
             text-align: right;
           }
 
+          .pr-detailed-bullet-li {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+
           @media print {
             .pr-detailed-avoid-split {
               break-inside: avoid !important;
@@ -720,6 +763,28 @@ export default function ParentReportDetailedPage() {
             #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-section { margin-bottom: 7px !important; }
             #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-summary-subject { margin-bottom: 8px !important; }
 
+            #parent-report-detailed-print .pr-detailed-plan-item,
+            #parent-report-detailed-print .pr-detailed-goal-item {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+              border-radius: 6px !important;
+              padding: 8px 10px !important;
+            }
+            #parent-report-detailed-print .pr-detailed-plan-item {
+              background: #f0f9ff !important;
+              border: 1px solid #38bdf8 !important;
+              color: #0c4a6e !important;
+            }
+            #parent-report-detailed-print .pr-detailed-goal-item {
+              background: #faf5ff !important;
+              border: 1px solid #a78bfa !important;
+              color: #4c1d95 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-bullet-li {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
+
             .no-pdf {
               display: none !important;
             }
@@ -727,7 +792,7 @@ export default function ParentReportDetailedPage() {
         `}</style>
       </Head>
       <div
-        className={`pr-detailed-page min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-3 md:p-6 ${
+        className={`pr-detailed-page min-h-screen bg-gradient-to-b from-[#0b1020] to-[#161c2e] text-white p-2.5 md:px-5 md:py-5 ${
           payload ? `pr-detailed-layout-${displayMode}` : ""
         }`}
         dir="rtl"
@@ -914,7 +979,7 @@ export default function ParentReportDetailedPage() {
                               <TierBlock tier="excellence" title="הצטיינות היציבה">
                                 <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
                                   {sp.excellence.map((x) => (
-                                    <li key={x.id} className="pr-0">
+                                    <li key={x.id} className="pr-0 pr-detailed-bullet-li">
                                       {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
                                     </li>
                                   ))}
@@ -925,7 +990,7 @@ export default function ParentReportDetailedPage() {
                               <TierBlock tier="strength" title="חוזקות מובילות">
                                 <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
                                   {sp.topStrengths.map((x) => (
-                                    <li key={x.id} className="pr-0">
+                                    <li key={x.id} className="pr-0 pr-detailed-bullet-li">
                                       {x.labelHe} — {x.accuracy}% ({x.questions})
                                     </li>
                                   ))}
@@ -936,7 +1001,7 @@ export default function ParentReportDetailedPage() {
                               <TierBlock tier="maintain" title="מומלץ לשמר">
                                 <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
                                   {sp.maintain.map((x) => (
-                                    <li key={x.id} className="pr-0">
+                                    <li key={x.id} className="pr-0 pr-detailed-bullet-li">
                                       {x.labelHe} — {x.accuracy}% ({x.questions})
                                     </li>
                                   ))}
@@ -947,7 +1012,7 @@ export default function ParentReportDetailedPage() {
                               <TierBlock tier="improving" title="נקודות לשיפור">
                                 <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
                                   {sp.improving.map((x) => (
-                                    <li key={x.id} className="pr-0">
+                                    <li key={x.id} className="pr-0 pr-detailed-bullet-li">
                                       {improvingDiagnosticsDisplayLabelHe(x.labelHe)} — דיוק {x.accuracy}% (
                                       {x.questions} שאלות)
                                     </li>
@@ -959,7 +1024,7 @@ export default function ParentReportDetailedPage() {
                               <TierBlock tier="attention" title="תחומים הדורשים תשומת לב">
                                 <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
                                   {sp.topWeaknesses.map((w) => (
-                                    <li key={w.id} className="pr-0">
+                                    <li key={w.id} className="pr-0 pr-detailed-bullet-li">
                                       {w.labelHe}
                                       {typeof w.mistakeCount === "number"
                                         ? ` (${w.mistakeCount} טעויות דומות)`
@@ -990,7 +1055,7 @@ export default function ParentReportDetailedPage() {
                                 <h4 className="pr-detailed-subheading">דוגמאות</h4>
                                 <ul className="pr-detailed-muted text-xs space-y-1 m-0 list-none pr-0 leading-relaxed">
                                   {sp.evidenceExamples.map((e, idx) => (
-                                    <li key={idx} className="pr-0">
+                                    <li key={idx} className="pr-0 pr-detailed-bullet-li">
                                       {e.type === "mistake" ? "טעות לדוגמה" : "חיזוק לדוגמה"}
                                       {e.exerciseText ? `: ${String(e.exerciseText).slice(0, 120)}` : ""}
                                     </li>
@@ -1051,12 +1116,12 @@ export default function ParentReportDetailedPage() {
 
                 {/* E */}
                 <SectionCard title="פעולות מומלצות לבית" compact={displayMode === "summary"}>
-                  <Bullets items={payload.homePlan.itemsHe} />
+                  <PlanItemCards items={payload.homePlan.itemsHe} />
                 </SectionCard>
 
                 {/* F */}
                 <SectionCard title="יעד לתקופה הבאה" compact={displayMode === "summary"}>
-                  <Bullets items={payload.nextPeriodGoals.itemsHe} />
+                  <GoalItemCards items={payload.nextPeriodGoals.itemsHe} />
                 </SectionCard>
               </div>
 
