@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react";
 import Layout from "../../components/Layout";
+import { ParentReportImportantDisclaimer } from "../../components/ParentReportImportantDisclaimer";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
@@ -1114,6 +1115,37 @@ export default function ParentReport() {
             }
             #parent-report-pdf .parent-report-graph-section .recharts-legend-wrapper {
               max-width: 100% !important;
+            }
+
+            #parent-report-pdf .parent-report-important-disclaimer {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+              margin-top: 12px !important;
+              margin-bottom: 8px !important;
+              padding: 10px 12px !important;
+              background: #f1f5f9 !important;
+              border: 1px solid #cbd5e1 !important;
+              border-radius: 6px !important;
+              box-shadow: none !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            #parent-report-pdf .parent-report-important-disclaimer-title {
+              color: #0f172a !important;
+              font-size: 10pt !important;
+              font-weight: 800 !important;
+              margin: 0 0 8px 0 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-pdf .parent-report-important-disclaimer-body p,
+            #parent-report-pdf .parent-report-important-disclaimer-body strong {
+              color: #334155 !important;
+              opacity: 1 !important;
+              font-size: 9pt !important;
+              line-height: 1.52 !important;
+            }
+            #parent-report-pdf .parent-report-important-disclaimer-body strong {
+              font-weight: 700 !important;
             }
 
             /* גרפי נושא — גיאומטריה דסקטופית אחידה בהדפסה (ללא דחיסה) */
@@ -3177,6 +3209,8 @@ export default function ParentReport() {
               </div>
             </div>
           )}
+
+          <ParentReportImportantDisclaimer />
 
           {/* כפתורים */}
           <div className="flex gap-2 md:gap-3 justify-center flex-wrap mb-3 md:mb-6 no-pdf">
