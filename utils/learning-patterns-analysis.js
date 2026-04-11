@@ -74,6 +74,64 @@ const MAX_IMPROVING = 2;
 /** Internal pool before merge/rank */
 const INTERNAL_SESSION_POOL = 12;
 
+/** ברירת מחדל לשורת סשן בלי שם בעברית — בכרטיס "מגמת שיפור" מוצגת מילה קצרה */
+const IMPROVING_GENERIC_PRACTICE_LABEL_ALIASES = new Set(["בנושא תרגול", "נושא בתרגול"]);
+
+/**
+ * תווית לתצוגה בכרטיסי "תחום במגמת שיפור" (ולדוחות ישנים במטמון).
+ * @param {string|null|undefined} labelHe
+ */
+export function improvingDiagnosticsDisplayLabelHe(labelHe) {
+  const lab = String(labelHe || "").trim();
+  if (IMPROVING_GENERIC_PRACTICE_LABEL_ALIASES.has(lab)) return "תרגול";
+  return lab;
+}
+
+/**
+ * ניסוח קצר להורה מכל תווית חולשה — "בנושא חיבור" במקום "קושי נקודתי בחיבור" / "סביב הנושא …".
+ * @param {string|null|undefined} labelHe
+ */
+function parentCopyTopicPhraseHe(labelHe) {
+  const s = String(labelHe || "").trim();
+  if (!s) return "בנושא שנבחר בתרגול";
+  if (s === GENERIC_WEAKNESS_HE) return "בנושא שזוהה בתרגול";
+  if (/^בנושא(\s|\/)/u.test(s)) return s;
+
+  const tailed = [
+    /^קושי נקודתי ב(.+)$/u,
+    /^קושי חוזר \/ חולשה יציבה ב(.+)$/u,
+    /^קושי חוזר ב(.+)$/u,
+  ];
+  for (const re of tailed) {
+    const m = s.match(re);
+    if (m) return `בנושא ${m[1].trim()}`;
+  }
+
+  const dePattern = s.replace(/^דפוס שגיאות:\s*/u, "").trim();
+  if (dePattern && dePattern !== s) return `בנושא ${dePattern}`;
+
+  if (s.startsWith("בלבול")) return `בנושא ${s}`;
+
+  if (/^קושי\s+/u.test(s)) {
+    const rest = s.replace(/^קושי\s+/u, "").trim();
+    return `בנושא ${rest}`;
+  }
+
+  return `בנושא ${s}`;
+}
+
+/** משפט יעד חיזוק מנקודת מבט של הצלחה, לא "לצמצם טעויות בדפוס" */
+function successRateImprovementGoalHe(labelHe) {
+  const ph = parentCopyTopicPhraseHe(labelHe);
+  const core = ph
+    .replace(/^בנושא\/ים\s+/u, "")
+    .replace(/^בנושא\s+/u, "")
+    .trim() || ph;
+  if (!core) return "להעלות את אחוזי ההצלחה במקצוע";
+  if (/^ב/u.test(core)) return `להעלות את אחוזי ההצלחה ${core}`;
+  return `להעלות את אחוזי ההצלחה ב${core}`;
+}
+
 function recStrength(mistakeCount) {
   if (mistakeCount >= MIN_MISTAKES_FOR_STRONG_RECOMMENDATION) return "strong";
   if (mistakeCount >= MIN_PATTERN_FAMILY_FOR_DIAGNOSIS) return "moderate";
@@ -103,8 +161,8 @@ function joinHebrewList(items) {
   const xs = (items || []).map((s) => String(s || "").trim()).filter(Boolean);
   if (!xs.length) return "";
   if (xs.length === 1) return xs[0];
-  if (xs.length === 2) return `${xs[0]} ו־${xs[1]}`;
-  return `${xs.slice(0, -1).join(", ")} ו־${xs[xs.length - 1]}`;
+  if (xs.length === 2) return `${xs[0]} ו${xs[1]}`;
+  return `${xs.slice(0, -1).join(", ")} ו${xs[xs.length - 1]}`;
 }
 
 function strengthTierHe(row) {
@@ -120,10 +178,10 @@ function weaknessTierHe(labelHe, mistakeCount, confidence) {
   const lab = String(labelHe || "").trim();
   if (!lab || lab === GENERIC_WEAKNESS_HE) return "תחום לחיזוק";
   if (mistakeCount >= MIN_MISTAKES_FOR_STRONG_RECOMMENDATION) {
-    return "קושי חוזר / חולשה יציבה";
+    return "קושי חוזר";
   }
   if (mistakeCount >= MIN_PATTERN_FAMILY_FOR_DIAGNOSIS) {
-    if (confidence === "high") return "קושי חוזר / חולשה יציבה";
+    if (confidence === "high") return "קושי חוזר";
     return "קושי נקודתי";
   }
   return "תחום לחיזוק";
@@ -221,7 +279,11 @@ function buildSessionBands(subjectId, report) {
     .map((r) => ({ ...r, tierHe: "תחום לשימור" }));
   const improvingOut = improving
     .slice(0, MAX_IMPROVING)
-    .map((r) => ({ ...r, tierHe: "תחום במגמת שיפור" }));
+    .map((r) => ({
+      ...r,
+      tierHe: "תחום במגמת שיפור",
+      labelHe: improvingDiagnosticsDisplayLabelHe(r.labelHe),
+    }));
 
   return {
     excellent: excellentOut,
@@ -303,11 +365,13 @@ function buildSummaryHe(
   }
 
   if (topWeaknesses.length) {
-    const names = joinHebrewList(topWeaknesses.map((w) => w.labelHe));
+    const names = joinHebrewList(
+      topWeaknesses.map((w) => parentCopyTopicPhraseHe(w.labelHe))
+    );
     let s =
       topWeaknesses.length > 1
-        ? `במקביל יש קשיים חוזרים סביב ${names}.`
-        : `במקביל יש קושי חוזר סביב הנושא ${topWeaknesses[0].labelHe}.`;
+        ? `במקביל יש מספר תחומים שדורשים חיזוק: ${names}.`
+        : `במקביל נדרש חיזוק ${parentCopyTopicPhraseHe(topWeaknesses[0].labelHe)}.`;
     if (
       topWeaknesses.some(
         (w) => w.mistakeCount >= MIN_MISTAKES_FOR_STRONG_RECOMMENDATION
@@ -346,14 +410,14 @@ function buildParentActionHe(
   const s0 = topStrengths[0];
 
   if (w0) {
-    return `שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת ב${subj} סביב הנושא ${w0.labelHe} — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.`;
+    return `שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת ב${subj} ${parentCopyTopicPhraseHe(w0.labelHe)} — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.`;
   }
   if (i0) {
-    return `פעמיים בשבוע, 12–15 דק׳: תרגול קצר ב${subj} בנושא ${i0.labelHe} (דיוק כ־${i0.accuracy}%) — לעודד ניסוח מלא של התשובה לפני בדיקת נכון/לא נכון.`;
+    return `פעמיים בשבוע, 12–15 דק׳: תרגול קצר ב${subj} ${parentCopyTopicPhraseHe(i0.labelHe)} (דיוק כ־${i0.accuracy}%) — לעודד ניסוח מלא של התשובה לפני בדיקת נכון/לא נכון.`;
   }
   if (m0 || s0) {
     const pick = m0 || s0;
-    return `פעם בשבוע, 10–12 דק׳: לשמור על תרגול שגרתי ורגוע ב${subj} בנושא ${pick.labelHe} — המטרה היא עקביות, לא האצת קצב.`;
+    return `פעם בשבוע, 10–12 דק׳: לשמור על תרגול שגרתי ורגוע ב${subj} ${parentCopyTopicPhraseHe(pick.labelHe)} — המטרה היא עקביות, לא האצת קצב.`;
   }
   return null;
 }
@@ -363,11 +427,11 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain) {
   const w0 = topWeaknesses[0];
   if (w0) {
     goals.push(
-      `יעד חיזוק: לצמצם טעויות בדפוס סביב ${w0.labelHe} (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).`
+      `יעד חיזוק: ${successRateImprovementGoalHe(w0.labelHe)} (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).`
     );
   } else if (improving[0]) {
     goals.push(
-      `יעד חיזוק: לחזק יציבות ב${improving[0].labelHe} באמצעות שני שיעורים קצרים וברורים.`
+      `יעד חיזוק: ${successRateImprovementGoalHe(improving[0].labelHe)} (שני שיעורים קצרים בשבוע).`
     );
   }
 
@@ -378,7 +442,7 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain) {
     maintain[0];
   if (preserve) {
     goals.push(
-      `יעד שימור: להמשיך בשגרת תרגול נינוחה ב${preserve.labelHe} כדי לשמר את רמת הדיוק.`
+      `יעד שימור: להמשיך בשגרת תרגול נינוחה ${parentCopyTopicPhraseHe(preserve.labelHe)} כדי לשמר את רמת הדיוק.`
     );
   }
 
@@ -493,7 +557,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       const rs = recStrength(w.mistakeCount);
       studentRecommendationsImprove.push({
         id: `stu-imp:${w.id}`,
-        textHe: `מומלץ להתמקד: ${w.labelHe} (זוהו ${w.mistakeCount} טעויות דומות בטווח התאריכים).`,
+        textHe: `מומלץ להתמקד ${parentCopyTopicPhraseHe(w.labelHe)} (זוהו ${w.mistakeCount} טעויות דומות בטווח התאריכים).`,
         strength: rs,
       });
     }
@@ -505,8 +569,8 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
         id: `par-imp:${w0.id}`,
         textHe:
           rs === "strong"
-            ? `יש דפוס חוזר סביב הנושא ${w0.labelHe}. מומלץ לשבת יחד על דוגמה אחת ולבדוק את הלוגיקה צעד־אחר־צעד.`
-            : `מתחיל להתגבש דפוס סביב הנושא ${w0.labelHe}. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.`,
+            ? `יש דפוס חוזר ${parentCopyTopicPhraseHe(w0.labelHe)}. מומלץ לשבת יחד על דוגמה אחת ולבדוק את הלוגיקה צעד־אחר־צעד.`
+            : `מתחיל להתגבש דפוס ${parentCopyTopicPhraseHe(w0.labelHe)}. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.`,
         strength: rs,
       });
     }
@@ -644,7 +708,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       wrongCount: 12,
       hasAnySignal: true,
       summaryHe:
-        "תמונת המקצוע בחשבון: רואים חוזקה בולטת בחיבור. במקביל יש קושי חוזר סביב הנושא קושי בהשוואת כמויות או מספרים.",
+        "תמונת המקצוע בחשבון: רואים חוזקה בולטת בחיבור. במקביל נדרש חיזוק בנושא בהשוואת כמויות או מספרים.",
       topStrengths: [
         {
           id: "math:addition:learning",
@@ -667,9 +731,9 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         },
       ],
       parentActionHe:
-        "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בחשבון סביב הנושא קושי בהשוואת כמויות או מספרים — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
+        "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בחשבון בנושא בהשוואת כמויות או מספרים — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
       nextWeekGoalHe:
-        "יעד חיזוק: לצמצם טעויות בדפוס סביב קושי בהשוואת כמויות או מספרים (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר). יעד שימור: להמשיך בשגרת תרגול נינוחה בחיבור כדי לשמר את רמת הדיוק.",
+        "יעד חיזוק: להעלות את אחוזי ההצלחה בהשוואת כמויות או מספרים (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר). יעד שימור: להמשיך בשגרת תרגול נינוחה בנושא חיבור כדי לשמר את רמת הדיוק.",
       evidenceExamples: [
         {
           type: "mistake",
@@ -715,7 +779,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:math:w:0",
           textHe:
-            "מומלץ להתמקד: קושי בהשוואת כמויות או מספרים (זוהו 7 טעויות דומות בטווח התאריכים).",
+            "מומלץ להתמקד בנושא בהשוואת כמויות או מספרים (זוהו 7 טעויות דומות בטווח התאריכים).",
           strength: "moderate",
         },
       ],
@@ -731,7 +795,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "par-imp:math:w:0",
           textHe:
-            "מתחיל להתגבש דפוס סביב הנושא קושי בהשוואת כמויות או מספרים. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.",
+            "מתחיל להתגבש דפוס בנושא בהשוואת כמויות או מספרים. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.",
           strength: "moderate",
         },
       ],
@@ -771,7 +835,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       wrongCount: 9,
       hasAnySignal: true,
       summaryHe:
-        "תמונת המקצוע בגאומטריה: במקביל יש קושי חוזר סביב הנושא בלבול חוזר בין היקף לשטח.",
+        "תמונת המקצוע בגאומטריה: במקביל נדרש חיזוק בנושא בלבול חוזר בין היקף לשטח.",
       topStrengths: [],
       topWeaknesses: [
         {
@@ -783,9 +847,9 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         },
       ],
       parentActionHe:
-        "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בגאומטריה סביב הנושא בלבול חוזר בין היקף לשטח — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
+        "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בגאומטריה בנושא בלבול חוזר בין היקף לשטח — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
       nextWeekGoalHe:
-        "יעד חיזוק: לצמצם טעויות בדפוס סביב בלבול חוזר בין היקף לשטח (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).",
+        "יעד חיזוק: להעלות את אחוזי ההצלחה בלבול חוזר בין היקף לשטח (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).",
       evidenceExamples: [
         {
           type: "mistake",
@@ -813,7 +877,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:geometry:w:0",
           textHe:
-            "מומלץ להתמקד: בלבול חוזר בין היקף לשטח (זוהו 6 טעויות דומות בטווח התאריכים).",
+            "מומלץ להתמקד בנושא בלבול חוזר בין היקף לשטח (זוהו 6 טעויות דומות בטווח התאריכים).",
           strength: "moderate",
         },
       ],
@@ -822,7 +886,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "par-imp:geometry:w:0",
           textHe:
-            "מתחיל להתגבש דפוס סביב הנושא בלבול חוזר בין היקף לשטח. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.",
+            "מתחיל להתגבש דפוס בנושא בלבול חוזר בין היקף לשטח. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.",
           strength: "moderate",
         },
       ],
@@ -897,7 +961,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       wrongCount: 11,
       hasAnySignal: true,
       summaryHe:
-        "תמונת המקצוע בעברית: במקביל יש קושי חוזר סביב הנושא קושי במילות יחס ובמבנה משפט.",
+        "תמונת המקצוע בעברית: במקביל נדרש חיזוק בנושא במילות יחס ובמבנה משפט.",
       topStrengths: [],
       topWeaknesses: [
         {
@@ -909,9 +973,9 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         },
       ],
       parentActionHe:
-        "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בעברית סביב הנושא קושי במילות יחס ובמבנה משפט — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
+        "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בעברית בנושא במילות יחס ובמבנה משפט — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
       nextWeekGoalHe:
-        "יעד חיזוק: לצמצם טעויות בדפוס סביב קושי במילות יחס ובמבנה משפט (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).",
+        "יעד חיזוק: להעלות את אחוזי ההצלחה במילות יחס ובמבנה משפט (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).",
       evidenceExamples: [
         {
           type: "mistake",
@@ -939,7 +1003,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:hebrew:w:0",
           textHe:
-            "מומלץ להתמקד: קושי במילות יחס ובמבנה משפט (זוהו 6 טעויות דומות בטווח התאריכים).",
+            "מומלץ להתמקד בנושא במילות יחס ובמבנה משפט (זוהו 6 טעויות דומות בטווח התאריכים).",
           strength: "moderate",
         },
       ],
@@ -948,7 +1012,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "par-imp:hebrew:w:0",
           textHe:
-            "מתחיל להתגבש דפוס סביב הנושא קושי במילות יחס ובמבנה משפט. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.",
+            "מתחיל להתגבש דפוס בנושא במילות יחס ובמבנה משפט. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.",
           strength: "moderate",
         },
       ],

@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
+import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import {
@@ -174,6 +175,11 @@ function stripTechnicalParensHe(text) {
     .trim();
 }
 
+/** תאימות ל-tierHe ישן בדוחות שמורים */
+function weaknessTierHeDisplay(tierHe) {
+  return tierHe === "קושי חוזר / חולשה יציבה" ? "קושי חוזר" : tierHe;
+}
+
 /**
  * תאימות לאחור: payload ישן (לפני patternDiagnostics.version 2).
  */
@@ -193,7 +199,7 @@ function migrateDiagnosticSubjectV1ToRow(sub, subjectId) {
     id: s.id,
     labelHe: stripTechnicalParensHe(
       String(s.label || "").replace(/^[^:]+:\s*/, "").trim()
-    ) || "נושא בתרגול",
+    ) || "בנושא תרגול",
     questions: Number(s.questions) || 0,
     accuracy: Number(s.accuracy) || 0,
     confidence: s.confidence === "high" ? "high" : "moderate",
@@ -239,7 +245,7 @@ function migrateDiagnosticSubjectV1ToRow(sub, subjectId) {
     confidence: w.confidence,
     tierHe:
       (w.mistakeCount || 0) >= 10
-        ? "קושי חוזר / חולשה יציבה"
+        ? "קושי חוזר"
         : (w.mistakeCount || 0) >= 5
           ? "קושי נקודתי"
           : "תחום לחיזוק",
@@ -998,10 +1004,96 @@ export default function ParentReport() {
               color: #1e293b !important;
             }
 
+            /* —— PDF בלבד: חדות היררכיה, כרטיסי סיכום, גרפים (לא משנה מסך) —— */
+            #parent-report-pdf .parent-report-print-section-label {
+              color: #0f172a !important;
+              opacity: 1 !important;
+              font-weight: 800 !important;
+            }
+            #parent-report-pdf .parent-report-print-subheading {
+              color: #111827 !important;
+              opacity: 1 !important;
+              font-weight: 800 !important;
+            }
+            #parent-report-pdf .parent-report-print-muted-text {
+              color: #334155 !important;
+              opacity: 1 !important;
+              font-weight: 600 !important;
+            }
+            #parent-report-pdf .parent-report-print-page-section-heading {
+              color: #0f172a !important;
+              opacity: 1 !important;
+              font-weight: 800 !important;
+            }
+            #parent-report-pdf h1.parent-report-print-page-section-heading {
+              font-weight: 900 !important;
+            }
+            #parent-report-pdf .parent-report-print-chart-title {
+              color: #0f172a !important;
+              opacity: 1 !important;
+              font-weight: 800 !important;
+            }
+            #parent-report-pdf .parent-report-print-chart-subtitle {
+              color: #334155 !important;
+              opacity: 1 !important;
+              font-weight: 600 !important;
+            }
+            #parent-report-pdf .parent-report-print-legend-label {
+              color: #111827 !important;
+              opacity: 1 !important;
+              font-weight: 600 !important;
+            }
+            #parent-report-pdf .parent-report-print-summary-card {
+              background: #f8fafc !important;
+              border-width: 1.5px !important;
+              border-style: solid !important;
+              border-color: #334155 !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            #parent-report-pdf .parent-report-print-summary-label {
+              color: #0f172a !important;
+              opacity: 1 !important;
+              font-weight: 700 !important;
+            }
+            #parent-report-pdf .parent-report-print-summary-stat {
+              color: #0f172a !important;
+              opacity: 1 !important;
+              font-weight: 800 !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-print-narrative-box {
+              color: #1e293b !important;
+              opacity: 1 !important;
+              font-weight: 500 !important;
+              background: #f1f5f9 !important;
+              border-color: #64748b !important;
+            }
+            #parent-report-pdf .parent-report-graph-section svg text,
+            #parent-report-pdf .parent-report-graph-section svg tspan {
+              fill: #111827 !important;
+            }
+            #parent-report-pdf .parent-report-graph-section svg .parent-report-print-svg-tick {
+              fill: #111827 !important;
+            }
+            #parent-report-pdf .parent-report-graph-section .recharts-legend-wrapper,
+            #parent-report-pdf .parent-report-graph-section .recharts-legend-item-text {
+              color: #111827 !important;
+              fill: #111827 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-pdf .parent-report-graph-section .recharts-legend-wrapper span {
+              color: #111827 !important;
+              opacity: 1 !important;
+            }
             /* גרפים — מניעת שבירה וקריאות בהדפסה */
             #parent-report-pdf .parent-report-chart-card {
               break-inside: avoid !important;
               page-break-inside: avoid !important;
+              border-color: #475569 !important;
+              border-width: 1.5px !important;
+              background: #fafafa !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
             #parent-report-pdf .parent-report-graph-section .recharts-wrapper,
             #parent-report-pdf .parent-report-graph-section .recharts-surface {
@@ -1054,7 +1146,9 @@ export default function ParentReport() {
           
           {/* כותרת */}
           <div className="text-center mb-1 md:mb-2">
-            <h1 className="text-2xl md:text-3xl font-extrabold mb-2">📊 דוח להורים</h1>
+            <h1 className="parent-report-print-page-section-heading text-2xl md:text-3xl font-extrabold mb-2">
+              📊 דוח להורים
+            </h1>
             <p className="text-white/70 text-sm md:text-base">{report.playerName}</p>
             
             {/* בחירת תקופה (לא נכנס ל-PDF) */}
@@ -1147,39 +1241,47 @@ export default function ParentReport() {
 
           {/* סיכום כללי */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-3 md:mb-6 avoid-break">
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
-              <div className="text-[10px] md:text-xs text-white/60 mb-1">זמן כולל</div>
-              <div className="text-lg md:text-2xl font-bold text-blue-400">
+            <div className="parent-report-print-summary-card bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
+              <div className="parent-report-print-summary-label text-[10px] md:text-xs text-white/60 mb-1">
+                זמן כולל
+              </div>
+              <div className="parent-report-print-summary-stat text-lg md:text-2xl font-bold text-blue-400">
                 {report.summary.totalTimeMinutes} דק'
               </div>
-              <div className="text-[10px] md:text-xs text-white/60">
+              <div className="parent-report-print-summary-label text-[10px] md:text-xs text-white/60">
                 ({report.summary.totalTimeHours} שעות)
               </div>
             </div>
             
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
-              <div className="text-[10px] md:text-xs text-white/60 mb-1">שאלות</div>
-              <div className="text-lg md:text-2xl font-bold text-emerald-400">
+            <div className="parent-report-print-summary-card bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
+              <div className="parent-report-print-summary-label text-[10px] md:text-xs text-white/60 mb-1">
+                שאלות
+              </div>
+              <div className="parent-report-print-summary-stat text-lg md:text-2xl font-bold text-emerald-400">
                 {report.summary.totalQuestions}
               </div>
-              <div className="text-[10px] md:text-xs text-white/60">
+              <div className="parent-report-print-summary-label text-[10px] md:text-xs text-white/60">
                 {report.summary.totalCorrect} נכון
               </div>
             </div>
             
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
-              <div className="text-[10px] md:text-xs text-white/60 mb-1">דיוק כללי</div>
-              <div className="text-lg md:text-2xl font-bold text-yellow-400">
+            <div className="parent-report-print-summary-card bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
+              <div className="parent-report-print-summary-label text-[10px] md:text-xs text-white/60 mb-1">
+                דיוק כללי
+              </div>
+              <div className="parent-report-print-summary-stat text-lg md:text-2xl font-bold text-yellow-400">
                 {report.summary.overallAccuracy}%
               </div>
             </div>
             
-            <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
-              <div className="text-[10px] md:text-xs text-white/60 mb-1">רמה</div>
-              <div className="text-lg md:text-2xl font-bold text-purple-400">
+            <div className="parent-report-print-summary-card bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 text-center">
+              <div className="parent-report-print-summary-label text-[10px] md:text-xs text-white/60 mb-1">
+                רמה
+              </div>
+              <div className="parent-report-print-summary-stat text-lg md:text-2xl font-bold text-purple-400">
                 Lv.{report.summary.playerLevel}
               </div>
-              <div className="text-[10px] md:text-xs text-white/60">
+              <div className="parent-report-print-summary-label text-[10px] md:text-xs text-white/60">
                 ⭐ {report.summary.stars} • 🏆 {report.summary.achievements}
               </div>
             </div>
@@ -1187,63 +1289,76 @@ export default function ParentReport() {
 
           {/* סיכום לפי מקצוע */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 mb-3 md:mb-6 avoid-break">
-            <div className="bg-blue-500/20 border border-blue-400/50 rounded-lg p-2 md:p-4 text-center">
-              <div className="text-xs md:text-sm text-white/60 mb-1">🧮 חשבון</div>
-              <div className="text-base md:text-lg font-bold text-blue-400">
+            <div className="parent-report-print-summary-card bg-blue-500/20 border border-blue-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="parent-report-print-summary-label text-xs md:text-sm text-white/60 mb-1">
+                🧮 חשבון
+              </div>
+              <div className="parent-report-print-summary-stat text-base md:text-lg font-bold text-blue-400">
                 {report.summary.mathQuestions || 0} שאלות
               </div>
-              <div className="text-xs text-white/80">
+              <div className="parent-report-print-muted-text text-xs text-white/80">
                 {report.summary.mathCorrect || 0} נכון • {report.summary.mathAccuracy || 0}% דיוק
               </div>
             </div>
             
-            <div className="bg-emerald-500/20 border border-emerald-400/50 rounded-lg p-2 md:p-4 text-center">
-              <div className="text-xs md:text-sm text-white/60 mb-1">📐 גאומטריה</div>
-              <div className="text-base md:text-lg font-bold text-emerald-400">
+            <div className="parent-report-print-summary-card bg-emerald-500/20 border border-emerald-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="parent-report-print-summary-label text-xs md:text-sm text-white/60 mb-1">
+                📐 גאומטריה
+              </div>
+              <div className="parent-report-print-summary-stat text-base md:text-lg font-bold text-emerald-400">
                 {report.summary.geometryQuestions || 0} שאלות
               </div>
-              <div className="text-xs text-white/80">
+              <div className="parent-report-print-muted-text text-xs text-white/80">
                 {report.summary.geometryCorrect || 0} נכון • {report.summary.geometryAccuracy || 0}% דיוק
               </div>
             </div>
             
-            <div className="bg-purple-500/20 border border-purple-400/50 rounded-lg p-2 md:p-4 text-center">
-              <div className="text-xs md:text-sm text-white/60 mb-1">📘 אנגלית</div>
-              <div className="text-base md:text-lg font-bold text-purple-200">
+            <div className="parent-report-print-summary-card bg-purple-500/20 border border-purple-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="parent-report-print-summary-label text-xs md:text-sm text-white/60 mb-1">
+                📘 אנגלית
+              </div>
+              <div className="parent-report-print-summary-stat text-base md:text-lg font-bold text-purple-200">
                 {report.summary.englishQuestions || 0} שאלות
               </div>
-              <div className="text-xs text-white/80">
+              <div className="parent-report-print-muted-text text-xs text-white/80">
                 {report.summary.englishCorrect || 0} נכון • {report.summary.englishAccuracy || 0}% דיוק
               </div>
             </div>
             
-            <div className="bg-green-500/20 border border-green-400/50 rounded-lg p-2 md:p-4 text-center">
-              <div className="text-xs md:text-sm text-white/60 mb-1">🔬 מדעים</div>
-              <div className="text-base md:text-lg font-bold text-green-200">
+            <div className="parent-report-print-summary-card bg-green-500/20 border border-green-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="parent-report-print-summary-label text-xs md:text-sm text-white/60 mb-1">
+                🔬 מדעים
+              </div>
+              <div className="parent-report-print-summary-stat text-base md:text-lg font-bold text-green-200">
                 {report.summary.scienceQuestions || 0} שאלות
               </div>
-              <div className="text-xs text-white/80">
+              <div className="parent-report-print-muted-text text-xs text-white/80">
                 {report.summary.scienceCorrect || 0} נכון • {report.summary.scienceAccuracy || 0}% דיוק
               </div>
             </div>
             
-            <div className="bg-orange-500/20 border border-orange-400/50 rounded-lg p-2 md:p-4 text-center">
-              <div className="text-xs md:text-sm text-white/60 mb-1">📚 עברית</div>
-              <div className="text-base md:text-lg font-bold text-orange-300">
+            <div className="parent-report-print-summary-card bg-orange-500/20 border border-orange-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="parent-report-print-summary-label text-xs md:text-sm text-white/60 mb-1">
+                📚 עברית
+              </div>
+              <div className="parent-report-print-summary-stat text-base md:text-lg font-bold text-orange-300">
                 {report.summary.hebrewQuestions || 0} שאלות
               </div>
-              <div className="text-xs text-white/80">
+              <div className="parent-report-print-muted-text text-xs text-white/80">
                 {report.summary.hebrewCorrect || 0} נכון • {report.summary.hebrewAccuracy || 0}% דיוק
               </div>
             </div>
             
-            <div className="bg-cyan-500/20 border border-cyan-400/50 rounded-lg p-2 md:p-4 text-center">
-              <div className="text-xs md:text-sm text-white/60 mb-1">🗺️ מולדת וגאוגרפיה</div>
-              <div className="text-base md:text-lg font-bold text-cyan-300">
+            <div className="parent-report-print-summary-card bg-cyan-500/20 border border-cyan-400/50 rounded-lg p-2 md:p-4 text-center">
+              <div className="parent-report-print-summary-label text-xs md:text-sm text-white/60 mb-1">
+                🗺️ מולדת וגאוגרפיה
+              </div>
+              <div className="parent-report-print-summary-stat text-base md:text-lg font-bold text-cyan-300">
                 {report.summary.moledetGeographyQuestions || 0} שאלות
               </div>
-              <div className="text-xs text-white/80">
-                {report.summary.moledetGeographyCorrect || 0} נכון • {report.summary.moledetGeographyAccuracy || 0}% דיוק
+              <div className="parent-report-print-muted-text text-xs text-white/80">
+                {report.summary.moledetGeographyCorrect || 0} נכון •{" "}
+                {report.summary.moledetGeographyAccuracy || 0}% דיוק
               </div>
             </div>
           </div>
@@ -2094,7 +2209,7 @@ export default function ParentReport() {
               (diagnosticsView.mode === "legacy" &&
                 diagnosticsView.legacyRecommendations.length > 0)) && (
               <div className="parent-report-recommendations-print parent-report-diagnostics-print bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
-                <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">
+                <h2 className="parent-report-print-page-section-heading text-base md:text-xl font-bold mb-2 md:mb-3 text-center">
                   💡 המלצות
                 </h2>
 
@@ -2124,10 +2239,10 @@ export default function ParentReport() {
                                   : "🔵"}
                           </span>
                           <div className="flex-1">
-                            <div className="font-semibold mb-1 text-sm md:text-base">
+                            <div className="parent-report-print-subheading font-semibold mb-1 text-sm md:text-base">
                               {rec.operationName}
                             </div>
-                            <div className="text-xs md:text-sm text-white/80 break-words">
+                            <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                               {rec.message}
                             </div>
                           </div>
@@ -2140,7 +2255,7 @@ export default function ParentReport() {
                 {(diagnosticsView.mode === "insufficient" ||
                   (diagnosticsView.mode === "new" &&
                     diagnosticsView.rows.length === 0)) && (
-                  <p className="text-center text-sm md:text-base text-white/75 px-2 py-3">
+                  <p className="parent-report-print-muted-text text-center text-sm md:text-base text-white/75 px-2 py-3">
                     עדיין אין מספיק נתונים לאבחון מקצועי יציב
                   </p>
                 )}
@@ -2163,7 +2278,7 @@ export default function ParentReport() {
                       const topStr = s.topStrengths?.length ? s.topStrengths : legacyStrength;
                       const wkLegacy = (s.weaknesses || []).map((w) => ({
                         ...w,
-                        tierHe: w.tierHe || "קושי חוזר / חולשה יציבה",
+                        tierHe: w.tierHe || "קושי חוזר",
                       }));
                       const topWk = s.topWeaknesses?.length ? s.topWeaknesses : wkLegacy;
                       const mn = s.maintain || [];
@@ -2209,12 +2324,12 @@ export default function ParentReport() {
                           </div>
                           <div className="space-y-2 md:space-y-2.5">
                             {summaryHe ? (
-                              <div className="text-xs md:text-sm text-white/85 leading-relaxed border border-white/10 rounded-md bg-white/5 px-2 py-1.5">
+                              <div className="parent-report-print-narrative-box text-xs md:text-sm text-white/85 leading-relaxed border border-white/10 rounded-md bg-white/5 px-2 py-1.5">
                                 {summaryHe}
                               </div>
                             ) : null}
                             {topStr.length > 0 && (
-                              <div className="text-[11px] font-semibold text-emerald-200/80 pt-1">
+                              <div className="parent-report-print-section-label text-[11px] font-semibold text-emerald-200/80 pt-1">
                                 חוזקות מובילות
                               </div>
                             )}
@@ -2226,10 +2341,10 @@ export default function ParentReport() {
                                 <div className="flex items-start gap-2">
                                   <span className="text-lg shrink-0">🌟</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
                                       {x.tierHe || "חוזקה בולטת"}
                                     </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
                                     </div>
                                   </div>
@@ -2237,7 +2352,7 @@ export default function ParentReport() {
                               </div>
                             ))}
                             {topWk.length > 0 && (
-                              <div className="text-[11px] font-semibold text-white/55 tracking-wide">
+                              <div className="parent-report-print-section-label text-[11px] font-semibold text-white/55 tracking-wide">
                                 תחומים הדורשים תשומת לב
                               </div>
                             )}
@@ -2249,10 +2364,10 @@ export default function ParentReport() {
                                 <div className="flex items-start gap-2">
                                   <span className="text-lg shrink-0">🔴</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      {w.tierHe || "תחום לחיזוק"}
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                      {weaknessTierHeDisplay(w.tierHe) || "תחום לחיזוק"}
                                     </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {w.labelHe}
                                       {typeof w.mistakeCount === "number"
                                         ? ` (${w.mistakeCount} טעויות דומות)`
@@ -2263,7 +2378,7 @@ export default function ParentReport() {
                               </div>
                             ))}
                             {mn.length > 0 && (
-                              <div className="text-[11px] font-semibold text-sky-200/80 pt-1">
+                              <div className="parent-report-print-section-label text-[11px] font-semibold text-sky-200/80 pt-1">
                                 מומלץ לשמר
                               </div>
                             )}
@@ -2275,10 +2390,10 @@ export default function ParentReport() {
                                 <div className="flex items-start gap-2">
                                   <span className="text-lg shrink-0">🔷</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
                                       {x.tierHe || "תחום לשימור"}
                                     </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
                                     </div>
                                   </div>
@@ -2286,7 +2401,7 @@ export default function ParentReport() {
                               </div>
                             ))}
                             {im.length > 0 && (
-                              <div className="text-[11px] font-semibold text-amber-200/80 pt-1">
+                              <div className="parent-report-print-section-label text-[11px] font-semibold text-amber-200/80 pt-1">
                                 נקודות לשיפור
                               </div>
                             )}
@@ -2298,11 +2413,11 @@ export default function ParentReport() {
                                 <div className="flex items-start gap-2">
                                   <span className="text-lg shrink-0">📈</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
                                       {x.tierHe || "תחום במגמת שיפור"}
                                     </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
-                                      {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
+                                      {improvingDiagnosticsDisplayLabelHe(x.labelHe)} — דיוק {x.accuracy}% ({x.questions} שאלות)
                                     </div>
                                   </div>
                                 </div>
@@ -2313,10 +2428,10 @@ export default function ParentReport() {
                                 <div className="flex items-start gap-2">
                                   <span className="text-lg shrink-0">👪</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
                                       פעולה קונקרטית לבית
                                     </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {parentActionHe}
                                     </div>
                                   </div>
@@ -2328,10 +2443,10 @@ export default function ParentReport() {
                                 <div className="flex items-start gap-2">
                                   <span className="text-lg shrink-0">🗓️</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
                                       יעדים לשבוע הקרוב
                                     </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {nextWeekGoalHe}
                                     </div>
                                   </div>
@@ -2346,10 +2461,10 @@ export default function ParentReport() {
                                 <div className="flex items-start gap-2">
                                   <span className="text-lg shrink-0">🎯</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
                                       המלצה לתלמיד
                                     </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {r.textHe}
                                     </div>
                                   </div>
@@ -2364,10 +2479,10 @@ export default function ParentReport() {
                                 <div className="flex items-start gap-2">
                                   <span className="text-lg shrink-0">✨</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
                                       המלצה לתלמיד — שימור חוזקה
                                     </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {r.textHe}
                                     </div>
                                   </div>
@@ -2383,10 +2498,10 @@ export default function ParentReport() {
                                     <div className="flex items-start gap-2">
                                       <span className="text-lg shrink-0">👪</span>
                                       <div className="flex-1 min-w-0">
-                                        <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                        <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
                                           המלצה להורה
                                         </div>
-                                        <div className="text-xs md:text-sm text-white/80 break-words">
+                                        <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                           {r.textHe}
                                         </div>
                                       </div>
@@ -2402,10 +2517,10 @@ export default function ParentReport() {
                                 <div className="flex items-start gap-2">
                                   <span className="text-lg shrink-0">💬</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
                                       המלצה להורה — עידוד ושימור
                                     </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {r.textHe}
                                     </div>
                                   </div>
@@ -2491,8 +2606,10 @@ export default function ParentReport() {
             {report.dailyActivity.length > 0 && (
               <div className="parent-report-chart-card bg-black/30 border border-white/10 rounded-xl p-3 md:p-5 avoid-break shadow-sm shadow-black/20">
                 <div className="text-center mb-1 md:mb-2">
-                  <h2 className="text-base md:text-xl font-bold tracking-tight">פעילות יומית</h2>
-                  <p className="text-[11px] md:text-xs text-white/55 mt-0.5">
+                  <h2 className="parent-report-print-chart-title text-base md:text-xl font-bold tracking-tight">
+                    פעילות יומית
+                  </h2>
+                  <p className="parent-report-print-chart-subtitle text-[11px] md:text-xs text-white/55 mt-0.5">
                     זמן תרגול ושאלות לפי יום בתקופה שנבחרה
                   </p>
                 </div>
@@ -2546,7 +2663,7 @@ export default function ParentReport() {
                         iconType="line"
                         iconSize={11}
                         formatter={(value) => (
-                          <span className="text-white/80">{value}</span>
+                          <span className="parent-report-print-legend-label text-white/80">{value}</span>
                         )}
                       />
                       <Line
@@ -2576,10 +2693,10 @@ export default function ParentReport() {
             {report.dailyActivity.length > 0 && (
               <div className="parent-report-chart-card bg-black/30 border border-white/10 rounded-xl p-3 md:p-5 avoid-break shadow-sm shadow-black/20">
                 <div className="text-center mb-1 md:mb-2">
-                  <h2 className="text-base md:text-xl font-bold tracking-tight">
+                  <h2 className="parent-report-print-chart-title text-base md:text-xl font-bold tracking-tight">
                     פעילות לפי מקצועות (יומי)
                   </h2>
-                  <p className="text-[11px] md:text-xs text-white/55 mt-0.5">
+                  <p className="parent-report-print-chart-subtitle text-[11px] md:text-xs text-white/55 mt-0.5">
                     מספר נושאים שונים שנוגעו בכל יום — כולל מדעים
                   </p>
                 </div>
@@ -2631,7 +2748,7 @@ export default function ParentReport() {
                         iconType="line"
                         iconSize={10}
                         formatter={(value) => (
-                          <span className="text-white/75">{value}</span>
+                          <span className="parent-report-print-legend-label text-white/75">{value}</span>
                         )}
                       />
                       <Line
@@ -2714,10 +2831,10 @@ export default function ParentReport() {
                 return (
                   <div className="parent-report-chart-card bg-black/30 border border-white/10 rounded-xl p-3 md:p-5 avoid-break shadow-sm shadow-black/20">
                     <div className="text-center mb-2 md:mb-3">
-                      <h2 className="text-base md:text-xl font-bold tracking-tight">
+                      <h2 className="parent-report-print-chart-title text-base md:text-xl font-bold tracking-tight">
                         סיכום לפי שש המקצועות
                       </h2>
-                      <p className="text-[11px] md:text-xs text-white/55 mt-0.5">
+                      <p className="parent-report-print-chart-subtitle text-[11px] md:text-xs text-white/55 mt-0.5">
                         זמן תרגול (דקות) — בפרטים מלאים יופיעו גם שאלות ודיוק
                       </p>
                     </div>
@@ -2780,6 +2897,7 @@ export default function ParentReport() {
                                   row?.name ?? String(payload.value ?? "");
                                 return (
                                   <text
+                                    className="parent-report-print-svg-tick"
                                     x={(x ?? 0) - 6}
                                     y={y}
                                     textAnchor="end"
@@ -2853,8 +2971,10 @@ export default function ParentReport() {
                     className={`parent-report-chart-card bg-black/30 border ${cfg.border} rounded-xl p-3 md:p-5 avoid-break shadow-sm shadow-black/15`}
                   >
                     <div className="text-center mb-2 md:mb-3">
-                      <h2 className="text-sm md:text-lg font-bold tracking-tight">{cfg.title}</h2>
-                      <p className="text-[11px] md:text-xs text-white/50 mt-0.5">
+                      <h2 className="parent-report-print-chart-title text-sm md:text-lg font-bold tracking-tight">
+                        {cfg.title}
+                      </h2>
+                      <p className="parent-report-print-chart-subtitle text-[11px] md:text-xs text-white/50 mt-0.5">
                         מסילת תוויות ומסילת גרף משותפות לכל המקצועות
                       </p>
                     </div>
@@ -2914,6 +3034,7 @@ export default function ParentReport() {
                                   row?.label ?? String(payload.value ?? "");
                                 return (
                                   <text
+                                    className="parent-report-print-svg-tick"
                                     x={(x ?? 0) - 6}
                                     y={y}
                                     textAnchor="end"

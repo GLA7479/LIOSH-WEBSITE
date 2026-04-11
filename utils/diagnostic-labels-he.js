@@ -40,8 +40,8 @@ function englishTopicLabelHe(topicKey) {
 /** טקסט כשאין פירוט טכני — תמיד בעברית, מבהיר שמדובר באנגלית */
 export function englishWeaknessFallbackHe(topicKey) {
   const t = englishTopicLabelHe(topicKey);
-  if (t) return `קושי ב${t} (אנגלית)`;
-  return "קושי באנגלית בדפוס טעויות חוזר";
+  if (t) return `בנושא ${t} (אנגלית)`;
+  return "בנושא תרגול באנגלית";
 }
 
 /** מילון מקוצר: מקטעים באנגלית מתוך patternFamily/kind → עברית */
@@ -170,7 +170,7 @@ export function weaknessLabelHe(subjectId, sampleEv) {
     if (hay.includes("perimeter") && hay.includes("area"))
       return "בלבול חוזר בין היקף לשטח";
     if (hay.includes("perimeter")) return "קושי בהבחנה ובחישוב היקף";
-    if (hay.includes("area")) return "קושי בשטחים וביחידות שטח";
+    if (hay.includes("area")) return "בנושא/ים שטחים ויחידות שטח";
     if (hay.includes("volume") || hay.includes("prism"))
       return "קושי בנפח ובתבניות תלת־ממד";
     if (hay.includes("angle")) return "קושי בזוויות וביחסים בין זוויות";
@@ -221,11 +221,11 @@ export function weaknessLabelHe(subjectId, sampleEv) {
 
   if (topic && !isMostlyAsciiIdentifier(topic)) {
     const t = String(topic).trim();
-    if (hasHebrewLetters(t)) return `קושי נקודתי ב${t}`;
+    if (hasHebrewLetters(t)) return `בנושא ${t}`;
   }
   if (topic && isMostlyAsciiIdentifier(topic)) {
     const nice = topicBucketLabelHe(subjectId, topic);
-    if (nice && !isMostlyAsciiIdentifier(nice)) return `קושי נקודתי ב${nice}`;
+    if (nice && !isMostlyAsciiIdentifier(nice)) return `בנושא ${nice}`;
   }
 
   if (pf && !isMostlyAsciiIdentifier(pf) && hasHebrewLetters(pf)) return `דפוס שגיאות: ${pf.trim()}`;
@@ -243,7 +243,7 @@ export function weaknessLabelHe(subjectId, sampleEv) {
  * @param {Record<string, unknown>} row — שורת דוח V2
  */
 export function sessionRowLabelHe(subjectId, row) {
-  if (!row || typeof row !== "object") return "נושא בתרגול";
+  if (!row || typeof row !== "object") return "בנושא תרגול";
   const dn = row.displayName != null ? String(row.displayName).trim() : "";
   if (dn && hasHebrewLetters(dn)) return dn;
   const bk = row.bucketKey != null ? String(row.bucketKey) : "";
@@ -251,5 +251,5 @@ export function sessionRowLabelHe(subjectId, row) {
     const mapped = topicBucketLabelHe(subjectId, bk);
     if (mapped && hasHebrewLetters(mapped)) return mapped;
   }
-  return "נושא בתרגול";
+  return "בנושא תרגול";
 }
