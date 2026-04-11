@@ -1385,14 +1385,36 @@ useEffect(() => {
       
       // שמירת שגיאה לתרגול ממוקד
       const topicKey = currentQuestion.topic || currentQuestion.operation || "homeland";
+      const mgPrm = currentQuestion.params || {};
+      const ts = Date.now();
       const mistake = {
         operation: topicKey,
+        topic: topicKey,
+        topicOrOperation: topicKey,
+        bucketKey: topicKey,
+        mode: reportModeFromGameState(mode, focusedPracticeMode),
         question: currentQuestion.exerciseText || currentQuestion.question || "",
+        exerciseText: currentQuestion.exerciseText || currentQuestion.question || "",
         correctAnswer: currentQuestion.correctAnswer,
         wrongAnswer: answer,
+        userAnswer: answer,
+        isCorrect: false,
         grade: grade,
         level: level,
-        timestamp: Date.now(),
+        timestamp: ts,
+        storedAt: ts,
+        kind: mgPrm.kind != null ? String(mgPrm.kind) : null,
+        patternFamily:
+          mgPrm.patternFamily != null ? String(mgPrm.patternFamily) : null,
+        subtype: mgPrm.subtype != null ? String(mgPrm.subtype) : null,
+        distractorFamily:
+          mgPrm.distractorFamily != null ? String(mgPrm.distractorFamily) : null,
+        conceptTag: mgPrm.conceptTag != null ? String(mgPrm.conceptTag) : null,
+        answerMode:
+          Array.isArray(currentQuestion.answers) &&
+          currentQuestion.answers.length > 1
+            ? "choice"
+            : "typed",
       };
       setMistakes((prev) => {
         const updated = [...prev, mistake].slice(-50); // שמור רק 50 שגיאות אחרונות

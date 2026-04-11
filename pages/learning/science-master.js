@@ -1340,15 +1340,25 @@ function recordSessionProgress() {
   function logScienceMistakeEntry(question, wrongAnswer) {
     if (typeof window === "undefined" || !question) return;
     try {
+      const ts = Date.now();
       const entry = {
         id: question.id,
         topic: question.topic,
+        topicOrOperation: question.topic,
+        bucketKey: question.topic,
         grade: question.assignedGrade || question.grades?.[0] || grade,
         level: question.assignedLevel || question.minLevel || level,
         stem: question.stem,
         correct: question.options?.[question.correctIndex],
         wrong: wrongAnswer,
-        timestamp: Date.now(),
+        exerciseText: question.stem || "",
+        questionLabel: question.id != null ? String(question.id) : null,
+        correctAnswer: question.options?.[question.correctIndex],
+        userAnswer: wrongAnswer,
+        isCorrect: false,
+        mode,
+        timestamp: ts,
+        storedAt: ts,
       };
       const stored = loadScienceMistakesFromStorage();
       stored.push(entry);

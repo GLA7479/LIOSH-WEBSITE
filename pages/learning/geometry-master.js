@@ -1083,9 +1083,29 @@ useEffect(() => {
             const filtered = prev.filter(
               (m) => geometryQuestionFingerprint(m.snapshot) !== fp
             );
+            const ts = Date.now();
+            const prm = currentQuestion.params || {};
             const entry = {
               id: newGeometryMistakeId(),
-              storedAt: Date.now(),
+              storedAt: ts,
+              timestamp: ts,
+              topic: currentQuestion.topic,
+              topicOrOperation: currentQuestion.topic,
+              bucketKey: currentQuestion.topic,
+              mode: reportModeFromGameState(mode, focusedPracticeMode),
+              kind: prm.kind != null ? String(prm.kind) : null,
+              patternFamily:
+                prm.patternFamily != null ? String(prm.patternFamily) : null,
+              subtype: prm.subtype != null ? String(prm.subtype) : null,
+              distractorFamily:
+                prm.distractorFamily != null ? String(prm.distractorFamily) : null,
+              conceptTag: prm.conceptTag != null ? String(prm.conceptTag) : null,
+              answerMode:
+                Array.isArray(currentQuestion.answers) &&
+                currentQuestion.answers.length > 1
+                  ? "choice"
+                  : "numeric",
+              isCorrect: false,
               grade,
               level,
               wrongAnswer: answer,

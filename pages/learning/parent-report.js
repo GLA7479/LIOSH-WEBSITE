@@ -151,6 +151,90 @@ function topicBarColor(accuracy) {
   return "#ef4444";
 }
 
+/** סדר תצוגת אבחון מקצועי — תואם `patternDiagnostics.subjects` */
+const PATTERN_DIAGNOSTIC_SUBJECT_ORDER = [
+  "math",
+  "geometry",
+  "english",
+  "science",
+  "hebrew",
+  "moledet-geography",
+];
+
+const MAX_DIAGNOSTIC_EVIDENCE_CHARS = 200;
+
+/**
+ * מקור תצוגה לאזור ההמלצות: אבחון חדש, הודעת "אין מספיק נתונים", או המלצות V2 ישנות רק כשאין `patternDiagnostics`.
+ * @returns {{ mode: "new"|"insufficient"|"legacy", rows: object[], legacyRecommendations: object[] }}
+ */
+function buildParentReportDiagnosticsView(report) {
+  const legacy = Array.isArray(report?.analysis?.recommendations)
+    ? report.analysis.recommendations
+    : [];
+  const subjects = report?.patternDiagnostics?.subjects;
+  const hasSubjects =
+    subjects && typeof subjects === "object" && !Array.isArray(subjects);
+
+  if (!hasSubjects) {
+    return {
+      mode: legacy.length ? "legacy" : "insufficient",
+      rows: [],
+      legacyRecommendations: legacy,
+    };
+  }
+
+  let hasWeakOrStrength = false;
+  for (const id of PATTERN_DIAGNOSTIC_SUBJECT_ORDER) {
+    const sub = subjects[id];
+    if (!sub) continue;
+    if ((sub.stableWeaknesses || [])[0] || (sub.stableStrengths || [])[0]) {
+      hasWeakOrStrength = true;
+      break;
+    }
+  }
+
+  if (!hasWeakOrStrength) {
+    return {
+      mode: "insufficient",
+      rows: [],
+      legacyRecommendations: legacy,
+    };
+  }
+
+  const rows = [];
+  for (const id of PATTERN_DIAGNOSTIC_SUBJECT_ORDER) {
+    const sub = subjects[id];
+    if (!sub) continue;
+    const weakness = (sub.stableWeaknesses || [])[0];
+    const strength = (sub.stableStrengths || [])[0];
+    const studentRec = (sub.studentRecommendations || [])[0];
+    const parentRec = (sub.parentRecommendations || [])[0];
+    let evidence = (sub.evidenceExamples || [])[0];
+    if (evidence) {
+      const c = evidence.confidence;
+      const okConf = c === "high" || c === "moderate";
+      const ex = String(evidence.exerciseText || "");
+      if (!okConf || ex.length > MAX_DIAGNOSTIC_EVIDENCE_CHARS) evidence = null;
+    }
+    if (!weakness && !strength && !studentRec && !parentRec && !evidence) continue;
+    rows.push({
+      subjectId: id,
+      subjectLabelHe: sub.subjectLabelHe || id,
+      weakness,
+      strength,
+      studentRec,
+      parentRec,
+      evidence,
+    });
+  }
+
+  return {
+    mode: "new",
+    rows,
+    legacyRecommendations: legacy,
+  };
+}
+
 /** הגדרות כרטיסי נושא — מקור אחד לרשימת המקצועות + איסוף תוויות גלובלי */
 const TOPIC_BAR_SUBJECT_CARDS = [
   { title: "חשבון — דיוק לפי נושא", mapKey: "mathOperations", prefix: "math_", border: "border-blue-400/25" },
@@ -465,6 +549,11 @@ export default function ParentReport() {
       chartHostInnerWidthPx,
     });
   }, [report, isMobile, isPrintLayout, chartHostInnerWidthPx]);
+
+  const diagnosticsView = useMemo(
+    () => (report ? buildParentReportDiagnosticsView(report) : null),
+    [report]
+  );
 
   if (loading) {
     return (
@@ -1823,44 +1912,160 @@ export default function ParentReport() {
             </div>
           )}
 
-          {/* המלצות */}
-          {report.analysis.recommendations.length > 0 && (
-            <div className="parent-report-recommendations-print bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">💡 המלצות</h2>
-              <div className="space-y-2 md:space-y-3">
-                {report.analysis.recommendations.map((rec, idx) => (
-                  <div
-                    key={idx}
-                    className={`parent-report-rec-item p-2 md:p-3 rounded-lg border ${
-                      rec.priority === 'success'
-                        ? "bg-green-500/20 border-green-400/50"
-                        : rec.priority === 'high'
-                        ? "bg-red-500/20 border-red-400/50"
-                        : rec.priority === 'medium'
-                        ? "bg-yellow-500/20 border-yellow-400/50"
-                        : "bg-blue-500/20 border-blue-400/50"
-                    }`}
-                  >
-                    <div className="flex items-start gap-2">
-                      <span className="text-lg md:text-xl">
-                        {rec.priority === 'success'
-                          ? '🟢'
-                          : rec.priority === 'high'
-                          ? '🔴'
-                          : rec.priority === 'medium'
-                          ? '🟡'
-                          : '🔵'}
-                      </span>
-                      <div className="flex-1">
-                        <div className="font-semibold mb-1 text-sm md:text-base">{rec.operationName}</div>
-                        <div className="text-xs md:text-sm text-white/80 break-words">{rec.message}</div>
+          {/* המלצות — מקור ראשי: patternDiagnostics; ישן רק אם אין אובייקט אבחון */}
+          {diagnosticsView &&
+            (diagnosticsView.mode === "insufficient" ||
+              diagnosticsView.mode === "new" ||
+              (diagnosticsView.mode === "legacy" &&
+                diagnosticsView.legacyRecommendations.length > 0)) && (
+              <div className="parent-report-recommendations-print bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
+                <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">
+                  💡 המלצות
+                </h2>
+
+                {diagnosticsView.mode === "legacy" && (
+                  <div className="space-y-2 md:space-y-3">
+                    {diagnosticsView.legacyRecommendations.map((rec, idx) => (
+                      <div
+                        key={idx}
+                        className={`parent-report-rec-item p-2 md:p-3 rounded-lg border ${
+                          rec.priority === "success"
+                            ? "bg-green-500/20 border-green-400/50"
+                            : rec.priority === "high"
+                              ? "bg-red-500/20 border-red-400/50"
+                              : rec.priority === "medium"
+                                ? "bg-yellow-500/20 border-yellow-400/50"
+                                : "bg-blue-500/20 border-blue-400/50"
+                        }`}
+                      >
+                        <div className="flex items-start gap-2">
+                          <span className="text-lg md:text-xl">
+                            {rec.priority === "success"
+                              ? "🟢"
+                              : rec.priority === "high"
+                                ? "🔴"
+                                : rec.priority === "medium"
+                                  ? "🟡"
+                                  : "🔵"}
+                          </span>
+                          <div className="flex-1">
+                            <div className="font-semibold mb-1 text-sm md:text-base">
+                              {rec.operationName}
+                            </div>
+                            <div className="text-xs md:text-sm text-white/80 break-words">
+                              {rec.message}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                )}
+
+                {(diagnosticsView.mode === "insufficient" ||
+                  (diagnosticsView.mode === "new" &&
+                    diagnosticsView.rows.length === 0)) && (
+                  <p className="text-center text-sm md:text-base text-white/75 px-2 py-3">
+                    עדיין אין מספיק נתונים לאבחון מקצועי יציב
+                  </p>
+                )}
+
+                {diagnosticsView.mode === "new" && diagnosticsView.rows.length > 0 && (
+                  <div className="space-y-3 md:space-y-4">
+                    {diagnosticsView.rows.map((row) => (
+                      <div
+                        key={row.subjectId}
+                        className="rounded-lg border border-white/15 bg-black/20 p-2 md:p-3"
+                      >
+                        <div className="font-bold text-sm md:text-base mb-2 text-white/95 border-b border-white/10 pb-1">
+                          {row.subjectLabelHe}
+                        </div>
+                        <div className="space-y-2 md:space-y-2.5">
+                          {row.weakness && (
+                            <div className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-red-500/20 border-red-400/50">
+                              <div className="flex items-start gap-2">
+                                <span className="text-lg shrink-0">🔴</span>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    חולשה מזוהה
+                                  </div>
+                                  <div className="text-xs md:text-sm text-white/80 break-words">
+                                    {row.weakness.label}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {row.strength && (
+                            <div className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-green-500/20 border-green-400/50">
+                              <div className="flex items-start gap-2">
+                                <span className="text-lg shrink-0">🟢</span>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    חוזקה
+                                  </div>
+                                  <div className="text-xs md:text-sm text-white/80 break-words">
+                                    {row.strength.label}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {row.studentRec && (
+                            <div className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-blue-500/20 border-blue-400/50">
+                              <div className="flex items-start gap-2">
+                                <span className="text-lg shrink-0">🎯</span>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    המלצה לתלמיד
+                                  </div>
+                                  <div className="text-xs md:text-sm text-white/80 break-words">
+                                    {row.studentRec.text}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {row.parentRec && (
+                            <div className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-yellow-500/15 border-yellow-400/45">
+                              <div className="flex items-start gap-2">
+                                <span className="text-lg shrink-0">👪</span>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                    המלצה להורה
+                                  </div>
+                                  <div className="text-xs md:text-sm text-white/80 break-words">
+                                    {row.parentRec.text}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {row.evidence && (
+                            <div className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-white/5 border-white/15">
+                              <div className="font-semibold text-xs text-white/70 mb-1">
+                                דוגמה מהתרגול
+                              </div>
+                              {row.evidence.exerciseText ? (
+                                <div className="text-xs text-white/80 break-words mb-1">
+                                  {row.evidence.exerciseText}
+                                </div>
+                              ) : null}
+                              <div className="text-[11px] md:text-xs text-white/60 break-all" dir="ltr">
+                                <span className="text-white/50">נכון:</span>{" "}
+                                {String(row.evidence.correctAnswer ?? "—")} ·{" "}
+                                <span className="text-white/50">נענה:</span>{" "}
+                                {String(row.evidence.userAnswer ?? "—")}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
-          )}
+            )}
 
           {/* ——— אזור גרפים בלבד ——— */}
           <section

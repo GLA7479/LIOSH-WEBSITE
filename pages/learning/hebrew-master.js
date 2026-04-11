@@ -1434,14 +1434,36 @@ useEffect(() => {
       
       // שמירת שגיאה לתרגול ממוקד
       const topicKey = currentQuestion.topic || currentQuestion.operation || "reading";
+      const hbPrm = currentQuestion.params || {};
+      const ts = Date.now();
       const mistake = {
         operation: topicKey,
+        topic: topicKey,
+        topicOrOperation: topicKey,
+        bucketKey: topicKey,
+        mode: reportModeFromGameState(mode, focusedPracticeMode),
         question: currentQuestion.exerciseText || currentQuestion.question || "",
+        exerciseText: currentQuestion.exerciseText || currentQuestion.question || "",
         correctAnswer: currentQuestion.correctAnswer,
         wrongAnswer: answer,
+        userAnswer: answer,
+        isCorrect: false,
         grade: grade,
         level: level,
-        timestamp: Date.now(),
+        timestamp: ts,
+        storedAt: ts,
+        kind: hbPrm.kind != null ? String(hbPrm.kind) : null,
+        patternFamily:
+          hbPrm.patternFamily != null ? String(hbPrm.patternFamily) : null,
+        subtype: hbPrm.subtype != null ? String(hbPrm.subtype) : null,
+        distractorFamily:
+          hbPrm.distractorFamily != null ? String(hbPrm.distractorFamily) : null,
+        conceptTag: hbPrm.conceptTag != null ? String(hbPrm.conceptTag) : null,
+        answerMode:
+          Array.isArray(currentQuestion.answers) &&
+          currentQuestion.answers.length > 1
+            ? "choice"
+            : "typed",
       };
       setMistakes((prev) => {
         const updated = [...prev, mistake].slice(-50); // שמור רק 50 שגיאות אחרונות

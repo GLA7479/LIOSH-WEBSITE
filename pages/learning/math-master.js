@@ -1862,10 +1862,40 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           currentQuestion.params?.kind !== "no_question"
         ) {
           const fp = mathQuestionFingerprint(currentQuestion);
+          const ts = Date.now();
+          const baseOp =
+            mathTrackingOperationKeyRef.current ?? currentQuestion.operation;
+          const bucketKey =
+            buildMathReportStorageKey(baseOp, currentQuestion) || baseOp;
+          const prm = currentQuestion.params || {};
           const entry = {
             id: newMathMistakeId(),
-            storedAt: Date.now(),
+            storedAt: ts,
+            timestamp: ts,
             operation: currentQuestion.operation,
+            topicOrOperation: baseOp,
+            bucketKey,
+            mode: reportModeFromGameState(mode, focusedPracticeMode),
+            kind: prm.kind != null ? String(prm.kind) : null,
+            patternFamily:
+              prm.patternFamily != null
+                ? String(prm.patternFamily)
+                : prm.semanticFamily != null
+                  ? String(prm.semanticFamily)
+                  : null,
+            subtype: prm.subtype != null ? String(prm.subtype) : null,
+            distractorFamily:
+              prm.distractorFamily != null ? String(prm.distractorFamily) : null,
+            conceptTag: prm.conceptTag != null ? String(prm.conceptTag) : null,
+            answerMode:
+              Array.isArray(currentQuestion.answers) &&
+              currentQuestion.answers.length > 1
+                ? "choice"
+                : "numeric",
+            total: totalQuestions + 1,
+            correctCountInSession: correctRef.current,
+            isCorrect: false,
+            questionLabel: currentQuestion.questionLabel || null,
             question:
               currentQuestion.exerciseText ||
               currentQuestion.question ||

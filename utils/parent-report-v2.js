@@ -16,6 +16,8 @@ import {
   formatParentReportGradeLabel,
   canonicalParentReportGradeKey,
 } from "./math-report-generator";
+import { mistakeTimestampMs } from "./mistake-event";
+import { analyzeLearningPatterns } from "./learning-patterns-analysis";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
 
@@ -395,22 +397,38 @@ function loadProgress(path) {
   }
 }
 
-function filterMistakes(mistakes, startMs, endMs, keyField) {
+/**
+ * Aggregate mistake counts by topic/op key. Supports legacy rows (storedAt, topic in snapshot, operation-only Hebrew/Moledet).
+ * @param {unknown[]} mistakes
+ * @param {number} startMs
+ * @param {number} endMs
+ * @param {(m: Record<string, unknown>) => string|undefined|null} getKey
+ */
+function filterMistakes(mistakes, startMs, endMs, getKey) {
   const arr = Array.isArray(mistakes) ? mistakes : [];
   const byKey = {};
   arr.forEach((m) => {
-    if (!m.timestamp) return;
-    const t = Number(m.timestamp);
-    if (t < startMs || t > endMs) return;
-    const k = m[keyField];
+    if (!m || typeof m !== "object") return;
+    const t = mistakeTimestampMs(m);
+    if (t === null || t < startMs || t > endMs) return;
+    const k = getKey(m);
     if (!k) return;
     if (!byKey[k]) byKey[k] = { count: 0, lastSeen: null };
     byKey[k].count += 1;
     if (!byKey[k].lastSeen || t > new Date(byKey[k].lastSeen).getTime()) {
-      byKey[k].lastSeen = m.timestamp;
+      byKey[k].lastSeen = m.timestamp ?? m.storedAt;
     }
   });
   return byKey;
+}
+
+function mistakesInDateRange(mistakes, startMs, endMs) {
+  const arr = Array.isArray(mistakes) ? mistakes : [];
+  return arr.filter((m) => {
+    if (!m || typeof m !== "object") return false;
+    const t = mistakeTimestampMs(m);
+    return t !== null && t >= startMs && t <= endMs;
+  });
 }
 
 function buildDailyActivityFromSessions(startMs, endMs) {
@@ -640,42 +658,72 @@ export function generateParentReportV2(
     ...moledetGeographyAchievements,
   ];
 
+  const mathMistakesRaw = JSON.parse(localStorage.getItem("mleo_mistakes") || "[]");
+  const geometryMistakesRaw = JSON.parse(
+    localStorage.getItem("mleo_geometry_mistakes") || "[]"
+  );
+  const englishMistakesRaw = JSON.parse(
+    localStorage.getItem("mleo_english_mistakes") || "[]"
+  );
+  const scienceMistakesRaw = JSON.parse(
+    localStorage.getItem("mleo_science_mistakes") || "[]"
+  );
+  const hebrewMistakesRaw = JSON.parse(
+    localStorage.getItem("mleo_hebrew_mistakes") || "[]"
+  );
+  const moledetGeographyMistakesRaw = JSON.parse(
+    localStorage.getItem("mleo_moledet_geography_mistakes") || "[]"
+  );
+
   const mathMistakesByOperation = filterMistakes(
-    JSON.parse(localStorage.getItem("mleo_mistakes") || "[]"),
+    mathMistakesRaw,
     startMs,
     endMs,
-    "operation"
+    (m) => m.operation
   );
   const geometryMistakesByTopic = filterMistakes(
-    JSON.parse(localStorage.getItem("mleo_geometry_mistakes") || "[]"),
+    geometryMistakesRaw,
     startMs,
     endMs,
-    "topic"
+    (m) => m.topic || (m.snapshot && m.snapshot.topic)
   );
   const englishMistakesByTopic = filterMistakes(
-    JSON.parse(localStorage.getItem("mleo_english_mistakes") || "[]"),
+    englishMistakesRaw,
     startMs,
     endMs,
-    "topic"
+    (m) => m.topic
   );
   const scienceMistakesByTopic = filterMistakes(
-    JSON.parse(localStorage.getItem("mleo_science_mistakes") || "[]"),
+    scienceMistakesRaw,
     startMs,
     endMs,
-    "topic"
+    (m) => m.topic
   );
   const hebrewMistakesByTopic = filterMistakes(
-    JSON.parse(localStorage.getItem("mleo_hebrew_mistakes") || "[]"),
+    hebrewMistakesRaw,
     startMs,
     endMs,
-    "topic"
+    (m) => m.topic || m.operation
   );
   const moledetGeographyMistakesByTopic = filterMistakes(
-    JSON.parse(localStorage.getItem("mleo_moledet_geography_mistakes") || "[]"),
+    moledetGeographyMistakesRaw,
     startMs,
     endMs,
-    "topic"
+    (m) => m.topic || m.operation
   );
+
+  const rawMistakesBySubject = {
+    math: mistakesInDateRange(mathMistakesRaw, startMs, endMs),
+    geometry: mistakesInDateRange(geometryMistakesRaw, startMs, endMs),
+    english: mistakesInDateRange(englishMistakesRaw, startMs, endMs),
+    science: mistakesInDateRange(scienceMistakesRaw, startMs, endMs),
+    hebrew: mistakesInDateRange(hebrewMistakesRaw, startMs, endMs),
+    "moledet-geography": mistakesInDateRange(
+      moledetGeographyMistakesRaw,
+      startMs,
+      endMs
+    ),
+  };
 
   const mathRecommendations = generateRecommendations(
     mathOperations,
@@ -838,6 +886,18 @@ export function generateParentReportV2(
         )
       : 0;
 
+  const patternDiagnostics = analyzeLearningPatterns(
+    {
+      mathOperations,
+      geometryTopics,
+      englishTopics,
+      scienceTopics,
+      hebrewTopics,
+      moledetGeographyTopics,
+    },
+    rawMistakesBySubject
+  );
+
   return {
     playerName,
     reportVersion: 2,
@@ -913,5 +973,7 @@ export function generateParentReportV2(
       },
     },
     achievements: achievements.map((name) => ({ name, earned: true })),
+    /** Data-driven diagnostics (JSON-only in phase 1); UI unchanged. */
+    patternDiagnostics,
   };
 }

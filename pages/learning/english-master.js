@@ -2095,13 +2095,32 @@ const refreshMonthlyProgress = useCallback(() => {
       
       const top = currentQuestion.topic;
       updateTopicProgress(top, false);
+      const enPrm = currentQuestion.params || {};
       logEnglishMistakeEntry({
         topic: currentQuestion.topic,
+        topicOrOperation: currentQuestion.topic,
+        bucketKey: currentQuestion.topic,
         grade: questionGradeKey,
         level: currentQuestion.levelKey || level,
+        mode: reportModeFromGameState(mode, focusedPracticeMode),
         question: currentQuestion.question,
+        exerciseText: currentQuestion.question,
         correctAnswer: currentQuestion.correctAnswer,
         wrongAnswer: answer,
+        userAnswer: answer,
+        isCorrect: false,
+        kind: enPrm.kind != null ? String(enPrm.kind) : null,
+        patternFamily:
+          enPrm.patternFamily != null ? String(enPrm.patternFamily) : null,
+        subtype: enPrm.subtype != null ? String(enPrm.subtype) : null,
+        distractorFamily:
+          enPrm.distractorFamily != null ? String(enPrm.distractorFamily) : null,
+        conceptTag: enPrm.conceptTag != null ? String(enPrm.conceptTag) : null,
+        answerMode:
+          Array.isArray(currentQuestion.answers) &&
+          currentQuestion.answers.length > 1
+            ? "choice"
+            : "typed",
       });
       if ("vibrate" in navigator) navigator.vibrate?.(200);
       if (mode === "learning") {
