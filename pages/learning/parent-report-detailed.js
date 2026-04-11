@@ -632,36 +632,33 @@ export default function ParentReportDetailedPage() {
                 </SectionCard>
               </div>
 
-              <div className="no-pdf mt-8 pt-5 border-t border-white/15 flex flex-col gap-4">
-                <ModeToggle className="justify-center" />
-                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
-                  <button
-                    type="button"
-                    onClick={() => printWithMode("full")}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-sky-600/85 border border-sky-400/50 hover:bg-sky-600 text-white transition-all"
-                  >
-                    🖨️ הדפס מלא
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => printWithMode("summary")}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-amber-600/85 border border-amber-400/50 hover:bg-amber-600 text-white transition-all"
-                  >
-                    🖨️ הדפס תקציר
-                  </button>
-                  <Link
-                    href={backHref}
-                    className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all text-center"
-                  >
-                    חזרה לדוח המקוצר
-                  </Link>
-                  <Link
-                    href="/learning"
-                    className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-violet-600/50 border border-violet-300/40 hover:bg-violet-600/65 text-white transition-all text-center"
-                  >
-                    חזרה ללמידה
-                  </Link>
-                </div>
+              <div className="no-pdf mt-8 pt-5 border-t border-white/15 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
+                <button
+                  type="button"
+                  onClick={() => printWithMode("full")}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-sky-600/85 border border-sky-400/50 hover:bg-sky-600 text-white transition-all"
+                >
+                  🖨️ הדפס מלא
+                </button>
+                <button
+                  type="button"
+                  onClick={() => printWithMode("summary")}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-amber-600/85 border border-amber-400/50 hover:bg-amber-600 text-white transition-all"
+                >
+                  🖨️ הדפס תקציר
+                </button>
+                <Link
+                  href={backHref}
+                  className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all text-center"
+                >
+                  חזרה לדוח המקוצר
+                </Link>
+                <Link
+                  href="/learning"
+                  className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-violet-600/50 border border-violet-300/40 hover:bg-violet-600/65 text-white transition-all text-center"
+                >
+                  חזרה ללמידה
+                </Link>
               </div>
             </>
           )}
