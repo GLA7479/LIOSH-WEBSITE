@@ -472,7 +472,7 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain, s
   const w0 = topWeaknesses[0];
   if (w0) {
     goals.push(
-      `לנסות שבוע אחד ${successRateImprovementGoalHe(w0.labelHe)} — מספיק שיפור באחוזי ההצלחה.`
+      `לנסות שבוע אחד ${successRateImprovementGoalHe(w0.labelHe)} — מספיק אפילו שיפור קטן באחוזי ההצלחה.`
     );
   } else if (improving[0]) {
     const labImp = improvingDiagnosticsDisplayLabelHe(improving[0].labelHe);

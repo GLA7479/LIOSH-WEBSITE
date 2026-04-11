@@ -40,6 +40,14 @@ export function displayTopicPhraseHe(labelHe) {
   return `בנושא ${core}`;
 }
 
+/** לקטע «איפה עדיין צריך ליווי»: «הנושא כפל» / «הנושא של …» */
+function displayTopicPhraseDefiniteHe(labelHe) {
+  const core = displayTopicCoreHe(labelHe);
+  if (!core) return "";
+  if (/\s/u.test(core)) return `הנושא של ${core}`;
+  return `הנושא ${core}`;
+}
+
 /** תרגום והסרת ניסוח "הגדרות / משחק / כיתה" לשפה הורית ברורה */
 export function rewriteParentRecommendationForDetailedHe(raw) {
   let s = stripGuillemetsHe(String(raw || ""));
@@ -154,16 +162,16 @@ export function buildSubjectParentLetter(sp, opts = {}) {
   const openingWasImprovingOnly = !w0 && !ex0 && !!imp0;
   if (imp0 && !openingWasImprovingOnly) {
     fragParts.push(
-      `${displayTopicPhraseHe(imp0.labelHe)} (דיוק ${imp0.accuracy}%) — עדיין דורש חיזוק הדרגתי`
+      `${displayTopicPhraseDefiniteHe(imp0.labelHe)} (דיוק ${imp0.accuracy}%) — עדיין דורש חיזוק הדרגתי`
     );
   }
   const weakList = sp.topWeaknesses || [];
   const weakForFrag = w0 ? weakList.slice(1, 3) : weakList.slice(0, 2);
   for (const w of weakForFrag) {
-    const phrase = displayTopicPhraseHe(w.labelHe);
+    const phrase = displayTopicPhraseDefiniteHe(w.labelHe);
     const tail =
       typeof w.mistakeCount === "number" && w.mistakeCount >= 8
-        ? " — הנושא חוזר מספיק פעמים כדי ששווה לעצור עליו"
+        ? " — הנושא חוזר מספיק פעמים לכן מומלץ לשים עליו דגש"
         : "";
     fragParts.push(`${phrase}${tail}`);
   }
