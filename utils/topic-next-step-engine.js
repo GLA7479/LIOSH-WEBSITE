@@ -15,7 +15,7 @@ export const RECOMMENDED_STEP_LABEL_HE = {
   maintain_and_strengthen: "לבסס באותה רמה",
   remediate_same_level: "חיזוק באותה רמה",
   drop_one_level_topic_only: "הורדת רמת קושי — בנושא זה בלבד",
-  drop_one_grade_topic_only: "הורדת כיתה — בנושא זה בלבד",
+  drop_one_grade_topic_only: "הורדת רמת קושי — בנושא זה בלבד",
 };
 
 const GRADE_ORDER = ["g1", "g2", "g3", "g4", "g5", "g6"];

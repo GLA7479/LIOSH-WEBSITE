@@ -7,27 +7,44 @@ import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { generateDetailedParentReport } from "../../utils/detailed-parent-report";
 import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
 
-function SectionCard({ title, children, className = "" }) {
+function SectionCard({ title, children, className = "", compact = false }) {
   return (
     <section
-      className={`pr-detailed-section pr-detailed-break-avoid rounded-xl border border-white/15 bg-black/25 p-3 md:p-5 mb-4 md:mb-5 ${className}`}
+      className={`pr-detailed-section rounded-xl border border-white/20 bg-black/30 shadow-sm mb-5 md:mb-6 overflow-hidden ${
+        compact ? "pr-detailed-section--compact" : ""
+      } ${className}`}
     >
-      <h2 className="pr-detailed-section-title text-base md:text-lg font-extrabold text-white/95 border-b border-white/10 pb-2 mb-3">
-        {title}
-      </h2>
-      {children}
+      <div className="pr-detailed-section-head px-3 md:px-5 py-2.5 md:py-3 border-b border-white/15 bg-white/[0.06]">
+        <h2 className="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0">
+          {title}
+        </h2>
+      </div>
+      <div className="pr-detailed-section-inner px-3 md:px-5 py-3 md:py-4">{children}</div>
     </section>
   );
 }
 
-function Bullets({ items }) {
-  if (!items?.length) return <p className="text-sm text-white/60">אין נתונים להצגה.</p>;
+function Bullets({ items, className = "" }) {
+  if (!items?.length)
+    return <p className={`pr-detailed-muted text-sm ${className}`.trim()}>אין נתונים להצגה.</p>;
   return (
-    <ul className="list-disc pr-5 space-y-1.5 text-sm md:text-base text-white/85 leading-relaxed">
+    <ul
+      className={`pr-detailed-body-text list-disc pr-5 space-y-1.5 text-sm md:text-base text-white/[0.88] leading-relaxed ${className}`.trim()}
+    >
       {items.map((t, i) => (
         <li key={i}>{t}</li>
       ))}
     </ul>
+  );
+}
+
+/** בלוק היררכי לפי סוג (מסך + הדפסה) — רק מחלקות, אותו תוכן */
+function TierBlock({ tier, title, children }) {
+  return (
+    <div className={`pr-detailed-tier-${tier} pr-detailed-avoid-split`}>
+      <h4 className="pr-detailed-subheading">{title}</h4>
+      <div className="pr-detailed-tier-inner">{children}</div>
+    </div>
   );
 }
 
@@ -55,50 +72,56 @@ function SubjectSummaryBlock({ sp }) {
   const ex = Array.isArray(sp.excellence) ? sp.excellence.slice(0, 2) : [];
   const weak = Array.isArray(sp.topWeaknesses) ? sp.topWeaknesses.slice(0, 2) : [];
   return (
-    <div className="pr-detailed-summary-subject rounded-lg border border-white/12 bg-black/20 p-3 md:p-4 space-y-2">
-      <h3 className="text-base font-bold text-white border-b border-white/10 pb-1">{sp.subjectLabelHe}</h3>
-      {sp.summaryHe ? (
-        <p className="text-sm text-white/80 leading-relaxed">{sp.summaryHe}</p>
-      ) : (
-        <p className="text-sm text-white/45">אין סיכום טקסטואלי למקצוע זה בטווח.</p>
-      )}
-      {ex.length ? (
-        <div>
-          <p className="text-xs font-bold text-violet-200 mb-1">הצטיינות יציבה (עד 2)</p>
-          <ul className="text-sm text-white/80 space-y-1">
-            {ex.map((x) => (
-              <li key={x.id}>
-                {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
-              </li>
-            ))}
-          </ul>
+    <div className="pr-detailed-summary-subject pr-detailed-avoid-split rounded-xl border border-white/18 bg-black/25 overflow-hidden">
+      <div className="pr-detailed-subject-header px-3 md:px-4 py-2.5 border-b border-white/15 bg-white/[0.05]">
+        <h3 className="pr-detailed-subject-title text-base md:text-lg font-bold text-white m-0 tracking-tight">
+          {sp.subjectLabelHe}
+        </h3>
+      </div>
+      <div className="px-3 md:px-4 py-3 space-y-3">
+        <div className="pr-detailed-subject-summary">
+          {sp.summaryHe ? (
+            <p className="pr-detailed-body-text text-sm leading-relaxed m-0">{sp.summaryHe}</p>
+          ) : (
+            <p className="pr-detailed-muted text-sm m-0">אין סיכום טקסטואלי למקצוע זה בטווח.</p>
+          )}
         </div>
-      ) : null}
-      {weak.length ? (
-        <div>
-          <p className="text-xs font-bold text-red-200/80 mb-1">תחומים הדורשים תשומת לב (עד 2)</p>
-          <ul className="text-sm text-white/80 space-y-1">
-            {weak.map((w) => (
-              <li key={w.id}>
-                {w.labelHe}
-                {typeof w.mistakeCount === "number" ? ` (${w.mistakeCount} טעויות דומות)` : ""}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-      {sp.parentActionHe ? (
-        <p className="text-sm text-yellow-100/90">
-          <span className="font-semibold">פעולה לבית: </span>
-          {sp.parentActionHe}
-        </p>
-      ) : null}
-      {sp.nextWeekGoalHe ? (
-        <p className="text-sm text-amber-100/85">
-          <span className="font-semibold">יעד לתקופה הבאה: </span>
-          {sp.nextWeekGoalHe}
-        </p>
-      ) : null}
+        {ex.length ? (
+          <TierBlock tier="excellence" title="הצטיינות יציבה (עד 2)">
+            <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
+              {ex.map((x) => (
+                <li key={x.id} className="pr-0">
+                  {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
+                </li>
+              ))}
+            </ul>
+          </TierBlock>
+        ) : null}
+        {weak.length ? (
+          <TierBlock tier="attention" title="תחומים הדורשים תשומת לב (עד 2)">
+            <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
+              {weak.map((w) => (
+                <li key={w.id} className="pr-0">
+                  {w.labelHe}
+                  {typeof w.mistakeCount === "number" ? ` (${w.mistakeCount} טעויות דומות)` : ""}
+                </li>
+              ))}
+            </ul>
+          </TierBlock>
+        ) : null}
+        {sp.parentActionHe ? (
+          <div className="pr-detailed-callout-action pr-detailed-avoid-split rounded-lg border px-3 py-2.5">
+            <span className="pr-detailed-callout-label">פעולה לבית</span>
+            <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">{sp.parentActionHe}</p>
+          </div>
+        ) : null}
+        {sp.nextWeekGoalHe ? (
+          <div className="pr-detailed-callout-goal pr-detailed-avoid-split rounded-lg border px-3 py-2.5">
+            <span className="pr-detailed-callout-label">יעד לתקופה הבאה</span>
+            <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">{sp.nextWeekGoalHe}</p>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -232,11 +255,179 @@ export default function ParentReportDetailedPage() {
       <Head>
         <title>דוח מקיף לתקופה — LIOSH</title>
         <style>{`
-          .pr-detailed-break-avoid {
-            break-inside: avoid;
-            page-break-inside: avoid;
+          .pr-detailed-page {
+            --pr-h1: 1.35rem;
+            --pr-h2: 1.05rem;
+            --pr-h3: 0.98rem;
+            --pr-h4: 0.78rem;
+            --pr-body: 0.875rem;
+            --pr-muted: 0.8rem;
           }
+
+          .pr-detailed-subheading {
+            margin: 0 0 0.4rem 0;
+            padding: 0 0 0.2rem 0;
+            font-size: var(--pr-h4);
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            text-transform: none;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+          }
+
+          .pr-detailed-body-text { line-height: 1.55; }
+          .pr-detailed-muted { color: rgba(255,255,255,0.58); line-height: 1.5; }
+          .pr-detailed-mini-heading { letter-spacing: 0.02em; }
+
+          .pr-detailed-layout-summary .pr-detailed-section {
+            box-shadow: none;
+          }
+          .pr-detailed-layout-summary .pr-detailed-doc-header {
+            margin-bottom: 1rem;
+          }
+
+          .pr-detailed-section--compact .pr-detailed-section-inner { padding-top: 0.65rem; padding-bottom: 0.65rem; }
+          .pr-detailed-section--compact .pr-detailed-section-head { padding-top: 0.45rem; padding-bottom: 0.45rem; }
+
+          #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-section { margin-bottom: 0.85rem; }
+          #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-section-inner { padding: 0.75rem 0.9rem; }
+          #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-subject-summary { font-size: 0.9rem; }
+
+          .pr-detailed-tier-excellence {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(167, 139, 250, 0.4);
+            background: linear-gradient(160deg, rgba(76, 29, 149, 0.28), rgba(15, 23, 42, 0.55));
+            padding: 0.65rem 0.85rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-excellence .pr-detailed-subheading { color: #e9d5ff; border-bottom-color: rgba(196, 181, 253, 0.35); }
+
+          .pr-detailed-tier-strength {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(52, 211, 153, 0.35);
+            background: linear-gradient(160deg, rgba(6, 78, 59, 0.35), rgba(15, 23, 42, 0.5));
+            padding: 0.65rem 0.85rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-strength .pr-detailed-subheading { color: #a7f3d0; border-bottom-color: rgba(52, 211, 153, 0.25); }
+
+          .pr-detailed-tier-maintain {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            background: linear-gradient(160deg, rgba(12, 74, 110, 0.35), rgba(15, 23, 42, 0.5));
+            padding: 0.65rem 0.85rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-maintain .pr-detailed-subheading { color: #bae6fd; border-bottom-color: rgba(56, 189, 248, 0.25); }
+
+          .pr-detailed-tier-improving {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(251, 191, 36, 0.38);
+            background: linear-gradient(160deg, rgba(120, 53, 15, 0.32), rgba(15, 23, 42, 0.52));
+            padding: 0.65rem 0.85rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-improving .pr-detailed-subheading { color: #fde68a; border-bottom-color: rgba(251, 191, 36, 0.28); }
+
+          .pr-detailed-tier-attention {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(248, 113, 113, 0.42);
+            background: linear-gradient(160deg, rgba(127, 29, 29, 0.32), rgba(15, 23, 42, 0.52));
+            padding: 0.65rem 0.85rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-attention .pr-detailed-subheading { color: #fecaca; border-bottom-color: rgba(248, 113, 113, 0.3); }
+
+          .pr-detailed-tier-examples {
+            border-radius: 0.5rem;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: rgba(15, 23, 42, 0.45);
+            padding: 0.55rem 0.75rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-examples .pr-detailed-subheading { color: rgba(226, 232, 240, 0.85); border-bottom-color: rgba(148, 163, 184, 0.2); }
+
+          .pr-detailed-callout-action {
+            border-color: rgba(250, 204, 21, 0.35);
+            background: rgba(66, 32, 6, 0.35);
+          }
+          .pr-detailed-callout-goal {
+            border-color: rgba(251, 191, 36, 0.3);
+            background: rgba(69, 26, 3, 0.28);
+          }
+          .pr-detailed-callout-label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: rgba(253, 230, 138, 0.95);
+            text-transform: uppercase;
+          }
+
+          .pr-detailed-topic-rec-block { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); }
+          .pr-detailed-topic-rec-head {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            color: rgba(165, 243, 252, 0.95);
+            margin: 0 0 0.5rem 0;
+          }
+
+          .pr-detailed-topic-nextstep-card {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(34, 211, 238, 0.32);
+            background: linear-gradient(165deg, rgba(22, 78, 99, 0.4), rgba(15, 23, 42, 0.65));
+            padding: 0.65rem 0.85rem;
+          }
+          .pr-detailed-topic-metrics {
+            font-size: 0.68rem;
+            line-height: 1.45;
+            color: rgba(207, 250, 254, 0.82);
+            margin: 0 0 0.45rem 0;
+          }
+          .pr-detailed-topic-reason { font-size: 0.84rem; line-height: 1.5; color: rgba(255,255,255,0.9); margin: 0 0 0.45rem 0; }
+          .pr-detailed-topic-parent {
+            font-size: 0.82rem;
+            line-height: 1.48;
+            color: rgba(224, 242, 254, 0.95);
+            margin: 0 0 0.35rem 0;
+            padding: 0.35rem 0.45rem;
+            border-radius: 0.35rem;
+            background: rgba(15, 23, 42, 0.45);
+            border-right: 3px solid rgba(56, 189, 248, 0.55);
+          }
+          .pr-detailed-topic-student {
+            font-size: 0.82rem;
+            line-height: 1.48;
+            color: rgba(209, 250, 229, 0.95);
+            margin: 0;
+            padding: 0.35rem 0.45rem;
+            border-radius: 0.35rem;
+            background: rgba(15, 23, 42, 0.45);
+            border-right: 3px solid rgba(52, 211, 153, 0.5);
+          }
+          .pr-detailed-topic-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 0.15rem 0.45rem;
+            border-radius: 0.35rem;
+            border: 1px solid rgba(103, 232, 249, 0.45);
+            color: #ecfeff;
+            background: rgba(8, 47, 73, 0.55);
+            white-space: normal;
+            max-width: 11rem;
+            text-align: right;
+          }
+
           @media print {
+            .pr-detailed-avoid-split {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
+            .pr-detailed-subheading {
+              break-after: avoid !important;
+              page-break-after: avoid !important;
+            }
+
             body {
               background: white !important;
               -webkit-print-color-adjust: exact !important;
@@ -257,69 +448,193 @@ export default function ParentReportDetailedPage() {
               width: 100% !important;
               max-width: 100% !important;
               margin: 0 !important;
-              padding: 10mm 12mm !important;
-              background: #fff !important;
+              padding: 9mm 11mm !important;
+              background: #fafafa !important;
               box-shadow: none !important;
+              font-size: 9.5pt;
+              line-height: 1.45;
+              color: #1c1917 !important;
             }
-            #parent-report-detailed-print,
-            #parent-report-detailed-print * {
-              color: #1a1a1a !important;
-            }
-            #parent-report-detailed-print .pr-detailed-section-title,
-            #parent-report-detailed-print h1,
-            #parent-report-detailed-print h2,
-            #parent-report-detailed-print h3,
-            #parent-report-detailed-print th {
-              color: #000 !important;
-            }
-            #parent-report-detailed-print .pr-detailed-future-compare {
-              color: #555 !important;
-            }
-            #parent-report-detailed-print .pr-detailed-section,
-            #parent-report-detailed-print .pr-detailed-subject-block {
-              background: #fff !important;
-              border: 1px solid #333 !important;
-            }
-            #parent-report-detailed-print .pr-detailed-section-title {
-              border-bottom-color: #999 !important;
-            }
-            #parent-report-detailed-print table {
-              border-collapse: collapse !important;
-              page-break-inside: avoid;
-            }
-            #parent-report-detailed-print th,
-            #parent-report-detailed-print td {
-              border: 1px solid #666 !important;
-              padding: 6px 8px !important;
-            }
-            #parent-report-detailed-print thead {
-              background: #f0f0f0 !important;
+            #parent-report-detailed-print[data-display-mode="full"] {
+              padding: 8mm 10mm !important;
+              font-size: 9.2pt;
             }
             #parent-report-detailed-print[data-display-mode="summary"] {
               padding: 7mm 9mm !important;
+              font-size: 9.4pt;
             }
-            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-section {
-              margin-bottom: 8px !important;
-              padding: 10px 12px !important;
+
+            #parent-report-detailed-print h1 {
+              font-size: 16pt !important;
+              color: #0f172a !important;
+              margin: 0 0 4px 0 !important;
             }
-            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-summary-subject {
+            #parent-report-detailed-print .pr-detailed-section-title {
+              font-size: 11.5pt !important;
+              color: #0f172a !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-title {
+              font-size: 11pt !important;
+              color: #0f172a !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subheading {
+              font-size: 8.5pt !important;
+              color: #1e293b !important;
+              border-bottom-color: #cbd5e1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-body-text,
+            #parent-report-detailed-print .pr-detailed-tier-inner li {
+              color: #292524 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-muted {
+              color: #57534e !important;
+            }
+            #parent-report-detailed-print .pr-detailed-mode-hint {
+              color: #92400e !important;
+              font-weight: 800 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-future-compare {
+              color: #57534e !important;
+              background: #f5f5f4 !important;
+              border: 1px solid #d6d3d1 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-section {
+              background: #fff !important;
+              border: 1px solid #d4d4d8 !important;
+              margin-bottom: 10px !important;
+              box-shadow: 0 1px 0 rgba(0,0,0,0.04) !important;
+            }
+            #parent-report-detailed-print .pr-detailed-section-head {
+              background: #f4f4f5 !important;
+              border-bottom: 1px solid #d4d4d8 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-section--compact .pr-detailed-section-inner {
+              padding: 6px 9px !important;
+            }
+            #parent-report-detailed-print .pr-detailed-section--compact .pr-detailed-section-head {
+              padding: 5px 9px !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-subject-block {
+              background: #fff !important;
+              border: 1px solid #c7c7cc !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-header {
+              background: #eef2ff !important;
+              border-bottom: 1px solid #c7d2fe !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-tier-excellence {
+              background: #f5f3ff !important;
+              border: 1px solid #7c3aed !important;
+              color: #1e1b4b !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-strength {
+              background: #ecfdf5 !important;
+              border: 1px solid #059669 !important;
+              color: #064e3b !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-maintain {
+              background: #f0f9ff !important;
+              border: 1px solid #0284c7 !important;
+              color: #0c4a6e !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-improving {
+              background: #fffbeb !important;
+              border: 1px solid #d97706 !important;
+              color: #78350f !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-attention {
+              background: #fef2f2 !important;
+              border: 1px solid #dc2626 !important;
+              color: #7f1d1d !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-examples {
+              background: #f8fafc !important;
+              border: 1px solid #94a3b8 !important;
+              color: #334155 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-tier-excellence .pr-detailed-subheading { color: #5b21b6 !important; border-bottom-color: #ddd6fe !important; }
+            #parent-report-detailed-print .pr-detailed-tier-strength .pr-detailed-subheading { color: #047857 !important; border-bottom-color: #a7f3d0 !important; }
+            #parent-report-detailed-print .pr-detailed-tier-maintain .pr-detailed-subheading { color: #0369a1 !important; border-bottom-color: #bae6fd !important; }
+            #parent-report-detailed-print .pr-detailed-tier-improving .pr-detailed-subheading { color: #b45309 !important; border-bottom-color: #fde68a !important; }
+            #parent-report-detailed-print .pr-detailed-tier-attention .pr-detailed-subheading { color: #b91c1c !important; border-bottom-color: #fecaca !important; }
+            #parent-report-detailed-print .pr-detailed-tier-examples .pr-detailed-subheading { color: #475569 !important; }
+
+            #parent-report-detailed-print .pr-detailed-callout-action {
+              background: #fffbeb !important;
+              border: 1px solid #eab308 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-callout-goal {
+              background: #fff7ed !important;
+              border: 1px solid #fb923c !important;
+            }
+            #parent-report-detailed-print .pr-detailed-callout-label { color: #713f12 !important; }
+
+            #parent-report-detailed-print .pr-detailed-topic-nextstep-card {
+              background: #f0fdfa !important;
+              border: 1px solid #0d9488 !important;
               break-inside: avoid !important;
               page-break-inside: avoid !important;
-              margin-bottom: 6px !important;
-              padding: 8px 10px !important;
             }
-            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-mode-hint {
-              font-size: 10pt !important;
-              margin-bottom: 6px !important;
+            #parent-report-detailed-print .pr-detailed-topic-rec-head { color: #0f766e !important; }
+            #parent-report-detailed-print .pr-detailed-topic-metrics { color: #115e59 !important; }
+            #parent-report-detailed-print .pr-detailed-topic-reason { color: #134e4a !important; }
+            #parent-report-detailed-print .pr-detailed-topic-parent {
+              background: #f8fafc !important;
+              border-right-color: #0284c7 !important;
+              color: #0f172a !important;
             }
-            #parent-report-detailed-print[data-display-mode="full"] .pr-detailed-topic-rec-block {
-              break-inside: avoid !important;
-              page-break-inside: avoid !important;
+            #parent-report-detailed-print .pr-detailed-topic-student {
+              background: #f8fafc !important;
+              border-right-color: #059669 !important;
+              color: #0f172a !important;
             }
-            #parent-report-detailed-print[data-display-mode="full"] .pr-detailed-subject-block {
-              break-inside: auto;
-              page-break-inside: auto;
+            #parent-report-detailed-print .pr-detailed-topic-badge {
+              background: #ccfbf1 !important;
+              border-color: #14b8a6 !important;
+              color: #134e4a !important;
             }
+
+            #parent-report-detailed-print .pr-detailed-summary-subject {
+              background: #fff !important;
+              border: 1px solid #c7c7cc !important;
+            }
+            #parent-report-detailed-print .pr-detailed-summary-subject .pr-detailed-subject-header {
+              background: #f8fafc !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-mini-heading {
+              color: #334155 !important;
+              font-weight: 800 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-doc-title {
+              color: #020617 !important;
+            }
+
+            #parent-report-detailed-print table {
+              border-collapse: collapse !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+            #parent-report-detailed-print tr { break-inside: auto !important; page-break-inside: auto !important; }
+            #parent-report-detailed-print th,
+            #parent-report-detailed-print td {
+              border: 1px solid #a8a29e !important;
+              padding: 5px 7px !important;
+              color: #292524 !important;
+            }
+            #parent-report-detailed-print thead {
+              background: #e7e5e4 !important;
+            }
+
+            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-section { margin-bottom: 7px !important; }
+            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-summary-subject { margin-bottom: 6px !important; }
+
             .no-pdf {
               display: none !important;
             }
@@ -327,7 +642,9 @@ export default function ParentReportDetailedPage() {
         `}</style>
       </Head>
       <div
-        className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-3 md:p-6"
+        className={`pr-detailed-page min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-3 md:p-6 ${
+          payload ? `pr-detailed-layout-${displayMode}` : ""
+        }`}
         dir="rtl"
         style={{
           paddingTop: "calc(var(--head-h, 56px) - 6px)",
@@ -355,15 +672,21 @@ export default function ParentReportDetailedPage() {
             <p className="text-center text-white/80">לא ניתן לטעון את הדוח המקיף.</p>
           ) : (
             <>
-              <div id="parent-report-detailed-print" data-display-mode={displayMode}>
+              <div
+                id="parent-report-detailed-print"
+                data-display-mode={displayMode}
+                className={displayMode === "summary" ? "pr-detailed-print-root pr-detailed-print-root--summary" : "pr-detailed-print-root pr-detailed-print-root--full"}
+              >
                 {/* A */}
-                <header className="mb-6 text-center border-b border-white/10 pb-4 pr-detailed-break-avoid">
-                  <h1 className="text-2xl md:text-3xl font-black text-white mb-1">דוח מקיף לתקופה</h1>
+                <header className="pr-detailed-doc-header mb-6 text-center border-b border-white/15 pb-4">
+                  <h1 className="pr-detailed-doc-title text-2xl md:text-3xl font-black text-white mb-1 tracking-tight">
+                    דוח מקיף לתקופה
+                  </h1>
                   <p className="pr-detailed-mode-hint text-xs font-semibold text-amber-200/90 mb-1">
                     {displayMode === "summary" ? "תקציר להדפסה" : "דוח מלא"}
                   </p>
-                  <p className="text-white/80 text-sm md:text-base">{pi.playerName}</p>
-                  <p className="text-white/60 text-sm mt-2">
+                  <p className="pr-detailed-body-text text-white/85 text-sm md:text-base">{pi.playerName}</p>
+                  <p className="pr-detailed-muted text-sm mt-2">
                     טווח תאריכים: {pi.startDateLabelHe} – {pi.endDateLabelHe}
                     <span className="text-white/40 mx-1">|</span>
                     מצב תקופה:{" "}
@@ -372,19 +695,19 @@ export default function ParentReportDetailedPage() {
                 </header>
 
                 {/* B */}
-                <SectionCard title="תקציר מנהלים">
-                  <div className="space-y-3 text-sm md:text-base text-white/85 leading-relaxed">
-                    <div>
-                      <p className="font-bold text-emerald-200/90 mb-1">חוזקות מרכזיות (עד 3)</p>
+                <SectionCard title="תקציר מנהלים" compact={displayMode === "summary"}>
+                  <div className="space-y-4">
+                    <div className="pr-detailed-avoid-split">
+                      <h4 className="pr-detailed-subheading text-emerald-200/95">חוזקות מרכזיות (עד 3)</h4>
                       <Bullets items={payload.executiveSummary.topStrengthsAcrossHe} />
                     </div>
-                    <div>
-                      <p className="font-bold text-amber-200/90 mb-1">תחומים מרכזיים לחיזוק (עד 3)</p>
+                    <div className="pr-detailed-avoid-split">
+                      <h4 className="pr-detailed-subheading text-amber-200/95">תחומים מרכזיים לחיזוק (עד 3)</h4>
                       <Bullets items={payload.executiveSummary.topFocusAreasHe} />
                     </div>
-                    <div>
-                      <p className="font-bold text-sky-200/90 mb-1">מיקוד מומלץ לבית</p>
-                      <p className="text-white/85 whitespace-pre-line leading-relaxed">
+                    <div className="pr-detailed-avoid-split">
+                      <h4 className="pr-detailed-subheading text-sky-200/95">מיקוד מומלץ לבית</h4>
+                      <p className="pr-detailed-body-text whitespace-pre-line leading-relaxed m-0">
                         {payload.executiveSummary.homeFocusHe}
                       </p>
                     </div>
@@ -398,7 +721,7 @@ export default function ParentReportDetailedPage() {
                 ) : null}
 
                 {/* C */}
-                <SectionCard title="תמונת מצב כוללת">
+                <SectionCard title="תמונת מצב כוללת" compact={displayMode === "summary"}>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                   <div className="rounded-lg bg-white/5 border border-white/10 p-3 text-center">
                     <div className="text-xs text-white/55 mb-1">זמן כולל</div>
@@ -419,7 +742,7 @@ export default function ParentReportDetailedPage() {
                     </div>
                   </div>
                 </div>
-                <p className="font-semibold text-white/90 mb-2 text-sm">כיסוי לפי מקצוע</p>
+                <p className="pr-detailed-mini-heading font-bold text-white/90 mb-2 text-sm mt-1">כיסוי לפי מקצוע</p>
                 <div className="overflow-x-auto rounded-lg border border-white/10">
                   <table className="w-full text-sm text-right">
                     <thead>
@@ -443,12 +766,12 @@ export default function ParentReportDetailedPage() {
                   </table>
                 </div>
                 <div className="mt-3 grid md:grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <p className="font-semibold text-white/80 mb-1">מקצועות עם חשיפה מועטה</p>
+                  <div className="pr-detailed-avoid-split">
+                    <p className="pr-detailed-mini-heading font-semibold text-white/82 mb-1">מקצועות עם חשיפה מועטה</p>
                     <Bullets items={payload.overallSnapshot.lowExposureSubjectsHe} />
                   </div>
-                  <div>
-                    <p className="font-semibold text-white/80 mb-1">מקצועות בולטים</p>
+                  <div className="pr-detailed-avoid-split">
+                    <p className="pr-detailed-mini-heading font-semibold text-white/82 mb-1">מקצועות בולטים</p>
                     <Bullets items={payload.overallSnapshot.notableSubjectsHe} />
                   </div>
                 </div>
@@ -456,7 +779,7 @@ export default function ParentReportDetailedPage() {
 
                 {/* D — אותו payload; תצוגה מלאה או מקוצרת */}
                 {displayMode === "summary" ? (
-                  <SectionCard title="פירוט מקוצר לפי מקצוע">
+                  <SectionCard title="פירוט מקוצר לפי מקצוע" compact>
                     <div className="space-y-4">
                       {payload.subjectProfiles.map((sp) => (
                         <SubjectSummaryBlock key={sp.subject} sp={sp} />
@@ -465,148 +788,150 @@ export default function ParentReportDetailedPage() {
                   </SectionCard>
                 ) : (
                   <SectionCard title="פירוט לפי מקצוע">
-                    <div className="space-y-5">
+                    <div className="space-y-6">
                       {payload.subjectProfiles.map((sp) => (
                         <div
                           key={sp.subject}
-                          className="pr-detailed-subject-block rounded-lg border border-white/12 bg-black/20 p-3 md:p-4 space-y-2"
+                          className="pr-detailed-subject-block rounded-xl border border-white/18 bg-black/25 overflow-hidden"
                         >
-                          <h3 className="text-lg font-bold text-white border-b border-white/10 pb-1">
-                            {sp.subjectLabelHe}
-                          </h3>
-                          {sp.summaryHe ? (
-                            <p className="text-sm text-white/80 leading-relaxed">{sp.summaryHe}</p>
-                          ) : (
-                            <p className="text-sm text-white/45">אין סיכום טקסטואלי למקצוע זה בטווח.</p>
-                          )}
-                          {sp.excellence?.length ? (
-                            <div>
-                              <p className="text-xs font-bold text-violet-200 mb-1">הצטיינות היציבה</p>
-                              <ul className="text-sm text-white/80 space-y-1">
-                                {sp.excellence.map((x) => (
-                                  <li key={x.id}>
-                                    {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
-                                  </li>
-                                ))}
-                              </ul>
+                          <div className="pr-detailed-subject-header px-3 md:px-4 py-2.5 border-b border-white/12 bg-white/[0.05]">
+                            <h3 className="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight">
+                              {sp.subjectLabelHe}
+                            </h3>
+                          </div>
+                          <div className="px-3 md:px-4 py-3 space-y-3">
+                            <div className="pr-detailed-subject-summary pr-detailed-avoid-split">
+                              {sp.summaryHe ? (
+                                <p className="pr-detailed-body-text text-sm leading-relaxed m-0">{sp.summaryHe}</p>
+                              ) : (
+                                <p className="pr-detailed-muted text-sm m-0">אין סיכום טקסטואלי למקצוע זה בטווח.</p>
+                              )}
                             </div>
-                          ) : null}
-                          {sp.topStrengths?.length ? (
-                            <div>
-                              <p className="text-xs font-bold text-emerald-200/80 mb-1">חוזקות מובילות</p>
-                              <ul className="text-sm text-white/80 space-y-1">
-                                {sp.topStrengths.map((x) => (
-                                  <li key={x.id}>
-                                    {x.labelHe} — {x.accuracy}% ({x.questions})
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ) : null}
-                          {sp.maintain?.length ? (
-                            <div>
-                              <p className="text-xs font-bold text-sky-200/80 mb-1">מומלץ לשמר</p>
-                              <ul className="text-sm text-white/80 space-y-1">
-                                {sp.maintain.map((x) => (
-                                  <li key={x.id}>
-                                    {x.labelHe} — {x.accuracy}% ({x.questions})
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ) : null}
-                          {sp.improving?.length ? (
-                            <div>
-                              <p className="text-xs font-bold text-amber-200/80 mb-1">נקודות לשיפור</p>
-                              <ul className="text-sm text-white/80 space-y-1">
-                                {sp.improving.map((x) => (
-                                  <li key={x.id}>
-                                    {improvingDiagnosticsDisplayLabelHe(x.labelHe)} — דיוק {x.accuracy}% (
-                                    {x.questions} שאלות)
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ) : null}
-                          {sp.topWeaknesses?.length ? (
-                            <div>
-                              <p className="text-xs font-bold text-red-200/80 mb-1">תחומים הדורשים תשומת לב</p>
-                              <ul className="text-sm text-white/80 space-y-1">
-                                {sp.topWeaknesses.map((w) => (
-                                  <li key={w.id}>
-                                    {w.labelHe}
-                                    {typeof w.mistakeCount === "number"
-                                      ? ` (${w.mistakeCount} טעויות דומות)`
-                                      : ""}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ) : null}
-                          {sp.parentActionHe ? (
-                            <p className="text-sm text-yellow-100/90">
-                              <span className="font-semibold">פעולה לבית: </span>
-                              {sp.parentActionHe}
-                            </p>
-                          ) : null}
-                          {sp.nextWeekGoalHe ? (
-                            <p className="text-sm text-amber-100/85">
-                              <span className="font-semibold">יעד לשבוע: </span>
-                              {sp.nextWeekGoalHe}
-                            </p>
-                          ) : null}
-                          {sp.evidenceExamples?.length ? (
-                            <div>
-                              <p className="text-xs font-bold text-white/60 mb-1">דוגמאות</p>
-                              <ul className="text-xs text-white/65 space-y-1">
-                                {sp.evidenceExamples.map((e, idx) => (
-                                  <li key={idx}>
-                                    {e.type === "mistake" ? "טעות לדוגמה" : "חיזוק לדוגמה"}
-                                    {e.exerciseText ? `: ${String(e.exerciseText).slice(0, 120)}` : ""}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ) : null}
-
-                          {sp.topicRecommendations?.length ? (
-                            <div className="pr-detailed-topic-rec-block mt-3 pt-3 border-t border-white/10 pr-detailed-break-avoid">
-                              <p className="text-xs font-bold text-cyan-200/95 mb-2">
-                                צעד הבא המומלץ לפי נושא (נתוני טווח + טעויות)
-                              </p>
-                              <div className="space-y-3">
-                                {sp.topicRecommendations.map((tr) => (
-                                  <div
-                                    key={tr.topicRowKey}
-                                    className="rounded-lg border border-cyan-500/25 bg-cyan-950/20 p-3 space-y-2"
-                                  >
-                                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                                      <span className="font-bold text-white/95">{tr.displayName}</span>
-                                      <span className="text-[11px] font-semibold text-cyan-100/90 px-2 py-0.5 rounded border border-cyan-400/35 bg-black/20">
-                                        {tr.recommendedStepLabelHe}
-                                      </span>
-                                    </div>
-                                    <p className="text-[11px] text-white/55 leading-relaxed">
-                                      שליטה {tr.currentMastery}% · יציבות {Math.round(tr.stability * 100)}% · ביטחון{" "}
-                                      {Math.round(tr.confidence * 100)}% · {tr.questions} שאלות · דיוק {tr.accuracy}%
-                                      {tr.mistakeEventCount > 0
-                                        ? ` · ${tr.mistakeEventCount} אירועי טעות בנושא`
+                            {sp.excellence?.length ? (
+                              <TierBlock tier="excellence" title="הצטיינות היציבה">
+                                <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
+                                  {sp.excellence.map((x) => (
+                                    <li key={x.id} className="pr-0">
+                                      {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
+                                    </li>
+                                  ))}
+                                </ul>
+                              </TierBlock>
+                            ) : null}
+                            {sp.topStrengths?.length ? (
+                              <TierBlock tier="strength" title="חוזקות מובילות">
+                                <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
+                                  {sp.topStrengths.map((x) => (
+                                    <li key={x.id} className="pr-0">
+                                      {x.labelHe} — {x.accuracy}% ({x.questions})
+                                    </li>
+                                  ))}
+                                </ul>
+                              </TierBlock>
+                            ) : null}
+                            {sp.maintain?.length ? (
+                              <TierBlock tier="maintain" title="מומלץ לשמר">
+                                <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
+                                  {sp.maintain.map((x) => (
+                                    <li key={x.id} className="pr-0">
+                                      {x.labelHe} — {x.accuracy}% ({x.questions})
+                                    </li>
+                                  ))}
+                                </ul>
+                              </TierBlock>
+                            ) : null}
+                            {sp.improving?.length ? (
+                              <TierBlock tier="improving" title="נקודות לשיפור">
+                                <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
+                                  {sp.improving.map((x) => (
+                                    <li key={x.id} className="pr-0">
+                                      {improvingDiagnosticsDisplayLabelHe(x.labelHe)} — דיוק {x.accuracy}% (
+                                      {x.questions} שאלות)
+                                    </li>
+                                  ))}
+                                </ul>
+                              </TierBlock>
+                            ) : null}
+                            {sp.topWeaknesses?.length ? (
+                              <TierBlock tier="attention" title="תחומים הדורשים תשומת לב">
+                                <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
+                                  {sp.topWeaknesses.map((w) => (
+                                    <li key={w.id} className="pr-0">
+                                      {w.labelHe}
+                                      {typeof w.mistakeCount === "number"
+                                        ? ` (${w.mistakeCount} טעויות דומות)`
                                         : ""}
-                                    </p>
-                                    <p className="text-sm text-white/82 leading-relaxed">{tr.recommendedStepReasonHe}</p>
-                                    <p className="text-sm text-sky-100/90 leading-relaxed">
-                                      <span className="font-bold text-sky-200/90">להורה: </span>
-                                      {tr.recommendedParentActionHe}
-                                    </p>
-                                    <p className="text-sm text-emerald-100/90 leading-relaxed">
-                                      <span className="font-bold text-emerald-200/90">לתלמיד: </span>
-                                      {tr.recommendedStudentActionHe}
-                                    </p>
-                                  </div>
-                                ))}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </TierBlock>
+                            ) : null}
+                            {sp.parentActionHe ? (
+                              <div className="pr-detailed-callout-action pr-detailed-avoid-split rounded-lg border px-3 py-2.5">
+                                <span className="pr-detailed-callout-label">פעולה לבית</span>
+                                <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">
+                                  {sp.parentActionHe}
+                                </p>
                               </div>
-                            </div>
-                          ) : null}
+                            ) : null}
+                            {sp.nextWeekGoalHe ? (
+                              <div className="pr-detailed-callout-goal pr-detailed-avoid-split rounded-lg border px-3 py-2.5">
+                                <span className="pr-detailed-callout-label">יעד לשבוע</span>
+                                <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">
+                                  {sp.nextWeekGoalHe}
+                                </p>
+                              </div>
+                            ) : null}
+                            {sp.evidenceExamples?.length ? (
+                              <div className="pr-detailed-tier-examples pr-detailed-avoid-split">
+                                <h4 className="pr-detailed-subheading">דוגמאות</h4>
+                                <ul className="pr-detailed-muted text-xs space-y-1 m-0 list-none pr-0 leading-relaxed">
+                                  {sp.evidenceExamples.map((e, idx) => (
+                                    <li key={idx} className="pr-0">
+                                      {e.type === "mistake" ? "טעות לדוגמה" : "חיזוק לדוגמה"}
+                                      {e.exerciseText ? `: ${String(e.exerciseText).slice(0, 120)}` : ""}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ) : null}
+
+                            {sp.topicRecommendations?.length ? (
+                              <div className="pr-detailed-topic-rec-block">
+                                <p className="pr-detailed-topic-rec-head">צעד הבא המומלץ לפי נושא (נתוני טווח + טעויות)</p>
+                                <div className="space-y-2.5">
+                                  {sp.topicRecommendations.map((tr) => (
+                                    <div key={tr.topicRowKey} className="pr-detailed-topic-nextstep-card pr-detailed-avoid-split">
+                                      <div className="flex flex-wrap items-start justify-between gap-2 mb-1.5">
+                                        <span className="pr-detailed-body-text font-bold text-white/95 leading-snug">
+                                          {tr.displayName}
+                                        </span>
+                                        <span className="pr-detailed-topic-badge shrink-0">
+                                          {tr.recommendedStepLabelHe}
+                                        </span>
+                                      </div>
+                                      <p className="pr-detailed-topic-metrics">
+                                        שליטה {tr.currentMastery}% · יציבות {Math.round(tr.stability * 100)}% · ביטחון{" "}
+                                        {Math.round(tr.confidence * 100)}% · {tr.questions} שאלות · דיוק {tr.accuracy}%
+                                        {tr.mistakeEventCount > 0
+                                          ? ` · ${tr.mistakeEventCount} אירועי טעות בנושא`
+                                          : ""}
+                                      </p>
+                                      <p className="pr-detailed-topic-reason">{tr.recommendedStepReasonHe}</p>
+                                      <p className="pr-detailed-topic-parent">
+                                        <span className="font-extrabold text-sky-200/95">להורה: </span>
+                                        {tr.recommendedParentActionHe}
+                                      </p>
+                                      <p className="pr-detailed-topic-student">
+                                        <span className="font-extrabold text-emerald-200/95">לתלמיד: </span>
+                                        {tr.recommendedStudentActionHe}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : null}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -614,7 +939,7 @@ export default function ParentReportDetailedPage() {
                 )}
 
                 {/* cross insights — part of structure; placed after subjects for flow */}
-                <SectionCard title="תובנות חוצות־מקצועות">
+                <SectionCard title="תובנות חוצות־מקצועות" compact={displayMode === "summary"}>
                 <Bullets items={payload.crossSubjectInsights.bulletsHe} />
                 {payload.crossSubjectInsights.dataQualityNoteHe ? (
                   <p className="text-sm text-amber-200/90 mt-2">{payload.crossSubjectInsights.dataQualityNoteHe}</p>
@@ -622,12 +947,12 @@ export default function ParentReportDetailedPage() {
                 </SectionCard>
 
                 {/* E */}
-                <SectionCard title="פעולות מומלצות לבית">
+                <SectionCard title="פעולות מומלצות לבית" compact={displayMode === "summary"}>
                   <Bullets items={payload.homePlan.itemsHe} />
                 </SectionCard>
 
                 {/* F */}
-                <SectionCard title="יעד לתקופה הבאה">
+                <SectionCard title="יעד לתקופה הבאה" compact={displayMode === "summary"}>
                   <Bullets items={payload.nextPeriodGoals.itemsHe} />
                 </SectionCard>
               </div>
