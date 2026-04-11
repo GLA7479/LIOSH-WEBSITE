@@ -14,6 +14,7 @@ const OPERATION_NAMES = {
   subtraction: "חיסור",
   multiplication: "כפל",
   division: "חילוק",
+  division_with_remainder: "חילוק עם שארית",
   fractions: "שברים",
   percentages: "אחוזים",
   sequences: "סדרות",
