@@ -172,6 +172,11 @@ const TOPIC_BAR_SUBJECT_CARDS = [
 const MASTER_BAR_CHART_GEOMETRY = {
   /** מרווחים בתוך מסילת הגרף בלבד — זהים לסיכום ולנושאים (יישור אופקי אחיד) */
   plotChartMargin: { top: 8, right: 16, left: 8, bottom: 8 },
+  /**
+   * גובה נוסף לתחתית משותף: תוויות ציר X + כותרת ציר — מסילת תוויות ו-Recharts חייבים אותו אזור קטגוריות.
+   * (margin.bottom הבסיסי קטן מדי; בלי זה מרכזי שורות מתפצלים מהפסים.)
+   */
+  barChartXAxisReservedHeightPx: 28,
   summaryBarCategoryGap: 14,
   summaryMaxBarSize: 28,
   topicBarCategoryGap: 10,
@@ -317,6 +322,7 @@ function computeMasterBarChartGeometry(report, view) {
     chartBodyVerticalPadPx: G.chartBodyVerticalPadPx,
     chartBodyMinHeightPx: G.chartBodyMinHeightPx,
     chartBodyMaxHeightPx: G.chartBodyMaxHeightPx,
+    barChartXAxisReservedHeightPx: G.barChartXAxisReservedHeightPx,
   };
 }
 
@@ -2077,9 +2083,13 @@ export default function ParentReport() {
                 const M = masterBarChartGeometry;
                 const sumH = M.summaryChartHeightPx;
                 const m = M.plotChartMargin;
-                const plotAreaH = Math.max(1, sumH - m.top - m.bottom);
-                const bandH = plotAreaH / overviewRows.length;
+                const xAxisRes = M.barChartXAxisReservedHeightPx;
+                const plotMargin = { ...m, bottom: m.bottom + xAxisRes };
                 const gap = M.labelPlotGapPx;
+                const chartMargin = {
+                  ...plotMargin,
+                  left: gap + plotMargin.left,
+                };
                 return (
                   <div className="parent-report-chart-card bg-black/30 border border-white/10 rounded-xl p-3 md:p-5 avoid-break shadow-sm shadow-black/20">
                     <div className="text-center mb-2 md:mb-3">
@@ -2095,94 +2105,73 @@ export default function ParentReport() {
                       dir="ltr"
                     >
                       <div
-                        className="parent-report-master-bar-canvas flex flex-row items-stretch min-w-0"
+                        className="parent-report-master-bar-canvas min-w-0"
                         dir="ltr"
                         style={{
                           width: M.summaryChartTotalWidthPx,
                           minWidth: M.summaryChartTotalWidthPx,
                           height: sumH,
-                          gap,
                         }}
                       >
-                        <div
-                          className="parent-report-master-label-rail flex shrink-0 flex-col border-r border-white/10"
-                          style={{
-                            width: M.summaryLabelRailWidthPx,
-                            minWidth: M.summaryLabelRailWidthPx,
-                            maxWidth: M.summaryLabelRailWidthPx,
-                            height: sumH,
-                            boxSizing: "border-box",
-                            paddingTop: m.top,
-                            paddingBottom: m.bottom,
-                          }}
+                        <ResponsiveContainer
+                          width={M.summaryChartTotalWidthPx}
+                          height={sumH}
                         >
-                          {overviewRows.map((row) => (
-                            <div
-                              key={row.key}
-                              className="flex w-full shrink-0 items-center justify-end pe-2"
-                              style={{
-                                height: bandH,
-                                minHeight: bandH,
-                                maxHeight: bandH,
-                                fontSize: M.labelTickFontPx,
-                                lineHeight: 1.25,
-                                color: "#e2e8f0",
-                                textAlign: "right",
-                                direction: "ltr",
-                                overflow: "hidden",
-                                wordBreak: "break-word",
+                          <BarChart
+                            layout="vertical"
+                            data={overviewRows}
+                            margin={chartMargin}
+                            barCategoryGap={M.summaryBarCategoryGap}
+                          >
+                            <CartesianGrid
+                              strokeDasharray="3 3"
+                              stroke="#ffffff22"
+                              horizontal={false}
+                            />
+                            <XAxis
+                              type="number"
+                              domain={[0, Math.ceil(maxMin * 1.08)]}
+                              tick={{ fill: "#ffffff85", fontSize: M.tickFontPx }}
+                              tickMargin={6}
+                              label={{
+                                value: "דקות",
+                                position: "insideBottom",
+                                offset: -2,
+                                fill: "#ffffff70",
+                                fontSize: M.tickFontPx,
                               }}
-                              title={row.name}
-                            >
-                              <span dir="auto" className="block w-full text-right">
-                                {row.name}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                        <div
-                          className="parent-report-master-plot-rail shrink-0"
-                          style={{
-                            width: M.plotRailWidthPx,
-                            minWidth: M.plotRailWidthPx,
-                            maxWidth: M.plotRailWidthPx,
-                            height: sumH,
-                          }}
-                        >
-                          <ResponsiveContainer width={M.plotRailWidthPx} height={sumH}>
-                            <BarChart
-                              layout="vertical"
-                              data={overviewRows}
-                              margin={m}
-                              barCategoryGap={M.summaryBarCategoryGap}
-                            >
-                              <CartesianGrid
-                                strokeDasharray="3 3"
-                                stroke="#ffffff22"
-                                horizontal={false}
-                              />
-                              <XAxis
-                                type="number"
-                                domain={[0, Math.ceil(maxMin * 1.08)]}
-                                tick={{ fill: "#ffffff85", fontSize: M.tickFontPx }}
-                                tickMargin={6}
-                                label={{
-                                  value: "דקות",
-                                  position: "insideBottom",
-                                  offset: -2,
-                                  fill: "#ffffff70",
-                                  fontSize: M.tickFontPx,
-                                }}
-                              />
-                              <YAxis
-                                type="category"
-                                dataKey="key"
-                                hide
-                                width={0}
-                                axisLine={false}
-                                tickLine={false}
-                              />
-                              <Tooltip
+                            />
+                            <YAxis
+                              type="category"
+                              dataKey="key"
+                              width={M.summaryLabelRailWidthPx}
+                              interval={0}
+                              axisLine={{
+                                stroke: "rgba(255,255,255,0.1)",
+                              }}
+                              tickLine={false}
+                              tick={(tickProps) => {
+                                const { x, y, payload } = tickProps;
+                                const row = overviewRows.find(
+                                  (r) => r.key === payload.value
+                                );
+                                const label =
+                                  row?.name ?? String(payload.value ?? "");
+                                return (
+                                  <text
+                                    x={(x ?? 0) - 6}
+                                    y={y}
+                                    textAnchor="end"
+                                    dominantBaseline="central"
+                                    fill="#e2e8f0"
+                                    fontSize={M.labelTickFontPx}
+                                  >
+                                    {label}
+                                  </text>
+                                );
+                              }}
+                            />
+                            <Tooltip
                                 contentStyle={chartTooltipStyle}
                                 labelFormatter={(_label, payload) =>
                                   payload?.[0]?.payload?.name ?? ""
@@ -2206,9 +2195,8 @@ export default function ParentReport() {
                                   <Cell key={row.key} fill={row.fill} />
                                 ))}
                               </Bar>
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </div>
+                          </BarChart>
+                        </ResponsiveContainer>
                       </div>
                     </div>
                   </div>
@@ -2230,12 +2218,14 @@ export default function ParentReport() {
                 );
                 const totalW = M.topicChartTotalWidthPx;
                 const labelW = M.topicLabelRailWidthPx;
-                const plotW = M.plotRailWidthPx;
                 const gap = M.labelPlotGapPx;
                 const m = M.plotChartMargin;
-                const plotAreaH = Math.max(1, innerH - m.top - m.bottom);
-                const bandH =
-                  rows.length > 0 ? plotAreaH / rows.length : M.rowHeightPx;
+                const xAxisRes = M.barChartXAxisReservedHeightPx;
+                const plotMargin = { ...m, bottom: m.bottom + xAxisRes };
+                const chartMargin = {
+                  ...plotMargin,
+                  left: gap + plotMargin.left,
+                };
                 return (
                   <div
                     key={cfg.mapKey}
@@ -2252,122 +2242,95 @@ export default function ParentReport() {
                       dir="ltr"
                     >
                       <div
-                        className="parent-report-topic-bar-canvas flex flex-row items-stretch min-w-0"
+                        className="parent-report-topic-bar-canvas min-w-0"
                         dir="ltr"
                         style={{
                           width: totalW,
                           minWidth: totalW,
                           height: innerH,
-                          gap,
                         }}
                       >
-                        {/* מסילת תוויות: רוחב גלובלי אחד; טקסט קרוב למפרד/לגרף (יישור end), שורה ממורכזת אנכית לפס */}
-                        <div
-                          className="parent-report-topic-label-rail flex shrink-0 flex-col border-r border-white/10"
-                          style={{
-                            width: labelW,
-                            minWidth: labelW,
-                            maxWidth: labelW,
-                            height: innerH,
-                            boxSizing: "border-box",
-                            paddingTop: m.top,
-                            paddingBottom: m.bottom,
-                          }}
-                        >
-                          {rows.map((row) => (
-                            <div
-                              key={row.rowKey}
-                              className="flex w-full shrink-0 items-center justify-end pe-2"
-                              style={{
-                                height: bandH,
-                                minHeight: bandH,
-                                maxHeight: bandH,
-                                fontSize: M.labelTickFontPx,
-                                lineHeight: 1.25,
-                                color: "#e2e8f0",
-                                textAlign: "right",
-                                direction: "ltr",
-                                overflow: "hidden",
-                                wordBreak: "break-word",
+                        <ResponsiveContainer width={totalW} height={innerH}>
+                          <BarChart
+                            layout="vertical"
+                            data={rows}
+                            margin={chartMargin}
+                            barCategoryGap={M.topicBarCategoryGap}
+                          >
+                            <CartesianGrid
+                              strokeDasharray="3 3"
+                              stroke="#ffffff22"
+                              horizontal={false}
+                            />
+                            <XAxis
+                              type="number"
+                              domain={M.topicAccuracyDomain}
+                              tick={{ fill: "#ffffff85", fontSize: M.tickFontPx }}
+                              tickMargin={6}
+                              label={{
+                                value: "דיוק %",
+                                position: "insideBottom",
+                                offset: -2,
+                                fill: "#ffffff65",
+                                fontSize: M.tickFontPx,
                               }}
-                              title={row.label}
+                            />
+                            <YAxis
+                              type="category"
+                              dataKey="rowKey"
+                              width={labelW}
+                              interval={0}
+                              axisLine={{
+                                stroke: "rgba(255,255,255,0.1)",
+                              }}
+                              tickLine={false}
+                              tick={(tickProps) => {
+                                const { x, y, payload } = tickProps;
+                                const row = rows.find(
+                                  (r) => r.rowKey === payload.value
+                                );
+                                const label =
+                                  row?.label ?? String(payload.value ?? "");
+                                return (
+                                  <text
+                                    x={(x ?? 0) - 6}
+                                    y={y}
+                                    textAnchor="end"
+                                    dominantBaseline="central"
+                                    fill="#e2e8f0"
+                                    fontSize={M.labelTickFontPx}
+                                  >
+                                    {label}
+                                  </text>
+                                );
+                              }}
+                            />
+                            <Tooltip
+                              contentStyle={chartTooltipStyle}
+                              labelFormatter={(_label, payload) =>
+                                payload?.[0]?.payload?.label ?? ""
+                              }
+                              formatter={(_value, _name, props) => {
+                                const p = props?.payload;
+                                if (!p) return ["", ""];
+                                return [
+                                  `דיוק ${p.accuracy}% · ${p.questions} שאלות · ${p.timeMinutes} דק׳`,
+                                  "",
+                                ];
+                              }}
+                            />
+                            <Bar
+                              dataKey="accuracy"
+                              name="דיוק %"
+                              radius={[0, 4, 4, 0]}
+                              maxBarSize={M.topicMaxBarSize}
                             >
-                              <span dir="auto" className="block w-full text-right">
-                                {row.label}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                        {/* מסילת גרף — רוחב 0–100 אחיד; ללא ציר Y של תוויות */}
-                        <div
-                          className="parent-report-topic-plot-rail shrink-0"
-                          style={{
-                            width: plotW,
-                            minWidth: plotW,
-                            maxWidth: plotW,
-                            height: innerH,
-                          }}
-                        >
-                          <ResponsiveContainer width={plotW} height={innerH}>
-                            <BarChart
-                              layout="vertical"
-                              data={rows}
-                              margin={m}
-                              barCategoryGap={M.topicBarCategoryGap}
-                            >
-                              <CartesianGrid
-                                strokeDasharray="3 3"
-                                stroke="#ffffff22"
-                                horizontal={false}
-                              />
-                              <XAxis
-                                type="number"
-                                domain={M.topicAccuracyDomain}
-                                tick={{ fill: "#ffffff85", fontSize: M.tickFontPx }}
-                                tickMargin={6}
-                                label={{
-                                  value: "דיוק %",
-                                  position: "insideBottom",
-                                  offset: -2,
-                                  fill: "#ffffff65",
-                                  fontSize: M.tickFontPx,
-                                }}
-                              />
-                              <YAxis
-                                type="category"
-                                dataKey="rowKey"
-                                hide
-                                width={0}
-                                axisLine={false}
-                                tickLine={false}
-                              />
-                              <Tooltip
-                                contentStyle={chartTooltipStyle}
-                                labelFormatter={(_label, payload) =>
-                                  payload?.[0]?.payload?.label ?? ""
-                                }
-                                formatter={(_value, _name, props) => {
-                                  const p = props?.payload;
-                                  if (!p) return ["", ""];
-                                  return [
-                                    `דיוק ${p.accuracy}% · ${p.questions} שאלות · ${p.timeMinutes} דק׳`,
-                                    "",
-                                  ];
-                                }}
-                              />
-                              <Bar
-                                dataKey="accuracy"
-                                name="דיוק %"
-                                radius={[0, 4, 4, 0]}
-                                maxBarSize={M.topicMaxBarSize}
-                              >
-                                {rows.map((row) => (
-                                  <Cell key={row.rowKey} fill={topicBarColor(row.accuracy)} />
-                                ))}
-                              </Bar>
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </div>
+                              {rows.map((row) => (
+                                <Cell key={row.rowKey} fill={topicBarColor(row.accuracy)} />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
                       </div>
                     </div>
                   </div>
