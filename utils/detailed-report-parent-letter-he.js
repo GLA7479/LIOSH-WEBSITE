@@ -112,9 +112,9 @@ function buildSubjectOpeningLineHe(sp, lab) {
     );
   }
   if (w0) {
-    const t = displayTopicPhraseHe(w0.labelHe);
+    const coreW = displayTopicCoreHe(w0.labelHe) || displayTopicPhraseHe(w0.labelHe);
     const pre = sparse ? "עדיין מוקדם לקבוע בביטחון, אבל " : "";
-    return stripGuillemetsHe(`${pre}ב${lab} הבולט כרגע הוא ${t}.`);
+    return stripGuillemetsHe(`${pre}הנושא הבולט כרגע ב${lab} הוא ${coreW}.`);
   }
   if (ex0) {
     const acc = Math.round(Number(ex0.accuracy) || 0);
@@ -140,9 +140,12 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
   const imp0 = sp?.improving?.[0];
 
   if (w0 && s0) {
-    const ws = (Number(w0.mistakeCount) || 0) >= 8 ? "הדפוס חוזר בטווח" : "כדאי לעקוב";
+    const strong = (Number(w0.mistakeCount) || 0) >= 8;
+    const tail = strong
+      ? "נדרש חיזוק; הדפוס חוזר בעקביות."
+      : "נדרש חיזוק — וכדאי להמשיך לעקוב בלי למהר למסקנה.";
     return stripGuillemetsHe(
-      `מצד אחד יש בסיס ב־${displayTopicPhraseHe(s0.labelHe)}; מצד שני נדרש חיזוק ב־${displayTopicPhraseHe(w0.labelHe)} — ${ws}.`
+      `בשאלות שנדגמו: ${displayTopicPhraseHe(s0.labelHe)} יש בסיס טוב לעומת זאת ${displayTopicPhraseHe(w0.labelHe)} ${tail}`
     );
   }
   if (w0) {
@@ -216,8 +219,8 @@ export function buildTopicRecommendationNarrative(tr) {
   const q = Number(tr?.questions) || 0;
   const acc = Math.round(Number(tr?.accuracy) || 0);
   const m = Number(tr?.mistakeEventCount) || 0;
-  let snap = `ב${core}: ${q} שאלות, דיוק כ־${acc}%.`;
-  if (m > 0) snap += ` ${m} טעויות בטווח.`;
+  let snap = `נדגמו ${q} שאלות, דיוק כ־${acc}%.`;
+  if (m > 0) snap += ` ${m} טעויות סה״כ.`;
   const early = !!tr?.isEarlySignalOnly || tr?.dataSufficiencyLevel === "low" || tr?.evidenceStrength === "low";
   if (early && q < 12) {
     snap = `עדיין מוקדם לסכם — ${snap}`;

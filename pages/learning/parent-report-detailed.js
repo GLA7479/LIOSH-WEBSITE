@@ -1045,7 +1045,7 @@ export default function ParentReportDetailedPage() {
                     {displayMode === "summary" ? "תקציר להדפסה" : "דוח מלא"}
                   </p>
                   <p className="pr-detailed-body-text text-white/85 text-sm md:text-base">
-                    דוח הורי מקיף — מבוסס על נתוני התרגול בטווח שבחרתם
+                    דוח הורים מקיף — מבוסס על התאריכים הנבחרים
                   </p>
                   <p className="pr-detailed-muted text-sm mt-2">
                     טווח תאריכים: {pi.startDateLabelHe} – {pi.endDateLabelHe}
@@ -1082,7 +1082,7 @@ export default function ParentReportDetailedPage() {
                 ) : null}
 
                 {/* C */}
-                <SectionCard title="מה עשינו בטווח הזה" compact={displayMode === "summary"}>
+                <SectionCard title="מה עשינו בתקופה הזאת" compact={displayMode === "summary"}>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                   <div className="rounded-lg bg-white/5 border border-white/10 p-3 text-center">
                     <div className="text-xs text-white/55 mb-1">זמן כולל</div>
@@ -1129,7 +1129,7 @@ export default function ParentReportDetailedPage() {
                 <div className="mt-3 grid md:grid-cols-2 gap-3 text-sm">
                   <div>
                     <p className="pr-detailed-mini-heading font-semibold text-white/82 mb-1">
-                      מקצועות שעוד לא דיברו איתנו הרבה
+                      מקצועות שלא נדגמו — אין מספיק נתונים
                     </p>
                     <Bullets items={payload.overallSnapshot.lowExposureSubjectsHe} />
                   </div>
@@ -1167,7 +1167,7 @@ export default function ParentReportDetailedPage() {
                       id="pr-detailed-subjects-heading-full"
                       className="pr-detailed-subjects-region-title pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0 mb-3 md:mb-4 pb-2 border-b border-white/10"
                     >
-                      לכל מקצוע — במילים של מורה
+                      מקצועות הלימוד
                     </h2>
                     <div className="space-y-6">
                       {payload.subjectProfiles.map((sp) => (

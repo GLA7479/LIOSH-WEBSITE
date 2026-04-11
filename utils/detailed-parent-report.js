@@ -119,6 +119,14 @@ function uniqueTopLabels(rows, labelKey, max) {
   return out;
 }
 
+/** להסרת "בנושא " מתחילת תווית כדי לא לכפול ניסוח ("דגש על הנושא חיבור"). */
+function stripLeadingBenosheaHe(s) {
+  return String(s || "")
+    .replace(/^בנושא\/ים\s+/u, "")
+    .replace(/^בנושא\s+/u, "")
+    .trim();
+}
+
 function collectMaintainRows(subjects) {
   const rows = [];
   for (const sid of SUBJECT_IDS) {
@@ -159,8 +167,10 @@ function buildHomeFocusHe(subjects, topStrengthsAcrossHe, topFocusAreasHe, summa
   const acc = Math.round(Number(summary?.overallAccuracy) || 0);
 
   if (focusLabels.length) {
-    const joined = focusLabels.join(" · ");
-    return `השבוע כדאי לתת דגש ל־${joined} — מפגשים קצרים; אחרי טעות, לקרוא שוב את ניסוח השאלה לפני תשובה חדשה.`;
+    const cleaned = focusLabels.map(stripLeadingBenosheaHe).filter(Boolean);
+    const joined = cleaned.join(" · ");
+    const noun = cleaned.length > 1 ? "הנושאים" : "הנושא";
+    return `השבוע מומלץ לשים דגש על ${noun} ${joined} — ההמלצה שלנו: תרגול משותף עם הילד. אחרי טעות, לקרוא שוב את השאלה, להיכנס לחלון התרגיל הקודם ולהבין ביחד איפה הטעות.`;
   }
   if (preservePhrase) {
     return `במקביל כדאי לשמור על תרגול רגוע סביב ${preservePhrase} — שם כבר יש בסיס טוב.`;
@@ -215,7 +225,7 @@ function buildOverallSnapshot(baseReport, subjectCoverage) {
       lowExposureSubjectsHe.push(`${row.subjectLabelHe} — אין שאלות בטווח`);
     } else if (row.questionCount < 15) {
       lowExposureSubjectsHe.push(
-        `${row.subjectLabelHe} — חשיפה מועטת (${row.questionCount} שאלות)`
+        `${row.subjectLabelHe} — מספר שאלות נמוך (${row.questionCount} שאלות)`
       );
     }
     if (row.questionCount >= 40 && row.accuracy >= 85) {

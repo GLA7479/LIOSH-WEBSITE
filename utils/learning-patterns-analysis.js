@@ -493,7 +493,8 @@ function buildParentActionHe(
   return null;
 }
 
-function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain, stableExcellence) {
+function buildNextWeekGoalHe(subjectLabelHe, topWeaknesses, improving, topStrengths, maintain, stableExcellence) {
+  const subj = subjectLabelHe || "המקצוע";
   const w0 = topWeaknesses[0];
   const preserve =
     stableExcellence[0] ||
@@ -505,9 +506,15 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain, s
   const tp = parentCopyTopicPhraseHe;
   const goals = [];
   if (w0) {
-    goals.push(
-      `לנסות שבוע אחד ${successRateImprovementGoalHe(w0.labelHe)} — מספיק אפילו שיפור קטן באחוזי ההצלחה.`
-    );
+    if (inferWeaknessKindHe(w0.labelHe) === "wording") {
+      goals.push(
+        `ב${subj} ${tp(w0.labelHe)} — מומלץ לבחור כמה דוגמאות מהנושא לעבור ביחד עם הילד צעד־צעד, ולנסות השבוע ${successRateImprovementGoalHe(w0.labelHe)} — מספיק אפילו שיפור קטן באחוזי ההצלחה.`
+      );
+    } else {
+      goals.push(
+        `ב${subj} ${tp(w0.labelHe)} — לנסות שבוע אחד ${successRateImprovementGoalHe(w0.labelHe)} — מספיק אפילו שיפור קטן באחוזי ההצלחה.`
+      );
+    }
   } else if (improving?.[0]) {
     const i0 = improving[0];
     goals.push(
@@ -789,6 +796,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
     );
 
     const nextWeekGoalHe = buildNextWeekGoalHe(
+      SUBJECT_LABEL_HE[sid],
       topWeaknesses,
       improving,
       topStrengths,
