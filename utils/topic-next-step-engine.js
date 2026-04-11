@@ -1,10 +1,11 @@
 /**
  * מנוע המלצות ברמת נושא/פעולה לדוח מקיף בלבד.
- * מבוסס על שורות דוח V2 (questions, accuracy, levelKey, gradeKey) + ספירת אירועי טעות לפי bucket.
+ * מבוסס על שורות דוח V2 + מפת טעויות (עם נירמול מפתחות מול אחסון אמיתי).
  */
 
 import { splitBucketModeRowKey } from "./parent-report-v2";
-import { canonicalParentReportGradeKey } from "./math-report-generator";
+import { canonicalParentReportGradeKey, mathReportBaseOperationKey } from "./math-report-generator";
+import { DEFAULT_TOPIC_NEXT_STEP_CONFIG } from "./topic-next-step-config";
 
 /** @typedef {'advance_level'|'advance_grade_topic_only'|'maintain_and_strengthen'|'remediate_same_level'|'drop_one_level_topic_only'|'drop_one_grade_topic_only'} RecommendedNextStep */
 
@@ -20,11 +21,70 @@ export const RECOMMENDED_STEP_LABEL_HE = {
 const GRADE_ORDER = ["g1", "g2", "g3", "g4", "g5", "g6"];
 const LEVEL_ORDER = ["easy", "medium", "hard"];
 
-const MIN_Q_LOW_CONFIDENCE = 7;
-const MIN_Q_STEP_CHANGE = 14;
-const MIN_Q_ADVANCE_LEVEL = 18;
-const MIN_Q_ADVANCE_GRADE = 22;
-const MIN_Q_REMEDIATE = 10;
+/**
+ * @param {Record<string, unknown>} [partial]
+ * @returns {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG}
+ */
+export function mergeTopicNextStepConfig(partial) {
+  return {
+    ...DEFAULT_TOPIC_NEXT_STEP_CONFIG,
+    ...(partial && typeof partial === "object" ? partial : {}),
+  };
+}
+
+/**
+ * מפתח אחיד לחיפוש טעויות מול שורת דוח (מתאים ל־operation/topic ב־localStorage ול־bucket במתמטיקה).
+ * @param {string} subjectId
+ * @param {string|null|undefined} rawKey
+ */
+export function canonicalMistakeLookupKey(subjectId, rawKey) {
+  const s = String(rawKey ?? "").trim();
+  if (!s) return "";
+  if (subjectId === "math") return mathReportBaseOperationKey(s);
+  if (/^[a-z0-9_\-.]+$/i.test(s)) return s.toLowerCase();
+  return s;
+}
+
+/**
+ * מאגד ספירות טעויות לפי מפתח קנוני — כמה מפתחות גולמיים מצביעים על אותו נושא (למשל base אחרי :: במתמטיקה).
+ * @param {string} subjectId
+ * @param {Record<string, { count?: number }>} mistakesByBucket
+ */
+export function aggregateMistakeCountsByCanonical(subjectId, mistakesByBucket) {
+  const out = {};
+  if (!mistakesByBucket || typeof mistakesByBucket !== "object") return out;
+  for (const [k, v] of Object.entries(mistakesByBucket)) {
+    const c = canonicalMistakeLookupKey(subjectId, k);
+    if (!c) continue;
+    const n = Number(v?.count) || 0;
+    out[c] = (out[c] || 0) + n;
+  }
+  return out;
+}
+
+/**
+ * ספירת אירועי טעות לשורה: bucketKey, מפתח שורה מהמפה, שם תצוגה, ובמתמטיקה גם בסיס לפני מפריד מצב.
+ */
+export function resolveMistakeEventCount(subjectId, mistakesByBucket, bucketKey, topicRowKey, row) {
+  const byCanon = aggregateMistakeCountsByCanonical(subjectId, mistakesByBucket);
+  const candidates = new Set();
+  if (bucketKey) candidates.add(canonicalMistakeLookupKey(subjectId, bucketKey));
+  const split = splitBucketModeRowKey(String(topicRowKey || ""));
+  if (split.bucketKey) candidates.add(canonicalMistakeLookupKey(subjectId, split.bucketKey));
+  if (row?.displayName) candidates.add(canonicalMistakeLookupKey(subjectId, String(row.displayName)));
+  if (subjectId === "math" && topicRowKey) {
+    const noMode = String(topicRowKey).split("\u0001")[0];
+    if (noMode) candidates.add(canonicalMistakeLookupKey(subjectId, noMode));
+  }
+  let total = 0;
+  const seen = new Set();
+  for (const c of candidates) {
+    if (!c || seen.has(c)) continue;
+    seen.add(c);
+    total += byCanon[c] || 0;
+  }
+  return total;
+}
 
 function gradeIndex(g) {
   if (!g || typeof g !== "string") return -1;
@@ -48,53 +108,45 @@ function normGradeKey(row) {
   return g && GRADE_ORDER.includes(g) ? g : null;
 }
 
-/**
- * שליטה נוכחית בנושא — אחוז הדיוק בטווח (0–100).
- */
 function computeCurrentMastery(row) {
   return Math.max(0, Math.min(100, Math.round(Number(row?.accuracy) || 0)));
 }
 
-/**
- * יציבות משוערת: נפח + יחס טעויות (אין סדרת סשנים לפי דיוק — קירוב שמרני).
- * @returns {number} 0–1
- */
-function computeStability(row, mistakeEventCount) {
+function computeStability(row, mistakeEventCount, cfg) {
   const q = Number(row?.questions) || 0;
   if (q <= 0) return 0;
   const wrong = Math.max(0, Number(row?.wrong) ?? q - (Number(row?.correct) || 0));
   const wrongRatio = wrong / q;
-  const volume = Math.min(1, q / 28);
-  const mistakePressure = Math.min(0.45, (mistakeEventCount || 0) / Math.max(q, 8) + wrongRatio * 0.35);
+  const volume = Math.min(1, q / cfg.stabilityVolumeDivisor);
+  const mistakePressure = Math.min(
+    cfg.stabilityMistakePressureMax,
+    (mistakeEventCount || 0) / Math.max(q, cfg.stabilityMistakeQDivisor) +
+      wrongRatio * cfg.stabilityWrongPenaltyCoef
+  );
   const raw = volume * (1 - mistakePressure);
   return Math.round(Math.max(0, Math.min(1, raw)) * 100) / 100;
 }
 
-/**
- * ביטחון סטטיסטי משוער בדגימת הדיוק (נפח בלבד + עקביות טעויות).
- * @returns {number} 0–1
- */
-function computeConfidence(row, mistakeEventCount) {
+function computeConfidence(row, mistakeEventCount, cfg) {
   const q = Number(row?.questions) || 0;
   if (q <= 0) return 0;
-  const base = 1 - Math.exp(-q / 20);
+  const base = 1 - Math.exp(-q / cfg.confidenceExpDivisor);
   const m = Number(mistakeEventCount) || 0;
-  const noise = m > q * 1.8 ? 0.75 : m > q ? 0.88 : 1;
+  const noise =
+    m > q * cfg.confidenceMistakeRatioHigh
+      ? cfg.confidenceNoiseHigh
+      : m > q * cfg.confidenceMistakeRatioMid
+        ? cfg.confidenceNoiseMid
+        : 1;
   return Math.round(Math.max(0, Math.min(1, base * noise)) * 100) / 100;
-}
-
-function mistakeCountForRow(mistakesByBucket, bucketKey) {
-  if (!mistakesByBucket || !bucketKey) return 0;
-  const direct = mistakesByBucket[bucketKey];
-  if (direct && typeof direct.count === "number") return direct.count;
-  return 0;
 }
 
 /**
  * @param {string} step
  * @param {object} ctx
+ * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} cfg
  */
-function buildHebrewCopy(step, ctx) {
+function buildHebrewCopy(step, ctx, cfg) {
   const {
     displayName,
     questions: q,
@@ -106,7 +158,7 @@ function buildHebrewCopy(step, ctx) {
   } = ctx;
 
   const mPart =
-    mC >= 3
+    mC >= cfg.copyMentionMistakesMin
       ? ` נרשמו בטווח ${mC} אירועי טעות בנושא הזה, ולכן חשוב לקרוא את המשימה לאט לפני מענה.`
       : "";
 
@@ -148,10 +200,9 @@ function buildHebrewCopy(step, ctx) {
 }
 
 /**
- * מודל החלטה: סדר עדיפויות משמרני (לא מעלים/יורדים מהר בלי נפח וביטחון).
- * @returns {{ step: RecommendedNextStep, reasonHe: string, parentHe: string, studentHe: string, currentMastery: number, stability: number, confidence: number }}
+ * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} cfg
  */
-function decideTopicNextStep(row, mistakeEventCount) {
+function decideTopicNextStep(row, mistakeEventCount, cfg) {
   const q = Number(row?.questions) || 0;
   const acc = computeCurrentMastery(row);
   const wrong = Math.max(0, Number(row?.wrong) ?? 0);
@@ -162,8 +213,8 @@ function decideTopicNextStep(row, mistakeEventCount) {
   const gi = gradeIndex(gradeKey);
   const displayName = String(row?.displayName || row?.bucketKey || "נושא").trim();
 
-  const stability = computeStability(row, mistakeEventCount);
-  const confidence = computeConfidence(row, mistakeEventCount);
+  const stability = computeStability(row, mistakeEventCount, cfg);
+  const confidence = computeConfidence(row, mistakeEventCount, cfg);
 
   const ctx = {
     displayName,
@@ -176,15 +227,21 @@ function decideTopicNextStep(row, mistakeEventCount) {
   };
 
   const repeatedStruggle =
-    q >= MIN_Q_STEP_CHANGE && acc < 52 && (mistakeEventCount >= 4 || wrongRatio >= 0.42);
+    q >= cfg.minQuestionsStepChange &&
+    acc < cfg.repeatedStruggleAccMax &&
+    (mistakeEventCount >= cfg.repeatedStruggleMistakesMin ||
+      wrongRatio >= cfg.repeatedStruggleWrongRatio);
   const highVolumeStrong =
-    q >= MIN_Q_ADVANCE_LEVEL && acc >= 86 && stability >= 0.52 && confidence >= 0.48;
-  const mistakeDrag = mistakeEventCount >= 4 && acc < 90;
+    q >= cfg.minQuestionsAdvanceLevel &&
+    acc >= cfg.advanceLevelAccMin &&
+    stability >= cfg.advanceLevelStabilityMin &&
+    confidence >= cfg.advanceLevelConfidenceMin;
+  const mistakeDrag =
+    mistakeEventCount >= cfg.mistakeDragMistakesMin && acc < cfg.mistakeDragAccMax;
 
-  /** דגימה קטנה מדי — לא משנים רמה/כיתה; רק חיזוק באותה הגדרה */
-  if (q < MIN_Q_LOW_CONFIDENCE && q > 0) {
+  if (q < cfg.minQuestionsLowConfidence && q > 0) {
     const step = "maintain_and_strengthen";
-    const copy = buildHebrewCopy(step, ctx);
+    const copy = buildHebrewCopy(step, ctx, cfg);
     return {
       step,
       ...copy,
@@ -199,34 +256,39 @@ function decideTopicNextStep(row, mistakeEventCount) {
 
   if (repeatedStruggle && li >= 1) {
     const step = "drop_one_level_topic_only";
-    const copy = buildHebrewCopy(step, ctx);
+    const copy = buildHebrewCopy(step, ctx, cfg);
     return { step, ...copy, currentMastery: acc, stability, confidence };
   }
 
   if (repeatedStruggle && li === 0 && gi > 0) {
     const step = "drop_one_grade_topic_only";
-    const copy = buildHebrewCopy(step, ctx);
-    return { step, ...copy, currentMastery: acc, stability, confidence };
-  }
-
-  if (q >= MIN_Q_REMEDIATE && acc >= 54 && acc <= 68 && !mistakeDrag) {
-    const step = "remediate_same_level";
-    const copy = buildHebrewCopy(step, ctx);
+    const copy = buildHebrewCopy(step, ctx, cfg);
     return { step, ...copy, currentMastery: acc, stability, confidence };
   }
 
   if (
-    q >= MIN_Q_ADVANCE_GRADE &&
+    q >= cfg.minQuestionsRemediate &&
+    acc >= cfg.remediateAccLo &&
+    acc <= cfg.remediateAccHi &&
+    !mistakeDrag
+  ) {
+    const step = "remediate_same_level";
+    const copy = buildHebrewCopy(step, ctx, cfg);
+    return { step, ...copy, currentMastery: acc, stability, confidence };
+  }
+
+  if (
+    q >= cfg.minQuestionsAdvanceGrade &&
     levelKey === "hard" &&
     gi >= 0 &&
     gi < GRADE_ORDER.length - 1 &&
-    acc >= 84 &&
-    stability >= 0.55 &&
-    confidence >= 0.55 &&
+    acc >= cfg.advanceGradeAccMin &&
+    stability >= cfg.advanceGradeStabilityMin &&
+    confidence >= cfg.advanceGradeConfidenceMin &&
     !mistakeDrag
   ) {
     const step = "advance_grade_topic_only";
-    const copy = buildHebrewCopy(step, ctx);
+    const copy = buildHebrewCopy(step, ctx, cfg);
     return { step, ...copy, currentMastery: acc, stability, confidence };
   }
 
@@ -238,36 +300,36 @@ function decideTopicNextStep(row, mistakeEventCount) {
     !mistakeDrag
   ) {
     const step = "advance_level";
-    const copy = buildHebrewCopy(step, ctx);
+    const copy = buildHebrewCopy(step, ctx, cfg);
     return { step, ...copy, currentMastery: acc, stability, confidence };
   }
 
-  if (q >= MIN_Q_STEP_CHANGE && acc < 55 && li >= 1) {
+  if (q >= cfg.minQuestionsStepChange && acc < cfg.dropLevelAccMax && li >= 1) {
     const step = "drop_one_level_topic_only";
-    const copy = buildHebrewCopy(step, ctx);
+    const copy = buildHebrewCopy(step, ctx, cfg);
     return { step, ...copy, currentMastery: acc, stability, confidence };
   }
 
-  if (q >= MIN_Q_STEP_CHANGE && acc < 55 && levelKey == null) {
+  if (q >= cfg.minQuestionsStepChange && acc < cfg.dropLevelAccMax && levelKey == null) {
     const step = "remediate_same_level";
-    const copy = buildHebrewCopy(step, ctx);
+    const copy = buildHebrewCopy(step, ctx, cfg);
     return { step, ...copy, currentMastery: acc, stability, confidence };
   }
 
-  if (q >= MIN_Q_STEP_CHANGE && acc < 52 && li === 0 && gi > 0) {
+  if (q >= cfg.minQuestionsStepChange && acc < cfg.dropGradeAccMax && li === 0 && gi > 0) {
     const step = "drop_one_grade_topic_only";
-    const copy = buildHebrewCopy(step, ctx);
+    const copy = buildHebrewCopy(step, ctx, cfg);
     return { step, ...copy, currentMastery: acc, stability, confidence };
   }
 
-  if (q >= MIN_Q_REMEDIATE && acc < 62 && acc >= 48) {
+  if (q >= cfg.minQuestionsRemediate && acc < cfg.remediateBandAccHi && acc >= cfg.remediateBandAccLo) {
     const step = "remediate_same_level";
-    const copy = buildHebrewCopy(step, ctx);
+    const copy = buildHebrewCopy(step, ctx, cfg);
     return { step, ...copy, currentMastery: acc, stability, confidence };
   }
 
   const step = "maintain_and_strengthen";
-  const copy = buildHebrewCopy(step, ctx);
+  const copy = buildHebrewCopy(step, ctx, cfg);
   return { step, ...copy, currentMastery: acc, stability, confidence };
 }
 
@@ -280,30 +342,21 @@ const MISTAKE_ANALYSIS_KEY = {
   "moledet-geography": "moledetGeographyMistakesByTopic",
 };
 
-function rowBucketKeyForMistakes(row, mapKey) {
-  const bk = row?.bucketKey;
-  if (bk) return String(bk);
-  return null;
-}
-
 /**
- * בונה רשומת המלצה לשורת נושא אחת ממפת הדוח.
- * @param {string} subjectId
- * @param {string} topicRowKey מפתח בשורת המפה (כולל מצב למתמטיקה)
- * @param {object} row
- * @param {Record<string, {count?: number}>} mistakesByBucket
+ * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} [cfg]
  */
-export function buildTopicRecommendationRecord(subjectId, topicRowKey, row, mistakesByBucket) {
-  const bucketKey = rowBucketKeyForMistakes(row) || splitBucketModeRowKey(String(topicRowKey)).bucketKey;
-  const mC = mistakeCountForMistakes(mistakesByBucket, bucketKey, subjectId, topicRowKey, row);
-  const decision = decideTopicNextStep(row, mC);
+export function buildTopicRecommendationRecord(subjectId, topicRowKey, row, mistakesByBucket, cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG) {
+  const bucketKey =
+    row?.bucketKey || splitBucketModeRowKey(String(topicRowKey)).bucketKey || null;
+  const mC = resolveMistakeEventCount(subjectId, mistakesByBucket, bucketKey, topicRowKey, row);
+  const decision = decideTopicNextStep(row, mC, cfg);
   const q = Number(row?.questions) || 0;
 
   return {
     subject: subjectId,
     topicRowKey: String(topicRowKey),
     displayName: String(row?.displayName || bucketKey || topicRowKey),
-    bucketKey: bucketKey || null,
+    bucketKey: bucketKey ? String(bucketKey) : null,
     modeKey: row?.modeKey ?? null,
     questions: q,
     accuracy: Number(row?.accuracy) || 0,
@@ -323,28 +376,9 @@ export function buildTopicRecommendationRecord(subjectId, topicRowKey, row, mist
 }
 
 /**
- * טעינת ספירת טעויות: לרוב לפי bucketKey; ניסיון התאמה נוסף למפתח השורה.
+ * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} [cfg]
  */
-function mistakeCountForMistakes(mistakesByBucket, bucketKey, _subjectId, topicRowKey, row) {
-  if (!mistakesByBucket || typeof mistakesByBucket !== "object") return 0;
-  let n = mistakeCountForRow(mistakesByBucket, bucketKey);
-  if (n > 0) return n;
-  const alt = mistakeCountForRow(mistakesByBucket, String(topicRowKey));
-  if (alt > 0) return alt;
-  if (row?.displayName) {
-    const d = mistakeCountForRow(mistakesByBucket, String(row.displayName));
-    if (d > 0) return d;
-  }
-  return 0;
-}
-
-/**
- * כל ההמלצות לפי מקצוע, ממוינות לפי דחיפות ואז נפח.
- * @param {string} subjectId
- * @param {Record<string, object>} topicMap
- * @param {object} analysis analysis מ־generateParentReportV2
- */
-export function buildTopicRecommendationsForSubject(subjectId, topicMap, analysis) {
+export function buildTopicRecommendationsForSubject(subjectId, topicMap, analysis, cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG) {
   const aKey = MISTAKE_ANALYSIS_KEY[subjectId];
   const mistakesByBucket = (analysis && analysis[aKey]) || {};
 
@@ -355,7 +389,7 @@ export function buildTopicRecommendationsForSubject(subjectId, topicMap, analysi
     if (!row || typeof row !== "object") continue;
     const q = Number(row.questions) || 0;
     if (q <= 0) continue;
-    rows.push(buildTopicRecommendationRecord(subjectId, topicRowKey, row, mistakesByBucket));
+    rows.push(buildTopicRecommendationRecord(subjectId, topicRowKey, row, mistakesByBucket, cfg));
   }
 
   const urgency = (s) => {
@@ -376,5 +410,5 @@ export function buildTopicRecommendationsForSubject(subjectId, topicMap, analysi
     return b.questions - a.questions;
   });
 
-  return rows;
+  return rows.slice(0, cfg.maxTopicRecommendationsPerSubject);
 }

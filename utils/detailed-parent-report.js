@@ -322,7 +322,7 @@ function buildSubjectProfiles(baseReport) {
     if (!s) continue;
     const stable = Array.isArray(s.stableExcellence) ? s.stableExcellence : [];
     const topicMap = baseReport?.[REPORT_MAP_KEY[sid]] || {};
-    const topicRecommendations = buildTopicRecommendationsForSubject(sid, topicMap, analysis).slice(0, 15);
+    const topicRecommendations = buildTopicRecommendationsForSubject(sid, topicMap, analysis);
     out.push({
       subject: sid,
       subjectLabelHe: SUBJECT_LABEL_HE[sid],

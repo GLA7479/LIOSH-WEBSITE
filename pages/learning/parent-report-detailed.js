@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -31,11 +31,84 @@ function Bullets({ items }) {
   );
 }
 
+/** מצב תצוגה: אותו payload, תצוגה מלאה או תמצית להדפסה */
+function normalizeDisplayMode(raw) {
+  return raw === "summary" ? "summary" : "full";
+}
+
+/** query נקי לשיתוף/הדפסה — רק פרמטרים שמוכרים לדף המקיף */
+function buildDetailedReportQuery(router, mode) {
+  const next = normalizeDisplayMode(mode);
+  const q = {};
+  const period = router.query?.period;
+  if (typeof period === "string" && period) q.period = period;
+  const start = router.query?.start;
+  const end = router.query?.end;
+  if (typeof start === "string" && start) q.start = start;
+  if (typeof end === "string" && end) q.end = end;
+  if (next === "summary") q.mode = "summary";
+  return q;
+}
+
+/** פירוט מקוצר למקצוע — רק שדות מה־payload הקיים (ללא מנוע נפרד) */
+function SubjectSummaryBlock({ sp }) {
+  const ex = Array.isArray(sp.excellence) ? sp.excellence.slice(0, 2) : [];
+  const weak = Array.isArray(sp.topWeaknesses) ? sp.topWeaknesses.slice(0, 2) : [];
+  return (
+    <div className="pr-detailed-summary-subject rounded-lg border border-white/12 bg-black/20 p-3 md:p-4 space-y-2">
+      <h3 className="text-base font-bold text-white border-b border-white/10 pb-1">{sp.subjectLabelHe}</h3>
+      {sp.summaryHe ? (
+        <p className="text-sm text-white/80 leading-relaxed">{sp.summaryHe}</p>
+      ) : (
+        <p className="text-sm text-white/45">אין סיכום טקסטואלי למקצוע זה בטווח.</p>
+      )}
+      {ex.length ? (
+        <div>
+          <p className="text-xs font-bold text-violet-200 mb-1">הצטיינות יציבה (עד 2)</p>
+          <ul className="text-sm text-white/80 space-y-1">
+            {ex.map((x) => (
+              <li key={x.id}>
+                {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {weak.length ? (
+        <div>
+          <p className="text-xs font-bold text-red-200/80 mb-1">תחומים הדורשים תשומת לב (עד 2)</p>
+          <ul className="text-sm text-white/80 space-y-1">
+            {weak.map((w) => (
+              <li key={w.id}>
+                {w.labelHe}
+                {typeof w.mistakeCount === "number" ? ` (${w.mistakeCount} טעויות דומות)` : ""}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {sp.parentActionHe ? (
+        <p className="text-sm text-yellow-100/90">
+          <span className="font-semibold">פעולה לבית: </span>
+          {sp.parentActionHe}
+        </p>
+      ) : null}
+      {sp.nextWeekGoalHe ? (
+        <p className="text-sm text-amber-100/85">
+          <span className="font-semibold">יעד לתקופה הבאה: </span>
+          {sp.nextWeekGoalHe}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 export default function ParentReportDetailedPage() {
   useIOSViewportFix();
   const router = useRouter();
   const [payload, setPayload] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [displayMode, setDisplayMode] = useState("full");
 
   const queryPeriod = typeof router.query.period === "string" ? router.query.period : "week";
   const queryStart = typeof router.query.start === "string" ? router.query.start : null;
@@ -77,6 +150,68 @@ export default function ParentReportDetailedPage() {
     setLoading(false);
     return undefined;
   }, [router.isReady, queryPeriod, queryStart, queryEnd]);
+
+  useEffect(() => {
+    if (!router.isReady) return undefined;
+    setDisplayMode(normalizeDisplayMode(router.query.mode));
+    return undefined;
+  }, [router.isReady, router.query.mode]);
+
+  const setModeInUrl = useCallback(
+    (mode) => {
+      const next = normalizeDisplayMode(mode);
+      const q = buildDetailedReportQuery(router, next);
+      router.replace({ pathname: "/learning/parent-report-detailed", query: q }, undefined, {
+        shallow: true,
+      });
+      setDisplayMode(next);
+    },
+    [router]
+  );
+
+  const printWithMode = useCallback(
+    (mode) => {
+      const next = normalizeDisplayMode(mode);
+      setDisplayMode(next);
+      const q = buildDetailedReportQuery(router, next);
+      router.replace({ pathname: "/learning/parent-report-detailed", query: q }, undefined, {
+        shallow: true,
+      });
+      window.setTimeout(() => window.print(), 120);
+    },
+    [router]
+  );
+
+  const ModeToggle = ({ className = "" }) => (
+    <div
+      className={`no-pdf flex flex-wrap items-center justify-center gap-2 ${className}`}
+      role="group"
+      aria-label="מצב תצוגת דוח"
+    >
+      <button
+        type="button"
+        onClick={() => setModeInUrl("full")}
+        className={`inline-flex px-4 py-2 rounded-lg text-sm font-bold border transition-all ${
+          displayMode === "full"
+            ? "bg-sky-600/80 border-sky-300/60 text-white"
+            : "bg-white/5 border-white/20 text-white/80 hover:bg-white/10"
+        }`}
+      >
+        דוח מלא
+      </button>
+      <button
+        type="button"
+        onClick={() => setModeInUrl("summary")}
+        className={`inline-flex px-4 py-2 rounded-lg text-sm font-bold border transition-all ${
+          displayMode === "summary"
+            ? "bg-amber-600/75 border-amber-300/55 text-white"
+            : "bg-white/5 border-white/20 text-white/80 hover:bg-white/10"
+        }`}
+      >
+        תקציר להדפסה
+      </button>
+    </div>
+  );
 
   if (loading) {
     return (
@@ -160,6 +295,31 @@ export default function ParentReportDetailedPage() {
             #parent-report-detailed-print thead {
               background: #f0f0f0 !important;
             }
+            #parent-report-detailed-print[data-display-mode="summary"] {
+              padding: 7mm 9mm !important;
+            }
+            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-section {
+              margin-bottom: 8px !important;
+              padding: 10px 12px !important;
+            }
+            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-summary-subject {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+              margin-bottom: 6px !important;
+              padding: 8px 10px !important;
+            }
+            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-mode-hint {
+              font-size: 10pt !important;
+              margin-bottom: 6px !important;
+            }
+            #parent-report-detailed-print[data-display-mode="full"] .pr-detailed-topic-rec-block {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
+            #parent-report-detailed-print[data-display-mode="full"] .pr-detailed-subject-block {
+              break-inside: auto;
+              page-break-inside: auto;
+            }
             .no-pdf {
               display: none !important;
             }
@@ -175,13 +335,16 @@ export default function ParentReportDetailedPage() {
         }}
       >
         <div className="max-w-3xl mx-auto w-full min-w-0">
-          <div className="no-pdf flex flex-wrap items-center justify-between gap-2 mb-4">
-            <Link
-              href={backHref}
-              className="inline-flex px-4 py-2 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all"
-            >
-              ← חזרה לדוח המקוצר
-            </Link>
+          <div className="no-pdf flex flex-col gap-3 mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Link
+                href={backHref}
+                className="inline-flex px-4 py-2 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all"
+              >
+                ← חזרה לדוח המקוצר
+              </Link>
+            </div>
+            <ModeToggle />
           </div>
 
           {noPlayer ? (
@@ -192,10 +355,13 @@ export default function ParentReportDetailedPage() {
             <p className="text-center text-white/80">לא ניתן לטעון את הדוח המקיף.</p>
           ) : (
             <>
-              <div id="parent-report-detailed-print">
+              <div id="parent-report-detailed-print" data-display-mode={displayMode}>
                 {/* A */}
                 <header className="mb-6 text-center border-b border-white/10 pb-4 pr-detailed-break-avoid">
                   <h1 className="text-2xl md:text-3xl font-black text-white mb-1">דוח מקיף לתקופה</h1>
+                  <p className="pr-detailed-mode-hint text-xs font-semibold text-amber-200/90 mb-1">
+                    {displayMode === "summary" ? "תקציר להדפסה" : "דוח מלא"}
+                  </p>
                   <p className="text-white/80 text-sm md:text-base">{pi.playerName}</p>
                   <p className="text-white/60 text-sm mt-2">
                     טווח תאריכים: {pi.startDateLabelHe} – {pi.endDateLabelHe}
@@ -225,9 +391,11 @@ export default function ParentReportDetailedPage() {
                   </div>
                 </SectionCard>
 
-                <p className="pr-detailed-future-compare text-xs text-white/50 mb-4 leading-relaxed border border-white/10 rounded-lg px-3 py-2 bg-black/15">
-                  השוואה לתקופה קודמת תתווסף בהמשך.
-                </p>
+                {displayMode === "full" ? (
+                  <p className="pr-detailed-future-compare text-xs text-white/50 mb-4 leading-relaxed border border-white/10 rounded-lg px-3 py-2 bg-black/15">
+                    השוואה לתקופה קודמת תתווסף בהמשך.
+                  </p>
+                ) : null}
 
                 {/* C */}
                 <SectionCard title="תמונת מצב כוללת">
@@ -286,152 +454,164 @@ export default function ParentReportDetailedPage() {
                 </div>
                 </SectionCard>
 
-                {/* D */}
-                <SectionCard title="פירוט לפי מקצוע">
-                <div className="space-y-5">
-                  {payload.subjectProfiles.map((sp) => (
-                    <div
-                      key={sp.subject}
-                      className="pr-detailed-subject-block rounded-lg border border-white/12 bg-black/20 p-3 md:p-4 space-y-2"
-                    >
-                      <h3 className="text-lg font-bold text-white border-b border-white/10 pb-1">
-                        {sp.subjectLabelHe}
-                      </h3>
-                      {sp.summaryHe ? (
-                        <p className="text-sm text-white/80 leading-relaxed">{sp.summaryHe}</p>
-                      ) : (
-                        <p className="text-sm text-white/45">אין סיכום טקסטואלי למקצוע זה בטווח.</p>
-                      )}
-                      {sp.excellence?.length ? (
-                        <div>
-                          <p className="text-xs font-bold text-violet-200 mb-1">הצטיינות היציבה</p>
-                          <ul className="text-sm text-white/80 space-y-1">
-                            {sp.excellence.map((x) => (
-                              <li key={x.id}>
-                                {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
-                      {sp.topStrengths?.length ? (
-                        <div>
-                          <p className="text-xs font-bold text-emerald-200/80 mb-1">חוזקות מובילות</p>
-                          <ul className="text-sm text-white/80 space-y-1">
-                            {sp.topStrengths.map((x) => (
-                              <li key={x.id}>
-                                {x.labelHe} — {x.accuracy}% ({x.questions})
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
-                      {sp.maintain?.length ? (
-                        <div>
-                          <p className="text-xs font-bold text-sky-200/80 mb-1">מומלץ לשמר</p>
-                          <ul className="text-sm text-white/80 space-y-1">
-                            {sp.maintain.map((x) => (
-                              <li key={x.id}>
-                                {x.labelHe} — {x.accuracy}% ({x.questions})
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
-                      {sp.improving?.length ? (
-                        <div>
-                          <p className="text-xs font-bold text-amber-200/80 mb-1">נקודות לשיפור</p>
-                          <ul className="text-sm text-white/80 space-y-1">
-                            {sp.improving.map((x) => (
-                              <li key={x.id}>
-                                {improvingDiagnosticsDisplayLabelHe(x.labelHe)} — דיוק {x.accuracy}% (
-                                {x.questions} שאלות)
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
-                      {sp.topWeaknesses?.length ? (
-                        <div>
-                          <p className="text-xs font-bold text-red-200/80 mb-1">תחומים הדורשים תשומת לב</p>
-                          <ul className="text-sm text-white/80 space-y-1">
-                            {sp.topWeaknesses.map((w) => (
-                              <li key={w.id}>
-                                {w.labelHe}
-                                {typeof w.mistakeCount === "number" ? ` (${w.mistakeCount} טעויות דומות)` : ""}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
-                      {sp.parentActionHe ? (
-                        <p className="text-sm text-yellow-100/90">
-                          <span className="font-semibold">פעולה לבית: </span>
-                          {sp.parentActionHe}
-                        </p>
-                      ) : null}
-                      {sp.nextWeekGoalHe ? (
-                        <p className="text-sm text-amber-100/85">
-                          <span className="font-semibold">יעד לשבוע: </span>
-                          {sp.nextWeekGoalHe}
-                        </p>
-                      ) : null}
-                      {sp.evidenceExamples?.length ? (
-                        <div>
-                          <p className="text-xs font-bold text-white/60 mb-1">דוגמאות</p>
-                          <ul className="text-xs text-white/65 space-y-1">
-                            {sp.evidenceExamples.map((e, idx) => (
-                              <li key={idx}>
-                                {e.type === "mistake" ? "טעות לדוגמה" : "חיזוק לדוגמה"}
-                                {e.exerciseText ? `: ${String(e.exerciseText).slice(0, 120)}` : ""}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
-
-                      {sp.topicRecommendations?.length ? (
-                        <div className="mt-3 pt-3 border-t border-white/10 pr-detailed-break-avoid">
-                          <p className="text-xs font-bold text-cyan-200/95 mb-2">
-                            צעד הבא המומלץ לפי נושא (נתוני טווח + טעויות)
-                          </p>
-                          <div className="space-y-3">
-                            {sp.topicRecommendations.map((tr) => (
-                              <div
-                                key={tr.topicRowKey}
-                                className="rounded-lg border border-cyan-500/25 bg-cyan-950/20 p-3 space-y-2"
-                              >
-                                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                                  <span className="font-bold text-white/95">{tr.displayName}</span>
-                                  <span className="text-[11px] font-semibold text-cyan-100/90 px-2 py-0.5 rounded border border-cyan-400/35 bg-black/20">
-                                    {tr.recommendedStepLabelHe}
-                                  </span>
-                                </div>
-                                <p className="text-[11px] text-white/55 leading-relaxed">
-                                  שליטה {tr.currentMastery}% · יציבות {Math.round(tr.stability * 100)}% · ביטחון{" "}
-                                  {Math.round(tr.confidence * 100)}% · {tr.questions} שאלות · דיוק {tr.accuracy}%
-                                  {tr.mistakeEventCount > 0
-                                    ? ` · ${tr.mistakeEventCount} אירועי טעות בנושא`
-                                    : ""}
-                                </p>
-                                <p className="text-sm text-white/82 leading-relaxed">{tr.recommendedStepReasonHe}</p>
-                                <p className="text-sm text-sky-100/90 leading-relaxed">
-                                  <span className="font-bold text-sky-200/90">להורה: </span>
-                                  {tr.recommendedParentActionHe}
-                                </p>
-                                <p className="text-sm text-emerald-100/90 leading-relaxed">
-                                  <span className="font-bold text-emerald-200/90">לתלמיד: </span>
-                                  {tr.recommendedStudentActionHe}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ) : null}
+                {/* D — אותו payload; תצוגה מלאה או מקוצרת */}
+                {displayMode === "summary" ? (
+                  <SectionCard title="פירוט מקוצר לפי מקצוע">
+                    <div className="space-y-4">
+                      {payload.subjectProfiles.map((sp) => (
+                        <SubjectSummaryBlock key={sp.subject} sp={sp} />
+                      ))}
                     </div>
-                  ))}
-                </div>
-                </SectionCard>
+                  </SectionCard>
+                ) : (
+                  <SectionCard title="פירוט לפי מקצוע">
+                    <div className="space-y-5">
+                      {payload.subjectProfiles.map((sp) => (
+                        <div
+                          key={sp.subject}
+                          className="pr-detailed-subject-block rounded-lg border border-white/12 bg-black/20 p-3 md:p-4 space-y-2"
+                        >
+                          <h3 className="text-lg font-bold text-white border-b border-white/10 pb-1">
+                            {sp.subjectLabelHe}
+                          </h3>
+                          {sp.summaryHe ? (
+                            <p className="text-sm text-white/80 leading-relaxed">{sp.summaryHe}</p>
+                          ) : (
+                            <p className="text-sm text-white/45">אין סיכום טקסטואלי למקצוע זה בטווח.</p>
+                          )}
+                          {sp.excellence?.length ? (
+                            <div>
+                              <p className="text-xs font-bold text-violet-200 mb-1">הצטיינות היציבה</p>
+                              <ul className="text-sm text-white/80 space-y-1">
+                                {sp.excellence.map((x) => (
+                                  <li key={x.id}>
+                                    {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+                          {sp.topStrengths?.length ? (
+                            <div>
+                              <p className="text-xs font-bold text-emerald-200/80 mb-1">חוזקות מובילות</p>
+                              <ul className="text-sm text-white/80 space-y-1">
+                                {sp.topStrengths.map((x) => (
+                                  <li key={x.id}>
+                                    {x.labelHe} — {x.accuracy}% ({x.questions})
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+                          {sp.maintain?.length ? (
+                            <div>
+                              <p className="text-xs font-bold text-sky-200/80 mb-1">מומלץ לשמר</p>
+                              <ul className="text-sm text-white/80 space-y-1">
+                                {sp.maintain.map((x) => (
+                                  <li key={x.id}>
+                                    {x.labelHe} — {x.accuracy}% ({x.questions})
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+                          {sp.improving?.length ? (
+                            <div>
+                              <p className="text-xs font-bold text-amber-200/80 mb-1">נקודות לשיפור</p>
+                              <ul className="text-sm text-white/80 space-y-1">
+                                {sp.improving.map((x) => (
+                                  <li key={x.id}>
+                                    {improvingDiagnosticsDisplayLabelHe(x.labelHe)} — דיוק {x.accuracy}% (
+                                    {x.questions} שאלות)
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+                          {sp.topWeaknesses?.length ? (
+                            <div>
+                              <p className="text-xs font-bold text-red-200/80 mb-1">תחומים הדורשים תשומת לב</p>
+                              <ul className="text-sm text-white/80 space-y-1">
+                                {sp.topWeaknesses.map((w) => (
+                                  <li key={w.id}>
+                                    {w.labelHe}
+                                    {typeof w.mistakeCount === "number"
+                                      ? ` (${w.mistakeCount} טעויות דומות)`
+                                      : ""}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+                          {sp.parentActionHe ? (
+                            <p className="text-sm text-yellow-100/90">
+                              <span className="font-semibold">פעולה לבית: </span>
+                              {sp.parentActionHe}
+                            </p>
+                          ) : null}
+                          {sp.nextWeekGoalHe ? (
+                            <p className="text-sm text-amber-100/85">
+                              <span className="font-semibold">יעד לשבוע: </span>
+                              {sp.nextWeekGoalHe}
+                            </p>
+                          ) : null}
+                          {sp.evidenceExamples?.length ? (
+                            <div>
+                              <p className="text-xs font-bold text-white/60 mb-1">דוגמאות</p>
+                              <ul className="text-xs text-white/65 space-y-1">
+                                {sp.evidenceExamples.map((e, idx) => (
+                                  <li key={idx}>
+                                    {e.type === "mistake" ? "טעות לדוגמה" : "חיזוק לדוגמה"}
+                                    {e.exerciseText ? `: ${String(e.exerciseText).slice(0, 120)}` : ""}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+
+                          {sp.topicRecommendations?.length ? (
+                            <div className="pr-detailed-topic-rec-block mt-3 pt-3 border-t border-white/10 pr-detailed-break-avoid">
+                              <p className="text-xs font-bold text-cyan-200/95 mb-2">
+                                צעד הבא המומלץ לפי נושא (נתוני טווח + טעויות)
+                              </p>
+                              <div className="space-y-3">
+                                {sp.topicRecommendations.map((tr) => (
+                                  <div
+                                    key={tr.topicRowKey}
+                                    className="rounded-lg border border-cyan-500/25 bg-cyan-950/20 p-3 space-y-2"
+                                  >
+                                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                                      <span className="font-bold text-white/95">{tr.displayName}</span>
+                                      <span className="text-[11px] font-semibold text-cyan-100/90 px-2 py-0.5 rounded border border-cyan-400/35 bg-black/20">
+                                        {tr.recommendedStepLabelHe}
+                                      </span>
+                                    </div>
+                                    <p className="text-[11px] text-white/55 leading-relaxed">
+                                      שליטה {tr.currentMastery}% · יציבות {Math.round(tr.stability * 100)}% · ביטחון{" "}
+                                      {Math.round(tr.confidence * 100)}% · {tr.questions} שאלות · דיוק {tr.accuracy}%
+                                      {tr.mistakeEventCount > 0
+                                        ? ` · ${tr.mistakeEventCount} אירועי טעות בנושא`
+                                        : ""}
+                                    </p>
+                                    <p className="text-sm text-white/82 leading-relaxed">{tr.recommendedStepReasonHe}</p>
+                                    <p className="text-sm text-sky-100/90 leading-relaxed">
+                                      <span className="font-bold text-sky-200/90">להורה: </span>
+                                      {tr.recommendedParentActionHe}
+                                    </p>
+                                    <p className="text-sm text-emerald-100/90 leading-relaxed">
+                                      <span className="font-bold text-emerald-200/90">לתלמיד: </span>
+                                      {tr.recommendedStudentActionHe}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </SectionCard>
+                )}
 
                 {/* cross insights — part of structure; placed after subjects for flow */}
                 <SectionCard title="תובנות חוצות־מקצועות">
@@ -452,26 +632,36 @@ export default function ParentReportDetailedPage() {
                 </SectionCard>
               </div>
 
-              <div className="no-pdf mt-8 pt-5 border-t border-white/15 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-emerald-600/90 border border-emerald-400/50 hover:bg-emerald-600 text-white transition-all"
-                >
-                  🖨️ הדפס / 📄 ייצא ל-PDF
-                </button>
-                <Link
-                  href={backHref}
-                  className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all text-center"
-                >
-                  חזרה לדוח המקוצר
-                </Link>
-                <Link
-                  href="/learning"
-                  className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-violet-600/50 border border-violet-300/40 hover:bg-violet-600/65 text-white transition-all text-center"
-                >
-                  חזרה ללמידה
-                </Link>
+              <div className="no-pdf mt-8 pt-5 border-t border-white/15 flex flex-col gap-4">
+                <ModeToggle className="justify-center" />
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
+                  <button
+                    type="button"
+                    onClick={() => printWithMode("full")}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-sky-600/85 border border-sky-400/50 hover:bg-sky-600 text-white transition-all"
+                  >
+                    🖨️ הדפס מלא
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => printWithMode("summary")}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-amber-600/85 border border-amber-400/50 hover:bg-amber-600 text-white transition-all"
+                  >
+                    🖨️ הדפס תקציר
+                  </button>
+                  <Link
+                    href={backHref}
+                    className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all text-center"
+                  >
+                    חזרה לדוח המקוצר
+                  </Link>
+                  <Link
+                    href="/learning"
+                    className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-violet-600/50 border border-violet-300/40 hover:bg-violet-600/65 text-white transition-all text-center"
+                  >
+                    חזרה ללמידה
+                  </Link>
+                </div>
               </div>
             </>
           )}
