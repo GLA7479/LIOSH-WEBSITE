@@ -760,7 +760,7 @@ export default function ParentReport() {
         className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-2 md:p-4"
         dir="rtl"
         style={{
-          paddingTop: "calc(var(--head-h, 56px) + 16px)",
+          paddingTop: "calc(var(--head-h, 56px) - 10px)",
           paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
           overflowY: "auto",
           overflowX: "hidden",
@@ -773,7 +773,7 @@ export default function ParentReport() {
           className="max-w-4xl mx-auto w-full min-w-0 overflow-x-hidden"
         >
           {/* כפתור BACK (לא נכנס ל-PDF) */}
-          <div className="mb-4 text-left no-pdf">
+          <div className="mb-0 text-left no-pdf">
             <button
               onClick={() => {
                 if (typeof window !== "undefined" && window.history.length > 1) {
@@ -789,12 +789,12 @@ export default function ParentReport() {
           </div>
           
           {/* כותרת */}
-          <div className="text-center mb-4 md:mb-6">
+          <div className="text-center mb-1 md:mb-2">
             <h1 className="text-2xl md:text-3xl font-extrabold mb-2">📊 דוח להורים</h1>
             <p className="text-white/70 text-sm md:text-base">{report.playerName}</p>
             
             {/* בחירת תקופה (לא נכנס ל-PDF) */}
-            <div className="flex flex-wrap gap-2 justify-center mt-2 md:mt-4 mb-2 md:mb-3 no-pdf">
+            <div className="flex flex-wrap gap-2 justify-center mt-1 md:mt-2 mb-1 md:mb-2 no-pdf">
               <button
                 onClick={() => {
                   setCustomDates(false);
@@ -876,7 +876,7 @@ export default function ParentReport() {
               </div>
             )}
             
-            <p className="text-xs md:text-sm text-white/60 mt-2 text-center" dir="ltr" style={{ direction: 'ltr', textAlign: 'center' }}>
+            <p className="text-xs md:text-sm text-white/60 mt-1 text-center" dir="ltr" style={{ direction: 'ltr', textAlign: 'center' }}>
               {formatDate(report.startDate)} - {formatDate(report.endDate)}
             </p>
           </div>
