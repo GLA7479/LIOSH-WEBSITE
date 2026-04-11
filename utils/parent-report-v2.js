@@ -18,6 +18,8 @@ import {
 } from "./math-report-generator";
 import { mistakeTimestampMs } from "./mistake-event";
 import { analyzeLearningPatterns } from "./learning-patterns-analysis";
+import { enrichTopicMapsWithRowDiagnostics } from "./parent-report-row-diagnostics";
+import { enrichReportMapsWithTopicStepHints } from "./topic-next-step-engine";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
 
@@ -297,6 +299,7 @@ function buildRowSummary({
     subject,
     bucketKey,
     lastSessionAt,
+    lastSessionMs: Number.isFinite(lastMs) ? lastMs : null,
     questions,
     correct,
     wrong: questions - correct,
@@ -886,6 +889,17 @@ export function generateParentReportV2(
         )
       : 0;
 
+  const mistakesBySubjectMaps = {
+    math: mathMistakesByOperation,
+    geometry: geometryMistakesByTopic,
+    english: englishMistakesByTopic,
+    science: scienceMistakesByTopic,
+    hebrew: hebrewMistakesByTopic,
+    "moledet-geography": moledetGeographyMistakesByTopic,
+  };
+  enrichTopicMapsWithRowDiagnostics(maps, mistakesBySubjectMaps, endMs);
+  enrichReportMapsWithTopicStepHints(maps, mistakesBySubjectMaps, endMs);
+
   const patternDiagnostics = analyzeLearningPatterns(
     {
       mathOperations,
@@ -897,6 +911,35 @@ export function generateParentReportV2(
     },
     rawMistakesBySubject
   );
+
+  const INSUFFICIENT_SUBJECT_Q = 8;
+  const insufficientDataSubjectsHe = [];
+  if ((mathTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
+    insufficientDataSubjectsHe.push(`חשבון (${mathTotalQuestions} שאלות בטווח)`);
+  }
+  if ((geometryTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
+    insufficientDataSubjectsHe.push(`גאומטריה (${geometryTotalQuestions} שאלות בטווח)`);
+  }
+  if ((englishTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
+    insufficientDataSubjectsHe.push(`אנגלית (${englishTotalQuestions} שאלות בטווח)`);
+  }
+  if ((scienceTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
+    insufficientDataSubjectsHe.push(`מדעים (${scienceTotalQuestions} שאלות בטווח)`);
+  }
+  if ((hebrewTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
+    insufficientDataSubjectsHe.push(`עברית (${hebrewTotalQuestions} שאלות בטווח)`);
+  }
+  if ((moledetGeographyTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
+    insufficientDataSubjectsHe.push(`מולדת וגאוגרפיה (${moledetGeographyTotalQuestions} שאלות בטווח)`);
+  }
+
+  const diagnosticOverviewHe = {
+    strongestAreaLineHe: excellent[0] || null,
+    mainFocusAreaLineHe: needsPractice[0] || null,
+    readyForProgressPreviewHe: excellent.filter(Boolean).slice(1, 4),
+    requiresAttentionPreviewHe: needsPractice.slice(0, 5),
+    insufficientDataSubjectsHe,
+  };
 
   return {
     playerName,
@@ -933,6 +976,7 @@ export function generateParentReportV2(
       playerLevel,
       xp,
       achievements: achievements.length,
+      diagnosticOverviewHe,
     },
     mathOperations,
     geometryTopics,

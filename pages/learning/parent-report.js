@@ -77,6 +77,41 @@ function sumTopicMapMinutes(map) {
   return Object.values(map || {}).reduce((a, r) => a + (Number(r?.timeMinutes) || 0), 0);
 }
 
+function evidenceStrengthLabelHe(strength) {
+  if (strength === "strong") return "ראיות חזקה";
+  if (strength === "medium") return "ראיות בינונית";
+  if (strength === "low") return "ראיות חלשה";
+  return "";
+}
+
+function recencyTierLabelHe(score) {
+  const n = Number(score);
+  if (!Number.isFinite(n)) return "";
+  if (n >= 80) return "עדכני";
+  if (n >= 45) return "בינוני";
+  return "פחות עדכני";
+}
+
+/** שורת מדדים קומפקטית לשורת נושא — עברית בלבד */
+function ParentReportRowDiagnosticsFootnote({ data }) {
+  const m = data?.masteryScore;
+  const ev = data?.evidenceStrength;
+  const rs = data?.recencyScore;
+  const step = data?.diagnosticRecommendedStepLabelHe;
+  const parts = [];
+  if (Number.isFinite(Number(m))) parts.push(`שליטה ${Math.round(Number(m))}%`);
+  const evLab = evidenceStrengthLabelHe(ev);
+  if (evLab) parts.push(evLab);
+  if (Number.isFinite(Number(rs))) parts.push(`עדכניות: ${recencyTierLabelHe(rs)}`);
+  if (step && String(step).trim()) parts.push(String(step).trim());
+  if (!parts.length) return null;
+  return (
+    <div className="mt-0.5 text-[8px] md:text-[9px] text-white/50 leading-snug max-w-[10rem] mx-auto">
+      {parts.join(" · ")}
+    </div>
+  );
+}
+
 function buildSubjectOverviewRows(report) {
   if (!report?.summary) return [];
   const s = report.summary;
@@ -689,7 +724,7 @@ export default function ParentReport() {
       <Layout>
         <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center p-4" dir="rtl">
           <div className="text-center text-white max-w-md w-full">
-            {/* כפתור BACK */}
+            {/* כפתור חזרה */}
             <div className="mb-4 text-left">
               <button
                 onClick={() => {
@@ -701,7 +736,7 @@ export default function ParentReport() {
                 }}
                 className="px-4 py-2 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all"
               >
-                BACK
+                חזרה
               </button>
             </div>
             
@@ -1173,7 +1208,7 @@ export default function ParentReport() {
           ref={parentReportPdfRef}
           className="max-w-4xl mx-auto w-full min-w-0 overflow-x-hidden"
         >
-          {/* כפתור BACK (לא נכנס ל-PDF) */}
+          {/* כפתור חזרה (לא נכנס ל-PDF) */}
           <div className="mb-0 text-left no-pdf">
             <button
               onClick={() => {
@@ -1185,7 +1220,7 @@ export default function ParentReport() {
               }}
               className="px-4 py-2 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all"
             >
-              BACK
+              חזרה
             </button>
           </div>
           
@@ -1347,6 +1382,38 @@ export default function ParentReport() {
             </div>
           </div>
 
+          {report.summary?.diagnosticOverviewHe ? (
+            <div className="mb-3 md:mb-5 avoid-break rounded-lg border border-amber-400/25 bg-amber-950/15 p-3 md:p-4 text-sm text-white/90 space-y-2">
+              <p className="font-bold text-amber-100/95 m-0 text-sm md:text-base">מיקוד אבחוני (לפי הנתונים בטווח)</p>
+              {report.summary.diagnosticOverviewHe.mainFocusAreaLineHe ? (
+                <p className="m-0 leading-relaxed">
+                  <span className="text-white/55">דורש תשומת לב כעת: </span>
+                  {report.summary.diagnosticOverviewHe.mainFocusAreaLineHe}
+                </p>
+              ) : (
+                <p className="m-0 text-white/55 text-xs">אין עדיין תחום שזוהה כדורש תשומת לב מיידית בטווח זה.</p>
+              )}
+              {report.summary.diagnosticOverviewHe.strongestAreaLineHe ? (
+                <p className="m-0 leading-relaxed">
+                  <span className="text-white/55">חוזק לשימור: </span>
+                  {report.summary.diagnosticOverviewHe.strongestAreaLineHe}
+                </p>
+              ) : null}
+              {report.summary.diagnosticOverviewHe.readyForProgressPreviewHe?.length ? (
+                <p className="m-0 leading-relaxed text-emerald-200/90 text-xs md:text-sm">
+                  <span className="text-white/55">מוכנות להתקדמות נוספת: </span>
+                  {report.summary.diagnosticOverviewHe.readyForProgressPreviewHe.join(" · ")}
+                </p>
+              ) : null}
+              {report.summary.diagnosticOverviewHe.insufficientDataSubjectsHe?.length ? (
+                <p className="m-0 leading-relaxed text-white/50 text-xs">
+                  נתונים חלקיים במקצועות:{" "}
+                  {report.summary.diagnosticOverviewHe.insufficientDataSubjectsHe.join(" · ")}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
           {/* סיכום לפי מקצוע */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 mb-3 md:mb-6 avoid-break">
             <div className="parent-report-print-summary-card bg-blue-500/20 border border-blue-400/50 rounded-lg p-2 md:p-4 text-center">
@@ -1494,14 +1561,17 @@ export default function ParentReport() {
                           }`}>
                             {data.accuracy}%
                           </td>
-                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
-                            {data.excellent ? (
-                              <span className="text-emerald-400">✅</span>
-                            ) : data.needsPractice ? (
-                              <span className="text-red-400">⚠️</span>
-                            ) : (
-                              <span className="text-yellow-400">👍</span>
-                            )}
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap align-top">
+                            <div className="flex flex-col items-center">
+                              {data.excellent ? (
+                                <span className="text-emerald-400">✅</span>
+                              ) : data.needsPractice ? (
+                                <span className="text-red-400">⚠️</span>
+                              ) : (
+                                <span className="text-yellow-400">👍</span>
+                              )}
+                              <ParentReportRowDiagnosticsFootnote data={data} />
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -1554,6 +1624,7 @@ export default function ParentReport() {
                         ) : (
                           <span className="text-yellow-400 text-xs">👍 טוב</span>
                         )}
+                        <ParentReportRowDiagnosticsFootnote data={data} />
                       </div>
                     </div>
                   ))}
@@ -1631,14 +1702,17 @@ export default function ParentReport() {
                           }`}>
                             {data.accuracy}%
                           </td>
-                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
-                            {data.excellent ? (
-                              <span className="text-emerald-400">✅</span>
-                            ) : data.needsPractice ? (
-                              <span className="text-red-400">⚠️</span>
-                            ) : (
-                              <span className="text-yellow-400">👍</span>
-                            )}
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap align-top">
+                            <div className="flex flex-col items-center">
+                              {data.excellent ? (
+                                <span className="text-emerald-400">✅</span>
+                              ) : data.needsPractice ? (
+                                <span className="text-red-400">⚠️</span>
+                              ) : (
+                                <span className="text-yellow-400">👍</span>
+                              )}
+                              <ParentReportRowDiagnosticsFootnote data={data} />
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -1691,6 +1765,7 @@ export default function ParentReport() {
                         ) : (
                           <span className="text-yellow-400 text-xs">👍 טוב</span>
                         )}
+                        <ParentReportRowDiagnosticsFootnote data={data} />
                       </div>
                     </div>
                   ))}
@@ -1769,14 +1844,17 @@ export default function ParentReport() {
                           }`}>
                             {data.accuracy}%
                           </td>
-                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
-                            {data.excellent ? (
-                              <span className="text-emerald-400">✅</span>
-                            ) : data.needsPractice ? (
-                              <span className="text-red-400">⚠️</span>
-                            ) : (
-                              <span className="text-yellow-400">👍</span>
-                            )}
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap align-top">
+                            <div className="flex flex-col items-center">
+                              {data.excellent ? (
+                                <span className="text-emerald-400">✅</span>
+                              ) : data.needsPractice ? (
+                                <span className="text-red-400">⚠️</span>
+                              ) : (
+                                <span className="text-yellow-400">👍</span>
+                              )}
+                              <ParentReportRowDiagnosticsFootnote data={data} />
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -1829,6 +1907,7 @@ export default function ParentReport() {
                         ) : (
                           <span className="text-yellow-400 text-xs">👍 טוב</span>
                         )}
+                        <ParentReportRowDiagnosticsFootnote data={data} />
                       </div>
                     </div>
                   ))}
@@ -1911,14 +1990,17 @@ export default function ParentReport() {
                           >
                             {data.accuracy}%
                           </td>
-                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
-                            {data.excellent ? (
-                              <span className="text-emerald-400">✅</span>
-                            ) : data.needsPractice ? (
-                              <span className="text-red-400">⚠️</span>
-                            ) : (
-                              <span className="text-yellow-400">👍</span>
-                            )}
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap align-top">
+                            <div className="flex flex-col items-center">
+                              {data.excellent ? (
+                                <span className="text-emerald-400">✅</span>
+                              ) : data.needsPractice ? (
+                                <span className="text-red-400">⚠️</span>
+                              ) : (
+                                <span className="text-yellow-400">👍</span>
+                              )}
+                              <ParentReportRowDiagnosticsFootnote data={data} />
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -1971,6 +2053,7 @@ export default function ParentReport() {
                         ) : (
                           <span className="text-yellow-400 text-xs">👍 טוב</span>
                         )}
+                        <ParentReportRowDiagnosticsFootnote data={data} />
                       </div>
                     </div>
                   ))}
@@ -2053,14 +2136,17 @@ export default function ParentReport() {
                           >
                             {data.accuracy}%
                           </td>
-                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
-                            {data.excellent ? (
-                              <span className="text-emerald-400">✅</span>
-                            ) : data.needsPractice ? (
-                              <span className="text-red-400">⚠️</span>
-                            ) : (
-                              <span className="text-yellow-400">👍</span>
-                            )}
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap align-top">
+                            <div className="flex flex-col items-center">
+                              {data.excellent ? (
+                                <span className="text-emerald-400">✅</span>
+                              ) : data.needsPractice ? (
+                                <span className="text-red-400">⚠️</span>
+                              ) : (
+                                <span className="text-yellow-400">👍</span>
+                              )}
+                              <ParentReportRowDiagnosticsFootnote data={data} />
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -2113,6 +2199,7 @@ export default function ParentReport() {
                         ) : (
                           <span className="text-yellow-400 text-xs">👍 טוב</span>
                         )}
+                        <ParentReportRowDiagnosticsFootnote data={data} />
                       </div>
                     </div>
                   ))}
@@ -2195,14 +2282,17 @@ export default function ParentReport() {
                           >
                             {data.accuracy}%
                           </td>
-                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap">
-                            {data.excellent ? (
-                              <span className="text-emerald-400">✅</span>
-                            ) : data.needsPractice ? (
-                              <span className="text-red-400">⚠️</span>
-                            ) : (
-                              <span className="text-yellow-400">👍</span>
-                            )}
+                          <td className="py-1.5 px-0.5 text-center text-[10px] md:text-sm whitespace-nowrap align-top">
+                            <div className="flex flex-col items-center">
+                              {data.excellent ? (
+                                <span className="text-emerald-400">✅</span>
+                              ) : data.needsPractice ? (
+                                <span className="text-red-400">⚠️</span>
+                              ) : (
+                                <span className="text-yellow-400">👍</span>
+                              )}
+                              <ParentReportRowDiagnosticsFootnote data={data} />
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -2255,6 +2345,7 @@ export default function ParentReport() {
                         ) : (
                           <span className="text-yellow-400 text-xs">👍 טוב</span>
                         )}
+                        <ParentReportRowDiagnosticsFootnote data={data} />
                       </div>
                     </div>
                   ))}

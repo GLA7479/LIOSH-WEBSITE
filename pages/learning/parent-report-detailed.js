@@ -6,7 +6,11 @@ import Layout from "../../components/Layout";
 import { ParentReportImportantDisclaimer } from "../../components/ParentReportImportantDisclaimer";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { generateDetailedParentReport } from "../../utils/detailed-parent-report";
-import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
+import {
+  buildSubjectParentLetter,
+  buildSubjectParentLetterCompact,
+  buildTopicRecommendationNarrative,
+} from "../../utils/detailed-report-parent-letter-he";
 
 /**
  * מיפוי ויזואלי בלבד לפי recommendedNextStep מה־payload — לא משנה מנוע או תוכן.
@@ -99,12 +103,22 @@ function GoalItemCards({ items }) {
   );
 }
 
-/** בלוק היררכי לפי סוג (מסך + הדפסה) — רק מחלקות, אותו תוכן */
-function TierBlock({ tier, title, children }) {
+/** מכתב מקצועי להורה — מפרש את אותו payload בלי כותרות מערכת */
+function SubjectParentLetter({ sp }) {
+  const letter = useMemo(() => buildSubjectParentLetter(sp), [sp]);
+  const blocks = [letter.opening, letter.goingWell, letter.fragile, letter.homeAction, letter.closing].filter(
+    Boolean
+  );
   return (
-    <div className={`pr-detailed-tier-${tier}`}>
-      <h4 className="pr-detailed-subheading">{title}</h4>
-      <div className="pr-detailed-tier-inner">{children}</div>
+    <div className="pr-detailed-subject-letter space-y-3 rounded-xl border border-white/12 bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-3 md:p-4">
+      {blocks.map((text, i) => (
+        <p
+          key={i}
+          className="pr-detailed-body-text text-sm md:text-[0.95rem] leading-relaxed m-0 text-white/[0.91]"
+        >
+          {text}
+        </p>
+      ))}
     </div>
   );
 }
@@ -130,8 +144,7 @@ function buildDetailedReportQuery(router, mode) {
 
 /** פירוט מקוצר למקצוע — רק שדות מה־payload הקיים (ללא מנוע נפרד) */
 function SubjectSummaryBlock({ sp }) {
-  const ex = Array.isArray(sp.excellence) ? sp.excellence.slice(0, 2) : [];
-  const weak = Array.isArray(sp.topWeaknesses) ? sp.topWeaknesses.slice(0, 2) : [];
+  const L = useMemo(() => buildSubjectParentLetterCompact(sp), [sp]);
   return (
     <div className="pr-detailed-summary-subject pr-detailed-subject-stack min-w-0">
       <div className="pr-detailed-subject-heading">
@@ -139,49 +152,17 @@ function SubjectSummaryBlock({ sp }) {
           {sp.subjectLabelHe}
         </h3>
       </div>
-      <div className="pr-detailed-subject-inner space-y-3 pt-3">
-        <div className="pr-detailed-subject-summary">
-          {sp.summaryHe ? (
-            <p className="pr-detailed-body-text text-sm leading-relaxed m-0">{sp.summaryHe}</p>
-          ) : (
-            <p className="pr-detailed-muted text-sm m-0">אין סיכום טקסטואלי למקצוע זה בטווח.</p>
-          )}
-        </div>
-        {ex.length ? (
-          <TierBlock tier="excellence" title="הצטיינות יציבה (עד 2)">
-            <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
-              {ex.map((x) => (
-                <li key={x.id} className="pr-0 pr-detailed-bullet-li">
-                  {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
-                </li>
-              ))}
-            </ul>
-          </TierBlock>
+      <div className="pr-detailed-subject-inner space-y-2.5 pt-3">
+        <p className="pr-detailed-body-text text-sm leading-relaxed m-0">{L.opening}</p>
+        {L.middle ? (
+          <p className="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.86]">{L.middle}</p>
         ) : null}
-        {weak.length ? (
-          <TierBlock tier="attention" title="תחומים הדורשים תשומת לב (עד 2)">
-            <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
-              {weak.map((w) => (
-                <li key={w.id} className="pr-0 pr-detailed-bullet-li">
-                  {w.labelHe}
-                  {typeof w.mistakeCount === "number" ? ` (${w.mistakeCount} טעויות דומות)` : ""}
-                </li>
-              ))}
-            </ul>
-          </TierBlock>
+        {L.homeAction ? (
+          <p className="pr-detailed-body-text text-sm leading-relaxed m-0 rounded-lg border border-amber-400/28 bg-amber-950/14 px-3 py-2.5">
+            {L.homeAction}
+          </p>
         ) : null}
-        {sp.parentActionHe ? (
-          <div className="pr-detailed-callout-action rounded-lg border px-3 py-2.5">
-            <span className="pr-detailed-callout-label">פעולה לבית</span>
-            <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">{sp.parentActionHe}</p>
-          </div>
-        ) : null}
-        {sp.nextWeekGoalHe ? (
-          <div className="pr-detailed-callout-goal rounded-lg border px-3 py-2.5">
-            <span className="pr-detailed-callout-label">יעד לתקופה הבאה</span>
-            <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">{sp.nextWeekGoalHe}</p>
-          </div>
-        ) : null}
+        <p className="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/82">{L.closing}</p>
       </div>
     </div>
   );
@@ -1054,7 +1035,9 @@ export default function ParentReportDetailedPage() {
                   <p className="pr-detailed-mode-hint text-xs font-semibold text-amber-200/90 mb-1">
                     {displayMode === "summary" ? "תקציר להדפסה" : "דוח מלא"}
                   </p>
-                  <p className="pr-detailed-body-text text-white/85 text-sm md:text-base">{pi.playerName}</p>
+                  <p className="pr-detailed-body-text text-white/85 text-sm md:text-base">
+                    דוח הורי מקיף — מבוסס על נתוני התרגול בטווח שבחרתם
+                  </p>
                   <p className="pr-detailed-muted text-sm mt-2">
                     טווח תאריכים: {pi.startDateLabelHe} – {pi.endDateLabelHe}
                     <span className="text-white/40 mx-1">|</span>
@@ -1064,18 +1047,18 @@ export default function ParentReportDetailedPage() {
                 </header>
 
                 {/* B */}
-                <SectionCard title="תקציר מנהלים" compact={displayMode === "summary"}>
+                <SectionCard title="מבט מהיר על התקופה" compact={displayMode === "summary"}>
                   <div className="space-y-4">
                     <div>
-                      <h4 className="pr-detailed-subheading text-emerald-200/95">חוזקות מרכזיות (עד 3)</h4>
+                      <h4 className="pr-detailed-subheading text-emerald-200/95">מה בולט לטוב</h4>
                       <Bullets items={payload.executiveSummary.topStrengthsAcrossHe} />
                     </div>
                     <div>
-                      <h4 className="pr-detailed-subheading text-amber-200/95">תחומים מרכזיים לחיזוק (עד 3)</h4>
+                      <h4 className="pr-detailed-subheading text-amber-200/95">איפה כדאי ליישר קו</h4>
                       <Bullets items={payload.executiveSummary.topFocusAreasHe} />
                     </div>
                     <div>
-                      <h4 className="pr-detailed-subheading text-sky-200/95">מיקוד מומלץ לבית</h4>
+                      <h4 className="pr-detailed-subheading text-sky-200/95">מילה על הבית</h4>
                       <p className="pr-detailed-body-text whitespace-pre-line leading-relaxed m-0">
                         {payload.executiveSummary.homeFocusHe}
                       </p>
@@ -1090,7 +1073,7 @@ export default function ParentReportDetailedPage() {
                 ) : null}
 
                 {/* C */}
-                <SectionCard title="תמונת מצב כוללת" compact={displayMode === "summary"}>
+                <SectionCard title="מה עשינו בטווח הזה" compact={displayMode === "summary"}>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                   <div className="rounded-lg bg-white/5 border border-white/10 p-3 text-center">
                     <div className="text-xs text-white/55 mb-1">זמן כולל</div>
@@ -1136,7 +1119,9 @@ export default function ParentReportDetailedPage() {
                 </div>
                 <div className="mt-3 grid md:grid-cols-2 gap-3 text-sm">
                   <div>
-                    <p className="pr-detailed-mini-heading font-semibold text-white/82 mb-1">מקצועות עם חשיפה מועטה</p>
+                    <p className="pr-detailed-mini-heading font-semibold text-white/82 mb-1">
+                      מקצועות שעוד לא דיברו איתנו הרבה
+                    </p>
                     <Bullets items={payload.overallSnapshot.lowExposureSubjectsHe} />
                   </div>
                   <div>
@@ -1156,7 +1141,7 @@ export default function ParentReportDetailedPage() {
                       id="pr-detailed-subjects-heading-summary"
                       className="pr-detailed-subjects-region-title pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0 mb-3 md:mb-4 pb-2 border-b border-white/10"
                     >
-                      פירוט מקוצר לפי מקצוע
+                      מקוצר: מילה לכל מקצוע
                     </h2>
                     <div className="space-y-4">
                       {payload.subjectProfiles.map((sp) => (
@@ -1173,7 +1158,7 @@ export default function ParentReportDetailedPage() {
                       id="pr-detailed-subjects-heading-full"
                       className="pr-detailed-subjects-region-title pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0 mb-3 md:mb-4 pb-2 border-b border-white/10"
                     >
-                      פירוט לפי מקצוע
+                      לכל מקצוע — במילים של מורה
                     </h2>
                     <div className="space-y-6">
                       {payload.subjectProfiles.map((sp) => (
@@ -1183,96 +1168,19 @@ export default function ParentReportDetailedPage() {
                               {sp.subjectLabelHe}
                             </h3>
                           </div>
-                          <div className="pr-detailed-subject-inner space-y-3 pt-3">
-                            <div className="pr-detailed-subject-summary">
-                              {sp.summaryHe ? (
-                                <p className="pr-detailed-body-text text-sm leading-relaxed m-0">{sp.summaryHe}</p>
-                              ) : (
-                                <p className="pr-detailed-muted text-sm m-0">אין סיכום טקסטואלי למקצוע זה בטווח.</p>
-                              )}
-                            </div>
-                            {sp.excellence?.length ? (
-                              <TierBlock tier="excellence" title="הצטיינות היציבה">
-                                <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
-                                  {sp.excellence.map((x) => (
-                                    <li key={x.id} className="pr-0 pr-detailed-bullet-li">
-                                      {x.labelHe} — {x.accuracy}% ({x.questions} שאלות)
-                                    </li>
-                                  ))}
-                                </ul>
-                              </TierBlock>
-                            ) : null}
-                            {sp.topStrengths?.length ? (
-                              <TierBlock tier="strength" title="חוזקות מובילות">
-                                <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
-                                  {sp.topStrengths.map((x) => (
-                                    <li key={x.id} className="pr-0 pr-detailed-bullet-li">
-                                      {x.labelHe} — {x.accuracy}% ({x.questions})
-                                    </li>
-                                  ))}
-                                </ul>
-                              </TierBlock>
-                            ) : null}
-                            {sp.maintain?.length ? (
-                              <TierBlock tier="maintain" title="מומלץ לשמר">
-                                <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
-                                  {sp.maintain.map((x) => (
-                                    <li key={x.id} className="pr-0 pr-detailed-bullet-li">
-                                      {x.labelHe} — {x.accuracy}% ({x.questions})
-                                    </li>
-                                  ))}
-                                </ul>
-                              </TierBlock>
-                            ) : null}
-                            {sp.improving?.length ? (
-                              <TierBlock tier="improving" title="נקודות לשיפור">
-                                <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
-                                  {sp.improving.map((x) => (
-                                    <li key={x.id} className="pr-0 pr-detailed-bullet-li">
-                                      {improvingDiagnosticsDisplayLabelHe(x.labelHe)} — דיוק {x.accuracy}% (
-                                      {x.questions} שאלות)
-                                    </li>
-                                  ))}
-                                </ul>
-                              </TierBlock>
-                            ) : null}
-                            {sp.topWeaknesses?.length ? (
-                              <TierBlock tier="attention" title="תחומים הדורשים תשומת לב">
-                                <ul className="pr-detailed-body-text text-sm space-y-1 m-0 list-none pr-0">
-                                  {sp.topWeaknesses.map((w) => (
-                                    <li key={w.id} className="pr-0 pr-detailed-bullet-li">
-                                      {w.labelHe}
-                                      {typeof w.mistakeCount === "number"
-                                        ? ` (${w.mistakeCount} טעויות דומות)`
-                                        : ""}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </TierBlock>
-                            ) : null}
-                            {sp.parentActionHe ? (
-                              <div className="pr-detailed-callout-action rounded-lg border px-3 py-2.5">
-                                <span className="pr-detailed-callout-label">פעולה לבית</span>
-                                <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">
-                                  {sp.parentActionHe}
-                                </p>
-                              </div>
-                            ) : null}
-                            {sp.nextWeekGoalHe ? (
-                              <div className="pr-detailed-callout-goal rounded-lg border px-3 py-2.5">
-                                <span className="pr-detailed-callout-label">יעד לשבוע</span>
-                                <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">
-                                  {sp.nextWeekGoalHe}
-                                </p>
-                              </div>
-                            ) : null}
+                          <div className="pr-detailed-subject-inner space-y-4 pt-3">
+                            <SubjectParentLetter sp={sp} />
                             {sp.evidenceExamples?.length ? (
                               <div className="pr-detailed-tier-examples">
-                                <h4 className="pr-detailed-subheading">דוגמאות</h4>
-                                <ul className="pr-detailed-muted text-xs space-y-1 m-0 list-none pr-0 leading-relaxed">
+                                <p className="pr-detailed-body-text text-sm m-0 mb-2 text-white/[0.82]">
+                                  דוגמאות מהתרגול — לעיון ההורים, בלי צורך לעבור על הכול בבת אחת.
+                                </p>
+                                <ul className="pr-detailed-muted text-xs space-y-1.5 m-0 list-none pr-0 leading-relaxed">
                                   {sp.evidenceExamples.map((e, idx) => (
                                     <li key={idx} className="pr-0 pr-detailed-bullet-li">
-                                      {e.type === "mistake" ? "טעות לדוגמה" : "חיזוק לדוגמה"}
+                                      {e.type === "mistake"
+                                        ? "שאלה שבה כדאי לעצור ולקרוא שוב את הניסוח"
+                                        : "שאלה שבה הכיוון היה נכון"}
                                       {e.exerciseText ? `: ${String(e.exerciseText).slice(0, 120)}` : ""}
                                     </li>
                                   ))}
@@ -1282,16 +1190,17 @@ export default function ParentReportDetailedPage() {
 
                             {sp.topicRecommendations?.length ? (
                               <div className="pr-detailed-topic-rec-block">
-                                <p className="pr-detailed-topic-rec-head">צעד הבא המומלץ לפי נושא (נתוני טווח + טעויות)</p>
+                                <p className="pr-detailed-topic-rec-head">נושאים שדורשים ליווי בטווח זה</p>
                                 <div className="space-y-2.5">
                                   {sp.topicRecommendations.map((tr) => {
                                     const tv = topicNextStepVisualVariant(tr.recommendedNextStep);
+                                    const nar = buildTopicRecommendationNarrative(tr);
                                     return (
                                       <div
                                         key={tr.topicRowKey}
                                         className={`pr-detailed-topic-nextstep-card pr-detailed-topic-nextstep--${tv}`}
                                       >
-                                        <div className="flex flex-wrap items-start justify-between gap-2 mb-1.5">
+                                        <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
                                           <span className="pr-detailed-body-text font-bold text-white/95 leading-snug">
                                             {tr.displayName}
                                           </span>
@@ -1301,22 +1210,14 @@ export default function ParentReportDetailedPage() {
                                             {tr.recommendedStepLabelHe}
                                           </span>
                                         </div>
-                                        <p className="pr-detailed-topic-metrics">
-                                          שליטה {tr.currentMastery}% · יציבות {Math.round(tr.stability * 100)}% · ביטחון{" "}
-                                          {Math.round(tr.confidence * 100)}% · {tr.questions} שאלות · דיוק {tr.accuracy}%
-                                          {tr.mistakeEventCount > 0
-                                            ? ` · ${tr.mistakeEventCount} אירועי טעות בנושא`
-                                            : ""}
+                                        <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2 text-white/[0.9]">
+                                          {nar.snapshot}
                                         </p>
-                                        <p className="pr-detailed-topic-reason">{tr.recommendedStepReasonHe}</p>
-                                        <p className="pr-detailed-topic-parent">
-                                          <span className="pr-detailed-topic-parent-label">להורה: </span>
-                                          {tr.recommendedParentActionHe}
-                                        </p>
-                                        <p className="pr-detailed-topic-student">
-                                          <span className="pr-detailed-topic-student-label">לתלמיד: </span>
-                                          {tr.recommendedStudentActionHe}
-                                        </p>
+                                        {nar.homeLine ? (
+                                          <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2.5 text-amber-100/95">
+                                            {nar.homeLine}
+                                          </p>
+                                        ) : null}
                                       </div>
                                     );
                                   })}
@@ -1331,7 +1232,7 @@ export default function ParentReportDetailedPage() {
                 )}
 
                 {/* cross insights — part of structure; placed after subjects for flow */}
-                <SectionCard title="תובנות חוצות־מקצועות" compact={displayMode === "summary"}>
+                <SectionCard title="מה שחוזר בכמה מקצועות" compact={displayMode === "summary"}>
                 <Bullets items={payload.crossSubjectInsights.bulletsHe} />
                 {payload.crossSubjectInsights.dataQualityNoteHe ? (
                   <p className="text-sm text-amber-200/90 mt-2">{payload.crossSubjectInsights.dataQualityNoteHe}</p>
@@ -1339,12 +1240,12 @@ export default function ParentReportDetailedPage() {
                 </SectionCard>
 
                 {/* E */}
-                <SectionCard title="פעולות מומלצות לבית" compact={displayMode === "summary"}>
+                <SectionCard title="רעיונות קצרים לבית" compact={displayMode === "summary"}>
                   <PlanItemCards items={payload.homePlan.itemsHe} />
                 </SectionCard>
 
                 {/* F */}
-                <SectionCard title="יעד לתקופה הבאה" compact={displayMode === "summary"}>
+                <SectionCard title="כיוון לימים הבאים" compact={displayMode === "summary"}>
                   <GoalItemCards items={payload.nextPeriodGoals.itemsHe} />
                 </SectionCard>
 

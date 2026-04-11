@@ -364,7 +364,7 @@ function buildSummaryHe(
   diagnosticSparseNoteHe
 ) {
   const label = subjectLabelHe || "המקצוע";
-  const opening = `תמונת המקצוע ב${label}`;
+  const opening = `על ${label}, אחרי מה שנאסף בטווח:`;
 
   if (
     !stableExcellence.length &&
@@ -373,12 +373,12 @@ function buildSummaryHe(
     !maintain.length &&
     !improving.length
   ) {
-    if (diagnosticSparseNoteHe) return `${opening}: ${diagnosticSparseNoteHe}`;
+    if (diagnosticSparseNoteHe) return `${opening} ${diagnosticSparseNoteHe}`;
     if (wrongCount > 0 && !topWeaknesses.length) {
-      return `${opening}: מעט טעויות בלי דפוס חוזר מספיק — ההערכה חלקית; כדאי להמשיך לאסוף תרגול יציב.`;
+      return `${opening} יש כאן כמה טעויות בלי "סיפור" חוזר ברור — עדיף לא למהר למסקנות; נמשיך לאסוף תרגול בשקט.`;
     }
     if (mistakeEventCount >= 0 && mistakeEventCount < 5) {
-      return `${opening}: מעט נתונים בטווח התאריכים — ההערכה חלקית בלבד.`;
+      return `${opening} עדיין מעט חומר — ניסוח קצר יגיע כשיהיה יותר בסיס.`;
     }
     return null;
   }
@@ -422,12 +422,12 @@ function buildSummaryHe(
         (w) => w.mistakeCount >= MIN_MISTAKES_FOR_STRONG_RECOMMENDATION
       )
     ) {
-      s += " הדפוס נראה יציב — כדאי לטפל בו מוקדם.";
+      s += " זה חוזר מספיק פעמים כדי ששווה לגשת אליו מוקדם — בלי פאניקה, עם מבנה קטן.";
     }
     parts.push(s);
   } else if (wrongCount > 0) {
     parts.push(
-      "הטעויות שנאספו עדיין לא יוצרות דפוס חוזר ברור — התמונה בשלב הזה חלקית."
+      "הטעויות שיש עדיין לא מספרות סיפור אחד ברור — זה בסדר; נמשיך לעקוב."
     );
   }
 
@@ -455,14 +455,14 @@ function buildParentActionHe(
   const s0 = topStrengths[0];
 
   if (w0) {
-    return `שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת ב${subj} ${parentCopyTopicPhraseHe(w0.labelHe)} — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.`;
+    return `פעם־פעמיים בשבוע, רבע שעה בלבד: משימה אחת ב${subj} ${parentCopyTopicPhraseHe(w0.labelHe)} — קוראים יחד את הניסוח, אומרים בקול מה נתון ומה מבקשים, עושים טיוטה קטנה ורק אז כותבים נקי ומתיישרים עם הפתרון.`;
   }
   if (i0) {
-    return `פעמיים בשבוע, 12–15 דק׳: תרגול קצר ב${subj} ${parentCopyTopicPhraseHe(i0.labelHe)} (דיוק כ־${i0.accuracy}%) — לעודד ניסוח מלא של התשובה לפני בדיקת נכון/לא נכון.`;
+    return `פעמיים בשבוע, רבע שעה: תרגול קצר ב${subj} ${parentCopyTopicPhraseHe(i0.labelHe)} (כרגע דיוק כ־${i0.accuracy}%) — מעודדים לנסח את כל הרעיון לפני שבודקים אם זה "נכון".`;
   }
   if (m0 || s0) {
     const pick = m0 || s0;
-    return `פעם בשבוע, 10–12 דק׳: לשמור על תרגול שגרתי ורגוע ב${subj} ${parentCopyTopicPhraseHe(pick.labelHe)} — המטרה היא עקביות, לא האצת קצב.`;
+    return `פעם בשבוע, עשר דק׳ נעימות: לשמור על תרגול רגוע ב${subj} ${parentCopyTopicPhraseHe(pick.labelHe)} — המטרה היא להרגיש בבית, לא להאיץ.`;
   }
   return null;
 }
@@ -472,11 +472,12 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain, s
   const w0 = topWeaknesses[0];
   if (w0) {
     goals.push(
-      `יעד לחיזוק: ${successRateImprovementGoalHe(w0.labelHe)} (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).`
+      `לנסות שבוע אחד עם ${successRateImprovementGoalHe(w0.labelHe)} — מספיק ניסיון אחד קצת יותר חלק מהרגיל.`
     );
   } else if (improving[0]) {
+    const labImp = improvingDiagnosticsDisplayLabelHe(improving[0].labelHe);
     goals.push(
-      `יעד לחיזוק: ${successRateImprovementGoalHe(improving[0].labelHe)} (שני שיעורים קצרים בשבוע).`
+      `שבועיים קצרים סביב ${labImp} — ${successRateImprovementGoalHe(improving[0].labelHe)} — שני מפגשים קטנים, לא מרתון.`
     );
   }
 
@@ -488,7 +489,7 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain, s
     maintain[0];
   if (preserve) {
     goals.push(
-      `יעד לשימור: להמשיך בשגרת תרגול נינוחה ${parentCopyTopicPhraseHe(preserve.labelHe)} כדי לשמר את רמת הדיוק.`
+      `להמשיך בשגרה נינוחה ${parentCopyTopicPhraseHe(preserve.labelHe)} — כדי שהדיוק הטוב יישאר חלק ממזג החדר.`
     );
   }
 
@@ -510,6 +511,78 @@ function buildEvidenceExamples(evidenceMistake, evidenceSuccess) {
     });
   }
   return out.slice(0, 2);
+}
+
+/**
+ * מקטעים מובנים לדוח מקיף — מבוסס על אותם דליים כמו הכרטיסים הקיימים, בלי טקסט דמה.
+ */
+function buildDiagnosticSectionsHe({
+  stableExcellence,
+  topStrengths,
+  maintain,
+  improving,
+  topWeaknesses,
+  insufficientData,
+  diagnosticSparseNoteHe,
+  parentActionHe,
+  nextWeekGoalHe,
+}) {
+  const strongHe = [];
+  for (const x of stableExcellence) {
+    strongHe.push(`${x.labelHe} — דיוק כ־${x.accuracy}% (${x.questions} שאלות)`);
+  }
+  for (const x of topStrengths) {
+    if (strongHe.length >= 6) break;
+    strongHe.push(`${x.labelHe} — דיוק כ־${x.accuracy}% (${x.questions} שאלות)`);
+  }
+
+  const maintainHe = (maintain || []).map(
+    (x) => `${x.labelHe} — דיוק ${x.accuracy}% (${x.questions} שאלות; מומלץ לשמר קצב)`
+  );
+
+  const improveHe = (improving || []).map(
+    (x) =>
+      `${improvingDiagnosticsDisplayLabelHe(x.labelHe)} — דיוק ${x.accuracy}% (${x.questions} שאלות)`
+  );
+
+  const urgentAttentionHe = topWeaknesses.map((w) =>
+    `${w.labelHe}${
+      typeof w.mistakeCount === "number" ? ` — כ־${w.mistakeCount} אירועי טעות דומים בטווח` : ""
+    }`
+  );
+
+  const insufficientDataHe = [];
+  if (diagnosticSparseNoteHe) insufficientDataHe.push(diagnosticSparseNoteHe);
+  for (const u of insufficientData.slice(0, 5)) {
+    insufficientDataHe.push(u.note || "נתונים חלקיים לדפוס מסוים.");
+  }
+  const insufficientDataNoteHe =
+    insufficientData.length > 8
+      ? "יש עוד אזורים עם טעויות מפוזרות שלא הגיעו לסף דפוס יציב — האבחון בהם נשאר חלקי."
+      : null;
+  if (insufficientDataNoteHe) insufficientDataHe.push(insufficientDataNoteHe);
+
+  return {
+    strongHe,
+    maintainHe,
+    improveHe,
+    urgentAttentionHe,
+    insufficientDataHe,
+    concreteHomeActionHe: parentActionHe || null,
+    nextShortGoalHe: nextWeekGoalHe || null,
+  };
+}
+
+function buildSubSkillInsightsHe(topWeaknesses) {
+  return topWeaknesses.slice(0, 4).map((w) => ({
+    lineHe: w.labelHe,
+    evidenceNoteHe:
+      typeof w.mistakeCount === "number" && w.mistakeCount >= MIN_MISTAKES_FOR_STRONG_RECOMMENDATION
+        ? "דפוס חוזר חזק בטווח התאריכים."
+        : typeof w.mistakeCount === "number" && w.mistakeCount >= MIN_PATTERN_FAMILY_FOR_DIAGNOSIS
+          ? "דפוס חוזר בינוני — מומלץ מעקב."
+          : "אות ראשוני בלבד — עדיין מוקדם לסיכום חד־משמעי.",
+  }));
 }
 
 /**
@@ -699,6 +772,19 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       stableExcellence
     );
 
+    const diagnosticSectionsHe = buildDiagnosticSectionsHe({
+      stableExcellence,
+      topStrengths,
+      maintain,
+      improving,
+      topWeaknesses,
+      insufficientData,
+      diagnosticSparseNoteHe,
+      parentActionHe,
+      nextWeekGoalHe,
+    });
+    const subSkillInsightsHe = buildSubSkillInsightsHe(topWeaknesses);
+
     const hasAnySignal =
       stableExcellence.length > 0 ||
       topWeaknesses.length > 0 ||
@@ -739,6 +825,8 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       evidenceSuccess,
       insufficientData,
       diagnosticSparseNoteHe,
+      diagnosticSectionsHe,
+      subSkillInsightsHe,
     };
   }
 

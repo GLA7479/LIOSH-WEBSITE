@@ -24,6 +24,11 @@
  *   distractorFamily: string|null,
  *   conceptTag: string|null,
  *   answerMode: string|null,
+ *   responseMs: number|null,
+ *   retryCount: number|null,
+ *   hintUsed: boolean|null,
+ *   changedAnswer: boolean|null,
+ *   firstTryCorrect: boolean|null,
  * }
  */
 
@@ -50,6 +55,16 @@ function strOrNull(v) {
   if (v == null || v === "") return null;
   const s = String(v).trim();
   return s || null;
+}
+
+function optFiniteNumber(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+function optBoolOrNull(v) {
+  if (typeof v === "boolean") return v;
+  return null;
 }
 
 function pickParams(raw, snap) {
@@ -158,6 +173,11 @@ export function normalizeMistakeEvent(raw, subjectId) {
     distractorFamily,
     conceptTag,
     answerMode: strOrNull(p.answerMode),
+    responseMs: optFiniteNumber(p.responseMs ?? params.responseMs),
+    retryCount: optFiniteNumber(p.retryCount ?? params.retryCount),
+    hintUsed: optBoolOrNull(p.hintUsed ?? params.hintUsed),
+    changedAnswer: optBoolOrNull(p.changedAnswer ?? params.changedAnswer),
+    firstTryCorrect: optBoolOrNull(p.firstTryCorrect ?? params.firstTryCorrect),
   };
 }
 

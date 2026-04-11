@@ -3,9 +3,15 @@
  * מבוסס על שורות דוח V2 + מפת טעויות (עם נירמול מפתחות מול אחסון אמיתי).
  */
 
-import { splitBucketModeRowKey } from "./parent-report-v2";
+import { splitBucketModeRowKey } from "./parent-report-row-diagnostics";
 import { canonicalParentReportGradeKey, mathReportBaseOperationKey } from "./math-report-generator";
 import { DEFAULT_TOPIC_NEXT_STEP_CONFIG } from "./topic-next-step-config";
+import {
+  computeConfidence01,
+  computeRowDiagnosticSignals,
+  computeStability01,
+  rowMistakeEventCount,
+} from "./parent-report-row-diagnostics";
 
 /** @typedef {'advance_level'|'advance_grade_topic_only'|'maintain_and_strengthen'|'remediate_same_level'|'drop_one_level_topic_only'|'drop_one_grade_topic_only'} RecommendedNextStep */
 
@@ -66,24 +72,7 @@ export function aggregateMistakeCountsByCanonical(subjectId, mistakesByBucket) {
  * ספירת אירועי טעות לשורה: bucketKey, מפתח שורה מהמפה, שם תצוגה, ובמתמטיקה גם בסיס לפני מפריד מצב.
  */
 export function resolveMistakeEventCount(subjectId, mistakesByBucket, bucketKey, topicRowKey, row) {
-  const byCanon = aggregateMistakeCountsByCanonical(subjectId, mistakesByBucket);
-  const candidates = new Set();
-  if (bucketKey) candidates.add(canonicalMistakeLookupKey(subjectId, bucketKey));
-  const split = splitBucketModeRowKey(String(topicRowKey || ""));
-  if (split.bucketKey) candidates.add(canonicalMistakeLookupKey(subjectId, split.bucketKey));
-  if (row?.displayName) candidates.add(canonicalMistakeLookupKey(subjectId, String(row.displayName)));
-  if (subjectId === "math" && topicRowKey) {
-    const noMode = String(topicRowKey).split("\u0001")[0];
-    if (noMode) candidates.add(canonicalMistakeLookupKey(subjectId, noMode));
-  }
-  let total = 0;
-  const seen = new Set();
-  for (const c of candidates) {
-    if (!c || seen.has(c)) continue;
-    seen.add(c);
-    total += byCanon[c] || 0;
-  }
-  return total;
+  return rowMistakeEventCount(subjectId, mistakesByBucket, bucketKey, topicRowKey, row);
 }
 
 function gradeIndex(g) {
@@ -113,32 +102,11 @@ function computeCurrentMastery(row) {
 }
 
 function computeStability(row, mistakeEventCount, cfg) {
-  const q = Number(row?.questions) || 0;
-  if (q <= 0) return 0;
-  const wrong = Math.max(0, Number(row?.wrong) ?? q - (Number(row?.correct) || 0));
-  const wrongRatio = wrong / q;
-  const volume = Math.min(1, q / cfg.stabilityVolumeDivisor);
-  const mistakePressure = Math.min(
-    cfg.stabilityMistakePressureMax,
-    (mistakeEventCount || 0) / Math.max(q, cfg.stabilityMistakeQDivisor) +
-      wrongRatio * cfg.stabilityWrongPenaltyCoef
-  );
-  const raw = volume * (1 - mistakePressure);
-  return Math.round(Math.max(0, Math.min(1, raw)) * 100) / 100;
+  return computeStability01(row, mistakeEventCount, cfg);
 }
 
 function computeConfidence(row, mistakeEventCount, cfg) {
-  const q = Number(row?.questions) || 0;
-  if (q <= 0) return 0;
-  const base = 1 - Math.exp(-q / cfg.confidenceExpDivisor);
-  const m = Number(mistakeEventCount) || 0;
-  const noise =
-    m > q * cfg.confidenceMistakeRatioHigh
-      ? cfg.confidenceNoiseHigh
-      : m > q * cfg.confidenceMistakeRatioMid
-        ? cfg.confidenceNoiseMid
-        : 1;
-  return Math.round(Math.max(0, Math.min(1, base * noise)) * 100) / 100;
+  return computeConfidence01(row, mistakeEventCount, cfg);
 }
 
 /**
@@ -202,6 +170,28 @@ function buildHebrewCopy(step, ctx, cfg) {
 /**
  * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} cfg
  */
+function applyAggressiveEvidenceCap(result, row, ctx, cfg) {
+  if (!result?.step || !row?.suppressAggressiveStep) return result;
+  const aggressive = new Set([
+    "advance_level",
+    "advance_grade_topic_only",
+    "drop_one_level_topic_only",
+    "drop_one_grade_topic_only",
+  ]);
+  if (!aggressive.has(result.step)) return result;
+  const step = "maintain_and_strengthen";
+  const copy = buildHebrewCopy(step, ctx, cfg);
+  const note =
+    " (לפי חוזק הנתונים בטווח — לא משנים כיתה או רמת קושי כרגע; מומלץ לבסס באותה הגדרה ולאסוף עוד תרגול.)";
+  return {
+    ...result,
+    step,
+    reasonHe: (result.reasonHe || copy.reasonHe) + note,
+    parentHe: copy.parentHe,
+    studentHe: copy.studentHe,
+  };
+}
+
 function decideTopicNextStep(row, mistakeEventCount, cfg) {
   const q = Number(row?.questions) || 0;
   const acc = computeCurrentMastery(row);
@@ -215,6 +205,9 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
 
   const stability = computeStability(row, mistakeEventCount, cfg);
   const confidence = computeConfidence(row, mistakeEventCount, cfg);
+  const recencyScore = Number.isFinite(Number(row?.recencyScore))
+    ? Number(row.recencyScore)
+    : 55;
 
   const ctx = {
     displayName,
@@ -235,35 +228,41 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
     q >= cfg.minQuestionsAdvanceLevel &&
     acc >= cfg.advanceLevelAccMin &&
     stability >= cfg.advanceLevelStabilityMin &&
-    confidence >= cfg.advanceLevelConfidenceMin;
+    confidence >= cfg.advanceLevelConfidenceMin &&
+    recencyScore >= 36;
   const mistakeDrag =
     mistakeEventCount >= cfg.mistakeDragMistakesMin && acc < cfg.mistakeDragAccMax;
 
   if (q < cfg.minQuestionsLowConfidence && q > 0) {
     const step = "maintain_and_strengthen";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return {
-      step,
-      ...copy,
-      currentMastery: acc,
-      stability,
-      confidence,
-      reasonHe: `יש רק ${q} שאלות ב«${displayName}» בטווח — מוקדם מדי לשנות כיתה או רמת קושי. עדיף עוד מפגשים קצרים באותה הגדרה ואז נבחן מחדש.`,
-      parentHe: `ב«${displayName}» יש עדיין מעט נתונים (${q} שאלות). נשארים על אותה כיתה ורמה, ומוסיפים 2–3 סשנים קצרים כדי שההמלצה הבאה תהיה מדויקת יותר.`,
-      studentHe: `נמשיך עוד קצת באותה רמה ב«${displayName}» — ואז נדע טוב יותר מה הלאה.`,
-    };
+    return applyAggressiveEvidenceCap(
+      {
+        step,
+        ...copy,
+        currentMastery: acc,
+        stability,
+        confidence,
+        reasonHe: `יש רק ${q} שאלות ב«${displayName}» בטווח — מוקדם מדי לשנות כיתה או רמת קושי. עדיף עוד מפגשים קצרים באותה הגדרה ואז נבחן מחדש.`,
+        parentHe: `ב«${displayName}» יש עדיין מעט נתונים (${q} שאלות). נשארים על אותה כיתה ורמה, ומוסיפים 2–3 סשנים קצרים כדי שההמלצה הבאה תהיה מדויקת יותר.`,
+        studentHe: `נמשיך עוד קצת באותה רמה ב«${displayName}» — ואז נדע טוב יותר מה הלאה.`,
+      },
+      row,
+      ctx,
+      cfg
+    );
   }
 
   if (repeatedStruggle && li >= 1) {
     const step = "drop_one_level_topic_only";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return { step, ...copy, currentMastery: acc, stability, confidence };
+    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
   }
 
   if (repeatedStruggle && li === 0 && gi > 0) {
     const step = "drop_one_grade_topic_only";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return { step, ...copy, currentMastery: acc, stability, confidence };
+    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
   }
 
   if (
@@ -274,7 +273,7 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
   ) {
     const step = "remediate_same_level";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return { step, ...copy, currentMastery: acc, stability, confidence };
+    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
   }
 
   if (
@@ -285,11 +284,12 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
     acc >= cfg.advanceGradeAccMin &&
     stability >= cfg.advanceGradeStabilityMin &&
     confidence >= cfg.advanceGradeConfidenceMin &&
+    recencyScore >= 42 &&
     !mistakeDrag
   ) {
     const step = "advance_grade_topic_only";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return { step, ...copy, currentMastery: acc, stability, confidence };
+    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
   }
 
   if (
@@ -301,36 +301,36 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
   ) {
     const step = "advance_level";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return { step, ...copy, currentMastery: acc, stability, confidence };
+    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
   }
 
   if (q >= cfg.minQuestionsStepChange && acc < cfg.dropLevelAccMax && li >= 1) {
     const step = "drop_one_level_topic_only";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return { step, ...copy, currentMastery: acc, stability, confidence };
+    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
   }
 
   if (q >= cfg.minQuestionsStepChange && acc < cfg.dropLevelAccMax && levelKey == null) {
     const step = "remediate_same_level";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return { step, ...copy, currentMastery: acc, stability, confidence };
+    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
   }
 
   if (q >= cfg.minQuestionsStepChange && acc < cfg.dropGradeAccMax && li === 0 && gi > 0) {
     const step = "drop_one_grade_topic_only";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return { step, ...copy, currentMastery: acc, stability, confidence };
+    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
   }
 
   if (q >= cfg.minQuestionsRemediate && acc < cfg.remediateBandAccHi && acc >= cfg.remediateBandAccLo) {
     const step = "remediate_same_level";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return { step, ...copy, currentMastery: acc, stability, confidence };
+    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
   }
 
   const step = "maintain_and_strengthen";
   const copy = buildHebrewCopy(step, ctx, cfg);
-  return { step, ...copy, currentMastery: acc, stability, confidence };
+  return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
 }
 
 const MISTAKE_ANALYSIS_KEY = {
@@ -345,11 +345,21 @@ const MISTAKE_ANALYSIS_KEY = {
 /**
  * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} [cfg]
  */
-export function buildTopicRecommendationRecord(subjectId, topicRowKey, row, mistakesByBucket, cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG) {
+export function buildTopicRecommendationRecord(
+  subjectId,
+  topicRowKey,
+  row,
+  mistakesByBucket,
+  cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG,
+  periodEndMs = null
+) {
   const bucketKey =
     row?.bucketKey || splitBucketModeRowKey(String(topicRowKey)).bucketKey || null;
   const mC = resolveMistakeEventCount(subjectId, mistakesByBucket, bucketKey, topicRowKey, row);
-  const decision = decideTopicNextStep(row, mC, cfg);
+  const endMs = Number.isFinite(periodEndMs) ? periodEndMs : Date.now();
+  const signals = computeRowDiagnosticSignals(subjectId, topicRowKey, row, mistakesByBucket, endMs, cfg);
+  const rowAug = { ...row, ...signals };
+  const decision = decideTopicNextStep(rowAug, mC, cfg);
   const q = Number(row?.questions) || 0;
 
   return {
@@ -367,18 +377,81 @@ export function buildTopicRecommendationRecord(subjectId, topicRowKey, row, mist
     currentMastery: decision.currentMastery,
     stability: decision.stability,
     confidence: decision.confidence,
+    masteryScore: signals.masteryScore,
+    stabilityScore: signals.stabilityScore,
+    confidenceScore: signals.confidenceScore,
+    recencyScore: signals.recencyScore,
+    evidenceStrength: signals.evidenceStrength,
+    dataSufficiencyLevel: signals.dataSufficiencyLevel,
+    dataSufficiencyLabelHe: signals.dataSufficiencyLabelHe,
+    recommendationContextHe: signals.recommendationContextHe,
+    patternStabilityHe: signals.patternStabilityHe,
     recommendedNextStep: decision.step,
-    recommendedStepLabelHe: RECOMMENDED_STEP_LABEL_HE[decision.step] || decision.step,
+    recommendedStepLabelHe:
+      RECOMMENDED_STEP_LABEL_HE[decision.step] || RECOMMENDED_STEP_LABEL_HE.maintain_and_strengthen,
     recommendedStepReasonHe: decision.reasonHe,
     recommendedParentActionHe: decision.parentHe,
     recommendedStudentActionHe: decision.studentHe,
+    recommendedEvidenceLevelHe:
+      signals.evidenceStrength === "strong"
+        ? "איכות ראיות גבוהה"
+        : signals.evidenceStrength === "medium"
+          ? "איכות ראיות בינונית"
+          : "איכות ראיות נמוכה",
+    recommendedWhyNowHe: signals.recommendationContextHe,
+    recommendationStabilityNoteHe: signals.patternStabilityHe,
+    isEarlySignalOnly: !!signals.isEarlySignalOnly,
   };
+}
+
+/**
+ * מוסיף לכל שורת נושא בדוח תוויות המלצה קצרות בעברית (ל־UI הדוח הרגיל).
+ * @param {Record<string, Record<string, unknown>>} maps
+ * @param {Record<string, Record<string, { count?: number }>>} mistakesBySubject
+ * @param {number} periodEndMs
+ * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} [cfg]
+ */
+export function enrichReportMapsWithTopicStepHints(
+  maps,
+  mistakesBySubject,
+  periodEndMs,
+  cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG
+) {
+  const endMs = Number.isFinite(periodEndMs) ? periodEndMs : Date.now();
+  for (const [subjectId, topicMap] of Object.entries(maps || {})) {
+    if (!topicMap || typeof topicMap !== "object") continue;
+    const mistakesByBucket = mistakesBySubject?.[subjectId] || {};
+    for (const [topicRowKey, row] of Object.entries(topicMap)) {
+      if (!row || typeof row !== "object") continue;
+      const q = Number(row.questions) || 0;
+      if (q <= 0) continue;
+      const rec = buildTopicRecommendationRecord(
+        subjectId,
+        topicRowKey,
+        row,
+        mistakesByBucket,
+        cfg,
+        endMs
+      );
+      row.diagnosticRecommendedStepLabelHe = rec.recommendedStepLabelHe;
+      row.diagnosticRecommendedEvidenceHe = rec.recommendedEvidenceLevelHe;
+      row.diagnosticWhyNowHe = rec.recommendedWhyNowHe;
+      row.diagnosticStabilityNoteHe = rec.recommendationStabilityNoteHe;
+      row.diagnosticIsEarlySignalOnly = rec.isEarlySignalOnly;
+    }
+  }
 }
 
 /**
  * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} [cfg]
  */
-export function buildTopicRecommendationsForSubject(subjectId, topicMap, analysis, cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG) {
+export function buildTopicRecommendationsForSubject(
+  subjectId,
+  topicMap,
+  analysis,
+  cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG,
+  periodEndMs = null
+) {
   const aKey = MISTAKE_ANALYSIS_KEY[subjectId];
   const mistakesByBucket = (analysis && analysis[aKey]) || {};
 
@@ -389,7 +462,7 @@ export function buildTopicRecommendationsForSubject(subjectId, topicMap, analysi
     if (!row || typeof row !== "object") continue;
     const q = Number(row.questions) || 0;
     if (q <= 0) continue;
-    rows.push(buildTopicRecommendationRecord(subjectId, topicRowKey, row, mistakesByBucket, cfg));
+    rows.push(buildTopicRecommendationRecord(subjectId, topicRowKey, row, mistakesByBucket, cfg, periodEndMs));
   }
 
   const urgency = (s) => {
