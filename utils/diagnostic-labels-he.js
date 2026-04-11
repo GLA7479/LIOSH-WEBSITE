@@ -40,7 +40,7 @@ function englishTopicLabelHe(topicKey) {
 /** טקסט כשאין פירוט טכני — תמיד בעברית, מבהיר שמדובר באנגלית */
 export function englishWeaknessFallbackHe(topicKey) {
   const t = englishTopicLabelHe(topicKey);
-  if (t) return `בנושא ${t} (אנגלית)`;
+  if (t) return `בנושא ${t} באנגלית`;
   return "בנושא תרגול באנגלית";
 }
 
@@ -170,10 +170,10 @@ export function weaknessLabelHe(subjectId, sampleEv) {
     if (hay.includes("perimeter") && hay.includes("area"))
       return "בלבול חוזר בין היקף לשטח";
     if (hay.includes("perimeter")) return "קושי בהבחנה ובחישוב היקף";
-    if (hay.includes("area")) return "בנושא/ים שטחים ויחידות שטח";
+    if (hay.includes("area")) return "בנושא שטחים ויחידות שטח";
     if (hay.includes("volume") || hay.includes("prism"))
       return "קושי בנפח ובתבניות תלת־ממד";
-    if (hay.includes("angle")) return "קושי בזוויות וביחסים בין זוויות";
+    if (hay.includes("angle")) return "קושי בנושא זוויות וביחסים בין זוויות";
   }
 
   if (subjectId === "hebrew") {

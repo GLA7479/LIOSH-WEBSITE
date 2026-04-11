@@ -33,10 +33,10 @@ import {
  *    stability note if mistakeCount ≥ MIN_MISTAKES_FOR_STRONG_RECOMMENDATION, sparse-data note if needed.
  *
  * D) parentActionHe: one imperative block with duration + focus + method; prefers top weakness, else improving, else maintain.
- *    nextWeekGoalHe: optional "יעד חיזוק" from top weakness or improving + "יעד שימור" from topStrengths[0] or maintain[0]
+ *    nextWeekGoalHe: optional "יעד לחיזוק" from top weakness or improving + "יעד לשימור" from topStrengths[0] or maintain[0]
  *    when questions ≥ 8 or excellent.
  *
- * E) UI: parent-report maps each tierHe to the card subtitle (not everything is "חולשה").
+ * E) UI: parent-report maps each tierHe to the card subtitle (not everything is "חולשה"; maintain → "עקביות").
  */
 
 const SUBJECT_IDS = [
@@ -114,13 +114,21 @@ function parentCopyTopicPhraseHe(labelHe) {
 
   if (/^קושי\s+/u.test(s)) {
     const rest = s.replace(/^קושי\s+/u, "").trim();
+    if (/^בנושא(\s|\/)/u.test(rest)) return rest;
     return `בנושא ${rest}`;
   }
 
   return `בנושא ${s}`;
 }
 
-/** משפט יעד חיזוק מנקודת מבט של הצלחה, לא "לצמצם טעויות בדפוס" */
+/** לניסוח "מומלץ להתמקד…" — נקודתיים אחרי "בנושא" / "בנושא/ים" */
+function parentCopyTopicPhraseForFocusHe(labelHe) {
+  return parentCopyTopicPhraseHe(labelHe)
+    .replace(/^בנושא\/ים\s+/u, "בנושא/ים: ")
+    .replace(/^בנושא\s+/u, "בנושא: ");
+}
+
+/** משפט יעד לחיזוק מנקודת מבט של הצלחה, לא "לצמצם טעויות בדפוס" */
 function successRateImprovementGoalHe(labelHe) {
   const ph = parentCopyTopicPhraseHe(labelHe);
   const core = ph
@@ -276,7 +284,7 @@ function buildSessionBands(subjectId, report) {
 
   const maintainOut = maintain
     .slice(0, MAX_MAINTAIN)
-    .map((r) => ({ ...r, tierHe: "תחום לשימור" }));
+    .map((r) => ({ ...r, tierHe: "עקביות" }));
   const improvingOut = improving
     .slice(0, MAX_IMPROVING)
     .map((r) => ({
@@ -427,11 +435,11 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain) {
   const w0 = topWeaknesses[0];
   if (w0) {
     goals.push(
-      `יעד חיזוק: ${successRateImprovementGoalHe(w0.labelHe)} (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).`
+      `יעד לחיזוק: ${successRateImprovementGoalHe(w0.labelHe)} (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).`
     );
   } else if (improving[0]) {
     goals.push(
-      `יעד חיזוק: ${successRateImprovementGoalHe(improving[0].labelHe)} (שני שיעורים קצרים בשבוע).`
+      `יעד לחיזוק: ${successRateImprovementGoalHe(improving[0].labelHe)} (שני שיעורים קצרים בשבוע).`
     );
   }
 
@@ -442,7 +450,7 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain) {
     maintain[0];
   if (preserve) {
     goals.push(
-      `יעד שימור: להמשיך בשגרת תרגול נינוחה ${parentCopyTopicPhraseHe(preserve.labelHe)} כדי לשמר את רמת הדיוק.`
+      `יעד לשימור: להמשיך בשגרת תרגול נינוחה ${parentCopyTopicPhraseHe(preserve.labelHe)} כדי לשמר את רמת הדיוק.`
     );
   }
 
@@ -557,7 +565,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       const rs = recStrength(w.mistakeCount);
       studentRecommendationsImprove.push({
         id: `stu-imp:${w.id}`,
-        textHe: `מומלץ להתמקד ${parentCopyTopicPhraseHe(w.labelHe)} (זוהו ${w.mistakeCount} טעויות דומות בטווח התאריכים).`,
+        textHe: `מומלץ להתמקד ${parentCopyTopicPhraseForFocusHe(w.labelHe)} (זוהו ${w.mistakeCount} טעויות דומות בטווח התאריכים). זוהה קושי חוזר`,
         strength: rs,
       });
     }
@@ -733,7 +741,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       parentActionHe:
         "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בחשבון בנושא בהשוואת כמויות או מספרים — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
       nextWeekGoalHe:
-        "יעד חיזוק: להעלות את אחוזי ההצלחה בהשוואת כמויות או מספרים (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר). יעד שימור: להמשיך בשגרת תרגול נינוחה בנושא חיבור כדי לשמר את רמת הדיוק.",
+        "יעד לחיזוק: להעלות את אחוזי ההצלחה בהשוואת כמויות או מספרים (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר). יעד לשימור: להמשיך בשגרת תרגול נינוחה בנושא חיבור כדי לשמר את רמת הדיוק.",
       evidenceExamples: [
         {
           type: "mistake",
@@ -779,7 +787,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:math:w:0",
           textHe:
-            "מומלץ להתמקד בנושא בהשוואת כמויות או מספרים (זוהו 7 טעויות דומות בטווח התאריכים).",
+            "מומלץ להתמקד בנושא: בהשוואת כמויות או מספרים (זוהו 7 טעויות דומות בטווח התאריכים). זוהה קושי חוזר",
           strength: "moderate",
         },
       ],
@@ -849,7 +857,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       parentActionHe:
         "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בגאומטריה בנושא בלבול חוזר בין היקף לשטח — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
       nextWeekGoalHe:
-        "יעד חיזוק: להעלות את אחוזי ההצלחה בלבול חוזר בין היקף לשטח (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).",
+        "יעד לחיזוק: להעלות את אחוזי ההצלחה בלבול חוזר בין היקף לשטח (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).",
       evidenceExamples: [
         {
           type: "mistake",
@@ -877,7 +885,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:geometry:w:0",
           textHe:
-            "מומלץ להתמקד בנושא בלבול חוזר בין היקף לשטח (זוהו 6 טעויות דומות בטווח התאריכים).",
+            "מומלץ להתמקד בנושא: בלבול חוזר בין היקף לשטח (זוהו 6 טעויות דומות בטווח התאריכים). זוהה קושי חוזר",
           strength: "moderate",
         },
       ],
@@ -975,7 +983,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       parentActionHe:
         "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בעברית בנושא במילות יחס ובמבנה משפט — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
       nextWeekGoalHe:
-        "יעד חיזוק: להעלות את אחוזי ההצלחה במילות יחס ובמבנה משפט (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).",
+        "יעד לחיזוק: להעלות את אחוזי ההצלחה במילות יחס ובמבנה משפט (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).",
       evidenceExamples: [
         {
           type: "mistake",
@@ -1003,7 +1011,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:hebrew:w:0",
           textHe:
-            "מומלץ להתמקד בנושא במילות יחס ובמבנה משפט (זוהו 6 טעויות דומות בטווח התאריכים).",
+            "מומלץ להתמקד בנושא: במילות יחס ובמבנה משפט (זוהו 6 טעויות דומות בטווח התאריכים). זוהה קושי חוזר",
           strength: "moderate",
         },
       ],

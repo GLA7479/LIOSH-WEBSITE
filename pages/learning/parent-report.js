@@ -180,6 +180,11 @@ function weaknessTierHeDisplay(tierHe) {
   return tierHe === "קושי חוזר / חולשה יציבה" ? "קושי חוזר" : tierHe;
 }
 
+/** תאימות ל-tierHe ישן בשורות שימור */
+function maintainTierHeDisplay(tierHe) {
+  return tierHe === "תחום לשימור" ? "עקביות" : tierHe;
+}
+
 /**
  * תאימות לאחור: payload ישן (לפני patternDiagnostics.version 2).
  */
@@ -2391,7 +2396,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">🔷</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      {x.tierHe || "תחום לשימור"}
+                                      {maintainTierHeDisplay(x.tierHe) || "עקביות"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
