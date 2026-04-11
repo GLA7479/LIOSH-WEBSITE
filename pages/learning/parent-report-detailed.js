@@ -389,6 +389,45 @@ export default function ParentReportDetailedPage() {
                           </ul>
                         </div>
                       ) : null}
+
+                      {sp.topicRecommendations?.length ? (
+                        <div className="mt-3 pt-3 border-t border-white/10 pr-detailed-break-avoid">
+                          <p className="text-xs font-bold text-cyan-200/95 mb-2">
+                            צעד הבא המומלץ לפי נושא (נתוני טווח + טעויות)
+                          </p>
+                          <div className="space-y-3">
+                            {sp.topicRecommendations.map((tr) => (
+                              <div
+                                key={tr.topicRowKey}
+                                className="rounded-lg border border-cyan-500/25 bg-cyan-950/20 p-3 space-y-2"
+                              >
+                                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                                  <span className="font-bold text-white/95">{tr.displayName}</span>
+                                  <span className="text-[11px] font-semibold text-cyan-100/90 px-2 py-0.5 rounded border border-cyan-400/35 bg-black/20">
+                                    {tr.recommendedStepLabelHe}
+                                  </span>
+                                </div>
+                                <p className="text-[11px] text-white/55 leading-relaxed">
+                                  שליטה {tr.currentMastery}% · יציבות {Math.round(tr.stability * 100)}% · ביטחון{" "}
+                                  {Math.round(tr.confidence * 100)}% · {tr.questions} שאלות · דיוק {tr.accuracy}%
+                                  {tr.mistakeEventCount > 0
+                                    ? ` · ${tr.mistakeEventCount} אירועי טעות בנושא`
+                                    : ""}
+                                </p>
+                                <p className="text-sm text-white/82 leading-relaxed">{tr.recommendedStepReasonHe}</p>
+                                <p className="text-sm text-sky-100/90 leading-relaxed">
+                                  <span className="font-bold text-sky-200/90">להורה: </span>
+                                  {tr.recommendedParentActionHe}
+                                </p>
+                                <p className="text-sm text-emerald-100/90 leading-relaxed">
+                                  <span className="font-bold text-emerald-200/90">לתלמיד: </span>
+                                  {tr.recommendedStudentActionHe}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   ))}
                 </div>

@@ -4,6 +4,7 @@
  */
 
 import { generateParentReportV2 } from "./parent-report-v2";
+import { buildTopicRecommendationsForSubject } from "./topic-next-step-engine";
 
 const SUBJECT_IDS = [
   "math",
@@ -314,11 +315,14 @@ function buildNextPeriodGoals(subjects) {
 
 function buildSubjectProfiles(baseReport) {
   const subjects = baseReport?.patternDiagnostics?.subjects;
+  const analysis = baseReport?.analysis || {};
   const out = [];
   for (const sid of SUBJECT_IDS) {
     const s = subjects?.[sid];
     if (!s) continue;
     const stable = Array.isArray(s.stableExcellence) ? s.stableExcellence : [];
+    const topicMap = baseReport?.[REPORT_MAP_KEY[sid]] || {};
+    const topicRecommendations = buildTopicRecommendationsForSubject(sid, topicMap, analysis).slice(0, 15);
     out.push({
       subject: sid,
       subjectLabelHe: SUBJECT_LABEL_HE[sid],
@@ -333,6 +337,8 @@ function buildSubjectProfiles(baseReport) {
       evidenceExamples: Array.isArray(s.evidenceExamples) ? s.evidenceExamples : [],
       /** כשתהיה השוואת תקופות אמיתית — ימולא; לא שולחים placeholder ל־UI */
       trendVsPreviousPeriod: null,
+      /** המלצות צעד הבא ברמת נושא — מנוע נפרד, מבוסס שורות V2 + טעויות */
+      topicRecommendations,
     });
   }
   return out;
@@ -365,7 +371,7 @@ export function generateDetailedParentReport(
   const subjectProfiles = buildSubjectProfiles(base);
 
   return {
-    version: 1,
+    version: 2,
     generatedAt: new Date().toISOString(),
     periodInfo: {
       period: base.period === "custom" ? "custom" : period,
