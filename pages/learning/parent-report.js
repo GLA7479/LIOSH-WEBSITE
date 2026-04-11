@@ -2119,7 +2119,7 @@ export default function ParentReport() {
                           {overviewRows.map((row) => (
                             <div
                               key={row.key}
-                              className="flex shrink-0 items-center"
+                              className="flex w-full shrink-0 items-center justify-end pe-2"
                               style={{
                                 height: bandH,
                                 minHeight: bandH,
@@ -2127,14 +2127,14 @@ export default function ParentReport() {
                                 fontSize: M.labelTickFontPx,
                                 lineHeight: 1.25,
                                 color: "#e2e8f0",
-                                textAlign: "left",
+                                textAlign: "right",
                                 direction: "ltr",
                                 overflow: "hidden",
                                 wordBreak: "break-word",
                               }}
                               title={row.name}
                             >
-                              <span dir="auto" className="block w-full text-left">
+                              <span dir="auto" className="block w-full text-right">
                                 {row.name}
                               </span>
                             </div>
@@ -2261,7 +2261,7 @@ export default function ParentReport() {
                           gap,
                         }}
                       >
-                        {/* מסילת תוויות: רוחב גלובלי אחד, יישור לשמאל (פיזי), שורות מיושרות לפסי הגרף */}
+                        {/* מסילת תוויות: רוחב גלובלי אחד; טקסט קרוב למפרד/לגרף (יישור end), שורה ממורכזת אנכית לפס */}
                         <div
                           className="parent-report-topic-label-rail flex shrink-0 flex-col border-r border-white/10"
                           style={{
@@ -2277,7 +2277,7 @@ export default function ParentReport() {
                           {rows.map((row) => (
                             <div
                               key={row.rowKey}
-                              className="flex shrink-0 items-center"
+                              className="flex w-full shrink-0 items-center justify-end pe-2"
                               style={{
                                 height: bandH,
                                 minHeight: bandH,
@@ -2285,14 +2285,14 @@ export default function ParentReport() {
                                 fontSize: M.labelTickFontPx,
                                 lineHeight: 1.25,
                                 color: "#e2e8f0",
-                                textAlign: "left",
+                                textAlign: "right",
                                 direction: "ltr",
                                 overflow: "hidden",
                                 wordBreak: "break-word",
                               }}
                               title={row.label}
                             >
-                              <span dir="auto" className="block w-full text-left">
+                              <span dir="auto" className="block w-full text-right">
                                 {row.label}
                               </span>
                             </div>
