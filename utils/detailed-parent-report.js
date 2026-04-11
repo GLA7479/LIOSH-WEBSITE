@@ -157,7 +157,7 @@ function buildHomeFocusHe(subjects, topStrengthsAcrossHe, topFocusAreasHe, summa
   const parts = [];
   if (reinforceLabels.length) {
     parts.push(
-      `אם מעוניינים להתמקד השבוע בנושא אחד או שניים: ${reinforceLabels.join(" · ")}. מומלץ תרגול קצר (כ־10–15 דקות); אחרי טעות — בירור קצר של הניסוח, בלי הרחבה ארוכה.`
+      `מומלץ להתמקד השבוע בנושא אחד או שניים: ${reinforceLabels.join(" · ")}. תרגול קצר (כ־10–15 דקות); אחרי טעות — בירור קצר של הניסוח, בלי הרחבה ארוכה.`
     );
   } else {
     parts.push(
@@ -166,7 +166,7 @@ function buildHomeFocusHe(subjects, topStrengthsAcrossHe, topFocusAreasHe, summa
   }
 
   if (preservePhrase) {
-    parts.push(`במקביל מומלץ לשמור על תרגול עקבי בתחום שבו ניכרת יציבות — סביב ${preservePhrase}.`);
+    parts.push(`במקביל מומלץ לשמור על תרגול עקבי בתחום שבו ניכרת עקביות — סביב ${preservePhrase}.`);
   } else {
     parts.push("במקביל מומלץ לשמור על שגרת תרגול קבועה — עקביות תורמת להמשך גם כשיש קשיים נקודתיים.");
   }

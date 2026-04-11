@@ -77,39 +77,9 @@ function sumTopicMapMinutes(map) {
   return Object.values(map || {}).reduce((a, r) => a + (Number(r?.timeMinutes) || 0), 0);
 }
 
-function evidenceStrengthLabelHe(strength) {
-  if (strength === "strong") return "ראיות חזקה";
-  if (strength === "medium") return "ראיות בינונית";
-  if (strength === "low") return "ראיות חלשה";
-  return "";
-}
-
-function recencyTierLabelHe(score) {
-  const n = Number(score);
-  if (!Number.isFinite(n)) return "";
-  if (n >= 80) return "עדכני";
-  if (n >= 45) return "בינוני";
-  return "פחות עדכני";
-}
-
-/** שורת מדדים קומפקטית לשורת נושא — עברית בלבד */
-function ParentReportRowDiagnosticsFootnote({ data }) {
-  const m = data?.masteryScore;
-  const ev = data?.evidenceStrength;
-  const rs = data?.recencyScore;
-  const step = data?.diagnosticRecommendedStepLabelHe;
-  const parts = [];
-  if (Number.isFinite(Number(m))) parts.push(`שליטה ${Math.round(Number(m))}%`);
-  const evLab = evidenceStrengthLabelHe(ev);
-  if (evLab) parts.push(evLab);
-  if (Number.isFinite(Number(rs))) parts.push(`עדכניות: ${recencyTierLabelHe(rs)}`);
-  if (step && String(step).trim()) parts.push(String(step).trim());
-  if (!parts.length) return null;
-  return (
-    <div className="mt-0.5 text-[8px] md:text-[9px] text-white/50 leading-snug max-w-[10rem] mx-auto">
-      {parts.join(" · ")}
-    </div>
-  );
+/** שורת משנה בעמודת סטטוס — הוסרה לפי בקשה (לא מציגים שליטה % / ראיות וכו׳). */
+function ParentReportRowDiagnosticsFootnote() {
+  return null;
 }
 
 function buildSubjectOverviewRows(report) {

@@ -472,7 +472,7 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain, s
   const w0 = topWeaknesses[0];
   if (w0) {
     goals.push(
-      `לנסות שבוע אחד עם ${successRateImprovementGoalHe(w0.labelHe)} — מספיק ניסיון אחד קצת יותר חלק מהרגיל.`
+      `לנסות שבוע אחד ${successRateImprovementGoalHe(w0.labelHe)} — מספיק שיפור באחוזי ההצלחה.`
     );
   } else if (improving[0]) {
     const labImp = improvingDiagnosticsDisplayLabelHe(improving[0].labelHe);
@@ -489,7 +489,7 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain, s
     maintain[0];
   if (preserve) {
     goals.push(
-      `להמשיך בשגרה נינוחה ${parentCopyTopicPhraseHe(preserve.labelHe)} — כדי שהדיוק הטוב יישאר חלק ממזג החדר.`
+      `להמשיך בשגרה נינוחה ${parentCopyTopicPhraseHe(preserve.labelHe)} — כדי שהדיוק הטוב יישמר בשגרת התרגול.`
     );
   }
 

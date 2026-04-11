@@ -13,7 +13,7 @@ import {
 
 /**
  * כשאין מספיק מידע לתווית ספציפית — אותו ניסוח לכל המקצועות.
- * (באנגלית מעדיפים לפני כן `englishWeaknessFallbackHe`.)
+ * (באנגלית: `englishWeaknessFallbackHe` — בלי "באנגלית" בטקסט, כי בדוחות חוצה־מקצועיים מוסיפים `(אנגלית)`.)
  */
 export const GENERIC_WEAKNESS_HE = "דפוס שגיאות חוזר";
 export const GENERIC_POINT_HE = "קושי נקודתי שדורש מעקב";
@@ -37,11 +37,11 @@ function englishTopicLabelHe(topicKey) {
   return ENGLISH_TOPIC_KEY_HE[k] || null;
 }
 
-/** טקסט כשאין פירוט טכני — תמיד בעברית, מבהיר שמדובר באנגלית */
+/** טקסט כשאין פירוט טכני — בעברית; המקצוע (אנגלית) נוסף בשכבות אחרות כשצריך */
 export function englishWeaknessFallbackHe(topicKey) {
   const t = englishTopicLabelHe(topicKey);
-  if (t) return `בנושא ${t} באנגלית`;
-  return "בנושא תרגול באנגלית";
+  if (t) return `בנושא ${t}`;
+  return "בנושא תרגול";
 }
 
 /** מילון מקוצר: מקטעים באנגלית מתוך patternFamily/kind → עברית */
