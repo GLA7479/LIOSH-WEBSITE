@@ -12,9 +12,11 @@ import {
   getScienceTopicName,
   getHebrewTopicName,
   getMoledetGeographyTopicName,
+  mathReportBaseOperationKey,
+  formatParentReportGradeLabel,
+  canonicalParentReportGradeKey,
 } from "./math-report-generator";
 
-const GRADE_LABELS = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
 
 const MODE_LABELS = {
@@ -117,11 +119,13 @@ function buildMapFromBucket({
     const item = raw[bucketKey];
     if (!item || typeof item !== "object") continue;
     const list = normalizeSessionsArray(item.sessions);
-    const key = String(bucketKey);
+    const storageKey = String(bucketKey);
+    const rowBucketKey =
+      subject === "math" ? mathReportBaseOperationKey(storageKey) : storageKey;
     for (const s of list) {
       if (!sessionInRange(s, startMs, endMs)) continue;
       const modeNorm = normalizeSessionMode(s);
-      const compositeKey = `${key}${TRACK_ROW_MODE_SEP}${modeNorm}`;
+      const compositeKey = `${rowBucketKey}${TRACK_ROW_MODE_SEP}${modeNorm}`;
       if (!map[compositeKey]) map[compositeKey] = [];
       map[compositeKey].push(s);
     }
@@ -132,12 +136,7 @@ function buildMapFromBucket({
     const sessions = map[itemKey];
     if (!sessions.length) continue;
     const { bucketKey } = splitBucketModeRowKey(itemKey);
-    const progressLookupKey =
-      subject === "math" &&
-      typeof bucketKey === "string" &&
-      bucketKey.includes("::")
-        ? bucketKey.split("::")[0]
-        : bucketKey;
+    const progressLookupKey = bucketKey;
     const legacy = progressData[progressLookupKey] || { total: 0, correct: 0 };
     out[itemKey] = buildRowSummary({
       subject,
@@ -273,10 +272,11 @@ function buildRowSummary({
   const modeDist = countDistribution(sessions, "mode");
   const gradeKeyLatest = latestSessionFieldValue(sessions, "grade");
   const levelKeyLatest = latestSessionFieldValue(sessions, "level");
-  const gradeKey =
+  const gradeKeyRaw =
     gradeKeyLatest != null && gradeKeyLatest !== ""
       ? gradeKeyLatest
       : dominantKey(gradeDist);
+  const gradeKey = canonicalParentReportGradeKey(gradeKeyRaw);
   const levelKey =
     levelKeyLatest != null && levelKeyLatest !== ""
       ? levelKeyLatest
@@ -303,7 +303,7 @@ function buildRowSummary({
     timeHours: (timeMinutes / 60).toFixed(2),
     needsPractice,
     excellent,
-    grade: gradeKey ? GRADE_LABELS[gradeKey] || gradeKey : "לא זמין",
+    grade: formatParentReportGradeLabel(gradeKeyRaw),
     gradeKey,
     level: levelKey ? LEVEL_LABELS[levelKey] || levelKey : "לא זמין",
     levelKey,
@@ -447,7 +447,8 @@ function buildDailyActivityFromSessions(startMs, endMs) {
         row.timeMinutes += durMin;
         const tq = s.total !== undefined ? Number(s.total) : 1;
         row.questions += tq;
-        if (def.id === "math") row.mathKeys.add(itemKey);
+        if (def.id === "math")
+          row.mathKeys.add(mathReportBaseOperationKey(String(itemKey)));
         if (def.id === "geometry") row.geometryKeys.add(itemKey);
         if (def.id === "english") row.englishKeys.add(itemKey);
         if (def.id === "science") row.scienceKeys.add(itemKey);

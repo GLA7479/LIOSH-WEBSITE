@@ -35,119 +35,6 @@ const OPERATION_NAMES = {
   mixed: "ערבוב"
 };
 
-/** תוויות עברית ל־params.kind בדוח הורים — לעולם לא להציג מפתחות אנגליים פנימיים */
-const MATH_REPORT_KIND_LABELS = {
-  add_second_decade: "חיבור בעשור השני",
-  add_tens_only: "חיבור עשרות בלבד",
-  add_three: "חיבור שלושה מספרים",
-  add_two: "חיבור שני מספרים",
-  add_vertical: "חיבור בשיטה עמודית",
-  sub_two: "חיסור שני מספרים",
-  sub_vertical: "חיסור בשיטה עמודית",
-  mul: "כפל בסיסי",
-  mul_tens: "כפל בעשרות",
-  mul_hundreds: "כפל במאות",
-  mul_vertical: "כפל בשיטה עמודית",
-  div: "חילוק בסיסי",
-  div_long: "חילוק ארוך",
-  div_two_digit: "חילוק במספר דו־ספרתי",
-  div_with_remainder: "חילוק עם שארית",
-  cmp: "השוואת גודל",
-  divisibility: "סימני התחלקות",
-  prime_composite: "מספרים ראשוניים ופריקים",
-  round: "עיגול",
-  sequence: "סדרות מספרים",
-  dec_add: "חיבור עשרוניים",
-  dec_sub: "חיסור עשרוניים",
-  dec_multiply: "כפל עשרוניים",
-  dec_divide: "חילוק עשרוניים",
-  dec_multiply_10_100: "כפל ב־10 ו־100",
-  dec_divide_10_100: "חילוק ב־10 ו־100",
-  dec_repeating: "שבר עשרוני מחזורי",
-  eq_add_simple: "משוואה — חיבור פשוט",
-  eq_sub_simple: "משוואה — חיסור פשוט",
-  eq_add: "משוואת חיבור",
-  eq_sub: "משוואת חיסור",
-  eq_mul: "משוואת כפל",
-  eq_div: "משוואת חילוק",
-  order_add_mul: "סדר פעולות — חיבור וכפל",
-  order_mul_sub: "סדר פעולות — כפל וחיסור",
-  order_parentheses: "סדר פעולות — סוגריים",
-  perc_part_of: "אחוז ממספר",
-  perc_discount: "הנחה באחוזים",
-  power_calc: "חישוב חזקה",
-  power_base: "זיהוי בסיס בחזקה",
-  ratio_find: "מציאת יחס",
-  ratio_first: "יחס — המספר הראשון",
-  ratio_second: "יחס — המספר השני",
-  zero_mul: "תכונת האפס בכפל",
-  zero_add: "תכונת האפס בחיבור",
-  zero_sub: "תכונת האפס בחיסור",
-  one_mul: "תכונת האחד בכפל",
-  est_add: "אומדן חיבור",
-  est_mul: "אומדן כפל",
-  est_quantity: "אומדן כמות",
-  scale_find: "מציאת קנה מידה",
-  scale_map_to_real: "ממפה למציאות",
-  scale_real_to_map: "ממציאות למפה",
-  fm_factor: "גורם של מספר",
-  fm_multiple: "כפולה של מספר",
-  fm_gcd: "מחלק משותף מקסימלי",
-  frac_to_mixed: "שבר גדול ממספר שלם למספר מעורב",
-  mixed_to_frac: "מספר מעורב לשבר",
-  frac_expand: "הרחבת שבר",
-  frac_reduce: "צמצום שבר",
-  frac_add_sub: "חיבור וחיסור שברים",
-  frac_multiply: "כפל שברים",
-  frac_divide: "חילוק שברים",
-  frac_as_division: "שבר כחילוק",
-  frac_half: "חצי ממספר שלם",
-  frac_half_reverse: "מחצי למספר שלם",
-  frac_quarter: "רבע ממספר שלם",
-  frac_quarter_reverse: "מרבע למספר שלם",
-  frac_same_den: "שברים עם מכנה משותף",
-  frac_same_den_g4: "שברים עם מכנה משותף",
-  ns_neighbors: "שכנים במספרים",
-  ns_place_tens_units: "ערך מקומי — עשרות ויחידות",
-  ns_place_hundreds: "ערך מקומי — מאות",
-  ns_complement10: "השלמה ל־10",
-  ns_complement100: "השלמה ל־100",
-  ns_number_line: "קו מספרים",
-  ns_counting_forward: "ספירה קדימה",
-  ns_counting_backward: "ספירה אחורה",
-  ns_even_odd: "זוגי ואי־זוגי",
-  wp_simple_add: "חיבור במילולית",
-  wp_simple_add_g2: "חיבור במילולית",
-  wp_simple_sub: "חיסור במילולית",
-  wp_simple_sub_g2: "חיסור במילולית",
-  wp_pocket_money: "כיס כסף",
-  wp_pocket_money_g2: "כיס כסף",
-  wp_coins: "מטבעות",
-  wp_coins_spent: "קנייה ועודף",
-  wp_time_days: "ימים וזמנים",
-  wp_time_date: "תאריך",
-  wp_time_sum: "סיכום זמנים",
-  wp_groups: "קבוצות שוות",
-  wp_groups_g2: "קבוצות שוות",
-  wp_groups_g3: "קבוצות שוות",
-  wp_groups_g4: "קבוצות שוות",
-  wp_groups_late: "קבוצות שוות",
-  wp_groups_late_g6: "קבוצות שוות",
-  wp_comparison_more: "השוואת כמויות — כמה יותר",
-  wp_division_simple: "חילוק במילולית",
-  wp_leftover: "שארית אחרי חלוקה",
-  wp_shop_discount: "הנחה בחנות",
-  wp_unit_cm_to_m: "המרת יחידות (סנטימטרים ומטרים)",
-  wp_unit_g_to_kg: "המרת יחידות (גרמים וקילוגרמים)",
-  wp_distance_time: "מרחק וזמן",
-  wp_multi_step: "בעיה בכמה שלבים",
-  wp_multi_step_g6: "בעיה בכמה שלבים",
-  wp_average: "ממוצע",
-  wp_average_g6: "ממוצע",
-  wp_change_stack: "שינויים לפי סדר",
-  wp_part_whole: "חלק מכלל",
-};
-
 // שמות נושאים בעברית (גאומטריה)
 const TOPIC_NAMES = {
   shapes_basic: "צורות בסיסיות",
@@ -182,20 +69,13 @@ export function mathReportBaseOperationKey(bucketKey) {
 }
 
 /**
- * תצוגת שורת דוח חשבון: פעולה בעברית + תווית עברית ל־kind (מפתח הדוח נשאר operation::kind).
- * אין להציג מפתחות kind באנגלית; אם אין מיפוי — רק שם הפעולה בעברית.
+ * תצוגת דוח הורים לחשבון: שם פעולה בעברית בלבד (פעולה בסיסית), ללא kind מובנה.
+ * מפתח אחסון עשוי להישאר operation::kind — כאן רק מציגים את בסיס הפעולה.
  */
 export function getMathReportBucketDisplayName(bucketKey) {
   if (bucketKey == null || bucketKey === "") return "";
-  const s = String(bucketKey);
-  const i = s.indexOf("::");
-  const base = i === -1 ? s : s.slice(0, i);
-  const opLabel = getOperationName(base);
-  if (i === -1) return opLabel;
-  const kind = s.slice(i + 2).trim();
-  if (!kind) return opLabel;
-  const kindHeb = MATH_REPORT_KIND_LABELS[kind];
-  return kindHeb ? `${opLabel} — ${kindHeb}` : opLabel;
+  const base = mathReportBaseOperationKey(String(bucketKey));
+  return getOperationName(base);
 }
 
 export function getTopicName(topic) {
@@ -258,12 +138,74 @@ export function getMoledetGeographyTopicName(topic) {
   return MOLEDET_GEOGRAPHY_TOPIC_NAMES[topic] || topic;
 }
 
-const GRADE_LABELS = { g1: "א'", g2: "ב'", g3: "ג'", g4: "ד'", g5: "ה'", g6: "ו'" };
+/** תווית כיתה בעברית לפי מפתח g1…g6 (דוח הורים / המלצות) */
+const GRADE_LABELS = { g1: "א׳", g2: "ב׳", g3: "ג׳", g4: "ד׳", g5: "ה׳", g6: "ו׳" };
+
+const HEBREW_GRADE_DISPLAY_AS_IS = new Set([
+  "א'",
+  "ב'",
+  "ג'",
+  "ד'",
+  "ה'",
+  "ו'",
+  "א׳",
+  "ב׳",
+  "ג׳",
+  "ד׳",
+  "ה׳",
+  "ו׳",
+]);
+
+const HEBREW_GRADE_TO_CANON = {
+  "א'": "g1",
+  "ב'": "g2",
+  "ג'": "g3",
+  "ד'": "g4",
+  "ה'": "g5",
+  "ו'": "g6",
+  "א׳": "g1",
+  "ב׳": "g2",
+  "ג׳": "g3",
+  "ד׳": "g4",
+  "ה׳": "g5",
+  "ו׳": "g6",
+};
+
+/**
+ * מנרמל מפתח כיתה פנימי (g1, gg3, "3" וכו׳) ל־g1…g6.
+ * @returns {string|null}
+ */
+export function canonicalParentReportGradeKey(raw) {
+  if (raw == null || raw === "") return null;
+  const s0 = String(raw).trim();
+  if (HEBREW_GRADE_DISPLAY_AS_IS.has(s0)) return HEBREW_GRADE_TO_CANON[s0] || null;
+  const s = s0.toLowerCase();
+  const m = s.match(/^g{1,2}([1-6])$/);
+  if (m) return `g${m[1]}`;
+  const d = s.match(/^([1-6])$/);
+  if (d) return `g${d[1]}`;
+  return null;
+}
+
+/**
+ * תווית כיתה לתצוגת דוח הורים בכל המקצועות — עברית בלבד, ללא g1/gg5.
+ * אם הערך כבר תווית עברית מוכרת — מחזירים אותו כמו שהוא.
+ */
+export function formatParentReportGradeLabel(raw) {
+  if (raw == null || raw === "") return "לא זמין";
+  const s0 = String(raw).trim();
+  if (HEBREW_GRADE_DISPLAY_AS_IS.has(s0)) return s0;
+  const c = canonicalParentReportGradeKey(s0);
+  if (c && GRADE_LABELS[c]) return GRADE_LABELS[c];
+  return "לא זמין";
+}
+
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
 
 function getMostCommonGradeAndLevel(savedTracking, containerKey, itemKey) {
   let gradeKey = null;
   let levelKey = null;
+  let rawGradeDominant = null;
 
   try {
     const itemData = savedTracking?.[containerKey]?.[itemKey];
@@ -278,7 +220,8 @@ function getMostCommonGradeAndLevel(savedTracking, containerKey, itemKey) {
 
       if (Object.keys(gradeCounts).length > 0) {
         const entries = Object.entries(gradeCounts).sort((a, b) => b[1] - a[1]);
-        gradeKey = entries[0][0];
+        rawGradeDominant = entries[0][0];
+        gradeKey = canonicalParentReportGradeKey(rawGradeDominant);
       }
 
       if (Object.keys(levelCounts).length > 0) {
@@ -293,7 +236,10 @@ function getMostCommonGradeAndLevel(savedTracking, containerKey, itemKey) {
   return {
     gradeKey,
     levelKey,
-    gradeLabel: gradeKey ? (GRADE_LABELS[gradeKey] || gradeKey) : "לא זמין",
+    gradeLabel:
+      rawGradeDominant != null
+        ? formatParentReportGradeLabel(rawGradeDominant)
+        : "לא זמין",
     levelLabel: levelKey ? (LEVEL_LABELS[levelKey] || levelKey) : "לא זמין",
   };
 }
