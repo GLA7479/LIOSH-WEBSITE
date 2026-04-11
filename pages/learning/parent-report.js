@@ -5,6 +5,7 @@ import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getS
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
 import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Head from "next/head";
 import {
   BarChart,
@@ -1205,7 +1206,22 @@ export default function ParentReport() {
                 תאריכים מותאמים
               </button>
             </div>
-            
+
+            <div className="flex justify-center mt-2 no-pdf">
+              <Link
+                href={{
+                  pathname: "/learning/parent-report-detailed",
+                  query:
+                    customDates && appliedStartDate && appliedEndDate
+                      ? { period: "custom", start: appliedStartDate, end: appliedEndDate }
+                      : { period },
+                }}
+                className="inline-flex px-4 py-2 rounded-lg text-sm font-bold bg-violet-500/35 border border-violet-300/45 hover:bg-violet-500/50 text-white transition-all"
+              >
+                דוח מקיף לתקופה
+              </Link>
+            </div>
+
             {/* בחירת תאריכים מותאמת אישית (לא נכנס ל-PDF) */}
             {customDates && (
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-3 mb-3 p-3 bg-black/20 rounded-lg no-pdf">
