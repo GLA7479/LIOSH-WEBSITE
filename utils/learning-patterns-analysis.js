@@ -18,7 +18,8 @@ import {
  * - summaryHe: string | null
  * - topStrengths: Array<{ id, labelHe, questions, accuracy, confidence, needsPractice, excellent, tierHe }>
  * - topWeaknesses: Array<{ id, labelHe, mistakeCount, confidence, tierHe }>
- * - maintain, improving: session bands + tierHe on each row
+ * - stableExcellence: Array<{ id, labelHe, questions, accuracy, confidence, needsPractice, excellent, tierHe }> — סף גבוה, נפרד מ־maintain
+ * - maintain, improving: session bands + tierHe על כל שורה
  * - parentActionHe: string | null  (max 1 concrete home action)
  * - nextWeekGoalHe: string | null   (חיזוק + שימור when data allows)
  * - evidenceExamples: Array<{ type: "mistake"|"success", ... }>  (max 2; only moderate/high confidence)
@@ -27,16 +28,16 @@ import {
  * - Weaknesses: clusters by mistakePatternClusterKey, sort by mistakeCount desc → top 3 (≥ MIN_PATTERN_FAMILY).
  * - topStrengths: merge excellent-pool + strengths-pool (disjoint), sort by
  *   (excellent desc, accuracy desc, questions desc) → top 3.
- * - maintain / improving: scan report rows (accuracy-sorted) into disjoint buckets → take top 2 each by pool order.
+ * - stableExcellence / maintain / improving: סריקת שורות דוח (ממוין דיוק) לדליים נפרדים — stableExcellence קודם (סף גבוה), אחר כך excellent/strengths/maintain/improving (ללא כפילויות).
  *
- * C) summaryHe: 1–2 Hebrew sentences — positives (topStrengths or maintain), risks (topWeaknesses or improving),
+ * C) summaryHe: 1–2 Hebrew sentences — positives (stableExcellence, topStrengths, maintain), risks (topWeaknesses or improving),
  *    stability note if mistakeCount ≥ MIN_MISTAKES_FOR_STRONG_RECOMMENDATION, sparse-data note if needed.
  *
  * D) parentActionHe: one imperative block with duration + focus + method; prefers top weakness, else improving, else maintain.
  *    nextWeekGoalHe: optional "יעד לחיזוק" from top weakness or improving + "יעד לשימור" from topStrengths[0] or maintain[0]
  *    when questions ≥ 8 or excellent.
  *
- * E) UI: parent-report maps each tierHe to the card subtitle (not everything is "חולשה"; maintain → "עקביות").
+ * E) UI: parent-report maps each tierHe to the card subtitle (not everything is "חולשה"; maintain → "עקביות"; stableExcellence → "הצטיינות היציבה").
  */
 
 const SUBJECT_IDS = [
@@ -71,6 +72,11 @@ const MAX_TOP_WEAKNESSES = 3;
 const MAX_TOP_STRENGTHS = 3;
 const MAX_MAINTAIN = 2;
 const MAX_IMPROVING = 2;
+/** עד כמה שורות "הצטיינות היציבה" (נפרד מ־maintain / חוזקות מובילות) */
+const MAX_STABLE_EXCELLENCE = 3;
+/** סף הצטיינות יציבה: לא מכריזים מהר — דיוק גבוה + מספיק שאלות בטווח */
+const STABLE_EXCELLENCE_MIN_ACCURACY = 92;
+const STABLE_EXCELLENCE_MIN_QUESTIONS = 22;
 /** Internal pool before merge/rank */
 const INTERNAL_SESSION_POOL = 12;
 
@@ -211,7 +217,7 @@ function buildTopStrengthsMerged(excellent, strengths, max) {
 }
 
 /**
- * מחלק שורות דוח ל־excellent / strengths / maintain / improving (ללא כפילויות לפי מפתח שורה).
+ * מחלק שורות דוח ל־stableExcellence / excellent / strengths / maintain / improving (ללא כפילויות לפי מפתח שורה).
  * אוסף בריכה פנימית גדולה יותר לצורך דירוג לפני חיתוך ל־topStrengths וכו׳.
  */
 function buildSessionBands(subjectId, report) {
@@ -240,6 +246,22 @@ function buildSessionBands(subjectId, report) {
     }
     return out;
   };
+
+  const stableExcellenceRaw = take(
+    (row, q) => {
+      if (row.needsPractice) return false;
+      const acc = Number(row.accuracy) || 0;
+      if (acc < STABLE_EXCELLENCE_MIN_ACCURACY) return false;
+      if (q < STABLE_EXCELLENCE_MIN_QUESTIONS) return false;
+      return true;
+    },
+    MAX_STABLE_EXCELLENCE
+  );
+
+  const stableExcellenceOut = stableExcellenceRaw.map((r) => ({
+    ...r,
+    tierHe: "הצטיינות היציבה",
+  }));
 
   const excellent = take(
     (row, q) => row.excellent && q >= 10,
@@ -294,6 +316,7 @@ function buildSessionBands(subjectId, report) {
     }));
 
   return {
+    stableExcellence: stableExcellenceOut,
     excellent: excellentOut,
     strengths: strengthsOut,
     maintain: maintainOut,
@@ -331,6 +354,7 @@ function buildEvidenceSuccessFromPick(pick) {
 
 function buildSummaryHe(
   subjectLabelHe,
+  stableExcellence,
   topStrengths,
   topWeaknesses,
   maintain,
@@ -343,6 +367,7 @@ function buildSummaryHe(
   const opening = `תמונת המקצוע ב${label}`;
 
   if (
+    !stableExcellence.length &&
     !topStrengths.length &&
     !topWeaknesses.length &&
     !maintain.length &&
@@ -359,6 +384,14 @@ function buildSummaryHe(
   }
 
   const parts = [];
+  if (stableExcellence.length) {
+    const exNames = joinHebrewList(stableExcellence.map((s) => s.labelHe));
+    parts.push(
+      stableExcellence.length > 1
+        ? `ניכרת הצטיינות היציבה ב${exNames}.`
+        : `ניכרת הצטיינות היציבה ב${stableExcellence[0].labelHe}.`
+    );
+  }
   if (topStrengths.length) {
     const names = joinHebrewList(topStrengths.map((s) => s.labelHe));
     parts.push(
@@ -366,9 +399,13 @@ function buildSummaryHe(
         ? `רואים חוזקות בולטות ב${names}.`
         : `רואים חוזקה בולטת ב${names}.`
     );
-  } else if (maintain.length) {
+  } else if (!stableExcellence.length && maintain.length) {
     parts.push(
       `רואים עקביות טובה ב־${joinHebrewList(maintain.map((m) => m.labelHe))}.`
+    );
+  } else if (stableExcellence.length && maintain.length) {
+    parts.push(
+      `ניכרת גם עקביות טובה ב־${joinHebrewList(maintain.map((m) => m.labelHe))}.`
     );
   }
 
@@ -430,7 +467,7 @@ function buildParentActionHe(
   return null;
 }
 
-function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain) {
+function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain, stableExcellence) {
   const goals = [];
   const w0 = topWeaknesses[0];
   if (w0) {
@@ -444,6 +481,7 @@ function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain) {
   }
 
   const preserve =
+    stableExcellence[0] ||
     topStrengths.find((t) => t.excellent || t.questions >= 8) ||
     maintain.find((m) => m.questions >= 8) ||
     topStrengths[0] ||
@@ -489,6 +527,9 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       maxStrengthRows: MAX_TOP_STRENGTHS,
       maxMaintain: MAX_MAINTAIN,
       maxImproving: MAX_IMPROVING,
+      maxStableExcellence: MAX_STABLE_EXCELLENCE,
+      stableExcellenceMinAccuracy: STABLE_EXCELLENCE_MIN_ACCURACY,
+      stableExcellenceMinQuestions: STABLE_EXCELLENCE_MIN_QUESTIONS,
     },
     subjects: {},
   };
@@ -549,6 +590,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
     const weaknesses = topWeaknesses.map((w) => ({ ...w }));
 
     const {
+      stableExcellence,
       excellent,
       strengths,
       maintain,
@@ -583,7 +625,8 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       });
     }
 
-    const topPositive = topStrengths[0] || excellent[0] || strengths[0];
+    const topPositive =
+      stableExcellence[0] || topStrengths[0] || excellent[0] || strengths[0];
     if (topPositive) {
       const rs =
         topPositive.confidence === "high" || topPositive.questions >= 18
@@ -623,11 +666,14 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       );
     }
 
-    const evidenceSuccess = buildEvidenceSuccessFromPick(topStrengths[0]);
+    const evidenceSuccess = buildEvidenceSuccessFromPick(
+      stableExcellence[0] || topStrengths[0]
+    );
     const evidenceExamples = buildEvidenceExamples(evidenceMistake, evidenceSuccess);
 
     const summaryHe = buildSummaryHe(
       SUBJECT_LABEL_HE[sid],
+      stableExcellence,
       topStrengths,
       topWeaknesses,
       maintain,
@@ -649,10 +695,12 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       topWeaknesses,
       improving,
       topStrengths,
-      maintain
+      maintain,
+      stableExcellence
     );
 
     const hasAnySignal =
+      stableExcellence.length > 0 ||
       topWeaknesses.length > 0 ||
       topStrengths.length > 0 ||
       maintain.length > 0 ||
@@ -679,6 +727,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       evidenceExamples,
       weaknesses,
       strengths,
+      stableExcellence,
       excellent,
       maintain,
       improving,
@@ -707,6 +756,9 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
     maxStrengthRows: 3,
     maxMaintain: 2,
     maxImproving: 2,
+    maxStableExcellence: 3,
+    stableExcellenceMinAccuracy: 92,
+    stableExcellenceMinQuestions: 22,
   },
   subjects: {
     math: {
@@ -716,8 +768,8 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       wrongCount: 12,
       hasAnySignal: true,
       summaryHe:
-        "תמונת המקצוע בחשבון: רואים חוזקה בולטת בחיבור. במקביל נדרש חיזוק בנושא בהשוואת כמויות או מספרים.",
-      topStrengths: [
+        "תמונת המקצוע בחשבון: ניכרת הצטיינות היציבה בחיבור. במקביל נדרש חיזוק בנושא בהשוואת כמויות או מספרים.",
+      stableExcellence: [
         {
           id: "math:addition:learning",
           labelHe: "חיבור",
@@ -726,9 +778,10 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
           confidence: "high",
           needsPractice: false,
           excellent: true,
-          tierHe: "חוזקה יציבה",
+          tierHe: "הצטיינות היציבה",
         },
       ],
+      topStrengths: [],
       topWeaknesses: [
         {
           id: "math:w:0",
@@ -769,18 +822,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         },
       ],
       strengths: [],
-      excellent: [
-        {
-          id: "math:addition:learning",
-          labelHe: "חיבור",
-          questions: 42,
-          accuracy: 93,
-          confidence: "high",
-          needsPractice: false,
-          excellent: true,
-          tierHe: "חוזקה יציבה",
-        },
-      ],
+      excellent: [],
       maintain: [],
       improving: [],
       studentRecommendationsImprove: [
@@ -845,6 +887,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       summaryHe:
         "תמונת המקצוע בגאומטריה: במקביל נדרש חיזוק בנושא בלבול חוזר בין היקף לשטח.",
       topStrengths: [],
+      stableExcellence: [],
       topWeaknesses: [
         {
           id: "geometry:w:0",
@@ -918,6 +961,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       hasAnySignal: false,
       summaryHe: null,
       topStrengths: [],
+      stableExcellence: [],
       topWeaknesses: [],
       parentActionHe: null,
       nextWeekGoalHe: null,
@@ -944,6 +988,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       hasAnySignal: false,
       summaryHe: null,
       topStrengths: [],
+      stableExcellence: [],
       topWeaknesses: [],
       parentActionHe: null,
       nextWeekGoalHe: null,
@@ -971,6 +1016,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       summaryHe:
         "תמונת המקצוע בעברית: במקביל נדרש חיזוק בנושא במילות יחס ובמבנה משפט.",
       topStrengths: [],
+      stableExcellence: [],
       topWeaknesses: [
         {
           id: "hebrew:w:0",
@@ -1049,6 +1095,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       hasAnySignal: false,
       summaryHe: null,
       topStrengths: [],
+      stableExcellence: [],
       topWeaknesses: [],
       parentActionHe: null,
       nextWeekGoalHe: null,

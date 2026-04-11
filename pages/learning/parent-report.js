@@ -152,7 +152,7 @@ function topicBarColor(accuracy) {
   return "#ef4444";
 }
 
-/** סדר תצוגת אבחון מקצועי — תואם `patternDiagnostics.subjects` */
+/** סדר תצוגת אבחון מקצועי — תואם `patternDiagnostics.subjects` (הצטיינות היציבה → חוזקות → מומלץ לשמר → נקודות לשיפור → תחומים דורשים תשומת לב) */
 const PATTERN_DIAGNOSTIC_SUBJECT_ORDER = [
   "math",
   "geometry",
@@ -281,6 +281,7 @@ function migrateDiagnosticSubjectV1ToRow(sub, subjectId) {
     excellent,
     maintain: [],
     improving: [],
+    stableExcellence: [],
     studentRecommendationsImprove,
     studentRecommendationsMaintain: [],
     parentRecommendationsImprove,
@@ -965,6 +966,12 @@ export default function ParentReport() {
             #parent-report-pdf .parent-report-diagnostics-print .parent-report-diagnostic-subject-block {
               border-color: #475569 !important;
               border-width: 1.5px !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-print-stable-excellence {
+              border-color: #6d28d9 !important;
+              background: #ede9fe !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
@@ -2288,6 +2295,7 @@ export default function ParentReport() {
                       const topWk = s.topWeaknesses?.length ? s.topWeaknesses : wkLegacy;
                       const mn = s.maintain || [];
                       const im = s.improving || [];
+                      const sx = Array.isArray(s.stableExcellence) ? s.stableExcellence : [];
                       const stuImp = s.studentRecommendationsImprove || [];
                       const stuMaint = s.studentRecommendationsMaintain || [];
                       const parImp = s.parentRecommendationsImprove || [];
@@ -2333,6 +2341,29 @@ export default function ParentReport() {
                                 {summaryHe}
                               </div>
                             ) : null}
+                            {sx.length > 0 && (
+                              <div className="parent-report-print-section-label text-[11px] font-semibold text-violet-200/85 pt-1">
+                                הצטיינות היציבה
+                              </div>
+                            )}
+                            {sx.map((x) => (
+                              <div
+                                key={x.id}
+                                className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-violet-500/12 border-violet-400/40 parent-report-print-stable-excellence"
+                              >
+                                <div className="flex items-start gap-2">
+                                  <span className="text-lg shrink-0">🏆</span>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                      {x.tierHe || "הצטיינות היציבה"}
+                                    </div>
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
+                                      {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
                             {topStr.length > 0 && (
                               <div className="parent-report-print-section-label text-[11px] font-semibold text-emerald-200/80 pt-1">
                                 חוזקות מובילות
@@ -2351,32 +2382,6 @@ export default function ParentReport() {
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                            {topWk.length > 0 && (
-                              <div className="parent-report-print-section-label text-[11px] font-semibold text-white/55 tracking-wide">
-                                תחומים הדורשים תשומת לב
-                              </div>
-                            )}
-                            {topWk.map((w) => (
-                              <div
-                                key={w.id}
-                                className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-red-500/20 border-red-400/50"
-                              >
-                                <div className="flex items-start gap-2">
-                                  <span className="text-lg shrink-0">🔴</span>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      {weaknessTierHeDisplay(w.tierHe) || "תחום לחיזוק"}
-                                    </div>
-                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {w.labelHe}
-                                      {typeof w.mistakeCount === "number"
-                                        ? ` (${w.mistakeCount} טעויות דומות)`
-                                        : ""}
                                     </div>
                                   </div>
                                 </div>
@@ -2423,6 +2428,32 @@ export default function ParentReport() {
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {improvingDiagnosticsDisplayLabelHe(x.labelHe)} — דיוק {x.accuracy}% ({x.questions} שאלות)
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            {topWk.length > 0 && (
+                              <div className="parent-report-print-section-label text-[11px] font-semibold text-white/55 tracking-wide">
+                                תחומים הדורשים תשומת לב
+                              </div>
+                            )}
+                            {topWk.map((w) => (
+                              <div
+                                key={w.id}
+                                className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-red-500/20 border-red-400/50"
+                              >
+                                <div className="flex items-start gap-2">
+                                  <span className="text-lg shrink-0">🔴</span>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                      {weaknessTierHeDisplay(w.tierHe) || "תחום לחיזוק"}
+                                    </div>
+                                    <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
+                                      {w.labelHe}
+                                      {typeof w.mistakeCount === "number"
+                                        ? ` (${w.mistakeCount} טעויות דומות)`
+                                        : ""}
                                     </div>
                                   </div>
                                 </div>
