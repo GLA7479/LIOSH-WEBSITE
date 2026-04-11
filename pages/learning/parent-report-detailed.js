@@ -110,13 +110,13 @@ function SubjectSummaryBlock({ sp }) {
   const ex = Array.isArray(sp.excellence) ? sp.excellence.slice(0, 2) : [];
   const weak = Array.isArray(sp.topWeaknesses) ? sp.topWeaknesses.slice(0, 2) : [];
   return (
-    <div className="pr-detailed-summary-subject rounded-xl border border-white/18 bg-black/25 overflow-hidden">
-      <div className="pr-detailed-subject-header px-3 md:px-4 py-2.5 border-b border-white/15 bg-white/[0.05]">
-        <h3 className="pr-detailed-subject-title text-base md:text-lg font-bold text-white m-0 tracking-tight">
+    <div className="pr-detailed-summary-subject pr-detailed-subject-stack min-w-0">
+      <div className="pr-detailed-subject-heading">
+        <h3 className="pr-detailed-subject-title text-base md:text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">
           {sp.subjectLabelHe}
         </h3>
       </div>
-      <div className="pr-detailed-subject-inner px-3 md:px-4 py-3 space-y-3">
+      <div className="pr-detailed-subject-inner space-y-3 pt-3">
         <div className="pr-detailed-subject-summary">
           {sp.summaryHe ? (
             <p className="pr-detailed-body-text text-sm leading-relaxed m-0">{sp.summaryHe}</p>
@@ -315,6 +315,28 @@ export default function ParentReportDetailedPage() {
           .pr-detailed-body-text { line-height: 1.55; }
           .pr-detailed-muted { color: rgba(255,255,255,0.58); line-height: 1.5; }
           .pr-detailed-mini-heading { letter-spacing: 0.02em; }
+
+          .pr-detailed-subject-stack {
+            min-width: 0;
+          }
+          .pr-detailed-summary-subject.pr-detailed-subject-stack,
+          .pr-detailed-subject-block.pr-detailed-subject-stack {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+            overflow: visible;
+          }
+          .pr-detailed-subject-heading {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+          }
+          .pr-detailed-subjects-region-title {
+            background: transparent;
+            box-shadow: none;
+          }
 
           .pr-detailed-layout-summary .pr-detailed-section {
             box-shadow: none;
@@ -573,7 +595,10 @@ export default function ParentReportDetailedPage() {
               break-inside: auto !important;
               page-break-inside: auto !important;
             }
-            #parent-report-detailed-print .pr-detailed-subjects-region > h2 {
+            #parent-report-detailed-print .pr-detailed-subjects-region-title {
+              background: transparent !important;
+              border: none !important;
+              box-shadow: none !important;
               border-bottom: 1px solid #d4d4d8 !important;
               padding-bottom: 6px !important;
               margin: 0 0 10px 0 !important;
@@ -587,16 +612,25 @@ export default function ParentReportDetailedPage() {
               overflow: visible !important;
               break-inside: auto !important;
               page-break-inside: auto !important;
-              margin-bottom: 14px !important;
+              margin-bottom: 0 !important;
             }
-            #parent-report-detailed-print .pr-detailed-subject-header {
+            #parent-report-detailed-print .pr-detailed-subject-stack {
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-heading {
               background: transparent !important;
               border: none !important;
               border-bottom: 2px solid #334155 !important;
-              padding: 2px 0 8px 0 !important;
+              padding: 0 0 6px 0 !important;
+              margin: 0 0 8px 0 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-heading .pr-detailed-subject-title {
+              border-bottom: none !important;
+              padding-bottom: 0 !important;
             }
             #parent-report-detailed-print .pr-detailed-subject-inner {
-              padding: 10px 0 0 0 !important;
+              padding: 8px 0 0 0 !important;
             }
 
             #parent-report-detailed-print .pr-detailed-subject-summary,
@@ -724,16 +758,6 @@ export default function ParentReportDetailedPage() {
               page-break-inside: auto !important;
               margin-bottom: 12px !important;
             }
-            #parent-report-detailed-print .pr-detailed-summary-subject .pr-detailed-subject-header {
-              background: transparent !important;
-              border: none !important;
-              border-bottom: 2px solid #334155 !important;
-              padding: 2px 0 8px 0 !important;
-            }
-            #parent-report-detailed-print .pr-detailed-summary-subject .pr-detailed-subject-inner {
-              padding: 10px 0 0 0 !important;
-            }
-
             #parent-report-detailed-print .pr-detailed-mini-heading {
               color: #1e293b !important;
               font-weight: 800 !important;
@@ -927,7 +951,7 @@ export default function ParentReportDetailedPage() {
                 </div>
                 </SectionCard>
 
-                {/* D — אותו payload; תצוגה מלאה או מקוצרת; ללא SectionCard חיצוני — כל מקצוע הוא הכרטיס הראשי */}
+                {/* D — אותו payload; מלא/מקוצר; כותרת אזור + לכל מקצוע כותרת + כרטיסים פנימיים בלבד */}
                 {displayMode === "summary" ? (
                   <section
                     className="pr-detailed-subjects-region mb-5 md:mb-6 min-w-0"
@@ -935,7 +959,7 @@ export default function ParentReportDetailedPage() {
                   >
                     <h2
                       id="pr-detailed-subjects-heading-summary"
-                      className="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0 mb-3 md:mb-4 pb-2 border-b border-white/12"
+                      className="pr-detailed-subjects-region-title pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0 mb-3 md:mb-4 pb-2 border-b border-white/10"
                     >
                       פירוט מקוצר לפי מקצוע
                     </h2>
@@ -952,22 +976,19 @@ export default function ParentReportDetailedPage() {
                   >
                     <h2
                       id="pr-detailed-subjects-heading-full"
-                      className="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0 mb-3 md:mb-4 pb-2 border-b border-white/12"
+                      className="pr-detailed-subjects-region-title pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0 mb-3 md:mb-4 pb-2 border-b border-white/10"
                     >
                       פירוט לפי מקצוע
                     </h2>
                     <div className="space-y-6">
                       {payload.subjectProfiles.map((sp) => (
-                        <div
-                          key={sp.subject}
-                          className="pr-detailed-subject-block rounded-xl border border-white/18 bg-black/25 overflow-hidden"
-                        >
-                          <div className="pr-detailed-subject-header px-3 md:px-4 py-2.5 border-b border-white/12 bg-white/[0.05]">
-                            <h3 className="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight">
+                        <div key={sp.subject} className="pr-detailed-subject-block pr-detailed-subject-stack min-w-0">
+                          <div className="pr-detailed-subject-heading">
+                            <h3 className="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">
                               {sp.subjectLabelHe}
                             </h3>
                           </div>
-                          <div className="pr-detailed-subject-inner px-3 md:px-4 py-3 space-y-3">
+                          <div className="pr-detailed-subject-inner space-y-3 pt-3">
                             <div className="pr-detailed-subject-summary">
                               {sp.summaryHe ? (
                                 <p className="pr-detailed-body-text text-sm leading-relaxed m-0">{sp.summaryHe}</p>
