@@ -191,7 +191,7 @@ const MASTER_BAR_CHART_GEOMETRY = {
   labelMeasureFontPx: 11,
   labelMeasureFontFamily:
     'ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Segoe UI Hebrew", Arial, sans-serif',
-  labelPadPx: 28,
+  labelPadPx: 0,
   labelColMaxPx: 368,
   tickMobilePx: 10,
   tickDesktopPx: 11,
@@ -263,9 +263,9 @@ function computeMasterBarChartGeometry(report, view) {
     G.labelMeasureFontFamily
   );
   let topicLabelRailWidthPx = Math.min(
-    G.labelColMaxPx,
-    Math.max(summaryLabelRailWidthPx, topicLabelMeasured)
-  );
+  G.labelColMaxPx,
+  topicLabelMeasured
+);
 
   const gap = G.labelPlotGapPx;
   const hostInner = view.chartHostInnerWidthPx;
