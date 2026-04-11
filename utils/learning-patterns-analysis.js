@@ -10,6 +10,35 @@ import {
   GENERIC_WEAKNESS_HE,
 } from "./diagnostic-labels-he";
 
+/**
+ * === Subject narrative payload (patternDiagnostics.subjects[subjectId]) ===
+ *
+ * A) Shape (extends legacy fields; narrative is the source of truth for UI):
+ * - subject, subjectLabelHe
+ * - summaryHe: string | null
+ * - topStrengths: Array<{ id, labelHe, questions, accuracy, confidence, needsPractice, excellent, tierHe }>
+ * - topWeaknesses: Array<{ id, labelHe, mistakeCount, confidence, tierHe }>
+ * - maintain, improving: session bands + tierHe on each row
+ * - parentActionHe: string | null  (max 1 concrete home action)
+ * - nextWeekGoalHe: string | null   (חיזוק + שימור when data allows)
+ * - evidenceExamples: Array<{ type: "mistake"|"success", ... }>  (max 2; only moderate/high confidence)
+ *
+ * B) Ranking:
+ * - Weaknesses: clusters by mistakePatternClusterKey, sort by mistakeCount desc → top 3 (≥ MIN_PATTERN_FAMILY).
+ * - topStrengths: merge excellent-pool + strengths-pool (disjoint), sort by
+ *   (excellent desc, accuracy desc, questions desc) → top 3.
+ * - maintain / improving: scan report rows (accuracy-sorted) into disjoint buckets → take top 2 each by pool order.
+ *
+ * C) summaryHe: 1–2 Hebrew sentences — positives (topStrengths or maintain), risks (topWeaknesses or improving),
+ *    stability note if mistakeCount ≥ MIN_MISTAKES_FOR_STRONG_RECOMMENDATION, sparse-data note if needed.
+ *
+ * D) parentActionHe: one imperative block with duration + focus + method; prefers top weakness, else improving, else maintain.
+ *    nextWeekGoalHe: optional "יעד חיזוק" from top weakness or improving + "יעד שימור" from topStrengths[0] or maintain[0]
+ *    when questions ≥ 8 or excellent.
+ *
+ * E) UI: parent-report maps each tierHe to the card subtitle (not everything is "חולשה").
+ */
+
 const SUBJECT_IDS = [
   "math",
   "geometry",
@@ -37,10 +66,13 @@ const SUBJECT_LABEL_HE = {
   "moledet-geography": "מולדת וגאוגרפיה",
 };
 
-const MAX_WEAKNESSES = 2;
-const MAX_STRENGTH_SLOTS = 2;
+/** Narrative caps (professional profile) */
+const MAX_TOP_WEAKNESSES = 3;
+const MAX_TOP_STRENGTHS = 3;
 const MAX_MAINTAIN = 2;
 const MAX_IMPROVING = 2;
+/** Internal pool before merge/rank */
+const INTERNAL_SESSION_POOL = 12;
 
 function recStrength(mistakeCount) {
   if (mistakeCount >= MIN_MISTAKES_FOR_STRONG_RECOMMENDATION) return "strong";
@@ -67,8 +99,54 @@ function formatSessionBand(subjectId, row, rowKey) {
   };
 }
 
+function joinHebrewList(items) {
+  const xs = (items || []).map((s) => String(s || "").trim()).filter(Boolean);
+  if (!xs.length) return "";
+  if (xs.length === 1) return xs[0];
+  if (xs.length === 2) return `${xs[0]} ו־${xs[1]}`;
+  return `${xs.slice(0, -1).join(", ")} ו־${xs[xs.length - 1]}`;
+}
+
+function strengthTierHe(row) {
+  const q = Number(row?.questions) || 0;
+  const acc = Number(row?.accuracy) || 0;
+  if (row?.excellent && q >= 20 && acc >= 90) return "חוזקה יציבה";
+  if (row?.excellent) return "חוזקה בולטת";
+  if (acc >= 92 && q >= 14) return "חוזקה יציבה";
+  return "חוזקה בולטת";
+}
+
+function weaknessTierHe(labelHe, mistakeCount, confidence) {
+  const lab = String(labelHe || "").trim();
+  if (!lab || lab === GENERIC_WEAKNESS_HE) return "תחום לחיזוק";
+  if (mistakeCount >= MIN_MISTAKES_FOR_STRONG_RECOMMENDATION) {
+    return "קושי חוזר / חולשה יציבה";
+  }
+  if (mistakeCount >= MIN_PATTERN_FAMILY_FOR_DIAGNOSIS) {
+    if (confidence === "high") return "קושי חוזר / חולשה יציבה";
+    return "קושי נקודתי";
+  }
+  return "תחום לחיזוק";
+}
+
+function buildTopStrengthsMerged(excellent, strengths, max) {
+  const combined = [...(excellent || []), ...(strengths || [])];
+  combined.sort((a, b) => {
+    const ex = (x) => (x.excellent ? 1 : 0);
+    if (ex(b) !== ex(a)) return ex(b) - ex(a);
+    const acc = (x) => Number(x.accuracy) || 0;
+    if (acc(b) !== acc(a)) return acc(b) - acc(a);
+    return (Number(b.questions) || 0) - (Number(a.questions) || 0);
+  });
+  return combined.slice(0, max).map((row) => ({
+    ...row,
+    tierHe: strengthTierHe(row),
+  }));
+}
+
 /**
  * מחלק שורות דוח ל־excellent / strengths / maintain / improving (ללא כפילויות לפי מפתח שורה).
+ * אוסף בריכה פנימית גדולה יותר לצורך דירוג לפני חיתוך ל־topStrengths וכו׳.
  */
 function buildSessionBands(subjectId, report) {
   const rowsKey = REPORT_ROWS_KEY[subjectId];
@@ -99,7 +177,7 @@ function buildSessionBands(subjectId, report) {
 
   const excellent = take(
     (row, q) => row.excellent && q >= 10,
-    MAX_STRENGTH_SLOTS
+    INTERNAL_SESSION_POOL
   );
 
   const strengths = take(
@@ -108,20 +186,15 @@ function buildSessionBands(subjectId, report) {
       Number(row.accuracy) >= 87 &&
       q >= 8 &&
       !row.needsPractice,
-    MAX_STRENGTH_SLOTS
+    INTERNAL_SESSION_POOL
   );
 
   const maintain = take(
     (row, q) => {
       const acc = Number(row.accuracy) || 0;
-      return (
-        !row.needsPractice &&
-        acc >= 80 &&
-        acc < 93 &&
-        q >= 6
-      );
+      return !row.needsPractice && acc >= 80 && acc < 93 && q >= 6;
     },
-    MAX_MAINTAIN
+    INTERNAL_SESSION_POOL
   );
 
   const improving = take(
@@ -131,10 +204,32 @@ function buildSessionBands(subjectId, report) {
       if (!row.excellent && acc >= 68 && acc <= 82 && q >= 6) return true;
       return false;
     },
-    MAX_IMPROVING
+    INTERNAL_SESSION_POOL
   );
 
-  return { excellent, strengths, maintain, improving };
+  const topStrengths = buildTopStrengthsMerged(
+    excellent,
+    strengths,
+    MAX_TOP_STRENGTHS
+  );
+
+  const excellentOut = topStrengths.filter((r) => r.excellent);
+  const strengthsOut = topStrengths.filter((r) => !r.excellent);
+
+  const maintainOut = maintain
+    .slice(0, MAX_MAINTAIN)
+    .map((r) => ({ ...r, tierHe: "תחום לשימור" }));
+  const improvingOut = improving
+    .slice(0, MAX_IMPROVING)
+    .map((r) => ({ ...r, tierHe: "תחום במגמת שיפור" }));
+
+  return {
+    excellent: excellentOut,
+    strengths: strengthsOut,
+    maintain: maintainOut,
+    improving: improvingOut,
+    topStrengths,
+  };
 }
 
 function buildEvidenceMistakeFromEvent(ev, confidence) {
@@ -152,17 +247,159 @@ function buildEvidenceMistakeFromEvent(ev, confidence) {
   };
 }
 
-function buildEvidenceSuccess(excellent, strengths) {
-  const pick = excellent[0] || strengths[0];
+function buildEvidenceSuccessFromPick(pick) {
   if (!pick) return null;
   if (pick.questions < 8) return null;
   const conf =
     pick.confidence === "high" || pick.questions >= 20 ? "high" : "moderate";
   return {
     titleHe: "חוזקה בתרגול",
-    bodyHe: `בנושא "${pick.labelHe}" רואים ביצועים טובים: כ־${pick.accuracy}% נכון מתוך ${pick.questions} שאלות בטווח התאריכים.`,
+    bodyHe: `בנושא ${pick.labelHe} רואים ביצועים טובים: כ־${pick.accuracy}% נכון מתוך ${pick.questions} שאלות בטווח התאריכים.`,
     confidence: conf,
   };
+}
+
+function buildSummaryHe(
+  subjectLabelHe,
+  topStrengths,
+  topWeaknesses,
+  maintain,
+  improving,
+  wrongCount,
+  mistakeEventCount,
+  diagnosticSparseNoteHe
+) {
+  const label = subjectLabelHe || "המקצוע";
+  const opening = `תמונת המקצוע ב${label}`;
+
+  if (
+    !topStrengths.length &&
+    !topWeaknesses.length &&
+    !maintain.length &&
+    !improving.length
+  ) {
+    if (diagnosticSparseNoteHe) return `${opening}: ${diagnosticSparseNoteHe}`;
+    if (wrongCount > 0 && !topWeaknesses.length) {
+      return `${opening}: מעט טעויות בלי דפוס חוזר מספיק — ההערכה חלקית; כדאי להמשיך לאסוף תרגול יציב.`;
+    }
+    if (mistakeEventCount >= 0 && mistakeEventCount < 5) {
+      return `${opening}: מעט נתונים בטווח התאריכים — ההערכה חלקית בלבד.`;
+    }
+    return null;
+  }
+
+  const parts = [];
+  if (topStrengths.length) {
+    const names = joinHebrewList(topStrengths.map((s) => s.labelHe));
+    parts.push(
+      topStrengths.length > 1
+        ? `רואים חוזקות בולטות ב${names}.`
+        : `רואים חוזקה בולטת ב${names}.`
+    );
+  } else if (maintain.length) {
+    parts.push(
+      `רואים עקביות טובה ב־${joinHebrewList(maintain.map((m) => m.labelHe))}.`
+    );
+  }
+
+  if (topWeaknesses.length) {
+    const names = joinHebrewList(topWeaknesses.map((w) => w.labelHe));
+    let s =
+      topWeaknesses.length > 1
+        ? `במקביל יש קשיים חוזרים סביב ${names}.`
+        : `במקביל יש קושי חוזר סביב הנושא ${topWeaknesses[0].labelHe}.`;
+    if (
+      topWeaknesses.some(
+        (w) => w.mistakeCount >= MIN_MISTAKES_FOR_STRONG_RECOMMENDATION
+      )
+    ) {
+      s += " הדפוס נראה יציב — כדאי לטפל בו מוקדם.";
+    }
+    parts.push(s);
+  } else if (wrongCount > 0) {
+    parts.push(
+      "הטעויות שנאספו עדיין לא יוצרות דפוס חוזר ברור — התמונה בשלב הזה חלקית."
+    );
+  }
+
+  if (!topWeaknesses.length && improving.length) {
+    parts.push(
+      `רואים גם תחומים במגמת שיפור: ${joinHebrewList(improving.map((x) => x.labelHe))}.`
+    );
+  }
+
+  const text = parts.join(" ").trim();
+  return text || null;
+}
+
+function buildParentActionHe(
+  subjectLabelHe,
+  topWeaknesses,
+  improving,
+  maintain,
+  topStrengths
+) {
+  const subj = subjectLabelHe || "המקצוע";
+  const w0 = topWeaknesses[0];
+  const i0 = improving[0];
+  const m0 = maintain[0];
+  const s0 = topStrengths[0];
+
+  if (w0) {
+    return `שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת ב${subj} סביב הנושא ${w0.labelHe} — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.`;
+  }
+  if (i0) {
+    return `פעמיים בשבוע, 12–15 דק׳: תרגול קצר ב${subj} בנושא ${i0.labelHe} (דיוק כ־${i0.accuracy}%) — לעודד ניסוח מלא של התשובה לפני בדיקת נכון/לא נכון.`;
+  }
+  if (m0 || s0) {
+    const pick = m0 || s0;
+    return `פעם בשבוע, 10–12 דק׳: לשמור על תרגול שגרתי ורגוע ב${subj} בנושא ${pick.labelHe} — המטרה היא עקביות, לא האצת קצב.`;
+  }
+  return null;
+}
+
+function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain) {
+  const goals = [];
+  const w0 = topWeaknesses[0];
+  if (w0) {
+    goals.push(
+      `יעד חיזוק: לצמצם טעויות בדפוס סביב ${w0.labelHe} (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).`
+    );
+  } else if (improving[0]) {
+    goals.push(
+      `יעד חיזוק: לחזק יציבות ב${improving[0].labelHe} באמצעות שני שיעורים קצרים וברורים.`
+    );
+  }
+
+  const preserve =
+    topStrengths.find((t) => t.excellent || t.questions >= 8) ||
+    maintain.find((m) => m.questions >= 8) ||
+    topStrengths[0] ||
+    maintain[0];
+  if (preserve) {
+    goals.push(
+      `יעד שימור: להמשיך בשגרת תרגול נינוחה ב${preserve.labelHe} כדי לשמר את רמת הדיוק.`
+    );
+  }
+
+  if (!goals.length) return null;
+  return goals.join(" ");
+}
+
+function buildEvidenceExamples(evidenceMistake, evidenceSuccess) {
+  const out = [];
+  if (evidenceMistake) {
+    out.push({ type: "mistake", ...evidenceMistake });
+  }
+  if (evidenceSuccess) {
+    out.push({
+      type: "success",
+      titleHe: evidenceSuccess.titleHe,
+      bodyHe: evidenceSuccess.bodyHe,
+      confidence: evidenceSuccess.confidence,
+    });
+  }
+  return out.slice(0, 2);
 }
 
 /**
@@ -176,8 +413,8 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
     constants: {
       minMistakesPerPatternFamily: MIN_PATTERN_FAMILY_FOR_DIAGNOSIS,
       minMistakesForStrongRecommendation: MIN_MISTAKES_FOR_STRONG_RECOMMENDATION,
-      maxWeaknesses: MAX_WEAKNESSES,
-      maxStrengthRows: MAX_STRENGTH_SLOTS,
+      maxWeaknesses: MAX_TOP_WEAKNESSES,
+      maxStrengthRows: MAX_TOP_STRENGTHS,
       maxMaintain: MAX_MAINTAIN,
       maxImproving: MAX_IMPROVING,
     },
@@ -226,31 +463,44 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
     });
 
     weaknessCandidates.sort((a, b) => b.mistakeCount - a.mistakeCount);
-    const weaknesses = weaknessCandidates.slice(0, MAX_WEAKNESSES).map((w, i) => ({
-      id: `${sid}:w:${i}`,
-      labelHe: w.labelHe || GENERIC_WEAKNESS_HE,
-      mistakeCount: w.mistakeCount,
-      confidence: w.confidence,
-    }));
+    const topWeaknesses = weaknessCandidates.slice(0, MAX_TOP_WEAKNESSES).map((w, i) => {
+      const lab = w.labelHe || GENERIC_WEAKNESS_HE;
+      return {
+        id: `${sid}:w:${i}`,
+        labelHe: lab,
+        mistakeCount: w.mistakeCount,
+        confidence: w.confidence,
+        tierHe: weaknessTierHe(lab, w.mistakeCount, w.confidence),
+      };
+    });
 
-    const { excellent, strengths, maintain, improving } = buildSessionBands(
-      sid,
-      report
-    );
+    const weaknesses = topWeaknesses.map((w) => ({ ...w }));
+
+    const {
+      excellent,
+      strengths,
+      maintain,
+      improving,
+      topStrengths,
+    } = buildSessionBands(sid, report);
 
     const studentRecommendationsImprove = [];
     const studentRecommendationsMaintain = [];
     const parentRecommendationsImprove = [];
     const parentRecommendationsMaintain = [];
 
-    const w0 = weaknesses[0];
-    if (w0) {
-      const rs = recStrength(w0.mistakeCount);
+    for (const w of topWeaknesses.slice(0, 2)) {
+      const rs = recStrength(w.mistakeCount);
       studentRecommendationsImprove.push({
-        id: `stu-imp:${w0.id}`,
-        textHe: `מומלץ להתמקד: ${w0.labelHe} (זוהו ${w0.mistakeCount} טעויות דומות בטווח התאריכים).`,
+        id: `stu-imp:${w.id}`,
+        textHe: `מומלץ להתמקד: ${w.labelHe} (זוהו ${w.mistakeCount} טעויות דומות בטווח התאריכים).`,
         strength: rs,
       });
+    }
+
+    const w0 = topWeaknesses[0];
+    if (w0) {
+      const rs = recStrength(w0.mistakeCount);
       parentRecommendationsImprove.push({
         id: `par-imp:${w0.id}`,
         textHe:
@@ -261,7 +511,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       });
     }
 
-    const topPositive = excellent[0] || strengths[0];
+    const topPositive = topStrengths[0] || excellent[0] || strengths[0];
     if (topPositive) {
       const rs =
         topPositive.confidence === "high" || topPositive.questions >= 18
@@ -269,18 +519,18 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
           : "moderate";
       studentRecommendationsMaintain.push({
         id: `stu-maint:${topPositive.id}`,
-        textHe: `להמשיך לתרגל בנוחות ב"${topPositive.labelHe}" — יש כאן עקביות (דיוק כ־${topPositive.accuracy}%).`,
+        textHe: `להמשיך לתרגל בנוחות בנושא ${topPositive.labelHe} — יש כאן עקביות (דיוק כ־${topPositive.accuracy}%).`,
         strength: rs,
       });
       parentRecommendationsMaintain.push({
         id: `par-maint:${topPositive.id}`,
-        textHe: `מומלץ לעודד על ההתמדה ב"${topPositive.labelHe}" — רואים הצלחה חוזרת; שימור הרגל חיובי חשוב לא פחות מתיקון טעויות.`,
+        textHe: `מומלץ לעודד על ההתמדה בנושא ${topPositive.labelHe} — רואים הצלחה חוזרת; שימור הרגל חיובי חשוב לא פחות מתיקון טעויות.`,
         strength: rs,
       });
     }
 
     let diagnosticSparseNoteHe = null;
-    if (!weaknesses.length && wrong.length > 0) {
+    if (!topWeaknesses.length && wrong.length > 0) {
       diagnosticSparseNoteHe =
         "יש טעויות בודדות אך בלי דפוס שחוזר מספיק פעמים — עדיין לא ניתן לקבוע חולשה יציבה.";
       if (!parentRecommendationsImprove.length) {
@@ -301,12 +551,38 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       );
     }
 
-    const evidenceSuccess = buildEvidenceSuccess(excellent, strengths);
+    const evidenceSuccess = buildEvidenceSuccessFromPick(topStrengths[0]);
+    const evidenceExamples = buildEvidenceExamples(evidenceMistake, evidenceSuccess);
+
+    const summaryHe = buildSummaryHe(
+      SUBJECT_LABEL_HE[sid],
+      topStrengths,
+      topWeaknesses,
+      maintain,
+      improving,
+      wrong.length,
+      events.length,
+      diagnosticSparseNoteHe
+    );
+
+    const parentActionHe = buildParentActionHe(
+      SUBJECT_LABEL_HE[sid],
+      topWeaknesses,
+      improving,
+      maintain,
+      topStrengths
+    );
+
+    const nextWeekGoalHe = buildNextWeekGoalHe(
+      topWeaknesses,
+      improving,
+      topStrengths,
+      maintain
+    );
 
     const hasAnySignal =
-      weaknesses.length > 0 ||
-      excellent.length > 0 ||
-      strengths.length > 0 ||
+      topWeaknesses.length > 0 ||
+      topStrengths.length > 0 ||
       maintain.length > 0 ||
       improving.length > 0 ||
       studentRecommendationsImprove.length > 0 ||
@@ -314,7 +590,8 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       parentRecommendationsImprove.length > 0 ||
       parentRecommendationsMaintain.length > 0 ||
       evidenceMistake != null ||
-      evidenceSuccess != null;
+      evidenceSuccess != null ||
+      !!summaryHe;
 
     out.subjects[sid] = {
       subject: sid,
@@ -322,6 +599,12 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       mistakeEventCount: events.length,
       wrongCount: wrong.length,
       hasAnySignal,
+      summaryHe,
+      topStrengths,
+      topWeaknesses,
+      parentActionHe,
+      nextWeekGoalHe,
+      evidenceExamples,
       weaknesses,
       strengths,
       excellent,
@@ -348,8 +631,8 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
   constants: {
     minMistakesPerPatternFamily: 5,
     minMistakesForStrongRecommendation: 10,
-    maxWeaknesses: 2,
-    maxStrengthRows: 2,
+    maxWeaknesses: 3,
+    maxStrengthRows: 3,
     maxMaintain: 2,
     maxImproving: 2,
   },
@@ -360,25 +643,60 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       mistakeEventCount: 12,
       wrongCount: 12,
       hasAnySignal: true,
+      summaryHe:
+        "תמונת המקצוע בחשבון: רואים חוזקה בולטת בחיבור. במקביל יש קושי חוזר סביב הנושא קושי בהשוואת כמויות או מספרים.",
+      topStrengths: [
+        {
+          id: "math:addition:learning",
+          labelHe: "חיבור",
+          questions: 42,
+          accuracy: 93,
+          confidence: "high",
+          needsPractice: false,
+          excellent: true,
+          tierHe: "חוזקה יציבה",
+        },
+      ],
+      topWeaknesses: [
+        {
+          id: "math:w:0",
+          labelHe: "קושי בהשוואת כמויות או מספרים",
+          mistakeCount: 7,
+          confidence: "moderate",
+          tierHe: "קושי נקודתי",
+        },
+      ],
+      parentActionHe:
+        "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בחשבון סביב הנושא קושי בהשוואת כמויות או מספרים — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
+      nextWeekGoalHe:
+        "יעד חיזוק: לצמצם טעויות בדפוס סביב קושי בהשוואת כמויות או מספרים (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר). יעד שימור: להמשיך בשגרת תרגול נינוחה בחיבור כדי לשמר את רמת הדיוק.",
+      evidenceExamples: [
+        {
+          type: "mistake",
+          exerciseText: "בכמה שקים המחיר של המחשב גבוה יותר?",
+          questionLabel: null,
+          correctAnswer: 120,
+          userAnswer: 102,
+          confidence: "moderate",
+        },
+        {
+          type: "success",
+          titleHe: "חוזקה בתרגול",
+          bodyHe:
+            "בנושא חיבור רואים ביצועים טובים: כ־93% נכון מתוך 42 שאלות בטווח התאריכים.",
+          confidence: "high",
+        },
+      ],
       weaknesses: [
         {
           id: "math:w:0",
           labelHe: "קושי בהשוואת כמויות או מספרים",
           mistakeCount: 7,
           confidence: "moderate",
+          tierHe: "קושי נקודתי",
         },
       ],
-      strengths: [
-        {
-          id: "math:subtraction:learning",
-          labelHe: "חיבור",
-          questions: 24,
-          accuracy: 88,
-          confidence: "moderate",
-          needsPractice: false,
-          excellent: false,
-        },
-      ],
+      strengths: [],
       excellent: [
         {
           id: "math:addition:learning",
@@ -388,6 +706,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
           confidence: "high",
           needsPractice: false,
           excellent: true,
+          tierHe: "חוזקה יציבה",
         },
       ],
       maintain: [],
@@ -404,7 +723,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-maint:math:addition:learning",
           textHe:
-            'להמשיך לתרגל בנוחות ב"חיבור" — יש כאן עקביות (דיוק כ־93%).',
+            "להמשיך לתרגל בנוחות בנושא חיבור — יש כאן עקביות (דיוק כ־93%).",
           strength: "strong",
         },
       ],
@@ -420,7 +739,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "par-maint:math:addition:learning",
           textHe:
-            'מומלץ לעודד על ההתמדה ב"חיבור" — רואים הצלחה חוזרת; שימור הרגל חיובי חשוב לא פחות מתיקון טעויות.',
+            "מומלץ לעודד על ההתמדה בנושא חיבור — רואים הצלחה חוזרת; שימור הרגל חיובי חשוב לא פחות מתיקון טעויות.",
           strength: "strong",
         },
       ],
@@ -434,11 +753,14 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       evidenceSuccess: {
         titleHe: "חוזקה בתרגול",
         bodyHe:
-          'בנושא "חיבור" רואים ביצועים טובים: כ־93% נכון מתוך 42 שאלות בטווח התאריכים.',
+          "בנושא חיבור רואים ביצועים טובים: כ־93% נכון מתוך 42 שאלות בטווח התאריכים.",
         confidence: "high",
       },
       insufficientData: [
-        { mistakeCount: 2, note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה" },
+        {
+          mistakeCount: 2,
+          note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה",
+        },
       ],
       diagnosticSparseNoteHe: null,
     },
@@ -448,12 +770,39 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       mistakeEventCount: 9,
       wrongCount: 9,
       hasAnySignal: true,
+      summaryHe:
+        "תמונת המקצוע בגאומטריה: במקביל יש קושי חוזר סביב הנושא בלבול חוזר בין היקף לשטח.",
+      topStrengths: [],
+      topWeaknesses: [
+        {
+          id: "geometry:w:0",
+          labelHe: "בלבול חוזר בין היקף לשטח",
+          mistakeCount: 6,
+          confidence: "moderate",
+          tierHe: "קושי נקודתי",
+        },
+      ],
+      parentActionHe:
+        "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בגאומטריה סביב הנושא בלבול חוזר בין היקף לשטח — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
+      nextWeekGoalHe:
+        "יעד חיזוק: לצמצם טעויות בדפוס סביב בלבול חוזר בין היקף לשטח (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).",
+      evidenceExamples: [
+        {
+          type: "mistake",
+          exerciseText: "מה ההיקף של מלבן 5×3 ס״מ?",
+          questionLabel: null,
+          correctAnswer: "16 ס״מ",
+          userAnswer: "15 ס״מ",
+          confidence: "moderate",
+        },
+      ],
       weaknesses: [
         {
           id: "geometry:w:0",
           labelHe: "בלבול חוזר בין היקף לשטח",
           mistakeCount: 6,
           confidence: "moderate",
+          tierHe: "קושי נקודתי",
         },
       ],
       strengths: [],
@@ -495,6 +844,12 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       mistakeEventCount: 0,
       wrongCount: 0,
       hasAnySignal: false,
+      summaryHe: null,
+      topStrengths: [],
+      topWeaknesses: [],
+      parentActionHe: null,
+      nextWeekGoalHe: null,
+      evidenceExamples: [],
       weaknesses: [],
       strengths: [],
       excellent: [],
@@ -515,6 +870,12 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       mistakeEventCount: 0,
       wrongCount: 0,
       hasAnySignal: false,
+      summaryHe: null,
+      topStrengths: [],
+      topWeaknesses: [],
+      parentActionHe: null,
+      nextWeekGoalHe: null,
+      evidenceExamples: [],
       weaknesses: [],
       strengths: [],
       excellent: [],
@@ -535,12 +896,39 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       mistakeEventCount: 11,
       wrongCount: 11,
       hasAnySignal: true,
+      summaryHe:
+        "תמונת המקצוע בעברית: במקביל יש קושי חוזר סביב הנושא קושי במילות יחס ובמבנה משפט.",
+      topStrengths: [],
+      topWeaknesses: [
+        {
+          id: "hebrew:w:0",
+          labelHe: "קושי במילות יחס ובמבנה משפט",
+          mistakeCount: 6,
+          confidence: "moderate",
+          tierHe: "קושי נקודתי",
+        },
+      ],
+      parentActionHe:
+        "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בעברית סביב הנושא קושי במילות יחס ובמבנה משפט — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
+      nextWeekGoalHe:
+        "יעד חיזוק: לצמצם טעויות בדפוס סביב קושי במילות יחס ובמבנה משפט (לפחות ניסיון אחד מוצלח יותר מהשבוע שעבר).",
+      evidenceExamples: [
+        {
+          type: "mistake",
+          exerciseText: "השלימו: הילדים שיחקו ___ הזמן בגן.",
+          questionLabel: null,
+          correctAnswer: "בְּ",
+          userAnswer: "לְ",
+          confidence: "moderate",
+        },
+      ],
       weaknesses: [
         {
           id: "hebrew:w:0",
           labelHe: "קושי במילות יחס ובמבנה משפט",
           mistakeCount: 6,
           confidence: "moderate",
+          tierHe: "קושי נקודתי",
         },
       ],
       strengths: [],
@@ -574,7 +962,10 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       },
       evidenceSuccess: null,
       insufficientData: [
-        { mistakeCount: 3, note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה" },
+        {
+          mistakeCount: 3,
+          note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה",
+        },
       ],
       diagnosticSparseNoteHe: null,
     },
@@ -584,6 +975,12 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       mistakeEventCount: 0,
       wrongCount: 0,
       hasAnySignal: false,
+      summaryHe: null,
+      topStrengths: [],
+      topWeaknesses: [],
+      parentActionHe: null,
+      nextWeekGoalHe: null,
+      evidenceExamples: [],
       weaknesses: [],
       strengths: [],
       excellent: [],

@@ -232,6 +232,25 @@ function migrateDiagnosticSubjectV1ToRow(sub, subjectId) {
       };
     }
   }
+  const topWeaknesses = weaknesses.map((w, i) => ({
+    id: w.id || `${subjectId}:w:${i}`,
+    labelHe: w.labelHe,
+    mistakeCount: w.mistakeCount,
+    confidence: w.confidence,
+    tierHe:
+      (w.mistakeCount || 0) >= 10
+        ? "קושי חוזר / חולשה יציבה"
+        : (w.mistakeCount || 0) >= 5
+          ? "קושי נקודתי"
+          : "תחום לחיזוק",
+  }));
+  const topStrengths = excellent.map((e) => ({
+    ...e,
+    tierHe: e.questions >= 20 ? "חוזקה יציבה" : "חוזקה בולטת",
+  }));
+  const evidenceExamples = [];
+  if (evidenceMistake) evidenceExamples.push({ type: "mistake", ...evidenceMistake });
+  const parentActionHe = parentRecommendationsImprove[0]?.textHe || null;
   const hasAnySignal =
     weaknesses.length > 0 ||
     excellent.length > 0 ||
@@ -240,6 +259,12 @@ function migrateDiagnosticSubjectV1ToRow(sub, subjectId) {
     evidenceMistake != null;
   return {
     ...sub,
+    summaryHe: null,
+    topStrengths,
+    topWeaknesses,
+    parentActionHe,
+    nextWeekGoalHe: null,
+    evidenceExamples,
     weaknesses,
     strengths: [],
     excellent,
@@ -931,6 +956,46 @@ export default function ParentReport() {
               border-width: 1.5px !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
+            }
+
+            /*
+             * דוגמאות טעות / חוזקה — הדפסה בלבד: Tailwind text-white/45, text-white/88, text-sky-300 וכו׳
+             * לא תואמים תמיד ל-overrides הגלובליים; כאן צבעים מפורשים ללא opacity נמוכה.
+             */
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card {
+              background: #ffffff !important;
+              border-color: #64748b !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card,
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card * {
+              opacity: 1 !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card .parent-report-example-heading {
+              color: #0f172a !important;
+              font-weight: 700 !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card .parent-report-example-prose {
+              color: #1e293b !important;
+              font-weight: 500 !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card .parent-report-example-answer-label {
+              color: #334155 !important;
+              font-weight: 700 !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card .parent-report-example-answer-sep {
+              color: #475569 !important;
+              font-weight: 700 !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card .parent-report-example-answer-value,
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card .parent-report-example-answer-value * {
+              color: #111827 !important;
+              font-weight: 800 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card .parent-report-example-answers {
+              color: #1e293b !important;
             }
 
             /* גרפים — מניעת שבירה וקריאות בהדפסה */
@@ -2085,9 +2150,22 @@ export default function ParentReport() {
                     {diagnosticsView.rows.map((row) => {
                       const s = row.sub;
                       if (!s) return null;
-                      const wk = s.weaknesses || [];
                       const ex = s.excellent || [];
                       const st = s.strengths || [];
+                      const legacyStrength = [...ex, ...st].slice(0, 3).map((x) => ({
+                        ...x,
+                        tierHe:
+                          x.tierHe ||
+                          (x.excellent && (x.questions || 0) >= 20
+                            ? "חוזקה יציבה"
+                            : "חוזקה בולטת"),
+                      }));
+                      const topStr = s.topStrengths?.length ? s.topStrengths : legacyStrength;
+                      const wkLegacy = (s.weaknesses || []).map((w) => ({
+                        ...w,
+                        tierHe: w.tierHe || "קושי חוזר / חולשה יציבה",
+                      }));
+                      const topWk = s.topWeaknesses?.length ? s.topWeaknesses : wkLegacy;
                       const mn = s.maintain || [];
                       const im = s.improving || [];
                       const stuImp = s.studentRecommendationsImprove || [];
@@ -2096,6 +2174,31 @@ export default function ParentReport() {
                       const parMaint = s.parentRecommendationsMaintain || [];
                       const evM = s.evidenceMistake;
                       const evS = s.evidenceSuccess;
+                      let evidenceList = Array.isArray(s.evidenceExamples)
+                        ? [...s.evidenceExamples]
+                        : [];
+                      if (!evidenceList.length) {
+                        if (evM && (evM.confidence === "high" || evM.confidence === "moderate")) {
+                          evidenceList.push({ type: "mistake", ...evM });
+                        }
+                        if (evS && (evS.confidence === "high" || evS.confidence === "moderate")) {
+                          evidenceList.push({
+                            type: "success",
+                            titleHe: evS.titleHe,
+                            bodyHe: evS.bodyHe,
+                            confidence: evS.confidence,
+                          });
+                        }
+                      }
+                      evidenceList = evidenceList
+                        .filter((e) => e.confidence === "high" || e.confidence === "moderate")
+                        .slice(0, 2);
+
+                      const parentActionHe = s.parentActionHe || null;
+                      const nextWeekGoalHe = s.nextWeekGoalHe || null;
+                      const summaryHe = s.summaryHe || null;
+                      const showLegacyParImp = !parentActionHe && parImp.length > 0;
+
                       return (
                         <div
                           key={row.subjectId}
@@ -2105,35 +2208,17 @@ export default function ParentReport() {
                             {row.subjectLabelHe}
                           </div>
                           <div className="space-y-2 md:space-y-2.5">
-                            {wk.length > 0 && (
-                              <div className="text-[11px] font-semibold text-white/55 tracking-wide">
-                                חולשות שזוהו
+                            {summaryHe ? (
+                              <div className="text-xs md:text-sm text-white/85 leading-relaxed border border-white/10 rounded-md bg-white/5 px-2 py-1.5">
+                                {summaryHe}
                               </div>
-                            )}
-                            {wk.map((w) => (
-                              <div
-                                key={w.id}
-                                className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-red-500/20 border-red-400/50"
-                              >
-                                <div className="flex items-start gap-2">
-                                  <span className="text-lg shrink-0">🔴</span>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      חולשה שזוהתה
-                                    </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
-                                      {w.labelHe}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                            {(ex.length > 0 || st.length > 0) && (
+                            ) : null}
+                            {topStr.length > 0 && (
                               <div className="text-[11px] font-semibold text-emerald-200/80 pt-1">
-                                מצוין וביצועים חזקים
+                                חוזקות מובילות
                               </div>
                             )}
-                            {[...ex, ...st].map((x) => (
+                            {topStr.map((x) => (
                               <div
                                 key={x.id}
                                 className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-emerald-500/15 border-emerald-400/45"
@@ -2142,10 +2227,36 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">🌟</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      {x.excellent ? "מצוין" : "חוזקה"}
+                                      {x.tierHe || "חוזקה בולטת"}
                                     </div>
                                     <div className="text-xs md:text-sm text-white/80 break-words">
                                       {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            {topWk.length > 0 && (
+                              <div className="text-[11px] font-semibold text-white/55 tracking-wide">
+                                תחומים הדורשים תשומת לב
+                              </div>
+                            )}
+                            {topWk.map((w) => (
+                              <div
+                                key={w.id}
+                                className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-red-500/20 border-red-400/50"
+                              >
+                                <div className="flex items-start gap-2">
+                                  <span className="text-lg shrink-0">🔴</span>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                      {w.tierHe || "תחום לחיזוק"}
+                                    </div>
+                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                      {w.labelHe}
+                                      {typeof w.mistakeCount === "number"
+                                        ? ` (${w.mistakeCount} טעויות דומות)`
+                                        : ""}
                                     </div>
                                   </div>
                                 </div>
@@ -2165,7 +2276,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">🔷</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      עקביות
+                                      {x.tierHe || "תחום לשימור"}
                                     </div>
                                     <div className="text-xs md:text-sm text-white/80 break-words">
                                       {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
@@ -2188,7 +2299,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">📈</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      נקודת לשיפור
+                                      {x.tierHe || "תחום במגמת שיפור"}
                                     </div>
                                     <div className="text-xs md:text-sm text-white/80 break-words">
                                       {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
@@ -2197,6 +2308,36 @@ export default function ParentReport() {
                                 </div>
                               </div>
                             ))}
+                            {parentActionHe ? (
+                              <div className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-yellow-500/15 border-yellow-400/45">
+                                <div className="flex items-start gap-2">
+                                  <span className="text-lg shrink-0">👪</span>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                      פעולה קונקרטית לבית
+                                    </div>
+                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                      {parentActionHe}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : null}
+                            {nextWeekGoalHe ? (
+                              <div className="parent-report-rec-item p-2 md:p-3 rounded-lg border border-amber-300/35 bg-amber-950/20">
+                                <div className="flex items-start gap-2">
+                                  <span className="text-lg shrink-0">🗓️</span>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                      יעדים לשבוע הקרוב
+                                    </div>
+                                    <div className="text-xs md:text-sm text-white/80 break-words">
+                                      {nextWeekGoalHe}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : null}
                             {stuImp.map((r) => (
                               <div
                                 key={r.id}
@@ -2233,24 +2374,26 @@ export default function ParentReport() {
                                 </div>
                               </div>
                             ))}
-                            {parImp.map((r) => (
-                              <div
-                                key={r.id}
-                                className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-yellow-500/15 border-yellow-400/45"
-                              >
-                                <div className="flex items-start gap-2">
-                                  <span className="text-lg shrink-0">👪</span>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      המלצה להורה
-                                    </div>
-                                    <div className="text-xs md:text-sm text-white/80 break-words">
-                                      {r.textHe}
+                            {showLegacyParImp
+                              ? parImp.map((r) => (
+                                  <div
+                                    key={r.id}
+                                    className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-yellow-500/15 border-yellow-400/45"
+                                  >
+                                    <div className="flex items-start gap-2">
+                                      <span className="text-lg shrink-0">👪</span>
+                                      <div className="flex-1 min-w-0">
+                                        <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
+                                          המלצה להורה
+                                        </div>
+                                        <div className="text-xs md:text-sm text-white/80 break-words">
+                                          {r.textHe}
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </div>
-                            ))}
+                                ))
+                              : null}
                             {parMaint.map((r) => (
                               <div
                                 key={r.id}
@@ -2269,48 +2412,67 @@ export default function ParentReport() {
                                 </div>
                               </div>
                             ))}
-                            {evM && (evM.confidence === "high" || evM.confidence === "moderate") && (
-                              <div className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-white/5 border-white/15">
-                                <div className="font-semibold text-xs text-white/70 mb-1">
-                                  דוגמה לטעות (מהתרגול)
-                                </div>
-                                {evM.exerciseText ? (
-                                  <div className="text-xs text-white/80 break-words mb-1">
-                                    {evM.exerciseText}
-                                  </div>
-                                ) : null}
+                            {evidenceList.map((ev, evIdx) =>
+                              ev.type === "mistake" ? (
                                 <div
-                                  className="flex flex-col gap-1.5 text-[11px] md:text-xs break-words"
-                                  dir="rtl"
+                                  key={`mistake-${evIdx}`}
+                                  className="parent-report-rec-item parent-report-example-card parent-report-example-mistake p-2 md:p-3 rounded-lg border bg-white/5 border-white/15"
                                 >
-                                  <div>
-                                    <span className="font-semibold text-sky-300">
-                                      התשובה הנכונה
-                                    </span>
-                                    <span className="text-white/45 mx-1">:</span>
-                                    <span className="text-white/88" dir="ltr">
-                                      {String(evM.correctAnswer ?? "—")}
-                                    </span>
+                                  <div className="parent-report-example-heading font-semibold text-xs text-white/70 mb-1">
+                                    דוגמה לטעות (מהתרגול)
                                   </div>
-                                  <div>
-                                    <span className="font-semibold text-amber-300">
-                                      תשובת הילד
-                                    </span>
-                                    <span className="text-white/45 mx-1">:</span>
-                                    <span className="text-white/88" dir="ltr">
-                                      {String(evM.userAnswer ?? "—")}
-                                    </span>
+                                  {ev.exerciseText ? (
+                                    <div className="parent-report-example-prose text-xs text-white/80 break-words mb-1">
+                                      {ev.exerciseText}
+                                    </div>
+                                  ) : null}
+                                  <div
+                                    className="parent-report-example-answers flex flex-col gap-1.5 text-[11px] md:text-xs break-words"
+                                    dir="rtl"
+                                  >
+                                    <div>
+                                      <span className="parent-report-example-answer-label font-semibold text-sky-300">
+                                        התשובה הנכונה
+                                      </span>
+                                      <span className="parent-report-example-answer-sep text-white/45 mx-1">
+                                        :
+                                      </span>
+                                      <span
+                                        className="parent-report-example-answer-value text-white/88"
+                                        dir="ltr"
+                                      >
+                                        {String(ev.correctAnswer ?? "—")}
+                                      </span>
+                                    </div>
+                                    <div>
+                                      <span className="parent-report-example-answer-label font-semibold text-amber-300">
+                                        תשובת הילד
+                                      </span>
+                                      <span className="parent-report-example-answer-sep text-white/45 mx-1">
+                                        :
+                                      </span>
+                                      <span
+                                        className="parent-report-example-answer-value text-white/88"
+                                        dir="ltr"
+                                      >
+                                        {String(ev.userAnswer ?? "—")}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            )}
-                            {evS && (evS.confidence === "high" || evS.confidence === "moderate") && (
-                              <div className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-emerald-500/10 border-emerald-400/30">
-                                <div className="font-semibold text-xs text-emerald-100/90 mb-1">
-                                  {evS.titleHe}
+                              ) : (
+                                <div
+                                  key={`success-${evIdx}`}
+                                  className="parent-report-rec-item parent-report-example-card parent-report-example-success p-2 md:p-3 rounded-lg border bg-emerald-500/10 border-emerald-400/30"
+                                >
+                                  <div className="parent-report-example-heading font-semibold text-xs text-emerald-100/90 mb-1">
+                                    {ev.titleHe}
+                                  </div>
+                                  <div className="parent-report-example-prose text-xs text-white/85 break-words">
+                                    {ev.bodyHe}
+                                  </div>
                                 </div>
-                                <div className="text-xs text-white/85 break-words">{evS.bodyHe}</div>
-                              </div>
+                              )
                             )}
                           </div>
                         </div>
