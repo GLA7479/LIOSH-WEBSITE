@@ -59,8 +59,9 @@ export function rewriteParentRecommendationForDetailedHe(raw) {
   s = s.replace(/לתת לילד/g, "לסייע לילד");
   s = s.replace(/ולבנות הצלחות קטנות/g, "ולבנות את הנושא בהדרגה עם הילד");
   s = s.replace(/נשארים על רמה [^ ו]+ ומתמקדים/g, "נשארים על אותה רמת קושי ומתמקדים");
-  s = s.replace(/2–3 סשנים קצרים/g, "שני־שלושה מפגשי תרגול קצרים");
-  s = s.replace(/סשנים קצרים/g, "מפגשי תרגול קצרים");
+  s = s.replace(/2–3 סשנים קצרים/g, "שני־שלושה תרגולים קצרים");
+  s = s.replace(/סשנים קצרים/g, "תרגולים קצרים");
+  s = s.replace(/מפגשי תרגול קצרים/g, "תרגולים קצרים");
   s = s.replace(/מומלץ לעלות רמת קושי אחת רק בנושא הזה בתרגול/g, "מומלץ לעלות רמה רק בנושא הזה");
   s = s.replace(/מומלץ לעלות רמת קושי אחת רק בנושא הזה במשחק/g, "מומלץ לעלות רמה רק בנושא הזה בתרגול");
   s = s.replace(/מומלץ להקשות מעט רק בנושא הזה/g, "מומלץ לעלות רמה רק בנושא הזה");
@@ -149,11 +150,14 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
     );
   }
   if (w0) {
-    const ws = (Number(w0.mistakeCount) || 0) >= 8 ? "זה חוזר מספיק כדי לתת דגש" : "עדיין לא סגור כדפוס ארוך";
-    return stripGuillemetsHe(`המוקד לחיזוק: ${displayTopicPhraseHe(w0.labelHe)} — ${ws}.`);
+    const ws =
+      (Number(w0.mistakeCount) || 0) >= 8
+        ? "חזרה עקבית — מומלץ לשים על זה דגש"
+        : "עדיין לא סגור כדפוס ארוך";
+    return stripGuillemetsHe(`ההמלצה שלנו: ${displayTopicPhraseHe(w0.labelHe)} — ${ws}.`);
   }
   if (s0) {
-    return stripGuillemetsHe(`הכיוון החזק: ${displayTopicPhraseHe(s0.labelHe)} — שווה לשמר עליו בשגרה קצרה.`);
+    return stripGuillemetsHe(`הכיוון החזק: ${displayTopicPhraseHe(s0.labelHe)} — שווה לשמר עליו בתרגול קצר.`);
   }
   if (imp0 && !w0) {
     return stripGuillemetsHe(`יש תנועה ב־${displayTopicPhraseHe(imp0.labelHe)} — נשארים עם תרגול קצר ולא מקפיצים רמה.`);

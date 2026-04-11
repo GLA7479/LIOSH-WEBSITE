@@ -476,19 +476,19 @@ function buildParentActionHe(
   if (w0) {
     const kind = inferWeaknessKindHe(w0.labelHe);
     if (kind === "wording") {
-      return `פעמיים בשבוע, רבע שעה: ב${subj} ${tp(w0.labelHe)} — קוראים יחד את הניסוח, מפרקים למשפטים קצרים, ורק אז כותבים.`;
+      return `ההמלצה שלנו: פעמיים בשבוע, כרבע שעה ב${subj} ${tp(w0.labelHe)} — קוראים יחד את הניסוח, מפרקים למשפטים קצרים, ורק אז עונים תשובה.`;
     }
     if (kind === "careless") {
       return `פעמיים בשבוע, רבע שעה ב${subj} ${tp(w0.labelHe)} — עצירה קצרה לפני שליחה: "האם עניתי על מה שנשאלתי?".`;
     }
-    return `פעמיים בשבוע, רבע שעה: משימה אחת ב${subj} ${tp(w0.labelHe)} — לחזור על רעיון אחד עד שהוא יושב.`;
+    return `פעמיים בשבוע, רבע שעה: תרגול ב${subj} ממוקד ${tp(w0.labelHe)} — לחזור על שאלות בתרגול ממוקד, להמשיך לאט עד שהנושא מובן, ואז לזהות שיפור קטן.`;
   }
   if (i0) {
     return `פעמיים בשבוע, רבע שעה: תרגול קצר ב${subj} ${tp(i0.labelHe)} (כרגע דיוק כ־${i0.accuracy}%) — לנסח קודם, לבדוק אחר כך.`;
   }
   const pick = m0 || s0;
   if (pick) {
-    return `פעם בשבוע, עשר דקות נעימות: לשמור על תרגול רגוע ב${subj} ${tp(pick.labelHe)} — להרגיש בבית, לא להאיץ.`;
+    return `פעם בשבוע, עשר דקות: לתרגל את המקצוע ${subj} ${tp(pick.labelHe)} — תרגול וחזרה קצרה על החומר הנלמד.`;
   }
   return null;
 }
@@ -508,7 +508,7 @@ function buildNextWeekGoalHe(subjectLabelHe, topWeaknesses, improving, topStreng
   if (w0) {
     if (inferWeaknessKindHe(w0.labelHe) === "wording") {
       goals.push(
-        `ב${subj} ${tp(w0.labelHe)} — מומלץ לבחור כמה דוגמאות מהנושא לעבור ביחד עם הילד צעד־צעד, ולנסות השבוע ${successRateImprovementGoalHe(w0.labelHe)} — מספיק אפילו שיפור קטן באחוזי ההצלחה.`
+        `מומלץ לבחור כמה דוגמאות לעבור ביחד עם הילד צעד־צעד, ולנסות השבוע להעלות את אחוזי ההצלחה — מספיק אפילו שיפור קטן באחוזי ההצלחה.`
       );
     } else {
       goals.push(
@@ -522,7 +522,7 @@ function buildNextWeekGoalHe(subjectLabelHe, topWeaknesses, improving, topStreng
     );
   }
   if (preserveLabel) {
-    goals.push(`להמשיך בשגרה נינוחה ${tp(preserveLabel)} — כדי שהדיוק הטוב יישמר.`);
+    goals.push(`להמשיך בשבוע הבא באותו קצב סביב ${tp(preserveLabel)} — לשמור על עקביות טובה.`);
   }
   if (!goals.length) return null;
   return goals.join(" ");
