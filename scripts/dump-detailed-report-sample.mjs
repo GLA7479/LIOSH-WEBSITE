@@ -145,7 +145,7 @@ function oldTopicCard(tr) {
 
 function newSubjectVisible(sp) {
   const L = buildSubjectParentLetter(sp);
-  return [L.opening, L.goingWell, L.fragile, L.homeAction, L.closing].filter(Boolean).join("\n\n");
+  return [L.opening, L.diagnosisHe, L.homeAction, L.closing].filter(Boolean).join("\n\n");
 }
 
 function newTopicCard(tr) {

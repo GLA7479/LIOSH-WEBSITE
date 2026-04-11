@@ -12,7 +12,6 @@ import {
   computeStability01,
   rowMistakeEventCount,
 } from "./parent-report-row-diagnostics";
-
 /** @typedef {'advance_level'|'advance_grade_topic_only'|'maintain_and_strengthen'|'remediate_same_level'|'drop_one_level_topic_only'|'drop_one_grade_topic_only'} RecommendedNextStep */
 
 export const RECOMMENDED_STEP_LABEL_HE = {
@@ -127,19 +126,19 @@ function buildHebrewCopy(step, ctx, cfg) {
 
   const mPart =
     mC >= cfg.copyMentionMistakesMin
-      ? ` נרשמו בטווח ${mC} אירועי טעות בנושא הזה, ולכן חשוב לקרוא את המשימה לאט לפני מענה.`
+      ? ` נרשמו בטווח ${mC} אירועי טעות בנושא הזה — לקרוא את המשימה לאט לפני מענה.`
       : "";
 
   /** @type {Record<RecommendedNextStep, { reasonHe: string, parentHe: string, studentHe: string }>} */
   const table = {
     advance_level: {
       reasonHe: `ב«${displayName}» הופיעו ${q} שאלות עם דיוק של כ-${acc}%${mPart}. התמונה מספיק יציבה כדי לנסות דרגת קושי גבוהה יותר — רק בנושא הזה, בלי לשנות את שאר המקצוע.`,
-      parentHe: `הנושא «${displayName}» נראה מבוסס: ${q} שאלות ודיוק ${acc}%. מומלץ לעלות רמת קושי אחת רק בנושא הזה במשחק, ולוודא שזה נשאר חוויה מוצלחת (שאלה–שאלה, לא מרתון ארוך).`,
+      parentHe: `הנושא «${displayName}» נראה מבוסס: ${q} שאלות ודיוק ${acc}%. מומלץ לעלות רמת קושי אחת רק בנושא הזה בתרגול, ולוודא שזה נשאר חוויה מוצלחת (שאלה–שאלה, לא מרתון ארוך).`,
       studentHe: `אתה מוכן לאתגר הבא ב«${displayName}» — ננסה רמה אחת מעלה רק שם.`,
     },
     advance_grade_topic_only: {
       reasonHe: `ב«${displayName}» כבר עובדים ברמה קשה יחסית (${levelLabel}) עם דיוק טוב (${acc}%) ונפח סביר (${q} שאלות). אפשר לנסות כיתה גבוהה יותר דווקא בנושא הזה — לא לכל המקצוע.`,
-      parentHe: `אם במשחק יש בחירת כיתה לפי נושא — ב«${displayName}» אפשר לנסות כיתה אחת מעלה. זה רק לנושא הזה; בשאר הנושאים נשארים כרגיל עד שיהיו נתונים דומים.`,
+      parentHe: `אם ניתן לבחור כיתה לפי נושא — ב«${displayName}» אפשר לנסות כיתה אחת מעלה. זה רק לנושא הזה; בשאר הנושאים נשארים כרגיל עד שיהיו נתונים דומים.`,
       studentHe: `ב«${displayName}» אפשר לנסות כיתה קצת יותר גבוהה — רק שם, צעד אחר צעד.`,
     },
     maintain_and_strengthen: {
@@ -154,7 +153,7 @@ function buildHebrewCopy(step, ctx, cfg) {
     },
     drop_one_level_topic_only: {
       reasonHe: `ב«${displayName}» הדיוק נמוך (${acc}%) והטעויות מהוות חלק משמעותי מהתרגול${mPart}. כנראה שהקושי יושב על בסיס חסר — עדיף לרדת רמה אחת רק בנושא הזה.`,
-      parentHe: `ב«${displayName}» מומלץ לרדת רמת קושי אחת (רק בנושא הזה) ולתת לילד לבנות הצלחות קטנות. אחרי כמה מפגשים עם דיוק טוב — נחזור לבחון העלאה.`,
+      parentHe: `ב«${displayName}» מומלץ לרדת רמת קושי אחת (רק בנושא הזה) ולסייע לילד לבנות את הנושא בהדרגה. אחרי כמה מפגשים עם דיוק טוב — נחזור לבחון העלאה.`,
       studentHe: `נוריד רגע רמת קושי ב«${displayName}» כדי שיהיה יותר ברור — ואז יהיה קל יותר להצליח.`,
     },
     drop_one_grade_topic_only: {
@@ -181,8 +180,7 @@ function applyAggressiveEvidenceCap(result, row, ctx, cfg) {
   if (!aggressive.has(result.step)) return result;
   const step = "maintain_and_strengthen";
   const copy = buildHebrewCopy(step, ctx, cfg);
-  const note =
-    " (לפי חוזק הנתונים בטווח — לא משנים כיתה או רמת קושי כרגע; מומלץ לבסס באותה הגדרה ולאסוף עוד תרגול.)";
+  const note = " (הנתון עדיין חלקי — לא משנים כיתה או רמת קושי כרגע; כדאי לבסס באותה הגדרה ולאסוף עוד קצת תרגול.)";
   return {
     ...result,
     step,

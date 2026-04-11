@@ -113,19 +113,9 @@ function SubjectParentLetter({ sp }) {
           {letter.opening}
         </p>
       ) : null}
-      {letter.goingWell ? (
+      {letter.diagnosisHe ? (
         <p className="pr-detailed-body-text text-sm md:text-[0.95rem] leading-relaxed m-0 text-white/[0.91]">
-          {letter.goingWell}
-        </p>
-      ) : null}
-      {letter.reliabilityNoteHe ? (
-        <p className="pr-detailed-body-text text-xs md:text-sm leading-relaxed m-0 text-white/[0.72]">
-          {letter.reliabilityNoteHe}
-        </p>
-      ) : null}
-      {letter.fragile ? (
-        <p className="pr-detailed-body-text text-sm md:text-[0.95rem] leading-relaxed m-0 text-white/[0.91]">
-          {letter.fragile}
+          {letter.diagnosisHe}
         </p>
       ) : null}
       {letter.homeAction ? (
@@ -1232,11 +1222,6 @@ export default function ParentReportDetailedPage() {
                                         <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2 text-white/[0.9]">
                                           {nar.snapshot}
                                         </p>
-                                        {nar.reliabilityLineHe ? (
-                                          <p className="pr-detailed-muted text-xs leading-snug m-0 mt-1.5 text-white/[0.68]">
-                                            {nar.reliabilityLineHe}
-                                          </p>
-                                        ) : null}
                                         {nar.homeLine ? (
                                           <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2.5 text-amber-100/95">
                                             {nar.homeLine}

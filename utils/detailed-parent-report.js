@@ -141,52 +141,40 @@ function collectMaintainRows(subjects) {
 }
 
 /**
- * מיקוד ביתי סינתטי: 1–2 חיזוקים, שימור אחד, משפט סיכום — לא העתקה של parentActionHe הראשון.
+ * מיקוד ביתי — משפט אחד לפי מצב (חיזוק / שימור / דל נתון), בלי שכבות מרובות.
  */
 function buildHomeFocusHe(subjects, topStrengthsAcrossHe, topFocusAreasHe, summary) {
-  const reinforceLabels = topFocusAreasHe.slice(0, 2).filter(Boolean);
+  const focusLabels = topFocusAreasHe.slice(0, 2).filter(Boolean);
   const maintainRows = collectMaintainRows(subjects);
   let preservePhrase = null;
   if (maintainRows.length && maintainRows[0].labelHe) {
     const m = maintainRows[0];
     preservePhrase = `${m.labelHe} ב${m.subjectLabelHe}`;
   } else if (topStrengthsAcrossHe.length) {
-    preservePhrase = topStrengthsAcrossHe[0].replace(/\s*\([^)]*\)\s*$/u, "").trim() || topStrengthsAcrossHe[0];
-  }
-
-  const parts = [];
-  if (reinforceLabels.length) {
-    parts.push(
-      `מומלץ להתמקד השבוע בנושא אחד או שניים: ${reinforceLabels.join(" · ")}. תרגול קצר (כ־10–15 דקות); אחרי טעות — בירור קצר של הניסוח, בלי הרחבה ארוכה.`
-    );
-  } else {
-    parts.push(
-      "בטווח הזה עדיין לא מתגבשת חולשה אחת ברורה — מומלץ להמשיך על שגרת תרגול קבועה ורגועה, ולאסוף עוד נתון."
-    );
-  }
-
-  if (preservePhrase) {
-    parts.push(`במקביל מומלץ לשמור על תרגול עקבי בתחום שבו ניכרת עקביות — סביב ${preservePhrase}.`);
-  } else {
-    parts.push("במקביל מומלץ לשמור על שגרת תרגול קבועה — עקביות תורמת להמשך גם כשיש קשיים נקודתיים.");
+    preservePhrase =
+      topStrengthsAcrossHe[0].replace(/\s*\([^)]*\)\s*$/u, "").trim() || topStrengthsAcrossHe[0];
   }
 
   const q = Number(summary?.totalQuestions) || 0;
-  const acc = Number(summary?.overallAccuracy) || 0;
-  let closing =
-    "סיכום: חיזוק נקודתי לצד שמירה על מה שעובד — כיוון מעשי לבניית ביטחון.";
-  if (q < 18) {
-    closing =
-      "סיכום: נפח התרגול בטווח מצומצם — אם אפשר להוסיף שני מפגשים קצרים בשבוע, התמונה בדוח הבא תהיה מדויקת יותר.";
-  } else if (acc >= 78 && q >= 35) {
-    closing =
-      "סיכום: יש איזון סביר בין נפח לדיוק — אפשר להמשיך כך, ולהעמיק רק בנושאים שמופיעים למעלה בלי לעמיס על כל המקצועות.";
-  } else if (acc < 62 && q >= 18) {
-    closing =
-      "סיכום: עדיף לייצב לאט — הבנת המשימה לפני תשובה, והערכה קצרה אחרי הצלחה קטנה. זה בונה יותר מסבב נוסף של שאלות.";
-  }
+  const acc = Math.round(Number(summary?.overallAccuracy) || 0);
 
-  return parts.join("\n\n");
+  if (focusLabels.length) {
+    const joined = focusLabels.join(" · ");
+    return `השבוע כדאי לתת דגש ל־${joined} — מפגשים קצרים; אחרי טעות, לקרוא שוב את ניסוח השאלה לפני תשובה חדשה.`;
+  }
+  if (preservePhrase) {
+    return `במקביל כדאי לשמור על תרגול רגוע סביב ${preservePhrase} — שם כבר יש בסיס טוב.`;
+  }
+  if (q < 18) {
+    return "עדיין מעט חומר בטווח — שני מפגשים קצרים בשבוע יעזרו לחדד את התמונה בפעם הבאה.";
+  }
+  if (acc >= 78 && q >= 35) {
+    return "הקצב הנוכחי נראה מאוזן — אפשר להמשיך כך ולהעמיק רק בנושאים שמופיעים למעלה ברשימת המיקוד.";
+  }
+  if (acc < 62 && q >= 18) {
+    return "כדאי לייצב לאט: משימה ברורה לפני פתרון, ושבח קטן אחרי הצלחה קטנה.";
+  }
+  return "להמשיך על שגרת תרגול קבועה ורגועה, ולעקוב איך הדיוק והביטחון מתפתחים.";
 }
 
 function buildExecutiveSummary(subjects, summary) {

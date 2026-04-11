@@ -9,6 +9,25 @@ import {
   sessionRowLabelHe,
   GENERIC_WEAKNESS_HE,
 } from "./diagnostic-labels-he";
+/**
+ * סיווג גס לסגנון פעולה בבית — לפי תווית חולשה בעברית בלבד.
+ * @returns {"wording"|"careless"|"foundation"}
+ */
+function inferWeaknessKindHe(labelHe) {
+  const s = String(labelHe || "").toLowerCase();
+  const h = `${labelHe || ""}`;
+  if (
+    /ניסוח|הבנה|הוראות|משימה|קריאה|מילולי|משפט|חיבור|הבנת הנקרא|האזנה/i.test(h) ||
+    s.includes("reading") ||
+    s.includes("listening")
+  ) {
+    return "wording";
+  }
+  if (/איות|דיוק|רשלנות|תשומת לב|שגיא|טעות|חוסר/i.test(h) || s.includes("spelling")) {
+    return "careless";
+  }
+  return "foundation";
+}
 
 /**
  * === Subject narrative payload (patternDiagnostics.subjects[subjectId]) ===
@@ -364,7 +383,7 @@ function buildSummaryHe(
   diagnosticSparseNoteHe
 ) {
   const label = subjectLabelHe || "המקצוע";
-  const opening = `על ${label}, אחרי מה שנאסף בטווח:`;
+  const opening = `לגבי ${label}:`;
 
   if (
     !stableExcellence.length &&
@@ -449,50 +468,55 @@ function buildParentActionHe(
   topStrengths
 ) {
   const subj = subjectLabelHe || "המקצוע";
+  const tp = parentCopyTopicPhraseHe;
   const w0 = topWeaknesses[0];
   const i0 = improving[0];
   const m0 = maintain[0];
   const s0 = topStrengths[0];
-
   if (w0) {
-    return `פעם־פעמיים בשבוע, רבע שעה בלבד: משימה אחת ב${subj} ${parentCopyTopicPhraseHe(w0.labelHe)} — קוראים יחד את הניסוח, אומרים בקול מה נתון ומה מבקשים, עושים טיוטה קטנה ורק אז כותבים נקי ומתיישרים עם הפתרון.`;
+    const kind = inferWeaknessKindHe(w0.labelHe);
+    if (kind === "wording") {
+      return `פעמיים בשבוע, רבע שעה: ב${subj} ${tp(w0.labelHe)} — קוראים יחד את הניסוח, מפרקים למשפטים קצרים, ורק אז כותבים.`;
+    }
+    if (kind === "careless") {
+      return `פעמיים בשבוע, רבע שעה ב${subj} ${tp(w0.labelHe)} — עצירה קצרה לפני שליחה: "האם עניתי על מה שנשאלתי?".`;
+    }
+    return `פעמיים בשבוע, רבע שעה: משימה אחת ב${subj} ${tp(w0.labelHe)} — לחזור על רעיון אחד עד שהוא יושב.`;
   }
   if (i0) {
-    return `פעמיים בשבוע, רבע שעה: תרגול קצר ב${subj} ${parentCopyTopicPhraseHe(i0.labelHe)} (כרגע דיוק כ־${i0.accuracy}%) — מעודדים לנסח את כל הרעיון לפני שבודקים אם זה "נכון".`;
+    return `פעמיים בשבוע, רבע שעה: תרגול קצר ב${subj} ${tp(i0.labelHe)} (כרגע דיוק כ־${i0.accuracy}%) — לנסח קודם, לבדוק אחר כך.`;
   }
-  if (m0 || s0) {
-    const pick = m0 || s0;
-    return `פעם בשבוע, עשר דק׳ נעימות: לשמור על תרגול רגוע ב${subj} ${parentCopyTopicPhraseHe(pick.labelHe)} — המטרה היא להרגיש בבית, לא להאיץ.`;
+  const pick = m0 || s0;
+  if (pick) {
+    return `פעם בשבוע, עשר דקות נעימות: לשמור על תרגול רגוע ב${subj} ${tp(pick.labelHe)} — להרגיש בבית, לא להאיץ.`;
   }
   return null;
 }
 
 function buildNextWeekGoalHe(topWeaknesses, improving, topStrengths, maintain, stableExcellence) {
-  const goals = [];
   const w0 = topWeaknesses[0];
-  if (w0) {
-    goals.push(
-      `לנסות שבוע אחד ${successRateImprovementGoalHe(w0.labelHe)} — מספיק אפילו שיפור קטן באחוזי ההצלחה.`
-    );
-  } else if (improving[0]) {
-    const labImp = improvingDiagnosticsDisplayLabelHe(improving[0].labelHe);
-    goals.push(
-      `שבועיים קצרים סביב ${labImp} — ${successRateImprovementGoalHe(improving[0].labelHe)} — שני מפגשים קטנים, לא מרתון.`
-    );
-  }
-
   const preserve =
     stableExcellence[0] ||
     topStrengths.find((t) => t.excellent || t.questions >= 8) ||
     maintain.find((m) => m.questions >= 8) ||
     topStrengths[0] ||
     maintain[0];
-  if (preserve) {
+  const preserveLabel = preserve?.labelHe;
+  const tp = parentCopyTopicPhraseHe;
+  const goals = [];
+  if (w0) {
     goals.push(
-      `להמשיך בשגרה נינוחה ${parentCopyTopicPhraseHe(preserve.labelHe)} — כדי שהדיוק הטוב יישמר בשגרת התרגול.`
+      `לנסות שבוע אחד ${successRateImprovementGoalHe(w0.labelHe)} — מספיק אפילו שיפור קטן באחוזי ההצלחה.`
+    );
+  } else if (improving?.[0]) {
+    const i0 = improving[0];
+    goals.push(
+      `שבועיים קצרים סביב ${i0.labelHe} — ${successRateImprovementGoalHe(i0.labelHe)} — שני מפגשים קטנים, לא מרתון.`
     );
   }
-
+  if (preserveLabel) {
+    goals.push(`להמשיך בשגרה נינוחה ${tp(preserveLabel)} — כדי שהדיוק הטוב יישמר.`);
+  }
   if (!goals.length) return null;
   return goals.join(" ");
 }
