@@ -4,6 +4,11 @@ import {
   normalizeMistakeEvent,
   mistakePatternClusterKey,
 } from "./mistake-event";
+import {
+  weaknessLabelHe,
+  sessionRowLabelHe,
+  GENERIC_WEAKNESS_HE,
+} from "./diagnostic-labels-he";
 
 const SUBJECT_IDS = [
   "math",
@@ -32,52 +37,10 @@ const SUBJECT_LABEL_HE = {
   "moledet-geography": "מולדת וגאוגרפיה",
 };
 
-function hebrewWeaknessLabel(subject, clusterKey, sampleEv) {
-  const pf = sampleEv?.patternFamily || "";
-  const k = sampleEv?.kind || "";
-  const st = sampleEv?.subtype || "";
-  const ct = sampleEv?.conceptTag || "";
-
-  if (subject === "geometry") {
-    const hay = `${pf} ${k} ${st} ${ct}`.toLowerCase();
-    if (hay.includes("perimeter") && hay.includes("area"))
-      return "בלבול חוזר בין היקף לשטח";
-    if (hay.includes("perimeter")) return "קושי בהבחנה ובחישוב היקף";
-    if (hay.includes("area") || hay.includes("שטח")) return "קושי בשטחים והבנת יחידות שטח";
-    if (hay.includes("volume") || hay.includes("prism")) return "קושי בנפח ובתבניות תלת־ממד";
-    if (hay.includes("angle")) return "קושי בזוויות וביחסים בין זוויות";
-    if (pf) return `דפוס שגיאות: ${pf.replace(/_/g, " ")}`;
-  }
-
-  if (subject === "hebrew") {
-    const h = `${pf} ${k} ${st} ${ct}`.toLowerCase();
-    if (h.includes("preposition") || h.includes("מילות") || h.includes("יחס"))
-      return "קושי במילות יחס ובמבנה משפט";
-    if (h.includes("verb") || h.includes("פועל") || h.includes("tense"))
-      return "קושי בפעלים וזמני פעולה";
-    if (h.includes("syntax") || h.includes("sequence") || h.includes("רצף"))
-      return "קושי ברצף לוגי ובניסוח";
-    if (h.includes("clarity") || h.includes("rewrite") || h.includes("היר"))
-      return "קושי בניסוח בהיר ובהבנה מדויקת של הניסוח";
-    if (pf) return `דפוס בעברית: ${pf.replace(/_/g, " ")}`;
-  }
-
-  if (subject === "math") {
-    const h = `${pf} ${k} ${st}`.toLowerCase();
-    if (h.includes("remainder") || h.includes("שארית")) return "קושי בשארית ובחלוקה עם שארית";
-    if (h.includes("compare") || h.includes("השוואה")) return "קושי בהשוואת כמויות/מספרים";
-    if (h.includes("percent") || h.includes("אחוז") || h.includes("discount"))
-      return "קושי באחוזים/הנחות";
-    if (h.includes("fraction")) return "קושי בשברים";
-    if (h.includes("decimal")) return "קושי בעשרוניים";
-    if (k) return `דפוס בחשבון (${k})`;
-  }
-
-  if (pf) return `דפוס חוזר: ${pf.replace(/_/g, " ")}`;
-  if (k && st) return `דפוס: ${k} — ${st}`;
-  if (k) return `דפוס לפי סוג תרגיל: ${k}`;
-  return `דפוס שגיאות (${clusterKey})`;
-}
+const MAX_WEAKNESSES = 2;
+const MAX_STRENGTH_SLOTS = 2;
+const MAX_MAINTAIN = 2;
+const MAX_IMPROVING = 2;
 
 function recStrength(mistakeCount) {
   if (mistakeCount >= MIN_MISTAKES_FOR_STRONG_RECOMMENDATION) return "strong";
@@ -85,32 +48,138 @@ function recStrength(mistakeCount) {
   return "tentative";
 }
 
-function buildEvidenceExample(ev, confidence) {
-  if (!ev) return null;
-  const ex = String(ev.exerciseText || "").trim();
-  if (ex.length > 220) return null;
-  if (!ex && ev.userAnswer == null) return null;
+function rowConfidenceFromSessions(row) {
+  const q = Number(row?.questions) || 0;
+  if (q >= 24) return "high";
+  if (q >= 10) return "moderate";
+  return "low";
+}
+
+function formatSessionBand(subjectId, row, rowKey) {
   return {
-    patternKey: mistakePatternClusterKey(ev),
-    exerciseText: ex || null,
-    questionLabel: ev.questionLabel,
-    correctAnswer: ev.correctAnswer,
-    userAnswer: ev.userAnswer,
-    confidence,
+    id: `${subjectId}:${String(rowKey).slice(0, 120)}`,
+    labelHe: sessionRowLabelHe(subjectId, row),
+    questions: Number(row?.questions) || 0,
+    accuracy: Number(row?.accuracy) || 0,
+    confidence: rowConfidenceFromSessions(row),
+    needsPractice: !!row?.needsPractice,
+    excellent: !!row?.excellent,
   };
 }
 
 /**
- * @param {Record<string, unknown>} report Output of generateParentReportV2 (or compatible).
- * @param {Record<string, unknown[]>} [rawMistakesBySubject] subjectId -> raw localStorage rows (date-filtered).
+ * מחלק שורות דוח ל־excellent / strengths / maintain / improving (ללא כפילויות לפי מפתח שורה).
+ */
+function buildSessionBands(subjectId, report) {
+  const rowsKey = REPORT_ROWS_KEY[subjectId];
+  const map = rowsKey && report[rowsKey] ? report[rowsKey] : {};
+  const entries = Object.entries(map || {})
+    .map(([rowKey, row]) => ({ rowKey, row }))
+    .sort((a, b) => {
+      const acc = (x) => Number(x.row?.accuracy) || 0;
+      const q = (x) => Number(x.row?.questions) || 0;
+      return acc(b) - acc(a) || q(b) - q(a);
+    });
+
+  const used = new Set();
+  const take = (predicate, max) => {
+    const out = [];
+    for (const { rowKey, row } of entries) {
+      if (out.length >= max) break;
+      if (!row || typeof row !== "object") continue;
+      const q = Number(row.questions) || 0;
+      if (q < 5) continue;
+      if (used.has(rowKey)) continue;
+      if (!predicate(row, q)) continue;
+      used.add(rowKey);
+      out.push(formatSessionBand(subjectId, row, rowKey));
+    }
+    return out;
+  };
+
+  const excellent = take(
+    (row, q) => row.excellent && q >= 10,
+    MAX_STRENGTH_SLOTS
+  );
+
+  const strengths = take(
+    (row, q) =>
+      !row.excellent &&
+      Number(row.accuracy) >= 87 &&
+      q >= 8 &&
+      !row.needsPractice,
+    MAX_STRENGTH_SLOTS
+  );
+
+  const maintain = take(
+    (row, q) => {
+      const acc = Number(row.accuracy) || 0;
+      return (
+        !row.needsPractice &&
+        acc >= 80 &&
+        acc < 93 &&
+        q >= 6
+      );
+    },
+    MAX_MAINTAIN
+  );
+
+  const improving = take(
+    (row, q) => {
+      const acc = Number(row.accuracy) || 0;
+      if (row.needsPractice && acc >= 55 && acc < 78) return true;
+      if (!row.excellent && acc >= 68 && acc <= 82 && q >= 6) return true;
+      return false;
+    },
+    MAX_IMPROVING
+  );
+
+  return { excellent, strengths, maintain, improving };
+}
+
+function buildEvidenceMistakeFromEvent(ev, confidence) {
+  if (!ev) return null;
+  const ex = String(ev.exerciseText || "").trim();
+  if (ex.length > 220) return null;
+  if (!ex && ev.userAnswer == null) return null;
+  if (confidence !== "high" && confidence !== "moderate") return null;
+  return {
+    exerciseText: ex || null,
+    questionLabel: ev.questionLabel || null,
+    correctAnswer: ev.correctAnswer ?? null,
+    userAnswer: ev.userAnswer ?? null,
+    confidence,
+  };
+}
+
+function buildEvidenceSuccess(excellent, strengths) {
+  const pick = excellent[0] || strengths[0];
+  if (!pick) return null;
+  if (pick.questions < 8) return null;
+  const conf =
+    pick.confidence === "high" || pick.questions >= 20 ? "high" : "moderate";
+  return {
+    titleHe: "חוזקה בתרגול",
+    bodyHe: `בנושא "${pick.labelHe}" רואים ביצועים טובים: כ־${pick.accuracy}% נכון מתוך ${pick.questions} שאלות בטווח התאריכים.`,
+    confidence: conf,
+  };
+}
+
+/**
+ * @param {Record<string, unknown>} report
+ * @param {Record<string, unknown[]>} [rawMistakesBySubject]
  */
 export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
   const out = {
-    version: 1,
+    version: 2,
     generatedAt: new Date().toISOString(),
     constants: {
       minMistakesPerPatternFamily: MIN_PATTERN_FAMILY_FOR_DIAGNOSIS,
       minMistakesForStrongRecommendation: MIN_MISTAKES_FOR_STRONG_RECOMMENDATION,
+      maxWeaknesses: MAX_WEAKNESSES,
+      maxStrengthRows: MAX_STRENGTH_SLOTS,
+      maxMaintain: MAX_MAINTAIN,
+      maxImproving: MAX_IMPROVING,
     },
     subjects: {},
   };
@@ -131,16 +200,14 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       clusters[key].push(ev);
     });
 
-    const stableWeaknesses = [];
+    const weaknessCandidates = [];
     const insufficientData = [];
-    const evidenceExamples = [];
 
-    Object.entries(clusters).forEach(([clusterKey, list]) => {
+    Object.entries(clusters).forEach(([, list]) => {
       const n = list.length;
       if (n < MIN_PATTERN_FAMILY_FOR_DIAGNOSIS) {
         if (insufficientData.length < 24) {
           insufficientData.push({
-            clusterKey,
             mistakeCount: n,
             note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה",
           });
@@ -148,99 +215,143 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
         return;
       }
       const sample = list[list.length - 1];
-      const label = hebrewWeaknessLabel(sid, clusterKey, sample);
-      const strength = recStrength(n);
-      stableWeaknesses.push({
-        id: `${sid}:${clusterKey}`,
-        clusterKey,
-        label,
+      const labelHe = weaknessLabelHe(sid, sample);
+      const rs = recStrength(n);
+      weaknessCandidates.push({
+        labelHe,
         mistakeCount: n,
-        patternFamily: sample.patternFamily,
-        kind: sample.kind,
-        subtype: sample.subtype,
-        conceptTag: sample.conceptTag,
-        topicOrOperation: sample.topicOrOperation,
-        confidence: strength === "strong" ? "high" : "moderate",
+        confidence: rs === "strong" ? "high" : "moderate",
+        sampleEvent: sample,
       });
-      const ev = buildEvidenceExample(sample, strength === "strong" ? "high" : "moderate");
-      if (ev) evidenceExamples.push(ev);
     });
 
-    const rowsKey = REPORT_ROWS_KEY[sid];
-    const rows = rowsKey && report[rowsKey] ? report[rowsKey] : {};
-    const stableStrengths = [];
-    Object.entries(rows).forEach(([rowKey, row]) => {
-      if (!row || typeof row !== "object") return;
-      if (row.excellent && row.questions >= 10) {
-        stableStrengths.push({
-          id: `${sid}:${rowKey}`,
-          rowKey,
-          label: `${SUBJECT_LABEL_HE[sid]}: ${row.displayName || row.bucketKey || ""}`.trim(),
-          basis: "session_row_excellent",
-          questions: row.questions,
-          accuracy: row.accuracy,
-          confidence: row.questions >= 24 ? "high" : "moderate",
-        });
-      }
-    });
+    weaknessCandidates.sort((a, b) => b.mistakeCount - a.mistakeCount);
+    const weaknesses = weaknessCandidates.slice(0, MAX_WEAKNESSES).map((w, i) => ({
+      id: `${sid}:w:${i}`,
+      labelHe: w.labelHe || GENERIC_WEAKNESS_HE,
+      mistakeCount: w.mistakeCount,
+      confidence: w.confidence,
+    }));
 
-    const studentRecommendations = [];
-    const parentRecommendations = [];
+    const { excellent, strengths, maintain, improving } = buildSessionBands(
+      sid,
+      report
+    );
 
-    stableWeaknesses.forEach((w) => {
-      const rs = recStrength(w.mistakeCount);
-      studentRecommendations.push({
-        id: `stu:${w.id}`,
-        text: `לתרגל בממוקד את הדפוס: ${w.label} (זוהה ${w.mistakeCount} טעויות דומות בטווח התאריכים).`,
-        relatedWeaknessId: w.id,
+    const studentRecommendationsImprove = [];
+    const studentRecommendationsMaintain = [];
+    const parentRecommendationsImprove = [];
+    const parentRecommendationsMaintain = [];
+
+    const w0 = weaknesses[0];
+    if (w0) {
+      const rs = recStrength(w0.mistakeCount);
+      studentRecommendationsImprove.push({
+        id: `stu-imp:${w0.id}`,
+        textHe: `לתרגל בממוקד: ${w0.labelHe} (זוהו ${w0.mistakeCount} טעויות דומות בטווח התאריכים).`,
         strength: rs,
       });
-      parentRecommendations.push({
-        id: `par:${w.id}`,
-        text:
+      parentRecommendationsImprove.push({
+        id: `par-imp:${w0.id}`,
+        textHe:
           rs === "strong"
-            ? `יש דפוס חוזר (${w.label}). כדאי לשבת 10–15 דקות יחד על דוגמה אחת, לבדוק את הלוגיקה ולא את הזיכרון בלבד.`
-            : `מתחיל להתגבש דפוס (${w.label}). מומלץ מעקב קצר אחרי שבוע נוסף של תרגול.`,
-        relatedWeaknessId: w.id,
+            ? `יש דפוס חוזר סביב "${w0.labelHe}". כדאי לשבת קצרות יחד על דוגמה אחת ולבדוק את הלוגיקה צעד־אחר־צעד.`
+            : `מתחיל להתגבש דפוס סביב "${w0.labelHe}". מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.`,
         strength: rs,
-      });
-    });
-
-    if (!stableWeaknesses.length && wrong.length > 0) {
-      parentRecommendations.push({
-        id: `par:${sid}:sparse`,
-        text: "יש טעויות בודדות אך בלי דפוס שחוזר על עצמו מספיק פעמים — עדיין לא ניתן לאבחן חולשה יציבה.",
-        relatedWeaknessId: null,
-        strength: "tentative",
       });
     }
+
+    const topPositive = excellent[0] || strengths[0];
+    if (topPositive) {
+      const rs =
+        topPositive.confidence === "high" || topPositive.questions >= 18
+          ? "strong"
+          : "moderate";
+      studentRecommendationsMaintain.push({
+        id: `stu-maint:${topPositive.id}`,
+        textHe: `להמשיך לתרגל בנוחות ב"${topPositive.labelHe}" — יש כאן יציבות טובה (דיוק כ־${topPositive.accuracy}%).`,
+        strength: rs,
+      });
+      parentRecommendationsMaintain.push({
+        id: `par-maint:${topPositive.id}`,
+        textHe: `כדאי לעודד על ההתמדה ב"${topPositive.labelHe}" — רואים הצלחה חוזרת; שימור הרגל חיובי חשוב לא פחות מתיקון טעויות.`,
+        strength: rs,
+      });
+    }
+
+    let diagnosticSparseNoteHe = null;
+    if (!weaknesses.length && wrong.length > 0) {
+      diagnosticSparseNoteHe =
+        "יש טעויות בודדות אך בלי דפוס שחוזר מספיק פעמים — עדיין לא ניתן לקבוע חולשה יציבה.";
+      if (!parentRecommendationsImprove.length) {
+        parentRecommendationsImprove.push({
+          id: `par-imp:${sid}:sparse`,
+          textHe: diagnosticSparseNoteHe,
+          strength: "tentative",
+        });
+      }
+    }
+
+    let evidenceMistake = null;
+    const wTop = weaknessCandidates[0];
+    if (wTop && wTop.sampleEvent) {
+      evidenceMistake = buildEvidenceMistakeFromEvent(
+        wTop.sampleEvent,
+        wTop.confidence
+      );
+    }
+
+    const evidenceSuccess = buildEvidenceSuccess(excellent, strengths);
+
+    const hasAnySignal =
+      weaknesses.length > 0 ||
+      excellent.length > 0 ||
+      strengths.length > 0 ||
+      maintain.length > 0 ||
+      improving.length > 0 ||
+      studentRecommendationsImprove.length > 0 ||
+      studentRecommendationsMaintain.length > 0 ||
+      parentRecommendationsImprove.length > 0 ||
+      parentRecommendationsMaintain.length > 0 ||
+      evidenceMistake != null ||
+      evidenceSuccess != null;
 
     out.subjects[sid] = {
       subject: sid,
       subjectLabelHe: SUBJECT_LABEL_HE[sid],
       mistakeEventCount: events.length,
       wrongCount: wrong.length,
-      stableWeaknesses,
-      stableStrengths,
-      studentRecommendations,
-      parentRecommendations,
-      evidenceExamples,
+      hasAnySignal,
+      weaknesses,
+      strengths,
+      excellent,
+      maintain,
+      improving,
+      studentRecommendationsImprove,
+      studentRecommendationsMaintain,
+      parentRecommendationsImprove,
+      parentRecommendationsMaintain,
+      evidenceMistake,
+      evidenceSuccess,
       insufficientData,
+      diagnosticSparseNoteHe,
     };
   }
 
   return out;
 }
 
-/**
- * Example diagnostic payload (static) — for contracts / UI later; not tied to live storage.
- */
+/** דוגמה סטטית לפי מבנה גרסה 2 */
 export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
-  version: 1,
+  version: 2,
   generatedAt: "2026-04-11T12:00:00.000Z",
   constants: {
     minMistakesPerPatternFamily: 5,
     minMistakesForStrongRecommendation: 10,
+    maxWeaknesses: 2,
+    maxStrengthRows: 2,
+    maxMaintain: 2,
+    maxImproving: 2,
   },
   subjects: {
     math: {
@@ -248,202 +359,244 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       subjectLabelHe: "חשבון",
       mistakeEventCount: 12,
       wrongCount: 12,
-      stableWeaknesses: [
+      hasAnySignal: true,
+      weaknesses: [
         {
-          id: "math:pf:word_compare_remainder_easy",
-          clusterKey: "pf:word_compare_remainder_easy",
-          label: "קושי בהשוואת כמויות/מספרים",
+          id: "math:w:0",
+          labelHe: "קושי בהשוואת כמויות או מספרים",
           mistakeCount: 7,
-          patternFamily: "word_compare_remainder_easy",
-          kind: "word_problem",
-          subtype: "compare_remainder",
-          conceptTag: null,
-          topicOrOperation: "word_problems",
           confidence: "moderate",
         },
       ],
-      stableStrengths: [
+      strengths: [
         {
-          id: "math:addition\u0001learning",
-          rowKey: "addition\u0001learning",
-          label: "חשבון: חיבור",
-          basis: "session_row_excellent",
+          id: "math:subtraction:learning",
+          labelHe: "חיבור",
+          questions: 24,
+          accuracy: 88,
+          confidence: "moderate",
+          needsPractice: false,
+          excellent: false,
+        },
+      ],
+      excellent: [
+        {
+          id: "math:addition:learning",
+          labelHe: "חיבור",
           questions: 42,
           accuracy: 93,
           confidence: "high",
+          needsPractice: false,
+          excellent: true,
         },
       ],
-      studentRecommendations: [
+      maintain: [],
+      improving: [],
+      studentRecommendationsImprove: [
         {
-          id: "stu:math:pf:word_compare_remainder_easy",
-          text: "לתרגל בממוקד את הדפוס: קושי בהשוואת כמויות/מספרים (זוהה 7 טעויות דומות בטווח התאריכים).",
-          relatedWeaknessId: "math:pf:word_compare_remainder_easy",
+          id: "stu-imp:math:w:0",
+          textHe:
+            "לתרגל בממוקד: קושי בהשוואת כמויות או מספרים (זוהו 7 טעויות דומות בטווח התאריכים).",
           strength: "moderate",
         },
       ],
-      parentRecommendations: [
+      studentRecommendationsMaintain: [
         {
-          id: "par:math:pf:word_compare_remainder_easy",
-          text: "מתחיל להתגבש דפוס (קושי בהשוואת כמויות/מספרים). מומלץ מעקב קצר אחרי שבוע נוסף של תרגול.",
-          relatedWeaknessId: "math:pf:word_compare_remainder_easy",
+          id: "stu-maint:math:addition:learning",
+          textHe:
+            'להמשיך לתרגל בנוחות ב"חיבור" — יש כאן יציבות טובה (דיוק כ־93%).',
+          strength: "strong",
+        },
+      ],
+      parentRecommendationsImprove: [
+        {
+          id: "par-imp:math:w:0",
+          textHe:
+            'מתחיל להתגבש דפוס סביב "קושי בהשוואת כמויות או מספרים". מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.',
           strength: "moderate",
         },
       ],
-      evidenceExamples: [
+      parentRecommendationsMaintain: [
         {
-          patternKey: "pf:word_compare_remainder_easy",
-          exerciseText: "בכמה שקים המחיר של המחשב גבוה יותר?",
-          questionLabel: null,
-          correctAnswer: 120,
-          userAnswer: 102,
-          confidence: "moderate",
+          id: "par-maint:math:addition:learning",
+          textHe:
+            'כדאי לעודד על ההתמדה ב"חיבור" — רואים הצלחה חוזרת; שימור הרגל חיובי חשוב לא פחות מתיקון טעויות.',
+          strength: "strong",
         },
       ],
+      evidenceMistake: {
+        exerciseText: "בכמה שקים המחיר של המחשב גבוה יותר?",
+        questionLabel: null,
+        correctAnswer: 120,
+        userAnswer: 102,
+        confidence: "moderate",
+      },
+      evidenceSuccess: {
+        titleHe: "חוזקה בתרגול",
+        bodyHe:
+          'בנושא "חיבור" רואים ביצועים טובים: כ־93% נכון מתוך 42 שאלות בטווח התאריכים.',
+        confidence: "high",
+      },
       insufficientData: [
-        {
-          clusterKey: "k:vertical_subtraction|st:borrow_once",
-          mistakeCount: 2,
-          note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה",
-        },
+        { mistakeCount: 2, note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה" },
       ],
+      diagnosticSparseNoteHe: null,
     },
     geometry: {
       subject: "geometry",
       subjectLabelHe: "גאומטריה",
       mistakeEventCount: 9,
       wrongCount: 9,
-      stableWeaknesses: [
+      hasAnySignal: true,
+      weaknesses: [
         {
-          id: "geometry:pf:rectangle_perimeter_vs_area_grade3",
-          clusterKey: "pf:rectangle_perimeter_vs_area_grade3",
-          label: "בלבול חוזר בין היקף לשטח",
+          id: "geometry:w:0",
+          labelHe: "בלבול חוזר בין היקף לשטח",
           mistakeCount: 6,
-          patternFamily: "rectangle_perimeter_vs_area_grade3",
-          kind: "mcq",
-          subtype: "choose_measure",
-          conceptTag: "perimeter_area_distinction",
-          topicOrOperation: "rectangles",
           confidence: "moderate",
         },
       ],
-      stableStrengths: [],
-      studentRecommendations: [
+      strengths: [],
+      excellent: [],
+      maintain: [],
+      improving: [],
+      studentRecommendationsImprove: [
         {
-          id: "stu:geometry:pf:rectangle_perimeter_vs_area_grade3",
-          text: "לתרגל בממוקד את הדפוס: בלבול חוזר בין היקף לשטח (זוהה 6 טעויות דומות בטווח התאריכים).",
-          relatedWeaknessId: "geometry:pf:rectangle_perimeter_vs_area_grade3",
+          id: "stu-imp:geometry:w:0",
+          textHe:
+            "לתרגל בממוקד: בלבול חוזר בין היקף לשטח (זוהו 6 טעויות דומות בטווח התאריכים).",
           strength: "moderate",
         },
       ],
-      parentRecommendations: [
+      studentRecommendationsMaintain: [],
+      parentRecommendationsImprove: [
         {
-          id: "par:geometry:pf:rectangle_perimeter_vs_area_grade3",
-          text: "מתחיל להתגבש דפוס (בלבול חוזר בין היקף לשטח). מומלץ מעקב קצר אחרי שבוע נוסף של תרגול.",
-          relatedWeaknessId: "geometry:pf:rectangle_perimeter_vs_area_grade3",
+          id: "par-imp:geometry:w:0",
+          textHe:
+            'מתחיל להתגבש דפוס סביב "בלבול חוזר בין היקף לשטח". מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.',
           strength: "moderate",
         },
       ],
-      evidenceExamples: [
-        {
-          patternKey: "pf:rectangle_perimeter_vs_area_grade3",
-          exerciseText: "מה ההיקף של מלבן 5×3 ס״מ?",
-          questionLabel: null,
-          correctAnswer: "16 ס״מ",
-          userAnswer: "15 ס״מ",
-          confidence: "moderate",
-        },
-      ],
+      parentRecommendationsMaintain: [],
+      evidenceMistake: {
+        exerciseText: "מה ההיקף של מלבן 5×3 ס״מ?",
+        questionLabel: null,
+        correctAnswer: "16 ס״מ",
+        userAnswer: "15 ס״מ",
+        confidence: "moderate",
+      },
+      evidenceSuccess: null,
       insufficientData: [],
+      diagnosticSparseNoteHe: null,
     },
     english: {
       subject: "english",
       subjectLabelHe: "אנגלית",
       mistakeEventCount: 0,
       wrongCount: 0,
-      stableWeaknesses: [],
-      stableStrengths: [],
-      studentRecommendations: [],
-      parentRecommendations: [],
-      evidenceExamples: [],
+      hasAnySignal: false,
+      weaknesses: [],
+      strengths: [],
+      excellent: [],
+      maintain: [],
+      improving: [],
+      studentRecommendationsImprove: [],
+      studentRecommendationsMaintain: [],
+      parentRecommendationsImprove: [],
+      parentRecommendationsMaintain: [],
+      evidenceMistake: null,
+      evidenceSuccess: null,
       insufficientData: [],
+      diagnosticSparseNoteHe: null,
     },
     science: {
       subject: "science",
       subjectLabelHe: "מדעים",
       mistakeEventCount: 0,
       wrongCount: 0,
-      stableWeaknesses: [],
-      stableStrengths: [],
-      studentRecommendations: [],
-      parentRecommendations: [],
-      evidenceExamples: [],
+      hasAnySignal: false,
+      weaknesses: [],
+      strengths: [],
+      excellent: [],
+      maintain: [],
+      improving: [],
+      studentRecommendationsImprove: [],
+      studentRecommendationsMaintain: [],
+      parentRecommendationsImprove: [],
+      parentRecommendationsMaintain: [],
+      evidenceMistake: null,
+      evidenceSuccess: null,
       insufficientData: [],
+      diagnosticSparseNoteHe: null,
     },
     hebrew: {
       subject: "hebrew",
       subjectLabelHe: "עברית",
       mistakeEventCount: 11,
       wrongCount: 11,
-      stableWeaknesses: [
+      hasAnySignal: true,
+      weaknesses: [
         {
-          id: "hebrew:pf:hebrew_prepositions_in_context",
-          clusterKey: "pf:hebrew_prepositions_in_context",
-          label: "קושי במילות יחס ובמבנה משפט",
+          id: "hebrew:w:0",
+          labelHe: "קושי במילות יחס ובמבנה משפט",
           mistakeCount: 6,
-          patternFamily: "hebrew_prepositions_in_context",
-          kind: "cloze",
-          subtype: "preposition_choice",
-          conceptTag: "prepositions",
-          topicOrOperation: "grammar",
           confidence: "moderate",
         },
       ],
-      stableStrengths: [],
-      studentRecommendations: [
+      strengths: [],
+      excellent: [],
+      maintain: [],
+      improving: [],
+      studentRecommendationsImprove: [
         {
-          id: "stu:hebrew:pf:hebrew_prepositions_in_context",
-          text: "לתרגל בממוקד את הדפוס: קושי במילות יחס ובמבנה משפט (זוהה 6 טעויות דומות בטווח התאריכים).",
-          relatedWeaknessId: "hebrew:pf:hebrew_prepositions_in_context",
+          id: "stu-imp:hebrew:w:0",
+          textHe:
+            "לתרגל בממוקד: קושי במילות יחס ובמבנה משפט (זוהו 6 טעויות דומות בטווח התאריכים).",
           strength: "moderate",
         },
       ],
-      parentRecommendations: [
+      studentRecommendationsMaintain: [],
+      parentRecommendationsImprove: [
         {
-          id: "par:hebrew:pf:hebrew_prepositions_in_context",
-          text: "מתחיל להתגבש דפוס (קושי במילות יחס ובמבנה משפט). מומלץ מעקב קצר אחרי שבוע נוסף של תרגול.",
-          relatedWeaknessId: "hebrew:pf:hebrew_prepositions_in_context",
+          id: "par-imp:hebrew:w:0",
+          textHe:
+            'מתחיל להתגבש דפוס סביב "קושי במילות יחס ובמבנה משפט". מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.',
           strength: "moderate",
         },
       ],
-      evidenceExamples: [
-        {
-          patternKey: "pf:hebrew_prepositions_in_context",
-          exerciseText: "השלימו: הילדים שיחקו ___ הזמן בגן.",
-          questionLabel: null,
-          correctAnswer: "בְּ",
-          userAnswer: "לְ",
-          confidence: "moderate",
-        },
-      ],
+      parentRecommendationsMaintain: [],
+      evidenceMistake: {
+        exerciseText: "השלימו: הילדים שיחקו ___ הזמן בגן.",
+        questionLabel: null,
+        correctAnswer: "בְּ",
+        userAnswer: "לְ",
+        confidence: "moderate",
+      },
+      evidenceSuccess: null,
       insufficientData: [
-        {
-          clusterKey: "pf:hebrew_logical_sequence",
-          mistakeCount: 3,
-          note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה",
-        },
+        { mistakeCount: 3, note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה" },
       ],
+      diagnosticSparseNoteHe: null,
     },
     "moledet-geography": {
       subject: "moledet-geography",
       subjectLabelHe: "מולדת וגאוגרפיה",
       mistakeEventCount: 0,
       wrongCount: 0,
-      stableWeaknesses: [],
-      stableStrengths: [],
-      studentRecommendations: [],
-      parentRecommendations: [],
-      evidenceExamples: [],
+      hasAnySignal: false,
+      weaknesses: [],
+      strengths: [],
+      excellent: [],
+      maintain: [],
+      improving: [],
+      studentRecommendationsImprove: [],
+      studentRecommendationsMaintain: [],
+      parentRecommendationsImprove: [],
+      parentRecommendationsMaintain: [],
+      evidenceMistake: null,
+      evidenceSuccess: null,
       insufficientData: [],
+      diagnosticSparseNoteHe: null,
     },
   },
 };

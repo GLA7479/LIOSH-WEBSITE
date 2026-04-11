@@ -1,0 +1,213 @@
+/**
+ * תוויות אבחון בעברית בלבד להורה — ללא מזהים טכניים באנגלית.
+ */
+
+import {
+  getMathReportBucketDisplayName,
+  getTopicName,
+  getEnglishTopicName,
+  getScienceTopicName,
+  getHebrewTopicName,
+  getMoledetGeographyTopicName,
+} from "./math-report-generator";
+
+export const GENERIC_WEAKNESS_HE = "דפוס שגיאות חוזר";
+export const GENERIC_POINT_HE = "קושי נקודתי שדורש מעקב";
+export const GENERIC_REINFORCE_HE = "נדרש חיזוק נוסף בנושא זה";
+
+/** מילון מקוצר: מקטעים באנגלית מתוך patternFamily/kind → עברית */
+const EN_SNIPPET_HE = {
+  word: "מילולי",
+  problems: "בעיות",
+  word_problems: "בעיות מילוליות",
+  vocabulary: "אוצר מילים",
+  grammar: "דקדוק",
+  sentence: "משפטים",
+  completion: "השלמה",
+  translation: "תרגום",
+  compare: "השוואה",
+  comparison: "השוואה",
+  remainder: "שארית",
+  division: "חלוקה",
+  fraction: "שברים",
+  fractions: "שברים",
+  decimal: "עשרוניים",
+  percent: "אחוזים",
+  discount: "הנחות",
+  perimeter: "היקף",
+  area: "שטח",
+  volume: "נפח",
+  prism: "מנסרה",
+  angle: "זוויות",
+  triangle: "משולשים",
+  rectangle: "מלבן",
+  mcq: "בחירה מרובה",
+  cloze: "השלמת חסר",
+  preposition: "מילות יחס",
+  prepositions: "מילות יחס",
+  reading: "קריאה",
+  writing: "כתיבה",
+  recall: "הזכרה",
+  vocab: "אוצר מילים",
+  story: "סיפור",
+  subtraction: "חיסור",
+  addition: "חיבור",
+  multiplication: "כפל",
+  mixed: "ערבוב פעולות",
+  vertical: "כתיבה אנכית",
+  borrow: "השאלה",
+  once: "פעם אחת",
+  easy: "רמה בסיסית",
+  medium: "רמה בינונית",
+  hard: "רמה מתקדמת",
+  grade: "כיתה",
+  context: "הקשר",
+  logical: "רצף לוגי",
+  sequence: "רצף",
+  homeland: "מולדת",
+  geography: "גאוגרפיה",
+};
+
+function hasHebrewLetters(s) {
+  return /[\u0590-\u05FF]/.test(String(s || ""));
+}
+
+function isMostlyAsciiIdentifier(s) {
+  const t = String(s || "")
+    .trim()
+    .replace(/[\s\d_./:?=-]/g, "");
+  if (t.length < 2) return false;
+  return !/[\u0590-\u05FF]/.test(t) && /^[a-zA-Z][a-zA-Z0-9_-]*$/.test(t);
+}
+
+/**
+ * ניסיון להפוך slug טכני לתיאור עברי קצר; אם אין מספיק — null.
+ * @param {string|null|undefined} slug
+ */
+export function hebrewFromEnglishSlug(slug) {
+  if (!slug || typeof slug !== "string") return null;
+  const raw = slug.trim().toLowerCase();
+  if (!raw) return null;
+  if (EN_SNIPPET_HE[raw]) return EN_SNIPPET_HE[raw];
+  const parts = raw.split(/[_/:+]+/).filter(Boolean);
+  if (parts.length === 0) return null;
+  const mapped = parts.map((p) => EN_SNIPPET_HE[p]).filter(Boolean);
+  if (mapped.length === 0) return null;
+  if (mapped.length >= Math.min(2, parts.length)) return [...new Set(mapped)].join(" · ");
+  if (mapped.length === 1 && parts.length <= 4) return mapped[0];
+  return null;
+}
+
+/**
+ * תווית נושא לפי מקצוע ומפתח דלי (operation/topic).
+ * @param {string} subjectId
+ * @param {string|null|undefined} bucketKey
+ */
+export function topicBucketLabelHe(subjectId, bucketKey) {
+  const k = bucketKey != null ? String(bucketKey) : "";
+  if (!k) return "נושא זה";
+  try {
+    if (subjectId === "math") return getMathReportBucketDisplayName(k);
+    if (subjectId === "geometry") return getTopicName(k);
+    if (subjectId === "english") return getEnglishTopicName(k);
+    if (subjectId === "science") return getScienceTopicName(k);
+    if (subjectId === "hebrew") return getHebrewTopicName(k);
+    if (subjectId === "moledet-geography") return getMoledetGeographyTopicName(k);
+  } catch {
+    /* ignore */
+  }
+  return "נושא זה";
+}
+
+/**
+ * תווית חולשה בעברית בלבד — ללא kind/patternFamily גולמיים באנגלית.
+ * @param {string} subjectId
+ * @param {Record<string, unknown>|null|undefined} sampleEv — normalizeMistakeEvent shape
+ */
+export function weaknessLabelHe(subjectId, sampleEv) {
+  const ev = sampleEv && typeof sampleEv === "object" ? sampleEv : {};
+  const pf = String(ev.patternFamily || "").trim();
+  const k = String(ev.kind || "").trim();
+  const st = String(ev.subtype || "").trim();
+  const ct = String(ev.conceptTag || "").trim();
+  const topic = ev.topicOrOperation;
+
+  if (subjectId === "geometry") {
+    const hay = `${pf} ${k} ${st} ${ct}`.toLowerCase();
+    if (hay.includes("perimeter") && hay.includes("area"))
+      return "בלבול חוזר בין היקף לשטח";
+    if (hay.includes("perimeter")) return "קושי בהבחנה ובחישוב היקף";
+    if (hay.includes("area")) return "קושי בשטחים וביחידות שטח";
+    if (hay.includes("volume") || hay.includes("prism"))
+      return "קושי בנפח ובתבניות תלת־ממד";
+    if (hay.includes("angle")) return "קושי בזוויות וביחסים בין זוויות";
+  }
+
+  if (subjectId === "hebrew") {
+    const h = `${pf} ${k} ${st} ${ct}`.toLowerCase();
+    if (h.includes("preposition") || h.includes("יחס"))
+      return "קושי במילות יחס ובמבנה משפט";
+    if (h.includes("verb") || h.includes("tense"))
+      return "קושי בפעלים וזמני פעולה";
+    if (h.includes("syntax") || h.includes("sequence") || h.includes("רצף"))
+      return "קושי ברצף לוגי ובניסוח";
+    if (h.includes("clarity") || h.includes("rewrite") || h.includes("היר"))
+      return "קושי בניסוח בהיר ובהבנה מדויקת של הניסוח";
+  }
+
+  if (subjectId === "math") {
+    const h = `${pf} ${k} ${st}`.toLowerCase();
+    if (h.includes("remainder") || h.includes("שארית"))
+      return "קושי בשארית ובחלוקה עם שארית";
+    if (h.includes("compare") || h.includes("השוואה"))
+      return "קושי בהשוואת כמויות או מספרים";
+    if (h.includes("percent") || h.includes("אחוז") || h.includes("discount"))
+      return "קושי באחוזים ובהנחות";
+    if (h.includes("fraction")) return "קושי בשברים";
+    if (h.includes("decimal")) return "קושי בעשרוניים";
+  }
+
+  if (subjectId === "english") {
+    const h = `${pf} ${k} ${st}`.toLowerCase();
+    if (h.includes("vocab")) return "קושי באוצר מילים ובהבנת מילים";
+    if (h.includes("grammar")) return "קושי בדקדוק ובצורות מילים";
+    if (h.includes("sentence") || h.includes("completion"))
+      return "קושי בהשלמת משפטים ובמבנה משפט";
+  }
+
+  const fromPf = hebrewFromEnglishSlug(pf);
+  if (fromPf && hasHebrewLetters(fromPf)) return `דפוס שגיאות: ${fromPf}`;
+  const fromK = hebrewFromEnglishSlug(k);
+  if (fromK && hasHebrewLetters(fromK)) return `דפוס שגיאות: ${fromK}`;
+  const fromSt = hebrewFromEnglishSlug(st);
+  if (fromSt && hasHebrewLetters(fromSt)) return `דפוס שגיאות: ${fromSt}`;
+
+  if (topic && !isMostlyAsciiIdentifier(topic)) {
+    const t = String(topic).trim();
+    if (hasHebrewLetters(t)) return `קושי נקודתי ב${t}`;
+  }
+  if (topic && isMostlyAsciiIdentifier(topic)) {
+    const nice = topicBucketLabelHe(subjectId, topic);
+    if (nice && !isMostlyAsciiIdentifier(nice)) return `קושי נקודתי ב${nice}`;
+  }
+
+  if (pf && !isMostlyAsciiIdentifier(pf) && hasHebrewLetters(pf)) return `דפוס שגיאות: ${pf.trim()}`;
+  return GENERIC_WEAKNESS_HE;
+}
+
+/**
+ * תווית שורת סשן (חוזקה / תחזוקה / שיפור) — מעדיף displayName בעברית.
+ * @param {string} subjectId
+ * @param {Record<string, unknown>} row — שורת דוח V2
+ */
+export function sessionRowLabelHe(subjectId, row) {
+  if (!row || typeof row !== "object") return "נושא בתרגול";
+  const dn = row.displayName != null ? String(row.displayName).trim() : "";
+  if (dn && hasHebrewLetters(dn)) return dn;
+  const bk = row.bucketKey != null ? String(row.bucketKey) : "";
+  if (bk) {
+    const mapped = topicBucketLabelHe(subjectId, bk);
+    if (mapped && hasHebrewLetters(mapped)) return mapped;
+  }
+  return "נושא בתרגול";
+}
