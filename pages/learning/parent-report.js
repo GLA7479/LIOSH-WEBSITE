@@ -897,10 +897,40 @@ export default function ParentReport() {
               font-weight: 600 !important;
             }
 
-            /* המלצות — מניעת שבירת פריט באמצע עמוד בלבד */
+            /* המלצות / אבחון — מניעת שבירה + חיזוק גבולות בהדפסה בלבד */
             #parent-report-pdf .parent-report-recommendations-print .parent-report-rec-item {
               break-inside: avoid !important;
               page-break-inside: avoid !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-rec-item {
+              border-width: 1.5px !important;
+              border-style: solid !important;
+              border-color: #475569 !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            /* רקע כהה שלא נכלל בגלובל — כרטיס מקצוע באבחון */
+            #parent-report-pdf .parent-report-diagnostics-print .bg-black\\/20 {
+              background: #f8fafc !important;
+              border-color: #64748b !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            /* כותרת מקצוע: לא להסתמך על text-white → שחור; צבע ורקע מפורשים ל-PDF */
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-diagnostic-subject-title {
+              color: #0f172a !important;
+              font-weight: 800 !important;
+              background: #e2e8f0 !important;
+              border-bottom: 2px solid #0f172a !important;
+              border-bottom-color: #0f172a !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            #parent-report-pdf .parent-report-diagnostics-print .parent-report-diagnostic-subject-block {
+              border-color: #475569 !important;
+              border-width: 1.5px !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
 
             /* גרפים — מניעת שבירה וקריאות בהדפסה */
@@ -1998,7 +2028,7 @@ export default function ParentReport() {
               diagnosticsView.mode === "new" ||
               (diagnosticsView.mode === "legacy" &&
                 diagnosticsView.legacyRecommendations.length > 0)) && (
-              <div className="parent-report-recommendations-print bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
+              <div className="parent-report-recommendations-print parent-report-diagnostics-print bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
                 <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">
                   💡 המלצות
                 </h2>
@@ -2069,15 +2099,15 @@ export default function ParentReport() {
                       return (
                         <div
                           key={row.subjectId}
-                          className="rounded-lg border border-white/15 bg-black/20 p-2 md:p-3"
+                          className="parent-report-diagnostic-subject-block rounded-lg border border-white/15 bg-black/20 p-2 md:p-3"
                         >
-                          <div className="font-bold text-sm md:text-base mb-2 text-white/95 border-b border-white/10 pb-1">
+                          <div className="parent-report-diagnostic-subject-title font-bold text-sm md:text-base mb-2 text-white/95 border-b border-white/10 pb-1">
                             {row.subjectLabelHe}
                           </div>
                           <div className="space-y-2 md:space-y-2.5">
                             {wk.length > 0 && (
                               <div className="text-[11px] font-semibold text-white/55 tracking-wide">
-                                חולשות יציבות
+                                חולשות שזוהו
                               </div>
                             )}
                             {wk.map((w) => (
@@ -2123,7 +2153,7 @@ export default function ParentReport() {
                             ))}
                             {mn.length > 0 && (
                               <div className="text-[11px] font-semibold text-sky-200/80 pt-1">
-                                כדאי לשמר
+                                מומלץ לשמר
                               </div>
                             )}
                             {mn.map((x) => (
@@ -2135,7 +2165,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">🔷</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      יציבות טובה
+                                      עקביות
                                     </div>
                                     <div className="text-xs md:text-sm text-white/80 break-words">
                                       {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
@@ -2146,7 +2176,7 @@ export default function ParentReport() {
                             ))}
                             {im.length > 0 && (
                               <div className="text-[11px] font-semibold text-amber-200/80 pt-1">
-                                משתפר
+                                נקודות לשיפור
                               </div>
                             )}
                             {im.map((x) => (
@@ -2158,7 +2188,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">📈</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      נקודת שיפור
+                                      נקודת לשיפור
                                     </div>
                                     <div className="text-xs md:text-sm text-white/80 break-words">
                                       {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)

@@ -248,14 +248,14 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       const rs = recStrength(w0.mistakeCount);
       studentRecommendationsImprove.push({
         id: `stu-imp:${w0.id}`,
-        textHe: `לתרגל בממוקד: ${w0.labelHe} (זוהו ${w0.mistakeCount} טעויות דומות בטווח התאריכים).`,
+        textHe: `מומלץ להתמקד: ${w0.labelHe} (זוהו ${w0.mistakeCount} טעויות דומות בטווח התאריכים).`,
         strength: rs,
       });
       parentRecommendationsImprove.push({
         id: `par-imp:${w0.id}`,
         textHe:
           rs === "strong"
-            ? `יש דפוס חוזר סביב "${w0.labelHe}". כדאי לשבת קצרות יחד על דוגמה אחת ולבדוק את הלוגיקה צעד־אחר־צעד.`
+            ? `יש דפוס חוזר סביב "${w0.labelHe}". מומלץ לשבת יחד על דוגמה אחת ולבדוק את הלוגיקה צעד־אחר־צעד.`
             : `מתחיל להתגבש דפוס סביב "${w0.labelHe}". מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.`,
         strength: rs,
       });
@@ -269,12 +269,12 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
           : "moderate";
       studentRecommendationsMaintain.push({
         id: `stu-maint:${topPositive.id}`,
-        textHe: `להמשיך לתרגל בנוחות ב"${topPositive.labelHe}" — יש כאן יציבות טובה (דיוק כ־${topPositive.accuracy}%).`,
+        textHe: `להמשיך לתרגל בנוחות ב"${topPositive.labelHe}" — יש כאן עקביות (דיוק כ־${topPositive.accuracy}%).`,
         strength: rs,
       });
       parentRecommendationsMaintain.push({
         id: `par-maint:${topPositive.id}`,
-        textHe: `כדאי לעודד על ההתמדה ב"${topPositive.labelHe}" — רואים הצלחה חוזרת; שימור הרגל חיובי חשוב לא פחות מתיקון טעויות.`,
+        textHe: `מומלץ לעודד על ההתמדה ב"${topPositive.labelHe}" — רואים הצלחה חוזרת; שימור הרגל חיובי חשוב לא פחות מתיקון טעויות.`,
         strength: rs,
       });
     }
@@ -396,7 +396,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:math:w:0",
           textHe:
-            "לתרגל בממוקד: קושי בהשוואת כמויות או מספרים (זוהו 7 טעויות דומות בטווח התאריכים).",
+            "מומלץ להתמקד: קושי בהשוואת כמויות או מספרים (זוהו 7 טעויות דומות בטווח התאריכים).",
           strength: "moderate",
         },
       ],
@@ -404,7 +404,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-maint:math:addition:learning",
           textHe:
-            'להמשיך לתרגל בנוחות ב"חיבור" — יש כאן יציבות טובה (דיוק כ־93%).',
+            'להמשיך לתרגל בנוחות ב"חיבור" — יש כאן עקביות (דיוק כ־93%).',
           strength: "strong",
         },
       ],
@@ -420,7 +420,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "par-maint:math:addition:learning",
           textHe:
-            'כדאי לעודד על ההתמדה ב"חיבור" — רואים הצלחה חוזרת; שימור הרגל חיובי חשוב לא פחות מתיקון טעויות.',
+            'מומלץ לעודד על ההתמדה ב"חיבור" — רואים הצלחה חוזרת; שימור הרגל חיובי חשוב לא פחות מתיקון טעויות.',
           strength: "strong",
         },
       ],
@@ -464,7 +464,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:geometry:w:0",
           textHe:
-            "לתרגל בממוקד: בלבול חוזר בין היקף לשטח (זוהו 6 טעויות דומות בטווח התאריכים).",
+            "מומלץ להתמקד: בלבול חוזר בין היקף לשטח (זוהו 6 טעויות דומות בטווח התאריכים).",
           strength: "moderate",
         },
       ],
@@ -551,7 +551,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:hebrew:w:0",
           textHe:
-            "לתרגל בממוקד: קושי במילות יחס ובמבנה משפט (זוהו 6 טעויות דומות בטווח התאריכים).",
+            "מומלץ להתמקד: קושי במילות יחס ובמבנה משפט (זוהו 6 טעויות דומות בטווח התאריכים).",
           strength: "moderate",
         },
       ],

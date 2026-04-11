@@ -11,9 +11,38 @@ import {
   getMoledetGeographyTopicName,
 } from "./math-report-generator";
 
+/**
+ * כשאין מספיק מידע לתווית ספציפית — אותו ניסוח לכל המקצועות.
+ * (באנגלית מעדיפים לפני כן `englishWeaknessFallbackHe`.)
+ */
 export const GENERIC_WEAKNESS_HE = "דפוס שגיאות חוזר";
 export const GENERIC_POINT_HE = "קושי נקודתי שדורש מעקב";
 export const GENERIC_REINFORCE_HE = "נדרש חיזוק נוסף בנושא זה";
+
+/** מפתח נושא באנגלית (כמו ב־localStorage) → תווית עברית להורה */
+const ENGLISH_TOPIC_KEY_HE = {
+  vocabulary: "אוצר מילים",
+  grammar: "דקדוק וצורות",
+  translation: "תרגום",
+  sentences: "הרכבת משפטים",
+  writing: "כתיבה",
+  mixed: "תרגול משולב",
+};
+
+function englishTopicLabelHe(topicKey) {
+  const k = String(topicKey || "")
+    .trim()
+    .toLowerCase();
+  if (!k) return null;
+  return ENGLISH_TOPIC_KEY_HE[k] || null;
+}
+
+/** טקסט כשאין פירוט טכני — תמיד בעברית, מבהיר שמדובר באנגלית */
+export function englishWeaknessFallbackHe(topicKey) {
+  const t = englishTopicLabelHe(topicKey);
+  if (t) return `קושי ב${t} (אנגלית)`;
+  return "קושי באנגלית בדפוס טעויות חוזר";
+}
 
 /** מילון מקוצר: מקטעים באנגלית מתוך patternFamily/kind → עברית */
 const EN_SNIPPET_HE = {
@@ -45,6 +74,10 @@ const EN_SNIPPET_HE = {
   cloze: "השלמת חסר",
   preposition: "מילות יחס",
   prepositions: "מילות יחס",
+  listening: "האזנה",
+  spelling: "איות",
+  tense: "זמני פעולה",
+  irregular: "שורשים לא רגילים",
   reading: "קריאה",
   writing: "כתיבה",
   recall: "הזכרה",
@@ -168,11 +201,15 @@ export function weaknessLabelHe(subjectId, sampleEv) {
   }
 
   if (subjectId === "english") {
-    const h = `${pf} ${k} ${st}`.toLowerCase();
+    const h = `${pf} ${k} ${st} ${ct}`.toLowerCase();
     if (h.includes("vocab")) return "קושי באוצר מילים ובהבנת מילים";
     if (h.includes("grammar")) return "קושי בדקדוק ובצורות מילים";
     if (h.includes("sentence") || h.includes("completion"))
       return "קושי בהשלמת משפטים ובמבנה משפט";
+    if (h.includes("listening")) return "קושי בהאזנה והבנת הנשמע";
+    if (h.includes("spelling")) return "קושי באיות ובכתיב";
+    if (h.includes("writing")) return "קושי בכתיבה ובניסוח באנגלית";
+    if (h.includes("reading")) return "קושי בקריאה והבנת הנקרא";
   }
 
   const fromPf = hebrewFromEnglishSlug(pf);
@@ -192,6 +229,11 @@ export function weaknessLabelHe(subjectId, sampleEv) {
   }
 
   if (pf && !isMostlyAsciiIdentifier(pf) && hasHebrewLetters(pf)) return `דפוס שגיאות: ${pf.trim()}`;
+
+  if (subjectId === "english") {
+    return englishWeaknessFallbackHe(topic);
+  }
+
   return GENERIC_WEAKNESS_HE;
 }
 
