@@ -249,7 +249,7 @@ function computeMasterBarChartGeometry(report, view) {
     G.labelMeasureFontPx,
     G.labelMeasureFontFamily
   );
-  const summaryLabelRailWidthPx = Math.min(G.labelColMaxPx, summaryLabelMeasured);
+  let summaryLabelRailWidthPx = Math.min(G.labelColMaxPx, summaryLabelMeasured);
 
   const topicLabels = collectAllTopicChartLabels(report);
   const topicLabelMeasured = measureMaxLabelWidthPx(
@@ -257,7 +257,7 @@ function computeMasterBarChartGeometry(report, view) {
     G.labelMeasureFontPx,
     G.labelMeasureFontFamily
   );
-  const topicLabelRailWidthPx = Math.min(
+  let topicLabelRailWidthPx = Math.min(
     G.labelColMaxPx,
     Math.max(summaryLabelRailWidthPx, topicLabelMeasured)
   );
@@ -269,6 +269,27 @@ function computeMasterBarChartGeometry(report, view) {
     const derivedPlot = Math.floor(hostInner - topicLabelRailWidthPx - gap);
     const minPlot = Math.min(basePlotRailWidthPx, useDesktopPlot ? 168 : 140);
     plotRailWidthPx = Math.max(minPlot, derivedPlot);
+  }
+
+  /** מובייל: בלי גלילה אופקית — סכום מסילות לא יעבור את hostInner */
+  const mobileNoHorizontalScroll =
+    Boolean(view.isMobileViewport && !view.forceDesktopLayout) &&
+    typeof hostInner === "number" &&
+    hostInner > gap + 48;
+  if (mobileNoHorizontalScroll) {
+    const plotFloor = 40;
+    plotRailWidthPx = Math.max(
+      plotFloor,
+      hostInner - topicLabelRailWidthPx - gap
+    );
+    topicLabelRailWidthPx = Math.max(
+      summaryLabelRailWidthPx,
+      Math.min(topicLabelRailWidthPx, hostInner - gap - plotFloor)
+    );
+    plotRailWidthPx = Math.max(
+      plotFloor,
+      hostInner - topicLabelRailWidthPx - gap
+    );
   }
 
   const summaryChartTotalWidthPx =
@@ -586,6 +607,17 @@ export default function ParentReport() {
     <Layout>
       <Head>
         <style>{`
+          /* מסך: בלי גלילה אופקית באזור גרפי עמודות — מניעת לכידת מגע אופקית */
+          .parent-report-topic-bar-host {
+            overflow-x: hidden !important;
+            touch-action: pan-y;
+            overscroll-behavior-x: none;
+          }
+          .parent-report-graph-section {
+            overflow-x: hidden;
+            min-width: 0;
+          }
+
           /* מצב הדפסה (לייצוא PDF) */
           .pdf-print-mode .no-pdf {
             display: none !important;
@@ -725,13 +757,14 @@ export default function ParentReport() {
           paddingTop: "calc(var(--head-h, 56px) + 16px)",
           paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)",
           overflowY: "auto",
+          overflowX: "hidden",
           WebkitOverflowScrolling: "touch"
         }}
       >
         <div
           id="parent-report-pdf"
           ref={parentReportPdfRef}
-          className="max-w-4xl mx-auto w-full"
+          className="max-w-4xl mx-auto w-full min-w-0 overflow-x-hidden"
         >
           {/* כפתור BACK (לא נכנס ל-PDF) */}
           <div className="mb-4 text-left no-pdf">
@@ -2058,11 +2091,11 @@ export default function ParentReport() {
                       </p>
                     </div>
                     <div
-                      className="w-full overflow-x-auto parent-report-topic-bar-host"
+                      className="w-full parent-report-topic-bar-host"
                       dir="ltr"
                     >
                       <div
-                        className="parent-report-master-bar-canvas flex flex-row items-stretch"
+                        className="parent-report-master-bar-canvas flex flex-row items-stretch min-w-0"
                         dir="ltr"
                         style={{
                           width: M.summaryChartTotalWidthPx,
@@ -2212,11 +2245,11 @@ export default function ParentReport() {
                       </p>
                     </div>
                     <div
-                      className="w-full overflow-x-auto parent-report-topic-bar-host"
+                      className="w-full parent-report-topic-bar-host"
                       dir="ltr"
                     >
                       <div
-                        className="parent-report-topic-bar-canvas flex flex-row items-stretch"
+                        className="parent-report-topic-bar-canvas flex flex-row items-stretch min-w-0"
                         dir="ltr"
                         style={{
                           width: totalW,
