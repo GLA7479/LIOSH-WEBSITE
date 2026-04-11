@@ -401,6 +401,8 @@ export function buildTopicRecommendationRecord(
     recommendedWhyNowHe: signals.recommendationContextHe,
     recommendationStabilityNoteHe: signals.patternStabilityHe,
     isEarlySignalOnly: !!signals.isEarlySignalOnly,
+    needsPractice: !!row?.needsPractice,
+    excellent: !!row?.excellent,
   };
 }
 
@@ -438,6 +440,7 @@ export function enrichReportMapsWithTopicStepHints(
       row.diagnosticWhyNowHe = rec.recommendedWhyNowHe;
       row.diagnosticStabilityNoteHe = rec.recommendationStabilityNoteHe;
       row.diagnosticIsEarlySignalOnly = rec.isEarlySignalOnly;
+      row.diagnosticRecommendedNextStep = rec.recommendedNextStep;
     }
   }
 }

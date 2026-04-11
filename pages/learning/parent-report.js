@@ -5,6 +5,7 @@ import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
 import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
+import { parentReliabilityVoiceHe } from "../../utils/parent-facing-reliability-he";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
@@ -77,9 +78,24 @@ function sumTopicMapMinutes(map) {
   return Object.values(map || {}).reduce((a, r) => a + (Number(r?.timeMinutes) || 0), 0);
 }
 
-/** שורת משנה בעמודת סטטוס — הוסרה לפי בקשה (לא מציגים שליטה % / ראיות וכו׳). */
-function ParentReportRowDiagnosticsFootnote() {
-  return null;
+/** שורת משנה בעמודת סטטוס — ניסוח הורי קצר על חוזק המסקנה (בלי מונחי מערכת). */
+function ParentReportRowDiagnosticsFootnote({ data }) {
+  const line = parentReliabilityVoiceHe({
+    questions: data?.questions,
+    evidenceStrength: data?.evidenceStrength,
+    dataSufficiencyLevel: data?.dataSufficiencyLevel,
+    isEarlySignalOnly: data?.isEarlySignalOnly,
+    mistakeEventCount: data?.mistakeEventCountResolved ?? data?.mistakeEventCount,
+    needsPractice: data?.needsPractice,
+    excellent: data?.excellent,
+    recommendedNextStep: data?.diagnosticRecommendedNextStep,
+  });
+  if (!line) return null;
+  return (
+    <div className="text-[9px] md:text-[10px] leading-snug text-white/50 mt-0.5 max-w-[11rem] mx-auto text-center font-normal">
+      {line}
+    </div>
+  );
 }
 
 function buildSubjectOverviewRows(report) {

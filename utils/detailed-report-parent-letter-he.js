@@ -4,6 +4,8 @@
  * לא משנה שדות payload; רק טקסטים שמוצגים לְהוֹרֶה.
  */
 
+import { parentReliabilityVoiceHe, subjectLetterReliabilityOptionalHe } from "./parent-facing-reliability-he";
+
 /** הסרת מירכאות צרפתיות / גוילמטים */
 export function stripGuillemetsHe(s) {
   return String(s || "")
@@ -112,7 +114,7 @@ function dedupeRowsByLabel(rows) {
 
 export function buildSubjectParentLetterCompact(sp) {
   const full = buildSubjectParentLetter(sp, { compact: true });
-  const mid = [full.goingWell, full.fragile].filter(Boolean).join(" ");
+  const mid = [full.goingWell, full.reliabilityNoteHe, full.fragile].filter(Boolean).join(" ");
   return {
     opening: full.opening,
     middle: mid,
@@ -199,9 +201,13 @@ export function buildSubjectParentLetter(sp, opts = {}) {
     closing = `מה חשוב לזכור להמשך: כשיימלא נתון על ${lab}, אפשר לחדד כאן את ההמלצה — בלי לחץ ובלי קפיצות רמה מוקדמות.`;
   }
 
+  const relRaw = subjectLetterReliabilityOptionalHe(sp);
+  const reliabilityNoteHe = relRaw ? stripGuillemetsHe(relRaw) : null;
+
   return {
     opening: stripGuillemetsHe(opening),
     goingWell: stripGuillemetsHe(goingWell),
+    reliabilityNoteHe,
     fragile: stripGuillemetsHe(fragile),
     homeAction,
     closing: stripGuillemetsHe(closing),
@@ -241,8 +247,21 @@ export function buildTopicRecommendationNarrative(tr) {
   const hint = stepHintForParentHe(tr);
   const homeRaw = tr?.recommendedParentActionHe ? String(tr.recommendedParentActionHe).trim() : "";
   const homeLine = rewriteParentRecommendationForDetailedHe(homeRaw);
+  const reliabilityLineHe = stripGuillemetsHe(
+    parentReliabilityVoiceHe({
+      questions: tr?.questions,
+      evidenceStrength: tr?.evidenceStrength,
+      dataSufficiencyLevel: tr?.dataSufficiencyLevel,
+      isEarlySignalOnly: tr?.isEarlySignalOnly,
+      mistakeEventCount: tr?.mistakeEventCount,
+      needsPractice: tr?.needsPractice,
+      excellent: tr?.excellent,
+      recommendedNextStep: tr?.recommendedNextStep,
+    })
+  );
   return {
     snapshot: stripGuillemetsHe(`${snap} ${hint}`.trim()),
     homeLine,
+    reliabilityLineHe,
   };
 }

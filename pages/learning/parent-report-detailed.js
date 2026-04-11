@@ -106,19 +106,38 @@ function GoalItemCards({ items }) {
 /** מכתב מקצועי להורה — מפרש את אותו payload בלי כותרות מערכת */
 function SubjectParentLetter({ sp }) {
   const letter = useMemo(() => buildSubjectParentLetter(sp), [sp]);
-  const blocks = [letter.opening, letter.goingWell, letter.fragile, letter.homeAction, letter.closing].filter(
-    Boolean
-  );
   return (
     <div className="pr-detailed-subject-letter space-y-3 rounded-xl border border-white/12 bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-3 md:p-4">
-      {blocks.map((text, i) => (
-        <p
-          key={i}
-          className="pr-detailed-body-text text-sm md:text-[0.95rem] leading-relaxed m-0 text-white/[0.91]"
-        >
-          {text}
+      {letter.opening ? (
+        <p className="pr-detailed-body-text text-sm md:text-[0.95rem] leading-relaxed m-0 text-white/[0.91]">
+          {letter.opening}
         </p>
-      ))}
+      ) : null}
+      {letter.goingWell ? (
+        <p className="pr-detailed-body-text text-sm md:text-[0.95rem] leading-relaxed m-0 text-white/[0.91]">
+          {letter.goingWell}
+        </p>
+      ) : null}
+      {letter.reliabilityNoteHe ? (
+        <p className="pr-detailed-body-text text-xs md:text-sm leading-relaxed m-0 text-white/[0.72]">
+          {letter.reliabilityNoteHe}
+        </p>
+      ) : null}
+      {letter.fragile ? (
+        <p className="pr-detailed-body-text text-sm md:text-[0.95rem] leading-relaxed m-0 text-white/[0.91]">
+          {letter.fragile}
+        </p>
+      ) : null}
+      {letter.homeAction ? (
+        <p className="pr-detailed-body-text text-sm md:text-[0.95rem] leading-relaxed m-0 text-white/[0.91]">
+          {letter.homeAction}
+        </p>
+      ) : null}
+      {letter.closing ? (
+        <p className="pr-detailed-body-text text-sm md:text-[0.95rem] leading-relaxed m-0 text-white/[0.91]">
+          {letter.closing}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -1213,6 +1232,11 @@ export default function ParentReportDetailedPage() {
                                         <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2 text-white/[0.9]">
                                           {nar.snapshot}
                                         </p>
+                                        {nar.reliabilityLineHe ? (
+                                          <p className="pr-detailed-muted text-xs leading-snug m-0 mt-1.5 text-white/[0.68]">
+                                            {nar.reliabilityLineHe}
+                                          </p>
+                                        ) : null}
                                         {nar.homeLine ? (
                                           <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2.5 text-amber-100/95">
                                             {nar.homeLine}
