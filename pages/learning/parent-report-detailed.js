@@ -10,9 +10,9 @@ import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-pattern
 function SectionCard({ title, children, className = "" }) {
   return (
     <section
-      className={`rounded-xl border border-white/15 bg-black/25 p-3 md:p-5 mb-4 md:mb-5 ${className}`}
+      className={`pr-detailed-section pr-detailed-break-avoid rounded-xl border border-white/15 bg-black/25 p-3 md:p-5 mb-4 md:mb-5 ${className}`}
     >
-      <h2 className="text-base md:text-lg font-extrabold text-white/95 border-b border-white/10 pb-2 mb-3">
+      <h2 className="pr-detailed-section-title text-base md:text-lg font-extrabold text-white/95 border-b border-white/10 pb-2 mb-3">
         {title}
       </h2>
       {children}
@@ -96,6 +96,75 @@ export default function ParentReportDetailedPage() {
     <Layout>
       <Head>
         <title>דוח מקיף לתקופה — LIOSH</title>
+        <style>{`
+          .pr-detailed-break-avoid {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+          @media print {
+            body {
+              background: white !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            body * {
+              visibility: hidden !important;
+            }
+            #parent-report-detailed-print,
+            #parent-report-detailed-print * {
+              visibility: visible !important;
+            }
+            #parent-report-detailed-print {
+              position: absolute !important;
+              inset: 0 auto auto 0 !important;
+              top: 0 !important;
+              left: 0 !important;
+              width: 100% !important;
+              max-width: 100% !important;
+              margin: 0 !important;
+              padding: 10mm 12mm !important;
+              background: #fff !important;
+              box-shadow: none !important;
+            }
+            #parent-report-detailed-print,
+            #parent-report-detailed-print * {
+              color: #1a1a1a !important;
+            }
+            #parent-report-detailed-print .pr-detailed-section-title,
+            #parent-report-detailed-print h1,
+            #parent-report-detailed-print h2,
+            #parent-report-detailed-print h3,
+            #parent-report-detailed-print th {
+              color: #000 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-future-compare {
+              color: #555 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-section,
+            #parent-report-detailed-print .pr-detailed-subject-block {
+              background: #fff !important;
+              border: 1px solid #333 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-section-title {
+              border-bottom-color: #999 !important;
+            }
+            #parent-report-detailed-print table {
+              border-collapse: collapse !important;
+              page-break-inside: avoid;
+            }
+            #parent-report-detailed-print th,
+            #parent-report-detailed-print td {
+              border: 1px solid #666 !important;
+              padding: 6px 8px !important;
+            }
+            #parent-report-detailed-print thead {
+              background: #f0f0f0 !important;
+            }
+            .no-pdf {
+              display: none !important;
+            }
+          }
+        `}</style>
       </Head>
       <div
         className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] text-white p-3 md:p-6"
@@ -106,7 +175,7 @@ export default function ParentReportDetailedPage() {
         }}
       >
         <div className="max-w-3xl mx-auto w-full min-w-0">
-          <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div className="no-pdf flex flex-wrap items-center justify-between gap-2 mb-4">
             <Link
               href={backHref}
               className="inline-flex px-4 py-2 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all"
@@ -123,38 +192,45 @@ export default function ParentReportDetailedPage() {
             <p className="text-center text-white/80">לא ניתן לטעון את הדוח המקיף.</p>
           ) : (
             <>
-              {/* A */}
-              <header className="mb-6 text-center border-b border-white/10 pb-4">
-                <h1 className="text-2xl md:text-3xl font-black text-white mb-1">דוח מקיף לתקופה</h1>
-                <p className="text-white/80 text-sm md:text-base">{pi.playerName}</p>
-                <p className="text-white/60 text-sm mt-2">
-                  טווח תאריכים: {pi.startDateLabelHe} – {pi.endDateLabelHe}
-                  <span className="text-white/40 mx-1">|</span>
-                  מצב תקופה:{" "}
-                  {pi.period === "custom" ? "תאריכים מותאמים" : pi.period === "month" ? "חודש" : "שבוע"}
+              <div id="parent-report-detailed-print">
+                {/* A */}
+                <header className="mb-6 text-center border-b border-white/10 pb-4 pr-detailed-break-avoid">
+                  <h1 className="text-2xl md:text-3xl font-black text-white mb-1">דוח מקיף לתקופה</h1>
+                  <p className="text-white/80 text-sm md:text-base">{pi.playerName}</p>
+                  <p className="text-white/60 text-sm mt-2">
+                    טווח תאריכים: {pi.startDateLabelHe} – {pi.endDateLabelHe}
+                    <span className="text-white/40 mx-1">|</span>
+                    מצב תקופה:{" "}
+                    {pi.period === "custom" ? "תאריכים מותאמים" : pi.period === "month" ? "חודש" : "שבוע"}
+                  </p>
+                </header>
+
+                {/* B */}
+                <SectionCard title="תקציר מנהלים">
+                  <div className="space-y-3 text-sm md:text-base text-white/85 leading-relaxed">
+                    <div>
+                      <p className="font-bold text-emerald-200/90 mb-1">חוזקות מרכזיות (עד 3)</p>
+                      <Bullets items={payload.executiveSummary.topStrengthsAcrossHe} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-amber-200/90 mb-1">תחומים מרכזיים לחיזוק (עד 3)</p>
+                      <Bullets items={payload.executiveSummary.topFocusAreasHe} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-sky-200/90 mb-1">מיקוד מומלץ לבית</p>
+                      <p className="text-white/85 whitespace-pre-line leading-relaxed">
+                        {payload.executiveSummary.homeFocusHe}
+                      </p>
+                    </div>
+                  </div>
+                </SectionCard>
+
+                <p className="pr-detailed-future-compare text-xs text-white/50 mb-4 leading-relaxed border border-white/10 rounded-lg px-3 py-2 bg-black/15">
+                  השוואה לתקופה קודמת תתווסף בהמשך.
                 </p>
-              </header>
 
-              {/* B */}
-              <SectionCard title="תקציר מנהלים">
-                <div className="space-y-3 text-sm md:text-base text-white/85 leading-relaxed">
-                  <div>
-                    <p className="font-bold text-emerald-200/90 mb-1">חוזקות מרכזיות (עד 3)</p>
-                    <Bullets items={payload.executiveSummary.topStrengthsAcrossHe} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-amber-200/90 mb-1">תחומים מרכזיים לחיזוק (עד 3)</p>
-                    <Bullets items={payload.executiveSummary.topFocusAreasHe} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-sky-200/90 mb-1">מיקוד מומלץ לבית</p>
-                    <p className="text-white/85">{payload.executiveSummary.homeFocusHe}</p>
-                  </div>
-                </div>
-              </SectionCard>
-
-              {/* C */}
-              <SectionCard title="תמונת מצב כוללת">
+                {/* C */}
+                <SectionCard title="תמונת מצב כוללת">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                   <div className="rounded-lg bg-white/5 border border-white/10 p-3 text-center">
                     <div className="text-xs text-white/55 mb-1">זמן כולל</div>
@@ -208,15 +284,15 @@ export default function ParentReportDetailedPage() {
                     <Bullets items={payload.overallSnapshot.notableSubjectsHe} />
                   </div>
                 </div>
-              </SectionCard>
+                </SectionCard>
 
-              {/* D */}
-              <SectionCard title="פירוט לפי מקצוע">
+                {/* D */}
+                <SectionCard title="פירוט לפי מקצוע">
                 <div className="space-y-5">
                   {payload.subjectProfiles.map((sp) => (
                     <div
                       key={sp.subject}
-                      className="rounded-lg border border-white/12 bg-black/20 p-3 md:p-4 space-y-2"
+                      className="pr-detailed-subject-block rounded-lg border border-white/12 bg-black/20 p-3 md:p-4 space-y-2"
                     >
                       <h3 className="text-lg font-bold text-white border-b border-white/10 pb-1">
                         {sp.subjectLabelHe}
@@ -313,35 +389,51 @@ export default function ParentReportDetailedPage() {
                           </ul>
                         </div>
                       ) : null}
-                      <p className="text-xs text-white/45 border-t border-white/10 pt-2 mt-2">
-                        מגמה מול תקופה קודמת: {sp.trendVsPreviousPeriod?.narrativeHe}
-                      </p>
                     </div>
                   ))}
                 </div>
-              </SectionCard>
+                </SectionCard>
 
-              {/* cross insights — part of structure; placed after subjects for flow */}
-              <SectionCard title="תובנות חוצות־מקצועות">
+                {/* cross insights — part of structure; placed after subjects for flow */}
+                <SectionCard title="תובנות חוצות־מקצועות">
                 <Bullets items={payload.crossSubjectInsights.bulletsHe} />
                 {payload.crossSubjectInsights.dataQualityNoteHe ? (
                   <p className="text-sm text-amber-200/90 mt-2">{payload.crossSubjectInsights.dataQualityNoteHe}</p>
                 ) : null}
-              </SectionCard>
+                </SectionCard>
 
-              {/* E */}
-              <SectionCard title="פעולות מומלצות לבית">
-                <Bullets items={payload.homePlan.itemsHe} />
-              </SectionCard>
+                {/* E */}
+                <SectionCard title="פעולות מומלצות לבית">
+                  <Bullets items={payload.homePlan.itemsHe} />
+                </SectionCard>
 
-              {/* F */}
-              <SectionCard title="יעד לתקופה הבאה">
-                <Bullets items={payload.nextPeriodGoals.itemsHe} />
-              </SectionCard>
+                {/* F */}
+                <SectionCard title="יעד לתקופה הבאה">
+                  <Bullets items={payload.nextPeriodGoals.itemsHe} />
+                </SectionCard>
+              </div>
 
-              <p className="text-center text-xs text-white/40 mt-4">
-                גרסת מבנה דוח מקיף {payload.version} · מקור נתונים: דוח V2 (לא מסמך PDF בשלב זה)
-              </p>
+              <div className="no-pdf mt-8 pt-5 border-t border-white/15 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-emerald-600/90 border border-emerald-400/50 hover:bg-emerald-600 text-white transition-all"
+                >
+                  🖨️ הדפס / 📄 ייצא ל-PDF
+                </button>
+                <Link
+                  href={backHref}
+                  className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all text-center"
+                >
+                  חזרה לדוח המקוצר
+                </Link>
+                <Link
+                  href="/learning"
+                  className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-violet-600/50 border border-violet-300/40 hover:bg-violet-600/65 text-white transition-all text-center"
+                >
+                  חזרה ללמידה
+                </Link>
+              </div>
             </>
           )}
         </div>

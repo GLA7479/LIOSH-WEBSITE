@@ -117,20 +117,84 @@ function uniqueTopLabels(rows, labelKey, max) {
   return out;
 }
 
-function buildExecutiveSummary(subjects) {
+function collectMaintainRows(subjects) {
+  const rows = [];
+  for (const sid of SUBJECT_IDS) {
+    const s = subjects?.[sid];
+    const list = Array.isArray(s?.maintain) ? s.maintain : [];
+    for (const r of list) {
+      rows.push({
+        labelHe: String(r.labelHe || "").trim(),
+        accuracy: Number(r.accuracy) || 0,
+        questions: Number(r.questions) || 0,
+        subjectLabelHe: SUBJECT_LABEL_HE[sid],
+      });
+    }
+  }
+  rows.sort((a, b) => {
+    if (b.accuracy !== a.accuracy) return b.accuracy - a.accuracy;
+    return b.questions - a.questions;
+  });
+  return rows;
+}
+
+/**
+ * מיקוד ביתי סינתטי: 1–2 חיזוקים, שימור אחד, משפט סיכום — לא העתקה של parentActionHe הראשון.
+ */
+function buildHomeFocusHe(subjects, topStrengthsAcrossHe, topFocusAreasHe, summary) {
+  const reinforceLabels = topFocusAreasHe.slice(0, 2).filter(Boolean);
+  const maintainRows = collectMaintainRows(subjects);
+  let preservePhrase = null;
+  if (maintainRows.length && maintainRows[0].labelHe) {
+    const m = maintainRows[0];
+    preservePhrase = `${m.labelHe} (${m.subjectLabelHe}, דיוק כ-${m.accuracy}%)`;
+  } else if (topStrengthsAcrossHe.length) {
+    preservePhrase = topStrengthsAcrossHe[0];
+  }
+
+  const parts = [];
+  if (reinforceLabels.length) {
+    parts.push(
+      `מוקדי חיזוק לבית: ${reinforceLabels.join(" · ")} — מומלץ קצר וממוקד (10–15 דק׳), עם דיון קל אחרי טעות ולא הרחבה מיותרת.`
+    );
+  } else {
+    parts.push(
+      "מוקדי חיזוק לבית: לפי הנתונים בטווח אין עדיין תחום חולשה מובחן ברמת המערכת — כדאי להמשיך בשגרה ולאסוף עוד תרגול כדי לכוון חיזוק מדויק."
+    );
+  }
+
+  if (preservePhrase) {
+    parts.push(`מוקד שימור: לשמר ולחזק את הביצועים החיוביים סביב — ${preservePhrase}.`);
+  } else {
+    parts.push(
+      "מוקד שימור: לשמור על חוויית תרגול חיובית ועקבית — זה תומך בהמשך גם כשמופיעים קשיים נקודתיים."
+    );
+  }
+
+  const q = Number(summary?.totalQuestions) || 0;
+  const acc = Number(summary?.overallAccuracy) || 0;
+  let closing =
+    "סיכום לתקופה: שילוב של חיזוק ממוקד לצד שימור על חוזקות ייצב את ההתקדמות ויבנה ביטחון מתמשך.";
+  if (q < 18) {
+    closing =
+      "סיכום לתקופה: נפח התרגול בטווח מצומצם — המלצה מרכזית היא להוסיף ימי תרגול קצרים כדי שהתמונה האבחונית תהיה מייצגת, ואז לכוון חיזוקים מדויקים יותר.";
+  } else if (acc >= 78 && q >= 35) {
+    closing =
+      "סיכום לתקופה: יש מומנטום טוב בין נפח לדיוק — כדאי לשמור על קצב, ולהעמיק רק בנקודות החולשה שמופיעות למעלה בלי לעמיס על כל המקצועות בבת אחת.";
+  } else if (acc < 62 && q >= 18) {
+    closing =
+      "סיכום לתקופה: נראה צורך בייצוב הדרגתי — עדיפות לתרגול מדויק בקצב נוח, הדגשת הבנת משימה לפני מענה, וחיזוק קטן אחרי הצלחות כדי לשמר מוטיבציה.";
+  }
+
+  return parts.join("\n\n");
+}
+
+function buildExecutiveSummary(subjects, summary) {
   const strengths = collectStrengthRows(subjects);
   const weaknesses = collectWeaknessRows(subjects);
   const topStrengthsAcrossHe = uniqueTopLabels(strengths, "labelHe", 3);
   const topFocusAreasHe = uniqueTopLabels(weaknesses, "labelHe", 3);
-  let homeFocusHe =
-    "להמשיך בשגרת תרגול מאוזנת — חיזוק נקודתי בתחומים שמופיעים למטה, לצד חיזוק חיובי בתחומים חזקים.";
-  for (const sid of SUBJECT_IDS) {
-    const pa = subjects?.[sid]?.parentActionHe;
-    if (pa && String(pa).trim()) {
-      homeFocusHe = String(pa).trim();
-      break;
-    }
-  }
+  const homeFocusHe = buildHomeFocusHe(subjects, topStrengthsAcrossHe, topFocusAreasHe, summary);
   return { topStrengthsAcrossHe, topFocusAreasHe, homeFocusHe };
 }
 
@@ -211,9 +275,6 @@ function buildCrossSubjectInsights(baseReport, subjects) {
   if (!bulletsHe.length) {
     bulletsHe.push("תובנות רוחביות נוספות יתווספו ככל שיימצאו דפוסים חוצי־מקצועות בנתונים.");
   }
-  bulletsHe.push(
-    "השוואה לתקופה קודמת: לא זמינה בגרסה זו — יתווסף כשיהיה בסיס השוואה (placeholder)."
-  );
   return {
     bulletsHe,
     dataQualityNoteHe:
@@ -251,14 +312,6 @@ function buildNextPeriodGoals(subjects) {
   return { itemsHe };
 }
 
-function trendPlaceholder() {
-  return {
-    status: "placeholder",
-    narrativeHe:
-      "השוואת מגמה לתקופה מקבילה קודמת — לא זמינה בגרסה זו (נדרש דוח לתקופה קודמת או API השוואה).",
-  };
-}
-
 function buildSubjectProfiles(baseReport) {
   const subjects = baseReport?.patternDiagnostics?.subjects;
   const out = [];
@@ -278,7 +331,8 @@ function buildSubjectProfiles(baseReport) {
       parentActionHe: s.parentActionHe ?? null,
       nextWeekGoalHe: s.nextWeekGoalHe ?? null,
       evidenceExamples: Array.isArray(s.evidenceExamples) ? s.evidenceExamples : [],
-      trendVsPreviousPeriod: trendPlaceholder(),
+      /** כשתהיה השוואת תקופות אמיתית — ימולא; לא שולחים placeholder ל־UI */
+      trendVsPreviousPeriod: null,
     });
   }
   return out;
@@ -304,7 +358,7 @@ export function generateDetailedParentReport(
   const subjects = base.patternDiagnostics?.subjects || {};
   const subjectCoverage = buildSubjectCoverage(base);
   const overallSnapshot = buildOverallSnapshot(base, subjectCoverage);
-  const executiveSummary = buildExecutiveSummary(subjects);
+  const executiveSummary = buildExecutiveSummary(subjects, base.summary || {});
   const crossSubjectInsights = buildCrossSubjectInsights(base, subjects);
   const homePlan = buildHomePlan(subjects);
   const nextPeriodGoals = buildNextPeriodGoals(subjects);
