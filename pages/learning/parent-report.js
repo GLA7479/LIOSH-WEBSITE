@@ -2184,12 +2184,15 @@ export default function ParentReport() {
                               />
                               <Tooltip
                                 contentStyle={chartTooltipStyle}
+                                labelFormatter={(_label, payload) =>
+                                  payload?.[0]?.payload?.name ?? ""
+                                }
                                 formatter={(_value, _name, props) => {
                                   const p = props?.payload;
                                   if (!p) return ["", ""];
                                   return [
                                     `${p.minutes} דק׳ תרגול · ${p.questions} שאלות · דיוק ${p.accuracy}%`,
-                                    p.name,
+                                    "",
                                   ];
                                 }}
                               />
@@ -2340,12 +2343,15 @@ export default function ParentReport() {
                               />
                               <Tooltip
                                 contentStyle={chartTooltipStyle}
+                                labelFormatter={(_label, payload) =>
+                                  payload?.[0]?.payload?.label ?? ""
+                                }
                                 formatter={(_value, _name, props) => {
                                   const p = props?.payload;
                                   if (!p) return ["", ""];
                                   return [
                                     `דיוק ${p.accuracy}% · ${p.questions} שאלות · ${p.timeMinutes} דק׳`,
-                                    p.label,
+                                    "",
                                   ];
                                 }}
                               />
