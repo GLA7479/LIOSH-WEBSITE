@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react";
 import Layout from "../../components/Layout";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
@@ -194,6 +194,11 @@ const MASTER_BAR_CHART_GEOMETRY = {
   chartBodyVerticalPadPx: 96,
   chartBodyMinHeightPx: 220,
   chartBodyMaxHeightPx: 960,
+  /** ריפוד אופקי כרטיס גרף (p-3 / md:p-5) — לחישוב רוחב מסילת מגרעה דינמי */
+  chartCardPadXPxMobile: 24,
+  chartCardPadXPxDesktop: 40,
+  /** מרווח קטן מקצה הכרטיס לפס גלילה/עיגול */
+  chartHostWidthSlopPx: 6,
 };
 
 function collectAllTopicChartLabels(report) {
@@ -233,7 +238,7 @@ function measureMaxLabelWidthPx(labels, fontPx, fontFamily) {
 function computeMasterBarChartGeometry(report, view) {
   const G = MASTER_BAR_CHART_GEOMETRY;
   const useDesktopPlot = Boolean(view.forceDesktopLayout || !view.isMobileViewport);
-  const plotRailWidthPx = useDesktopPlot
+  const basePlotRailWidthPx = useDesktopPlot
     ? G.plotRailWidthDesktopPx
     : G.plotRailWidthMobilePx;
   const tickFontPx = useDesktopPlot ? G.tickDesktopPx : G.tickMobilePx;
@@ -257,10 +262,19 @@ function computeMasterBarChartGeometry(report, view) {
     Math.max(summaryLabelRailWidthPx, topicLabelMeasured)
   );
 
+  const gap = G.labelPlotGapPx;
+  const hostInner = view.chartHostInnerWidthPx;
+  let plotRailWidthPx = basePlotRailWidthPx;
+  if (typeof hostInner === "number" && hostInner > 0) {
+    const derivedPlot = Math.floor(hostInner - topicLabelRailWidthPx - gap);
+    const minPlot = Math.min(basePlotRailWidthPx, useDesktopPlot ? 168 : 140);
+    plotRailWidthPx = Math.max(minPlot, derivedPlot);
+  }
+
   const summaryChartTotalWidthPx =
-    summaryLabelRailWidthPx + G.labelPlotGapPx + plotRailWidthPx;
+    summaryLabelRailWidthPx + gap + plotRailWidthPx;
   const topicChartTotalWidthPx =
-    topicLabelRailWidthPx + G.labelPlotGapPx + plotRailWidthPx;
+    topicLabelRailWidthPx + gap + plotRailWidthPx;
 
   return {
     plotChartMargin: G.plotChartMargin,
@@ -308,6 +322,29 @@ export default function ParentReport() {
   const [appliedEndDate, setAppliedEndDate] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [isPrintLayout, setIsPrintLayout] = useState(false);
+  const parentReportPdfRef = useRef(null);
+  /** רוחב פנימי משוער לכרטיס גרף (עמודת PDF − ריפוד כרטיס) — למגרעת X דינמית */
+  const [chartHostInnerWidthPx, setChartHostInnerWidthPx] = useState(0);
+
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const el = parentReportPdfRef.current;
+    if (!el) return undefined;
+    const G = MASTER_BAR_CHART_GEOMETRY;
+    const measure = () => {
+      const pad = isMobile ? G.chartCardPadXPxMobile : G.chartCardPadXPxDesktop;
+      const w = el.clientWidth - pad - G.chartHostWidthSlopPx;
+      setChartHostInnerWidthPx(Math.max(0, Math.floor(w)));
+    };
+    measure();
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [isMobile, report]);
 
   // פונקציה לפרמט תאריך מ-YYYY-MM-DD ל-DD/MM/YYYY
   const formatDate = (dateStr) => {
@@ -398,8 +435,9 @@ export default function ParentReport() {
     return computeMasterBarChartGeometry(report, {
       isMobileViewport: isMobile,
       forceDesktopLayout: isPrintLayout,
+      chartHostInnerWidthPx,
     });
-  }, [report, isMobile, isPrintLayout]);
+  }, [report, isMobile, isPrintLayout, chartHostInnerWidthPx]);
 
   if (loading) {
     return (
@@ -690,7 +728,11 @@ export default function ParentReport() {
           WebkitOverflowScrolling: "touch"
         }}
       >
-        <div id="parent-report-pdf" className="max-w-4xl mx-auto w-full">
+        <div
+          id="parent-report-pdf"
+          ref={parentReportPdfRef}
+          className="max-w-4xl mx-auto w-full"
+        >
           {/* כפתור BACK (לא נכנס ל-PDF) */}
           <div className="mb-4 text-left no-pdf">
             <button
