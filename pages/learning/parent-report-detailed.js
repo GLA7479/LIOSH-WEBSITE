@@ -521,6 +521,21 @@ export default function ParentReportDetailedPage() {
               padding: 5px 9px !important;
             }
 
+            #parent-report-detailed-print .pr-detailed-subjects-region {
+              background: transparent !important;
+              border: none !important;
+              box-shadow: none !important;
+              padding: 0 !important;
+              margin: 0 0 14px 0 !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subjects-region > h2 {
+              border-bottom: 1px solid #d4d4d8 !important;
+              padding-bottom: 6px !important;
+              margin: 0 0 10px 0 !important;
+            }
+
             #parent-report-detailed-print .pr-detailed-subject-block {
               background: transparent !important;
               border: none !important;
@@ -847,17 +862,35 @@ export default function ParentReportDetailedPage() {
                 </div>
                 </SectionCard>
 
-                {/* D — אותו payload; תצוגה מלאה או מקוצרת */}
+                {/* D — אותו payload; תצוגה מלאה או מקוצרת; ללא SectionCard חיצוני — כל מקצוע הוא הכרטיס הראשי */}
                 {displayMode === "summary" ? (
-                  <SectionCard title="פירוט מקוצר לפי מקצוע" compact>
+                  <section
+                    className="pr-detailed-subjects-region mb-5 md:mb-6 min-w-0"
+                    aria-labelledby="pr-detailed-subjects-heading-summary"
+                  >
+                    <h2
+                      id="pr-detailed-subjects-heading-summary"
+                      className="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0 mb-3 md:mb-4 pb-2 border-b border-white/12"
+                    >
+                      פירוט מקוצר לפי מקצוע
+                    </h2>
                     <div className="space-y-4">
                       {payload.subjectProfiles.map((sp) => (
                         <SubjectSummaryBlock key={sp.subject} sp={sp} />
                       ))}
                     </div>
-                  </SectionCard>
+                  </section>
                 ) : (
-                  <SectionCard title="פירוט לפי מקצוע">
+                  <section
+                    className="pr-detailed-subjects-region mb-5 md:mb-6 min-w-0"
+                    aria-labelledby="pr-detailed-subjects-heading-full"
+                  >
+                    <h2
+                      id="pr-detailed-subjects-heading-full"
+                      className="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0 mb-3 md:mb-4 pb-2 border-b border-white/12"
+                    >
+                      פירוט לפי מקצוע
+                    </h2>
                     <div className="space-y-6">
                       {payload.subjectProfiles.map((sp) => (
                         <div
@@ -1005,7 +1038,7 @@ export default function ParentReportDetailedPage() {
                         </div>
                       ))}
                     </div>
-                  </SectionCard>
+                  </section>
                 )}
 
                 {/* cross insights — part of structure; placed after subjects for flow */}
