@@ -41,7 +41,7 @@ function Bullets({ items, className = "" }) {
 /** בלוק היררכי לפי סוג (מסך + הדפסה) — רק מחלקות, אותו תוכן */
 function TierBlock({ tier, title, children }) {
   return (
-    <div className={`pr-detailed-tier-${tier} pr-detailed-avoid-split`}>
+    <div className={`pr-detailed-tier-${tier}`}>
       <h4 className="pr-detailed-subheading">{title}</h4>
       <div className="pr-detailed-tier-inner">{children}</div>
     </div>
@@ -72,13 +72,13 @@ function SubjectSummaryBlock({ sp }) {
   const ex = Array.isArray(sp.excellence) ? sp.excellence.slice(0, 2) : [];
   const weak = Array.isArray(sp.topWeaknesses) ? sp.topWeaknesses.slice(0, 2) : [];
   return (
-    <div className="pr-detailed-summary-subject pr-detailed-avoid-split rounded-xl border border-white/18 bg-black/25 overflow-hidden">
+    <div className="pr-detailed-summary-subject rounded-xl border border-white/18 bg-black/25 overflow-hidden">
       <div className="pr-detailed-subject-header px-3 md:px-4 py-2.5 border-b border-white/15 bg-white/[0.05]">
         <h3 className="pr-detailed-subject-title text-base md:text-lg font-bold text-white m-0 tracking-tight">
           {sp.subjectLabelHe}
         </h3>
       </div>
-      <div className="px-3 md:px-4 py-3 space-y-3">
+      <div className="pr-detailed-subject-inner px-3 md:px-4 py-3 space-y-3">
         <div className="pr-detailed-subject-summary">
           {sp.summaryHe ? (
             <p className="pr-detailed-body-text text-sm leading-relaxed m-0">{sp.summaryHe}</p>
@@ -110,13 +110,13 @@ function SubjectSummaryBlock({ sp }) {
           </TierBlock>
         ) : null}
         {sp.parentActionHe ? (
-          <div className="pr-detailed-callout-action pr-detailed-avoid-split rounded-lg border px-3 py-2.5">
+          <div className="pr-detailed-callout-action rounded-lg border px-3 py-2.5">
             <span className="pr-detailed-callout-label">פעולה לבית</span>
             <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">{sp.parentActionHe}</p>
           </div>
         ) : null}
         {sp.nextWeekGoalHe ? (
-          <div className="pr-detailed-callout-goal pr-detailed-avoid-split rounded-lg border px-3 py-2.5">
+          <div className="pr-detailed-callout-goal rounded-lg border px-3 py-2.5">
             <span className="pr-detailed-callout-label">יעד לתקופה הבאה</span>
             <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">{sp.nextWeekGoalHe}</p>
           </div>
@@ -448,53 +448,56 @@ export default function ParentReportDetailedPage() {
               width: 100% !important;
               max-width: 100% !important;
               margin: 0 !important;
-              padding: 9mm 11mm !important;
+              padding: 8mm 6mm !important;
               background: #fafafa !important;
               box-shadow: none !important;
-              font-size: 9.5pt;
-              line-height: 1.45;
+              font-size: 9.6pt;
+              line-height: 1.48;
               color: #1c1917 !important;
             }
             #parent-report-detailed-print[data-display-mode="full"] {
-              padding: 8mm 10mm !important;
-              font-size: 9.2pt;
+              padding: 7mm 5.5mm !important;
+              font-size: 9.35pt;
             }
             #parent-report-detailed-print[data-display-mode="summary"] {
-              padding: 7mm 9mm !important;
-              font-size: 9.4pt;
+              padding: 6mm 5mm !important;
+              font-size: 9.45pt;
             }
 
             #parent-report-detailed-print h1 {
-              font-size: 16pt !important;
-              color: #0f172a !important;
+              font-size: 16.5pt !important;
+              color: #020617 !important;
               margin: 0 0 4px 0 !important;
             }
             #parent-report-detailed-print .pr-detailed-section-title {
-              font-size: 11.5pt !important;
+              font-size: 12pt !important;
+              font-weight: 900 !important;
               color: #0f172a !important;
             }
             #parent-report-detailed-print .pr-detailed-subject-title {
-              font-size: 11pt !important;
+              font-size: 12pt !important;
+              font-weight: 900 !important;
               color: #0f172a !important;
             }
             #parent-report-detailed-print .pr-detailed-subheading {
-              font-size: 8.5pt !important;
+              font-size: 9pt !important;
+              font-weight: 800 !important;
               color: #1e293b !important;
               border-bottom-color: #cbd5e1 !important;
             }
             #parent-report-detailed-print .pr-detailed-body-text,
             #parent-report-detailed-print .pr-detailed-tier-inner li {
-              color: #292524 !important;
+              color: #1c1917 !important;
             }
             #parent-report-detailed-print .pr-detailed-muted {
-              color: #57534e !important;
+              color: #44403c !important;
             }
             #parent-report-detailed-print .pr-detailed-mode-hint {
               color: #92400e !important;
               font-weight: 800 !important;
             }
             #parent-report-detailed-print .pr-detailed-future-compare {
-              color: #57534e !important;
+              color: #44403c !important;
               background: #f5f5f4 !important;
               border: 1px solid #d6d3d1 !important;
             }
@@ -504,6 +507,8 @@ export default function ParentReportDetailedPage() {
               border: 1px solid #d4d4d8 !important;
               margin-bottom: 10px !important;
               box-shadow: 0 1px 0 rgba(0,0,0,0.04) !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
             }
             #parent-report-detailed-print .pr-detailed-section-head {
               background: #f4f4f5 !important;
@@ -517,44 +522,82 @@ export default function ParentReportDetailedPage() {
             }
 
             #parent-report-detailed-print .pr-detailed-subject-block {
-              background: #fff !important;
-              border: 1px solid #c7c7cc !important;
+              background: transparent !important;
+              border: none !important;
+              box-shadow: none !important;
+              border-radius: 0 !important;
+              overflow: visible !important;
               break-inside: auto !important;
               page-break-inside: auto !important;
+              margin-bottom: 14px !important;
             }
             #parent-report-detailed-print .pr-detailed-subject-header {
-              background: #eef2ff !important;
-              border-bottom: 1px solid #c7d2fe !important;
+              background: transparent !important;
+              border: none !important;
+              border-bottom: 2px solid #334155 !important;
+              padding: 2px 0 8px 0 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-inner {
+              padding: 10px 0 0 0 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-subject-summary,
+            #parent-report-detailed-print .pr-detailed-tier-excellence,
+            #parent-report-detailed-print .pr-detailed-tier-strength,
+            #parent-report-detailed-print .pr-detailed-tier-maintain,
+            #parent-report-detailed-print .pr-detailed-tier-improving,
+            #parent-report-detailed-print .pr-detailed-tier-attention,
+            #parent-report-detailed-print .pr-detailed-tier-examples,
+            #parent-report-detailed-print .pr-detailed-callout-action,
+            #parent-report-detailed-print .pr-detailed-callout-goal,
+            #parent-report-detailed-print .pr-detailed-topic-nextstep-card {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+              border-radius: 6px !important;
+              padding: 8px 10px !important;
+              margin-bottom: 8px !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-subject-summary {
+              background: #ffffff !important;
+              border: 1px solid #d6d3d1 !important;
+              color: #1c1917 !important;
             }
 
             #parent-report-detailed-print .pr-detailed-tier-excellence {
-              background: #f5f3ff !important;
-              border: 1px solid #7c3aed !important;
+              background: linear-gradient(135deg, #faf5ff 0%, #f0fdf4 55%, #f5f3ff 100%) !important;
+              border: 1.5px solid #6d28d9 !important;
+              border-right: 4px solid #6d28d9 !important;
               color: #1e1b4b !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-strength {
               background: #ecfdf5 !important;
-              border: 1px solid #059669 !important;
+              border: 1.5px solid #047857 !important;
+              border-right: 4px solid #059669 !important;
               color: #064e3b !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-maintain {
-              background: #f0f9ff !important;
-              border: 1px solid #0284c7 !important;
+              background: #eff6ff !important;
+              border: 1.5px solid #0369a1 !important;
+              border-right: 4px solid #0284c7 !important;
               color: #0c4a6e !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-improving {
               background: #fffbeb !important;
-              border: 1px solid #d97706 !important;
+              border: 1.5px solid #b45309 !important;
+              border-right: 4px solid #d97706 !important;
               color: #78350f !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-attention {
               background: #fef2f2 !important;
-              border: 1px solid #dc2626 !important;
+              border: 1.5px solid #b91c1c !important;
+              border-right: 4px solid #dc2626 !important;
               color: #7f1d1d !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-examples {
-              background: #f8fafc !important;
-              border: 1px solid #94a3b8 !important;
+              background: #f1f5f9 !important;
+              border: 1.5px solid #64748b !important;
+              border-right: 4px solid #94a3b8 !important;
               color: #334155 !important;
             }
 
@@ -563,25 +606,38 @@ export default function ParentReportDetailedPage() {
             #parent-report-detailed-print .pr-detailed-tier-maintain .pr-detailed-subheading { color: #0369a1 !important; border-bottom-color: #bae6fd !important; }
             #parent-report-detailed-print .pr-detailed-tier-improving .pr-detailed-subheading { color: #b45309 !important; border-bottom-color: #fde68a !important; }
             #parent-report-detailed-print .pr-detailed-tier-attention .pr-detailed-subheading { color: #b91c1c !important; border-bottom-color: #fecaca !important; }
-            #parent-report-detailed-print .pr-detailed-tier-examples .pr-detailed-subheading { color: #475569 !important; }
+            #parent-report-detailed-print .pr-detailed-tier-examples .pr-detailed-subheading { color: #334155 !important; }
 
             #parent-report-detailed-print .pr-detailed-callout-action {
               background: #fffbeb !important;
-              border: 1px solid #eab308 !important;
+              border: 1.5px solid #ca8a04 !important;
             }
             #parent-report-detailed-print .pr-detailed-callout-goal {
               background: #fff7ed !important;
-              border: 1px solid #fb923c !important;
+              border: 1.5px solid #ea580c !important;
             }
             #parent-report-detailed-print .pr-detailed-callout-label { color: #713f12 !important; }
 
-            #parent-report-detailed-print .pr-detailed-topic-nextstep-card {
-              background: #f0fdfa !important;
-              border: 1px solid #0d9488 !important;
-              break-inside: avoid !important;
-              page-break-inside: avoid !important;
+            #parent-report-detailed-print .pr-detailed-topic-rec-block {
+              margin-top: 6px !important;
+              padding-top: 0 !important;
+              border-top: none !important;
+              background: transparent !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
             }
-            #parent-report-detailed-print .pr-detailed-topic-rec-head { color: #0f766e !important; }
+            #parent-report-detailed-print .pr-detailed-topic-rec-head {
+              color: #0f766e !important;
+              font-weight: 800 !important;
+              break-after: avoid !important;
+              page-break-after: avoid !important;
+              margin: 0 0 6px 0 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-nextstep-card {
+              background: linear-gradient(180deg, #f0fdfa 0%, #f8fafc 100%) !important;
+              border: 1.5px solid #0f766e !important;
+              border-right: 4px solid #14b8a6 !important;
+            }
             #parent-report-detailed-print .pr-detailed-topic-metrics { color: #115e59 !important; }
             #parent-report-detailed-print .pr-detailed-topic-reason { color: #134e4a !important; }
             #parent-report-detailed-print .pr-detailed-topic-parent {
@@ -596,21 +652,35 @@ export default function ParentReportDetailedPage() {
             }
             #parent-report-detailed-print .pr-detailed-topic-badge {
               background: #ccfbf1 !important;
-              border-color: #14b8a6 !important;
+              border-color: #0d9488 !important;
               color: #134e4a !important;
             }
 
             #parent-report-detailed-print .pr-detailed-summary-subject {
-              background: #fff !important;
-              border: 1px solid #c7c7cc !important;
+              background: transparent !important;
+              border: none !important;
+              box-shadow: none !important;
+              border-radius: 0 !important;
+              overflow: visible !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+              margin-bottom: 12px !important;
             }
             #parent-report-detailed-print .pr-detailed-summary-subject .pr-detailed-subject-header {
-              background: #f8fafc !important;
+              background: transparent !important;
+              border: none !important;
+              border-bottom: 2px solid #334155 !important;
+              padding: 2px 0 8px 0 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-summary-subject .pr-detailed-subject-inner {
+              padding: 10px 0 0 0 !important;
             }
 
             #parent-report-detailed-print .pr-detailed-mini-heading {
-              color: #334155 !important;
+              color: #1e293b !important;
               font-weight: 800 !important;
+              break-after: avoid !important;
+              page-break-after: avoid !important;
             }
             #parent-report-detailed-print .pr-detailed-doc-title {
               color: #020617 !important;
@@ -626,14 +696,14 @@ export default function ParentReportDetailedPage() {
             #parent-report-detailed-print td {
               border: 1px solid #a8a29e !important;
               padding: 5px 7px !important;
-              color: #292524 !important;
+              color: #1c1917 !important;
             }
             #parent-report-detailed-print thead {
               background: #e7e5e4 !important;
             }
 
             #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-section { margin-bottom: 7px !important; }
-            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-summary-subject { margin-bottom: 6px !important; }
+            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-summary-subject { margin-bottom: 8px !important; }
 
             .no-pdf {
               display: none !important;
@@ -651,7 +721,7 @@ export default function ParentReportDetailedPage() {
           paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)",
         }}
       >
-        <div className="max-w-3xl mx-auto w-full min-w-0">
+        <div className="max-w-4xl mx-auto w-full min-w-0 overflow-x-hidden">
           <div className="no-pdf flex flex-col gap-3 mb-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <Link
@@ -697,15 +767,15 @@ export default function ParentReportDetailedPage() {
                 {/* B */}
                 <SectionCard title="תקציר מנהלים" compact={displayMode === "summary"}>
                   <div className="space-y-4">
-                    <div className="pr-detailed-avoid-split">
+                    <div>
                       <h4 className="pr-detailed-subheading text-emerald-200/95">חוזקות מרכזיות (עד 3)</h4>
                       <Bullets items={payload.executiveSummary.topStrengthsAcrossHe} />
                     </div>
-                    <div className="pr-detailed-avoid-split">
+                    <div>
                       <h4 className="pr-detailed-subheading text-amber-200/95">תחומים מרכזיים לחיזוק (עד 3)</h4>
                       <Bullets items={payload.executiveSummary.topFocusAreasHe} />
                     </div>
-                    <div className="pr-detailed-avoid-split">
+                    <div>
                       <h4 className="pr-detailed-subheading text-sky-200/95">מיקוד מומלץ לבית</h4>
                       <p className="pr-detailed-body-text whitespace-pre-line leading-relaxed m-0">
                         {payload.executiveSummary.homeFocusHe}
@@ -766,11 +836,11 @@ export default function ParentReportDetailedPage() {
                   </table>
                 </div>
                 <div className="mt-3 grid md:grid-cols-2 gap-3 text-sm">
-                  <div className="pr-detailed-avoid-split">
+                  <div>
                     <p className="pr-detailed-mini-heading font-semibold text-white/82 mb-1">מקצועות עם חשיפה מועטה</p>
                     <Bullets items={payload.overallSnapshot.lowExposureSubjectsHe} />
                   </div>
-                  <div className="pr-detailed-avoid-split">
+                  <div>
                     <p className="pr-detailed-mini-heading font-semibold text-white/82 mb-1">מקצועות בולטים</p>
                     <Bullets items={payload.overallSnapshot.notableSubjectsHe} />
                   </div>
@@ -799,8 +869,8 @@ export default function ParentReportDetailedPage() {
                               {sp.subjectLabelHe}
                             </h3>
                           </div>
-                          <div className="px-3 md:px-4 py-3 space-y-3">
-                            <div className="pr-detailed-subject-summary pr-detailed-avoid-split">
+                          <div className="pr-detailed-subject-inner px-3 md:px-4 py-3 space-y-3">
+                            <div className="pr-detailed-subject-summary">
                               {sp.summaryHe ? (
                                 <p className="pr-detailed-body-text text-sm leading-relaxed m-0">{sp.summaryHe}</p>
                               ) : (
@@ -867,7 +937,7 @@ export default function ParentReportDetailedPage() {
                               </TierBlock>
                             ) : null}
                             {sp.parentActionHe ? (
-                              <div className="pr-detailed-callout-action pr-detailed-avoid-split rounded-lg border px-3 py-2.5">
+                              <div className="pr-detailed-callout-action rounded-lg border px-3 py-2.5">
                                 <span className="pr-detailed-callout-label">פעולה לבית</span>
                                 <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">
                                   {sp.parentActionHe}
@@ -875,7 +945,7 @@ export default function ParentReportDetailedPage() {
                               </div>
                             ) : null}
                             {sp.nextWeekGoalHe ? (
-                              <div className="pr-detailed-callout-goal pr-detailed-avoid-split rounded-lg border px-3 py-2.5">
+                              <div className="pr-detailed-callout-goal rounded-lg border px-3 py-2.5">
                                 <span className="pr-detailed-callout-label">יעד לשבוע</span>
                                 <p className="pr-detailed-body-text text-sm m-0 mt-1 leading-relaxed">
                                   {sp.nextWeekGoalHe}
@@ -883,7 +953,7 @@ export default function ParentReportDetailedPage() {
                               </div>
                             ) : null}
                             {sp.evidenceExamples?.length ? (
-                              <div className="pr-detailed-tier-examples pr-detailed-avoid-split">
+                              <div className="pr-detailed-tier-examples">
                                 <h4 className="pr-detailed-subheading">דוגמאות</h4>
                                 <ul className="pr-detailed-muted text-xs space-y-1 m-0 list-none pr-0 leading-relaxed">
                                   {sp.evidenceExamples.map((e, idx) => (
@@ -901,7 +971,7 @@ export default function ParentReportDetailedPage() {
                                 <p className="pr-detailed-topic-rec-head">צעד הבא המומלץ לפי נושא (נתוני טווח + טעויות)</p>
                                 <div className="space-y-2.5">
                                   {sp.topicRecommendations.map((tr) => (
-                                    <div key={tr.topicRowKey} className="pr-detailed-topic-nextstep-card pr-detailed-avoid-split">
+                                    <div key={tr.topicRowKey} className="pr-detailed-topic-nextstep-card">
                                       <div className="flex flex-wrap items-start justify-between gap-2 mb-1.5">
                                         <span className="pr-detailed-body-text font-bold text-white/95 leading-snug">
                                           {tr.displayName}
