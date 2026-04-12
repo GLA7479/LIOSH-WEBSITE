@@ -12,28 +12,18 @@ import {
   mistakePatternLineHe,
   phase8PracticeCalibrationLineHe,
   phase8TopicMetaChipsHe,
-  recalibrationLineHe,
   responseToInterventionLineHe,
   reviewBeforeAdvanceLineHe,
   sanitizeEngineSnippetHe,
   sufficiencyBadgeLabelHe,
-  supportAdjustmentLineHe,
   transferReadinessLineHe,
   trendCompactLineHe,
   truncateHe,
-  freshnessLineHe,
-  sequenceActionLineHe,
-  topicRepetitionFatigueCompactLineHe,
-  topicSupportSequenceOrReleaseLineHe,
-  recommendationMemoryLineHe,
-  outcomeTrackingLineHe,
-  continuationDecisionLineHe,
-  gateStateLineHe,
-  evidenceTargetLineHe,
-  gateTriggerCompactLineHe,
-  dependencyStateLineHe,
-  interventionOrderingLineHe,
-  foundationBeforeExpansionLineHe,
+  topicFreshnessUnifiedLineHe,
+  topicSequencingRepeatCompactLineHe,
+  topicMemoryOutcomeContinuationCompactLineHe,
+  topicGatesEvidenceDecisionCompactLineHe,
+  topicFoundationDependencyCompactLineHe,
 } from "../utils/parent-report-ui-explain-he";
 
 /** תג קומפקטי — RTL, לא מגדיל את גובה השורה יתר על המידה */
@@ -199,94 +189,34 @@ export function ParentReportTopicExplainRow({ row }) {
             {truncateHe(responseToInterventionLineHe(row), 150)}
           </p>
         ) : null}
-        {freshnessLineHe(row) ? (
+        {topicFreshnessUnifiedLineHe(row) ? (
           <p className="text-[9px] md:text-[10px] text-white/66 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">עדכניות: </span>
-            {truncateHe(freshnessLineHe(row), 150)}
+            <span className="text-white/45 font-semibold">עדכניות וראיה: </span>
+            {truncateHe(topicFreshnessUnifiedLineHe(row), 168)}
           </p>
         ) : null}
-        {supportAdjustmentLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-amber-100/82 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">צעד הבא: </span>
-            {truncateHe(supportAdjustmentLineHe(row), 160)}
+        {topicSequencingRepeatCompactLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-indigo-100/86 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">רצף וצעד: </span>
+            {truncateHe(topicSequencingRepeatCompactLineHe(row), 168)}
           </p>
         ) : null}
-        {topicSupportSequenceOrReleaseLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-indigo-100/88 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">רצף תמיכה: </span>
-            {truncateHe(topicSupportSequenceOrReleaseLineHe(row), 158)}
-          </p>
-        ) : null}
-        {topicRepetitionFatigueCompactLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-indigo-100/82 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">חזרתיות: </span>
-            {truncateHe(topicRepetitionFatigueCompactLineHe(row), 158)}
-          </p>
-        ) : null}
-        {sequenceActionLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-indigo-100/85 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">צעד ברצף: </span>
-            {truncateHe(sequenceActionLineHe(row), 158)}
-          </p>
-        ) : null}
-        {recommendationMemoryLineHe(row) ? (
+        {topicMemoryOutcomeContinuationCompactLineHe(row) ? (
           <p className="text-[9px] md:text-[10px] text-slate-100/86 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">זיכרון המלצה: </span>
-            {truncateHe(recommendationMemoryLineHe(row), 158)}
+            <span className="text-white/45 font-semibold">זיכרון ותוצאה: </span>
+            {truncateHe(topicMemoryOutcomeContinuationCompactLineHe(row), 168)}
           </p>
         ) : null}
-        {outcomeTrackingLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-slate-100/84 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">צפי מול נצפה: </span>
-            {truncateHe(outcomeTrackingLineHe(row), 158)}
-          </p>
-        ) : null}
-        {continuationDecisionLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-slate-100/88 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">המשך: </span>
-            {truncateHe(continuationDecisionLineHe(row), 158)}
-          </p>
-        ) : null}
-        {gateStateLineHe(row) ? (
+        {topicGatesEvidenceDecisionCompactLineHe(row) ? (
           <p className="text-[9px] md:text-[10px] text-fuchsia-100/86 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">שער החלטה: </span>
-            {truncateHe(gateStateLineHe(row), 158)}
+            <span className="text-white/45 font-semibold">שערים וראיה לסבב: </span>
+            {truncateHe(topicGatesEvidenceDecisionCompactLineHe(row), 168)}
           </p>
         ) : null}
-        {evidenceTargetLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-fuchsia-100/82 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">מה לאסוף: </span>
-            {truncateHe(evidenceTargetLineHe(row), 158)}
-          </p>
-        ) : null}
-        {gateTriggerCompactLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-fuchsia-100/88 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">טריגר: </span>
-            {truncateHe(gateTriggerCompactLineHe(row), 158)}
-          </p>
-        ) : null}
-        {dependencyStateLineHe(row) ? (
+        {topicFoundationDependencyCompactLineHe(row) ? (
           <p className="text-[9px] md:text-[10px] text-emerald-100/86 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">יסוד/מקומי: </span>
-            {truncateHe(dependencyStateLineHe(row), 158)}
-          </p>
-        ) : null}
-        {interventionOrderingLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-emerald-100/84 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">סדר: </span>
-            {truncateHe(interventionOrderingLineHe(row), 158)}
-          </p>
-        ) : null}
-        {foundationBeforeExpansionLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-emerald-100/88 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">לפני הרחבה: </span>
-            {truncateHe(foundationBeforeExpansionLineHe(row), 158)}
-          </p>
-        ) : null}
-        {recalibrationLineHe(row) && !freshnessLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-white/62 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">ריענון: </span>
-            {truncateHe(recalibrationLineHe(row), 140)}
+            <span className="text-white/45 font-semibold">יסוד וסדר: </span>
+            {truncateHe(topicFoundationDependencyCompactLineHe(row), 168)}
           </p>
         ) : null}
         {hasDetails ? (

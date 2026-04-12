@@ -10,6 +10,11 @@ import {
 
 /**
  * @param {Record<string, unknown>} p merged dependency + gates + targets
+ *
+ * Phase 15 — קדימות פנימית (ללא מנוע חדש):
+ * 1) `insufficient_dependency_evidence` או mixed עם conf נמוך → תמיד evidence-first לפני foundation_first.
+ * 2) `likely_foundational_block` + shouldTreat + conf moderate|high → foundation_first; אחרת gather או local.
+ * 3) שערי advance/release ב-forming רק מחזקים foundationBeforeExpansion — לא דורסים החלטת dependency.
  */
 export function buildFoundationOrderingPhase14(p) {
   const dep = String(p?.dependencyState || "");

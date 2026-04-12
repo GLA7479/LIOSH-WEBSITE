@@ -161,7 +161,8 @@ export function buildFoundationDependencyPhase14(ctx) {
     shouldTreatAsFoundationFirst = true;
     downstreamSymptomLikelihood = "high";
     localIssueLikelihood = "low";
-  } else if (foundationScore >= 1 && localScore === 0 && (fragileStage || persistentMistakes || retentionShaky)) {
+  /* Phase 15: דורשים לפחות שני אותות «יסוד» כדי לא לסווג foundational על אות חלש בודד */
+  } else if (foundationScore >= 2 && localScore === 0 && (fragileStage || persistentMistakes || retentionShaky)) {
     dependencyState = "likely_foundational_block";
     shouldTreatAsFoundationFirst = true;
     downstreamSymptomLikelihood = "moderate";
@@ -181,7 +182,7 @@ export function buildFoundationDependencyPhase14(ctx) {
     localIssueLikelihood = q >= 16 ? "high" : "moderate";
   }
 
-  if (likelyFoundationalBlocker === "unknown" && dependencyState === "likely_foundational_block") {
+  if (likelyFoundationalBlocker === "unknown" && dependencyState === "likely_foundational_block" && q >= 15) {
     likelyFoundationalBlocker = "procedure_automaticity_gap";
   }
 

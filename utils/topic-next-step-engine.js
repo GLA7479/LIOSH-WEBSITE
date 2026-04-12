@@ -1002,7 +1002,23 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
   } else if (phase11Drift.recommendationRotationNeed === "meaningful_rotation" && phase11Overlay.whyWeShouldNotRepeatSameSupportHe) {
     whyThisRecommendationHe += ` ${String(phase11Overlay.whyWeShouldNotRepeatSameSupportHe).slice(0, 120)}`;
   }
-  if (phase12Overlay.whatNeedsFreshEvidenceNowHe && phase12Memory.recommendationMemoryState === "no_memory") {
+  /* Phase 15: קדימות ניסוח — Phase 13 (מה עדיין חסר) מעל Phase 12 כדי לא לשכפל אות זהה */
+  const evStillNeed = phase13Overlay.whatEvidenceWeStillNeedHe
+    ? String(phase13Overlay.whatEvidenceWeStillNeedHe).trim()
+    : "";
+  const freshNeed = phase12Overlay.whatNeedsFreshEvidenceNowHe
+    ? String(phase12Overlay.whatNeedsFreshEvidenceNowHe).trim()
+    : "";
+  const freshProbe = freshNeed.slice(0, Math.min(36, freshNeed.length));
+  const evProbe = evStillNeed.slice(0, Math.min(36, evStillNeed.length));
+  const freshOverlapsEv =
+    freshProbe.length > 14 && evProbe.length > 14 && (evStillNeed.includes(freshProbe) || freshNeed.includes(evProbe));
+
+  if (
+    phase12Overlay.whatNeedsFreshEvidenceNowHe &&
+    phase12Memory.recommendationMemoryState === "no_memory" &&
+    !freshOverlapsEv
+  ) {
     whyThisRecommendationHe += ` ${String(phase12Overlay.whatNeedsFreshEvidenceNowHe).slice(0, 140)}`;
   } else if (phase12Overlay.whyWeThinkThisPathDidNotLandHe && phase12Outcome.expectedVsObservedMatch === "misaligned") {
     whyThisRecommendationHe += ` ${String(phase12Overlay.whyWeThinkThisPathDidNotLandHe).slice(0, 140)}`;
@@ -1011,7 +1027,11 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
     (phase13Gates.gateReadiness === "insufficient" || phase13Gates.gateState === "gates_not_ready") &&
     phase13Overlay.whatEvidenceWeStillNeedHe
   ) {
-    whyThisRecommendationHe += ` ${String(phase13Overlay.whatEvidenceWeStillNeedHe).slice(0, 130)}`;
+    const chunk = String(phase13Overlay.whatEvidenceWeStillNeedHe).slice(0, 130);
+    const chunkProbe = chunk.slice(0, Math.min(32, chunk.length));
+    if (chunkProbe.length < 12 || !whyThisRecommendationHe.includes(chunkProbe)) {
+      whyThisRecommendationHe += ` ${chunk}`;
+    }
   } else if (phase13Gates.gateState === "recheck_gate_visible" && phase13Overlay.whatWouldTriggerRecheckHe) {
     whyThisRecommendationHe += ` ${String(phase13Overlay.whatWouldTriggerRecheckHe).slice(0, 120)}`;
   }
@@ -1027,7 +1047,8 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
   }
   if (
     phase14Dep.dependencyState === "likely_foundational_block" &&
-    (phase13Gates.releaseGate === "forming" || phase13Gates.advanceGate === "forming")
+    (phase13Gates.releaseGate === "forming" || phase13Gates.advanceGate === "forming") &&
+    !whyThisRecommendationHe.includes("לא מרחיבים שחרור")
   ) {
     whyThisRecommendationHe += " כל עוד יש חשד לפער יסוד — לא מרחיבים שחרור או קידום בלי יותר יציבות בסיס.";
   }

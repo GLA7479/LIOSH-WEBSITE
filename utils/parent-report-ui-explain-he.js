@@ -964,3 +964,125 @@ export function downstreamSymptomLineHe(rowOrRec) {
   const h = String(src.downstreamSymptomLikelihoodHe || "").trim();
   return h ? truncateHe(h, 140) : "";
 }
+
+/* -------------------------------------------------------------------------- */
+/* Phase 15 — קומפקט UI: סדר עדיפות הוראתי אחיד, בלי כפילויות בין שכבות     */
+/* עדיפות תוכן: (1) מה נראה (2) תמיכה (3) מה עדיין חסר (4) מה לדחות        */
+/* (5) יסוד/מקומי — כאן רק מאחדים שורות מקבילות שמקורן באותם שדות מנוע.      */
+/* -------------------------------------------------------------------------- */
+
+/** @param {string} hay @param {string} needle */
+function pr15HayContainsProbe(hay, needle, minProbe = 16) {
+  const H = String(hay || "");
+  const N = String(needle || "").trim();
+  if (!H || !N) return false;
+  const probe = N.slice(0, Math.min(Math.max(minProbe, 12), N.length));
+  return probe.length >= 10 && H.includes(probe);
+}
+
+/**
+ * עדכניות + ריענון + «ראיה טרייה» בשורה אחת (לא שלוש שורות זהירות כמעט זהות).
+ * קדימות: freshness > fresh-evidence (מסונן) > recalibration.
+ */
+export function topicFreshnessUnifiedLineHe(rowOrRec) {
+  const fr = freshnessLineHe(rowOrRec);
+  if (fr) return fr;
+  const fe = freshEvidenceNeedLineHe(rowOrRec);
+  const rec = recalibrationLineHe(rowOrRec);
+  if (fe && rec && !pr15HayContainsProbe(fe, rec, 14) && !pr15HayContainsProbe(rec, fe, 14)) {
+    return truncateHe(`${fe} · ${rec}`, 195);
+  }
+  if (fe) return fe;
+  return rec || "";
+}
+
+/**
+ * התאמת תמיכה / צעד ברצף / ניסוח רצף — שורה אחת; קדימות ל-adjustment כי הוא מכסה לעיתים את הרצף.
+ */
+export function topicSupportFlowUnifiedLineHe(rowOrRec) {
+  const adj = supportAdjustmentLineHe(rowOrRec);
+  if (adj) return adj;
+  const seqA = sequenceActionLineHe(rowOrRec);
+  if (seqA) return seqA;
+  return topicSupportSequenceOrReleaseLineHe(rowOrRec);
+}
+
+/** רצף + חזרתיות — מיזוג כשהטקסט חופף; אחרת « · » */
+export function topicSequencingRepeatCompactLineHe(rowOrRec) {
+  const flow = topicSupportFlowUnifiedLineHe(rowOrRec);
+  const rep = topicRepetitionFatigueCompactLineHe(rowOrRec);
+  if (!rep) return flow;
+  if (!flow) return rep;
+  if (pr15HayContainsProbe(flow, rep, 14) || pr15HayContainsProbe(rep, flow, 14)) return flow;
+  return truncateHe(`${flow} · ${rep}`, 200);
+}
+
+/** זיכרון המלצה + תוצאה + המשך — בלי לשכפל משפטים כמעט זהים */
+export function topicMemoryOutcomeContinuationCompactLineHe(rowOrRec) {
+  const mem = recommendationMemoryLineHe(rowOrRec);
+  const out = outcomeTrackingLineHe(rowOrRec);
+  const cont = continuationDecisionLineHe(rowOrRec);
+  const parts = [];
+  let acc = "";
+  if (mem) {
+    parts.push(mem);
+    acc = mem;
+  }
+  if (out && !pr15HayContainsProbe(acc, out, 18)) {
+    parts.push(out);
+    acc = parts.join(" ");
+  }
+  if (cont && !pr15HayContainsProbe(acc, cont, 18)) parts.push(cont);
+  return parts.length ? truncateHe(parts.join(" · "), 210) : "";
+}
+
+/**
+ * שער + מיקוד סבב + יעד ראיה + טריגר — שורה אחת כשהשדות חוזרים על אותה כוונה.
+ * קדימות: gate narrative > focus > evidence target > trigger (רק אם מוסיף מידע).
+ */
+export function topicGatesEvidenceDecisionCompactLineHe(rowOrRec) {
+  const gate = gateStateLineHe(rowOrRec);
+  const focus = decisionFocusLineHe(rowOrRec);
+  const ev = evidenceTargetLineHe(rowOrRec);
+  const trig = gateTriggerCompactLineHe(rowOrRec);
+  const parts = [];
+  let acc = "";
+  if (gate) {
+    parts.push(gate);
+    acc = gate;
+  }
+  if (focus && !pr15HayContainsProbe(acc, focus, 14)) {
+    parts.push(focus);
+    acc = parts.join(" ");
+  }
+  if (ev && !pr15HayContainsProbe(acc, ev, 18)) {
+    parts.push(ev);
+    acc = parts.join(" ");
+  }
+  if (trig && !pr15HayContainsProbe(acc, trig, 18)) parts.push(trig);
+  return parts.length ? truncateHe(parts.join(" · "), 215) : "";
+}
+
+/** יסוד/מקומי + סדר התערבות + לפני הרחבה + תסמין משנה — מניעת כפילות בין שורות Phase 14 */
+export function topicFoundationDependencyCompactLineHe(rowOrRec) {
+  const dep = dependencyStateLineHe(rowOrRec);
+  const ord = interventionOrderingLineHe(rowOrRec);
+  const fbe = foundationBeforeExpansionLineHe(rowOrRec);
+  const dss = downstreamSymptomLineHe(rowOrRec);
+  const parts = [];
+  let acc = "";
+  if (dep) {
+    parts.push(dep);
+    acc = dep;
+  }
+  if (ord && !pr15HayContainsProbe(acc, ord, 12)) {
+    parts.push(ord);
+    acc = parts.join(" ");
+  }
+  if (fbe && !pr15HayContainsProbe(acc, fbe, 16)) {
+    parts.push(fbe);
+    acc = parts.join(" ");
+  }
+  if (dss && !pr15HayContainsProbe(acc, dss, 16)) parts.push(dss);
+  return parts.length ? truncateHe(parts.join(" · "), 220) : "";
+}

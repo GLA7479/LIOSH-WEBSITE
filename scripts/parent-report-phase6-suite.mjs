@@ -64,6 +64,11 @@ const {
   evidenceTargetLineHe,
   gateTriggerCompactLineHe,
   dependencyStateLineHe,
+  topicFreshnessUnifiedLineHe,
+  topicGatesEvidenceDecisionCompactLineHe,
+  topicFoundationDependencyCompactLineHe,
+  topicMemoryOutcomeContinuationCompactLineHe,
+  topicSequencingRepeatCompactLineHe,
 } = await importUtils("utils/parent-report-ui-explain-he.js");
 const { PARENT_REPORT_SCENARIOS } = await import(pathToFileURL(join(ROOT, "tests/fixtures/parent-report-pipeline.mjs")).href);
 const { generateQuestion: genMath } = await importUtils("utils/math-question-generator.js");
@@ -871,6 +876,81 @@ function runUiResilienceHelpers() {
   assert.equal(evidenceTargetLineHe(null), "");
   assert.equal(gateTriggerCompactLineHe({ topicEngineRowSignals: {} }), "");
   assert.equal(dependencyStateLineHe({}), "");
+  assert.equal(topicFreshnessUnifiedLineHe({}), "");
+  assert.equal(topicGatesEvidenceDecisionCompactLineHe(null), "");
+  assert.equal(topicFoundationDependencyCompactLineHe({}), "");
+}
+
+function runPhase15NarrativeCompactAndStack() {
+  const gateDup = {
+    topicEngineRowSignals: {
+      gateNarrativeHe: "לפני החלטה: לאשר דיוק קצר בלי לחץ.",
+      evidenceTargetNarrativeHe: "לאשר דיוק קצר בלי לחץ — זהה לשער.",
+      nextCycleDecisionFocusHe: "להוכיח שהכיוון הנוכחי באמת עוזר",
+    },
+  };
+  const gCompact = topicGatesEvidenceDecisionCompactLineHe(gateDup);
+  assert.ok(gCompact.length > 5);
+  assert.ok(gCompact.split(" · ").length <= 4, "phase15: gates compact bounded join count");
+
+  const memOverlap = {
+    topicEngineRowSignals: {
+      recommendationMemoryNarrativeHe: "יש זיכרון חלש מהחלון הנוכחי.",
+      outcomeTrackingNarrativeHe: "יש זיכרון חלש מהחלון הנוכחי — כפילות מכוונת לבדיקה.",
+      recommendationContinuationDecisionHe: "להמשיך עם תצפית קצרה בלבד.",
+    },
+  };
+  const moc = topicMemoryOutcomeContinuationCompactLineHe(memOverlap);
+  assert.ok(!moc.includes(" · ") || moc.split(" · ").length <= 3, "phase15: memory/outcome merge");
+
+  const seqRow = {
+    topicEngineRowSignals: {
+      nextSupportAdjustmentHe: "להתאים עומס לפי התגובה בשבוע הקרוב.",
+      nextSupportSequenceActionHe: "להתאים עומס לפי התגובה בשבוע הקרוב.",
+      supportSequenceNarrativeHe: "רצף ארוך מדי",
+    },
+  };
+  const seqC = topicSequencingRepeatCompactLineHe(seqRow);
+  assert.ok(seqC.length > 5, "phase15: sequencing compact returns primary flow line");
+
+  const synth = {
+    questions: 18,
+    evidenceStrength: "medium",
+    dataSufficiencyLevel: "medium",
+    accuracy: 70,
+    wrongRatio: 0.2,
+    behaviorProfile: { dominantType: "knowledge_gap" },
+    trend: { direction: "flat", confidence: "medium" },
+    topicEngineRowSignals: {},
+  };
+  const rec = buildTopicRecommendationRecord("math", "add:1_2", synth, {}, DEFAULT_TOPIC_NEXT_STEP_CONFIG, Date.now());
+  assert.ok(rec && typeof rec.whyThisRecommendationHe === "string");
+  assert.ok(String(rec.dependencyState || "").length > 2);
+  const why = String(rec.whyThisRecommendationHe);
+  const wn = String(rec.whatEvidenceWeStillNeedHe || "").trim();
+  if (wn.length > 18) {
+    const probe = wn.slice(0, 28);
+    assert.equal(why.indexOf(probe), why.lastIndexOf(probe), "phase15: no duplicate evidence-need snippet in why");
+  }
+  assert.ok(typeof rec.interventionOrdering === "string");
+
+  const d = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.one_dominant_subject(), { period: "week" });
+  const math = d.subjectProfiles.find((s) => s.subject === "math");
+  const topics = math?.topicRecommendations;
+  const firstTr =
+    topics && typeof topics === "object"
+      ? Object.values(topics).find((t) => t && typeof t === "object" && (t.whyThisRecommendationHe || t.topicEngineRowSignals))
+      : null;
+  if (firstTr) {
+    const strip = [
+      topicFreshnessUnifiedLineHe(firstTr),
+      topicSequencingRepeatCompactLineHe(firstTr),
+      topicMemoryOutcomeContinuationCompactLineHe(firstTr),
+      topicGatesEvidenceDecisionCompactLineHe(firstTr),
+      topicFoundationDependencyCompactLineHe(firstTr),
+    ].filter(Boolean);
+    assert.ok(Array.isArray(strip), "phase15: strip helpers accept detailed topic rec");
+  }
 }
 
 function runReactServerSmoke() {
@@ -1788,6 +1868,7 @@ function main() {
   runPhase12MemoryAndOutcome();
   runPhase13DecisionsAndEvidenceTargets();
   runPhase14FoundationDependencyAndOrdering();
+  runPhase15NarrativeCompactAndStack();
   runReactServerSmoke();
 
   const reportDir = join(ROOT, "reports", "parent-report-phase6");

@@ -2,6 +2,8 @@
 
 Concise map of how the parent report pipeline fits together, what each test script covers, and where to look when something breaks. This doc is scoped to **parent-report / detailed report / related tests only** — not the whole app.
 
+**Engine layers, merge precedence, and Phase 15 UI consolidation:** see [`docs/PARENT_REPORT_ENGINE.md`](./PARENT_REPORT_ENGINE.md).
+
 ## Pipeline layers (data flow)
 
 Order is roughly bottom-up: raw usage → enriched rows → subject diagnostics → assembled reports → UI.

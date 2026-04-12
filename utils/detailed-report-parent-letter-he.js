@@ -412,4 +412,10 @@ export {
   interventionOrderingLineHe,
   foundationBeforeExpansionLineHe,
   downstreamSymptomLineHe,
+  topicFreshnessUnifiedLineHe,
+  topicGatesEvidenceDecisionCompactLineHe,
+  topicFoundationDependencyCompactLineHe,
+  topicMemoryOutcomeContinuationCompactLineHe,
+  topicSequencingRepeatCompactLineHe,
+  topicSupportFlowUnifiedLineHe,
 } from "./parent-report-ui-explain-he.js";

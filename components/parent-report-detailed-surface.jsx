@@ -13,34 +13,21 @@ import {
   confidenceBadgeLabelHe,
   diagnosticTypeLabelHe,
   learningMemoryLineHe,
-  freshnessLineHe,
   mistakePatternLineHe,
   phase8PracticeCalibrationLineHe,
   phase8TopicMetaChipsHe,
-  recalibrationLineHe,
   responseToInterventionLineHe,
   reviewBeforeAdvanceLineHe,
   sanitizeEngineSnippetHe,
   subjectMajorRiskLabelsHe,
   sufficiencyBadgeLabelHe,
-  supportAdjustmentLineHe,
-  sequenceActionLineHe,
-  topicRepetitionFatigueCompactLineHe,
-  topicSupportSequenceOrReleaseLineHe,
   transferReadinessLineHe,
   truncateHe,
-  recommendationMemoryLineHe,
-  outcomeTrackingLineHe,
-  continuationDecisionLineHe,
-  freshEvidenceNeedLineHe,
-  gateStateLineHe,
-  evidenceTargetLineHe,
-  decisionFocusLineHe,
-  gateTriggerCompactLineHe,
-  dependencyStateLineHe,
-  interventionOrderingLineHe,
-  foundationBeforeExpansionLineHe,
-  downstreamSymptomLineHe,
+  topicFreshnessUnifiedLineHe,
+  topicSequencingRepeatCompactLineHe,
+  topicMemoryOutcomeContinuationCompactLineHe,
+  topicGatesEvidenceDecisionCompactLineHe,
+  topicFoundationDependencyCompactLineHe,
 } from "../utils/parent-report-ui-explain-he";
 
 export function Bullets({ items, className = "" }) {
@@ -658,24 +645,11 @@ export function TopicRecommendationExplainStrip({ tr }) {
   const rbaLine = truncateHe(reviewBeforeAdvanceLineHe(tr || sig), 100);
   const trLine = truncateHe(transferReadinessLineHe(tr || sig), 100);
   const rtiLine = truncateHe(responseToInterventionLineHe(tr || sig), 118);
-  const frLine = truncateHe(freshnessLineHe(tr || sig), 118);
-  const adjLine = truncateHe(supportAdjustmentLineHe(tr || sig), 120);
-  const recLine = truncateHe(recalibrationLineHe(tr || sig), 110);
-  const seqTopicLine = truncateHe(topicSupportSequenceOrReleaseLineHe(tr || sig), 118);
-  const repFatLine = truncateHe(topicRepetitionFatigueCompactLineHe(tr || sig), 118);
-  const seqActLine = truncateHe(sequenceActionLineHe(tr || sig), 118);
-  const memLine = truncateHe(recommendationMemoryLineHe(tr || sig), 118);
-  const outLine = truncateHe(outcomeTrackingLineHe(tr || sig), 118);
-  const contLine = truncateHe(continuationDecisionLineHe(tr || sig), 118);
-  const freshLine = truncateHe(freshEvidenceNeedLineHe(tr || sig), 110);
-  const gateLine = truncateHe(gateStateLineHe(tr || sig), 118);
-  const evTargetLine = truncateHe(evidenceTargetLineHe(tr || sig), 118);
-  const decFocusLine = truncateHe(decisionFocusLineHe(tr || sig), 118);
-  const gateTrigLine = truncateHe(gateTriggerCompactLineHe(tr || sig), 118);
-  const depLine = truncateHe(dependencyStateLineHe(tr || sig), 118);
-  const ordLine = truncateHe(interventionOrderingLineHe(tr || sig), 118);
-  const fbeLine = truncateHe(foundationBeforeExpansionLineHe(tr || sig), 118);
-  const dssLine = truncateHe(downstreamSymptomLineHe(tr || sig), 118);
+  const freshUnified = truncateHe(topicFreshnessUnifiedLineHe(tr || sig), 125);
+  const seqCompact = truncateHe(topicSequencingRepeatCompactLineHe(tr || sig), 125);
+  const memOutCont = truncateHe(topicMemoryOutcomeContinuationCompactLineHe(tr || sig), 125);
+  const gatesCompact = truncateHe(topicGatesEvidenceDecisionCompactLineHe(tr || sig), 125);
+  const foundationCompact = truncateHe(topicFoundationDependencyCompactLineHe(tr || sig), 125);
   const hasPhase8 = !!(
     ip ||
     dn ||
@@ -688,24 +662,11 @@ export function TopicRecommendationExplainStrip({ tr }) {
     rbaLine ||
     trLine ||
     rtiLine ||
-    frLine ||
-    adjLine ||
-    recLine ||
-    seqTopicLine ||
-    repFatLine ||
-    seqActLine ||
-    memLine ||
-    outLine ||
-    contLine ||
-    freshLine ||
-    gateLine ||
-    evTargetLine ||
-    decFocusLine ||
-    gateTrigLine ||
-    depLine ||
-    ordLine ||
-    fbeLine ||
-    dssLine
+    freshUnified ||
+    seqCompact ||
+    memOutCont ||
+    gatesCompact ||
+    foundationCompact
   );
   if (!why && !risks.length && !diag && !cBad && !sBad && !whatCh && !hasPhase8) return null;
   return (
@@ -819,112 +780,34 @@ export function TopicRecommendationExplainStrip({ tr }) {
           {rtiLine}
         </p>
       ) : null}
-      {frLine ? (
+      {freshUnified ? (
         <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-white/68 leading-snug">
-          <span className="text-white/45 font-bold">עדכניות: </span>
-          {frLine}
+          <span className="text-white/45 font-bold">עדכניות וראיה: </span>
+          {freshUnified}
         </p>
       ) : null}
-      {adjLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-amber-100/82 leading-snug">
-          <span className="text-white/45 font-bold">צעד הבא: </span>
-          {adjLine}
+      {seqCompact ? (
+        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-indigo-100/86 leading-snug">
+          <span className="text-white/45 font-bold">רצף וצעד: </span>
+          {seqCompact}
         </p>
       ) : null}
-      {recLine && !frLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-white/64 leading-snug">
-          <span className="text-white/45 font-bold">ריענון: </span>
-          {recLine}
-        </p>
-      ) : null}
-      {seqTopicLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-indigo-100/88 leading-snug">
-          <span className="text-white/45 font-bold">רצף תמיכה: </span>
-          {seqTopicLine}
-        </p>
-      ) : null}
-      {repFatLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-indigo-100/82 leading-snug">
-          <span className="text-white/45 font-bold">חזרתיות: </span>
-          {repFatLine}
-        </p>
-      ) : null}
-      {seqActLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-indigo-100/85 leading-snug">
-          <span className="text-white/45 font-bold">צעד ברצף: </span>
-          {seqActLine}
-        </p>
-      ) : null}
-      {memLine ? (
+      {memOutCont ? (
         <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-slate-100/85 leading-snug">
-          <span className="text-white/45 font-bold">זיכרון המלצה: </span>
-          {memLine}
+          <span className="text-white/45 font-bold">זיכרון ותוצאה: </span>
+          {memOutCont}
         </p>
       ) : null}
-      {outLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-slate-100/82 leading-snug">
-          <span className="text-white/45 font-bold">צפי מול נצפה: </span>
-          {outLine}
-        </p>
-      ) : null}
-      {contLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-slate-100/88 leading-snug">
-          <span className="text-white/45 font-bold">המשך: </span>
-          {contLine}
-        </p>
-      ) : null}
-      {freshLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-amber-100/82 leading-snug">
-          <span className="text-white/45 font-bold">ראיה טרייה: </span>
-          {freshLine}
-        </p>
-      ) : null}
-      {gateLine ? (
+      {gatesCompact ? (
         <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-fuchsia-100/86 leading-snug">
-          <span className="text-white/45 font-bold">שער החלטה: </span>
-          {gateLine}
+          <span className="text-white/45 font-bold">שערים וראיה לסבב: </span>
+          {gatesCompact}
         </p>
       ) : null}
-      {evTargetLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-fuchsia-100/84 leading-snug">
-          <span className="text-white/45 font-bold">מה לאסוף: </span>
-          {evTargetLine}
-        </p>
-      ) : null}
-      {decFocusLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-fuchsia-100/82 leading-snug">
-          <span className="text-white/45 font-bold">מיקוד סבב: </span>
-          {decFocusLine}
-        </p>
-      ) : null}
-      {gateTrigLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-fuchsia-100/88 leading-snug">
-          <span className="text-white/45 font-bold">טריגר: </span>
-          {gateTrigLine}
-        </p>
-      ) : null}
-      {depLine ? (
+      {foundationCompact ? (
         <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-emerald-100/86 leading-snug">
-          <span className="text-white/45 font-bold">יסוד/מקומי: </span>
-          {depLine}
-        </p>
-      ) : null}
-      {ordLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-emerald-100/84 leading-snug">
-          <span className="text-white/45 font-bold">סדר: </span>
-          {ordLine}
-        </p>
-      ) : null}
-      {fbeLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-emerald-100/88 leading-snug">
-          <span className="text-white/45 font-bold">לפני הרחבה: </span>
-          {fbeLine}
-        </p>
-      ) : null}
-      {dssLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-emerald-100/82 leading-snug">
-          <span className="text-white/45 font-bold">תסמין משנה: </span>
-          {dssLine}
+          <span className="text-white/45 font-bold">יסוד וסדר: </span>
+          {foundationCompact}
         </p>
       ) : null}
     </div>

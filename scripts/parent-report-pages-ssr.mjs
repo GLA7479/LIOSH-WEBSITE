@@ -290,6 +290,25 @@ function runDetailedPageChunks() {
     },
   };
   render("topic-strip:phase14-compact", h(TopicRecommendationExplainStrip, { tr: trPhase14 }));
+
+  const trPhase15 = {
+    ...trPhase14,
+    topicEngineRowSignals: {
+      ...(trPhase14.topicEngineRowSignals && typeof trPhase14.topicEngineRowSignals === "object"
+        ? trPhase14.topicEngineRowSignals
+        : {}),
+      freshnessStateLabelHe: "המידע מתחיל להתיישן",
+      conclusionFreshnessLabelHe: "ביטחון במסקנה יורד",
+      whatNeedsFreshEvidenceNowHe: "כדאי ראיה טרייה לפני החמרה",
+      gateNarrativeHe: "שער: לאסוף ראיה לפני החלטה",
+      evidenceTargetNarrativeHe: "יעד: דיוק קצר בלי לחץ",
+      nextSupportAdjustmentHe: "להתאים עומס — צעד קדימה זהיר",
+      nextSupportSequenceActionHe: "להתאים עומס — צעד קדימה זהיר",
+      recommendationMemoryNarrativeHe: "זיכרון חלש מהחלון האחרון",
+      outcomeTrackingNarrativeHe: "תוצאה לא תואמת ציפייה",
+    },
+  };
+  render("topic-strip:phase15-unified-compact", h(TopicRecommendationExplainStrip, { tr: trPhase15 }));
 }
 
 function runParentReportPageChunks() {
@@ -408,6 +427,19 @@ function runParentReportPageChunks() {
     },
   };
   render("parent-report:explain-row-phase14", h(ParentReportTopicExplainRow, { row: rowPhase14 }));
+
+  const rowPhase15 = {
+    ...rowPhase14,
+    topicEngineRowSignals: {
+      ...rowPhase14.topicEngineRowSignals,
+      freshnessStateLabelHe: "המידע מתחיל להתיישן",
+      conclusionFreshnessLabelHe: "ביטחון במסקנה יורד",
+      whatNeedsFreshEvidenceNowHe: "כדאי ראיה טרייה לפני החמרה",
+      nextSupportAdjustmentHe: "להתאים עומס — צעד קדימה זהיר",
+      nextSupportSequenceActionHe: "להתאים עומס — צעד קדימה זהיר",
+    },
+  };
+  render("parent-report:explain-row-phase15", h(ParentReportTopicExplainRow, { row: rowPhase15 }));
 }
 
 function main() {
