@@ -5,7 +5,6 @@ import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
 import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
-import { ParentReportTopicExplainBlock } from "../../components/parent-report-topic-explain-row.jsx";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
@@ -3286,9 +3285,6 @@ export default function ParentReport() {
                             </Bar>
                           </BarChart>
                         </ResponsiveContainer>
-                      </div>
-                      <div dir="rtl" className="w-full min-w-0">
-                        <ParentReportTopicExplainBlock rows={rows} />
                       </div>
                     </div>
                   </div>

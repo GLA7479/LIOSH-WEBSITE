@@ -8,26 +8,13 @@ import {
   rewriteParentRecommendationForDetailedHe,
 } from "../utils/detailed-report-parent-letter-he";
 import {
-  activeRiskFlagLabelsHe,
   behaviorDominantLabelHe,
-  confidenceBadgeLabelHe,
-  diagnosticTypeLabelHe,
   learningMemoryLineHe,
   mistakePatternLineHe,
-  phase8PracticeCalibrationLineHe,
-  phase8TopicMetaChipsHe,
-  responseToInterventionLineHe,
-  reviewBeforeAdvanceLineHe,
   sanitizeEngineSnippetHe,
   subjectMajorRiskLabelsHe,
-  sufficiencyBadgeLabelHe,
   transferReadinessLineHe,
   truncateHe,
-  topicFreshnessUnifiedLineHe,
-  topicSequencingRepeatCompactLineHe,
-  topicMemoryOutcomeContinuationCompactLineHe,
-  topicGatesEvidenceDecisionCompactLineHe,
-  topicFoundationDependencyCompactLineHe,
 } from "../utils/parent-report-ui-explain-he";
 
 export function Bullets({ items, className = "" }) {
@@ -619,197 +606,69 @@ export function SubjectSummaryBlock({ sp }) {
   );
 }
 
-/** פס Phase 2 על המלצת נושא */
+/** ניקוי תצוגה הורית לטקסט שמקורו בשדות מנוע — בלי לשנות את ה-payload */
+function topicStripParentClean(s) {
+  let t = sanitizeEngineSnippetHe(String(s || ""));
+  t = t.replace(/\bdefault_[a-z0-9_]+\b/gi, "");
+  t = t.replace(/\bresponseMs\b|\bretry\b|\bhint\b/gi, "");
+  t = t.replace(/\blow_?confidence\b|\bmin_?questions\b|\btier\b/gi, "");
+  t = t.replace(/\b[a-z][a-z0-9_]{12,}\b/g, "");
+  t = t.replace(/\s{2,}/g, " ").trim();
+  return t;
+}
+
+function topicStripNorm(s) {
+  return String(s || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+/** פס על המלצת נושא — עד 3 שכבות הוריות: מה ראינו / מה זה אומר / כיוון עבודה */
 export function TopicRecommendationExplainStrip({ tr }) {
   const sig = tr?.topicEngineRowSignals && typeof tr.topicEngineRowSignals === "object" ? tr.topicEngineRowSignals : null;
-  const why = truncateHe(
-    sanitizeEngineSnippetHe(String(tr?.whyThisRecommendationHe || sig?.whyThisRecommendationHe || "")),
-    130
-  );
-  const whatCh = truncateHe(String(tr?.whatCouldChangeThisHe || sig?.whatCouldChangeThisHe || ""), 100);
-  const risks = activeRiskFlagLabelsHe(tr?.riskFlags ?? sig?.riskFlags, 4);
-  const diagRaw = tr?.diagnosticType ?? sig?.diagnosticType;
-  const diag = diagRaw ? diagnosticTypeLabelHe(diagRaw) : "";
-  const cRaw = tr?.confidenceBadge ?? sig?.confidenceBadge;
-  const sRaw = tr?.sufficiencyBadge ?? sig?.sufficiencyBadge;
-  const cBad = cRaw != null ? confidenceBadgeLabelHe(cRaw) : "";
-  const sBad = sRaw != null ? sufficiencyBadgeLabelHe(sRaw) : "";
-  const ip = truncateHe(String(tr?.interventionPlanHe || sig?.interventionPlanHe || ""), 132);
-  const dn = truncateHe(String(tr?.doNowHe || sig?.doNowHe || ""), 96);
-  const av = truncateHe(String(tr?.avoidNowHe || sig?.avoidNowHe || ""), 96);
-  const caut = truncateHe(String(tr?.cautionLineHe || sig?.cautionLineHe || ""), 118);
-  const calLine = truncateHe(phase8PracticeCalibrationLineHe(tr || sig), 100);
-  const p8chips = phase8TopicMetaChipsHe(tr || {});
-  const mpLine = truncateHe(mistakePatternLineHe(tr || sig), 118);
-  const lmLine = truncateHe(learningMemoryLineHe(tr || sig), 118);
-  const rbaLine = truncateHe(reviewBeforeAdvanceLineHe(tr || sig), 100);
-  const trLine = truncateHe(transferReadinessLineHe(tr || sig), 100);
-  const rtiLine = truncateHe(responseToInterventionLineHe(tr || sig), 118);
-  const freshUnified = truncateHe(topicFreshnessUnifiedLineHe(tr || sig), 125);
-  const seqCompact = truncateHe(topicSequencingRepeatCompactLineHe(tr || sig), 125);
-  const memOutCont = truncateHe(topicMemoryOutcomeContinuationCompactLineHe(tr || sig), 125);
-  const gatesCompact = truncateHe(topicGatesEvidenceDecisionCompactLineHe(tr || sig), 125);
-  const foundationCompact = truncateHe(topicFoundationDependencyCompactLineHe(tr || sig), 125);
-  const hasPhase8 = !!(
-    ip ||
-    dn ||
-    av ||
-    caut ||
-    calLine ||
-    p8chips.length ||
-    mpLine ||
-    lmLine ||
-    rbaLine ||
-    trLine ||
-    rtiLine ||
-    freshUnified ||
-    seqCompact ||
-    memOutCont ||
-    gatesCompact ||
-    foundationCompact
-  );
-  if (!why && !risks.length && !diag && !cBad && !sBad && !whatCh && !hasPhase8) return null;
+
+  const mp = topicStripParentClean(mistakePatternLineHe(tr || sig) || "");
+  const lm = topicStripParentClean(learningMemoryLineHe(tr || sig) || "");
+  const seenRaw = [mp, lm].filter(Boolean).join(" · ");
+  let seen = truncateHe(seenRaw, 200);
+
+  const whyRaw = String(tr?.whyThisRecommendationHe || sig?.whyThisRecommendationHe || "").trim();
+  let meaning = truncateHe(topicStripParentClean(whyRaw), 200);
+
+  if (seen && meaning && topicStripNorm(seen) === topicStripNorm(meaning)) {
+    meaning = "";
+  }
+
+  const ip = topicStripParentClean(String(tr?.interventionPlanHe || sig?.interventionPlanHe || ""));
+  const dn = topicStripParentClean(String(tr?.doNowHe || sig?.doNowHe || ""));
+  const av = topicStripParentClean(String(tr?.avoidNowHe || sig?.avoidNowHe || ""));
+  const caut = topicStripParentClean(String(tr?.cautionLineHe || sig?.cautionLineHe || ""));
+
+  const dirParts = [];
+  if (ip) dirParts.push(ip);
+  if (dn) dirParts.push(`מה כדאי לעשות עכשיו: ${dn}`);
+  if (av) dirParts.push(`מה כדאי לדחות כרגע: ${av}`);
+  let direction = truncateHe(dirParts.join(" "), 220);
+  if (caut) {
+    direction = direction ? `${direction} שימו לב: ${truncateHe(caut, 140)}` : `שימו לב: ${truncateHe(caut, 160)}`;
+  }
+
+  if (!seen && !meaning && !direction) return null;
+
+  const row = (label, body) =>
+    body ? (
+      <p className="pr-detailed-body-text text-[11px] md:text-xs m-0 text-white/80 leading-snug">
+        <span className="text-white/45 font-bold">{label}</span>
+        {body}
+      </p>
+    ) : null;
+
   return (
     <div className="pr-detailed-topic-phase2 mt-2 space-y-1.5 border-t border-white/10 pt-2">
-      <div className="flex flex-wrap gap-1">
-        {cBad ? (
-          <span className="text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 rounded border border-sky-400/35 text-sky-100/95 bg-sky-950/20">
-            {cBad}
-          </span>
-        ) : null}
-        {sBad ? (
-          <span className="text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 rounded border border-slate-400/35 text-slate-100/90 bg-slate-900/25">
-            {sBad}
-          </span>
-        ) : null}
-        {diag ? (
-          <span className="text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 rounded border border-white/15 text-white/80">
-            {diag}
-          </span>
-        ) : null}
-        {risks.map((lab) => (
-          <span
-            key={lab}
-            className="text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 rounded border border-rose-400/35 text-rose-100/95 bg-rose-950/20"
-          >
-            {lab}
-          </span>
-        ))}
-        {p8chips.map((lab) => (
-          <span
-            key={lab}
-            className="text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 rounded border border-emerald-400/28 text-emerald-100/90 bg-emerald-950/15"
-          >
-            {lab}
-          </span>
-        ))}
-      </div>
-      {why ? (
-        <p className="pr-detailed-body-text text-[11px] md:text-xs m-0 text-white/78 leading-snug">
-          <span className="text-white/45 font-bold">למה: </span>
-          {why}
-        </p>
-      ) : null}
-      {whatCh ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-white/60 leading-snug">
-          <span className="text-white/40 font-bold">מה יכול לשנות: </span>
-          {whatCh}
-        </p>
-      ) : null}
-      {ip ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-emerald-100/88 leading-snug">
-          <span className="text-white/45 font-bold">תוכנית קצרה: </span>
-          {ip}
-        </p>
-      ) : null}
-      {calLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-white/65 leading-snug">
-          <span className="text-white/40 font-bold">כיול תרגול: </span>
-          {calLine}
-        </p>
-      ) : null}
-      {dn || av ? (
-        <div className="text-[10px] md:text-[11px] text-sky-100/88 leading-snug space-y-0.5 border border-sky-400/18 rounded px-2 py-1 bg-sky-950/10">
-          {dn ? (
-            <p className="m-0">
-              <span className="text-white/45 font-bold">עכשיו: </span>
-              {dn}
-            </p>
-          ) : null}
-          {av ? (
-            <p className="m-0">
-              <span className="text-white/45 font-bold">להימנע: </span>
-              {av}
-            </p>
-          ) : null}
-        </div>
-      ) : null}
-      {caut ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-amber-100/85 leading-snug">
-          <span className="text-white/45 font-bold">זהירות: </span>
-          {caut}
-        </p>
-      ) : null}
-      {mpLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-white/72 leading-snug">
-          <span className="text-white/45 font-bold">דפוס טעות: </span>
-          {mpLine}
-        </p>
-      ) : null}
-      {lmLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-white/72 leading-snug">
-          <span className="text-white/45 font-bold">שימור: </span>
-          {lmLine}
-        </p>
-      ) : null}
-      {rbaLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-violet-100/88 leading-snug">
-          <span className="text-white/45 font-bold">לפני קידום: </span>
-          {rbaLine}
-        </p>
-      ) : null}
-      {trLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-cyan-100/85 leading-snug">
-          <span className="text-white/45 font-bold">העברה: </span>
-          {trLine}
-        </p>
-      ) : null}
-      {rtiLine ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-teal-100/88 leading-snug">
-          <span className="text-white/45 font-bold">תגובה לתמיכה: </span>
-          {rtiLine}
-        </p>
-      ) : null}
-      {freshUnified ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-white/68 leading-snug">
-          <span className="text-white/45 font-bold">עדכניות וראיה: </span>
-          {freshUnified}
-        </p>
-      ) : null}
-      {seqCompact ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-indigo-100/86 leading-snug">
-          <span className="text-white/45 font-bold">רצף וצעד: </span>
-          {seqCompact}
-        </p>
-      ) : null}
-      {memOutCont ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-slate-100/85 leading-snug">
-          <span className="text-white/45 font-bold">זיכרון ותוצאה: </span>
-          {memOutCont}
-        </p>
-      ) : null}
-      {gatesCompact ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-fuchsia-100/86 leading-snug">
-          <span className="text-white/45 font-bold">שערים וראיה לסבב: </span>
-          {gatesCompact}
-        </p>
-      ) : null}
-      {foundationCompact ? (
-        <p className="pr-detailed-body-text text-[10px] md:text-[11px] m-0 text-emerald-100/86 leading-snug">
-          <span className="text-white/45 font-bold">יסוד וסדר: </span>
-          {foundationCompact}
-        </p>
-      ) : null}
+      {row("מה ראינו: ", seen)}
+      {row("מה זה אומר: ", meaning)}
+      {row("כיוון עבודה: ", direction)}
     </div>
   );
 }

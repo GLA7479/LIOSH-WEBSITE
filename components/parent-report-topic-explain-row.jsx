@@ -4,27 +4,26 @@
 import React from "react";
 import {
   activeRiskFlagLabelsHe,
-  behaviorDominantLabelHe,
   confidenceBadgeLabelHe,
-  diagnosticTypeLabelHe,
-  formatDecisionTraceBulletsHe,
   learningMemoryLineHe,
   mistakePatternLineHe,
-  phase8PracticeCalibrationLineHe,
-  phase8TopicMetaChipsHe,
-  responseToInterventionLineHe,
-  reviewBeforeAdvanceLineHe,
   sanitizeEngineSnippetHe,
   sufficiencyBadgeLabelHe,
-  transferReadinessLineHe,
   trendCompactLineHe,
   truncateHe,
-  topicFreshnessUnifiedLineHe,
-  topicSequencingRepeatCompactLineHe,
-  topicMemoryOutcomeContinuationCompactLineHe,
-  topicGatesEvidenceDecisionCompactLineHe,
-  topicFoundationDependencyCompactLineHe,
 } from "../utils/parent-report-ui-explain-he";
+
+/**
+ * ניסוח להצגת הורה בלבד — לא משנה נתונים; רק מנקה שאריות טכניות נפוצות מהמנוע.
+ * @param {string} raw
+ */
+function parentFacingEngineLine(raw) {
+  let s = sanitizeEngineSnippetHe(String(raw || ""));
+  s = s.replace(/\bdefault_[a-z0-9_]+\b/gi, "");
+  s = s.replace(/\b[a-z][a-z0-9_]{8,}\b/g, "");
+  s = s.replace(/\s{2,}/g, " ").trim();
+  return s;
+}
 
 /** תג קומפקטי — RTL, לא מגדיל את גובה השורה יתר על המידה */
 export function PrMiniBadge({ children, tone = "neutral" }) {
@@ -56,27 +55,21 @@ export function ParentReportTopicExplainRow({ row }) {
   const trend = row.trend;
   const bp = row.behaviorProfile;
   const whyRaw = sig?.whyThisRecommendationHe ? String(sig.whyThisRecommendationHe) : "";
-  const whyOne = truncateHe(sanitizeEngineSnippetHe(whyRaw), 118);
+  const whyOne = truncateHe(parentFacingEngineLine(whyRaw), 140);
   const trendLine = trendCompactLineHe(trend);
-  const diag = sig?.diagnosticType ? diagnosticTypeLabelHe(sig.diagnosticType) : "";
-  const beh = bp?.dominantType ? behaviorDominantLabelHe(bp.dominantType) : "";
+  const trendFacing = trendLine ? truncateHe(parentFacingEngineLine(trendLine), 120) : "";
   const confLab = sig?.confidenceBadge != null ? confidenceBadgeLabelHe(sig.confidenceBadge) : "";
   const suffLab = sig?.sufficiencyBadge != null ? sufficiencyBadgeLabelHe(sig.sufficiencyBadge) : "";
   const risks = activeRiskFlagLabelsHe(sig?.riskFlags, 4);
-  const hasSignals = !!(sig || trendLine || beh);
-  const mergedTrace = [
-    ...(Array.isArray(row.decisionTrace) ? row.decisionTrace : []),
-    ...(Array.isArray(row.recommendationDecisionTrace) ? row.recommendationDecisionTrace : []),
-  ];
-  const traceBullets = formatDecisionTraceBulletsHe(mergedTrace, 4);
-  const whatChange = sig?.whatCouldChangeThisHe ? truncateHe(String(sig.whatCouldChangeThisHe), 140) : "";
-  const ip = sig?.interventionPlanHe ? truncateHe(String(sig.interventionPlanHe), 130) : "";
-  const dn = sig?.doNowHe ? truncateHe(String(sig.doNowHe), 100) : "";
-  const av = sig?.avoidNowHe ? truncateHe(String(sig.avoidNowHe), 100) : "";
-  const caut = sig?.cautionLineHe ? truncateHe(String(sig.cautionLineHe), 110) : "";
-  const calLine = truncateHe(phase8PracticeCalibrationLineHe(row), 96);
-  const p8chips = phase8TopicMetaChipsHe(row);
-  const hasDetails = !!(traceBullets.length || whatChange || row.patternStabilityHe || row.dataSufficiencyLabelHe);
+  const hasSignals = !!(sig || trendFacing);
+  const ip = sig?.interventionPlanHe ? truncateHe(parentFacingEngineLine(String(sig.interventionPlanHe)), 130) : "";
+  const dn = sig?.doNowHe ? truncateHe(parentFacingEngineLine(String(sig.doNowHe)), 100) : "";
+  const av = sig?.avoidNowHe ? truncateHe(parentFacingEngineLine(String(sig.avoidNowHe)), 100) : "";
+  const caut = sig?.cautionLineHe ? truncateHe(parentFacingEngineLine(String(sig.cautionLineHe)), 110) : "";
+  const mp = mistakePatternLineHe(row);
+  const mpFacing = mp ? truncateHe(parentFacingEngineLine(mp), 120) : "";
+  const lm = learningMemoryLineHe(row);
+  const lmFacing = lm ? truncateHe(parentFacingEngineLine(lm), 120) : "";
 
   return (
     <div className="parent-report-topic-explain-row border-b border-white/[0.07] last:border-b-0 py-1.5 px-1 md:px-2">
@@ -85,24 +78,24 @@ export function ParentReportTopicExplainRow({ row }) {
           <span className="text-[10px] md:text-xs font-semibold text-white/88 truncate max-w-[58%] md:max-w-[50%]">
             {row.label}
           </span>
-          {confLab ? <PrMiniBadge tone="sky">{confLab}</PrMiniBadge> : null}
-          {suffLab ? <PrMiniBadge tone="neutral">{suffLab}</PrMiniBadge> : null}
-          {trendLine ? (
-            <PrMiniBadge tone="warn" title={trendLine}>
-              מגמה: {truncateHe(trendLine, 36)}
-            </PrMiniBadge>
+          {confLab || suffLab ? (
+            <span className="text-[9px] md:text-[10px] text-white/50 leading-tight">
+              {[confLab, suffLab].filter(Boolean).join(" · ")}
+            </span>
           ) : null}
-          {diag ? <PrMiniBadge tone="neutral">אבחון: {diag}</PrMiniBadge> : null}
-          {!diag && beh ? <PrMiniBadge tone="neutral">התנהגות: {beh}</PrMiniBadge> : null}
         </div>
+        {trendFacing ? (
+          <p className="text-[10px] md:text-[11px] text-white/65 leading-snug m-0 pr-0.5">
+            <span className="text-white/45 font-semibold">בתקופה האחרונה: </span>
+            {trendFacing}
+          </p>
+        ) : null}
         {whyOne ? (
           <p className="text-[10px] md:text-[11px] text-white/70 leading-snug m-0 pr-0.5">
-            <span className="text-white/45 font-semibold">למה: </span>
+            <span className="text-white/45 font-semibold">מה זה אומר: </span>
             {whyOne}
           </p>
-        ) : hasSignals ? (
-          <p className="text-[10px] md:text-[11px] text-white/55 m-0">אין ניסוח «למה» מהמנוע לשורה זו.</p>
-        ) : null}
+        ) : hasSignals ? null : null}
         {risks.length ? (
           <div className="flex flex-wrap gap-1">
             {risks.map((lab) => (
@@ -112,29 +105,12 @@ export function ParentReportTopicExplainRow({ row }) {
             ))}
           </div>
         ) : null}
-        {p8chips.length ? (
-          <div className="flex flex-wrap gap-1">
-            {p8chips.map((lab) => (
-              <PrMiniBadge key={lab} tone="ok">
-                {lab}
-              </PrMiniBadge>
-            ))}
-          </div>
-        ) : null}
-        {ip || calLine ? (
+        {ip ? (
           <div className="text-[9px] md:text-[10px] text-emerald-100/85 leading-snug space-y-0.5 m-0 pr-0.5">
-            {ip ? (
-              <p className="m-0">
-                <span className="text-white/45 font-semibold">תוכנית: </span>
-                {ip}
-              </p>
-            ) : null}
-            {calLine ? (
-              <p className="m-0 text-white/68">
-                <span className="text-white/40 font-semibold">כיול: </span>
-                {calLine}
-              </p>
-            ) : null}
+            <p className="m-0">
+              <span className="text-white/45 font-semibold">כיוון עבודה: </span>
+              {ip}
+            </p>
           </div>
         ) : null}
         {dn || av ? (
@@ -159,99 +135,17 @@ export function ParentReportTopicExplainRow({ row }) {
             {caut}
           </p>
         ) : null}
-        {mistakePatternLineHe(row) ? (
+        {mpFacing ? (
           <p className="text-[9px] md:text-[10px] text-white/70 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">דפוס טעות: </span>
-            {mistakePatternLineHe(row)}
+            <span className="text-white/45 font-semibold">איפה נתקעים לעיתים: </span>
+            {mpFacing}
           </p>
         ) : null}
-        {learningMemoryLineHe(row) ? (
+        {lmFacing ? (
           <p className="text-[9px] md:text-[10px] text-white/68 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">שימור: </span>
-            {learningMemoryLineHe(row)}
+            <span className="text-white/45 font-semibold">שימור בבית: </span>
+            {lmFacing}
           </p>
-        ) : null}
-        {reviewBeforeAdvanceLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-violet-100/85 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">לפני קידום: </span>
-            {reviewBeforeAdvanceLineHe(row)}
-          </p>
-        ) : null}
-        {transferReadinessLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-cyan-100/85 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">העברה: </span>
-            {transferReadinessLineHe(row)}
-          </p>
-        ) : null}
-        {responseToInterventionLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-teal-100/88 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">תגובה לתמיכה: </span>
-            {truncateHe(responseToInterventionLineHe(row), 150)}
-          </p>
-        ) : null}
-        {topicFreshnessUnifiedLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-white/66 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">עדכניות וראיה: </span>
-            {truncateHe(topicFreshnessUnifiedLineHe(row), 168)}
-          </p>
-        ) : null}
-        {topicSequencingRepeatCompactLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-indigo-100/86 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">רצף וצעד: </span>
-            {truncateHe(topicSequencingRepeatCompactLineHe(row), 168)}
-          </p>
-        ) : null}
-        {topicMemoryOutcomeContinuationCompactLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-slate-100/86 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">זיכרון ותוצאה: </span>
-            {truncateHe(topicMemoryOutcomeContinuationCompactLineHe(row), 168)}
-          </p>
-        ) : null}
-        {topicGatesEvidenceDecisionCompactLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-fuchsia-100/86 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">שערים וראיה לסבב: </span>
-            {truncateHe(topicGatesEvidenceDecisionCompactLineHe(row), 168)}
-          </p>
-        ) : null}
-        {topicFoundationDependencyCompactLineHe(row) ? (
-          <p className="text-[9px] md:text-[10px] text-emerald-100/86 m-0 pr-0.5 leading-snug">
-            <span className="text-white/45 font-semibold">יסוד וסדר: </span>
-            {truncateHe(topicFoundationDependencyCompactLineHe(row), 168)}
-          </p>
-        ) : null}
-        {hasDetails ? (
-          <details className="parent-report-topic-explain-details group min-w-0">
-            <summary className="cursor-pointer select-none text-[9px] md:text-[10px] font-bold text-sky-300/95 hover:text-sky-200 list-none [&::-webkit-details-marker]:hidden">
-              <span className="underline-offset-2 group-open:no-underline">פרטים (מסלול החלטה)</span>
-            </summary>
-            <div className="mt-1 rounded border border-white/10 bg-black/30 px-2 py-1.5 space-y-1 text-[9px] md:text-[10px] text-white/72 leading-snug">
-              {row.dataSufficiencyLabelHe ? (
-                <p className="m-0">
-                  <span className="text-white/45">נתונים: </span>
-                  {row.dataSufficiencyLabelHe}
-                </p>
-              ) : null}
-              {row.patternStabilityHe ? (
-                <p className="m-0">
-                  <span className="text-white/45">יציבות: </span>
-                  {truncateHe(row.patternStabilityHe, 160)}
-                </p>
-              ) : null}
-              {whatChange ? (
-                <p className="m-0">
-                  <span className="text-white/45">מה יכול לשנות: </span>
-                  {whatChange}
-                </p>
-              ) : null}
-              {traceBullets.length ? (
-                <ul className="m-0 pr-3 list-disc space-y-0.5">
-                  {traceBullets.map((t, i) => (
-                    <li key={i}>{t}</li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          </details>
         ) : null}
       </div>
     </div>
@@ -265,7 +159,7 @@ export function ParentReportTopicExplainBlock({ rows }) {
   return (
     <div className="parent-report-topic-explain-block mt-2 rounded-lg border border-white/10 bg-black/25 overflow-hidden">
       <div className="px-2 py-1 text-[10px] md:text-[11px] font-bold text-white/55 border-b border-white/10">
-        הסבר קצר לפי נושא (מהמערכת)
+        מה חשוב לדעת לפי נושא
       </div>
       <div className="max-h-[min(42vh,320px)] overflow-y-auto overscroll-contain">
         {withQ.map((r) => (

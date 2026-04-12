@@ -1040,19 +1040,13 @@ export default function ParentReportDetailedPage() {
                   </p>
                 </header>
 
-                {/* B — סיכום מנהלים (Phase 4) */}
-                <SectionCard title="סיכום מנהלים לתקופה" compact={displayMode === "summary"}>
+                {/* B — סיכום לתקופה (תוכן ExecutiveSummarySection ללא שינוי) */}
+                <SectionCard title="סיכום לתקופה" compact={displayMode === "summary"}>
                   <ExecutiveSummarySection
                     es={normalizeExecutiveSummary(payload)}
                     compact={displayMode === "summary"}
                   />
                 </SectionCard>
-
-                {displayMode === "full" ? (
-                  <p className="pr-detailed-future-compare text-xs text-white/50 mb-4 leading-relaxed border border-white/10 rounded-lg px-3 py-2 bg-white/[0.04]">
-                    השוואה לתקופה קודמת תתווסף בהמשך.
-                  </p>
-                ) : null}
 
                 {/* C */}
                 <SectionCard title="מה עשינו בתקופה הזאת" compact={displayMode === "summary"}>
