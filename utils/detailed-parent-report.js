@@ -6,6 +6,28 @@
 import { generateParentReportV2 } from "./parent-report-v2";
 import { buildTopicRecommendationsForSubject } from "./topic-next-step-engine";
 import { rewriteParentRecommendationForDetailedHe } from "./detailed-report-parent-letter-he";
+import {
+  EXPECTED_VS_OBSERVED_MATCH_LABEL_HE,
+  LEARNING_STAGE_LABEL_HE,
+  MISTAKE_PATTERN_LABEL_HE,
+  NEXT_BEST_SEQUENCE_STEP_LABEL_HE,
+  RECALIBRATION_NEED_LABEL_HE,
+  RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE,
+  RECOMMENDATION_MEMORY_STATE_LABEL_HE,
+  RESPONSE_TO_INTERVENTION_LABEL_HE,
+  ROOT_CAUSE_LABEL_HE,
+  STRATEGY_REPETITION_RISK_LABEL_HE,
+  SUPPORT_ADJUSTMENT_NEED_LABEL_HE,
+  SUPPORT_HISTORY_DEPTH_LABEL_HE,
+  SUPPORT_SEQUENCE_STATE_LABEL_HE,
+  GATE_STATE_LABEL_HE,
+  NEXT_CYCLE_DECISION_FOCUS_LABEL_HE,
+  TARGET_EVIDENCE_TYPE_LABEL_HE,
+  TARGET_OBSERVATION_WINDOW_LABEL_HE,
+  DEPENDENCY_STATE_LABEL_HE,
+  FOUNDATIONAL_BLOCKER_LABEL_HE,
+} from "./parent-report-ui-explain-he.js";
+import { pickRecommendedInterventionType } from "./topic-next-step-phase2.js";
 
 const SUBJECT_IDS = [
   "math",
@@ -399,6 +421,865 @@ function buildMixedSignalNoticeHe(subjects, crossRisks, topStrengthsAcrossHe) {
 /**
  * מיקוד ביתי — משפט אחד לפי מצב (חיזוק / שימור / דל נתון), בלי שכבות מרובות.
  */
+/**
+ * סינתזה חוצת־מקצועות לשלב 7 (שורש קושי, בשלות מסקנה, סדר עדיפויות הורה).
+ * @param {Record<string, unknown>} subjects
+ */
+function buildCrossSubjectPhase7Fields(subjects) {
+  const dist = {};
+  const cautionSet = new Set();
+  let notReady = 0;
+  let partial = 0;
+  let countedSubjects = 0;
+
+  for (const sid of SUBJECT_IDS) {
+    const s = subjects?.[sid];
+    if (!s || typeof s !== "object") continue;
+    countedSubjects += 1;
+    const rd = s.rootCauseDistribution;
+    if (rd && typeof rd === "object") {
+      for (const [k, v] of Object.entries(rd)) {
+        const n = Number(v) || 0;
+        if (!n) continue;
+        dist[k] = (dist[k] || 0) + n;
+      }
+    }
+    const cr = s.subjectConclusionReadiness;
+    if (cr === "not_ready") notReady += 1;
+    else if (cr === "partial") partial += 1;
+    const sd = String(s.subjectDiagnosticRestraintHe || "").trim();
+    if (sd) cautionSet.add(`${SUBJECT_LABEL_HE[sid]}: ${sd}`);
+  }
+
+  const entries = Object.entries(dist)
+    .filter(([, n]) => n > 0)
+    .sort((a, b) => b[1] - a[1]);
+  const nonIns = entries.filter(([k]) => k !== "insufficient_evidence");
+  let dominantCrossSubjectRootCause = "insufficient_evidence";
+  if (entries.length) {
+    const top = entries[0];
+    if (top[0] === "insufficient_evidence" && nonIns.length && nonIns[0][1] >= top[1]) {
+      dominantCrossSubjectRootCause = nonIns[0][0];
+    } else {
+      dominantCrossSubjectRootCause = top[0];
+    }
+  }
+
+  const dominantCrossSubjectRootCauseLabelHe =
+    ROOT_CAUSE_LABEL_HE[dominantCrossSubjectRootCause] ||
+    ROOT_CAUSE_LABEL_HE.insufficient_evidence;
+
+  let crossSubjectConclusionReadiness = "ready";
+  if (!countedSubjects) crossSubjectConclusionReadiness = "not_ready";
+  else if (notReady >= 2 || notReady >= Math.ceil(countedSubjects * 0.5)) {
+    crossSubjectConclusionReadiness = "not_ready";
+  } else if (notReady >= 1 || partial >= 2 || partial >= Math.ceil(countedSubjects * 0.45)) {
+    crossSubjectConclusionReadiness = "partial";
+  }
+
+  const majorDiagnosticCautionsHe = [];
+  if (crossSubjectConclusionReadiness !== "ready") {
+    majorDiagnosticCautionsHe.push(
+      "חלק מהמקצועות עם אותות מוקדמים או מעורבים — לא מגיעים למסקנה חדה על כל הבית בשלב זה."
+    );
+  }
+  for (const c of cautionSet) {
+    if (majorDiagnosticCautionsHe.length >= 6) break;
+    majorDiagnosticCautionsHe.push(c);
+  }
+
+  const recommendedParentPriorityType = pickRecommendedInterventionType(
+    dominantCrossSubjectRootCause,
+    "maintain_and_strengthen"
+  );
+
+  return {
+    dominantCrossSubjectRootCause,
+    dominantCrossSubjectRootCauseLabelHe,
+    crossSubjectConclusionReadiness,
+    majorDiagnosticCautionsHe,
+    recommendedParentPriorityType,
+  };
+}
+
+const CROSS_STAGE_PRIORITY_P9 = [
+  "regression_signal",
+  "fragile_retention",
+  "early_acquisition",
+  "insufficient_longitudinal_evidence",
+  "partial_stabilization",
+  "transfer_emerging",
+  "stable_control",
+];
+
+/**
+ * Phase 9 — טעות חוזרת וזיכרון למידה חוצה־מקצועות.
+ * @param {Record<string, unknown>} subjects
+ */
+function buildCrossSubjectPhase9Fields(subjects) {
+  const mpVotes = {};
+  const lsSubjectCounts = {};
+  let maxRetRank = 0;
+  const rrRank = { unknown: 0, low: 1, moderate: 2, high: 3 };
+  let minTrRank = 99;
+  const trRank = { not_ready: 0, limited: 1, emerging: 2, ready: 3 };
+  const reviewBeforeAdvanceAreasHe = [];
+  const transferReadyAreasHe = [];
+
+  for (const sid of SUBJECT_IDS) {
+    const s = subjects?.[sid];
+    if (!s || typeof s !== "object") continue;
+    const mp = String(s.dominantMistakePattern || "").trim();
+    if (mp) mpVotes[mp] = (mpVotes[mp] || 0) + 1;
+    const sls = String(s.subjectLearningStage || "").trim();
+    if (sls) lsSubjectCounts[sls] = (lsSubjectCounts[sls] || 0) + 1;
+    const sr = String(s.subjectRetentionRisk || "");
+    if (rrRank[sr] != null && rrRank[sr] > maxRetRank) maxRetRank = rrRank[sr];
+    const tr = String(s.subjectTransferReadiness || "");
+    const trv = trRank[tr];
+    if (trv != null && trv < minTrRank) minTrRank = trv;
+    const rba = String(s.subjectReviewBeforeAdvanceHe || "").trim();
+    if (rba && reviewBeforeAdvanceAreasHe.length < 5) {
+      reviewBeforeAdvanceAreasHe.push(`${SUBJECT_LABEL_HE[sid]}: ${shortenHe(rba, 110)}`);
+    }
+    if (tr === "ready" && sls === "stable_control" && transferReadyAreasHe.length < 4) {
+      transferReadyAreasHe.push(`${SUBJECT_LABEL_HE[sid]}: מוכנות זהירה להרחבה קטנה בתוך הנושא בלבד.`);
+    }
+  }
+
+  const mpEntries = Object.entries(mpVotes)
+    .filter(([, n]) => n > 0)
+    .sort((a, b) => b[1] - a[1]);
+  const nonInsMp = mpEntries.filter(([k]) => k !== "insufficient_mistake_evidence");
+  let dominantCrossSubjectMistakePattern = "insufficient_mistake_evidence";
+  if (mpEntries.length) {
+    const top = mpEntries[0];
+    if (top[0] === "insufficient_mistake_evidence" && nonInsMp.length && nonInsMp[0][1] >= top[1]) {
+      dominantCrossSubjectMistakePattern = nonInsMp[0][0];
+    } else {
+      dominantCrossSubjectMistakePattern = top[0];
+    }
+  }
+
+  let crossSubjectLearningStage = "insufficient_longitudinal_evidence";
+  for (const st of CROSS_STAGE_PRIORITY_P9) {
+    if ((lsSubjectCounts[st] || 0) > 0) {
+      crossSubjectLearningStage = st;
+      break;
+    }
+  }
+
+  const crossSubjectRetentionRisk =
+    maxRetRank >= 3 ? "high" : maxRetRank === 2 ? "moderate" : maxRetRank === 1 ? "low" : "unknown";
+
+  let crossSubjectTransferReadiness = "not_ready";
+  if (minTrRank === 99) crossSubjectTransferReadiness = "not_ready";
+  else if (minTrRank === 3) crossSubjectTransferReadiness = "ready";
+  else if (minTrRank === 2) crossSubjectTransferReadiness = "emerging";
+  else if (minTrRank === 1) crossSubjectTransferReadiness = "limited";
+
+  if (crossSubjectLearningStage === "fragile_retention" || crossSubjectLearningStage === "regression_signal") {
+    if (crossSubjectTransferReadiness === "ready") crossSubjectTransferReadiness = "limited";
+  }
+  if (crossSubjectTransferReadiness === "ready" && maxRetRank >= 2) {
+    crossSubjectTransferReadiness = "emerging";
+  }
+
+  return {
+    dominantCrossSubjectMistakePattern,
+    dominantCrossSubjectMistakePatternLabelHe:
+      MISTAKE_PATTERN_LABEL_HE[dominantCrossSubjectMistakePattern] ||
+      MISTAKE_PATTERN_LABEL_HE.insufficient_mistake_evidence,
+    crossSubjectLearningStage,
+    crossSubjectLearningStageLabelHe:
+      LEARNING_STAGE_LABEL_HE[crossSubjectLearningStage] ||
+      LEARNING_STAGE_LABEL_HE.insufficient_longitudinal_evidence,
+    crossSubjectRetentionRisk,
+    crossSubjectTransferReadiness,
+    reviewBeforeAdvanceAreasHe,
+    transferReadyAreasHe,
+  };
+}
+
+const RTI_CROSS_WORST_FIRST = [
+  "regression_under_support",
+  "stalled_response",
+  "mixed_response",
+  "over_supported_progress",
+  "not_enough_evidence",
+  "early_positive_response",
+  "independence_growing",
+];
+
+/**
+ * Phase 10 — תגובה להתערבות וריענון מסקנות חוצה־מקצועות.
+ * @param {Record<string, unknown>} subjects
+ */
+function buildCrossSubjectPhase10Fields(subjects) {
+  const votes = {};
+  const adjRank = {
+    monitor_only: 0,
+    hold_course: 1,
+    reduce_support: 2,
+    tighten_focus: 3,
+    increase_structure: 4,
+    change_strategy: 5,
+  };
+  const cfRank = { high: 0, medium: 1, low: 2, expired: 3 };
+  const recRank = { none: 0, light_review: 1, structured_recheck: 2, do_not_rely_yet: 3 };
+  let maxAdj = 0;
+  let crossSubjectSupportAdjustmentNeed = "monitor_only";
+  let maxCf = 0;
+  let crossSubjectConclusionFreshness = "medium";
+  let maxRec = 0;
+  let crossSubjectRecalibrationNeed = "none";
+  /** @type {string[]} */
+  const majorRecheckAreasHe = [];
+  /** @type {string[]} */
+  const areasWhereSupportCanBeReducedHe = [];
+  /** @type {string[]} */
+  const areasNeedingStrategyChangeHe = [];
+
+  for (const sid of SUBJECT_IDS) {
+    const s = subjects?.[sid];
+    if (!s || typeof s !== "object") continue;
+    const rti = String(s.subjectResponseToIntervention || "").trim();
+    if (rti) votes[rti] = (votes[rti] || 0) + 1;
+    const sadj = String(s.subjectSupportAdjustmentNeed || "");
+    if (adjRank[sadj] != null && adjRank[sadj] > maxAdj) {
+      maxAdj = adjRank[sadj];
+      crossSubjectSupportAdjustmentNeed = sadj;
+    }
+    const cf = String(s.subjectConclusionFreshness || "");
+    if (cfRank[cf] != null && cfRank[cf] > maxCf) {
+      maxCf = cfRank[cf];
+      crossSubjectConclusionFreshness = cf;
+    }
+    const rec = String(s.subjectRecalibrationNeed || "");
+    if (recRank[rec] != null && recRank[rec] > maxRec) {
+      maxRec = recRank[rec];
+      crossSubjectRecalibrationNeed = rec;
+    }
+    const lab = SUBJECT_LABEL_HE[sid];
+    if (rec === "structured_recheck" || cf === "expired" || (cf === "low" && rec !== "none")) {
+      if (majorRecheckAreasHe.length < 6) {
+        const hint = String(s.subjectRecalibrationNeedHe || "").trim() || "לעשות סבב תצפית לפני שינוי משמעותי.";
+        majorRecheckAreasHe.push(`${lab}: ${shortenHe(hint, 120)}`);
+      }
+    }
+    if (rti === "independence_growing" || rti === "over_supported_progress") {
+      if (areasWhereSupportCanBeReducedHe.length < 5) {
+        areasWhereSupportCanBeReducedHe.push(
+          `${lab}: ${RESPONSE_TO_INTERVENTION_LABEL_HE[rti] || RESPONSE_TO_INTERVENTION_LABEL_HE.not_enough_evidence}`
+        );
+      }
+    }
+    if (rti === "regression_under_support" || (rti === "stalled_response" && String(s.subjectSupportFit) === "poor_fit")) {
+      if (areasNeedingStrategyChangeHe.length < 5) {
+        areasNeedingStrategyChangeHe.push(`${lab}: כדאי לבחון שינוי אסטרטגיה זהיר, לא רק עוד אותה חזרה.`);
+      }
+    }
+  }
+
+  let crossSubjectResponseToIntervention = "not_enough_evidence";
+  const rtiSum = Object.values(votes).reduce((a, b) => a + b, 0);
+  if (rtiSum > 0) {
+    for (const id of RTI_CROSS_WORST_FIRST) {
+      if ((votes[id] || 0) > 0) {
+        crossSubjectResponseToIntervention = id;
+        break;
+      }
+    }
+  }
+
+  return {
+    crossSubjectResponseToIntervention,
+    crossSubjectResponseToInterventionLabelHe:
+      RESPONSE_TO_INTERVENTION_LABEL_HE[crossSubjectResponseToIntervention] ||
+      RESPONSE_TO_INTERVENTION_LABEL_HE.not_enough_evidence,
+    crossSubjectSupportAdjustmentNeed,
+    crossSubjectSupportAdjustmentNeedHe:
+      SUPPORT_ADJUSTMENT_NEED_LABEL_HE[crossSubjectSupportAdjustmentNeed] ||
+      SUPPORT_ADJUSTMENT_NEED_LABEL_HE.monitor_only,
+    crossSubjectConclusionFreshness,
+    crossSubjectRecalibrationNeed,
+    crossSubjectRecalibrationNeedHe:
+      RECALIBRATION_NEED_LABEL_HE[crossSubjectRecalibrationNeed] || RECALIBRATION_NEED_LABEL_HE.none,
+    majorRecheckAreasHe,
+    areasWhereSupportCanBeReducedHe,
+    areasNeedingStrategyChangeHe,
+  };
+}
+
+const SEQ_STATE_CROSS_WORST_FIRST = [
+  "sequence_exhausted",
+  "sequence_stalled",
+  "insufficient_sequence_evidence",
+  "continuing_sequence",
+  "early_sequence",
+  "new_support_cycle",
+  "sequence_ready_for_release",
+];
+
+const NEXT_BEST_STEP_CROSS_WORST_FIRST = [
+  "switch_support_type",
+  "reset_with_short_review",
+  "tighten_same_goal",
+  "observe_before_next_cycle",
+  "begin_release_step",
+  "continue_current_sequence",
+];
+
+/**
+ * Phase 11 — רצף תמיכה חוצה־מקצועות.
+ * @param {Record<string, unknown>} subjects
+ */
+function buildCrossSubjectPhase11Fields(subjects) {
+  const seqVotes = {};
+  const repRank = { unknown: 0, low: 1, moderate: 2, high: 3 };
+  let maxRep = 0;
+  let crossSubjectStrategyRepetitionRisk = "unknown";
+  const fatRank = { unknown: 0, low: 1, moderate: 2, high: 3 };
+  let maxFat = 0;
+  let crossSubjectStrategyFatigueRisk = "unknown";
+  const stepVotes = {};
+  /** @type {string[]} */
+  const subjectsReadyForReleaseHe = [];
+  /** @type {string[]} */
+  const subjectsAtRiskOfSupportRepetitionHe = [];
+  /** @type {string[]} */
+  const subjectsNeedingSupportResetHe = [];
+
+  for (const sid of SUBJECT_IDS) {
+    const s = subjects?.[sid];
+    if (!s || typeof s !== "object") continue;
+    const ss = String(s.subjectSupportSequenceState || "").trim();
+    if (ss) seqVotes[ss] = (seqVotes[ss] || 0) + 1;
+    const rep = String(s.subjectStrategyRepetitionRisk || "");
+    if (repRank[rep] != null && repRank[rep] > maxRep) {
+      maxRep = repRank[rep];
+      crossSubjectStrategyRepetitionRisk = rep;
+    }
+    const fat = String(s.subjectStrategyFatigueRisk || "");
+    if (fatRank[fat] != null && fatRank[fat] > maxFat) {
+      maxFat = fatRank[fat];
+      crossSubjectStrategyFatigueRisk = fat;
+    }
+    const stp = String(s.subjectNextBestSequenceStep || "").trim();
+    if (stp) stepVotes[stp] = (stepVotes[stp] || 0) + 1;
+    const lab = SUBJECT_LABEL_HE[sid];
+    if (ss === "sequence_ready_for_release" && subjectsReadyForReleaseHe.length < 5) {
+      subjectsReadyForReleaseHe.push(`${lab}: ${shortenHe(String(s.subjectSupportSequenceStateLabelHe || ""), 100)}`);
+    }
+    if (
+      (rep === "high" || (rep === "moderate" && ss === "sequence_stalled")) &&
+      subjectsAtRiskOfSupportRepetitionHe.length < 5
+    ) {
+      subjectsAtRiskOfSupportRepetitionHe.push(
+        `${lab}: ${STRATEGY_REPETITION_RISK_LABEL_HE[rep] || STRATEGY_REPETITION_RISK_LABEL_HE.unknown}`
+      );
+    }
+    const rot = String(s.subjectRecommendationRotationNeed || "");
+    if (
+      (ss === "sequence_exhausted" || rot === "meaningful_rotation") &&
+      subjectsNeedingSupportResetHe.length < 5
+    ) {
+      subjectsNeedingSupportResetHe.push(`${lab}: כדאי לעצור חזרות ולחדש כיוון לפני עוד אותו סוג תרגול.`);
+    }
+  }
+
+  let crossSubjectSupportSequenceState = "insufficient_sequence_evidence";
+  const seqSum = Object.values(seqVotes).reduce((a, b) => a + b, 0);
+  if (seqSum > 0) {
+    for (const id of SEQ_STATE_CROSS_WORST_FIRST) {
+      if ((seqVotes[id] || 0) > 0) {
+        crossSubjectSupportSequenceState = id;
+        break;
+      }
+    }
+  }
+
+  let crossSubjectNextBestSequenceStep = "observe_before_next_cycle";
+  const stepSum = Object.values(stepVotes).reduce((a, b) => a + b, 0);
+  if (stepSum > 0) {
+    for (const id of NEXT_BEST_STEP_CROSS_WORST_FIRST) {
+      if ((stepVotes[id] || 0) > 0) {
+        crossSubjectNextBestSequenceStep = id;
+        break;
+      }
+    }
+  }
+
+  return {
+    crossSubjectSupportSequenceState,
+    crossSubjectSupportSequenceStateLabelHe:
+      SUPPORT_SEQUENCE_STATE_LABEL_HE[crossSubjectSupportSequenceState] ||
+      SUPPORT_SEQUENCE_STATE_LABEL_HE.insufficient_sequence_evidence,
+    crossSubjectStrategyRepetitionRisk,
+    crossSubjectStrategyFatigueRisk,
+    crossSubjectNextBestSequenceStep,
+    crossSubjectNextBestSequenceStepHe:
+      NEXT_BEST_SEQUENCE_STEP_LABEL_HE[crossSubjectNextBestSequenceStep] ||
+      NEXT_BEST_SEQUENCE_STEP_LABEL_HE.observe_before_next_cycle,
+    subjectsReadyForReleaseHe,
+    subjectsAtRiskOfSupportRepetitionHe,
+    subjectsNeedingSupportResetHe,
+  };
+}
+
+const MEM_STATE_RANK_P12 = { no_memory: 0, light_memory: 1, usable_memory: 2, strong_memory: 3 };
+const DEPTH_RANK_P12 = { unknown: 0, single_window: 1, short_history: 2, multi_window: 3 };
+const MATCH_WORST_FIRST_P12 = ["misaligned", "not_enough_evidence", "partly_aligned", "aligned"];
+const CONTINUATION_WORST_FIRST_P12 = [
+  "reset_and_rebuild_signal",
+  "pivot_from_prior_path",
+  "do_not_repeat_without_new_evidence",
+  "continue_but_refine",
+  "begin_controlled_release",
+  "continue_with_same_core",
+];
+
+/**
+ * Phase 12 — זיכרון המלצה ומעקב תוצאה חוצה־מקצועות.
+ * @param {Record<string, unknown>} subjects
+ */
+function buildCrossSubjectPhase12Fields(subjects) {
+  let minMemRank = 99;
+  let minDepthRank = 99;
+  const matchVotes = {};
+  const contVotes = {};
+  /** @type {string[]} */
+  const subjectsWithClearCarryoverHe = [];
+  /** @type {string[]} */
+  const subjectsNeedingFreshEvidenceHe = [];
+  /** @type {string[]} */
+  const subjectsWherePriorPathSeemsMisalignedHe = [];
+
+  for (const sid of SUBJECT_IDS) {
+    const s = subjects?.[sid];
+    if (!s || typeof s !== "object") continue;
+    const m = String(s.subjectRecommendationMemoryState || "no_memory");
+    if (MEM_STATE_RANK_P12[m] != null && MEM_STATE_RANK_P12[m] < minMemRank) minMemRank = MEM_STATE_RANK_P12[m];
+    const d = String(s.subjectSupportHistoryDepth || "unknown");
+    if (DEPTH_RANK_P12[d] != null && DEPTH_RANK_P12[d] < minDepthRank) minDepthRank = DEPTH_RANK_P12[d];
+    const mat = String(s.subjectExpectedVsObservedMatch || "").trim();
+    if (mat) matchVotes[mat] = (matchVotes[mat] || 0) + 1;
+    const ctn = String(s.subjectContinuationDecision || "").trim();
+    if (ctn) contVotes[ctn] = (contVotes[ctn] || 0) + 1;
+    const lab = SUBJECT_LABEL_HE[sid];
+    if (
+      s.subjectRecommendationCarryover === "clearly_visible" &&
+      mat === "aligned" &&
+      subjectsWithClearCarryoverHe.length < 5
+    ) {
+      subjectsWithClearCarryoverHe.push(`${lab}: נראה שעקביות המסלול נשמרה והתוצאה מתאימה לציפייה.`);
+    }
+    if (
+      (m === "no_memory" || m === "light_memory") &&
+      (mat === "not_enough_evidence" || s.subjectFollowThroughSignal === "not_inferable") &&
+      subjectsNeedingFreshEvidenceHe.length < 5
+    ) {
+      subjectsNeedingFreshEvidenceHe.push(`${lab}: כדאי לאסוף עוד אות לפני שממשיכים אותו מסלול.`);
+    }
+    if (mat === "misaligned" && subjectsWherePriorPathSeemsMisalignedHe.length < 5) {
+      subjectsWherePriorPathSeemsMisalignedHe.push(
+        `${lab}: הציפייה מהמסלול הקודם לא נראית מתיישרת עם מה שרואים עכשיו.`
+      );
+    }
+  }
+
+  const memKeyFromRank = (r) => {
+    if (r >= 99) return "no_memory";
+    for (const [k, v] of Object.entries(MEM_STATE_RANK_P12)) if (v === r) return k;
+    return "no_memory";
+  };
+  const depthKeyFromRank = (r) => {
+    if (r >= 99) return "unknown";
+    for (const [k, v] of Object.entries(DEPTH_RANK_P12)) if (v === r) return k;
+    return "unknown";
+  };
+
+  const crossSubjectRecommendationMemoryState = memKeyFromRank(minMemRank);
+  const crossSubjectSupportHistoryDepth = depthKeyFromRank(minDepthRank);
+
+  let crossSubjectExpectedVsObservedMatch = "not_enough_evidence";
+  const mSum = Object.values(matchVotes).reduce((a, b) => a + b, 0);
+  if (mSum > 0) {
+    for (const id of MATCH_WORST_FIRST_P12) {
+      if ((matchVotes[id] || 0) > 0) {
+        crossSubjectExpectedVsObservedMatch = id;
+        break;
+      }
+    }
+  }
+
+  let crossSubjectContinuationDecision = "continue_but_refine";
+  const cSum = Object.values(contVotes).reduce((a, b) => a + b, 0);
+  if (cSum > 0) {
+    for (const id of CONTINUATION_WORST_FIRST_P12) {
+      if ((contVotes[id] || 0) > 0) {
+        crossSubjectContinuationDecision = id;
+        break;
+      }
+    }
+  }
+
+  return {
+    crossSubjectRecommendationMemoryState,
+    crossSubjectRecommendationMemoryStateLabelHe:
+      RECOMMENDATION_MEMORY_STATE_LABEL_HE[crossSubjectRecommendationMemoryState] ||
+      RECOMMENDATION_MEMORY_STATE_LABEL_HE.no_memory,
+    crossSubjectSupportHistoryDepth,
+    crossSubjectSupportHistoryDepthLabelHe:
+      SUPPORT_HISTORY_DEPTH_LABEL_HE[crossSubjectSupportHistoryDepth] ||
+      SUPPORT_HISTORY_DEPTH_LABEL_HE.unknown,
+    crossSubjectExpectedVsObservedMatch,
+    crossSubjectExpectedVsObservedMatchHe:
+      EXPECTED_VS_OBSERVED_MATCH_LABEL_HE[crossSubjectExpectedVsObservedMatch] ||
+      EXPECTED_VS_OBSERVED_MATCH_LABEL_HE.not_enough_evidence,
+    crossSubjectContinuationDecision,
+    crossSubjectContinuationDecisionHe:
+      RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE[crossSubjectContinuationDecision] ||
+      RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE.continue_but_refine,
+    subjectsWithClearCarryoverHe,
+    subjectsNeedingFreshEvidenceHe,
+    subjectsWherePriorPathSeemsMisalignedHe,
+  };
+}
+
+const GATE_CROSS_PRIORITY_P13 = [
+  "pivot_gate_visible",
+  "recheck_gate_visible",
+  "gates_not_ready",
+  "mixed_gate_state",
+  "release_gate_forming",
+  "advance_gate_forming",
+  "continue_gate_active",
+];
+const FOCUS_CROSS_PRIORITY_P13 = [
+  "refresh_baseline_before_decision",
+  "test_if_path_is_working",
+  "stabilize_before_advance",
+  "check_independence_before_release",
+  "prepare_for_controlled_release",
+  "prove_current_direction",
+];
+const TARGET_TYPE_CROSS_P13 = [
+  "fresh_data_needed",
+  "mixed_target",
+  "response_confirmation",
+  "mistake_reduction_confirmation",
+  "retention_confirmation",
+  "independence_confirmation",
+  "accuracy_confirmation",
+];
+const WINDOW_CROSS_P13 = ["needs_fresh_baseline", "next_two_cycles", "next_short_cycle", "unknown"];
+
+/**
+ * Phase 13 — שערים ויעדי ראיה חוצה־מקצועות.
+ * @param {Record<string, unknown>} subjects
+ */
+function buildCrossSubjectPhase13Fields(subjects) {
+  const gateVotes = {};
+  const focusVotes = {};
+  const targetVotes = {};
+  const windowVotes = {};
+  /** @type {string[]} */
+  const subjectsNearReleaseButNotThereHe = [];
+  /** @type {string[]} */
+  const subjectsNeedingRecheckBeforeDecisionHe = [];
+  /** @type {string[]} */
+  const subjectsWithVisiblePivotTriggerHe = [];
+
+  for (const sid of SUBJECT_IDS) {
+    const s = subjects?.[sid];
+    if (!s || typeof s !== "object") continue;
+    const gs = String(s.subjectGateState || "").trim();
+    if (gs) gateVotes[gs] = (gateVotes[gs] || 0) + 1;
+    const nf = String(s.subjectNextCycleDecisionFocus || "").trim();
+    if (nf) focusVotes[nf] = (focusVotes[nf] || 0) + 1;
+    const tt = String(s.subjectEvidenceTargetType || "").trim();
+    if (tt) targetVotes[tt] = (targetVotes[tt] || 0) + 1;
+    const tw = String(s.subjectTargetObservationWindow || "").trim();
+    if (tw) windowVotes[tw] = (windowVotes[tw] || 0) + 1;
+    const lab = SUBJECT_LABEL_HE[sid];
+    if (
+      gs === "release_gate_forming" &&
+      s.subjectFollowThroughSignal !== "likely_followed" &&
+      subjectsNearReleaseButNotThereHe.length < 5
+    ) {
+      subjectsNearReleaseButNotThereHe.push(
+        `${lab}: קרובים לשחרור זהיר — עדיין חסר אות עצמאות קצר לפני שמורידים תמיכה.`
+      );
+    }
+    if (
+      (gs === "recheck_gate_visible" || nf === "refresh_baseline_before_decision") &&
+      subjectsNeedingRecheckBeforeDecisionHe.length < 5
+    ) {
+      subjectsNeedingRecheckBeforeDecisionHe.push(`${lab}: כדאי סבב תצפית/נתון עדכני לפני החלטה מהותית.`);
+    }
+    if (gs === "pivot_gate_visible" && subjectsWithVisiblePivotTriggerHe.length < 5) {
+      subjectsWithVisiblePivotTriggerHe.push(`${lab}: אם הסבב הבא חוזר על אותו דפוס בלי שיפור — כדאי לשקול שינוי כיוון זהיר.`);
+    }
+  }
+
+  let crossSubjectGateState = "gates_not_ready";
+  const gSum = Object.values(gateVotes).reduce((a, b) => a + b, 0);
+  if (gSum > 0) {
+    for (const id of GATE_CROSS_PRIORITY_P13) {
+      if ((gateVotes[id] || 0) > 0) {
+        crossSubjectGateState = id;
+        break;
+      }
+    }
+  }
+
+  let crossSubjectNextCycleDecisionFocus = "prove_current_direction";
+  const fSum = Object.values(focusVotes).reduce((a, b) => a + b, 0);
+  if (fSum > 0) {
+    for (const id of FOCUS_CROSS_PRIORITY_P13) {
+      if ((focusVotes[id] || 0) > 0) {
+        crossSubjectNextCycleDecisionFocus = id;
+        break;
+      }
+    }
+  }
+
+  let crossSubjectEvidenceTargetType = "mixed_target";
+  const tSum = Object.values(targetVotes).reduce((a, b) => a + b, 0);
+  if (tSum > 0) {
+    for (const id of TARGET_TYPE_CROSS_P13) {
+      if ((targetVotes[id] || 0) > 0) {
+        crossSubjectEvidenceTargetType = id;
+        break;
+      }
+    }
+  }
+
+  let crossSubjectTargetObservationWindow = "unknown";
+  const wSum = Object.values(windowVotes).reduce((a, b) => a + b, 0);
+  if (wSum > 0) {
+    for (const id of WINDOW_CROSS_P13) {
+      if ((windowVotes[id] || 0) > 0) {
+        crossSubjectTargetObservationWindow = id;
+        break;
+      }
+    }
+  }
+
+  return {
+    crossSubjectGateState,
+    crossSubjectGateStateLabelHe: GATE_STATE_LABEL_HE[crossSubjectGateState] || GATE_STATE_LABEL_HE.gates_not_ready,
+    crossSubjectNextCycleDecisionFocus,
+    crossSubjectNextCycleDecisionFocusHe:
+      NEXT_CYCLE_DECISION_FOCUS_LABEL_HE[crossSubjectNextCycleDecisionFocus] ||
+      NEXT_CYCLE_DECISION_FOCUS_LABEL_HE.prove_current_direction,
+    crossSubjectEvidenceTargetType,
+    crossSubjectEvidenceTargetTypeLabelHe:
+      TARGET_EVIDENCE_TYPE_LABEL_HE[crossSubjectEvidenceTargetType] || TARGET_EVIDENCE_TYPE_LABEL_HE.mixed_target,
+    crossSubjectTargetObservationWindow,
+    crossSubjectTargetObservationWindowLabelHe:
+      TARGET_OBSERVATION_WINDOW_LABEL_HE[crossSubjectTargetObservationWindow] ||
+      TARGET_OBSERVATION_WINDOW_LABEL_HE.unknown,
+    subjectsNearReleaseButNotThereHe,
+    subjectsNeedingRecheckBeforeDecisionHe,
+    subjectsWithVisiblePivotTriggerHe,
+  };
+}
+
+const DEP_CROSS_PRIORITY_P14 = [
+  "likely_foundational_block",
+  "mixed_dependency_signal",
+  "insufficient_dependency_evidence",
+  "likely_local_issue",
+];
+const BLOCKER_CROSS_PRIORITY_P14 = [
+  "retention_instability",
+  "independence_readiness_gap",
+  "accuracy_foundation_gap",
+  "instruction_language_load",
+  "procedure_automaticity_gap",
+  "unknown",
+];
+
+/**
+ * Phase 14 — תלות יסוד חוצה־מקצועות.
+ * @param {Record<string, unknown>} subjects
+ */
+function buildCrossSubjectPhase14Fields(subjects) {
+  const depVotes = {};
+  const blockerVotes = {};
+  let downstreamHigh = 0;
+  let downstreamMod = 0;
+  let foundationFirstSubjects = 0;
+  /** @type {string[]} */
+  const subjectsLikelyShowingDownstreamSymptomsHe = [];
+  /** @type {string[]} */
+  const subjectsNeedingFoundationFirstHe = [];
+  /** @type {string[]} */
+  const subjectsSafeForLocalInterventionHe = [];
+
+  for (const sid of SUBJECT_IDS) {
+    const s = subjects?.[sid];
+    if (!s || typeof s !== "object") continue;
+    const ds = String(s.subjectDependencyState || "").trim();
+    if (ds) depVotes[ds] = (depVotes[ds] || 0) + 1;
+    const bk = String(s.subjectLikelyFoundationalBlocker || "").trim();
+    if (bk) blockerVotes[bk] = (blockerVotes[bk] || 0) + 1;
+    const dr = String(s.subjectDownstreamSymptomRisk || "").trim();
+    if (dr === "high") downstreamHigh += 1;
+    else if (dr === "moderate") downstreamMod += 1;
+    if (s.subjectFoundationFirstPriority) foundationFirstSubjects += 1;
+    const lab = SUBJECT_LABEL_HE[sid];
+    if (
+      (ds === "likely_foundational_block" || dr === "high") &&
+      subjectsLikelyShowingDownstreamSymptomsHe.length < 5
+    ) {
+      subjectsLikelyShowingDownstreamSymptomsHe.push(
+        `${lab}: ייתכן שהקושי הנראה קשור גם לבסיס — לא רק לנקודה אחת בנושא.`
+      );
+    }
+    if (s.subjectFoundationFirstPriority && subjectsNeedingFoundationFirstHe.length < 5) {
+      subjectsNeedingFoundationFirstHe.push(`${lab}: כדאי לפתוח קודם ייצוב בסיס קצר — ואז לחדד במקצוע.`);
+    }
+    if (ds === "likely_local_issue" && subjectsSafeForLocalInterventionHe.length < 5) {
+      subjectsSafeForLocalInterventionHe.push(`${lab}: נראה מקומי יותר — אפשר טיפול ממוקד בלי סיפור רחב.`);
+    }
+  }
+
+  let crossSubjectDependencyState = "insufficient_dependency_evidence";
+  const dSum = Object.values(depVotes).reduce((a, b) => a + b, 0);
+  if (dSum > 0) {
+    for (const id of DEP_CROSS_PRIORITY_P14) {
+      if ((depVotes[id] || 0) > 0) {
+        crossSubjectDependencyState = id;
+        break;
+      }
+    }
+  }
+
+  let crossSubjectLikelyFoundationalBlocker = "unknown";
+  const bSum = Object.values(blockerVotes).reduce((a, b) => a + b, 0);
+  if (bSum > 0) {
+    for (const id of BLOCKER_CROSS_PRIORITY_P14) {
+      if ((blockerVotes[id] || 0) > 0) {
+        crossSubjectLikelyFoundationalBlocker = id;
+        break;
+      }
+    }
+  }
+
+  const crossSubjectFoundationFirstPriority = foundationFirstSubjects >= 2 || downstreamHigh >= 2;
+  const crossSubjectFoundationFirstPriorityHe = crossSubjectFoundationFirstPriority
+    ? "בכמה מקצועות כדאי לחזק קודם בסיס לפני הרחבה או ליטוש עמוק."
+    : "רוב המקצועות נראים יותר מקומיים או עם ראיה חלקית — לא חייבים «בסיס גדול» בכל מקום.";
+
+  return {
+    crossSubjectDependencyState,
+    crossSubjectDependencyStateLabelHe:
+      DEPENDENCY_STATE_LABEL_HE[crossSubjectDependencyState] ||
+      DEPENDENCY_STATE_LABEL_HE.insufficient_dependency_evidence,
+    crossSubjectLikelyFoundationalBlocker,
+    crossSubjectLikelyFoundationalBlockerLabelHe:
+      FOUNDATIONAL_BLOCKER_LABEL_HE[crossSubjectLikelyFoundationalBlocker] ||
+      FOUNDATIONAL_BLOCKER_LABEL_HE.unknown,
+    crossSubjectFoundationFirstPriority,
+    crossSubjectFoundationFirstPriorityHe,
+    subjectsLikelyShowingDownstreamSymptomsHe,
+    subjectsNeedingFoundationFirstHe,
+    subjectsSafeForLocalInterventionHe,
+  };
+}
+
+/**
+ * Phase 8 — סולם עדיפויות הורי חוצה־מקצועות (1–2 פעולות מיידיות מרכזיות).
+ * @param {Record<string, unknown>} subjects
+ * @param {Array<{ subject: string, questionCount?: number }>} subjectCoverage
+ */
+function buildParentPriorityLadderPhase8(subjects, subjectCoverage) {
+  const ranked = [];
+  for (const sid of SUBJECT_IDS) {
+    const s = subjects?.[sid];
+    if (!s || typeof s !== "object") continue;
+    const cov = Array.isArray(subjectCoverage) ? subjectCoverage.find((c) => c.subject === sid) : null;
+    const qc = Number(cov?.questionCount) || 0;
+    let score = 0;
+    if (s.subjectMonitoringOnly) score -= 42;
+    const pl = String(s.subjectPriorityLevel || "");
+    if (pl === "immediate") score += 55;
+    else if (pl === "soon") score += 28;
+    else if (pl === "maintain") score += 14;
+    else if (pl === "monitor") score -= 8;
+    if (s.subjectConclusionReadiness === "ready") score += 18;
+    else if (s.subjectConclusionReadiness === "partial") score += 6;
+    else score -= 22;
+    if (s.dominantRootCause === "knowledge_gap") score += 20;
+    if (s.dominantRootCause === "weak_independence" || s.dominantRootCause === "instruction_friction") score += 12;
+    score += Math.min(18, Math.floor(qc / 5));
+    ranked.push({ sid, subjectLabelHe: SUBJECT_LABEL_HE[sid], score, s });
+  }
+  ranked.sort((a, b) => b.score - a.score);
+
+  const eligible = ranked.filter((r) => r.score >= 20 && !r.s.subjectMonitoringOnly);
+  const top = eligible[0] || ranked[0] || null;
+  let second = eligible[1] || ranked.find((r) => r.sid !== top?.sid && r.score >= 10) || null;
+  if (second && top && second.sid === top.sid) second = null;
+
+  let topImmediateParentActionHe = "";
+  if (top) {
+    topImmediateParentActionHe = shortenHe(
+      String(top.s.subjectImmediateActionHe || top.s.recommendedHomeMethodHe || top.s.subjectPriorityReasonHe || "").trim(),
+      240
+    );
+  }
+
+  let secondPriorityActionHe = "";
+  if (second && top && second.sid !== top.sid) {
+    secondPriorityActionHe = shortenHe(
+      String(second.s.subjectDeferredActionHe || second.s.subjectImmediateActionHe || "").trim(),
+      220
+    );
+  }
+
+  const monitoringOnlyAreasHe = [];
+  const deferForNowAreasHe = [];
+  for (const r of ranked) {
+    if (r.s.subjectMonitoringOnly && monitoringOnlyAreasHe.length < 5) {
+      monitoringOnlyAreasHe.push(
+        `${r.subjectLabelHe}: ${shortenHe(String(r.s.subjectPriorityReasonHe || "מעקב בלבד בשלב זה."), 120)}`
+      );
+    } else if (
+      r.s.subjectPriorityLevel === "soon" &&
+      r.sid !== top?.sid &&
+      r.sid !== second?.sid &&
+      deferForNowAreasHe.length < 4
+    ) {
+      deferForNowAreasHe.push(
+        `${r.subjectLabelHe}: ${shortenHe(String(r.s.subjectDeferredActionHe || "להמתין עם שינוי מהותי."), 110)}`
+      );
+    }
+  }
+
+  const parentPriorityLadder = {
+    version: 1,
+    rankedSubjects: ranked.map(({ sid, subjectLabelHe, score, s: sub }) => ({
+      subject: sid,
+      subjectLabelHe,
+      score: Math.round(score),
+      priorityLevel: String(sub.subjectPriorityLevel || ""),
+      monitoringOnly: !!sub.subjectMonitoringOnly,
+    })),
+  };
+
+  return {
+    parentPriorityLadder,
+    topImmediateParentActionHe,
+    secondPriorityActionHe,
+    monitoringOnlyAreasHe,
+    deferForNowAreasHe,
+  };
+}
+
 function buildHomeFocusHe(subjects, topStrengthsAcrossHe, topFocusAreasHe, summary) {
   const focusLabels = topFocusAreasHe.slice(0, 2).filter(Boolean);
   const maintainRows = collectMaintainRows(subjects);
@@ -478,6 +1359,14 @@ function buildExecutiveSummary(subjects, summary, subjectCoverage, dataIntegrity
   const reportReadinessHe = buildReportReadinessHe(dataIntegrityReport, summary);
   const evidenceBalanceHe = buildEvidenceBalanceHe(subjects);
   const mixedSignalNoticeHe = buildMixedSignalNoticeHe(subjects, crossRisks, topStrengthsAcrossHe);
+  const phase7Exec = buildCrossSubjectPhase7Fields(subjects);
+  const phase8Ladder = buildParentPriorityLadderPhase8(subjects, subjectCoverage);
+  const phase9Cross = buildCrossSubjectPhase9Fields(subjects);
+  const phase10Cross = buildCrossSubjectPhase10Fields(subjects);
+  const phase11Cross = buildCrossSubjectPhase11Fields(subjects);
+  const phase12Cross = buildCrossSubjectPhase12Fields(subjects);
+  const phase13Cross = buildCrossSubjectPhase13Fields(subjects);
+  const phase14Cross = buildCrossSubjectPhase14Fields(subjects);
 
   return {
     version: 2,
@@ -496,6 +1385,14 @@ function buildExecutiveSummary(subjects, summary, subjectCoverage, dataIntegrity
     mixedSignalNoticeHe,
     reportReadinessHe,
     evidenceBalanceHe,
+    ...phase7Exec,
+    ...phase8Ladder,
+    ...phase9Cross,
+    ...phase10Cross,
+    ...phase11Cross,
+    ...phase12Cross,
+    ...phase13Cross,
+    ...phase14Cross,
   };
 }
 
@@ -672,6 +1569,72 @@ function buildSubjectProfiles(baseReport) {
       dominantLearningRiskLabelHe: s.dominantLearningRiskLabelHe ?? null,
       dominantSuccessPatternLabelHe: s.dominantSuccessPatternLabelHe ?? null,
       improvingButSupportedHe: s.improvingButSupportedHe ?? null,
+      dominantRootCause: s.dominantRootCause ?? null,
+      dominantRootCauseLabelHe: s.dominantRootCauseLabelHe ?? null,
+      secondaryRootCause: s.secondaryRootCause ?? null,
+      rootCauseDistribution: s.rootCauseDistribution && typeof s.rootCauseDistribution === "object" ? s.rootCauseDistribution : {},
+      subjectDiagnosticRestraintHe: s.subjectDiagnosticRestraintHe ?? null,
+      subjectConclusionReadiness: s.subjectConclusionReadiness ?? null,
+      subjectInterventionPriorityHe: s.subjectInterventionPriorityHe ?? null,
+      subjectPriorityLevel: s.subjectPriorityLevel ?? null,
+      subjectPriorityReasonHe: s.subjectPriorityReasonHe ?? null,
+      subjectImmediateActionHe: s.subjectImmediateActionHe ?? null,
+      subjectDeferredActionHe: s.subjectDeferredActionHe ?? null,
+      subjectMonitoringOnly: s.subjectMonitoringOnly ?? false,
+      subjectDoNowHe: s.subjectDoNowHe ?? null,
+      subjectAvoidNowHe: s.subjectAvoidNowHe ?? null,
+      dominantMistakePattern: s.dominantMistakePattern ?? null,
+      dominantMistakePatternLabelHe: s.dominantMistakePatternLabelHe ?? null,
+      mistakePatternDistribution: s.mistakePatternDistribution && typeof s.mistakePatternDistribution === "object" ? s.mistakePatternDistribution : {},
+      subjectLearningStage: s.subjectLearningStage ?? null,
+      subjectLearningStageLabelHe: s.subjectLearningStageLabelHe ?? null,
+      subjectRetentionRisk: s.subjectRetentionRisk ?? null,
+      subjectTransferReadiness: s.subjectTransferReadiness ?? null,
+      subjectMemoryNarrativeHe: s.subjectMemoryNarrativeHe ?? null,
+      subjectReviewBeforeAdvanceHe: s.subjectReviewBeforeAdvanceHe ?? null,
+      subjectResponseToIntervention: s.subjectResponseToIntervention ?? null,
+      subjectResponseToInterventionLabelHe: s.subjectResponseToInterventionLabelHe ?? null,
+      subjectSupportFit: s.subjectSupportFit ?? null,
+      subjectSupportAdjustmentNeed: s.subjectSupportAdjustmentNeed ?? null,
+      subjectSupportAdjustmentNeedHe: s.subjectSupportAdjustmentNeedHe ?? null,
+      subjectConclusionFreshness: s.subjectConclusionFreshness ?? null,
+      subjectRecalibrationNeed: s.subjectRecalibrationNeed ?? null,
+      subjectRecalibrationNeedHe: s.subjectRecalibrationNeedHe ?? null,
+      subjectEffectivenessNarrativeHe: s.subjectEffectivenessNarrativeHe ?? null,
+      subjectSupportSequenceState: s.subjectSupportSequenceState ?? null,
+      subjectSupportSequenceStateLabelHe: s.subjectSupportSequenceStateLabelHe ?? null,
+      subjectStrategyRepetitionRisk: s.subjectStrategyRepetitionRisk ?? null,
+      subjectStrategyFatigueRisk: s.subjectStrategyFatigueRisk ?? null,
+      subjectNextBestSequenceStep: s.subjectNextBestSequenceStep ?? null,
+      subjectNextBestSequenceStepHe: s.subjectNextBestSequenceStepHe ?? null,
+      subjectAdviceNovelty: s.subjectAdviceNovelty ?? null,
+      subjectRecommendationRotationNeed: s.subjectRecommendationRotationNeed ?? null,
+      subjectSequenceNarrativeHe: s.subjectSequenceNarrativeHe ?? null,
+      subjectRecommendationMemoryState: s.subjectRecommendationMemoryState ?? null,
+      subjectPriorRecommendationSignature: s.subjectPriorRecommendationSignature ?? null,
+      subjectSupportHistoryDepth: s.subjectSupportHistoryDepth ?? null,
+      subjectRecommendationCarryover: s.subjectRecommendationCarryover ?? null,
+      subjectExpectedVsObservedMatch: s.subjectExpectedVsObservedMatch ?? null,
+      subjectFollowThroughSignal: s.subjectFollowThroughSignal ?? null,
+      subjectContinuationDecision: s.subjectContinuationDecision ?? null,
+      subjectContinuationDecisionHe: s.subjectContinuationDecisionHe ?? null,
+      subjectOutcomeNarrativeHe: s.subjectOutcomeNarrativeHe ?? null,
+      subjectGateState: s.subjectGateState ?? null,
+      subjectGateStateLabelHe: s.subjectGateStateLabelHe ?? null,
+      subjectGateReadiness: s.subjectGateReadiness ?? null,
+      subjectNextCycleDecisionFocus: s.subjectNextCycleDecisionFocus ?? null,
+      subjectNextCycleDecisionFocusHe: s.subjectNextCycleDecisionFocusHe ?? null,
+      subjectEvidenceTargetType: s.subjectEvidenceTargetType ?? null,
+      subjectTargetObservationWindow: s.subjectTargetObservationWindow ?? null,
+      subjectGateNarrativeHe: s.subjectGateNarrativeHe ?? null,
+      subjectDependencyState: s.subjectDependencyState ?? null,
+      subjectDependencyStateLabelHe: s.subjectDependencyStateLabelHe ?? null,
+      subjectLikelyFoundationalBlocker: s.subjectLikelyFoundationalBlocker ?? null,
+      subjectLikelyFoundationalBlockerLabelHe: s.subjectLikelyFoundationalBlockerLabelHe ?? null,
+      subjectDownstreamSymptomRisk: s.subjectDownstreamSymptomRisk ?? null,
+      subjectFoundationFirstPriority: s.subjectFoundationFirstPriority ?? false,
+      subjectFoundationFirstPriorityHe: s.subjectFoundationFirstPriorityHe ?? null,
+      subjectDependencyNarrativeHe: s.subjectDependencyNarrativeHe ?? null,
     });
   }
   return out;

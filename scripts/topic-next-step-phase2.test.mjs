@@ -10,6 +10,7 @@ async function importEngine() {
 }
 
 const { decideTopicNextStep, DEFAULT_TOPIC_NEXT_STEP_CONFIG } = await importEngine();
+const { buildPracticeCalibration, buildPhase9RecommendationOverlay } = await import("../utils/topic-next-step-phase2.js");
 
 function trendBase(overrides = {}) {
   return {
@@ -256,6 +257,103 @@ function assertStep(name, row, mC, expectedStep, forbiddenSteps = []) {
   assert.ok(st?.sections?.version === 2);
   assert.ok(Array.isArray(st.sections.blockers));
   assert.ok(st.sections.chosenRule);
+  assert.ok("phase7RuleId" in st.sections.chosenRule);
+}
+
+// 9) Phase 7 — מגנון מהירות מול «פער ידע»: לא ירידה אגרסיבית (מעורב + ריסון)
+{
+  const row = rowAug({
+    questions: 22,
+    accuracy: 48,
+    wrong: 4,
+    modeKey: "speed",
+    levelKey: "medium",
+    dataSufficiencyLevel: "strong",
+    evidenceStrength: "strong",
+    behaviorProfile: behaviorBase("knowledge_gap", {
+      signals: { hintRate: 0.05, hintKnownCount: 6, wrongEventCount: 4 },
+    }),
+    trend: trendBase({ accuracyDirection: "unknown", confidence: 0.22 }),
+  });
+  const d = decideTopicNextStep(row, 6, DEFAULT_TOPIC_NEXT_STEP_CONFIG);
+  assert.notEqual(d.step, "drop_one_level_topic_only", `phase7 mixed speed vs gap: ${d.step}`);
+  assert.notEqual(d.step, "drop_one_grade_topic_only");
+  assert.ok(["remediate_same_level", "maintain_and_strengthen"].includes(d.step), d.step);
+}
+
+// 10) Phase 7 — מסלול מהיר: שורש לחץ מהירות
+{
+  const row = rowAug({
+    questions: 20,
+    accuracy: 60,
+    wrong: 6,
+    modeKey: "speed",
+    dataSufficiencyLevel: "strong",
+    evidenceStrength: "medium",
+    behaviorProfile: behaviorBase("speed_pressure"),
+    trend: trendBase({ accuracyDirection: "flat", confidence: 0.4 }),
+  });
+  const d = decideTopicNextStep(row, 2, DEFAULT_TOPIC_NEXT_STEP_CONFIG);
+  assert.equal(d.rootCause, "speed_pressure", `root ${d.rootCause}`);
+}
+
+// 11) Phase 7 — חיכוך הוראה: לא לאבחן כפער ידע כשורש ראשי
+{
+  const row = rowAug({
+    questions: 18,
+    accuracy: 48,
+    wrong: 9,
+    dataSufficiencyLevel: "medium",
+    evidenceStrength: "medium",
+    behaviorProfile: behaviorBase("instruction_friction", {
+      signals: { hintRate: 0.5, hintKnownCount: 10, wrongEventCount: 6 },
+    }),
+    trend: trendBase({ accuracyDirection: "flat", confidence: 0.35 }),
+  });
+  const d = decideTopicNextStep(row, 3, DEFAULT_TOPIC_NEXT_STEP_CONFIG);
+  assert.equal(d.rootCause, "instruction_friction", `root ${d.rootCause}`);
+}
+
+// 12) Phase 8 — כיול עומס ביתי: נתון דל / ריסון => עומס מינימלי
+{
+  const c = buildPracticeCalibration({
+    rootCause: "insufficient_evidence",
+    conclusionStrength: "tentative",
+    shouldAvoidStrongConclusion: true,
+    diagnosticRestraintLevel: "mixed",
+    q: 6,
+    accuracy: 72,
+    evidenceStrength: "low",
+    dataSufficiencyLevel: "low",
+    interventionIntensity: "light",
+  });
+  assert.equal(c.recommendedPracticeLoad, "minimal");
+  assert.ok(c.recommendedSessionCount <= 3);
+}
+
+// 13) Phase 9 — overlay מצב תרגול לפי דפוס טעות ושלב למידה
+{
+  const o1 = buildPhase9RecommendationOverlay({
+    dominantMistakePattern: "insufficient_mistake_evidence",
+    learningStage: "insufficient_longitudinal_evidence",
+    retentionRisk: "unknown",
+    transferReadiness: "not_ready",
+    rootCause: "insufficient_evidence",
+    finalStep: "maintain_and_strengthen",
+    riskFlags: {},
+  });
+  assert.equal(o1.recommendedPracticeMode, "observe_only");
+
+  const o2 = buildPhase9RecommendationOverlay({
+    dominantMistakePattern: "speed_driven_error",
+    learningStage: "partial_stabilization",
+    retentionRisk: "low",
+    transferReadiness: "limited",
+    rootCause: "speed_pressure",
+    finalStep: "maintain_and_strengthen",
+    riskFlags: {},
+  });
+  assert.equal(o2.recommendedPracticeMode, "slow_guided_accuracy");
 }
 
 console.log("topic-next-step phase2 tests: OK");

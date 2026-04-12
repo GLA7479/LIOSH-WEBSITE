@@ -3,6 +3,15 @@
  * נקרא מ־topic-next-step-engine.js בלבד.
  */
 
+import {
+  INTERVENTION_TYPE_LABEL_HE,
+  NEXT_SUPPORT_ADJUSTMENT_LABEL_HE,
+  NEXT_SUPPORT_SEQUENCE_ACTION_LABEL_HE,
+  OUTCOME_BASED_NEXT_MOVE_LABEL_HE,
+  RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE,
+  NEXT_CYCLE_DECISION_FOCUS_LABEL_HE,
+} from "./parent-report-ui-explain-he.js";
+
 const AGGRESSIVE = new Set([
   "advance_level",
   "advance_grade_topic_only",
@@ -12,6 +21,10 @@ const AGGRESSIVE = new Set([
 
 export function isAggressiveStep(step) {
   return AGGRESSIVE.has(step);
+}
+
+export function isAdvanceOnlyStep(step) {
+  return step === "advance_level" || step === "advance_grade_topic_only";
 }
 
 /**
@@ -280,6 +293,717 @@ export function applyPhase2GuardsToStep(proposed, ctx) {
   }
 
   return { step, blockers, traceAdds, phase2RuleId };
+}
+
+/**
+ * Phase 7 — ריסון אבחוני: לא מקדמים/מורידים אגרסיבית כשהמסקנה חלקית או דלה.
+ * @param {string} step
+ * @param {{ restraint?: Record<string, unknown>, rootCause?: Record<string, unknown> }} ctx
+ */
+export function applyPhase7RestraintGuards(step, ctx) {
+  const restraint = ctx?.restraint && typeof ctx.restraint === "object" ? ctx.restraint : {};
+  const rootCause = ctx?.rootCause && typeof ctx.rootCause === "object" ? ctx.rootCause : {};
+  const shouldAvoid = !!restraint.shouldAvoidStrongConclusion;
+  const rc = String(rootCause.rootCause || "");
+
+  let out = step;
+  const blockers = [];
+  const traceAdds = [];
+  let phase7RuleId = "phase7_pass";
+
+  const pushTrace = (id, detailHe, fromStep, toStep) => {
+    traceAdds.push({
+      source: "recommendation",
+      phase: "phase7_restraint",
+      ruleId: id,
+      data: { fromStep, toStep, detailHe },
+    });
+  };
+
+  const apply = (id, detailHe, newStep) => {
+    if (out === newStep) return;
+    const fromStep = out;
+    blockers.push({ id, detailHe });
+    pushTrace(id, detailHe, fromStep, newStep);
+    out = newStep;
+    phase7RuleId = id;
+  };
+
+  if (shouldAvoid) {
+    if (isAdvanceOnlyStep(out)) {
+      apply(
+        "phase7_restraint_cap_advance",
+        "שלב 7: ראיות חלקיות או אותות מנוגדים — לא מקדמים כיתה/רמת קושי כרגע.",
+        "maintain_and_strengthen"
+      );
+    }
+    if (isDropStep(out)) {
+      apply(
+        "phase7_restraint_soften_drop",
+        "שלב 7: לא יורדים רמה/כיתה כשהמסקנה אינה בשלה — מעבירים לחיזוק באותה רמה.",
+        "remediate_same_level"
+      );
+    }
+  }
+
+  if (rc === "insufficient_evidence" && isDropStep(out)) {
+    apply(
+      "phase7_insufficient_evidence_drop",
+      "שלב 7: אין די ראיות לשורש קושי — לא מורידים רמה; חיזוק מבוקר.",
+      "remediate_same_level"
+    );
+  }
+
+  if (rc === "early_stage_instability" && isDropStep(out) && restraint.conclusionStrength !== "strong") {
+    apply(
+      "phase7_early_stage_soften_drop",
+      "שלב 7: שלב מוקדם — חיזוק לפני ירידת רמה.",
+      "remediate_same_level"
+    );
+  }
+
+  return { step: out, blockers, traceAdds, phase7RuleId };
+}
+
+/**
+ * ריכוך ניסוח הורה כשהמנוע מרסן מסקנה חזקה.
+ * @param {{ reasonHe?: string, parentHe?: string, studentHe?: string }} copy
+ */
+export function mergePhase7SoftHebrewCopy(copy, restraint, rootCause) {
+  const c = copy && typeof copy === "object" ? copy : {};
+  const addParent = [];
+  const cs = String(restraint?.conclusionStrength || "");
+  const level = String(restraint?.diagnosticRestraint?.level || "");
+  if (cs === "withheld" || level === "insufficient") {
+    addParent.push("אנחנו עדיין לא בשלים למסקנה חזקה — עדיף תרגול קצר ושגרתי באותה רמה.");
+  } else if (cs === "tentative" || restraint?.shouldAvoidStrongConclusion) {
+    addParent.push("מסכמים בזהירות: שינויים קטנים ועקביים, לא קפיצות.");
+  }
+  const rc = String(rootCause?.rootCause || "");
+  if (rc === "speed_pressure") {
+    addParent.push("חלק מהקושי עלול להיות לחץ מהירות — שווה לנסות את אותה רמה במצב רגוע יותר לפני הורדה.");
+  }
+  if (rc === "instruction_friction") {
+    addParent.push("מומלץ לוודא שהמשימה מובנת לפני רמזים נוספים.");
+  }
+  if (rc === "insufficient_evidence") {
+    addParent.push("נמשיך לאסוף נתון לפני החלטה גדולה.");
+  }
+  if (!addParent.length) return c;
+  const glue = " " + addParent.join(" ");
+  return {
+    ...c,
+    parentHe: (c.parentHe || "") + glue,
+  };
+}
+
+/** @param {string} rootCauseId */
+export function pickRecommendedInterventionType(rootCauseId, finalStep) {
+  const rc = String(rootCauseId || "mixed_signal");
+  if (finalStep === "maintain_and_strengthen" && rc === "mixed_signal") return "monitor_before_escalation";
+  const map = {
+    speed_pressure: "reduce_time_pressure",
+    instruction_friction: "clarify_instruction_pattern",
+    careless_execution: "stabilize_accuracy",
+    weak_independence: "guided_to_independent_transition",
+    knowledge_gap: "target_core_skill_gap",
+    insufficient_evidence: "monitor_before_escalation",
+    early_stage_instability: "monitor_before_escalation",
+    mixed_signal: "monitor_before_escalation",
+    retention_fragility: "monitor_before_escalation",
+    language_load: "clarify_instruction_pattern",
+    transition_gap: "target_core_skill_gap",
+  };
+  return map[rc] || "monitor_before_escalation";
+}
+
+/** פעולת ראיות מומלצת (מזהה) — לצרכני API */
+export function pickRecommendedEvidenceAction(rootCauseId, conclusionStrength) {
+  const rc = String(rootCauseId || "");
+  const cs = String(conclusionStrength || "");
+  if (rc === "insufficient_evidence" || cs === "withheld") return "collect_controlled_practice";
+  if (rc === "speed_pressure") return "accuracy_first_same_level";
+  if (rc === "instruction_friction") return "clarify_task_reduce_hints";
+  if (rc === "weak_independence") return "fade_support_gradually";
+  if (rc === "knowledge_gap") return "targeted_review_errors";
+  if (rc === "careless_execution") return "pause_check_before_submit";
+  return "continue_short_sessions";
+}
+
+export function buildPhase7RecommendationFields(p) {
+  const {
+    displayName,
+    finalStep,
+    restraint,
+    rootCause,
+    riskFlags,
+    trendDer,
+    behaviorType,
+    legacyRuleId,
+  } = p;
+  const rc = String(rootCause?.rootCause || "mixed_signal");
+  const intervention = pickRecommendedInterventionType(rc, finalStep);
+  const interventionLabelHe = INTERVENTION_TYPE_LABEL_HE[intervention] || intervention;
+  const evidenceAction = pickRecommendedEvidenceAction(rc, restraint?.conclusionStrength);
+  const evidenceActionHe =
+    evidenceAction === "collect_controlled_practice"
+      ? "לצבור עוד תרגול קצר באותה רמת קושי, עם דגש על דיוק ולא על קפיצת רמה."
+      : evidenceAction === "accuracy_first_same_level"
+        ? "אותה רמת קושי במצב רגוע — דיוק לפני מהירות."
+        : evidenceAction === "clarify_task_reduce_hints"
+          ? "לקרוא את ניסוח המשימה ביחד ואז לנסות לפני רמז נוסף."
+          : evidenceAction === "fade_support_gradually"
+            ? "להפחית בהדרגה את ההכוונה אחרי הצלחה קטנה ברורה."
+            : evidenceAction === "targeted_review_errors"
+              ? "לחזור על טעויות ספציפיות באותה רמה עד לייצוב."
+              : evidenceAction === "pause_check_before_submit"
+                ? "עצירה קצרה לפני שליחה — בדיקה מול הניסוח."
+                : "להמשיך מפגשים קצרים כדי לחדד את הפרופיל.";
+
+  const nar = String(rootCause?.rootCauseNarrativeHe || "").trim();
+  const stepLab = stepLabelHe(finalStep);
+  const reasoningParts = [];
+  reasoningParts.push(`לגבי «${displayName}»: ${nar || "המנוע משלב פרופיל התנהגות, מגמה ונפח."}`);
+  reasoningParts.push(`הצעד שנבחר: ${stepLab}.`);
+  reasoningParts.push(`סוג התערבות מומלץ: ${interventionLabelHe}.`);
+  if (legacyRuleId) reasoningParts.push(`כלל בסיס: ${legacyRuleId}.`);
+  if (riskFlags?.speedOnlyRisk) reasoningParts.push("הופעל הקשר מהירות.");
+  if (trendDer?.fragileProgressPattern) reasoningParts.push("מגמה שבירה (דיוק מול עצמאות).");
+  if (behaviorType && behaviorType !== "undetermined") {
+    reasoningParts.push(`פרופיל התנהגות דומיננטי: ${behaviorType}.`);
+  }
+
+  const alt = Array.isArray(restraint?.alternativeExplanations) ? restraint.alternativeExplanations : [];
+  const whatWouldIncreaseConfidenceHe =
+    alt.length > 0
+      ? alt.join(" ")
+      : "עוד שאלות בטווח, מגמת דיוק ברורה יותר, ופחות תלות ברמזים — יגבירו את הביטחון במסקנה.";
+
+  const whyNot =
+    String(restraint?.diagnosticCautionHe || "").trim() ||
+    (restraint?.conclusionStrength === "strong"
+      ? "אין חסימת ביטחון מיוחדת בשלב זה."
+      : "המנוע שומר על ניסוח זהיר בגלל נפח/יציבות/מגמה.");
+
+  return {
+    recommendationReasoningHe: reasoningParts.join(" "),
+    recommendedInterventionType: intervention,
+    recommendedEvidenceAction: evidenceAction,
+    recommendedEvidenceActionHe: evidenceActionHe,
+    whatWouldIncreaseConfidenceHe,
+    whyNotAStrongerConclusionHe: whyNot,
+  };
+}
+
+/**
+ * Phase 9 — מצב תרגול, העברה, ופעולות ממוקדות טעות/זיכרון.
+ * @param {object} p
+ * @param {string} [p.dominantMistakePattern]
+ * @param {string} [p.learningStage]
+ * @param {string} [p.retentionRisk]
+ * @param {string} [p.transferReadiness]
+ * @param {string} [p.rootCause]
+ * @param {Record<string, boolean>|null} [p.riskFlags]
+ */
+export function buildPhase9RecommendationOverlay(p) {
+  const mp = String(p?.dominantMistakePattern || "");
+  const ls = String(p?.learningStage || "");
+  const tr = String(p?.transferReadiness || "");
+  const rr = String(p?.retentionRisk || "");
+  const hint = !!p?.riskFlags?.hintDependenceRisk;
+
+  let recommendedPracticeMode = "slow_guided_accuracy";
+  if (ls === "insufficient_longitudinal_evidence" || mp === "insufficient_mistake_evidence") {
+    recommendedPracticeMode = "observe_only";
+  } else if (ls === "regression_signal" || ls === "fragile_retention" || rr === "high") {
+    recommendedPracticeMode = "review_and_hold";
+  } else if (mp === "concept_confusion" || mp === "procedure_break") {
+    recommendedPracticeMode = "error_reduction_loop";
+  } else if (mp === "speed_driven_error") {
+    recommendedPracticeMode = "slow_guided_accuracy";
+  } else if (mp === "support_dependent_success" || mp === "instruction_misread") {
+    recommendedPracticeMode = "guided_release";
+  } else if (ls === "transfer_emerging" || (ls === "stable_control" && tr === "emerging")) {
+    recommendedPracticeMode = "stabilize_then_transfer";
+  } else if (ls === "early_acquisition") {
+    recommendedPracticeMode = "observe_only";
+  }
+
+  let recommendedTransferStep = "hold_same_conditions";
+  if (tr === "ready" && ls === "stable_control" && !hint) {
+    recommendedTransferStep = "micro_transfer_same_topic";
+  } else if (tr === "emerging" && rr === "low" && ls !== "fragile_retention" && ls !== "regression_signal") {
+    recommendedTransferStep = "micro_transfer_same_topic";
+  } else if (tr === "not_ready" || ls === "regression_signal" || ls === "fragile_retention") {
+    recommendedTransferStep = "hold_same_conditions";
+  } else {
+    recommendedTransferStep = "limited_probe_same_level";
+  }
+
+  let reviewBeforeAdvanceHe = "";
+  if (rr === "high" || ls === "fragile_retention" || ls === "regression_signal") {
+    reviewBeforeAdvanceHe =
+      "לחזור על אותה רמה בעקביות קצרה לפני שינוי רמת קושי או פתיחת נושא חדש.";
+  } else if ((mp === "concept_confusion" || mp === "procedure_break") && tr !== "ready") {
+    reviewBeforeAdvanceHe = "לסגור מעגל טעויות דומות באותה רמה לפני קפיצה קדימה.";
+  } else if (hint && tr !== "ready") {
+    reviewBeforeAdvanceHe = "לצמצם תלות ברמזים לפני שמנסים רמה קשה יותר.";
+  }
+
+  let mistakeFocusedActionHe = "";
+  if (mp === "speed_driven_error") {
+    mistakeFocusedActionHe = "משימות קצרות בלי שעון — דיוק לפני מהירות.";
+  } else if (mp === "instruction_misread") {
+    mistakeFocusedActionHe = "קריאה משותפת של המשימה וניסוח במילים פשוטות לפני חישוב.";
+  } else if (mp === "support_dependent_success") {
+    mistakeFocusedActionHe = "ניסיון עצמאי קצר ואז השוואה יחד — בלי לבטל עזרה פתאום.";
+  } else if (mp === "concept_confusion") {
+    mistakeFocusedActionHe = "חזרה על טעות טיפוסית עם הסבר מושגי אחד בכל מפגש.";
+  } else if (mp === "procedure_break") {
+    mistakeFocusedActionHe = "לכתוב סדר פעולות על טיוטה ולעבור צעד־אחר־צעד.";
+  } else if (mp === "insufficient_mistake_evidence") {
+    mistakeFocusedActionHe = "לתעד 2–3 מפגשים קצרים באותה רמה לפני שמזקקים סוג טעות.";
+  }
+
+  let memoryFocusedActionHe = "";
+  if (ls === "early_acquisition") {
+    memoryFocusedActionHe = "תרגול קצר וחוזר — בלי ציפייה להעברה מהירה.";
+  } else if (ls === "partial_stabilization") {
+    memoryFocusedActionHe = "לשמור על אותו אופן תרגול שבוע נוסף ולבחון שיפור קטן.";
+  } else if (ls === "stable_control") {
+    memoryFocusedActionHe = "לשמר קצב; לשבח עקביות לפני שמוסיפים משתנה.";
+  } else if (ls === "fragile_retention") {
+    memoryFocusedActionHe = "לחזק חזרה על אותה רמה — השימור עדיין שביר.";
+  } else if (ls === "regression_signal") {
+    memoryFocusedActionHe = "לפשט משימה ולקצר מפגש עד שיתייצב דיוק.";
+  } else if (ls === "transfer_emerging") {
+    memoryFocusedActionHe = "אפשר ניסוי קטן בתוך הנושא עם בדיקה מהירה בסוף.";
+  } else if (ls === "insufficient_longitudinal_evidence") {
+    memoryFocusedActionHe = "לא לסכם מגמה ארוכה עדיין — מעקב מדוד.";
+  }
+
+  return {
+    recommendedPracticeMode,
+    recommendedTransferStep,
+    reviewBeforeAdvanceHe,
+    mistakeFocusedActionHe,
+    memoryFocusedActionHe,
+  };
+}
+
+/**
+ * Phase 10 — כיוון התאמת תמיכה (טקסט + מזהה) לפי תגובה להתערבות וריענון ראיות.
+ * @param {object} p
+ */
+export function buildPhase10RecommendationOverlay(p) {
+  const rti = String(p?.responseToIntervention || "not_enough_evidence");
+  const san = String(p?.supportAdjustmentNeed || "monitor_only");
+  const rec = String(p?.recalibrationNeed || "none");
+  const cf = String(p?.conclusionFreshness || "medium");
+  const fs = String(p?.freshnessState || "unknown");
+  const weakEff = rti === "not_enough_evidence";
+  const staleish = fs === "stale" || fs === "aging" || cf === "low" || cf === "expired";
+  const finalStep = String(p?.finalStep || "");
+
+  let nextSupportAdjustment = "continue_same_plan";
+  if (weakEff && (rec === "structured_recheck" || cf === "expired" || fs === "stale")) {
+    nextSupportAdjustment = "recheck_before_advancing";
+  } else if (weakEff) {
+    nextSupportAdjustment = "pause_and_observe";
+  } else if (rti === "regression_under_support") {
+    nextSupportAdjustment = "switch_strategy";
+  } else if (rti === "stalled_response") {
+    nextSupportAdjustment = san === "change_strategy" ? "switch_strategy" : "continue_and_tighten_focus";
+  } else if (rti === "over_supported_progress") {
+    nextSupportAdjustment = "continue_and_reduce_support";
+  } else if (rti === "independence_growing") {
+    nextSupportAdjustment = "continue_and_reduce_support";
+  } else if (rti === "early_positive_response") {
+    nextSupportAdjustment = staleish || rec !== "none" ? "recheck_before_advancing" : "continue_same_plan";
+  } else if (rti === "mixed_response") {
+    nextSupportAdjustment = "continue_and_tighten_focus";
+  }
+
+  if (weakEff && (isAdvanceOnlyStep(finalStep) || isAggressiveStep(finalStep))) {
+    nextSupportAdjustment = "recheck_before_advancing";
+  }
+
+  const nextSupportAdjustmentHe =
+    NEXT_SUPPORT_ADJUSTMENT_LABEL_HE[nextSupportAdjustment] ||
+    NEXT_SUPPORT_ADJUSTMENT_LABEL_HE.continue_same_plan;
+
+  let continueWhatWorksHe = "";
+  let changeBecauseHe = "";
+  let recheckBeforeEscalationHe = "";
+  let evidenceStillMissingHe = "";
+
+  if (weakEff) {
+    evidenceStillMissingHe =
+      "עדיין חסר אות מספיק חד כדי לדעת אם התמיכה הנוכחית מחזיקה את ההתקדמות — עדיף לא לסגור מוקדם מדי.";
+  }
+  if (rti === "early_positive_response" || rti === "independence_growing") {
+    continueWhatWorksHe =
+      "להמשיך על אותו סוג תרגול קצר וקבוע — זה מה שנראה שעובד כרגע, ובמעקב קטן אחרי כל מפגש.";
+  }
+  if (rti === "stalled_response" || rti === "regression_under_support") {
+    changeBecauseHe =
+      "נראה שהתמונה לא משתפרת מספיק עם אותה נוסחה — כדאי לדייק מיקוד או לשנות כיוון, לא לחזור על אותו טקסט בלי שינוי.";
+  }
+  if (rti === "over_supported_progress") {
+    changeBecauseHe =
+      "נראה שההצלחה קיימת בעיקר כשיש הכוונה — עדיין לא נכון להסיק שליטה מלאה בלי תמיכה.";
+    continueWhatWorksHe =
+      "לשמור על אותה רמת קושי, ולנסות קטע קצר יותר עם פחות הכוונה באמצע — רק אם נשארים בנוחות.";
+  }
+  if (staleish || rec === "structured_recheck" || rec === "light_review") {
+    recheckBeforeEscalationHe =
+      "המידע הקיים כבר פחות עדכני — עדיף לא להישען עליו לבדו לפני העלאת קושי או החמרה.";
+  }
+  if (rti === "mixed_response") {
+    changeBecauseHe = "יש תגובה מעורבת לתמיכה — חלקים מתקדמים וחלקים נשארים תלויים; כדאי לדייק מבנה קצר.";
+  }
+
+  return {
+    nextSupportAdjustment,
+    nextSupportAdjustmentHe,
+    continueWhatWorksHe,
+    changeBecauseHe,
+    recheckBeforeEscalationHe,
+    evidenceStillMissingHe,
+  };
+}
+
+/**
+ * Phase 11 — פעולת רצף + ניסוח שמבדיל ומונע חזרה ריקה.
+ * @param {object} p
+ */
+export function buildPhase11SequenceOverlay(p) {
+  const seq = String(p?.supportSequenceState || "");
+  const rti = String(p?.responseToIntervention || "");
+  const nextAdj = String(p?.nextSupportAdjustment || "");
+  const rot = String(p?.recommendationRotationNeed || "");
+  const cf = String(p?.conclusionFreshness || "");
+  const sim = String(p?.adviceSimilarityLevel || "");
+  const rep = String(p?.strategyRepetitionRisk || "");
+  const fat = String(p?.strategyFatigueRisk || "");
+  const rec = String(p?.recalibrationNeed || "");
+  const fs = String(p?.freshnessState || "");
+
+  let nextSupportSequenceAction = "continue_same_sequence";
+  if (seq === "insufficient_sequence_evidence") {
+    nextSupportSequenceAction = "observe_without_new_push";
+  } else if (seq === "sequence_exhausted" || rot === "meaningful_rotation" || rep === "high") {
+    nextSupportSequenceAction = "pause_repeat_and_switch";
+  } else if (seq === "sequence_ready_for_release" || rti === "over_supported_progress" || rti === "independence_growing") {
+    nextSupportSequenceAction = "begin_release_sequence";
+  } else if (seq === "sequence_stalled" || rti === "stalled_response") {
+    nextSupportSequenceAction = "continue_with_tighter_target";
+  } else if (
+    (cf === "expired" || cf === "low" || fs === "stale") &&
+    (sim === "mostly_repeated" || rot === "meaningful_rotation" || rec === "structured_recheck")
+  ) {
+    nextSupportSequenceAction = "short_reset_then_retry";
+  } else if (nextAdj === "pause_and_observe" || nextAdj === "recheck_before_advancing") {
+    nextSupportSequenceAction = "observe_without_new_push";
+  } else if (nextAdj === "switch_strategy") {
+    nextSupportSequenceAction = "pause_repeat_and_switch";
+  } else if (fat === "high" && rti !== "early_positive_response") {
+    nextSupportSequenceAction = "pause_repeat_and_switch";
+  }
+
+  const nextSupportSequenceActionHe =
+    NEXT_SUPPORT_SEQUENCE_ACTION_LABEL_HE[nextSupportSequenceAction] ||
+    NEXT_SUPPORT_SEQUENCE_ACTION_LABEL_HE.continue_same_sequence;
+
+  let whyThisIsDifferentNowHe = "";
+  let whyWeShouldNotRepeatSameSupportHe = "";
+  let whatMustHappenBeforeReleaseHe = "";
+  let whatSignalsSequenceSuccessHe = "";
+
+  if (rot === "meaningful_rotation" || sim === "mostly_repeated") {
+    whyWeShouldNotRepeatSameSupportHe =
+      "כרגע עדיף לא לחזור שוב על אותו סוג תרגול בלי בדיקה מחודשת — אחרת זה נשמע חדש אבל לא באמת משתנה.";
+  }
+  if (sim === "clearly_new" || rot === "light_variation") {
+    whyThisIsDifferentNowHe = "הפעם יש שינוי קטן בכיוון או במטרה — לא רק עוד סיבוב על אותה משפטיות.";
+  }
+  if (seq === "sequence_ready_for_release" && rti !== "independence_growing") {
+    whatMustHappenBeforeReleaseHe =
+      "לפני שחרור מלא: שני מפגשים קצרים עם הצלחה קטנה בלי הכוונה באמצע, ואז בדיקה מהירה בסוף.";
+  }
+  if (seq === "continuing_sequence" || seq === "early_sequence") {
+    whatSignalsSequenceSuccessHe =
+      "סימני הצלחה לרצף: דיוק יציב באותה רמה, ופחות טעויות חוזרות מאותו סוג — גם אם עדיין עם ליווי.";
+  }
+  if (seq === "sequence_ready_for_release") {
+    whatSignalsSequenceSuccessHe =
+      "מוכנות לשחרור זהיר: עצמאות קצת עולה או הצלחה קצרה בלי עזרה באמצע — לא שליטה מלאה, אבל כיוון.";
+  }
+
+  return {
+    nextSupportSequenceAction,
+    nextSupportSequenceActionHe,
+    whyThisIsDifferentNowHe,
+    whyWeShouldNotRepeatSameSupportHe,
+    whatMustHappenBeforeReleaseHe,
+    whatSignalsSequenceSuccessHe,
+  };
+}
+
+/**
+ * Phase 12 — החלטת המשך לפי זיכרון המלצה ומעקב תוצאות.
+ * @param {object} p
+ */
+export function buildPhase12ContinuationOverlay(p) {
+  const match = String(p?.expectedVsObservedMatch || "");
+  const mem = String(p?.recommendationMemoryState || "");
+  const carry = String(p?.recommendationCarryover || "");
+  const ft = String(p?.followThroughSignal || "");
+  const sim = String(p?.adviceSimilarityLevel || "");
+  const rot = String(p?.recommendationRotationNeed || "");
+  const rti = String(p?.responseToIntervention || "");
+  const seqAct = String(p?.nextSupportSequenceAction || "");
+  const exp = String(p?.expectedOutcomeType || "");
+  const obs = String(p?.observedOutcomeState || "");
+  const rep = String(p?.strategyRepetitionRisk || "");
+
+  let recommendationContinuationDecision = "continue_but_refine";
+  if (match === "misaligned" && (rot === "meaningful_rotation" || sim === "mostly_repeated")) {
+    recommendationContinuationDecision = "reset_and_rebuild_signal";
+  } else if (match === "misaligned" && (mem === "usable_memory" || mem === "strong_memory")) {
+    recommendationContinuationDecision = "pivot_from_prior_path";
+  } else if (
+    match === "not_enough_evidence" &&
+    (sim === "mostly_repeated" || rep === "high" || rot === "meaningful_rotation")
+  ) {
+    recommendationContinuationDecision = "do_not_repeat_without_new_evidence";
+  } else if ((sim === "mostly_repeated" || rep === "high") && match !== "aligned") {
+    recommendationContinuationDecision = "do_not_repeat_without_new_evidence";
+  } else if (
+    match === "aligned" &&
+    (exp === "release_readiness" || seqAct === "begin_release_sequence") &&
+    (rti === "independence_growing" || rti === "over_supported_progress" || obs === "partial_progress")
+  ) {
+    recommendationContinuationDecision = "begin_controlled_release";
+  } else if (match === "aligned" && ft === "likely_followed" && sim !== "mostly_repeated") {
+    recommendationContinuationDecision = "continue_with_same_core";
+  } else if (match === "partly_aligned" || seqAct === "continue_with_tighter_target") {
+    recommendationContinuationDecision = "continue_but_refine";
+  }
+
+  if (mem === "no_memory" && recommendationContinuationDecision !== "reset_and_rebuild_signal") {
+    recommendationContinuationDecision = "continue_but_refine";
+  }
+
+  let outcomeBasedNextMove = "collect_new_evidence_first";
+  if (recommendationContinuationDecision === "reset_and_rebuild_signal") {
+    outcomeBasedNextMove = "brief_reset_then_compare";
+  } else if (recommendationContinuationDecision === "pivot_from_prior_path") {
+    outcomeBasedNextMove = "switch_path_type";
+  } else if (recommendationContinuationDecision === "begin_controlled_release") {
+    outcomeBasedNextMove = "reduce_support_and_check_transfer";
+  } else if (recommendationContinuationDecision === "continue_with_same_core") {
+    outcomeBasedNextMove = "keep_current_direction";
+  } else if (recommendationContinuationDecision === "continue_but_refine") {
+    outcomeBasedNextMove = mem === "no_memory" || match === "not_enough_evidence" ? "collect_new_evidence_first" : "tighten_goal_definition";
+  } else if (recommendationContinuationDecision === "do_not_repeat_without_new_evidence") {
+    outcomeBasedNextMove = "collect_new_evidence_first";
+  } else if (match === "misaligned") {
+    outcomeBasedNextMove = "switch_path_type";
+  }
+
+  let whyWeThinkThisPathWorkedHe = "";
+  let whyWeThinkThisPathDidNotLandHe = "";
+  let whatNeedsFreshEvidenceNowHe = "";
+  let whatShouldCarryForwardHe = "";
+
+  if (match === "aligned" && (ft === "likely_followed" || ft === "possibly_followed")) {
+    whyWeThinkThisPathWorkedHe =
+      "הכיוון בבית נראה מתיישר עם מה שהמסלול ניסה לשפר — לכן אפשר להמשיך בזהירות, לא לזרוק הכל.";
+  }
+  if (match === "misaligned" || obs === "contradictory_response") {
+    whyWeThinkThisPathDidNotLandHe =
+      "נראה שהמטרה של התרגול הייתה ברורה, אבל בפועל עדיין לא רואים התיישבות מספקת עם הציפייה — כדאי לעצור ולבדוק לפני עוד אותו סיבוב.";
+  }
+  if (mem === "no_memory" || match === "not_enough_evidence") {
+    whatNeedsFreshEvidenceNowHe =
+      "כדי לא לבנות המשך על ניחוש: שני מפגשים קצרים עם רישום קטן בסוף — מה הצליח בלי עזרה באמצע.";
+  }
+  if (match === "aligned" && carry === "clearly_visible") {
+    whatShouldCarryForwardHe = "להשאיר את אותו שלד תרגול קצר, ורק לדייק מטרה או טיימינג — בלי להחליף הכל.";
+  }
+
+  const recommendationContinuationDecisionHe =
+    RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE[recommendationContinuationDecision] ||
+    RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE.continue_but_refine;
+  const outcomeBasedNextMoveHe =
+    OUTCOME_BASED_NEXT_MOVE_LABEL_HE[outcomeBasedNextMove] ||
+    OUTCOME_BASED_NEXT_MOVE_LABEL_HE.collect_new_evidence_first;
+
+  return {
+    recommendationContinuationDecision,
+    recommendationContinuationDecisionHe,
+    outcomeBasedNextMove,
+    outcomeBasedNextMoveHe,
+    whyWeThinkThisPathWorkedHe,
+    whyWeThinkThisPathDidNotLandHe,
+    whatNeedsFreshEvidenceNowHe,
+    whatShouldCarryForwardHe,
+  };
+}
+
+/**
+ * Phase 13 — מיקוד סבב הבא + ניסוח תנאים (שערים + יעדי ראיה).
+ * @param {object} p
+ */
+export function buildPhase13NextCycleOverlay(p) {
+  const gate = String(p?.gateState || "");
+  const rel = String(p?.releaseGate || "");
+  const piv = String(p?.pivotGate || "");
+  const recg = String(p?.recheckGate || "");
+  const adv = String(p?.advanceGate || "");
+  const fs = String(p?.freshnessState || "");
+  const cf = String(p?.conclusionFreshness || "");
+  const rec = String(p?.recalibrationNeed || "");
+  const match = String(p?.expectedVsObservedMatch || "");
+  const mem = String(p?.recommendationMemoryState || "");
+  const rti = String(p?.responseToIntervention || "");
+  const ls = String(p?.learningStage || "");
+  const td = p?.trendDer && typeof p.trendDer === "object" ? p.trendDer : {};
+  const indepUp = String(td.independenceDirection || "") === "up" || String(p?.independenceProgress || "") === "improving";
+  const stale = fs === "stale" || cf === "expired" || cf === "low" || rec === "structured_recheck";
+
+  let nextCycleDecisionFocus = "prove_current_direction";
+  if (stale || recg === "forming") {
+    nextCycleDecisionFocus = "refresh_baseline_before_decision";
+  } else if (piv === "forming" || (match === "misaligned" && mem !== "no_memory")) {
+    nextCycleDecisionFocus = "test_if_path_is_working";
+  } else if (ls === "fragile_retention" || ls === "regression_signal" || adv === "blocked") {
+    nextCycleDecisionFocus = "stabilize_before_advance";
+  } else if (rel === "forming" && indepUp) {
+    nextCycleDecisionFocus = "prepare_for_controlled_release";
+  } else if (rel === "forming" || rel === "pending" || rti === "over_supported_progress") {
+    nextCycleDecisionFocus = "check_independence_before_release";
+  } else if (adv === "forming") {
+    nextCycleDecisionFocus = "stabilize_before_advance";
+  }
+
+  const nextCycleDecisionFocusHe =
+    NEXT_CYCLE_DECISION_FOCUS_LABEL_HE[nextCycleDecisionFocus] ||
+    NEXT_CYCLE_DECISION_FOCUS_LABEL_HE.prove_current_direction;
+
+  const whatWouldJustifyReleaseHe =
+    "לפני שחרור: שני מפגשים קצרים עם הצלחה בסוף בלי הכוונה באמצע, ועדיין לא לקפוץ לעצמאות מלאה.";
+  const whatWouldJustifyAdvanceHe =
+    "לפני קפיצת רמה: יציבות באותה רמת קושי, סיכון שימור לא גבוה, ונתון שלא נראה «מתיישן».";
+  const whatWouldTriggerPivotHe =
+    "אם גם בסבב הבא נשארים עם אותו דפוס בלי שיפור — זה סימן לעבור למסלול מעט שונה, לא עוד אותה חזרה.";
+  const whatWouldTriggerRecheckHe =
+    "כשהמידע נראה חלקי או מתיישן — סבב תצפית קצר לפני החמרה או לפני מסקנה חזקה.";
+  const whatEvidenceWeStillNeedHe = String(p?.targetSuccessSignalHe || "").trim()
+    ? `${String(p?.targetSuccessSignalHe || "").trim()} · ${String(p?.targetObservationWindowLabelHe || "").trim()}.`
+    : "מפגש קצר עם רישום קטן בסוף — מה הצליח בפועל.";
+
+  return {
+    nextCycleDecisionFocus,
+    nextCycleDecisionFocusHe,
+    whatWouldJustifyReleaseHe,
+    whatWouldJustifyAdvanceHe,
+    whatWouldTriggerPivotHe,
+    whatWouldTriggerRecheckHe,
+    whatEvidenceWeStillNeedHe,
+  };
+}
+
+export { buildFoundationOrderingPhase14, buildPhase14RecommendationOverlay } from "./parent-report-foundation-ordering.js";
+
+/**
+ * Phase 8 — כיול עומס תרגול ריאלי לבית (לא "להרבה להתאמן").
+ * @param {object} p
+ * @param {string} p.rootCause
+ * @param {string} p.conclusionStrength
+ * @param {boolean} [p.shouldAvoidStrongConclusion]
+ * @param {string} [p.diagnosticRestraintLevel]
+ * @param {number} p.q
+ * @param {number} p.accuracy
+ * @param {string} [p.evidenceStrength]
+ * @param {string} [p.dataSufficiencyLevel]
+ * @param {string} p.interventionIntensity
+ * @param {string} [p.retentionRisk]
+ * @param {string} [p.learningStage]
+ */
+export function buildPracticeCalibration(p) {
+  const rc = String(p?.rootCause || "");
+  const cs = String(p?.conclusionStrength || "");
+  const shouldAvoid = !!p?.shouldAvoidStrongConclusion;
+  const level = String(p?.diagnosticRestraintLevel || "");
+  const q = Number(p?.q) || 0;
+  const acc = Math.round(Number(p?.accuracy) || 0);
+  const ev = String(p?.evidenceStrength || "");
+  const suff = String(p?.dataSufficiencyLevel || "");
+  const inten = String(p?.interventionIntensity || "focused");
+
+  let recommendedPracticeLoad = "light";
+  if (inten === "targeted" && ev === "strong" && suff === "strong" && rc === "knowledge_gap") {
+    recommendedPracticeLoad = "moderate";
+  } else if (inten === "light" || cs === "withheld" || cs === "tentative" || shouldAvoid) {
+    recommendedPracticeLoad = "minimal";
+  } else if (inten === "focused") {
+    recommendedPracticeLoad = "light";
+  }
+
+  let recommendedSessionCount = 2;
+  if (recommendedPracticeLoad === "minimal") recommendedSessionCount = 2;
+  else if (recommendedPracticeLoad === "light") recommendedSessionCount = 3;
+  else recommendedSessionCount = 3;
+
+  let recommendedSessionLengthBand = "short";
+  if (recommendedPracticeLoad === "minimal") recommendedSessionLengthBand = "very_short";
+  else if (recommendedPracticeLoad === "moderate") recommendedSessionLengthBand = "moderate";
+
+  let practiceReadiness = "building";
+  if (q >= 18 && ev === "strong" && suff === "strong") practiceReadiness = "ready";
+  else if (q < 8 || ev === "low" || cs === "withheld") practiceReadiness = "low";
+
+  const escalationThresholdHe =
+    rc === "insufficient_evidence" || practiceReadiness === "low"
+      ? "להחמיר מיקוד רק אחרי לפחות שבוע עם 2–3 מפגשים קצרים עקביים ושיפור קטן בדיוק."
+      : rc === "speed_pressure"
+        ? "להוסיף מעט לחץ זמן רק אחרי שני מפגשים רצופים עם דיוק יציב באותה רמה."
+        : "להוסיף עומס רק אם שני מפגשים רצופים מראים שיפור ברור בדיוק או בפחות טעויות חוזרות.";
+
+  const deescalationThresholdHe =
+    "אם יש התנגדות חזקה או ירידה בדיוק — לחזור למפגש קצר יותר ולפשט את המשימה לשבוע.";
+
+  if (acc >= 88 && q >= 20 && !shouldAvoid) {
+    recommendedPracticeLoad = "minimal";
+    recommendedSessionCount = 2;
+    recommendedSessionLengthBand = "very_short";
+    practiceReadiness = "ready";
+  }
+
+  if (level === "mixed" || level === "insufficient") {
+    recommendedPracticeLoad = "minimal";
+    recommendedSessionCount = 2;
+  }
+
+  const rr = String(p?.retentionRisk || "");
+  const lsMem = String(p?.learningStage || "");
+  if (rr === "high" || lsMem === "fragile_retention" || lsMem === "regression_signal") {
+    recommendedPracticeLoad = "minimal";
+    recommendedSessionCount = Math.min(recommendedSessionCount, 2);
+    recommendedSessionLengthBand = "very_short";
+    if (practiceReadiness === "ready") practiceReadiness = "building";
+  }
+
+  return {
+    recommendedPracticeLoad,
+    recommendedSessionCount,
+    recommendedSessionLengthBand,
+    escalationThresholdHe,
+    deescalationThresholdHe,
+    practiceReadiness,
+  };
 }
 
 function hintDependenceRiskActive(rf) {

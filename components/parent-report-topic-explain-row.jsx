@@ -8,10 +8,32 @@ import {
   confidenceBadgeLabelHe,
   diagnosticTypeLabelHe,
   formatDecisionTraceBulletsHe,
+  learningMemoryLineHe,
+  mistakePatternLineHe,
+  phase8PracticeCalibrationLineHe,
+  phase8TopicMetaChipsHe,
+  recalibrationLineHe,
+  responseToInterventionLineHe,
+  reviewBeforeAdvanceLineHe,
   sanitizeEngineSnippetHe,
   sufficiencyBadgeLabelHe,
+  supportAdjustmentLineHe,
+  transferReadinessLineHe,
   trendCompactLineHe,
   truncateHe,
+  freshnessLineHe,
+  sequenceActionLineHe,
+  topicRepetitionFatigueCompactLineHe,
+  topicSupportSequenceOrReleaseLineHe,
+  recommendationMemoryLineHe,
+  outcomeTrackingLineHe,
+  continuationDecisionLineHe,
+  gateStateLineHe,
+  evidenceTargetLineHe,
+  gateTriggerCompactLineHe,
+  dependencyStateLineHe,
+  interventionOrderingLineHe,
+  foundationBeforeExpansionLineHe,
 } from "../utils/parent-report-ui-explain-he";
 
 /** תג קומפקטי — RTL, לא מגדיל את גובה השורה יתר על המידה */
@@ -58,6 +80,12 @@ export function ParentReportTopicExplainRow({ row }) {
   ];
   const traceBullets = formatDecisionTraceBulletsHe(mergedTrace, 4);
   const whatChange = sig?.whatCouldChangeThisHe ? truncateHe(String(sig.whatCouldChangeThisHe), 140) : "";
+  const ip = sig?.interventionPlanHe ? truncateHe(String(sig.interventionPlanHe), 130) : "";
+  const dn = sig?.doNowHe ? truncateHe(String(sig.doNowHe), 100) : "";
+  const av = sig?.avoidNowHe ? truncateHe(String(sig.avoidNowHe), 100) : "";
+  const caut = sig?.cautionLineHe ? truncateHe(String(sig.cautionLineHe), 110) : "";
+  const calLine = truncateHe(phase8PracticeCalibrationLineHe(row), 96);
+  const p8chips = phase8TopicMetaChipsHe(row);
   const hasDetails = !!(traceBullets.length || whatChange || row.patternStabilityHe || row.dataSufficiencyLabelHe);
 
   return (
@@ -93,6 +121,173 @@ export function ParentReportTopicExplainRow({ row }) {
               </PrMiniBadge>
             ))}
           </div>
+        ) : null}
+        {p8chips.length ? (
+          <div className="flex flex-wrap gap-1">
+            {p8chips.map((lab) => (
+              <PrMiniBadge key={lab} tone="ok">
+                {lab}
+              </PrMiniBadge>
+            ))}
+          </div>
+        ) : null}
+        {ip || calLine ? (
+          <div className="text-[9px] md:text-[10px] text-emerald-100/85 leading-snug space-y-0.5 m-0 pr-0.5">
+            {ip ? (
+              <p className="m-0">
+                <span className="text-white/45 font-semibold">תוכנית: </span>
+                {ip}
+              </p>
+            ) : null}
+            {calLine ? (
+              <p className="m-0 text-white/68">
+                <span className="text-white/40 font-semibold">כיול: </span>
+                {calLine}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+        {dn || av ? (
+          <div className="text-[9px] md:text-[10px] text-sky-100/88 leading-snug border border-sky-400/20 rounded px-1.5 py-1 bg-sky-950/12 space-y-0.5 m-0 pr-0.5">
+            {dn ? (
+              <p className="m-0">
+                <span className="text-white/45 font-semibold">עכשיו: </span>
+                {dn}
+              </p>
+            ) : null}
+            {av ? (
+              <p className="m-0">
+                <span className="text-white/45 font-semibold">להימנע: </span>
+                {av}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+        {caut ? (
+          <p className="text-[9px] md:text-[10px] text-amber-100/85 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">זהירות: </span>
+            {caut}
+          </p>
+        ) : null}
+        {mistakePatternLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-white/70 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">דפוס טעות: </span>
+            {mistakePatternLineHe(row)}
+          </p>
+        ) : null}
+        {learningMemoryLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-white/68 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">שימור: </span>
+            {learningMemoryLineHe(row)}
+          </p>
+        ) : null}
+        {reviewBeforeAdvanceLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-violet-100/85 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">לפני קידום: </span>
+            {reviewBeforeAdvanceLineHe(row)}
+          </p>
+        ) : null}
+        {transferReadinessLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-cyan-100/85 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">העברה: </span>
+            {transferReadinessLineHe(row)}
+          </p>
+        ) : null}
+        {responseToInterventionLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-teal-100/88 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">תגובה לתמיכה: </span>
+            {truncateHe(responseToInterventionLineHe(row), 150)}
+          </p>
+        ) : null}
+        {freshnessLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-white/66 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">עדכניות: </span>
+            {truncateHe(freshnessLineHe(row), 150)}
+          </p>
+        ) : null}
+        {supportAdjustmentLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-amber-100/82 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">צעד הבא: </span>
+            {truncateHe(supportAdjustmentLineHe(row), 160)}
+          </p>
+        ) : null}
+        {topicSupportSequenceOrReleaseLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-indigo-100/88 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">רצף תמיכה: </span>
+            {truncateHe(topicSupportSequenceOrReleaseLineHe(row), 158)}
+          </p>
+        ) : null}
+        {topicRepetitionFatigueCompactLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-indigo-100/82 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">חזרתיות: </span>
+            {truncateHe(topicRepetitionFatigueCompactLineHe(row), 158)}
+          </p>
+        ) : null}
+        {sequenceActionLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-indigo-100/85 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">צעד ברצף: </span>
+            {truncateHe(sequenceActionLineHe(row), 158)}
+          </p>
+        ) : null}
+        {recommendationMemoryLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-slate-100/86 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">זיכרון המלצה: </span>
+            {truncateHe(recommendationMemoryLineHe(row), 158)}
+          </p>
+        ) : null}
+        {outcomeTrackingLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-slate-100/84 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">צפי מול נצפה: </span>
+            {truncateHe(outcomeTrackingLineHe(row), 158)}
+          </p>
+        ) : null}
+        {continuationDecisionLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-slate-100/88 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">המשך: </span>
+            {truncateHe(continuationDecisionLineHe(row), 158)}
+          </p>
+        ) : null}
+        {gateStateLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-fuchsia-100/86 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">שער החלטה: </span>
+            {truncateHe(gateStateLineHe(row), 158)}
+          </p>
+        ) : null}
+        {evidenceTargetLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-fuchsia-100/82 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">מה לאסוף: </span>
+            {truncateHe(evidenceTargetLineHe(row), 158)}
+          </p>
+        ) : null}
+        {gateTriggerCompactLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-fuchsia-100/88 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">טריגר: </span>
+            {truncateHe(gateTriggerCompactLineHe(row), 158)}
+          </p>
+        ) : null}
+        {dependencyStateLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-emerald-100/86 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">יסוד/מקומי: </span>
+            {truncateHe(dependencyStateLineHe(row), 158)}
+          </p>
+        ) : null}
+        {interventionOrderingLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-emerald-100/84 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">סדר: </span>
+            {truncateHe(interventionOrderingLineHe(row), 158)}
+          </p>
+        ) : null}
+        {foundationBeforeExpansionLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-emerald-100/88 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">לפני הרחבה: </span>
+            {truncateHe(foundationBeforeExpansionLineHe(row), 158)}
+          </p>
+        ) : null}
+        {recalibrationLineHe(row) && !freshnessLineHe(row) ? (
+          <p className="text-[9px] md:text-[10px] text-white/62 m-0 pr-0.5 leading-snug">
+            <span className="text-white/45 font-semibold">ריענון: </span>
+            {truncateHe(recalibrationLineHe(row), 140)}
+          </p>
         ) : null}
         {hasDetails ? (
           <details className="parent-report-topic-explain-details group min-w-0">

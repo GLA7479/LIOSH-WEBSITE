@@ -2485,6 +2485,39 @@ export default function ParentReport() {
                                 {summaryHe}
                               </div>
                             ) : null}
+                            {(s.subjectPriorityReasonHe || s.subjectDoNowHe || s.subjectAvoidNowHe) && (
+                              <div className="text-[10px] md:text-[11px] text-sky-100/90 border border-sky-400/22 bg-sky-950/12 rounded px-2 py-1.5 space-y-1 leading-snug">
+                                {s.subjectPriorityReasonHe ? <p className="m-0">{s.subjectPriorityReasonHe}</p> : null}
+                                {s.subjectDoNowHe ? (
+                                  <p className="m-0">
+                                    <span className="text-white/45 font-bold">עכשיו: </span>
+                                    {s.subjectDoNowHe}
+                                  </p>
+                                ) : null}
+                                {s.subjectAvoidNowHe ? (
+                                  <p className="m-0">
+                                    <span className="text-white/45 font-bold">להימנע: </span>
+                                    {s.subjectAvoidNowHe}
+                                  </p>
+                                ) : null}
+                              </div>
+                            )}
+                            {(s.dominantMistakePatternLabelHe || s.subjectMemoryNarrativeHe) && (
+                              <div className="text-[10px] md:text-[11px] text-emerald-100/85 border border-emerald-400/20 bg-emerald-950/10 rounded px-2 py-1.5 space-y-1 leading-snug">
+                                {s.dominantMistakePatternLabelHe ? (
+                                  <p className="m-0">
+                                    <span className="text-white/45 font-bold">דפוס טעות: </span>
+                                    {s.dominantMistakePatternLabelHe}
+                                  </p>
+                                ) : null}
+                                {s.subjectMemoryNarrativeHe ? (
+                                  <p className="m-0">
+                                    <span className="text-white/45 font-bold">שימור למידה: </span>
+                                    {s.subjectMemoryNarrativeHe}
+                                  </p>
+                                ) : null}
+                              </div>
+                            )}
                             {sx.length > 0 && (
                               <div className="parent-report-print-section-label text-[11px] font-semibold text-violet-200/85 pt-1">
                                 הצטיינות היציבה

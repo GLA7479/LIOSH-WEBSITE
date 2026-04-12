@@ -544,4 +544,87 @@ export const PARENT_REPORT_SCENARIOS = {
     }
     return { ...base, patternDiagnostics: pd };
   },
+
+  /**
+   * Phase 7 — חוצה־מקצועות: נפח בינוני־נמוך + מגמה/התנהגות שמזינים ריסון ושורש קושי (בדיקות מנוע + מנהלים).
+   */
+  phase7_cross_subject_sparse_mixed: () =>
+    buildSyntheticBaseReport({
+      summary: {
+        totalQuestions: 18,
+        totalTimeMinutes: 14,
+        overallAccuracy: 56,
+        mathQuestions: 10,
+        mathCorrect: 5,
+        mathAccuracy: 50,
+        geometryQuestions: 8,
+        geometryCorrect: 5,
+        geometryAccuracy: 62,
+      },
+      mathOperations: {
+        "addition\u0001speed": mathRowSession({
+          questions: 10,
+          accuracy: 50,
+          modeKey: "speed",
+          levelKey: "medium",
+          behaviorProfile: {
+            version: 1,
+            dominantType: "knowledge_gap",
+            signals: { hintRate: 0.05, hintKnownCount: 2, wrongEventCount: 4 },
+            decisionTrace: [],
+          },
+          trend: {
+            version: 1,
+            accuracyDirection: "unknown",
+            independenceDirection: "flat",
+            fluencyDirection: "flat",
+            confidence: 0.12,
+            summaryHe: "",
+            windows: {
+              currentPeriod: { accuracy: 50, questions: 10 },
+              previousComparablePeriod: { accuracy: 55, questions: 8 },
+              recentShortWindow: { accuracy: 48, questions: 4 },
+            },
+          },
+        }),
+      },
+      geometryTopics: {
+        "perimeter\u0001learning": {
+          bucketKey: "perimeter",
+          displayName: "היקף",
+          questions: 8,
+          correct: 5,
+          wrong: 3,
+          accuracy: 62,
+          modeKey: "learning",
+          lastSessionMs: END_MS - 10000,
+          timeMinutes: 12,
+          behaviorProfile: {
+            version: 1,
+            dominantType: "fragile_success",
+            signals: { hintRate: 0.42, hintKnownCount: 5, wrongEventCount: 3 },
+            decisionTrace: [],
+          },
+          trend: {
+            version: 1,
+            accuracyDirection: "up",
+            independenceDirection: "down",
+            fluencyDirection: "flat",
+            confidence: 0.42,
+            summaryHe: "דיוק עולה אך עצמאות יורדת.",
+            windows: {
+              currentPeriod: { accuracy: 62, questions: 8 },
+              previousComparablePeriod: { accuracy: 58, questions: 7 },
+              recentShortWindow: { accuracy: 64, questions: 4 },
+            },
+          },
+        },
+      },
+      mistakes: { math: mathWrongCluster(5), geometry: [] },
+      analysis: {
+        ...emptyAnalysis(),
+        mathMistakesByOperation: { addition: { count: 5 } },
+        geometryMistakesByTopic: { perimeter: { count: 3 } },
+      },
+    }),
 };

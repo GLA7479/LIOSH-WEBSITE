@@ -9,6 +9,31 @@ import {
   sessionRowLabelHe,
   GENERIC_WEAKNESS_HE,
 } from "./diagnostic-labels-he";
+import {
+  CONCLUSION_FRESHNESS_LABEL_HE,
+  EXPECTED_VS_OBSERVED_MATCH_LABEL_HE,
+  FOLLOW_THROUGH_SIGNAL_LABEL_HE,
+  GATE_STATE_LABEL_HE,
+  DEPENDENCY_STATE_LABEL_HE,
+  FOUNDATIONAL_BLOCKER_LABEL_HE,
+  INTERVENTION_TYPE_LABEL_HE,
+  LEARNING_STAGE_LABEL_HE,
+  MISTAKE_PATTERN_LABEL_HE,
+  NEXT_BEST_SEQUENCE_STEP_LABEL_HE,
+  NEXT_CYCLE_DECISION_FOCUS_LABEL_HE,
+  PRIOR_RECOMMENDATION_SIGNATURE_LABEL_HE,
+  RECALIBRATION_NEED_LABEL_HE,
+  RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE,
+  RECOMMENDATION_MEMORY_STATE_LABEL_HE,
+  RECOMMENDATION_ROTATION_NEED_LABEL_HE,
+  RESPONSE_TO_INTERVENTION_LABEL_HE,
+  ROOT_CAUSE_LABEL_HE,
+  SUPPORT_ADJUSTMENT_NEED_LABEL_HE,
+  SUPPORT_SEQUENCE_STATE_LABEL_HE,
+  TARGET_EVIDENCE_TYPE_LABEL_HE,
+  TARGET_OBSERVATION_WINDOW_LABEL_HE,
+} from "./parent-report-ui-explain-he.js";
+import { pickRecommendedInterventionType } from "./topic-next-step-phase2.js";
 /**
  * סיווג גס לסגנון פעולה בבית — לפי תווית חולשה בעברית בלבד.
  * @returns {"wording"|"careless"|"foundation"}
@@ -636,6 +661,113 @@ function emptyRiskOr() {
 }
 
 /**
+ * Phase 8 — סולם עדיפות הורית ברמת מקצוע.
+ * @param {string} subjectId
+ * @param {object} args
+ */
+function computeSubjectPriorityFieldsPhase8(subjectId, args) {
+  const {
+    dominantLearningRisk,
+    dominantSuccessPattern,
+    subjectConclusionReadiness,
+    dominantRootCause,
+    riskOr,
+    stableMasteryRowCount,
+    fragileSuccessRowCount,
+    recommendedHomeMethodHe,
+    strongRowCount,
+  } = args;
+  const lab = SUBJECT_LABEL_HE[subjectId] || "המקצוע";
+  const home =
+    recommendedHomeMethodHe && String(recommendedHomeMethodHe).trim()
+      ? String(recommendedHomeMethodHe).trim()
+      : "";
+
+  if (subjectConclusionReadiness === "not_ready" || dominantRootCause === "insufficient_evidence") {
+    return {
+      subjectPriorityLevel: "monitor",
+      subjectPriorityReasonHe: `ב${lab} הראיות עדיין חלקיות — עדיפות להקלה ומעקב ולא לטיפול כבד.`,
+      subjectImmediateActionHe: `ב${lab}: שני מפגשים קצרים (5–8 דקות) באותה רמת קושי — לצפות ולתעד בלבד.`,
+      subjectDeferredActionHe: `ב${lab}: לדחות שינוי רמה/כיתה ותוכנית ארוכה עד שיתייצב נתון.`,
+      subjectMonitoringOnly: true,
+      subjectDoNowHe: "מעקב קצר וקבוע; משימה אחת ברורה לכל מפגש.",
+      subjectAvoidNowHe: "לא להסיק מסקנות חזקות ולא להעמיס סדרת חיזוקים.",
+    };
+  }
+
+  if (
+    subjectConclusionReadiness === "ready" &&
+    dominantRootCause === "knowledge_gap" &&
+    (strongRowCount || 0) >= 1
+  ) {
+    return {
+      subjectPriorityLevel: "immediate",
+      subjectPriorityReasonHe: `ב${lab} יש פער בסיס עם ראיות סבירות — מומלץ מיקוד מוקדם וצר.`,
+      subjectImmediateActionHe: home || `ב${lab}: משימה אחת קצרה עם חזרה על טעות טיפוסית באותה רמה.`,
+      subjectDeferredActionHe: `ב${lab}: להמתין עם הרחבת נושאים עד שייצבו הצלחות קטנות חוזרות.`,
+      subjectMonitoringOnly: false,
+      subjectDoNowHe: "חיזוק ממוקד באותה רמה; פחות נושאים במקביל.",
+      subjectAvoidNowHe: "לא לדחוף קפיצת רמה בבית; לא לדלג על טעויות חוזרות.",
+    };
+  }
+
+  if (
+    subjectConclusionReadiness === "ready" &&
+    fragileSuccessRowCount >= 1 &&
+    riskOr?.hintDependenceRisk
+  ) {
+    return {
+      subjectPriorityLevel: "immediate",
+      subjectPriorityReasonHe: `ב${lab} יש הצלחה עם תלות ברמזים — כדאי לעבוד עכשיו על מעבר הדרגתי לעצמאות.`,
+      subjectImmediateActionHe: home || `ב${lab}: משימה קצרה — ניסיון עצמאי קטן ואז בדיקה יחד.`,
+      subjectDeferredActionHe: `ב${lab}: לדחות קפיצת רמה עד שיורדת התלות מעט.`,
+      subjectMonitoringOnly: false,
+      subjectDoNowHe: "להפריד בין ניסיון עצמאי קצר לבין בדיקה בסוף.",
+      subjectAvoidNowHe: "לא להפסיק עזרה פתאום; לא להסביר ארוך מדי בזמן התרגול.",
+    };
+  }
+
+  if (
+    dominantSuccessPattern === "stable_mastery" &&
+    stableMasteryRowCount >= 2 &&
+    dominantLearningRisk !== "knowledge_gap" &&
+    dominantRootCause !== "knowledge_gap"
+  ) {
+    return {
+      subjectPriorityLevel: "maintain",
+      subjectPriorityReasonHe: `ב${lab} יש יציבות יחסית — להישאר על שגרה רגועה.`,
+      subjectImmediateActionHe: home || `ב${lab}: לשמר שני מפגשים קצרים בשבוע סביב החוזקות.`,
+      subjectDeferredActionHe: `ב${lab}: לדחות הרחבות או הקשחה לפני צורך ברור.`,
+      subjectMonitoringOnly: false,
+      subjectDoNowHe: "להמשיך קצב קבוע; לשבח עקביות קטנה.",
+      subjectAvoidNowHe: "לא להוסיף עומס ביתי כשאין אות מפורש לכך.",
+    };
+  }
+
+  if (subjectConclusionReadiness === "partial" || dominantRootCause === "mixed_signal") {
+    return {
+      subjectPriorityLevel: "soon",
+      subjectPriorityReasonHe: `ב${lab} תמונה אמצעית — שינוי קטן עכשיו, החלטות גדולות אחר כך.`,
+      subjectImmediateActionHe: home || `ב${lab}: מפגש קצר אחד השבוע עם מיקוד אחד בלבד.`,
+      subjectDeferredActionHe: `ב${lab}: לדחות סגירת סיפור כשהאותות עדיין מעורבים.`,
+      subjectMonitoringOnly: false,
+      subjectDoNowHe: "לעקוב אחרי דיוק באותה רמה לפני שמוסיפים משתנים.",
+      subjectAvoidNowHe: "לא לנעול הסבר יחיד כשיש כמה כיוונים סבירים.",
+    };
+  }
+
+  return {
+    subjectPriorityLevel: "soon",
+    subjectPriorityReasonHe: `ב${lab}: עדיפות בינונית — תרגול קצר עקבי.`,
+    subjectImmediateActionHe: home || `ב${lab}: שני מפגשים קצרים בשבוע באותה רמה.`,
+    subjectDeferredActionHe: `ב${lab}: לדחות שינויים דרמטיים עד שיתבהר הכיוון.`,
+    subjectMonitoringOnly: false,
+    subjectDoNowHe: "תרגול קצר וקבוע; משימה ברורה.",
+    subjectAvoidNowHe: "לא להחמיר רמה בלי שני מפגשים עקביים.",
+  };
+}
+
+/**
  * סינתזה ברמת מקצוע משורות דוח מועשרות (Phase 1–2) — רק כשיש נתונים בשורה.
  * @param {string} subjectId
  * @param {Record<string, unknown>} report
@@ -666,6 +798,73 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
       improvingButSupportedHe: null,
       dominantLearningRiskLabelHe: null,
       dominantSuccessPatternLabelHe: null,
+      dominantRootCause: "insufficient_evidence",
+      dominantRootCauseLabelHe: ROOT_CAUSE_LABEL_HE.insufficient_evidence,
+      secondaryRootCause: null,
+      rootCauseDistribution: {},
+      subjectDiagnosticRestraintHe:
+        "אין מספיק שורות דוח בטווח — לא מסיקים שורש קושי חוצה־נושאים ולא ממליצים על שינוי אגרסיבי.",
+      subjectConclusionReadiness: "not_ready",
+      subjectInterventionPriorityHe: INTERVENTION_TYPE_LABEL_HE.monitor_before_escalation,
+      subjectPriorityLevel: "monitor",
+      subjectPriorityReasonHe: "אין שורות דוח בטווח — לא מדרגים עדיפות.",
+      subjectImmediateActionHe: null,
+      subjectDeferredActionHe: null,
+      subjectMonitoringOnly: true,
+      subjectDoNowHe: "לאסוף מעט תרגול קצר לפני החלטות.",
+      subjectAvoidNowHe: "לא לבנות תוכנית ארוכה לפני שיש נתון.",
+      dominantMistakePattern: "insufficient_mistake_evidence",
+      dominantMistakePatternLabelHe: MISTAKE_PATTERN_LABEL_HE.insufficient_mistake_evidence,
+      mistakePatternDistribution: {},
+      subjectLearningStage: "insufficient_longitudinal_evidence",
+      subjectLearningStageLabelHe: LEARNING_STAGE_LABEL_HE.insufficient_longitudinal_evidence,
+      subjectRetentionRisk: "unknown",
+      subjectTransferReadiness: "not_ready",
+      subjectMemoryNarrativeHe: "אין שורות דוח בטווח — לא מסכמים דפוס טעות או מגמה לאורך זמן.",
+      subjectReviewBeforeAdvanceHe: null,
+      subjectResponseToIntervention: "not_enough_evidence",
+      subjectResponseToInterventionLabelHe: RESPONSE_TO_INTERVENTION_LABEL_HE.not_enough_evidence,
+      subjectSupportFit: "unknown",
+      subjectSupportAdjustmentNeed: "monitor_only",
+      subjectSupportAdjustmentNeedHe: SUPPORT_ADJUSTMENT_NEED_LABEL_HE.monitor_only,
+      subjectConclusionFreshness: "low",
+      subjectRecalibrationNeed: "do_not_rely_yet",
+      subjectRecalibrationNeedHe: RECALIBRATION_NEED_LABEL_HE.do_not_rely_yet,
+      subjectEffectivenessNarrativeHe: "אין שורות דוח בטווח — לא מעריכים תגובה לתמיכה.",
+      subjectSupportSequenceState: "insufficient_sequence_evidence",
+      subjectSupportSequenceStateLabelHe: SUPPORT_SEQUENCE_STATE_LABEL_HE.insufficient_sequence_evidence,
+      subjectStrategyRepetitionRisk: "unknown",
+      subjectStrategyFatigueRisk: "unknown",
+      subjectNextBestSequenceStep: "observe_before_next_cycle",
+      subjectNextBestSequenceStepHe: NEXT_BEST_SEQUENCE_STEP_LABEL_HE.observe_before_next_cycle,
+      subjectAdviceNovelty: "unknown",
+      subjectRecommendationRotationNeed: "do_not_repeat_yet",
+      subjectSequenceNarrativeHe: "אין שורות דוח בטווח — לא מסכמים רצף תמיכה.",
+      subjectRecommendationMemoryState: "no_memory",
+      subjectPriorRecommendationSignature: "unknown",
+      subjectSupportHistoryDepth: "unknown",
+      subjectRecommendationCarryover: "not_visible",
+      subjectExpectedVsObservedMatch: "not_enough_evidence",
+      subjectFollowThroughSignal: "not_inferable",
+      subjectContinuationDecision: "continue_but_refine",
+      subjectContinuationDecisionHe: RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE.continue_but_refine,
+      subjectOutcomeNarrativeHe: "אין שורות דוח בטווח — לא מסכמים זיכרון המלצה או תוצאה.",
+      subjectGateState: "gates_not_ready",
+      subjectGateStateLabelHe: GATE_STATE_LABEL_HE.gates_not_ready,
+      subjectGateReadiness: "insufficient",
+      subjectNextCycleDecisionFocus: "prove_current_direction",
+      subjectNextCycleDecisionFocusHe: NEXT_CYCLE_DECISION_FOCUS_LABEL_HE.prove_current_direction,
+      subjectEvidenceTargetType: "fresh_data_needed",
+      subjectTargetObservationWindow: "unknown",
+      subjectGateNarrativeHe: "אין שורות דוח בטווח — לא מסכמים שערי החלטה.",
+      subjectDependencyState: "insufficient_dependency_evidence",
+      subjectDependencyStateLabelHe: DEPENDENCY_STATE_LABEL_HE.insufficient_dependency_evidence,
+      subjectLikelyFoundationalBlocker: "unknown",
+      subjectLikelyFoundationalBlockerLabelHe: FOUNDATIONAL_BLOCKER_LABEL_HE.unknown,
+      subjectDownstreamSymptomRisk: "unknown",
+      subjectFoundationFirstPriority: false,
+      subjectFoundationFirstPriorityHe: "אין שורות דוח — לא מדרגים יסוד מול מקומי.",
+      subjectDependencyNarrativeHe: "אין שורות דוח בטווח — לא מסכמים תלות יסוד.",
     };
   }
 
@@ -674,10 +873,140 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
   let stableMasteryRowCount = 0;
   const riskOr = emptyRiskOr();
   const modeKeys = [];
+  const rootCauseRowCounts = {};
+  let withheldStrengthRows = 0;
+  let tentativeStrengthRows = 0;
+  let moderateOrStrongRows = 0;
 
   let bestPositive = /** @type {{ labelHe: string, summaryHe: string, conf: number }|null} */ (null);
   let worstCaution = /** @type {{ labelHe: string, summaryHe: string, score: number }|null} */ (null);
   let improvingButSupportedHe = /** @type {string|null} */ (null);
+
+  const mistakePatternRowCounts = {};
+  const learningStageRowCounts = {};
+  let maxRetentionRank = 0;
+  const rrRank = { unknown: 0, low: 1, moderate: 2, high: 3 };
+  let minTransferScore = 99;
+  const trScore = { not_ready: 0, limited: 1, emerging: 2, ready: 3, unknown: -1 };
+  /** @type {string[]} */
+  const reviewBeforeAdvanceRowHints = [];
+
+  const rtiCounts = {};
+  const RTI_SUBJECT_WORST_FIRST = [
+    "regression_under_support",
+    "stalled_response",
+    "mixed_response",
+    "over_supported_progress",
+    "not_enough_evidence",
+    "early_positive_response",
+    "independence_growing",
+  ];
+  const fitRank = { unknown: 0, good_fit: 1, partial_fit: 2, poor_fit: 3 };
+  let fitBest = 0;
+  let subjectSupportFitAgg = "unknown";
+  const adjRank = {
+    monitor_only: 0,
+    hold_course: 1,
+    reduce_support: 2,
+    tighten_focus: 3,
+    increase_structure: 4,
+    change_strategy: 5,
+  };
+  let adjBest = 0;
+  let subjectSupportAdjustmentNeedAgg = "monitor_only";
+  const cfRank = { high: 0, medium: 1, low: 2, expired: 3 };
+  let cfBest = 0;
+  let subjectConclusionFreshnessAgg = "medium";
+  const recRank = { none: 0, light_review: 1, structured_recheck: 2, do_not_rely_yet: 3 };
+  let recBest = 0;
+  let subjectRecalibrationNeedAgg = "none";
+
+  const SEQ_STATE_WORST_FIRST = [
+    "sequence_exhausted",
+    "sequence_stalled",
+    "insufficient_sequence_evidence",
+    "continuing_sequence",
+    "early_sequence",
+    "new_support_cycle",
+    "sequence_ready_for_release",
+  ];
+  const seqStateCounts = {};
+  const repRiskRankP11 = { unknown: 0, low: 1, moderate: 2, high: 3 };
+  let repBestP11 = 0;
+  let subjectStrategyRepetitionRiskAgg = "unknown";
+  const fatRiskRankP11 = { unknown: 0, low: 1, moderate: 2, high: 3 };
+  let fatBestP11 = 0;
+  let subjectStrategyFatigueRiskAgg = "unknown";
+  const rotRankP11 = { none: 0, light_variation: 1, meaningful_rotation: 2, do_not_repeat_yet: 3 };
+  let rotBestP11 = 0;
+  let subjectRecommendationRotationNeedAgg = "none";
+  const noveltyRankWorst = { low: 0, medium: 1, high: 2, unknown: 3 };
+  let noveltyWorstScore = 99;
+  let subjectAdviceNoveltyAgg = "unknown";
+  const NEXT_BEST_STEP_WORST_FIRST = [
+    "switch_support_type",
+    "reset_with_short_review",
+    "tighten_same_goal",
+    "observe_before_next_cycle",
+    "begin_release_step",
+    "continue_current_sequence",
+  ];
+  const nextBestStepCounts = {};
+
+  const MEM_STATE_RANK = { no_memory: 0, light_memory: 1, usable_memory: 2, strong_memory: 3 };
+  const DEPTH_RANK = { unknown: 0, single_window: 1, short_history: 2, multi_window: 3 };
+  const CARRY_RANK = { not_visible: 0, unclear: 1, partly_visible: 2, clearly_visible: 3 };
+  const MATCH_WORST_FIRST = ["misaligned", "not_enough_evidence", "partly_aligned", "aligned"];
+  const FOLLOW_WORST_FIRST = ["not_inferable", "unclear", "possibly_followed", "likely_followed"];
+  const CONTINUATION_WORST_FIRST = [
+    "reset_and_rebuild_signal",
+    "pivot_from_prior_path",
+    "do_not_repeat_without_new_evidence",
+    "continue_but_refine",
+    "begin_controlled_release",
+    "continue_with_same_core",
+  ];
+  let memRankBest = -1;
+  let subjectRecommendationMemoryState = "no_memory";
+  let depthRankBest = -1;
+  let subjectSupportHistoryDepth = "unknown";
+  let carryRankBest = -1;
+  let subjectRecommendationCarryover = "not_visible";
+  const priorSigCounts = {};
+  const matchCounts = {};
+  const followCounts = {};
+  const continuationCounts = {};
+
+  const GATE_STATE_PRIORITY = [
+    "pivot_gate_visible",
+    "recheck_gate_visible",
+    "gates_not_ready",
+    "mixed_gate_state",
+    "release_gate_forming",
+    "advance_gate_forming",
+    "continue_gate_active",
+  ];
+  const gateStateCounts = {};
+  const READINESS_WORST = ["insufficient", "low", "moderate", "high"];
+  const readinessCounts = {};
+  const nextFocusCounts = {};
+  const TARGET_TYPE_PRIORITY = [
+    "fresh_data_needed",
+    "mixed_target",
+    "response_confirmation",
+    "mistake_reduction_confirmation",
+    "retention_confirmation",
+    "independence_confirmation",
+    "accuracy_confirmation",
+  ];
+  const targetTypeCounts = {};
+  const WINDOW_PRIORITY = ["needs_fresh_baseline", "next_two_cycles", "next_short_cycle", "unknown"];
+  const windowCounts = {};
+  const depStateCounts = {};
+  const blockerRowCounts = {};
+  const dlRank = { unknown: 0, low: 1, moderate: 2, high: 3 };
+  let worstDownstreamRank = 0;
+  let foundationHeavyRows = 0;
 
   for (const { rowKey, row } of rows) {
     const bp = row.behaviorProfile && typeof row.behaviorProfile === "object" ? row.behaviorProfile : null;
@@ -693,6 +1022,13 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
         if (rf[k]) riskOr[k] = true;
       }
     }
+
+    const rcId = String(sig?.rootCause || "").trim();
+    if (rcId) rootCauseRowCounts[rcId] = (rootCauseRowCounts[rcId] || 0) + 1;
+    const csRow = String(sig?.conclusionStrength || "").trim();
+    if (csRow === "withheld") withheldStrengthRows += 1;
+    else if (csRow === "tentative") tentativeStrengthRows += 1;
+    else if (csRow === "moderate" || csRow === "strong") moderateOrStrongRows += 1;
 
     const mk = row.modeKey != null && String(row.modeKey).trim() !== "" ? String(row.modeKey).trim() : null;
     if (mk) modeKeys.push(mk);
@@ -725,6 +1061,114 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
     ) {
       const subLab = SUBJECT_LABEL_HE[subjectId] || "המקצוע";
       improvingButSupportedHe = `ב${subLab} מופיעה לפחות שורה (${labelHe}) שבה הדיוק עולה אך העצמאות יורדת — ההתקדמות עדיין מבוססת ליווי; לא מאסטרי מלא.`;
+    }
+
+    const dmp = String(sig?.dominantMistakePattern || "").trim();
+    if (dmp) mistakePatternRowCounts[dmp] = (mistakePatternRowCounts[dmp] || 0) + 1;
+    const lsg = String(sig?.learningStage || "").trim();
+    if (lsg) learningStageRowCounts[lsg] = (learningStageRowCounts[lsg] || 0) + 1;
+    const rrs = String(sig?.retentionRisk || "");
+    if (rrRank[rrs] != null && rrRank[rrs] > maxRetentionRank) maxRetentionRank = rrRank[rrs];
+    const trs = String(sig?.transferReadiness || "");
+    if (trs && trScore[trs] != null && trScore[trs] >= 0 && trScore[trs] < minTransferScore) {
+      minTransferScore = trScore[trs];
+    }
+    const rba = String(sig?.reviewBeforeAdvanceHe || "").trim();
+    if (rba && reviewBeforeAdvanceRowHints.length < 4) reviewBeforeAdvanceRowHints.push(rba);
+
+    const rtiRow = String(sig?.responseToIntervention || "").trim();
+    if (rtiRow) rtiCounts[rtiRow] = (rtiCounts[rtiRow] || 0) + 1;
+    const sf = String(sig?.supportFit || "").trim();
+    if (fitRank[sf] != null && fitRank[sf] > fitBest) {
+      fitBest = fitRank[sf];
+      subjectSupportFitAgg = sf;
+    }
+    const adj = String(sig?.supportAdjustmentNeed || "").trim();
+    if (adjRank[adj] != null && adjRank[adj] > adjBest) {
+      adjBest = adjRank[adj];
+      subjectSupportAdjustmentNeedAgg = adj;
+    }
+    const cf = String(sig?.conclusionFreshness || "").trim();
+    if (cfRank[cf] != null && cfRank[cf] > cfBest) {
+      cfBest = cfRank[cf];
+      subjectConclusionFreshnessAgg = cf;
+    }
+    const rcn = String(sig?.recalibrationNeed || "").trim();
+    if (recRank[rcn] != null && recRank[rcn] > recBest) {
+      recBest = recRank[rcn];
+      subjectRecalibrationNeedAgg = rcn;
+    }
+
+    const ssq = String(sig?.supportSequenceState || "").trim();
+    if (ssq) seqStateCounts[ssq] = (seqStateCounts[ssq] || 0) + 1;
+    const repP = String(sig?.strategyRepetitionRisk || "").trim();
+    if (repRiskRankP11[repP] != null && repRiskRankP11[repP] > repBestP11) {
+      repBestP11 = repRiskRankP11[repP];
+      subjectStrategyRepetitionRiskAgg = repP;
+    }
+    const fatP = String(sig?.strategyFatigueRisk || "").trim();
+    if (fatRiskRankP11[fatP] != null && fatRiskRankP11[fatP] > fatBestP11) {
+      fatBestP11 = fatRiskRankP11[fatP];
+      subjectStrategyFatigueRiskAgg = fatP;
+    }
+    const rotP = String(sig?.recommendationRotationNeed || "").trim();
+    if (rotRankP11[rotP] != null && rotRankP11[rotP] > rotBestP11) {
+      rotBestP11 = rotRankP11[rotP];
+      subjectRecommendationRotationNeedAgg = rotP;
+    }
+    const advN = String(sig?.adviceNovelty || "").trim();
+    const nvs = noveltyRankWorst[advN];
+    if (nvs != null && nvs < noveltyWorstScore) {
+      noveltyWorstScore = nvs;
+      subjectAdviceNoveltyAgg = advN;
+    }
+    const nbs = String(sig?.nextBestSequenceStep || "").trim();
+    if (nbs) nextBestStepCounts[nbs] = (nextBestStepCounts[nbs] || 0) + 1;
+
+    const memSt = String(sig?.recommendationMemoryState || "").trim();
+    if (MEM_STATE_RANK[memSt] != null && MEM_STATE_RANK[memSt] > memRankBest) {
+      memRankBest = MEM_STATE_RANK[memSt];
+      subjectRecommendationMemoryState = memSt;
+    }
+    const dep = String(sig?.supportHistoryDepth || "").trim();
+    if (DEPTH_RANK[dep] != null && DEPTH_RANK[dep] > depthRankBest) {
+      depthRankBest = DEPTH_RANK[dep];
+      subjectSupportHistoryDepth = dep;
+    }
+    const car = String(sig?.recommendationCarryover || "").trim();
+    if (CARRY_RANK[car] != null && CARRY_RANK[car] > carryRankBest) {
+      carryRankBest = CARRY_RANK[car];
+      subjectRecommendationCarryover = car;
+    }
+    const prs = String(sig?.priorRecommendationSignature || "").trim();
+    if (prs) priorSigCounts[prs] = (priorSigCounts[prs] || 0) + 1;
+    const mch = String(sig?.expectedVsObservedMatch || "").trim();
+    if (mch) matchCounts[mch] = (matchCounts[mch] || 0) + 1;
+    const flw = String(sig?.followThroughSignal || "").trim();
+    if (flw) followCounts[flw] = (followCounts[flw] || 0) + 1;
+    const cont = String(sig?.recommendationContinuationDecision || "").trim();
+    if (cont) continuationCounts[cont] = (continuationCounts[cont] || 0) + 1;
+
+    const gs = String(sig?.gateState || "").trim();
+    if (gs) gateStateCounts[gs] = (gateStateCounts[gs] || 0) + 1;
+    const gr = String(sig?.gateReadiness || "").trim();
+    if (gr) readinessCounts[gr] = (readinessCounts[gr] || 0) + 1;
+    const nf = String(sig?.nextCycleDecisionFocus || "").trim();
+    if (nf) nextFocusCounts[nf] = (nextFocusCounts[nf] || 0) + 1;
+    const tet = String(sig?.targetEvidenceType || "").trim();
+    if (tet) targetTypeCounts[tet] = (targetTypeCounts[tet] || 0) + 1;
+    const tow = String(sig?.targetObservationWindow || "").trim();
+    if (tow) windowCounts[tow] = (windowCounts[tow] || 0) + 1;
+
+    const depSt = String(sig?.dependencyState || "").trim();
+    if (depSt) depStateCounts[depSt] = (depStateCounts[depSt] || 0) + 1;
+    const lbk = String(sig?.likelyFoundationalBlocker || "").trim();
+    if (lbk && lbk !== "unknown") blockerRowCounts[lbk] = (blockerRowCounts[lbk] || 0) + 1;
+    const dsl = String(sig?.downstreamSymptomLikelihood || "").trim();
+    const drk = dlRank[dsl] != null ? dlRank[dsl] : 0;
+    if (drk > worstDownstreamRank) worstDownstreamRank = drk;
+    if (sig?.foundationDecision === "stabilize_foundation_first" || sig?.shouldTreatAsFoundationFirst) {
+      foundationHeavyRows += 1;
     }
   }
 
@@ -854,6 +1298,373 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
   }
   const whatNotToDoHe = avoid.length ? avoid.join(" ") : "לא לקבוע שינוי דרמטי בלי עוד תרגול בטווח.";
 
+  const rootEntries = Object.entries(rootCauseRowCounts)
+    .filter(([, n]) => n > 0)
+    .sort((a, b) => b[1] - a[1]);
+  const nonInsEntries = rootEntries.filter(([k]) => k !== "insufficient_evidence");
+  let dominantRootCause = "insufficient_evidence";
+  let secondaryRootCause = null;
+  if (rootEntries.length) {
+    const top = rootEntries[0];
+    if (top[0] === "insufficient_evidence" && nonInsEntries.length && nonInsEntries[0][1] >= top[1]) {
+      dominantRootCause = nonInsEntries[0][0];
+      secondaryRootCause = rootEntries.find(([k]) => k !== dominantRootCause)?.[0] ?? null;
+    } else {
+      dominantRootCause = top[0];
+      secondaryRootCause = rootEntries[1]?.[0] ?? null;
+    }
+  }
+  const dominantRootCauseLabelHe =
+    ROOT_CAUSE_LABEL_HE[dominantRootCause] || ROOT_CAUSE_LABEL_HE.insufficient_evidence;
+
+  const nR = rows.length;
+  const wFrac = withheldStrengthRows / nR;
+  const tFrac = tentativeStrengthRows / nR;
+  let subjectConclusionReadiness = "ready";
+  if (wFrac >= 0.38) subjectConclusionReadiness = "not_ready";
+  else if (wFrac + tFrac >= 0.45) subjectConclusionReadiness = "partial";
+
+  let subjectDiagnosticRestraintHe = "";
+  if (subjectConclusionReadiness === "not_ready") {
+    subjectDiagnosticRestraintHe =
+      "רוב השורות במקצוע עדיין עם ראיות דלה או מסקנה מושהית — לא לנעול הסבר חד־משמעי.";
+  } else if (subjectConclusionReadiness === "partial") {
+    subjectDiagnosticRestraintHe =
+      "יש בסיס אבל גם שורות עם מסקנה זהירה — כדאי לעקוב ולא לדרוס בהנחות חזקות.";
+  } else if (moderateOrStrongRows >= Math.ceil(nR * 0.55)) {
+    subjectDiagnosticRestraintHe = "יש כמה שורות עם ראיות יציבות יחסית — אפשר לסמוך יותר על הסיכום בתוך המקצוע.";
+  } else {
+    subjectDiagnosticRestraintHe = "התמונה המקצועית מעורבת מעט — קריאה שורה־שורה עדיין חשובה.";
+  }
+
+  const intv = pickRecommendedInterventionType(dominantRootCause, "maintain_and_strengthen");
+  const subjectInterventionPriorityHe = INTERVENTION_TYPE_LABEL_HE[intv] || INTERVENTION_TYPE_LABEL_HE.monitor_before_escalation;
+
+  const priorityFields = computeSubjectPriorityFieldsPhase8(subjectId, {
+    dominantLearningRisk,
+    dominantSuccessPattern,
+    subjectConclusionReadiness,
+    dominantRootCause,
+    riskOr,
+    stableMasteryRowCount,
+    fragileSuccessRowCount,
+    recommendedHomeMethodHe,
+    strongRowCount: strongRows.length,
+  });
+
+  const mpEntries = Object.entries(mistakePatternRowCounts)
+    .filter(([, n]) => n > 0)
+    .sort((a, b) => b[1] - a[1]);
+  const nonInsMp = mpEntries.filter(([k]) => k !== "insufficient_mistake_evidence");
+  let dominantMistakePattern = "insufficient_mistake_evidence";
+  if (mpEntries.length) {
+    const top = mpEntries[0];
+    if (top[0] === "insufficient_mistake_evidence" && nonInsMp.length && nonInsMp[0][1] >= top[1]) {
+      dominantMistakePattern = nonInsMp[0][0];
+    } else {
+      dominantMistakePattern = top[0];
+    }
+  }
+  const dominantMistakePatternLabelHe =
+    MISTAKE_PATTERN_LABEL_HE[dominantMistakePattern] || MISTAKE_PATTERN_LABEL_HE.insufficient_mistake_evidence;
+
+  const STAGE_PRIORITY = [
+    "regression_signal",
+    "fragile_retention",
+    "early_acquisition",
+    "insufficient_longitudinal_evidence",
+    "partial_stabilization",
+    "transfer_emerging",
+    "stable_control",
+  ];
+  let subjectLearningStage = "insufficient_longitudinal_evidence";
+  for (const st of STAGE_PRIORITY) {
+    if ((learningStageRowCounts[st] || 0) > 0) {
+      subjectLearningStage = st;
+      break;
+    }
+  }
+  const subjectLearningStageLabelHe =
+    LEARNING_STAGE_LABEL_HE[subjectLearningStage] || LEARNING_STAGE_LABEL_HE.insufficient_longitudinal_evidence;
+
+  const subjectRetentionRisk =
+    maxRetentionRank >= 3 ? "high" : maxRetentionRank === 2 ? "moderate" : maxRetentionRank === 1 ? "low" : "unknown";
+
+  let subjectTransferReadiness = "not_ready";
+  if (minTransferScore === 99) subjectTransferReadiness = "not_ready";
+  else if (minTransferScore === 3) subjectTransferReadiness = "ready";
+  else if (minTransferScore === 2) subjectTransferReadiness = "emerging";
+  else if (minTransferScore === 1) subjectTransferReadiness = "limited";
+  else subjectTransferReadiness = "not_ready";
+
+  if (subjectLearningStage === "fragile_retention" || subjectLearningStage === "regression_signal") {
+    if (subjectTransferReadiness === "ready") subjectTransferReadiness = "limited";
+  }
+
+  const subjectMemoryNarrativeHe = `${subjectLearningStageLabelHe} ברוב השורות — שימור: ${
+    subjectRetentionRisk === "high"
+      ? "עדיף חיזוק חוזר לפני הרחבה."
+      : subjectRetentionRisk === "moderate"
+        ? "כדאי לעקוב לפני שינוי מהותי."
+        : "אפשר קצב עקבי עם מעקב קל."
+  }`.trim();
+
+  let subjectReviewBeforeAdvanceHe = null;
+  if (subjectRetentionRisk === "high" || subjectLearningStage === "fragile_retention" || subjectLearningStage === "regression_signal") {
+    subjectReviewBeforeAdvanceHe =
+      "לעצור לרגע לפני קידום: לחזור על אותה רמה עם מפגשים קצרים עד שמתייצב דיוק.";
+  } else if (reviewBeforeAdvanceRowHints.length) {
+    subjectReviewBeforeAdvanceHe = reviewBeforeAdvanceRowHints[0];
+  } else if (subjectTransferReadiness === "limited" || subjectTransferReadiness === "not_ready") {
+    subjectReviewBeforeAdvanceHe = "לוודא חזרה על טעויות דומות באותה רמה לפני פתיחת נושא חדש.";
+  }
+
+  let subjectResponseToIntervention = "not_enough_evidence";
+  const rtiSum = Object.values(rtiCounts).reduce((a, b) => a + b, 0);
+  if (rtiSum > 0) {
+    for (const id of RTI_SUBJECT_WORST_FIRST) {
+      if ((rtiCounts[id] || 0) > 0) {
+        subjectResponseToIntervention = id;
+        break;
+      }
+    }
+  }
+  const subjectResponseToInterventionLabelHe =
+    RESPONSE_TO_INTERVENTION_LABEL_HE[subjectResponseToIntervention] ||
+    RESPONSE_TO_INTERVENTION_LABEL_HE.not_enough_evidence;
+  const subjectSupportFit = subjectSupportFitAgg;
+  const subjectSupportAdjustmentNeed = subjectSupportAdjustmentNeedAgg;
+  const subjectSupportAdjustmentNeedHe =
+    SUPPORT_ADJUSTMENT_NEED_LABEL_HE[subjectSupportAdjustmentNeed] ||
+    SUPPORT_ADJUSTMENT_NEED_LABEL_HE.monitor_only;
+  const subjectConclusionFreshness = subjectConclusionFreshnessAgg;
+  const subjectRecalibrationNeed = subjectRecalibrationNeedAgg;
+  const subjectRecalibrationNeedHe =
+    RECALIBRATION_NEED_LABEL_HE[subjectRecalibrationNeed] || RECALIBRATION_NEED_LABEL_HE.none;
+  const subLabAgg = SUBJECT_LABEL_HE[subjectId] || "המקצוע";
+  const subjectEffectivenessNarrativeHe =
+    `ב${subLabAgg}: ${subjectResponseToInterventionLabelHe}. ` +
+    (subjectRecalibrationNeed !== "none" ? subjectRecalibrationNeedHe : subjectSupportAdjustmentNeedHe);
+
+  let subjectSupportSequenceState = "insufficient_sequence_evidence";
+  const seqStateSum = Object.values(seqStateCounts).reduce((a, b) => a + b, 0);
+  if (seqStateSum > 0) {
+    for (const id of SEQ_STATE_WORST_FIRST) {
+      if ((seqStateCounts[id] || 0) > 0) {
+        subjectSupportSequenceState = id;
+        break;
+      }
+    }
+  }
+  const subjectSupportSequenceStateLabelHe =
+    SUPPORT_SEQUENCE_STATE_LABEL_HE[subjectSupportSequenceState] ||
+    SUPPORT_SEQUENCE_STATE_LABEL_HE.insufficient_sequence_evidence;
+
+  let subjectNextBestSequenceStep = "observe_before_next_cycle";
+  const nbsSum = Object.values(nextBestStepCounts).reduce((a, b) => a + b, 0);
+  if (nbsSum > 0) {
+    for (const id of NEXT_BEST_STEP_WORST_FIRST) {
+      if ((nextBestStepCounts[id] || 0) > 0) {
+        subjectNextBestSequenceStep = id;
+        break;
+      }
+    }
+  }
+  const subjectNextBestSequenceStepHe =
+    NEXT_BEST_SEQUENCE_STEP_LABEL_HE[subjectNextBestSequenceStep] ||
+    NEXT_BEST_SEQUENCE_STEP_LABEL_HE.observe_before_next_cycle;
+
+  const subjectSequenceNarrativeHe =
+    `ב${subLabAgg}: ${subjectSupportSequenceStateLabelHe}. ${subjectNextBestSequenceStepHe} · ` +
+    (RECOMMENDATION_ROTATION_NEED_LABEL_HE[subjectRecommendationRotationNeedAgg] ||
+      RECOMMENDATION_ROTATION_NEED_LABEL_HE.none);
+
+  const priorSigEntries = Object.entries(priorSigCounts)
+    .filter(([k]) => k && k !== "unknown")
+    .sort((a, b) => b[1] - a[1]);
+  const priorSigAll = Object.entries(priorSigCounts).sort((a, b) => b[1] - a[1]);
+  let subjectPriorRecommendationSignature = "unknown";
+  if (priorSigEntries.length) subjectPriorRecommendationSignature = priorSigEntries[0][0];
+  else if (priorSigAll.length) subjectPriorRecommendationSignature = priorSigAll[0][0];
+
+  let subjectExpectedVsObservedMatch = "not_enough_evidence";
+  const mSum = Object.values(matchCounts).reduce((a, b) => a + b, 0);
+  if (mSum > 0) {
+    for (const id of MATCH_WORST_FIRST) {
+      if ((matchCounts[id] || 0) > 0) {
+        subjectExpectedVsObservedMatch = id;
+        break;
+      }
+    }
+  }
+
+  let subjectFollowThroughSignal = "not_inferable";
+  const fSum = Object.values(followCounts).reduce((a, b) => a + b, 0);
+  if (fSum > 0) {
+    for (const id of FOLLOW_WORST_FIRST) {
+      if ((followCounts[id] || 0) > 0) {
+        subjectFollowThroughSignal = id;
+        break;
+      }
+    }
+  }
+
+  let subjectContinuationDecision = "continue_but_refine";
+  const cSum = Object.values(continuationCounts).reduce((a, b) => a + b, 0);
+  if (cSum > 0) {
+    for (const id of CONTINUATION_WORST_FIRST) {
+      if ((continuationCounts[id] || 0) > 0) {
+        subjectContinuationDecision = id;
+        break;
+      }
+    }
+  }
+  const subjectContinuationDecisionHe =
+    RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE[subjectContinuationDecision] ||
+    RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE.continue_but_refine;
+
+  const subjectOutcomeNarrativeHe =
+    `ב${subLabAgg}: ${RECOMMENDATION_MEMORY_STATE_LABEL_HE[subjectRecommendationMemoryState] || RECOMMENDATION_MEMORY_STATE_LABEL_HE.no_memory} · ` +
+    `${PRIOR_RECOMMENDATION_SIGNATURE_LABEL_HE[subjectPriorRecommendationSignature] || PRIOR_RECOMMENDATION_SIGNATURE_LABEL_HE.unknown} · ` +
+    `${EXPECTED_VS_OBSERVED_MATCH_LABEL_HE[subjectExpectedVsObservedMatch] || EXPECTED_VS_OBSERVED_MATCH_LABEL_HE.not_enough_evidence} · ` +
+    `${FOLLOW_THROUGH_SIGNAL_LABEL_HE[subjectFollowThroughSignal] || FOLLOW_THROUGH_SIGNAL_LABEL_HE.not_inferable} · ` +
+    subjectContinuationDecisionHe;
+
+  let subjectGateState = "gates_not_ready";
+  const gSum = Object.values(gateStateCounts).reduce((a, b) => a + b, 0);
+  if (gSum > 0) {
+    for (const id of GATE_STATE_PRIORITY) {
+      if ((gateStateCounts[id] || 0) > 0) {
+        subjectGateState = id;
+        break;
+      }
+    }
+  }
+  const subjectGateStateLabelHe = GATE_STATE_LABEL_HE[subjectGateState] || GATE_STATE_LABEL_HE.gates_not_ready;
+
+  let subjectGateReadiness = "insufficient";
+  const rSum = Object.values(readinessCounts).reduce((a, b) => a + b, 0);
+  if (rSum > 0) {
+    for (const id of READINESS_WORST) {
+      if ((readinessCounts[id] || 0) > 0) {
+        subjectGateReadiness = id;
+        break;
+      }
+    }
+  }
+
+  let subjectNextCycleDecisionFocus = "prove_current_direction";
+  const nfSum = Object.values(nextFocusCounts).reduce((a, b) => a + b, 0);
+  if (nfSum > 0) {
+    for (const id of [
+      "refresh_baseline_before_decision",
+      "test_if_path_is_working",
+      "stabilize_before_advance",
+      "check_independence_before_release",
+      "prepare_for_controlled_release",
+      "prove_current_direction",
+    ]) {
+      if ((nextFocusCounts[id] || 0) > 0) {
+        subjectNextCycleDecisionFocus = id;
+        break;
+      }
+    }
+  }
+  const subjectNextCycleDecisionFocusHe =
+    NEXT_CYCLE_DECISION_FOCUS_LABEL_HE[subjectNextCycleDecisionFocus] ||
+    NEXT_CYCLE_DECISION_FOCUS_LABEL_HE.prove_current_direction;
+
+  let subjectEvidenceTargetType = "mixed_target";
+  const tSum = Object.values(targetTypeCounts).reduce((a, b) => a + b, 0);
+  if (tSum > 0) {
+    for (const id of TARGET_TYPE_PRIORITY) {
+      if ((targetTypeCounts[id] || 0) > 0) {
+        subjectEvidenceTargetType = id;
+        break;
+      }
+    }
+  }
+
+  let subjectTargetObservationWindow = "unknown";
+  const wSum = Object.values(windowCounts).reduce((a, b) => a + b, 0);
+  if (wSum > 0) {
+    for (const id of WINDOW_PRIORITY) {
+      if ((windowCounts[id] || 0) > 0) {
+        subjectTargetObservationWindow = id;
+        break;
+      }
+    }
+  }
+
+  const subjectGateNarrativeHe =
+    `ב${subLabAgg}: ${subjectGateStateLabelHe} · ${subjectNextCycleDecisionFocusHe} · ` +
+    `${TARGET_EVIDENCE_TYPE_LABEL_HE[subjectEvidenceTargetType] || TARGET_EVIDENCE_TYPE_LABEL_HE.mixed_target} · ` +
+    `${TARGET_OBSERVATION_WINDOW_LABEL_HE[subjectTargetObservationWindow] || TARGET_OBSERVATION_WINDOW_LABEL_HE.unknown}`;
+
+  const DEP_SUBJ_PRIORITY = [
+    "likely_foundational_block",
+    "mixed_dependency_signal",
+    "insufficient_dependency_evidence",
+    "likely_local_issue",
+  ];
+  let subjectDependencyState = "insufficient_dependency_evidence";
+  const depStateSum = Object.values(depStateCounts).reduce((a, b) => a + b, 0);
+  if (depStateSum > 0) {
+    for (const id of DEP_SUBJ_PRIORITY) {
+      if ((depStateCounts[id] || 0) > 0) {
+        subjectDependencyState = id;
+        break;
+      }
+    }
+  }
+  const nDepFound = depStateCounts.likely_foundational_block || 0;
+  const nDepLocal = depStateCounts.likely_local_issue || 0;
+  if (rows.length >= 4 && nDepFound === 1 && stableMasteryRowCount >= 2 && fragileSuccessRowCount <= 1) {
+    subjectDependencyState = "likely_local_issue";
+  }
+  if (rows.length >= 3 && nDepLocal >= rows.length - 1 && nDepFound === 0) {
+    subjectDependencyState = "likely_local_issue";
+  }
+
+  const BLOCK_SUBJ_PRIORITY = [
+    "retention_instability",
+    "independence_readiness_gap",
+    "accuracy_foundation_gap",
+    "instruction_language_load",
+    "procedure_automaticity_gap",
+    "unknown",
+  ];
+  let subjectLikelyFoundationalBlocker = "unknown";
+  const blkSum = Object.values(blockerRowCounts).reduce((a, b) => a + b, 0);
+  if (blkSum > 0) {
+    for (const id of BLOCK_SUBJ_PRIORITY) {
+      if ((blockerRowCounts[id] || 0) > 0) {
+        subjectLikelyFoundationalBlocker = id;
+        break;
+      }
+    }
+  }
+
+  let subjectDownstreamSymptomRisk = "unknown";
+  if (worstDownstreamRank >= 3) subjectDownstreamSymptomRisk = "high";
+  else if (worstDownstreamRank === 2) subjectDownstreamSymptomRisk = "moderate";
+  else if (worstDownstreamRank === 1) subjectDownstreamSymptomRisk = "low";
+
+  const subjectFoundationFirstPriority =
+    subjectDependencyState === "likely_foundational_block" ||
+    (subjectDependencyState === "mixed_dependency_signal" && foundationHeavyRows >= 1);
+  const subjectFoundationFirstPriorityHe = subjectFoundationFirstPriority
+    ? "כדאי לפתוח קודם ייצוב בסיס קצר במקצוע הזה — ורק אז להרחיב."
+    : "אפשר להישאר עם מיקוד מקומי או קל במקביל — בלי לפתוח סיפור רחב מיותר.";
+
+  const subjectDependencyStateLabelHe =
+    DEPENDENCY_STATE_LABEL_HE[subjectDependencyState] || DEPENDENCY_STATE_LABEL_HE.insufficient_dependency_evidence;
+  const subjectLikelyFoundationalBlockerLabelHe =
+    FOUNDATIONAL_BLOCKER_LABEL_HE[subjectLikelyFoundationalBlocker] || FOUNDATIONAL_BLOCKER_LABEL_HE.unknown;
+
+  const subjectDependencyNarrativeHe =
+    `ב${subLabAgg}: ${subjectDependencyStateLabelHe} · ${subjectLikelyFoundationalBlockerLabelHe} · ${subjectFoundationFirstPriorityHe}`;
+
   return {
     dominantLearningRisk,
     dominantSuccessPattern,
@@ -873,6 +1684,66 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
     dominantLearningRiskLabelHe: domRiskHe,
     dominantSuccessPatternLabelHe: successLabelHe[dominantSuccessPattern] || dominantSuccessPattern,
     improvingButSupportedHe,
+    dominantRootCause,
+    dominantRootCauseLabelHe,
+    secondaryRootCause,
+    rootCauseDistribution: { ...rootCauseRowCounts },
+    subjectDiagnosticRestraintHe,
+    subjectConclusionReadiness,
+    subjectInterventionPriorityHe,
+    ...priorityFields,
+    dominantMistakePattern,
+    dominantMistakePatternLabelHe,
+    mistakePatternDistribution: { ...mistakePatternRowCounts },
+    subjectLearningStage,
+    subjectLearningStageLabelHe,
+    subjectRetentionRisk,
+    subjectTransferReadiness,
+    subjectMemoryNarrativeHe,
+    subjectReviewBeforeAdvanceHe,
+    subjectResponseToIntervention,
+    subjectResponseToInterventionLabelHe,
+    subjectSupportFit,
+    subjectSupportAdjustmentNeed,
+    subjectSupportAdjustmentNeedHe,
+    subjectConclusionFreshness,
+    subjectRecalibrationNeed,
+    subjectRecalibrationNeedHe,
+    subjectEffectivenessNarrativeHe,
+    subjectSupportSequenceState,
+    subjectSupportSequenceStateLabelHe,
+    subjectStrategyRepetitionRisk: subjectStrategyRepetitionRiskAgg,
+    subjectStrategyFatigueRisk: subjectStrategyFatigueRiskAgg,
+    subjectNextBestSequenceStep,
+    subjectNextBestSequenceStepHe,
+    subjectAdviceNovelty: subjectAdviceNoveltyAgg,
+    subjectRecommendationRotationNeed: subjectRecommendationRotationNeedAgg,
+    subjectSequenceNarrativeHe,
+    subjectRecommendationMemoryState,
+    subjectPriorRecommendationSignature,
+    subjectSupportHistoryDepth,
+    subjectRecommendationCarryover,
+    subjectExpectedVsObservedMatch,
+    subjectFollowThroughSignal,
+    subjectContinuationDecision,
+    subjectContinuationDecisionHe,
+    subjectOutcomeNarrativeHe,
+    subjectGateState,
+    subjectGateStateLabelHe,
+    subjectGateReadiness,
+    subjectNextCycleDecisionFocus,
+    subjectNextCycleDecisionFocusHe,
+    subjectEvidenceTargetType,
+    subjectTargetObservationWindow,
+    subjectGateNarrativeHe,
+    subjectDependencyState,
+    subjectDependencyStateLabelHe,
+    subjectLikelyFoundationalBlocker,
+    subjectLikelyFoundationalBlockerLabelHe,
+    subjectDownstreamSymptomRisk,
+    subjectFoundationFirstPriority,
+    subjectFoundationFirstPriorityHe,
+    subjectDependencyNarrativeHe,
   };
 }
 

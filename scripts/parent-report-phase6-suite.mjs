@@ -29,8 +29,29 @@ const { confidenceBadgeFromScore, sufficiencyBadgeFromLevel } = await importUtil
 const {
   applyAggressiveEvidenceCap,
   buildTopicRecommendationRecord,
+  decideTopicNextStep,
   DEFAULT_TOPIC_NEXT_STEP_CONFIG,
 } = await importUtils("utils/topic-next-step-engine.js");
+const { buildInterventionPlanPhase8 } = await importUtils("utils/parent-report-intervention-plan.js");
+const { buildPracticeCalibration, buildPhase9RecommendationOverlay } = await importUtils("utils/topic-next-step-phase2.js");
+const { buildMistakeIntelligencePhase9 } = await importUtils("utils/parent-report-mistake-intelligence.js");
+const { buildLearningMemoryPhase9 } = await importUtils("utils/parent-report-learning-memory.js");
+const { buildInterventionEffectivenessPhase10 } = await importUtils("utils/parent-report-intervention-effectiveness.js");
+const { buildConfidenceAgingPhase10 } = await importUtils("utils/parent-report-confidence-aging.js");
+const { buildSupportSequencingPhase11 } = await importUtils("utils/parent-report-support-sequencing.js");
+const { buildAdviceDriftPhase11 } = await importUtils("utils/parent-report-advice-drift.js");
+const {
+  buildPhase10RecommendationOverlay,
+  buildPhase11SequenceOverlay,
+  buildPhase12ContinuationOverlay,
+  buildPhase13NextCycleOverlay,
+} = await importUtils("utils/topic-next-step-phase2.js");
+const { buildRecommendationMemoryPhase12 } = await importUtils("utils/parent-report-recommendation-memory.js");
+const { buildOutcomeTrackingPhase12 } = await importUtils("utils/parent-report-outcome-tracking.js");
+const { buildDecisionGatesPhase13 } = await importUtils("utils/parent-report-decision-gates.js");
+const { buildEvidenceTargetsPhase13 } = await importUtils("utils/parent-report-evidence-targets.js");
+const { buildFoundationDependencyPhase14 } = await importUtils("utils/parent-report-foundation-dependency.js");
+const { buildPhase14RecommendationOverlay } = await importUtils("utils/parent-report-foundation-ordering.js");
 const {
   assertDetailedExecutiveLabels,
   assertSubjectProfileUiLabels,
@@ -39,6 +60,10 @@ const {
   activeRiskFlagLabelsHe,
   sanitizeEngineSnippetHe,
   truncateHe,
+  gateStateLineHe,
+  evidenceTargetLineHe,
+  gateTriggerCompactLineHe,
+  dependencyStateLineHe,
 } = await importUtils("utils/parent-report-ui-explain-he.js");
 const { PARENT_REPORT_SCENARIOS } = await import(pathToFileURL(join(ROOT, "tests/fixtures/parent-report-pipeline.mjs")).href);
 const { generateQuestion: genMath } = await importUtils("utils/math-question-generator.js");
@@ -77,6 +102,74 @@ const REQUIRED_EXEC_KEYS = [
   "mixedSignalNoticeHe",
   "reportReadinessHe",
   "evidenceBalanceHe",
+  "dominantCrossSubjectRootCause",
+  "dominantCrossSubjectRootCauseLabelHe",
+  "crossSubjectConclusionReadiness",
+  "majorDiagnosticCautionsHe",
+  "recommendedParentPriorityType",
+  "parentPriorityLadder",
+  "topImmediateParentActionHe",
+  "secondPriorityActionHe",
+  "monitoringOnlyAreasHe",
+  "deferForNowAreasHe",
+  "dominantCrossSubjectMistakePattern",
+  "dominantCrossSubjectMistakePatternLabelHe",
+  "crossSubjectLearningStage",
+  "crossSubjectLearningStageLabelHe",
+  "crossSubjectRetentionRisk",
+  "crossSubjectTransferReadiness",
+  "reviewBeforeAdvanceAreasHe",
+  "transferReadyAreasHe",
+  "crossSubjectResponseToIntervention",
+  "crossSubjectResponseToInterventionLabelHe",
+  "crossSubjectSupportAdjustmentNeed",
+  "crossSubjectSupportAdjustmentNeedHe",
+  "crossSubjectConclusionFreshness",
+  "crossSubjectRecalibrationNeed",
+  "crossSubjectRecalibrationNeedHe",
+  "majorRecheckAreasHe",
+  "areasWhereSupportCanBeReducedHe",
+  "areasNeedingStrategyChangeHe",
+  "crossSubjectSupportSequenceState",
+  "crossSubjectSupportSequenceStateLabelHe",
+  "crossSubjectStrategyRepetitionRisk",
+  "crossSubjectStrategyFatigueRisk",
+  "crossSubjectNextBestSequenceStep",
+  "crossSubjectNextBestSequenceStepHe",
+  "subjectsReadyForReleaseHe",
+  "subjectsAtRiskOfSupportRepetitionHe",
+  "subjectsNeedingSupportResetHe",
+  "crossSubjectRecommendationMemoryState",
+  "crossSubjectRecommendationMemoryStateLabelHe",
+  "crossSubjectSupportHistoryDepth",
+  "crossSubjectSupportHistoryDepthLabelHe",
+  "crossSubjectExpectedVsObservedMatch",
+  "crossSubjectExpectedVsObservedMatchHe",
+  "crossSubjectContinuationDecision",
+  "crossSubjectContinuationDecisionHe",
+  "subjectsWithClearCarryoverHe",
+  "subjectsNeedingFreshEvidenceHe",
+  "subjectsWherePriorPathSeemsMisalignedHe",
+  "crossSubjectGateState",
+  "crossSubjectGateStateLabelHe",
+  "crossSubjectNextCycleDecisionFocus",
+  "crossSubjectNextCycleDecisionFocusHe",
+  "crossSubjectEvidenceTargetType",
+  "crossSubjectEvidenceTargetTypeLabelHe",
+  "crossSubjectTargetObservationWindow",
+  "crossSubjectTargetObservationWindowLabelHe",
+  "subjectsNearReleaseButNotThereHe",
+  "subjectsNeedingRecheckBeforeDecisionHe",
+  "subjectsWithVisiblePivotTriggerHe",
+  "crossSubjectDependencyState",
+  "crossSubjectDependencyStateLabelHe",
+  "crossSubjectLikelyFoundationalBlocker",
+  "crossSubjectLikelyFoundationalBlockerLabelHe",
+  "crossSubjectFoundationFirstPriority",
+  "crossSubjectFoundationFirstPriorityHe",
+  "subjectsLikelyShowingDownstreamSymptomsHe",
+  "subjectsNeedingFoundationFirstHe",
+  "subjectsSafeForLocalInterventionHe",
 ];
 
 const REQUIRED_SUBJECT_PROFILE_KEYS = [
@@ -92,6 +185,72 @@ const REQUIRED_SUBJECT_PROFILE_KEYS = [
   "recommendedHomeMethodHe",
   "whatNotToDoHe",
   "majorRiskFlagsAcrossRows",
+  "dominantRootCause",
+  "dominantRootCauseLabelHe",
+  "secondaryRootCause",
+  "rootCauseDistribution",
+  "subjectDiagnosticRestraintHe",
+  "subjectConclusionReadiness",
+  "subjectInterventionPriorityHe",
+  "subjectPriorityLevel",
+  "subjectPriorityReasonHe",
+  "subjectImmediateActionHe",
+  "subjectDeferredActionHe",
+  "subjectMonitoringOnly",
+  "subjectDoNowHe",
+  "subjectAvoidNowHe",
+  "dominantMistakePattern",
+  "dominantMistakePatternLabelHe",
+  "mistakePatternDistribution",
+  "subjectLearningStage",
+  "subjectLearningStageLabelHe",
+  "subjectRetentionRisk",
+  "subjectTransferReadiness",
+  "subjectMemoryNarrativeHe",
+  "subjectReviewBeforeAdvanceHe",
+  "subjectResponseToIntervention",
+  "subjectResponseToInterventionLabelHe",
+  "subjectSupportFit",
+  "subjectSupportAdjustmentNeed",
+  "subjectSupportAdjustmentNeedHe",
+  "subjectConclusionFreshness",
+  "subjectRecalibrationNeed",
+  "subjectRecalibrationNeedHe",
+  "subjectEffectivenessNarrativeHe",
+  "subjectSupportSequenceState",
+  "subjectSupportSequenceStateLabelHe",
+  "subjectStrategyRepetitionRisk",
+  "subjectStrategyFatigueRisk",
+  "subjectNextBestSequenceStep",
+  "subjectNextBestSequenceStepHe",
+  "subjectAdviceNovelty",
+  "subjectRecommendationRotationNeed",
+  "subjectSequenceNarrativeHe",
+  "subjectRecommendationMemoryState",
+  "subjectPriorRecommendationSignature",
+  "subjectSupportHistoryDepth",
+  "subjectRecommendationCarryover",
+  "subjectExpectedVsObservedMatch",
+  "subjectFollowThroughSignal",
+  "subjectContinuationDecision",
+  "subjectContinuationDecisionHe",
+  "subjectOutcomeNarrativeHe",
+  "subjectGateState",
+  "subjectGateStateLabelHe",
+  "subjectGateReadiness",
+  "subjectNextCycleDecisionFocus",
+  "subjectNextCycleDecisionFocusHe",
+  "subjectEvidenceTargetType",
+  "subjectTargetObservationWindow",
+  "subjectGateNarrativeHe",
+  "subjectDependencyState",
+  "subjectDependencyStateLabelHe",
+  "subjectLikelyFoundationalBlocker",
+  "subjectLikelyFoundationalBlockerLabelHe",
+  "subjectDownstreamSymptomRisk",
+  "subjectFoundationFirstPriority",
+  "subjectFoundationFirstPriorityHe",
+  "subjectDependencyNarrativeHe",
 ];
 
 /** שדות מלאים לרשומת המלצת נושא (מנוע topic-next-step) — חוזה רגרסיה */
@@ -141,6 +300,200 @@ const REQUIRED_TOPIC_RECOMMENDATION_KEYS = [
   "whyThisRecommendationHe",
   "whatCouldChangeThisHe",
   "recommendationStructuredTrace",
+  "diagnosticRestraint",
+  "conclusionStrength",
+  "shouldAvoidStrongConclusion",
+  "alternativeExplanations",
+  "diagnosticCautionHe",
+  "diagnosticConfidenceBand",
+  "rootCause",
+  "rootCauseLabelHe",
+  "rootCauseConfidence",
+  "rootCauseEvidence",
+  "secondaryPossibleCause",
+  "rootCauseNarrativeHe",
+  "recommendationReasoningHe",
+  "recommendedInterventionType",
+  "recommendedEvidenceAction",
+  "recommendedEvidenceActionHe",
+  "whatWouldIncreaseConfidenceHe",
+  "whyNotAStrongerConclusionHe",
+  "interventionPlan",
+  "interventionPlanHe",
+  "interventionDurationBand",
+  "interventionIntensity",
+  "interventionFormat",
+  "interventionGoal",
+  "interventionSuccessSignalHe",
+  "interventionStopSignalHe",
+  "interventionParentEffort",
+  "doNowHe",
+  "avoidNowHe",
+  "recommendedPracticeLoad",
+  "recommendedSessionCount",
+  "recommendedSessionLengthBand",
+  "escalationThresholdHe",
+  "deescalationThresholdHe",
+  "practiceReadiness",
+  "cautionLineHe",
+  "mistakeIntelligence",
+  "dominantMistakePattern",
+  "dominantMistakePatternLabelHe",
+  "mistakePatternConfidence",
+  "mistakePatternEvidence",
+  "secondaryMistakePattern",
+  "mistakePatternNarrativeHe",
+  "mistakeSpecificity",
+  "mistakeRecurrenceLevel",
+  "learningMemory",
+  "learningStage",
+  "learningStageLabelHe",
+  "retentionRisk",
+  "stabilizationState",
+  "transferReadiness",
+  "independenceProgress",
+  "memoryNarrativeHe",
+  "learningMemoryEvidence",
+  "recommendedPracticeMode",
+  "recommendedTransferStep",
+  "reviewBeforeAdvanceHe",
+  "mistakeFocusedActionHe",
+  "memoryFocusedActionHe",
+  "interventionEffectiveness",
+  "responseToIntervention",
+  "responseToInterventionLabelHe",
+  "effectivenessConfidence",
+  "effectivenessEvidence",
+  "supportFit",
+  "supportFitLabelHe",
+  "supportAdjustmentNeed",
+  "supportAdjustmentNeedHe",
+  "interventionEffectNarrativeHe",
+  "confidenceAging",
+  "freshnessState",
+  "freshnessStateLabelHe",
+  "conclusionFreshness",
+  "conclusionFreshnessLabelHe",
+  "confidenceDecayApplied",
+  "recalibrationNeed",
+  "recalibrationNeedHe",
+  "nextSupportAdjustment",
+  "nextSupportAdjustmentHe",
+  "continueWhatWorksHe",
+  "changeBecauseHe",
+  "recheckBeforeEscalationHe",
+  "evidenceStillMissingHe",
+  "supportSequencing",
+  "supportSequenceState",
+  "supportSequenceStateLabelHe",
+  "priorSupportPattern",
+  "priorSupportPatternLabelHe",
+  "strategyRepetitionRisk",
+  "strategyRepetitionRiskHe",
+  "strategyFatigueRisk",
+  "strategyFatigueRiskHe",
+  "nextBestSequenceStep",
+  "nextBestSequenceStepHe",
+  "supportSequenceNarrativeHe",
+  "adviceDrift",
+  "adviceSimilarityLevel",
+  "adviceSimilarityLevelHe",
+  "adviceNovelty",
+  "adviceNoveltyHe",
+  "repeatAdviceWarning",
+  "repeatAdviceWarningHe",
+  "recommendationRotationNeed",
+  "recommendationRotationNeedHe",
+  "nextSupportSequenceAction",
+  "nextSupportSequenceActionHe",
+  "whyThisIsDifferentNowHe",
+  "whyWeShouldNotRepeatSameSupportHe",
+  "whatMustHappenBeforeReleaseHe",
+  "whatSignalsSequenceSuccessHe",
+  "recommendationMemory",
+  "recommendationMemoryState",
+  "recommendationMemoryStateLabelHe",
+  "priorRecommendationSignature",
+  "priorRecommendationSignatureLabelHe",
+  "supportHistoryDepth",
+  "supportHistoryDepthLabelHe",
+  "recommendationCarryover",
+  "recommendationCarryoverLabelHe",
+  "memoryOfPriorSupportConfidence",
+  "recommendationMemoryNarrativeHe",
+  "outcomeTracking",
+  "expectedOutcomeType",
+  "expectedOutcomeTypeLabelHe",
+  "observedOutcomeState",
+  "observedOutcomeStateLabelHe",
+  "expectedVsObservedMatch",
+  "expectedVsObservedMatchHe",
+  "followThroughSignal",
+  "followThroughSignalHe",
+  "outcomeTrackingConfidence",
+  "outcomeTrackingNarrativeHe",
+  "recommendationContinuationDecision",
+  "recommendationContinuationDecisionHe",
+  "outcomeBasedNextMove",
+  "outcomeBasedNextMoveHe",
+  "whyWeThinkThisPathWorkedHe",
+  "whyWeThinkThisPathDidNotLandHe",
+  "whatNeedsFreshEvidenceNowHe",
+  "whatShouldCarryForwardHe",
+  "decisionGates",
+  "gateState",
+  "gateStateLabelHe",
+  "continueGate",
+  "releaseGate",
+  "pivotGate",
+  "recheckGate",
+  "advanceGate",
+  "gateReadiness",
+  "gateReadinessLabelHe",
+  "gateNarrativeHe",
+  "evidenceTargets",
+  "targetEvidenceType",
+  "targetEvidenceTypeLabelHe",
+  "targetObservationWindow",
+  "targetObservationWindowLabelHe",
+  "targetSuccessSignalHe",
+  "targetFailureSignalHe",
+  "targetIndependenceSignalHe",
+  "targetStabilitySignalHe",
+  "targetFreshnessNeedHe",
+  "evidenceTargetNarrativeHe",
+  "nextCycleDecisionFocus",
+  "nextCycleDecisionFocusHe",
+  "whatWouldJustifyReleaseHe",
+  "whatWouldJustifyAdvanceHe",
+  "whatWouldTriggerPivotHe",
+  "whatWouldTriggerRecheckHe",
+  "whatEvidenceWeStillNeedHe",
+  "foundationDependency",
+  "dependencyState",
+  "dependencyStateLabelHe",
+  "likelyFoundationalBlocker",
+  "likelyFoundationalBlockerLabelHe",
+  "dependencyConfidence",
+  "dependencyEvidence",
+  "downstreamSymptomLikelihood",
+  "downstreamSymptomLikelihoodHe",
+  "localIssueLikelihood",
+  "localIssueLikelihoodHe",
+  "shouldTreatAsFoundationFirst",
+  "foundationDependencyNarrativeHe",
+  "interventionOrdering",
+  "interventionOrderingHe",
+  "whyThisMayBeSymptomNotCoreHe",
+  "whyFoundationFirstHe",
+  "whyLocalSupportFirstHe",
+  "whatCanWaitUntilFoundationStabilizesHe",
+  "foundationDecision",
+  "foundationDecisionLabelHe",
+  "nextCycleSupportLevel",
+  "nextCycleSupportLevelHe",
+  "foundationBeforeExpansion",
+  "foundationBeforeExpansionHe",
 ];
 
 const REQUIRED_CROSS_RISK_FLAG_KEYS = [
@@ -494,6 +847,13 @@ function runContractAdditive() {
   const norm = normalizeExecutiveSummary({ executiveSummary: null });
   assert.equal(Array.isArray(norm.topStrengthsAcrossHe), true);
   assert.equal(norm.homeFocusHe, "");
+  assert.ok(Array.isArray(norm.monitoringOnlyAreasHe));
+  assert.ok(Array.isArray(norm.deferForNowAreasHe));
+  assert.ok(norm.parentPriorityLadder && norm.parentPriorityLadder.version === 1);
+  assert.ok(Array.isArray(norm.parentPriorityLadder.rankedSubjects));
+  assert.ok(Array.isArray(norm.reviewBeforeAdvanceAreasHe));
+  assert.ok(Array.isArray(norm.transferReadyAreasHe));
+  assert.ok(typeof norm.dominantCrossSubjectMistakePatternLabelHe === "string");
 }
 
 function runUiResilienceHelpers() {
@@ -507,6 +867,10 @@ function runUiResilienceHelpers() {
   const labs = activeRiskFlagLabelsHe(rf, 10);
   assert.ok(labs.every((x) => typeof x === "string"));
   assert.ok(!labs.some((x) => /falsePromotionRisk/i.test(x)), "no raw keys in chips");
+  assert.equal(gateStateLineHe({}), "");
+  assert.equal(evidenceTargetLineHe(null), "");
+  assert.equal(gateTriggerCompactLineHe({ topicEngineRowSignals: {} }), "");
+  assert.equal(dependencyStateLineHe({}), "");
 }
 
 function runReactServerSmoke() {
@@ -529,6 +893,823 @@ function runReactServerSmoke() {
   );
   assert.ok(html.includes("data-testid") || html.includes("exec-smoke"));
   assert.ok(html.length > 50);
+}
+
+function runPhase9MistakeMemoryAndExecutive() {
+  const sparse = buildMistakeIntelligencePhase9({
+    rootCause: "insufficient_evidence",
+    behaviorType: "undetermined",
+    riskFlags: {},
+    trendDer: { trendConfOk: false, unclearTrend: true },
+    q: 4,
+    accuracy: 80,
+    wrongRatio: 0.1,
+    mistakeEventCount: 0,
+    evidenceStrength: "low",
+    dataSufficiencyLevel: "low",
+    conclusionStrength: "tentative",
+    displayName: "נושא",
+  });
+  assert.equal(sparse.dominantMistakePattern, "insufficient_mistake_evidence");
+
+  const speed = buildMistakeIntelligencePhase9({
+    rootCause: "speed_pressure",
+    behaviorType: "speed_pressure",
+    riskFlags: { speedOnlyRisk: true },
+    trendDer: { trendConfOk: true, fragileProgressPattern: false, independenceDeteriorating: false },
+    q: 18,
+    accuracy: 72,
+    wrongRatio: 0.18,
+    mistakeEventCount: 4,
+    evidenceStrength: "medium",
+    dataSufficiencyLevel: "medium",
+    conclusionStrength: "moderate",
+    modeKey: "speed",
+    displayName: "חיבור",
+  });
+  assert.equal(speed.dominantMistakePattern, "speed_driven_error");
+
+  const instr = buildMistakeIntelligencePhase9({
+    rootCause: "instruction_friction",
+    behaviorType: "instruction_friction",
+    riskFlags: { hintDependenceRisk: true },
+    trendDer: { trendConfOk: true },
+    q: 16,
+    accuracy: 55,
+    wrongRatio: 0.28,
+    mistakeEventCount: 5,
+    evidenceStrength: "medium",
+    dataSufficiencyLevel: "medium",
+    conclusionStrength: "moderate",
+    displayName: "מילים",
+  });
+  assert.equal(instr.dominantMistakePattern, "instruction_misread");
+
+  const memFrag = buildLearningMemoryPhase9({
+    trendDer: {
+      trendConfOk: true,
+      fragileProgressPattern: true,
+      positiveAccuracy: true,
+      independenceDeteriorating: true,
+      negativeAccuracy: false,
+    },
+    behaviorType: "fragile_success",
+    riskFlags: { hintDependenceRisk: true },
+    q: 16,
+    accuracy: 78,
+    wrongRatio: 0.12,
+    conclusionStrength: "moderate",
+    diagnosticRestraintLevel: "mixed",
+    trend: null,
+  });
+  assert.equal(memFrag.learningStage, "fragile_retention");
+
+  const memStable = buildLearningMemoryPhase9({
+    trendDer: {
+      trendConfOk: true,
+      fragileProgressPattern: false,
+      independenceDeteriorating: false,
+      positiveAccuracy: false,
+      negativeAccuracy: false,
+    },
+    behaviorType: "stable_mastery",
+    riskFlags: {},
+    q: 22,
+    accuracy: 88,
+    wrongRatio: 0.06,
+    conclusionStrength: "strong",
+    diagnosticRestraintLevel: "confirmed",
+    trend: null,
+  });
+  assert.ok(["stable_control", "transfer_emerging", "partial_stabilization"].includes(memStable.learningStage));
+
+  const ov = buildPhase9RecommendationOverlay({
+    dominantMistakePattern: "concept_confusion",
+    learningStage: "partial_stabilization",
+    retentionRisk: "moderate",
+    transferReadiness: "limited",
+    rootCause: "knowledge_gap",
+    finalStep: "remediate_same_level",
+    riskFlags: {},
+  });
+  assert.equal(ov.recommendedPracticeMode, "error_reduction_loop");
+
+  const d = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.one_dominant_subject(), { period: "week" });
+  assert.ok("dominantCrossSubjectMistakePattern" in d.executiveSummary);
+  const mathSp = d.subjectProfiles.find((s) => s.subject === "math");
+  assert.ok(mathSp?.dominantMistakePattern, "subject dominant mistake");
+  const tr0 = mathSp?.topicRecommendations?.[0];
+  assert.ok(tr0?.learningStage, "topic learningStage");
+  assert.ok(tr0?.recommendedPracticeMode, "topic recommendedPracticeMode");
+}
+
+function runPhase10EffectivenessConfidenceAndExecutive() {
+  const weak = buildInterventionEffectivenessPhase10({
+    trendDer: { trendConfOk: false, positiveAccuracy: false },
+    learningStage: "early_acquisition",
+    independenceProgress: "flat",
+    mistakeRecurrenceLevel: "unclear",
+    dominantMistakePattern: "insufficient_mistake_evidence",
+    retentionRisk: "low",
+    riskFlags: {},
+    q: 5,
+    accuracy: 70,
+    wrongRatio: 0.2,
+    evidenceStrength: "low",
+    dataSufficiencyLevel: "low",
+    conclusionStrength: "tentative",
+    displayName: "נושא",
+  });
+  assert.equal(weak.responseToIntervention, "not_enough_evidence");
+
+  const stalled = buildInterventionEffectivenessPhase10({
+    trendDer: { trendConfOk: true, positiveAccuracy: false, negativeAccuracy: false },
+    learningStage: "partial_stabilization",
+    independenceProgress: "flat",
+    mistakeRecurrenceLevel: "persistent",
+    dominantMistakePattern: "concept_confusion",
+    retentionRisk: "moderate",
+    riskFlags: {},
+    q: 20,
+    accuracy: 65,
+    wrongRatio: 0.22,
+    evidenceStrength: "medium",
+    dataSufficiencyLevel: "medium",
+    conclusionStrength: "moderate",
+    displayName: "חיבור",
+  });
+  assert.equal(stalled.responseToIntervention, "stalled_response");
+
+  const over = buildInterventionEffectivenessPhase10({
+    trendDer: { trendConfOk: true, positiveAccuracy: true, independenceDirection: "flat" },
+    learningStage: "fragile_retention",
+    independenceProgress: "flat",
+    mistakeRecurrenceLevel: "repeating",
+    dominantMistakePattern: "support_dependent_success",
+    retentionRisk: "moderate",
+    riskFlags: { hintDependenceRisk: true },
+    q: 22,
+    accuracy: 82,
+    wrongRatio: 0.12,
+    evidenceStrength: "strong",
+    dataSufficiencyLevel: "strong",
+    conclusionStrength: "moderate",
+    displayName: "חיבור",
+  });
+  assert.equal(over.responseToIntervention, "over_supported_progress");
+
+  const ind = buildInterventionEffectivenessPhase10({
+    trendDer: {
+      trendConfOk: true,
+      positiveAccuracy: true,
+      independenceDirection: "up",
+    },
+    learningStage: "stable_control",
+    independenceProgress: "improving",
+    mistakeRecurrenceLevel: "repeating",
+    dominantMistakePattern: "careless_flip",
+    retentionRisk: "low",
+    riskFlags: {},
+    q: 22,
+    accuracy: 74,
+    wrongRatio: 0.14,
+    evidenceStrength: "strong",
+    dataSufficiencyLevel: "strong",
+    conclusionStrength: "strong",
+    displayName: "חיבור",
+  });
+  assert.equal(ind.responseToIntervention, "independence_growing");
+
+  const fresh = buildConfidenceAgingPhase10({
+    recencyScore: 88,
+    q: 18,
+    evidenceStrength: "strong",
+    dataSufficiencyLevel: "strong",
+    conclusionStrength: "strong",
+    retentionRisk: "low",
+  });
+  assert.equal(fresh.freshnessState, "fresh");
+  assert.equal(fresh.recalibrationNeed, "none");
+
+  const stale = buildConfidenceAgingPhase10({
+    recencyScore: 22,
+    q: 16,
+    evidenceStrength: "low",
+    dataSufficiencyLevel: "medium",
+    conclusionStrength: "strong",
+    retentionRisk: "low",
+  });
+  assert.ok(stale.freshnessState === "stale" || stale.conclusionFreshness === "expired");
+  assert.ok(stale.recalibrationNeed === "structured_recheck" || stale.recalibrationNeed === "light_review");
+
+  const p10 = buildPhase10RecommendationOverlay({
+    responseToIntervention: "stalled_response",
+    supportFit: "partial_fit",
+    supportAdjustmentNeed: "tighten_focus",
+    recalibrationNeed: "none",
+    conclusionFreshness: "high",
+    freshnessState: "fresh",
+    finalStep: "maintain_and_strengthen",
+    rootCause: "knowledge_gap",
+    recommendedPracticeMode: "error_reduction_loop",
+  });
+  assert.equal(p10.nextSupportAdjustment, "continue_and_tighten_focus");
+
+  const p10Weak = buildPhase10RecommendationOverlay({
+    responseToIntervention: "not_enough_evidence",
+    supportFit: "unknown",
+    supportAdjustmentNeed: "monitor_only",
+    recalibrationNeed: "structured_recheck",
+    conclusionFreshness: "expired",
+    freshnessState: "stale",
+    finalStep: "advance_level",
+    rootCause: "knowledge_gap",
+    recommendedPracticeMode: "observe_only",
+  });
+  assert.equal(p10Weak.nextSupportAdjustment, "recheck_before_advancing");
+
+  const d = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.one_dominant_subject(), { period: "week" });
+  assert.ok(typeof d.executiveSummary.crossSubjectResponseToIntervention === "string");
+  assert.ok(String(d.executiveSummary.crossSubjectResponseToInterventionLabelHe || "").length > 4);
+  assert.ok(Array.isArray(d.executiveSummary.majorRecheckAreasHe));
+  const tr = d.subjectProfiles.find((s) => s.subject === "math")?.topicRecommendations?.[0];
+  assert.ok(tr && typeof tr.responseToIntervention === "string", "topic rec phase10 rti");
+  assert.ok(typeof tr.nextSupportAdjustmentHe === "string" && tr.nextSupportAdjustmentHe.length > 3);
+}
+
+function runPhase11SequencingAndDrift() {
+  const d = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.one_dominant_subject(), { period: "week" });
+  const tr = d.subjectProfiles.find((s) => s.subject === "math")?.topicRecommendations?.[0];
+  assert.ok(tr && typeof tr.supportSequenceState === "string");
+  assert.ok(typeof tr.nextSupportSequenceAction === "string");
+  assert.ok(typeof d.executiveSummary.crossSubjectSupportSequenceState === "string");
+  assert.ok(String(d.executiveSummary.crossSubjectSupportSequenceStateLabelHe || "").length > 3);
+  assert.ok(Array.isArray(d.executiveSummary.subjectsReadyForReleaseHe));
+  const mathSp = d.subjectProfiles.find((s) => s.subject === "math");
+  assert.ok(typeof mathSp?.subjectSupportSequenceState === "string");
+  assert.ok(String(mathSp?.subjectSequenceNarrativeHe || "").length > 4);
+
+  const seqWeak = buildSupportSequencingPhase11({
+    q: 6,
+    accuracy: 70,
+    wrongRatio: 0.2,
+    evidenceStrength: "low",
+    dataSufficiencyLevel: "low",
+    conclusionStrength: "tentative",
+    recommendedPracticeMode: "observe_only",
+    recommendedInterventionType: "monitor_before_escalation",
+    interventionFormat: "observation_block",
+    responseToIntervention: "not_enough_evidence",
+    supportAdjustmentNeed: "monitor_only",
+    learningStage: "insufficient_longitudinal_evidence",
+    independenceProgress: "flat",
+    mistakeRecurrenceLevel: "unclear",
+    trendDer: { trendConfOk: false },
+    trend: null,
+    displayName: "נושא",
+  });
+  assert.equal(seqWeak.supportSequenceState, "insufficient_sequence_evidence");
+
+  const seqGuided = buildSupportSequencingPhase11({
+    q: 20,
+    accuracy: 68,
+    wrongRatio: 0.22,
+    evidenceStrength: "medium",
+    dataSufficiencyLevel: "medium",
+    conclusionStrength: "moderate",
+    recommendedPracticeMode: "slow_guided_accuracy",
+    recommendedInterventionType: "stabilize_accuracy",
+    interventionFormat: "guided_practice",
+    responseToIntervention: "stalled_response",
+    supportAdjustmentNeed: "tighten_focus",
+    learningStage: "partial_stabilization",
+    independenceProgress: "flat",
+    mistakeRecurrenceLevel: "persistent",
+    trendDer: { trendConfOk: true, positiveAccuracy: false, independenceDirection: "flat" },
+    trend: {
+      windows: { previousComparablePeriod: { accuracy: 70 }, currentPeriod: { accuracy: 69 } },
+    },
+    displayName: "חיבור",
+  });
+  assert.ok(
+    seqGuided.strategyRepetitionRisk === "high" || seqGuided.supportSequenceState === "sequence_stalled",
+    "guided persistent should surface repetition or stall"
+  );
+
+  const drift = buildAdviceDriftPhase11({
+    ...seqGuided,
+    rootCause: "knowledge_gap",
+    recommendedInterventionType: "stabilize_accuracy",
+    recommendedPracticeMode: "slow_guided_accuracy",
+  });
+  assert.ok(typeof drift.adviceSimilarityLevel === "string");
+
+  const p11 = buildPhase11SequenceOverlay({
+    ...seqGuided,
+    ...drift,
+    responseToIntervention: "stalled_response",
+    nextSupportAdjustment: "continue_and_tighten_focus",
+    conclusionFreshness: "medium",
+    freshnessState: "fresh",
+    recalibrationNeed: "none",
+    displayName: "חיבור",
+  });
+  assert.ok(typeof p11.nextSupportSequenceAction === "string" && p11.nextSupportSequenceAction.length > 3);
+
+  const earlyRow = {
+    bucketKey: "addition",
+    displayName: "חיבור",
+    questions: 14,
+    correct: 11,
+    wrong: 3,
+    accuracy: 78,
+    modeKey: "learning",
+    evidenceStrength: "medium",
+    dataSufficiencyLevel: "medium",
+    trend: {
+      version: 1,
+      accuracyDirection: "up",
+      independenceDirection: "flat",
+      fluencyDirection: "flat",
+      confidence: 0.55,
+      windows: { currentPeriod: { accuracy: 78 }, recentShortWindow: { accuracy: 72 } },
+    },
+    behaviorProfile: { version: 1, dominantType: "knowledge_gap", signals: {}, decisionTrace: [] },
+  };
+  const endMsEarly = Date.UTC(2026, 3, 10, 23, 59, 59);
+  const sigEarly = computeRowDiagnosticSignals(
+    "math",
+    "addition\u0001learning",
+    earlyRow,
+    { addition: { count: 3 } },
+    endMsEarly
+  );
+  const decEarly = decideTopicNextStep({ ...earlyRow, ...sigEarly }, 3, DEFAULT_TOPIC_NEXT_STEP_CONFIG);
+  assert.ok(typeof decEarly.responseToIntervention === "string" && decEarly.responseToIntervention.length > 2);
+}
+
+function runPhase12MemoryAndOutcome() {
+  const memWeak = buildRecommendationMemoryPhase12({
+    q: 6,
+    evidenceStrength: "low",
+    dataSufficiencyLevel: "low",
+    conclusionStrength: "tentative",
+    trend: null,
+    trendDer: {},
+    priorSupportPattern: "unknown",
+    recommendedPracticeMode: "observe_only",
+    interventionFormat: "observation_block",
+    responseToIntervention: "not_enough_evidence",
+    displayName: "נושא",
+  });
+  assert.equal(memWeak.recommendationMemoryState, "no_memory");
+
+  const memMulti = buildRecommendationMemoryPhase12({
+    q: 20,
+    evidenceStrength: "strong",
+    dataSufficiencyLevel: "strong",
+    conclusionStrength: "moderate",
+    trend: {
+      windows: {
+        previousComparablePeriod: { accuracy: 72 },
+        currentPeriod: { accuracy: 74 },
+        recentShortWindow: { accuracy: 73 },
+      },
+    },
+    trendDer: { trendConfOk: true },
+    priorSupportPattern: "guided_repeat",
+    recommendedPracticeMode: "slow_guided_accuracy",
+    interventionFormat: "guided_practice",
+    responseToIntervention: "stalled_response",
+    displayName: "חיבור",
+  });
+  assert.ok(
+    memMulti.supportHistoryDepth === "multi_window" || memMulti.recommendationMemoryState === "usable_memory",
+    "multi-window trend should deepen memory signal"
+  );
+
+  const outMis = buildOutcomeTrackingPhase12({
+    ...memMulti,
+    responseToIntervention: "stalled_response",
+    independenceProgress: "flat",
+    mistakeRecurrenceLevel: "persistent",
+    trendDer: { trendConfOk: true, positiveAccuracy: false },
+    displayName: "חיבור",
+  });
+  assert.ok(typeof outMis.expectedVsObservedMatch === "string");
+
+  const p12 = buildPhase12ContinuationOverlay({
+    ...memMulti,
+    ...outMis,
+    adviceSimilarityLevel: "mostly_repeated",
+    recommendationRotationNeed: "meaningful_rotation",
+    nextSupportSequenceAction: "pause_repeat_and_switch",
+    supportSequenceState: "sequence_stalled",
+    strategyRepetitionRisk: "high",
+  });
+  assert.ok(typeof p12.recommendationContinuationDecision === "string" && p12.recommendationContinuationDecision.length > 3);
+  assert.ok(typeof p12.outcomeBasedNextMove === "string");
+
+  const d = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.one_dominant_subject(), { period: "week" });
+  const tr = d.subjectProfiles.find((s) => s.subject === "math")?.topicRecommendations?.[0];
+  assert.ok(tr && typeof tr.recommendationMemoryState === "string");
+  assert.ok(typeof tr.recommendationContinuationDecision === "string");
+  assert.ok(typeof tr.expectedVsObservedMatch === "string");
+  assert.ok(typeof d.executiveSummary.crossSubjectRecommendationMemoryState === "string");
+  assert.ok(String(d.executiveSummary.crossSubjectContinuationDecisionHe || "").length > 4);
+  assert.ok(Array.isArray(d.executiveSummary.subjectsNeedingFreshEvidenceHe));
+  const mathSp = d.subjectProfiles.find((s) => s.subject === "math");
+  assert.ok(typeof mathSp?.subjectContinuationDecision === "string");
+  assert.ok(String(mathSp?.subjectOutcomeNarrativeHe || "").length > 8);
+}
+
+function runPhase13DecisionsAndEvidenceTargets() {
+  const baseWeak = {
+    q: 6,
+    evidenceStrength: "low",
+    dataSufficiencyLevel: "low",
+    conclusionStrength: "tentative",
+    rootCause: "knowledge_gap",
+    retentionRisk: "low",
+    learningStage: "stable_mastery",
+    freshnessState: "fresh",
+    conclusionFreshness: "medium",
+    recalibrationNeed: "none",
+    supportSequenceState: "insufficient_sequence_evidence",
+    responseToIntervention: "not_enough_evidence",
+    expectedVsObservedMatch: "not_enough_evidence",
+    recommendationMemoryState: "no_memory",
+    independenceProgress: "flat",
+    trendDer: {},
+    finalStep: "maintain_and_strengthen",
+    displayName: "נושא",
+  };
+  const gWeak = buildDecisionGatesPhase13(baseWeak);
+  assert.equal(gWeak.gateState, "gates_not_ready");
+  const tWeak = buildEvidenceTargetsPhase13(baseWeak);
+  assert.equal(tWeak.targetEvidenceType, "response_confirmation");
+
+  const gPivot = buildDecisionGatesPhase13({
+    ...baseWeak,
+    q: 20,
+    evidenceStrength: "strong",
+    conclusionStrength: "moderate",
+    dataSufficiencyLevel: "strong",
+    expectedVsObservedMatch: "misaligned",
+    recommendationMemoryState: "usable_memory",
+    responseToIntervention: "mixed_response",
+  });
+  assert.equal(gPivot.pivotGate, "forming");
+  assert.equal(gPivot.gateState, "pivot_gate_visible");
+
+  const ctxHighAccNoSeq = {
+    q: 22,
+    evidenceStrength: "strong",
+    conclusionStrength: "strong",
+    dataSufficiencyLevel: "strong",
+    supportSequenceState: "single_support_episode",
+    responseToIntervention: "early_positive_response",
+    expectedVsObservedMatch: "aligned",
+    recommendationMemoryState: "light_memory",
+    independenceProgress: "improving",
+    trendDer: { independenceDirection: "up" },
+    finalStep: "maintain_and_strengthen",
+    displayName: "חיבור",
+    freshnessState: "fresh",
+    conclusionFreshness: "high",
+    recalibrationNeed: "none",
+    retentionRisk: "low",
+    learningStage: "consolidating",
+  };
+  const gNoRelease = buildDecisionGatesPhase13(ctxHighAccNoSeq);
+  assert.equal(gNoRelease.releaseGate, "off", "release needs sequence/independence pathway, not accuracy alone");
+
+  const gReleaseForming = buildDecisionGatesPhase13({
+    ...ctxHighAccNoSeq,
+    supportSequenceState: "sequence_ready_for_release",
+    q: 18,
+    trendDer: { independenceDirection: "up" },
+  });
+  assert.ok(
+    gReleaseForming.releaseGate === "forming" || gReleaseForming.releaseGate === "pending",
+    "sequence_ready + independence can open release track"
+  );
+
+  const gRecheck = buildDecisionGatesPhase13({
+    q: 18,
+    evidenceStrength: "medium",
+    conclusionStrength: "moderate",
+    dataSufficiencyLevel: "medium",
+    rootCause: "knowledge_gap",
+    retentionRisk: "low",
+    learningStage: "consolidating",
+    freshnessState: "stale",
+    conclusionFreshness: "low",
+    recalibrationNeed: "structured_recheck",
+    supportSequenceState: "continuing_sequence",
+    responseToIntervention: "early_positive_response",
+    expectedVsObservedMatch: "partly_aligned",
+    recommendationMemoryState: "light_memory",
+    independenceProgress: "flat",
+    trendDer: {},
+    finalStep: "maintain_and_strengthen",
+    displayName: "חיבור",
+  });
+  assert.equal(gRecheck.recheckGate, "forming");
+  assert.equal(gRecheck.gateState, "recheck_gate_visible");
+
+  const targSpeed = buildEvidenceTargetsPhase13({
+    rootCause: "speed_pressure",
+    freshnessState: "fresh",
+    conclusionFreshness: "high",
+    recommendationMemoryState: "usable_memory",
+    expectedVsObservedMatch: "aligned",
+    responseToIntervention: "early_positive_response",
+    mistakeRecurrenceLevel: "low",
+    learningStage: "consolidating",
+  });
+  assert.equal(targSpeed.targetEvidenceType, "accuracy_confirmation");
+
+  const targStale = buildEvidenceTargetsPhase13({
+    rootCause: "knowledge_gap",
+    freshnessState: "stale",
+    conclusionFreshness: "low",
+    recommendationMemoryState: "usable_memory",
+    expectedVsObservedMatch: "aligned",
+    responseToIntervention: "early_positive_response",
+    mistakeRecurrenceLevel: "low",
+    learningStage: "consolidating",
+  });
+  assert.equal(targStale.targetEvidenceType, "fresh_data_needed");
+  assert.equal(targStale.targetObservationWindow, "needs_fresh_baseline");
+
+  const overlayStab = buildPhase13NextCycleOverlay({
+    gateState: "continue_gate_active",
+    releaseGate: "off",
+    pivotGate: "off",
+    recheckGate: "off",
+    advanceGate: "blocked",
+    learningStage: "fragile_retention",
+    expectedVsObservedMatch: "aligned",
+    recommendationMemoryState: "usable_memory",
+    responseToIntervention: "early_positive_response",
+    freshnessState: "fresh",
+    conclusionFreshness: "high",
+    recalibrationNeed: "none",
+    trendDer: {},
+    independenceProgress: "flat",
+    targetSuccessSignalHe: "בדיקה",
+    targetObservationWindowLabelHe: "חלון קצר",
+  });
+  assert.equal(overlayStab.nextCycleDecisionFocus, "stabilize_before_advance");
+
+  const evP = buildEvidenceTargetsPhase13(gPivot);
+  const ov = buildPhase13NextCycleOverlay({ ...gPivot, ...evP });
+  assert.ok(String(ov.nextCycleDecisionFocusHe || "").length > 4);
+
+  const dSparse = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.all_sparse(), { period: "week" });
+  const esSparse = dSparse.executiveSummary;
+  assert.ok(typeof esSparse.crossSubjectGateState === "string");
+  assert.ok(Array.isArray(esSparse.subjectsNearReleaseButNotThereHe));
+  const mathSparse = dSparse.subjectProfiles.find((s) => s.subject === "math");
+  assert.ok(typeof mathSparse?.subjectGateState === "string");
+  assert.ok(typeof mathSparse?.subjectNextCycleDecisionFocus === "string");
+
+  const mixed = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.mixed_signals_cross_subjects(), {
+    period: "week",
+  });
+  assert.ok(String(mixed.executiveSummary.crossSubjectNextCycleDecisionFocus || "").length > 2);
+  assert.ok(Array.isArray(mixed.executiveSummary.subjectsNeedingRecheckBeforeDecisionHe));
+
+  const n = normalizeExecutiveSummary({});
+  assert.ok("crossSubjectGateState" in n && "subjectsWithVisiblePivotTriggerHe" in n);
+
+  const rowUi = {
+    topicEngineRowSignals: {
+      gateNarrativeHe: "ב«חיבור»: מיקוד סבב.",
+      evidenceTargetNarrativeHe: "יעד ראיה.",
+      recheckGate: "forming",
+      whatWouldTriggerRecheckHe: "סבב קצר לפני החלטה.",
+    },
+  };
+  assert.ok(gateStateLineHe(rowUi).length > 0);
+  assert.ok(evidenceTargetLineHe(rowUi).length > 0);
+  assert.ok(gateTriggerCompactLineHe(rowUi).length > 0);
+}
+
+function runPhase14FoundationDependencyAndOrdering() {
+  const speedCtx = {
+    q: 18,
+    evidenceStrength: "medium",
+    dataSufficiencyLevel: "medium",
+    conclusionStrength: "moderate",
+    rootCause: "speed_pressure",
+    learningStage: "consolidating",
+    retentionRisk: "low",
+    mistakeRecurrenceLevel: "low",
+    dominantMistakePattern: "speed_driven_error",
+    independenceProgress: "improving",
+    trendDer: { independenceDirection: "up", accuracyDirection: "flat" },
+    responseToIntervention: "early_positive_response",
+    expectedVsObservedMatch: "aligned",
+    recommendationMemoryState: "light_memory",
+    gateReadiness: "moderate",
+    gateState: "continue_gate_active",
+    targetEvidenceType: "accuracy_confirmation",
+    displayName: "חיבור",
+  };
+  const speed = buildFoundationDependencyPhase14(speedCtx);
+  assert.equal(speed.dependencyState, "likely_local_issue");
+  assert.equal(speed.likelyFoundationalBlocker, "unknown");
+
+  const fragile = buildFoundationDependencyPhase14({
+    ...speedCtx,
+    rootCause: "knowledge_gap",
+    learningStage: "fragile_retention",
+    retentionRisk: "high",
+    mistakeRecurrenceLevel: "persistent",
+    gateReadiness: "high",
+  });
+  assert.equal(fragile.dependencyState, "likely_foundational_block");
+  assert.ok(fragile.shouldTreatAsFoundationFirst);
+
+  const ov = buildPhase14RecommendationOverlay({
+    ...fragile,
+    releaseGate: "off",
+    advanceGate: "forming",
+    nextCycleDecisionFocus: "stabilize_before_advance",
+    targetEvidenceType: "retention_confirmation",
+    targetObservationWindowLabelHe: "בשני סבבים קצרים",
+    targetSuccessSignalHe: "בדיקה",
+  });
+  assert.ok(ov.foundationBeforeExpansion === true || String(ov.foundationBeforeExpansionHe || "").length > 5);
+  assert.ok(
+    ov.interventionOrdering === "foundation_first" || ov.interventionOrdering === "gather_dependency_evidence_first"
+  );
+
+  const localOv = buildPhase14RecommendationOverlay({
+    ...speed,
+    gateState: "continue_gate_active",
+    releaseGate: "off",
+    nextCycleDecisionFocus: "prove_current_direction",
+  });
+  assert.equal(localOv.interventionOrdering, "local_support_first");
+
+  const d = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.one_dominant_subject(), { period: "week" });
+  assert.ok(typeof d.executiveSummary.crossSubjectDependencyState === "string");
+  assert.ok(Array.isArray(d.executiveSummary.subjectsSafeForLocalInterventionHe));
+  const mathSp = d.subjectProfiles.find((s) => s.subject === "math");
+  assert.ok(typeof mathSp?.subjectDependencyState === "string");
+  assert.ok(typeof mathSp?.subjectDependencyNarrativeHe === "string");
+
+  const n = normalizeExecutiveSummary({});
+  assert.ok("crossSubjectDependencyState" in n && "subjectsNeedingFoundationFirstHe" in n);
+}
+
+function runPhase8InterventionPriorityAndCalibration() {
+  const sparseObs = buildInterventionPlanPhase8({
+    rootCause: "insufficient_evidence",
+    conclusionStrength: "tentative",
+    shouldAvoidStrongConclusion: true,
+    recommendedInterventionType: "monitor_before_escalation",
+    finalStep: "maintain_and_strengthen",
+    q: 6,
+    accuracy: 80,
+    dataSufficiencyLevel: "low",
+    evidenceStrength: "low",
+    displayName: "חיבור",
+  });
+  assert.equal(sparseObs.interventionFormat, "observation_block");
+  assert.equal(sparseObs.interventionIntensity, "light");
+  assert.ok(String(sparseObs.avoidNowHe).length > 8);
+
+  const speed = buildInterventionPlanPhase8({
+    rootCause: "speed_pressure",
+    conclusionStrength: "strong",
+    shouldAvoidStrongConclusion: false,
+    recommendedInterventionType: "reduce_time_pressure",
+    finalStep: "maintain_and_strengthen",
+    q: 18,
+    accuracy: 72,
+    dataSufficiencyLevel: "medium",
+    evidenceStrength: "medium",
+    displayName: "חיבור",
+  });
+  assert.notEqual(sparseObs.interventionPlanHe, speed.interventionPlanHe);
+  assert.ok(String(speed.avoidNowHe).includes("מהירות") || String(speed.doNowHe).includes("טיימר"));
+
+  const weakInd = buildInterventionPlanPhase8({
+    rootCause: "weak_independence",
+    conclusionStrength: "moderate",
+    shouldAvoidStrongConclusion: false,
+    recommendedInterventionType: "guided_to_independent_transition",
+    finalStep: "maintain_and_strengthen",
+    q: 16,
+    accuracy: 78,
+    dataSufficiencyLevel: "medium",
+    evidenceStrength: "medium",
+    displayName: "חלוקה",
+  });
+  assert.equal(weakInd.interventionFormat, "mixed");
+
+  const friction = buildInterventionPlanPhase8({
+    rootCause: "instruction_friction",
+    conclusionStrength: "moderate",
+    shouldAvoidStrongConclusion: false,
+    recommendedInterventionType: "clarify_instruction_pattern",
+    finalStep: "maintain_and_strengthen",
+    q: 14,
+    accuracy: 76,
+    displayName: "מילים",
+  });
+  assert.equal(friction.interventionIntensity, "light");
+  assert.equal(friction.interventionDurationBand, "very_short");
+
+  const gap = buildInterventionPlanPhase8({
+    rootCause: "knowledge_gap",
+    conclusionStrength: "strong",
+    shouldAvoidStrongConclusion: false,
+    recommendedInterventionType: "target_core_skill_gap",
+    finalStep: "remediate_same_level",
+    q: 22,
+    accuracy: 68,
+    dataSufficiencyLevel: "strong",
+    evidenceStrength: "strong",
+    displayName: "חיבור",
+  });
+  assert.equal(gap.interventionGoal, "core_skill_gap");
+  assert.ok(gap.interventionFormat === "guided_practice");
+
+  const gapCapped = buildInterventionPlanPhase8({
+    rootCause: "knowledge_gap",
+    conclusionStrength: "withheld",
+    shouldAvoidStrongConclusion: true,
+    recommendedInterventionType: "monitor_before_escalation",
+    finalStep: "maintain_and_strengthen",
+    q: 20,
+    accuracy: 65,
+    dataSufficiencyLevel: "medium",
+    evidenceStrength: "medium",
+    displayName: "חיבור",
+  });
+  assert.ok(gapCapped.interventionFormat !== "guided_practice" || gapCapped.interventionIntensity !== "targeted");
+
+  const mixedReport = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.mixed_signals_cross_subjects(), {
+    period: "week",
+  });
+  const urgentSubjects = (mixedReport.subjectProfiles || []).filter((s) => s.subjectPriorityLevel === "immediate");
+  assert.ok(urgentSubjects.length <= 2, "phase8: at most two immediate subject priorities");
+  assert.ok(mixedReport.executiveSummary.parentPriorityLadder?.rankedSubjects?.length >= 1);
+  assert.ok(Array.isArray(mixedReport.executiveSummary.monitoringOnlyAreasHe));
+
+  const oneDom = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.one_dominant_subject(), {
+    period: "week",
+  });
+  const tr0 = oneDom.subjectProfiles.find((s) => s.subject === "math")?.topicRecommendations?.[0];
+  assert.ok(tr0?.interventionPlan && typeof tr0.interventionPlan === "object");
+  assert.equal(typeof tr0.doNowHe, "string");
+  assert.equal(typeof tr0.avoidNowHe, "string");
+  assert.ok(typeof tr0.recommendedPracticeLoad === "string" && tr0.recommendedPracticeLoad.length > 1);
+
+  const strong = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.strong_executive_case(), {
+    period: "week",
+  });
+  const mathStrong = strong.subjectProfiles.find((s) => s.subject === "math");
+  const trHi =
+    mathStrong?.topicRecommendations?.find((t) => (Number(t.accuracy) || 0) >= 88 && (Number(t.questions) || 0) >= 18) ||
+    mathStrong?.topicRecommendations?.[0];
+  if (trHi) {
+    assert.ok(
+      trHi.recommendedPracticeLoad === "minimal" || trHi.recommendedSessionLengthBand === "very_short",
+      "phase8: strong row should stay light at home"
+    );
+  }
+
+  const calSparse = buildPracticeCalibration({
+    rootCause: "insufficient_evidence",
+    conclusionStrength: "withheld",
+    shouldAvoidStrongConclusion: true,
+    diagnosticRestraintLevel: "insufficient",
+    q: 5,
+    accuracy: 70,
+    evidenceStrength: "low",
+    dataSufficiencyLevel: "low",
+    interventionIntensity: "light",
+  });
+  assert.equal(calSparse.recommendedPracticeLoad, "minimal");
+
+  const calGap = buildPracticeCalibration({
+    rootCause: "knowledge_gap",
+    conclusionStrength: "strong",
+    shouldAvoidStrongConclusion: false,
+    diagnosticRestraintLevel: "clear",
+    q: 24,
+    accuracy: 68,
+    evidenceStrength: "strong",
+    dataSufficiencyLevel: "strong",
+    interventionIntensity: "targeted",
+  });
+  assert.ok(calGap.recommendedPracticeLoad === "moderate" || calGap.recommendedPracticeLoad === "light");
 }
 
 function runTopicRecGoldenRow() {
@@ -555,6 +1736,34 @@ function runTopicRecGoldenRow() {
   assert.ok(typeof rec.whyThisRecommendationHe === "string");
   assert.ok(rec.riskFlags && typeof rec.riskFlags === "object");
   assert.ok(Array.isArray(rec.decisionTrace));
+  assert.ok("rootCause" in rec && rec.rootCause, "topic rec: rootCause");
+  assert.ok("conclusionStrength" in rec, "topic rec: conclusionStrength");
+  assert.ok(typeof rec.recommendationReasoningHe === "string", "topic rec: recommendationReasoningHe");
+  assert.ok(rec.interventionPlan && typeof rec.interventionPlan === "object", "topic rec: interventionPlan");
+  assert.ok(typeof rec.doNowHe === "string");
+  assert.ok(typeof rec.avoidNowHe === "string");
+  assert.ok(typeof rec.escalationThresholdHe === "string");
+  assert.ok(typeof rec.dominantMistakePattern === "string" && rec.dominantMistakePattern.length > 1);
+  assert.ok(typeof rec.learningStage === "string" && rec.learningStage.length > 1);
+  assert.ok(typeof rec.recommendedPracticeMode === "string");
+}
+
+function runPhase7CrossSubjectScenario() {
+  const d = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.phase7_cross_subject_sparse_mixed(), {
+    period: "week",
+  });
+  assert.ok(d.executiveSummary.dominantCrossSubjectRootCause, "phase7 exec dominantCrossSubjectRootCause");
+  assert.ok(
+    String(d.executiveSummary.dominantCrossSubjectRootCauseLabelHe || "").length > 2,
+    "phase7 exec root cause label"
+  );
+  assert.ok(["ready", "partial", "not_ready"].includes(d.executiveSummary.crossSubjectConclusionReadiness));
+  assert.ok(Array.isArray(d.executiveSummary.majorDiagnosticCautionsHe));
+  assert.ok(typeof d.executiveSummary.recommendedParentPriorityType === "string");
+  const mathP = d.subjectProfiles.find((s) => s.subject === "math");
+  const geoP = d.subjectProfiles.find((s) => s.subject === "geometry");
+  assert.ok(mathP?.dominantRootCause, "phase7 math dominantRootCause");
+  assert.ok(geoP?.dominantRootCause, "phase7 geometry dominantRootCause");
 }
 
 function main() {
@@ -571,6 +1780,14 @@ function main() {
   runContractAdditive();
   runUiResilienceHelpers();
   runTopicRecGoldenRow();
+  runPhase7CrossSubjectScenario();
+  runPhase8InterventionPriorityAndCalibration();
+  runPhase9MistakeMemoryAndExecutive();
+  runPhase10EffectivenessConfidenceAndExecutive();
+  runPhase11SequencingAndDrift();
+  runPhase12MemoryAndOutcome();
+  runPhase13DecisionsAndEvidenceTargets();
+  runPhase14FoundationDependencyAndOrdering();
   runReactServerSmoke();
 
   const reportDir = join(ROOT, "reports", "parent-report-phase6");

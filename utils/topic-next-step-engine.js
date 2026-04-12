@@ -16,14 +16,38 @@ import {
 } from "./parent-report-row-diagnostics";
 import {
   applyPhase2GuardsToStep,
+  applyPhase7RestraintGuards,
   buildPhase2RiskFlags,
+  buildPhase7RecommendationFields,
+  buildPhase9RecommendationOverlay,
+  buildPhase10RecommendationOverlay,
+  buildPhase11SequenceOverlay,
+  buildPhase12ContinuationOverlay,
+  buildPhase13NextCycleOverlay,
+  buildPracticeCalibration,
   buildRecommendationStructuredTrace,
   buildTrendDerivedSignals,
   buildWhatCouldChangeThisHe,
   buildWhyThisRecommendationHe,
   confidenceBadgeFromScore,
+  mergePhase7SoftHebrewCopy,
   sufficiencyBadgeFromLevel,
 } from "./topic-next-step-phase2";
+import { computeDiagnosticRestraint } from "./parent-report-diagnostic-restraint.js";
+import { estimateRowRootCause } from "./parent-report-root-cause.js";
+import { buildInterventionPlanPhase8 } from "./parent-report-intervention-plan.js";
+import { buildMistakeIntelligencePhase9 } from "./parent-report-mistake-intelligence.js";
+import { buildLearningMemoryPhase9 } from "./parent-report-learning-memory.js";
+import { buildInterventionEffectivenessPhase10 } from "./parent-report-intervention-effectiveness.js";
+import { buildConfidenceAgingPhase10 } from "./parent-report-confidence-aging.js";
+import { buildSupportSequencingPhase11 } from "./parent-report-support-sequencing.js";
+import { buildAdviceDriftPhase11 } from "./parent-report-advice-drift.js";
+import { buildRecommendationMemoryPhase12 } from "./parent-report-recommendation-memory.js";
+import { buildOutcomeTrackingPhase12 } from "./parent-report-outcome-tracking.js";
+import { buildDecisionGatesPhase13 } from "./parent-report-decision-gates.js";
+import { buildEvidenceTargetsPhase13 } from "./parent-report-evidence-targets.js";
+import { buildFoundationDependencyPhase14 } from "./parent-report-foundation-dependency.js";
+import { buildPhase14RecommendationOverlay } from "./parent-report-foundation-ordering.js";
 
 /** @typedef {'advance_level'|'advance_grade_topic_only'|'maintain_and_strengthen'|'remediate_same_level'|'drop_one_level_topic_only'|'drop_one_grade_topic_only'} RecommendedNextStep */
 
@@ -517,7 +541,39 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
   const sufficiencyStrong = row?.dataSufficiencyLevel === "strong";
   const strongKnowledgeGapEvidence = !!riskFlags.strongKnowledgeGapEvidence;
 
-  const guarded = applyPhase2GuardsToStep(legacy.step, {
+  const q = Number(row?.questions) || 0;
+  const acc = computeCurrentMastery(row);
+  const wrong = Math.max(0, Number(row?.wrong) ?? 0);
+  const wrongRatio = q > 0 ? wrong / q : 0;
+  const recencyScore = Number.isFinite(Number(row?.recencyScore)) ? Number(row.recencyScore) : 55;
+
+  const restraintPayload = computeDiagnosticRestraint({
+    q,
+    accuracy: acc,
+    wrongRatio,
+    recencyScore,
+    evidenceStrength: String(row?.evidenceStrength || "low"),
+    dataSufficiencyLevel: String(row?.dataSufficiencyLevel || "low"),
+    stability01: Number(legacy.stability) || 0,
+    confidence01: Number(legacy.confidence) || 0,
+    trendDer,
+    riskFlags,
+    behaviorProfile,
+  });
+
+  const rootCausePayload = estimateRowRootCause({
+    row,
+    restraint: restraintPayload,
+    riskFlags,
+    trendDer,
+    behaviorProfile,
+    q,
+    accuracy: acc,
+    wrongRatio,
+    behaviorType,
+  });
+
+  const afterP2 = applyPhase2GuardsToStep(legacy.step, {
     row,
     riskFlags,
     trendDer,
@@ -526,10 +582,15 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
     strongKnowledgeGapEvidence,
   });
 
-  const q = Number(row?.questions) || 0;
-  const acc = computeCurrentMastery(row);
-  const wrong = Math.max(0, Number(row?.wrong) ?? 0);
-  const wrongRatio = q > 0 ? wrong / q : 0;
+  const afterP7 = applyPhase7RestraintGuards(afterP2.step, {
+    restraint: restraintPayload,
+    rootCause: rootCausePayload,
+  });
+
+  const guardedBlockers = [...afterP2.blockers, ...afterP7.blockers];
+  const guardedTraceAdds = [...afterP2.traceAdds, ...afterP7.traceAdds];
+  const guardedStep = afterP7.step;
+
   const displayName = String(row?.displayName || row?.bucketKey || "נושא").trim();
   const levelKey = normLevelKey(row);
   const gradeKey = normGradeKey(row);
@@ -545,21 +606,33 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
 
   let merged = {
     ...legacy,
-    step: guarded.step,
-    recommendationDecisionTrace: [...(legacy.recommendationDecisionTrace || []), ...guarded.traceAdds],
+    step: guardedStep,
+    recommendationDecisionTrace: [...(legacy.recommendationDecisionTrace || []), ...guardedTraceAdds],
   };
 
-  if (guarded.step !== legacy.step) {
-    const copy = buildHebrewCopy(guarded.step, ctx, cfg);
-    const note =
-      guarded.blockers.length > 0
-        ? ` [שלב 2: ${guarded.blockers.map((b) => b.detailHe).join(" | ")}]`
+  if (guardedStep !== legacy.step) {
+    const copy = buildHebrewCopy(guardedStep, ctx, cfg);
+    const phaseNote =
+      guardedBlockers.length > 0
+        ? ` [שלבים 2–7: ${guardedBlockers.map((b) => b.detailHe).join(" | ")}]`
         : "";
+    const softened = mergePhase7SoftHebrewCopy(
+      { ...copy, reasonHe: (copy.reasonHe || "") + phaseNote },
+      restraintPayload,
+      rootCausePayload
+    );
     merged = {
       ...merged,
-      ...copy,
-      reasonHe: (copy.reasonHe || "") + note,
+      ...softened,
+      reasonHe: softened.reasonHe || (copy.reasonHe || "") + phaseNote,
     };
+  } else {
+    const soft = mergePhase7SoftHebrewCopy(
+      { reasonHe: merged.reasonHe, parentHe: merged.parentHe, studentHe: merged.studentHe },
+      restraintPayload,
+      rootCausePayload
+    );
+    merged = { ...merged, parentHe: soft.parentHe ?? merged.parentHe };
   }
 
   const legacyChosen = [...(legacy.recommendationDecisionTrace || [])]
@@ -598,14 +671,16 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
       trendDerived: trendDer,
       strongKnowledgeGapEvidence,
     },
-    blockers: guarded.blockers,
+    blockers: guardedBlockers,
     appliedRules: (legacy.recommendationDecisionTrace || []).filter(
       (e) => e && (e.phase === "decision" || e.ruleId === "engine_context")
     ),
     chosenRule: {
       legacyRuleId,
-      phase2RuleId: guarded.phase2RuleId,
-      stepAfterPhase2: guarded.step,
+      phase2RuleId: afterP2.phase2RuleId,
+      stepAfterPhase2: afterP2.step,
+      phase7RuleId: afterP7.phase7RuleId,
+      stepAfterPhase7: afterP7.step,
     },
     postCapAdjustments: [],
   });
@@ -615,15 +690,295 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
     ...(merged.recommendationDecisionTrace || []),
   ];
 
-  const capped = applyAggressiveEvidenceCap(merged, row, ctx, cfg);
+  let capped = applyAggressiveEvidenceCap(merged, row, ctx, cfg);
   if (capped.postCapApplied) {
     structured.postCapAdjustments.push({
       ruleId: "evidence_sufficiency_cap",
       fromStep: capped.postCapFromStep,
       toStep: capped.postCapToStep,
     });
+    const softCap = mergePhase7SoftHebrewCopy(
+      {
+        reasonHe: capped.reasonHe,
+        parentHe: capped.parentHe,
+        studentHe: capped.studentHe,
+      },
+      restraintPayload,
+      rootCausePayload
+    );
+    capped = { ...capped, parentHe: softCap.parentHe ?? capped.parentHe };
   }
   structured.chosenRule.finalStep = capped.step;
+
+  const phase7Rec = buildPhase7RecommendationFields({
+    displayName,
+    finalStep: capped.step,
+    restraint: restraintPayload,
+    rootCause: rootCausePayload,
+    riskFlags: riskFlagsPayload,
+    trendDer,
+    behaviorType,
+    legacyRuleId,
+  });
+
+  const mistakeIntel = buildMistakeIntelligencePhase9({
+    rootCause: rootCausePayload.rootCause,
+    behaviorType,
+    riskFlags: riskFlagsPayload,
+    trendDer,
+    q,
+    accuracy: acc,
+    wrongRatio,
+    mistakeEventCount,
+    evidenceStrength: String(row?.evidenceStrength || ""),
+    dataSufficiencyLevel: String(row?.dataSufficiencyLevel || ""),
+    conclusionStrength: restraintPayload.conclusionStrength,
+    modeKey: String(row?.modeKey || ""),
+    displayName,
+  });
+
+  const memoryPhase9 = buildLearningMemoryPhase9({
+    trendDer,
+    behaviorType,
+    riskFlags: riskFlagsPayload,
+    q,
+    accuracy: acc,
+    wrongRatio,
+    conclusionStrength: restraintPayload.conclusionStrength,
+    diagnosticRestraintLevel: restraintPayload.diagnosticRestraint?.level,
+    trend,
+  });
+
+  const interventionPhase8 = buildInterventionPlanPhase8({
+    rootCause: rootCausePayload.rootCause,
+    rootCauseLabelHe: rootCausePayload.rootCauseLabelHe,
+    conclusionStrength: restraintPayload.conclusionStrength,
+    shouldAvoidStrongConclusion: restraintPayload.shouldAvoidStrongConclusion,
+    recommendedInterventionType: phase7Rec.recommendedInterventionType,
+    finalStep: capped.step,
+    q,
+    accuracy: acc,
+    dataSufficiencyLevel: String(row?.dataSufficiencyLevel || ""),
+    evidenceStrength: String(row?.evidenceStrength || ""),
+    displayName,
+    phase9: {
+      dominantMistakePattern: mistakeIntel.dominantMistakePattern,
+      learningStage: memoryPhase9.learningStage,
+      retentionRisk: memoryPhase9.retentionRisk,
+    },
+  });
+
+  const calibrationPhase8 = buildPracticeCalibration({
+    rootCause: rootCausePayload.rootCause,
+    conclusionStrength: restraintPayload.conclusionStrength,
+    shouldAvoidStrongConclusion: restraintPayload.shouldAvoidStrongConclusion,
+    diagnosticRestraintLevel: restraintPayload.diagnosticRestraint?.level,
+    q,
+    accuracy: acc,
+    evidenceStrength: String(row?.evidenceStrength || ""),
+    dataSufficiencyLevel: String(row?.dataSufficiencyLevel || ""),
+    interventionIntensity: interventionPhase8.interventionIntensity,
+    retentionRisk: memoryPhase9.retentionRisk,
+    learningStage: memoryPhase9.learningStage,
+  });
+
+  const phase9Recommendation = buildPhase9RecommendationOverlay({
+    dominantMistakePattern: mistakeIntel.dominantMistakePattern,
+    learningStage: memoryPhase9.learningStage,
+    retentionRisk: memoryPhase9.retentionRisk,
+    transferReadiness: memoryPhase9.transferReadiness,
+    rootCause: rootCausePayload.rootCause,
+    finalStep: capped.step,
+    riskFlags: riskFlagsPayload,
+  });
+
+  const phase10Effectiveness = buildInterventionEffectivenessPhase10({
+    trendDer,
+    learningStage: memoryPhase9.learningStage,
+    independenceProgress: memoryPhase9.independenceProgress,
+    mistakeRecurrenceLevel: mistakeIntel.mistakeRecurrenceLevel,
+    dominantMistakePattern: mistakeIntel.dominantMistakePattern,
+    retentionRisk: memoryPhase9.retentionRisk,
+    riskFlags: riskFlagsPayload,
+    q,
+    accuracy: acc,
+    wrongRatio,
+    evidenceStrength: String(row?.evidenceStrength || "low"),
+    dataSufficiencyLevel: String(row?.dataSufficiencyLevel || "low"),
+    conclusionStrength: restraintPayload.conclusionStrength,
+    displayName,
+  });
+
+  const phase10Aging = buildConfidenceAgingPhase10({
+    recencyScore,
+    q,
+    evidenceStrength: String(row?.evidenceStrength || "low"),
+    dataSufficiencyLevel: String(row?.dataSufficiencyLevel || "low"),
+    conclusionStrength: restraintPayload.conclusionStrength,
+    retentionRisk: memoryPhase9.retentionRisk,
+  });
+
+  const phase10Overlay = buildPhase10RecommendationOverlay({
+    responseToIntervention: phase10Effectiveness.responseToIntervention,
+    supportFit: phase10Effectiveness.supportFit,
+    supportAdjustmentNeed: phase10Effectiveness.supportAdjustmentNeed,
+    recalibrationNeed: phase10Aging.recalibrationNeed,
+    conclusionFreshness: phase10Aging.conclusionFreshness,
+    freshnessState: phase10Aging.freshnessState,
+    finalStep: capped.step,
+    rootCause: rootCausePayload.rootCause,
+    recommendedPracticeMode: phase9Recommendation.recommendedPracticeMode,
+  });
+
+  const phase11Sequencing = buildSupportSequencingPhase11({
+    q,
+    accuracy: acc,
+    wrongRatio,
+    evidenceStrength: String(row?.evidenceStrength || "low"),
+    dataSufficiencyLevel: String(row?.dataSufficiencyLevel || "low"),
+    conclusionStrength: restraintPayload.conclusionStrength,
+    recommendedPracticeMode: phase9Recommendation.recommendedPracticeMode,
+    recommendedInterventionType: phase7Rec.recommendedInterventionType,
+    interventionFormat: interventionPhase8.interventionFormat,
+    responseToIntervention: phase10Effectiveness.responseToIntervention,
+    supportAdjustmentNeed: phase10Effectiveness.supportAdjustmentNeed,
+    learningStage: memoryPhase9.learningStage,
+    independenceProgress: memoryPhase9.independenceProgress,
+    mistakeRecurrenceLevel: mistakeIntel.mistakeRecurrenceLevel,
+    trendDer,
+    trend,
+    displayName,
+  });
+
+  const phase11Drift = buildAdviceDriftPhase11({
+    ...phase11Sequencing,
+    rootCause: rootCausePayload.rootCause,
+    recommendedInterventionType: phase7Rec.recommendedInterventionType,
+    recommendedPracticeMode: phase9Recommendation.recommendedPracticeMode,
+  });
+
+  const phase11Overlay = buildPhase11SequenceOverlay({
+    ...phase11Sequencing,
+    ...phase11Drift,
+    responseToIntervention: phase10Effectiveness.responseToIntervention,
+    nextSupportAdjustment: phase10Overlay.nextSupportAdjustment,
+    conclusionFreshness: phase10Aging.conclusionFreshness,
+    freshnessState: phase10Aging.freshnessState,
+    recalibrationNeed: phase10Aging.recalibrationNeed,
+    displayName,
+  });
+
+  const phase12Memory = buildRecommendationMemoryPhase12({
+    q,
+    evidenceStrength: String(row?.evidenceStrength || "low"),
+    dataSufficiencyLevel: String(row?.dataSufficiencyLevel || "low"),
+    conclusionStrength: restraintPayload.conclusionStrength,
+    trend,
+    trendDer,
+    priorSupportPattern: phase11Sequencing.priorSupportPattern,
+    recommendedPracticeMode: phase9Recommendation.recommendedPracticeMode,
+    interventionFormat: interventionPhase8.interventionFormat,
+    responseToIntervention: phase10Effectiveness.responseToIntervention,
+    displayName,
+  });
+
+  const phase12Outcome = buildOutcomeTrackingPhase12({
+    ...phase12Memory,
+    responseToIntervention: phase10Effectiveness.responseToIntervention,
+    independenceProgress: memoryPhase9.independenceProgress,
+    mistakeRecurrenceLevel: mistakeIntel.mistakeRecurrenceLevel,
+    trendDer,
+    displayName,
+  });
+
+  const phase12Overlay = buildPhase12ContinuationOverlay({
+    ...phase12Memory,
+    ...phase12Outcome,
+    ...phase11Drift,
+    ...phase11Overlay,
+    nextSupportSequenceAction: phase11Overlay.nextSupportSequenceAction,
+    supportSequenceState: phase11Sequencing.supportSequenceState,
+    strategyRepetitionRisk: phase11Sequencing.strategyRepetitionRisk,
+  });
+
+  const phase13Gates = buildDecisionGatesPhase13({
+    q,
+    evidenceStrength: String(row?.evidenceStrength || "low"),
+    dataSufficiencyLevel: String(row?.dataSufficiencyLevel || "low"),
+    conclusionStrength: restraintPayload.conclusionStrength,
+    rootCause: rootCausePayload.rootCause,
+    retentionRisk: memoryPhase9.retentionRisk,
+    learningStage: memoryPhase9.learningStage,
+    freshnessState: phase10Aging.freshnessState,
+    conclusionFreshness: phase10Aging.conclusionFreshness,
+    recalibrationNeed: phase10Aging.recalibrationNeed,
+    supportSequenceState: phase11Sequencing.supportSequenceState,
+    responseToIntervention: phase10Effectiveness.responseToIntervention,
+    expectedVsObservedMatch: phase12Outcome.expectedVsObservedMatch,
+    recommendationMemoryState: phase12Memory.recommendationMemoryState,
+    independenceProgress: memoryPhase9.independenceProgress,
+    trendDer,
+    finalStep: capped.step,
+    displayName,
+  });
+
+  const phase13Targets = buildEvidenceTargetsPhase13({
+    rootCause: rootCausePayload.rootCause,
+    freshnessState: phase10Aging.freshnessState,
+    conclusionFreshness: phase10Aging.conclusionFreshness,
+    recommendationMemoryState: phase12Memory.recommendationMemoryState,
+    expectedVsObservedMatch: phase12Outcome.expectedVsObservedMatch,
+    responseToIntervention: phase10Effectiveness.responseToIntervention,
+    mistakeRecurrenceLevel: mistakeIntel.mistakeRecurrenceLevel,
+    learningStage: memoryPhase9.learningStage,
+    displayName,
+  });
+
+  const phase13Overlay = buildPhase13NextCycleOverlay({
+    ...phase13Gates,
+    ...phase13Targets,
+    learningStage: memoryPhase9.learningStage,
+    trendDer,
+    independenceProgress: memoryPhase9.independenceProgress,
+    freshnessState: phase10Aging.freshnessState,
+    conclusionFreshness: phase10Aging.conclusionFreshness,
+    recalibrationNeed: phase10Aging.recalibrationNeed,
+    expectedVsObservedMatch: phase12Outcome.expectedVsObservedMatch,
+    recommendationMemoryState: phase12Memory.recommendationMemoryState,
+  });
+
+  const phase14Dep = buildFoundationDependencyPhase14({
+    q,
+    evidenceStrength: String(row?.evidenceStrength || "low"),
+    dataSufficiencyLevel: String(row?.dataSufficiencyLevel || "low"),
+    conclusionStrength: restraintPayload.conclusionStrength,
+    rootCause: rootCausePayload.rootCause,
+    learningStage: memoryPhase9.learningStage,
+    retentionRisk: memoryPhase9.retentionRisk,
+    mistakeRecurrenceLevel: mistakeIntel.mistakeRecurrenceLevel,
+    dominantMistakePattern: mistakeIntel.dominantMistakePattern,
+    independenceProgress: memoryPhase9.independenceProgress,
+    trendDer,
+    responseToIntervention: phase10Effectiveness.responseToIntervention,
+    expectedVsObservedMatch: phase12Outcome.expectedVsObservedMatch,
+    recommendationMemoryState: phase12Memory.recommendationMemoryState,
+    gateReadiness: phase13Gates.gateReadiness,
+    gateState: phase13Gates.gateState,
+    targetEvidenceType: phase13Targets.targetEvidenceType,
+    displayName,
+  });
+
+  const phase14Overlay = buildPhase14RecommendationOverlay({
+    ...phase13Gates,
+    ...phase13Targets,
+    ...phase13Overlay,
+    ...phase14Dep,
+  });
+
+  const wnTrim = String(phase7Rec.whyNotAStrongerConclusionHe || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const cautionLineHe = wnTrim.length > 110 ? `${wnTrim.slice(0, 107)}…` : wnTrim;
 
   let whyThisRecommendationHe = buildWhyThisRecommendationHe({
     displayName,
@@ -636,9 +991,72 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
   if (capped.postCapApplied) {
     whyThisRecommendationHe += " הוחל כיסוי ראיות בסיס — לא מבצעים צעד אגרסיבי כשהנתונים חלקיים.";
   }
+  whyThisRecommendationHe += ` שורש קושי סביר: ${rootCausePayload.rootCauseLabelHe || rootCausePayload.rootCause}.`;
+  const dc = String(restraintPayload.diagnosticCautionHe || "").trim();
+  if (dc) whyThisRecommendationHe += ` ${dc}`;
+  if (phase10Aging.confidenceDecayApplied) {
+    whyThisRecommendationHe += " הראיות בטווח מתחילות להתיישן — נשארים עם ניסוח זהיר יחסית.";
+  }
+  if (phase11Drift.repeatAdviceWarning && phase11Overlay.whyWeShouldNotRepeatSameSupportHe) {
+    whyThisRecommendationHe += ` ${phase11Overlay.whyWeShouldNotRepeatSameSupportHe}`;
+  } else if (phase11Drift.recommendationRotationNeed === "meaningful_rotation" && phase11Overlay.whyWeShouldNotRepeatSameSupportHe) {
+    whyThisRecommendationHe += ` ${String(phase11Overlay.whyWeShouldNotRepeatSameSupportHe).slice(0, 120)}`;
+  }
+  if (phase12Overlay.whatNeedsFreshEvidenceNowHe && phase12Memory.recommendationMemoryState === "no_memory") {
+    whyThisRecommendationHe += ` ${String(phase12Overlay.whatNeedsFreshEvidenceNowHe).slice(0, 140)}`;
+  } else if (phase12Overlay.whyWeThinkThisPathDidNotLandHe && phase12Outcome.expectedVsObservedMatch === "misaligned") {
+    whyThisRecommendationHe += ` ${String(phase12Overlay.whyWeThinkThisPathDidNotLandHe).slice(0, 140)}`;
+  }
+  if (
+    (phase13Gates.gateReadiness === "insufficient" || phase13Gates.gateState === "gates_not_ready") &&
+    phase13Overlay.whatEvidenceWeStillNeedHe
+  ) {
+    whyThisRecommendationHe += ` ${String(phase13Overlay.whatEvidenceWeStillNeedHe).slice(0, 130)}`;
+  } else if (phase13Gates.gateState === "recheck_gate_visible" && phase13Overlay.whatWouldTriggerRecheckHe) {
+    whyThisRecommendationHe += ` ${String(phase13Overlay.whatWouldTriggerRecheckHe).slice(0, 120)}`;
+  }
+  if (phase14Overlay.interventionOrdering === "foundation_first" && phase14Overlay.whyFoundationFirstHe) {
+    whyThisRecommendationHe += ` ${String(phase14Overlay.whyFoundationFirstHe).slice(0, 135)}`;
+  } else if (
+    phase14Overlay.interventionOrdering === "gather_dependency_evidence_first" &&
+    phase14Overlay.whyLocalSupportFirstHe
+  ) {
+    whyThisRecommendationHe += ` ${String(phase14Overlay.whyLocalSupportFirstHe).slice(0, 125)}`;
+  } else if (phase14Overlay.interventionOrdering === "parallel_light_support" && phase14Overlay.whyThisMayBeSymptomNotCoreHe) {
+    whyThisRecommendationHe += ` ${String(phase14Overlay.whyThisMayBeSymptomNotCoreHe).slice(0, 115)}`;
+  }
+  if (
+    phase14Dep.dependencyState === "likely_foundational_block" &&
+    (phase13Gates.releaseGate === "forming" || phase13Gates.advanceGate === "forming")
+  ) {
+    whyThisRecommendationHe += " כל עוד יש חשד לפער יסוד — לא מרחיבים שחרור או קידום בלי יותר יציבות בסיס.";
+  }
 
   return {
     ...capped,
+    ...restraintPayload,
+    ...rootCausePayload,
+    ...phase7Rec,
+    ...interventionPhase8,
+    ...calibrationPhase8,
+    ...mistakeIntel,
+    ...memoryPhase9,
+    ...phase9Recommendation,
+    ...phase10Effectiveness,
+    ...phase10Aging,
+    ...phase10Overlay,
+    ...phase11Sequencing,
+    ...phase11Drift,
+    ...phase11Overlay,
+    ...phase12Memory,
+    ...phase12Outcome,
+    ...phase12Overlay,
+    ...phase13Gates,
+    ...phase13Targets,
+    ...phase13Overlay,
+    ...phase14Dep,
+    ...phase14Overlay,
+    cautionLineHe,
     recommendationStructuredTrace: structured,
     riskFlags: riskFlagsPayload,
     diagnosticType: behaviorType,
@@ -736,6 +1154,208 @@ export function buildTopicRecommendationRecord(
     whyThisRecommendationHe: decision.whyThisRecommendationHe || "",
     whatCouldChangeThisHe: decision.whatCouldChangeThisHe || "",
     recommendationStructuredTrace: decision.recommendationStructuredTrace ?? null,
+    diagnosticRestraint: decision.diagnosticRestraint ?? null,
+    conclusionStrength: decision.conclusionStrength ?? null,
+    shouldAvoidStrongConclusion: !!decision.shouldAvoidStrongConclusion,
+    alternativeExplanations: Array.isArray(decision.alternativeExplanations) ? decision.alternativeExplanations : [],
+    diagnosticCautionHe: decision.diagnosticCautionHe ?? "",
+    diagnosticConfidenceBand: decision.diagnosticConfidenceBand ?? "medium",
+    rootCause: decision.rootCause ?? null,
+    rootCauseLabelHe: decision.rootCauseLabelHe ?? null,
+    rootCauseConfidence: Number.isFinite(Number(decision.rootCauseConfidence))
+      ? Number(decision.rootCauseConfidence)
+      : null,
+    rootCauseEvidence: Array.isArray(decision.rootCauseEvidence) ? decision.rootCauseEvidence : [],
+    secondaryPossibleCause: decision.secondaryPossibleCause ?? null,
+    rootCauseNarrativeHe: decision.rootCauseNarrativeHe ?? null,
+    recommendationReasoningHe: decision.recommendationReasoningHe ?? "",
+    recommendedInterventionType: decision.recommendedInterventionType ?? null,
+    recommendedEvidenceAction: decision.recommendedEvidenceAction ?? null,
+    recommendedEvidenceActionHe: decision.recommendedEvidenceActionHe ?? "",
+    whatWouldIncreaseConfidenceHe: decision.whatWouldIncreaseConfidenceHe ?? "",
+    whyNotAStrongerConclusionHe: decision.whyNotAStrongerConclusionHe ?? "",
+    interventionPlan: decision.interventionPlan ?? null,
+    interventionPlanHe: decision.interventionPlanHe ?? "",
+    interventionDurationBand: decision.interventionDurationBand ?? null,
+    interventionIntensity: decision.interventionIntensity ?? null,
+    interventionFormat: decision.interventionFormat ?? null,
+    interventionGoal: decision.interventionGoal ?? null,
+    interventionSuccessSignalHe: decision.interventionSuccessSignalHe ?? "",
+    interventionStopSignalHe: decision.interventionStopSignalHe ?? "",
+    interventionParentEffort: decision.interventionParentEffort ?? null,
+    doNowHe: decision.doNowHe ?? "",
+    avoidNowHe: decision.avoidNowHe ?? "",
+    recommendedPracticeLoad: decision.recommendedPracticeLoad ?? null,
+    recommendedSessionCount: Number.isFinite(Number(decision.recommendedSessionCount))
+      ? Number(decision.recommendedSessionCount)
+      : null,
+    recommendedSessionLengthBand: decision.recommendedSessionLengthBand ?? null,
+    escalationThresholdHe: decision.escalationThresholdHe ?? "",
+    deescalationThresholdHe: decision.deescalationThresholdHe ?? "",
+    practiceReadiness: decision.practiceReadiness ?? null,
+    cautionLineHe: decision.cautionLineHe ?? "",
+    mistakeIntelligence: decision.mistakeIntelligence ?? null,
+    dominantMistakePattern: decision.dominantMistakePattern ?? null,
+    dominantMistakePatternLabelHe: decision.dominantMistakePatternLabelHe ?? "",
+    mistakePatternConfidence: Number.isFinite(Number(decision.mistakePatternConfidence))
+      ? Number(decision.mistakePatternConfidence)
+      : null,
+    mistakePatternEvidence: Array.isArray(decision.mistakePatternEvidence) ? decision.mistakePatternEvidence : [],
+    secondaryMistakePattern: decision.secondaryMistakePattern ?? null,
+    mistakePatternNarrativeHe: decision.mistakePatternNarrativeHe ?? "",
+    mistakeSpecificity: decision.mistakeSpecificity ?? null,
+    mistakeRecurrenceLevel: decision.mistakeRecurrenceLevel ?? null,
+    learningMemory: decision.learningMemory ?? null,
+    learningStage: decision.learningStage ?? null,
+    learningStageLabelHe: decision.learningStageLabelHe ?? "",
+    retentionRisk: decision.retentionRisk ?? null,
+    stabilizationState: decision.stabilizationState ?? null,
+    transferReadiness: decision.transferReadiness ?? null,
+    independenceProgress: decision.independenceProgress ?? null,
+    memoryNarrativeHe: decision.memoryNarrativeHe ?? "",
+    learningMemoryEvidence: Array.isArray(decision.learningMemoryEvidence) ? decision.learningMemoryEvidence : [],
+    recommendedPracticeMode: decision.recommendedPracticeMode ?? null,
+    recommendedTransferStep: decision.recommendedTransferStep ?? null,
+    reviewBeforeAdvanceHe: decision.reviewBeforeAdvanceHe ?? "",
+    mistakeFocusedActionHe: decision.mistakeFocusedActionHe ?? "",
+    memoryFocusedActionHe: decision.memoryFocusedActionHe ?? "",
+    interventionEffectiveness: decision.interventionEffectiveness ?? null,
+    responseToIntervention: decision.responseToIntervention ?? null,
+    responseToInterventionLabelHe: decision.responseToInterventionLabelHe ?? "",
+    effectivenessConfidence: Number.isFinite(Number(decision.effectivenessConfidence))
+      ? Number(decision.effectivenessConfidence)
+      : null,
+    effectivenessEvidence: Array.isArray(decision.effectivenessEvidence) ? decision.effectivenessEvidence : [],
+    supportFit: decision.supportFit ?? null,
+    supportFitLabelHe: decision.supportFitLabelHe ?? "",
+    supportAdjustmentNeed: decision.supportAdjustmentNeed ?? null,
+    supportAdjustmentNeedHe: decision.supportAdjustmentNeedHe ?? "",
+    interventionEffectNarrativeHe: decision.interventionEffectNarrativeHe ?? "",
+    confidenceAging: decision.confidenceAging ?? null,
+    freshnessState: decision.freshnessState ?? null,
+    freshnessStateLabelHe: decision.freshnessStateLabelHe ?? "",
+    conclusionFreshness: decision.conclusionFreshness ?? null,
+    conclusionFreshnessLabelHe: decision.conclusionFreshnessLabelHe ?? "",
+    confidenceDecayApplied: !!decision.confidenceDecayApplied,
+    recalibrationNeed: decision.recalibrationNeed ?? null,
+    recalibrationNeedHe: decision.recalibrationNeedHe ?? "",
+    nextSupportAdjustment: decision.nextSupportAdjustment ?? null,
+    nextSupportAdjustmentHe: decision.nextSupportAdjustmentHe ?? "",
+    continueWhatWorksHe: decision.continueWhatWorksHe ?? "",
+    changeBecauseHe: decision.changeBecauseHe ?? "",
+    recheckBeforeEscalationHe: decision.recheckBeforeEscalationHe ?? "",
+    evidenceStillMissingHe: decision.evidenceStillMissingHe ?? "",
+    supportSequencing: decision.supportSequencing ?? null,
+    supportSequenceState: decision.supportSequenceState ?? null,
+    supportSequenceStateLabelHe: decision.supportSequenceStateLabelHe ?? "",
+    priorSupportPattern: decision.priorSupportPattern ?? null,
+    priorSupportPatternLabelHe: decision.priorSupportPatternLabelHe ?? "",
+    strategyRepetitionRisk: decision.strategyRepetitionRisk ?? null,
+    strategyRepetitionRiskHe: decision.strategyRepetitionRiskHe ?? "",
+    strategyFatigueRisk: decision.strategyFatigueRisk ?? null,
+    strategyFatigueRiskHe: decision.strategyFatigueRiskHe ?? "",
+    nextBestSequenceStep: decision.nextBestSequenceStep ?? null,
+    nextBestSequenceStepHe: decision.nextBestSequenceStepHe ?? "",
+    supportSequenceNarrativeHe: decision.supportSequenceNarrativeHe ?? "",
+    adviceDrift: decision.adviceDrift ?? null,
+    adviceSimilarityLevel: decision.adviceSimilarityLevel ?? null,
+    adviceSimilarityLevelHe: decision.adviceSimilarityLevelHe ?? "",
+    adviceNovelty: decision.adviceNovelty ?? null,
+    adviceNoveltyHe: decision.adviceNoveltyHe ?? "",
+    repeatAdviceWarning: !!decision.repeatAdviceWarning,
+    repeatAdviceWarningHe: decision.repeatAdviceWarningHe ?? "",
+    recommendationRotationNeed: decision.recommendationRotationNeed ?? null,
+    recommendationRotationNeedHe: decision.recommendationRotationNeedHe ?? "",
+    nextSupportSequenceAction: decision.nextSupportSequenceAction ?? null,
+    nextSupportSequenceActionHe: decision.nextSupportSequenceActionHe ?? "",
+    whyThisIsDifferentNowHe: decision.whyThisIsDifferentNowHe ?? "",
+    whyWeShouldNotRepeatSameSupportHe: decision.whyWeShouldNotRepeatSameSupportHe ?? "",
+    whatMustHappenBeforeReleaseHe: decision.whatMustHappenBeforeReleaseHe ?? "",
+    whatSignalsSequenceSuccessHe: decision.whatSignalsSequenceSuccessHe ?? "",
+    recommendationMemory: decision.recommendationMemory ?? null,
+    recommendationMemoryState: decision.recommendationMemoryState ?? null,
+    recommendationMemoryStateLabelHe: decision.recommendationMemoryStateLabelHe ?? "",
+    priorRecommendationSignature: decision.priorRecommendationSignature ?? null,
+    priorRecommendationSignatureLabelHe: decision.priorRecommendationSignatureLabelHe ?? "",
+    supportHistoryDepth: decision.supportHistoryDepth ?? null,
+    supportHistoryDepthLabelHe: decision.supportHistoryDepthLabelHe ?? "",
+    recommendationCarryover: decision.recommendationCarryover ?? null,
+    recommendationCarryoverLabelHe: decision.recommendationCarryoverLabelHe ?? "",
+    memoryOfPriorSupportConfidence: decision.memoryOfPriorSupportConfidence ?? null,
+    recommendationMemoryNarrativeHe: decision.recommendationMemoryNarrativeHe ?? "",
+    outcomeTracking: decision.outcomeTracking ?? null,
+    expectedOutcomeType: decision.expectedOutcomeType ?? null,
+    expectedOutcomeTypeLabelHe: decision.expectedOutcomeTypeLabelHe ?? "",
+    observedOutcomeState: decision.observedOutcomeState ?? null,
+    observedOutcomeStateLabelHe: decision.observedOutcomeStateLabelHe ?? "",
+    expectedVsObservedMatch: decision.expectedVsObservedMatch ?? null,
+    expectedVsObservedMatchHe: decision.expectedVsObservedMatchHe ?? "",
+    followThroughSignal: decision.followThroughSignal ?? null,
+    followThroughSignalHe: decision.followThroughSignalHe ?? "",
+    outcomeTrackingConfidence: decision.outcomeTrackingConfidence ?? null,
+    outcomeTrackingNarrativeHe: decision.outcomeTrackingNarrativeHe ?? "",
+    recommendationContinuationDecision: decision.recommendationContinuationDecision ?? null,
+    recommendationContinuationDecisionHe: decision.recommendationContinuationDecisionHe ?? "",
+    outcomeBasedNextMove: decision.outcomeBasedNextMove ?? null,
+    outcomeBasedNextMoveHe: decision.outcomeBasedNextMoveHe ?? "",
+    whyWeThinkThisPathWorkedHe: decision.whyWeThinkThisPathWorkedHe ?? "",
+    whyWeThinkThisPathDidNotLandHe: decision.whyWeThinkThisPathDidNotLandHe ?? "",
+    whatNeedsFreshEvidenceNowHe: decision.whatNeedsFreshEvidenceNowHe ?? "",
+    whatShouldCarryForwardHe: decision.whatShouldCarryForwardHe ?? "",
+    decisionGates: decision.decisionGates ?? null,
+    gateState: decision.gateState ?? null,
+    gateStateLabelHe: decision.gateStateLabelHe ?? "",
+    continueGate: decision.continueGate ?? null,
+    releaseGate: decision.releaseGate ?? null,
+    pivotGate: decision.pivotGate ?? null,
+    recheckGate: decision.recheckGate ?? null,
+    advanceGate: decision.advanceGate ?? null,
+    gateReadiness: decision.gateReadiness ?? null,
+    gateReadinessLabelHe: decision.gateReadinessLabelHe ?? "",
+    gateNarrativeHe: decision.gateNarrativeHe ?? "",
+    evidenceTargets: decision.evidenceTargets ?? null,
+    targetEvidenceType: decision.targetEvidenceType ?? null,
+    targetEvidenceTypeLabelHe: decision.targetEvidenceTypeLabelHe ?? "",
+    targetObservationWindow: decision.targetObservationWindow ?? null,
+    targetObservationWindowLabelHe: decision.targetObservationWindowLabelHe ?? "",
+    targetSuccessSignalHe: decision.targetSuccessSignalHe ?? "",
+    targetFailureSignalHe: decision.targetFailureSignalHe ?? "",
+    targetIndependenceSignalHe: decision.targetIndependenceSignalHe ?? "",
+    targetStabilitySignalHe: decision.targetStabilitySignalHe ?? "",
+    targetFreshnessNeedHe: decision.targetFreshnessNeedHe ?? "",
+    evidenceTargetNarrativeHe: decision.evidenceTargetNarrativeHe ?? "",
+    nextCycleDecisionFocus: decision.nextCycleDecisionFocus ?? null,
+    nextCycleDecisionFocusHe: decision.nextCycleDecisionFocusHe ?? "",
+    whatWouldJustifyReleaseHe: decision.whatWouldJustifyReleaseHe ?? "",
+    whatWouldJustifyAdvanceHe: decision.whatWouldJustifyAdvanceHe ?? "",
+    whatWouldTriggerPivotHe: decision.whatWouldTriggerPivotHe ?? "",
+    whatWouldTriggerRecheckHe: decision.whatWouldTriggerRecheckHe ?? "",
+    whatEvidenceWeStillNeedHe: decision.whatEvidenceWeStillNeedHe ?? "",
+    foundationDependency: decision.foundationDependency ?? null,
+    dependencyState: decision.dependencyState ?? null,
+    dependencyStateLabelHe: decision.dependencyStateLabelHe ?? "",
+    likelyFoundationalBlocker: decision.likelyFoundationalBlocker ?? null,
+    likelyFoundationalBlockerLabelHe: decision.likelyFoundationalBlockerLabelHe ?? "",
+    dependencyConfidence: decision.dependencyConfidence ?? null,
+    dependencyEvidence: Array.isArray(decision.dependencyEvidence) ? decision.dependencyEvidence : [],
+    downstreamSymptomLikelihood: decision.downstreamSymptomLikelihood ?? null,
+    downstreamSymptomLikelihoodHe: decision.downstreamSymptomLikelihoodHe ?? "",
+    localIssueLikelihood: decision.localIssueLikelihood ?? null,
+    localIssueLikelihoodHe: decision.localIssueLikelihoodHe ?? "",
+    shouldTreatAsFoundationFirst: !!decision.shouldTreatAsFoundationFirst,
+    foundationDependencyNarrativeHe: decision.foundationDependencyNarrativeHe ?? "",
+    interventionOrdering: decision.interventionOrdering ?? null,
+    interventionOrderingHe: decision.interventionOrderingHe ?? "",
+    whyThisMayBeSymptomNotCoreHe: decision.whyThisMayBeSymptomNotCoreHe ?? "",
+    whyFoundationFirstHe: decision.whyFoundationFirstHe ?? "",
+    whyLocalSupportFirstHe: decision.whyLocalSupportFirstHe ?? "",
+    whatCanWaitUntilFoundationStabilizesHe: decision.whatCanWaitUntilFoundationStabilizesHe ?? "",
+    foundationDecision: decision.foundationDecision ?? null,
+    foundationDecisionLabelHe: decision.foundationDecisionLabelHe ?? "",
+    nextCycleSupportLevel: decision.nextCycleSupportLevel ?? null,
+    nextCycleSupportLevelHe: decision.nextCycleSupportLevelHe ?? "",
+    foundationBeforeExpansion: !!decision.foundationBeforeExpansion,
+    foundationBeforeExpansionHe: decision.foundationBeforeExpansionHe ?? "",
   };
 }
 
@@ -783,6 +1403,200 @@ export function enrichReportMapsWithTopicStepHints(
         whyThisRecommendationHe: rec.whyThisRecommendationHe || null,
         whatCouldChangeThisHe: rec.whatCouldChangeThisHe || null,
         recommendationStructuredTrace: rec.recommendationStructuredTrace ?? null,
+        diagnosticRestraint: rec.diagnosticRestraint ?? null,
+        conclusionStrength: rec.conclusionStrength ?? null,
+        shouldAvoidStrongConclusion: rec.shouldAvoidStrongConclusion ?? false,
+        alternativeExplanations: rec.alternativeExplanations ?? [],
+        diagnosticCautionHe: rec.diagnosticCautionHe ?? null,
+        diagnosticConfidenceBand: rec.diagnosticConfidenceBand ?? null,
+        rootCause: rec.rootCause ?? null,
+        rootCauseLabelHe: rec.rootCauseLabelHe ?? null,
+        rootCauseConfidence: rec.rootCauseConfidence ?? null,
+        rootCauseEvidence: rec.rootCauseEvidence ?? null,
+        secondaryPossibleCause: rec.secondaryPossibleCause ?? null,
+        rootCauseNarrativeHe: rec.rootCauseNarrativeHe ?? null,
+        recommendationReasoningHe: rec.recommendationReasoningHe ?? null,
+        recommendedInterventionType: rec.recommendedInterventionType ?? null,
+        recommendedEvidenceAction: rec.recommendedEvidenceAction ?? null,
+        recommendedEvidenceActionHe: rec.recommendedEvidenceActionHe ?? null,
+        whatWouldIncreaseConfidenceHe: rec.whatWouldIncreaseConfidenceHe ?? null,
+        whyNotAStrongerConclusionHe: rec.whyNotAStrongerConclusionHe ?? null,
+        interventionPlan: rec.interventionPlan ?? null,
+        interventionPlanHe: rec.interventionPlanHe ?? null,
+        interventionDurationBand: rec.interventionDurationBand ?? null,
+        interventionIntensity: rec.interventionIntensity ?? null,
+        interventionFormat: rec.interventionFormat ?? null,
+        interventionGoal: rec.interventionGoal ?? null,
+        interventionSuccessSignalHe: rec.interventionSuccessSignalHe ?? null,
+        interventionStopSignalHe: rec.interventionStopSignalHe ?? null,
+        interventionParentEffort: rec.interventionParentEffort ?? null,
+        doNowHe: rec.doNowHe ?? null,
+        avoidNowHe: rec.avoidNowHe ?? null,
+        recommendedPracticeLoad: rec.recommendedPracticeLoad ?? null,
+        recommendedSessionCount: rec.recommendedSessionCount ?? null,
+        recommendedSessionLengthBand: rec.recommendedSessionLengthBand ?? null,
+        escalationThresholdHe: rec.escalationThresholdHe ?? null,
+        deescalationThresholdHe: rec.deescalationThresholdHe ?? null,
+        practiceReadiness: rec.practiceReadiness ?? null,
+        cautionLineHe: rec.cautionLineHe ?? null,
+        mistakeIntelligence: rec.mistakeIntelligence ?? null,
+        dominantMistakePattern: rec.dominantMistakePattern ?? null,
+        dominantMistakePatternLabelHe: rec.dominantMistakePatternLabelHe ?? null,
+        mistakePatternConfidence: rec.mistakePatternConfidence ?? null,
+        mistakePatternEvidence: rec.mistakePatternEvidence ?? null,
+        secondaryMistakePattern: rec.secondaryMistakePattern ?? null,
+        mistakePatternNarrativeHe: rec.mistakePatternNarrativeHe ?? null,
+        mistakeSpecificity: rec.mistakeSpecificity ?? null,
+        mistakeRecurrenceLevel: rec.mistakeRecurrenceLevel ?? null,
+        learningMemory: rec.learningMemory ?? null,
+        learningStage: rec.learningStage ?? null,
+        learningStageLabelHe: rec.learningStageLabelHe ?? null,
+        retentionRisk: rec.retentionRisk ?? null,
+        stabilizationState: rec.stabilizationState ?? null,
+        transferReadiness: rec.transferReadiness ?? null,
+        independenceProgress: rec.independenceProgress ?? null,
+        memoryNarrativeHe: rec.memoryNarrativeHe ?? null,
+        learningMemoryEvidence: rec.learningMemoryEvidence ?? null,
+        recommendedPracticeMode: rec.recommendedPracticeMode ?? null,
+        recommendedTransferStep: rec.recommendedTransferStep ?? null,
+        reviewBeforeAdvanceHe: rec.reviewBeforeAdvanceHe ?? null,
+        mistakeFocusedActionHe: rec.mistakeFocusedActionHe ?? null,
+        memoryFocusedActionHe: rec.memoryFocusedActionHe ?? null,
+        interventionEffectiveness: rec.interventionEffectiveness ?? null,
+        responseToIntervention: rec.responseToIntervention ?? null,
+        responseToInterventionLabelHe: rec.responseToInterventionLabelHe ?? null,
+        effectivenessConfidence: rec.effectivenessConfidence ?? null,
+        effectivenessEvidence: rec.effectivenessEvidence ?? null,
+        supportFit: rec.supportFit ?? null,
+        supportFitLabelHe: rec.supportFitLabelHe ?? null,
+        supportAdjustmentNeed: rec.supportAdjustmentNeed ?? null,
+        supportAdjustmentNeedHe: rec.supportAdjustmentNeedHe ?? null,
+        interventionEffectNarrativeHe: rec.interventionEffectNarrativeHe ?? null,
+        confidenceAging: rec.confidenceAging ?? null,
+        freshnessState: rec.freshnessState ?? null,
+        freshnessStateLabelHe: rec.freshnessStateLabelHe ?? null,
+        conclusionFreshness: rec.conclusionFreshness ?? null,
+        conclusionFreshnessLabelHe: rec.conclusionFreshnessLabelHe ?? null,
+        confidenceDecayApplied: rec.confidenceDecayApplied ?? false,
+        recalibrationNeed: rec.recalibrationNeed ?? null,
+        recalibrationNeedHe: rec.recalibrationNeedHe ?? null,
+        nextSupportAdjustment: rec.nextSupportAdjustment ?? null,
+        nextSupportAdjustmentHe: rec.nextSupportAdjustmentHe ?? null,
+        continueWhatWorksHe: rec.continueWhatWorksHe ?? null,
+        changeBecauseHe: rec.changeBecauseHe ?? null,
+        recheckBeforeEscalationHe: rec.recheckBeforeEscalationHe ?? null,
+        evidenceStillMissingHe: rec.evidenceStillMissingHe ?? null,
+        supportSequencing: rec.supportSequencing ?? null,
+        supportSequenceState: rec.supportSequenceState ?? null,
+        supportSequenceStateLabelHe: rec.supportSequenceStateLabelHe ?? null,
+        priorSupportPattern: rec.priorSupportPattern ?? null,
+        priorSupportPatternLabelHe: rec.priorSupportPatternLabelHe ?? null,
+        strategyRepetitionRisk: rec.strategyRepetitionRisk ?? null,
+        strategyRepetitionRiskHe: rec.strategyRepetitionRiskHe ?? null,
+        strategyFatigueRisk: rec.strategyFatigueRisk ?? null,
+        strategyFatigueRiskHe: rec.strategyFatigueRiskHe ?? null,
+        nextBestSequenceStep: rec.nextBestSequenceStep ?? null,
+        nextBestSequenceStepHe: rec.nextBestSequenceStepHe ?? null,
+        supportSequenceNarrativeHe: rec.supportSequenceNarrativeHe ?? null,
+        adviceDrift: rec.adviceDrift ?? null,
+        adviceSimilarityLevel: rec.adviceSimilarityLevel ?? null,
+        adviceSimilarityLevelHe: rec.adviceSimilarityLevelHe ?? null,
+        adviceNovelty: rec.adviceNovelty ?? null,
+        adviceNoveltyHe: rec.adviceNoveltyHe ?? null,
+        repeatAdviceWarning: rec.repeatAdviceWarning ?? false,
+        repeatAdviceWarningHe: rec.repeatAdviceWarningHe ?? null,
+        recommendationRotationNeed: rec.recommendationRotationNeed ?? null,
+        recommendationRotationNeedHe: rec.recommendationRotationNeedHe ?? null,
+        nextSupportSequenceAction: rec.nextSupportSequenceAction ?? null,
+        nextSupportSequenceActionHe: rec.nextSupportSequenceActionHe ?? null,
+        whyThisIsDifferentNowHe: rec.whyThisIsDifferentNowHe ?? null,
+        whyWeShouldNotRepeatSameSupportHe: rec.whyWeShouldNotRepeatSameSupportHe ?? null,
+        whatMustHappenBeforeReleaseHe: rec.whatMustHappenBeforeReleaseHe ?? null,
+        whatSignalsSequenceSuccessHe: rec.whatSignalsSequenceSuccessHe ?? null,
+        recommendationMemory: rec.recommendationMemory ?? null,
+        recommendationMemoryState: rec.recommendationMemoryState ?? null,
+        recommendationMemoryStateLabelHe: rec.recommendationMemoryStateLabelHe ?? null,
+        priorRecommendationSignature: rec.priorRecommendationSignature ?? null,
+        priorRecommendationSignatureLabelHe: rec.priorRecommendationSignatureLabelHe ?? null,
+        supportHistoryDepth: rec.supportHistoryDepth ?? null,
+        supportHistoryDepthLabelHe: rec.supportHistoryDepthLabelHe ?? null,
+        recommendationCarryover: rec.recommendationCarryover ?? null,
+        recommendationCarryoverLabelHe: rec.recommendationCarryoverLabelHe ?? null,
+        memoryOfPriorSupportConfidence: rec.memoryOfPriorSupportConfidence ?? null,
+        recommendationMemoryNarrativeHe: rec.recommendationMemoryNarrativeHe ?? null,
+        outcomeTracking: rec.outcomeTracking ?? null,
+        expectedOutcomeType: rec.expectedOutcomeType ?? null,
+        expectedOutcomeTypeLabelHe: rec.expectedOutcomeTypeLabelHe ?? null,
+        observedOutcomeState: rec.observedOutcomeState ?? null,
+        observedOutcomeStateLabelHe: rec.observedOutcomeStateLabelHe ?? null,
+        expectedVsObservedMatch: rec.expectedVsObservedMatch ?? null,
+        expectedVsObservedMatchHe: rec.expectedVsObservedMatchHe ?? null,
+        followThroughSignal: rec.followThroughSignal ?? null,
+        followThroughSignalHe: rec.followThroughSignalHe ?? null,
+        outcomeTrackingConfidence: rec.outcomeTrackingConfidence ?? null,
+        outcomeTrackingNarrativeHe: rec.outcomeTrackingNarrativeHe ?? null,
+        recommendationContinuationDecision: rec.recommendationContinuationDecision ?? null,
+        recommendationContinuationDecisionHe: rec.recommendationContinuationDecisionHe ?? null,
+        outcomeBasedNextMove: rec.outcomeBasedNextMove ?? null,
+        outcomeBasedNextMoveHe: rec.outcomeBasedNextMoveHe ?? null,
+        whyWeThinkThisPathWorkedHe: rec.whyWeThinkThisPathWorkedHe ?? null,
+        whyWeThinkThisPathDidNotLandHe: rec.whyWeThinkThisPathDidNotLandHe ?? null,
+        whatNeedsFreshEvidenceNowHe: rec.whatNeedsFreshEvidenceNowHe ?? null,
+        whatShouldCarryForwardHe: rec.whatShouldCarryForwardHe ?? null,
+        decisionGates: rec.decisionGates ?? null,
+        gateState: rec.gateState ?? null,
+        gateStateLabelHe: rec.gateStateLabelHe ?? null,
+        continueGate: rec.continueGate ?? null,
+        releaseGate: rec.releaseGate ?? null,
+        pivotGate: rec.pivotGate ?? null,
+        recheckGate: rec.recheckGate ?? null,
+        advanceGate: rec.advanceGate ?? null,
+        gateReadiness: rec.gateReadiness ?? null,
+        gateReadinessLabelHe: rec.gateReadinessLabelHe ?? null,
+        gateNarrativeHe: rec.gateNarrativeHe ?? null,
+        evidenceTargets: rec.evidenceTargets ?? null,
+        targetEvidenceType: rec.targetEvidenceType ?? null,
+        targetEvidenceTypeLabelHe: rec.targetEvidenceTypeLabelHe ?? null,
+        targetObservationWindow: rec.targetObservationWindow ?? null,
+        targetObservationWindowLabelHe: rec.targetObservationWindowLabelHe ?? null,
+        targetSuccessSignalHe: rec.targetSuccessSignalHe ?? null,
+        targetFailureSignalHe: rec.targetFailureSignalHe ?? null,
+        targetIndependenceSignalHe: rec.targetIndependenceSignalHe ?? null,
+        targetStabilitySignalHe: rec.targetStabilitySignalHe ?? null,
+        targetFreshnessNeedHe: rec.targetFreshnessNeedHe ?? null,
+        evidenceTargetNarrativeHe: rec.evidenceTargetNarrativeHe ?? null,
+        nextCycleDecisionFocus: rec.nextCycleDecisionFocus ?? null,
+        nextCycleDecisionFocusHe: rec.nextCycleDecisionFocusHe ?? null,
+        whatWouldJustifyReleaseHe: rec.whatWouldJustifyReleaseHe ?? null,
+        whatWouldJustifyAdvanceHe: rec.whatWouldJustifyAdvanceHe ?? null,
+        whatWouldTriggerPivotHe: rec.whatWouldTriggerPivotHe ?? null,
+        whatWouldTriggerRecheckHe: rec.whatWouldTriggerRecheckHe ?? null,
+        whatEvidenceWeStillNeedHe: rec.whatEvidenceWeStillNeedHe ?? null,
+        foundationDependency: rec.foundationDependency ?? null,
+        dependencyState: rec.dependencyState ?? null,
+        dependencyStateLabelHe: rec.dependencyStateLabelHe ?? null,
+        likelyFoundationalBlocker: rec.likelyFoundationalBlocker ?? null,
+        likelyFoundationalBlockerLabelHe: rec.likelyFoundationalBlockerLabelHe ?? null,
+        dependencyConfidence: rec.dependencyConfidence ?? null,
+        dependencyEvidence: Array.isArray(rec.dependencyEvidence) ? rec.dependencyEvidence : [],
+        downstreamSymptomLikelihood: rec.downstreamSymptomLikelihood ?? null,
+        downstreamSymptomLikelihoodHe: rec.downstreamSymptomLikelihoodHe ?? null,
+        localIssueLikelihood: rec.localIssueLikelihood ?? null,
+        localIssueLikelihoodHe: rec.localIssueLikelihoodHe ?? null,
+        shouldTreatAsFoundationFirst: rec.shouldTreatAsFoundationFirst ?? false,
+        foundationDependencyNarrativeHe: rec.foundationDependencyNarrativeHe ?? null,
+        interventionOrdering: rec.interventionOrdering ?? null,
+        interventionOrderingHe: rec.interventionOrderingHe ?? null,
+        whyThisMayBeSymptomNotCoreHe: rec.whyThisMayBeSymptomNotCoreHe ?? null,
+        whyFoundationFirstHe: rec.whyFoundationFirstHe ?? null,
+        whyLocalSupportFirstHe: rec.whyLocalSupportFirstHe ?? null,
+        whatCanWaitUntilFoundationStabilizesHe: rec.whatCanWaitUntilFoundationStabilizesHe ?? null,
+        foundationDecision: rec.foundationDecision ?? null,
+        foundationDecisionLabelHe: rec.foundationDecisionLabelHe ?? null,
+        nextCycleSupportLevel: rec.nextCycleSupportLevel ?? null,
+        nextCycleSupportLevelHe: rec.nextCycleSupportLevelHe ?? null,
+        foundationBeforeExpansion: rec.foundationBeforeExpansion ?? false,
+        foundationBeforeExpansionHe: rec.foundationBeforeExpansionHe ?? null,
       };
     }
   }

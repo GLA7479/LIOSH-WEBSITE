@@ -114,6 +114,45 @@ function buildSubjectOpeningLineHe(sp, lab) {
   const domRisk = String(sp?.dominantLearningRiskLabelHe || "").trim();
   const domSucc = String(sp?.dominantSuccessPatternLabelHe || "").trim();
   const mr = majorRiskAny(sp);
+  const readiness = String(sp?.subjectConclusionReadiness || "").trim();
+  const domRc = String(sp?.dominantRootCauseLabelHe || "").trim();
+  const pri = String(sp?.subjectPriorityLevel || "").trim();
+  const priReason = String(sp?.subjectPriorityReasonHe || "").trim();
+
+  if (pri === "immediate" && priReason) {
+    const t = [
+      stripGuillemetsHe(`${priReason} מומלץ לבחור משימה אחת השבוע ולדבוק בה.`),
+      stripGuillemetsHe(`${priReason} עדיף צעד קטן וחוזר מאשר «לתקן הכל».`),
+    ];
+    return t[Math.abs(priReason.length + lab.length) % t.length];
+  }
+  if (pri === "monitor" && priReason) {
+    const t = [
+      stripGuillemetsHe(`${priReason} בשלב הזה עדיף לצמצם החלטות גדולות בבית.`),
+      stripGuillemetsHe(`${priReason} נשארים עם תרגול קצר ומדיד לפני מסקנה חדה.`),
+    ];
+    return t[Math.abs((priReason + lab).length) % t.length];
+  }
+  if (pri === "maintain" && domSucc && ex0 && !mr) {
+    const t = [
+      stripGuillemetsHe(`ב${lab} אפשר לנוח קצת על הגז: ${domSucc} — שימור שגרה קצרה מספיק.`),
+      stripGuillemetsHe(`ב${lab} המצב יציב יחסית (${domSucc}) — לא חובה להוסיף עומס; רק לעקוב בעדינות.`),
+    ];
+    return t[Math.abs((domSucc + lab).length) % t.length];
+  }
+
+  if (readiness === "not_ready" && domRc) {
+    const templates = [
+      `ב${lab} עדיין אין בשלות מספקת למסקנה חזקה — מה שכן בולט: ${domRc}. נמשיך לאסוף תרגול קצר לפני שינוי מהותי.`,
+      `ב${lab} הנתון בטווח עדיין חלקי; הכיוון הסביר ביותר כרגע הוא ${domRc} — בלי לנעול תוכנית ארוכה.`,
+    ];
+    return stripGuillemetsHe(templates[Math.abs((lab + domRc).length) % templates.length]);
+  }
+  if (readiness === "partial" && domRc && w0) {
+    return stripGuillemetsHe(
+      `ב${lab} יש תמונה אמצעית: ${domRc} לצד ${displayTopicPhraseHe(w0.labelHe)} — כדאי לעקוב ולא לדרוס בהנחה חדה.`
+    );
+  }
 
   if (domSucc && sp?.dominantSuccessPattern === "stable_mastery" && ex0 && !mr) {
     return stripGuillemetsHe(
@@ -159,6 +198,15 @@ function buildSubjectOpeningLineHe(sp, lab) {
 /** משפט אבחנה אחד — ממזג חוזק/חולשה בלי בלוקים נפרדים */
 function buildSubjectDiagnosisLineHe(sp, lab) {
   const w0 = sp?.topWeaknesses?.[0];
+  const domRc = String(sp?.dominantRootCauseLabelHe || "").trim();
+  const restraintLine = String(sp?.subjectDiagnosticRestraintHe || "").trim();
+  if (domRc && restraintLine) {
+    const variants = [
+      stripGuillemetsHe(`מה שאנחנו חושבים שקורה: ${domRc}. ${restraintLine}`),
+      stripGuillemetsHe(`ניסוח זהיר לגבי ${lab}: ${domRc}. ${restraintLine}`),
+    ];
+    return variants[Math.abs(restraintLine.length) % variants.length];
+  }
   const pool = dedupeRowsByLabel([
     ...(Array.isArray(sp.excellence) ? sp.excellence : []),
     ...(Array.isArray(sp.topStrengths) ? sp.topStrengths : []),
@@ -215,6 +263,8 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
 function buildSubjectHomeLineHe(sp, lab) {
   const homeDiag = sp?.recommendedHomeMethodHe && String(sp.recommendedHomeMethodHe).trim();
   if (homeDiag) return stripGuillemetsHe(rewriteParentRecommendationForDetailedHe(homeDiag));
+  const imm = sp?.subjectImmediateActionHe && String(sp.subjectImmediateActionHe).trim();
+  if (imm) return stripGuillemetsHe(rewriteParentRecommendationForDetailedHe(imm));
   const raw = sp?.parentActionHe && String(sp.parentActionHe).trim();
   if (raw) return rewriteParentRecommendationForDetailedHe(raw);
   return stripGuillemetsHe(`ב${lab}: שני מפגשים קצרים בשבוע, דגש על קריאת המשימה לפני תשובה.`);
@@ -224,6 +274,9 @@ function buildSubjectClosingLineHe(sp, lab) {
   const conf = String(sp?.confidenceSummaryHe || "").trim();
   const wnt = String(sp?.whatNotToDoHe || "").trim();
   const g = sp?.nextWeekGoalHe && String(sp.nextWeekGoalHe).trim();
+  const doNow = String(sp?.subjectDoNowHe || "").trim();
+  const avoidNow = String(sp?.subjectAvoidNowHe || "").trim();
+  const memN = String(sp?.subjectMemoryNarrativeHe || "").trim();
   const parts = [];
   if (conf) parts.push(takeFirstSentence(conf));
   if (g) {
@@ -233,6 +286,25 @@ function buildSubjectClosingLineHe(sp, lab) {
     parts.push(c);
   }
   if (wnt) parts.push(takeFirstSentence(wnt));
+  if (doNow) {
+    const d1 = takeFirstSentence(doNow);
+    const dup =
+      parts.some((p) => p.includes(d1.slice(0, Math.min(18, d1.length)))) ||
+      (wnt && wnt.includes(d1.slice(0, Math.min(18, d1.length))));
+    if (!dup) parts.push(d1);
+  }
+  if (avoidNow) {
+    const a1 = takeFirstSentence(avoidNow);
+    const dup =
+      parts.some((p) => p.includes(a1.slice(0, Math.min(18, a1.length)))) ||
+      (wnt && wnt.includes(a1.slice(0, Math.min(18, a1.length))));
+    if (!dup) parts.push(a1);
+  }
+  if (memN) {
+    const m1 = takeFirstSentence(memN);
+    const dup = parts.some((p) => p.includes(m1.slice(0, Math.min(16, m1.length))));
+    if (!dup && m1.length > 20) parts.push(m1);
+  }
   if (parts.length) return stripGuillemetsHe(parts.join(" "));
   return stripGuillemetsHe(`להמשך: ב${lab} עדיף עקביות קצרה מאשר מפגש ארוך אחד.`);
 }
@@ -284,10 +356,60 @@ export function buildTopicRecommendationNarrative(tr) {
   if (early && q < 12) {
     snap = `עדיין מוקדם לסכם — ${snap}`;
   }
+  const cs = String(tr?.conclusionStrength || "").trim();
+  const rc = String(tr?.rootCauseLabelHe || "").trim();
+  if (cs === "withheld" || cs === "tentative") {
+    const alt = [
+      `עדיין לא סוגרים סופית לגבי ${core}: ${snap} ${rc ? `הכיוון הסביר: ${rc}.` : ""}`,
+      `ב${core} אנחנו בשלב איסוף — ${snap} ${rc ? `(${rc})` : ""}`,
+    ];
+    snap = stripGuillemetsHe(alt[Math.abs(q + acc) % alt.length]);
+  } else if (rc) {
+    snap = stripGuillemetsHe(`${snap} שורש קושי סביר: ${rc}.`);
+  }
+  const reasoning = String(tr?.recommendationReasoningHe || "").trim();
   const homeRaw = tr?.recommendedParentActionHe ? String(tr.recommendedParentActionHe).trim() : "";
   const homeLine = rewriteParentRecommendationForDetailedHe(homeRaw);
+  const whyHold = String(tr?.whyNotAStrongerConclusionHe || "").trim();
+  const homeAug =
+    reasoning && q >= 10
+      ? `${homeLine} ${takeFirstSentence(reasoning)}`
+      : homeLine;
   return {
     snapshot: stripGuillemetsHe(snap),
-    homeLine: stripGuillemetsHe(homeLine),
+    homeLine: stripGuillemetsHe(homeAug),
+    cautionLineHe: whyHold ? stripGuillemetsHe(takeFirstSentence(whyHold)) : "",
   };
 }
+
+/** Phase 10–11 — שורות קצרות לניסוח הורי (ממופות מ־parent-report-ui-explain-he) */
+export {
+  responseToInterventionLineHe,
+  supportAdjustmentLineHe,
+  freshnessLineHe,
+  recalibrationLineHe,
+  supportSequenceLineHe,
+  repetitionRiskLineHe,
+  fatigueRiskLineHe,
+  releaseReadinessLineHe,
+  sequenceActionLineHe,
+  topicRepetitionFatigueCompactLineHe,
+  topicSupportSequenceOrReleaseLineHe,
+  recommendationMemoryLineHe,
+  outcomeTrackingLineHe,
+  continuationDecisionLineHe,
+  carryoverLineHe,
+  freshEvidenceNeedLineHe,
+  gateStateLineHe,
+  decisionFocusLineHe,
+  evidenceTargetLineHe,
+  releaseGateLineHe,
+  pivotTriggerLineHe,
+  recheckTriggerLineHe,
+  gateTriggerCompactLineHe,
+  dependencyStateLineHe,
+  foundationPriorityLineHe,
+  interventionOrderingLineHe,
+  foundationBeforeExpansionLineHe,
+  downstreamSymptomLineHe,
+} from "./parent-report-ui-explain-he.js";
