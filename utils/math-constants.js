@@ -354,6 +354,7 @@ export const GRADES = {
       "compare",
       "number_sense",
       "word_problems", // שאלות חיבור וחיסור
+      "mixed",          // תרגילים מעורבים
     ],
     allowFractions: false,
     allowNegatives: false,
