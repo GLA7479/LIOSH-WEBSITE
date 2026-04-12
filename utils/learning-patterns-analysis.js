@@ -41,6 +41,7 @@ import {
   mathScopeLevelFromField,
   normalizeMistakeModeField,
 } from "./parent-report-row-diagnostics.js";
+import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
 
 /**
  * מזהה נושא יציב לצורך reconciliation (אותו bucket כמו בטעויות / שורת דוח).
@@ -1977,6 +1978,9 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
  * @param {Record<string, unknown[]>} [rawMistakesBySubject]
  */
 export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
+  if (report?.mathOperations && typeof report.mathOperations === "object") {
+    applyMathScopedParentDisplayNames(report.mathOperations);
+  }
   const out = {
     version: 2,
     generatedAt: new Date().toISOString(),

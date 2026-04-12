@@ -4,6 +4,7 @@
  */
 
 import { generateParentReportV2 } from "./parent-report-v2";
+import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
 import { buildTopicRecommendationsForSubject } from "./topic-next-step-engine";
 import { rewriteParentRecommendationForDetailedHe } from "./detailed-report-parent-letter-he";
 import {
@@ -1528,6 +1529,9 @@ function buildSubjectProfiles(baseReport) {
     if (!s) continue;
     const stable = Array.isArray(s.stableExcellence) ? s.stableExcellence : [];
     const topicMap = baseReport?.[REPORT_MAP_KEY[sid]] || {};
+    if (sid === "math" && topicMap && typeof topicMap === "object") {
+      applyMathScopedParentDisplayNames(topicMap);
+    }
     const topicRecommendations = buildTopicRecommendationsForSubject(
       sid,
       topicMap,

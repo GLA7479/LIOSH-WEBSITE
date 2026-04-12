@@ -34,6 +34,7 @@ import { enrichTopicMapsWithRowTrends } from "./parent-report-row-trend";
 import { enrichTopicMapsWithRowBehaviorProfiles } from "./parent-report-row-behavior";
 import { validateParentReportDataIntegrity } from "./parent-report-data-integrity";
 import { enrichReportMapsWithTopicStepHints } from "./topic-next-step-engine";
+import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
 
@@ -638,6 +639,8 @@ export function generateParentReportV2(
       }
     });
   });
+
+  applyMathScopedParentDisplayNames(mathOperations);
 
   const totalQuestions =
     mathTotalQuestions +
