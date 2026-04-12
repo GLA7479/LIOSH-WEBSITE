@@ -51,11 +51,15 @@ Granular helpers (`gateStateLineHe`, `freshnessLineHe`, …) remain exported for
 - **Labels:** `parent-report-label-contract.js` asserts Hebrew UI strings for executive + subject profiles — **ids must not leak** into those strings.
 - **SSR:** `scripts/parent-report-pages-ssr.mjs` renders extracted components only (no full Next layout).
 
-## 6. Calibration notes (Phase 15)
+## 6. QA calibration (Phase X)
+
+Release / continuation / stale / memory alignment: see [`PARENT_REPORT_QA_CALIBRATION.md`](./PARENT_REPORT_QA_CALIBRATION.md) for contradiction matrix, red-team results, and regression test names.
+
+## 7. Calibration notes (Phase 15)
 
 - **Foundation dependency:** `likely_foundational_block` from the “single foundation score + instability” branch requires **`foundationScore >= 2`** (was ≥1). Procedure fallback `procedure_automaticity_gap` when blocker unknown requires **`q >= 15`**.
 - **Foundation ordering:** see JSDoc on `buildFoundationOrderingPhase14` in `parent-report-foundation-ordering.js`.
 
-## 7. Related docs
+## 8. Related docs
 
 - Pipeline and test commands: `docs/PARENT_REPORT.md`.

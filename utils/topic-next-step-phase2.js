@@ -766,10 +766,16 @@ export function buildPhase12ContinuationOverlay(p) {
   const exp = String(p?.expectedOutcomeType || "");
   const obs = String(p?.observedOutcomeState || "");
   const rep = String(p?.strategyRepetitionRisk || "");
+  const fs = String(p?.freshnessState || "");
+  const cf = String(p?.conclusionFreshness || "");
+  /** QA: מסלול ישן חזק לא מצדיק pivot אגרסיבי כשהראיה הנוכחית רעננה מדי פחות */
+  const evidenceStale = fs === "stale" || cf === "expired" || cf === "low";
 
   let recommendationContinuationDecision = "continue_but_refine";
   if (match === "misaligned" && (rot === "meaningful_rotation" || sim === "mostly_repeated")) {
     recommendationContinuationDecision = "reset_and_rebuild_signal";
+  } else if (evidenceStale && match === "misaligned") {
+    recommendationContinuationDecision = "do_not_repeat_without_new_evidence";
   } else if (match === "misaligned" && (mem === "usable_memory" || mem === "strong_memory")) {
     recommendationContinuationDecision = "pivot_from_prior_path";
   } else if (
@@ -781,6 +787,8 @@ export function buildPhase12ContinuationOverlay(p) {
     recommendationContinuationDecision = "do_not_repeat_without_new_evidence";
   } else if (
     match === "aligned" &&
+    !evidenceStale &&
+    (mem === "usable_memory" || mem === "strong_memory") &&
     (exp === "release_readiness" || seqAct === "begin_release_sequence") &&
     (rti === "independence_growing" || rti === "over_supported_progress" || obs === "partial_progress")
   ) {
@@ -792,6 +800,12 @@ export function buildPhase12ContinuationOverlay(p) {
   }
 
   if (mem === "no_memory" && recommendationContinuationDecision !== "reset_and_rebuild_signal") {
+    recommendationContinuationDecision = "continue_but_refine";
+  }
+  if (
+    (mem === "light_memory" || evidenceStale) &&
+    recommendationContinuationDecision === "begin_controlled_release"
+  ) {
     recommendationContinuationDecision = "continue_but_refine";
   }
 

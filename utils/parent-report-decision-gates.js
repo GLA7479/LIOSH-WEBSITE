@@ -29,6 +29,14 @@ export function buildDecisionGatesPhase13(ctx) {
   const indep = String(ctx?.independenceProgress || "");
   const td = ctx?.trendDer && typeof ctx.trendDer === "object" ? ctx.trendDer : {};
   const indepUp = String(td.independenceDirection || "") === "up" || indep === "improving";
+  const transferReadiness = String(ctx?.transferReadiness || "");
+  /** QA calibration: שחרור «forming» רק כשאין עצירה מוכנות/שורש עצמאות */
+  const releaseIndependenceHold =
+    root === "weak_independence" ||
+    transferReadiness === "not_ready" ||
+    transferReadiness === "limited" ||
+    indep === "flat" ||
+    String(td.independenceDirection || "") === "down";
   const finalStep = String(ctx?.finalStep || "");
   const weak = q < 12 || ev === "low" || cs === "withheld" || cs === "tentative";
   const stale = fs === "stale" || cf === "expired" || cf === "low" || rec === "structured_recheck";
@@ -54,13 +62,15 @@ export function buildDecisionGatesPhase13(ctx) {
   }
 
   if (seq === "sequence_ready_for_release" || rti === "independence_growing" || rti === "over_supported_progress") {
-    if (indepUp && q >= 14 && ev !== "low") releaseGate = "forming";
+    /* forming דורש q גבוה יותר + בלי חסימת מוכנות — מפחית false release */
+    if (indepUp && q >= 16 && ev !== "low" && !releaseIndependenceHold) releaseGate = "forming";
     else if (rti === "over_supported_progress" && !indepUp) releaseGate = "pending";
     else releaseGate = "pending";
   } else {
     releaseGate = "off";
   }
   if (weak || rti === "not_enough_evidence") releaseGate = releaseGate === "off" ? "off" : "blocked";
+  if (stale && releaseGate === "forming") releaseGate = "pending";
 
   if (!weak && match === "misaligned" && (mem === "usable_memory" || mem === "strong_memory")) {
     pivotGate = "forming";

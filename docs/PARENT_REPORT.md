@@ -4,6 +4,8 @@ Concise map of how the parent report pipeline fits together, what each test scri
 
 **Engine layers, merge precedence, and Phase 15 UI consolidation:** see [`docs/PARENT_REPORT_ENGINE.md`](./PARENT_REPORT_ENGINE.md).
 
+**QA / calibration / red-team log:** see [`docs/PARENT_REPORT_QA_CALIBRATION.md`](./PARENT_REPORT_QA_CALIBRATION.md).
+
 ## Pipeline layers (data flow)
 
 Order is roughly bottom-up: raw usage → enriched rows → subject diagnostics → assembled reports → UI.

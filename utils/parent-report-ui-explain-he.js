@@ -615,7 +615,8 @@ export const NEXT_CYCLE_DECISION_FOCUS_LABEL_HE = {
 /** Phase 14 — תלות יסוד */
 export const DEPENDENCY_STATE_LABEL_HE = {
   likely_local_issue: "נראה שהקושי נשאר מקומי יותר — אפשר לטפל בו במיקוד",
-  likely_foundational_block: "ייתכן שהקושי הנראה קשור לבסיס שעדיין לא התייצב",
+  /* QA wording: פחות «ייתכן» מוערם — ניסוח ישיר יותר */
+  likely_foundational_block: "האותות כאן מצביעים על בסיס שעדיין לא התייצב במידה מספקת — לא רק נקודה צרה",
   mixed_dependency_signal: "יש תמונה מעורבת בין בסיס לנקודתי",
   insufficient_dependency_evidence: "אין עדיין מספיק ראיות לקבוע אם זה בסיס רחב או קושי נקודתי",
 };

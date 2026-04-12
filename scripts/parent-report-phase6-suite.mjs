@@ -881,6 +881,117 @@ function runUiResilienceHelpers() {
   assert.equal(topicFoundationDependencyCompactLineHe({}), "");
 }
 
+function runQaCalibrationRedTeam() {
+  const ctxRelease = {
+    q: 18,
+    evidenceStrength: "medium",
+    conclusionStrength: "moderate",
+    dataSufficiencyLevel: "medium",
+    supportSequenceState: "sequence_ready_for_release",
+    responseToIntervention: "independence_growing",
+    expectedVsObservedMatch: "aligned",
+    recommendationMemoryState: "light_memory",
+    independenceProgress: "improving",
+    trendDer: { independenceDirection: "up" },
+    finalStep: "maintain_and_strengthen",
+    displayName: "חיבור",
+    freshnessState: "fresh",
+    conclusionFreshness: "high",
+    recalibrationNeed: "none",
+    retentionRisk: "low",
+    learningStage: "consolidating",
+    rootCause: "knowledge_gap",
+  };
+  const gForm = buildDecisionGatesPhase13(ctxRelease);
+  assert.ok(gForm.releaseGate === "forming" || gForm.releaseGate === "pending");
+
+  const gBlockRoot = buildDecisionGatesPhase13({ ...ctxRelease, rootCause: "weak_independence" });
+  assert.notEqual(
+    gBlockRoot.releaseGate,
+    "forming",
+    "QA: weak_independence must not show release as forming"
+  );
+
+  const gBlockTransfer = buildDecisionGatesPhase13({ ...ctxRelease, transferReadiness: "limited" });
+  assert.notEqual(gBlockTransfer.releaseGate, "forming", "QA: limited transfer must not form release");
+
+  const gStaleRelease = buildDecisionGatesPhase13({
+    ...ctxRelease,
+    freshnessState: "stale",
+    conclusionFreshness: "low",
+  });
+  assert.notEqual(gStaleRelease.releaseGate, "forming", "QA: stale evidence must not keep release forming");
+
+  const staleMis = buildPhase12ContinuationOverlay({
+    expectedVsObservedMatch: "misaligned",
+    recommendationMemoryState: "usable_memory",
+    freshnessState: "stale",
+    conclusionFreshness: "low",
+    followThroughSignal: "unclear",
+    adviceSimilarityLevel: "some_overlap",
+    recommendationRotationNeed: "fine",
+    responseToIntervention: "mixed_response",
+    nextSupportSequenceAction: "continue_with_tighter_target",
+    supportSequenceState: "continuing_sequence",
+    strategyRepetitionRisk: "medium",
+    expectedOutcomeType: "accuracy_stability",
+    observedOutcomeState: "no_clear_progress",
+  });
+  assert.equal(
+    staleMis.recommendationContinuationDecision,
+    "do_not_repeat_without_new_evidence",
+    "QA: stale misaligned prefers evidence over pivot"
+  );
+
+  const lightMemRelease = buildPhase12ContinuationOverlay({
+    expectedVsObservedMatch: "aligned",
+    recommendationMemoryState: "light_memory",
+    expectedOutcomeType: "release_readiness",
+    responseToIntervention: "independence_growing",
+    observedOutcomeState: "partial_progress",
+    followThroughSignal: "possibly_followed",
+    adviceSimilarityLevel: "some_overlap",
+    recommendationRotationNeed: "fine",
+    nextSupportSequenceAction: "begin_release_sequence",
+    strategyRepetitionRisk: "low",
+    freshnessState: "fresh",
+    conclusionFreshness: "high",
+  });
+  assert.notEqual(
+    lightMemRelease.recommendationContinuationDecision,
+    "begin_controlled_release",
+    "QA: light memory must not authorize controlled release continuation"
+  );
+
+  const speed = buildFoundationDependencyPhase14({
+    q: 18,
+    evidenceStrength: "medium",
+    dataSufficiencyLevel: "medium",
+    conclusionStrength: "moderate",
+    rootCause: "speed_pressure",
+    learningStage: "consolidating",
+    retentionRisk: "low",
+    mistakeRecurrenceLevel: "low",
+    dominantMistakePattern: "speed_driven_error",
+    independenceProgress: "improving",
+    trendDer: { independenceDirection: "up", accuracyDirection: "flat" },
+    responseToIntervention: "early_positive_response",
+    expectedVsObservedMatch: "aligned",
+    recommendationMemoryState: "light_memory",
+    gateReadiness: "moderate",
+    gateState: "continue_gate_active",
+    targetEvidenceType: "accuracy_confirmation",
+    displayName: "חיבור",
+  });
+  assert.equal(speed.dependencyState, "likely_local_issue");
+
+  const dMixed = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.mixed_signals_cross_subjects(), {
+    period: "week",
+  });
+  assert.ok(String(dMixed.executiveSummary.mainHomeRecommendationHe || "").length > 3);
+  assert.ok(typeof dMixed.executiveSummary.crossSubjectDependencyState === "string");
+}
+
 function runPhase15NarrativeCompactAndStack() {
   const gateDup = {
     topicEngineRowSignals: {
@@ -1869,6 +1980,7 @@ function main() {
   runPhase13DecisionsAndEvidenceTargets();
   runPhase14FoundationDependencyAndOrdering();
   runPhase15NarrativeCompactAndStack();
+  runQaCalibrationRedTeam();
   runReactServerSmoke();
 
   const reportDir = join(ROOT, "reports", "parent-report-phase6");
