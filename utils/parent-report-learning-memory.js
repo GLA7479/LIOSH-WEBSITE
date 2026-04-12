@@ -83,7 +83,7 @@ export function buildLearningMemoryPhase9(ctx) {
     stabilizationState = "unstable";
     transferReadiness = "not_ready";
     independenceProgress = "not_visible";
-    memEvidence.push("עדיין בשלב איסוף/רכישה מוקדמת — לא מסכמים יציבות מלאה.");
+    memEvidence.push("עדיין לא נצבר מספיק ניסיון ארוך בטווח כדי לדבר על יציבות מלאה — זה בסדר.");
   } else if (acc >= 70 && acc < 82 && !negAcc) {
     learningStage = "partial_stabilization";
     retentionRisk = fragileProg || rf.hintDependenceRisk ? "moderate" : "low";

@@ -34,6 +34,229 @@ import {
   TARGET_OBSERVATION_WINDOW_LABEL_HE,
 } from "./parent-report-ui-explain-he.js";
 import { pickRecommendedInterventionType } from "./topic-next-step-phase2.js";
+import { mathReportBaseOperationKey, canonicalParentReportGradeKey } from "./math-report-generator.js";
+import {
+  splitTopicRowKey,
+  mistakeMathScopeComplete,
+  mathScopeLevelFromField,
+  normalizeMistakeModeField,
+} from "./parent-report-row-diagnostics.js";
+
+/**
+ * מזהה נושא יציב לצורך reconciliation (אותו bucket כמו בטעויות / שורת דוח).
+ * @param {string} subjectId
+ * @param {string} topicRowKey
+ * @param {Record<string, unknown>|null|undefined} row
+ */
+function stableTopicBucketBase(subjectId, topicRowKey, row) {
+  const bk =
+    row && typeof row === "object" && row.bucketKey != null && row.bucketKey !== ""
+      ? String(row.bucketKey)
+      : splitTopicRowKey(String(topicRowKey)).bucketKey;
+  if (subjectId === "math") return mathReportBaseOperationKey(bk);
+  return String(bk || "").trim();
+}
+
+/**
+ * תואם סף "חוזקה" ב-buildSessionBands: דיוק גבוה + מספיק שאלות, בלי needsPractice.
+ */
+function isHighAccuracySessionRow(row) {
+  if (!row || typeof row !== "object") return false;
+  const q = Number(row.questions) || 0;
+  const acc = Number(row.accuracy) || 0;
+  if (q < 8) return false;
+  if (row.needsPractice) return false;
+  if (row.excellent && q >= 10) return true;
+  return acc >= 87;
+}
+
+/** דיוק נמוך לצורך true_weakness כשיש דפוס טעויות */
+function isLowAccuracySessionRow(row) {
+  if (!row || typeof row !== "object") return false;
+  const acc = Number(row.accuracy) || 0;
+  if (row.needsPractice) return true;
+  return acc < 70;
+}
+
+function bucketBaseFromMistakeSample(subjectId, sampleEv) {
+  if (!sampleEv || typeof sampleEv !== "object") return "";
+  if (subjectId === "math") {
+    return mathReportBaseOperationKey(
+      String(sampleEv.bucketKey || sampleEv.topicOrOperation || "")
+    );
+  }
+  return String(sampleEv.topicOrOperation || sampleEv.bucketKey || "").trim();
+}
+
+function findWeaknessCandidateForTopWeakness(weaknessCandidates, w) {
+  const found = weaknessCandidates.find(
+    (c) => c.labelHe === w.labelHe && c.mistakeCount === w.mistakeCount
+  );
+  if (found) return found;
+  const m = /^[^:]+:w:(\d+)$/.exec(String(w.id || ""));
+  if (m) {
+    const idx = Number(m[1]);
+    if (Number.isFinite(idx) && weaknessCandidates[idx]) return weaknessCandidates[idx];
+  }
+  return null;
+}
+
+function buildStrengthWithCautionLines(row, mistakeCount) {
+  const label = String(row?.displayName || "הנושא").trim() || "הנושא";
+  const acc = Number(row?.accuracy) || 0;
+  const q = Number(row?.questions) || 0;
+  const n = Number(mistakeCount) || 0;
+  return [
+    `ב${label} נראית שליטה טובה בתקופה הזו: כ־${acc}% נכון מתוך ${q} שאלות.`,
+    `כשיש טעות, לפעמים חוזר אותו דפוס (${n} מקרים דומים בטווח) — כדאי לעצור רגע על דוגמה אחת ביחד.`,
+    `מה כדאי לעשות בבית: לבחור תרגיל אחד קצר, לעבור עליו בקול צעד אחר צעד, ואז לתת לילד לנסות שוב בעצמו.`,
+  ];
+}
+
+/**
+ * מונע חפיפה בין חולשה ראשית לבין שורת נושא עם דיוק גבוה (Batch 1 — לוגיקה בלבד, ללא שינוי UI).
+ * @returns {{
+ *   topWeaknesses: object[],
+ *   parentTopicToneByKey: Record<string, string>,
+ *   parentStrengthWithCautionLinesByKey: Record<string, string[]>,
+ *   suppressedCautionByBucket: Map<string, { mistakeCount: number, lines: string[] }>,
+ * }}
+ */
+function reconcileParentFacingTopicSignals(
+  subjectId,
+  report,
+  weaknessCandidates,
+  topWeaknessesPre
+) {
+  const rowsKey = REPORT_ROWS_KEY[subjectId];
+  const map =
+    rowsKey && report && typeof report === "object" && report[rowsKey] && typeof report[rowsKey] === "object"
+      ? report[rowsKey]
+      : {};
+
+  /** @type {Map<string, { mistakeCount: number, lines: string[] }>} */
+  const suppressedCautionByRowKey = new Map();
+  const filteredWeaknesses = [];
+
+  function mathWeaknessSampleMatchesRow(topicRowKey, sampleEv) {
+    if (subjectId !== "math") return true;
+    const ev = sampleEv && typeof sampleEv === "object" ? sampleEv : null;
+    if (!mistakeMathScopeComplete(ev)) return false;
+    const parts = splitTopicRowKey(String(topicRowKey));
+    if (parts.gradeScope == null || parts.levelScope == null) return false;
+    const g = canonicalParentReportGradeKey(ev.grade);
+    const l = mathScopeLevelFromField(ev.level);
+    const m = normalizeMistakeModeField(ev.mode);
+    return (
+      parts.gradeScope === g &&
+      parts.levelScope === l &&
+      (parts.modeKey || "learning") === m
+    );
+  }
+
+  for (const w of topWeaknessesPre) {
+    const cand = findWeaknessCandidateForTopWeakness(weaknessCandidates, w);
+    const bucket = bucketBaseFromMistakeSample(subjectId, cand?.sampleEvent);
+    if (!bucket) {
+      filteredWeaknesses.push(w);
+      continue;
+    }
+    const rowKeys = Object.keys(map).filter((k) => {
+      const row = map[k];
+      if (!row || typeof row !== "object") return false;
+      if ((Number(row.questions) || 0) <= 0) return false;
+      if (stableTopicBucketBase(subjectId, k, row) !== bucket) return false;
+      return mathWeaknessSampleMatchesRow(k, cand?.sampleEvent);
+    });
+    const hasHigh = rowKeys.some((k) => isHighAccuracySessionRow(map[k]));
+    if (hasHigh) {
+      let bestKey = rowKeys[0];
+      let bestAcc = -1;
+      for (const k of rowKeys) {
+        const r = map[k];
+        if (!isHighAccuracySessionRow(r)) continue;
+        const a = Number(r.accuracy) || 0;
+        if (a > bestAcc) {
+          bestAcc = a;
+          bestKey = k;
+        }
+      }
+      const bestRow = map[bestKey];
+      const lines = buildStrengthWithCautionLines(bestRow, cand?.mistakeCount ?? w.mistakeCount);
+      suppressedCautionByRowKey.set(String(bestKey), {
+        mistakeCount: cand?.mistakeCount ?? w.mistakeCount,
+        lines,
+      });
+      continue;
+    }
+    filteredWeaknesses.push(w);
+  }
+
+  const parentTopicToneByKey = {};
+  const parentStrengthWithCautionLinesByKey = {};
+
+  for (const k of Object.keys(map)) {
+    const row = map[k];
+    if (!row || typeof row !== "object") continue;
+    if ((Number(row.questions) || 0) <= 0) continue;
+    if (suppressedCautionByRowKey.has(String(k))) {
+      parentTopicToneByKey[k] = "strength_with_caution";
+      const pack = suppressedCautionByRowKey.get(String(k));
+      if (pack?.lines && !parentStrengthWithCautionLinesByKey[k]) {
+        parentStrengthWithCautionLinesByKey[k] = pack.lines;
+      }
+    }
+  }
+
+  const weaknessTargetRowKeys = new Set();
+  for (const w of filteredWeaknesses) {
+    const cand = findWeaknessCandidateForTopWeakness(weaknessCandidates, w);
+    const bucket = bucketBaseFromMistakeSample(subjectId, cand?.sampleEvent);
+    if (!bucket) continue;
+    for (const k of Object.keys(map)) {
+      const row = map[k];
+      if (!row || typeof row !== "object") continue;
+      if ((Number(row.questions) || 0) <= 0) continue;
+      if (stableTopicBucketBase(subjectId, k, row) !== bucket) continue;
+      if (!mathWeaknessSampleMatchesRow(k, cand?.sampleEvent)) continue;
+      weaknessTargetRowKeys.add(String(k));
+    }
+  }
+
+  for (const k of Object.keys(map)) {
+    const row = map[k];
+    if (!row || typeof row !== "object") continue;
+    if ((Number(row.questions) || 0) <= 0) continue;
+    if (parentTopicToneByKey[k]) continue;
+    if (weaknessTargetRowKeys.has(String(k)) && isLowAccuracySessionRow(row)) {
+      parentTopicToneByKey[k] = "true_weakness";
+    } else if (isHighAccuracySessionRow(row)) {
+      parentTopicToneByKey[k] = "strength";
+    } else {
+      parentTopicToneByKey[k] = "stable_monitor";
+    }
+  }
+
+  return {
+    topWeaknesses: filteredWeaknesses,
+    parentTopicToneByKey,
+    parentStrengthWithCautionLinesByKey,
+    suppressedCautionByBucket: suppressedCautionByRowKey,
+  };
+}
+
+function mergeParentActionWithCautionBlocks(parentActionHe, parentStrengthWithCautionLinesByKey) {
+  const keys = Object.keys(parentStrengthWithCautionLinesByKey || {});
+  if (!keys.length) return parentActionHe || null;
+  const firstKey = keys[0];
+  const lines = parentStrengthWithCautionLinesByKey[firstKey];
+  if (!Array.isArray(lines) || lines.length < 3) return parentActionHe || null;
+  const block = lines.join(" ").trim();
+  const base = typeof parentActionHe === "string" ? parentActionHe.trim() : "";
+  if (!base) return block;
+  if (base.includes(lines[0])) return base;
+  return `${block} ${base}`.trim();
+}
 /**
  * סיווג גס לסגנון פעולה בבית — לפי תווית חולשה בעברית בלבד.
  * @returns {"wording"|"careless"|"foundation"}
@@ -62,6 +285,8 @@ function inferWeaknessKindHe(labelHe) {
  * - summaryHe: string | null
  * - topStrengths: Array<{ id, labelHe, questions, accuracy, confidence, needsPractice, excellent, tierHe }>
  * - topWeaknesses: Array<{ id, labelHe, mistakeCount, confidence, tierHe }>
+ * - parentTopicToneByKey: Record<topicRowKey, "strength"|"strength_with_caution"|"stable_monitor"|"true_weakness"> — reconciliation מול שורות דוח
+ * - parentStrengthWithCautionLinesByKey: Record<topicRowKey, [string,string,string]> — חיובי, הסתייגות על דפוס בטעויות, כיוון לבית (רק ב־strength_with_caution)
  * - stableExcellence: Array<{ id, labelHe, questions, accuracy, confidence, needsPractice, excellent, tierHe }> — סף גבוה, נפרד מ־maintain
  * - maintain, improving: session bands + tierHe על כל שורה
  * - parentActionHe: string | null  (max 1 concrete home action)
@@ -81,7 +306,7 @@ function inferWeaknessKindHe(labelHe) {
  *    nextWeekGoalHe: optional "יעד לחיזוק" from top weakness or improving + "יעד לשימור" from topStrengths[0] or maintain[0]
  *    when questions ≥ 8 or excellent.
  *
- * E) UI: parent-report maps each tierHe to the card subtitle (not everything is "חולשה"; maintain → "עקביות"; stableExcellence → "הצטיינות היציבה").
+ * E) UI: parent-report maps each tierHe to the card subtitle (not everything is "חולשה"; maintain → "עקביות"; stableExcellence → "הצלחה יציבה").
  */
 
 const SUBJECT_IDS = [
@@ -116,7 +341,7 @@ const MAX_TOP_WEAKNESSES = 3;
 const MAX_TOP_STRENGTHS = 3;
 const MAX_MAINTAIN = 2;
 const MAX_IMPROVING = 2;
-/** עד כמה שורות "הצטיינות היציבה" (נפרד מ־maintain / חוזקות מובילות) */
+/** עד כמה שורות "הצלחה יציבה" (נפרד מ־maintain / חוזקות מובילות) */
 const MAX_STABLE_EXCELLENCE = 3;
 /** סף הצטיינות יציבה: לא מכריזים מהר — דיוק גבוה + מספיק שאלות בטווח */
 const STABLE_EXCELLENCE_MIN_ACCURACY = 92;
@@ -304,7 +529,7 @@ function buildSessionBands(subjectId, report) {
 
   const stableExcellenceOut = stableExcellenceRaw.map((r) => ({
     ...r,
-    tierHe: "הצטיינות היציבה",
+    tierHe: "הצלחה יציבה",
   }));
 
   const excellent = take(
@@ -391,7 +616,7 @@ function buildEvidenceSuccessFromPick(pick) {
     pick.confidence === "high" || pick.questions >= 20 ? "high" : "moderate";
   return {
     titleHe: "חוזקה בתרגול",
-    bodyHe: `בנושא ${pick.labelHe} רואים ביצועים טובים: כ־${pick.accuracy}% נכון מתוך ${pick.questions} שאלות בטווח התאריכים.`,
+    bodyHe: `בנושא ${pick.labelHe} יש הצלחה טובה בתקופה: כ־${pick.accuracy}% נכון מתוך ${pick.questions} שאלות.`,
     confidence: conf,
   };
 }
@@ -419,10 +644,10 @@ function buildSummaryHe(
   ) {
     if (diagnosticSparseNoteHe) return `${opening} ${diagnosticSparseNoteHe}`;
     if (wrongCount > 0 && !topWeaknesses.length) {
-      return `${opening} יש כאן כמה טעויות בלי "סיפור" חוזר ברור — עדיף לא למהר למסקנות; נמשיך לאסוף תרגול בשקט.`;
+      return `${opening} יש כאן כמה טעויות בלי דפוס חוזר ברור — עדיף לא למהר למסקנות; כדאי להמשיך בתרגול רגוע ולצבור עוד דוגמאות.`;
     }
     if (mistakeEventCount >= 0 && mistakeEventCount < 5) {
-      return `${opening} עדיין מעט חומר — ניסוח קצר יגיע כשיהיה יותר בסיס.`;
+      return `${opening} עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.`;
     }
     return null;
   }
@@ -432,8 +657,8 @@ function buildSummaryHe(
     const exNames = joinHebrewList(stableExcellence.map((s) => s.labelHe));
     parts.push(
       stableExcellence.length > 1
-        ? `ניכרת הצטיינות היציבה ב${exNames}.`
-        : `ניכרת הצטיינות היציבה ב${stableExcellence[0].labelHe}.`
+        ? `נראית הצלחה יציבה ב${exNames}.`
+        : `נראית הצלחה יציבה ב${stableExcellence[0].labelHe}.`
     );
   }
   if (topStrengths.length) {
@@ -449,7 +674,7 @@ function buildSummaryHe(
     );
   } else if (stableExcellence.length && maintain.length) {
     parts.push(
-      `ניכרת גם עקביות טובה ב־${joinHebrewList(maintain.map((m) => m.labelHe))}.`
+      `נראית גם עקביות טובה ב־${joinHebrewList(maintain.map((m) => m.labelHe))}.`
     );
   }
 
@@ -459,14 +684,14 @@ function buildSummaryHe(
     );
     let s =
       topWeaknesses.length > 1
-        ? `במקביל יש מספר תחומים שדורשים חיזוק: ${names}.`
-        : `במקביל נדרש חיזוק ${parentCopyTopicPhraseHe(topWeaknesses[0].labelHe)}.`;
+        ? `יש גם כמה תחומים שכדאי לחזק: ${names}.`
+        : `יש גם מקום לחיזוק ${parentCopyTopicPhraseHe(topWeaknesses[0].labelHe)}.`;
     if (
       topWeaknesses.some(
         (w) => w.mistakeCount >= MIN_MISTAKES_FOR_STRONG_RECOMMENDATION
       )
     ) {
-      s += " זה חוזר מספיק פעמים כדי ששווה לגשת אליו מוקדם — בלי פאניקה, עם מבנה קטן.";
+      s += " זה חוזר מספיק כדי ששווה לגשת אליו מוקדם — בלי לחץ, עם תרגול קצר ומסודר.";
     }
     parts.push(s);
   } else if (wrongCount > 0) {
@@ -501,7 +726,7 @@ function buildParentActionHe(
   if (w0) {
     const kind = inferWeaknessKindHe(w0.labelHe);
     if (kind === "wording") {
-      return `ההמלצה שלנו: פעמיים בשבוע, כרבע שעה ב${subj} ${tp(w0.labelHe)} — קוראים יחד את הניסוח, מפרקים למשפטים קצרים, ורק אז עונים תשובה.`;
+      return `כדאי פעמיים בשבוע, כרבע שעה ב${subj} ${tp(w0.labelHe)} — לקרוא יחד את הניסוח, לפרק למשפטים קצרים, ורק אז לנסח תשובה.`;
     }
     if (kind === "careless") {
       return `פעמיים בשבוע, רבע שעה ב${subj} ${tp(w0.labelHe)} — עצירה קצרה לפני שליחה: "האם עניתי על מה שנשאלתי?".`;
@@ -1811,7 +2036,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
     });
 
     weaknessCandidates.sort((a, b) => b.mistakeCount - a.mistakeCount);
-    const topWeaknesses = weaknessCandidates.slice(0, MAX_TOP_WEAKNESSES).map((w, i) => {
+    const topWeaknessesPre = weaknessCandidates.slice(0, MAX_TOP_WEAKNESSES).map((w, i) => {
       const lab = w.labelHe || GENERIC_WEAKNESS_HE;
       return {
         id: `${sid}:w:${i}`,
@@ -1822,8 +2047,6 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       };
     });
 
-    const weaknesses = topWeaknesses.map((w) => ({ ...w }));
-
     const {
       stableExcellence,
       excellent,
@@ -1832,6 +2055,14 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       improving,
       topStrengths,
     } = buildSessionBands(sid, report);
+
+    const {
+      topWeaknesses,
+      parentTopicToneByKey,
+      parentStrengthWithCautionLinesByKey,
+    } = reconcileParentFacingTopicSignals(sid, report, weaknessCandidates, topWeaknessesPre);
+
+    const weaknesses = topWeaknesses.map((w) => ({ ...w }));
 
     const studentRecommendationsImprove = [];
     const studentRecommendationsMaintain = [];
@@ -1842,7 +2073,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       const rs = recStrength(w.mistakeCount);
       studentRecommendationsImprove.push({
         id: `stu-imp:${w.id}`,
-        textHe: `מומלץ להתמקד ${parentCopyTopicPhraseForFocusHe(w.labelHe)} (זוהו ${w.mistakeCount} טעויות דומות בטווח התאריכים). זוהה קושי חוזר`,
+        textHe: `כדאי לתרגל עוד קצת ${parentCopyTopicPhraseForFocusHe(w.labelHe)} — נרשמו ${w.mistakeCount} טעויות דומות בטווח. נשארים עם תרגול ממוקד ולא עם «לתקן הכל בבת אחת».`,
         strength: rs,
       });
     }
@@ -1854,8 +2085,8 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
         id: `par-imp:${w0.id}`,
         textHe:
           rs === "strong"
-            ? `יש דפוס חוזר ${parentCopyTopicPhraseHe(w0.labelHe)}. מומלץ לשבת יחד על דוגמה אחת ולבדוק את הלוגיקה צעד־אחר־צעד.`
-            : `מתחיל להתגבש דפוס ${parentCopyTopicPhraseHe(w0.labelHe)}. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.`,
+            ? `חוזרת אותה טעות — ${parentCopyTopicPhraseHe(w0.labelHe)}. זה לא חירום, אבל שווה לטפל. מומלץ לשבת יחד על דוגמה אחת ולעבור עליה בקול צעד אחר צעד.`
+            : `מתחילה חזרה על אותו סוג טעות — ${parentCopyTopicPhraseHe(w0.labelHe)}. לשבוע הקרוב מספיק מבט רגוע ותרגול קצר וממוקד.`,
         strength: rs,
       });
     }
@@ -1893,11 +2124,14 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
     }
 
     let evidenceMistake = null;
-    const wTop = weaknessCandidates[0];
-    if (wTop && wTop.sampleEvent) {
+    const wTopMatched =
+      weaknessCandidates.find((c) =>
+        topWeaknesses.some((w) => w.labelHe === c.labelHe && w.mistakeCount === c.mistakeCount)
+      ) || null;
+    if (wTopMatched && wTopMatched.sampleEvent) {
       evidenceMistake = buildEvidenceMistakeFromEvent(
-        wTop.sampleEvent,
-        wTop.confidence
+        wTopMatched.sampleEvent,
+        wTopMatched.confidence
       );
     }
 
@@ -1918,12 +2152,16 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       diagnosticSparseNoteHe
     );
 
-    const parentActionHe = buildParentActionHe(
+    let parentActionHe = buildParentActionHe(
       SUBJECT_LABEL_HE[sid],
       topWeaknesses,
       improving,
       maintain,
       topStrengths
+    );
+    parentActionHe = mergeParentActionWithCautionBlocks(
+      parentActionHe,
+      parentStrengthWithCautionLinesByKey
     );
 
     const nextWeekGoalHe = buildNextWeekGoalHe(
@@ -1973,6 +2211,8 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       summaryHe,
       topStrengths,
       topWeaknesses,
+      parentTopicToneByKey,
+      parentStrengthWithCautionLinesByKey,
       parentActionHe,
       nextWeekGoalHe,
       evidenceExamples,
@@ -2022,7 +2262,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       wrongCount: 12,
       hasAnySignal: true,
       summaryHe:
-        "תמונת המקצוע בחשבון: ניכרת הצטיינות היציבה בחיבור. במקביל נדרש חיזוק בנושא בהשוואת כמויות או מספרים.",
+        "תמונת המקצוע בחשבון: נראית הצלחה יציבה בחיבור. יש גם מקום לחיזוק בהשוואת כמויות או מספרים.",
       stableExcellence: [
         {
           id: "math:addition:learning",
@@ -2032,7 +2272,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
           confidence: "high",
           needsPractice: false,
           excellent: true,
-          tierHe: "הצטיינות היציבה",
+          tierHe: "הצלחה יציבה",
         },
       ],
       topStrengths: [],
@@ -2045,6 +2285,8 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
           tierHe: "קושי נקודתי",
         },
       ],
+      parentTopicToneByKey: {},
+      parentStrengthWithCautionLinesByKey: {},
       parentActionHe:
         "שלוש פעמים בשבוע, 15–20 דק׳ בכל מפגש: לבחור משימה אחת בחשבון בנושא בהשוואת כמויות או מספרים — לקרוא יחד את הניסוח, לנסח בקול מה נתון ומה מבקשים, לבצע צעד ראשון על דף טיוטה ורק אז לכתוב תשובה סופית ולבדוק מול הפתרון.",
       nextWeekGoalHe:
@@ -2062,7 +2304,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
           type: "success",
           titleHe: "חוזקה בתרגול",
           bodyHe:
-            "בנושא חיבור רואים ביצועים טובים: כ־93% נכון מתוך 42 שאלות בטווח התאריכים.",
+            "בנושא חיבור יש הצלחה טובה בתקופה: כ־93% נכון מתוך 42 שאלות.",
           confidence: "high",
         },
       ],
@@ -2083,7 +2325,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:math:w:0",
           textHe:
-            "מומלץ להתמקד בנושא: בהשוואת כמויות או מספרים (זוהו 7 טעויות דומות בטווח התאריכים). זוהה קושי חוזר",
+            "כדאי לתרגל עוד קצת בנושא: בהשוואת כמויות או מספרים — נרשמו 7 טעויות דומות בטווח. נשארים עם תרגול ממוקד ולא עם «לתקן הכל בבת אחת».",
           strength: "moderate",
         },
       ],
@@ -2099,7 +2341,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "par-imp:math:w:0",
           textHe:
-            "מתחיל להתגבש דפוס בנושא בהשוואת כמויות או מספרים. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.",
+            "מתחילה חזרה על אותו סוג טעות — בנושא בהשוואת כמויות או מספרים. לשבוע הקרוב מספיק מבט רגוע ותרגול קצר וממוקד.",
           strength: "moderate",
         },
       ],
@@ -2121,7 +2363,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       evidenceSuccess: {
         titleHe: "חוזקה בתרגול",
         bodyHe:
-          "בנושא חיבור רואים ביצועים טובים: כ־93% נכון מתוך 42 שאלות בטווח התאריכים.",
+          "בנושא חיבור יש הצלחה טובה בתקופה: כ־93% נכון מתוך 42 שאלות.",
         confidence: "high",
       },
       insufficientData: [
@@ -2139,7 +2381,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       wrongCount: 9,
       hasAnySignal: true,
       summaryHe:
-        "תמונת המקצוע בגאומטריה: במקביל נדרש חיזוק בנושא בלבול חוזר בין היקף לשטח.",
+        "תמונת המקצוע בגאומטריה: יש גם מקום לחיזוק בנושא בלבול חוזר בין היקף לשטח.",
       topStrengths: [],
       stableExcellence: [],
       topWeaknesses: [
@@ -2182,7 +2424,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:geometry:w:0",
           textHe:
-            "מומלץ להתמקד בנושא: בלבול חוזר בין היקף לשטח (זוהו 6 טעויות דומות בטווח התאריכים). זוהה קושי חוזר",
+            "כדאי לתרגל עוד קצת בנושא: בלבול חוזר בין היקף לשטח — נרשמו 6 טעויות דומות בטווח. נשארים עם תרגול ממוקד ולא עם «לתקן הכל בבת אחת».",
           strength: "moderate",
         },
       ],
@@ -2191,7 +2433,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "par-imp:geometry:w:0",
           textHe:
-            "מתחיל להתגבש דפוס בנושא בלבול חוזר בין היקף לשטח. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.",
+            "מתחילה חזרה על אותו סוג טעות — בנושא בלבול חוזר בין היקף לשטח. לשבוע הקרוב מספיק מבט רגוע ותרגול קצר וממוקד.",
           strength: "moderate",
         },
       ],
@@ -2268,7 +2510,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       wrongCount: 11,
       hasAnySignal: true,
       summaryHe:
-        "תמונת המקצוע בעברית: במקביל נדרש חיזוק בנושא במילות יחס ובמבנה משפט.",
+        "תמונת המקצוע בעברית: יש גם מקום לחיזוק במילות יחס ובמבנה משפט.",
       topStrengths: [],
       stableExcellence: [],
       topWeaknesses: [
@@ -2311,7 +2553,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-imp:hebrew:w:0",
           textHe:
-            "מומלץ להתמקד בנושא: במילות יחס ובמבנה משפט (זוהו 6 טעויות דומות בטווח התאריכים). זוהה קושי חוזר",
+            "כדאי לתרגל עוד קצת בנושא: במילות יחס ובמבנה משפט — נרשמו 6 טעויות דומות בטווח. נשארים עם תרגול ממוקד ולא עם «לתקן הכל בבת אחת».",
           strength: "moderate",
         },
       ],
@@ -2320,7 +2562,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "par-imp:hebrew:w:0",
           textHe:
-            "מתחיל להתגבש דפוס בנושא במילות יחס ובמבנה משפט. מומלץ מעקב קל אחרי שבוע נוסף של תרגול ממוקד.",
+            "מתחילה חזרה על אותו סוג טעות — בנושא במילות יחס ובמבנה משפט. לשבוע הקרוב מספיק מבט רגוע ותרגול קצר וממוקד.",
           strength: "moderate",
         },
       ],

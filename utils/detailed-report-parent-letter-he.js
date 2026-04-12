@@ -143,7 +143,7 @@ function buildSubjectOpeningLineHe(sp, lab) {
 
   if (readiness === "not_ready" && domRc) {
     const templates = [
-      `ב${lab} עדיין אין בשלות מספקת למסקנה חזקה — מה שכן בולט: ${domRc}. נמשיך לאסוף תרגול קצר לפני שינוי מהותי.`,
+      `ב${lab} עדיין אין בשלות מספקת למסקנה חזקה — מה שכן בולט: ${domRc}. כדאי להמשיך עם תרגול קצר לפני שינוי מהותי.`,
       `ב${lab} הנתון בטווח עדיין חלקי; הכיוון הסביר ביותר כרגע הוא ${domRc} — בלי לנעול תוכנית ארוכה.`,
     ];
     return stripGuillemetsHe(templates[Math.abs((lab + domRc).length) % templates.length]);
@@ -162,7 +162,7 @@ function buildSubjectOpeningLineHe(sp, lab) {
   if (mr && ex0) {
     const acc = Math.round(Number(ex0.accuracy) || 0);
     return stripGuillemetsHe(
-      `ב${lab} יש גם חוזקות (למשל ${displayTopicPhraseHe(ex0.labelHe)}, כ־${acc}%) וגם אותות זהירות מהמנוע — לא מסכמים הכל כהצלחה מלאה.`
+      `ב${lab} יש גם חוזקות (למשל ${displayTopicPhraseHe(ex0.labelHe)}, כ־${acc}%) וגם נקודות לשימת לב — לא מסכמים הכל כהצלחה מלאה.`
     );
   }
   if (domRisk && domRisk !== "דל נתון" && w0) {
@@ -202,7 +202,7 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
   const restraintLine = String(sp?.subjectDiagnosticRestraintHe || "").trim();
   if (domRc && restraintLine) {
     const variants = [
-      stripGuillemetsHe(`מה שאנחנו חושבים שקורה: ${domRc}. ${restraintLine}`),
+      stripGuillemetsHe(`מה שנראה כרגע: ${domRc}. ${restraintLine}`),
       stripGuillemetsHe(`ניסוח זהיר לגבי ${lab}: ${domRc}. ${restraintLine}`),
     ];
     return variants[Math.abs(restraintLine.length) % variants.length];
@@ -226,7 +226,7 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
     const base = stripGuillemetsHe(`${domRisk} — ${trendLine}`);
     if (w0 && s0) {
       return stripGuillemetsHe(
-        `${base} בשאלות שנדגמו: ${displayTopicPhraseHe(s0.labelHe)} יש בסיס טוב לעומת זאת ${displayTopicPhraseHe(w0.labelHe)} נדרש חיזוק ממוקד.`
+        `${base} מהתרגול בטווח: ${displayTopicPhraseHe(s0.labelHe)} יש בסיס טוב, ואילו ${displayTopicPhraseHe(w0.labelHe)} נדרש חיזוק ממוקד.`
       );
     }
     if (w0) {
@@ -241,7 +241,7 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
       ? "נדרש חיזוק; הדפוס חוזר בעקביות."
       : "נדרש חיזוק — וכדאי להמשיך לעקוב בלי למהר למסקנה.";
     return stripGuillemetsHe(
-      `בשאלות שנדגמו: ${displayTopicPhraseHe(s0.labelHe)} יש בסיס טוב לעומת זאת ${displayTopicPhraseHe(w0.labelHe)} ${tail}`
+      `מהתרגול בטווח: ${displayTopicPhraseHe(s0.labelHe)} יש בסיס טוב, ואילו ${displayTopicPhraseHe(w0.labelHe)} ${tail}`
     );
   }
   if (w0) {
@@ -257,7 +257,7 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
   if (imp0 && !w0) {
     return stripGuillemetsHe(`יש תנועה ב־${displayTopicPhraseHe(imp0.labelHe)} — נשארים עם תרגול קצר ולא מקפיצים רמה.`);
   }
-  return stripGuillemetsHe("התמונה עדיין לא מלאה — נמשיך לאסוף עוד קצת תרגול.");
+  return stripGuillemetsHe("התמונה עדיין לא מלאה — כדאי להמשיך עם עוד קצת תרגול קצר.");
 }
 
 function buildSubjectHomeLineHe(sp, lab) {
@@ -350,22 +350,24 @@ export function buildTopicRecommendationNarrative(tr) {
   const q = Number(tr?.questions) || 0;
   const acc = Math.round(Number(tr?.accuracy) || 0);
   const m = Number(tr?.mistakeEventCount) || 0;
-  let snap = `נדגמו ${q} שאלות, דיוק כ־${acc}%.`;
-  if (m > 0) snap += ` ${m} טעויות סה״כ.`;
+  const statsLine = `בטווח הזה נכללו ${q} שאלות, עם דיוק של כ־${acc}%${m > 0 ? `; נרשמו ${m} טעויות בסך הכול` : ""}.`;
+  let snap = `ב${core}, ${statsLine}`;
   const early = !!tr?.isEarlySignalOnly || tr?.dataSufficiencyLevel === "low" || tr?.evidenceStrength === "low";
   if (early && q < 12) {
-    snap = `עדיין מוקדם לסכם — ${snap}`;
+    snap = `עדיין מוקדם לסכם — ב${core}, ${statsLine}`;
   }
   const cs = String(tr?.conclusionStrength || "").trim();
   const rc = String(tr?.rootCauseLabelHe || "").trim();
   if (cs === "withheld" || cs === "tentative") {
     const alt = [
-      `עדיין לא סוגרים סופית לגבי ${core}: ${snap} ${rc ? `הכיוון הסביר: ${rc}.` : ""}`,
-      `ב${core} אנחנו בשלב איסוף — ${snap} ${rc ? `(${rc})` : ""}`,
+      `עדיין לא סוגרים סופית לגבי ${core}. ${statsLine}${rc ? ` הכיוון הסביר: ${rc}.` : ""}`,
+      q >= 20 && acc >= 85
+        ? `ב${core} נראים ביצועים טובים לאורך התקופה. ${statsLine} עדיין לא סוגרים הכל במילה אחת.${rc ? ` נקודת מבט: ${rc}.` : ""}`
+        : `ב${core} הנתון עדיין חלקי. ${statsLine}${rc ? ` נקודת מבט: ${rc}.` : ""}`,
     ];
     snap = stripGuillemetsHe(alt[Math.abs(q + acc) % alt.length]);
   } else if (rc) {
-    snap = stripGuillemetsHe(`${snap} שורש קושי סביר: ${rc}.`);
+    snap = stripGuillemetsHe(`${snap} נקודה שכדאי לשים עליה לב: ${rc}.`);
   }
   const reasoning = String(tr?.recommendationReasoningHe || "").trim();
   const homeRaw = tr?.recommendedParentActionHe ? String(tr.recommendedParentActionHe).trim() : "";

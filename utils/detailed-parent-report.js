@@ -406,7 +406,7 @@ function buildMixedSignalNoticeHe(subjects, crossRisks, topStrengthsAcrossHe) {
   const strong = topStrengthsAcrossHe.length >= 2;
   const risky = crossRisks.falsePromotionRisk || crossRisks.hintDependenceRisk;
   if (strong && risky) {
-    return "תמונה מעורבת: יש חוזקות, אך גם דגלי סיכון מהמנוע — לא לאחד את הכל כהצלחה מלאה.";
+    return "תמונה מעורבת: יש חוזקות, אך גם סימנים שכדאי לבדוק לפני מסקנה של הצלחה מלאה בכל התחומים.";
   }
   if (anyIbs) {
     return "מופיע שיפור לצד תלות בעזרה בעצמאות — ההתקדמות עדיין דורשת ליווי מדוד.";
@@ -1302,7 +1302,7 @@ function buildHomeFocusHe(subjects, topStrengthsAcrossHe, topFocusAreasHe, summa
     return `השבוע מומלץ לשים דגש על ${noun} ${joined} — ההמלצה שלנו: תרגול משותף עם הילד. אחרי טעות, לקרוא שוב את השאלה, להיכנס לחלון התרגיל הקודם ולהבין ביחד איפה הטעות.`;
   }
   if (preservePhrase) {
-    return `במקביל כדאי לשמור על תרגול רגוע סביב ${preservePhrase} — שם כבר יש בסיס טוב.`;
+    return `כדאי לשמור גם על תרגול רגוע סביב ${preservePhrase} — שם כבר יש בסיס טוב.`;
   }
   if (q < 18) {
     return "עדיין מעט חומר בטווח — שני מפגשים קצרים בשבוע יעזרו לחדד את התמונה בפעם הבאה.";
@@ -1533,7 +1533,15 @@ function buildSubjectProfiles(baseReport) {
       topicMap,
       analysis,
       undefined,
-      periodEndMs
+      periodEndMs,
+      {
+        parentTopicToneByKey:
+          s.parentTopicToneByKey && typeof s.parentTopicToneByKey === "object" ? s.parentTopicToneByKey : {},
+        parentStrengthWithCautionLinesByKey:
+          s.parentStrengthWithCautionLinesByKey && typeof s.parentStrengthWithCautionLinesByKey === "object"
+            ? s.parentStrengthWithCautionLinesByKey
+            : {},
+      }
     );
     out.push({
       subject: sid,
@@ -1541,6 +1549,12 @@ function buildSubjectProfiles(baseReport) {
       summaryHe: s.summaryHe ?? null,
       topStrengths: Array.isArray(s.topStrengths) ? s.topStrengths : [],
       topWeaknesses: Array.isArray(s.topWeaknesses) ? s.topWeaknesses : [],
+      parentTopicToneByKey:
+        s.parentTopicToneByKey && typeof s.parentTopicToneByKey === "object" ? s.parentTopicToneByKey : {},
+      parentStrengthWithCautionLinesByKey:
+        s.parentStrengthWithCautionLinesByKey && typeof s.parentStrengthWithCautionLinesByKey === "object"
+          ? s.parentStrengthWithCautionLinesByKey
+          : {},
       maintain: Array.isArray(s.maintain) ? s.maintain : [],
       improving: Array.isArray(s.improving) ? s.improving : [],
       excellence: stable,

@@ -70,7 +70,9 @@ const {
   topicMemoryOutcomeContinuationCompactLineHe,
   topicSequencingRepeatCompactLineHe,
 } = await importUtils("utils/parent-report-ui-explain-he.js");
-const { PARENT_REPORT_SCENARIOS } = await import(pathToFileURL(join(ROOT, "tests/fixtures/parent-report-pipeline.mjs")).href);
+const { PARENT_REPORT_SCENARIOS, FIXTURE_MATH_ROW_ADD_LEARN_G4_MED } = await import(
+  pathToFileURL(join(ROOT, "tests/fixtures/parent-report-pipeline.mjs")).href
+);
 const { generateQuestion: genMath } = await importUtils("utils/math-question-generator.js");
 const { getLevelConfig } = await importUtils("utils/math-storage.js");
 const { generateQuestion: genGeo } = await importUtils("utils/geometry-question-generator.js");
@@ -610,7 +612,7 @@ function runLabelContractsForAllGoldens() {
 
 function runExplicitNamedPhase6Scenarios() {
   const recent = PARENT_REPORT_SCENARIOS.recent_transition_recent_difficulty_increase();
-  const kMath = "addition\u0001learning";
+  const kMath = FIXTURE_MATH_ROW_ADD_LEARN_G4_MED;
   const endMs = new Date(`${recent.endDate}T23:59:59.999Z`).getTime();
   const rec = buildTopicRecommendationRecord(
     "math",
@@ -707,7 +709,7 @@ function runThresholdBoundaries() {
     modeKey: "learning",
     lastSessionMs: endMs - 86400000,
   };
-  const sigLow = computeRowDiagnosticSignals("math", "addition\u0001learning", rowLow, {}, endMs);
+  const sigLow = computeRowDiagnosticSignals("math", FIXTURE_MATH_ROW_ADD_LEARN_G4_MED, rowLow, {}, endMs);
   assert.ok(sigLow.dataSufficiencyLevel === "low" || sigLow.dataSufficiencyLevel === "medium");
 
   assert.equal(confidenceBadgeFromScore(100), "high");
@@ -725,7 +727,13 @@ function runThresholdBoundaries() {
     correct: 8,
     wrong: 3,
   };
-  const sigMed = computeRowDiagnosticSignals("math", "addition\u0001learning", rowMed, { addition: { count: 3 } }, endMs);
+  const sigMed = computeRowDiagnosticSignals(
+    "math",
+    FIXTURE_MATH_ROW_ADD_LEARN_G4_MED,
+    rowMed,
+    { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 3 } },
+    endMs
+  );
   assert.ok(sigMed.dataSufficiencyLevel === "medium" || sigMed.dataSufficiencyLevel === "strong");
 }
 
@@ -775,7 +783,7 @@ function runLegacyMistakeAndDiagnostics() {
         moledetGeographyAccuracy: 0,
       },
       mathOperations: {
-        "addition\u0001learning": {
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: {
           bucketKey: "addition",
           displayName: "חיבור",
           questions: 20,
@@ -794,7 +802,7 @@ function runLegacyMistakeAndDiagnostics() {
       hebrewTopics: {},
       moledetGeographyTopics: {},
       analysis: {
-        mathMistakesByOperation: { addition: { count: 6 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 6 } },
         geometryMistakesByTopic: {},
         englishMistakesByTopic: {},
         scienceMistakesByTopic: {},
@@ -809,7 +817,21 @@ function runLegacyMistakeAndDiagnostics() {
       allItems: {},
       dailyActivity: [],
     },
-    { math: Array.from({ length: 6 }, (_, i) => ({ subject: "math", operation: "addition", isCorrect: false, timestamp: Date.UTC(2026, 3, 4) + i * 1000, patternFamily: "pf:leg", exerciseText: "x", correctAnswer: 1, userAnswer: 2 })) }
+    {
+      math: Array.from({ length: 6 }, (_, i) => ({
+        subject: "math",
+        operation: "addition",
+        grade: "ד׳",
+        level: "medium",
+        mode: "learning",
+        isCorrect: false,
+        timestamp: Date.UTC(2026, 3, 4) + i * 1000,
+        patternFamily: "pf:leg",
+        exerciseText: "x",
+        correctAnswer: 1,
+        userAnswer: 2,
+      })),
+    }
   );
   assert.ok(v2.subjects?.math?.hasAnySignal !== undefined);
 }
@@ -1430,9 +1452,9 @@ function runPhase11SequencingAndDrift() {
   const endMsEarly = Date.UTC(2026, 3, 10, 23, 59, 59);
   const sigEarly = computeRowDiagnosticSignals(
     "math",
-    "addition\u0001learning",
+    FIXTURE_MATH_ROW_ADD_LEARN_G4_MED,
     earlyRow,
-    { addition: { count: 3 } },
+    { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 3 } },
     endMsEarly
   );
   const decEarly = decideTopicNextStep({ ...earlyRow, ...sigEarly }, 3, DEFAULT_TOPIC_NEXT_STEP_CONFIG);
@@ -1915,12 +1937,18 @@ function runTopicRecGoldenRow() {
     modeKey: "learning",
     lastSessionMs: endMs - 86400000,
   };
-  const signals = computeRowDiagnosticSignals("math", "addition\u0001learning", row, { addition: { count: 4 } }, endMs);
+  const signals = computeRowDiagnosticSignals(
+    "math",
+    FIXTURE_MATH_ROW_ADD_LEARN_G4_MED,
+    row,
+    { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 4 } },
+    endMs
+  );
   const rec = buildTopicRecommendationRecord(
     "math",
-    "addition\u0001learning",
+    FIXTURE_MATH_ROW_ADD_LEARN_G4_MED,
     { ...row, ...signals },
-    { addition: { count: 4 } },
+    { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 4 } },
     undefined,
     endMs
   );

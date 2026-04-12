@@ -16,9 +16,20 @@ import {
   formatParentReportGradeLabel,
   canonicalParentReportGradeKey,
 } from "./math-report-generator";
-import { mistakeTimestampMs } from "./mistake-event";
+import { mistakeTimestampMs, normalizeMistakeEvent } from "./mistake-event";
 import { analyzeLearningPatterns } from "./learning-patterns-analysis";
-import { enrichTopicMapsWithRowDiagnostics } from "./parent-report-row-diagnostics";
+import {
+  enrichTopicMapsWithRowDiagnostics,
+  splitBucketModeRowKey,
+  splitTopicRowKey,
+  TRACK_ROW_MODE_SEP,
+  mathScopeGradeFromSession,
+  mathScopeLevelFromSession,
+  normalizeSessionModeForMath,
+  buildMathScopedMistakeAggregationKey,
+  MATH_MISTAKE_UNSCOPED_MARKER,
+  MATH_SCOPE_UNKNOWN,
+} from "./parent-report-row-diagnostics";
 import { enrichTopicMapsWithRowTrends } from "./parent-report-row-trend";
 import { enrichTopicMapsWithRowBehaviorProfiles } from "./parent-report-row-behavior";
 import { validateParentReportDataIntegrity } from "./parent-report-data-integrity";
@@ -131,8 +142,15 @@ function buildMapFromBucket({
       subject === "math" ? mathReportBaseOperationKey(storageKey) : storageKey;
     for (const s of list) {
       if (!sessionInRange(s, startMs, endMs)) continue;
-      const modeNorm = normalizeSessionMode(s);
-      const compositeKey = `${rowBucketKey}${TRACK_ROW_MODE_SEP}${modeNorm}`;
+      const modeNorm = normalizeSessionModeForMath(s);
+      let compositeKey;
+      if (subject === "math") {
+        const g = mathScopeGradeFromSession(s);
+        const l = mathScopeLevelFromSession(s);
+        compositeKey = `${rowBucketKey}${TRACK_ROW_MODE_SEP}${modeNorm}${TRACK_ROW_MODE_SEP}${g}${TRACK_ROW_MODE_SEP}${l}`;
+      } else {
+        compositeKey = `${rowBucketKey}${TRACK_ROW_MODE_SEP}${modeNorm}`;
+      }
       if (!map[compositeKey]) map[compositeKey] = [];
       map[compositeKey].push(s);
     }
@@ -180,29 +198,6 @@ export function normalizeDailyToDateMap(daily) {
     });
   }
   return out;
-}
-
-/** Composite report row key = storage bucket id + mode (Option A: one row per bucket+mode). */
-const TRACK_ROW_MODE_SEP = "\u0001";
-
-function normalizeSessionMode(s) {
-  if (!s || typeof s !== "object") return "learning";
-  const m = s.mode;
-  if (m == null || m === "") return "learning";
-  const t = String(m).trim();
-  return t || "learning";
-}
-
-export function splitBucketModeRowKey(itemKey) {
-  if (typeof itemKey !== "string") {
-    return { bucketKey: String(itemKey), modeKey: null };
-  }
-  const i = itemKey.indexOf(TRACK_ROW_MODE_SEP);
-  if (i === -1) return { bucketKey: itemKey, modeKey: null };
-  return {
-    bucketKey: itemKey.slice(0, i),
-    modeKey: itemKey.slice(i + TRACK_ROW_MODE_SEP.length) || null,
-  };
 }
 
 function dominantKey(counts) {
@@ -269,7 +264,9 @@ function buildRowSummary({
   legacyProgress,
   displayNameFn,
 }) {
-  const { bucketKey, modeKey: modeFromKey } = splitBucketModeRowKey(itemKey);
+  const tp = splitTopicRowKey(itemKey);
+  const bucketKey = tp.bucketKey;
+  const modeFromKey = tp.modeKey;
   const timeSeconds = sessions.reduce((s, x) => s + sessionDurationSeconds(x), 0);
   const timeMinutes = Math.round(timeSeconds / 60);
   const { questions, correct } = sumQuestionsCorrect(sessions, legacyProgress);
@@ -279,19 +276,34 @@ function buildRowSummary({
   const modeDist = countDistribution(sessions, "mode");
   const gradeKeyLatest = latestSessionFieldValue(sessions, "grade");
   const levelKeyLatest = latestSessionFieldValue(sessions, "level");
-  const gradeKeyRaw =
-    gradeKeyLatest != null && gradeKeyLatest !== ""
-      ? gradeKeyLatest
-      : dominantKey(gradeDist);
-  const gradeKey = canonicalParentReportGradeKey(gradeKeyRaw);
-  const levelKey =
-    levelKeyLatest != null && levelKeyLatest !== ""
-      ? levelKeyLatest
-      : dominantKey(levelDist);
-  const modeKey =
-    modeFromKey && modeFromKey !== ""
-      ? modeFromKey
-      : dominantKey(modeDist) || "learning";
+
+  let gradeKeyRaw;
+  let gradeKey;
+  let levelKey;
+  let modeKey;
+
+  if (subject === "math" && String(itemKey).split(TRACK_ROW_MODE_SEP).length >= 4) {
+    gradeKeyRaw =
+      tp.gradeScope === MATH_SCOPE_UNKNOWN ? null : String(tp.gradeScope).trim() || null;
+    gradeKey = gradeKeyRaw ? canonicalParentReportGradeKey(gradeKeyRaw) : null;
+    levelKey =
+      tp.levelScope === MATH_SCOPE_UNKNOWN ? null : String(tp.levelScope).trim().toLowerCase() || null;
+    modeKey = modeFromKey && modeFromKey !== "" ? modeFromKey : dominantKey(modeDist) || "learning";
+  } else {
+    gradeKeyRaw =
+      gradeKeyLatest != null && gradeKeyLatest !== ""
+        ? gradeKeyLatest
+        : dominantKey(gradeDist);
+    gradeKey = canonicalParentReportGradeKey(gradeKeyRaw);
+    levelKey =
+      levelKeyLatest != null && levelKeyLatest !== ""
+        ? levelKeyLatest
+        : dominantKey(levelDist);
+    modeKey =
+      modeFromKey && modeFromKey !== ""
+        ? modeFromKey
+        : dominantKey(modeDist) || "learning";
+  }
   const needsPractice = accuracy < 70;
   const excellent = accuracy >= 90 && questions >= 10;
   const topicOpLabel = displayNameFn(bucketKey);
@@ -401,6 +413,33 @@ function loadProgress(path) {
   } catch {
     return {};
   }
+}
+
+/**
+ * מתמטיקה: ספירת טעויות לפי מפתח שורה scoped (פעולה+מצב+כיתה+רמה); טעויות בלי scope מלא → מפתח `op__UNSCOPED__`.
+ * @param {unknown[]} mistakes
+ * @param {number} startMs
+ * @param {number} endMs
+ */
+function buildMathMistakesScopedCounts(mistakes, startMs, endMs) {
+  const byKey = {};
+  const arr = Array.isArray(mistakes) ? mistakes : [];
+  for (const m of arr) {
+    if (!m || typeof m !== "object") continue;
+    const t = mistakeTimestampMs(m);
+    if (t === null || t < startMs || t > endMs) continue;
+    const ev = normalizeMistakeEvent(m, "math");
+    const scoped = buildMathScopedMistakeAggregationKey(ev);
+    const op = mathReportBaseOperationKey(String(ev.topicOrOperation || m.operation || ""));
+    const k = scoped || (op ? `${op}${MATH_MISTAKE_UNSCOPED_MARKER}` : null);
+    if (!k) continue;
+    if (!byKey[k]) byKey[k] = { count: 0, lastSeen: null };
+    byKey[k].count += 1;
+    if (!byKey[k].lastSeen || t > new Date(byKey[k].lastSeen).getTime()) {
+      byKey[k].lastSeen = m.timestamp ?? m.storedAt;
+    }
+  }
+  return byKey;
 }
 
 /**
@@ -681,12 +720,7 @@ export function generateParentReportV2(
     localStorage.getItem("mleo_moledet_geography_mistakes") || "[]"
   );
 
-  const mathMistakesByOperation = filterMistakes(
-    mathMistakesRaw,
-    startMs,
-    endMs,
-    (m) => m.operation
-  );
+  const mathMistakesByOperation = buildMathMistakesScopedCounts(mathMistakesRaw, startMs, endMs);
   const geometryMistakesByTopic = filterMistakes(
     geometryMistakesRaw,
     startMs,

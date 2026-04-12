@@ -100,7 +100,7 @@ function oldSubjectVisible(sp) {
     if (!Array.isArray(arr) || !arr.length) continue;
     const title =
       label === "excellence"
-        ? "הצטיינות היציבה"
+        ? "הצלחה יציבה"
         : label === "topStrengths"
           ? "חוזקות מובילות"
           : label === "maintain"

@@ -3,28 +3,120 @@
  * ללא תלות ב־parent-report-v2 (מניעת מעגל ייבוא).
  */
 
-import { mathReportBaseOperationKey } from "./math-report-generator";
+import { mathReportBaseOperationKey, canonicalParentReportGradeKey } from "./math-report-generator";
 import { DEFAULT_TOPIC_NEXT_STEP_CONFIG } from "./topic-next-step-config";
+export const TRACK_ROW_MODE_SEP = "\u0001";
 
-const TRACK_ROW_MODE_SEP = "\u0001";
+/** placeholder פנימי לסשנים/טעויות בלי כיתה או בלי רמה — לא מאחדים כמה ערכים אמיתיים */
+export const MATH_SCOPE_UNKNOWN = "unknown";
 
-/** מפרק מפתח שורה bucket+mode — מיוצא לשימוש במנוע המלצות בלי לייבא את parent-report-v2 */
-export function splitBucketModeRowKey(itemKey) {
-  if (typeof itemKey !== "string") {
-    return { bucketKey: String(itemKey), modeKey: null };
+/** סיומת מפתח אגרגציה לטעויות מתמטיקה בלי scope מלא — לא נשענים עליו לשורה scoped */
+export const MATH_MISTAKE_UNSCOPED_MARKER = "__UNSCOPED__";
+
+/**
+ * מתמטיקה: מפתח שורה = operation + mode + grade + level (4 מקטעים).
+ * שאר המקצועות: operation/topic + mode (2 מקטעים) — תאימות לאחור.
+ */
+export function splitTopicRowKey(itemKey) {
+  const raw = String(itemKey ?? "");
+  const parts = raw.split(TRACK_ROW_MODE_SEP);
+  if (parts.length >= 4) {
+    return {
+      bucketKey: parts[0],
+      modeKey: parts[1] || null,
+      gradeScope: parts[2] || MATH_SCOPE_UNKNOWN,
+      levelScope: parts[3] || MATH_SCOPE_UNKNOWN,
+    };
   }
-  const i = itemKey.indexOf(TRACK_ROW_MODE_SEP);
-  if (i === -1) return { bucketKey: itemKey, modeKey: null };
-  return {
-    bucketKey: itemKey.slice(0, i),
-    modeKey: itemKey.slice(i + TRACK_ROW_MODE_SEP.length) || null,
-  };
+  if (parts.length === 2) {
+    return { bucketKey: parts[0], modeKey: parts[1] || null, gradeScope: null, levelScope: null };
+  }
+  if (parts.length === 1 && parts[0]) {
+    return { bucketKey: parts[0], modeKey: null, gradeScope: null, levelScope: null };
+  }
+  return { bucketKey: raw, modeKey: null, gradeScope: null, levelScope: null };
+}
+
+/** מפרק מפתח שורה — bucket + mode (תאימות); למתמטיקה מלאה השתמשו ב־splitTopicRowKey */
+export function splitBucketModeRowKey(itemKey) {
+  const s = splitTopicRowKey(itemKey);
+  return { bucketKey: s.bucketKey, modeKey: s.modeKey };
+}
+
+/** @param {unknown} session */
+export function normalizeSessionModeForMath(session) {
+  if (!session || typeof session !== "object") return "learning";
+  const m = session.mode;
+  if (m == null || m === "") return "learning";
+  const t = String(m).trim();
+  return t || "learning";
+}
+
+/** @param {unknown} session */
+export function mathScopeGradeFromSession(session) {
+  const c = canonicalParentReportGradeKey(session?.grade);
+  return c || MATH_SCOPE_UNKNOWN;
+}
+
+/** @param {unknown} session */
+export function mathScopeLevelFromSession(session) {
+  if (!session || typeof session !== "object") return MATH_SCOPE_UNKNOWN;
+  const lv = session.level != null && session.level !== "" ? String(session.level).trim().toLowerCase() : "";
+  if (lv === "easy" || lv === "medium" || lv === "hard") return lv;
+  return MATH_SCOPE_UNKNOWN;
+}
+
+/** @param {unknown} level */
+export function mathScopeLevelFromField(level) {
+  if (level == null || level === "") return MATH_SCOPE_UNKNOWN;
+  const lv = String(level).trim().toLowerCase();
+  if (lv === "easy" || lv === "medium" || lv === "hard") return lv;
+  return MATH_SCOPE_UNKNOWN;
+}
+
+/** @param {unknown} mode */
+export function normalizeMistakeModeField(mode) {
+  if (mode == null || mode === "") return "learning";
+  const t = String(mode).trim();
+  return t || "learning";
+}
+
+/**
+ * טעות מתמטיקה עם grade+level תקפים (לא unknown) — רק כאלה נכנסות לשורה scoped.
+ * @param {Record<string, unknown>|null|undefined} ev
+ */
+export function mistakeMathScopeComplete(ev) {
+  if (!ev || typeof ev !== "object") return false;
+  const g = canonicalParentReportGradeKey(ev.grade);
+  const l = mathScopeLevelFromField(ev.level);
+  return !!(g && l && l !== MATH_SCOPE_UNKNOWN);
+}
+
+/**
+ * מפתח אגרגציה לטעויות מתמטיקה (תואם מפתח שורת דוח scoped).
+ * @param {Record<string, unknown>|null|undefined} ev
+ * @returns {string|null} null אם חסרים נתוני scope — הקורא יפנה ל־UNSCOPED
+ */
+export function buildMathScopedMistakeAggregationKey(ev) {
+  if (!ev || typeof ev !== "object") return null;
+  const op = mathReportBaseOperationKey(String(ev.topicOrOperation || ev.bucketKey || ""));
+  if (!op) return null;
+  if (!mistakeMathScopeComplete(ev)) return null;
+  const g = canonicalParentReportGradeKey(ev.grade);
+  const l = mathScopeLevelFromField(ev.level);
+  const m = normalizeMistakeModeField(ev.mode);
+  return `${op}${TRACK_ROW_MODE_SEP}${m}${TRACK_ROW_MODE_SEP}${g}${TRACK_ROW_MODE_SEP}${l}`;
 }
 
 export function canonicalMistakeLookupKeyForDiagnostics(subjectId, rawKey) {
   const s = String(rawKey ?? "").trim();
   if (!s) return "";
-  if (subjectId === "math") return mathReportBaseOperationKey(s);
+  if (subjectId === "math") {
+    if (s.endsWith(MATH_MISTAKE_UNSCOPED_MARKER)) return s;
+    const parts = s.split(TRACK_ROW_MODE_SEP);
+    if (parts.length >= 4) return s;
+    return mathReportBaseOperationKey(s);
+  }
   if (/^[a-z0-9_\-.]+$/i.test(s)) return s.toLowerCase();
   return s;
 }
@@ -46,6 +138,13 @@ export function aggregateMistakeCountsByCanonicalKey(subjectId, mistakesByBucket
  */
 export function rowMistakeEventCount(subjectId, mistakesByBucket, bucketKey, topicRowKey, row) {
   const byCanon = aggregateMistakeCountsByCanonicalKey(subjectId, mistakesByBucket);
+  if (subjectId === "math") {
+    const pk = String(topicRowKey || "");
+    const parts = splitTopicRowKey(pk);
+    if (parts.gradeScope != null && parts.levelScope != null) {
+      return byCanon[pk] || 0;
+    }
+  }
   const candidates = new Set();
   if (bucketKey) candidates.add(canonicalMistakeLookupKeyForDiagnostics(subjectId, bucketKey));
   const split = splitBucketModeRowKey(String(topicRowKey || ""));
@@ -63,6 +162,25 @@ export function rowMistakeEventCount(subjectId, mistakesByBucket, bucketKey, top
     total += byCanon[c] || 0;
   }
   return total;
+}
+
+/**
+ * האם אירוע טעות (מתמטיקה) שייך לשורת דוח scoped לפי כיתה+רמה+מצב.
+ * @param {string} topicRowKey
+ * @param {Record<string, unknown>|null|undefined} ev
+ */
+export function mathMistakeEventMatchesScopedRow(topicRowKey, ev) {
+  const parts = splitTopicRowKey(String(topicRowKey || ""));
+  if (parts.gradeScope == null || parts.levelScope == null) return false;
+  if (!mistakeMathScopeComplete(ev)) return false;
+  const g = canonicalParentReportGradeKey(ev.grade);
+  const l = mathScopeLevelFromField(ev.level);
+  const m = normalizeMistakeModeField(ev.mode);
+  return (
+    g === parts.gradeScope &&
+    l === parts.levelScope &&
+    m === (parts.modeKey || "learning")
+  );
 }
 
 /**

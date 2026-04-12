@@ -13,6 +13,10 @@ const START = "2026-04-01";
 const END = "2026-04-10";
 const END_MS = Date.UTC(2026, 3, 10, 23, 59, 59, 999);
 
+/** מפתח שורת מתמטיקה scoped (תואם parent-report-v2) */
+const _RK = "\u0001";
+export const FIXTURE_MATH_ROW_ADD_LEARN_G4_MED = `addition${_RK}learning${_RK}g4${_RK}medium`;
+
 function defaultSummary(over = {}) {
   return {
     totalQuestions: 0,
@@ -117,6 +121,9 @@ export function mathWrongCluster(n, patternFamily = "pf:fixture_gap") {
     subject: "math",
     operation: "addition",
     bucketKey: "addition",
+    grade: "g4",
+    level: "medium",
+    mode: "learning",
     timestamp: base + i * 2000,
     isCorrect: false,
     exerciseText: `שאלת חיבור ${i}`,
@@ -172,12 +179,12 @@ export const PARENT_REPORT_SCENARIOS = {
         overallAccuracy: acc,
       },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({ questions: q, accuracy: acc, needsPractice: true }),
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({ questions: q, accuracy: acc, needsPractice: true }),
       },
       mistakes: { math: mathWrongCluster(5) },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 5 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 5 } },
       },
     });
   },
@@ -192,7 +199,7 @@ export const PARENT_REPORT_SCENARIOS = {
         overallAccuracy: 93,
       },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({
           questions: 24,
           accuracy: 93,
           needsPractice: false,
@@ -206,7 +213,7 @@ export const PARENT_REPORT_SCENARIOS = {
     buildSyntheticBaseReport({
       summary: { totalQuestions: 40, mathQuestions: 40, mathCorrect: 30, mathAccuracy: 75, overallAccuracy: 75 },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({
           questions: 20,
           accuracy: 78,
           behaviorProfile: {
@@ -227,7 +234,7 @@ export const PARENT_REPORT_SCENARIOS = {
       mistakes: { math: mathWrongCluster(5) },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 5 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 5 } },
       },
     }),
 
@@ -235,7 +242,7 @@ export const PARENT_REPORT_SCENARIOS = {
     buildSyntheticBaseReport({
       summary: { totalQuestions: 35, mathQuestions: 35, mathCorrect: 18, mathAccuracy: 51, overallAccuracy: 51 },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({
           questions: 18,
           accuracy: 50,
           behaviorProfile: {
@@ -249,7 +256,7 @@ export const PARENT_REPORT_SCENARIOS = {
       mistakes: { math: mathWrongCluster(8, "pf:gap_core") },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 8 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 8 } },
       },
     }),
 
@@ -257,7 +264,7 @@ export const PARENT_REPORT_SCENARIOS = {
     buildSyntheticBaseReport({
       summary: { totalQuestions: 28, mathQuestions: 28, mathCorrect: 22, mathAccuracy: 78, overallAccuracy: 78 },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({
           questions: 22,
           accuracy: 78,
           modeKey: "speed",
@@ -272,7 +279,7 @@ export const PARENT_REPORT_SCENARIOS = {
       mistakes: { math: mathWrongCluster(5, "pf:careless_fixture") },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 5 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 5 } },
       },
     }),
 
@@ -280,7 +287,7 @@ export const PARENT_REPORT_SCENARIOS = {
     buildSyntheticBaseReport({
       summary: { totalQuestions: 30, mathQuestions: 30, mathCorrect: 20, mathAccuracy: 66, overallAccuracy: 66 },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({
           questions: 18,
           accuracy: 66,
           behaviorProfile: {
@@ -294,7 +301,7 @@ export const PARENT_REPORT_SCENARIOS = {
       mistakes: { math: mathWrongCluster(6, "pf:instr_friction") },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 6 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 6 } },
       },
     }),
 
@@ -317,7 +324,7 @@ export const PARENT_REPORT_SCENARIOS = {
       mistakes: { math: mathWrongCluster(5, "pf:speed_only") },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 5 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 5 } },
       },
     }),
 
@@ -325,7 +332,7 @@ export const PARENT_REPORT_SCENARIOS = {
     buildSyntheticBaseReport({
       summary: { totalQuestions: 32, mathQuestions: 32, mathCorrect: 26, mathAccuracy: 81, overallAccuracy: 81 },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({
           questions: 24,
           accuracy: 81,
           trend: {
@@ -341,7 +348,7 @@ export const PARENT_REPORT_SCENARIOS = {
       mistakes: { math: mathWrongCluster(5) },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 5 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 5 } },
       },
     }),
 
@@ -358,7 +365,7 @@ export const PARENT_REPORT_SCENARIOS = {
         overallAccuracy: 62,
       },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({ questions: 22, accuracy: 82, needsPractice: false }),
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({ questions: 22, accuracy: 82, needsPractice: false }),
       },
       geometryTopics: {
         "perimeter\u0001learning": mathRowSession({
@@ -384,7 +391,7 @@ export const PARENT_REPORT_SCENARIOS = {
       },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 5 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 5 } },
         geometryMistakesByTopic: { perimeter: { count: 6 } },
       },
     }),
@@ -393,7 +400,7 @@ export const PARENT_REPORT_SCENARIOS = {
     buildSyntheticBaseReport({
       summary: { totalQuestions: 42, mathQuestions: 42, mathCorrect: 36, mathAccuracy: 86, overallAccuracy: 86 },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({
           questions: 24,
           accuracy: 90,
           excellent: true,
@@ -410,14 +417,14 @@ export const PARENT_REPORT_SCENARIOS = {
             confidenceBadge: "high",
             sufficiencyBadge: "low",
             diagnosticType: "fragile_success",
-            whyThisRecommendationHe: "יש חוזקות אך גם דגלי סיכון מהמנוע.",
+            whyThisRecommendationHe: "יש חוזקות אך גם סימנים שכדאי לבדוק.",
           },
         }),
       },
       mistakes: { math: mathWrongCluster(5) },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 5 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 5 } },
       },
     }),
 
@@ -473,7 +480,7 @@ export const PARENT_REPORT_SCENARIOS = {
         overallAccuracy: 59,
       },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({
           questions: 22,
           accuracy: 58,
           levelKey: "hard",
@@ -495,7 +502,7 @@ export const PARENT_REPORT_SCENARIOS = {
       mistakes: { math: mathWrongCluster(9) },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 9 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 9 } },
       },
     }),
 
@@ -521,7 +528,7 @@ export const PARENT_REPORT_SCENARIOS = {
         overallAccuracy: 61,
       },
       mathOperations: {
-        "addition\u0001learning": mathRowSession({
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({
           questions: 20,
           accuracy: 60,
           behaviorProfile: {
@@ -535,7 +542,7 @@ export const PARENT_REPORT_SCENARIOS = {
       mistakes: { math: mathWrongCluster(7, "pf:no_home_fixture") },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 7 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 7 } },
       },
     });
     const pd = structuredClone(base.patternDiagnostics);
@@ -623,7 +630,7 @@ export const PARENT_REPORT_SCENARIOS = {
       mistakes: { math: mathWrongCluster(5), geometry: [] },
       analysis: {
         ...emptyAnalysis(),
-        mathMistakesByOperation: { addition: { count: 5 } },
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 5 } },
         geometryMistakesByTopic: { perimeter: { count: 3 } },
       },
     }),

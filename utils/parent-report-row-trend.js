@@ -3,18 +3,17 @@
  * לא תלוי ב־window; ניתן לבדיקות יחידה.
  */
 
-import { splitBucketModeRowKey, canonicalMistakeLookupKeyForDiagnostics } from "./parent-report-row-diagnostics";
+import {
+  splitBucketModeRowKey,
+  splitTopicRowKey,
+  canonicalMistakeLookupKeyForDiagnostics,
+  mathMistakeEventMatchesScopedRow,
+  mathScopeGradeFromSession,
+  mathScopeLevelFromSession,
+  normalizeSessionModeForMath,
+} from "./parent-report-row-diagnostics";
 import { normalizeMistakeEvent } from "./mistake-event";
 import { mathReportBaseOperationKey } from "./math-report-generator";
-
-/** @param {unknown} s */
-function normalizeSessionMode(s) {
-  if (!s || typeof s !== "object") return "learning";
-  const m = s.mode;
-  if (m == null || m === "") return "learning";
-  const t = String(m).trim();
-  return t || "learning";
-}
 
 /** @param {unknown} session */
 function parseSessionTime(session) {
@@ -109,7 +108,12 @@ function mistakeMatchesRowEsm(subjectId, topicRowKey, row, ev) {
   if (subjectId === "math") {
     const kb = mathReportBaseOperationKey(String(bucketKey || ""));
     const kt = mathReportBaseOperationKey(String(to || ""));
-    return kb && kt && kb === kt;
+    if (!kb || !kt || kb !== kt) return false;
+    const parts = splitTopicRowKey(String(topicRowKey || ""));
+    if (parts.gradeScope != null && parts.levelScope != null) {
+      return mathMistakeEventMatchesScopedRow(String(topicRowKey || ""), ev);
+    }
+    return true;
   }
   const c1 = canonicalMistakeLookupKeyForDiagnostics(subjectId, b);
   const c2 = canonicalMistakeLookupKeyForDiagnostics(subjectId, to);
@@ -346,18 +350,44 @@ export function enrichTopicMapsWithRowTrends(
     const mistakes = rawMistakesBySubject?.[subjectId] || [];
     for (const [topicRowKey, row] of Object.entries(topicMap)) {
       if (!row || typeof row !== "object") continue;
-      const { bucketKey, modeKey } = splitBucketModeRowKey(String(topicRowKey || ""));
+      const tp = splitTopicRowKey(String(topicRowKey || ""));
+      const bucketKey = tp.bucketKey;
+      const modeKey = tp.modeKey;
       const storageKey =
         subjectId === "math" ? Object.keys(bucket).find((k) => mathReportBaseOperationKey(k) === bucketKey) : bucketKey;
       const rawItem = storageKey != null ? bucket[storageKey] : null;
       const list = normalizeSessionsArray(rawItem?.sessions);
       const modeNorm = modeKey && String(modeKey) !== "" ? String(modeKey) : String(row.modeKey || "learning");
-      const sessionsCurrent = list.filter(
-        (s) => sessionInRange(s, periodStartMs, periodEndMs) && normalizeSessionMode(s) === modeNorm
-      );
-      const prevSessions = list.filter(
-        (s) => sessionInRange(s, prevStartMs, prevEndMs) && normalizeSessionMode(s) === modeNorm
-      );
+      const sessionsCurrent = list.filter((s) => {
+        if (!sessionInRange(s, periodStartMs, periodEndMs)) return false;
+        if (normalizeSessionModeForMath(s) !== modeNorm) return false;
+        if (
+          subjectId === "math" &&
+          tp.gradeScope != null &&
+          tp.levelScope != null &&
+          String(topicRowKey).split("\u0001").length >= 4
+        ) {
+          return (
+            mathScopeGradeFromSession(s) === tp.gradeScope && mathScopeLevelFromSession(s) === tp.levelScope
+          );
+        }
+        return true;
+      });
+      const prevSessions = list.filter((s) => {
+        if (!sessionInRange(s, prevStartMs, prevEndMs)) return false;
+        if (normalizeSessionModeForMath(s) !== modeNorm) return false;
+        if (
+          subjectId === "math" &&
+          tp.gradeScope != null &&
+          tp.levelScope != null &&
+          String(topicRowKey).split("\u0001").length >= 4
+        ) {
+          return (
+            mathScopeGradeFromSession(s) === tp.gradeScope && mathScopeLevelFromSession(s) === tp.levelScope
+          );
+        }
+        return true;
+      });
       const legacyProgress = { total: 0, correct: 0 };
       row.trend = computeRowTrend({
         subjectId,

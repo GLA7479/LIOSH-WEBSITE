@@ -179,14 +179,14 @@ function buildHebrewCopy(step, ctx, cfg) {
       studentHe: `ב«${displayName}» אפשר לנסות כיתה קצת יותר גבוהה — רק שם, צעד אחר צעד.`,
     },
     maintain_and_strengthen: {
-      reasonHe: `ב«${displayName}» יש ${q} שאלות ודיוק של כ-${acc}%${mPart}. עדיין לא בטוחים מספיק לקפיצה קדימה או אחורה — הכי נכון להישאר באותה כיתה ורמת קושי ולחזק עקביות.`,
+      reasonHe: `ב«${displayName}» יש ${q} שאלות ודיוק של כ-${acc}%${mPart}. עדיין לא בטוחים מספיק לקפיצה קדימה או אחורה — כדאי להמשיך באותה כיתה ורמת קושי ולחזק עקביות.`,
       parentHe: `בנושא ${displayName} מומלץ להמשיך כרגע באותה רמת קושי, להוסיף תרגול קצר וממוקד פעמיים בשבוע. המטרה: ביסוס הנושא ועקביות לפני שמשנים משהו.`,
       studentHe: `כדאי להתאמן עוד קצת ב«${displayName}» באותה רמה — ואז נחליט על צעד הבא.`,
     },
     remediate_same_level: {
       reasonHe: `ב«${displayName}» הדיוק בינוני (${acc}%) עם ${q} שאלות${mPart}. עדיף לחזק את הבסיס באותה רמת קושי לפני שמנסים משהו חדש.`,
       parentHe:
-        "מומלץ להישאר על אותה רמת קושי ולהתמקד בהבנת הטעויות: לתרגל ביחד עם הילד ולאחר כל תשובה שגויה — נבדוק ביחד מה הקושי וננסה להבין את הטעויות שלנו, ההמלצה שלנו לא לעלות רמה עד שנרגיש שיש התקדמות ועקביות.",
+        "כדאי להמשיך על אותה רמת קושי ולהתמקד בהבנת הטעויות: לתרגל ביחד עם הילד, ואחרי תשובה שגויה לעצור ולברר ביחד איפה זה הסתבך. עדיף לא לעלות רמה לפני שיש תחושה של התקדמות ועקביות.",
       studentHe: `נחזק קודם את הבסיס ב«${displayName}» באותה רמה — ואז נתקדם.`,
     },
     drop_one_level_topic_only: {
@@ -994,7 +994,7 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
   if (capped.postCapApplied) {
     whyThisRecommendationHe += " הוחל כיסוי ראיות בסיס — לא מבצעים צעד אגרסיבי כשהנתונים חלקיים.";
   }
-  whyThisRecommendationHe += ` שורש קושי סביר: ${rootCausePayload.rootCauseLabelHe || rootCausePayload.rootCause}.`;
+  whyThisRecommendationHe += ` נקודה שכדאי לשים עליה לב: ${rootCausePayload.rootCauseLabelHe || rootCausePayload.rootCause}.`;
   const dc = String(restraintPayload.diagnosticCautionHe || "").trim();
   if (dc) whyThisRecommendationHe += ` ${dc}`;
   if (phase10Aging.confidenceDecayApplied) {
@@ -1107,7 +1107,8 @@ export function buildTopicRecommendationRecord(
   row,
   mistakesByBucket,
   cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG,
-  periodEndMs = null
+  periodEndMs = null,
+  toneContext = null
 ) {
   const bucketKey =
     row?.bucketKey || splitBucketModeRowKey(String(topicRowKey)).bucketKey || null;
@@ -1118,6 +1119,20 @@ export function buildTopicRecommendationRecord(
   const decision = decideTopicNextStep(rowAug, mC, cfg);
   const q = Number(row?.questions) || 0;
 
+  const toneByKey =
+    toneContext && typeof toneContext === "object" && toneContext.parentTopicToneByKey
+      ? toneContext.parentTopicToneByKey
+      : null;
+  const cautionLinesByKey =
+    toneContext && typeof toneContext === "object" && toneContext.parentStrengthWithCautionLinesByKey
+      ? toneContext.parentStrengthWithCautionLinesByKey
+      : null;
+  const rowTone = toneByKey ? toneByKey[String(topicRowKey)] : null;
+  const cautionLines =
+    cautionLinesByKey && Array.isArray(cautionLinesByKey[String(topicRowKey)])
+      ? cautionLinesByKey[String(topicRowKey)]
+      : null;
+
   const recommendationDecisionTrace = Array.isArray(decision.recommendationDecisionTrace)
     ? decision.recommendationDecisionTrace
     : [];
@@ -1125,6 +1140,13 @@ export function buildTopicRecommendationRecord(
     ...(Array.isArray(signals.decisionTrace) ? signals.decisionTrace : []),
     ...recommendationDecisionTrace,
   ];
+
+  let whyThisRecommendationHe = decision.whyThisRecommendationHe || "";
+  let recommendedParentActionHe = decision.parentHe;
+  if (rowTone === "strength_with_caution" && Array.isArray(cautionLines) && cautionLines.length >= 3) {
+    whyThisRecommendationHe = `${cautionLines[0]} ${cautionLines[1]} ${cautionLines[2]}`.trim();
+    recommendedParentActionHe = cautionLines[2];
+  }
 
   return {
     subject: subjectId,
@@ -1158,7 +1180,7 @@ export function buildTopicRecommendationRecord(
     recommendedStepLabelHe:
       RECOMMENDED_STEP_LABEL_HE[decision.step] || RECOMMENDED_STEP_LABEL_HE.maintain_and_strengthen,
     recommendedStepReasonHe: decision.reasonHe,
-    recommendedParentActionHe: decision.parentHe,
+    recommendedParentActionHe,
     recommendedStudentActionHe: decision.studentHe,
     recommendedEvidenceLevelHe:
       signals.evidenceStrength === "strong"
@@ -1175,7 +1197,8 @@ export function buildTopicRecommendationRecord(
     sufficiencyBadge: sufficiencyBadgeFromLevel(signals.dataSufficiencyLevel),
     diagnosticType: decision.diagnosticType ?? "undetermined",
     riskFlags: decision.riskFlags || null,
-    whyThisRecommendationHe: decision.whyThisRecommendationHe || "",
+    whyThisRecommendationHe,
+    parentTopicTone: rowTone || null,
     whatCouldChangeThisHe: decision.whatCouldChangeThisHe || "",
     recommendationStructuredTrace: decision.recommendationStructuredTrace ?? null,
     diagnosticRestraint: decision.diagnosticRestraint ?? null,
@@ -1634,7 +1657,8 @@ export function buildTopicRecommendationsForSubject(
   topicMap,
   analysis,
   cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG,
-  periodEndMs = null
+  periodEndMs = null,
+  toneContext = null
 ) {
   const aKey = MISTAKE_ANALYSIS_KEY[subjectId];
   const mistakesByBucket = (analysis && analysis[aKey]) || {};
@@ -1646,7 +1670,17 @@ export function buildTopicRecommendationsForSubject(
     if (!row || typeof row !== "object") continue;
     const q = Number(row.questions) || 0;
     if (q <= 0) continue;
-    rows.push(buildTopicRecommendationRecord(subjectId, topicRowKey, row, mistakesByBucket, cfg, periodEndMs));
+    rows.push(
+      buildTopicRecommendationRecord(
+        subjectId,
+        topicRowKey,
+        row,
+        mistakesByBucket,
+        cfg,
+        periodEndMs,
+        toneContext
+      )
+    );
   }
 
   const urgency = (s) => {
