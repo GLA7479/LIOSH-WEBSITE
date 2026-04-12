@@ -678,6 +678,51 @@ function buildSubjectProfiles(baseReport) {
 }
 
 /**
+ * בונה דוח מקיף מאובייקט דוח V2 קיים — לבדיקות ולכלי עזר (ללא טעינת שחקן).
+ * @param {Record<string, unknown>} baseReport
+ * @param {{ playerName?: string, period?: string }} [meta]
+ */
+export function buildDetailedParentReportFromBaseReport(baseReport, meta = {}) {
+  if (!baseReport || typeof baseReport !== "object") return null;
+  const playerName = meta.playerName ?? baseReport.playerName ?? "_fixture_";
+  const period = meta.period ?? baseReport.period ?? "week";
+
+  const subjects = baseReport.patternDiagnostics?.subjects || {};
+  const subjectCoverage = buildSubjectCoverage(baseReport);
+  const overallSnapshot = buildOverallSnapshot(baseReport, subjectCoverage);
+  const executiveSummary = buildExecutiveSummary(
+    subjects,
+    baseReport.summary || {},
+    subjectCoverage,
+    baseReport.dataIntegrityReport ?? null
+  );
+  const crossSubjectInsights = buildCrossSubjectInsights(baseReport, subjects);
+  const homePlan = buildHomePlan(subjects);
+  const nextPeriodGoals = buildNextPeriodGoals(subjects);
+  const subjectProfiles = buildSubjectProfiles(baseReport);
+
+  return {
+    version: 2,
+    generatedAt: new Date().toISOString(),
+    periodInfo: {
+      period: baseReport.period === "custom" ? "custom" : period,
+      startDate: baseReport.startDate,
+      endDate: baseReport.endDate,
+      startDateLabelHe: formatDateLabelHe(baseReport.startDate),
+      endDateLabelHe: formatDateLabelHe(baseReport.endDate),
+      playerName: baseReport.playerName || playerName,
+    },
+    executiveSummary,
+    overallSnapshot,
+    subjectProfiles,
+    crossSubjectInsights,
+    homePlan,
+    nextPeriodGoals,
+    dataIntegrityReport: baseReport.dataIntegrityReport ?? null,
+  };
+}
+
+/**
  * בונה דוח מקיף לתקופה (מבנה נפרד מדוח V2).
  * @param {string} playerName
  * @param {string} period 'week'|'month'|'custom'
@@ -693,39 +738,5 @@ export function generateDetailedParentReport(
 ) {
   const base = generateParentReportV2(playerName, period, customStartDate, customEndDate);
   if (!base) return null;
-
-  const subjects = base.patternDiagnostics?.subjects || {};
-  const subjectCoverage = buildSubjectCoverage(base);
-  const overallSnapshot = buildOverallSnapshot(base, subjectCoverage);
-  const executiveSummary = buildExecutiveSummary(
-    subjects,
-    base.summary || {},
-    subjectCoverage,
-    base.dataIntegrityReport ?? null
-  );
-  const crossSubjectInsights = buildCrossSubjectInsights(base, subjects);
-  const homePlan = buildHomePlan(subjects);
-  const nextPeriodGoals = buildNextPeriodGoals(subjects);
-  const subjectProfiles = buildSubjectProfiles(base);
-
-  return {
-    version: 2,
-    generatedAt: new Date().toISOString(),
-    periodInfo: {
-      period: base.period === "custom" ? "custom" : period,
-      startDate: base.startDate,
-      endDate: base.endDate,
-      startDateLabelHe: formatDateLabelHe(base.startDate),
-      endDateLabelHe: formatDateLabelHe(base.endDate),
-      playerName: base.playerName || playerName,
-    },
-    executiveSummary,
-    overallSnapshot,
-    subjectProfiles,
-    crossSubjectInsights,
-    homePlan,
-    nextPeriodGoals,
-    /** שלב 1 — שלמות נתונים כפי שחושב ב־V2 (לביקורת JSON) */
-    dataIntegrityReport: base.dataIntegrityReport ?? null,
-  };
+  return buildDetailedParentReportFromBaseReport(base, { playerName, period });
 }

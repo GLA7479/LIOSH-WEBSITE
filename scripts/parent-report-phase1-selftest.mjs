@@ -1,5 +1,6 @@
 /**
- * בדיקות עצמאיות ל־Phase 1 (ללא Jest) — הרצה: npx tsx scripts/parent-report-phase1-selftest.mjs
+ * בדיקות עצמאיות ל־Phase 1 (ללא Jest) — הרצה: npm run test:parent-report-phase1
+ * תיעוד: docs/PARENT_REPORT.md
  */
 import assert from "node:assert/strict";
 

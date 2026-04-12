@@ -183,7 +183,8 @@ function buildHebrewCopy(step, ctx, cfg) {
 /**
  * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} cfg
  */
-function applyAggressiveEvidenceCap(result, row, ctx, cfg) {
+/** מיוצא לבדיקות חוזה — לא חלק מ-API המוצר */
+export function applyAggressiveEvidenceCap(result, row, ctx, cfg) {
   const trace = Array.isArray(result?.recommendationDecisionTrace)
     ? [...result.recommendationDecisionTrace]
     : [];

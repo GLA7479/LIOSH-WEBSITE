@@ -1,5 +1,6 @@
 /**
- * Phase 2 — בדיקות מנוע המלצות (הרצה: npx tsx scripts/topic-next-step-phase2.test.mjs)
+ * Phase 2 — בדיקות מנוע המלצות (הרצה: npm run test:topic-next-step-phase2)
+ * תיעוד: docs/PARENT_REPORT.md
  */
 import assert from "node:assert/strict";
 

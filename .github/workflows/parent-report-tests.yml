@@ -1,0 +1,22 @@
+# Parent-report CI: phase1 row stack, phase2 topic-next-step helpers, phase6 suite + pages SSR, then full Next compile (see docs/PARENT_REPORT.md).
+name: Parent report checks
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  parent-report-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npm run test:parent-report-phase1
+      - run: npm run test:topic-next-step-phase2
+      - run: npm run test:parent-report-phase6
+      - run: npx next build

@@ -10,6 +10,8 @@ This folder is a minimal Next.js project that matches the structure you describe
 - 4 offline games
 - 3 learning games
 
+**Parent reports (pipeline & tests):** [docs/PARENT_REPORT.md](docs/PARENT_REPORT.md)
+
 ## Routes
 
 - `/` – Home
