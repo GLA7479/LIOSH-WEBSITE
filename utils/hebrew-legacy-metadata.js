@@ -24,48 +24,45 @@ function inferAnswerMode(topic, stem) {
 }
 
 /**
- * קידומת כיתה לטקסט שאלה — מיושר ל־audit (אותו טקסט כמו בזמן ריצה אחרי finalize).
+ * מנקה מתוך גוף השאלה סימוני כיתה בסגנון legacy — **ללא** הוספת "(כיתה …)" למסך הילד.
+ * הכיתה כבר נבחרת בממשק; אין צורך לחזור עליה בתוך ניסוח השאלה.
+ * @param {string} _topic
+ * @param {string} question
+ * @param {string} _gradeKey
  */
-export function scopeHebrewStemForGrade(topic, question, gradeKey) {
-  const q0 = String(question || "").trim();
-  const g = parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
-  if (!g || /^\(כיתה|בהתאם לכיתה/.test(q0)) return q0;
-  if (
-    g >= 1 &&
-    g <= 2 &&
-    [
-      "comprehension",
-      "vocabulary",
-      "grammar",
-      "speaking",
-      "reading",
-      "writing",
-    ].includes(topic)
-  ) {
-    const heb = g === 1 ? "א׳" : "ב׳";
-    return `(כיתה ${heb}) ${q0}`;
-  }
-  if (
-    g >= 3 &&
-    g <= 4 &&
-    ["vocabulary", "speaking", "reading", "writing", "grammar", "comprehension"].includes(
-      topic
-    )
-  ) {
-    const heb = g === 3 ? "ג׳" : "ד׳";
-    return `(כיתה ${heb}) ${q0}`;
-  }
-  if (
-    g >= 5 &&
-    g <= 6 &&
-    ["reading", "writing", "speaking", "comprehension", "grammar", "vocabulary"].includes(
-      topic
-    )
-  ) {
-    const heb = g === 5 ? "ה׳" : "ו׳";
-    return `(כיתה ${heb}) ${q0}`;
-  }
-  return q0;
+export function scopeHebrewStemForGrade(_topic, question, _gradeKey) {
+  let t = String(question ?? "").trim();
+  if (!t) return t;
+  // כל ביטוי בסוג "(כיתה א')" / "(כיתה א׳ — קל)" — בכל מקום במחרוזת
+  t = t.replace(/\(\s*כיתה\s+[^)]+\)\s*/g, "");
+  // "בהתאם לכיתה א׳ …" (נשאר ממסלולים ישנים או בנק)
+  t = t.replace(/\s*בהתאם לכיתה\s+[אבגדהו][׳']?\s*/gi, "");
+  t = t.replace(/\s+:/g, ":");
+  return t.replace(/\s{2,}/g, " ").trim();
+}
+
+const PEDAGOGICAL_LEAD_IN_RES = [
+  /^\s*זיהוי\s+כתיב\s*:\s*/i,
+  /^\s*זיהוי\s+הכתיב\s*:\s*/i,
+  /^\s*הבנת\s+הנקרא\s*:\s*/i,
+  /^\s*קריאה\s*:\s*/i,
+  /^\s*אוצר\s+מילים\s*:\s*/i,
+  /^\s*דקדוק\s*:\s*/i,
+  /^\s*כתיבה\s*:\s*/i,
+  /^\s*דיבור\s*:\s*/i,
+];
+
+/** מסיר שורת־כותרת פדגוגית לפני גוף השאלה (למשל "זיהוי כתיב:") — חוזר על עצמו עד יציבות */
+export function stripHebrewQuestionPedagogicalLeadIn(s) {
+  let t = String(s ?? "").trim();
+  let prev;
+  do {
+    prev = t;
+    for (const re of PEDAGOGICAL_LEAD_IN_RES) {
+      t = t.replace(re, "").trim();
+    }
+  } while (t !== prev);
+  return t;
 }
 
 /**

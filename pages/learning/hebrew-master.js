@@ -54,6 +54,17 @@ import {
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
+import {
+  hebrewScriptLikely,
+  isChildHebrewNiqqudGradeKey,
+  textAlreadyHasNiqqud,
+} from "../../utils/hebrew-dicta-nakdan";
+import {
+  spellingStemForNiqqudDetect,
+  isSpellingTargetWordInQuotesContextFromStem,
+  stripNiqqudInsideQuotedHebrewWordSpans,
+  normalizeAnswerForSpellingNiqqudStrict,
+} from "../../utils/hebrew-spelling-niqqud";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -105,6 +116,8 @@ export default function HebrewMaster() {
   const hebrewPatternFamilyTailRef = useRef([]);
   const hebrewNearDuplicateTailRef = useRef([]);
   const yearMonthRef = useRef(getCurrentYearMonth());
+  /** עדכני ל־handleAnswer (משוב שגוי) כדי להציג תשובה נכונה מנוקדת כשה־map כבר הגיע */
+  const niqqudByIdRef = useRef({});
 
   const [mounted, setMounted] = useState(false);
 
@@ -125,6 +138,8 @@ export default function HebrewMaster() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [typedAnswer, setTypedAnswer] = useState("");
   const [feedback, setFeedback] = useState(null);
+  /** תצוגת ניקוד (כיתות א׳–ב׳) — מפתח → טקסט אחרי Nakdan */
+  const [niqqudById, setNiqqudById] = useState({});
   const [bestScore, setBestScore] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
 
@@ -702,6 +717,85 @@ useEffect(() => {
     };
   }, [mounted]);
 
+  useEffect(() => {
+    niqqudByIdRef.current = niqqudById;
+  }, [niqqudById]);
+
+  // ניקוד לתצוגה בלבד — כיתות א׳–ב׳, דרך Nakdan (Dicta); handleAnswer נשאר על המחרוזות המקוריות מהבנק
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setNiqqudById({});
+
+    const eff = String(grade || "").toLowerCase();
+    if (!isChildHebrewNiqqudGradeKey(eff) || !currentQuestion) return;
+
+    const q = currentQuestion;
+    const entries = [];
+    const pushIf = (id, text) => {
+      const s = String(text ?? "").trim();
+      if (!s) return;
+      if (!hebrewScriptLikely(s)) return;
+      if (textAlreadyHasNiqqud(s)) return;
+      entries.push({ id, text });
+    };
+
+    pushIf("questionLabel", q.questionLabel);
+    pushIf("exerciseText", q.exerciseText);
+    pushIf("question", q.question);
+    if (Array.isArray(q.answers)) {
+      q.answers.forEach((a, i) => {
+        pushIf(`answer_${i}`, a);
+      });
+    }
+
+    if (entries.length === 0) return;
+
+    const ac = new AbortController();
+    let cancelled = false;
+    const t = setTimeout(() => {
+      (async () => {
+        try {
+          const fetchOnce = () =>
+            fetch("/api/hebrew-nakdan", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ entries }),
+              signal: ac.signal,
+            });
+          let res = await fetchOnce();
+          if (!res.ok && !cancelled) {
+            await new Promise((r) => setTimeout(r, 400));
+            if (!cancelled) res = await fetchOnce();
+          }
+          if (!res.ok) return;
+          const data = await res.json();
+          if (cancelled) return;
+          const map = {};
+          for (const e of data.entries || []) {
+            if (e?.id) map[e.id] = e.text;
+          }
+          const stemN = spellingStemForNiqqudDetect(q);
+          if (isSpellingTargetWordInQuotesContextFromStem(stemN)) {
+            for (const id of ["questionLabel", "exerciseText", "question"]) {
+              if (map[id])
+                map[id] = stripNiqqudInsideQuotedHebrewWordSpans(map[id]);
+            }
+          }
+          setNiqqudById(map);
+        } catch (e) {
+          if (e?.name === "AbortError") return;
+          if (!cancelled) setNiqqudById({});
+        }
+      })();
+    }, 60);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+      ac.abort();
+    };
+  }, [currentQuestion, grade]);
+
   // Timer countdown (רק במצב Challenge או Speed)
   useEffect(() => {
     if (!gameActive || (mode !== "challenge" && mode !== "speed")) return;
@@ -1164,6 +1258,20 @@ useEffect(() => {
     });
 
     setSelectedAnswer(answer);
+    const gradeKeyEff = String(grade || "").toLowerCase();
+    const correctAnswerDisplay =
+      isChildHebrewNiqqudGradeKey(gradeKeyEff) &&
+      Array.isArray(currentQuestion.answers)
+        ? (() => {
+            const ci = currentQuestion.answers.findIndex(
+              (a) => a === currentQuestion.correctAnswer
+            );
+            if (ci < 0) return currentQuestion.correctAnswer;
+            const mapped = niqqudByIdRef.current?.[`answer_${ci}`];
+            return mapped || currentQuestion.correctAnswer;
+          })()
+        : currentQuestion.correctAnswer;
+
     const HEBREW_NIQQUD_RE = /[\u0591-\u05C7]/g;
     const SURROUNDING_PUNCT_RE = /^[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+|[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+$/g;
     const normalize = (value) =>
@@ -1181,9 +1289,18 @@ useEffect(() => {
       currentQuestion.acceptedAnswers.length > 0
         ? currentQuestion.acceptedAnswers
         : [currentQuestion.correctAnswer];
-    const isCorrect = acceptedAnswers.some(
-      (candidate) => normalize(candidate) === normalize(answer)
+    const strictNiqqudSpelling = isSpellingTargetWordInQuotesContextFromStem(
+      spellingStemForNiqqudDetect(currentQuestion)
     );
+    const isCorrect = strictNiqqudSpelling
+      ? acceptedAnswers.some(
+          (candidate) =>
+            normalizeAnswerForSpellingNiqqudStrict(candidate) ===
+            normalizeAnswerForSpellingNiqqudStrict(answer)
+        )
+      : acceptedAnswers.some(
+          (candidate) => normalize(candidate) === normalize(answer)
+        );
     pendingHebrewTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
       total: 1,
@@ -1473,14 +1590,23 @@ useEffect(() => {
         return updated;
       });
       
-      setErrorExplanation(
-        getErrorExplanation(
+      {
+        let expl = getErrorExplanation(
           currentQuestion,
           topicKey,
           answer,
           grade
-        )
-      );
+        );
+        if (
+          isChildHebrewNiqqudGradeKey(gradeKeyEff) &&
+          currentQuestion.correctAnswer &&
+          correctAnswerDisplay &&
+          correctAnswerDisplay !== currentQuestion.correctAnswer
+        ) {
+          expl = expl.split(currentQuestion.correctAnswer).join(correctAnswerDisplay);
+        }
+        setErrorExplanation(expl);
+      }
       
       // עדכון התקדמות אישית
       setProgress((prev) => {
@@ -1511,7 +1637,7 @@ useEffect(() => {
       if (mode === "learning") {
         // במצב למידה – אין Game Over, רק הצגת תשובה והמשך
         setFeedback(
-          `לא נכון 😔 התשובה הנכונה: ${currentQuestion.correctAnswer} ✅`
+          `לא נכון 😔 התשובה הנכונה: ${correctAnswerDisplay} ✅`
         );
         setTimeout(() => {
           generateNewQuestion();
@@ -1523,7 +1649,7 @@ useEffect(() => {
       } else if (mode === "challenge") {
         // מצב Challenge – עובדים עם חיים
         setFeedback(
-          `לא נכון 😔 התשובה: ${currentQuestion.correctAnswer} ❌ (-1 ❤️)`
+          `לא נכון 😔 התשובה: ${correctAnswerDisplay} ❌ (-1 ❤️)`
         );
         setLives((prevLives) => {
           const nextLives = prevLives - 1;
@@ -1555,7 +1681,7 @@ useEffect(() => {
         });
       } else {
         // speed / marathon / practice stay active on wrong answers
-        setFeedback(`לא נכון 😔 התשובה הנכונה: ${currentQuestion.correctAnswer} ✅`);
+        setFeedback(`לא נכון 😔 התשובה הנכונה: ${correctAnswerDisplay} ✅`);
         setTimeout(() => {
           generateNewQuestion();
           setSelectedAnswer(null);
@@ -1634,6 +1760,23 @@ useEffect(() => {
     currentQuestion && currentQuestion.operation
       ? getSolutionSteps(currentQuestion, currentQuestion.params?.op || currentQuestion.operation, grade)
       : [];
+
+  const effGradeNiqqud = String(grade || "").toLowerCase();
+  const childNiqqudActive = isChildHebrewNiqqudGradeKey(effGradeNiqqud);
+  const nqx = (id, fallback) =>
+    childNiqqudActive && Object.prototype.hasOwnProperty.call(niqqudById, id)
+      ? niqqudById[id]
+      : fallback;
+
+  const disQuestionLabel = currentQuestion
+    ? nqx("questionLabel", currentQuestion.questionLabel ?? "")
+    : "";
+  const disExerciseText = currentQuestion
+    ? nqx("exerciseText", currentQuestion.exerciseText ?? "")
+    : "";
+  const disQuestionBody = currentQuestion
+    ? nqx("question", currentQuestion.question ?? "")
+    : "";
 
   const questionTextForPressure = (
     currentQuestion?.questionLabel ||
@@ -2822,11 +2965,11 @@ useEffect(() => {
                           overflowWrap: "break-word",
                           lineHeight: questionLineHeightByPressure,
                           ...getQuestionFontStyle({
-                            text: currentQuestion.questionLabel || "",
+                            text: disQuestionLabel || "",
                           }),
                         }}
                       >
-                        {currentQuestion.questionLabel}
+                        {disQuestionLabel}
                       </p>
                       
                       {/* כפתור החלפה מאוזן/מאונך - רק אם התרגיל יכול להיות מאונך */}
@@ -2854,7 +2997,7 @@ useEffect(() => {
                               overflowWrap: "break-word",
                             }}
                           >
-                            {getVerticalExercise() || currentQuestion.exerciseText}
+                            {getVerticalExercise() || disExerciseText}
                           </pre>
                         </div>
                       ) : (
@@ -2869,11 +3012,11 @@ useEffect(() => {
                             overflowWrap: "break-word",
                             lineHeight: questionLineHeightByPressure,
                             ...getQuestionFontStyle({
-                              text: currentQuestion.exerciseText || "",
+                              text: disExerciseText || "",
                             }),
                           }}
                         >
-                          {currentQuestion.exerciseText}
+                          {disExerciseText}
                         </p>
                       )}
                     </>
@@ -2904,7 +3047,7 @@ useEffect(() => {
                               overflowWrap: "break-word",
                             }}
                           >
-                            {getVerticalExercise() || currentQuestion.exerciseText}
+                            {getVerticalExercise() || disExerciseText}
                           </pre>
                         </div>
                       ) : (
@@ -2917,11 +3060,11 @@ useEffect(() => {
                             overflowWrap: "break-word",
                             lineHeight: questionLineHeightByPressure,
                             ...getQuestionFontStyle({
-                              text: currentQuestion.exerciseText || "",
+                              text: disExerciseText || "",
                             }),
                           }}
                         >
-                          {currentQuestion.exerciseText}
+                          {disExerciseText}
                         </p>
                       )}
                     </>
@@ -2935,11 +3078,11 @@ useEffect(() => {
                         overflowWrap: "break-word",
                         lineHeight: questionLineHeightByPressure,
                         ...getQuestionFontStyle({
-                          text: currentQuestion.question || "",
+                          text: disQuestionBody || "",
                         }),
                       }}
                     >
-                      {currentQuestion.question}
+                      {disQuestionBody}
                     </div>
                   )}
                   
@@ -3013,7 +3156,7 @@ useEffect(() => {
                                 : "bg-black/30 border-white/15 text-white hover:border-white/40"
                             }`}
                           >
-                            {answer}
+                            {nqx(`answer_${idx}`, answer)}
                           </button>
                         );
                       })}
@@ -3101,9 +3244,16 @@ useEffect(() => {
                                       overflowWrap: "break-word",
                                     }}
                                   >
-                                    {info.exercise ||
-                                      explanationQuestion.exerciseText ||
-                                      explanationQuestion.question}
+                                    {explanationQuestion === currentQuestion
+                                      ? disExerciseText ||
+                                        disQuestionBody ||
+                                        disQuestionLabel ||
+                                        info.exercise ||
+                                        explanationQuestion.exerciseText ||
+                                        explanationQuestion.question
+                                      : info.exercise ||
+                                        explanationQuestion.exerciseText ||
+                                        explanationQuestion.question}
                                   </div>
                                   {info.vertical && (
                                     <div className="mb-3 rounded-lg bg-emerald-900/50 px-3 py-2">

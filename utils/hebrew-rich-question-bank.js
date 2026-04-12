@@ -371,7 +371,7 @@ export const HEBREW_RICH_POOL = [
     subtype: "spelling_choice_short",
     distractorFamily: "orthography",
     question: "זיהוי כתיב (כיתה א׳): איך כותבים נכון את המילה 'בית'?",
-    answers: ["בַּיִת", "ביאת", "ביתת", "בייט"],
+    answers: ["בית", "בֵּית", "ביאת", "ביתת"],
     correct: 0,
   },
   {

@@ -3,6 +3,7 @@ import { filterRichHebrewPool } from './hebrew-rich-question-bank';
 import {
   inferHebrewLegacyMeta,
   scopeHebrewStemForGrade,
+  stripHebrewQuestionPedagogicalLeadIn,
 } from './hebrew-legacy-metadata';
 
 // ========== מאגר שאלות לפי כיתה ורמה ==========
@@ -658,14 +659,13 @@ function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
   if (gradeKey && /^איזה משפט נכון\?$/i.test(stem)) {
     const g = parseInt(String(gradeKey).replace(/\D/g, ""), 10);
     if (g >= 1 && g <= 6) {
-      const heb = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][g - 1];
       const levFr =
         levelKey === "easy"
           ? "רמה קלה — התאמת גוף פשוטה"
           : levelKey === "medium"
             ? "רמה בינונית — דיוק תחבירי"
             : "רמה קשה — משפט מורכב יותר";
-      q.question = `בהתאם לכיתה ${heb} (${levFr}): איזה משפט נכון מבחינה דקדוקית?`;
+      q.question = `${levFr}: איזה משפט נכון מבחינה דקדוקית?`;
       stem = String(q.question || "").trim();
       if (!q.patternFamily || q.patternFamily === "grammar_correct_sentence") {
         q.patternFamily = "grammar_correct_sentence_scoped";
@@ -682,6 +682,11 @@ function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
   if (scoped !== String(q.question || "").trim()) {
     q.question = scoped;
     stem = scoped;
+  }
+  const strippedLead = stripHebrewQuestionPedagogicalLeadIn(String(q.question || "").trim());
+  if (strippedLead !== String(q.question || "").trim()) {
+    q.question = strippedLead;
+    stem = strippedLead;
   }
   const binaryStem =
     q.binary === true ||
@@ -1002,7 +1007,7 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
       return {
         question:
           "אין כרגע שאלות זמינות לכיתה ולרמה שנבחרו. נסו נושא אחר או רמת קושי אחרת.",
-        questionLabel: "עברית",
+        questionLabel: "",
         exerciseText:
           "אין כרגע שאלות זמינות לכיתה ולרמה שנבחרו. נסו נושא אחר או רמת קושי אחרת.",
         answers: ["הבנתי", "אנסה שוב", "אחזור לתפריט", "אבחר נושא אחר"],
@@ -1056,7 +1061,7 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     const optionCount = shuffledAnswers.length;
     return {
       question: randomQ.question,
-      questionLabel: `שאלה בנושא: ${TOPICS[fallbackTopic]?.name || fallbackTopic}`,
+      questionLabel: "",
       exerciseText: randomQ.question,
       answers: shuffledAnswers,
       correctAnswer: correctAnswer,
@@ -1120,7 +1125,7 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   const optionCount = shuffledAnswers.length;
   return {
     question: randomQ.question,
-    questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
+    questionLabel: "",
     exerciseText: randomQ.question,
     answers: shuffledAnswers,
     correctAnswer: correctAnswer,
