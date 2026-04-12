@@ -173,6 +173,84 @@ export function evaluateDataSufficiency(q, evidenceStrength, confidence01) {
 }
 
 /**
+ * מסלול החלטה לביקורת JSON — ללא טקסט פדגוגי חדש מעבר לשדות הקיימים.
+ * @param {object} ctx
+ * @returns {Array<{ source: "diagnostics", phase: string, detailHe?: string, data: Record<string, unknown> }>}
+ */
+export function buildDiagnosticsDecisionTrace(ctx) {
+  const {
+    subjectId,
+    topicRowKey,
+    q,
+    wrong,
+    wrongRatio,
+    mistakeEventCountResolved,
+    stability01,
+    confidence01,
+    recencyScore,
+    masteryScore,
+    evidenceStrength,
+    dataSufficiencyLevel,
+    suppressAggressiveStep,
+    isStablePattern,
+    isEarlySignalOnly,
+    cfgSnapshot,
+  } = ctx;
+
+  const data = (obj) => ({ source: "diagnostics", ...obj });
+
+  return [
+    data({
+      phase: "inputs",
+      detailHe: "קלטים לשורה לפני חישוב אותות.",
+      data: {
+        subjectId,
+        topicRowKey: String(topicRowKey || ""),
+        questions: q,
+        wrong,
+        wrongRatio: Math.round(wrongRatio * 1000) / 1000,
+        mistakeEventCountResolved,
+        periodEndMs: Number.isFinite(Number(ctx.periodEndMs)) ? ctx.periodEndMs : null,
+        cfg: cfgSnapshot || null,
+      },
+    }),
+    data({
+      phase: "stability_01",
+      data: { stability01, formula: "volume*(1-mistakePressure), mistakePressure from wrongRatio+mistake/q" },
+    }),
+    data({
+      phase: "confidence_01",
+      data: { confidence01, formula: "(1-exp(-q/divisor))*noise(mistakesVsQ)" },
+    }),
+    data({
+      phase: "recency_score",
+      data: { recencyScore, lastSessionMs: ctx.lastSessionMs ?? null },
+    }),
+    data({
+      phase: "mastery_score",
+      data: { masteryScore },
+    }),
+    data({
+      phase: "evidence_strength",
+      data: { evidenceStrength },
+    }),
+    data({
+      phase: "data_sufficiency",
+      detailHe: "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+      data: {
+        dataSufficiencyLevel,
+        suppressAggressiveStep,
+        labelHe: ctx.dataSufficiencyLabelHe ?? null,
+      },
+    }),
+    data({
+      phase: "pattern_flags",
+      data: { isStablePattern, isEarlySignalOnly },
+    }),
+  ];
+}
+
+/**
  * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} [cfg]
  */
 export function computeRowDiagnosticSignals(subjectId, topicRowKey, row, mistakesByBucket, periodEndMs, cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG) {
@@ -202,6 +280,31 @@ export function computeRowDiagnosticSignals(subjectId, topicRowKey, row, mistake
     patternStabilityHe = "אות בינוני — כדאי לאסוף עוד תרגול לפני מסקנות חזקות.";
   }
 
+  const decisionTrace = buildDiagnosticsDecisionTrace({
+    subjectId,
+    topicRowKey,
+    q,
+    wrong,
+    wrongRatio,
+    mistakeEventCountResolved: mC,
+    stability01,
+    confidence01,
+    recencyScore,
+    masteryScore,
+    evidenceStrength,
+    dataSufficiencyLevel: sufficiency.level,
+    dataSufficiencyLabelHe: sufficiency.labelHe,
+    suppressAggressiveStep: sufficiency.suppressAggressiveStep,
+    isStablePattern,
+    isEarlySignalOnly,
+    lastSessionMs: Number.isFinite(lastMs) ? lastMs : null,
+    periodEndMs,
+    cfgSnapshot: {
+      stabilityVolumeDivisor: cfg.stabilityVolumeDivisor,
+      confidenceExpDivisor: cfg.confidenceExpDivisor,
+    },
+  });
+
   return {
     mistakeEventCountResolved: mC,
     masteryScore,
@@ -217,6 +320,7 @@ export function computeRowDiagnosticSignals(subjectId, topicRowKey, row, mistake
     recommendationContextHe: isEarlySignalOnly
       ? "ההמלצה מבוססת על נתונים חלקיים; עדיף לא ליישם שינוי דרמטי בלי מעקב נוסף."
       : "ההמלצה מבוססת על שילוב דיוק, נפח, טעויות ועדכניות בטווח.",
+    decisionTrace,
   };
 }
 

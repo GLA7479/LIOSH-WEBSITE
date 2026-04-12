@@ -19,6 +19,9 @@ import {
 import { mistakeTimestampMs } from "./mistake-event";
 import { analyzeLearningPatterns } from "./learning-patterns-analysis";
 import { enrichTopicMapsWithRowDiagnostics } from "./parent-report-row-diagnostics";
+import { enrichTopicMapsWithRowTrends } from "./parent-report-row-trend";
+import { enrichTopicMapsWithRowBehaviorProfiles } from "./parent-report-row-behavior";
+import { validateParentReportDataIntegrity } from "./parent-report-data-integrity";
 import { enrichReportMapsWithTopicStepHints } from "./topic-next-step-engine";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
@@ -897,8 +900,25 @@ export function generateParentReportV2(
     hebrew: hebrewMistakesByTopic,
     "moledet-geography": moledetGeographyMistakesByTopic,
   };
+  const trackingSnapshots = {};
+  SUBJECTS.forEach((def) => {
+    const saved = loadTracking(def.trackingKey);
+    trackingSnapshots[def.id] = saved[def.container] || {};
+  });
+
   enrichTopicMapsWithRowDiagnostics(maps, mistakesBySubjectMaps, endMs);
+  enrichTopicMapsWithRowTrends(maps, trackingSnapshots, rawMistakesBySubject, startMs, endMs);
+  enrichTopicMapsWithRowBehaviorProfiles(maps, rawMistakesBySubject, startMs, endMs);
   enrichReportMapsWithTopicStepHints(maps, mistakesBySubjectMaps, endMs);
+
+  const dataIntegrityReport = validateParentReportDataIntegrity({
+    trackingSnapshots,
+    rawMistakesBySubject,
+    maps,
+    dailyActivity,
+    startMs,
+    endMs,
+  });
 
   const patternDiagnostics = analyzeLearningPatterns(
     {
@@ -1019,5 +1039,7 @@ export function generateParentReportV2(
     achievements: achievements.map((name) => ({ name, earned: true })),
     /** Data-driven diagnostics (JSON-only in phase 1); UI unchanged. */
     patternDiagnostics,
+    /** שלמות נתונים — לבדיקה; לא מוצג ב־UI בשלב 1 */
+    dataIntegrityReport,
   };
 }

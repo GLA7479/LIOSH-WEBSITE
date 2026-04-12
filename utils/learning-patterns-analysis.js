@@ -616,6 +616,266 @@ function buildSubSkillInsightsHe(topWeaknesses) {
   }));
 }
 
+const RISK_BEHAVIOR_TYPES = new Set([
+  "knowledge_gap",
+  "speed_pressure",
+  "instruction_friction",
+  "careless_pattern",
+  "fragile_success",
+]);
+
+function emptyRiskOr() {
+  return {
+    falsePromotionRisk: false,
+    falseRemediationRisk: false,
+    speedOnlyRisk: false,
+    hintDependenceRisk: false,
+    insufficientEvidenceRisk: false,
+    recentTransitionRisk: false,
+  };
+}
+
+/**
+ * סינתזה ברמת מקצוע משורות דוח מועשרות (Phase 1–2) — רק כשיש נתונים בשורה.
+ * @param {string} subjectId
+ * @param {Record<string, unknown>} report
+ */
+function synthesizeSubjectPhase3FromRows(subjectId, report) {
+  const rowsKey = REPORT_ROWS_KEY[subjectId];
+  const map = rowsKey && report[rowsKey] ? report[rowsKey] : {};
+  const entries = Object.entries(map || {}).filter(([, row]) => row && typeof row === "object");
+  const rows = entries
+    .map(([rowKey, row]) => ({ rowKey, row }))
+    .filter(({ row }) => (Number(row.questions) || 0) > 0);
+
+  if (!rows.length) {
+    return {
+      dominantLearningRisk: "none_sparse",
+      dominantSuccessPattern: "none_sparse",
+      trendNarrativeHe: "אין מספיק שורות דוח בטווח כדי לסכם מגמה במקצוע זה.",
+      confidenceSummaryHe: "נתון דל — לא מסכמים ביטחון סטטיסטי ברמת המקצוע.",
+      recommendedHomeMethodHe: null,
+      whatNotToDoHe: "לא לבנות תוכנית ארוכה לפני שיש עוד תרגול בטווח.",
+      majorRiskFlagsAcrossRows: emptyRiskOr(),
+      dominantBehaviorProfileAcrossRows: "undetermined",
+      strongestPositiveTrendRowHe: null,
+      strongestCautionTrendRowHe: null,
+      fragileSuccessRowCount: 0,
+      stableMasteryRowCount: 0,
+      modeConcentrationNoteHe: null,
+      improvingButSupportedHe: null,
+      dominantLearningRiskLabelHe: null,
+      dominantSuccessPatternLabelHe: null,
+    };
+  }
+
+  const behaviorCounts = {};
+  let fragileSuccessRowCount = 0;
+  let stableMasteryRowCount = 0;
+  const riskOr = emptyRiskOr();
+  const modeKeys = [];
+
+  let bestPositive = /** @type {{ labelHe: string, summaryHe: string, conf: number }|null} */ (null);
+  let worstCaution = /** @type {{ labelHe: string, summaryHe: string, score: number }|null} */ (null);
+  let improvingButSupportedHe = /** @type {string|null} */ (null);
+
+  for (const { rowKey, row } of rows) {
+    const bp = row.behaviorProfile && typeof row.behaviorProfile === "object" ? row.behaviorProfile : null;
+    const dom = String(bp?.dominantType || "undetermined");
+    behaviorCounts[dom] = (behaviorCounts[dom] || 0) + 1;
+    if (dom === "fragile_success") fragileSuccessRowCount += 1;
+    if (dom === "stable_mastery") stableMasteryRowCount += 1;
+
+    const sig = row.topicEngineRowSignals && typeof row.topicEngineRowSignals === "object" ? row.topicEngineRowSignals : null;
+    const rf = sig?.riskFlags && typeof sig.riskFlags === "object" ? sig.riskFlags : null;
+    if (rf) {
+      for (const k of Object.keys(riskOr)) {
+        if (rf[k]) riskOr[k] = true;
+      }
+    }
+
+    const mk = row.modeKey != null && String(row.modeKey).trim() !== "" ? String(row.modeKey).trim() : null;
+    if (mk) modeKeys.push(mk);
+
+    const trend = row.trend && typeof row.trend === "object" ? row.trend : null;
+    const tConf = Number(trend?.confidence);
+    const labelHe = sessionRowLabelHe(subjectId, row);
+    const sumHe = String(trend?.summaryHe || "").trim();
+
+    if (trend && (trend.accuracyDirection === "up" || trend.fluencyDirection === "up")) {
+      const c = Number.isFinite(tConf) ? tConf : 0;
+      if (!bestPositive || c > bestPositive.conf) {
+        bestPositive = { labelHe, summaryHe: sumHe, conf: c };
+      }
+    }
+    if (trend && (trend.accuracyDirection === "down" || trend.independenceDirection === "down")) {
+      let score = 0;
+      if (trend.accuracyDirection === "down") score += 2;
+      if (trend.independenceDirection === "down") score += 1;
+      if (trend.accuracyDirection === "up" && trend.independenceDirection === "down") score += 2;
+      if (!worstCaution || score > worstCaution.score) {
+        worstCaution = { labelHe, summaryHe: sumHe, score };
+      }
+    }
+    if (
+      trend &&
+      trend.accuracyDirection === "up" &&
+      trend.independenceDirection === "down" &&
+      !improvingButSupportedHe
+    ) {
+      const subLab = SUBJECT_LABEL_HE[subjectId] || "המקצוע";
+      improvingButSupportedHe = `ב${subLab} מופיעה לפחות שורה (${labelHe}) שבה הדיוק עולה אך העצמאות יורדת — ההתקדמות עדיין מבוססת ליווי; לא מאסטרי מלא.`;
+    }
+  }
+
+  const riskPool = {};
+  for (const [k, n] of Object.entries(behaviorCounts)) {
+    if (RISK_BEHAVIOR_TYPES.has(k)) riskPool[k] = n;
+  }
+  const riskEntries = Object.entries(riskPool)
+    .filter(([, n]) => n > 0)
+    .sort((a, b) => b[1] - a[1]);
+  let dominantLearningRisk = "mixed";
+  if (!riskEntries.length) {
+    dominantLearningRisk = behaviorCounts.stable_mastery ? "none_observed" : "none_sparse";
+  } else {
+    const [topType, topN] = riskEntries[0];
+    if (topN >= 2 || rows.length <= 4) dominantLearningRisk = topType;
+    else if (rows.length >= 8 && topN === 1) dominantLearningRisk = "mixed_low_signal";
+    else dominantLearningRisk = topType;
+  }
+
+  let dominantSuccessPattern = "mixed";
+  if (stableMasteryRowCount >= 2 && stableMasteryRowCount >= fragileSuccessRowCount) {
+    dominantSuccessPattern = "stable_mastery";
+  } else if (fragileSuccessRowCount > stableMasteryRowCount && fragileSuccessRowCount >= 2) {
+    dominantSuccessPattern = "fragile_success_cluster";
+  } else if (stableMasteryRowCount > 0) {
+    dominantSuccessPattern = "stable_mastery";
+  } else if (fragileSuccessRowCount > 0) {
+    dominantSuccessPattern = "fragile_success_cluster";
+  }
+
+  const modeDist = {};
+  for (const m of modeKeys) modeDist[m] = (modeDist[m] || 0) + 1;
+  const modeTop = Object.entries(modeDist).sort((a, b) => b[1] - a[1])[0];
+  let modeConcentrationNoteHe = null;
+  if (modeTop && modeKeys.length >= 4 && modeTop[1] / modeKeys.length >= 0.62) {
+    modeConcentrationNoteHe = `רוב התרגול בטווח במצב «${modeTop[0]}» — לא מכלילים אוטומטית לכל המקצוע.`;
+  }
+
+  const strongRows = rows.filter((r) => r.row.dataSufficiencyLevel === "strong" && r.row.evidenceStrength === "strong");
+  const anyHighRisk = riskOr.falsePromotionRisk || riskOr.hintDependenceRisk || riskOr.recentTransitionRisk;
+  const trendParts = [];
+  if (bestPositive && bestPositive.summaryHe && (bestPositive.conf >= 0.35 || !Number.isFinite(bestPositive.conf))) {
+    trendParts.push(`מגמה חיובית ב־${bestPositive.labelHe}: ${bestPositive.summaryHe}`);
+  }
+  if (worstCaution && worstCaution.summaryHe) {
+    trendParts.push(`נקודת זהירות ב־${worstCaution.labelHe}: ${worstCaution.summaryHe}`);
+  }
+  if (modeConcentrationNoteHe) trendParts.push(modeConcentrationNoteHe);
+  let trendNarrativeHe = trendParts.join(" ").trim();
+  if (!trendNarrativeHe) {
+    trendNarrativeHe =
+      rows.some((r) => r.row.trend)
+        ? "יש נתוני מגמה בשורות, אך אין עדיין סיפור מגמה אחיד ברמת המקצוע — כדאי לאסוף עוד תרגול."
+        : "אין עדיין אובייקטי מגמה משויכים לשורות — לא מסכמים מגמה כללית.";
+  }
+
+  const suffStrong = rows.filter((r) => r.row.dataSufficiencyLevel === "strong").length;
+  const suffMed = rows.filter((r) => r.row.dataSufficiencyLevel === "medium").length;
+  const suffLow = rows.filter((r) => r.row.dataSufficiencyLevel === "low" || !r.row.dataSufficiencyLevel).length;
+  const hiConf = rows.filter((r) => (Number(r.row.confidenceScore) || 0) >= 72).length;
+  let confidenceSummaryHe = `בשורות הדוח: ${suffStrong} עם ראיות חזקות, ${suffMed} בינוניות, ${suffLow} דלות; ${hiConf} שורות עם ביטחון מחושב גבוה מתוך ${rows.length}.`;
+  if (suffLow >= rows.length * 0.55) {
+    confidenceSummaryHe += " התמונה במקצוע עדיין חלקית — מסקנות זהירות בלבד.";
+  }
+  if (anyHighRisk && strongRows.length >= 2) {
+    confidenceSummaryHe += " למרות חוזקות בשורות, מופיעים גם דגלי סיכון — לא לפרש הכל כהצלחה מלאה.";
+  }
+
+  const riskLabelHe = {
+    knowledge_gap: "פער ידע / חוסר בסיס",
+    speed_pressure: "לחץ מהירות או מסלול זמן",
+    instruction_friction: "חיכוך הוראה או תלות ברמזים",
+    careless_pattern: "רשלנות או אי־יציבות בתשובות",
+    fragile_success: "הצלחה שבירה (תלות בעזרה / עצמאות נמוכה)",
+    mixed: "תמהיל קשיים",
+    mixed_low_signal: "תמהיל חלקי — אות התנהגותי חלש בשורות",
+    none_sparse: "דל נתון",
+    none_observed: "לא זוהה קושי דומיננטי בפרופיל ההתנהגות",
+  };
+
+  const successLabelHe = {
+    stable_mastery: "מאסטרי יציב בשורות",
+    fragile_success_cluster: "הצלחה עם שבירות בעזרה/עצמאות",
+    mixed: "תמהיל הצלחות",
+    none_sparse: "דל נתון",
+  };
+
+  let recommendedHomeMethodHe = null;
+  const domRiskHe = riskLabelHe[dominantLearningRisk] || dominantLearningRisk;
+  if (dominantLearningRisk === "knowledge_gap") {
+    recommendedHomeMethodHe = `דגש ביתי: חזרה איטית על הבסיס ב${domRiskHe} — משימה קצרה, בדיקה מול הפתרון, בלי קפיצת רמה.`;
+  } else if (dominantLearningRisk === "speed_pressure") {
+    recommendedHomeMethodHe =
+      "דגש ביתי: לפרק את המסלול המהיר — תרגול באותה רמת קושי עם דגש על דיוק לפני מהירות, בלי להוריד רמה לכל המקצוע.";
+  } else if (dominantLearningRisk === "instruction_friction") {
+    recommendedHomeMethodHe =
+      "דגש ביתי: קריאת משימה משותפת, זיהוי מה נשאל, ורק אז תשובה — לצמצם תלות ברמזים צעד אחר צעד.";
+  } else if (dominantLearningRisk === "careless_pattern") {
+    recommendedHomeMethodHe =
+      "דגש ביתי: עצירה קצרה לפני שליחה, בדיקה מול הניסוח — לא מניחים מיד שזה פער ידע עמוק.";
+  } else if (dominantLearningRisk === "fragile_success") {
+    recommendedHomeMethodHe =
+      "דגש ביתי: לבנות עצמאות הדרגתית — תרגול קצר עם פחות התערבות אחרי שהבנה ברורה, בלי לדחוף קפיצת רמה.";
+  } else {
+    recommendedHomeMethodHe =
+      strongRows.length >= 1
+        ? "דגש ביתי: לשמור על תרגול קצר וקבוע, ולעקוב אחרי עקביות לפני שינוי הגדרות."
+        : "דגש ביתי: להמשיך לאסוף תרגול קצר עד שהתמונה במקצוע מתייצבת.";
+  }
+
+  const avoid = [];
+  if (riskOr.falsePromotionRisk || dominantLearningRisk === "fragile_success") {
+    avoid.push("לא לדחוף קפיצת רמה או כיתה בבית בלי עקביות ובלי ירידה בתלות ברמזים.");
+  }
+  if (riskOr.speedOnlyRisk || dominantLearningRisk === "speed_pressure") {
+    avoid.push("לא להפוך חולשה במסלול מהירות לירידת רמה בכל המקצוע.");
+  }
+  if (riskOr.falseRemediationRisk || dominantLearningRisk === "careless_pattern") {
+    avoid.push("לא לרדת מיד לרמה קלה בלי לנסות קודם חיזוק ממוקד באותה רמה.");
+  }
+  if (riskOr.hintDependenceRisk) {
+    avoid.push("לא להפסיק פתאום עזרה — אלא לצמצם אותה בהדרגה כשההבנה משתפרת.");
+  }
+  if (worstCaution && worstCaution.score >= 3) {
+    avoid.push("לא לפרש מגמה שלילית קצרה ככישלון יציב — עדיף זהירות ומעקב.");
+  }
+  const whatNotToDoHe = avoid.length ? avoid.join(" ") : "לא לקבוע שינוי דרמטי בלי עוד תרגול בטווח.";
+
+  return {
+    dominantLearningRisk,
+    dominantSuccessPattern,
+    trendNarrativeHe,
+    confidenceSummaryHe,
+    recommendedHomeMethodHe,
+    whatNotToDoHe,
+    majorRiskFlagsAcrossRows: riskOr,
+    dominantBehaviorProfileAcrossRows: Object.keys(behaviorCounts).sort(
+      (a, b) => (behaviorCounts[b] || 0) - (behaviorCounts[a] || 0)
+    )[0] || "undetermined",
+    strongestPositiveTrendRowHe: bestPositive ? `${bestPositive.labelHe}: ${bestPositive.summaryHe}` : null,
+    strongestCautionTrendRowHe: worstCaution ? `${worstCaution.labelHe}: ${worstCaution.summaryHe}` : null,
+    fragileSuccessRowCount,
+    stableMasteryRowCount,
+    modeConcentrationNoteHe,
+    dominantLearningRiskLabelHe: domRiskHe,
+    dominantSuccessPatternLabelHe: successLabelHe[dominantSuccessPattern] || dominantSuccessPattern,
+    improvingButSupportedHe,
+  };
+}
+
 /**
  * @param {Record<string, unknown>} report
  * @param {Record<string, unknown[]>} [rawMistakesBySubject]
@@ -817,6 +1077,8 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
     });
     const subSkillInsightsHe = buildSubSkillInsightsHe(topWeaknesses);
 
+    const phase3Subject = synthesizeSubjectPhase3FromRows(sid, report);
+
     const hasAnySignal =
       stableExcellence.length > 0 ||
       topWeaknesses.length > 0 ||
@@ -859,6 +1121,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
       diagnosticSparseNoteHe,
       diagnosticSectionsHe,
       subSkillInsightsHe,
+      ...phase3Subject,
     };
   }
 

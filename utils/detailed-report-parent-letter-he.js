@@ -99,12 +99,39 @@ function topicDataSparse(sp) {
   return recs.every((t) => t?.isEarlySignalOnly);
 }
 
+function majorRiskAny(sp) {
+  const r = sp?.majorRiskFlagsAcrossRows;
+  if (!r || typeof r !== "object") return false;
+  return Object.values(r).some(Boolean);
+}
+
 /** משפט פתיחה אחד */
 function buildSubjectOpeningLineHe(sp, lab) {
   const w0 = sp?.topWeaknesses?.[0];
   const ex0 = sp?.excellence?.[0] || sp?.topStrengths?.[0];
   const imp0 = sp?.improving?.[0];
   const sparse = topicDataSparse(sp);
+  const domRisk = String(sp?.dominantLearningRiskLabelHe || "").trim();
+  const domSucc = String(sp?.dominantSuccessPatternLabelHe || "").trim();
+  const mr = majorRiskAny(sp);
+
+  if (domSucc && sp?.dominantSuccessPattern === "stable_mastery" && ex0 && !mr) {
+    return stripGuillemetsHe(
+      `ב${lab} נראית עקביות טובה (${domSucc}) סביב ${displayTopicPhraseHe(ex0.labelHe)} — כדאי לשמר קצב רגוע.`
+    );
+  }
+  if (mr && ex0) {
+    const acc = Math.round(Number(ex0.accuracy) || 0);
+    return stripGuillemetsHe(
+      `ב${lab} יש גם חוזקות (למשל ${displayTopicPhraseHe(ex0.labelHe)}, כ־${acc}%) וגם אותות זהירות מהמנוע — לא מסכמים הכל כהצלחה מלאה.`
+    );
+  }
+  if (domRisk && domRisk !== "דל נתון" && w0) {
+    const pre = sparse ? "עדיין מוקדם לסגור סופית, אבל " : "";
+    return stripGuillemetsHe(
+      `${pre}ב${lab} התמונה המרכזית נוגעת ל־${domRisk} לצד ${displayTopicPhraseHe(w0.labelHe)}.`
+    );
+  }
 
   if (!w0 && !ex0 && !imp0 && sp.summaryHe && String(sp.summaryHe).trim()) {
     return (
@@ -139,6 +166,26 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
   ]);
   const s0 = pool[0];
   const imp0 = sp?.improving?.[0];
+  const trendLine = takeFirstSentence(String(sp?.trendNarrativeHe || "").trim());
+  const domRisk = String(sp?.dominantLearningRiskLabelHe || "").trim();
+  const ibs = String(sp?.improvingButSupportedHe || "").trim();
+
+  if (ibs) {
+    return stripGuillemetsHe(ibs);
+  }
+
+  if (trendLine && domRisk && domRisk !== "דל נתון") {
+    const base = stripGuillemetsHe(`${domRisk} — ${trendLine}`);
+    if (w0 && s0) {
+      return stripGuillemetsHe(
+        `${base} בשאלות שנדגמו: ${displayTopicPhraseHe(s0.labelHe)} יש בסיס טוב לעומת זאת ${displayTopicPhraseHe(w0.labelHe)} נדרש חיזוק ממוקד.`
+      );
+    }
+    if (w0) {
+      return stripGuillemetsHe(`${base} נדרש חיזוק סביב ${displayTopicPhraseHe(w0.labelHe)}.`);
+    }
+    return base.length > 280 ? `${base.slice(0, 277)}…` : base;
+  }
 
   if (w0 && s0) {
     const strong = (Number(w0.mistakeCount) || 0) >= 8;
@@ -166,19 +213,27 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
 }
 
 function buildSubjectHomeLineHe(sp, lab) {
+  const homeDiag = sp?.recommendedHomeMethodHe && String(sp.recommendedHomeMethodHe).trim();
+  if (homeDiag) return stripGuillemetsHe(rewriteParentRecommendationForDetailedHe(homeDiag));
   const raw = sp?.parentActionHe && String(sp.parentActionHe).trim();
   if (raw) return rewriteParentRecommendationForDetailedHe(raw);
   return stripGuillemetsHe(`ב${lab}: שני מפגשים קצרים בשבוע, דגש על קריאת המשימה לפני תשובה.`);
 }
 
 function buildSubjectClosingLineHe(sp, lab) {
+  const conf = String(sp?.confidenceSummaryHe || "").trim();
+  const wnt = String(sp?.whatNotToDoHe || "").trim();
   const g = sp?.nextWeekGoalHe && String(sp.nextWeekGoalHe).trim();
+  const parts = [];
+  if (conf) parts.push(takeFirstSentence(conf));
   if (g) {
     let c = takeFirstSentence(rewriteParentRecommendationForDetailedHe(g));
     if (!c) c = takeFirstSentence(stripGuillemetsHe(g));
     if (c && !/[.!?]$/.test(c)) c += ".";
-    return stripGuillemetsHe(c);
+    parts.push(c);
   }
+  if (wnt) parts.push(takeFirstSentence(wnt));
+  if (parts.length) return stripGuillemetsHe(parts.join(" "));
   return stripGuillemetsHe(`להמשך: ב${lab} עדיף עקביות קצרה מאשר מפגש ארוך אחד.`);
 }
 

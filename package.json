@@ -8,7 +8,9 @@
     "start": "next start",
     "audit:questions": "tsx scripts/generator-deterministic-harness.mjs && tsx scripts/audit-question-banks.mjs",
     "audit:branches": "tsx scripts/extract-generator-branches.mjs",
-    "audit:harness": "tsx scripts/generator-deterministic-harness.mjs"
+    "audit:harness": "tsx scripts/generator-deterministic-harness.mjs",
+    "test:parent-report-phase1": "tsx scripts/parent-report-phase1-selftest.mjs",
+    "test:topic-next-step-phase2": "tsx scripts/topic-next-step-phase2.test.mjs"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.2",

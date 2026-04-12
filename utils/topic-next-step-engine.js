@@ -6,12 +6,25 @@
 import { splitBucketModeRowKey } from "./parent-report-row-diagnostics";
 import { canonicalParentReportGradeKey, mathReportBaseOperationKey } from "./math-report-generator";
 import { DEFAULT_TOPIC_NEXT_STEP_CONFIG } from "./topic-next-step-config";
+
+export { DEFAULT_TOPIC_NEXT_STEP_CONFIG } from "./topic-next-step-config";
 import {
   computeConfidence01,
   computeRowDiagnosticSignals,
   computeStability01,
   rowMistakeEventCount,
 } from "./parent-report-row-diagnostics";
+import {
+  applyPhase2GuardsToStep,
+  buildPhase2RiskFlags,
+  buildRecommendationStructuredTrace,
+  buildTrendDerivedSignals,
+  buildWhatCouldChangeThisHe,
+  buildWhyThisRecommendationHe,
+  confidenceBadgeFromScore,
+  sufficiencyBadgeFromLevel,
+} from "./topic-next-step-phase2";
+
 /** @typedef {'advance_level'|'advance_grade_topic_only'|'maintain_and_strengthen'|'remediate_same_level'|'drop_one_level_topic_only'|'drop_one_grade_topic_only'} RecommendedNextStep */
 
 export const RECOMMENDED_STEP_LABEL_HE = {
@@ -171,27 +184,45 @@ function buildHebrewCopy(step, ctx, cfg) {
  * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} cfg
  */
 function applyAggressiveEvidenceCap(result, row, ctx, cfg) {
-  if (!result?.step || !row?.suppressAggressiveStep) return result;
+  const trace = Array.isArray(result?.recommendationDecisionTrace)
+    ? [...result.recommendationDecisionTrace]
+    : [];
+  if (!result?.step || !row?.suppressAggressiveStep) {
+    return { ...result, recommendationDecisionTrace: trace, postCapApplied: false };
+  }
   const aggressive = new Set([
     "advance_level",
     "advance_grade_topic_only",
     "drop_one_level_topic_only",
     "drop_one_grade_topic_only",
   ]);
-  if (!aggressive.has(result.step)) return result;
+  if (!aggressive.has(result.step)) {
+    return { ...result, recommendationDecisionTrace: trace, postCapApplied: false };
+  }
   const step = "maintain_and_strengthen";
   const copy = buildHebrewCopy(step, ctx, cfg);
   const note = " (הנתון עדיין חלקי — לא משנים כיתה או רמת קושי כרגע; כדאי לבסס באותה הגדרה ולאסוף עוד קצת תרגול.)";
+  trace.push({
+    source: "recommendation",
+    phase: "post_cap_adjustments",
+    ruleId: "evidence_sufficiency_cap",
+    data: { fromStep: result.step, toStep: step, suppressAggressiveStep: !!row?.suppressAggressiveStep },
+  });
   return {
     ...result,
     step,
     reasonHe: (result.reasonHe || copy.reasonHe) + note,
     parentHe: copy.parentHe,
     studentHe: copy.studentHe,
+    recommendationDecisionTrace: trace,
+    postCapApplied: true,
+    postCapFromStep: result.step,
+    postCapToStep: step,
   };
 }
 
-function decideTopicNextStep(row, mistakeEventCount, cfg) {
+function runLegacyTopicNextStep(row, mistakeEventCount, cfg) {
+  const trace = [];
   const q = Number(row?.questions) || 0;
   const acc = computeCurrentMastery(row);
   const wrong = Math.max(0, Number(row?.wrong) ?? 0);
@@ -218,6 +249,26 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
     wrongRatio,
   };
 
+  trace.push({
+    source: "recommendation",
+    phase: "inputs",
+    ruleId: "engine_context",
+    data: {
+      q,
+      acc,
+      wrong,
+      wrongRatio: Math.round(wrongRatio * 1000) / 1000,
+      levelKey,
+      gradeKey,
+      levelIndex: li,
+      gradeIndex: gi,
+      mistakeEventCount,
+      stability01: stability,
+      confidence01: confidence,
+      recencyScore,
+    },
+  });
+
   const repeatedStruggle =
     q >= cfg.minQuestionsStepChange &&
     acc < cfg.repeatedStruggleAccMax &&
@@ -235,6 +286,12 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
   if (q < cfg.minQuestionsLowConfidence && q > 0) {
     const step = "maintain_and_strengthen";
     const copy = buildHebrewCopy(step, ctx, cfg);
+    trace.push({
+      source: "recommendation",
+      phase: "decision",
+      ruleId: "min_questions_low_confidence",
+      data: { q, threshold: cfg.minQuestionsLowConfidence, step },
+    });
     return applyAggressiveEvidenceCap(
       {
         step,
@@ -245,6 +302,7 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
         reasonHe: `יש רק ${q} שאלות ב«${displayName}» בטווח — מוקדם מדי לשנות כיתה או רמת קושי. עדיף עוד מפגשים קצרים באותה הגדרה ואז נבחן מחדש.`,
         parentHe: `ב«${displayName}» יש עדיין מעט נתונים (${q} שאלות). המלצה להמשיך באותה רמת קושי, להוסיף שניים־שלושה תרגולים קצרים כדי שההמלצה הבאה תהיה מדויקת יותר.`,
         studentHe: `נמשיך עוד קצת באותה רמה ב«${displayName}» — ואז נדע טוב יותר מה הלאה.`,
+        recommendationDecisionTrace: trace,
       },
       row,
       ctx,
@@ -255,13 +313,35 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
   if (repeatedStruggle && li >= 1) {
     const step = "drop_one_level_topic_only";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
+    trace.push({
+      source: "recommendation",
+      phase: "decision",
+      ruleId: "repeated_struggle_drop_level",
+      data: { repeatedStruggle, li, step },
+    });
+    return applyAggressiveEvidenceCap(
+      { step, ...copy, currentMastery: acc, stability, confidence, recommendationDecisionTrace: trace },
+      row,
+      ctx,
+      cfg
+    );
   }
 
   if (repeatedStruggle && li === 0 && gi > 0) {
     const step = "drop_one_grade_topic_only";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
+    trace.push({
+      source: "recommendation",
+      phase: "decision",
+      ruleId: "repeated_struggle_drop_grade",
+      data: { repeatedStruggle, li, gi, step },
+    });
+    return applyAggressiveEvidenceCap(
+      { step, ...copy, currentMastery: acc, stability, confidence, recommendationDecisionTrace: trace },
+      row,
+      ctx,
+      cfg
+    );
   }
 
   if (
@@ -272,7 +352,18 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
   ) {
     const step = "remediate_same_level";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
+    trace.push({
+      source: "recommendation",
+      phase: "decision",
+      ruleId: "remediate_mid_band_no_drag",
+      data: { q, acc, mistakeDrag, step },
+    });
+    return applyAggressiveEvidenceCap(
+      { step, ...copy, currentMastery: acc, stability, confidence, recommendationDecisionTrace: trace },
+      row,
+      ctx,
+      cfg
+    );
   }
 
   if (
@@ -288,7 +379,18 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
   ) {
     const step = "advance_grade_topic_only";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
+    trace.push({
+      source: "recommendation",
+      phase: "decision",
+      ruleId: "advance_grade_topic",
+      data: { q, acc, recencyScore, mistakeDrag, step },
+    });
+    return applyAggressiveEvidenceCap(
+      { step, ...copy, currentMastery: acc, stability, confidence, recommendationDecisionTrace: trace },
+      row,
+      ctx,
+      cfg
+    );
   }
 
   if (
@@ -300,36 +402,248 @@ function decideTopicNextStep(row, mistakeEventCount, cfg) {
   ) {
     const step = "advance_level";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
+    trace.push({
+      source: "recommendation",
+      phase: "decision",
+      ruleId: "high_volume_advance_level",
+      data: { q, acc, stability, confidence, mistakeDrag, step },
+    });
+    return applyAggressiveEvidenceCap(
+      { step, ...copy, currentMastery: acc, stability, confidence, recommendationDecisionTrace: trace },
+      row,
+      ctx,
+      cfg
+    );
   }
 
   if (q >= cfg.minQuestionsStepChange && acc < cfg.dropLevelAccMax && li >= 1) {
     const step = "drop_one_level_topic_only";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
+    trace.push({
+      source: "recommendation",
+      phase: "decision",
+      ruleId: "low_accuracy_drop_level",
+      data: { q, acc, li, step },
+    });
+    return applyAggressiveEvidenceCap(
+      { step, ...copy, currentMastery: acc, stability, confidence, recommendationDecisionTrace: trace },
+      row,
+      ctx,
+      cfg
+    );
   }
 
   if (q >= cfg.minQuestionsStepChange && acc < cfg.dropLevelAccMax && levelKey == null) {
     const step = "remediate_same_level";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
+    trace.push({
+      source: "recommendation",
+      phase: "decision",
+      ruleId: "low_accuracy_unknown_level_remediate",
+      data: { q, acc, step },
+    });
+    return applyAggressiveEvidenceCap(
+      { step, ...copy, currentMastery: acc, stability, confidence, recommendationDecisionTrace: trace },
+      row,
+      ctx,
+      cfg
+    );
   }
 
   if (q >= cfg.minQuestionsStepChange && acc < cfg.dropGradeAccMax && li === 0 && gi > 0) {
     const step = "drop_one_grade_topic_only";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
+    trace.push({
+      source: "recommendation",
+      phase: "decision",
+      ruleId: "low_accuracy_drop_grade",
+      data: { q, acc, li, gi, step },
+    });
+    return applyAggressiveEvidenceCap(
+      { step, ...copy, currentMastery: acc, stability, confidence, recommendationDecisionTrace: trace },
+      row,
+      ctx,
+      cfg
+    );
   }
 
   if (q >= cfg.minQuestionsRemediate && acc < cfg.remediateBandAccHi && acc >= cfg.remediateBandAccLo) {
     const step = "remediate_same_level";
     const copy = buildHebrewCopy(step, ctx, cfg);
-    return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
+    trace.push({
+      source: "recommendation",
+      phase: "decision",
+      ruleId: "remediate_band",
+      data: { q, acc, step },
+    });
+    return applyAggressiveEvidenceCap(
+      { step, ...copy, currentMastery: acc, stability, confidence, recommendationDecisionTrace: trace },
+      row,
+      ctx,
+      cfg
+    );
   }
 
   const step = "maintain_and_strengthen";
   const copy = buildHebrewCopy(step, ctx, cfg);
-  return applyAggressiveEvidenceCap({ step, ...copy, currentMastery: acc, stability, confidence }, row, ctx, cfg);
+  trace.push({
+    source: "recommendation",
+    phase: "decision",
+    ruleId: "default_maintain",
+    data: { q, acc, repeatedStruggle, highVolumeStrong, mistakeDrag, step },
+  });
+  return applyAggressiveEvidenceCap(
+    { step, ...copy, currentMastery: acc, stability, confidence, recommendationDecisionTrace: trace },
+    row,
+    ctx,
+    cfg
+  );
+}
+
+/**
+ * החלטת צעד נושא — כולל שלב 2 (התנהגות, מגמה, סיכונים) + cap ראיות.
+ * מיוצא לבדיקות יחידה.
+ * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} [cfg]
+ */
+export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG) {
+  const legacy = runLegacyTopicNextStep(row, mistakeEventCount, cfg);
+  const trend = row?.trend && typeof row.trend === "object" ? row.trend : null;
+  const behaviorProfile = row?.behaviorProfile && typeof row.behaviorProfile === "object" ? row.behaviorProfile : null;
+
+  const trendDer = buildTrendDerivedSignals(trend, row);
+  const riskFlags = buildPhase2RiskFlags(row, trend, behaviorProfile, trendDer);
+  const behaviorType = riskFlags.behaviorType;
+  const sufficiencyStrong = row?.dataSufficiencyLevel === "strong";
+  const strongKnowledgeGapEvidence = !!riskFlags.strongKnowledgeGapEvidence;
+
+  const guarded = applyPhase2GuardsToStep(legacy.step, {
+    row,
+    riskFlags,
+    trendDer,
+    behaviorType,
+    sufficiencyStrong,
+    strongKnowledgeGapEvidence,
+  });
+
+  const q = Number(row?.questions) || 0;
+  const acc = computeCurrentMastery(row);
+  const wrong = Math.max(0, Number(row?.wrong) ?? 0);
+  const wrongRatio = q > 0 ? wrong / q : 0;
+  const displayName = String(row?.displayName || row?.bucketKey || "נושא").trim();
+  const levelKey = normLevelKey(row);
+  const gradeKey = normGradeKey(row);
+  const ctx = {
+    displayName,
+    questions: q,
+    accuracy: acc,
+    mistakeEventCount,
+    levelLabel: row?.level || levelKey || "לא זמין",
+    gradeLabel: row?.grade || gradeKey || "לא זמין",
+    wrongRatio,
+  };
+
+  let merged = {
+    ...legacy,
+    step: guarded.step,
+    recommendationDecisionTrace: [...(legacy.recommendationDecisionTrace || []), ...guarded.traceAdds],
+  };
+
+  if (guarded.step !== legacy.step) {
+    const copy = buildHebrewCopy(guarded.step, ctx, cfg);
+    const note =
+      guarded.blockers.length > 0
+        ? ` [שלב 2: ${guarded.blockers.map((b) => b.detailHe).join(" | ")}]`
+        : "";
+    merged = {
+      ...merged,
+      ...copy,
+      reasonHe: (copy.reasonHe || "") + note,
+    };
+  }
+
+  const legacyChosen = [...(legacy.recommendationDecisionTrace || [])]
+    .reverse()
+    .find((e) => e && e.phase === "decision");
+  const legacyRuleId = legacyChosen?.ruleId || "unknown";
+
+  const riskFlagsPayload = {
+    falsePromotionRisk: !!riskFlags.falsePromotionRisk,
+    falseRemediationRisk: !!riskFlags.falseRemediationRisk,
+    speedOnlyRisk: !!riskFlags.speedOnlyRisk,
+    hintDependenceRisk: !!riskFlags.hintDependenceRisk,
+    insufficientEvidenceRisk: !!riskFlags.insufficientEvidenceRisk,
+    recentTransitionRisk: !!riskFlags.recentTransitionRisk,
+  };
+
+  const structured = buildRecommendationStructuredTrace({
+    inputs: {
+      questions: q,
+      accuracy: acc,
+      wrongRatio: Math.round(wrongRatio * 1000) / 1000,
+      mistakeEventCount,
+      trendDirections: trend
+        ? {
+            accuracy: trendDer.accuracyDirection,
+            independence: trendDer.independenceDirection,
+            fluency: trendDer.fluencyDirection,
+            trendConfidence01: trendDer.trendConfidence01,
+          }
+        : null,
+      behaviorType,
+      modeKey: row?.modeKey ?? null,
+    },
+    derivedFlags: {
+      riskFlags: riskFlagsPayload,
+      trendDerived: trendDer,
+      strongKnowledgeGapEvidence,
+    },
+    blockers: guarded.blockers,
+    appliedRules: (legacy.recommendationDecisionTrace || []).filter(
+      (e) => e && (e.phase === "decision" || e.ruleId === "engine_context")
+    ),
+    chosenRule: {
+      legacyRuleId,
+      phase2RuleId: guarded.phase2RuleId,
+      stepAfterPhase2: guarded.step,
+    },
+    postCapAdjustments: [],
+  });
+
+  merged.recommendationDecisionTrace = [
+    { source: "recommendation", phase: "structured_trace", version: 2, sections: structured },
+    ...(merged.recommendationDecisionTrace || []),
+  ];
+
+  const capped = applyAggressiveEvidenceCap(merged, row, ctx, cfg);
+  if (capped.postCapApplied) {
+    structured.postCapAdjustments.push({
+      ruleId: "evidence_sufficiency_cap",
+      fromStep: capped.postCapFromStep,
+      toStep: capped.postCapToStep,
+    });
+  }
+  structured.chosenRule.finalStep = capped.step;
+
+  let whyThisRecommendationHe = buildWhyThisRecommendationHe({
+    displayName,
+    finalStep: capped.step,
+    riskFlags: riskFlagsPayload,
+    trendDer,
+    behaviorType,
+    legacyRuleId,
+  });
+  if (capped.postCapApplied) {
+    whyThisRecommendationHe += " הוחל כיסוי ראיות בסיס — לא מבצעים צעד אגרסיבי כשהנתונים חלקיים.";
+  }
+
+  return {
+    ...capped,
+    recommendationStructuredTrace: structured,
+    riskFlags: riskFlagsPayload,
+    diagnosticType: behaviorType,
+    whyThisRecommendationHe,
+    whatCouldChangeThisHe: buildWhatCouldChangeThisHe({ q, behaviorType }),
+  };
 }
 
 const MISTAKE_ANALYSIS_KEY = {
@@ -361,6 +675,14 @@ export function buildTopicRecommendationRecord(
   const decision = decideTopicNextStep(rowAug, mC, cfg);
   const q = Number(row?.questions) || 0;
 
+  const recommendationDecisionTrace = Array.isArray(decision.recommendationDecisionTrace)
+    ? decision.recommendationDecisionTrace
+    : [];
+  const decisionTrace = [
+    ...(Array.isArray(signals.decisionTrace) ? signals.decisionTrace : []),
+    ...recommendationDecisionTrace,
+  ];
+
   return {
     subject: subjectId,
     topicRowKey: String(topicRowKey),
@@ -385,6 +707,10 @@ export function buildTopicRecommendationRecord(
     dataSufficiencyLabelHe: signals.dataSufficiencyLabelHe,
     recommendationContextHe: signals.recommendationContextHe,
     patternStabilityHe: signals.patternStabilityHe,
+    decisionTrace,
+    recommendationDecisionTrace,
+    trend: row?.trend ?? null,
+    behaviorProfile: row?.behaviorProfile ?? null,
     recommendedNextStep: decision.step,
     recommendedStepLabelHe:
       RECOMMENDED_STEP_LABEL_HE[decision.step] || RECOMMENDED_STEP_LABEL_HE.maintain_and_strengthen,
@@ -402,6 +728,13 @@ export function buildTopicRecommendationRecord(
     isEarlySignalOnly: !!signals.isEarlySignalOnly,
     needsPractice: !!row?.needsPractice,
     excellent: !!row?.excellent,
+    confidenceBadge: confidenceBadgeFromScore(signals.confidenceScore),
+    sufficiencyBadge: sufficiencyBadgeFromLevel(signals.dataSufficiencyLevel),
+    diagnosticType: decision.diagnosticType ?? "undetermined",
+    riskFlags: decision.riskFlags || null,
+    whyThisRecommendationHe: decision.whyThisRecommendationHe || "",
+    whatCouldChangeThisHe: decision.whatCouldChangeThisHe || "",
+    recommendationStructuredTrace: decision.recommendationStructuredTrace ?? null,
   };
 }
 
@@ -440,6 +773,16 @@ export function enrichReportMapsWithTopicStepHints(
       row.diagnosticStabilityNoteHe = rec.recommendationStabilityNoteHe;
       row.diagnosticIsEarlySignalOnly = rec.isEarlySignalOnly;
       row.diagnosticRecommendedNextStep = rec.recommendedNextStep;
+      row.recommendationDecisionTrace = rec.recommendationDecisionTrace || [];
+      row.topicEngineRowSignals = {
+        riskFlags: rec.riskFlags || null,
+        confidenceBadge: rec.confidenceBadge ?? null,
+        sufficiencyBadge: rec.sufficiencyBadge ?? null,
+        diagnosticType: rec.diagnosticType ?? null,
+        whyThisRecommendationHe: rec.whyThisRecommendationHe || null,
+        whatCouldChangeThisHe: rec.whatCouldChangeThisHe || null,
+        recommendationStructuredTrace: rec.recommendationStructuredTrace ?? null,
+      };
     }
   }
 }
