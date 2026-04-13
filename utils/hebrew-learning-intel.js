@@ -45,3 +45,21 @@ export function hebrewCognitiveTemplateKey(q) {
   const raw = String(q.question || q.exerciseText || "").trim();
   return `${topic}|${hebrewCognitiveTemplateStem(raw)}`;
 }
+
+/**
+ * מפתח לחסימת חזרות לפי "צורת משימה" (לא רק patternFamily ולא רק גזע מלא).
+ * לכיתות א׳–ב׳ מוקדם: מפזר משפחות קוגניטיביות בסשן קצר.
+ */
+export function hebrewTaskShapeKey(q) {
+  if (!q) return "";
+  const topic = q.topic || q.operation || "x";
+  const pf = String(q.params?.patternFamily || "").trim();
+  const st = String(q.params?.subtype || "").trim();
+  const sub = String(q.params?.subtopicId || "").trim();
+  const head = hebrewStemNorm(q.question || q.exerciseText || "")
+    .split(" ")
+    .slice(0, 5)
+    .join(" ");
+  const bucket = pf || st || sub || head.slice(0, 36);
+  return `${topic}|${bucket}`;
+}

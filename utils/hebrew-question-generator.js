@@ -26,7 +26,12 @@ const G1_EASY_QUESTIONS = {
   reading: [
     { question: "מה האות הראשונה במילה 'בית'?", answers: ["ב", "ת", "י", "ה"], correct: 0 },
     { question: "מה האות האחרונה במילה 'כלב'?", answers: ["כ", "ל", "ב", "ה"], correct: 2 },
-    { question: "איזה אות רואים במילה 'שמש'?", answers: ["ש", "מ", "ש", "כל התשובות נכונות"], correct: 3 },
+    {
+      question: "במילה 'שמש' — איזה צליל (אות) חוזר פעמיים?",
+      answers: ["ש", "מ", "ס", "ה"],
+      correct: 0,
+      subtopicId: "g1.phoneme_awareness",
+    },
     { question: "מה המילה הנכונה: ב___ת?", answers: ["בית", "בת", "בתת", "בבית"], correct: 0 },
     { question: "מה המילה הנכונה: כ___ב?", answers: ["כלב", "כבל", "כלוב", "קלב"], correct: 0 },
     { question: "איזה אות חסרה: ש_ש?", answers: ["מ", "ב", "ת", "כ"], correct: 0 },
@@ -34,7 +39,7 @@ const G1_EASY_QUESTIONS = {
     { question: "מה המילה הנכונה: י_ד?", answers: ["ילד", "יילד", "ילת", "ילג"], correct: 0 },
     { question: "קרא את המילה: 'ספר'", answers: ["ספר", "ספור", "סבר", "ספיר"], correct: 0 },
     { question: "מה המילה הנכונה: ת_פוח?", answers: ["תפוח", "טפוח", "תבוח", "תיפוח"], correct: 0 },
-    { question: "מה האות הראשונה במילה 'אבא'?", answers: ["א", "ב", "א", "ה"], correct: 0 },
+    { question: "מה האות הראשונה במילה 'אבא'?", answers: ["א", "ב", "מ", "ה"], correct: 0 },
     { question: "מה המילה הנכונה: כ_סה?", answers: ["כיסא", "כיסע", "קיסא", "כיסאי"], correct: 0 },
     { question: "קרא את המילה: 'מים'", answers: ["מים", "ממים", "מיים", "מימ"], correct: 0 },
     { question: "מה המילה הנכונה: ש_לחן?", answers: ["שולחן", "שלחן", "שולחנ", "שלחנ"], correct: 0 },
@@ -79,12 +84,6 @@ const G1_EASY_QUESTIONS = {
       answers: ["ד", "ג", "דג", "גד"],
       correct: 0,
       subtopicId: "g1.sound_letter_match",
-    },
-    {
-      question: "במילה 'שמש' — איזה צליל (אות) חוזר פעמיים?",
-      answers: ["ש", "מ", "ס", "ה"],
-      correct: 0,
-      subtopicId: "g1.phoneme_awareness",
     },
     {
       question: "קרא את המילה: 'ארנב'",
@@ -310,7 +309,7 @@ const G1_EASY_QUESTIONS = {
       correct: 0,
       subtopicId: "g1.word_meaning_concrete",
     },
-    { question: "מה ההפך של 'חם'?", answers: ["קר", "חם", "יפה", "גדול"], correct: 0 },
+    { question: "מה ההפך של 'חם'?", answers: ["קר", "רך", "יבש", "צל"], correct: 0 },
     { question: "מי הולך לבית הספר ולומד שם?", answers: ["ילד או ילדה", "מורה בלבד", "שולחן", "ספר"], correct: 0 },
     { question: "מה ההפך של 'שמח'?", answers: ["עצוב", "שמח", "יפה", "גדול"], correct: 0 },
     { question: "מה קוראים לדבר שקוראים ממנו סיפורים?", answers: ["ספר", "עפרון", "שולחן", "כיסא"], correct: 0 },
@@ -320,7 +319,7 @@ const G1_EASY_QUESTIONS = {
     { question: "איפה לעיתים רואים ענפים ועלים גבוהים?", answers: ["על עץ", "במחברת", "בסיר", "בנעליים"], correct: 0 },
     { question: "מה ההפך של 'פתוח'?", answers: ["סגור", "גדול", "קטן", "גבוה"], correct: 0 },
     { question: "מה מאיר לנו ביום בהיר בשמיים?", answers: ["השמש", "הירח המלא", "כוכב בלבד ביום", "ענן סופה"], correct: 0 },
-    { question: "מה ההפך של 'חושך'?", answers: ["אור", "חושך", "יום", "לילה"], correct: 0 },
+    { question: "מה ההפך של 'חושך'?", answers: ["אור", "צל", "ערפל", "ענן"], correct: 0 },
     { question: "איזו חיה יכולה לעוף ולרדת לחלון?", answers: ["יונה", "חתול", "כלב", "דג"], correct: 0 },
     { question: "מה ההפך של 'ראשון'?", answers: ["אחרון", "שני", "שלישי", "רביעי"], correct: 0 },
     {
@@ -395,76 +394,165 @@ const G1_EASY_QUESTIONS = {
     },
   ],
   writing: [
-    { question: "איך כותבים את המילה 'בית'?", answers: ["בית", "באת", "ביית", "ביט"], correct: 0 },
-    { question: "איך כותבים את המילה 'אמא'?", answers: ["אמא", "אמה", "אימא", "אמאה"], correct: 0 },
-    { question: "בחרו משפט עם ניסוח תקין:", answers: ["אני בבית", "אני בספרייה בבית הספר.", "אני גר בבית ספר", "אני בבית."], correct: 0 },
-    { question: "איך כותבים את המילה 'כלב'?", answers: ["כלב", "כבל", "כלוב", "קלב"], correct: 0 },
-    { question: "איך כותבים את המילה 'שמש'?", answers: ["שמש", "שמס", "שימש", "שמיש"], correct: 0 },
-    { question: "איזה ניסוח מתאים לגוף ראשון יחיד (אוכל)?", answers: ["אני אוכל", "אני אוכלים", "אני אוכלות", "אני אוכלת"], correct: 0 },
-    { question: "איך כותבים את המילה 'אבא'?", answers: ["אבא", "אבבא", "אבה", "אב"], correct: 0 },
-    { question: "איך כותבים את המילה 'כיסא'?", answers: ["כיסא", "כיסע", "קיסא", "כיסאי"], correct: 0 },
-    { question: "בחרו משפט תקין עם הפועל ׳יושב׳ (אני):", answers: ["אני יושב", "אני יושבת", "אני יושבים", "אני יושבות"], correct: 0 },
-    { question: "איך כותבים את המילה 'שולחן'?", answers: ["שולחן", "שלחן", "שולחנ", "שלחנ"], correct: 0 },
-    { question: "מה המשפט התקין דקדוקית לגבי ׳קורא׳?", answers: ["אני קורא", "אני קוראת", "אני קוראים", "אני קוראות"], correct: 0 },
-    { question: "איך כותבים את המילה 'תפוח'?", answers: ["תפוח", "טפוח", "תבוח", "תיפוח"], correct: 0 },
-    { question: "איזה משפט על ׳משחק׳ נכון?", answers: ["אני משחק", "אני משחקת", "אני משחקים", "אני משחקות"], correct: 0 },
-    { question: "איך כותבים את המילה 'ספר'?", answers: ["ספר", "ספור", "סבר", "ספיר"], correct: 0 },
-    { question: "בחרו צורה נכונה של ׳אוהב׳ לגוף ראשון:", answers: ["אני אוהב", "אני אוהבת", "אני אוהבים", "אני אוהבות"], correct: 0 },
     {
-      question: "בחרו משפט שמתאר בוקר טוב בבית (ניסוח תקין):",
-      answers: ["אמא מכינה ארוחת בוקר", "אמא מכינים ארוחת בוקר", "אני מכינה ארוחת בוקר לכלב", "ארוחת בוקר ישנה"],
+      question: "יש לנו מקום לגור בו עם דלת וחלונות — במילה אחת, איך נכתוב את שם המקום?",
+      answers: ["בית", "באת", "ביית", "ביט"],
       correct: 0,
-      subtopicId: "g1.spell_word_choice",
-      patternFamily: "g1_writing_morning_sentence",
-      subtype: "agreement_mama",
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_home",
+      subtype: "context_not_shown",
     },
     {
-      question: "איך כותבים נכון את המילה 'חבר'?",
+      question: "השלימו במשפט: ׳א___ ואמא באים לאסוף אותי.׳",
+      answers: ["אבא", "אבבא", "אבה", "אב"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_cloze_family",
+      subtype: "aba",
+    },
+    {
+      question: "מי מבשלת לפעמים, מנחמת ואוהבת מאוד? בחרו איות למילה שמתארת את התפקיד המשפחתי:",
+      answers: ["אמא", "אמה", "אימא", "אמאה"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_mother",
+      subtype: "family_role",
+    },
+    {
+      question: "לפני בית הספר, ילדים קטנים משחקים לפעמים ב___ .",
+      answers: ["גן", "גנ", "גין", "גגן"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_cloze_gan",
+      subtype: "place_school",
+    },
+    {
+      question: "חיה שמנבחת לפעמים ויש לה זנב — במילה אחת, איך נכתוב את שם החיה?",
+      answers: ["כלב", "כבל", "כלוב", "קלב"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_riddle_animal",
+      subtype: "dog",
+    },
+    {
+      question: "מה מאיר לנו ביום בהיר בשמיים? בחרו את האיות הנכון למילה שמתארת את זה:",
+      answers: ["שמש", "שמס", "שימש", "שמיש"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_sun",
+      subtype: "concept_then_spell",
+    },
+    {
+      question: "יש בו עופרת וכותבים איתו על הדף — בחרו איות נכון לשם החפץ:",
+      answers: ["עפרון", "אפרון", "עפורון", "עפרנ"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_riddle_object",
+      subtype: "pencil",
+    },
+    {
+      question: "ישבתי בכיתה על ___ יציב.",
+      answers: ["כיסא", "כיסע", "קיסא", "כיסאי"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_cloze_chair",
+      subtype: "furniture",
+    },
+    {
+      question: "מי מסבירה ליד הלוח ועוזרת לנו ללמוד? בחרו איות למילה שמתארת את התפקיד:",
+      answers: ["מורה", "מורא", "מוורה", "מורי"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_teacher",
+      subtype: "role",
+    },
+    {
+      question: "אוכלים עליו לפעמים או כותבים עליו בכיתה — בחרו איות למילה שמתארת את הרהיט הארוך:",
+      answers: ["שולחן", "שלחן", "שולחנ", "שלחנ"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_table",
+      subtype: "furniture",
+    },
+    {
+      question: "פרי עגול ואדום לפעמים — בחרו איות נכון לשם הפרי:",
+      answers: ["תפוח", "טפוח", "תבוח", "תיפוח"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_riddle_food",
+      subtype: "apple",
+    },
+    {
+      question: "בכיתה רואים דרכו החוצה — בחרו איות למילה שמתארת את הפתח המואר:",
+      answers: ["חלון", "חלונ", "חילון", "חלאון"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_window",
+      subtype: "classroom",
+    },
+    {
+      question: "קוראים ממנו סיפורים — בחרו איות למילה שמתארת את החפץ:",
+      answers: ["ספר", "ספור", "סבר", "ספיר"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_book",
+      subtype: "object",
+    },
+    {
+      question: "בחרו איות נכון למילה (רק צורת כתיב):",
+      answers: ["מחברת", "מחברט", "מחבורת", "מחבת"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_writing_spell_notebook",
+      subtype: "machberet",
+    },
+    {
+      question: "מי משחק איתי ואוהב אותי? בחרו איות למילה שמתארת את הקשר:",
       answers: ["חבר", "חביר", "חברר", "חבור"],
       correct: 0,
       subtopicId: "g1.copy_word",
-      patternFamily: "g1_writing_copy_friend",
-      subtype: "spelling_friend",
+      patternFamily: "g1_spelling_meaning_friend",
+      subtype: "social",
     },
     {
-      question: "בחרו משפט קצר ונכון על לימודים:",
-      answers: ["אני לומד בבית הספר", "אני לומדים בבית הספר", "אני לומדות בבית הספר לכלב", "בית הספר ישן"],
+      question: "השלימו איות: אני או_ה מים.",
+      answers: ["אוהב", "אוהבב", "אוהוב", "אוהבא"],
       correct: 0,
       subtopicId: "g1.spell_word_choice",
-      patternFamily: "g1_writing_school_agreement",
-      subtype: "ani_lomed",
+      patternFamily: "g1_writing_cloze_ahav",
+      subtype: "ohev_water",
     },
   ],
   grammar: [
-    { question: "מה חלק הדיבר של המילה 'בית'?", answers: ["שם עצם", "פועל", "תואר", "מספר"], correct: 0, patternFamily: "g1_grammar_pos_label" },
-    { question: "במשפט ׳הילד אוכל תפוח׳ — איזו מילה היא הפועל?", answers: ["אוכל", "הילד", "תפוח", "המשפט"], correct: 0, patternFamily: "g1_grammar_pick_verb" },
-    { question: "במשפט ׳הפרחים צבעוניים׳ — איזו מילה היא התואר?", answers: ["צבעוניים", "הפרחים", "פרחים", "הפרח"], correct: 0, patternFamily: "g1_grammar_pick_adj" },
-    { question: "במשפט ׳הוא רץ מהר׳ — איך נקראת המילה 'מהר'?", answers: ["תואר (איך)", "שם עצם", "פועל", "מילת שאלה"], correct: 0, patternFamily: "g1_grammar_pos_manner" },
-    { question: "בחרו משפט תקין על הכלב ופועל ׳רץ׳:", answers: ["הכלב רץ", "הכלב רצים", "הכלב רצה", "כלבים רץ"], correct: 0, patternFamily: "g1_grammar_subject_verb_animal" },
-    { question: "איזה ניסוח מתאים לגוף ולמין (ילד/ילדה)?", answers: ["הילד רץ", "הילד רצים", "הילדה רץ", "הילדים רץ"], correct: 0, patternFamily: "g1_grammar_gender_agreement_short" },
-    { question: "בחרו משפט תקין — חתול ופועל ׳ישן׳:", answers: ["החתול ישן", "החתול ישנה", "חתולים ישן", "החתול ישנים"], correct: 0, patternFamily: "g1_grammar_subject_verb_cat" },
-    { question: "מה המשפט התקין לגבי דג ופועל ׳שוחה׳?", answers: ["הדג שוחה", "הדג שוחים", "דגים שוחה", "הדג שוחות"], correct: 0, patternFamily: "g1_grammar_subject_verb_fish" },
-    { question: "איזה משפט לא תקין?", answers: ["אני קורא ספר", "אוכל הילד תפוח", "אמא מבשלת מרק", "הכלב רץ בחצר"], correct: 1, patternFamily: "g1_grammar_illformed_pick" },
-    { question: "בחרו מילה שמשלימה: בבוקר אני ___ קורא.", answers: ["תמיד", "שולחן", "רץ", "במים"], correct: 0, patternFamily: "g1_grammar_cloze_adverb" },
-    { question: "איזו מילה לא שייכת לקבוצה?", answers: ["כיסא", "תפוח", "בננה", "אבטיח"], correct: 0, patternFamily: "g1_grammar_odd_one_out" },
-    { question: "איזה משפט עם סדר מילים תקין?", answers: ["אני אוהב בית ספר", "ספר בית אני אוהב", "אוהב ספר אני בית", "בית אוהב אני ספר"], correct: 0, patternFamily: "g1_grammar_word_order" },
-    { question: "איזה משפט מסתיים בסימן הנכון בסוף?", answers: ["היום חם.", "היום חם?", "היום חם", "היום .חם"], correct: 0, patternFamily: "g1_grammar_sentence_punct_end" },
-    { question: "איזה משפט שאלה נכון?", answers: ["איפה הספר?", "איפה הספר.", "איפה הספר", "איפה ?הספר"], correct: 0, patternFamily: "g1_grammar_question_mark" },
-    { question: "איזה משפט לא מתאים לרבים?", answers: ["שני ילדים ישן", "שני ילדים ישנים", "הילד ישן", "הילדים ישנים"], correct: 0, patternFamily: "g1_grammar_plural_agreement_bad" },
-    { question: "בחרו צמד מילים מתאים:", answers: ["ילד קטן", "ילד רץ לאט", "ילד שולחן", "ילד במים"], correct: 0, patternFamily: "g1_grammar_noun_adj_pair" },
-    { question: "בחרו משפט תקין:", answers: ["הילדים משחקים בחצר", "הילדים משחק בחצר", "הילד משחקים בחצר", "הילדים משחקים חצר"], correct: 0, patternFamily: "g1_grammar_plural_verb_play" },
-    { question: "מי מתאים לשאלה: ׳מי בא לכיתה?׳", answers: ["המורה", "מהר", "בשקט", "למה"], correct: 0, patternFamily: "g1_grammar_wh_answer_fit" },
-    { question: "במשפט ׳אמא מבשלת מרק׳ — איזו מילה היא הפועל?", answers: ["מבשלת", "אמא", "מרק", "המשפט"], correct: 0, patternFamily: "g1_grammar_pick_verb_cook" },
-    { question: "בחרו משפט עם ׳ו׳ חיבור נכון:", answers: ["אמא ואבא", "אמא אבא", "אמא עם ואבא", "ואמא אבא"], correct: 0, patternFamily: "g1_grammar_conjunction_and" },
-    { question: "בחרו משפט תקין לנקבה:", answers: ["הילדה קוראת", "הילדה קוראים", "הילד קוראת", "הילדות קורא"], correct: 0, patternFamily: "g1_grammar_fem_singular_verb" },
-    { question: "בחרו משפט תקין לעתיד:", answers: ["מחר אני אלך לגן", "מחר אני הלכתי לגן", "מחר אני הולך אתמול", "מחר אני לגן אתמול"], correct: 0, patternFamily: "g1_grammar_future_basic" },
-    { question: "בחרו משפט עם שלילה נכונה:", answers: ["אני לא רוצה לשתות", "אני לא רוצה שתות", "אני לא רוצה שותה", "אני לא רוצה שתייה לא"], correct: 0, patternFamily: "g1_grammar_negation_want" },
-    { question: "בחרו משפט תקין אחרי שינה:", answers: ["בבוקר אני מתעורר מהשינה", "בבוקר אני מתעוררים מהשינה", "בבוקר אני מתעוררת מהשינה לשולחן", "בבוקר מתעורר אני שינה"], correct: 0, patternFamily: "g1_grammar_morning_wake" },
-    { question: "בחרו משפט תקין:", answers: ["בכיתה ישבנו בשקט", "בכיתה ישבנו הספר בשקט", "בכיתה שולחן בשקט", "בשקט ישבנו בכיתה הספר"], correct: 0, patternFamily: "g1_grammar_classroom_sentence" },
-    { question: "דני ויוסי ___ בגן.", answers: ["משחקים", "משחק", "משחקת", "משחקות"], correct: 0, patternFamily: "g1_grammar_dual_subject_plural" },
-    { question: "המילה ׳ילדים׳ מציינת:", answers: ["רבים", "יחיד", "תואר", "זמן"], correct: 0, patternFamily: "g1_grammar_plural_meaning" },
-    { question: "בחרו משפט תקין:", answers: ["אני שותה מים", "אני שותים מים", "אני שותה המים שולחן", "אני שותים אתמול מים"], correct: 0, patternFamily: "g1_grammar_drink_agreement" },
-    { question: "איזה משפט מתאר היום (לא אתמול ולא מחר)?", answers: ["עכשיו אני כותב", "אתמול אני כותב", "מחר אני כותב", "לעולם לא אני כותב"], correct: 0, patternFamily: "g1_grammar_present_time" },
+    { question: "מה חלק הדיבר של המילה 'בית'?", answers: ["שם עצם", "פועל", "תואר", "מספר"], correct: 0, patternFamily: "g1_grammar_pos_label", subtopicId: "g1.grammar_pos_roles" },
+    { question: "במשפט ׳הילד אוכל תפוח׳ — איזו מילה היא הפועל?", answers: ["אוכל", "הילד", "תפוח", "המשפט"], correct: 0, patternFamily: "g1_grammar_pick_verb", subtopicId: "g1.grammar_pos_roles" },
+    { question: "במשפט ׳הפרחים צבעוניים׳ — איזו מילה היא התואר?", answers: ["צבעוניים", "הפרחים", "פרחים", "הפרח"], correct: 0, patternFamily: "g1_grammar_pick_adj", subtopicId: "g1.grammar_pos_roles" },
+    { question: "במשפט ׳הוא רץ מהר׳ — איך נקראת המילה 'מהר'?", answers: ["תואר (איך)", "שם עצם", "פועל", "מילת שאלה"], correct: 0, patternFamily: "g1_grammar_pos_manner", subtopicId: "g1.grammar_pos_roles" },
+    { question: "בחרו משפט תקין על הכלב ופועל ׳רץ׳:", answers: ["הכלב רץ", "הכלב רצים", "הכלב רצה", "כלבים רץ"], correct: 0, patternFamily: "g1_grammar_subject_verb_animal", subtopicId: "g1.grammar_agreement_light" },
+    { question: "איזה ניסוח מתאים לגוף ולמין (ילד/ילדה)?", answers: ["הילד רץ", "הילד רצים", "הילדה רץ", "הילדים רץ"], correct: 0, patternFamily: "g1_grammar_gender_agreement_short", subtopicId: "g1.grammar_agreement_light" },
+    { question: "בחרו משפט תקין — חתול ופועל ׳ישן׳:", answers: ["החתול ישן", "החתול ישנה", "חתולים ישן", "החתול ישנים"], correct: 0, patternFamily: "g1_grammar_subject_verb_cat", subtopicId: "g1.grammar_agreement_light" },
+    { question: "מה המשפט התקין לגבי דג ופועל ׳שוחה׳?", answers: ["הדג שוחה", "הדג שוחים", "דגים שוחה", "הדג שוחות"], correct: 0, patternFamily: "g1_grammar_subject_verb_fish", subtopicId: "g1.grammar_agreement_light" },
+    { question: "איזה משפט לא תקין?", answers: ["אני קורא ספר", "אוכל הילד תפוח", "אמא מבשלת מרק", "הכלב רץ בחצר"], correct: 1, patternFamily: "g1_grammar_illformed_pick", subtopicId: "g1.grammar_wellformed" },
+    { question: "בחרו מילה שמשלימה: בבוקר אני ___ קורא.", answers: ["תמיד", "שולחן", "רץ", "במים"], correct: 0, patternFamily: "g1_grammar_cloze_adverb", subtopicId: "g1.grammar_cloze_deixis" },
+    { question: "איזו מילה לא שייכת לקבוצה?", answers: ["כיסא", "תפוח", "בננה", "אבטיח"], correct: 0, patternFamily: "g1_grammar_odd_one_out", subtopicId: "g1.grammar_odd_category" },
+    { question: "איזה משפט עם סדר מילים תקין?", answers: ["אני אוהב בית ספר", "ספר בית אני אוהב", "אוהב ספר אני בית", "בית אוהב אני ספר"], correct: 0, patternFamily: "g1_grammar_word_order", subtopicId: "g1.grammar_word_order" },
+    { question: "איזה משפט מסתיים בסימן הנכון בסוף?", answers: ["היום חם.", "היום חם?", "היום חם", "היום .חם"], correct: 0, patternFamily: "g1_grammar_sentence_punct_end", subtopicId: "g1.grammar_punctuation" },
+    { question: "איזה משפט שאלה נכון?", answers: ["איפה הספר?", "איפה הספר.", "איפה הספר", "איפה ?הספר"], correct: 0, patternFamily: "g1_grammar_question_mark", subtopicId: "g1.grammar_punctuation" },
+    { question: "איזה משפט לא מתאים לרבים?", answers: ["שני ילדים ישן", "שני ילדים ישנים", "הילד ישן", "הילדים ישנים"], correct: 0, patternFamily: "g1_grammar_plural_agreement_bad", subtopicId: "g1.grammar_agreement_light" },
+    { question: "בחרו צמד מילים מתאים:", answers: ["ילד קטן", "ילד רץ לאט", "ילד שולחן", "ילד במים"], correct: 0, patternFamily: "g1_grammar_noun_adj_pair", subtopicId: "g1.grammar_agreement_light" },
+    { question: "בחרו משפט תקין:", answers: ["הילדים משחקים בחצר", "הילדים משחק בחצר", "הילד משחקים בחצר", "הילדים משחקים חצר"], correct: 0, patternFamily: "g1_grammar_plural_verb_play", subtopicId: "g1.grammar_agreement_light" },
+    { question: "מי מתאים לשאלה: ׳מי בא לכיתה?׳", answers: ["המורה", "מהר", "בשקט", "למה"], correct: 0, patternFamily: "g1_grammar_wh_answer_fit", subtopicId: "g1.grammar_connectors_time" },
+    { question: "במשפט ׳אמא מבשלת מרק׳ — איזו מילה היא הפועל?", answers: ["מבשלת", "אמא", "מרק", "המשפט"], correct: 0, patternFamily: "g1_grammar_pick_verb_cook", subtopicId: "g1.grammar_pos_roles" },
+    { question: "בחרו משפט עם ׳ו׳ חיבור נכון:", answers: ["אמא ואבא", "אמא אבא", "אמא עם ואבא", "ואמא אבא"], correct: 0, patternFamily: "g1_grammar_conjunction_and", subtopicId: "g1.grammar_connectors_time" },
+    { question: "בחרו משפט תקין לנקבה:", answers: ["הילדה קוראת", "הילדה קוראים", "הילד קוראת", "הילדות קורא"], correct: 0, patternFamily: "g1_grammar_fem_singular_verb", subtopicId: "g1.grammar_agreement_light" },
+    { question: "בחרו משפט תקין לעתיד:", answers: ["מחר אני אלך לגן", "מחר אני הלכתי לגן", "מחר אני הולך אתמול", "מחר אני לגן אתמול"], correct: 0, patternFamily: "g1_grammar_future_basic", subtopicId: "g1.grammar_connectors_time" },
+    { question: "בחרו משפט עם שלילה נכונה:", answers: ["אני לא רוצה לשתות", "אני לא רוצה שתות", "אני לא רוצה שותה", "אני לא רוצה שתייה לא"], correct: 0, patternFamily: "g1_grammar_negation_want", subtopicId: "g1.grammar_wellformed" },
+    { question: "בחרו משפט תקין אחרי שינה:", answers: ["בבוקר אני מתעורר מהשינה", "בבוקר אני מתעוררים מהשינה", "בבוקר אני מתעוררת מהשינה לשולחן", "בבוקר מתעורר אני שינה"], correct: 0, patternFamily: "g1_grammar_morning_wake", subtopicId: "g1.grammar_agreement_light" },
+    { question: "בחרו משפט תקין:", answers: ["בכיתה ישבנו בשקט", "בכיתה ישבנו הספר בשקט", "בכיתה שולחן בשקט", "בשקט ישבנו בכיתה הספר"], correct: 0, patternFamily: "g1_grammar_classroom_sentence", subtopicId: "g1.grammar_wellformed" },
+    { question: "דני ויוסי ___ בגן.", answers: ["משחקים", "משחק", "משחקת", "משחקות"], correct: 0, patternFamily: "g1_grammar_dual_subject_plural", subtopicId: "g1.grammar_agreement_light" },
+    { question: "המילה ׳ילדים׳ מציינת:", answers: ["רבים", "יחיד", "תואר", "זמן"], correct: 0, patternFamily: "g1_grammar_plural_meaning", subtopicId: "g1.grammar_pos_roles" },
+    { question: "בחרו משפט תקין:", answers: ["אני שותה מים", "אני שותים מים", "אני שותה המים שולחן", "אני שותים אתמול מים"], correct: 0, patternFamily: "g1_grammar_drink_agreement", subtopicId: "g1.grammar_agreement_light" },
+    { question: "איזה משפט מתאר היום (לא אתמול ולא מחר)?", answers: ["עכשיו אני כותב", "אתמול אני כותב", "מחר אני כותב", "לעולם לא אני כותב"], correct: 0, patternFamily: "g1_grammar_present_time", subtopicId: "g1.grammar_connectors_time" },
   ],
   vocabulary: [
     { question: "איפה שמים לפעמים צלחת או ספר בשיעור הבית?", answers: ["על השולחן", "במים", "בשמיים", "בנעל"], correct: 0 },
@@ -832,25 +920,53 @@ const G1_MEDIUM_QUESTIONS = {
     },
   ],
   writing: [
-    { question: "בחרו את הניסוח הנכון לגוף ראשון יחיד זכר עם הפועל ׳לומד׳:", answers: ["אני לומד", "אני לומדת", "אני לומדים", "אני לומדות"], correct: 0 },
-    { question: "בחרו משפט תקין על הכלב ופועל ׳רץ׳:", answers: ["הכלב רץ", "הכלב רצים", "הכלב רצה", "כלבים רץ"], correct: 0 },
-    { question: "איך כותבים נכון: 'אני ה_כתי'?", answers: ["אני כתבתי", "אני כתבתיי", "אני התכתבתי", "אני כתבי"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["אני קורא ספר", "אני קוראת ספר", "אני קוראים ספר", "אני קוראות ספר"], correct: 0 },
     {
-      question: "איך כותבים נכון את המילה 'צבע'?",
+      question: "בכיתה יש לפעמים ילד וגם ___ — בחרו איות למילה שמתארת ילדה:",
+      answers: ["ילדה", "יילדה", "ילדא", "ילדהה"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_context_girl",
+      subtype: "classroom_contrast",
+    },
+    {
+      question: "כותבים בה שיעורים ומדביקים לפעמים מדבקות — בחרו איות למילה שמתארת את החפץ:",
+      answers: ["מחברת", "מחברט", "מחבורת", "מחבת"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_notebook",
+      subtype: "school_object",
+    },
+    {
+      question: "השלימו את המשפט בכתיב תקין: ׳אני ה_כתי׳.",
+      answers: ["אני כתבתי", "אני כתבתיי", "אני התכתבתי", "אני כתבי"],
+      correct: 0,
+      subtopicId: "g1.spell_word_choice",
+      patternFamily: "g1_writing_sentence_completion_past",
+      subtype: "first_person_wrote",
+    },
+    {
+      question: "השלימו איות: אני ק_א ספר (רק צורת הכתיב הנכונה).",
+      answers: ["קורא", "קרוא", "קרא", "קורע"],
+      correct: 0,
+      subtopicId: "g1.spell_word_choice",
+      patternFamily: "g1_writing_cloze_kore",
+      subtype: "orthographic_slot",
+    },
+    {
+      question: "משתמשים בו כדי לצבוע או להדגיש — בחרו איות למילה שמתארת חומר צבע:",
       answers: ["צבע", "צביח", "צביע", "צבעע"],
       correct: 0,
       subtopicId: "g1.copy_word",
-      patternFamily: "g1_writing_color_noun",
-      subtype: "tzeva",
+      patternFamily: "g1_spelling_meaning_color",
+      subtype: "material_hint",
     },
     {
-      question: "בחרו משפט קצר ונכון על משפחה:",
-      answers: ["אני אוהב את משפחתי", "אני אוהבים את משפחתי", "אני אוהב את משפחה", "משפחתי אוכלת אותי"],
+      question: "אבא, אמא והילדים ביחד — בחרו איות למילה שמתארת את הקבוצה:",
+      answers: ["משפחה", "משפחא", "משפחהה", "מושפחה"],
       correct: 0,
-      subtopicId: "g1.spell_word_choice",
-      patternFamily: "g1_writing_family_sentence",
-      subtype: "love_family",
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_family_group",
+      subtype: "concept_then_spell",
     },
   ],
   grammar: [
@@ -1084,34 +1200,82 @@ const G1_HARD_QUESTIONS = {
     },
   ],
   writing: [
-    { question: "איזה משפט נכון?", answers: ["אני כותב", "אני כותבות", "אני כותבו", "אני כותבה"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["הילדה קוראת", "הילדה קורא", "הילד קוראת", "הילדה קוראים"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["הילדים משחקים", "הילדים משחק", "הילד משחקים", "הילדה משחקים"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["הכלב רץ", "הכלב רצים", "כלבים רץ", "הכלב רצה"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["אני אוהב לקרוא", "אני אוהבים לקרוא", "אני אוהבות לקרוא", "אני אוהבת לקרוא"], correct: 0 },
     {
-      question: "בחרו ניסוח נכון לדיווח קצר: 'אתמול ___ ספר בבית.'",
-      answers: ["קראתי", "קראנו אתמול אני", "קראתי אתמול אתמול", "אתמול קרא"],
+      question: "מי לומד בכיתה ומקשיב לשיעור? בחרו איות למילה שמתארת את התפקיד:",
+      answers: ["תלמיד", "תלמידד", "טלמיד", "תלמידי"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_pupil",
+      subtype: "role_school",
+    },
+    {
+      question: "דביקה קטנה שמדביקים על דף או על כיסא — בחרו איות למילה שמתארת את החפץ:",
+      answers: ["מדבקה", "מדבקא", "מדבקע", "מדבקוה"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_sticker",
+      subtype: "object_school",
+    },
+    {
+      question: "כלי עם שני חלקים שחותכים איתו נייר — בחרו איות למילה שמתארת את הכלי:",
+      answers: ["מספריים", "מספוריים", "נספריים", "משפריים"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_spelling_meaning_scissors",
+      subtype: "object_tool",
+    },
+    {
+      question: "השלימו איות: מ_חברת חדשה לכיתה.",
+      answers: ["מחברת", "מחברט", "מחבורת", "מחברתת"],
+      correct: 0,
+      subtopicId: "g1.spell_word_choice",
+      patternFamily: "g1_writing_cloze_machberet",
+      subtype: "orthographic_slot",
+    },
+    {
+      question:
+        "בחרו משפט מלא לכותרת ביומן: ׳אחרי בית הספר׳ — משפט אחד, כתיב תקין וניסוח של כתיבה:",
+      answers: [
+        "אחרי בית הספר שיחקתי עם החברים בחצר.",
+        "אחרי בית ספר שיחקתי עם החברים בחצר.",
+        "אחרי בית הספר שיחקתי חברים בחצר.",
+        "אחרי בית הספר שיחקתי עם חבר.",
+      ],
+      correct: 0,
+      subtopicId: "g1.spell_word_choice",
+      patternFamily: "g1_writing_micro_paragraph_title",
+      subtype: "after_school",
+    },
+    {
+      question: "בדיווח קצר ביומן: ׳אתמול ___ ספר בבית.׳ — בחרו רק את האיות הנכון של המילה החסרה:",
+      answers: ["קראתי", "קרתי", "קראתיי", "כראתי"],
       correct: 0,
       subtopicId: "g1.spell_word_choice",
       patternFamily: "g1_writing_past_first",
       subtype: "qraati",
     },
     {
-      question: "איך כותבים נכון את המילה 'שִׁעוּר' (בבית הספר)?",
+      question:
+        "בבית הספר נכנסים לחלק מהיום שנקרא לפעמים בשם של ___ — בחרו איות (בלי ניקוד בשאלה):",
       answers: ["שיעור", "שייעור", "שיעורר", "טיעור"],
       correct: 0,
       subtopicId: "g1.copy_word",
-      patternFamily: "g1_writing_lesson_word",
-      subtype: "shiur",
+      patternFamily: "g1_spelling_context_lesson_plain",
+      subtype: "shiur_no_niqqud_stem",
     },
   ],
   grammar: [
-    { question: "מה חלק הדיבר של המילה 'רץ' במשפט 'הילד רץ'?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["הילדים קוראים", "הילדים קורא", "הילד קוראים", "הילדה קוראים"], correct: 0 },
-    { question: "מה חלק הדיבר של המילה 'קורא' במשפט 'הילד קורא'?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["המורה מלמדת", "המורה מלמד", "המורה מלמדים", "המורה מלמדות"], correct: 0 },
-    { question: "מה חלק הדיבר של המילה 'יפה' במשפט 'הפרח יפה'?", answers: ["תואר", "שם עצם", "פועל", "מספר"], correct: 0 },
+    { question: "מה חלק הדיבר של המילה 'רץ' במשפט 'הילד רץ'?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0, subtopicId: "g1.grammar_pos_roles" },
+    { question: "איזה משפט נכון?", answers: ["הילדים קוראים", "הילדים קורא", "הילד קוראים", "הילדה קוראים"], correct: 0, subtopicId: "g1.grammar_agreement_light" },
+    { question: "מה חלק הדיבר של המילה 'קורא' במשפט 'הילד קורא'?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0, subtopicId: "g1.grammar_pos_roles" },
+    { question: "איזה משפט נכון?", answers: ["המורה מלמדת", "המורה מלמד", "המורה מלמדים", "המורה מלמדות"], correct: 0, subtopicId: "g1.grammar_agreement_light" },
+    { question: "מה חלק הדיבר של המילה 'יפה' במשפט 'הפרח יפה'?", answers: ["תואר", "שם עצם", "פועל", "מספר"], correct: 0, subtopicId: "g1.grammar_pos_roles" },
+    { question: "איזה משפט לא תקין?", answers: ["הכלב רץ", "רץ הכלב מהר", "החתול ישן", "אמא מבשלת"], correct: 1, subtopicId: "g1.grammar_wellformed" },
+    { question: "בחרו מילה שמשלימה: אתמול אני ___ ספר.", answers: ["קראתי", "קורא", "קרא", "קוראתי"], correct: 0, subtopicId: "g1.grammar_cloze_deixis" },
+    { question: "איזה משפט מסתיים בסימן שאלה נכון?", answers: ["מה זה?", "מה זה.", "מה זה", "?מה זה"], correct: 0, subtopicId: "g1.grammar_punctuation" },
+    { question: "איזו מילה לא שייכת לכלי כתיבה?", answers: ["מחק", "עיפרון", "סרגל", "נדנדה"], correct: 3, subtopicId: "g1.grammar_odd_category" },
+    { question: "בחרו משפט עם סדר מילים הגיוני:", answers: ["אני שותה מים בבית", "מים אני בבית שותה", "בבית שותה מים אני", "שותה בבית אני"], correct: 0, subtopicId: "g1.grammar_word_order" },
+    { question: "מחר אני ___ לגן.", answers: ["אלך", "הלכתי", "הולך", "הלכנו"], correct: 0, subtopicId: "g1.grammar_connectors_time" },
   ],
   vocabulary: [
     { question: "במה משתמשים לפעמים כדי לשחק או ללמוד במחשב?", answers: ["מחשב", "מחבת", "מטאטא", "כפפה"], correct: 0 },
@@ -1307,11 +1471,47 @@ const G2_EASY_QUESTIONS = {
     },
   ],
   writing: [
-    { question: "איזה משפט נכון?", answers: ["הילדים קוראים ספר", "הילדים קורא ספר", "הילד קוראים ספר", "הילדה קוראים ספר"], correct: 0 },
-    { question: "איזה סימן פיסוק מתאים בסוף משפט שאלה?", answers: ["?", "!", ".", ","], correct: 0 },
-    { question: "איזה סימן פיסוק מתאים בסוף משפט רגיל?", answers: [".", "?", "!", ","], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["אני קורא ספר", "אני קוראת ספר", "אני קוראים ספר", "אני קוראות ספר"], correct: 0 },
-    { question: "איך כותבים את המילה 'מחברת'?", answers: ["מחברת", "מחברט", "מחבת", "מהברת"], correct: 0 },
+    {
+      question:
+        "לפני שיעור עושים לעיתים ___ קצרה: בחרו איות למילה שמתארת את הפעולה או השלב (באותיות בלבד, בלי ניקוד בשאלה).",
+      answers: ["הכנה", "הכנא", "הכניה", "יכנה"],
+      correct: 0,
+      subtopicId: "g2.fluent_words",
+      patternFamily: "g2_writing_spell_hachana",
+      subtype: "prep_noun_cloze",
+    },
+    {
+      question: "השלימו איות: אני מ_דר את המחברת.",
+      answers: ["מסדר", "מסדרר", "מסדור", "מסדרד"],
+      correct: 0,
+      subtopicId: "g2.sentence_wellformed",
+      patternFamily: "g2_writing_cloze_mesader",
+      subtype: "orthography_slot",
+    },
+    {
+      question: "בשיעור עוסקים לפעמים ב___ טקסט (מילה אחת) — בחרו איות נכון:",
+      answers: ["קריאה", "קריאהה", "קרייה", "קריאא"],
+      correct: 0,
+      subtopicId: "g2.sentence_wellformed",
+      patternFamily: "g2_writing_spell_kriah",
+      subtype: "activity_noun",
+    },
+    {
+      question: "כותבים בה שיעורים ומסדרים דפים — בחרו איות למילה שמתארת את החפץ:",
+      answers: ["מחברת", "מחברט", "מחבת", "מהברת"],
+      correct: 0,
+      subtopicId: "g2.fluent_words",
+      patternFamily: "g2_writing_spell_machberet",
+      subtype: "object_context",
+    },
+    {
+      question: "בשיעור לפעמים פותרים ___ בכיתה או בבית — בחרו איות למילה שמתארת את המטלה:",
+      answers: ["תרגיל", "תרגייל", "טרגיל", "תרגיול"],
+      correct: 0,
+      subtopicId: "g2.fluent_words",
+      patternFamily: "g2_writing_spell_targil",
+      subtype: "task_cloze",
+    },
     {
       question: "בחרו פסקה קצרה (שני משפטים) שמתאימה לכותרת ׳יום כיף בגן׳:",
       answers: [
@@ -1319,17 +1519,6 @@ const G2_EASY_QUESTIONS = {
         "חיכינו לאוטובוס. לא נכנסנו לגן.",
         "ישבנו בבית. לא שיחקנו בחוץ.",
         "אכלנו בלבד. לא שיחקנו בכלל.",
-      ],
-      correct: 0,
-      subtopicId: "g2.short_paragraph_choice",
-    },
-    {
-      question: "בחרו פסקה קצרה שמתאימה לנושא ׳יום גשום בבית הספר׳:",
-      answers: [
-        "ירד גשם. נכנסנו מהר לכיתה. ניגבנו נעליים.",
-        "גשם",
-        "יום",
-        "בית ספר",
       ],
       correct: 0,
       subtopicId: "g2.short_paragraph_choice",
@@ -1623,12 +1812,28 @@ const G2_MEDIUM_QUESTIONS = {
     },
   ],
   writing: [
-    { question: "איזה משפט נכון?", answers: ["הילדה קוראת ספר", "הילדה קורא ספר", "הילד קוראת ספר", "הילדה קוראים ספר"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["אני כותב מכתב", "אני כותבות מכתב", "אני כותבו מכתב", "אני כותבה מכתב"], correct: 0 },
     {
-      question: "איך כותבים את המשפט: 'הילדים משחקים בחצר'?",
+      question: "דף קטן או פתק שעוזר לזכור מילים לבחינה — בחרו איות למילה שמתארת את החפץ:",
+      answers: ["תזכירית", "תזכיריית", "תיזכירית", "טזכירית"],
+      correct: 0,
+      subtopicId: "g2.fluent_words",
+      patternFamily: "g2_writing_spell_tazkir",
+      subtype: "object_meaning",
+    },
+    {
+      question: "השלימו איות: ניסינו ש_ עד שהצלחנו.",
+      answers: ["שוב", "שובב", "שובש", "שובא"],
+      correct: 0,
+      subtopicId: "g2.sentence_wellformed",
+      patternFamily: "g2_writing_cloze_shuv",
+      subtype: "orthography_slot",
+    },
+    {
+      question: "בחרו את המשפט שנכתב בכתיב תקני (אותיות ורווחים), לפי המשמעות: ילדים משחקים בחצר בבית הספר.",
       answers: ["הילדים משחקים בחצר", "ילידים משחקים בחצר", "הילדים משחקים בחצה", "הילדים משחקים בצר"],
       correct: 0,
+      patternFamily: "g2_spelling_sentence_wellformed_yard",
+      subtype: "pick_correct_sentence",
     },
     {
       question: "בחרו פסקה קצרה שמתאימה לנושא ׳המורה בכיתה׳:",
@@ -1938,7 +2143,16 @@ const G2_HARD_QUESTIONS = {
 const G3_EASY_QUESTIONS = {
   reading: [
     { question: "קרא את הטקסט: 'הילד קורא ספר מעניין בכיתה. הספר מספר על הרפתקאות.' מה הנושא העיקרי?", answers: ["ילד קורא ספר על הרפתקאות", "ילד משחק", "ילד כותב", "ילד אוכל"], correct: 0 },
-    { question: "קרא את המשפט: 'הילדים קוראים ספרים ומתכוננים למבחן'", answers: ["הילדים קוראים ספרים ומתכוננים למבחן", "הילד קורא ספר", "הילדה קוראת ספר", "כל התשובות נכונות"], correct: 0 },
+    {
+      question: "קרא את המשפט: 'הילדים קוראים ספרים ומתכוננים למבחן'",
+      answers: [
+        "הילדים קוראים ספרים ומתכוננים למבחן",
+        "הילדים קוראים ספרים ומתכוננים למבחן.",
+        "ילדים קוראים ספרים ומתכוננים למבחן",
+        "הילדים קוראים ספרים מתכוננים למבחן",
+      ],
+      correct: 0,
+    },
     { question: "מה המילה הנכונה: מ_בחן?", answers: ["מבחן", "מבחנה", "מבחני", "מבחנת"], correct: 0 },
     { question: "קרא את הטקסט: 'השמש זורחת בבוקר. הציפורים שרות. הכל יפה.' כמה משפטים יש?", answers: ["3", "2", "4", "1"], correct: 0 },
   ],
@@ -3110,6 +3324,50 @@ const G6_HARD_QUESTIONS = {
   ],
 };
 
+/**
+ * מסיר מסיחים אסורים (״כל התשובות נכונות׳ וכו׳), מנקה כפילויות, ומתקן אינדקס נכון.
+ * @param {{ answers: string[], correct: number, optionCount?: number }} q
+ */
+function scrubHebrewMcqAnswers(q) {
+  const answers = Array.isArray(q.answers)
+    ? q.answers.map((a) => String(a ?? "").trim())
+    : [];
+  if (answers.length < 2) return;
+  let correctIdx = Number(q.correct);
+  if (!Number.isFinite(correctIdx) || correctIdx < 0 || correctIdx >= answers.length) {
+    correctIdx = 0;
+  }
+  const correctText = answers[correctIdx];
+  const banned = (t) =>
+    /כל\s*התשובות|שניהם\s*נכון|שנייהם\s*נכון|גם\s*וגם|^אף\s+אחת\s+לא$/i.test(
+      String(t).trim()
+    );
+  if (banned(correctText)) return;
+
+  const entries = answers
+    .map((t, i) => ({ t, isCorrect: i === correctIdx }))
+    .filter(({ t }) => t && !banned(t));
+  if (entries.length < 2) return;
+
+  const seen = new Map();
+  const acc = [];
+  for (const { t, isCorrect } of entries) {
+    const key = t.toLowerCase();
+    if (!seen.has(key)) {
+      seen.set(key, acc.length);
+      acc.push({ t, isCorrect });
+    } else if (isCorrect) {
+      acc[seen.get(key)] = { t, isCorrect: true };
+    }
+  }
+  const out = acc.map((x) => x.t);
+  const newCorrect = acc.findIndex((x) => x.isCorrect);
+  if (newCorrect < 0 || out.length < 2) return;
+  q.answers = out;
+  q.correct = newCorrect;
+  if (q.optionCount != null) q.optionCount = out.length;
+}
+
 export function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
   const q = {
     question: raw.question,
@@ -3198,6 +3456,7 @@ export function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
     allowedGrades: inferred.allowedGrades,
     inferredDifficultyBand: inferred.difficultyBand,
   };
+  scrubHebrewMcqAnswers(q);
   return q;
 }
 
@@ -3281,6 +3540,64 @@ function mergeTopicPools(gradeKey, levelKey, topic, legacyList) {
   );
   const base = Array.isArray(legacyList) ? [...legacyList] : [];
   return base.concat(fromRich);
+}
+
+/** מאגרי עברית חיים ב־UI — לא `data/hebrew-questions/*` (אין ייבוא בריפו). */
+const HEBREW_LIVE_SOURCE_FILE_LEGACY = "utils/hebrew-question-generator.js";
+const HEBREW_LIVE_SOURCE_FILE_RICH = "utils/hebrew-rich-question-bank.js";
+
+function attachSubtopicParamsForGrade(gradeKey, topicKey, rawPick) {
+  const g = String(gradeKey || "").toLowerCase();
+  if (g === "g1") return attachG1SubtopicParams(topicKey, rawPick);
+  if (g === "g2") return attachG2SubtopicParams(topicKey, rawPick);
+  if (["g3", "g4", "g5", "g6"].includes(g)) {
+    return attachUpperGradeSubtopicParams(gradeKey, topicKey, rawPick);
+  }
+  return {};
+}
+
+/**
+ * מעקב מקור לשאלה חיה (ל־params / דיבוג). מאגר `data/hebrew-questions/*.js` לא נטען ב־generateQuestion.
+ * @param {Record<string, unknown>} rawPick
+ * @param {Record<string, unknown>} randomQ
+ */
+function buildHebrewSourceTrace(rawPick, randomQ, ctx) {
+  const fromRich = Boolean(rawPick && rawPick._fromRich);
+  const sub = ctx.subtopicParams || {};
+  return {
+    runtimeEntry: "utils/hebrew-question-generator.js#generateQuestion",
+    question: String(randomQ?.question ?? ""),
+    gradeKey: ctx.gradeKey,
+    topic: ctx.topic,
+    levelKey: ctx.poolLevelKey,
+    requestedLevelKey: ctx.requestedLevelKey ?? ctx.poolLevelKey,
+    subtopicId: sub.subtopicId != null ? String(sub.subtopicId) : null,
+    patternFamily: randomQ?.patternFamily != null ? String(randomQ.patternFamily) : null,
+    subtype: randomQ?.subtype != null ? String(randomQ.subtype) : null,
+    sourceBank: fromRich ? "HEBREW_RICH_POOL" : "HEBREW_LEGACY_INLINE",
+    sourceFile: fromRich ? HEBREW_LIVE_SOURCE_FILE_RICH : HEBREW_LIVE_SOURCE_FILE_LEGACY,
+    fromRich,
+    dataHebrewQuestionsG1Imported: false,
+    dataHebrewQuestionsG2Imported: false,
+    dataHebrewQuestionsNote:
+      "data/hebrew-questions/g*.js is not imported by the app; grep the repo for 'hebrew-questions' / 'data/hebrew-questions' on JS/TS entrypoints.",
+  };
+}
+
+function logHebrewSourceTraceIfDev(trace) {
+  try {
+    if (
+      typeof console !== "undefined" &&
+      console.info &&
+      typeof process !== "undefined" &&
+      process.env &&
+      process.env.NODE_ENV === "development"
+    ) {
+      console.info("[hebrew][sourceTrace]", trace);
+    }
+  } catch (_e) {
+    /* ignore */
+  }
 }
 
 /** צילום מאגרי legacy לסקריפט אודיט — `scripts/audit-question-banks.mjs` */
@@ -3486,6 +3803,26 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
           selectedTopic,
         });
       }
+      const emptyTrace = {
+        runtimeEntry: "utils/hebrew-question-generator.js#generateQuestion",
+        question:
+          "אין כרגע שאלות זמינות לכיתה ולרמה שנבחרו. נסו נושא אחר או רמת קושי אחרת.",
+        gradeKey,
+        topic: selectedTopic,
+        levelKey,
+        requestedLevelKey: levelKey,
+        subtopicId: null,
+        patternFamily: "no_questions",
+        subtype: null,
+        sourceBank: "EMPTY_POOL_PLACEHOLDER",
+        sourceFile: null,
+        fromRich: false,
+        dataHebrewQuestionsG1Imported: false,
+        dataHebrewQuestionsG2Imported: false,
+        dataHebrewQuestionsNote:
+          "data/hebrew-questions/g*.js is not imported by the app; grep the repo for 'hebrew-questions' / 'data/hebrew-questions' on JS/TS entrypoints.",
+      };
+      logHebrewSourceTraceIfDev(emptyTrace);
       return {
         question:
           "אין כרגע שאלות זמינות לכיתה ולרמה שנבחרו. נסו נושא אחר או רמת קושי אחרת.",
@@ -3509,6 +3846,7 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
           levelKey,
           patternFamily: "no_questions",
           answerMode: "choice",
+          sourceTrace: emptyTrace,
         },
       };
     }
@@ -3549,6 +3887,19 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     const answerMode = resolveAnswerMode(fallbackTopic, randomQ.question);
     const acceptedAnswers = buildAcceptedAnswers(correctAnswer);
     const optionCount = shuffledAnswers.length;
+    const subtopicParams = attachSubtopicParamsForGrade(
+      gradeKey,
+      fallbackTopic,
+      rawPick
+    );
+    const sourceTrace = buildHebrewSourceTrace(rawPick, randomQ, {
+      gradeKey,
+      topic: fallbackTopic,
+      poolLevelKey: fallbackLevelKey,
+      requestedLevelKey: levelKey,
+      subtopicParams,
+    });
+    logHebrewSourceTraceIfDev(sourceTrace);
     return {
       question: randomQ.question,
       questionLabel: "",
@@ -3582,13 +3933,8 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
           ? { gradeFallbackFromTopic: selectedTopic }
           : {}),
         ...(fallbackLevelKey !== levelKey ? { levelRelaxedFrom: levelKey } : {}),
-        ...(String(gradeKey).toLowerCase() === "g1"
-          ? attachG1SubtopicParams(fallbackTopic, rawPick)
-          : String(gradeKey).toLowerCase() === "g2"
-            ? attachG2SubtopicParams(fallbackTopic, rawPick)
-            : ["g3", "g4", "g5", "g6"].includes(String(gradeKey).toLowerCase())
-              ? attachUpperGradeSubtopicParams(gradeKey, fallbackTopic, rawPick)
-              : {}),
+        ...subtopicParams,
+        sourceTrace,
       },
     };
   }
@@ -3620,6 +3966,19 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   const answerMode = resolveAnswerMode(selectedTopic, randomQ.question);
   const acceptedAnswers = buildAcceptedAnswers(correctAnswer);
   const optionCount = shuffledAnswers.length;
+  const subtopicParams = attachSubtopicParamsForGrade(
+    gradeKey,
+    selectedTopic,
+    rawPick
+  );
+  const sourceTrace = buildHebrewSourceTrace(rawPick, randomQ, {
+    gradeKey,
+    topic: selectedTopic,
+    poolLevelKey,
+    requestedLevelKey: levelKey,
+    subtopicParams,
+  });
+  logHebrewSourceTraceIfDev(sourceTrace);
   return {
     question: randomQ.question,
     questionLabel: "",
@@ -3645,17 +4004,13 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
       difficultyBand: randomQ.difficultyBand,
       optionCount,
       answerMode,
+      requestedLevelKey: levelKey,
       ...(randomQ.hebrewLegacyMeta
         ? { hebrewLegacyMeta: randomQ.hebrewLegacyMeta }
         : {}),
       ...(poolLevelKey !== levelKey ? { levelRelaxedFrom: levelKey } : {}),
-      ...(String(gradeKey).toLowerCase() === "g1"
-        ? attachG1SubtopicParams(selectedTopic, rawPick)
-        : String(gradeKey).toLowerCase() === "g2"
-          ? attachG2SubtopicParams(selectedTopic, rawPick)
-          : ["g3", "g4", "g5", "g6"].includes(String(gradeKey).toLowerCase())
-            ? attachUpperGradeSubtopicParams(gradeKey, selectedTopic, rawPick)
-            : {}),
+      ...subtopicParams,
+      sourceTrace,
     },
   };
 }

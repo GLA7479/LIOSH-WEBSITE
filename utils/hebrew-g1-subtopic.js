@@ -50,7 +50,16 @@ export function inferG1SubtopicIdFromStem(stem, topicKey) {
   }
 
   if (topicKey === "grammar") {
-    return "g1.noun_verb_adj_basic";
+    const low = String(stem || "").toLowerCase();
+    if (/חלק הדיבר|איזו מילה היא (הפועל|התואר)|מה חלק הדיבר/.test(low)) return "g1.grammar_pos_roles";
+    if (/איזה משפט לא תקין|לא תקין\?|משפט לא מתאים/.test(low)) return "g1.grammar_wellformed";
+    if (/סדר מילים|סדר המילים/.test(low)) return "g1.grammar_word_order";
+    if (/לא שייכת לקבוצה|לא שייכת/.test(low)) return "g1.grammar_odd_category";
+    if (/סימן|פיסוק|\?|\.|נקודה|שאלה/.test(low)) return "g1.grammar_punctuation";
+    if (/___|מלאו|השלימו את המילה|בחרו מילה שמשלימה/.test(low)) return "g1.grammar_cloze_deixis";
+    if (/מחר|אתמול|עכשיו|ו׳|וגם|מי מתאים לשאלה/.test(low)) return "g1.grammar_connectors_time";
+    if (/ילד\/ילדה|התאמ|נכון לגבי|רבים|יחיד|נקבה|זכר|משפט תקין ל/.test(low)) return "g1.grammar_agreement_light";
+    return "g1.grammar_pos_roles";
   }
 
   if (topicKey === "vocabulary") {

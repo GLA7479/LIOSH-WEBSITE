@@ -48,7 +48,14 @@ export const HEBREW_G1_CONTENT_MAP = {
   },
   grammar: {
     subtopics: [
-      { id: "g1.noun_verb_adj_basic", weight: 10, order: 1, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
+      { id: "g1.grammar_pos_roles", weight: 3, order: 1, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
+      { id: "g1.grammar_wellformed", weight: 4, order: 2, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
+      { id: "g1.grammar_agreement_light", weight: 4, order: 3, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
+      { id: "g1.grammar_cloze_deixis", weight: 2, order: 4, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
+      { id: "g1.grammar_word_order", weight: 2, order: 5, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
+      { id: "g1.grammar_odd_category", weight: 2, order: 6, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
+      { id: "g1.grammar_punctuation", weight: 2, order: 7, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
+      { id: "g1.grammar_connectors_time", weight: 3, order: 8, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
     ],
   },
   vocabulary: {

@@ -22,6 +22,7 @@ import {
   hebrewQuestionFingerprint,
   hebrewNearDuplicateKey,
   hebrewCognitiveTemplateKey,
+  hebrewTaskShapeKey,
 } from "../../utils/hebrew-learning-intel";
 import {
   getHint,
@@ -118,6 +119,8 @@ export default function HebrewMaster() {
   const hebrewPatternFamilyTailRef = useRef([]);
   const hebrewNearDuplicateTailRef = useRef([]);
   const hebrewCognitiveTemplateTailRef = useRef([]);
+  /** כיתה א׳–ב׳: מגביל חזרה על אותה צורת משימה (לא רק patternFamily) */
+  const hebrewTaskShapeTailRef = useRef([]);
   const yearMonthRef = useRef(getCurrentYearMonth());
   /** עדכני ל־handleAnswer (משוב שגוי) כדי להציג תשובה נכונה מנוקדת כשה־map כבר הגיע */
   const niqqudByIdRef = useRef({});
@@ -1008,16 +1011,23 @@ useEffect(() => {
       const recentSamePf = tail.filter((x) => x === pf).length;
       const pfCooldownBlock = pf && recentSamePf >= (earlyHebrewChild ? 2 : 3);
 
+      const taskShapeKey = hebrewTaskShapeKey(question);
+      const taskShapeTail = hebrewTaskShapeTailRef.current;
+      const taskShapeRepeats = taskShapeTail.filter((x) => x === taskShapeKey).length;
+      const taskShapeBlock = earlyHebrewChild && taskShapeRepeats >= 2;
+
       if (
         !localRecentQuestions.has(questionKey) &&
         !pfCooldownBlock &&
         !nearBlock &&
-        !cogBlock
+        !cogBlock &&
+        !taskShapeBlock
       ) {
         localRecentQuestions.add(questionKey);
         hebrewPatternFamilyTailRef.current = [...tail, pf || "gen"].slice(-12);
         hebrewNearDuplicateTailRef.current = [...nearTail, nearKey].slice(-16);
         hebrewCognitiveTemplateTailRef.current = [...cogTail, cogKey].slice(-12);
+        hebrewTaskShapeTailRef.current = [...taskShapeTail, taskShapeKey || "gen"].slice(-10);
         // שמירה רק על 60 שאלות אחרונות
         if (localRecentQuestions.size > 60) {
           const first = Array.from(localRecentQuestions)[0];
@@ -1035,6 +1045,7 @@ useEffect(() => {
       hebrewPatternFamilyTailRef.current = [];
       hebrewNearDuplicateTailRef.current = [];
       hebrewCognitiveTemplateTailRef.current = [];
+      hebrewTaskShapeTailRef.current = [];
     } else {
       setRecentQuestions(localRecentQuestions);
     }
@@ -1111,6 +1122,7 @@ useEffect(() => {
     hebrewPatternFamilyTailRef.current = [];
     hebrewNearDuplicateTailRef.current = [];
     hebrewCognitiveTemplateTailRef.current = [];
+    hebrewTaskShapeTailRef.current = [];
     setGameActive(true);
     setScore(0);
     setStreak(0);
