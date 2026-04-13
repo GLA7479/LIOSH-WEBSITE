@@ -1,8 +1,12 @@
 import {
   G2_FLAGS_DEFAULT,
+  HEBREW_G2_CONTENT_MAP,
   pickG2SubtopicId,
   getG2SubtopicSpec,
 } from "../data/hebrew-g2-content-map";
+
+/** כמו `EARLY_G12_SUBTOPIC_POOL_MIN` ב־g1 — ערך זהה בלי ייבוא מוצלב. */
+const EARLY_G12_SUBTOPIC_POOL_MIN = 18;
 
 /**
  * @param {string} stem
@@ -86,6 +90,36 @@ export function narrowHebrewG2Pool(merged, topicKey, pickedSubtopicId) {
   return match.length > 0 ? match : merged;
 }
 
+export function widenHebrewG2PoolIfSmall(
+  merged,
+  topicKey,
+  pickedSubtopicId,
+  minFloor = EARLY_G12_SUBTOPIC_POOL_MIN
+) {
+  if (!Array.isArray(merged) || merged.length === 0) return merged;
+  const narrowed = narrowHebrewG2Pool(merged, topicKey, pickedSubtopicId);
+  if (narrowed.length >= minFloor || narrowed.length >= merged.length) return narrowed;
+
+  const list = HEBREW_G2_CONTENT_MAP[topicKey]?.subtopics;
+  if (!Array.isArray(list) || list.length <= 1) return merged;
+
+  const sorted = [...list].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const ids = sorted.map((s) => s.id);
+  const pickedIdx = ids.indexOf(pickedSubtopicId);
+  if (pickedIdx < 0) return merged;
+
+  const allow = new Set([pickedSubtopicId]);
+  let pool = merged.filter((row) => allow.has(resolveG2ItemSubtopicId(row, topicKey)));
+
+  for (let offset = 1; pool.length < minFloor && offset < ids.length; offset++) {
+    allow.add(ids[(pickedIdx - offset + ids.length) % ids.length]);
+    allow.add(ids[(pickedIdx + offset) % ids.length]);
+    pool = merged.filter((row) => allow.has(resolveG2ItemSubtopicId(row, topicKey)));
+  }
+
+  return pool.length >= minFloor ? pool : merged;
+}
+
 /**
  * @param {string} gradeKey
  * @param {string} topicKey
@@ -97,8 +131,8 @@ export function withG2SubtopicPreference(gradeKey, topicKey, mergedList) {
     return { merged: mergedList, pickedSubtopicId: null };
   }
   const picked = pickG2SubtopicId(topicKey);
-  const narrowed = narrowHebrewG2Pool(mergedList, topicKey, picked);
-  return { merged: narrowed, pickedSubtopicId: picked };
+  const widened = widenHebrewG2PoolIfSmall(mergedList, topicKey, picked, EARLY_G12_SUBTOPIC_POOL_MIN);
+  return { merged: widened, pickedSubtopicId: picked };
 }
 
 /**

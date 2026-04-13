@@ -26,3 +26,22 @@ export function hebrewNearDuplicateKey(q) {
   const head = stem.split(" ").slice(0, 10).join(" ");
   return `${topic}|${head}`;
 }
+
+/**
+ * מאחד מילים מצוטטות/מודגשות — מפתח לחזרתיות תבניתית (״אותה משימה, מילה אחרת׳).
+ */
+export function hebrewCognitiveTemplateStem(text) {
+  return String(text || "")
+    .replace(/[“”"]/g, "'")
+    .replace(/['׳][^'׳]{1,18}['׳]/g, "'@'")
+    .replace(/׳[^׳]{1,18}׳/g, "׳@׳")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function hebrewCognitiveTemplateKey(q) {
+  if (!q) return "";
+  const topic = q.topic || q.operation || "x";
+  const raw = String(q.question || q.exerciseText || "").trim();
+  return `${topic}|${hebrewCognitiveTemplateStem(raw)}`;
+}

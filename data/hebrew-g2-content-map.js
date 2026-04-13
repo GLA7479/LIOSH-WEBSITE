@@ -29,13 +29,13 @@ export const HEBREW_G2_CONTENT_MAP = {
     subtopics: [
       { id: "g2.detail_main_idea", weight: 10, order: 1, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
       { id: "g2.simple_sequence", weight: 4, order: 2, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
-      { id: "g2.light_inference", weight: 7, order: 3, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
+      { id: "g2.light_inference", weight: 9, order: 3, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
     ],
   },
   writing: {
     subtopics: [
       { id: "g2.sentence_wellformed", weight: 10, order: 1, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
-      { id: "g2.short_paragraph_choice", weight: 5, order: 2, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
+      { id: "g2.short_paragraph_choice", weight: 7, order: 2, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
       { id: "g2.punctuation_choice", weight: 6, order: 3, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
     ],
   },
@@ -48,7 +48,7 @@ export const HEBREW_G2_CONTENT_MAP = {
   },
   vocabulary: {
     subtopics: [
-      { id: "g2.synonyms_basic", weight: 6, order: 1, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
+      { id: "g2.synonyms_basic", weight: 8, order: 1, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
       { id: "g2.context_clue_easy", weight: 8, order: 2, modesAllowed: [...ALL_MODES], flags: { ...G2_FLAGS_DEFAULT } },
     ],
   },

@@ -36,8 +36,8 @@ export const HEBREW_G1_CONTENT_MAP = {
   comprehension: {
     subtopics: [
       { id: "g1.word_meaning_concrete", weight: 10, order: 1, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
-      { id: "g1.one_sentence_who_what", weight: 6, order: 2, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
-      { id: "g1.simple_instruction", weight: 4, order: 3, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
+      { id: "g1.one_sentence_who_what", weight: 7, order: 2, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
+      { id: "g1.simple_instruction", weight: 6, order: 3, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
     ],
   },
   writing: {
@@ -53,7 +53,7 @@ export const HEBREW_G1_CONTENT_MAP = {
   },
   vocabulary: {
     subtopics: [
-      { id: "g1.word_picture", weight: 2, order: 1, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT, audio: "off" } },
+      { id: "g1.word_picture", weight: 6, order: 1, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT, audio: "off" } },
       { id: "g1.word_meaning_concrete", weight: 10, order: 2, modesAllowed: [...ALL_MODES], flags: { ...G1_FLAGS_DEFAULT } },
     ],
   },

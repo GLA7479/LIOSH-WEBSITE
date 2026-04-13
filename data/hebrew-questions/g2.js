@@ -1,4 +1,8 @@
-﻿export const G2_EASY_QUESTIONS = {
+﻿/**
+ * לא מחובר ל־`pages/learning/hebrew-master.js` ולא ל־`utils/hebrew-question-generator.js`.
+ * מאגר ה־MCQ החי הוא ב־`utils/hebrew-question-generator.js` + `utils/hebrew-rich-question-bank.js`.
+ */
+export const G2_EASY_QUESTIONS = {
   reading: [
     { question: "קרא את המשפט: 'הילד קורא ספר בכיתה'", answers: ["הילד קורא ספר בכיתה", "הילדה קוראת ספר בכיתה", "הילדים קוראים ספר בכיתה", "כל התשובות נכונות"], correct: 0 },
     { question: "מה המילה הנכונה: י_דים?", answers: ["ילדים", "ילד", "ילדה", "ילדות"], correct: 0 },

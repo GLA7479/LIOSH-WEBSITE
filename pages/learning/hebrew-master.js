@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -21,6 +21,7 @@ import { generateQuestion } from "../../utils/hebrew-question-generator";
 import {
   hebrewQuestionFingerprint,
   hebrewNearDuplicateKey,
+  hebrewCognitiveTemplateKey,
 } from "../../utils/hebrew-learning-intel";
 import {
   getHint,
@@ -116,11 +117,17 @@ export default function HebrewMaster() {
   /** עוצר לולאות של אותה משפחת תבנית בזו אחר זו */
   const hebrewPatternFamilyTailRef = useRef([]);
   const hebrewNearDuplicateTailRef = useRef([]);
+  const hebrewCognitiveTemplateTailRef = useRef([]);
   const yearMonthRef = useRef(getCurrentYearMonth());
   /** עדכני ל־handleAnswer (משוב שגוי) כדי להציג תשובה נכונה מנוקדת כשה־map כבר הגיע */
   const niqqudByIdRef = useRef({});
 
   const [mounted, setMounted] = useState(false);
+
+  /** לפני ציור ראשון — מונע מצב שבו הדף נשאר על ״טוען...׳ בלי hydration מלא (נראה בבדיקות אוטומטיות ובמקרי קצה). */
+  useLayoutEffect(() => {
+    setMounted(true);
+  }, []);
 
   // NEW: grade & mode
   const [gradeNumber, setGradeNumber] = useState(3); // 1 = כיתה א׳, 2 = ב׳, ... 6 = ו׳
@@ -572,8 +579,6 @@ useEffect(() => {
   }, []);
 
   useEffect(() => {
-    setMounted(true);
-
     // Load best scores for current player
     if (typeof window !== "undefined") {
       try {
@@ -650,7 +655,7 @@ useEffect(() => {
     setDailyChallenge((prev) => {
       if (prev.date !== today) {
         return { date: today, bestScore: 0, questions: 0 };
-    }
+      }
       return prev;
     });
   }, []); // רק פעם אחת בטעינה
@@ -993,6 +998,11 @@ useEffect(() => {
       const earlyHebrewChild = isChildHebrewNiqqudGradeKey(String(grade || "").toLowerCase());
       const nearBlock = nearRepeats >= (earlyHebrewChild ? 1 : 2);
 
+      const cogKey = hebrewCognitiveTemplateKey(question);
+      const cogTail = hebrewCognitiveTemplateTailRef.current;
+      const cogRepeats = cogTail.filter((x) => x === cogKey).length;
+      const cogBlock = earlyHebrewChild && cogRepeats >= 1;
+
       const pf = question.params?.patternFamily || "";
       const tail = hebrewPatternFamilyTailRef.current;
       const recentSamePf = tail.filter((x) => x === pf).length;
@@ -1001,11 +1011,13 @@ useEffect(() => {
       if (
         !localRecentQuestions.has(questionKey) &&
         !pfCooldownBlock &&
-        !nearBlock
+        !nearBlock &&
+        !cogBlock
       ) {
         localRecentQuestions.add(questionKey);
         hebrewPatternFamilyTailRef.current = [...tail, pf || "gen"].slice(-12);
         hebrewNearDuplicateTailRef.current = [...nearTail, nearKey].slice(-16);
+        hebrewCognitiveTemplateTailRef.current = [...cogTail, cogKey].slice(-12);
         // שמירה רק על 60 שאלות אחרונות
         if (localRecentQuestions.size > 60) {
           const first = Array.from(localRecentQuestions)[0];
@@ -1022,6 +1034,7 @@ useEffect(() => {
       setRecentQuestions(new Set());
       hebrewPatternFamilyTailRef.current = [];
       hebrewNearDuplicateTailRef.current = [];
+      hebrewCognitiveTemplateTailRef.current = [];
     } else {
       setRecentQuestions(localRecentQuestions);
     }
@@ -1097,6 +1110,7 @@ useEffect(() => {
     setRecentQuestions(new Set()); // איפוס ההיסטוריה
     hebrewPatternFamilyTailRef.current = [];
     hebrewNearDuplicateTailRef.current = [];
+    hebrewCognitiveTemplateTailRef.current = [];
     setGameActive(true);
     setScore(0);
     setStreak(0);

@@ -1,8 +1,12 @@
 import {
   G1_FLAGS_DEFAULT,
+  HEBREW_G1_CONTENT_MAP,
   pickG1SubtopicId,
   getG1SubtopicSpec,
 } from "../data/hebrew-g1-content-map";
+
+/** כיתה א׳–ב׳ קל: אם צמצום לתת־נושא משאיר בריכה קטנה מדי — מרחיבים לפי סדר תתי־נושאים או חוזרים למלא. */
+export const EARLY_G12_SUBTOPIC_POOL_MIN = 18;
 
 /**
  * היסק תת־נושא לשאלת legacy / עשירה ללא שדה subtopicId (כיתה א׳ בלבד).
@@ -89,6 +93,39 @@ export function narrowHebrewG1Pool(merged, topicKey, pickedSubtopicId) {
 }
 
 /**
+ * מרחיב את הבריכה אם הצמצום לתת־נושא יחיד קטן מדי (מפחית חזרות בסשן ארוך).
+ */
+export function widenHebrewG1PoolIfSmall(
+  merged,
+  topicKey,
+  pickedSubtopicId,
+  minFloor = EARLY_G12_SUBTOPIC_POOL_MIN
+) {
+  if (!Array.isArray(merged) || merged.length === 0) return merged;
+  const narrowed = narrowHebrewG1Pool(merged, topicKey, pickedSubtopicId);
+  if (narrowed.length >= minFloor || narrowed.length >= merged.length) return narrowed;
+
+  const list = HEBREW_G1_CONTENT_MAP[topicKey]?.subtopics;
+  if (!Array.isArray(list) || list.length <= 1) return merged;
+
+  const sorted = [...list].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const ids = sorted.map((s) => s.id);
+  const pickedIdx = ids.indexOf(pickedSubtopicId);
+  if (pickedIdx < 0) return merged;
+
+  const allow = new Set([pickedSubtopicId]);
+  let pool = merged.filter((row) => allow.has(resolveG1ItemSubtopicId(row, topicKey)));
+
+  for (let offset = 1; pool.length < minFloor && offset < ids.length; offset++) {
+    allow.add(ids[(pickedIdx - offset + ids.length) % ids.length]);
+    allow.add(ids[(pickedIdx + offset) % ids.length]);
+    pool = merged.filter((row) => allow.has(resolveG1ItemSubtopicId(row, topicKey)));
+  }
+
+  return pool.length >= minFloor ? pool : merged;
+}
+
+/**
  * @param {string} gradeKey
  * @param {string} topicKey
  * @param {unknown[]} mergedList
@@ -99,8 +136,8 @@ export function withG1SubtopicPreference(gradeKey, topicKey, mergedList) {
     return { merged: mergedList, pickedSubtopicId: null };
   }
   const picked = pickG1SubtopicId(topicKey);
-  const narrowed = narrowHebrewG1Pool(mergedList, topicKey, picked);
-  return { merged: narrowed, pickedSubtopicId: picked };
+  const widened = widenHebrewG1PoolIfSmall(mergedList, topicKey, picked, EARLY_G12_SUBTOPIC_POOL_MIN);
+  return { merged: widened, pickedSubtopicId: picked };
 }
 
 /**

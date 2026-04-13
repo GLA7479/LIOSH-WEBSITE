@@ -1,4 +1,9 @@
-﻿export const G1_EASY_QUESTIONS = {
+﻿/**
+ * לא מחובר ל־`pages/learning/hebrew-master.js` ולא ל־`utils/hebrew-question-generator.js`.
+ * מאגר ה־MCQ החי הוא ב־`utils/hebrew-question-generator.js` + `utils/hebrew-rich-question-bank.js`.
+ * קובץ זה נשאר לתאימות/תיעוד — אל תסיקו ממנו מה רץ במסך בלי לוודא ייבוא בפועל.
+ */
+export const G1_EASY_QUESTIONS = {
   reading: [
     { question: "מה האות הראשונה במילה 'בית'?", answers: ["ב", "ת", "י", "ה"], correct: 0 },
     { question: "מה האות האחרונה במילה 'כלב'?", answers: ["כ", "ל", "ב", "ה"], correct: 2 },
