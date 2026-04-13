@@ -80,6 +80,24 @@ const G1_EASY_QUESTIONS = {
       correct: 0,
       subtopicId: "g1.sound_letter_match",
     },
+    {
+      question: "במילה 'שמש' — איזה צליל (אות) חוזר פעמיים?",
+      answers: ["ש", "מ", "ס", "ה"],
+      correct: 0,
+      subtopicId: "g1.phoneme_awareness",
+    },
+    {
+      question: "קרא את המילה: 'ארנב'",
+      answers: ["ארנב", "ארנבת", "ארני", "רנב"],
+      correct: 0,
+      subtopicId: "g1.simple_words_read",
+    },
+    {
+      question: "קרא את המילה: 'פרח'",
+      answers: ["פרח", "פרחה", "פרחים", "פר"],
+      correct: 0,
+      subtopicId: "g1.simple_words_read",
+    },
   ],
   comprehension: [
     { question: "מה המשמעות של המילה 'בית'?", answers: ["מקום מגורים", "חיה", "צבע", "מספר"], correct: 0 },
@@ -100,6 +118,30 @@ const G1_EASY_QUESTIONS = {
     { question: "מה ההפך של 'חושך'?", answers: ["אור", "חושך", "יום", "לילה"], correct: 0 },
     { question: "מה המשמעות של 'יונה'?", answers: ["ציפור", "חתול", "כלב", "דג"], correct: 0 },
     { question: "מה ההפך של 'ראשון'?", answers: ["אחרון", "שני", "שלישי", "רביעי"], correct: 0 },
+    {
+      question: "מי אוהב לאכול גזר בדרך כלל?",
+      answers: ["ארנב", "ספר", "שולחן", "עץ"],
+      correct: 0,
+      subtopicId: "g1.one_sentence_who_what",
+    },
+    {
+      question: "מה רואים בשמים ביום בהיר?",
+      answers: ["שמש", "ירח מלא", "כוכבים בלבד", "ענן סופה"],
+      correct: 0,
+      subtopicId: "g1.one_sentence_who_what",
+    },
+    {
+      question: "סמנו לפי ההוראה: איזו מילה מתארת מזג חם?",
+      answers: ["שמש", "שלג", "גשם קר", "רוח סערה"],
+      correct: 0,
+      subtopicId: "g1.simple_instruction",
+    },
+    {
+      question: "ענו לפי ההוראה: סמנו את המילה שמתאימה ללילה.",
+      answers: ["ירח", "שמש", "בוקר", "צהריים"],
+      correct: 0,
+      subtopicId: "g1.simple_instruction",
+    },
   ],
   writing: [
     { question: "איך כותבים את המילה 'בית'?", answers: ["בית", "ביתבית", "בת", "בייתט"], correct: 0 },
@@ -176,6 +218,54 @@ const G1_MEDIUM_QUESTIONS = {
     { question: "קרא את המשפט: 'אמא קוראת ספר'", answers: ["אמא קוראת ספר", "אבא קורא ספר", "אח קורא ספר", "כל התשובות נכונות"], correct: 0 },
     { question: "מה המילה הנכונה: י_דה?", answers: ["ילדה", "ילד", "ילדים", "ילדות"], correct: 0 },
     { question: "קרא את המילה: 'מורה'", answers: ["מורה", "מור", "מורהו", "מורהי"], correct: 0 },
+    {
+      question: "במילה 'בובה' — איזה צליל חוזר בתחילת המילה?",
+      answers: ["ב", "ה", "בו", "בה"],
+      correct: 0,
+      subtopicId: "g1.phoneme_awareness",
+    },
+    {
+      question: "במילה 'כלב' — ההברה האחרונה 'לב' היא פתוחה או סגורה?",
+      answers: ["סגורה", "פתוחה", "אין הברה", "לא בטוחים"],
+      correct: 0,
+      subtopicId: "g1.open_close_syllable",
+    },
+    {
+      question: "איזו מילה חורזת עם 'ליל'?",
+      answers: ["חיל", "יום", "בוקר", "ספר"],
+      correct: 0,
+      subtopicId: "g1.rhyme",
+    },
+    {
+      question: "כמה הברות יש במילה 'אבטיח'?",
+      answers: ["3", "2", "1", "4"],
+      correct: 0,
+      subtopicId: "g1.syllables",
+    },
+    {
+      question: "קרא את המילה המנוקדת: 'סֵפֶר'",
+      answers: ["ספר", "ספרה", "סיפור", "ספרי"],
+      correct: 0,
+      subtopicId: "g1.basic_niqqud",
+    },
+    {
+      question: "במילה 'סוס' — באיזה צליל המילה מתחילה?",
+      answers: ["ס", "ו", "סו", "סוס"],
+      correct: 0,
+      subtopicId: "g1.sound_letter_match",
+    },
+    {
+      question: "קרא את המילה: 'חתול'",
+      answers: ["חתול", "חתולה", "חתלתול", "חתל"],
+      correct: 0,
+      subtopicId: "g1.simple_words_read",
+    },
+    {
+      question: "קרא את המילה: 'נעליים'",
+      answers: ["נעליים", "נעל", "נעלים", "נעלי"],
+      correct: 0,
+      subtopicId: "g1.simple_words_read",
+    },
   ],
   comprehension: [
     { question: "מה המשמעות של 'ילד קורא'?", answers: ["ילד קורא ספר", "ילד רץ", "ילד שוחה", "ילד כותב"], correct: 0 },
@@ -184,6 +274,24 @@ const G1_MEDIUM_QUESTIONS = {
     { question: "מה המשמעות של 'שמש זורחת'?", answers: ["השמש זורחת", "השמש שוקעת", "השמש נעלמת", "לילה"], correct: 0 },
     { question: "מה המשמעות של 'ילד משחק'?", answers: ["ילד משחק", "ילד קורא", "ילד כותב", "ילד אוכל"], correct: 0 },
     { question: "סמנו את התשובה הנכונה לפי ההוראה: אם המשפט נכון לחצו על ׳כן׳.", answers: ["כן", "לא", "אולי", "לא יודע"], correct: 0 },
+    {
+      question: "מי שותה מים כשצמא?",
+      answers: ["אנחנו", "השולחן", "הספר", "העיפרון"],
+      correct: 0,
+      subtopicId: "g1.one_sentence_who_what",
+    },
+    {
+      question: "מה קורה לבגד שנשאר בגשם בלי מעיל?",
+      answers: ["נרטב", "נשאר יבש", "נעלם", "נהיה קטן"],
+      correct: 0,
+      subtopicId: "g1.one_sentence_who_what",
+    },
+    {
+      question: "הקפו לפי ההוראה: סמנו את החיה שחיה במים.",
+      answers: ["דג", "חתול", "כלב", "ארנב"],
+      correct: 0,
+      subtopicId: "g1.simple_instruction",
+    },
   ],
   writing: [
     { question: "איך כותבים: 'אני לומד'?", answers: ["אני לומד", "אני לומדת", "אני לומדים", "אני לומדות"], correct: 0 },
@@ -219,6 +327,48 @@ const G1_HARD_QUESTIONS = {
     { question: "מה המילה הנכונה: מ_רה?", answers: ["מורה", "מור", "מורהו", "מורהי"], correct: 0 },
     { question: "קרא את המשפט: 'הכלב רץ בחצר'", answers: ["הכלב רץ בחצר", "הכלב רץו בחצר", "כלבים רץ בחצר", "כל התשובות נכונות"], correct: 0 },
     { question: "קרא את המשפט: 'השמש זורחת בבוקר'", answers: ["השמש זורחת בבוקר", "השמש שוקעת בערב", "לילה", "צהריים"], correct: 0 },
+    {
+      question: "במילה 'אבא' — איזה אות חוזר פעמיים?",
+      answers: ["א", "ב", "אין חזרה", "ב וא"],
+      correct: 0,
+      subtopicId: "g1.phoneme_awareness",
+    },
+    {
+      question: "במילה 'מורה' — ההברה האחרונה היא פתוחה או סגורה?",
+      answers: ["פתוחה", "סגורה", "שתיהן", "אין הברה"],
+      correct: 0,
+      subtopicId: "g1.open_close_syllable",
+    },
+    {
+      question: "איזו מילה חורזת עם 'אם'?",
+      answers: ["גם", "בת", "סוס", "עץ"],
+      correct: 0,
+      subtopicId: "g1.rhyme",
+    },
+    {
+      question: "כמה הברות יש במילה 'שולחן'?",
+      answers: ["2", "1", "3", "4"],
+      correct: 0,
+      subtopicId: "g1.syllables",
+    },
+    {
+      question: "קרא את המילה המנוקדת: 'חַם'",
+      answers: ["חם", "חמה", "חימום", "חומר"],
+      correct: 0,
+      subtopicId: "g1.basic_niqqud",
+    },
+    {
+      question: "במילה 'צפרדע' — באיזה צליל המילה מתחילה?",
+      answers: ["צ", "פ", "צפ", "דע"],
+      correct: 0,
+      subtopicId: "g1.sound_letter_match",
+    },
+    {
+      question: "קרא את המילה: 'קרקע'",
+      answers: ["קרקע", "קרקעת", "קרא", "רקע"],
+      correct: 0,
+      subtopicId: "g1.simple_words_read",
+    },
   ],
   comprehension: [
     { question: "מה המשמעות של 'ילד קורא ספר'?", answers: ["ילד קורא ספר", "ילד כותב ספר", "ילד מצייר ספר", "ילד רואה ספר"], correct: 0 },
@@ -226,6 +376,24 @@ const G1_HARD_QUESTIONS = {
     { question: "מה המשמעות של 'ילדים משחקים בחצר'?", answers: ["ילדים משחקים בחצר", "ילדים קוראים בחצר", "ילדים כותבים בחצר", "ילדים אוכלים בחצר"], correct: 0 },
     { question: "מה המשמעות של 'הכלב רץ'?", answers: ["הכלב רץ", "הכלב ישן", "הכלב אוכל", "הכלב שוחה"], correct: 0 },
     { question: "מה המשמעות של 'אמא קוראת ספר לילד'?", answers: ["אמא קוראת ספר לילד", "אמא כותבת ספר לילד", "אמא מציירת ספר לילד", "אמא שרה לילד"], correct: 0 },
+    {
+      question: "איפה אפשר לקרוא ספר בשקט?",
+      answers: ["בספרייה", "במגרש כדורגל", "במטבח בזמן בישול", "במקלחת"],
+      correct: 0,
+      subtopicId: "g1.one_sentence_who_what",
+    },
+    {
+      question: "למה חשוב לשתות מים אחרי ריצה?",
+      answers: ["כדי לא להתייבש", "כדי לצבוע", "כדי לישון", "כדי לשבור את הספר"],
+      correct: 0,
+      subtopicId: "g1.one_sentence_who_what",
+    },
+    {
+      question: "עקבו אחרי ההוראה: סמנו את המילה שמתארת משהו קר.",
+      answers: ["קרח", "שמש", "אש", "חול"],
+      correct: 0,
+      subtopicId: "g1.simple_instruction",
+    },
   ],
   writing: [
     { question: "איזה משפט נכון?", answers: ["אני כותב", "אני כותבות", "אני כותבו", "אני כותבה"], correct: 0 },
@@ -271,6 +439,24 @@ const G2_EASY_QUESTIONS = {
       correct: 0,
       subtopicId: "g2.simple_punctuation_read",
     },
+    {
+      question: "קרא את המילה: 'מחברת'",
+      answers: ["מחברת", "מחבת", "מברת", "מכתבת"],
+      correct: 0,
+      subtopicId: "g2.fluent_words",
+    },
+    {
+      question: "קרא את המילה: 'משחק'",
+      answers: ["משחק", "משחקים", "משיכה", "שחק"],
+      correct: 0,
+      subtopicId: "g2.fluent_words",
+    },
+    {
+      question: "קרא את המשפט: 'הילדות שרות שיר קצר'",
+      answers: ["הילדות שרות שיר קצר", "הילדות שרים שיר קצר", "הילד שרה שיר קצר", "כל התשובות נכונות"],
+      correct: 0,
+      subtopicId: "g2.short_sentence",
+    },
   ],
   comprehension: [
     { question: "מה המשמעות של 'ילד קורא ספר בכיתה'?", answers: ["ילד קורא ספר בכיתה", "ילד כותב בכיתה", "ילד משחק בכיתה", "ילד אוכל בכיתה"], correct: 0 },
@@ -281,6 +467,12 @@ const G2_EASY_QUESTIONS = {
     {
       question: "מה יבוא קודם לפי הסדר: ׳בוקר׳ ואז ׳ערב׳?",
       answers: ["בוקר קודם", "ערב קודם", "שניהם יחד", "אי אפשר לדעת"],
+      correct: 0,
+      subtopicId: "g2.simple_sequence",
+    },
+    {
+      question: "לפי הסדר: ׳קודם שוטפים ידיים ואז יושבים לאכול׳ — מה קורה ראשון?",
+      answers: ["שוטפים ידיים", "יושבים לאכול", "אוכלים ואז שוטפים", "לא כתוב"],
       correct: 0,
       subtopicId: "g2.simple_sequence",
     },
@@ -319,6 +511,12 @@ const G2_EASY_QUESTIONS = {
       subtopicId: "g2.simple_tense",
     },
     { question: "מה חלק הדיבר של המילה 'כיתה'?", answers: ["שם עצם", "פועל", "תואר", "מספר"], correct: 0 },
+    {
+      question: "במשפט ׳עכשיו אני כותב במחברת׳ — באיזה זמן הפועל ׳כותב׳?",
+      answers: ["הווה", "עבר", "עתיד", "לא ידוע"],
+      correct: 0,
+      subtopicId: "g2.simple_tense",
+    },
   ],
   vocabulary: [
     { question: "מה המשמעות של המילה 'ספרייה'?", answers: ["מקום שיש בו ספרים", "ספר אחד", "כלי כתיבה", "מזון"], correct: 0 },
@@ -334,6 +532,12 @@ const G2_EASY_QUESTIONS = {
     {
       question: "בחרו מילה נרדפת ל׳יפה׳:",
       answers: ["נאה", "גדול", "ארוך", "כבד"],
+      correct: 0,
+      subtopicId: "g2.synonyms_basic",
+    },
+    {
+      question: "בחרו מילה נרדפת ל׳שמח׳ (מילה בסגנון דומה):",
+      answers: ["עליז", "עצוב", "עייף", "כועס"],
       correct: 0,
       subtopicId: "g2.synonyms_basic",
     },
@@ -358,6 +562,18 @@ const G2_MEDIUM_QUESTIONS = {
       correct: 0,
       subtopicId: "g2.simple_punctuation_read",
     },
+    {
+      question: "קרא את המילה: 'תלמידים'",
+      answers: ["תלמידים", "תלמיד", "תלמידות", "תלמידין"],
+      correct: 0,
+      subtopicId: "g2.fluent_words",
+    },
+    {
+      question: "קרא את המשפט: 'אחר הצהריים אנחנו קוראים בכיתה'",
+      answers: ["אחר הצהריים אנחנו קוראים בכיתה", "אחר הצהריים אני קוראים בכיתה", "אני קורא בכיתה אחר הצהריים", "כל התשובות נכונות"],
+      correct: 0,
+      subtopicId: "g2.short_sentence",
+    },
   ],
   comprehension: [
     { question: "מה המשמעות של 'ילדים קוראים ספרים בכיתה'?", answers: ["ילדים קוראים ספרים בכיתה", "ילדים כותבים בכיתה", "ילדים משחקים בכיתה", "ילדים אוכלים בכיתה"], correct: 0 },
@@ -366,6 +582,12 @@ const G2_MEDIUM_QUESTIONS = {
     {
       question: "לפי הסדר: ׳קודם נכנסים לאולם ואז יושבים׳ — מה קורה ראשון?",
       answers: ["נכנסים לאולם", "יושבים", "שניהם יחד", "לא כתוב"],
+      correct: 0,
+      subtopicId: "g2.simple_sequence",
+    },
+    {
+      question: "לפי הסדר: ׳קודם פותחים ספר ואז קוראים את השורה הראשונה׳ — מה קורה אחרי הפתיחה?",
+      answers: ["קוראים את השורה הראשונה", "פותחים ספר", "סוגרים ספר", "לא כתוב"],
       correct: 0,
       subtopicId: "g2.simple_sequence",
     },
@@ -381,6 +603,17 @@ const G2_MEDIUM_QUESTIONS = {
         "מורה",
         "כיתה",
         "ספר",
+      ],
+      correct: 0,
+      subtopicId: "g2.short_paragraph_choice",
+    },
+    {
+      question: "בחרו פסקה קצרה שמתאימה לנושא ׳טיול בשביל׳:",
+      answers: [
+        "הלכנו לאט. עצרנו לשתות מים. חזרנו שמחים.",
+        "שביל",
+        "טיול",
+        "מים",
       ],
       correct: 0,
       subtopicId: "g2.short_paragraph_choice",
@@ -401,10 +634,28 @@ const G2_MEDIUM_QUESTIONS = {
       correct: 0,
       subtopicId: "g2.simple_tense",
     },
+    {
+      question: "במשפט ׳בשבוע הבא נבקר במוזיאון׳ — באיזה זמן הפועל ׳נבקר׳?",
+      answers: ["עתיד", "עבר", "הווה", "לא ידוע"],
+      correct: 0,
+      subtopicId: "g2.simple_tense",
+    },
   ],
   vocabulary: [
     { question: "מה המשמעות של המילה 'מורה'?", answers: ["מורה", "תלמיד", "ספר", "כיתה"], correct: 0 },
     { question: "מה המשמעות של המילה 'חצר'?", answers: ["חצר", "כיתה", "בית", "חדר"], correct: 0 },
+    {
+      question: "בחרו מילה נרדפת ל׳קטן׳:",
+      answers: ["זעיר", "גדול", "ארוך", "כבד"],
+      correct: 0,
+      subtopicId: "g2.synonyms_basic",
+    },
+    {
+      question: "בחרו מילה נרדפת ל׳רעש׳:",
+      answers: ["קול חזק", "שקט", "שינה", "אוכל"],
+      correct: 0,
+      subtopicId: "g2.synonyms_basic",
+    },
   ],
   speaking: [
     { question: "בחרו ניסוח נכון לבקשת עזרה מילולית:", answers: ["אני צריך עזרה", "אני צריך ספר", "אני צריך כלב", "אני צריך בית"], correct: 0 },
@@ -422,6 +673,24 @@ const G2_HARD_QUESTIONS = {
       correct: 0,
       subtopicId: "g2.simple_punctuation_read",
     },
+    {
+      question: "קרא את המילה: 'הכנות'",
+      answers: ["הכנות", "הכנה", "כנות", "הכנת"],
+      correct: 0,
+      subtopicId: "g2.fluent_words",
+    },
+    {
+      question: "קרא את המשפט: 'בערב המורה סוגרת את הכיתה בזהירות'",
+      answers: ["בערב המורה סוגרת את הכיתה בזהירות", "בערב המורה סוגר את הכיתה בזהירות", "בערב המורה סוגרים את הכיתה בזהירות", "כל התשובות נכונות"],
+      correct: 0,
+      subtopicId: "g2.short_sentence",
+    },
+    {
+      question: "קרא את המשפט: 'הילדים מכינים מצגת קצרה על הטבע'",
+      answers: ["הילדים מכינים מצגת קצרה על הטבע", "הילד מכין מצגת קצרה על הטבע", "הילדה מכינים מצגת קצרה על הטבע", "כל התשובות נכונות"],
+      correct: 0,
+      subtopicId: "g2.short_sentence",
+    },
   ],
   comprehension: [
     { question: "מה המשמעות של 'ילדים קוראים ספרים ומכינים שיעורי בית'?", answers: ["ילדים קוראים ספרים ומכינים שיעורי בית", "ילדים משחקים", "ילדים אוכלים", "ילדים ישנים"], correct: 0 },
@@ -429,6 +698,12 @@ const G2_HARD_QUESTIONS = {
     {
       question: "לפי הסדר: ׳קודם אוכלים ארוחת בוקר ואז יוצאים לדרך׳ — מה קורה אחרי הארוחה?",
       answers: ["יוצאים לדרך", "אוכלים ארוחת בוקר", "שניהם יחד", "לא כתוב"],
+      correct: 0,
+      subtopicId: "g2.simple_sequence",
+    },
+    {
+      question: "לפי הסדר: ׳קודם כותבים טיוטה ואז מתקנים שגיאות׳ — מה עושים אחרי הטיוטה?",
+      answers: ["מתקנים שגיאות", "כותבים טיוטה", "קוראים בלבד", "לא כתוב"],
       correct: 0,
       subtopicId: "g2.simple_sequence",
     },
@@ -442,6 +717,17 @@ const G2_HARD_QUESTIONS = {
         "קבוצה",
         "עבודה",
         "מורה",
+      ],
+      correct: 0,
+      subtopicId: "g2.short_paragraph_choice",
+    },
+    {
+      question: "בחרו פסקה קצרה שמתאימה לנושא ׳יום חורף בבית הספר׳:",
+      answers: [
+        "ירד גשם. לבשנו מעילים. למדנו בשקט.",
+        "חורף",
+        "גשם",
+        "מעיל",
       ],
       correct: 0,
       subtopicId: "g2.short_paragraph_choice",
@@ -461,12 +747,24 @@ const G2_HARD_QUESTIONS = {
       correct: 0,
       subtopicId: "g2.simple_tense",
     },
+    {
+      question: "במשפט ׳היום אנחנו לומדים שיעור חדש׳ — באיזה זמן הפועל ׳לומדים׳?",
+      answers: ["הווה", "עבר", "עתיד", "לא ידוע"],
+      correct: 0,
+      subtopicId: "g2.simple_tense",
+    },
   ],
   vocabulary: [
     { question: "מה המשמעות של המילה 'טבע'?", answers: ["טבע", "בית", "כיתה", "ספר"], correct: 0 },
     {
       question: "בחרו מילה נרדפת ל׳חכם׳:",
       answers: ["נבון", "איטי", "קטן", "עצוב"],
+      correct: 0,
+      subtopicId: "g2.synonyms_basic",
+    },
+    {
+      question: "בחרו מילה נרדפת ל׳עצוב׳ (מילה בסגנון דומה):",
+      answers: ["מדוכא", "שמח", "מהיר", "גבוה"],
       correct: 0,
       subtopicId: "g2.synonyms_basic",
     },
