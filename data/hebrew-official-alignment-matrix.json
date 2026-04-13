@@ -5,12 +5,36 @@
     "official_objective": "זיהוי והבחנה בין צלילים חוזרים ובין יחידות צליליות במילים מוכרות (מודעות פונולוגית בסיסית).",
     "mapped_subtopic_id": "g1.phoneme_awareness",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["phoneme_match", "segment_blend_orally_or_visually", "minimal_pair_audio_or_visual"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "phoneme_match",
+      "segment_blend_orally_or_visually",
+      "minimal_pair_audio_or_visual"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי לפי taxonomy ב־data/hebrew-g1-content-map.js; runtime: שאלות חיות רק מ־utils/hebrew-question-generator.js + utils/hebrew-rich-question-bank.js; כיתה א׳–ב׳: כל התשובות במסך הן בחירה (resolveAnswerMode מחזיר choice ל־g1–g2)."
+    "notes": "official_objective = ניסוח עבודה פנימי לפי taxonomy ב־data/hebrew-g1-content-map.js; runtime: שאלות חיות מ־utils/hebrew-question-generator.js + utils/hebrew-rich-question-bank.js; כיתה א׳–ב׳: ברירת מחדל MCQ, ו־typing מבוקר רק בפריטים עם preferredAnswerMode בתתי־נושא מאושר (Layer 3).",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -18,12 +42,36 @@
     "official_objective": "הבחנה בין הברה פתוחה להברה סגורה במילים מוכרות.",
     "mapped_subtopic_id": "g1.open_close_syllable",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["syllable_sort", "decode_with_syllable_scaffold", "oral_syllable_clap_or_tap"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "syllable_sort",
+      "decode_with_syllable_scaffold",
+      "oral_syllable_clap_or_tap"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; אין מסמך משרד החינוך מחובר ל־runtime."
+    "notes": "official_objective = ניסוח עבודה פנימי; אין מסמך משרד החינוך מחובר ל־runtime.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -31,12 +79,36 @@
     "official_objective": "זיהוי מילים חורזות במסגרת אוצר מילים מוכר.",
     "mapped_subtopic_id": "g1.rhyme",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["rhyme_match", "odd_one_out_rhyme", "generate_rhyme_family_orally_or_in_writing"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "rhyme_match",
+      "odd_one_out_rhyme",
+      "generate_rhyme_family_orally_or_in_writing"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -44,12 +116,36 @@
     "official_objective": "ספירת הברות במילים מוכרות.",
     "mapped_subtopic_id": "g1.syllables",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["syllable_count_interactive", "segment_to_syllables", "build_word_from_syllables"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "syllable_count_interactive",
+      "segment_to_syllables",
+      "build_word_from_syllables"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -57,12 +153,36 @@
     "official_objective": "זיהוי אותיות (ראשונה/אמצעית/אחרונה) והשלמת אות חסרה במילים מוכרות.",
     "mapped_subtopic_id": "g1.letters",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["letter_trace_or_copy", "constrained_fill_one_letter", "letter_sound_match"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "letter_trace_or_copy",
+      "constrained_fill_one_letter",
+      "letter_sound_match"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; חלק מהגזעים מפעילים typing ב־g3+ אבל לא בא׳–ב׳."
+    "notes": "official_objective = ניסוח עבודה פנימי; חלק מהגזעים מפעילים typing ב־g3+ אבל לא בא׳–ב׳.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -70,12 +190,36 @@
     "official_objective": "זיהוי אות סופית ושימוש נכון באותיות סופיות במילים מוכרות.",
     "mapped_subtopic_id": "g1.final_letters",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["final_letter_discrimination", "write_word_with_final_form", "dictation_minimal"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "final_letter_discrimination",
+      "write_word_with_final_form",
+      "dictation_minimal"
+    ],
     "live_source": "both",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; live_source כולל פריטים מ־HEBREW_RICH_POOL (מסונן לפי grade/level/topic)."
+    "notes": "official_objective = ניסוח עבודה פנימי; live_source כולל פריטים מ־HEBREW_RICH_POOL (מסונן לפי grade/level/topic).",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -83,12 +227,36 @@
     "official_objective": "קריאת מילים מנוקדות בסיסיות והתאמה למילה ללא ניקוד.",
     "mapped_subtopic_id": "g1.basic_niqqud",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["decode_graded_niqqud", "match_niqqud_to_meaning", "minimal_typing_after_decode"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "decode_graded_niqqud",
+      "match_niqqud_to_meaning",
+      "minimal_typing_after_decode"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; יש תשתית ניקוד בצד הלקוח (nakdan) אך זה לא משנה את סוג המשימה בא׳–ב׳ כרגע."
+    "notes": "official_objective = ניסוח עבודה פנימי; יש תשתית ניקוד בצד הלקוח (nakdan) אך זה לא משנה את סוג המשימה בא׳–ב׳ כרגע.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -96,12 +264,36 @@
     "official_objective": "התאמת צליל פותח/ראשון לאות המתאימה במילים מוכרות.",
     "mapped_subtopic_id": "g1.sound_letter_match",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["sound_letter_sorting", "onset_rime_build", "audio_supported_match"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "sound_letter_sorting",
+      "onset_rime_build",
+      "audio_supported_match"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -109,12 +301,36 @@
     "official_objective": "פענוח מילים תדירות ומוכרות (קריאת מילה בודדת).",
     "mapped_subtopic_id": "g1.simple_words_read",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["decode_ladder", "timed_fluency_read", "minimal_copy_or_typing"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "decode_ladder",
+      "timed_fluency_read",
+      "minimal_copy_or_typing"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; כיסוי כמותי יחסית גבוה אך עדיין MCQ בלבד בא׳–ב׳."
+    "notes": "official_objective = ניסוח עבודה פנימי; כיסוי כמותי יחסית גבוה אך עדיין MCQ בלבד בא׳–ב׳.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -122,12 +338,36 @@
     "official_objective": "הבנת משמעות מילים קונקרטיות מתוך משפט או הקשר קצר.",
     "mapped_subtopic_id": "g1.word_meaning_concrete",
     "runtime_topic": "comprehension",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["picture_word_match", "context_cloze", "short_oral_paraphrase"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "picture_word_match",
+      "context_cloze",
+      "short_oral_paraphrase"
+    ],
     "live_source": "both",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; comprehension נשאר choice גם בכיתות גבוהות."
+    "notes": "official_objective = ניסוח עבודה פנימי; comprehension נשאר choice גם בכיתות גבוהות.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -135,12 +375,36 @@
     "official_objective": "מענה על שאלות מי/מה/איפה ודומיהן מתוך משפט אחד.",
     "mapped_subtopic_id": "g1.one_sentence_who_what",
     "runtime_topic": "comprehension",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["visual_scene_qa", "two_sentence_bridge", "guided_retrieval"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "visual_scene_qa",
+      "two_sentence_bridge",
+      "guided_retrieval"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -148,12 +412,36 @@
     "official_objective": "הבנה וביצוע של הוראה פשוטה (מילולית) ברמת משפט אחד.",
     "mapped_subtopic_id": "g1.simple_instruction",
     "runtime_topic": "comprehension",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["perform_instruction", "sequence_two_steps", "match_instruction_to_image"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "perform_instruction",
+      "sequence_two_steps",
+      "match_instruction_to_image"
+    ],
     "live_source": "legacy",
-    "coverage_status": "weak",
+    "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; פדגוגית נדרשת משימת ביצוע/סדר — כרגע רק MCQ."
+    "notes": "יעד מסונכרן לתוכנית העברית (א–ו); הוראות קצרות והתאמה לטקסט — כיסוי בקל ובינוני עם תת־נושא מפורש.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -161,12 +449,37 @@
     "official_objective": "העתקת מילים מוכרות בכתב (מעבר מזיהוי לכתיבה תהליכית).",
     "mapped_subtopic_id": "g1.copy_word",
     "runtime_topic": "writing",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["trace_copy", "constrained_typing_copy", "dictation_single_word"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only",
+      "constrained_typing_single_word_l3"
+    ],
+    "required_task_types_pedagogically": [
+      "trace_copy",
+      "constrained_typing_copy",
+      "dictation_single_word"
+    ],
     "live_source": "legacy",
-    "coverage_status": "misleading_due_to_fallback",
+    "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; ב־runtime_topic=writing בא׳–ב׳ המסך נשאר MCQ (resolveAnswerMode מחזיר choice ל־g1–g2) — זה pseudo-writing."
+    "notes": "יעד מסונכרן לתוכנית העברית (א–ו); כיתה א׳–ב׳: בנוסף לבחירת איות/צורה, יש subset הקלדת מילה בודדת (Layer 3, תת־נושא מאושר) — לא העתקה ארוכה.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -174,12 +487,37 @@
     "official_objective": "בחירת איות נכון ובחירת משפט תקין תחבירית ברמת מילה/משפט קצר.",
     "mapped_subtopic_id": "g1.spell_word_choice",
     "runtime_topic": "writing",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["constrained_typing_spelling", "dictation_choice_then_write", "sentence_build"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only",
+      "constrained_typing_single_word_l3"
+    ],
+    "required_task_types_pedagogically": [
+      "constrained_typing_spelling",
+      "dictation_choice_then_write",
+      "sentence_build"
+    ],
     "live_source": "both",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; עדיין MCQ בלבד בא׳–ב׳ למרות runtime_topic=writing."
+    "notes": "official_objective = ניסוח עבודה פנימי; בא׳–ב׳: subset פריטים עם הקלדה מילה אחת (Layer 3) + שאר הפריטים MCQ.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -187,12 +525,36 @@
     "official_objective": "זיהוי שם עצם / פועל / תואר במשפטים פשוטים.",
     "mapped_subtopic_id": "g1.grammar_pos_roles",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["cloze_in_context", "underline_in_text", "minimal_correction"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "cloze_in_context",
+      "underline_in_text",
+      "minimal_correction"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "medium",
-    "notes": "official_objective = ניסוח עבודה פנימי; narrowHebrewG1Pool עלול להחזיר merged מלא כשאין התאמה לתת־נושא שנבחר — סיכון masking ברמת subtopic; בדיקה סימולטיבית: narrowFallbackRate גבוה ב־grammar/rמה medium."
+    "notes": "official_objective = ניסוח עבודה פנימי; narrowHebrewG1Pool עלול להחזיר merged מלא כשאין התאמה לתת־נושא שנבחר — סיכון masking ברמת subtopic; בדיקה סימולטיבית: narrowFallbackRate גבוה ב־grammar/rמה medium.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -200,12 +562,36 @@
     "official_objective": "זיהוי משפט לא תקין מול משפט תקין ברמת כיתה א׳.",
     "mapped_subtopic_id": "g1.grammar_wellformed",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["repair_sentence", "reorder_words", "explain_why_wrong_orally_or_short_text"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "repair_sentence",
+      "reorder_words",
+      "explain_why_wrong_orally_or_short_text"
+    ],
     "live_source": "legacy",
-    "coverage_status": "weak",
-    "fallback_masking_risk": "medium",
-    "notes": "official_objective = ניסוח עבודה פנימי; כיסוי כמותי נמוך יחסית; חסרים פריטים ברמת medium לפי ספירה runtime."
+    "coverage_status": "partial",
+    "fallback_masking_risk": "low",
+    "notes": "official_objective = ניסוח עבודה פנימי; הורחב מאגר קשה (grammar) בפריטי משפט לא תקין/תקין — נדרש עדיין מעקב medium.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -213,12 +599,36 @@
     "official_objective": "בחירת ניסוח תקין בהתאמה קלה בין נושא לפועל ובין מין/מספר בסיסיים.",
     "mapped_subtopic_id": "g1.grammar_agreement_light",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["cloze_agreement", "transform_minimal", "error_correction"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "cloze_agreement",
+      "transform_minimal",
+      "error_correction"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "medium",
-    "notes": "official_objective = ניסוח עבודה פנימי; חסרים פריטים ברמת medium לפי ספירה runtime — סיכון masking."
+    "notes": "official_objective = ניסוח עבודה פנימי; חסרים פריטים ברמת medium לפי ספירה runtime — סיכון masking.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -226,12 +636,36 @@
     "official_objective": "השלמת מילה מתאימה במשפט פשוט לפי הקשר (דהיקסיס/תואר מצב בסיסי).",
     "mapped_subtopic_id": "g1.grammar_cloze_deixis",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["constrained_fill", "two_option_reasoning", "cloze_bank_graded"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "constrained_fill",
+      "two_option_reasoning",
+      "cloze_bank_graded"
+    ],
     "live_source": "legacy",
-    "coverage_status": "weak",
-    "fallback_masking_risk": "high",
-    "notes": "official_objective = ניסוח עבודה פנימי; כיסוי כמותי נמוך מאוד; סיכון גבוה ל־narrow fallback בתוך grammar."
+    "coverage_status": "partial",
+    "fallback_masking_risk": "medium",
+    "notes": "יעד מסונכרן לתוכנית העברית (א–ו); ב־runtime יש פריטי השלמה הקשרית בקל/בינוני/קשה — בריכה מספקת; עדיין MCQ בלבד בא׳–ב׳.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -239,12 +673,35 @@
     "official_objective": "זיהוי סדר מילים תקין במשפט פשוט.",
     "mapped_subtopic_id": "g1.grammar_word_order",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["reorder_tokens", "scaffold_then_write"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "reorder_tokens",
+      "scaffold_then_write"
+    ],
     "live_source": "legacy",
-    "coverage_status": "weak",
-    "fallback_masking_risk": "high",
-    "notes": "official_objective = ניסוח עבודה פנימי; כיסוי כמותי נמוך מאוד."
+    "coverage_status": "partial",
+    "fallback_masking_risk": "medium",
+    "notes": "יעד מסונכרן לתוכנית העברית (א–ו); ב־runtime יש סדר מילים בקל ובינוני ובקשה — בריכה מספקת.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -252,12 +709,35 @@
     "official_objective": "זיהוי מילה שלא שייכת לקבוצה סמנטית פשוטה.",
     "mapped_subtopic_id": "g1.grammar_odd_category",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["sort_to_categories", "justify_choice_short"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "sort_to_categories",
+      "justify_choice_short"
+    ],
     "live_source": "legacy",
-    "coverage_status": "weak",
-    "fallback_masking_risk": "high",
-    "notes": "official_objective = ניסוח עבודה פנימי; כיסוי כמותי נמוך מאוד."
+    "coverage_status": "partial",
+    "fallback_masking_risk": "medium",
+    "notes": "יעד מסונכרן לתוכנית העברית (א–ו); ב־runtime יש ׳לא שייך לקבוצה׳ בקל ובינוני ובקשה.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -265,12 +745,35 @@
     "official_objective": "זיהוי סימן פיסוק מתאים בסוף משפט (נקודה/סימן שאלה וכו׳).",
     "mapped_subtopic_id": "g1.grammar_punctuation",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["punctuation_insert_or_edit", "read_aloud_intonation_choice"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "punctuation_insert_or_edit",
+      "read_aloud_intonation_choice"
+    ],
     "live_source": "both",
     "coverage_status": "partial",
     "fallback_masking_risk": "medium",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -278,12 +781,36 @@
     "official_objective": "זיהוי מילות זמן ומחברים פשוטים והתאמתם למשפט.",
     "mapped_subtopic_id": "g1.grammar_connectors_time",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["timeline_order", "cloze_connectors", "short_rewrite_with_connector"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "timeline_order",
+      "cloze_connectors",
+      "short_rewrite_with_connector"
+    ],
     "live_source": "legacy",
-    "coverage_status": "weak",
-    "fallback_masking_risk": "high",
-    "notes": "official_objective = ניסוח עבודה פנימי; חסרים פריטים ברמת medium לפי ספירה runtime."
+    "coverage_status": "partial",
+    "fallback_masking_risk": "medium",
+    "notes": "יעד מסונכרן לתוכנית העברית (א–ו); ב־runtime יש זמן/מחברים בקל ובינוני ובקשה כולל רמת medium מורחבת.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -291,12 +818,36 @@
     "official_objective": "קישור בין מילה קונקרטית לייצוג חזותי (תמונה/סצנה).",
     "mapped_subtopic_id": "g1.word_picture",
     "runtime_topic": "vocabulary",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["image_word_match", "label_image", "sort_by_category_visual"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "image_word_match",
+      "label_image",
+      "sort_by_category_visual"
+    ],
     "live_source": "legacy",
-    "coverage_status": "misleading_due_to_fallback",
+    "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; שם התת־נושא מרמז על תמונה אך runtime מספק רק MCQ טקסטואלי."
+    "notes": "שם התת־נושא היסטורית מרמז על תמונה; בפועל משימות ״תמונה מילולית״ בטקסט (MCQ) — מסומן במטריצה כחוזה מוצר בא׳–ב׳ ללא אודיו.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -304,12 +855,36 @@
     "official_objective": "הרחבת אוצר מילים קונקרטי והבנת משמעות בהקשר קצר.",
     "mapped_subtopic_id": "g1.word_meaning_concrete",
     "runtime_topic": "vocabulary",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["context_cloze", "semantic_field_sort", "use_word_in_new_sentence_typed"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "context_cloze",
+      "semantic_field_sort",
+      "use_word_in_new_sentence_typed"
+    ],
     "live_source": "both",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; אותו subtopic_id קיים גם ב־comprehension — שורה נפרדת שם."
+    "notes": "official_objective = ניסוח עבודה פנימי; אותו subtopic_id קיים גם ב־comprehension — שורה נפרדת שם.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g1",
@@ -317,12 +892,36 @@
     "official_objective": "בחירת ניסוח מתאים במצב חברתי פשוט (נימוס, שגרה).",
     "mapped_subtopic_id": "g1.phrase_appropriateness",
     "runtime_topic": "speaking",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["dialogue_completion", "role_play_prompt_or_audio_response", "short_oral_production"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "dialogue_completion",
+      "role_play_prompt_or_audio_response",
+      "short_oral_production"
+    ],
     "live_source": "both",
-    "coverage_status": "misleading_due_to_fallback",
+    "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי; runtime_topic=speaking אך בא׳–ב׳ זה MCQ בלבד — pseudo-speaking."
+    "notes": "יעד מסונכרן לתוכנית העברית (א–ו); דיבור בא׳–ב׳ הוא בחירת ניסוח מצבית (MCQ) עם authenticity_pattern במקומות מובילים — לא הקלטה.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -330,12 +929,36 @@
     "official_objective": "קריאת מילים מוכרות בשטף ובדיוק (מעבר מפענוח לקריאה שוטפת יותר).",
     "mapped_subtopic_id": "g2.fluent_words",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["word_ladder_fluency", "timed_read_choice", "minimal_typing_read"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "word_ladder_fluency",
+      "timed_read_choice",
+      "minimal_typing_read"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי לפי taxonomy ב־data/hebrew-g2-content-map.js."
+    "notes": "official_objective = ניסוח עבודה פנימי לפי taxonomy ב־data/hebrew-g2-content-map.js.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -343,12 +966,36 @@
     "official_objective": "קריאת משפטים קצרים והבנת משמעות בסיסית.",
     "mapped_subtopic_id": "g2.short_sentence",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["read_then_answer_wh", "match_sentence_to_picture", "oral_read_model"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "read_then_answer_wh",
+      "match_sentence_to_picture",
+      "oral_read_model"
+    ],
     "live_source": "both",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -356,12 +1003,35 @@
     "official_objective": "זיהוי סימני פיסוק בסיסיים בהקשר של משפטים קצרים בקריאה.",
     "mapped_subtopic_id": "g2.simple_punctuation_read",
     "runtime_topic": "reading",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["punctuation_in_context_read", "edit_then_reread"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "punctuation_in_context_read",
+      "edit_then_reread"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -369,12 +1039,36 @@
     "official_objective": "זיהוי פרטים מפורשים ורעיון מרכזי בטקסט קצר.",
     "mapped_subtopic_id": "g2.detail_main_idea",
     "runtime_topic": "comprehension",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["short_passage_with_title", "highlight_evidence", "oral_retell_short"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "short_passage_with_title",
+      "highlight_evidence",
+      "oral_retell_short"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -382,12 +1076,35 @@
     "official_objective": "זיהוי סדר אירועים לפני/אחרי/קודם בסיסי.",
     "mapped_subtopic_id": "g2.simple_sequence",
     "runtime_topic": "comprehension",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["sequence_strip_order", "storyboard_match"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "sequence_strip_order",
+      "storyboard_match"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -395,12 +1112,36 @@
     "official_objective": "הסקת מסקנה פשוטה מטקסט קצר או ממשפטים מובילים.",
     "mapped_subtopic_id": "g2.light_inference",
     "runtime_topic": "comprehension",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["two_sentence_inference", "evidence_pair_choice", "explain_in_one_sentence_typed"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "two_sentence_inference",
+      "evidence_pair_choice",
+      "explain_in_one_sentence_typed"
+    ],
     "live_source": "both",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -408,12 +1149,36 @@
     "official_objective": "בחירת משפט תקין תחבירית וניסוח תקין ברמת משפט.",
     "mapped_subtopic_id": "g2.sentence_wellformed",
     "runtime_topic": "writing",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["sentence_combine", "minimal_typing_sentence", "dictation_sentence"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "sentence_combine",
+      "minimal_typing_sentence",
+      "dictation_sentence"
+    ],
     "live_source": "both",
-    "coverage_status": "misleading_due_to_fallback",
+    "coverage_status": "partial",
     "fallback_masking_risk": "medium",
-    "notes": "official_objective = ניסוח עבודה פנימי; runtime_topic=writing אך בא׳–ב׳ MCQ בלבד; narrowFallbackRate בינוני ב־writing/easy–medium."
+    "notes": "official_objective = ניסוח עבודה פנימי; נכון ל־2026-04: יש פריטי typing מבוקרים (משפט קצר / מילת מפתח) בנוסף ל־MCQ; עדיין יש צורך באיזון MCQ/typing וצמצום misleading.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -421,12 +1186,36 @@
     "official_objective": "בניית/בחירת מבנה לפסקה קצרה (2–3 משפטים) ברמת בחירה מובנית.",
     "mapped_subtopic_id": "g2.short_paragraph_choice",
     "runtime_topic": "writing",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["sentence_ordering", "two_to_three_sentence_typing", "peer_check_rubric_light"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "sentence_ordering",
+      "two_to_three_sentence_typing",
+      "peer_check_rubric_light"
+    ],
     "live_source": "legacy",
-    "coverage_status": "misleading_due_to_fallback",
+    "coverage_status": "partial",
     "fallback_masking_risk": "medium",
-    "notes": "official_objective = ניסוח עבודה פנימי; שם התת־נושא מרמז על פסקה אך המשימות הן בחירה בלבד בא׳–ב׳."
+    "notes": "יעד מסונכרן לתוכנית העברית (א–ו); מבנה פסקה קצרה (2–3 משפטים) כבחירה מובנית — לא כתיבה חופשית ארוכה (מחוץ לטווח מוצר).",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -434,12 +1223,35 @@
     "official_objective": "בחירת סימן פיסוק מתאים בהקשר של משפט בכתיבה.",
     "mapped_subtopic_id": "g2.punctuation_choice",
     "runtime_topic": "writing",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["punctuation_insert_edit", "rewrite_with_punctuation"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "punctuation_insert_edit",
+      "rewrite_with_punctuation"
+    ],
     "live_source": "legacy",
-    "coverage_status": "weak",
-    "fallback_masking_risk": "high",
-    "notes": "official_objective = ניסוח עבודה פנימי; כיסוי כמותי כמעט אפסי לתת־נושא הזה (ספירה runtime) — סיכון גבוה ל־masking בתוך writing כשמבקשים פיסוק."
+    "coverage_status": "partial",
+    "fallback_masking_risk": "medium",
+    "notes": "official_objective = ניסוח עבודה פנימי; נכון ל־2026-04: מאגר writing כולל עשרות פריטי פיסוק; חלקם typing מילולי (שם סימן) + שאר MCQ — סיכון masking ירד אך עדיין יש ערבוב פיסוק/רמות.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -447,12 +1259,36 @@
     "official_objective": "זיהוי שם עצם/פועל/תואר במשפטים קצרים.",
     "mapped_subtopic_id": "g2.pos_basic",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["underline_in_text", "cloze_pos", "short_correction"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "underline_in_text",
+      "cloze_pos",
+      "short_correction"
+    ],
     "live_source": "both",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -460,12 +1296,36 @@
     "official_objective": "זיהוי והתאמת זמן בסיסי (עבר/הווה/עתיד) במשפטים פשוטים.",
     "mapped_subtopic_id": "g2.simple_tense",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["transform_tense", "cloze_tense", "timeline_match"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "transform_tense",
+      "cloze_tense",
+      "timeline_match"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -473,12 +1333,36 @@
     "official_objective": "בחירת ניסוח תקין בהתאמת מין/מספר בין נושא לפועל/תואר ברמת משפט קצר.",
     "mapped_subtopic_id": "g2.number_gender_light",
     "runtime_topic": "grammar",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["agreement_cloze", "transform_minimal", "error_correction"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "agreement_cloze",
+      "transform_minimal",
+      "error_correction"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -486,12 +1370,35 @@
     "official_objective": "זיהוי מילה קרובה במשמעות (נרדפת) בהקשר פשוט.",
     "mapped_subtopic_id": "g2.synonyms_basic",
     "runtime_topic": "vocabulary",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["synonym_in_context", "replace_word_in_sentence_typed"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "synonym_in_context",
+      "replace_word_in_sentence_typed"
+    ],
     "live_source": "legacy",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -499,12 +1406,35 @@
     "official_objective": "הסקת משמעות מילה מרמז הקשר במשפט קצר.",
     "mapped_subtopic_id": "g2.context_clue_easy",
     "runtime_topic": "vocabulary",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["context_cloze", "choose_best_word_two_sentences"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "context_cloze",
+      "choose_best_word_two_sentences"
+    ],
     "live_source": "both",
     "coverage_status": "partial",
     "fallback_masking_risk": "low",
-    "notes": "official_objective = ניסוח עבודה פנימי."
+    "notes": "official_objective = ניסוח עבודה פנימי.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -512,12 +1442,36 @@
     "official_objective": "בחירת ניסוח מתאים למצב שיח (כיתה/בית ספר/נימוס).",
     "mapped_subtopic_id": "g2.situation_register",
     "runtime_topic": "speaking",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["dialogue_completion", "oral_response_short", "role_cards"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "dialogue_completion",
+      "oral_response_short",
+      "role_cards"
+    ],
     "live_source": "both",
-    "coverage_status": "misleading_due_to_fallback",
-    "fallback_masking_risk": "medium",
-    "notes": "official_objective = ניסוח עבודה פנימי; runtime_topic=speaking אך בא׳–ב׳ MCQ בלבד; narrowFallbackRate בינוני ב־speaking/medium."
+    "coverage_status": "partial",
+    "fallback_masking_risk": "low",
+    "notes": "יעד מסונכרן לתוכנית העברית (א–ו); רגיסטר ונימוס בבחירת ניסוח (MCQ) עם authenticity_pattern — עקבי עם מגבלות א׳–ב׳.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   },
   {
     "grade": "g2",
@@ -525,11 +1479,35 @@
     "official_objective": "בניית משפט קצר שמתאר חוויה/תמונה לפי הנחיה (במסגרת בחירה).",
     "mapped_subtopic_id": "g2.describe_prompt_choice",
     "runtime_topic": "speaking",
-    "allowed_task_types_today": ["mcq_4choice", "text_only"],
-    "required_task_types_pedagogically": ["picture_prompt_oral_or_typed", "sentence_starter_scaffold", "two_sentence_description_typed"],
+    "allowed_task_types_today": [
+      "mcq_4choice",
+      "text_only"
+    ],
+    "required_task_types_pedagogically": [
+      "picture_prompt_oral_or_typed",
+      "sentence_starter_scaffold",
+      "two_sentence_description_typed"
+    ],
     "live_source": "legacy",
-    "coverage_status": "weak",
-    "fallback_masking_risk": "high",
-    "notes": "official_objective = ניסוח עבודה פנימי; כיסוי כמותי כמעט אפסי לתת־נושא הזה; narrowFallbackRate גבוה ב־speaking/medium–hard — masking בתוך speaking."
+    "coverage_status": "partial",
+    "fallback_masking_risk": "medium",
+    "notes": "יעד מסונכרן לתוכנית העברית (א–ו); תיאור מונחה במשפט קצר (MCQ) בקל ובינוני ובקשה — authenticity_pattern במקטעים מובילים.",
+    "official_provenance": {
+      "schema_version": 1,
+      "mapping_status": "file_bound_excerpt_linked",
+      "source_language_expected": "he",
+      "source_subject_expected": "lashon_hebrew",
+      "source_files_in_repo": [
+        "hebrew-1-6.pdf"
+      ],
+      "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
+      "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
+      "official_section_anchor": null,
+      "official_objective_source": "ministry_summary_verified",
+      "official_doc_excerpt_ref": null,
+      "mapped_at": "2026-04-15",
+      "confidence": "medium",
+      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+    }
   }
 ]

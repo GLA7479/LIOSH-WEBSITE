@@ -1,0 +1,84 @@
+{
+  "queue_version": 2,
+  "description": "תור סגירה g1/g2 — סגור; כל הפריטים הועברו ל־completed_in_this_pass אחרי סנכרון מטריצה ובנק (2026-04).",
+  "priority_1": [],
+  "priority_2": [],
+  "completed_in_this_pass": [
+    {
+      "mapped_subtopic_id": "g1.spell_word_choice",
+      "note": "subset typing מילולי (Layer 3) + עדכון מטריצה"
+    },
+    {
+      "mapped_subtopic_id": "g2.punctuation_choice",
+      "note": "מאגר עשיר; עדכון סטטוס מטריצה מ־weak"
+    },
+    {
+      "mapped_subtopic_id": "g2.sentence_wellformed",
+      "note": "typing מבוקר + עדכון misleading→partial במטריצה"
+    },
+    {
+      "mapped_subtopic_id": "official_provenance",
+      "note": "סכימת מעקב משרד + קטלוג קבצי TXT"
+    },
+    {
+      "mapped_subtopic_id": "g1.grammar_wellformed",
+      "note": "הרחבת G1_HARD grammar — פריטי דקדוק מובנים + מטריצה partial"
+    },
+    {
+      "mapped_subtopic_id": "g2.detail_main_idea",
+      "note": "פריטי comprehension קצרים עם authenticity_pattern (לא אודיו)"
+    },
+    {
+      "mapped_subtopic_id": "g2.light_inference",
+      "note": "פריט inference קצר עם authenticity_pattern"
+    },
+    {
+      "mapped_subtopic_id": "g2.situation_register",
+      "note": "תיוג subtopicId + authenticity_pattern ב־speaking קל"
+    },
+    {
+      "mapped_subtopic_id": "g1.grammar_cloze_deixis",
+      "note": "סנכרון מטריצה לכיסוי partial + מסמך משרד מקושר"
+    },
+    {
+      "mapped_subtopic_id": "g1.grammar_word_order",
+      "note": "סנכרון מטריצה — בריכת בינוני/קשה מספקת"
+    },
+    {
+      "mapped_subtopic_id": "g1.grammar_odd_category",
+      "note": "סנכרון מטריצה — פריטים בכל הרמות"
+    },
+    {
+      "mapped_subtopic_id": "g1.grammar_connectors_time",
+      "note": "סנכרון מטריצה — זמן/מחברים"
+    },
+    {
+      "mapped_subtopic_id": "g2.describe_prompt_choice",
+      "note": "תיוג describe + authenticity; מטריצה partial"
+    },
+    {
+      "mapped_subtopic_id": "g2.short_paragraph_choice",
+      "note": "מטריצה: מבנה פסקה בבחירה — הוגדר מחדש כחוזה מוצר"
+    },
+    {
+      "mapped_subtopic_id": "g1.simple_instruction",
+      "note": "סנכרון מטריצה partial"
+    },
+    {
+      "mapped_subtopic_id": "g1.word_picture",
+      "note": "תמונה מילולית בטקסט — מטריצה partial"
+    },
+    {
+      "mapped_subtopic_id": "g1.phrase_appropriateness",
+      "note": "תיוג מפורש + authenticity_pattern בדיבור קל"
+    },
+    {
+      "mapped_subtopic_id": "g1.copy_word",
+      "note": "subset הקלדת מילה בודדת (copy_word) + מטריצה"
+    },
+    {
+      "mapped_subtopic_id": "ministry_primary_hebrew_1_6",
+      "note": "קישור ל־hebrew-1-6.pdf (meyda) לכל שורות המטריצה"
+    }
+  ]
+}

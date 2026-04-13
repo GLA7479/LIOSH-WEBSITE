@@ -23,6 +23,7 @@ import {
 /** Layer 3: typing רק לפריטים עם preferredAnswerMode + תת־נושא מאושר (א׳–ב׳). */
 const G12_ALLOWED_TYPING_SUBTOPICS = new Set([
   "g1.spell_word_choice",
+  "g1.copy_word",
   "g2.sentence_wellformed",
   "g2.punctuation_choice",
 ]);
@@ -516,6 +517,36 @@ const G1_EASY_QUESTIONS = {
       subtype: "machberet",
     },
     {
+      question: "המילה מופיעה כאן: ׳ספר׳ — הקלידו בדיוק את המילה (בלי רווחים מיותרים):",
+      answers: ["ספר", "ספור", "סבר", "ספיר"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_copy_typing_book",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["ספר"],
+      maxTypingChars: 8,
+    },
+    {
+      question: "המילה מופיעה כאן: ׳בית׳ — הקלידו בדיוק את המילה:",
+      answers: ["בית", "באת", "ביית", "ביט"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_copy_typing_home",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["בית"],
+      maxTypingChars: 8,
+    },
+    {
+      question: "המילה מופיעה כאן: ׳אמא׳ — הקלידו בדיוק את המילה:",
+      answers: ["אמא", "אמה", "אימא", "אמאה"],
+      correct: 0,
+      subtopicId: "g1.copy_word",
+      patternFamily: "g1_copy_typing_ima",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["אמא", "אימא"],
+      maxTypingChars: 8,
+    },
+    {
       question: "מי משחק איתי ואוהב אותי? בחרו איות למילה שמתארת את הקשר:",
       answers: ["חבר", "חביר", "חברר", "חבור"],
       correct: 0,
@@ -693,18 +724,90 @@ const G1_EASY_QUESTIONS = {
     },
   ],
   speaking: [
-    { question: "מה התשובה הנכונה לשאלה 'מה שלומך?'?", answers: ["טוב, תודה", "שלום", "להתראות", "בבקשה"], correct: 0 },
-    { question: "איך אומרים בוקר טוב?", answers: ["בוקר טוב", "לילה טוב", "ערב טוב", "צהריים טובים"], correct: 0 },
-    { question: "מה אומרים כשנכנסים לבית?", answers: ["שלום", "להתראות", "תודה", "בבקשה"], correct: 0 },
-    { question: "איך אומרים תודה?", answers: ["תודה", "בבקשה", "סליחה", "שלום"], correct: 0 },
-    { question: "מה אומרים כשיוצאים מבית?", answers: ["להתראות", "שלום", "תודה", "בבקשה"], correct: 0 },
-    { question: "איך אומרים 'אני רעב'?", answers: ["אני רעב", "אני שמח", "אני עייף", "אני עצוב"], correct: 0 },
-    { question: "מה אומרים כשמבקשים משהו?", answers: ["בבקשה", "תודה", "סליחה", "שלום"], correct: 0 },
-    { question: "איך אומרים 'אני עייף'?", answers: ["אני עייף", "אני רעב", "אני שמח", "אני עצוב"], correct: 0 },
-    { question: "מה נאמר כשטעינו או פגענו במישהו בטעות?", answers: ["סליחה", "תודה", "בבקשה", "שלום"], correct: 0 },
-    { question: "איך אומרים 'אני שמח'?", answers: ["אני שמח", "אני עצוב", "אני רעב", "אני עייף"], correct: 0 },
-    { question: "מה אומרים כשמקבלים משהו?", answers: ["תודה", "בבקשה", "סליחה", "שלום"], correct: 0 },
-    { question: "איך אומרים 'אני אוהב'?", answers: ["אני אוהב", "אני שונא", "אני בוכה", "אני צוחק"], correct: 0 },
+    {
+      question: "מה התשובה הנכונה לשאלה 'מה שלומך?'?",
+      answers: ["טוב, תודה", "שלום", "להתראות", "בבקשה"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "איך אומרים בוקר טוב?",
+      answers: ["בוקר טוב", "לילה טוב", "ערב טוב", "צהריים טובים"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "מה אומרים כשנכנסים לבית?",
+      answers: ["שלום", "להתראות", "תודה", "בבקשה"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "איך אומרים תודה?",
+      answers: ["תודה", "בבקשה", "סליחה", "שלום"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "מה אומרים כשיוצאים מבית?",
+      answers: ["להתראות", "שלום", "תודה", "בבקשה"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "איך אומרים 'אני רעב'?",
+      answers: ["אני רעב", "אני שמח", "אני עייף", "אני עצוב"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "מה אומרים כשמבקשים משהו?",
+      answers: ["בבקשה", "תודה", "סליחה", "שלום"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "איך אומרים 'אני עייף'?",
+      answers: ["אני עייף", "אני רעב", "אני שמח", "אני עצוב"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "מה נאמר כשטעינו או פגענו במישהו בטעות?",
+      answers: ["סליחה", "תודה", "בבקשה", "שלום"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "איך אומרים 'אני שמח'?",
+      answers: ["אני שמח", "אני עצוב", "אני רעב", "אני עייף"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "מה אומרים כשמקבלים משהו?",
+      answers: ["תודה", "בבקשה", "סליחה", "שלום"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "איך אומרים 'אני אוהב'?",
+      answers: ["אני אוהב", "אני שונא", "אני בוכה", "אני צוחק"],
+      correct: 0,
+      subtopicId: "g1.phrase_appropriateness",
+      authenticity_pattern: "situational_phrase_register",
+    },
   ],
 };
 
@@ -1489,6 +1592,38 @@ const G1_HARD_QUESTIONS = {
     { question: "איזו מילה לא שייכת לכלי כתיבה?", answers: ["מחק", "עיפרון", "סרגל", "נדנדה"], correct: 3, subtopicId: "g1.grammar_odd_category" },
     { question: "בחרו משפט עם סדר מילים הגיוני:", answers: ["אני שותה מים בבית", "מים אני בבית שותה", "בבית שותה מים אני", "שותה בבית אני"], correct: 0, subtopicId: "g1.grammar_word_order" },
     { question: "מחר אני ___ לגן.", answers: ["אלך", "הלכתי", "הולך", "הלכנו"], correct: 0, subtopicId: "g1.grammar_connectors_time" },
+    {
+      question: "איזה משפט לא תקין כי חסר נושא ברור?",
+      answers: ["רץ מהר בחצר", "הילד רץ מהר בחצר", "הכלב רץ בחצר", "אמא מדברת בשקט"],
+      correct: 0,
+      subtopicId: "g1.grammar_wellformed",
+      patternFamily: "g1_grammar_illformed_missing_subject",
+      subtype: "subject_required",
+    },
+    {
+      question: "בחרו משפט תקין:",
+      answers: ["הספר נמצא על השולחן", "הספר על השולחן נמצא", "על השולחן הספר נמצא", "נמצא על שולחן הספר"],
+      correct: 0,
+      subtopicId: "g1.grammar_wellformed",
+      patternFamily: "g1_grammar_wellformed_book_table",
+      subtype: "svo_basic",
+    },
+    {
+      question: "איזה משפט לא תקין?",
+      answers: ["אני שותה מים", "שותה אני מים", "אמא מבשלת מרק", "הילד קורא ספר"],
+      correct: 1,
+      subtopicId: "g1.grammar_wellformed",
+      patternFamily: "g1_grammar_illformed_word_order_light",
+      subtype: "drink_water",
+    },
+    {
+      question: "בחרו משפט שמתאר פעולה בסדר הגיוני:",
+      answers: ["קודם נכנסנו לכיתה ואז ישבנו", "ישבנו קודם ואז לא נכנסנו", "נכנסנו לכיתה ואז לא ישבנו", "קודם ישבנו ואז לא כיתה"],
+      correct: 0,
+      subtopicId: "g1.grammar_wellformed",
+      patternFamily: "g1_grammar_sequence_classroom",
+      subtype: "two_step_order",
+    },
   ],
   vocabulary: [
     { question: "במה משתמשים לפעמים כדי לשחק או ללמוד במחשב?", answers: ["מחשב", "מחבת", "מטאטא", "כפפה"], correct: 0 },
@@ -1681,6 +1816,41 @@ const G2_EASY_QUESTIONS = {
       answers: ["כותבים כותרת", "פותחים מחברת", "סוגרים מחברת", "לא כתוב"],
       correct: 0,
       subtopicId: "g2.simple_sequence",
+    },
+    {
+      question:
+        "שני משפטים: ׳הילדים נכנסו לחדר המוסיקה. המורה הדליקה אור.׳ — מה הרעיון המרכזי?",
+      answers: [
+        "מתחילים פעילות/שיעור בחדר",
+        "הילדים ישנים בבית",
+        "קונים ממתקים בסופר",
+        "יורד שלג בחוץ",
+      ],
+      correct: 0,
+      subtopicId: "g2.detail_main_idea",
+      patternFamily: "g2_comp_main_idea_music_room",
+      subtype: "two_sentence_gist",
+      authenticity_pattern: "micro_passage_main_idea",
+    },
+    {
+      question:
+        "שני משפטים: ׳אמא שמה מרק על האש. אבא מכין סלט.׳ — מה המשותף לשני המשפטים?",
+      answers: ["הכנת אוכל בבית", "טיול ביער", "משחק כדורגל", "קניית ספרים"],
+      correct: 0,
+      subtopicId: "g2.detail_main_idea",
+      patternFamily: "g2_comp_shared_theme_cooking",
+      subtype: "two_sentence_link",
+      authenticity_pattern: "micro_passage_link_theme",
+    },
+    {
+      question:
+        "משפט אחד: ׳הדלת נטרקה בגלל הרוח׳ — מה הסיבה הסבירה ביותר?",
+      answers: ["רוח חזקה", "הדלת נשברה לתמיד", "מישהו שכח את המפתח בבית", "המורה ביקשה שקט"],
+      correct: 0,
+      subtopicId: "g2.light_inference",
+      patternFamily: "g2_infer_door_slams_wind",
+      subtype: "cause_single_sentence",
+      authenticity_pattern: "single_sentence_cause_choice",
     },
   ],
   writing: [
@@ -1979,10 +2149,42 @@ const G2_EASY_QUESTIONS = {
     },
   ],
   speaking: [
-    { question: "איך אומרים 'אני אוהב לקרוא ספרים'?", answers: ["אני אוהב לקרוא ספרים", "אני אוהבת לקרוא ספרים", "אני אוהבים לקרוא ספרים", "אני אוהבות לקרוא ספרים"], correct: 0 },
-    { question: "מה אומרים כשמבקשים סליחה?", answers: ["סליחה", "תודה", "בבקשה", "שלום"], correct: 0 },
-    { question: "איך אומרים כשלא הבנו את ההוראות?", answers: ["אפשר להסביר שוב?", "אני צריך ספר", "אני צריך כלב", "אני צריך בית"], correct: 0 },
-    { question: "בחרו משפט קצר שמתאר גן עם פרחים:", answers: ["בגן יש פרחים צבעוניים", "אני אוהב ספרים", "המורה קוראת", "לילה טוב"], correct: 0 },
+    {
+      question: "איך אומרים 'אני אוהב לקרוא ספרים'?",
+      answers: ["אני אוהב לקרוא ספרים", "אני אוהבת לקרוא ספרים", "אני אוהבים לקרוא ספרים", "אני אוהבות לקרוא ספרים"],
+      correct: 0,
+      subtopicId: "g2.situation_register",
+      patternFamily: "g2_speak_register_reading_like",
+      subtype: "phrase_choice",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "מה אומרים כשמבקשים סליחה?",
+      answers: ["סליחה", "תודה", "בבקשה", "שלום"],
+      correct: 0,
+      subtopicId: "g2.situation_register",
+      patternFamily: "g2_speak_register_apology",
+      subtype: "politeness",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "איך אומרים כשלא הבנו את ההוראות?",
+      answers: ["אפשר להסביר שוב?", "אני צריך ספר", "אני צריך כלב", "אני צריך בית"],
+      correct: 0,
+      subtopicId: "g2.situation_register",
+      patternFamily: "g2_speak_register_clarify",
+      subtype: "classroom_help",
+      authenticity_pattern: "situational_phrase_register",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר גן עם פרחים:",
+      answers: ["בגן יש פרחים צבעוניים", "אני אוהב ספרים", "המורה קוראת", "לילה טוב"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_garden_flowers",
+      subtype: "garden",
+      authenticity_pattern: "guided_description_sentence_choice",
+    },
     {
       question: "בחרו משפט קצר שמתאר יום גשום בבית הספר:",
       answers: ["ירד גשם ונכנסנו מהר לכיתה", "השמש זרחה ולא היה ענן", "אכלנו גלידה על הגג", "ישנו בחצר כל הלילה"],
@@ -1990,6 +2192,7 @@ const G2_EASY_QUESTIONS = {
       subtopicId: "g2.describe_prompt_choice",
       patternFamily: "g2_speak_describe_rain_day",
       subtype: "weather_school",
+      authenticity_pattern: "guided_description_sentence_choice",
     },
     {
       question: "בחרו משפט קצר שמתאר חברות שמשחקות בחצר בהפסקה:",
@@ -3976,6 +4179,7 @@ export function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
       ? [...raw.typingAcceptedAnswers]
       : undefined,
     maxTypingChars: raw.maxTypingChars,
+    authenticity_pattern: raw.authenticity_pattern,
   };
   let stem = String(q.question || "").trim();
   if (gradeKey && /^איזה משפט נכון\?$/i.test(stem)) {
@@ -4570,6 +4774,10 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
           : {}),
         ...(fallbackLevelKey !== levelKey ? { levelRelaxedFrom: levelKey } : {}),
         ...subtopicParams,
+        ...(randomQ.authenticity_pattern != null &&
+        String(randomQ.authenticity_pattern).trim() !== ""
+          ? { authenticity_pattern: String(randomQ.authenticity_pattern).trim() }
+          : {}),
         sourceTrace,
       },
     };
@@ -4654,6 +4862,10 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
         : {}),
       ...(poolLevelKey !== levelKey ? { levelRelaxedFrom: levelKey } : {}),
       ...subtopicParams,
+      ...(randomQ.authenticity_pattern != null &&
+      String(randomQ.authenticity_pattern).trim() !== ""
+        ? { authenticity_pattern: String(randomQ.authenticity_pattern).trim() }
+        : {}),
       sourceTrace,
     },
   };

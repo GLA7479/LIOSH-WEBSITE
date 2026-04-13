@@ -1,0 +1,75 @@
+{
+  "catalog_version": 2,
+  "generated_note": "מלאי קבצי TXT תחת תיקיית משרד החינוך בריפו + מסמך עברית ראשי ב־PDF בשורש הריפו.",
+  "base_folder": "תוכנית משרד החינוך קובצי TXT",
+  "entries": [
+    {
+      "relative_path": "תוכנית משרד החינוך קובצי TXT/כיתה א.txt",
+      "detected_subject": "english_curriculum_2020",
+      "detected_language": "en",
+      "not_hebrew_lashon": true,
+      "sample": "Grade 1 – Exposure Stage · Ministry of Education · English Curriculum 2020"
+    },
+    {
+      "relative_path": "תוכנית משרד החינוך קובצי TXT/כיתה ב.txt",
+      "detected_subject": "english_curriculum_2020",
+      "detected_language": "en",
+      "not_hebrew_lashon": true,
+      "sample": "Grade 2 – Foundation Stage · Ministry of Education · English Curriculum 2020"
+    },
+    {
+      "relative_path": "תוכנית משרד החינוך קובצי TXT/כיתה ג.txt",
+      "detected_subject": "english_curriculum_2020",
+      "detected_language": "en",
+      "not_hebrew_lashon": true,
+      "sample": "Grade 3 – Beginning Literacy · Ministry of Education · English Curriculum 2020"
+    },
+    {
+      "relative_path": "תוכנית משרד החינוך קובצי TXT/כיתה ד.txt",
+      "detected_subject": "unknown_unverified",
+      "detected_language": "unknown",
+      "not_hebrew_lashon": null,
+      "sample": null
+    },
+    {
+      "relative_path": "תוכנית משרד החינוך קובצי TXT/כיתה ה.txt",
+      "detected_subject": "unknown_unverified",
+      "detected_language": "unknown",
+      "not_hebrew_lashon": null,
+      "sample": null
+    },
+    {
+      "relative_path": "תוכנית משרד החינוך קובצי TXT/כיתה ו.txt",
+      "detected_subject": "unknown_unverified",
+      "detected_language": "unknown",
+      "not_hebrew_lashon": null,
+      "sample": null
+    },
+    {
+      "relative_path": "תוכנית משרד החינוך קובצי TXT/mavo1.txt",
+      "detected_subject": "mathematics_curriculum",
+      "detected_language": "he",
+      "not_hebrew_lashon": true,
+      "sample": "משרד החינוך · תכנית לימודים במתמטיקה לכיתות א-ו"
+    },
+    {
+      "relative_path": "תוכנית משרד החינוך קובצי TXT/mismach_hatamot.txt",
+      "detected_subject": "unknown_unverified",
+      "detected_language": "unknown",
+      "not_hebrew_lashon": null,
+      "sample": null
+    },
+    {
+      "relative_path": "תוכנית משרד החינוך קובצי TXT/resource_100673815.txt",
+      "detected_subject": "mathematics_special_ed_outline",
+      "detected_language": "he",
+      "not_hebrew_lashon": true,
+      "sample": "מתווה לארגון תכני הוראה במתמטיקה בחינוך המיוחד"
+    }
+  ],
+  "hebrew_lashon_primary": {
+    "status": "bound_in_repo",
+    "repo_relative_path": "hebrew-1-6.pdf",
+    "canonical_download_url": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf"
+  }
+}

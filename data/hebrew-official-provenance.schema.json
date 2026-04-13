@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local/hebrew-official-provenance.schema.json",
+  "title": "Hebrew alignment official_provenance",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "mapping_status",
+    "official_objective_source",
+    "mapped_at",
+    "confidence"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "mapping_status": {
+      "type": "string",
+      "enum": [
+        "pending_hebrew_ministry_primary",
+        "file_bound_excerpt_pending",
+        "file_bound_excerpt_linked",
+        "superseded_internal_only"
+      ]
+    },
+    "source_language_expected": { "type": "string", "enum": ["he", "mixed", "unknown"] },
+    "source_subject_expected": {
+      "type": "string",
+      "enum": ["lashon_hebrew", "english", "mathematics", "other", "unknown"]
+    },
+    "source_files_in_repo": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "נתיבים יחסיים לשורש הריפו; ריק עד שיש מסמך לשון עברית רלוונטי"
+    },
+    "repo_txt_catalog_ref": {
+      "type": "string",
+      "const": "data/hebrew-ministry-source-catalog.json"
+    },
+    "official_doc_id": { "type": ["string", "null"] },
+    "official_section_anchor": { "type": ["string", "null"] },
+    "official_objective_source": {
+      "type": "string",
+      "enum": ["internal_working_statement", "ministry_excerpt_verbatim", "ministry_summary_verified"]
+    },
+    "official_doc_excerpt_ref": { "type": ["string", "null"] },
+    "mapped_at": { "type": "string", "minLength": 8 },
+    "confidence": {
+      "type": "string",
+      "enum": ["none_until_hebrew_primary_linked", "low", "medium", "high"]
+    },
+    "reviewer_notes": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}
