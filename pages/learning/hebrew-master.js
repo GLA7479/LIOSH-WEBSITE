@@ -65,6 +65,7 @@ import {
   stripNiqqudInsideQuotedHebrewWordSpans,
   normalizeAnswerForSpellingNiqqudStrict,
 } from "../../utils/hebrew-spelling-niqqud";
+import { isHebrewFullCompetitiveScoringGrade } from "../../utils/hebrew-scoring-policy";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -818,6 +819,14 @@ useEffect(() => {
     if (typeof window === "undefined" || !playerName.trim()) return;
 
     try {
+      if (!isHebrewFullCompetitiveScoringGrade(grade)) {
+        if (showLeaderboard) {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+          setLeaderboardData(buildTop10ByScore(saved, leaderboardLevel));
+        }
+        return;
+      }
+
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
       const key = `${level}_${operation || "reading"}`;
 
@@ -1308,14 +1317,17 @@ useEffect(() => {
     };
 
     if (isCorrect) {
-      // חישוב נקודות לפי מצב
+      const hebrewCompetitiveScoring = isHebrewFullCompetitiveScoringGrade(grade);
+      // חישוב נקודות לפי מצב (כיתות ג׳+ — לא מצטברות ל־score)
       let points = 10 + streak;
       if (mode === "speed") {
         const timeBonus = timeLeft ? Math.floor(timeLeft * 2) : 0;
         points += timeBonus; // בונוס זמן במצב מהירות
       }
-      
-      setScore((prev) => prev + points);
+
+      if (hebrewCompetitiveScoring) {
+        setScore((prev) => prev + points);
+      }
       setStreak((prev) => prev + 1);
       setCorrect((prev) => prev + 1);
       
@@ -1345,12 +1357,12 @@ useEffect(() => {
       // משתנים משותפים למערכת תגים וכוכבים
       const newCorrect = correct + 1;
       const newStreak = streak + 1;
-      const newScore = score + points;
+      const newScore = hebrewCompetitiveScoring ? score + points : score;
       const opProgress = progress[topicKey] || { total: 0, correct: 0 };
       const newOpCorrect = opProgress.correct + 1;
 
-      // מערכת כוכבים - כוכב כל 5 תשובות נכונות
-      if (newCorrect % 5 === 0) {
+      // מערכת כוכבים - כוכב כל 5 תשובות נכונות (כיתות א׳–ב׳ בלבד)
+      if (hebrewCompetitiveScoring && newCorrect % 5 === 0) {
         setStars((prev) => {
           const newStars = prev + 1;
           // שמירה ל-localStorage
@@ -1416,15 +1428,25 @@ useEffect(() => {
         saveBadge(newBadge);
       }
       
-      // תגים לפי ניקוד
-      if (newScore >= 1000 && newScore - points < 1000 && !badges.includes("💎 אלף נקודות")) {
+      // תגים לפי ניקוד (כיתות א׳–ב׳ בלבד)
+      if (
+        hebrewCompetitiveScoring &&
+        newScore >= 1000 &&
+        newScore - points < 1000 &&
+        !badges.includes("💎 אלף נקודות")
+      ) {
         const newBadge = "💎 אלף נקודות";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
         sound.playSound("badge-earned");
         setTimeout(() => setShowBadge(null), 3000);
         saveBadge(newBadge);
-      } else if (newScore >= 5000 && newScore - points < 5000 && !badges.includes("🎯 חמשת אלפים")) {
+      } else if (
+        hebrewCompetitiveScoring &&
+        newScore >= 5000 &&
+        newScore - points < 5000 &&
+        !badges.includes("🎯 חמשת אלפים")
+      ) {
         const newBadge = "🎯 חמשת אלפים";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
@@ -1450,45 +1472,51 @@ useEffect(() => {
         saveBadge(newBadge);
       }
 
-      // מערכת XP ורמות
-      const xpGain = hintUsed ? 5 : 10; // פחות XP אם השתמש ברמז
-      setXp((prev) => {
-        const newXp = prev + xpGain;
-        const xpNeeded = playerLevel * 100;
-        
-        if (newXp >= xpNeeded) {
-          setPlayerLevel((prevLevel) => {
-            const newLevel = prevLevel + 1;
-            setShowLevelUp(true);
-            sound.playSound("level-up");
-            setTimeout(() => setShowLevelUp(false), 3000);
-            if (typeof window !== "undefined") {
-              try {
-                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
-                saved.playerLevel = newLevel;
-                saved.xp = newXp - xpNeeded;
-                localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
-              } catch {}
-            }
-            return newLevel;
-          });
-          return newXp - xpNeeded;
-        }
-        
-        if (typeof window !== "undefined") {
-          try {
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
-            saved.xp = newXp;
-            localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
-          } catch {}
-        }
-        return newXp;
-      });
+      // מערכת XP ורמות (כיתות א׳–ב׳ בלבד)
+      if (hebrewCompetitiveScoring) {
+        const xpGain = hintUsed ? 5 : 10; // פחות XP אם השתמש ברמז
+        setXp((prev) => {
+          const newXp = prev + xpGain;
+          const xpNeeded = playerLevel * 100;
+
+          if (newXp >= xpNeeded) {
+            setPlayerLevel((prevLevel) => {
+              const newLevel = prevLevel + 1;
+              setShowLevelUp(true);
+              sound.playSound("level-up");
+              setTimeout(() => setShowLevelUp(false), 3000);
+              if (typeof window !== "undefined") {
+                try {
+                  const saved = JSON.parse(
+                    localStorage.getItem(STORAGE_KEY + "_progress") || "{}"
+                  );
+                  saved.playerLevel = newLevel;
+                  saved.xp = newXp - xpNeeded;
+                  localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+                } catch {}
+              }
+              return newLevel;
+            });
+            return newXp - xpNeeded;
+          }
+
+          if (typeof window !== "undefined") {
+            try {
+              const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+              saved.xp = newXp;
+              localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+            } catch {}
+          }
+          return newXp;
+        });
+      }
 
       // עדכון תחרות יומית
       setDailyChallenge((prev) => ({
         ...prev,
-        bestScore: Math.max(prev.bestScore, score + points),
+        bestScore: hebrewCompetitiveScoring
+          ? Math.max(prev.bestScore, score + points)
+          : prev.bestScore,
         questions: prev.questions + 1,
       }));
 
@@ -1512,8 +1540,12 @@ useEffect(() => {
       }
       setFeedback(`${feedbackText}${randomEmoji}`);
       
-      // Play sound - different sound for streak milestones
-      if ((streak + 1) % 5 === 0 && streak + 1 >= 5) {
+      // Play sound - different sound for streak milestones (כוכבים רק בכיתות א׳–ב׳)
+      if (
+        hebrewCompetitiveScoring &&
+        (streak + 1) % 5 === 0 &&
+        streak + 1 >= 5
+      ) {
         sound.playSound("streak");
       } else {
         sound.playSound("correct");

@@ -5,6 +5,14 @@ import {
   scopeHebrewStemForGrade,
   stripHebrewQuestionPedagogicalLeadIn,
 } from './hebrew-legacy-metadata';
+import {
+  withG1SubtopicPreference,
+  attachG1SubtopicParams,
+} from './hebrew-g1-subtopic';
+import {
+  withG2SubtopicPreference,
+  attachG2SubtopicParams,
+} from './hebrew-g2-subtopic';
 
 // ========== מאגר שאלות לפי כיתה ורמה ==========
 // הקובץ כולל מאות שאלות מותאמות לכל כיתה (א'-ו'), רמה (קל/בינוני/קשה) ונושא
@@ -924,6 +932,14 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     }
   }
 
+  if (String(gradeKey).toLowerCase() === "g1") {
+    const w = withG1SubtopicPreference(gradeKey, selectedTopic, topicQuestionsMerged);
+    topicQuestionsMerged = w.merged;
+  } else if (String(gradeKey).toLowerCase() === "g2") {
+    const w = withG2SubtopicPreference(gradeKey, selectedTopic, topicQuestionsMerged);
+    topicQuestionsMerged = w.merged;
+  }
+
   const HEBREW_NIQQUD_RE = /[\u0591-\u05C7]/g;
   const SURROUNDING_PUNCT_RE = /^[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+|[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+$/g;
   const normalizeQuotes = (value) =>
@@ -1032,8 +1048,14 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     }
     const fallbackTopic = got.topic;
     const fallbackLevelKey = got.lv;
+    let mergedForPick = got.merged;
+    if (String(gradeKey).toLowerCase() === "g1") {
+      mergedForPick = withG1SubtopicPreference(gradeKey, fallbackTopic, got.merged).merged;
+    } else if (String(gradeKey).toLowerCase() === "g2") {
+      mergedForPick = withG2SubtopicPreference(gradeKey, fallbackTopic, got.merged).merged;
+    }
     const rawPick = pickWeightedHebrewItem(
-      got.merged,
+      mergedForPick,
       fallbackLevelKey,
       fallbackTopic,
       gradeKey
@@ -1092,6 +1114,11 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
           ? { gradeFallbackFromTopic: selectedTopic }
           : {}),
         ...(fallbackLevelKey !== levelKey ? { levelRelaxedFrom: levelKey } : {}),
+        ...(String(gradeKey).toLowerCase() === "g1"
+          ? attachG1SubtopicParams(fallbackTopic, rawPick)
+          : String(gradeKey).toLowerCase() === "g2"
+            ? attachG2SubtopicParams(fallbackTopic, rawPick)
+            : {}),
       },
     };
   }
@@ -1152,6 +1179,11 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
         ? { hebrewLegacyMeta: randomQ.hebrewLegacyMeta }
         : {}),
       ...(poolLevelKey !== levelKey ? { levelRelaxedFrom: levelKey } : {}),
+      ...(String(gradeKey).toLowerCase() === "g1"
+        ? attachG1SubtopicParams(selectedTopic, rawPick)
+        : String(gradeKey).toLowerCase() === "g2"
+          ? attachG2SubtopicParams(selectedTopic, rawPick)
+          : {}),
     },
   };
 }
