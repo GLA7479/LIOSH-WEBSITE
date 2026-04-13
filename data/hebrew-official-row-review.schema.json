@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local/hebrew-official-row-review.schema.json",
+  "title": "Hebrew official row review ledger (g1/g2 credibility)",
+  "type": "object",
+  "required": ["review_ledger_version", "rows"],
+  "properties": {
+    "review_ledger_version": { "type": "integer", "minimum": 1 },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["grade", "mapped_subtopic_id", "runtime_topic", "review_status"],
+        "properties": {
+          "grade": { "type": "string", "enum": ["g1", "g2"] },
+          "mapped_subtopic_id": { "type": "string", "minLength": 4 },
+          "runtime_topic": { "type": "string", "minLength": 2 },
+          "review_status": {
+            "type": "string",
+            "enum": ["needs_review", "approved", "rejected"]
+          },
+          "proposed_official_doc_excerpt_ref": { "type": ["string", "null"] },
+          "proposed_char_start": { "type": ["integer", "null"] },
+          "proposed_char_end": { "type": ["integer", "null"] },
+          "approved_official_doc_excerpt_ref": { "type": ["string", "null"] },
+          "approved_char_start": { "type": ["integer", "null"] },
+          "approved_char_end": { "type": ["integer", "null"] },
+          "support_type": {
+            "type": "string",
+            "enum": ["direct_verbatim", "summary_supported"]
+          },
+          "official_objective_source": {
+            "type": "string",
+            "enum": ["ministry_excerpt_verbatim", "ministry_summary_verified"]
+          },
+          "row_specific_rationale_he": { "type": ["string", "null"] },
+          "anchor_quality_class": {
+            "type": "string",
+            "enum": ["exact_span", "section_span", "weak_generic"]
+          },
+          "excerpt_quality_class": {
+            "type": "string",
+            "enum": ["direct", "strong_support", "weak_support"]
+          },
+          "runtime_coverage_adequacy_declared": { "type": ["boolean", "null"] },
+          "reviewer_id": { "type": ["string", "null"] },
+          "approved_at": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

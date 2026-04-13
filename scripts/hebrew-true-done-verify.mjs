@@ -34,6 +34,9 @@ function run(scriptRel) {
 console.log("== 1) official provenance ==");
 run("scripts/hebrew-official-provenance-validate.mjs");
 
+console.log("== 1b) official row binding divergence ==");
+run("scripts/hebrew-official-divergence-audit.mjs");
+
 console.log("== 2) audit-hebrew-g1-g2-hard ==");
 run("scripts/audit-hebrew-g1-g2-hard.mjs");
 
@@ -92,17 +95,57 @@ if (criticalBad.length > 0) {
   process.exit(1);
 }
 
+/** `internal_working_statement` מותר רק כשהמיפוי ממתין לסקירה (לא heuristic כ־binding סופי). */
 const internalOnly = g12.filter(
-  (row) => row.official_provenance?.official_objective_source === "internal_working_statement"
+  (row) =>
+    row.official_provenance?.official_objective_source === "internal_working_statement" &&
+    row.official_provenance?.mapping_status !== "file_bound_excerpt_pending"
 );
 if (internalOnly.length > 0) {
   console.error(
-    "hebrew-true-done-verify: FAIL — official_objective_source still internal_working_statement:",
-    internalOnly.map((r) => r.mapped_subtopic_id).join(", ")
+    "hebrew-true-done-verify: FAIL — internal_working_statement without pending curation:",
+    internalOnly.map((r) => `${r.grade}:${r.mapped_subtopic_id}`).join(", ")
   );
   process.exit(1);
 }
 
-console.log("== 4) ministry + closure + matrix critical gates: OK");
+const badCoverage = g12.filter((row) =>
+  ["weak", "misleading_due_to_fallback", "missing"].includes(row.coverage_status)
+);
+if (badCoverage.length > 0) {
+  console.error(
+    "hebrew-true-done-verify: FAIL — g1/g2 coverage_status must not be weak/misleading/missing:",
+    badCoverage.map((r) => `${r.mapped_subtopic_id}:${r.coverage_status}`).join("; ")
+  );
+  process.exit(1);
+}
+
+const linkedG12 = g12.filter((row) => row.official_provenance?.mapping_status === "file_bound_excerpt_linked");
+const missingAnchor = linkedG12.filter(
+  (row) => !row.official_provenance?.official_section_anchor || !row.official_provenance?.official_doc_excerpt_ref
+);
+if (missingAnchor.length > 0) {
+  console.error(
+    "hebrew-true-done-verify: FAIL — linked rows missing anchor or excerpt ref:",
+    missingAnchor.map((r) => r.mapped_subtopic_id).join(", ")
+  );
+  process.exit(1);
+}
+
+const missingJustification = linkedG12.filter(
+  (row) =>
+    row.official_provenance?.official_objective_source === "ministry_summary_verified" &&
+    (!row.official_provenance?.summary_alignment_justification ||
+      String(row.official_provenance.summary_alignment_justification).length < 16)
+);
+if (missingJustification.length > 0) {
+  console.error(
+    "hebrew-true-done-verify: FAIL — linked ministry_summary_verified without summary_alignment_justification:",
+    missingJustification.map((r) => r.mapped_subtopic_id).join(", ")
+  );
+  process.exit(1);
+}
+
+console.log("== 4) ministry + closure + matrix + perfection gates: OK");
 
 console.log("\nhebrew-true-done-verify: ALL CHECKS PASSED");

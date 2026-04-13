@@ -5,9 +5,10 @@
 ### True Done (אימות חוסם לפני merge)
 
 - מסמך handoff מפורט: [`docs/hebrew-true-done-handoff.md`](hebrew-true-done-handoff.md)
-- פקודה: `npm run verify:hebrew-true-done` — **חוסם** על: provenance + קובץ משרד + תור סגירה ריק + אין misleading / weak+high במטריצת g1/g2 + אין `internal_working_statement` ב־g1/g2 + כיסוי תתי־נושאים
+- פקודה: `npm run verify:hebrew-true-done` — **חוסם** על: provenance + קובץ משרד + תור סגירה ריק + אין misleading / weak+high במטריצת g1/g2 + אין `internal_working_statement` **אלא** כש־`mapping_status: file_bound_excerpt_pending` (ממתין ליומן סקירה) + כיסוי תתי־נושאים
+- **Perfect Close (credibility):** `npm run verify:hebrew-perfect-credible` — דורש גם `hebrew-official-credibility-verify` (כל השורות `approved` ב־`hebrew-official-row-review.json`). פירוט: [`docs/hebrew-perfect-credible-signoff.md`](hebrew-perfect-credible-signoff.md).
 
-**מצב סגירה:** עברית סגורה כ־**True Done** לפי ההגדרה הנוכחית. **החרגות שנשארות במפורש:** אודיו; כתיבה חופשית ארוכה. **שקיפות:** קישור למשרד הוא `file_bound_excerpt_linked` / `ministry_summary_verified` — בלי עוגן עמוד־עמוד לכל שורת מטריצה.
+**מצב סגירה:** עברית סגורה כ־**True Done** לפי ההגדרה הנוכחית. **Perfect Close:** [`docs/hebrew-perfect-close-handoff.md`](hebrew-perfect-close-handoff.md) (יומן סקירה + מיפוי excerpt מאושר + SHA256 + divergence). **החרגות שנשארות במפורש:** אודיו / שמע / הקלטה; כתיבה חופשית ארוכה. **שקיפות:** עוגן מכוני `hebrew-1-6.pdf#chars=…` לפי חילוץ טקסט מה־PDF — לא עמוד־עמוד ידני במשרד; רלוונטיות פדגוגית דרך יומן הסקירה.
 
 ---
 

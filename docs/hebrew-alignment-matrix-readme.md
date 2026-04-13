@@ -15,7 +15,9 @@
 - **מסמך עברית ראשי (א–ו):** `hebrew-1-6.pdf` בשורש הריפו — תואם לקובץ הרשמי ב־[meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf](https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf); `mapping_status` בשורות: `file_bound_excerpt_linked`, `official_objective_source: ministry_summary_verified`.
 - **קטלוג:** `data/hebrew-ministry-source-catalog.json` (כולל סיווג קבצי TXT שאינם לשון עברית).
 - **אימות:** `npm run audit:hebrew-official-provenance` / `npx tsx scripts/hebrew-official-provenance-validate.mjs`.
-- **סנכרון מלא:** `npx tsx scripts/hebrew-matrix-bind-ministry-primary-and-sync.mjs` (אחרי שינויי מבנה). סקריפט הזרקה הישן: `scripts/hebrew-matrix-add-official-provenance.mjs`.
+- **סנכרון מלא (Perfect row binding):** `npm run hebrew:official-extract-excerpts` ואז `npm run hebrew:official-bind-rows` (יוצרים/מעדכנים `data/hebrew-official-excerpts.json`, `data/hebrew-official-source-version.json`, `data/hebrew-official-row-binding.json` ומעדכנים את המטריצה).
+- **בדיקת divergence:** `npm run audit:hebrew-official-divergence`
+- **סנכרון legacy (לא דורס binding קיים):** `npx tsx scripts/hebrew-matrix-bind-ministry-primary-and-sync.mjs`. סקריפט הזרקה הישן: `scripts/hebrew-matrix-add-official-provenance.mjs`.
 
 ## מה נחשב source of truth ל־runtime (שאלות חיות)
 
@@ -51,6 +53,6 @@
 - יש שורת מטריצה עם `pending_hebrew_ministry_primary`
 - ב־`data/hebrew-g12-closure-queue.json` יש פריטים ב־`priority_1` או ב־`priority_2`
 - בשורות g1/g2: `misleading_due_to_fallback`, או `weak` עם `fallback_masking_risk: high`
-- בשורות g1/g2: `official_objective_source: internal_working_statement`
+- בשורות g1/g2: `official_objective_source: internal_working_statement` **רק** אם זה לא מצב pending מכוון — מותר כש־`mapping_status: file_bound_excerpt_pending` (ממתין לאישור ב־`hebrew-official-row-review.json`); אחרת כשלון.
 
-אין שלב „תזכורת“ בלבד — אלה שערי **pass/fail**.
+אין שלב „תזכורת“ בלבד — אלה שערי **pass/fail**. בנוסף: **divergence** מול `data/hebrew-official-row-binding.json`; `partial` מותר ב־g1/g2 כשהמיפוי עדיין pending; אין `weak`/`misleading`/`missing`; ל־שורות **מקושרות** `ministry_summary_verified` נדרש `summary_alignment_justification` (אורך מלא — ראו credibility verify). פירוט: [`docs/hebrew-perfect-close-handoff.md`](hebrew-perfect-close-handoff.md), [`docs/hebrew-perfect-credible-signoff.md`](hebrew-perfect-credible-signoff.md).

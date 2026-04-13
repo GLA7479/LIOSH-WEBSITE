@@ -4,6 +4,8 @@
 
 **אין לערוך** את קובץ התכנון תחת `.cursor/plans/`.
 
+**Perfect Close (מעבר ל־True Done):** ראו [`docs/hebrew-perfect-close-handoff.md`](hebrew-perfect-close-handoff.md) — מיפוי שורה־שורה ל־excerpt מה־PDF, נעילת SHA256, ואימות divergence.
+
 ---
 
 ## 1. Evidence — פקודות חוסמות (חייבות לעבור)

@@ -1,5 +1,7 @@
 /**
- * קישור מסמך לשון/עברית רשמי (כיתות א–ו) לכל שורות המטריצה + סנכרון סטטוסים לסגירת True Done.
+ * קישור מסמך לשון/עברית רשמי (כיתות א–ו) + סנכרון סטטוסים (legacy).
+ * אם כבר יש row-level binding (אחרי Perfection), לא דורסים anchor/excerpt/justification.
+ * ל־Perfect Close מלא: הרץ `hebrew-official-extract-excerpts` ואז `hebrew-official-bind-rows`.
  * Run: npx tsx scripts/hebrew-matrix-bind-ministry-primary-and-sync.mjs
  */
 import fs from "node:fs";
@@ -105,17 +107,23 @@ const rows = JSON.parse(fs.readFileSync(matrixPath, "utf8"));
 if (!Array.isArray(rows)) throw new Error("matrix must be array");
 
 for (const row of rows) {
-  row.official_provenance = { ...LINKED_PROVENANCE, ...(row.official_provenance || {}) };
+  const prev = row.official_provenance && typeof row.official_provenance === "object" ? row.official_provenance : {};
+  const hasRowBinding =
+    prev.official_section_anchor && prev.official_doc_excerpt_ref && prev.summary_alignment_justification;
+
+  row.official_provenance = { ...LINKED_PROVENANCE, ...prev };
   row.official_provenance.source_files_in_repo = [...LINKED_PROVENANCE.source_files_in_repo];
   row.official_provenance.mapping_status = LINKED_PROVENANCE.mapping_status;
-  row.official_provenance.official_objective_source = LINKED_PROVENANCE.official_objective_source;
   row.official_provenance.official_doc_id = LINKED_PROVENANCE.official_doc_id;
-  row.official_provenance.confidence = LINKED_PROVENANCE.confidence;
-  row.official_provenance.reviewer_notes = LINKED_PROVENANCE.reviewer_notes;
+  if (!hasRowBinding) {
+    row.official_provenance.official_objective_source = LINKED_PROVENANCE.official_objective_source;
+    row.official_provenance.confidence = LINKED_PROVENANCE.confidence;
+    row.official_provenance.reviewer_notes = LINKED_PROVENANCE.reviewer_notes;
+  }
 
   const k = `${row.mapped_subtopic_id}|${row.grade}`;
   const patch = COVERAGE_SYNC[k];
-  if (patch) {
+  if (patch && row.coverage_status !== "adequate") {
     Object.assign(row, patch);
   }
 }

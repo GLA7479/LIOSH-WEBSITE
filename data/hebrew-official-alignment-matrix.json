@@ -28,12 +28,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=67982-68362",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.phoneme_awareness.reading",
+      "summary_alignment_justification": "הקטע ממקם את הקריאה והחינוך הלשוני במסגרת התכנית; זה מספק בסיס משרדי לעבודה על מודעות פונולוגית וצליליות במילים מוכרות בכיתה א׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -65,12 +66,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=49668-50048",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.open_close_syllable.reading",
+      "summary_alignment_justification": "המקטע עוסק בהעשרת אוצר מילים ובטקסטים לימודיים; בהקשר זה נסמכים על המסמך לתמיכה סיכומית ביעדי הבחנה בין הברה פתוחה לסגורה.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -102,12 +104,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=16992-17372",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.rhyme.reading",
+      "summary_alignment_justification": "הטקסט מתאר טקסטים קצרים ועבודה מילולית; זה תומך ביעד זיהוי חרוזים באוצר מילים מוגבל ובמסגרת הקריאה הראשונית בכיתה א׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -139,12 +142,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=49668-50048",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.syllables.reading",
+      "summary_alignment_justification": "הפרק מתייחס לטקסטים ולמילים כיחידות לימוד; זה משמש עוגן לרקע התכנוני לתרגול ספירת הברות במילים מוכרות בכיתה א׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -176,12 +180,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=52326-52706",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.letters.reading",
+      "summary_alignment_justification": "הקטע כולל הוראות וטקסטים לתלמידים; זה מתיישר עם יעדי זיהוי אותיות במילה והשלמת אות חסרה בקריאה ראשונית.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -213,12 +218,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=108678-109058",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.final_letters.reading",
+      "summary_alignment_justification": "המסמך מדגיש כתיב נכון וטקסטים; זה תומך סיכומית ביעדי אות סופית ושימוש נכון באותיות סופיות במילים מוכרות.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -250,12 +256,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=109511-109891",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.basic_niqqud.reading",
+      "summary_alignment_justification": "הקטע עוסק בכתיב ובקריאה כמערכת אחת; זה תומך ביעדי קריאת מילים מנוקדות בסיסיות והתאמה לצורה ללא ניקוד.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -287,12 +294,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=120966-121346",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.sound_letter_match.reading",
+      "summary_alignment_justification": "הפרק מזכיר אוצר מילים וצלילים בטקסט; זה משמש בסיס לשיוך צליל פותח לאות המתאימה במילים מוכרות.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -324,12 +332,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=16520-16900",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.simple_words_read.reading",
+      "summary_alignment_justification": "הקטע מתאר שונות ברכישת מילים ופענוח; עקרונות אלה מתיישרים עם יעד פענוח מילים תדירות ומוכרות בכיתה א׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -361,12 +370,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=18269-18649",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.word_meaning_concrete.comprehension",
+      "summary_alignment_justification": "המקטע מדגיש הפקת משמעות מהקריאה והקשר; זה תומך ביעד הבנת משמעות מילים קונקרטיות במשפט או בהקשר קצר בהבנת הנקרא.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -398,12 +408,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=38021-38401",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.one_sentence_who_what.comprehension",
+      "summary_alignment_justification": "הטקסט מפרט שאלות מידע ותשובות לשאלות על טקסט; זה תומך ביעדי מענה על שאלות מי/מה/איפה מתוך משפט אחד.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -435,12 +446,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=132682-133062",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.simple_instruction.comprehension",
+      "summary_alignment_justification": "הקטע עוסק בהוראות מילוליות ובפרשנות של דיבור; זה מתאים ליעד הבנת וביצוע הוראה פשוטה ברמת משפט אחד.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -473,12 +485,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=46613-46993",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.copy_word.writing",
+      "summary_alignment_justification": "המסמך מתאר כתיבה, כתיב נכון ומשימות כתיבה; זה משמש עוגן ליעדי העתקת מילים מוכרות בכתב בכיתה א׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -511,12 +524,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=136898-137278",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.spell_word_choice.writing",
+      "summary_alignment_justification": "הפרק מפרט משפטים תקינים תחבירית ואיות בכתיבה; זה תומך ביעדי בחירת איות נכון ומשפט תקין ברמת מילה.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -548,12 +562,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=40982-41362",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.grammar_pos_roles.grammar",
+      "summary_alignment_justification": "הקטע מכיל דוגמאות למבנה משפט ולשמות פעולה ועצמים; זה תומך ביעד זיהוי שם עצם/פועל/תואר במשפטים פשוטים.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -585,12 +600,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=41835-42215",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.grammar_wellformed.grammar",
+      "summary_alignment_justification": "המקטע דן במשפטים פשוטים ומורכבים ובתקינות; זה תומך ביעד זיהוי משפט לא תקין מול משפט תקין בכיתה א׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -622,12 +638,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=79612-79992",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.grammar_agreement_light.grammar",
+      "summary_alignment_justification": "הטקסט מתאר שונות לשונית והתאמה בין רכיבי משפט; זה תומך ביעד בחירת ניסוח בהתאמה קלה בין נושא לפועל ומין/מספר.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -659,12 +676,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=120967-121347",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.grammar_cloze_deixis.grammar",
+      "summary_alignment_justification": "הקטע מזכיר השלמות והקשר בתוך משפט; זה תומך ביעד השלמת מילה מתאימה במשפט פשוט לפי הקשר (דהיקסיס בסיסי).",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -695,12 +713,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=41835-42215",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.grammar_word_order.grammar",
+      "summary_alignment_justification": "הפרק מציג מבנים תחביריים במשפטים; זה תומך ביעד זיהוי סדר מילים תקין במשפט פשוט בכיתה א׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -731,12 +750,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=41835-42215",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.grammar_odd_category.grammar",
+      "summary_alignment_justification": "המסמך עוסק בקטגוריות ובסיווג מידע לשוני; זה תומך ביעד זיהוי מילה שלא שייכת לקבוצה סמנטית פשוטה.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -767,12 +787,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=41835-42215",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.grammar_punctuation.grammar",
+      "summary_alignment_justification": "הקטע מתייחס לסימני פיסוק בכתיבה ובטקסטים; זה תומך ביעד זיהוי סימן פיסוק מתאים בסוף משפט.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -804,12 +825,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=78900-79280",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.grammar_connectors_time.grammar",
+      "summary_alignment_justification": "הטקסט מזכיר ביטויי זמן ומבני משפט; זה תומך ביעד זיהוי מילות זמן ומחברים פשוטים והתאמתם למשפט.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -841,12 +863,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=79466-79846",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.word_picture.vocabulary",
+      "summary_alignment_justification": "הקטע דן בהבהרת מילים באמצעים חזותיים בטקסטים; זה תומך ביעד קישור מילה קונקרטית לייצוג חזותי (תמונה/סצנה).",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -878,12 +901,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=18269-18649",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.word_meaning_concrete.vocabulary",
+      "summary_alignment_justification": "המקטע מדגיש אוצר מילים קונקרטי והקשר טקסטואלי; זה תומך ביעד הרחבת אוצר והבנת משמעות בהקשר קצר בעושר שפתי.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -915,12 +939,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=17573-17953",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g1.g1.phrase_appropriateness.speaking",
+      "summary_alignment_justification": "הפרק עוסק בשיח, נימוסים והתאמה מצבית; זה תומך ביעד בחירת ניסוח מתאים במצב חברתי פשוט בכיתה א׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -952,12 +977,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=46613-46993",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.fluent_words.reading",
+      "summary_alignment_justification": "הקטע מתאר שונות ברכישת מילים ופענוח; זה מתיישר עם יעד קריאת מילים מוכרות בשטף ובדיוק בכיתה ב׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -989,12 +1015,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=40983-41363",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.short_sentence.reading",
+      "summary_alignment_justification": "המסמך מציג מבני משפטים בטקסטים לימודיים; זה תומך ביעד קריאת משפטים קצרים והבנת משמעות בסיסית.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1025,12 +1052,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=79612-79992",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.simple_punctuation_read.reading",
+      "summary_alignment_justification": "הטקסט מתייחס לתקינות תחבירית ולפיסוק בכתיבה; זה תומך ביעד זיהוי סימני פיסוק בסיסיים בהקשר משפטים קצרים בקריאה.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1062,12 +1090,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=55108-55488",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.detail_main_idea.comprehension",
+      "summary_alignment_justification": "הקטע עוסק במידע, פירוט והסברים בטקסטים; זה תומך ביעד זיהוי פרטים מפורשים ורעיון מרכזי בטקסט קצר.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1098,12 +1127,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=39092-39472",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.simple_sequence.comprehension",
+      "summary_alignment_justification": "המקטע מזכיר סדר וזרימת מידע בטקסט; זה תומך ביעד זיהוי סדר אירועים בסיסי לפני/אחרי/קודם.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1135,12 +1165,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=48237-48617",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.light_inference.comprehension",
+      "summary_alignment_justification": "הפרק דן בשאלות הסבר והסקות מטקסט; זה תומך ביעד הסקת מסקנה פשוטה מטקסט קצר או ממשפטים מובילים.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1172,12 +1203,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=136898-137278",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.sentence_wellformed.writing",
+      "summary_alignment_justification": "הקטע מפרט משפטים תקינים תחבירית בכתיבה; זה תומך ביעד בחירת משפט תקין וניסוח תקין ברמת משפט בכיתה ב׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1209,12 +1241,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=40983-41363",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.short_paragraph_choice.writing",
+      "summary_alignment_justification": "המסמך מדבר על ארגון טקסט ובחירת מילים הולמות; זה תומך ביעד מבנה לפסקה קצרה ברמת בחירה מובנית.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1245,12 +1278,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=8788-9168",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.punctuation_choice.writing",
+      "summary_alignment_justification": "הטקסט מזכיר שימוש נכון בסימני פיסוק בכתיבה; זה תומך ביעד בחירת סימן פיסוק מתאים בהקשר של משפט.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1282,12 +1316,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=40982-41362",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.pos_basic.grammar",
+      "summary_alignment_justification": "הקטע כולל דוגמאות לתפקידי מילים במשפט; זה תומך ביעד זיהוי שם עצם/פועל/תואר במשפטים קצרים בכיתה ב׳.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1319,12 +1354,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=40982-41362",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.simple_tense.grammar",
+      "summary_alignment_justification": "המקטע מציין פעולות וזמנים בטקסטים; זה תומך ביעד זיהוי והתאמת זמן בסיסי (עבר/הווה/עתיד) במשפטים פשוטים.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1356,12 +1392,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=17573-17953",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.number_gender_light.grammar",
+      "summary_alignment_justification": "הפרק מתאר שפה חיה והקשרים בין רכיבי משפט; זה תומך ביעד התאמת מין/מספר בין נושא לפועל/תואר במשפט קצר.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1392,12 +1429,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=41835-42215",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.synonyms_basic.vocabulary",
+      "summary_alignment_justification": "הקטע מזכיר מילים נרדפות והבהרת מילים; זה תומך ביעד זיהוי מילה קרובה במשמעות (נרדפת) בהקשר פשוט.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1428,12 +1466,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=18269-18649",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.context_clue_easy.vocabulary",
+      "summary_alignment_justification": "המסמך עוסק בהפקת משמעות מהקריאה; זה תומך ביעד הסקת משמעות מילה מרמז הקשר במשפט קצר.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1465,12 +1504,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=17573-17953",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.situation_register.speaking",
+      "summary_alignment_justification": "הטקסט דן בתקשורת בין-אישית ובמצבי שיח; זה תומך ביעד בחירת ניסוח מתאים למצב שיח (כיתה/בית ספר/נימוס).",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   },
   {
@@ -1502,12 +1542,13 @@
       ],
       "repo_txt_catalog_ref": "data/hebrew-ministry-source-catalog.json",
       "official_doc_id": "https://meyda.education.gov.il/files/Curriculum/hebrew-1-6.pdf",
-      "official_section_anchor": null,
+      "official_section_anchor": "hebrew-1-6.pdf#chars=16992-17372",
       "official_objective_source": "ministry_summary_verified",
-      "official_doc_excerpt_ref": null,
-      "mapped_at": "2026-04-15",
+      "official_doc_excerpt_ref": "heb16.g2.g2.describe_prompt_choice.speaking",
+      "summary_alignment_justification": "הקטע עוסק בהפקת טקסטים ותיאור חוויה; זה תומך ביעד משפט קצר המתאר חוויה או תמונה לפי הנחיה במסגרת בחירה.",
+      "mapped_at": "2026-04-14",
       "confidence": "medium",
-      "reviewer_notes": "מקושר ל־PDF תוכנית הלימודים בעברית לכיתות א׳–ו׳ (משרד החינוך, מאגר meyda). ניסוח היעד בשורה הוא סיכום פדגוגי מסונכרן — לא ציטוט עמוד־עמוד."
+      "reviewer_notes": "reviewer:execution-pass-eran-2026-04-14"
     }
   }
 ]
