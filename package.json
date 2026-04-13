@@ -11,6 +11,7 @@
     "audit:harness": "tsx scripts/generator-deterministic-harness.mjs",
     "test:parent-report-phase1": "tsx scripts/parent-report-phase1-selftest.mjs",
     "test:topic-next-step-phase2": "tsx scripts/topic-next-step-phase2.test.mjs",
+    "test:topic-next-step-engine-scenarios": "tsx scripts/topic-next-step-engine-scenarios.mjs",
     "test:parent-report-phase6": "tsx scripts/parent-report-phase6-suite.mjs && tsx scripts/parent-report-pages-ssr.mjs"
   },
   "dependencies": {

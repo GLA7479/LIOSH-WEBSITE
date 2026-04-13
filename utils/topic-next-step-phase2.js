@@ -90,10 +90,39 @@ export function buildTrendDerivedSignals(trend, row) {
  * @param {Record<string, unknown>|null|undefined} behaviorProfile
  * @param {ReturnType<typeof buildTrendDerivedSignals>} trendDer
  */
+function resolvePhase2BehaviorType(row, behaviorProfile) {
+  const prof = String(behaviorProfile?.dominantType || "").trim();
+  const ex =
+    row?.topicEngineRowSignals && typeof row.topicEngineRowSignals === "object"
+      ? row.topicEngineRowSignals
+      : null;
+  const exDiag = ex?.diagnosticType != null ? String(ex.diagnosticType).trim() : "";
+  if (prof && prof !== "undetermined") return prof;
+  if (exDiag && exDiag !== "undetermined") return exDiag;
+  if (prof) return prof;
+  return exDiag || "undetermined";
+}
+
+function mergeExplicitTopicEngineRiskFlags(row, base) {
+  const ex =
+    row?.topicEngineRowSignals && typeof row.topicEngineRowSignals === "object"
+      ? row.topicEngineRowSignals
+      : null;
+  const rf = ex?.riskFlags && typeof ex.riskFlags === "object" ? ex.riskFlags : null;
+  if (!rf) return base;
+  const out = { ...base };
+  if (rf.hintDependenceRisk === true) out.hintDependenceRisk = true;
+  if (rf.falsePromotionRisk === true) out.falsePromotionRisk = true;
+  if (rf.falseRemediationRisk === true) out.falseRemediationRisk = true;
+  if (rf.speedOnlyRisk === true) out.speedOnlyRisk = true;
+  if (rf.recentTransitionRisk === true) out.recentTransitionRisk = true;
+  return out;
+}
+
 export function buildPhase2RiskFlags(row, trend, behaviorProfile, trendDer) {
   const suff = row?.dataSufficiencyLevel;
   const ev = row?.evidenceStrength;
-  const behaviorType = String(behaviorProfile?.dominantType || "undetermined");
+  const behaviorType = resolvePhase2BehaviorType(row, behaviorProfile);
   const hintRate = behaviorProfile?.signals?.hintRate;
   const hintKnown = Number(behaviorProfile?.signals?.hintKnownCount) || 0;
   const modeKey = String(row?.modeKey || "").trim();
@@ -101,18 +130,18 @@ export function buildPhase2RiskFlags(row, trend, behaviorProfile, trendDer) {
   const acc = Math.round(Number(row?.accuracy) || 0);
   const wrongRatio = q > 0 ? Math.max(0, Number(row?.wrong) || 0) / q : 0;
 
-  const insufficientEvidenceRisk =
+  let insufficientEvidenceRisk =
     suff !== "strong" || ev === "low" || row?.isEarlySignalOnly === true || q < 12;
 
-  const hintDependenceRisk =
+  let hintDependenceRisk =
     behaviorType === "instruction_friction" ||
     (hintRate != null && hintRate >= 0.32 && hintKnown >= 3);
 
-  const speedOnlyRisk =
+  let speedOnlyRisk =
     behaviorType === "speed_pressure" ||
     ((modeKey === "speed" || modeKey === "marathon") && acc >= 55 && wrongRatio < 0.32);
 
-  const falsePromotionRisk =
+  let falsePromotionRisk =
     insufficientEvidenceRisk ||
     hintDependenceRisk ||
     trendDer.fragileProgressPattern ||
@@ -125,17 +154,31 @@ export function buildPhase2RiskFlags(row, trend, behaviorProfile, trendDer) {
     q >= 10 &&
     wrongRatio >= 0.28;
 
-  const falseRemediationRisk =
+  let falseRemediationRisk =
     speedOnlyRisk ||
     (behaviorType === "careless_pattern" && acc >= 58) ||
     (trendDer.positiveAccuracy && behaviorType !== "knowledge_gap") ||
     (trendDer.fluencySupportWithoutAccuracyDrop && behaviorType === "speed_pressure");
 
-  const recentTransitionRisk =
+  let recentTransitionRisk =
     (String(row?.levelKey) === "hard" &&
       trendDer.negativeAccuracy &&
       trendDer.recentDifficultyIncrease) ||
     (trendDer.periodRegression && trendDer.negativeAccuracy);
+
+  ({
+    hintDependenceRisk,
+    falsePromotionRisk,
+    falseRemediationRisk,
+    speedOnlyRisk,
+    recentTransitionRisk,
+  } = mergeExplicitTopicEngineRiskFlags(row, {
+    hintDependenceRisk,
+    falsePromotionRisk,
+    falseRemediationRisk,
+    speedOnlyRisk,
+    recentTransitionRisk,
+  }));
 
   return {
     falsePromotionRisk,
@@ -229,7 +272,23 @@ export function applyPhase2GuardsToStep(proposed, ctx) {
   }
 
   if (trendDer.unclearTrend && isAggressiveStep(step)) {
-    apply("unclear_trend_cap_aggressive", "מגמת דיוק לא ברורה או ביטחון מגמה נמוך — לא פועלים אגרסיבית.", "maintain_and_strengthen");
+    const qN = Number(row?.questions) || 0;
+    const accN = Math.round(Number(row?.accuracy) || 0);
+    const strongPerformanceNoTrend =
+      sufficiencyStrong &&
+      qN >= 18 &&
+      accN >= 88 &&
+      row?.excellent === true &&
+      !hintDependenceRiskActive(riskFlags) &&
+      !riskFlags.falsePromotionRisk &&
+      !trendDer.fragileProgressPattern;
+    if (!strongPerformanceNoTrend) {
+      apply(
+        "unclear_trend_cap_aggressive",
+        "מגמת דיוק לא ברורה או ביטחון מגמה נמוך — לא פועלים אגרסיבית.",
+        "maintain_and_strengthen"
+      );
+    }
   }
 
   if (trendDer.fragileProgressPattern && isAdvance) {
@@ -290,6 +349,30 @@ export function applyPhase2GuardsToStep(proposed, ctx) {
 
   if (riskFlags.insufficientEvidenceRisk && isAggressiveStep(step)) {
     apply("insufficient_evidence_cap_phase2", "ראיות לא מספקות לשינוי אגרסיבי בשלב 2.", "maintain_and_strengthen");
+  }
+
+  const qR = Number(row?.questions) || 0;
+  const accR = Math.round(Number(row?.accuracy) || 0);
+  const wrongRR = qR > 0 ? Math.max(0, Number(row?.wrong) || 0) / qR : 0;
+  const modeR = String(row?.modeKey || "").trim();
+  const fragileLikeProfile =
+    behaviorType === "fragile_success" ||
+    behaviorType === "instruction_friction" ||
+    (behaviorType === "speed_pressure" && (modeR === "speed" || modeR === "marathon"));
+  if (
+    step === "maintain_and_strengthen" &&
+    fragileLikeProfile &&
+    behaviorType !== "stable_mastery" &&
+    sufficiencyStrong &&
+    qR >= 10 &&
+    wrongRR >= 0.15 &&
+    accR < 88
+  ) {
+    apply(
+      "risk_profile_prefer_remediate_over_maintain",
+      "פרופיל סיכון/שבירות מזוהה — מעדיפים חיזוק ממוקד באותה רמה על פני עמידה כללית בלבד.",
+      "remediate_same_level"
+    );
   }
 
   return { step, blockers, traceAdds, phase2RuleId };

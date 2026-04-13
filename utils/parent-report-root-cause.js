@@ -42,6 +42,22 @@ export function estimateRowRootCause(p) {
   /** @type {string|null} */
   let secondary = null;
 
+  if (behaviorType === "careless_pattern") {
+    evidence.push("פרופיל דומיננטי — דפוס רשלנות");
+    if (riskFlags.speedOnlyRisk) secondary = "speed_pressure";
+    return finalize("careless_execution", 0.66, evidence, secondary, acc, wr, q, trendDer, behaviorType);
+  }
+
+  if (behaviorType === "fragile_success" && (trendDer.fragileProgressPattern || riskFlags.hintDependenceRisk)) {
+    evidence.push("הצלחה עם תלות או מגמה שבירה");
+    return finalize("weak_independence", 0.63, evidence, "instruction_friction", acc, wr, q, trendDer, behaviorType);
+  }
+
+  if (behaviorType === "knowledge_gap" && riskFlags.strongKnowledgeGapEvidence && acc < 62 && q >= 10) {
+    evidence.push("פער ידע עם דיוק נמוך ונפח טעויות תומך");
+    return finalize("knowledge_gap", 0.74, evidence, secondary, acc, wr, q, trendDer, behaviorType);
+  }
+
   if (riskFlags.speedOnlyRisk && behaviorType !== "speed_pressure") {
     evidence.push("דגל מהירות/מסלול ללא פער דיוק חמור");
     return finalize("speed_pressure", 0.72, evidence, secondary, acc, wr, q, trendDer, behaviorType);
@@ -58,7 +74,15 @@ export function estimateRowRootCause(p) {
     return finalize("speed_pressure", 0.7, evidence, secondary, acc, wr, q, trendDer, behaviorType);
   }
 
-  if (behaviorType === "careless_pattern" || (acc >= 68 && wr > 0.12 && wr < 0.35 && q >= 10)) {
+  if (
+    acc >= 68 &&
+    wr > 0.12 &&
+    wr < 0.35 &&
+    q >= 10 &&
+    behaviorType !== "fragile_success" &&
+    behaviorType !== "knowledge_gap" &&
+    behaviorType !== "instruction_friction"
+  ) {
     evidence.push("טעויות «רשלניות» יחסית לרמת שליטה");
     return finalize("careless_execution", 0.62, evidence, secondary, acc, wr, q, trendDer, behaviorType);
   }
@@ -70,16 +94,6 @@ export function estimateRowRootCause(p) {
   ) {
     evidence.push("עצמאות יורדת לצד דיוק גבוה יחסית");
     return finalize("weak_independence", 0.65, evidence, "instruction_friction", acc, wr, q, trendDer, behaviorType);
-  }
-
-  if (behaviorType === "knowledge_gap" && riskFlags.strongKnowledgeGapEvidence && acc < 62 && q >= 10) {
-    evidence.push("פער ידע עם דיוק נמוך ונפח טעויות תומך");
-    return finalize("knowledge_gap", 0.74, evidence, secondary, acc, wr, q, trendDer, behaviorType);
-  }
-
-  if (behaviorType === "fragile_success" && (trendDer.fragileProgressPattern || riskFlags.hintDependenceRisk)) {
-    evidence.push("הצלחה עם תלות או מגמה שבירה");
-    return finalize("weak_independence", 0.63, evidence, "instruction_friction", acc, wr, q, trendDer, behaviorType);
   }
 
   if (q < 12 || restraint?.conclusionStrength === "tentative") {

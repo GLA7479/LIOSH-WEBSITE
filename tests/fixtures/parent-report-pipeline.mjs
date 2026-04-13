@@ -204,6 +204,8 @@ export const PARENT_REPORT_SCENARIOS = {
           accuracy: 93,
           needsPractice: false,
           excellent: true,
+          gradeKey: "g4",
+          levelKey: "medium",
         }),
       },
       mistakes: {},
@@ -632,6 +634,40 @@ export const PARENT_REPORT_SCENARIOS = {
         ...emptyAnalysis(),
         mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 5 } },
         geometryMistakesByTopic: { perimeter: { count: 3 } },
+      },
+    }),
+
+  /**
+   * מנוע בלבד — אי־התאמה בין gradeKey בשורה לבין טווח התרגול בפועל (טעויות ב־g4 medium).
+   * בודקים שלא מקדמים כיתה כשהשורה מדווחת כרמה נמוכה יחסית לעומת פער ידע חזק.
+   */
+  grade_level_mismatch_math: () =>
+    buildSyntheticBaseReport({
+      summary: {
+        totalQuestions: 30,
+        mathQuestions: 30,
+        mathCorrect: 18,
+        mathAccuracy: 60,
+        overallAccuracy: 60,
+      },
+      mathOperations: {
+        [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: mathRowSession({
+          questions: 20,
+          accuracy: 60,
+          gradeKey: "g2",
+          levelKey: "hard",
+          behaviorProfile: {
+            version: 1,
+            dominantType: "knowledge_gap",
+            signals: { hintRate: 0.08, hintKnownCount: 2, wrongEventCount: 6 },
+            decisionTrace: [],
+          },
+        }),
+      },
+      mistakes: { math: mathWrongCluster(8, "pf:gap_grade_mismatch") },
+      analysis: {
+        ...emptyAnalysis(),
+        mathMistakesByOperation: { [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: { count: 8 } },
       },
     }),
 };
