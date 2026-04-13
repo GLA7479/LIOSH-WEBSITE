@@ -1,8 +1,9 @@
 /**
  * E2E: Hebrew grades א׳–ב׳ (g1/g2) — product fit on real Next page.
  *
- * לכל נושא (כולל דיבור אם מופיע ב־select): אין שדה הקלדה, בדיוק 4 כפתורי בחירה,
- * אין מטא/תוויות פנימיות בגוף השאלה הגלוי.
+ * לכל נושא (כולל דיבור אם מופיע ב־select): סבב תקין הוא או MCQ (בדיוק 4 כפתורים)
+ * או סבב הקלדה מבוקר (שדה טקסט + ״בדוק תשובה׳) לפי `preferredAnswerMode` בבנק החי —
+ * לא שילוב של שני המצבים. אין מטא/תוויות פנימיות בגוף השאלה הגלוי.
  *
  * מומלץ מול `next start` **מהשורש של הפרויקט** (אחרי `next build`), עם פורט פנוי —
  * אם `E2E_BASE_URL` מצביע על שרת אחר או build ישן, תראו «טוען...» ו־0 `<select>`.
@@ -101,13 +102,18 @@ async function snapshotRound(page) {
   const { texts } = await readChoiceGrid(page);
   const meta = metaHits(q);
   const issues = [];
-  if (typing) issues.push("typing_ui_visible");
-  if (texts.length !== 4) issues.push(`choice_buttons:${texts.length}`);
+  if (typing) {
+    if (texts.length !== 0) {
+      issues.push(`typing_with_choice_grid:${texts.length}`);
+    }
+  } else {
+    if (texts.length !== 4) issues.push(`choice_buttons:${texts.length}`);
+    const binaryish =
+      texts.length === 2 &&
+      texts.join(" ").match(/נכון|לא\s+נכון|אמת|שקר/i);
+    if (binaryish) issues.push("binary_two_button_row");
+  }
   if (meta.length) issues.push(`meta_in_stem:${meta.join(",")}`);
-  const binaryish =
-    texts.length === 2 &&
-    texts.join(" ").match(/נכון|לא\s+נכון|אמת|שקר/i);
-  if (binaryish) issues.push("binary_two_button_row");
   return {
     pass: issues.length === 0,
     issues,
@@ -122,7 +128,8 @@ async function waitForChoiceRound(page, timeoutMs = 22000) {
   while (Date.now() < deadline) {
     last = await snapshotRound(page);
     if (last.pass) return last;
-    if (last.issues.includes("typing_ui_visible")) return last;
+    if (last.issues.some((x) => String(x).startsWith("typing_with_choice_grid")))
+      return last;
     await page.waitForTimeout(200);
   }
   return last;
@@ -187,10 +194,12 @@ async function runScenario(page, { grade, topic }) {
 
   const r1 = await waitForChoiceRound(page, 22000);
 
-  if (r1.pass) {
+  if (r1.pass && Array.isArray(r1.texts) && r1.texts.length === 4) {
     const firstBtn = page.locator("div.grid.gap-3.w-full.mb-3 button").first();
     await firstBtn.click();
     await page.waitForTimeout(2600);
+  } else if (r1.pass) {
+    await page.waitForTimeout(400);
   }
 
   const r2 = await waitForChoiceRound(page, 22000);

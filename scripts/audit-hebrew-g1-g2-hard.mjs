@@ -5,7 +5,8 @@
  * - answers.length !== 4
  * - binary: true OR optionCount === 2 with 2 answers
  * - question stem (raw + post-finalize+scope+strip) matching internal/meta heuristics
- * - "typing risk" if legacy resolveAnswerMode (without g1/g2 override) would return typing
+ * - "typing risk" if legacy resolveAnswerMode (without g1/g2 early-return) would return typing
+ *   (מידע בלבד; בזמן ריצה g1/g2 נשארים choice אלא אם יש `preferredAnswerMode: "typing"` בתת־נושא מאושר)
  *
  * Run: npx tsx scripts/audit-hebrew-g1-g2-hard.mjs
  * Exit 1 if any blocking issue is found.

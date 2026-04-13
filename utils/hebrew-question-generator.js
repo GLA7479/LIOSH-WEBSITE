@@ -8,15 +8,24 @@ import {
 import {
   withG1SubtopicPreference,
   attachG1SubtopicParams,
+  resolveG1ItemSubtopicId,
 } from './hebrew-g1-subtopic';
 import {
   withG2SubtopicPreference,
   attachG2SubtopicParams,
+  resolveG2ItemSubtopicId,
 } from './hebrew-g2-subtopic';
 import {
   withUpperGradeSubtopicPreference,
   attachUpperGradeSubtopicParams,
 } from './hebrew-g3456-subtopic';
+
+/** Layer 3: typing רק לפריטים עם preferredAnswerMode + תת־נושא מאושר (א׳–ב׳). */
+const G12_ALLOWED_TYPING_SUBTOPICS = new Set([
+  "g1.spell_word_choice",
+  "g2.sentence_wellformed",
+  "g2.punctuation_choice",
+]);
 
 // ========== מאגר שאלות לפי כיתה ורמה ==========
 // הקובץ כולל מאות שאלות מותאמות לכל כיתה (א'-ו'), רמה (קל/בינוני/קשה) ונושא
@@ -521,6 +530,9 @@ const G1_EASY_QUESTIONS = {
       subtopicId: "g1.spell_word_choice",
       patternFamily: "g1_writing_cloze_ahav",
       subtype: "ohev_water",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["אוהב"],
+      maxTypingChars: 8,
     },
   ],
   grammar: [
@@ -951,6 +963,9 @@ const G1_MEDIUM_QUESTIONS = {
       subtopicId: "g1.spell_word_choice",
       patternFamily: "g1_writing_cloze_kore",
       subtype: "orthographic_slot",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["קורא"],
+      maxTypingChars: 8,
     },
     {
       question: "משתמשים בו כדי לצבוע או להדגיש — בחרו איות למילה שמתארת חומר צבע:",
@@ -974,6 +989,198 @@ const G1_MEDIUM_QUESTIONS = {
     { question: "מה חלק הדיבר של המילה 'רץ'?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0 },
     { question: "איזה ניסוח מתאים לגוף ולמין (ילד/ילדה)?", answers: ["הילד רץ", "הילד רצים", "הילדה רץ", "הילדים רץ"], correct: 0 },
     { question: "מה חלק הדיבר של המילה 'קורא'?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0 },
+    {
+      question: "איזה משפט לא תקין?",
+      answers: ["אבא קורא עיתון", "קורא אבא עיתון בבית", "אמא מכינה ארוחה", "הילדה מציירת"],
+      correct: 1,
+      subtopicId: "g1.grammar_wellformed",
+      patternFamily: "g1_grammar_medium_illformed_word_order",
+      subtype: "subject_verb_scramble",
+    },
+    {
+      question: "איזה משפט לא תקין?",
+      answers: ["החתול ישן על הספה", "ישן החתול על הספה בלי", "הכלב שיחק בחצר", "אני שותה מים"],
+      correct: 1,
+      subtopicId: "g1.grammar_wellformed",
+      patternFamily: "g1_grammar_medium_illformed_cat_sleep",
+      subtype: "verb_front",
+    },
+    {
+      question: "בחרו משפט תקין:",
+      answers: ["אני אוכל תפוח במטבח", "אוכל אני במטבח תפוח", "תפוח אוכל אני במטבח לא", "במטבח תפוח אוכל"],
+      correct: 0,
+      subtopicId: "g1.grammar_wellformed",
+      patternFamily: "g1_grammar_medium_wellformed_apple_kitchen",
+      subtype: "svo",
+    },
+    {
+      question: "איזה משפט לא תקין?",
+      answers: ["הילדים משחקים יפה", "משחקים הילדים יפה בלי", "המורה מדברת בשקט", "אנחנו יושבים בשורה"],
+      correct: 1,
+      subtopicId: "g1.grammar_wellformed",
+      patternFamily: "g1_grammar_medium_illformed_play_nice",
+      subtype: "verb_initial",
+    },
+    {
+      question: "בחרו משפט תקין:",
+      answers: ["בגן ראינו פרחים אדומים", "בגן פרחים ראינו אדומים לא", "ראינו בגן אדומים פרחים", "פרחים בגן ראינו"],
+      correct: 0,
+      subtopicId: "g1.grammar_wellformed",
+      patternFamily: "g1_grammar_medium_wellformed_garden_flowers",
+      subtype: "place_first",
+    },
+    {
+      question: "בחרו מילה שמשלימה: עכשיו אני ___ על השולחן.",
+      answers: ["כותב", "כתבתי", "אכתוב", "כתבנו"],
+      correct: 0,
+      subtopicId: "g1.grammar_cloze_deixis",
+      patternFamily: "g1_grammar_medium_cloze_now_write",
+      subtype: "present_now",
+    },
+    {
+      question: "בחרו מילה שמשלימה: מחר בבוקר אנחנו ___ את השיעור.",
+      answers: ["נחזור", "חזרנו", "חוזרים", "חזרתי"],
+      correct: 0,
+      subtopicId: "g1.grammar_cloze_deixis",
+      patternFamily: "g1_grammar_medium_cloze_tomorrow_review",
+      subtype: "future_morning",
+    },
+    {
+      question: "בחרו מילה שמשלימה: אתמול בערב אני ___ סיפור קצר.",
+      answers: ["שמעתי", "שומע", "אשמע", "שמענו עכשיו"],
+      correct: 0,
+      subtopicId: "g1.grammar_cloze_deixis",
+      patternFamily: "g1_grammar_medium_cloze_yesterday_story",
+      subtype: "past_evening",
+    },
+    {
+      question: "בחרו מילה שמשלימה: אחרי הצהריים אני ___ קצת במחברת.",
+      answers: ["מתרגל", "תרגלתי", "אתרגל", "תרגלנו כבר"],
+      correct: 0,
+      subtopicId: "g1.grammar_cloze_deixis",
+      patternFamily: "g1_grammar_medium_cloze_afternoon_practice",
+      subtype: "afternoon_habit",
+    },
+    {
+      question: "בחרו מילה שמשלימה: לפני השיעור אנחנו ___ את החומר על השולחן.",
+      answers: ["מסדרים", "סידרנו", "נסדר", "סידרתי לבד"],
+      correct: 0,
+      subtopicId: "g1.grammar_cloze_deixis",
+      patternFamily: "g1_grammar_medium_cloze_before_lesson_arrange",
+      subtype: "prep_sequence",
+    },
+    {
+      question: "בחרו משפט עם סדר מילים הגיוני:",
+      answers: ["המורה נותנת לנו משימה", "נותנת המורה משימה לנו", "משימה לנו המורה נותנת", "לנו משימה נותנת המורה"],
+      correct: 0,
+      subtopicId: "g1.grammar_word_order",
+      patternFamily: "g1_grammar_medium_word_order_teacher_task",
+      subtype: "svo_classroom",
+    },
+    {
+      question: "בחרו משפט עם סדר מילים הגיוני:",
+      answers: ["אני מחזיק את התיק בשתי ידיים", "את התיק בשתי ידיים מחזיק אני", "מחזיק אני בשתי ידיים את התיק לא", "בשתי ידיים אני את התיק"],
+      correct: 0,
+      subtopicId: "g1.grammar_word_order",
+      patternFamily: "g1_grammar_medium_word_order_hold_bag",
+      subtype: "hold_object",
+    },
+    {
+      question: "בחרו משפט עם סדר מילים הגיוני:",
+      answers: ["בחצר רצים הילדים בשקט", "רצים בחצר בשקט הילדים לא", "הילדים בשקט בחצר רצים", "בשקט הילדים רצים בחצר לא"],
+      correct: 0,
+      subtopicId: "g1.grammar_word_order",
+      patternFamily: "g1_grammar_medium_word_order_yard_run",
+      subtype: "place_adverb",
+    },
+    {
+      question: "בחרו משפט עם סדר מילים הגיוני:",
+      answers: ["אמא שמה את האוכל על השולחן", "על השולחן שמה אמא את האוכל לא", "את האוכל אמא על השולחן שמה", "שמה על האוכל אמא השולחן"],
+      correct: 0,
+      subtopicId: "g1.grammar_word_order",
+      patternFamily: "g1_grammar_medium_word_order_mom_table",
+      subtype: "meal_setup",
+    },
+    {
+      question: "לפני השינה אני ___ שיניים.",
+      answers: ["מצחצח", "צחצחתי", "אצחצח", "צחצחנו אתמול"],
+      correct: 0,
+      subtopicId: "g1.grammar_connectors_time",
+      patternFamily: "g1_grammar_medium_time_before_sleep_teeth",
+      subtype: "routine_before",
+    },
+    {
+      question: "אחרי המשחק אנחנו ___ מים.",
+      answers: ["שותים", "שתיתי", "נשתה", "שתינו אתמול"],
+      correct: 0,
+      subtopicId: "g1.grammar_connectors_time",
+      patternFamily: "g1_grammar_medium_time_after_play_drink",
+      subtype: "after_activity",
+    },
+    {
+      question: "בבוקר אני ___ את הפנים.",
+      answers: ["רוחץ", "רחצתי", "ארחץ", "רחצנו בערב"],
+      correct: 0,
+      subtopicId: "g1.grammar_connectors_time",
+      patternFamily: "g1_grammar_medium_time_morning_wash_face",
+      subtype: "morning_hygiene",
+    },
+    {
+      question: "כשמסיימים ארוחה אני לפעמים ___ את השולחן.",
+      answers: ["מנקה", "ניקיתי", "אנקה", "ניקינו מחר"],
+      correct: 0,
+      subtopicId: "g1.grammar_connectors_time",
+      patternFamily: "g1_grammar_medium_time_after_meal_clean",
+      subtype: "after_meal",
+    },
+    {
+      question: "איזו מילה לא שייכת לקבוצת ׳חיות מחמד בבית׳?",
+      answers: ["דג זהב", "חתול", "כלב", "ארון"],
+      correct: 3,
+      subtopicId: "g1.grammar_odd_category",
+      patternFamily: "g1_grammar_medium_odd_pets_home",
+      subtype: "furniture_vs_pet",
+    },
+    {
+      question: "איזו מילה לא שייכת לקבוצת ׳דברים שצומחים בגינה׳?",
+      answers: ["עשב", "שושן", "עץ קטן", "אופניים"],
+      correct: 3,
+      subtopicId: "g1.grammar_odd_category",
+      patternFamily: "g1_grammar_medium_odd_garden_grows",
+      subtype: "object_vs_plant",
+    },
+    {
+      question: "איזה משפט מסתיים בסימן פיסוק נכון אחרי מילת פלא?",
+      answers: ["וואו, איזה יום יפה!", "וואו איזה יום יפה.", "וואו איזה יום יפה", "וואו! איזה יום יפה לא"],
+      correct: 0,
+      subtopicId: "g1.grammar_punctuation",
+      patternFamily: "g1_grammar_medium_punct_wow_comma",
+      subtype: "interjection_comma",
+    },
+    {
+      question: "איזה משפט עם סימן שאלה בסוף נכון?",
+      answers: ["איפה הנעליים שלי?", "איפה הנעליים שלי.", "איפה הנעליים שלי", "?איפה הנעליים שלי"],
+      correct: 0,
+      subtopicId: "g1.grammar_punctuation",
+      patternFamily: "g1_grammar_medium_punct_where_shoes",
+      subtype: "where_question",
+    },
+    {
+      question: "איזה משפט נכון ליחיד מול רבים?",
+      answers: ["הילדים משחקים בחוץ", "הילדים משחק בחוץ", "הילד משחקים בחוץ", "הילד משחקים בחוץ לא"],
+      correct: 0,
+      subtopicId: "g1.grammar_agreement_light",
+      patternFamily: "g1_grammar_medium_agreement_kids_play_outside",
+      subtype: "plural_subject",
+    },
+    {
+      question: "איזה משפט נכון לגבי המורה בכיתה?",
+      answers: ["המורה כותבת על הלוח", "המורה כותבים על הלוח", "המורה כותב על הלוח", "המורות כותב על הלוח"],
+      correct: 0,
+      subtopicId: "g1.grammar_agreement_light",
+      patternFamily: "g1_grammar_medium_agreement_teacher_writes",
+      subtype: "fem_singular",
+    },
   ],
   vocabulary: [
     { question: "מה רוכבים לפעמים בחוץ ויש לזה גלגלים?", answers: ["אופניים", "מחברת", "ענן", "כיסא"], correct: 0 },
@@ -1231,6 +1438,9 @@ const G1_HARD_QUESTIONS = {
       subtopicId: "g1.spell_word_choice",
       patternFamily: "g1_writing_cloze_machberet",
       subtype: "orthographic_slot",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["מחברת"],
+      maxTypingChars: 10,
     },
     {
       question:
@@ -1253,6 +1463,9 @@ const G1_HARD_QUESTIONS = {
       subtopicId: "g1.spell_word_choice",
       patternFamily: "g1_writing_past_first",
       subtype: "qraati",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["קראתי"],
+      maxTypingChars: 10,
     },
     {
       question:
@@ -1487,6 +1700,9 @@ const G2_EASY_QUESTIONS = {
       subtopicId: "g2.sentence_wellformed",
       patternFamily: "g2_writing_cloze_mesader",
       subtype: "orthography_slot",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["מסדר"],
+      maxTypingChars: 10,
     },
     {
       question: "בשיעור עוסקים לפעמים ב___ טקסט (מילה אחת) — בחרו איות נכון:",
@@ -1495,6 +1711,9 @@ const G2_EASY_QUESTIONS = {
       subtopicId: "g2.sentence_wellformed",
       patternFamily: "g2_writing_spell_kriah",
       subtype: "activity_noun",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["קריאה"],
+      maxTypingChars: 10,
     },
     {
       question: "כותבים בה שיעורים ומסדרים דפים — בחרו איות למילה שמתארת את החפץ:",
@@ -1548,12 +1767,88 @@ const G2_EASY_QUESTIONS = {
       subtype: "two_sentences",
     },
     {
-      question: "ניסוח נכון ליומן: בחרו משפט פתיחה מתאים:",
+      question:
+        "ניסוח נכון ליומן: כתבו משפט פתיחה קצר אחד ותקין (משפט אחד בלבד, בלי נקודות בסוף):",
       answers: ["היום היה מעניין בבית הספר", "היום בית הספר מעניין היום", "היום היה בית ספר", "מעניין היום בלי היום"],
       correct: 0,
       subtopicId: "g2.sentence_wellformed",
       patternFamily: "g2_journal_opening",
       subtype: "diary_style",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["היום היה מעניין בבית הספר"],
+      maxTypingChars: 48,
+    },
+    {
+      question:
+        "בכתיבה: בסוף משפט הודעה רגילה כמו ׳היום למדנו משהו חדש׳ — כתבו מילה אחת: איך קוראים לסימן הפיסוק המתאים? (אחת מארבע: נקודה / סימן שאלה / סימן קריאה / פסיק)",
+      answers: ["נקודה", "סימן שאלה", "סימן קריאה", "פסיק"],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_period_fact",
+      subtype: "end_declarative",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["נקודה"],
+      maxTypingChars: 16,
+    },
+    {
+      question:
+        "בכתיבה: המשפט ׳איפה המחק׳ הוא שאלה — כתבו מילה אחת: איך קוראים לסימן הנכון בסוף? (אחת מארבע: נקודה / סימן שאלה / סימן קריאה / פסיק)",
+      answers: ["סימן שאלה", "נקודה", "סימן קריאה", "פסיק"],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_question_where",
+      subtype: "question_mark",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["סימן שאלה"],
+      maxTypingChars: 16,
+    },
+    {
+      question: "בכתיבה: המשפט ׳וואו כמה זה גבוה׳ מביע הפתעה — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: ["!", ".", "?", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_exclaim",
+      subtype: "surprise",
+    },
+    {
+      question: "בכתיבה: המשפט ׳ניפגש אחרי ההפסקה׳ הוא הודעה רגילה — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: [".", "?", "!", "..."],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_meet_after_break",
+      subtype: "statement",
+    },
+    {
+      question: "בכתיבה: המשפט ׳מתי מתחיל השיעור׳ — איזה סימן פיסוק נכון בסוף המשפט?",
+      answers: ["?", ".", "!", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_when_lesson",
+      subtype: "wh_question",
+    },
+    {
+      question: "בכתיבה: המשפט ׳אל תרוצו במסדרון׳ הוא הוראה חזקה — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: ["!", ".", "?", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_imperative_hall",
+      subtype: "command",
+    },
+    {
+      question: "בכתיבה: המשפט ׳הבאתי עפרון ומחק׳ ממשיך ברשימה — איזה סימן פיסוק מתאים בין ׳עפרון׳ ל׳מחק׳ בתוך המשפט?",
+      answers: [",", ".", "?", "!"],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_list_comma",
+      subtype: "inline_pair",
+    },
+    {
+      question: "בכתיבה: המשפט ׳תודה על העזרה׳ הוא משפט מנומס — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: [".", "?", "!", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_thanks",
+      subtype: "courtesy",
     },
   ],
   grammar: [
@@ -1688,6 +1983,54 @@ const G2_EASY_QUESTIONS = {
     { question: "מה אומרים כשמבקשים סליחה?", answers: ["סליחה", "תודה", "בבקשה", "שלום"], correct: 0 },
     { question: "איך אומרים כשלא הבנו את ההוראות?", answers: ["אפשר להסביר שוב?", "אני צריך ספר", "אני צריך כלב", "אני צריך בית"], correct: 0 },
     { question: "בחרו משפט קצר שמתאר גן עם פרחים:", answers: ["בגן יש פרחים צבעוניים", "אני אוהב ספרים", "המורה קוראת", "לילה טוב"], correct: 0 },
+    {
+      question: "בחרו משפט קצר שמתאר יום גשום בבית הספר:",
+      answers: ["ירד גשם ונכנסנו מהר לכיתה", "השמש זרחה ולא היה ענן", "אכלנו גלידה על הגג", "ישנו בחצר כל הלילה"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_rain_day",
+      subtype: "weather_school",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר חברות שמשחקות בחצר בהפסקה:",
+      answers: ["שתי חברות קופצות בחבל בחצר", "כולם ישנים בשקט בכיתה", "המורה כותבת על הלוח לבד", "אין אף אחד בבית הספר"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_recess_rope",
+      subtype: "playground",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר ארוחת צהריים חמה בבית:",
+      answers: ["אמא הגישה מרק חם ולחם", "אכלנו רק קרח בבוקר", "שיחקנו כדורסל בלי לאכול", "ישנו במסדרון בלי אוכל"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_lunch_home",
+      subtype: "meal",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר כלב קטן ושמח בפארק:",
+      answers: ["הכלב הקטן רץ עם זנב מרוצה", "הכלב ישן על הספה כל היום", "אין כלב רק חתול עצוב", "הכלב קורא ספר בעצמו"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_happy_puppy",
+      subtype: "animal",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר הכנות לפני הצגה בכיתה:",
+      answers: ["תרגלנו את השורות וסידרנו תחפושות", "שכחנו את ההצגה וביקשנו לבטל", "לא דיברנו אחד עם השני", "ישבנו בלי לזוז בחוץ"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_play_prep",
+      subtype: "class_play",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר לילה עם ירח מלא ושמיים בהירים:",
+      answers: ["הירח זרח והכוכבים נראו בבירור", "היה חושך מוחלט בלי ירח", "ירד שלג כבד בלי רוח", "השמש זרחה בחצות"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_moon_night",
+      subtype: "night_sky",
+    },
   ],
 };
 
@@ -1827,13 +2170,21 @@ const G2_MEDIUM_QUESTIONS = {
       subtopicId: "g2.sentence_wellformed",
       patternFamily: "g2_writing_cloze_shuv",
       subtype: "orthography_slot",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["שוב"],
+      maxTypingChars: 8,
     },
     {
-      question: "בחרו את המשפט שנכתב בכתיב תקני (אותיות ורווחים), לפי המשמעות: ילדים משחקים בחצר בבית הספר.",
+      question:
+        "כתבו משפט קצר אחד בכתיב תקין (אותיות ורווחים), לפי המשמעות: ילדים משחקים בחצר בבית הספר.",
       answers: ["הילדים משחקים בחצר", "ילידים משחקים בחצר", "הילדים משחקים בחצה", "הילדים משחקים בצר"],
       correct: 0,
+      subtopicId: "g2.sentence_wellformed",
       patternFamily: "g2_spelling_sentence_wellformed_yard",
       subtype: "pick_correct_sentence",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["הילדים משחקים בחצר"],
+      maxTypingChars: 40,
     },
     {
       question: "בחרו פסקה קצרה שמתאימה לנושא ׳המורה בכיתה׳:",
@@ -1867,6 +2218,78 @@ const G2_MEDIUM_QUESTIONS = {
       ],
       correct: 0,
       subtopicId: "g2.short_paragraph_choice",
+    },
+    {
+      question:
+        "בכתיבה: המשפט ׳המורה ביקשה שקט כדי להסביר את הניסוי׳ מסתיים כהודעה — כתבו מילה אחת: איך קוראים לסימן המתאים בסוף? (נקודה / סימן שאלה / סימן קריאה / פסיק)",
+      answers: ["נקודה", "סימן שאלה", "סימן קריאה", "פסיק"],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_teacher_quiet",
+      subtype: "complex_declarative",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["נקודה"],
+      maxTypingChars: 16,
+    },
+    {
+      question:
+        "בכתיבה: המשפט ׳למה לא הבאת את המחברת׳ — כתבו מילה אחת: איך קוראים לסימן הנכון בסוף? (נקודה / סימן שאלה / סימן קריאה / פסיק)",
+      answers: ["סימן שאלה", "נקודה", "סימן קריאה", "פסיק"],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_why_notebook",
+      subtype: "why_question",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["סימן שאלה"],
+      maxTypingChars: 16,
+    },
+    {
+      question: "בכתיבה: המשפט ׳זהירות הרצפה רטובה׳ הוא אזהרה קצרה — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: ["!", ".", "?", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_wet_floor",
+      subtype: "warning_sign",
+    },
+    {
+      question: "בכתיבה: המשפט ׳אחר הצהריים יש מפגש עם ההורים׳ — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: [".", "?", "!", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_parents_meeting",
+      subtype: "schedule_note",
+    },
+    {
+      question: "בכתיבה: המשפט ׳מי אחראי על לוח המודעות השבוע׳ — איזה סימן פיסוק נכון בסוף המשפט?",
+      answers: ["?", ".", "!", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_who_board",
+      subtype: "who_question",
+    },
+    {
+      question: "בכתיבה: המשפט ׳הכנו חומרים נייר צבעים ודבק׳ מפרט רשימה — איזה סימן פיסוק מתאים אחרי ׳נייר׳ בתוך המשפט?",
+      answers: [",", ".", "?", "!"],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_supply_list",
+      subtype: "serial_comma",
+    },
+    {
+      question: "בכתיבה: המשפט ׳האם כולם הבינו את ההוראות׳ — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: ["?", ".", "!", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_haim_understood",
+      subtype: "yes_no_question_style",
+    },
+    {
+      question: "בכתיבה: המשפט ׳נתראה מחר בבוקר׳ הוא משלום קצר — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: [".", "?", "!", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_see_tomorrow",
+      subtype: "closing_line",
     },
   ],
   grammar: [
@@ -1928,6 +2351,54 @@ const G2_MEDIUM_QUESTIONS = {
   speaking: [
     { question: "איך מבקשים עזרה בנימוס אחרי שניסו לבד?", answers: ["אפשר עזרה?", "תן לי עכשיו", "אל תדבר אליי", "אני לא צריך"], correct: 0 },
     { question: "איך אומרים כשהבנו את ההסבר?", answers: ["הבנתי", "לא הבנתי", "ביי", "רגע"], correct: 0 },
+    {
+      question: "בחרו משפט קצר שמתאר עבודה בקבוצה שמתקדמת בצורה מסודרת:",
+      answers: ["חילקנו תפקידים וכל אחד עשה את חלקו בזמן", "רבנו ולא סיימנו כלום", "עזבנו את החומרים על הרצפה", "דיברנו רק על משחקים בלי לעבוד"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_group_work",
+      subtype: "teamwork",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר טיול בטבע עם שביל ועצים גבוהים:",
+      answers: ["הלכנו בשביל הצל ושמענו ציפורים בין הענפים", "ישבנו במרתף בלי חלונות", "שחינו בבריכה מלאה קרח", "לא יצאנו מהאוטובוס בכלל"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_nature_trail",
+      subtype: "forest_path",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר ילד שמתאמן בסבלנות עד שהצליח:",
+      answers: ["נפל פעמיים אבל קם שוב עד שהצליח", "ויתר אחרי ניסיון אחד ועזב", "לא ניסה כי פחד מכל דבר", "ביקש שיעשו לו את העבודה"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_persist_practice",
+      subtype: "effort",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר כיתה אחרי ניקיון: הכל מסודר וריח נעים:",
+      answers: ["סידרנו שולחנות ושטפנו את הלוח והאוויר נקי", "השארנו פסולת בכל פינה", "שברנו כיסאות בכוונה", "פתחנו חלונות וזרקנו ספרים"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_clean_class",
+      subtype: "classroom_cleanup",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר מפגש עם סבא שמספר סיפור ישן:",
+      answers: ["סבא ישב בכורסה וסיפר על ילדותו בקול רגוע", "סבא שתק ולא אמר מילה", "סבא רץ במסלול במהירות", "סבא ביקש שנלמד אנגלית בלבד"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_grandpa_story",
+      subtype: "family_scene",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר שוק רועש עם הרבה ריחות ואנשים:",
+      answers: ["המקום היה רועש וריח תבלין עלה מאחת הדוכנים", "לא היה אף אדם ולא נשמע קול", "ישבנו בשקט בספרייה", "היה רק שלג בלי דוכנים"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_busy_market",
+      subtype: "sensory_place",
+    },
   ],
 };
 
@@ -2079,6 +2550,78 @@ const G2_HARD_QUESTIONS = {
       correct: 0,
       subtopicId: "g2.short_paragraph_choice",
     },
+    {
+      question:
+        "בכתיבה: המשפט ׳הילדים הציגו פרויקט והקהל מחא כפיים׳ מסתיים כעובדה מלאה — כתבו מילה אחת: איך קוראים לסימן המתאים בסוף? (נקודה / סימן שאלה / סימן קריאה / פסיק)",
+      answers: ["נקודה", "סימן שאלה", "סימן קריאה", "פסיק"],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_project_applause",
+      subtype: "compound_sentence_end",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["נקודה"],
+      maxTypingChars: 16,
+    },
+    {
+      question:
+        "בכתיבה: המשפט ׳איך בחרתם את הנושא לעבודה המשותפת׳ — כתבו מילה אחת: איך קוראים לסימן הנכון בסוף? (נקודה / סימן שאלה / סימן קריאה / פסיק)",
+      answers: ["סימן שאלה", "נקודה", "סימן קריאה", "פסיק"],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_how_topic",
+      subtype: "how_question",
+      preferredAnswerMode: "typing",
+      typingAcceptedAnswers: ["סימן שאלה"],
+      maxTypingChars: 16,
+    },
+    {
+      question: "בכתיבה: המשפט ׳שימו לב השער נסגר בעוד חמש דקות׳ הוא אזהרה דחופה — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: ["!", ".", "?", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_gate_closing",
+      subtype: "urgent_notice",
+    },
+    {
+      question: "בכתיבה: המשפט ׳הנחיות הבטיחות חלות על כולם בלי יוצא מן הכלל׳ — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: [".", "?", "!", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_safety_rules",
+      subtype: "formal_rule",
+    },
+    {
+      question: "בכתיבה: המשפט ׳מי חתם על רשימת הנוכחים לטיול׳ — איזה סימן פיסוק נכון בסוף המשפט?",
+      answers: ["?", ".", "!", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_trip_attendance",
+      subtype: "admin_question",
+    },
+    {
+      question: "בכתיבה: המשפט ׳נבדוק שוב את התוצאות לפני שמדפיסים׳ — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: [".", "?", "!", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_check_before_print",
+      subtype: "planning_sentence",
+    },
+    {
+      question: "בכתיבה: המשפט ׳האם מותר להשתמש במחשב בשלב זה של העבודה׳ — איזה סימן פיסוק מתאים בסוף המשפט?",
+      answers: ["?", ".", "!", ","],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_computer_allowed",
+      subtype: "permission_question",
+    },
+    {
+      question: "בכתיבה: המשפט ׳ספרים מחברות ומחקים מסודרים על המדף׳ — איזה סימן פיסוק מתאים אחרי ׳מחברות׳ בתוך המשפט?",
+      answers: [",", ".", "?", "!"],
+      correct: 0,
+      subtopicId: "g2.punctuation_choice",
+      patternFamily: "g2_writing_punct_shelf_series",
+      subtype: "three_item_list",
+    },
   ],
   grammar: [
     { question: "מה חלק הדיבר של המילה 'מכינים'?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0 },
@@ -2136,6 +2679,54 @@ const G2_HARD_QUESTIONS = {
   ],
   speaking: [
     { question: "איך אומרים 'אני מבין את השיעור'?", answers: ["אני מבין את השיעור", "אני מבינה את השיעור", "אני מבינים את השיעור", "אני מבינות את השיעור"], correct: 0 },
+    {
+      question: "בחרו משפט קצר שמתאר רגע לפני מבחן: מתח שקט והכנה אחרונה:",
+      answers: ["הכנסנו עיפרונות בדקנו שעון ונשמנו נשימה עמוקה", "צחקנו בקול עד שהמורה עזבה", "זרקנו את המחברות לפח", "ישנו על השולחן בלי להתכונן"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_before_exam",
+      subtype: "exam_moment",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר פרויקט מדעים שבו בודקים השערה בזהירות:",
+      answers: ["כתבנו ניבוי מדדנו פעמיים ורשמנו תוצאות בטבלה", "ניחשנו בלי לקרוא הוראות", "שברנו את כל הציוד בכוונה", "דילגנו על השלב של הבדיקה"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_science_fair",
+      subtype: "hypothesis",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר חזרה הביתה אחרי יום ארוך: עייפות ושקט בדרך:",
+      answers: ["הלכתי לאט עם התיק והרחוב היה שקט יחסית", "רצתי כל הדרך בלי לנשום", "שכחתי איפה הבית", "נשארתי בבית הספר עד בוקר"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_walk_home_tired",
+      subtype: "after_school",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר שיחה קשה שנפתרה בכבוד הדדי:",
+      answers: ["הקשבנו אחד לשני ומצאנו פשרה בלי לצעוק", "העלמנו את הבעיה ולא דיברנו יותר", "האשמנו אחד את השני בלי להקשיב", "עזבנו באמצע בלי לומר שלום"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_conflict_resolve",
+      subtype: "social_resolution",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר ביקור במוזיאון עם הסבר מודרך מעניין:",
+      answers: ["המדריכה עצרה ליד התצוגה והסבירה על החפץ בקצרה", "לא שמענו כלום ורצנו בין הקירות", "המוזיאון היה סגור והתעלמנו", "ישבנו בחוץ בלי להיכנס"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_museum_guide",
+      subtype: "cultural_visit",
+    },
+    {
+      question: "בחרו משפט קצר שמתאר תחושת הצלחה אחרי מאמץ מתמשך:",
+      answers: ["אחרי תרגול ארוך הצלחתי סוף סוף והרגשתי גאווה שקטה", "ויתרתי לפני שבאמת ניסיתי", "הצלחתי בלי לעשות כלום", "התביישתי כשכולם צחקו"],
+      correct: 0,
+      subtopicId: "g2.describe_prompt_choice",
+      patternFamily: "g2_speak_describe_pride_after_work",
+      subtype: "achievement",
+    },
   ],
 };
 
@@ -3379,6 +3970,12 @@ export function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
     optionCount: raw.optionCount,
     binary: raw.binary,
     difficultyBand: raw.difficultyBand || levelKey,
+    subtopicId: raw.subtopicId,
+    preferredAnswerMode: raw.preferredAnswerMode,
+    typingAcceptedAnswers: Array.isArray(raw.typingAcceptedAnswers)
+      ? [...raw.typingAcceptedAnswers]
+      : undefined,
+    maxTypingChars: raw.maxTypingChars,
   };
   let stem = String(q.question || "").trim();
   if (gradeKey && /^איזה משפט נכון\?$/i.test(stem)) {
@@ -3572,6 +4169,10 @@ function buildHebrewSourceTrace(rawPick, randomQ, ctx) {
     levelKey: ctx.poolLevelKey,
     requestedLevelKey: ctx.requestedLevelKey ?? ctx.poolLevelKey,
     subtopicId: sub.subtopicId != null ? String(sub.subtopicId) : null,
+    preferredAnswerMode:
+      randomQ?.preferredAnswerMode != null
+        ? String(randomQ.preferredAnswerMode)
+        : null,
     patternFamily: randomQ?.patternFamily != null ? String(randomQ.patternFamily) : null,
     subtype: randomQ?.subtype != null ? String(randomQ.subtype) : null,
     sourceBank: fromRich ? "HEBREW_RICH_POOL" : "HEBREW_LEGACY_INLINE",
@@ -3744,9 +4345,36 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     );
   };
 
-  const resolveAnswerMode = (selectedTopicKey, questionText) => {
+  const buildAcceptedAnswersUnion = (seeds) => {
+    const acc = new Set();
+    for (const seed of seeds) {
+      if (seed == null) continue;
+      const s = String(seed).trim();
+      if (!s) continue;
+      for (const v of buildAcceptedAnswers(s)) acc.add(v);
+    }
+    return [...acc];
+  };
+
+  function resolveG12ControlledTypingGate(topicKey, rawPick) {
+    const g = String(gradeKey || "").toLowerCase();
+    if (g !== "g1" && g !== "g2") return false;
+    if (String(rawPick?.preferredAnswerMode || "").toLowerCase() !== "typing") {
+      return false;
+    }
+    const sid =
+      g === "g1"
+        ? resolveG1ItemSubtopicId(rawPick, topicKey)
+        : resolveG2ItemSubtopicId(rawPick, topicKey);
+    return G12_ALLOWED_TYPING_SUBTOPICS.has(sid);
+  }
+
+  const resolveAnswerMode = (selectedTopicKey, questionText, rawPickForGate) => {
     const gEarly = parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 9;
     if (gEarly <= 2) {
+      if (resolveG12ControlledTypingGate(selectedTopicKey, rawPickForGate)) {
+        return "typing";
+      }
       return "choice";
     }
     const q = String(questionText || "").trim();
@@ -3884,8 +4512,16 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
     const correctAnswer = randomQ.answers[randomQ.correct];
     const newCorrectIndex = shuffledAnswers.findIndex((ans) => ans === correctAnswer);
 
-    const answerMode = resolveAnswerMode(fallbackTopic, randomQ.question);
-    const acceptedAnswers = buildAcceptedAnswers(correctAnswer);
+    const answerMode = resolveAnswerMode(fallbackTopic, randomQ.question, rawPick);
+    const acceptedAnswers =
+      answerMode === "typing"
+        ? buildAcceptedAnswersUnion([
+            correctAnswer,
+            ...(Array.isArray(rawPick?.typingAcceptedAnswers)
+              ? rawPick.typingAcceptedAnswers
+              : []),
+          ])
+        : buildAcceptedAnswers(correctAnswer);
     const optionCount = shuffledAnswers.length;
     const subtopicParams = attachSubtopicParamsForGrade(
       gradeKey,
@@ -3963,8 +4599,16 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   const correctAnswer = randomQ.answers[randomQ.correct];
   const newCorrectIndex = shuffledAnswers.findIndex((ans) => ans === correctAnswer);
 
-  const answerMode = resolveAnswerMode(selectedTopic, randomQ.question);
-  const acceptedAnswers = buildAcceptedAnswers(correctAnswer);
+  const answerMode = resolveAnswerMode(selectedTopic, randomQ.question, rawPick);
+  const acceptedAnswers =
+    answerMode === "typing"
+      ? buildAcceptedAnswersUnion([
+          correctAnswer,
+          ...(Array.isArray(rawPick?.typingAcceptedAnswers)
+            ? rawPick.typingAcceptedAnswers
+            : []),
+        ])
+      : buildAcceptedAnswers(correctAnswer);
   const optionCount = shuffledAnswers.length;
   const subtopicParams = attachSubtopicParamsForGrade(
     gradeKey,
