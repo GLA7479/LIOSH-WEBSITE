@@ -57,7 +57,7 @@ import { getQuestionFontStyle } from "../../utils/learning-question-font";
 import {
   hebrewScriptLikely,
   isChildHebrewNiqqudGradeKey,
-  textAlreadyHasNiqqud,
+  stripHebrewNiqqudMarks,
 } from "../../utils/hebrew-dicta-nakdan";
 import {
   spellingStemForNiqqudDetect,
@@ -736,8 +736,10 @@ useEffect(() => {
       const s = String(text ?? "").trim();
       if (!s) return;
       if (!hebrewScriptLikely(s)) return;
-      if (textAlreadyHasNiqqud(s)) return;
-      entries.push({ id, text });
+      const stripped = stripHebrewNiqqudMarks(s).trim();
+      if (!stripped) return;
+      if (!hebrewScriptLikely(stripped)) return;
+      entries.push({ id, text: stripped });
     };
 
     pushIf("questionLabel", q.questionLabel);
@@ -988,12 +990,13 @@ useEffect(() => {
       const nearKey = hebrewNearDuplicateKey(question);
       const nearTail = hebrewNearDuplicateTailRef.current;
       const nearRepeats = nearTail.filter((x) => x === nearKey).length;
-      const nearBlock = nearRepeats >= 2;
+      const earlyHebrewChild = isChildHebrewNiqqudGradeKey(String(grade || "").toLowerCase());
+      const nearBlock = nearRepeats >= (earlyHebrewChild ? 1 : 2);
 
       const pf = question.params?.patternFamily || "";
       const tail = hebrewPatternFamilyTailRef.current;
       const recentSamePf = tail.filter((x) => x === pf).length;
-      const pfCooldownBlock = pf && recentSamePf >= 3;
+      const pfCooldownBlock = pf && recentSamePf >= (earlyHebrewChild ? 2 : 3);
 
       if (
         !localRecentQuestions.has(questionKey) &&

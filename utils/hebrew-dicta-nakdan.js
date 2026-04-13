@@ -6,6 +6,11 @@ const HEBREW_SCRIPT_RE = /[\u0590-\u05FF]/;
  */
 const HEBREW_NIQQUD_RE = /[\u0591-\u05BD\u05BF-\u05C7]/;
 
+/** מסיר תווי ניקוד/טעם לפני שליחה ל־Nakdan — כדי לנקד מחדש את כל המחרוזת (גם כשיש ניקוד חלקי). */
+export function stripHebrewNiqqudMarks(s) {
+  return String(s ?? "").replace(HEBREW_NIQQUD_RE, "");
+}
+
 const CHILD_NIQQUD_GRADES = new Set(["g1", "g2"]);
 
 const DEFAULT_DICTA_URL = "https://nakdan-u1-0.loadbalancer.dicta.org.il/api";
@@ -79,11 +84,13 @@ export async function vocalizeHebrewWithDicta(text, opts = {}) {
   const raw = String(text ?? "");
   if (!raw.trim()) return raw;
   if (!hebrewScriptLikely(raw)) return raw;
-  if (textAlreadyHasNiqqud(raw)) return raw;
+  const stripped = stripHebrewNiqqudMarks(raw).trim();
+  if (!stripped) return raw;
+  if (!hebrewScriptLikely(stripped)) return raw;
 
   const url = opts.url || getDictaNakdanApiUrl();
   const maxLen = 3500;
-  const payload = raw.length > maxLen ? raw.slice(0, maxLen) : raw;
+  const payload = stripped.length > maxLen ? stripped.slice(0, maxLen) : stripped;
 
   try {
     const res = await fetch(url, {
