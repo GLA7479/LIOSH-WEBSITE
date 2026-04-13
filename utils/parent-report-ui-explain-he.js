@@ -40,10 +40,10 @@ const RISK_FLAG_HE = {
 };
 
 const TREND_DIR_HE = {
-  up: "עולה",
-  down: "יורד",
-  flat: "יציב",
-  unknown: "לא חד",
+  up: "בשיפור",
+  down: "בירידה",
+  flat: "יציבה",
+  unknown: "לא ברורה מספיק",
 };
 
 /**
@@ -71,6 +71,37 @@ export function sanitizeEngineSnippetHe(text) {
   s = s.replace(/\b(falsePromotionRisk|falseRemediationRisk|speedOnlyRisk|hintDependenceRisk|insufficientEvidenceRisk|recentTransitionRisk)\b/g, "");
   s = s.replace(/\s{2,}/g, " ").trim();
   return s;
+}
+
+/** הסרת סוגריים טכניים מטקסט גלוי באזור אבחון/המלצות (דוח מקוצר). */
+export function stripTechnicalParensForParentDiagnosticsHe(text) {
+  return String(text || "")
+    .replace(/\(pf:[^)]*\)/gi, "")
+    .replace(/\(k:[^)]*\)/gi, "")
+    .replace(/\(to:[^)]*\)/gi, "")
+    .replace(/\(st:[^)]*\)/gi, "")
+    .replace(/\(ct:[^)]*\)/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+/**
+ * PR1 — טקסט גלוי בדוח מקוצר (אבחון הדפסה).
+ * @param {unknown} s
+ */
+export function shortReportDiagnosticsParentVisibleHe(s) {
+  let t = stripTechnicalParensForParentDiagnosticsHe(String(s ?? ""));
+  t = sanitizeEngineSnippetHe(t);
+  t = t.replace(/\u0001/g, " ");
+  t = t.replace(/\bdefault_[a-z0-9_]+\b/gi, "");
+  t = t.replace(
+    /\b(advance_level|advance_grade_topic_only|maintain_and_strengthen|remediate_same_level|drop_one_level_topic_only|drop_one_grade_topic_only)\b/g,
+    ""
+  );
+  t = t.replace(/\b(no_memory|light_memory|not_enough_evidence)\b/gi, "");
+  t = t.replace(/\b[a-z][a-z0-9_]{10,}\b/g, "");
+  t = t.replace(/\s{2,}/g, " ").trim();
+  return t;
 }
 
 export function diagnosticTypeLabelHe(id) {
@@ -115,13 +146,19 @@ export function activeRiskFlagLabelsHe(riskFlags, maxLabels = 4) {
 export function trendCompactLineHe(trend) {
   const t = trend && typeof trend === "object" ? trend : null;
   if (!t) return "";
-  const sum = String(t.summaryHe || "").trim();
-  if (sum) return truncateHe(sum, 100);
-  const ad = String(t.accuracyDirection || "unknown");
-  const ind = String(t.independenceDirection || "unknown");
-  const a = TREND_DIR_HE[ad] || ad;
-  const i = TREND_DIR_HE[ind] || ind;
-  return `דיוק ${a} · עצמאות ${i}`;
+  const sumRaw = String(t.summaryHe || "").trim();
+  if (sumRaw) {
+    let s = sanitizeEngineSnippetHe(sumRaw);
+    s = s.replace(/\bdefault_[a-z0-9_]+\b/gi, "");
+    s = s.replace(/\u0001/g, " ");
+    s = s.replace(/\s{2,}/g, " ").trim();
+    return truncateHe(s, 100);
+  }
+  const ad = String(t.accuracyDirection ?? "unknown").trim().toLowerCase();
+  const ind = String(t.independenceDirection ?? "unknown").trim().toLowerCase();
+  const a = TREND_DIR_HE[ad] || TREND_DIR_HE.unknown;
+  const i = TREND_DIR_HE[ind] || TREND_DIR_HE.unknown;
+  return `מגמת הדיוק ${a} · מגמת העצמאות ${i}`;
 }
 
 /**

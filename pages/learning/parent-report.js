@@ -5,6 +5,10 @@ import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
 import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
+import {
+  stripTechnicalParensForParentDiagnosticsHe as stripTechnicalParensHe,
+  shortReportDiagnosticsParentVisibleHe as diagnosticParentVisibleTextHe,
+} from "../../utils/parent-report-ui-explain-he";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
@@ -179,17 +183,6 @@ const PATTERN_DIAGNOSTIC_SUBJECT_ORDER = [
 ];
 
 const MAX_DIAGNOSTIC_EVIDENCE_CHARS = 200;
-
-function stripTechnicalParensHe(text) {
-  return String(text || "")
-    .replace(/\(pf:[^)]*\)/gi, "")
-    .replace(/\(k:[^)]*\)/gi, "")
-    .replace(/\(to:[^)]*\)/gi, "")
-    .replace(/\(st:[^)]*\)/gi, "")
-    .replace(/\(ct:[^)]*\)/gi, "")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-}
 
 /** תאימות ל-tierHe ישן בדוחות שמורים */
 function weaknessTierHeDisplay(tierHe) {
@@ -2481,22 +2474,24 @@ export default function ParentReport() {
                           <div className="space-y-2 md:space-y-2.5">
                             {summaryHe ? (
                               <div className="parent-report-print-narrative-box text-xs md:text-sm text-white/85 leading-relaxed border border-white/10 rounded-md bg-white/5 px-2 py-1.5">
-                                {summaryHe}
+                                {diagnosticParentVisibleTextHe(summaryHe)}
                               </div>
                             ) : null}
                             {(s.subjectPriorityReasonHe || s.subjectDoNowHe || s.subjectAvoidNowHe) && (
                               <div className="text-[10px] md:text-[11px] text-sky-100/90 border border-sky-400/22 bg-sky-950/12 rounded px-2 py-1.5 space-y-1 leading-snug">
-                                {s.subjectPriorityReasonHe ? <p className="m-0">{s.subjectPriorityReasonHe}</p> : null}
+                                {s.subjectPriorityReasonHe ? (
+                                  <p className="m-0">{diagnosticParentVisibleTextHe(s.subjectPriorityReasonHe)}</p>
+                                ) : null}
                                 {s.subjectDoNowHe ? (
                                   <p className="m-0">
                                     <span className="text-white/45 font-bold">עכשיו: </span>
-                                    {s.subjectDoNowHe}
+                                    {diagnosticParentVisibleTextHe(s.subjectDoNowHe)}
                                   </p>
                                 ) : null}
                                 {s.subjectAvoidNowHe ? (
                                   <p className="m-0">
                                     <span className="text-white/45 font-bold">להימנע: </span>
-                                    {s.subjectAvoidNowHe}
+                                    {diagnosticParentVisibleTextHe(s.subjectAvoidNowHe)}
                                   </p>
                                 ) : null}
                               </div>
@@ -2506,13 +2501,13 @@ export default function ParentReport() {
                                 {s.dominantMistakePatternLabelHe ? (
                                   <p className="m-0">
                                     <span className="text-white/45 font-bold">דפוס טעות: </span>
-                                    {s.dominantMistakePatternLabelHe}
+                                    {diagnosticParentVisibleTextHe(s.dominantMistakePatternLabelHe)}
                                   </p>
                                 ) : null}
                                 {s.subjectMemoryNarrativeHe ? (
                                   <p className="m-0">
                                     <span className="text-white/45 font-bold">שימור למידה: </span>
-                                    {s.subjectMemoryNarrativeHe}
+                                    {diagnosticParentVisibleTextHe(s.subjectMemoryNarrativeHe)}
                                   </p>
                                 ) : null}
                               </div>
@@ -2534,7 +2529,7 @@ export default function ParentReport() {
                                       {x.tierHe || "הצטיינות היציבה"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
+                                      {diagnosticParentVisibleTextHe(x.labelHe)} — דיוק {x.accuracy}% ({x.questions} שאלות)
                                     </div>
                                   </div>
                                 </div>
@@ -2557,7 +2552,7 @@ export default function ParentReport() {
                                       {x.tierHe || "חוזקה בולטת"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
+                                      {diagnosticParentVisibleTextHe(x.labelHe)} — דיוק {x.accuracy}% ({x.questions} שאלות)
                                     </div>
                                   </div>
                                 </div>
@@ -2580,7 +2575,7 @@ export default function ParentReport() {
                                       {maintainTierHeDisplay(x.tierHe) || "עקביות"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {x.labelHe} — דיוק {x.accuracy}% ({x.questions} שאלות)
+                                      {diagnosticParentVisibleTextHe(x.labelHe)} — דיוק {x.accuracy}% ({x.questions} שאלות)
                                     </div>
                                   </div>
                                 </div>
@@ -2603,7 +2598,10 @@ export default function ParentReport() {
                                       {x.tierHe || "תחום במגמת שיפור"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {improvingDiagnosticsDisplayLabelHe(x.labelHe)} — דיוק {x.accuracy}% ({x.questions} שאלות)
+                                      {diagnosticParentVisibleTextHe(
+                                        improvingDiagnosticsDisplayLabelHe(x.labelHe)
+                                      )}{" "}
+                                      — דיוק {x.accuracy}% ({x.questions} שאלות)
                                     </div>
                                   </div>
                                 </div>
@@ -2626,7 +2624,7 @@ export default function ParentReport() {
                                       {weaknessTierHeDisplay(w.tierHe) || "תחום לחיזוק"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {w.labelHe}
+                                      {diagnosticParentVisibleTextHe(w.labelHe)}
                                       {typeof w.mistakeCount === "number"
                                         ? ` (${w.mistakeCount} טעויות דומות)`
                                         : ""}
@@ -2644,7 +2642,7 @@ export default function ParentReport() {
                                       פעולה קונקרטית לבית
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {parentActionHe}
+                                      {diagnosticParentVisibleTextHe(parentActionHe)}
                                     </div>
                                   </div>
                                 </div>
@@ -2659,7 +2657,7 @@ export default function ParentReport() {
                                       יעדים לשבוע הקרוב
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {nextWeekGoalHe}
+                                      {diagnosticParentVisibleTextHe(nextWeekGoalHe)}
                                     </div>
                                   </div>
                                 </div>
@@ -2677,7 +2675,7 @@ export default function ParentReport() {
                                       המלצה לתלמיד
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {r.textHe}
+                                      {diagnosticParentVisibleTextHe(r.textHe)}
                                     </div>
                                   </div>
                                 </div>
@@ -2695,7 +2693,7 @@ export default function ParentReport() {
                                       המלצה לתלמיד — שימור חוזקה
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {r.textHe}
+                                      {diagnosticParentVisibleTextHe(r.textHe)}
                                     </div>
                                   </div>
                                 </div>
@@ -2714,7 +2712,7 @@ export default function ParentReport() {
                                           המלצה להורה
                                         </div>
                                         <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                          {r.textHe}
+                                          {diagnosticParentVisibleTextHe(r.textHe)}
                                         </div>
                                       </div>
                                     </div>
@@ -2733,7 +2731,7 @@ export default function ParentReport() {
                                       המלצה להורה — עידוד ושימור
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
-                                      {r.textHe}
+                                      {diagnosticParentVisibleTextHe(r.textHe)}
                                     </div>
                                   </div>
                                 </div>

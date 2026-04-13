@@ -58,7 +58,7 @@ export function rewriteParentRecommendationForDetailedHe(raw) {
   s = s.replace(/נשארים על אותה כיתה ורמה/g, "להמשיך באותה רמת קושי");
   s = s.replace(/לתת לילד/g, "לסייע לילד");
   s = s.replace(/ולבנות הצלחות קטנות/g, "ולבנות את הנושא בהדרגה עם הילד");
-  s = s.replace(/נשארים על רמה [^ ו]+ ומתמקדים/g, "נשארים על אותה רמת קושי ומתמקדים");
+  s = s.replace(/נשארים על רמה [^ ו]+ ומתמקדים/g, "כדאי להישאר על אותה רמת קושי ולהתמקד");
   s = s.replace(/2–3 סשנים קצרים/g, "שני־שלושה תרגולים קצרים");
   s = s.replace(/סשנים קצרים/g, "תרגולים קצרים");
   s = s.replace(/מפגשי תרגול קצרים/g, "תרגולים קצרים");
@@ -121,22 +121,22 @@ function buildSubjectOpeningLineHe(sp, lab) {
 
   if (pri === "immediate" && priReason) {
     const t = [
-      stripGuillemetsHe(`${priReason} מומלץ לבחור משימה אחת השבוע ולדבוק בה.`),
-      stripGuillemetsHe(`${priReason} עדיף צעד קטן וחוזר מאשר «לתקן הכל».`),
+      stripGuillemetsHe(`${priReason} כדאי לבחור משימה אחת השבוע ולדבוק בה.`),
+      stripGuillemetsHe(`${priReason} עדיף צעד קטן וחוזר מאשר לנסות «לתקן הכל בבת אחת».`),
     ];
     return t[Math.abs(priReason.length + lab.length) % t.length];
   }
   if (pri === "monitor" && priReason) {
     const t = [
-      stripGuillemetsHe(`${priReason} בשלב הזה עדיף לצמצם החלטות גדולות בבית.`),
-      stripGuillemetsHe(`${priReason} נשארים עם תרגול קצר ומדיד לפני מסקנה חדה.`),
+      stripGuillemetsHe(`${priReason} בשלב הזה עדיף להימנע מהחלטות גדולות בבית.`),
+      stripGuillemetsHe(`${priReason} נשארים עם תרגול קצר וברור לפני מסקנה חדה.`),
     ];
     return t[Math.abs((priReason + lab).length) % t.length];
   }
   if (pri === "maintain" && domSucc && ex0 && !mr) {
     const t = [
-      stripGuillemetsHe(`ב${lab} אפשר לנוח קצת על הגז: ${domSucc} — שימור שגרה קצרה מספיק.`),
-      stripGuillemetsHe(`ב${lab} המצב יציב יחסית (${domSucc}) — לא חובה להוסיף עומס; רק לעקוב בעדינות.`),
+      stripGuillemetsHe(`ב${lab} אפשר לנוח קצת על הגז: ${domSucc} — מספיק שגרת תרגול קצרה.`),
+      stripGuillemetsHe(`ב${lab} המצב יציב יחסית (${domSucc}) — אין חובה להוסיף עומס; מספיק לעקוב בעדינות.`),
     ];
     return t[Math.abs((domSucc + lab).length) % t.length];
   }
@@ -150,19 +150,19 @@ function buildSubjectOpeningLineHe(sp, lab) {
   }
   if (readiness === "partial" && domRc && w0) {
     return stripGuillemetsHe(
-      `ב${lab} יש תמונה אמצעית: ${domRc} לצד ${displayTopicPhraseHe(w0.labelHe)} — כדאי לעקוב ולא לדרוס בהנחה חדה.`
+      `ב${lab} יש תמונה אמצעית: ${domRc} לצד ${displayTopicPhraseHe(w0.labelHe)} — כדאי לעקוב ולא לקבוע סופית עדיין.`
     );
   }
 
   if (domSucc && sp?.dominantSuccessPattern === "stable_mastery" && ex0 && !mr) {
     return stripGuillemetsHe(
-      `ב${lab} נראית עקביות טובה (${domSucc}) סביב ${displayTopicPhraseHe(ex0.labelHe)} — כדאי לשמר קצב רגוע.`
+      `ב${lab} נראית עקביות טובה (${domSucc}) סביב ${displayTopicPhraseHe(ex0.labelHe)} — כדאי לשמור על קצב רגוע.`
     );
   }
   if (mr && ex0) {
     const acc = Math.round(Number(ex0.accuracy) || 0);
     return stripGuillemetsHe(
-      `ב${lab} יש גם חוזקות (למשל ${displayTopicPhraseHe(ex0.labelHe)}, כ־${acc}%) וגם נקודות לשימת לב — לא מסכמים הכל כהצלחה מלאה.`
+      `ב${lab} יש גם חוזקות (למשל ${displayTopicPhraseHe(ex0.labelHe)}, כ־${acc}%) וגם נקודות שכדאי לשים לב אליהן — לא מסכמים הכל כהצלחה מלאה.`
     );
   }
   if (domRisk && domRisk !== "דל נתון" && w0) {
@@ -189,8 +189,8 @@ function buildSubjectOpeningLineHe(sp, lab) {
   }
   if (imp0) {
     const acc = Math.round(Number(imp0.accuracy) || 0);
-    const pre = sparse ? "מסתמן ש" : "";
-    return stripGuillemetsHe(`${pre}ב${lab} נראית התקדמות חלקית ב־${displayTopicPhraseHe(imp0.labelHe)} (דיוק כ־${acc}%).`);
+    const pre = sparse ? "נראה ש" : "";
+    return stripGuillemetsHe(`${pre}ב${lab} יש התקדמות חלקית ב־${displayTopicPhraseHe(imp0.labelHe)} (דיוק כ־${acc}%).`);
   }
   return stripGuillemetsHe(`עדיין מוקדם לסכם לגבי ${lab} — מעט נתון בטווח שנבחר.`);
 }
@@ -203,7 +203,7 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
   if (domRc && restraintLine) {
     const variants = [
       stripGuillemetsHe(`מה שנראה כרגע: ${domRc}. ${restraintLine}`),
-      stripGuillemetsHe(`ניסוח זהיר לגבי ${lab}: ${domRc}. ${restraintLine}`),
+      stripGuillemetsHe(`מבט זהיר על ${lab}: ${domRc}. ${restraintLine}`),
     ];
     return variants[Math.abs(restraintLine.length) % variants.length];
   }
@@ -226,7 +226,7 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
     const base = stripGuillemetsHe(`${domRisk} — ${trendLine}`);
     if (w0 && s0) {
       return stripGuillemetsHe(
-        `${base} מהתרגול בטווח: ${displayTopicPhraseHe(s0.labelHe)} יש בסיס טוב, ואילו ${displayTopicPhraseHe(w0.labelHe)} נדרש חיזוק ממוקד.`
+        `${base} בתרגול בטווח זה: ${displayTopicPhraseHe(s0.labelHe)} יש בסיס טוב; לעומת זאת ${displayTopicPhraseHe(w0.labelHe)} נדרש חיזוק ממוקד.`
       );
     }
     if (w0) {
@@ -241,21 +241,21 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
       ? "נדרש חיזוק; הדפוס חוזר בעקביות."
       : "נדרש חיזוק — וכדאי להמשיך לעקוב בלי למהר למסקנה.";
     return stripGuillemetsHe(
-      `מהתרגול בטווח: ${displayTopicPhraseHe(s0.labelHe)} יש בסיס טוב, ואילו ${displayTopicPhraseHe(w0.labelHe)} ${tail}`
+      `בתרגול בטווח זה: ${displayTopicPhraseHe(s0.labelHe)} יש בסיס טוב; לעומת זאת ${displayTopicPhraseHe(w0.labelHe)} ${tail}`
     );
   }
   if (w0) {
     const ws =
       (Number(w0.mistakeCount) || 0) >= 8
-        ? "חזרה עקבית — מומלץ לשים על זה דגש"
-        : "עדיין לא סגור כדפוס ארוך";
-    return stripGuillemetsHe(`ההמלצה שלנו: ${displayTopicPhraseHe(w0.labelHe)} — ${ws}.`);
+        ? "חזרה עקבית — כדאי לשים על זה דגש"
+        : "עדיין לא ברור אם זה דפוס ארוך";
+    return stripGuillemetsHe(`המוקד המומלץ כרגע: ${displayTopicPhraseHe(w0.labelHe)} — ${ws}.`);
   }
   if (s0) {
     return stripGuillemetsHe(`הכיוון החזק: ${displayTopicPhraseHe(s0.labelHe)} — שווה לשמר עליו בתרגול קצר.`);
   }
   if (imp0 && !w0) {
-    return stripGuillemetsHe(`יש תנועה ב־${displayTopicPhraseHe(imp0.labelHe)} — נשארים עם תרגול קצר ולא מקפיצים רמה.`);
+    return stripGuillemetsHe(`יש תנועה ${displayTopicPhraseHe(imp0.labelHe)} — נשארים עם תרגול קצר ולא מקפיצים רמה.`);
   }
   return stripGuillemetsHe("התמונה עדיין לא מלאה — כדאי להמשיך עם עוד קצת תרגול קצר.");
 }
@@ -267,7 +267,7 @@ function buildSubjectHomeLineHe(sp, lab) {
   if (imm) return stripGuillemetsHe(rewriteParentRecommendationForDetailedHe(imm));
   const raw = sp?.parentActionHe && String(sp.parentActionHe).trim();
   if (raw) return rewriteParentRecommendationForDetailedHe(raw);
-  return stripGuillemetsHe(`ב${lab}: שני מפגשים קצרים בשבוע, דגש על קריאת המשימה לפני תשובה.`);
+  return stripGuillemetsHe(`ב${lab}: פעמיים בשבוע תרגול קצר, עם דגש על קריאת המשימה לפני התשובה.`);
 }
 
 function buildSubjectClosingLineHe(sp, lab) {
@@ -306,7 +306,7 @@ function buildSubjectClosingLineHe(sp, lab) {
     if (!dup && m1.length > 20) parts.push(m1);
   }
   if (parts.length) return stripGuillemetsHe(parts.join(" "));
-  return stripGuillemetsHe(`להמשך: ב${lab} עדיף עקביות קצרה מאשר מפגש ארוך אחד.`);
+  return stripGuillemetsHe(`ב${lab} עדיף עקביות בתרגולים קצרים מאשר מפגש ארוך אחד.`);
 }
 
 export function buildSubjectParentLetterCompact(sp) {
@@ -350,7 +350,7 @@ export function buildTopicRecommendationNarrative(tr) {
   const q = Number(tr?.questions) || 0;
   const acc = Math.round(Number(tr?.accuracy) || 0);
   const m = Number(tr?.mistakeEventCount) || 0;
-  const statsLine = `בטווח הזה נכללו ${q} שאלות, עם דיוק של כ־${acc}%${m > 0 ? `; נרשמו ${m} טעויות בסך הכול` : ""}.`;
+  const statsLine = `בתקופה שנבחרה הופיעו ${q} שאלות, עם דיוק של כ־${acc}%${m > 0 ? `; נרשמו בסך הכול ${m} טעויות` : ""}.`;
   let snap = `ב${core}, ${statsLine}`;
   const early = !!tr?.isEarlySignalOnly || tr?.dataSufficiencyLevel === "low" || tr?.evidenceStrength === "low";
   if (early && q < 12) {
@@ -362,12 +362,12 @@ export function buildTopicRecommendationNarrative(tr) {
     const alt = [
       `עדיין לא סוגרים סופית לגבי ${core}. ${statsLine}${rc ? ` הכיוון הסביר: ${rc}.` : ""}`,
       q >= 20 && acc >= 85
-        ? `ב${core} נראים ביצועים טובים לאורך התקופה. ${statsLine} עדיין לא סוגרים הכל במילה אחת.${rc ? ` נקודת מבט: ${rc}.` : ""}`
-        : `ב${core} הנתון עדיין חלקי. ${statsLine}${rc ? ` נקודת מבט: ${rc}.` : ""}`,
+        ? `ב${core} נראים ביצועים טובים לאורך התקופה. ${statsLine} עדיין לא סוגרים הכל במילה אחת.${rc ? ` כיוון סביר: ${rc}.` : ""}`
+        : `ב${core} הנתון עדיין חלקי. ${statsLine}${rc ? ` כיוון סביר: ${rc}.` : ""}`,
     ];
     snap = stripGuillemetsHe(alt[Math.abs(q + acc) % alt.length]);
   } else if (rc) {
-    snap = stripGuillemetsHe(`${snap} נקודה שכדאי לשים עליה לב: ${rc}.`);
+    snap = stripGuillemetsHe(`${snap} כדאי לשים לב גם ל־${rc}.`);
   }
   const reasoning = String(tr?.recommendationReasoningHe || "").trim();
   const homeRaw = tr?.recommendedParentActionHe ? String(tr.recommendedParentActionHe).trim() : "";

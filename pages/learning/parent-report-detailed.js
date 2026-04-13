@@ -1158,7 +1158,7 @@ export default function ParentReportDetailedPage() {
                                       {e.type === "mistake"
                                         ? "שאלה שבה כדאי לעצור ולקרוא שוב את הניסוח"
                                         : "שאלה שבה הכיוון היה נכון"}
-                                      {e.exerciseText ? `: ${String(e.exerciseText).slice(0, 120)}` : ""}
+                                      {e.exerciseText ? `: ${String(e.exerciseText).slice(0, 140)}` : ""}
                                     </li>
                                   ))}
                                 </ul>

@@ -172,15 +172,15 @@ function collectMaintainRows(subjects) {
 }
 
 const CROSS_RISK_LABEL_HE = {
-  knowledge_gap: "פער ידע / בסיס",
-  speed_pressure: "לחץ מהירות",
-  instruction_friction: "חיכוך הוראה או רמזים",
-  careless_pattern: "רשלנות / אי־יציבות",
-  fragile_success: "הצלחה שבירה",
-  mixed: "תמהיל קשיים",
-  mixed_low_signal: "אות חלש בשורות",
-  none_sparse: "דל נתון",
-  none_observed: "ללא קושי דומיננטי בפרופיל",
+  knowledge_gap: "פער ידע או בסיס שלא הוסדר מספיק",
+  speed_pressure: "לחץ מהירות במשימות",
+  instruction_friction: "עומס בהוראה או תלות ברמזים",
+  careless_pattern: "רשלנות קטנה או אי־יציבות בתשובות",
+  fragile_success: "הצלחה שבירה (דיוק גבוה עם סיכון)",
+  mixed: "כמה סוגי קשיים במקביל",
+  mixed_low_signal: "מעט נתונים — אות מקצועי חלוש",
+  none_sparse: "עדיין מעט נתונים",
+  none_observed: "לא נראה כרגע קושי דומיננטי",
 };
 
 function crossRiskLabelHe(riskId, subjects) {
@@ -204,10 +204,10 @@ function crossSuccessLabelHe(patId, subjects) {
 }
 
 const CROSS_SUCCESS_LABEL_HE = {
-  stable_mastery: "מאסטרי יציב",
-  fragile_success_cluster: "הצלחה עם שבירות",
-  mixed: "תמהיל הצלחות",
-  none_sparse: "דל נתון",
+  stable_mastery: "שליטה יציבה בחומר",
+  fragile_success_cluster: "הצלחה שחוזרת אך עדיין שבירה",
+  mixed: "כמה דפוסי הצלחה במקביל",
+  none_sparse: "עדיין מעט נתונים",
 };
 
 function shortenHe(s, maxLen) {
