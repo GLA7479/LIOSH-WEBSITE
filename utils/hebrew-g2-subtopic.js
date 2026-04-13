@@ -36,6 +36,8 @@ export function inferG2SubtopicIdFromStem(stem, topicKey) {
   }
 
   if (topicKey === "grammar") {
+    if (/מה\s+הזמן|באיזה\s+זמן|איזה\s+זמן|זמן\s+של\s+המילה|זמן\s+של\s+הפועל|קראתי|אתמול|אמש|מחר|להבא/.test(low))
+      return "g2.simple_tense";
     if (/זמן|עבר|הווה|עתיד|נטיית|נטיות/.test(low)) return "g2.simple_tense";
     if (/גוף|מין|יחיד|רבים|התאמ|נכון\s+לגבי\s+הילד/.test(low)) return "g2.number_gender_light";
     if (/חלק\s+הדיבר|שם\s+עצם|פועל|תואר/.test(low)) return "g2.pos_basic";
@@ -43,14 +45,14 @@ export function inferG2SubtopicIdFromStem(stem, topicKey) {
   }
 
   if (topicKey === "vocabulary") {
-    if (/נרדף|מילה\s+דומה|במקום\s+מילה/.test(low)) return "g2.synonyms_basic";
+    if (/נרדפ[ות]?|נרדף|מילה\s+דומה|במקום\s+מילה/.test(low)) return "g2.synonyms_basic";
     if (/הקשר|לפי\s+המשפט\s+הבא|השלים\s+לפי/.test(low)) return "g2.context_clue_easy";
     if (/מה\s+המשמעות/.test(low)) return "g2.context_clue_easy";
     return "g2.context_clue_easy";
   }
 
   if (topicKey === "speaking") {
-    if (/מתארים|מה\s+אני\s+רואה|תיאור/.test(low)) return "g2.describe_prompt_choice";
+    if (/מתארים|שמתאר|משפט\s+קצר\s+שמתאר|מה\s+אני\s+רואה|תיאור/.test(low)) return "g2.describe_prompt_choice";
     if (/איך\s+אומרים|מה\s+נאמר|בשיעור|מצב|נימוס|שיח/.test(low)) return "g2.situation_register";
     return "g2.situation_register";
   }

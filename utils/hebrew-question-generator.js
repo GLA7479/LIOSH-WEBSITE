@@ -13,6 +13,10 @@ import {
   withG2SubtopicPreference,
   attachG2SubtopicParams,
 } from './hebrew-g2-subtopic';
+import {
+  withUpperGradeSubtopicPreference,
+  attachUpperGradeSubtopicParams,
+} from './hebrew-g3456-subtopic';
 
 // ========== מאגר שאלות לפי כיתה ורמה ==========
 // הקובץ כולל מאות שאלות מותאמות לכל כיתה (א'-ו'), רמה (קל/בינוני/קשה) ונושא
@@ -40,6 +44,42 @@ const G1_EASY_QUESTIONS = {
     { question: "מה המילה הנכונה: כ_תב?", answers: ["כתב", "כתבה", "כתבים", "כתבות"], correct: 0 },
     { question: "מה האות הראשונה במילה 'גן'?", answers: ["ג", "ן", "י", "ה"], correct: 0 },
     { question: "קרא את המילה: 'דג'", answers: ["דג", "דגה", "דגים", "דגות"], correct: 0 },
+    {
+      question: "במילה 'מים' — איזה צליל חוזר פעמיים?",
+      answers: ["מ", "י", "ם", "ה"],
+      correct: 0,
+      subtopicId: "g1.phoneme_awareness",
+    },
+    {
+      question: "במילה 'אבא' — ההברה הראשונה (א-) היא פתוחה או סגורה?",
+      answers: ["פתוחה", "סגורה", "אין הברות", "לא יודעים"],
+      correct: 0,
+      subtopicId: "g1.open_close_syllable",
+    },
+    {
+      question: "איזו מילה חורזת עם 'גן'?",
+      answers: ["כן", "ספר", "בית", "ילד"],
+      correct: 0,
+      subtopicId: "g1.rhyme",
+    },
+    {
+      question: "כמה הברות יש במילה 'כיתה'?",
+      answers: ["2", "1", "3", "4"],
+      correct: 0,
+      subtopicId: "g1.syllables",
+    },
+    {
+      question: "קרא את המילה המנוקדת: 'בַּיִת'",
+      answers: ["בית", "בת", "בני", "ביש"],
+      correct: 0,
+      subtopicId: "g1.basic_niqqud",
+    },
+    {
+      question: "במילה 'דג' — באיזה צליל המילה מתחילה?",
+      answers: ["ד", "ג", "דג", "גד"],
+      correct: 0,
+      subtopicId: "g1.sound_letter_match",
+    },
   ],
   comprehension: [
     { question: "מה המשמעות של המילה 'בית'?", answers: ["מקום מגורים", "חיה", "צבע", "מספר"], correct: 0 },
@@ -108,6 +148,7 @@ const G1_EASY_QUESTIONS = {
     { question: "מה המשמעות של המילה 'כוכב'?", answers: ["כוכב", "שמש", "ירח", "ענן"], correct: 0 },
     { question: "מה המשמעות של המילה 'חתול'?", answers: ["חתול", "כלב", "יונה", "דג"], correct: 0 },
     { question: "מה המשמעות של המילה 'יונה'?", answers: ["ציפור", "חתול", "כלב", "דג"], correct: 0 },
+    { question: "מה רואים בתמונה של גן? — בחרו מילה:", answers: ["גן", "ספר", "מים", "שמש"], correct: 0 },
   ],
   speaking: [
     { question: "מה התשובה הנכונה לשאלה 'מה שלומך?'?", answers: ["טוב, תודה", "שלום", "להתראות", "בבקשה"], correct: 0 },
@@ -142,6 +183,7 @@ const G1_MEDIUM_QUESTIONS = {
     { question: "מה ההפך של 'שמח'?", answers: ["עצוב", "צבעוני", "יפה", "חכם"], correct: 0 },
     { question: "מה המשמעות של 'שמש זורחת'?", answers: ["השמש זורחת", "השמש שוקעת", "השמש נעלמת", "לילה"], correct: 0 },
     { question: "מה המשמעות של 'ילד משחק'?", answers: ["ילד משחק", "ילד קורא", "ילד כותב", "ילד אוכל"], correct: 0 },
+    { question: "סמנו את התשובה הנכונה לפי ההוראה: אם המשפט נכון לחצו על ׳כן׳.", answers: ["כן", "לא", "אולי", "לא יודע"], correct: 0 },
   ],
   writing: [
     { question: "איך כותבים: 'אני לומד'?", answers: ["אני לומד", "אני לומדת", "אני לומדים", "אני לומדות"], correct: 0 },
@@ -223,6 +265,12 @@ const G2_EASY_QUESTIONS = {
     { question: "קרא את המשפט: 'המורה קוראה בכיתה'", answers: ["המורה קוראה בכיתה", "המורה קורא בכיתה", "המורה קוראים בכיתה", "כל התשובות נכונות"], correct: 0 },
     { question: "מה המילה הנכונה: ס_פר?", answers: ["ספר", "סבר", "סברי", "סברת"], correct: 0 },
     { question: "קרא את המשפט: 'הילדים משחקים בחצר'", answers: ["הילדים משחקים בחצר", "הילד משחק בחצר", "הילדה משחקת בחצר", "כל התשובות נכונות"], correct: 0 },
+    {
+      question: "בקראית: איזה סימן פיסוק מתאים אחרי שאלה קצרה כמו ׳מה זה׳?",
+      answers: ["?", ".", "!", ","],
+      correct: 0,
+      subtopicId: "g2.simple_punctuation_read",
+    },
   ],
   comprehension: [
     { question: "מה המשמעות של 'ילד קורא ספר בכיתה'?", answers: ["ילד קורא ספר בכיתה", "ילד כותב בכיתה", "ילד משחק בכיתה", "ילד אוכל בכיתה"], correct: 0 },
@@ -230,6 +278,12 @@ const G2_EASY_QUESTIONS = {
     { question: "מה המשמעות של 'שמש זורחת בבוקר'?", answers: ["השמש זורחת בבוקר", "השמש שוקעת בערב", "לילה", "צהריים"], correct: 0 },
     { question: "מה המשמעות של 'ילדים משחקים בחצר'?", answers: ["ילדים משחקים בחצר", "ילדים קוראים בחצר", "ילדים כותבים בחצר", "ילדים אוכלים בחצר"], correct: 0 },
     { question: "כיתה ב׳: אם מישהו לא ׳שמח׳ אלא במצב רגשי הפוך — איך קוראים לזה?", answers: ["עצוב", "שמח", "יפה", "גדול"], correct: 0 },
+    {
+      question: "מה יבוא קודם לפי הסדר: ׳בוקר׳ ואז ׳ערב׳?",
+      answers: ["בוקר קודם", "ערב קודם", "שניהם יחד", "אי אפשר לדעת"],
+      correct: 0,
+      subtopicId: "g2.simple_sequence",
+    },
   ],
   writing: [
     { question: "איזה משפט נכון?", answers: ["הילדים קוראים ספר", "הילדים קורא ספר", "הילד קוראים ספר", "הילדה קוראים ספר"], correct: 0 },
@@ -237,11 +291,33 @@ const G2_EASY_QUESTIONS = {
     { question: "איזה סימן פיסוק מתאים בסוף משפט רגיל?", answers: [".", "?", "!", ","], correct: 0 },
     { question: "איזה משפט נכון?", answers: ["אני קורא ספר", "אני קוראת ספר", "אני קוראים ספר", "אני קוראות ספר"], correct: 0 },
     { question: "איך כותבים את המילה 'מחברת'?", answers: ["מחברת", "מחברתת", "מחברתי", "מחברתא"], correct: 0 },
+    {
+      question: "בחרו פסקה קצרה (שני משפטים) שמתאימה לכותרת ׳יום כיף בגן׳:",
+      answers: [
+        "היינו בגן. שיחקנו וצחקנו.",
+        "יום כיף",
+        "בגן",
+        "משחק",
+      ],
+      correct: 0,
+      subtopicId: "g2.short_paragraph_choice",
+    },
   ],
   grammar: [
     { question: "במשפט ׳הילד קורא ספר׳ (כיתה ב׳) — מה חלק הדיבר של ׳קורא׳?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0 },
     { question: "במשפט ׳הפרח יפה מאוד׳ — מה חלק הדיבר של ׳יפה׳?", answers: ["תואר", "שם עצם", "פועל", "מספר"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["הילדים קוראים", "הילדים קורא", "הילד קוראים", "הילדה קוראים"], correct: 0 },
+    {
+      question: "איזה משפט נכון?",
+      answers: ["הילדים קוראים", "הילדים קורא", "הילד קוראים", "הילדה קוראים"],
+      correct: 0,
+      subtopicId: "g2.number_gender_light",
+    },
+    {
+      question: "במשפט ׳אתמול קראתי ספר׳ — באיזה זמן הפועל העיקרי?",
+      answers: ["עבר", "הווה", "עתיד", "לא ידוע"],
+      correct: 0,
+      subtopicId: "g2.simple_tense",
+    },
     { question: "מה חלק הדיבר של המילה 'כיתה'?", answers: ["שם עצם", "פועל", "תואר", "מספר"], correct: 0 },
   ],
   vocabulary: [
@@ -249,11 +325,24 @@ const G2_EASY_QUESTIONS = {
     { question: "מה המשמעות של המילה 'מחברת'?", answers: ["מחברת", "עפרון", "מחק", "מדברת"], correct: 0 },
     { question: "מה המשמעות של המילה 'מורה'?", answers: ["מורה", "תלמיד", "ספר", "כיתה"], correct: 0 },
     { question: "מה המשמעות של המילה 'תלמיד'?", answers: ["תלמיד", "מורה", "ספר", "כיתה"], correct: 0 },
+    {
+      question: "בחרו מילה נרדפת ל׳מהיר׳:",
+      answers: ["זריז", "איטי", "קטן", "כבד"],
+      correct: 0,
+      subtopicId: "g2.synonyms_basic",
+    },
+    {
+      question: "בחרו מילה נרדפת ל׳יפה׳:",
+      answers: ["נאה", "גדול", "ארוך", "כבד"],
+      correct: 0,
+      subtopicId: "g2.synonyms_basic",
+    },
   ],
   speaking: [
     { question: "איך אומרים 'אני אוהב לקרוא ספרים'?", answers: ["אני אוהב לקרוא ספרים", "אני אוהבת לקרוא ספרים", "אני אוהבים לקרוא ספרים", "אני אוהבות לקרוא ספרים"], correct: 0 },
     { question: "מה אומרים כשמבקשים סליחה?", answers: ["סליחה", "תודה", "בבקשה", "שלום"], correct: 0 },
     { question: "איך אומרים 'אני צריך עזרה'?", answers: ["אני צריך עזרה", "אני צריך ספר", "אני צריך כלב", "אני צריך בית"], correct: 0 },
+    { question: "בחרו משפט קצר שמתאר גן עם פרחים:", answers: ["בגן יש פרחים צבעוניים", "אני אוהב ספרים", "המורה קוראת", "לילה טוב"], correct: 0 },
   ],
 };
 
@@ -263,21 +352,55 @@ const G2_MEDIUM_QUESTIONS = {
     { question: "קרא את המשפט: 'המורה מלמדת את הילדים'", answers: ["המורה מלמדת את הילדים", "המורה מלמד את הילדים", "המורה מלמדים את הילדים", "כל התשובות נכונות"], correct: 0 },
     { question: "מה המילה הנכונה: ת_למידים?", answers: ["תלמידים", "תלמיד", "תלמידה", "תלמידות"], correct: 0 },
     { question: "קרא את המשפט: 'הילדים שרים שירים'", answers: ["הילדים שרים שירים", "הילד שר שירים", "הילדה שרה שירים", "כל התשובות נכונות"], correct: 0 },
+    {
+      question: "בקריאה: איזה סימן פיסוק מתאים בסוף משפט מפתיע — ׳אוי׳?",
+      answers: ["!", "?", ".", ","],
+      correct: 0,
+      subtopicId: "g2.simple_punctuation_read",
+    },
   ],
   comprehension: [
     { question: "מה המשמעות של 'ילדים קוראים ספרים בכיתה'?", answers: ["ילדים קוראים ספרים בכיתה", "ילדים כותבים בכיתה", "ילדים משחקים בכיתה", "ילדים אוכלים בכיתה"], correct: 0 },
     { question: "מה המשמעות של 'שמש זורחת בבוקר ומאירה את העולם'?", answers: ["השמש זורחת בבוקר ומאירה את העולם", "השמש שוקעת בערב", "לילה", "צהריים"], correct: 0 },
     { question: "מה ההפך של 'עצוב'?", answers: ["שמח", "עצוב", "יפה", "גדול"], correct: 0 },
+    {
+      question: "לפי הסדר: ׳קודם נכנסים לאולם ואז יושבים׳ — מה קורה ראשון?",
+      answers: ["נכנסים לאולם", "יושבים", "שניהם יחד", "לא כתוב"],
+      correct: 0,
+      subtopicId: "g2.simple_sequence",
+    },
   ],
   writing: [
     { question: "איזה משפט נכון?", answers: ["הילדה קוראת ספר", "הילדה קורא ספר", "הילד קוראת ספר", "הילדה קוראים ספר"], correct: 0 },
     { question: "איזה משפט נכון?", answers: ["אני כותב מכתב", "אני כותבות מכתב", "אני כותבו מכתב", "אני כותבה מכתב"], correct: 0 },
     { question: "איך כותבים את המשפט: 'הילדים משחקים בחצר'?", answers: ["הילדים משחקים בחצר", "הילדים משחק בחצר", "הילד משחקים בחצר", "הילדה משחקים בחצר"], correct: 0 },
+    {
+      question: "בחרו פסקה קצרה שמתאימה לנושא ׳המורה בכיתה׳:",
+      answers: [
+        "המורה מסבירה. הילדים מקשיבים.",
+        "מורה",
+        "כיתה",
+        "ספר",
+      ],
+      correct: 0,
+      subtopicId: "g2.short_paragraph_choice",
+    },
   ],
   grammar: [
     { question: "מה חלק הדיבר של המילה 'קוראים'?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0 },
     { question: "מה חלק הדיבר של המילה 'מורה'?", answers: ["שם עצם", "פועל", "תואר", "מספר"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["המורה מלמדת", "המורה מלמד", "המורה מלמדים", "המורה מלמדות"], correct: 0 },
+    {
+      question: "איזה משפט נכון?",
+      answers: ["המורה מלמדת", "המורה מלמד", "המורה מלמדים", "המורה מלמדות"],
+      correct: 0,
+      subtopicId: "g2.number_gender_light",
+    },
+    {
+      question: "במשפט ׳מחר נלך לטיול׳ — באיזה זמן הפועל ׳נלך׳?",
+      answers: ["עתיד", "עבר", "הווה", "לא ידוע"],
+      correct: 0,
+      subtopicId: "g2.simple_tense",
+    },
   ],
   vocabulary: [
     { question: "מה המשמעות של המילה 'מורה'?", answers: ["מורה", "תלמיד", "ספר", "כיתה"], correct: 0 },
@@ -293,20 +416,60 @@ const G2_HARD_QUESTIONS = {
   reading: [
     { question: "קרא את המשפט: 'הילדים קוראים ספרים ומכינים שיעורי בית'", answers: ["הילדים קוראים ספרים ומכינים שיעורי בית", "הילד קורא ספר ומכין שיעורי בית", "הילדה קוראת ספר ומכינה שיעורי בית", "כל התשובות נכונות"], correct: 0 },
     { question: "קרא את המשפט: 'המורה מסבירה לילדים על הטבע'", answers: ["המורה מסבירה לילדים על הטבע", "המורה מסביר לילדים על הטבע", "המורה מסבירים לילדים על הטבע", "כל התשובות נכונות"], correct: 0 },
+    {
+      question: "בקריאה: אחרי סיפור קצר ומפתיע — איזה סימן פיסוק מתאים אחרי המילה ׳פתאום׳?",
+      answers: ["!", ".", "?", ","],
+      correct: 0,
+      subtopicId: "g2.simple_punctuation_read",
+    },
   ],
   comprehension: [
     { question: "מה המשמעות של 'ילדים קוראים ספרים ומכינים שיעורי בית'?", answers: ["ילדים קוראים ספרים ומכינים שיעורי בית", "ילדים משחקים", "ילדים אוכלים", "ילדים ישנים"], correct: 0 },
     { question: "מה המשמעות של 'השמש זורחת בבוקר ומאירה את העולם'?", answers: ["השמש זורחת בבוקר ומאירה את העולם", "השמש שוקעת", "לילה", "עננים"], correct: 0 },
+    {
+      question: "לפי הסדר: ׳קודם אוכלים ארוחת בוקר ואז יוצאים לדרך׳ — מה קורה אחרי הארוחה?",
+      answers: ["יוצאים לדרך", "אוכלים ארוחת בוקר", "שניהם יחד", "לא כתוב"],
+      correct: 0,
+      subtopicId: "g2.simple_sequence",
+    },
   ],
   writing: [
     { question: "איזה משפט נכון?", answers: ["אני קורא ספר ומכין שיעורי בית", "אני קוראת ספר ומכינה שיעורי בית", "אני קוראים ספר ומכינים שיעורי בית", "אני קוראות ספר ומכינות שיעורי בית"], correct: 0 },
+    {
+      question: "בחרו פסקה קצרה שמתאימה לנושא ׳עבודה בקבוצה׳:",
+      answers: [
+        "תכננו יחד. חילקו תפקידים. הצליחו.",
+        "קבוצה",
+        "עבודה",
+        "מורה",
+      ],
+      correct: 0,
+      subtopicId: "g2.short_paragraph_choice",
+    },
   ],
   grammar: [
     { question: "מה חלק הדיבר של המילה 'מכינים'?", answers: ["פועל", "שם עצם", "תואר", "מספר"], correct: 0 },
-    { question: "איזה משפט נכון?", answers: ["הילדים קוראים ומכינים", "הילדים קורא ומכין", "הילד קוראים ומכינים", "הילדה קוראים ומכינים"], correct: 0 },
+    {
+      question: "איזה משפט נכון?",
+      answers: ["הילדים קוראים ומכינים", "הילדים קורא ומכין", "הילד קוראים ומכינים", "הילדה קוראים ומכינים"],
+      correct: 0,
+      subtopicId: "g2.number_gender_light",
+    },
+    {
+      question: "במשפט ׳אתמול למדנו שיעור מעניין׳ — באיזה זמן הפועל העיקרי ׳למדנו׳?",
+      answers: ["עבר", "הווה", "עתיד", "לא ידוע"],
+      correct: 0,
+      subtopicId: "g2.simple_tense",
+    },
   ],
   vocabulary: [
     { question: "מה המשמעות של המילה 'טבע'?", answers: ["טבע", "בית", "כיתה", "ספר"], correct: 0 },
+    {
+      question: "בחרו מילה נרדפת ל׳חכם׳:",
+      answers: ["נבון", "איטי", "קטן", "עצוב"],
+      correct: 0,
+      subtopicId: "g2.synonyms_basic",
+    },
   ],
   speaking: [
     { question: "איך אומרים 'אני מבין את השיעור'?", answers: ["אני מבין את השיעור", "אני מבינה את השיעור", "אני מבינים את השיעור", "אני מבינות את השיעור"], correct: 0 },
@@ -938,6 +1101,9 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   } else if (String(gradeKey).toLowerCase() === "g2") {
     const w = withG2SubtopicPreference(gradeKey, selectedTopic, topicQuestionsMerged);
     topicQuestionsMerged = w.merged;
+  } else if (["g3", "g4", "g5", "g6"].includes(String(gradeKey).toLowerCase())) {
+    const w = withUpperGradeSubtopicPreference(gradeKey, selectedTopic, topicQuestionsMerged);
+    topicQuestionsMerged = w.merged;
   }
 
   const HEBREW_NIQQUD_RE = /[\u0591-\u05C7]/g;
@@ -1053,6 +1219,8 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
       mergedForPick = withG1SubtopicPreference(gradeKey, fallbackTopic, got.merged).merged;
     } else if (String(gradeKey).toLowerCase() === "g2") {
       mergedForPick = withG2SubtopicPreference(gradeKey, fallbackTopic, got.merged).merged;
+    } else if (["g3", "g4", "g5", "g6"].includes(String(gradeKey).toLowerCase())) {
+      mergedForPick = withUpperGradeSubtopicPreference(gradeKey, fallbackTopic, got.merged).merged;
     }
     const rawPick = pickWeightedHebrewItem(
       mergedForPick,
@@ -1118,7 +1286,9 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
           ? attachG1SubtopicParams(fallbackTopic, rawPick)
           : String(gradeKey).toLowerCase() === "g2"
             ? attachG2SubtopicParams(fallbackTopic, rawPick)
-            : {}),
+            : ["g3", "g4", "g5", "g6"].includes(String(gradeKey).toLowerCase())
+              ? attachUpperGradeSubtopicParams(gradeKey, fallbackTopic, rawPick)
+              : {}),
       },
     };
   }
@@ -1183,7 +1353,9 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
         ? attachG1SubtopicParams(selectedTopic, rawPick)
         : String(gradeKey).toLowerCase() === "g2"
           ? attachG2SubtopicParams(selectedTopic, rawPick)
-          : {}),
+          : ["g3", "g4", "g5", "g6"].includes(String(gradeKey).toLowerCase())
+            ? attachUpperGradeSubtopicParams(gradeKey, selectedTopic, rawPick)
+            : {}),
     },
   };
 }

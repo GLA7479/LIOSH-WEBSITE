@@ -19,6 +19,7 @@ export function inferG1SubtopicIdFromStem(stem, topicKey) {
     if (/הברה\s+פתוחה|הברה\s+סגורה|סוגרת|פתוחה/.test(low)) return "g1.open_close_syllable";
     if (/חרוז|מחרוזת/.test(low)) return "g1.rhyme";
     if (/מספר\s+הברות|הברות\s+במילה/.test(low)) return "g1.syllables";
+    if (/[\u05B0-\u05BD\u05BF\u05C1\u05C2\u05C4\u05C7]/.test(s)) return "g1.basic_niqqud";
     if (/ניקוד|תנועה|קמץ|פתח|צירה|חולם|שורוק|חיריק/.test(low)) return "g1.basic_niqqud";
     if (/צליל.*אות|אות.*צליל|התאמ.*צליל/.test(low)) return "g1.sound_letter_match";
     if (/אות\s+סופית|סופית|ך|ם|ן|ף|ץ/.test(low)) return "g1.final_letters";
@@ -30,10 +31,11 @@ export function inferG1SubtopicIdFromStem(stem, topicKey) {
   }
 
   if (topicKey === "comprehension") {
-    if (/עקוב|סמן|הקף|לפי\s+ההוראה|הוראה\s+פשוטה/.test(low)) return "g1.simple_instruction";
-    if (/מי\s|מה\s|איפה\s|מתי\s|למה\s|איך\s.*\?/.test(low) && s.length > 20) return "g1.one_sentence_who_what";
+    if (/עקוב|סמן|הקף|לפי\s+ההוראה|הוראה\s+פשוטה|ענו\s+לפי/.test(low)) return "g1.simple_instruction";
+    if (/משמעות\s+של|מה\s+המשמעות/.test(low)) return "g1.word_meaning_concrete";
     if (/מה\s+ההפך|ההפך\s+של|נכון\s*\/\s*לא|האם\s+נכון|אמת\s+או\s+שקר/.test(low)) return "g1.one_sentence_who_what";
-    if (/מה\s+המשמעות\s+של\s+המילה|משמעות\s+של\s+'/.test(low)) return "g1.word_meaning_concrete";
+    if (/^מי\s|^מה\s+זה\s|^מה\s+זו\s|^איפה\s|^מתי\s|^למה\s|^איך\s/.test(s.trim()) && s.length > 10) return "g1.one_sentence_who_what";
+    if (/^מה\s+(?!המשמעות|ההפך)/.test(s.trim()) && s.length > 18 && /\?/.test(s)) return "g1.one_sentence_who_what";
     return "g1.word_meaning_concrete";
   }
 
@@ -48,7 +50,7 @@ export function inferG1SubtopicIdFromStem(stem, topicKey) {
   }
 
   if (topicKey === "vocabulary") {
-    if (/תמונה|תמונות/.test(low)) return "g1.word_picture";
+    if (/תמונה|תמונות|קשרו\s+מילה\s+לתמונה|מה\s+רואים\s+בתמונה/.test(low)) return "g1.word_picture";
     if (/מה\s+המשמעות|משמעות\s+של/.test(low)) return "g1.word_meaning_concrete";
     return "g1.word_meaning_concrete";
   }
