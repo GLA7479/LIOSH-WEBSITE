@@ -45,6 +45,13 @@ if (!stemL.narration_plaintext.includes("זוהי שאלת בדיקה")) {
   fail("narration must include full question body");
 }
 if (!stemL.narration_plaintext.includes("אפשרות א")) fail("narration must include answers preview");
+if (!stemL.narration_plaintext.includes("האזינו לשאלה וענו לפי מה ששמעתם")) {
+  fail("narration must include full listen instruction after topic");
+}
+if (!stemL.narration_plaintext.includes("תוכן השאלה:")) fail("narration must include question lead-in");
+if (/^\s*כיתה\s+[אבגדהו]/.test(stemL.narration_plaintext)) {
+  fail("narration must not start with grade (כיתה …)");
+}
 if (!String(stemL.stem_audio_url || "").startsWith("/api/hebrew-audio-stream?h=")) fail("bad stem_audio_url");
 if (!/^he\.gen\.v1\.[a-f0-9]{16}$/.test(stemL.audio_asset_id)) fail("bad audio_asset_id");
 const h = narrationContentHash16(stemL.narration_plaintext);
@@ -58,6 +65,23 @@ const stemO = qOral.params?.audioStem;
 if (stemO.task_mode !== "oral_comprehension_mcq") fail("expected oral");
 if (stemO.playback_kind !== "static_url") fail("oral static");
 if (!stemO.narration_plaintext.includes("לפי מה ששמעתם")) fail("oral narration must include oral closing phrase");
+if (/^\s*כיתה\s+[אבגדהו]/.test(stemO.narration_plaintext)) {
+  fail("oral narration must not start with grade (כיתה …)");
+}
+
+const qPhon = structuredClone(baseQuestion());
+if (!attachHebrewAudioToQuestion(qPhon, { gradeKey: "g1", topic: "reading", sequenceIndex: 5 })) {
+  fail("attach g1 reading seq5 phonological expected true");
+}
+const stemP = qPhon.params?.audioStem;
+if (stemP.task_mode !== "phonological_discrimination_he") fail("expected phonological_discrimination_he");
+if (stemP.playback_kind !== "static_url") fail("phonological expected static_url");
+if (stemP.tts_text != null) fail("phonological tts_text must be null");
+if (!stemP.narration_plaintext.includes("צליל המילה")) fail("phonological narration must include sound cue");
+if (!stemP.narration_plaintext.includes("תוכן השאלה:")) fail("phonological narration must include question lead-in");
+if (!/^he\.gen\.v1\.[a-f0-9]{16}$/.test(stemP.audio_asset_id)) fail("bad phonological audio_asset_id");
+const hP = narrationContentHash16(stemP.narration_plaintext);
+if (!stemP.audio_asset_id.endsWith(hP)) fail("phonological audio_asset_id must match narration hash");
 
 const qG3 = structuredClone(baseQuestion());
 if (!attachHebrewAudioToQuestion(qG3, { gradeKey: "g3", topic: "reading", sequenceIndex: 6 })) {

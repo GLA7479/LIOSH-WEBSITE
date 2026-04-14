@@ -1,7 +1,7 @@
 /**
  * Hebrew static audio — first pass envelope (Core v1).
- * g1–g2 × reading/comprehension × listen_and_choose | oral_comprehension_mcq
- * קבצי שמע נוצרים לפי hash על `narration_plaintext` (תוכן שאלה מלא) — ראו `hebrew-audio-narration-binding.js` ו־`/api/hebrew-audio-ensure`.
+ * g1–g2 × reading/comprehension × listen_and_choose | oral_comprehension_mcq | phonological_discrimination_he (קריאה g1–g2 בלבד במצורף)
+ * קבצי שמע נוצרים לפי hash על `narration_plaintext` — ראו `hebrew-audio-narration-binding.js` ו־`/api/hebrew-audio-ensure`.
  */
 
 /** @type {ReadonlySet<string>} */
@@ -11,7 +11,11 @@ export const HE_STATIC_CORE_V1_GRADES = new Set(["g1", "g2"]);
 export const HE_STATIC_CORE_V1_TOPICS = new Set(["reading", "comprehension"]);
 
 /** @type {ReadonlySet<string>} */
-export const HE_STATIC_CORE_V1_MODES = new Set(["listen_and_choose", "oral_comprehension_mcq"]);
+export const HE_STATIC_CORE_V1_MODES = new Set([
+  "listen_and_choose",
+  "oral_comprehension_mcq",
+  "phonological_discrimination_he",
+]);
 
 /**
  * @param {{ gradeKey: string, topic: string, task_mode: string }} opts

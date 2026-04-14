@@ -34,7 +34,8 @@ export function narrationContentHash16(plaintext) {
 }
 
 /**
- * טקסט מלא להקראה: כיתה + נושא + גוף השאלה + אפשרויות + סגירה.
+ * טקסט מלא להקראה: שם תחום + הנחיה + תוכן השאלה + אפשרויות + סיום — ללא prefix של כיתה (למשל "כיתה א׳").
+ * `gradeKey` נשאר לתאימות קוראים ואינו נכנס לטקסט.
  * @param {{
  *   gradeKey: string,
  *   topic: string,
@@ -55,10 +56,16 @@ export function buildFirstPassNarrationPlaintext(p) {
       )
     : "";
   const topicLabel = p.topic === "reading" ? "קריאה" : "הבנת הנקרא";
-  const gl = p.gradeKey === "g1" ? "כיתה א׳" : "כיתה ב׳";
   const ansPart = ansLine ? ` האפשרויות: ${ansLine}.` : "";
+  /** פתיח אחרי שם התחום — הנחיה מלאה; לא כולל ציון כיתה */
+  const afterTopic = "האזינו לשאלה וענו לפי מה ששמעתם.";
+  const lead = `${topicLabel}. ${afterTopic} תוכן השאלה: `;
   if (p.task_mode === "oral_comprehension_mcq") {
-    return `${gl}, ${topicLabel}. תוכן השאלה: ${body}.${ansPart} בחרו את התשובה הנכונה לפי מה ששמעתם.`;
+    return `${lead}${body}.${ansPart} בחרו את התשובה הנכונה לפי מה ששמעתם.`;
   }
-  return `${gl}, ${topicLabel}. תוכן השאלה: ${body}.${ansPart} בחרו את התשובה הנכונה.`;
+  if (p.task_mode === "phonological_discrimination_he") {
+    const phonLead = `${topicLabel}. האזינו לצליל המילה; ענו לפי מה ששמעתם. תוכן השאלה: `;
+    return `${phonLead}${body}.${ansPart} בחרו את האפשרות המתאימה לפי מה ששמעתם.`;
+  }
+  return `${lead}${body}.${ansPart} בחרו את התשובה הנכונה.`;
 }
