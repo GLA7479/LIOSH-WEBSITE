@@ -62,7 +62,7 @@ function wrongEvents(subject, bucketKey, count) {
 
 const cases = [
   {
-    id: "weak_sparse_suppresses_hybrid",
+    id: "weak_sparse_explain_only_hybrid",
     maps: {
       math: {
         "addition\u0001learning\u0001g4\u0001medium": row("חיבור", 4, 3, 1, 75),
@@ -71,8 +71,8 @@ const cases = [
     raw: { math: wrongEvents("math", "addition", 1) },
     assertHybrid: (hr) => {
       const u = hr.units[0];
-      assert.equal(u.aiAssist.mode, "suppressed");
-      assert.ok(u.aiAssist.suppressionFlags.includes("v2_cannot_conclude"));
+      assert.equal(u.aiAssist.mode, "explain_only");
+      assert.ok(!u.aiAssist.suppressionFlags.includes("v2_cannot_conclude"));
     },
   },
   {

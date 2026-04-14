@@ -47,6 +47,7 @@ import {
   tierWeaknessSupportHe,
   v2SubjectDiagnosticRestraintHe,
   v2SubjectMemoryPartialEvidenceHe,
+  topicRecommendationV2CautionGatedHe,
 } from "./parent-report-language/index.js";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
@@ -572,22 +573,52 @@ function safeNumber(n) {
   return Number.isFinite(v) ? v : 0;
 }
 
+const POSITIVE_LEVEL_RANK = { excellent: 3, very_good: 2, good: 1, none: 0 };
+
+/** Positive-first evidence line: approved tier text (no diagnosis/taxonomy dependency). */
+function v2PositiveStrengthBodyHe() {
+  return tierStableStrengthHe();
+}
+
 function summarizeV2UnitsForSubject(units) {
   const list = Array.isArray(units) ? units : [];
   const diagnosed = list.filter((u) => !!u?.diagnosis?.allowed);
-  const stable = list.filter(
-    (u) => Array.isArray(u?.strengthProfile?.tags) && u.strengthProfile.tags.includes("stable_mastery")
-  );
+  const positiveAllowed = list.filter((u) => !!u?.outputGating?.positiveConclusionAllowed);
   const uncertain = list.filter((u) => !!u?.outputGating?.cannotConcludeYet);
-  const topWeak = diagnosed.find((u) => String(u?.priority?.level || "") === "P4") || diagnosed[0] || list[0] || null;
+  const topWeak =
+    diagnosed.find((u) => String(u?.priority?.level || "") === "P4") ||
+    diagnosed.find((u) => String(u?.priority?.level || "") === "P3") ||
+    diagnosed[0] ||
+    null;
+  const actionAnchor = topWeak || positiveAllowed[0] || list[0] || null;
 
-  const topStrengths = stable.slice(0, 3).map((u) => ({
+  const rankPositive = (a, b) => {
+    const la = String(a?.outputGating?.positiveAuthorityLevel || "none");
+    const lb = String(b?.outputGating?.positiveAuthorityLevel || "none");
+    return (POSITIVE_LEVEL_RANK[lb] || 0) - (POSITIVE_LEVEL_RANK[la] || 0);
+  };
+
+  const excellentUnits = positiveAllowed
+    .filter((u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "excellent")
+    .sort(rankPositive);
+  const veryGoodUnits = positiveAllowed
+    .filter((u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "very_good")
+    .sort(rankPositive);
+  const goodUnits = positiveAllowed
+    .filter((u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "good")
+    .sort(rankPositive);
+
+  const mapStrengthRow = (u, /** @type {boolean} */ excellentFlag) => ({
     labelHe: normalizeParentFacingHe(String(u?.displayName || "")),
     questions: safeNumber(u?.evidenceTrace?.[0]?.value?.questions),
     accuracy: safeNumber(u?.evidenceTrace?.[0]?.value?.accuracy),
-    excellent: true,
+    excellent: excellentFlag,
     tierHe: tierStableStrengthHe(),
-  }));
+  });
+
+  const stableExcellence = excellentUnits.slice(0, 5).map((u) => mapStrengthRow(u, true));
+  const topStrengths = veryGoodUnits.slice(0, 3).map((u) => mapStrengthRow(u, false));
+  const maintain = goodUnits.slice(0, 5).map((u) => mapStrengthRow(u, false));
 
   const topWeaknesses = diagnosed
     .filter((u) => String(u?.taxonomy?.patternHe || "").trim())
@@ -598,8 +629,20 @@ function summarizeV2UnitsForSubject(units) {
       tierHe: safeNumber(u?.recurrence?.wrongCountForRules) >= 5 ? tierWeaknessRecurringHe() : tierWeaknessSupportHe(),
     }));
 
+  const rankedForEvidence = [...positiveAllowed].sort(rankPositive);
   const evidenceExamples = [];
-  for (const u of diagnosed.slice(0, 2)) {
+  for (const u of rankedForEvidence.slice(0, 2)) {
+    const lev = String(u?.outputGating?.positiveAuthorityLevel || "");
+    const confidence = lev === "excellent" || lev === "very_good" ? "high" : "moderate";
+    evidenceExamples.push({
+      type: "success",
+      titleHe: normalizeParentFacingHe(String(u?.displayName || evidenceExampleTitleFallbackHe())),
+      bodyHe: normalizeParentFacingHe(v2PositiveStrengthBodyHe()),
+      confidence,
+    });
+  }
+  for (const u of diagnosed) {
+    if (evidenceExamples.length >= 2) break;
     const confidence = String(u?.confidence?.level || "");
     if (confidence !== "high" && confidence !== "moderate") continue;
     evidenceExamples.push({
@@ -612,35 +655,87 @@ function summarizeV2UnitsForSubject(units) {
     });
   }
 
+  const evidenceSuccess =
+    rankedForEvidence[0] != null
+      ? {
+          titleHe: normalizeParentFacingHe(
+            String(rankedForEvidence[0]?.displayName || evidenceExampleTitleFallbackHe())
+          ),
+          bodyHe: normalizeParentFacingHe(v2PositiveStrengthBodyHe()),
+          confidence:
+            String(rankedForEvidence[0]?.outputGating?.positiveAuthorityLevel || "") === "excellent" ||
+            String(rankedForEvidence[0]?.outputGating?.positiveAuthorityLevel || "") === "very_good"
+              ? "high"
+              : "moderate",
+        }
+      : null;
+
+  const p4Unit = diagnosed.find((u) => String(u?.priority?.level || "") === "P4");
+  const leadPositive = rankedForEvidence[0] || null;
+  const leadLevel = String(leadPositive?.outputGating?.positiveAuthorityLevel || "none");
+  const strongPositiveLead =
+    !!leadPositive && (leadLevel === "excellent" || leadLevel === "very_good");
+  const additiveOnLead = !!leadPositive?.outputGating?.additiveCautionAllowed;
+  const summaryHe = (() => {
+    if (p4Unit) {
+      return normalizeParentFacingHe(
+        `בנושא ${String(p4Unit?.displayName || evidenceExampleTitleFallbackHe())}: ${String(
+          p4Unit?.taxonomy?.patternHe || "עדיף עוד קצת תרגול לפני מסקנה סופית."
+        )}`
+      );
+    }
+    if (strongPositiveLead && leadPositive) {
+      const name = String(leadPositive.displayName || evidenceExampleTitleFallbackHe());
+      const base = `בנושא ${name}: ${tierStableStrengthHe()}`;
+      const pattern = String(topWeak?.taxonomy?.patternHe || "").trim();
+      if (additiveOnLead && pattern) {
+        return normalizeParentFacingHe(`${base} · ${pattern}`);
+      }
+      if (additiveOnLead && topWeak) {
+        return normalizeParentFacingHe(`${base} ${topicRecommendationV2CautionGatedHe()}`);
+      }
+      return normalizeParentFacingHe(base);
+    }
+    if (leadPositive && leadLevel === "good") {
+      return normalizeParentFacingHe(
+        `בנושא ${String(leadPositive.displayName || evidenceExampleTitleFallbackHe())}: ${tierStableStrengthHe()}`
+      );
+    }
+    if (topWeak) {
+      return normalizeParentFacingHe(
+        `בנושא ${String(topWeak?.displayName || evidenceExampleTitleFallbackHe())}: ${String(
+          topWeak?.taxonomy?.patternHe || "עדיף עוד קצת תרגול לפני מסקנה סופית."
+        )}`
+      );
+    }
+    return null;
+  })();
+
   return {
     hasAnySignal: list.length > 0,
-    summaryHe: topWeak
-      ? normalizeParentFacingHe(
-          `בנושא ${String(topWeak?.displayName || evidenceExampleTitleFallbackHe())}: ${String(
-            topWeak?.taxonomy?.patternHe || "עדיף עוד קצת תרגול לפני מסקנה סופית."
-          )}`
-        )
-      : null,
+    summaryHe,
     topStrengths,
     topWeaknesses,
     strengths: [],
     weaknesses: [],
-    maintain: [],
+    maintain,
     improving: [],
-    stableExcellence: [],
+    stableExcellence,
     studentRecommendationsImprove: [],
     studentRecommendationsMaintain: [],
     parentRecommendationsImprove: [],
     parentRecommendationsMaintain: [],
     evidenceMistake: null,
-    evidenceSuccess: null,
+    evidenceSuccess,
     evidenceExamples,
     parentActionHe: (() => {
-      const t = String(topWeak?.intervention?.immediateActionHe || topWeak?.probe?.specificationHe || "").trim();
+      const t = String(
+        actionAnchor?.intervention?.immediateActionHe || actionAnchor?.probe?.specificationHe || ""
+      ).trim();
       return t ? normalizeParentFacingHe(t) : null;
     })(),
     nextWeekGoalHe: (() => {
-      const t = String(topWeak?.probe?.objectiveHe || topWeak?.intervention?.shortPracticeHe || "").trim();
+      const t = String(actionAnchor?.probe?.objectiveHe || actionAnchor?.intervention?.shortPracticeHe || "").trim();
       return t ? normalizeParentFacingHe(t) : null;
     })(),
     subjectPriorityReasonHe: (() => {
@@ -648,11 +743,11 @@ function summarizeV2UnitsForSubject(units) {
       return t ? normalizeParentFacingHe(t) : null;
     })(),
     subjectDoNowHe: (() => {
-      const t = String(topWeak?.intervention?.immediateActionHe || "").trim();
+      const t = String(actionAnchor?.intervention?.immediateActionHe || "").trim();
       return t ? normalizeParentFacingHe(t) : null;
     })(),
     subjectAvoidNowHe: (() => {
-      const t = String(topWeak?.intervention?.avoidHe || "").trim();
+      const t = String(actionAnchor?.intervention?.avoidHe || "").trim();
       return t ? normalizeParentFacingHe(t) : null;
     })(),
     dominantMistakePatternLabelHe: (() => {

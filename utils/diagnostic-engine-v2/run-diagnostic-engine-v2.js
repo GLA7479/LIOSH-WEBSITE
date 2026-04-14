@@ -129,6 +129,9 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
 
       const narrowSample = (Number(row.questions) || 0) < 10;
       const weakEvidence = wrongs.length === 0 && wrongCountForRules > 0;
+      const strengthProfile = deriveStrengthProfile(row);
+      const stableMasteryTag =
+        Array.isArray(strengthProfile.tags) && strengthProfile.tags.includes("stable_mastery");
       const gating = applyOutputGating({
         confidence,
         priority,
@@ -137,6 +140,13 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
         hasTaxonomyMatch: !!chosenId,
         narrowSample,
         weakEvidence,
+        hintInvalidates,
+        questions: row.questions,
+        accuracy: row.accuracy,
+        wrong: row.wrong,
+        needsPractice: !!row.needsPractice,
+        stableMasteryTag,
+        wrongCountForRules,
       });
 
       const behaviorDom = row?.behaviorProfile?.dominantType;
@@ -196,7 +206,7 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
         confidence: { level: confidence, rowSignals: { confidence01: row.confidence01 ?? null, dataSufficiencyLevel: row.dataSufficiencyLevel ?? null, isEarlySignalOnly: row.isEarlySignalOnly ?? null } },
         priority: { level: priority, breadth },
         competingHypotheses: competing,
-        strengthProfile: deriveStrengthProfile(row),
+        strengthProfile,
         outputGating: gating,
         diagnosis:
           gating.diagnosisAllowed && !(sanitized.stripped && !sanitized.safe)

@@ -50,6 +50,7 @@ import {
   subjectV2TrendNarrativeStableHe,
   topicRecommendationV2CautionGatedHe,
   normalizeParentFacingHe,
+  tierStableStrengthHe,
 } from "./parent-report-language/index.js";
 import {
   mergeCrossSubjectConclusionReadinessContract,
@@ -1736,6 +1737,7 @@ function recommendationFromV2Unit(u) {
   if (confLev === "moderate") evidenceStrength = "medium";
   if (confLev === "high") evidenceStrength = "strong";
   const gated = !!u?.outputGating?.cannotConcludeYet;
+  const cautionAdditive = !!u?.outputGating?.additiveCautionAllowed && !gated;
   return {
     topicRowKey: String(u?.topicRowKey || ""),
     displayName: String(u?.displayName || ""),
@@ -1760,7 +1762,7 @@ function recommendationFromV2Unit(u) {
     doNowHe: String(u?.intervention?.immediateActionHe || u?.probe?.specificationHe || ""),
     avoidNowHe: String(u?.intervention?.avoidHe || ""),
     cautionLineHe:
-      u?.outputGating?.cannotConcludeYet
+      u?.outputGating?.cannotConcludeYet || cautionAdditive
         ? topicRecommendationV2CautionGatedHe()
         : "",
     topicEngineRowSignals: {
@@ -1779,9 +1781,15 @@ function buildSubjectProfilesFromV2(baseReport) {
   for (const sid of SUBJECT_IDS) {
     const units = grouped[sid] || [];
     const highPriority = units.filter((u) => String(u?.priority?.level || "") === "P4").length;
-    const stable = units.filter((u) => Array.isArray(u?.strengthProfile?.tags) && u.strengthProfile.tags.includes("stable_mastery")).length;
+    const positiveUnits = units.filter((u) => !!u?.outputGating?.positiveConclusionAllowed);
+    const stable = positiveUnits.length;
     const fragile = units.filter((u) => Array.isArray(u?.strengthProfile?.tags) && u.strengthProfile.tags.includes("fragile_success")).length;
-    const topWeakUnit = units.find((u) => u?.diagnosis?.allowed && (u?.priority?.level === "P4" || u?.priority?.level === "P3")) || units[0] || null;
+    const diagnosed = units.filter((u) => !!u?.diagnosis?.allowed);
+    const topicWeakLeader =
+      diagnosed.find((u) => String(u?.priority?.level || "") === "P4") ||
+      diagnosed.find((u) => String(u?.priority?.level || "") === "P3") ||
+      null;
+    const topWeakUnit = topicWeakLeader || positiveUnits[0] || units[0] || null;
 
     const topicRecommendations = applyGateToTextClampToTopicRecommendations(
       units
@@ -1790,15 +1798,26 @@ function buildSubjectProfilesFromV2(baseReport) {
         .slice(0, 8)
     );
 
-    const topStrengths = units
-      .filter((u) => Array.isArray(u?.strengthProfile?.tags) && u.strengthProfile.tags.includes("stable_mastery"))
-      .slice(0, 3)
-      .map((u) => ({
-        labelHe: String(u?.displayName || ""),
-        questions: Number(u?.evidenceTrace?.[0]?.value?.questions) || 0,
-        accuracy: Number(u?.evidenceTrace?.[0]?.value?.accuracy) || 0,
-        excellent: true,
-      }));
+    const excellentList = positiveUnits.filter(
+      (u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "excellent"
+    );
+    const veryGoodList = positiveUnits.filter(
+      (u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "very_good"
+    );
+    const goodList = positiveUnits.filter((u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "good");
+
+    const topStrengths = veryGoodList.slice(0, 3).map((u) => ({
+      labelHe: String(u?.displayName || ""),
+      questions: Number(u?.evidenceTrace?.[0]?.value?.questions) || 0,
+      accuracy: Number(u?.evidenceTrace?.[0]?.value?.accuracy) || 0,
+      excellent: false,
+    }));
+
+    const maintain = goodList.slice(0, 5).map((u) => ({
+      labelHe: String(u?.displayName || ""),
+      questions: Number(u?.evidenceTrace?.[0]?.value?.questions) || 0,
+      accuracy: Number(u?.evidenceTrace?.[0]?.value?.accuracy) || 0,
+    }));
 
     const topWeaknesses = units
       .filter((u) => u?.taxonomy?.patternHe)
@@ -1808,17 +1827,57 @@ function buildSubjectProfilesFromV2(baseReport) {
         mistakeCount: Number(u?.recurrence?.wrongCountForRules) || 0,
       }));
 
+    const POSITIVE_LEVEL_RANK_D = { excellent: 3, very_good: 2, good: 1, none: 0 };
+    const rankPosD = (a, b) => {
+      const la = String(a?.outputGating?.positiveAuthorityLevel || "none");
+      const lb = String(b?.outputGating?.positiveAuthorityLevel || "none");
+      return (POSITIVE_LEVEL_RANK_D[lb] || 0) - (POSITIVE_LEVEL_RANK_D[la] || 0);
+    };
+    const rankedPositiveD = [...positiveUnits].sort(rankPosD);
+    const leadPosD = rankedPositiveD[0] || null;
+    const leadLevD = String(leadPosD?.outputGating?.positiveAuthorityLevel || "none");
+    const strongPosD = !!leadPosD && (leadLevD === "excellent" || leadLevD === "very_good");
+    const additiveLeadD = !!leadPosD?.outputGating?.additiveCautionAllowed;
+    const p4UnitD = diagnosed.find((u) => String(u?.priority?.level || "") === "P4");
+
+    const summaryHe = (() => {
+      if (p4UnitD) {
+        return `ברמת ${p4UnitD.displayName}: ${p4UnitD.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
+      }
+      if (strongPosD && leadPosD) {
+        const base = `בנושא ${leadPosD.displayName}: ${tierStableStrengthHe()}`;
+        const pattern = String(topicWeakLeader?.taxonomy?.patternHe || "").trim();
+        if (additiveLeadD && pattern) {
+          return `${base} · ${pattern}`;
+        }
+        if (additiveLeadD && topicWeakLeader) {
+          return `${base} ${topicRecommendationV2CautionGatedHe()}`;
+        }
+        return base;
+      }
+      if (leadPosD && leadLevD === "good") {
+        return `בנושא ${leadPosD.displayName}: ${tierStableStrengthHe()}`;
+      }
+      if (topicWeakLeader) {
+        return `ברמת ${topicWeakLeader.displayName}: ${topicWeakLeader.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
+      }
+      return "אין מספיק ראיות בשלב זה.";
+    })();
+
     out.push({
       subject: sid,
       subjectLabelHe: SUBJECT_LABEL_HE[sid],
-      summaryHe: topWeakUnit
-        ? `ברמת ${topWeakUnit.displayName}: ${topWeakUnit.taxonomy?.patternHe || "נדרש בירור נוסף"}`
-        : "אין מספיק ראיות בשלב זה.",
+      summaryHe,
       topStrengths,
       topWeaknesses,
-      maintain: [],
+      maintain,
       improving: [],
-      excellence: [],
+      excellence: excellentList.slice(0, 5).map((u) => ({
+        labelHe: String(u?.displayName || ""),
+        questions: Number(u?.evidenceTrace?.[0]?.value?.questions) || 0,
+        accuracy: Number(u?.evidenceTrace?.[0]?.value?.accuracy) || 0,
+        excellent: true,
+      })),
       diagnosticSectionsHe: null,
       subSkillInsightsHe: [],
       parentActionHe: topWeakUnit?.intervention?.immediateActionHe || topWeakUnit?.probe?.specificationHe || null,
@@ -1891,15 +1950,33 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
   const diag = baseReport?.diagnosticEngineV2;
   const units = Array.isArray(diag?.units) ? diag.units : [];
   const diagnosed = units.filter((u) => u?.diagnosis?.allowed);
-  const stable = units.filter((u) => Array.isArray(u?.strengthProfile?.tags) && u.strengthProfile.tags.includes("stable_mastery"));
+  const stable = units.filter((u) => !!u?.outputGating?.positiveConclusionAllowed);
   const uncertain = units.filter((u) => u?.outputGating?.cannotConcludeYet);
   const p4 = units.filter((u) => String(u?.priority?.level || "") === "P4");
 
+  const POSITIVE_LEVEL_RANK_X = { excellent: 3, very_good: 2, good: 1, none: 0 };
+  const rankPosX = (a, b) => {
+    const la = String(a?.outputGating?.positiveAuthorityLevel || "none");
+    const lb = String(b?.outputGating?.positiveAuthorityLevel || "none");
+    return (POSITIVE_LEVEL_RANK_X[lb] || 0) - (POSITIVE_LEVEL_RANK_X[la] || 0);
+  };
+  const stableRanked = [...stable].sort(rankPosX);
+  const leadPosX = stableRanked[0] || null;
+  const leadLevX = String(leadPosX?.outputGating?.positiveAuthorityLevel || "none");
+  const strongPosExec = !!leadPosX && (leadLevX === "excellent" || leadLevX === "very_good");
+
   const topStrengthsAcrossHe = stable.slice(0, 3).map((u) => `${u.displayName} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`);
-  const topFocusAreasHe = diagnosed
+  const diagnosedFocus = diagnosed
     .filter((u) => u?.taxonomy?.patternHe)
     .slice(0, 3)
     .map((u) => `${u.taxonomy.patternHe} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`);
+  const strengthFocus =
+    diagnosedFocus.length > 0
+      ? []
+      : stableRanked
+          .slice(0, 3)
+          .map((u) => `${u.displayName} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`);
+  const topFocusAreasHe = diagnosedFocus.length > 0 ? diagnosedFocus : strengthFocus;
 
   return {
     version: 2,
@@ -1914,7 +1991,11 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
     }),
     mainHomeRecommendationHe:
       p4[0]?.intervention?.immediateActionHe
-      || diagnosed[0]?.intervention?.immediateActionHe
+      || (strongPosExec &&
+        String(
+          leadPosX?.intervention?.immediateActionHe || leadPosX?.probe?.specificationHe || ""
+        ).trim()) ||
+      diagnosed[0]?.intervention?.immediateActionHe
       || diagnosed[0]?.probe?.specificationHe
       || "להמשיך עם תרגול ממוקד לפני שינוי רחב בבית.",
     cautionNoteHe: executiveV2CautionNoteHe({ p4Length: p4.length, uncertainLength: uncertain.length }),
@@ -1922,7 +2003,9 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
     dominantCrossSubjectRiskLabelHe: diagnosed[0]?.taxonomy?.patternHe || "",
     dominantCrossSubjectSuccessPatternLabelHe: stable[0]?.taxonomy?.subskillHe
       ? normalizeParentFacingHe(`שליטה טובה ועקבית ב${stable[0].taxonomy.subskillHe}`)
-      : "",
+      : stable[0]
+        ? normalizeParentFacingHe(`שליטה טובה ועקבית ב${stable[0].displayName}`)
+        : "",
     mixedSignalNoticeHe: executiveV2MixedSignalNoticeHe(uncertain.length > 0),
     reportReadinessHe: executiveV2ReportReadinessHe(units.length),
     evidenceBalanceHe: executiveV2EvidenceBalanceHe(stable.length, diagnosed.length),

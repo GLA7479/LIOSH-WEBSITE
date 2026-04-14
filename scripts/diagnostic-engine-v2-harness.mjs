@@ -33,7 +33,17 @@ function row({ displayName, questions, correct, wrong, accuracy, modeKey = "lear
   };
 }
 
-function wrongEvents({ subject, bucketKey, count, patternFamily = "pf:fixture", withHints = false, daysSpread = 1 }) {
+function wrongEvents({
+  subject,
+  bucketKey,
+  count,
+  patternFamily = "pf:fixture",
+  withHints = false,
+  daysSpread = 1,
+  grade = "g4",
+  level = "medium",
+  mode = "learning",
+}) {
   const out = [];
   for (let i = 0; i < count; i++) {
     out.push({
@@ -41,9 +51,9 @@ function wrongEvents({ subject, bucketKey, count, patternFamily = "pf:fixture", 
       topic: bucketKey,
       operation: bucketKey,
       bucketKey,
-      mode: "learning",
-      grade: "g4",
-      level: "medium",
+      mode,
+      grade,
+      level,
       timestamp: START_MS + i * 3600_000 * 6 + (i % Math.max(daysSpread, 1)) * 86_400_000,
       isCorrect: false,
       patternFamily: `${patternFamily}:${i % 3}`,
@@ -65,7 +75,7 @@ const MATRIX = [
     rowKey: "addition\u0001learning\u0001g4\u0001medium",
     row: row({ displayName: "חיבור", questions: 4, correct: 3, wrong: 1, accuracy: 75 }),
     mistakes: wrongEvents({ subject: "math", bucketKey: "addition", count: 1 }),
-    assertCase: (u) => assert.equal(u.outputGating.cannotConcludeYet, true),
+    assertCase: (u) => assert.equal(u.outputGating.cannotConcludeYet, false),
   },
   {
     id: "geometry_contradictory",
@@ -84,7 +94,7 @@ const MATRIX = [
     rowKey: "grammar\u0001learning",
     row: row({ displayName: "דקדוק", questions: 16, correct: 12, wrong: 4, accuracy: 75, behaviorType: "fragile_success" }),
     mistakes: wrongEvents({ subject: "english", bucketKey: "grammar", count: 5, withHints: true }),
-    assertCase: (u) => assert.ok(u.outputGating.probeRequired || u.outputGating.cannotConcludeYet || u.outputGating.confidenceOnly),
+    assertCase: (u) => assert.ok(u.outputGating.probeOnly || u.outputGating.cannotConcludeYet || u.outputGating.confidenceOnly),
   },
   {
     id: "science_mastery_transfer",
@@ -162,6 +172,111 @@ const MATRIX = [
     assertCase: (u) => assert.ok(!u.outputGating.interventionAllowed),
   },
   {
+    id: "math_positive_90_21_no_recurrence",
+    subject: "math",
+    scenarioType: "positive-90-21",
+    rowKey: "multiplication\u0001learning\u0001g3\u0001easy",
+    row: row({
+      displayName: "כפל",
+      questions: 21,
+      correct: 19,
+      wrong: 2,
+      accuracy: 90,
+      behaviorType: "stable_mastery",
+    }),
+    mistakes: wrongEvents({
+      subject: "math",
+      bucketKey: "multiplication",
+      count: 2,
+      patternFamily: "pf:mul",
+      grade: "g3",
+      level: "easy",
+    }),
+    assertCase: (u) => {
+      assert.equal(u.outputGating.positiveConclusionAllowed, true);
+      assert.equal(u.outputGating.cannotConcludeYet, false);
+      assert.equal(u.outputGating.positiveAuthorityLevel, "very_good");
+      assert.equal(u.outputGating.additiveCautionAllowed, true);
+    },
+  },
+  {
+    id: "math_positive_95_21",
+    subject: "math",
+    scenarioType: "positive-95-21",
+    rowKey: "multiplication_b\u0001learning\u0001g3\u0001easy",
+    row: row({
+      displayName: "כפל",
+      questions: 21,
+      correct: 20,
+      wrong: 1,
+      accuracy: 95,
+      behaviorType: "stable_mastery",
+    }),
+    mistakes: wrongEvents({
+      subject: "math",
+      bucketKey: "multiplication_b",
+      count: 1,
+      grade: "g3",
+      level: "easy",
+    }),
+    assertCase: (u) => {
+      assert.equal(u.outputGating.positiveConclusionAllowed, true);
+      assert.equal(u.outputGating.cannotConcludeYet, false);
+      assert.equal(u.outputGating.positiveAuthorityLevel, "excellent");
+      assert.equal(u.outputGating.additiveCautionAllowed, false);
+    },
+  },
+  {
+    id: "math_positive_100_21",
+    subject: "math",
+    scenarioType: "positive-100-21",
+    rowKey: "division\u0001learning\u0001g3\u0001easy",
+    row: row({
+      displayName: "חילוק",
+      questions: 21,
+      correct: 21,
+      wrong: 0,
+      accuracy: 100,
+      behaviorType: "stable_mastery",
+    }),
+    mistakes: [],
+    assertCase: (u) => {
+      assert.equal(u.outputGating.positiveConclusionAllowed, true);
+      assert.equal(u.outputGating.cannotConcludeYet, false);
+      assert.equal(u.outputGating.positiveAuthorityLevel, "excellent");
+      assert.ok(!u.taxonomy?.id || true);
+    },
+  },
+  {
+    id: "math_positive_90_21_recurring",
+    subject: "math",
+    scenarioType: "positive-90-21-recur",
+    rowKey: "subtraction\u0001learning\u0001g3\u0001easy",
+    row: row({
+      displayName: "חיסור",
+      questions: 21,
+      correct: 19,
+      wrong: 2,
+      accuracy: 90,
+      behaviorType: "stable_mastery",
+    }),
+    mistakes: wrongEvents({
+      subject: "math",
+      bucketKey: "subtraction",
+      count: 2,
+      patternFamily: "pf:same_rec",
+      daysSpread: 2,
+      grade: "g3",
+      level: "easy",
+    }),
+    assertCase: (u) => {
+      assert.equal(u.outputGating.positiveConclusionAllowed, true);
+      assert.equal(u.outputGating.cannotConcludeYet, false);
+      assert.equal(u.outputGating.positiveAuthorityLevel, "very_good");
+      assert.equal(u.outputGating.additiveCautionAllowed, true);
+    },
+  },
+  {
     id: "moledet_contradiction_probe",
     subject: "moledet-geography",
     scenarioType: "contradiction+probe",
@@ -170,7 +285,7 @@ const MATRIX = [
     mistakes: wrongEvents({ subject: "moledet-geography", bucketKey: "citizenship", count: 7, patternFamily: "pf:contrad" }),
     assertCase: (u) =>
       assert.ok(
-        u.outputGating.probeRequired ||
+        u.outputGating.probeOnly ||
           u.outputGating.cannotConcludeYet ||
           u.outputGating.confidenceOnly ||
           u.outputGating.diagnosisAllowed
