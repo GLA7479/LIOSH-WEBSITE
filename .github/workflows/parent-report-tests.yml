@@ -19,5 +19,6 @@ jobs:
       - run: npm run test:parent-report-phase1
       - run: npm run test:topic-next-step-phase2
       - run: npm run test:topic-next-step-engine-scenarios
+      - run: npm run test:ai-hybrid-harness
       - run: npm run test:parent-report-phase6
       - run: npx next build

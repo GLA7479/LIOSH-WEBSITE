@@ -36,6 +36,7 @@ import { validateParentReportDataIntegrity } from "./parent-report-data-integrit
 import { enrichReportMapsWithTopicStepHints } from "./topic-next-step-engine";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
 import { runDiagnosticEngineV2 } from "./diagnostic-engine-v2/index.js";
+import { safeBuildHybridRuntimeForReport } from "./ai-hybrid-diagnostic/safe-build-hybrid-runtime.js";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
 
@@ -1064,6 +1065,15 @@ export function generateParentReportV2(
     endMs,
   });
 
+  /** Best-effort only: failures must not break the parent report (V2 remains primary). */
+  const hybridRuntime = safeBuildHybridRuntimeForReport({
+    diagnosticEngineV2,
+    maps,
+    rawMistakesBySubject,
+    startMs,
+    endMs,
+  });
+
   const dataIntegrityReport = validateParentReportDataIntegrity({
     trackingSnapshots,
     rawMistakesBySubject,
@@ -1204,5 +1214,7 @@ export function generateParentReportV2(
     dataIntegrityReport,
     /** מנוע אבחון V2 — פלט מובנה לפי stage1 blueprint (שכבות נפרדות, שערים, טקסונומיה) */
     diagnosticEngineV2,
+    /** AI-hybrid layer (V2 remains hard authority; ranking/probe/explanation bounded). */
+    hybridRuntime,
   };
 }

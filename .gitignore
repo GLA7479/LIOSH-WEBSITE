@@ -48,3 +48,6 @@ data/hebrew-audio-review-queue.json
 # Local dev cache for Hebrew narration MP3s (production serverless uses /tmp; playback via /api/hebrew-audio-stream)
 public/audio/hebrew/gen/v1/
 
+# AI-hybrid synthetic gold (regenerate: npm run ai-hybrid:generate-gold)
+data/ai-hybrid-gold/synthetic-gold-v1.jsonl
+

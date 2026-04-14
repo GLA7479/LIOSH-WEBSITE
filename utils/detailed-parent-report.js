@@ -4,6 +4,7 @@
  */
 
 import { generateParentReportV2 } from "./parent-report-v2";
+import { isValidHybridRuntimePayload } from "./ai-hybrid-diagnostic/validate-hybrid-runtime.js";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
 import { buildTopicRecommendationsForSubject } from "./topic-next-step-engine";
 import { rewriteParentRecommendationForDetailedHe } from "./detailed-report-parent-letter-he";
@@ -1976,6 +1977,12 @@ export function buildDetailedParentReportFromBaseReport(baseReport, meta = {}) {
     version: 2,
     generatedAt: new Date().toISOString(),
     diagnosticEngineV2: baseReport.diagnosticEngineV2 ?? null,
+    hybridRuntime: (() => {
+      const h = baseReport?.hybridRuntime;
+      if (h == null) return null;
+      const n = Array.isArray(baseReport?.diagnosticEngineV2?.units) ? baseReport.diagnosticEngineV2.units.length : 0;
+      return isValidHybridRuntimePayload(h, { expectedUnitCount: n }) ? h : null;
+    })(),
     diagnosticPrimarySource: hasV2Primary ? "diagnosticEngineV2" : "legacy_patternDiagnostics_fallback",
     periodInfo: {
       period: baseReport.period === "custom" ? "custom" : period,

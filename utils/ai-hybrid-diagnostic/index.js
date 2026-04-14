@@ -1,0 +1,17 @@
+export { HYBRID_RUNTIME_VERSION, FEATURE_SCHEMA_VERSION, NUMERIC_GATES, STORAGE_KEYS } from "./constants.js";
+export { readAiHybridConsent, writeAiHybridConsent, trainingExportAllowed } from "./governance.js";
+export { readHybridLearningState, writeHybridLearningState, taxonomyPriorBoost } from "./learning-loop.js";
+export { buildV2AuthoritySnapshot } from "./v2-authority-snapshot.js";
+export { extractUnitFeatures } from "./extract-unit-features.js";
+export { validateFeatureVector } from "./feature-schema.js";
+export { resolveAuthorityGate } from "./authority-gate.js";
+export { rankHypotheses, buildDisagreement } from "./hypothesis-ranker.js";
+export { buildProbeIntelligence } from "./probe-intelligence.js";
+export { validateExplanationOutput } from "./explanation-validator.js";
+export { buildHybridExplanations } from "./explanation-layer.js";
+export { getAiHybridRolloutStage, isAiHybridLiveUi } from "./rollout-config.js";
+export { appendShadowHybridEntry, readShadowHybridLog } from "./shadow-store.js";
+export { buildHybridRuntimeForReport } from "./run-hybrid-for-report.js";
+export { safeBuildHybridRuntimeForReport } from "./safe-build-hybrid-runtime.js";
+export { isValidHybridRuntimePayload } from "./validate-hybrid-runtime.js";
+export { GOLD_LABEL_FIELDS } from "./label-schema.js";
