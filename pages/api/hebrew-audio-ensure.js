@@ -1,10 +1,12 @@
 /**
  * יוצר/מבטיח קובץ MP3 להקראת טקסט עברי (Edge neural TTS בשרת בלבד — לא בדפדפן המשתמש).
- * מפתח קובץ: sha256(normalize(text)) → public/audio/hebrew/gen/v1/<hash16>.mp3
+ * מפתח קובץ: sha256(normalize(text)) → דיסק לפי getHebrewGenMp3Paths (public מקומית / tmp ב־Vercel).
+ * כתובת נגינה: GET /api/hebrew-audio-stream?h=<hash16> (לא קובץ סטטי ב־Git).
  */
 import fs from "node:fs";
-import path from "node:path";
 
+import { getHebrewGenMp3Paths } from "../../utils/hebrew-audio-gen-store.js";
+import { hebrewGenStreamUrl } from "../../utils/hebrew-audio-gen-url.js";
 import { narrationContentHash16 } from "../../utils/hebrew-audio-narration-binding.js";
 
 export const config = {
@@ -28,9 +30,8 @@ export default async function handler(req, res) {
 
   const hash16 = narrationContentHash16(text);
 
-  const dir = path.join(process.cwd(), "public", "audio", "hebrew", "gen", "v1");
-  const filePath = path.join(dir, `${hash16}.mp3`);
-  const url = `/audio/hebrew/gen/v1/${hash16}.mp3`;
+  const { dir, filePath } = getHebrewGenMp3Paths(hash16);
+  const url = hebrewGenStreamUrl(hash16);
 
   try {
     if (fs.existsSync(filePath)) {

@@ -26,7 +26,7 @@ export function normalizeNarrationForHash(plaintext) {
 }
 
 /**
- * 16 תווים hex — מזהה קובץ תחת public/audio/hebrew/gen/v1/
+ * 16 תווים hex — מפתח קובץ/זרם (ensure + /api/hebrew-audio-stream).
  * @param {string} plaintext
  */
 export function narrationContentHash16(plaintext) {

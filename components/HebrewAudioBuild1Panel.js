@@ -37,6 +37,9 @@ export default function HebrewAudioBuild1Panel({
 
   const route = resolveScoreOrReviewRoute(stem);
 
+  const needsServerNarration =
+    stem?.audio_source === "static_registry_bound" && Boolean(stem?.narration_plaintext);
+
   useEffect(() => {
     if (stem?.playback_kind !== "tts") return () => {};
     const unprime = primeSpeechSynthesisVoices();
@@ -54,7 +57,7 @@ export default function HebrewAudioBuild1Panel({
   /** הקראה סטטית לפי תוכן שאלה — יוצרת MP3 בשרת (לא TTS בדפדפן) */
   const ensureServerNarrationMp3 = useCallback(async () => {
     const t = stem?.narration_plaintext;
-    if (!t || !String(stem?.stem_audio_url || "").includes("/audio/hebrew/gen/v1/")) return;
+    if (!t || !needsServerNarration) return;
     const r = await fetch("/api/hebrew-audio-ensure", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -70,10 +73,10 @@ export default function HebrewAudioBuild1Panel({
       }
       throw new Error(err);
     }
-  }, [stem?.narration_plaintext, stem?.stem_audio_url]);
+  }, [needsServerNarration, stem?.narration_plaintext]);
 
   useEffect(() => {
-    if (!stem?.narration_plaintext || !String(stem?.stem_audio_url || "").includes("/audio/hebrew/gen/v1/")) {
+    if (!needsServerNarration) {
       return () => {};
     }
     let cancelled = false;
@@ -89,7 +92,7 @@ export default function HebrewAudioBuild1Panel({
     return () => {
       cancelled = true;
     };
-  }, [stem?.narration_plaintext, stem?.stem_audio_url, ensureServerNarrationMp3]);
+  }, [needsServerNarration, stem?.narration_plaintext, ensureServerNarrationMp3]);
 
   const playStem = useCallback(async () => {
     if (!gameActive || busy) return;
@@ -100,7 +103,7 @@ export default function HebrewAudioBuild1Panel({
     setBusy(true);
     setStatusMsg("משמיעים…");
     try {
-      if (stem?.narration_plaintext && String(stem?.stem_audio_url || "").includes("/audio/hebrew/gen/v1/")) {
+      if (needsServerNarration) {
         setStatusMsg("מכינים שמע…");
         await ensureServerNarrationMp3();
         ctrlRef.current = createStemPlaybackController(stem, {});
@@ -124,7 +127,7 @@ export default function HebrewAudioBuild1Panel({
     } finally {
       setBusy(false);
     }
-  }, [busy, gameActive, replayCount, stem, ensureServerNarrationMp3]);
+  }, [busy, gameActive, needsServerNarration, replayCount, stem, ensureServerNarrationMp3]);
 
   const runGuidedCapture = useCallback(async () => {
     if (!gameActive || busy || !guidedMode) return;

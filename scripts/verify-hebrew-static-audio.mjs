@@ -45,7 +45,7 @@ if (!stemL.narration_plaintext.includes("זוהי שאלת בדיקה")) {
   fail("narration must include full question body");
 }
 if (!stemL.narration_plaintext.includes("אפשרות א")) fail("narration must include answers preview");
-if (!String(stemL.stem_audio_url || "").startsWith("/audio/hebrew/gen/v1/")) fail("bad stem_audio_url");
+if (!String(stemL.stem_audio_url || "").startsWith("/api/hebrew-audio-stream?h=")) fail("bad stem_audio_url");
 if (!/^he\.gen\.v1\.[a-f0-9]{16}$/.test(stemL.audio_asset_id)) fail("bad audio_asset_id");
 const h = narrationContentHash16(stemL.narration_plaintext);
 if (!stemL.audio_asset_id.endsWith(h)) fail("audio_asset_id must match narration hash");

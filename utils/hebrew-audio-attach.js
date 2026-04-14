@@ -3,6 +3,7 @@
  */
 
 import { validateAudioStemV2 } from "./audio-task-contract.js";
+import { hebrewGenStreamUrl } from "./hebrew-audio-gen-url.js";
 import {
   buildFirstPassNarrationPlaintext,
   narrationContentHash16,
@@ -134,7 +135,7 @@ export function attachHebrewAudioToQuestion(question, ctx) {
     });
     const hash16 = narrationContentHash16(narration_plaintext);
     playback_kind = "static_url";
-    stem_audio_url = `/audio/hebrew/gen/v1/${hash16}.mp3`;
+    stem_audio_url = hebrewGenStreamUrl(hash16);
     audio_asset_id = `he.gen.v1.${hash16}`;
     tts_text = null;
     audio_source = "static_registry_bound";
