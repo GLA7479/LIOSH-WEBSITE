@@ -622,15 +622,15 @@ export default function ParentReportDetailedPage() {
               color: #1c1917 !important;
             }
             #parent-report-detailed-print .pr-detailed-muted {
-              color: #52525c !important;
+              color: #1f2937 !important;
               opacity: 1 !important;
             }
             #parent-report-detailed-print .pr-detailed-muted * {
-              color: #52525c !important;
+              color: #1f2937 !important;
               opacity: 1 !important;
             }
             #parent-report-detailed-print .pr-detailed-mode-hint {
-              color: #92400e !important;
+              color: #111827 !important;
               font-weight: 800 !important;
             }
             #parent-report-detailed-print .pr-detailed-future-compare {
@@ -769,12 +769,12 @@ export default function ParentReportDetailedPage() {
             #parent-report-detailed-print .pr-detailed-tier-examples .pr-detailed-subheading { color: #334155 !important; }
 
             #parent-report-detailed-print .pr-detailed-tier-inner .pr-detailed-muted {
-              color: #4b5563 !important;
+              color: #111827 !important;
               opacity: 1 !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-examples .pr-detailed-muted,
             #parent-report-detailed-print .pr-detailed-tier-examples li {
-              color: #4b5563 !important;
+              color: #111827 !important;
               opacity: 1 !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-excellence *,
@@ -799,7 +799,7 @@ export default function ParentReportDetailedPage() {
               opacity: 1 !important;
             }
             #parent-report-detailed-print .pr-detailed-callout-label {
-              color: #713f12 !important;
+              color: #111827 !important;
               opacity: 1 !important;
               font-weight: 800 !important;
             }
@@ -849,21 +849,26 @@ export default function ParentReportDetailedPage() {
               border-right: 4px solid #ef4444 !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-nextstep-card .pr-detailed-body-text {
-              color: #0f172a !important;
+              color: #111827 !important;
               opacity: 1 !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-nextstep-card .pr-detailed-body-text.font-bold {
               font-weight: 800 !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-metrics {
-              color: #0f3d3a !important;
+              color: #111827 !important;
               opacity: 1 !important;
-              font-weight: 600 !important;
+              font-weight: 700 !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-reason {
-              color: #134e4a !important;
+              color: #111827 !important;
               opacity: 1 !important;
-              font-weight: 500 !important;
+              font-weight: 700 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-phase2 p,
+            #parent-report-detailed-print .pr-detailed-topic-phase2 span {
+              color: #111827 !important;
+              opacity: 1 !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-parent,
             #parent-report-detailed-print .pr-detailed-topic-parent * {
@@ -990,12 +995,12 @@ export default function ParentReportDetailedPage() {
             }
             #parent-report-detailed-print .pr-detailed-plan-item {
               background: #ffffff !important;
-              border: 1px solid #7dd3fc !important;
+              border: 1px solid #64748b !important;
               color: #111827 !important;
             }
             #parent-report-detailed-print .pr-detailed-goal-item {
               background: #ffffff !important;
-              border: 1px solid #c4b5fd !important;
+              border: 1px solid #64748b !important;
               color: #111827 !important;
             }
             #parent-report-detailed-print .pr-detailed-bullet-li {

@@ -73,8 +73,12 @@ async function main() {
   await page.waitForTimeout(1500);
   const summaryPath = await exportPdf(page, "parent-detailed-summary.pdf");
 
+  await page.goto(`${base}/learning/parent-report`, { waitUntil: "domcontentloaded", timeout: 90000 });
+  await page.waitForTimeout(1500);
+  const parentPath = await exportPdf(page, "parent-report-main.pdf");
+
   await browser.close();
-  console.log("OK", fullPath, summaryPath);
+  console.log("OK", fullPath, summaryPath, parentPath);
 }
 
 main().catch((err) => {
