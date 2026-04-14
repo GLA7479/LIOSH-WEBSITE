@@ -35,6 +35,7 @@ import { enrichTopicMapsWithRowBehaviorProfiles } from "./parent-report-row-beha
 import { validateParentReportDataIntegrity } from "./parent-report-data-integrity";
 import { enrichReportMapsWithTopicStepHints } from "./topic-next-step-engine";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
+import { runDiagnosticEngineV2 } from "./diagnostic-engine-v2/index.js";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
 
@@ -948,6 +949,13 @@ export function generateParentReportV2(
   enrichTopicMapsWithRowBehaviorProfiles(maps, rawMistakesBySubject, startMs, endMs);
   enrichReportMapsWithTopicStepHints(maps, mistakesBySubjectMaps, endMs);
 
+  const diagnosticEngineV2 = runDiagnosticEngineV2({
+    maps,
+    rawMistakesBySubject,
+    startMs,
+    endMs,
+  });
+
   const dataIntegrityReport = validateParentReportDataIntegrity({
     trackingSnapshots,
     rawMistakesBySubject,
@@ -1078,5 +1086,7 @@ export function generateParentReportV2(
     patternDiagnostics,
     /** שלמות נתונים — לבדיקה; לא מוצג ב־UI בשלב 1 */
     dataIntegrityReport,
+    /** מנוע אבחון V2 — פלט מובנה לפי stage1 blueprint (שכבות נפרדות, שערים, טקסונומיה) */
+    diagnosticEngineV2,
   };
 }

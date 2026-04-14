@@ -7,11 +7,12 @@ Engineering handoff for Phases **7–15** (diagnostic depth through consolidatio
 1. **V2 base report** — period snapshot, per-subject topic maps, mistake aggregates (`utils/parent-report-v2.js`).
 2. **Row diagnostics** — sufficiency, stability, caps, `decisionTrace` (`utils/parent-report-row-diagnostics.js`).
 3. **Trend / behavior** — session-style signals and dominant behavior (`parent-report-row-trend.js`, `parent-report-row-behavior.js`).
-4. **Topic next step engine** — merges diagnostics + legacy step + Phases 7–14 overlays into one `decideTopicNextStep` object (`utils/topic-next-step-engine.js`, helpers in `topic-next-step-phase2.js` and standalone `parent-report-*.js` modules).
-5. **Pattern diagnostics** — subject aggregation from enriched rows (`utils/learning-patterns-analysis.js`).
-6. **Detailed report** — `subjectProfiles`, `topicRecommendations`, `executiveSummary` (`utils/detailed-parent-report.js`).
-7. **Normalization** — safe defaults for partial payloads (`utils/parent-report-payload-normalize.js`).
-8. **UI** — chips and **parent-facing lines** built from the same Hebrew helpers as letters (`utils/parent-report-ui-explain-he.js`, `components/parent-report-*.jsx`).
+4. **Diagnostic Engine V2** — פלט מובנה לפי [stage1 blueprint](./stage1-scientific-blueprint-source-of-truth.md): טקסונומיה, ביטחון, עדיפות, שערי פלט, probe והתערבות (`utils/diagnostic-engine-v2/`, `report.diagnosticEngineV2`). רץ אחרי העשרת שורות; לא מחליף את topic-next-step אלא משלים אותו.
+5. **Topic next step engine** — merges diagnostics + legacy step + Phases 7–14 overlays into one `decideTopicNextStep` object (`utils/topic-next-step-engine.js`, helpers in `topic-next-step-phase2.js` and standalone `parent-report-*.js` modules).
+6. **Pattern diagnostics** — subject aggregation from enriched rows (`utils/learning-patterns-analysis.js`).
+7. **Detailed report** — `subjectProfiles`, `topicRecommendations`, `executiveSummary` (`utils/detailed-parent-report.js`).
+8. **Normalization** — safe defaults for partial payloads (`utils/parent-report-payload-normalize.js`).
+9. **UI** — chips and **parent-facing lines** built from the same Hebrew helpers as letters (`utils/parent-report-ui-explain-he.js`, `components/parent-report-*.jsx`).
 
 ## 2. Topic engine internal merge order (single object)
 

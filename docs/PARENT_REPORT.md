@@ -22,6 +22,9 @@ Order is roughly bottom-up: raw usage → enriched rows → subject diagnostics 
 4. **Behavior** (`utils/parent-report-row-behavior.js`)  
    Dominant behavior profile per row (e.g. fragile success, knowledge gap); feeds Phase 2 risk flags and explainability.
 
+4b. **Diagnostic Engine V2** (`utils/diagnostic-engine-v2/`)  
+   Structured blueprint-aligned output on `report.diagnosticEngineV2` (taxonomy, confidence, priority, gating, probe/intervention). See [`docs/DIAGNOSTIC_ENGINE_V2.md`](./DIAGNOSTIC_ENGINE_V2.md).
+
 5. **Topic next step** (`utils/topic-next-step-engine.js`, `utils/topic-next-step-phase2.js`, `utils/topic-next-step-config.js`)  
    `buildTopicRecommendationRecord` merges diagnostics + legacy step logic + Phase 2 guards + aggressive evidence cap. Output includes `recommendedNextStep`, Hebrew copy, `riskFlags`, `whyThisRecommendationHe`, structured trace.
 

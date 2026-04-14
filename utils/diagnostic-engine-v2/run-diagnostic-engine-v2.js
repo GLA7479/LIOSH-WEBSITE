@@ -1,0 +1,258 @@
+/**
+ * Diagnostic Engine V2 — אורכסטרציה end-to-end לפי stage1 blueprint.
+ * תלות: מפות דוח V2 לאחר enrich, טעויות גולמיות, חלון זמן.
+ */
+import { splitTopicRowKey } from "../parent-report-row-diagnostics.js";
+import { filterMistakesForRow } from "../parent-report-row-trend.js";
+import { TAXONOMY_BY_ID } from "./taxonomy-registry.js";
+import { taxonomyIdsForReportBucket } from "./topic-taxonomy-bridge.js";
+import { passesRecurrenceRules, heavyHintLikelyInvalidatesPattern } from "./recurrence.js";
+import { resolveConfidenceLevel } from "./confidence-policy.js";
+import { resolvePriority, breadthFromWeakRowCount } from "./priority-policy.js";
+import { applyOutputGating } from "./output-gating.js";
+import { buildCompetingHypotheses } from "./competing-hypotheses.js";
+import { buildProbePlan } from "./probe-layer.js";
+import { buildInterventionPlan } from "./intervention-layer.js";
+import { deriveStrengthProfile } from "./strength-profile.js";
+import { sanitizePedagogicLine } from "./human-boundaries.js";
+
+const ENGINE_VERSION = "2.0.0";
+const BLUEPRINT_REF = "docs/stage1-scientific-blueprint-source-of-truth.md v1.0";
+
+/**
+ * @param {object} params
+ * @param {Record<string, Record<string, Record<string, unknown>>>} params.maps
+ * @param {Record<string, unknown[]>} params.rawMistakesBySubject
+ * @param {number} params.startMs
+ * @param {number} params.endMs
+ */
+export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, endMs }) {
+  const generatedAt = new Date().toISOString();
+  /** @type {unknown[]} */
+  const allEvidenceRefs = [];
+
+  /** @type {Record<string, number>} */
+  const weakRowsBySubject = {};
+  for (const [subjectId, topicMap] of Object.entries(maps || {})) {
+    if (!topicMap || typeof topicMap !== "object") continue;
+    let c = 0;
+    for (const row of Object.values(topicMap)) {
+      if (row && typeof row === "object" && row.needsPractice) c += 1;
+    }
+    weakRowsBySubject[subjectId] = c;
+  }
+
+  /** @type {object[]} */
+  const units = [];
+
+  for (const [subjectId, topicMap] of Object.entries(maps || {})) {
+    if (!topicMap || typeof topicMap !== "object") continue;
+    const breadth = breadthFromWeakRowCount(weakRowsBySubject[subjectId] || 0);
+    const raw = rawMistakesBySubject?.[subjectId] || [];
+
+    for (const [topicRowKey, row] of Object.entries(topicMap)) {
+      if (!row || typeof row !== "object") continue;
+
+      const events = filterMistakesForRow(subjectId, topicRowKey, row, raw, startMs, endMs);
+      const wrongs = events.filter((e) => !e.isCorrect);
+      const rowWrongTotal = Math.max(0, Number(row.wrong) || 0);
+      const wrongCountForRules = Math.max(wrongs.length, rowWrongTotal);
+      const { bucketKey } = splitTopicRowKey(topicRowKey);
+
+      const evidenceTrace = [
+        { type: "volume", source: "report_row", value: { questions: row.questions, correct: row.correct, wrong: row.wrong, accuracy: row.accuracy } },
+        {
+          type: "mistake_events",
+          source: "normalized_mistake_event",
+          value: { total: events.length, wrong: wrongs.length, rowWrongTotal, wrongCountForRules },
+        },
+      ];
+      if (row.lastSessionMs != null) evidenceTrace.push({ type: "recency", source: "row", value: { lastSessionMs: row.lastSessionMs } });
+
+      const hintInvalidates = heavyHintLikelyInvalidatesPattern(events);
+
+      const candidateIds = taxonomyIdsForReportBucket(subjectId, bucketKey);
+      /** @type {string|null} */
+      let chosenId = null;
+      for (const tid of candidateIds) {
+        const trow = TAXONOMY_BY_ID[tid];
+        if (!trow) continue;
+        if (passesRecurrenceRules(wrongs, trow)) {
+          chosenId = tid;
+          break;
+        }
+        if (
+          wrongs.length === 0 &&
+          wrongCountForRules >= trow.minWrong &&
+          !(trow.minDistinctDays > 0) &&
+          !(trow.minDistinctPatternFamilies > 0)
+        ) {
+          chosenId = tid;
+          break;
+        }
+      }
+      if (!chosenId && candidateIds.length && wrongCountForRules >= 2) {
+        chosenId = candidateIds[0];
+      }
+
+      const recurrenceFull = !!(() => {
+        if (!chosenId) return false;
+        const trow = TAXONOMY_BY_ID[chosenId];
+        if (!trow) return false;
+        if (passesRecurrenceRules(wrongs, trow)) return true;
+        return (
+          wrongs.length === 0 &&
+          wrongCountForRules >= trow.minWrong &&
+          !(trow.minDistinctDays > 0) &&
+          !(trow.minDistinctPatternFamilies > 0)
+        );
+      })();
+      const counterEvidenceStrong =
+        (Number(row.accuracy) >= 88 && wrongCountForRules >= 4) ||
+        (row.modeKey === "speed" && Number(row.accuracy) >= 82 && wrongCountForRules >= 2);
+
+      const confidence = resolveConfidenceLevel({
+        events,
+        wrongs,
+        row,
+        recurrenceFull,
+        hintInvalidates,
+      });
+
+      const sharpDecline =
+        row?.trend && typeof row.trend === "object" && String(row.trend.accuracyDirection || "") === "down";
+
+      const priority = resolvePriority(confidence, breadth, {
+        sharpDecline: !!sharpDecline,
+        crossSubjectContradiction: confidence === "contradictory",
+      });
+
+      const narrowSample = (Number(row.questions) || 0) < 10;
+      const gating = applyOutputGating({
+        confidence,
+        priority,
+        recurrenceFull,
+        counterEvidenceStrong,
+        hasTaxonomyMatch: !!chosenId,
+        narrowSample,
+      });
+
+      const behaviorDom = row?.behaviorProfile?.dominantType;
+      const competing = chosenId ? buildCompetingHypotheses(TAXONOMY_BY_ID[chosenId], behaviorDom) : { hypotheses: [], distinguishingEvidenceHe: [] };
+
+      const tax = chosenId ? TAXONOMY_BY_ID[chosenId] : null;
+      const diagnosisLineRaw = tax
+        ? `מצביע על דפוס: ${tax.patternHe} (תת־מיומנות: ${tax.subskillHe}) ב${String(row.displayName || bucketKey)} — מזהה טקסונומיה ${tax.id}.`
+        : "";
+      const sanitized = sanitizePedagogicLine(diagnosisLineRaw);
+
+      /** @type {string[]} */
+      const whyNotStronger = [];
+      if (!recurrenceFull) whyNotStronger.push("חזרתיות מלאה לפי הטקסונומיה לא הושגה");
+      if (narrowSample) whyNotStronger.push("נפח שאלות בשורה קטן מדי לביטחון גבוה");
+      if (hintInvalidates) whyNotStronger.push("רמז כבד מסביר חלק מההצלחות — אין להסיק שליטה מלאה");
+      if (counterEvidenceStrong) whyNotStronger.push("דיוק גבוה יחסית לנפח טעויות — נדרשتمييز מול רשלנות או רעש");
+
+      /** @type {string[]} */
+      const cannotConclude = [];
+      if (gating.cannotConcludeYet) cannotConclude.push("לא ניתן להסיק מסקנה יציבה כרגע לפי שערי הפלט");
+      if (!chosenId && wrongCountForRules > 0) cannotConclude.push("אין התאמת טקסונומיה אחרי סינון חזרתיות");
+
+      const unit = {
+        blueprintRef: BLUEPRINT_REF,
+        engineVersion: ENGINE_VERSION,
+        unitKey: `${subjectId}::${topicRowKey}`,
+        subjectId,
+        topicRowKey,
+        bucketKey,
+        displayName: row.displayName || bucketKey,
+        evidenceTrace,
+        taxonomy: tax
+          ? {
+              id: tax.id,
+              domainHe: tax.domainHe,
+              topicHe: tax.topicHe,
+              subskillHe: tax.subskillHe,
+              patternHe: tax.patternHe,
+              observableMarkersHe: tax.observableMarkersHe,
+              counterEvidenceHe: tax.counterEvidenceHe,
+              countsWhenHe: tax.countsWhenHe,
+              doesNotCountWhenHe: tax.doesNotCountWhenHe,
+              rootsHe: tax.rootsHe,
+              competitorsHe: tax.competitorsHe,
+              doNotConcludeHe: tax.doNotConcludeHe,
+            }
+          : null,
+        recurrence: {
+          full: recurrenceFull,
+          minWrongRequired: tax ? tax.minWrong : null,
+          wrongEventCount: wrongs.length,
+          rowWrongTotal,
+          wrongCountForRules,
+        },
+        confidence: { level: confidence, rowSignals: { confidence01: row.confidence01 ?? null, dataSufficiencyLevel: row.dataSufficiencyLevel ?? null, isEarlySignalOnly: row.isEarlySignalOnly ?? null } },
+        priority: { level: priority, breadth },
+        competingHypotheses: competing,
+        strengthProfile: deriveStrengthProfile(row),
+        outputGating: gating,
+        diagnosis:
+          gating.diagnosisAllowed && !(sanitized.stripped && !sanitized.safe)
+            ? {
+                allowed: true,
+                conditional: !!(gating.confidenceOnly || narrowSample || !recurrenceFull),
+                taxonomyId: chosenId,
+                lineHe: sanitized.safe || diagnosisLineRaw,
+                humanBoundaryStripped: sanitized.stripped,
+                forbiddenInferencesHe: tax?.doNotConcludeHe || [],
+              }
+            : {
+                allowed: false,
+                taxonomyId: chosenId,
+                lineHe: sanitized.stripped ? null : sanitized.safe || null,
+                conditional: false,
+                humanBoundaryStripped: sanitized.stripped,
+                forbiddenInferencesHe: tax?.doNotConcludeHe || [],
+              },
+        probe: gating.probeOnly || gating.diagnosisAllowed ? buildProbePlan(chosenId) : null,
+        intervention: gating.interventionAllowed ? buildInterventionPlan(chosenId) : null,
+        explainability: {
+          whyNotStrongerConclusionHe: whyNotStronger,
+          cannotConcludeYetHe: cannotConclude,
+        },
+      };
+      units.push(unit);
+      allEvidenceRefs.push({ unitKey: unit.unitKey, evidenceTrace });
+    }
+  }
+
+  const subjectRollup = Object.keys(maps || {}).map((sid) => {
+    const u = units.filter((x) => x.subjectId === sid);
+    const anyP4 = u.some((x) => x.priority.level === "P4");
+    const anyIntervention = u.some((x) => x.outputGating?.interventionAllowed);
+    return {
+      subjectId: sid,
+      unitCount: u.length,
+      weakRowCount: weakRowsBySubject[sid] || 0,
+      priorityCeiling: anyP4 ? "P4" : "P3",
+      interventionAny: anyIntervention,
+    };
+  });
+
+  return {
+    blueprintRef: BLUEPRINT_REF,
+    engineVersion: ENGINE_VERSION,
+    generatedAt,
+    evidenceFoundation: {
+      schema: "MistakeEventV1+report_row",
+      mappingChain: "question_event → topicRowKey → bucketKey → taxonomyId (bridge)",
+      eventCountHint: "סוכם מסננים per-row; ראה evidenceTrace בכל unit",
+    },
+    units,
+    subjectRollup,
+    global: {
+      humanReviewRecommended: units.some((u) => u.outputGating?.humanReviewRecommended),
+      crossSubjectBreadth: weakRowsBySubject,
+    },
+    meta: { allEvidenceRefsCount: allEvidenceRefs.length },
+  };
+}
