@@ -1916,7 +1916,10 @@ export function buildDetailedParentReportFromBaseReport(baseReport, meta = {}) {
     Array.isArray(baseReport?.diagnosticEngineV2?.units) &&
     baseReport.diagnosticEngineV2.units.length > 0;
 
-  const subjectsLegacy = baseReport.patternDiagnostics?.subjects || {};
+  const subjectsLegacy =
+    baseReport.legacyPatternDiagnostics?.subjects ||
+    baseReport.patternDiagnostics?.subjects ||
+    {};
   const executiveSummary = hasV2Primary
     ? buildExecutiveSummaryFromV2(baseReport, subjectCoverage)
     : buildExecutiveSummary(

@@ -10,6 +10,7 @@
  * @param {boolean} p.counterEvidenceStrong
  * @param {boolean} p.hasTaxonomyMatch
  * @param {boolean} p.narrowSample
+ * @param {boolean} [p.weakEvidence]
  */
 export function applyOutputGating(p) {
   const {
@@ -19,6 +20,7 @@ export function applyOutputGating(p) {
     counterEvidenceStrong,
     hasTaxonomyMatch,
     narrowSample,
+    weakEvidence = false,
   } = p;
 
   const out = {
@@ -42,6 +44,14 @@ export function applyOutputGating(p) {
     out.cannotConcludeYet = true;
     out.probeOnly = true;
     out.reasons.push("ראיות סותרות או נגד־ראיה חזקה");
+    return out;
+  }
+
+  if (weakEvidence) {
+    out.cannotConcludeYet = true;
+    out.confidenceOnly = true;
+    out.probeOnly = true;
+    out.reasons.push("ראיות חלשות: הסתמכות על ספירה מצטברת ללא רצף אירועים מספק");
     return out;
   }
 

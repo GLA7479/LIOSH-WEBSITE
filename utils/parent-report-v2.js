@@ -537,6 +537,114 @@ function buildDailyActivityFromSessions(startMs, endMs) {
     }));
 }
 
+const V2_SUBJECT_ORDER = [
+  "math",
+  "geometry",
+  "english",
+  "science",
+  "hebrew",
+  "moledet-geography",
+];
+
+const V2_SUBJECT_LABEL_HE = {
+  math: "חשבון",
+  geometry: "גאומטריה",
+  english: "אנגלית",
+  science: "מדעים",
+  hebrew: "עברית",
+  "moledet-geography": "מולדת וגאוגרפיה",
+};
+
+function safeNumber(n) {
+  const v = Number(n);
+  return Number.isFinite(v) ? v : 0;
+}
+
+function summarizeV2UnitsForSubject(units) {
+  const list = Array.isArray(units) ? units : [];
+  const diagnosed = list.filter((u) => !!u?.diagnosis?.allowed);
+  const stable = list.filter(
+    (u) => Array.isArray(u?.strengthProfile?.tags) && u.strengthProfile.tags.includes("stable_mastery")
+  );
+  const uncertain = list.filter((u) => !!u?.outputGating?.cannotConcludeYet);
+  const topWeak = diagnosed.find((u) => String(u?.priority?.level || "") === "P4") || diagnosed[0] || list[0] || null;
+
+  const topStrengths = stable.slice(0, 3).map((u) => ({
+    labelHe: String(u?.displayName || ""),
+    questions: safeNumber(u?.evidenceTrace?.[0]?.value?.questions),
+    accuracy: safeNumber(u?.evidenceTrace?.[0]?.value?.accuracy),
+    excellent: true,
+    tierHe: "חוזקה יציבה",
+  }));
+
+  const topWeaknesses = diagnosed
+    .filter((u) => String(u?.taxonomy?.patternHe || "").trim())
+    .slice(0, 3)
+    .map((u) => ({
+      labelHe: String(u?.taxonomy?.patternHe || ""),
+      mistakeCount: safeNumber(u?.recurrence?.wrongCountForRules),
+      tierHe: safeNumber(u?.recurrence?.wrongCountForRules) >= 5 ? "קושי חוזר" : "תחום לחיזוק",
+    }));
+
+  const evidenceExamples = [];
+  for (const u of diagnosed.slice(0, 2)) {
+    const confidence = String(u?.confidence?.level || "");
+    if (confidence !== "high" && confidence !== "moderate") continue;
+    evidenceExamples.push({
+      type: "mistake",
+      titleHe: String(u?.displayName || "יחידת אבחון"),
+      bodyHe: String(u?.diagnosis?.lineHe || u?.taxonomy?.patternHe || "ראיה אבחונית חלקית"),
+      confidence,
+    });
+  }
+
+  return {
+    hasAnySignal: list.length > 0,
+    summaryHe: topWeak
+      ? `ברמת ${String(topWeak?.displayName || "יחידת אבחון")}: ${String(topWeak?.taxonomy?.patternHe || "נדרש בירור נוסף")}`
+      : null,
+    topStrengths,
+    topWeaknesses,
+    strengths: [],
+    weaknesses: [],
+    maintain: [],
+    improving: [],
+    stableExcellence: [],
+    studentRecommendationsImprove: [],
+    studentRecommendationsMaintain: [],
+    parentRecommendationsImprove: [],
+    parentRecommendationsMaintain: [],
+    evidenceMistake: null,
+    evidenceSuccess: null,
+    evidenceExamples,
+    parentActionHe: String(topWeak?.intervention?.immediateActionHe || topWeak?.probe?.specificationHe || "").trim() || null,
+    nextWeekGoalHe: String(topWeak?.probe?.objectiveHe || topWeak?.intervention?.shortPracticeHe || "").trim() || null,
+    subjectPriorityReasonHe: String(topWeak?.taxonomy?.patternHe || "").trim() || null,
+    subjectDoNowHe: String(topWeak?.intervention?.immediateActionHe || "").trim() || null,
+    subjectAvoidNowHe: String(topWeak?.intervention?.avoidHe || "").trim() || null,
+    dominantMistakePatternLabelHe: String(topWeak?.taxonomy?.patternHe || "").trim() || null,
+    subjectMemoryNarrativeHe: uncertain.length
+      ? "בחלק מהשורות הראיות עדיין חלקיות וצריך עוד חלון תצפית."
+      : null,
+    subjectDiagnosticRestraintHe: uncertain.length
+      ? "לא סוגרים מסקנה חזקה בכל השורות עד הצטברות ראיות."
+      : null,
+  };
+}
+
+function buildPatternDiagnosticsFromV2(diagnosticEngineV2) {
+  const units = Array.isArray(diagnosticEngineV2?.units) ? diagnosticEngineV2.units : [];
+  const subjects = {};
+  for (const sid of V2_SUBJECT_ORDER) {
+    const subjectUnits = units.filter((u) => String(u?.subjectId || "") === sid);
+    subjects[sid] = {
+      subjectLabelHe: V2_SUBJECT_LABEL_HE[sid] || sid,
+      ...summarizeV2UnitsForSubject(subjectUnits),
+    };
+  }
+  return { version: 2, subjects };
+}
+
 /**
  * @param {string} playerName
  * @param {string} period 'week'|'month'|'custom'
@@ -965,7 +1073,7 @@ export function generateParentReportV2(
     endMs,
   });
 
-  const patternDiagnostics = analyzeLearningPatterns(
+  const legacyPatternDiagnostics = analyzeLearningPatterns(
     {
       mathOperations,
       geometryTopics,
@@ -976,6 +1084,10 @@ export function generateParentReportV2(
     },
     rawMistakesBySubject
   );
+  const hasV2Units = Array.isArray(diagnosticEngineV2?.units) && diagnosticEngineV2.units.length > 0;
+  const patternDiagnostics = hasV2Units
+    ? buildPatternDiagnosticsFromV2(diagnosticEngineV2)
+    : legacyPatternDiagnostics;
 
   const INSUFFICIENT_SUBJECT_Q = 8;
   const insufficientDataSubjectsHe = [];
@@ -1082,8 +1194,12 @@ export function generateParentReportV2(
       },
     },
     achievements: achievements.map((name) => ({ name, earned: true })),
-    /** Data-driven diagnostics (JSON-only in phase 1); UI unchanged. */
+    /** Data-driven diagnostics for UI authority (V2 primary, legacy fallback only). */
     patternDiagnostics,
+    legacyPatternDiagnostics,
+    diagnosticPrimarySource: hasV2Units
+      ? "diagnosticEngineV2"
+      : "legacy_patternDiagnostics_fallback",
     /** שלמות נתונים — לבדיקה; לא מוצג ב־UI בשלב 1 */
     dataIntegrityReport,
     /** מנוע אבחון V2 — פלט מובנה לפי stage1 blueprint (שכבות נפרדות, שערים, טקסונומיה) */

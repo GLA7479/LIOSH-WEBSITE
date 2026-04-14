@@ -302,7 +302,7 @@ function migrateDiagnosticSubjectV1ToRow(sub, subjectId) {
 }
 
 /**
- * מקור תצוגה לאזור ההמלצות: אבחון (גרסה 2), הודעת חוסר נתונים, או המלצות V2 ישנות רק כשאין patternDiagnostics.
+ * מקור תצוגה לאזור ההמלצות: V2 (ראשי) או fallback legacy מפורש בלבד.
  * @returns {{ mode: "new"|"insufficient"|"legacy", rows: object[], legacyRecommendations: object[] }}
  */
 function buildParentReportDiagnosticsView(report) {
@@ -310,14 +310,17 @@ function buildParentReportDiagnosticsView(report) {
     ? report.analysis.recommendations
     : [];
   const subjects = report?.patternDiagnostics?.subjects;
+  const primarySource = String(report?.diagnosticPrimarySource || "");
+  const allowLegacyFallback =
+    primarySource === "legacy_patternDiagnostics_fallback" || !primarySource;
   const hasSubjects =
     subjects && typeof subjects === "object" && !Array.isArray(subjects);
 
   if (!hasSubjects) {
     return {
-      mode: legacy.length ? "legacy" : "insufficient",
+      mode: allowLegacyFallback && legacy.length ? "legacy" : "insufficient",
       rows: [],
-      legacyRecommendations: legacy,
+      legacyRecommendations: allowLegacyFallback ? legacy : [],
     };
   }
 
@@ -339,7 +342,7 @@ function buildParentReportDiagnosticsView(report) {
     return {
       mode: "insufficient",
       rows: [],
-      legacyRecommendations: legacy,
+      legacyRecommendations: allowLegacyFallback ? legacy : [],
     };
   }
 
@@ -357,7 +360,7 @@ function buildParentReportDiagnosticsView(report) {
   return {
     mode: "new",
     rows,
-    legacyRecommendations: legacy,
+    legacyRecommendations: allowLegacyFallback ? legacy : [],
   };
 }
 
@@ -680,6 +683,14 @@ export default function ParentReport() {
     () => (report ? buildParentReportDiagnosticsView(report) : null),
     [report]
   );
+  const diagnosticSourceLabelHe = useMemo(() => {
+    const source = String(report?.diagnosticPrimarySource || "");
+    if (source === "diagnosticEngineV2") return "מקור אבחון ראשי: מנוע V2";
+    if (source === "legacy_patternDiagnostics_fallback") {
+      return "מקור אבחון זמני: legacy fallback (אין יחידות V2 מספיקות)";
+    }
+    return "מקור אבחון: לא זוהה (קריאת זהירות)";
+  }, [report]);
 
   if (loading) {
     return (
@@ -2360,6 +2371,9 @@ export default function ParentReport() {
                 <h2 className="parent-report-print-page-section-heading text-base md:text-xl font-bold mb-2 md:mb-3 text-center">
                   💡 המלצות
                 </h2>
+                <p className="text-[11px] md:text-xs text-white/60 text-center mb-2">
+                  {diagnosticSourceLabelHe}
+                </p>
 
                 {diagnosticsView.mode === "legacy" && (
                   <div className="space-y-2 md:space-y-3">

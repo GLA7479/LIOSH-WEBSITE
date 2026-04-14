@@ -128,6 +128,7 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
       });
 
       const narrowSample = (Number(row.questions) || 0) < 10;
+      const weakEvidence = wrongs.length === 0 && wrongCountForRules > 0;
       const gating = applyOutputGating({
         confidence,
         priority,
@@ -135,6 +136,7 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
         counterEvidenceStrong,
         hasTaxonomyMatch: !!chosenId,
         narrowSample,
+        weakEvidence,
       });
 
       const behaviorDom = row?.behaviorProfile?.dominantType;
@@ -150,6 +152,7 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
       const whyNotStronger = [];
       if (!recurrenceFull) whyNotStronger.push("חזרתיות מלאה לפי הטקסונומיה לא הושגה");
       if (narrowSample) whyNotStronger.push("נפח שאלות בשורה קטן מדי לביטחון גבוה");
+      if (weakEvidence) whyNotStronger.push("אין רצף אירועי טעות מספיק; נדרש חיזוק evidence לפני קביעה");
       if (hintInvalidates) whyNotStronger.push("רמז כבד מסביר חלק מההצלחות — אין להסיק שליטה מלאה");
       if (counterEvidenceStrong) whyNotStronger.push("דיוק גבוה יחסית לנפח טעויות — נדרשتمييز מול רשלנות או רעש");
 

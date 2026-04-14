@@ -9,7 +9,7 @@
 - טקסונומיה: [`utils/diagnostic-engine-v2/taxonomy-*.js`](../utils/diagnostic-engine-v2/)
 - גשר נושא↔טקסונומיה: [`utils/diagnostic-engine-v2/topic-taxonomy-bridge.js`](../utils/diagnostic-engine-v2/topic-taxonomy-bridge.js)
 - ביטחון / עדיפות / שערים: `confidence-policy.js`, `priority-policy.js`, `output-gating.js`
-- אינטגרציה לדוח: [`utils/parent-report-v2.js`](../utils/parent-report-v2.js) — השדה `diagnosticEngineV2` על אובייקט הדוח; [`utils/detailed-parent-report.js`](../utils/detailed-parent-report.js) מעביר לדוח מקיף
+- אינטגרציה לדוח: [`utils/parent-report-v2.js`](../utils/parent-report-v2.js) — `diagnosticEngineV2` הוא מקור סמכות ראשי גם לדוח ההורה הרגיל; `patternDiagnostics` נגזר מ־V2 כברירת מחדל; fallback legacy נשמר ב־`legacyPatternDiagnostics` בלבד כשאין יחידות V2 שימושיות. [`utils/detailed-parent-report.js`](../utils/detailed-parent-report.js) משתמש באותו מודל סמכות.
 
 ## זרימת נתונים (end-to-end)
 

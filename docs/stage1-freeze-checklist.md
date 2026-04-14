@@ -81,4 +81,9 @@
 
 סבב **Stage 1 Blueprint Freeze** הושלם לפי התוכנית: Baseline Lock, Sufficiency Audit, Tightening (ללא Partial), Consistency Check, והחלטת Freeze.
 
+## Pilot package reference
+
+- Controlled pilot package: [pilot-readiness-package.md](./pilot-readiness-package.md)
+- Pedagogical matrix: [pedagogical-verdict-matrix.md](./pedagogical-verdict-matrix.md)
+
 **אחראי על ביצוע הסבב (מערכת):** Cursor Agent — 2026-04-14  
