@@ -1,6 +1,12 @@
 # AI-Hybrid Diagnostic Engine (implementation)
 
-This document describes **repo-local code**: runtime wiring, validators, and tooling. It does **not** assert completion of external program gates (expert gold labeling, multi-week shadow SLOs, human review sign-off, production rollout).
+This document describes **repo-local code**: runtime wiring, validators, and tooling. It does **not** assert completion of external program gates (expert gold labeling, multi-week shadow SLOs, human review sign-off, production rollout). For external-only gates and suggested ownership, see [`AI_HYBRID_EXTERNAL_PROGRAM_HANDOFF.md`](./AI_HYBRID_EXTERNAL_PROGRAM_HANDOFF.md).
+
+## Repo-complete scope (explicit)
+
+**Included in repo-complete:** hybrid runtime safety against **runtime exceptions** inside `safeBuildHybridRuntimeForReport` / `buildHybridRuntimeForReport`; **malformed** hybrid payload rejected with `hybridRuntime = null`; detailed-report **validation + fallback** to `null`; local harness/CI verification; tracked source and `.gitignore` for generated gold.
+
+**Excluded from repo-complete:** survival of **ES-module parse/load/link failure** before any module code runs (e.g. broken static import graph). That class of failure is a **build-time / bundle integrity** concern, not covered by in-function try/catch. A separate future hardening task could address lazy-loading or split chunks if product requirements demand it.
 
 ## Authority
 

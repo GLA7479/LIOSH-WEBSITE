@@ -14,4 +14,6 @@ export { appendShadowHybridEntry, readShadowHybridLog } from "./shadow-store.js"
 export { buildHybridRuntimeForReport } from "./run-hybrid-for-report.js";
 export { safeBuildHybridRuntimeForReport } from "./safe-build-hybrid-runtime.js";
 export { isValidHybridRuntimePayload } from "./validate-hybrid-runtime.js";
+export { summarizeHybridRuntimeForReview } from "./hybrid-review-summary.js";
+export { buildHybridCaseReviewRecord } from "./hybrid-review-record.js";
 export { GOLD_LABEL_FIELDS } from "./label-schema.js";

@@ -28,6 +28,7 @@
     "test:topic-next-step-engine-scenarios": "tsx scripts/topic-next-step-engine-scenarios.mjs",
     "test:diagnostic-engine-v2-harness": "tsx scripts/diagnostic-engine-v2-harness.mjs",
     "test:ai-hybrid-harness": "tsx scripts/ai-hybrid-harness.mjs",
+    "ai-hybrid:review-export": "tsx scripts/ai-hybrid-review-case-export.ts",
     "ai-hybrid:generate-gold": "tsx scripts/ai-hybrid-generate-synthetic-gold.mjs",
     "ai-hybrid:offline-eval": "tsx scripts/ai-hybrid-offline-eval.mjs",
     "test:parent-report-phase6": "tsx scripts/parent-report-phase6-suite.mjs && tsx scripts/parent-report-pages-ssr.mjs",
