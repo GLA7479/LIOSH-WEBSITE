@@ -24,15 +24,22 @@
 
 ## Controlled pilot checklist
 
-- [ ] Run `npm run test:parent-report-phase1`
-- [ ] Run `npm run test:topic-next-step-phase2`
-- [ ] Run `npm run test:topic-next-step-engine-scenarios`
-- [ ] Run `npm run test:diagnostic-engine-v2-harness`
-- [ ] Run `npm run test:parent-report-phase6`
-- [ ] Run `npm run build`
-- [ ] Verify `diagnosticPrimarySource` labeling in parent report UI
-- [ ] Verify fallback appears only with explicit reason and no hidden authority mixing
-- [ ] Confirm pedagogical matrix remains GO with no blocking items
+- [x] Run `npm run test:parent-report-phase1`
+- [x] Run `npm run test:topic-next-step-phase2`
+- [x] Run `npm run test:topic-next-step-engine-scenarios`
+- [x] Run `npm run test:diagnostic-engine-v2-harness`
+- [x] Run `npm run test:parent-report-phase6`
+- [x] Run `npm run build`
+- [x] Verify `diagnosticPrimarySource` labeling in parent report UI
+- [x] Verify fallback appears only with explicit reason and no hidden authority mixing
+- [x] Confirm pedagogical matrix remains GO with no blocking items
+
+## Monitoring plan during pilot
+
+- Monitor each pilot report for `diagnosticPrimarySource`; flag any unexpected `legacy_patternDiagnostics_fallback` spikes.
+- Trigger immediate pause if any severe issue category is observed once in production-like usage.
+- Log and review all `cannotConcludeYet` dominant outputs weekly to ensure conservative behavior remains coherent for parents.
+- Re-run full verification pack before every pilot cohort expansion.
 
 ## Ready-for-pilot verdict
 

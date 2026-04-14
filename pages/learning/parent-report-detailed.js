@@ -507,6 +507,10 @@ export default function ParentReportDetailedPage() {
           }
 
           @media print {
+            @page {
+              size: A4;
+              margin: 10mm 8mm;
+            }
             .pr-detailed-avoid-split {
               break-inside: avoid !important;
               page-break-inside: avoid !important;
@@ -520,36 +524,45 @@ export default function ParentReportDetailedPage() {
               background: white !important;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
+              color: #111827 !important;
             }
-            body * {
-              visibility: hidden !important;
+            .no-pdf {
+              display: none !important;
+            }
+            .pr-detailed-page {
+              background: #ffffff !important;
+              color: #111827 !important;
+              min-height: auto !important;
+              padding: 0 !important;
+            }
+            .pr-detailed-page .max-w-4xl {
+              max-width: none !important;
+              width: auto !important;
+              margin: 0 !important;
+            }
+            #parent-report-detailed-print {
+              position: static !important;
+              width: auto !important;
+              max-width: 100% !important;
+              margin: 0 auto !important;
+              padding: 0 !important;
+              background: #ffffff !important;
+              box-shadow: none !important;
+              font-size: 10pt;
+              line-height: 1.48;
+              color: #111827 !important;
+            }
+            #parent-report-detailed-print[data-display-mode="full"] {
+              font-size: 10pt;
+            }
+            #parent-report-detailed-print[data-display-mode="summary"] {
+              font-size: 10pt;
             }
             #parent-report-detailed-print,
             #parent-report-detailed-print * {
-              visibility: visible !important;
-            }
-            #parent-report-detailed-print {
-              position: absolute !important;
-              inset: 0 auto auto 0 !important;
-              top: 0 !important;
-              left: 0 !important;
-              width: 100% !important;
-              max-width: 100% !important;
-              margin: 0 !important;
-              padding: 8mm 6mm !important;
-              background: #ffffff !important;
-              box-shadow: none !important;
-              font-size: 9.6pt;
-              line-height: 1.48;
-              color: #1c1917 !important;
-            }
-            #parent-report-detailed-print[data-display-mode="full"] {
-              padding: 7mm 5.5mm !important;
-              font-size: 9.35pt;
-            }
-            #parent-report-detailed-print[data-display-mode="summary"] {
-              padding: 6mm 5mm !important;
-              font-size: 9.45pt;
+              color: #111827 !important;
+              opacity: 1 !important;
+              text-shadow: none !important;
             }
 
             #parent-report-detailed-print h1 {
@@ -671,8 +684,8 @@ export default function ParentReportDetailedPage() {
             #parent-report-detailed-print .pr-detailed-callout-action,
             #parent-report-detailed-print .pr-detailed-callout-goal,
             #parent-report-detailed-print .pr-detailed-topic-nextstep-card {
-              break-inside: avoid !important;
-              page-break-inside: avoid !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
               border-radius: 6px !important;
               padding: 8px 10px !important;
               margin-bottom: 8px !important;
@@ -685,40 +698,34 @@ export default function ParentReportDetailedPage() {
             }
 
             #parent-report-detailed-print .pr-detailed-tier-excellence {
-              background: linear-gradient(135deg, #faf5ff 0%, #f0fdf4 55%, #f5f3ff 100%) !important;
+              background: #ffffff !important;
               border: 1.5px solid #6d28d9 !important;
               border-right: 4px solid #6d28d9 !important;
-              color: #1e1b4b !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-strength {
-              background: #ecfdf5 !important;
+              background: #ffffff !important;
               border: 1.5px solid #047857 !important;
               border-right: 4px solid #059669 !important;
-              color: #064e3b !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-maintain {
-              background: #eff6ff !important;
+              background: #ffffff !important;
               border: 1.5px solid #0369a1 !important;
               border-right: 4px solid #0284c7 !important;
-              color: #0c4a6e !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-improving {
-              background: #fffbeb !important;
+              background: #ffffff !important;
               border: 1.5px solid #b45309 !important;
               border-right: 4px solid #d97706 !important;
-              color: #78350f !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-attention {
-              background: #fef2f2 !important;
+              background: #ffffff !important;
               border: 1.5px solid #b91c1c !important;
               border-right: 4px solid #dc2626 !important;
-              color: #7f1d1d !important;
             }
             #parent-report-detailed-print .pr-detailed-tier-examples {
-              background: #f1f5f9 !important;
+              background: #ffffff !important;
               border: 1.5px solid #64748b !important;
               border-right: 4px solid #94a3b8 !important;
-              color: #334155 !important;
             }
 
             #parent-report-detailed-print .pr-detailed-tier-excellence .pr-detailed-subheading { color: #5b21b6 !important; border-bottom-color: #ddd6fe !important; }
@@ -781,22 +788,22 @@ export default function ParentReportDetailedPage() {
               margin: 0 0 6px 0 !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-nextstep--advance {
-              background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 55%, #f0fdf4 100%) !important;
+              background: #ffffff !important;
               border: 1.5px solid #059669 !important;
               border-right: 4px solid #10b981 !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-nextstep--maintain {
-              background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 50%, #f0f9ff 100%) !important;
+              background: #ffffff !important;
               border: 1.5px solid #0369a1 !important;
               border-right: 4px solid #0ea5e9 !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-nextstep--remediate {
-              background: linear-gradient(180deg, #fffbeb 0%, #ffedd5 45%, #fff7ed 100%) !important;
+              background: #ffffff !important;
               border: 1.5px solid #d97706 !important;
               border-right: 4px solid #f59e0b !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-nextstep--drop {
-              background: linear-gradient(180deg, #fef2f2 0%, #fee2e2 100%) !important;
+              background: #ffffff !important;
               border: 1.5px solid #b91c1c !important;
               border-right: 4px solid #ef4444 !important;
             }
@@ -928,8 +935,8 @@ export default function ParentReportDetailedPage() {
 
             #parent-report-detailed-print .pr-detailed-plan-item,
             #parent-report-detailed-print .pr-detailed-goal-item {
-              break-inside: avoid !important;
-              page-break-inside: avoid !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
               border-radius: 6px !important;
               padding: 8px 10px !important;
             }
@@ -979,9 +986,6 @@ export default function ParentReportDetailedPage() {
               font-weight: 700 !important;
             }
 
-            .no-pdf {
-              display: none !important;
-            }
           }
         `}</style>
       </Head>

@@ -152,9 +152,9 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
       const whyNotStronger = [];
       if (!recurrenceFull) whyNotStronger.push("חזרתיות מלאה לפי הטקסונומיה לא הושגה");
       if (narrowSample) whyNotStronger.push("נפח שאלות בשורה קטן מדי לביטחון גבוה");
-      if (weakEvidence) whyNotStronger.push("אין רצף אירועי טעות מספיק; נדרש חיזוק evidence לפני קביעה");
+      if (weakEvidence) whyNotStronger.push("אין רצף אירועי טעות מספק; נדרש חיזוק ראיות לפני קביעה");
       if (hintInvalidates) whyNotStronger.push("רמז כבד מסביר חלק מההצלחות — אין להסיק שליטה מלאה");
-      if (counterEvidenceStrong) whyNotStronger.push("דיוק גבוה יחסית לנפח טעויות — נדרשتمييز מול רשלנות או רעש");
+      if (counterEvidenceStrong) whyNotStronger.push("דיוק גבוה יחסית לנפח טעויות — נדרשת הבחנה מול רשלנות או רעש");
 
       /** @type {string[]} */
       const cannotConclude = [];
