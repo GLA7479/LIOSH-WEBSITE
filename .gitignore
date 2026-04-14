@@ -41,3 +41,7 @@ gradle-wrapper.jar
 # Android
 .android/
 
+# Hebrew audio dev store (API)
+data/_audio_store/
+data/hebrew-audio-review-queue.json
+

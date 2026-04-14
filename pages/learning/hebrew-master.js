@@ -68,6 +68,9 @@ import {
   normalizeAnswerForSpellingNiqqudStrict,
 } from "../../utils/hebrew-spelling-niqqud";
 import { isHebrewFullCompetitiveScoringGrade } from "../../utils/hebrew-scoring-policy";
+import { attachHebrewAudioToQuestion } from "../../utils/hebrew-audio-build1";
+import { validateAudioStem } from "../../utils/audio-task-contract";
+import HebrewAudioBuild1Panel from "../../components/HebrewAudioBuild1Panel";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -124,6 +127,8 @@ export default function HebrewMaster() {
   const yearMonthRef = useRef(getCurrentYearMonth());
   /** עדכני ל־handleAnswer (משוב שגוי) כדי להציג תשובה נכונה מנוקדת כשה־map כבר הגיע */
   const niqqudByIdRef = useRef({});
+  const audioBuild1CounterRef = useRef(0);
+  const currentQuestionRef = useRef(null);
 
   const [mounted, setMounted] = useState(false);
 
@@ -141,6 +146,10 @@ export default function HebrewMaster() {
   const [operation, setOperation] = useState("reading"); // לא mixed כברירת מחדל כדי שה-modal לא יפתח אוטומטית
   const [gameActive, setGameActive] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(null);
+
+  useEffect(() => {
+    currentQuestionRef.current = currentQuestion;
+  }, [currentQuestion]);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [correct, setCorrect] = useState(0);
@@ -1058,6 +1067,12 @@ useEffect(() => {
     }
     hebrewTrackingTopicKeyRef.current =
       question.topic || question.operation || "mixed";
+    audioBuild1CounterRef.current += 1;
+    attachHebrewAudioToQuestion(question, {
+      gradeKey: grade,
+      topic: question.topic || question.operation || operationForState,
+      sequenceIndex: audioBuild1CounterRef.current,
+    });
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setTypedAnswer("");
@@ -1280,8 +1295,69 @@ useEffect(() => {
     }
   }
 
+  /** הקלטה ידנית־ראשונה — ללא ציון אוטומטי; רק ספירת שאלה + מעבר הלאה */
+  function finishAudioRecordedManualNeutral() {
+    if (!gameActive) return;
+    const cq = currentQuestionRef.current;
+    if (!cq || cq.answerMode !== "hebrew_audio_recorded_manual") return;
+    trackCurrentQuestionTime();
+    setTotalQuestions((prevCount) => {
+      const newCount = prevCount + 1;
+      if (questionStartTime) {
+        const elapsed = (Date.now() - questionStartTime) / 1000;
+        setAvgTime((prevAvg) =>
+          prevCount === 0 ? elapsed : (prevAvg * prevCount + elapsed) / newCount
+        );
+      }
+      return newCount;
+    });
+    const topicKey = cq.topic || cq.operation || "reading";
+    setProgress((prev) => {
+      const updated = {
+        ...prev,
+        [topicKey]: {
+          total: (prev[topicKey]?.total || 0) + 1,
+          correct: prev[topicKey]?.correct || 0,
+        },
+      };
+      if (typeof window !== "undefined") {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+          saved.progress = updated;
+          localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(updated));
+        } catch {}
+      }
+      return updated;
+    });
+    pendingHebrewTrackMetaRef.current = {
+      correct: undefined,
+      total: 1,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
+    };
+    setDailyChallenge((prev) => ({
+      ...prev,
+      questions: prev.questions + 1,
+      bestScore: prev.bestScore,
+    }));
+    setFeedback("נשמר לבדיקה ידנית — אין ציון אוטומטי לדיבור בשלב זה.");
+    setSelectedAnswer("__guided_done__");
+    setTimeout(() => {
+      generateNewQuestion();
+      setSelectedAnswer(null);
+      setTypedAnswer("");
+      setFeedback(null);
+      setShowHint(false);
+      setHintUsed(false);
+      setShowSolution(false);
+      if (mode === "challenge") setTimeLeft(20);
+      else if (mode === "speed") setTimeLeft(10);
+      else setTimeLeft(null);
+    }, 1400);
+  }
+
   function handleAnswer(answer) {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
+    if (currentQuestion.answerMode === "hebrew_audio_recorded_manual") return;
 
     // סטטיסטיקה – ספירת שאלה וזמן
     setTotalQuestions((prevCount) => {
@@ -1918,6 +1994,8 @@ useEffect(() => {
     answerPressureBucket === "veryLong" ||
     (answerPressureBucket === "long" && questionPressureBucket !== "short");
   const isTypingQuestion = currentQuestion?.answerMode === "typing";
+  const isHebrewAudioRecordedManual =
+    currentQuestion?.answerMode === "hebrew_audio_recorded_manual";
   const typingPanelClass =
     questionPressureBucket === "veryLong" || questionPressureBucket === "long"
       ? "w-full mb-2.5 p-3 rounded-lg bg-blue-500/20 border border-blue-400/50"
@@ -2850,6 +2928,21 @@ useEffect(() => {
                   )}
 
                   <div className={questionSlotClassByPressure}>
+                  {currentQuestion?.params?.audioStem &&
+                    validateAudioStem(currentQuestion.params.audioStem) && (
+                      <HebrewAudioBuild1Panel
+                        stem={currentQuestion.params.audioStem}
+                        gameActive={gameActive && !selectedAnswer}
+                        grade={grade}
+                        topic={
+                          currentQuestion.topic ||
+                          currentQuestion.operation ||
+                          "reading"
+                        }
+                        guidedMode={isHebrewAudioRecordedManual}
+                        onGuidedNeutralDone={finishAudioRecordedManualNeutral}
+                      />
+                    )}
                   {/* ויזואליזציה של מספרים (כיתות א'-ג') */}
                   {(grade === "g1" || grade === "g2" || grade === "g3") && (currentQuestion.operation === "addition" || currentQuestion.operation === "subtraction") && (
                     <div className="mb-4 flex gap-6 items-center justify-center flex-wrap" style={{ direction: "ltr" }}>
@@ -3186,6 +3279,13 @@ useEffect(() => {
                         >
                           ✅ בדוק תשובה
                         </button>
+                      </div>
+                    </div>
+                  ) : isHebrewAudioRecordedManual ? (
+                    <div className="w-full mb-3 px-2 py-4 rounded-xl bg-slate-800/60 border border-white/10 text-center text-sm text-white/85">
+                      השלימו את ההקלטה בפאנל האודיו למעלה (או דלגו אם אין מיקרופון).
+                      <div className="text-xs text-white/55 mt-2">
+                        אין ציון אוטומטי לדיבור — רק שמירה לבדיקה ידנית.
                       </div>
                     </div>
                   ) : (
