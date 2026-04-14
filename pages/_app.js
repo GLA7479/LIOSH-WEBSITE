@@ -9,20 +9,6 @@ export default function MyApp({ Component, pageProps }) {
       return;
     }
 
-    // בסביבת פיתוח – דאג להסיר Service Workers קיימים כדי שלא ישפיעו על Fast Refresh
-    if (process.env.NODE_ENV !== "production") {
-      // הסר כל Service Worker רשום והסר קבצים מה-cache כדי למנוע שליטה על dev server
-      navigator.serviceWorker.getRegistrations?.().then((registrations) => {
-        registrations.forEach((registration) => registration.unregister());
-      });
-      if (window.caches?.keys) {
-        caches.keys().then((keys) => {
-          keys.forEach((key) => caches.delete(key));
-        });
-      }
-      return;
-    }
-
     const registerSW = () => {
         navigator.serviceWorker
           .register("/sw.js", { scope: "/" })
