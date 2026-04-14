@@ -350,24 +350,48 @@ export function buildTopicRecommendationNarrative(tr) {
   const q = Number(tr?.questions) || 0;
   const acc = Math.round(Number(tr?.accuracy) || 0);
   const m = Number(tr?.mistakeEventCount) || 0;
-  const statsLine = `בתקופה שנבחרה הופיעו ${q} שאלות, עם דיוק של כ־${acc}%${m > 0 ? `; נרשמו בסך הכול ${m} טעויות` : ""}.`;
-  let snap = `ב${core}, ${statsLine}`;
+  const step = String(tr?.recommendedNextStep || "").trim();
+  const statsLine =
+    q > 0
+      ? `נצפו ${q} שאלות, עם דיוק של כ־${acc}%${m > 0 ? ` ו־${m} טעויות מצטברות` : ""}.`
+      : "עדיין אין מספיק שאלות בטווח כדי לסכם מגמה אמינה.";
+  let snap = q > 0 ? `ב${core} ${statsLine}` : `ב${core} ${statsLine}`;
+  if (q > 0) {
+    const stepOpeners =
+      step === "remediate_same_level"
+        ? [
+            `ב${core} התמונה מצביעה על צורך בחיזוק: ${statsLine}`,
+            `ב${core} כרגע עדיף לעצור לחיזוק ממוקד: ${statsLine}`,
+          ]
+        : [
+            `ב${core} כרגע הכיוון זהיר יותר: ${statsLine}`,
+            `ב${core} בשלב זה אוספים עוד אות לפני החלטה רחבה: ${statsLine}`,
+          ];
+    snap = stepOpeners[Math.abs(q + m + core.length) % stepOpeners.length];
+  }
   const early = !!tr?.isEarlySignalOnly || tr?.dataSufficiencyLevel === "low" || tr?.evidenceStrength === "low";
-  if (early && q < 12) {
-    snap = `עדיין מוקדם לסכם — ב${core}, ${statsLine}`;
+  if (early && q > 0 && q < 12) {
+    snap = `ב${core} התמונה עדיין מוקדמת: ${statsLine}`;
   }
   const cs = String(tr?.conclusionStrength || "").trim();
   const rc = String(tr?.rootCauseLabelHe || "").trim();
   if (cs === "withheld" || cs === "tentative") {
     const alt = [
-      `עדיין לא סוגרים סופית לגבי ${core}. ${statsLine}${rc ? ` הכיוון הסביר: ${rc}.` : ""}`,
+      `עדיין לא סוגרים סופית לגבי ${core}. ${statsLine}${rc ? ` הכיוון הסביר כרגע: ${rc}.` : ""}`,
       q >= 20 && acc >= 85
-        ? `ב${core} נראים ביצועים טובים לאורך התקופה. ${statsLine} עדיין לא סוגרים הכל במילה אחת.${rc ? ` כיוון סביר: ${rc}.` : ""}`
+        ? `ב${core} נראים ביצועים טובים לאורך התקופה. ${statsLine} עדיין לא מסיקים מסקנה חד-משמעית.${rc ? ` כיוון סביר: ${rc}.` : ""}`
         : `ב${core} הנתון עדיין חלקי. ${statsLine}${rc ? ` כיוון סביר: ${rc}.` : ""}`,
     ];
     snap = stripGuillemetsHe(alt[Math.abs(q + acc) % alt.length]);
   } else if (rc) {
-    snap = stripGuillemetsHe(`${snap} כדאי לשים לב גם ל־${rc}.`);
+    snap = stripGuillemetsHe(`${snap} מוקד הקושי המרכזי כעת: ${rc}.`);
+  }
+  if (q === 0 && !rc) {
+    const altNoData = [
+      `ב${core} עדיין חסר נפח תרגול מינימלי כדי לקבוע כיוון ברור.`,
+      `ב${core} בשלב זה חסרות ראיות מספקות, ולכן נשארים עם מסקנה זהירה.`,
+    ];
+    snap = altNoData[Math.abs(core.length) % altNoData.length];
   }
   const reasoning = String(tr?.recommendationReasoningHe || "").trim();
   const homeRaw = tr?.recommendedParentActionHe ? String(tr.recommendedParentActionHe).trim() : "";

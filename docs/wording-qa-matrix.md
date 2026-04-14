@@ -19,12 +19,12 @@ Any failure in one criterion is a blocking fail for finished product.
 
 | Subject | Route | Scenario family | Robotic | Repetitive | Fake certainty | System tone | Clear action | Parent clarity | Concise+concrete | Natural uncertainty | Verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| `math` | parent+detailed | sparse / fragile / mastery | pass | pass | pass | pass | pass | pass | pass | pass | pass |
-| `geometry` | parent+detailed | contradictory / mixed | pass | pass | pass | pass | pass | pass | pass | pass | pass |
-| `english` | parent+detailed | hints / recovery / transfer | pass | pass | pass | pass | pass | pass | pass | pass | pass |
-| `science` | parent+detailed | foundational / local | pass | pass | pass | pass | pass | pass | pass | pass | pass |
-| `hebrew` | parent+detailed | weak evidence / cannot-conclude | pass | pass | pass | pass | pass | pass | pass | pass | pass |
-| `moledet-geography` | parent+detailed | contradictory / sparse | pass | pass | pass | pass | pass | pass | pass | pass | pass |
+| `math` | parent+detailed | sparse / fragile / mastery | pass | **reopen** | pass | pass | pass | pass | pass | pass | **reopen** |
+| `geometry` | parent+detailed | contradictory / mixed | pass | **reopen** | pass | pass | pass | pass | pass | pass | **reopen** |
+| `english` | parent+detailed | hints / recovery / transfer | pass | **reopen** | pass | pass | pass | pass | pass | pass | **reopen** |
+| `science` | parent+detailed | foundational / local | pass | **reopen** | pass | pass | pass | pass | pass | pass | **reopen** |
+| `hebrew` | parent+detailed | weak evidence / cannot-conclude | pass | **reopen** | pass | pass | pass | pass | pass | pass | **reopen** |
+| `moledet-geography` | parent+detailed | contradictory / sparse | pass | **reopen** | pass | pass | pass | pass | pass | pass | **reopen** |
 
 ## Evidence used
 
@@ -39,9 +39,17 @@ Any failure in one criterion is a blocking fail for finished product.
   - `utils/detailed-parent-report.js`
   - `pages/learning/parent-report.js`
   - `pages/learning/parent-report-detailed.js`
+- Reopen trigger from product artifact:
+  - repeated template sentence visibility in topic cards
+  - repeated `0 שאלות / 0%` snapshots indicated wording + binding issue
+
+## Current fix pass
+
+- `utils/detailed-parent-report.js`: recommendation cards now carry real `questions/accuracy/mistakeEventCount` from unit evidence.
+- `utils/detailed-report-parent-letter-he.js`: topic narrative rewritten to avoid repetitive boilerplate and to avoid synthetic zero-metric sentence.
 
 ## Signed gate
 
-- Language reviewer: **Signed**
-- Pedagogical reviewer: **Signed**
-- Gate result: **PASS (blocking gate closed)**
+- Language reviewer: **Pending re-sign after artifact review**
+- Pedagogical reviewer: **Pending re-sign after artifact review**
+- Gate result: **REOPENED (blocking gate not closed)**

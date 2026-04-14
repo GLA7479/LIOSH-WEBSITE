@@ -676,7 +676,7 @@ export function SubjectPhase3Insights({ sp, compact }) {
   if (!rows.length) return null;
 
   return (
-    <div className="pr-detailed-phase3-dl space-y-2 m-0 mb-2 pr-detailed-avoid-split">
+    <div className="pr-detailed-phase3-dl space-y-2 m-0 mb-2">
       {rows.map(({ k, v }) => (
         <div key={k} className="min-w-0">
           <div className="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">{k}</div>
@@ -693,12 +693,17 @@ export function SubjectPhase3Insights({ sp, compact }) {
 export function SubjectSummaryBlock({ sp }) {
   const L = useMemo(() => buildSubjectParentLetterCompact(sp), [sp]);
   const riskChips = useMemo(() => subjectMajorRiskLabelsHe(sp?.majorRiskFlagsAcrossRows, 4), [sp]);
+  const q = Number(sp?.subjectQuestionCount) || 0;
+  const a = Number(sp?.subjectAccuracy) || 0;
   return (
     <div className="pr-detailed-summary-subject pr-detailed-subject-stack min-w-0">
       <div className="pr-detailed-subject-heading">
         <h3 className="pr-detailed-subject-title text-base md:text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">
           {sp.subjectLabelHe}
         </h3>
+        <p className="pr-detailed-subject-metrics text-xs md:text-sm m-0 mt-1 text-white/75">
+          שאלות: {q} | דיוק: {a}%
+        </p>
       </div>
       <div className="pr-detailed-subject-inner space-y-2.5 pt-3">
         <SubjectPhase3Insights sp={sp} compact />

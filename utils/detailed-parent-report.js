@@ -1671,6 +1671,22 @@ function groupV2UnitsBySubject(diag) {
 }
 
 function recommendationFromV2Unit(u) {
+  const traces = Array.isArray(u?.evidenceTrace) ? u.evidenceTrace : [];
+  const volume = traces.find((t) => String(t?.type || "") === "volume")?.value || {};
+  const recurrence = u?.recurrence && typeof u.recurrence === "object" ? u.recurrence : {};
+  const questions =
+    Number(volume?.questions)
+    || Number(recurrence?.totalQuestions)
+    || 0;
+  const accuracy =
+    Number(volume?.accuracy)
+    || (questions > 0
+      ? Math.round((Number(volume?.correct) || 0) * 100 / Math.max(questions, 1))
+      : 0);
+  const mistakeEventCount =
+    Number(recurrence?.wrongCountForRules)
+    || Number(volume?.wrong)
+    || 0;
   const step = u?.intervention
     ? "remediate_same_level"
     : u?.probe
@@ -1685,6 +1701,12 @@ function recommendationFromV2Unit(u) {
     displayName: String(u?.displayName || ""),
     recommendedNextStep: step,
     recommendedStepLabelHe: label,
+    questions,
+    accuracy,
+    mistakeEventCount,
+    dataSufficiencyLevel: String(u?.confidence?.rowSignals?.dataSufficiencyLevel || ""),
+    isEarlySignalOnly: Boolean(u?.confidence?.rowSignals?.isEarlySignalOnly),
+    evidenceStrength: String(u?.confidence?.level || ""),
     whyThisRecommendationHe:
       String(u?.diagnosis?.lineHe || "")
       || String(u?.taxonomy?.patternHe || "")
@@ -1935,9 +1957,20 @@ export function buildDetailedParentReportFromBaseReport(baseReport, meta = {}) {
   const nextPeriodGoals = hasV2Primary
     ? buildNextPeriodGoalsFromV2(baseReport)
     : buildNextPeriodGoals(subjectsLegacy);
-  const subjectProfiles = hasV2Primary
+  const rawSubjectProfiles = hasV2Primary
     ? buildSubjectProfilesFromV2(baseReport)
     : buildSubjectProfiles(baseReport);
+  const subjectCoverageById = Object.fromEntries(
+    subjectCoverage.map((row) => [String(row.subject), row])
+  );
+  const subjectProfiles = rawSubjectProfiles.map((sp) => {
+    const cov = subjectCoverageById[String(sp?.subject)] || null;
+    return {
+      ...sp,
+      subjectQuestionCount: Number(cov?.questionCount) || 0,
+      subjectAccuracy: Number(cov?.accuracy) || 0,
+    };
+  });
 
   return {
     version: 2,

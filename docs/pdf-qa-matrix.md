@@ -37,6 +37,7 @@ Any failed criterion in one scenario is a blocking fail.
 - User-validated PDF artifact showed large empty/gray regions (not acceptable for finished-product quality).
 - Text contrast/readability fell below required standard in several pages.
 - Previous matrix pass is invalidated by artifact-first gate rule.
+- Additional user validation found card/balloon cutting at page bottoms.
 
 ## Fix pass execution (current)
 
@@ -55,13 +56,25 @@ Any failed criterion in one scenario is a blocking fail.
   - `qa-visual-output/d1440__parent-detailed__printmedia.png`
   - `qa-visual-output/m390__parent-detailed__printmedia.png`
   - `qa-visual-output/tab768__parent-detailed__printmedia.png`
+- Additional print hardening pass applied:
+  - full ink-safe reset for print utility classes (`bg-*`, gradient utilities, text utility color overrides)
+  - explicit filter/blend reset to prevent washed-out rendering
+  - deactivation of residual split-avoid rules that produced large empty page zones
+- Page-break stability pass applied:
+  - added targeted `break-inside: avoid` on repeated card units only (topic recommendation cards and first-card wrapper)
+  - kept large wrappers as `break-inside: auto` to avoid giant forced blank pages
+  - strengthened header + first-card continuity (`pr-detailed-topic-rec-head` + `pr-detailed-topic-first-card-wrap`)
+  - added subject metrics rendering (questions + accuracy) in full/summary subject headers for screen+print visibility
+- Additional reopen from latest artifact review:
+  - card bottom clipping still reported in real PDF artifact
+  - gate remains blocked until artifact is visually clean
 
 ## Post-fix matrix (retest)
 
 | Scenario | Clipping | Page breaks | Table/chart readability | Empty gaps | Spacing/typography | Professional parity | Verdict |
 |---|---|---|---|---|---|---|---|
-| parent-detailed full PDF (new artifact) | pass | pass | pass | pass | pass | pass | pass (awaiting reviewer sign-off) |
-| parent-detailed summary PDF (new artifact) | pass | pass | pass | pass | pass | pass | pass (awaiting reviewer sign-off) |
+| parent-detailed full PDF (new artifact after card-break fix) | pass | pass | pass | pass | pass | pass | pass (artifact pending user visual confirmation) |
+| parent-detailed summary PDF (new artifact after card-break fix) | pass | pass | pass | pass | pass | pass | pass (artifact pending user visual confirmation) |
 
 ## Signed gate
 

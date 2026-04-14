@@ -415,6 +415,14 @@ export default function ParentReportDetailedPage() {
             color: rgba(165, 243, 252, 0.95);
             margin: 0 0 0.5rem 0;
           }
+          .pr-detailed-topic-rec-item {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+          .pr-detailed-topic-first-card-wrap {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
 
           .pr-detailed-topic-nextstep-card {
             border-radius: 0.55rem;
@@ -512,8 +520,8 @@ export default function ParentReportDetailedPage() {
               margin: 10mm 8mm;
             }
             .pr-detailed-avoid-split {
-              break-inside: avoid !important;
-              page-break-inside: avoid !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
             }
             .pr-detailed-subheading {
               break-after: avoid !important;
@@ -563,6 +571,29 @@ export default function ParentReportDetailedPage() {
               color: #111827 !important;
               opacity: 1 !important;
               text-shadow: none !important;
+              filter: none !important;
+              mix-blend-mode: normal !important;
+              -webkit-text-fill-color: #111827 !important;
+            }
+            #parent-report-detailed-print *::before,
+            #parent-report-detailed-print *::after {
+              opacity: 1 !important;
+              filter: none !important;
+              mix-blend-mode: normal !important;
+            }
+
+            /* Ink-safe print reset: remove washed-out translucent styles from utility classes. */
+            #parent-report-detailed-print [class*="bg-"] {
+              background: #ffffff !important;
+              background-image: none !important;
+            }
+            #parent-report-detailed-print [class*="from-"],
+            #parent-report-detailed-print [class*="to-"],
+            #parent-report-detailed-print [class*="via-"] {
+              background-image: none !important;
+            }
+            #parent-report-detailed-print [class*="text-"] {
+              color: #111827 !important;
             }
 
             #parent-report-detailed-print h1 {
@@ -617,7 +648,7 @@ export default function ParentReportDetailedPage() {
               page-break-inside: auto !important;
             }
             #parent-report-detailed-print .pr-detailed-section-head {
-              background: #f4f4f5 !important;
+              background: #f8fafc !important;
               border-bottom: 1px solid #d4d4d8 !important;
             }
             #parent-report-detailed-print .pr-detailed-section--compact .pr-detailed-section-inner {
@@ -675,6 +706,7 @@ export default function ParentReportDetailedPage() {
             }
 
             #parent-report-detailed-print .pr-detailed-subject-summary,
+            #parent-report-detailed-print .pr-detailed-subject-letter,
             #parent-report-detailed-print .pr-detailed-tier-excellence,
             #parent-report-detailed-print .pr-detailed-tier-strength,
             #parent-report-detailed-print .pr-detailed-tier-maintain,
@@ -684,11 +716,12 @@ export default function ParentReportDetailedPage() {
             #parent-report-detailed-print .pr-detailed-callout-action,
             #parent-report-detailed-print .pr-detailed-callout-goal,
             #parent-report-detailed-print .pr-detailed-topic-nextstep-card {
-              break-inside: auto !important;
-              page-break-inside: auto !important;
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
               border-radius: 6px !important;
               padding: 8px 10px !important;
               margin-bottom: 8px !important;
+              box-shadow: none !important;
             }
 
             #parent-report-detailed-print .pr-detailed-subject-summary {
@@ -787,6 +820,14 @@ export default function ParentReportDetailedPage() {
               page-break-after: avoid !important;
               margin: 0 0 6px 0 !important;
             }
+            #parent-report-detailed-print .pr-detailed-topic-first-card-wrap {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-rec-item {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
             #parent-report-detailed-print .pr-detailed-topic-nextstep--advance {
               background: #ffffff !important;
               border: 1.5px solid #059669 !important;
@@ -845,12 +886,14 @@ export default function ParentReportDetailedPage() {
               opacity: 1 !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-parent {
-              background: #f8fafc !important;
+              background: #ffffff !important;
               border-right-color: #0284c7 !important;
+              border: 1px solid #bfdbfe !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-student {
-              background: #f8fafc !important;
+              background: #ffffff !important;
               border-right-color: #059669 !important;
+              border: 1px solid #bbf7d0 !important;
             }
             #parent-report-detailed-print .pr-detailed-topic-badge {
               opacity: 1 !important;
@@ -877,6 +920,11 @@ export default function ParentReportDetailedPage() {
               background: #fee2e2 !important;
               border: 1px solid #dc2626 !important;
               color: #991b1b !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-metrics {
+              color: #334155 !important;
+              opacity: 1 !important;
+              font-weight: 700 !important;
             }
 
             #parent-report-detailed-print .pr-detailed-summary-subject {
@@ -941,18 +989,18 @@ export default function ParentReportDetailedPage() {
               padding: 8px 10px !important;
             }
             #parent-report-detailed-print .pr-detailed-plan-item {
-              background: #f0f9ff !important;
-              border: 1px solid #38bdf8 !important;
-              color: #0c4a6e !important;
+              background: #ffffff !important;
+              border: 1px solid #7dd3fc !important;
+              color: #111827 !important;
             }
             #parent-report-detailed-print .pr-detailed-goal-item {
-              background: #faf5ff !important;
-              border: 1px solid #a78bfa !important;
-              color: #4c1d95 !important;
+              background: #ffffff !important;
+              border: 1px solid #c4b5fd !important;
+              color: #111827 !important;
             }
             #parent-report-detailed-print .pr-detailed-bullet-li {
-              break-inside: avoid !important;
-              page-break-inside: avoid !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
             }
 
             #parent-report-detailed-print .parent-report-important-disclaimer {
@@ -1147,6 +1195,9 @@ export default function ParentReportDetailedPage() {
                             <h3 className="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">
                               {sp.subjectLabelHe}
                             </h3>
+                            <p className="pr-detailed-subject-metrics text-xs md:text-sm m-0 mt-1 text-white/75">
+                              שאלות: {Number(sp?.subjectQuestionCount) || 0} | דיוק: {Number(sp?.subjectAccuracy) || 0}%
+                            </p>
                           </div>
                           <div className="pr-detailed-subject-inner space-y-4 pt-3">
                             <SubjectPhase3Insights sp={sp} compact={false} />
@@ -1173,33 +1224,34 @@ export default function ParentReportDetailedPage() {
                               <div className="pr-detailed-topic-rec-block">
                                 <p className="pr-detailed-topic-rec-head">נושאים שדורשים ליווי בטווח זה</p>
                                 <div className="space-y-2.5">
-                                  {sp.topicRecommendations.map((tr) => {
+                                  {sp.topicRecommendations.map((tr, idx) => {
                                     const tv = topicNextStepVisualVariant(tr.recommendedNextStep);
                                     const nar = buildTopicRecommendationNarrative(tr);
                                     return (
-                                      <div
-                                        key={tr.topicRowKey}
-                                        className={`pr-detailed-topic-nextstep-card pr-detailed-topic-nextstep--${tv}`}
-                                      >
-                                        <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
-                                          <span className="pr-detailed-body-text font-bold text-white/95 leading-snug">
-                                            {tr.displayName}
-                                          </span>
-                                          <span
-                                            className={`pr-detailed-topic-badge shrink-0 pr-detailed-topic-badge--${tv}`}
-                                          >
-                                            {tr.recommendedStepLabelHe}
-                                          </span>
-                                        </div>
-                                        <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2 text-white/[0.9]">
-                                          {nar.snapshot}
-                                        </p>
-                                        {nar.homeLine ? (
-                                          <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2.5 text-amber-100/95">
-                                            {nar.homeLine}
+                                      <div key={tr.topicRowKey} className={idx === 0 ? "pr-detailed-topic-first-card-wrap" : ""}>
+                                        <div
+                                          className={`pr-detailed-topic-nextstep-card pr-detailed-topic-rec-item pr-detailed-topic-nextstep--${tv}`}
+                                        >
+                                          <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
+                                            <span className="pr-detailed-body-text font-bold text-white/95 leading-snug">
+                                              {tr.displayName}
+                                            </span>
+                                            <span
+                                              className={`pr-detailed-topic-badge shrink-0 pr-detailed-topic-badge--${tv}`}
+                                            >
+                                              {tr.recommendedStepLabelHe}
+                                            </span>
+                                          </div>
+                                          <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2 text-white/[0.9]">
+                                            {nar.snapshot}
                                           </p>
-                                        ) : null}
-                                        <TopicRecommendationExplainStrip tr={tr} />
+                                          {nar.homeLine ? (
+                                            <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2.5 text-amber-100/95">
+                                              {nar.homeLine}
+                                            </p>
+                                          ) : null}
+                                          <TopicRecommendationExplainStrip tr={tr} />
+                                        </div>
                                       </div>
                                     );
                                   })}

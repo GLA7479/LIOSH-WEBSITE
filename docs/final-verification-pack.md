@@ -21,8 +21,21 @@ This pack closes the finished-product verification requirements.
 
 - Engine QA gate: **closed**
 - End-to-end QA gate: **reopened (pending PDF confirmation)**
-- Wording gate: **closed**
+- Wording gate: **reopened (blocking)**
 - PDF gate: **reopened (blocking)**
 - Manual QA gate: **reopened (requires updated PDF artifact confirmation/sign-off)**
 - Pedagogical gate: **closed**
 - Pilot hardening gate: **reopened**
+
+## Re-run status after second PDF hardening pass
+
+- Build: `npm run build` — pass
+- Parent report suite: `npm run test:parent-report-phase6` — pass
+- Visual QA rerun: `node scripts/qa-parent-pages-visual.mjs` — pass
+- PDF export rerun: `node scripts/qa-parent-pdf-export.mjs` — pass (artifacts regenerated)
+- Page-break/missing-metrics fix pass:
+  - targeted print card break rules added and wrappers tuned
+  - subject question count + accuracy wired into full/summary subject headers
+- Metrics/writing correctness pass:
+  - topic recommendation cards now bind metrics from V2 evidence trace
+  - repetitive boilerplate topic sentence logic reduced with varied natural-language templates
