@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createStemPlaybackController } from "../utils/audio-playback-core";
+import {
+  createStemPlaybackController,
+  primeSpeechSynthesisVoices,
+} from "../utils/audio-playback-core";
 import { recordShortUtterance } from "../utils/audio-recording-core";
 import {
   appendAudioArtifact,
@@ -35,6 +38,11 @@ export default function HebrewAudioBuild1Panel({
   const route = resolveScoreOrReviewRoute(stem);
 
   useEffect(() => {
+    const unprime = primeSpeechSynthesisVoices();
+    return unprime;
+  }, []);
+
+  useEffect(() => {
     ctrlRef.current = createStemPlaybackController(stem, {});
     return () => {
       ctrlRef.current?.dispose();
@@ -55,8 +63,17 @@ export default function HebrewAudioBuild1Panel({
       const n = ctrlRef.current?.bumpReplay() ?? replayCount + 1;
       setReplayCount(n);
       setStatusMsg("");
-    } catch {
-      setStatusMsg("לא ניתן להשמיע כרגע. נסו שוב או המשיכו לפי הטקסט.");
+    } catch (err) {
+      const code =
+        err && typeof err === "object" && "code" in err ? String(/** @type {any} */ (err).code) : "";
+      const msg =
+        err instanceof Error && err.message
+          ? err.message
+          : "לא ניתן להשמיע כרגע. נסו שוב או המשיכו לפי הטקסט.";
+      setStatusMsg(code ? `${msg} (${code})` : msg);
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[HebrewAudioBuild1Panel] play failed", err);
+      }
     } finally {
       setBusy(false);
     }
