@@ -48,6 +48,7 @@ import { buildDecisionGatesPhase13 } from "./parent-report-decision-gates.js";
 import { buildEvidenceTargetsPhase13 } from "./parent-report-evidence-targets.js";
 import { buildFoundationDependencyPhase14 } from "./parent-report-foundation-dependency.js";
 import { buildPhase14RecommendationOverlay } from "./parent-report-foundation-ordering.js";
+import { glossTopicRecommendationHeFields } from "./parent-report-language/index.js";
 
 /** @typedef {'advance_level'|'advance_grade_topic_only'|'maintain_and_strengthen'|'remediate_same_level'|'drop_one_level_topic_only'|'drop_one_grade_topic_only'} RecommendedNextStep */
 
@@ -1148,7 +1149,7 @@ export function buildTopicRecommendationRecord(
     recommendedParentActionHe = cautionLines[2];
   }
 
-  return {
+  return glossTopicRecommendationHeFields({
     subject: subjectId,
     topicRowKey: String(topicRowKey),
     displayName: String(row?.displayName || bucketKey || topicRowKey),
@@ -1403,7 +1404,7 @@ export function buildTopicRecommendationRecord(
     nextCycleSupportLevelHe: decision.nextCycleSupportLevelHe ?? "",
     foundationBeforeExpansion: !!decision.foundationBeforeExpansion,
     foundationBeforeExpansionHe: decision.foundationBeforeExpansionHe ?? "",
-  };
+  });
 }
 
 /**

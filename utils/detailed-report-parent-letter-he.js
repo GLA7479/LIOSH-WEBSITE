@@ -3,6 +3,9 @@
  * קצר, חד, בלי שכבות משנה — ללא שינוי שדות payload מהמנוע.
  */
 
+import { pickVariant } from "./parent-report-language/variants.js";
+import { normalizeParentFacingHe } from "./parent-report-language/parent-facing-normalize-he.js";
+
 /** הסרת מירכאות צרפתיות / גוילמטים */
 export function stripGuillemetsHe(s) {
   return String(s || "")
@@ -252,12 +255,12 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
     return stripGuillemetsHe(`המוקד המומלץ כרגע: ${displayTopicPhraseHe(w0.labelHe)} — ${ws}.`);
   }
   if (s0) {
-    return stripGuillemetsHe(`הכיוון החזק: ${displayTopicPhraseHe(s0.labelHe)} — שווה לשמר עליו בתרגול קצר.`);
+    return stripGuillemetsHe(`הכיוון החזק: ${displayTopicPhraseHe(s0.labelHe)} — שווה לשמר עליו עם תרגול קצר וברור.`);
   }
   if (imp0 && !w0) {
     return stripGuillemetsHe(`יש תנועה ${displayTopicPhraseHe(imp0.labelHe)} — נשארים עם תרגול קצר ולא מקפיצים רמה.`);
   }
-  return stripGuillemetsHe("התמונה עדיין לא מלאה — כדאי להמשיך עם עוד קצת תרגול קצר.");
+  return stripGuillemetsHe("התמונה עדיין חלקית — עוד קצת תרגול יעזור להבהיר.");
 }
 
 function buildSubjectHomeLineHe(sp, lab) {
@@ -333,10 +336,10 @@ export function buildSubjectParentLetter(sp, opts = {}) {
   const closing = buildSubjectClosingLineHe(sp, lab);
 
   return {
-    opening: stripGuillemetsHe(opening),
-    diagnosisHe: stripGuillemetsHe(diagnosisHe),
-    homeAction,
-    closing: stripGuillemetsHe(closing),
+    opening: normalizeParentFacingHe(stripGuillemetsHe(opening)),
+    diagnosisHe: normalizeParentFacingHe(stripGuillemetsHe(diagnosisHe)),
+    homeAction: normalizeParentFacingHe(String(homeAction || "")),
+    closing: normalizeParentFacingHe(stripGuillemetsHe(closing)),
     /** תאימות לאחור — ריקים */
     goingWell: "",
     fragile: "",
@@ -377,12 +380,12 @@ export function buildTopicRecommendationNarrative(tr) {
   const rc = String(tr?.rootCauseLabelHe || "").trim();
   if (cs === "withheld" || cs === "tentative") {
     const alt = [
-      `עדיין לא סוגרים סופית לגבי ${core}. ${statsLine}${rc ? ` הכיוון הסביר כרגע: ${rc}.` : ""}`,
+      `בשלב הזה לא קובעים סופית לגבי ${core}. ${statsLine}${rc ? ` הכיוון הסביר כרגע: ${rc}.` : ""}`,
       q >= 20 && acc >= 85
-        ? `ב${core} נראים ביצועים טובים לאורך התקופה. ${statsLine} עדיין לא מסיקים מסקנה חד-משמעית.${rc ? ` כיוון סביר: ${rc}.` : ""}`
-        : `ב${core} הנתון עדיין חלקי. ${statsLine}${rc ? ` כיוון סביר: ${rc}.` : ""}`,
+        ? `ב${core} נראים ביצועים טובים לאורך התקופה. ${statsLine} עדיין מוקדם למסקנה חד-משמעית.${rc ? ` מה שנראה סביר עכשיו: ${rc}.` : ""}`
+        : `ב${core} הנתון עדיין חלקי. ${statsLine}${rc ? ` מה שנראה סביר עכשיו: ${rc}.` : ""}`,
     ];
-    snap = stripGuillemetsHe(alt[Math.abs(q + acc) % alt.length]);
+    snap = stripGuillemetsHe(pickVariant(`${core}|${q}|${acc}`, alt));
   } else if (rc) {
     snap = stripGuillemetsHe(`${snap} מוקד הקושי המרכזי כעת: ${rc}.`);
   }
@@ -402,9 +405,9 @@ export function buildTopicRecommendationNarrative(tr) {
       ? `${homeLine} ${takeFirstSentence(reasoning)}`
       : homeLine;
   return {
-    snapshot: stripGuillemetsHe(snap),
-    homeLine: stripGuillemetsHe(homeAug),
-    cautionLineHe: whyHold ? stripGuillemetsHe(takeFirstSentence(whyHold)) : "",
+    snapshot: normalizeParentFacingHe(stripGuillemetsHe(snap)),
+    homeLine: normalizeParentFacingHe(stripGuillemetsHe(homeAug)),
+    cautionLineHe: whyHold ? normalizeParentFacingHe(stripGuillemetsHe(takeFirstSentence(whyHold))) : "",
   };
 }
 

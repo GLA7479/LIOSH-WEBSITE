@@ -42,6 +42,8 @@ import {
   normalizeMistakeModeField,
 } from "./parent-report-row-diagnostics.js";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
+import { normalizeParentFacingHe } from "./parent-report-language/parent-facing-normalize-he.js";
+import { mergeSubjectConclusionReadinessContract } from "./minimal-safe-scope-enforcement.js";
 
 /**
  * מזהה נושא יציב לצורך reconciliation (אותו bucket כמו בטעויות / שורת דוח).
@@ -103,7 +105,7 @@ function findWeaknessCandidateForTopWeakness(weaknessCandidates, w) {
 }
 
 function buildStrengthWithCautionLines(row, mistakeCount) {
-  const label = String(row?.displayName || "הנושא").trim() || "הנושא";
+  const label = normalizeParentFacingHe(String(row?.displayName || "הנושא").trim() || "הנושא");
   const acc = Number(row?.accuracy) || 0;
   const q = Number(row?.questions) || 0;
   const n = Number(mistakeCount) || 0;
@@ -1451,6 +1453,7 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
         ? "יש נתוני מגמה בשורות, אך אין עדיין סיפור מגמה אחיד ברמת המקצוע — כדאי לאסוף עוד תרגול."
         : "אין עדיין אובייקטי מגמה משויכים לשורות — לא מסכמים מגמה כללית.";
   }
+  trendNarrativeHe = normalizeParentFacingHe(trendNarrativeHe);
 
   const suffStrong = rows.filter((r) => r.row.dataSufficiencyLevel === "strong").length;
   const suffMed = rows.filter((r) => r.row.dataSufficiencyLevel === "medium").length;
@@ -1461,7 +1464,7 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
     confidenceSummaryHe += " התמונה במקצוע עדיין חלקית — מסקנות זהירות בלבד.";
   }
   if (anyHighRisk && strongRows.length >= 2) {
-    confidenceSummaryHe += " למרות חוזקות בשורות, מופיעים גם דגלי סיכון — לא לפרש הכל כהצלחה מלאה.";
+    confidenceSummaryHe += " למרות חוזקות בשורות, מופיעות גם נקודות לשימת לב — לא לפרש הכל כהצלחה מלאה.";
   }
 
   const riskLabelHe = {
@@ -1470,16 +1473,16 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
     instruction_friction: "חיכוך הוראה או תלות ברמזים",
     careless_pattern: "רשלנות או אי־יציבות בתשובות",
     fragile_success: "הצלחה שבירה (תלות בעזרה / עצמאות נמוכה)",
-    mixed: "תמהיל קשיים",
-    mixed_low_signal: "תמהיל חלקי — אות התנהגותי חלש בשורות",
+    mixed: "תערובת קשיים",
+    mixed_low_signal: "תערובת חלקית — אות התנהגותי חלש בשורות",
     none_sparse: "דל נתון",
     none_observed: "לא זוהה קושי דומיננטי בפרופיל ההתנהגות",
   };
 
   const successLabelHe = {
-    stable_mastery: "מאסטרי יציב בשורות",
+    stable_mastery: "שליטה טובה ויציבה בשורות",
     fragile_success_cluster: "הצלחה עם שבירות בעזרה/עצמאות",
-    mixed: "תמהיל הצלחות",
+    mixed: "תערובת הצלחות",
     none_sparse: "דל נתון",
   };
 
@@ -1549,6 +1552,15 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
   let subjectConclusionReadiness = "ready";
   if (wFrac >= 0.38) subjectConclusionReadiness = "not_ready";
   else if (wFrac + tFrac >= 0.45) subjectConclusionReadiness = "partial";
+
+  subjectConclusionReadiness = mergeSubjectConclusionReadinessContract({
+    internalReadiness: subjectConclusionReadiness,
+    rows,
+    withheldStrengthRows,
+    tentativeStrengthRows,
+    rowCount: nR,
+    hasCannotConcludeYet: false,
+  });
 
   let subjectDiagnosticRestraintHe = "";
   if (subjectConclusionReadiness === "not_ready") {
@@ -1902,13 +1914,21 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
     dominantBehaviorProfileAcrossRows: Object.keys(behaviorCounts).sort(
       (a, b) => (behaviorCounts[b] || 0) - (behaviorCounts[a] || 0)
     )[0] || "undetermined",
-    strongestPositiveTrendRowHe: bestPositive ? `${bestPositive.labelHe}: ${bestPositive.summaryHe}` : null,
-    strongestCautionTrendRowHe: worstCaution ? `${worstCaution.labelHe}: ${worstCaution.summaryHe}` : null,
+    strongestPositiveTrendRowHe: bestPositive
+      ? normalizeParentFacingHe(`${bestPositive.labelHe}: ${bestPositive.summaryHe}`)
+      : null,
+    strongestCautionTrendRowHe: worstCaution
+      ? normalizeParentFacingHe(`${worstCaution.labelHe}: ${worstCaution.summaryHe}`)
+      : null,
     fragileSuccessRowCount,
     stableMasteryRowCount,
     modeConcentrationNoteHe,
-    dominantLearningRiskLabelHe: domRiskHe,
-    dominantSuccessPatternLabelHe: successLabelHe[dominantSuccessPattern] || dominantSuccessPattern,
+    dominantLearningRiskLabelHe: normalizeParentFacingHe(
+      riskLabelHe[dominantLearningRisk] || String(dominantLearningRisk || "")
+    ),
+    dominantSuccessPatternLabelHe: normalizeParentFacingHe(
+      successLabelHe[dominantSuccessPattern] || String(dominantSuccessPattern || "")
+    ),
     improvingButSupportedHe,
     dominantRootCause,
     dominantRootCauseLabelHe,

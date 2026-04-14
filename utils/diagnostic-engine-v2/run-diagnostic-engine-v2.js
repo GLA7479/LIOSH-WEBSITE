@@ -144,13 +144,13 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
 
       const tax = chosenId ? TAXONOMY_BY_ID[chosenId] : null;
       const diagnosisLineRaw = tax
-        ? `מצביע על דפוס: ${tax.patternHe} (תת־מיומנות: ${tax.subskillHe}) ב${String(row.displayName || bucketKey)} — מזהה טקסונומיה ${tax.id}.`
+        ? `מצביע על דפוס: ${tax.patternHe} (נקודת מיקוד: ${tax.subskillHe}) ב${String(row.displayName || bucketKey)}.`
         : "";
       const sanitized = sanitizePedagogicLine(diagnosisLineRaw);
 
       /** @type {string[]} */
       const whyNotStronger = [];
-      if (!recurrenceFull) whyNotStronger.push("חזרתיות מלאה לפי הטקסונומיה לא הושגה");
+      if (!recurrenceFull) whyNotStronger.push("חזרתיות מלאה לפי סוג הטעות שנבחר לא הושגה");
       if (narrowSample) whyNotStronger.push("נפח שאלות בשורה קטן מדי לביטחון גבוה");
       if (weakEvidence) whyNotStronger.push("אין רצף אירועי טעות מספק; נדרש חיזוק ראיות לפני קביעה");
       if (hintInvalidates) whyNotStronger.push("רמז כבד מסביר חלק מההצלחות — אין להסיק שליטה מלאה");
@@ -158,8 +158,8 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
 
       /** @type {string[]} */
       const cannotConclude = [];
-      if (gating.cannotConcludeYet) cannotConclude.push("לא ניתן להסיק מסקנה יציבה כרגע לפי שערי הפלט");
-      if (!chosenId && wrongCountForRules > 0) cannotConclude.push("אין התאמת טקסונומיה אחרי סינון חזרתיות");
+      if (gating.cannotConcludeYet) cannotConclude.push("לא ניתן להסיק מסקנה יציבה כרגע — כדאי עוד תרגול בטווח");
+      if (!chosenId && wrongCountForRules > 0) cannotConclude.push("לא נמצאה התאמה ברורה לסוג טעות אחרי סינון חזרתיות");
 
       const unit = {
         blueprintRef: BLUEPRINT_REF,

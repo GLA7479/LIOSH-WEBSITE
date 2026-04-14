@@ -12,6 +12,7 @@ import {
   trendCompactLineHe,
   truncateHe,
 } from "../utils/parent-report-ui-explain-he";
+import { normalizeParentFacingHe } from "../utils/parent-report-language/index.js";
 
 /**
  * ניסוח להצגת הורה בלבד — לא משנה נתונים; רק מנקה שאריות טכניות נפוצות מהמנוע.
@@ -22,7 +23,7 @@ function parentFacingEngineLine(raw) {
   s = s.replace(/\bdefault_[a-z0-9_]+\b/gi, "");
   s = s.replace(/\b[a-z][a-z0-9_]{8,}\b/g, "");
   s = s.replace(/\s{2,}/g, " ").trim();
-  return s;
+  return normalizeParentFacingHe(s);
 }
 
 /** תג קומפקטי — RTL, לא מגדיל את גובה השורה יתר על המידה */
@@ -159,7 +160,7 @@ export function ParentReportTopicExplainBlock({ rows }) {
   return (
     <div className="parent-report-topic-explain-block mt-2 rounded-lg border border-white/10 bg-black/25 overflow-hidden">
       <div className="px-2 py-1 text-[10px] md:text-[11px] font-bold text-white/55 border-b border-white/10">
-        מה חשוב לדעת לפי נושא
+        מה בולט בכל נושא
       </div>
       <div className="max-h-[min(42vh,320px)] overflow-y-auto overscroll-contain">
         {withQ.map((r) => (

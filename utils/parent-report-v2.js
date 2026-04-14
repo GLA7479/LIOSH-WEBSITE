@@ -37,6 +37,17 @@ import { enrichReportMapsWithTopicStepHints } from "./topic-next-step-engine";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
 import { runDiagnosticEngineV2 } from "./diagnostic-engine-v2/index.js";
 import { safeBuildHybridRuntimeForReport } from "./ai-hybrid-diagnostic/safe-build-hybrid-runtime.js";
+import {
+  evidenceExampleBodyFallbackHe,
+  evidenceExampleTitleFallbackHe,
+  insufficientSubjectQuestionsLineHe,
+  normalizeParentFacingHe,
+  tierStableStrengthHe,
+  tierWeaknessRecurringHe,
+  tierWeaknessSupportHe,
+  v2SubjectDiagnosticRestraintHe,
+  v2SubjectMemoryPartialEvidenceHe,
+} from "./parent-report-language/index.js";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
 
@@ -571,20 +582,20 @@ function summarizeV2UnitsForSubject(units) {
   const topWeak = diagnosed.find((u) => String(u?.priority?.level || "") === "P4") || diagnosed[0] || list[0] || null;
 
   const topStrengths = stable.slice(0, 3).map((u) => ({
-    labelHe: String(u?.displayName || ""),
+    labelHe: normalizeParentFacingHe(String(u?.displayName || "")),
     questions: safeNumber(u?.evidenceTrace?.[0]?.value?.questions),
     accuracy: safeNumber(u?.evidenceTrace?.[0]?.value?.accuracy),
     excellent: true,
-    tierHe: "חוזקה יציבה",
+    tierHe: tierStableStrengthHe(),
   }));
 
   const topWeaknesses = diagnosed
     .filter((u) => String(u?.taxonomy?.patternHe || "").trim())
     .slice(0, 3)
     .map((u) => ({
-      labelHe: String(u?.taxonomy?.patternHe || ""),
+      labelHe: normalizeParentFacingHe(String(u?.taxonomy?.patternHe || "")),
       mistakeCount: safeNumber(u?.recurrence?.wrongCountForRules),
-      tierHe: safeNumber(u?.recurrence?.wrongCountForRules) >= 5 ? "קושי חוזר" : "תחום לחיזוק",
+      tierHe: safeNumber(u?.recurrence?.wrongCountForRules) >= 5 ? tierWeaknessRecurringHe() : tierWeaknessSupportHe(),
     }));
 
   const evidenceExamples = [];
@@ -593,8 +604,10 @@ function summarizeV2UnitsForSubject(units) {
     if (confidence !== "high" && confidence !== "moderate") continue;
     evidenceExamples.push({
       type: "mistake",
-      titleHe: String(u?.displayName || "יחידת אבחון"),
-      bodyHe: String(u?.diagnosis?.lineHe || u?.taxonomy?.patternHe || "ראיה אבחונית חלקית"),
+      titleHe: normalizeParentFacingHe(String(u?.displayName || evidenceExampleTitleFallbackHe())),
+      bodyHe: normalizeParentFacingHe(
+        String(u?.diagnosis?.lineHe || u?.taxonomy?.patternHe || evidenceExampleBodyFallbackHe())
+      ),
       confidence,
     });
   }
@@ -602,7 +615,11 @@ function summarizeV2UnitsForSubject(units) {
   return {
     hasAnySignal: list.length > 0,
     summaryHe: topWeak
-      ? `ברמת ${String(topWeak?.displayName || "יחידת אבחון")}: ${String(topWeak?.taxonomy?.patternHe || "נדרש בירור נוסף")}`
+      ? normalizeParentFacingHe(
+          `בנושא ${String(topWeak?.displayName || evidenceExampleTitleFallbackHe())}: ${String(
+            topWeak?.taxonomy?.patternHe || "עדיף עוד קצת תרגול לפני מסקנה סופית."
+          )}`
+        )
       : null,
     topStrengths,
     topWeaknesses,
@@ -618,18 +635,32 @@ function summarizeV2UnitsForSubject(units) {
     evidenceMistake: null,
     evidenceSuccess: null,
     evidenceExamples,
-    parentActionHe: String(topWeak?.intervention?.immediateActionHe || topWeak?.probe?.specificationHe || "").trim() || null,
-    nextWeekGoalHe: String(topWeak?.probe?.objectiveHe || topWeak?.intervention?.shortPracticeHe || "").trim() || null,
-    subjectPriorityReasonHe: String(topWeak?.taxonomy?.patternHe || "").trim() || null,
-    subjectDoNowHe: String(topWeak?.intervention?.immediateActionHe || "").trim() || null,
-    subjectAvoidNowHe: String(topWeak?.intervention?.avoidHe || "").trim() || null,
-    dominantMistakePatternLabelHe: String(topWeak?.taxonomy?.patternHe || "").trim() || null,
-    subjectMemoryNarrativeHe: uncertain.length
-      ? "בחלק מהשורות הראיות עדיין חלקיות וצריך עוד חלון תצפית."
-      : null,
-    subjectDiagnosticRestraintHe: uncertain.length
-      ? "לא סוגרים מסקנה חזקה בכל השורות עד הצטברות ראיות."
-      : null,
+    parentActionHe: (() => {
+      const t = String(topWeak?.intervention?.immediateActionHe || topWeak?.probe?.specificationHe || "").trim();
+      return t ? normalizeParentFacingHe(t) : null;
+    })(),
+    nextWeekGoalHe: (() => {
+      const t = String(topWeak?.probe?.objectiveHe || topWeak?.intervention?.shortPracticeHe || "").trim();
+      return t ? normalizeParentFacingHe(t) : null;
+    })(),
+    subjectPriorityReasonHe: (() => {
+      const t = String(topWeak?.taxonomy?.patternHe || "").trim();
+      return t ? normalizeParentFacingHe(t) : null;
+    })(),
+    subjectDoNowHe: (() => {
+      const t = String(topWeak?.intervention?.immediateActionHe || "").trim();
+      return t ? normalizeParentFacingHe(t) : null;
+    })(),
+    subjectAvoidNowHe: (() => {
+      const t = String(topWeak?.intervention?.avoidHe || "").trim();
+      return t ? normalizeParentFacingHe(t) : null;
+    })(),
+    dominantMistakePatternLabelHe: (() => {
+      const t = String(topWeak?.taxonomy?.patternHe || "").trim();
+      return t ? normalizeParentFacingHe(t) : null;
+    })(),
+    subjectMemoryNarrativeHe: uncertain.length ? v2SubjectMemoryPartialEvidenceHe() : null,
+    subjectDiagnosticRestraintHe: uncertain.length ? v2SubjectDiagnosticRestraintHe() : null,
   };
 }
 
@@ -1102,22 +1133,26 @@ export function generateParentReportV2(
   const INSUFFICIENT_SUBJECT_Q = 8;
   const insufficientDataSubjectsHe = [];
   if ((mathTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
-    insufficientDataSubjectsHe.push(`חשבון (${mathTotalQuestions} שאלות בטווח)`);
+    insufficientDataSubjectsHe.push(insufficientSubjectQuestionsLineHe(V2_SUBJECT_LABEL_HE.math, mathTotalQuestions));
   }
   if ((geometryTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
-    insufficientDataSubjectsHe.push(`גאומטריה (${geometryTotalQuestions} שאלות בטווח)`);
+    insufficientDataSubjectsHe.push(
+      insufficientSubjectQuestionsLineHe(V2_SUBJECT_LABEL_HE.geometry, geometryTotalQuestions)
+    );
   }
   if ((englishTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
-    insufficientDataSubjectsHe.push(`אנגלית (${englishTotalQuestions} שאלות בטווח)`);
+    insufficientDataSubjectsHe.push(insufficientSubjectQuestionsLineHe(V2_SUBJECT_LABEL_HE.english, englishTotalQuestions));
   }
   if ((scienceTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
-    insufficientDataSubjectsHe.push(`מדעים (${scienceTotalQuestions} שאלות בטווח)`);
+    insufficientDataSubjectsHe.push(insufficientSubjectQuestionsLineHe(V2_SUBJECT_LABEL_HE.science, scienceTotalQuestions));
   }
   if ((hebrewTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
-    insufficientDataSubjectsHe.push(`עברית (${hebrewTotalQuestions} שאלות בטווח)`);
+    insufficientDataSubjectsHe.push(insufficientSubjectQuestionsLineHe(V2_SUBJECT_LABEL_HE.hebrew, hebrewTotalQuestions));
   }
   if ((moledetGeographyTotalQuestions || 0) < INSUFFICIENT_SUBJECT_Q) {
-    insufficientDataSubjectsHe.push(`מולדת וגאוגרפיה (${moledetGeographyTotalQuestions} שאלות בטווח)`);
+    insufficientDataSubjectsHe.push(
+      insufficientSubjectQuestionsLineHe(V2_SUBJECT_LABEL_HE["moledet-geography"], moledetGeographyTotalQuestions)
+    );
   }
 
   const diagnosticOverviewHe = {

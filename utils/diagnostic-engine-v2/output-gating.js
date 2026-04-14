@@ -66,14 +66,14 @@ export function applyOutputGating(p) {
   if (confidence === "early_signal_only") {
     out.probeOnly = true;
     out.confidenceOnly = true;
-    out.reasons.push("אות מוקדם בלבד — נדרש probe או מעקב");
+    out.reasons.push("אות מוקדם בלבד — כדאי עוד תרגול קצר או מעקב לפני מסקנה חזקה");
     return out;
   }
 
   if (confidence === "low") {
     out.probeOnly = true;
     out.confidenceOnly = true;
-    out.reasons.push("ביטחון נמוך — probe לפני אבחנה מלאה");
+    out.reasons.push("ביטחון נמוך — כדאי לאסוף עוד תרגול לפני אבחנה מלאה");
     return out;
   }
 

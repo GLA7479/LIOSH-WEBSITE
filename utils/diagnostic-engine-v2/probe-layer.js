@@ -16,7 +16,7 @@ export function buildProbePlan(taxonomyId) {
   const row = TAXONOMY_BY_ID[taxonomyId];
   return {
     probeType: "blueprint_row_probe",
-    objectiveHe: `הכרעה בין שורש לבין מתחרים לפי טקסונומיה ${row.id}`,
+    objectiveHe: "להבחין בין קושי יסודי לבין קושי ספציפי של הנושא",
     specificationHe: row.probeHe,
     stoppingRuleHe: "עמידה בסף חזרתיות של השורה או דחיית ההשערה",
     escalationRuleHe: row.escalationHe,

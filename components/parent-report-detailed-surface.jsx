@@ -16,6 +16,11 @@ import {
   transferReadinessLineHe,
   truncateHe,
 } from "../utils/parent-report-ui-explain-he";
+import {
+  SUBJECT_PHASE3_ROW_LABEL_HE,
+  SUBJECT_V2_RECALIBRATION_NEED_NO_HE,
+  normalizeParentFacingHe,
+} from "../utils/parent-report-language/index.js";
 
 const PR1_RETENTION_LABEL_HE = {
   low: "נמוך",
@@ -69,7 +74,7 @@ function pr1ParentVisibleTextHe(s) {
   t = t.replace(/\(ct:[^)]*\)/gi, "");
   t = t.replace(/\b[a-z][a-z0-9_]{10,}\b/g, "");
   t = t.replace(/\s{2,}/g, " ").trim();
-  return t;
+  return normalizeParentFacingHe(t);
 }
 
 export function Bullets({ items, className = "" }) {
@@ -232,7 +237,7 @@ export function ExecutiveSummarySection({ es, compact }) {
               </p>
             ) : null}
             {es.crossSubjectRecalibrationNeedHe &&
-            es.crossSubjectRecalibrationNeedHe !== "אין צורך מיוחד בריענון כרגע" ? (
+            es.crossSubjectRecalibrationNeedHe !== SUBJECT_V2_RECALIBRATION_NEED_NO_HE ? (
               <p className="m-0">
                 <span className="text-white/45 font-bold">ריענון מסקנה: </span>
                 {pr1ParentVisibleTextHe(es.crossSubjectRecalibrationNeedHe)}
@@ -546,13 +551,19 @@ export function SubjectPhase3Insights({ sp, compact }) {
   const fr = Number(sp?.fragileSuccessRowCount) || 0;
   const stb = Number(sp?.stableMasteryRowCount) || 0;
   if (fr > 0 || stb > 0) {
-    rows.push({ k: "שורות (מערכת)", v: `${stb} מאסטרי יציב · ${fr} הצלחה שבירה` });
+    rows.push({
+      k: SUBJECT_PHASE3_ROW_LABEL_HE.topicPatternCounts,
+      v: `${stb} שליטה טובה ויציבה · ${fr} הצלחה שבירה`,
+    });
   }
   const modeNote = String(sp?.modeConcentrationNoteHe || "").trim();
   if (modeNote) rows.push({ k: "מיקוד לפי מצב תרגול", v: pr1ParentVisibleTextHe(modeNote) });
   const risks = subjectMajorRiskLabelsHe(sp?.majorRiskFlagsAcrossRows, 5);
   if (risks.length) {
-    rows.push({ k: "אזהרות מערכת", v: risks.map((x) => pr1ParentVisibleTextHe(String(x))).join(" · ") });
+    rows.push({
+      k: SUBJECT_PHASE3_ROW_LABEL_HE.majorRisks,
+      v: risks.map((x) => pr1ParentVisibleTextHe(String(x))).join(" · "),
+    });
   }
   if (sp?.recommendedHomeMethodHe && String(sp.recommendedHomeMethodHe).trim() && !hideStructuredHome) {
     rows.push({
@@ -631,7 +642,7 @@ export function SubjectPhase3Insights({ sp, compact }) {
     });
   }
   const sRec = String(sp?.subjectRecalibrationNeedHe || "").trim();
-  if (sRec && sRec !== "אין צורך מיוחד בריענון כרגע" && (!effN || !effN.includes(sRec.slice(0, 10)))) {
+  if (sRec && sRec !== SUBJECT_V2_RECALIBRATION_NEED_NO_HE && (!effN || !effN.includes(sRec.slice(0, 10)))) {
     rows.push({
       k: "ריענון מסקנה",
       v: truncateHe(pr1ParentVisibleTextHe(sRec), compact ? 100 : 200),
@@ -749,7 +760,7 @@ function topicStripParentClean(s) {
   t = t.replace(/\blow_?confidence\b|\bmin_?questions\b|\btier\b/gi, "");
   t = t.replace(/\b[a-z][a-z0-9_]{10,}\b/g, "");
   t = t.replace(/\s{2,}/g, " ").trim();
-  return t;
+  return normalizeParentFacingHe(t);
 }
 
 function topicStripNorm(s) {

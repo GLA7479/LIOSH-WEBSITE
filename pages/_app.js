@@ -6,7 +6,16 @@ import OfflineIndicator from "../components/OfflineIndicator";
 export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
     if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
-      return;
+      return undefined;
+    }
+
+    // בפיתוח: SW שומר תגובות ישנות של dev server ומתנגש ב-HMR → רענון מלא בלולאה.
+    // בפרודקשן נשאר הרישום הרגיל.
+    if (process.env.NODE_ENV === "development") {
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        regs.forEach((r) => r.unregister());
+      });
+      return undefined;
     }
 
     const registerSW = () => {

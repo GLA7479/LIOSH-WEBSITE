@@ -2,9 +2,13 @@
 
 Concise map of how the parent report pipeline fits together, what each test script covers, and where to look when something breaks. This doc is scoped to **parent-report / detailed report / related tests only** — not the whole app.
 
+**Hebrew / parent copy:** [`docs/PARENT_REPORT_TEXT_SOURCE_MAP.md`](./PARENT_REPORT_TEXT_SOURCE_MAP.md) · [`docs/PARENT_REPORT_HEBREW_STYLE_GUIDE.md`](./PARENT_REPORT_HEBREW_STYLE_GUIDE.md) · [`docs/PARENT_REPORT_EDITORIAL_SIGNOFF.md`](./PARENT_REPORT_EDITORIAL_SIGNOFF.md) · language layer: `utils/parent-report-language/` (כולל **`parent-facing-normalize-he.js`** לניסוח הורה סופי) · `npm run test:parent-report-hebrew-language`
+
 **Engine layers, merge precedence, and Phase 15 UI consolidation:** see [`docs/PARENT_REPORT_ENGINE.md`](./PARENT_REPORT_ENGINE.md).
 
 **QA / calibration / red-team log:** see [`docs/PARENT_REPORT_QA_CALIBRATION.md`](./PARENT_REPORT_QA_CALIBRATION.md).
+
+**Decision contract & execution readiness (policy v1):** start at [`docs/execution-readiness-bundle-v1.md`](./execution-readiness-bundle-v1.md) — links governance freeze, decision contract, evidence bands, language permissions, gate-to-text binding, subject/overall readiness, and recommendation intensity caps.
 
 ## Pipeline layers (data flow)
 

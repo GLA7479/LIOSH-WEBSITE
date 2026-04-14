@@ -130,17 +130,17 @@ function normalizeDisplayMode(raw) {
 }
 
 /** query נקי לשיתוף/הדפסה — רק פרמטרים שמוכרים לדף המקיף */
-function buildDetailedReportQuery(router, mode) {
+function buildDetailedReportQueryFromQueryObject(query, mode) {
   const next = normalizeDisplayMode(mode);
   const q = {};
-  const period = router.query?.period;
+  const period = query?.period;
   if (typeof period === "string" && period) q.period = period;
-  const start = router.query?.start;
-  const end = router.query?.end;
+  const start = query?.start;
+  const end = query?.end;
   if (typeof start === "string" && start) q.start = start;
   if (typeof end === "string" && end) q.end = end;
   if (next === "summary") q.mode = "summary";
-  if (router.query?.reviewHybrid === "1") q.reviewHybrid = "1";
+  if (query?.reviewHybrid === "1") q.reviewHybrid = "1";
   return q;
 }
 
@@ -154,6 +154,8 @@ export default function ParentReportDetailedPage() {
   const queryPeriod = typeof router.query.period === "string" ? router.query.period : "week";
   const queryStart = typeof router.query.start === "string" ? router.query.start : null;
   const queryEnd = typeof router.query.end === "string" ? router.query.end : null;
+  const queryModeRaw = router.query.mode;
+  const queryReviewHybrid = router.query.reviewHybrid;
 
   const backHref = useMemo(() => {
     const q = { period: queryPeriod };
@@ -196,31 +198,31 @@ export default function ParentReportDetailedPage() {
     if (!router.isReady) return undefined;
     setDisplayMode(normalizeDisplayMode(router.query.mode));
     return undefined;
-  }, [router.isReady, router.query.mode]);
+  }, [router.isReady, queryModeRaw]);
 
   const setModeInUrl = useCallback(
     (mode) => {
       const next = normalizeDisplayMode(mode);
-      const q = buildDetailedReportQuery(router, next);
+      const q = buildDetailedReportQueryFromQueryObject(router.query, next);
       router.replace({ pathname: "/learning/parent-report-detailed", query: q }, undefined, {
         shallow: true,
       });
       setDisplayMode(next);
     },
-    [router]
+    [router.replace, queryPeriod, queryStart, queryEnd, queryModeRaw, queryReviewHybrid]
   );
 
   const printWithMode = useCallback(
     (mode) => {
       const next = normalizeDisplayMode(mode);
       setDisplayMode(next);
-      const q = buildDetailedReportQuery(router, next);
+      const q = buildDetailedReportQueryFromQueryObject(router.query, next);
       router.replace({ pathname: "/learning/parent-report-detailed", query: q }, undefined, {
         shallow: true,
       });
       window.setTimeout(() => window.print(), 120);
     },
-    [router]
+    [router.replace, queryPeriod, queryStart, queryEnd, queryModeRaw, queryReviewHybrid]
   );
 
   const internalHybridOn = useMemo(() => {
@@ -237,9 +239,9 @@ export default function ParentReportDetailedPage() {
   }, [router.isReady, router.query.reviewHybrid]);
 
   const enableInternalHybridReviewer = useCallback(() => {
-    const q = { ...buildDetailedReportQuery(router, displayMode), reviewHybrid: "1" };
+    const q = { ...buildDetailedReportQueryFromQueryObject(router.query, displayMode), reviewHybrid: "1" };
     router.replace({ pathname: "/learning/parent-report-detailed", query: q }, undefined, { shallow: true });
-  }, [router, displayMode]);
+  }, [router.replace, displayMode, queryPeriod, queryStart, queryEnd, queryModeRaw, queryReviewHybrid]);
 
   const persistInternalHybridReviewer = useCallback(() => {
     try {
@@ -256,10 +258,10 @@ export default function ParentReportDetailedPage() {
     } catch {
       /* ignore */
     }
-    const q = { ...buildDetailedReportQuery(router, displayMode) };
+    const q = { ...buildDetailedReportQueryFromQueryObject(router.query, displayMode) };
     delete q.reviewHybrid;
     router.replace({ pathname: "/learning/parent-report-detailed", query: q }, undefined, { shallow: true });
-  }, [router, displayMode]);
+  }, [router.replace, displayMode, queryPeriod, queryStart, queryEnd, queryModeRaw, queryReviewHybrid]);
 
   const ModeToggle = ({ className = "" }) => (
     <div

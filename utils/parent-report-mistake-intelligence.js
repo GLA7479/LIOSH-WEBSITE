@@ -99,7 +99,7 @@ export function buildMistakeIntelligencePhase9(ctx) {
       mistakePatternConfidence = 0.4;
     } else {
       dominantMistakePattern = "mixed_mistake_pattern";
-      evidence.push("תמהיל אותות — דפוס טעות לא חד־משמעי.");
+      evidence.push("תערובת אותות — דפוס טעות לא חד־משמעי.");
       mistakePatternConfidence = 0.45;
     }
 

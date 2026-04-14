@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Layout from "../../components/Layout";
 import { ParentReportImportantDisclaimer } from "../../components/ParentReportImportantDisclaimer";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
@@ -9,6 +9,7 @@ import {
   stripTechnicalParensForParentDiagnosticsHe as stripTechnicalParensHe,
   shortReportDiagnosticsParentVisibleHe as diagnosticParentVisibleTextHe,
 } from "../../utils/parent-report-ui-explain-he";
+import { diagnosticPrimarySourceParentLabelHe } from "../../utils/parent-report-language/index.js";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
@@ -566,7 +567,8 @@ export default function ParentReport() {
   /** רוחב פנימי משוער לכרטיס גרף (עמודת PDF − ריפוד כרטיס) — למגרעת X דינמית */
   const [chartHostInnerWidthPx, setChartHostInnerWidthPx] = useState(0);
 
-  useLayoutEffect(() => {
+  // useEffect (לא useLayoutEffect) — נדרש ב-SSR של Next כדי למנוע אזהרת hydration / useLayoutEffect על השרת
+  useEffect(() => {
     if (typeof window === "undefined") return undefined;
     const el = parentReportPdfRef.current;
     if (!el) return undefined;
@@ -683,14 +685,10 @@ export default function ParentReport() {
     () => (report ? buildParentReportDiagnosticsView(report) : null),
     [report]
   );
-  const diagnosticSourceLabelHe = useMemo(() => {
-    const source = String(report?.diagnosticPrimarySource || "");
-    if (source === "diagnosticEngineV2") return "מקור אבחון ראשי: מנוע V2";
-    if (source === "legacy_patternDiagnostics_fallback") {
-      return "מקור אבחון זמני: legacy fallback (אין יחידות V2 מספיקות)";
-    }
-    return "מקור אבחון: לא זוהה (קריאת זהירות)";
-  }, [report]);
+  const diagnosticSourceLabelHe = useMemo(
+    () => diagnosticPrimarySourceParentLabelHe(String(report?.diagnosticPrimarySource || "")),
+    [report]
+  );
 
   if (loading) {
     return (
@@ -726,9 +724,9 @@ export default function ParentReport() {
             <div className="text-4xl mb-4">📊</div>
             <h1 className="text-2xl font-bold mb-2">דוח להורים</h1>
             <p className="text-white/70 mb-4">
-              לא נמצאו נתונים לתקופה שנבחרה.
+              אין עדיין מספיק פעילות בתקופה שנבחרה.
               <br />
-              התחל לשחק כדי ליצור דוח.
+              אחרי קצת תרגול יופיע כאן סיכום.
             </p>
             
             {/* בחירת תקופה גם במסך "אין נתונים" */}

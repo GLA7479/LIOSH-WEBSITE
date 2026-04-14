@@ -1,4 +1,4 @@
-# Parent-report CI: phase1 row stack, phase2 topic-next-step helpers, phase6 suite + pages SSR, then full Next compile (see docs/PARENT_REPORT.md).
+# Parent-report CI: phase1 row stack, phase2 topic-next-step helpers, phase6 (Hebrew language selftest + suite + pages SSR), then full Next compile (see docs/PARENT_REPORT.md).
 name: Parent report checks
 
 on:
@@ -21,4 +21,5 @@ jobs:
       - run: npm run test:topic-next-step-engine-scenarios
       - run: npm run test:ai-hybrid-harness
       - run: npm run test:parent-report-phase6
+      - run: npm run test:minimal-safe-scope
       - run: npx next build

@@ -11,7 +11,7 @@ export function buildInterventionPlan(taxonomyId) {
       avoidHe: "קפיצה לרמה גבוהה; ערבוב נושאים",
       improvementSignalsHe: ["ירידה בטעויות חוזרות", "תיקון עצמאי אחרי טעות"],
       failureSignalsHe: ["אין שינוי אחרי שני מחזורים מובנים"],
-      hypothesisChangeHe: "כישלון בprobe יסודי או הצלחה רק ברמז עשיר",
+      hypothesisChangeHe: "כישלון בבדיקה המוצעת או הצלחה רק כשיש הרבה רמזים",
     };
   }
   const row = TAXONOMY_BY_ID[taxonomyId];

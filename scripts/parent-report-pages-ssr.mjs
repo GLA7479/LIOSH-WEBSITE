@@ -64,7 +64,7 @@ function runDetailedPageChunks() {
   );
   const esP9 = {
     ...normalizeExecutiveSummary(strong),
-    dominantCrossSubjectMistakePatternLabelHe: "תמהיל טעויות לא אחיד",
+    dominantCrossSubjectMistakePatternLabelHe: "תערובת טעויות לא אחידה",
     crossSubjectLearningStageLabelHe: "ייצוב חלקי",
     crossSubjectRetentionRisk: "moderate",
     crossSubjectTransferReadiness: "limited",
@@ -202,7 +202,7 @@ function runDetailedPageChunks() {
     topicEngineRowSignals: {
       ...(tr.topicEngineRowSignals && typeof tr.topicEngineRowSignals === "object" ? tr.topicEngineRowSignals : {}),
       supportSequenceNarrativeHe: "נראה שהתמיכה עוזרת — כדאי לעקוב אם לא חוזרים על אותו כלי יתר על המידה.",
-      strategyRepetitionRiskHe: "יש סיכון בינוני שחוזרים על אותו כיוון בלי שינוי",
+      strategyRepetitionRiskHe: "סיכון בינוני לחזור על אותו כיוון בלי שינוי",
       strategyFatigueRiskHe: "סיכון נמוך לחזרה מיותרת על אותה שיטה",
       nextSupportSequenceActionHe: "להמשיך ברצף הנוכחי עם מטרה צרה יותר לפני שינוי מהותי",
     },
@@ -389,7 +389,7 @@ function runParentReportPageChunks() {
     topicEngineRowSignals: {
       ...rowPhase10.topicEngineRowSignals,
       supportSequenceStateLabelHe: "בתחילת רצף תמיכה — כדאי לעקוב בלי להעמיס",
-      strategyRepetitionRiskHe: "יש סיכון בינוני שחוזרים על אותו כיוון בלי שינוי",
+      strategyRepetitionRiskHe: "סיכון בינוני לחזור על אותו כיוון בלי שינוי",
       nextSupportSequenceActionHe: "להתחיל שחרור הדרגתי קצר — לא לקפוץ לעצמאות מלאה",
     },
   };
