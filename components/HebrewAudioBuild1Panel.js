@@ -38,9 +38,10 @@ export default function HebrewAudioBuild1Panel({
   const route = resolveScoreOrReviewRoute(stem);
 
   useEffect(() => {
+    if (stem?.playback_kind !== "tts") return () => {};
     const unprime = primeSpeechSynthesisVoices();
     return unprime;
-  }, []);
+  }, [stem?.playback_kind]);
 
   useEffect(() => {
     ctrlRef.current = createStemPlaybackController(stem, {});

@@ -30,4 +30,7 @@
 ```bash
 npm run verify:hebrew-audio-build1
 npm run verify:hebrew-audio-final
+npm run verify:hebrew-static-audio
 ```
+
+מעבר ל־static clips (עברית ללא TTS של הדפדפן) — ראו [HEBREW_STATIC_AUDIO_CUTOVER.md](./HEBREW_STATIC_AUDIO_CUTOVER.md).
