@@ -873,10 +873,30 @@ export default function ParentReport() {
               visibility: visible !important;
             }
             #parent-report-pdf {
-              position: absolute !important;
-              left: 0 !important;
-              top: 0 !important;
-              width: 100% !important;
+              position: static !important;
+              left: auto !important;
+              top: auto !important;
+              width: auto !important;
+              max-width: 100% !important;
+              margin: 0 auto !important;
+            }
+            #parent-report-pdf,
+            #parent-report-pdf h1,
+            #parent-report-pdf h2,
+            #parent-report-pdf h3,
+            #parent-report-pdf h4,
+            #parent-report-pdf p,
+            #parent-report-pdf span,
+            #parent-report-pdf li,
+            #parent-report-pdf td,
+            #parent-report-pdf th,
+            #parent-report-pdf strong,
+            #parent-report-pdf small {
+              color: #111827 !important;
+              opacity: 1 !important;
+              text-shadow: none !important;
+              filter: none !important;
+              -webkit-text-fill-color: #111827 !important;
             }
             .bg-gradient-to-b,
             .bg-black\\/30,
@@ -922,7 +942,17 @@ export default function ParentReport() {
               display: none !important;
             }
             table {
-              page-break-inside: avoid;
+              page-break-inside: auto !important;
+              break-inside: auto !important;
+            }
+            thead {
+              display: table-header-group !important;
+            }
+            tr,
+            th,
+            td {
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
             }
             .recharts-wrapper {
               page-break-inside: avoid;
@@ -977,6 +1007,15 @@ export default function ParentReport() {
             }
             #parent-report-pdf .parent-report-subject-table tbody td:first-child {
               font-weight: 600 !important;
+            }
+            #parent-report-pdf .parent-report-math-progress-title {
+              break-after: avoid !important;
+              page-break-after: avoid !important;
+              margin-bottom: 8px !important;
+            }
+            #parent-report-pdf .parent-report-table-wrap-print {
+              break-before: auto !important;
+              page-break-before: auto !important;
             }
 
             /* המלצות / אבחון — מניעת שבירה + חיזוק גבולות בהדפסה בלבד */
@@ -1501,9 +1540,9 @@ export default function ParentReport() {
           {/* טבלת פעולות חשבון */}
           {Object.keys(report.mathOperations || {}).length > 0 && (
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6 avoid-break">
-              <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🧮 התקדמות בחשבון</h2>
+              <h2 className="parent-report-math-progress-title text-base md:text-xl font-bold mb-2 md:mb-3 text-center">🧮 התקדמות בחשבון</h2>
               {/* Desktop Table */}
-              <div className="parent-report-desktop-only hidden md:block mt-2">
+              <div className="parent-report-desktop-only parent-report-table-wrap-print hidden md:block mt-2">
                 <table className="w-full table-fixed text-sm parent-report-subject-table">
                   <colgroup>
                     <col style={{ width: "15%" }} />
