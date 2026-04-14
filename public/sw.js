@@ -10,10 +10,10 @@ const STATIC_ASSETS = [
   '/styles/globals.css',
   // Essential images
   '/images/leo-intro.png',
-  '/images/leo-icons/android-chrome-192x192.png',
-  '/images/leo-icons/android-chrome-512x512.png',
-  '/images/leo-icons/android-chrome-maskable-192x192.png',
-  '/images/leo-icons/android-chrome-maskable-512x512.png',
+  '/images/leo-icons/icon-192.png',
+  '/images/leo-icons/icon-512.png',
+  '/images/leo-icons/icon-192-maskable.png',
+  '/images/leo-icons/icon-512-maskable.png',
   // Game images
   '/images/dog.png',
   '/images/leo2.png',

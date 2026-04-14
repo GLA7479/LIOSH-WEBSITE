@@ -91,14 +91,14 @@ export default function MyApp({ Component, pageProps }) {
         <meta name="msapplication-config" content="/browserconfig.xml" />
         
         {/* Icons */}
-        <link rel="icon" href="/images/leo-icons/favicon.ico" sizes="any" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/images/leo-icons/favicon-16x16.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/images/leo-icons/favicon-32x32.png" />
-        <link rel="apple-touch-icon" href="/images/leo-icons/apple-touch-icon.png" />
-        <link rel="apple-touch-icon" sizes="120x120" href="/images/leo-icons/apple-touch-icon-120x120.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/images/leo-icons/apple-touch-icon-152x152.png" />
-        <link rel="apple-touch-icon" sizes="167x167" href="/images/leo-icons/apple-touch-icon-167x167.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/images/leo-icons/apple-touch-icon-180x180.png" />
+        <link rel="icon" href="/images/leo-icons/icon-192.png" sizes="any" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/images/leo-icons/icon-192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/images/leo-icons/icon-512.png" />
+        <link rel="apple-touch-icon" href="/images/leo-icons/icon-192.png" />
+        <link rel="apple-touch-icon" sizes="120x120" href="/images/leo-icons/icon-192.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/images/leo-icons/icon-192.png" />
+        <link rel="apple-touch-icon" sizes="167x167" href="/images/leo-icons/icon-192.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/leo-icons/icon-192.png" />
         
         {/* Manifest */}
         <link rel="manifest" href="/manifest.json" />
