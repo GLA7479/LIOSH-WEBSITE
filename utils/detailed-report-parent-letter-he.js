@@ -139,7 +139,7 @@ function buildSubjectOpeningLineHe(sp, lab) {
   if (pri === "maintain" && domSucc && ex0 && !mr) {
     const t = [
       stripGuillemetsHe(`ב${lab} אפשר לנוח קצת על הגז: ${domSucc} — מספיק שגרת תרגול קצרה.`),
-      stripGuillemetsHe(`ב${lab} המצב יציב יחסית (${domSucc}) — אין חובה להוסיף עומס; מספיק לעקוב בעדינות.`),
+      stripGuillemetsHe(`ב${lab} התמונה עקבית יחסית (${domSucc}) — אין חובה להוסיף עומס; מספיק לעקוב בעדינות.`),
     ];
     return t[Math.abs((domSucc + lab).length) % t.length];
   }

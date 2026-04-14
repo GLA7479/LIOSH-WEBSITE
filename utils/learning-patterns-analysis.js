@@ -46,7 +46,7 @@ import { normalizeParentFacingHe } from "./parent-report-language/parent-facing-
 import { mergeSubjectConclusionReadinessContract } from "./minimal-safe-scope-enforcement.js";
 
 /**
- * מזהה נושא יציב לצורך reconciliation (אותו bucket כמו בטעויות / שורת דוח).
+ * מזהה נושא עקבי לצורך reconciliation (אותו bucket כמו בטעויות / שורת דוח).
  * @param {string} subjectId
  * @param {string} topicRowKey
  * @param {Record<string, unknown>|null|undefined} row
@@ -309,7 +309,7 @@ function inferWeaknessKindHe(labelHe) {
  *    nextWeekGoalHe: optional "יעד לחיזוק" from top weakness or improving + "יעד לשימור" from topStrengths[0] or maintain[0]
  *    when questions ≥ 8 or excellent.
  *
- * E) UI: parent-report maps each tierHe to the card subtitle (not everything is "חולשה"; maintain → "עקביות"; stableExcellence → "הצלחה יציבה").
+ * E) UI: parent-report maps each tierHe to the card subtitle (not everything is "חולשה"; maintain → "שמירה על רמה טובה"; stableExcellence → "הילד מצליח בנושא הזה לאורך זמן").
  */
 
 const SUBJECT_IDS = [
@@ -344,9 +344,9 @@ const MAX_TOP_WEAKNESSES = 3;
 const MAX_TOP_STRENGTHS = 3;
 const MAX_MAINTAIN = 2;
 const MAX_IMPROVING = 2;
-/** עד כמה שורות "הצלחה יציבה" (נפרד מ־maintain / חוזקות מובילות) */
+/** עד כמה שורות "הילד מצליח בנושא הזה לאורך זמן" (נפרד מ־maintain / חוזקות מובילות) */
 const MAX_STABLE_EXCELLENCE = 3;
-/** סף הצטיינות יציבה: לא מכריזים מהר — דיוק גבוה + מספיק שאלות בטווח */
+/** סף הצלחה לאורך זמן: לא מכריזים מהר — דיוק גבוה + מספיק שאלות בטווח */
 const STABLE_EXCELLENCE_MIN_ACCURACY = 92;
 const STABLE_EXCELLENCE_MIN_QUESTIONS = 22;
 /** Internal pool before merge/rank */
@@ -377,7 +377,7 @@ function parentCopyTopicPhraseHe(labelHe) {
 
   const tailed = [
     /^קושי נקודתי ב(.+)$/u,
-    /^קושי חוזר \/ חולשה יציבה ב(.+)$/u,
+    /^קושי חוזר \/ קושי שחוזר ב(.+)$/u,
     /^קושי חוזר ב(.+)$/u,
   ];
   for (const re of tailed) {
@@ -454,9 +454,9 @@ function joinHebrewList(items) {
 function strengthTierHe(row) {
   const q = Number(row?.questions) || 0;
   const acc = Number(row?.accuracy) || 0;
-  if (row?.excellent && q >= 20 && acc >= 90) return "חוזקה יציבה";
+  if (row?.excellent && q >= 20 && acc >= 90) return "תחום חזק";
   if (row?.excellent) return "חוזקה בולטת";
-  if (acc >= 92 && q >= 14) return "חוזקה יציבה";
+  if (acc >= 92 && q >= 14) return "תחום חזק";
   return "חוזקה בולטת";
 }
 
@@ -532,7 +532,7 @@ function buildSessionBands(subjectId, report) {
 
   const stableExcellenceOut = stableExcellenceRaw.map((r) => ({
     ...r,
-    tierHe: "הצלחה יציבה",
+    tierHe: "הילד מצליח בנושא הזה לאורך זמן",
   }));
 
   const excellent = take(
@@ -578,7 +578,7 @@ function buildSessionBands(subjectId, report) {
 
   const maintainOut = maintain
     .slice(0, MAX_MAINTAIN)
-    .map((r) => ({ ...r, tierHe: "עקביות" }));
+    .map((r) => ({ ...r, tierHe: "שמירה על רמה טובה" }));
   const improvingOut = improving
     .slice(0, MAX_IMPROVING)
     .map((r) => ({
@@ -660,8 +660,8 @@ function buildSummaryHe(
     const exNames = joinHebrewList(stableExcellence.map((s) => s.labelHe));
     parts.push(
       stableExcellence.length > 1
-        ? `נראית הצלחה יציבה ב${exNames}.`
-        : `נראית הצלחה יציבה ב${stableExcellence[0].labelHe}.`
+        ? `נראה שהילד מצליח ב${exNames} לאורך זמן.`
+        : `נראה שהילד מצליח ב${stableExcellence[0].labelHe} לאורך זמן.`
     );
   }
   if (topStrengths.length) {
@@ -673,11 +673,11 @@ function buildSummaryHe(
     );
   } else if (!stableExcellence.length && maintain.length) {
     parts.push(
-      `רואים עקביות טובה ב־${joinHebrewList(maintain.map((m) => m.labelHe))}.`
+      `רואים שמירה טובה על הרמה ב־${joinHebrewList(maintain.map((m) => m.labelHe))}.`
     );
   } else if (stableExcellence.length && maintain.length) {
     parts.push(
-      `נראית גם עקביות טובה ב־${joinHebrewList(maintain.map((m) => m.labelHe))}.`
+      `רואים גם שמירה טובה על הרמה ב־${joinHebrewList(maintain.map((m) => m.labelHe))}.`
     );
   }
 
@@ -775,7 +775,7 @@ function buildNextWeekGoalHe(subjectLabelHe, topWeaknesses, improving, topStreng
     );
   }
   if (preserveLabel) {
-    goals.push(`להמשיך בשבוע הבא באותו קצב סביב ${tp(preserveLabel)} — לשמור על עקביות טובה.`);
+    goals.push(`להמשיך בשבוע הבא באותו קצב סביב ${tp(preserveLabel)} — לשמור על הרמה הטובה.`);
   }
   if (!goals.length) return null;
   return goals.join(" ");
@@ -842,7 +842,7 @@ function buildDiagnosticSectionsHe({
   }
   const insufficientDataNoteHe =
     insufficientData.length > 8
-      ? "יש עוד אזורים עם טעויות מפוזרות שלא הגיעו לסף דפוס יציב — האבחון בהם נשאר חלקי."
+      ? "יש עוד אזורים עם טעויות מפוזרות שלא הגיעו לסף דפוס שחוזר מספיק — האבחון בהם נשאר חלקי."
       : null;
   if (insufficientDataNoteHe) insufficientDataHe.push(insufficientDataNoteHe);
 
@@ -963,11 +963,11 @@ function computeSubjectPriorityFieldsPhase8(subjectId, args) {
   ) {
     return {
       subjectPriorityLevel: "maintain",
-      subjectPriorityReasonHe: `ב${lab} יש יציבות יחסית — להישאר על שגרה רגועה.`,
+      subjectPriorityReasonHe: `ב${lab} נראה שהרמה נשמרת טוב יחסית — להישאר על שגרה רגועה.`,
       subjectImmediateActionHe: home || `ב${lab}: לשמר שני מפגשים קצרים בשבוע סביב החוזקות.`,
       subjectDeferredActionHe: `ב${lab}: לדחות הרחבות או הקשחה לפני צורך ברור.`,
       subjectMonitoringOnly: false,
-      subjectDoNowHe: "להמשיך קצב קבוע; לשבח עקביות קטנה.",
+      subjectDoNowHe: "להמשיך קצב קבוע; לשבח התמדה קטנה.",
       subjectAvoidNowHe: "לא להוסיף עומס ביתי כשאין אות מפורש לכך.",
     };
   }
@@ -977,7 +977,7 @@ function computeSubjectPriorityFieldsPhase8(subjectId, args) {
       subjectPriorityLevel: "soon",
       subjectPriorityReasonHe: `ב${lab} תמונה אמצעית — שינוי קטן עכשיו, החלטות גדולות אחר כך.`,
       subjectImmediateActionHe: home || `ב${lab}: מפגש קצר אחד השבוע עם מיקוד אחד בלבד.`,
-      subjectDeferredActionHe: `ב${lab}: לדחות סגירת סיפור כשהאותות עדיין מעורבים.`,
+      subjectDeferredActionHe: `ב${lab}: לדחות החלטה סופית כשהנתונים עדיין מעורבים.`,
       subjectMonitoringOnly: false,
       subjectDoNowHe: "לעקוב אחרי דיוק באותה רמה לפני שמוסיפים משתנים.",
       subjectAvoidNowHe: "לא לנעול הסבר יחיד כשיש כמה כיוונים סבירים.",
@@ -986,12 +986,12 @@ function computeSubjectPriorityFieldsPhase8(subjectId, args) {
 
   return {
     subjectPriorityLevel: "soon",
-    subjectPriorityReasonHe: `ב${lab}: עדיפות בינונית — תרגול קצר עקבי.`,
+    subjectPriorityReasonHe: `ב${lab}: עדיפות בינונית — תרגול קצר וקבוע.`,
     subjectImmediateActionHe: home || `ב${lab}: שני מפגשים קצרים בשבוע באותה רמה.`,
     subjectDeferredActionHe: `ב${lab}: לדחות שינויים דרמטיים עד שיתבהר הכיוון.`,
     subjectMonitoringOnly: false,
     subjectDoNowHe: "תרגול קצר וקבוע; משימה ברורה.",
-    subjectAvoidNowHe: "לא להחמיר רמה בלי שני מפגשים עקביים.",
+    subjectAvoidNowHe: "לא להחמיר רמה בלי שני מפגשים טובים ברצף.",
   };
 }
 
@@ -1084,7 +1084,7 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
       subjectNextCycleDecisionFocusHe: NEXT_CYCLE_DECISION_FOCUS_LABEL_HE.prove_current_direction,
       subjectEvidenceTargetType: "fresh_data_needed",
       subjectTargetObservationWindow: "unknown",
-      subjectGateNarrativeHe: "אין שורות דוח בטווח — לא מסכמים שערי החלטה.",
+      subjectGateNarrativeHe: "אין שורות דוח בטווח — עדיין מוקדם להחלטה בטוחה.",
       subjectDependencyState: "insufficient_dependency_evidence",
       subjectDependencyStateLabelHe: DEPENDENCY_STATE_LABEL_HE.insufficient_dependency_evidence,
       subjectLikelyFoundationalBlocker: "unknown",
@@ -1469,18 +1469,18 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
 
   const riskLabelHe = {
     knowledge_gap: "פער ידע / חוסר בסיס",
-    speed_pressure: "לחץ מהירות או מסלול זמן",
+    speed_pressure: "לחץ מהירות במצב תרגול עם זמן",
     instruction_friction: "חיכוך הוראה או תלות ברמזים",
-    careless_pattern: "רשלנות או אי־יציבות בתשובות",
+    careless_pattern: "חוסר תשומת לב שחוזר בתשובות",
     fragile_success: "הצלחה שבירה (תלות בעזרה / עצמאות נמוכה)",
     mixed: "תערובת קשיים",
     mixed_low_signal: "תערובת חלקית — אות התנהגותי חלש בשורות",
     none_sparse: "דל נתון",
-    none_observed: "לא זוהה קושי דומיננטי בפרופיל ההתנהגות",
+    none_observed: "לא זוהה קושי דומיננטי בדפוס ההתנהגות",
   };
 
   const successLabelHe = {
-    stable_mastery: "שליטה טובה ויציבה בשורות",
+    stable_mastery: "שליטה טובה שנשמרת לאורך זמן בשורות",
     fragile_success_cluster: "הצלחה עם שבירות בעזרה/עצמאות",
     mixed: "תערובת הצלחות",
     none_sparse: "דל נתון",
@@ -1492,7 +1492,7 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
     recommendedHomeMethodHe = `דגש ביתי: חזרה איטית על הבסיס ב${domRiskHe} — משימה קצרה, בדיקה מול הפתרון, בלי קפיצת רמה.`;
   } else if (dominantLearningRisk === "speed_pressure") {
     recommendedHomeMethodHe =
-      "דגש ביתי: לפרק את המסלול המהיר — תרגול באותה רמת קושי עם דגש על דיוק לפני מהירות, בלי להוריד רמה לכל המקצוע.";
+      "דגש ביתי: לפרק את הלחץ למהירות — תרגול באותה רמת קושי עם דגש על דיוק לפני מהירות, בלי להוריד רמה לכל המקצוע.";
   } else if (dominantLearningRisk === "instruction_friction") {
     recommendedHomeMethodHe =
       "דגש ביתי: קריאת משימה משותפת, זיהוי מה נשאל, ורק אז תשובה — לצמצם תלות ברמזים צעד אחר צעד.";
@@ -1501,20 +1501,20 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
       "דגש ביתי: עצירה קצרה לפני שליחה, בדיקה מול הניסוח — לא מניחים מיד שזה פער ידע עמוק.";
   } else if (dominantLearningRisk === "fragile_success") {
     recommendedHomeMethodHe =
-      "דגש ביתי: לבנות עצמאות הדרגתית — תרגול קצר עם פחות התערבות אחרי שהבנה ברורה, בלי לדחוף קפיצת רמה.";
+      "דגש ביתי: לבנות עצמאות בהדרגה — תרגול קצר עם פחות עזרה אחרי שההבנה ברורה, בלי לדחוף קפיצת רמה.";
   } else {
     recommendedHomeMethodHe =
       strongRows.length >= 1
-        ? "דגש ביתי: לשמור על תרגול קצר וקבוע, ולעקוב אחרי עקביות לפני שינוי הגדרות."
+        ? "דגש ביתי: לשמור על תרגול קצר וקבוע, ולבדוק שהרמה נשמרת לפני שינוי הגדרות."
         : "דגש ביתי: להמשיך לאסוף תרגול קצר עד שהתמונה במקצוע מתייצבת.";
   }
 
   const avoid = [];
   if (riskOr.falsePromotionRisk || dominantLearningRisk === "fragile_success") {
-    avoid.push("לא לדחוף קפיצת רמה או כיתה בבית בלי עקביות ובלי ירידה בתלות ברמזים.");
+    avoid.push("לא לדחוף קפיצת רמה או כיתה בבית בלי הצלחה שחוזרת ובלי ירידה בתלות ברמזים.");
   }
   if (riskOr.speedOnlyRisk || dominantLearningRisk === "speed_pressure") {
-    avoid.push("לא להפוך חולשה במסלול מהירות לירידת רמה בכל המקצוע.");
+    avoid.push("לא להפוך קושי במצב מהירות לירידת רמה בכל המקצוע.");
   }
   if (riskOr.falseRemediationRisk || dominantLearningRisk === "careless_pattern") {
     avoid.push("לא לרדת מיד לרמה קלה בלי לנסות קודם חיזוק ממוקד באותה רמה.");
@@ -1523,7 +1523,7 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
     avoid.push("לא להפסיק פתאום עזרה — אלא לצמצם אותה בהדרגה כשההבנה משתפרת.");
   }
   if (worstCaution && worstCaution.score >= 3) {
-    avoid.push("לא לפרש מגמה שלילית קצרה ככישלון יציב — עדיף זהירות ומעקב.");
+    avoid.push("לא לפרש מגמה שלילית קצרה ככישלון קבוע — עדיף זהירות ומעקב.");
   }
   const whatNotToDoHe = avoid.length ? avoid.join(" ") : "לא לקבוע שינוי דרמטי בלי עוד תרגול בטווח.";
 
@@ -1570,7 +1570,7 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
     subjectDiagnosticRestraintHe =
       "יש בסיס אבל גם שורות עם מסקנה זהירה — כדאי לעקוב ולא לדרוס בהנחות חזקות.";
   } else if (moderateOrStrongRows >= Math.ceil(nR * 0.55)) {
-    subjectDiagnosticRestraintHe = "יש כמה שורות עם ראיות יציבות יחסית — אפשר לסמוך יותר על הסיכום בתוך המקצוע.";
+    subjectDiagnosticRestraintHe = "יש כמה שורות עם ראיות שחוזרות בצורה דומה — אפשר לסמוך יותר על הסיכום בתוך המקצוע.";
   } else {
     subjectDiagnosticRestraintHe = "התמונה המקצועית מעורבת מעט — קריאה שורה־שורה עדיין חשובה.";
   }
@@ -1644,7 +1644,7 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
       ? "עדיף חיזוק חוזר לפני הרחבה."
       : subjectRetentionRisk === "moderate"
         ? "כדאי לעקוב לפני שינוי מהותי."
-        : "אפשר קצב עקבי עם מעקב קל."
+        : "אפשר להמשיך בקצב קבוע עם מעקב קל."
   }`.trim();
 
   let subjectReviewBeforeAdvanceHe = null;
@@ -2043,7 +2043,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
         if (insufficientData.length < 24) {
           insufficientData.push({
             mistakeCount: n,
-            note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה",
+            note: "פחות מ־5 טעויות באותו דפוס — עדיין מוקדם לקבוע קושי שחוזר",
           });
         }
         return;
@@ -2124,7 +2124,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
           : "moderate";
       studentRecommendationsMaintain.push({
         id: `stu-maint:${topPositive.id}`,
-        textHe: `להמשיך לתרגל בנוחות בנושא ${topPositive.labelHe} — יש כאן עקביות (דיוק כ־${topPositive.accuracy}%).`,
+        textHe: `להמשיך לתרגל בנוחות בנושא ${topPositive.labelHe} — הרמה שם נשמרת (דיוק כ־${topPositive.accuracy}%).`,
         strength: rs,
       });
       parentRecommendationsMaintain.push({
@@ -2137,7 +2137,7 @@ export function analyzeLearningPatterns(report, rawMistakesBySubject = {}) {
     let diagnosticSparseNoteHe = null;
     if (!topWeaknesses.length && wrong.length > 0) {
       diagnosticSparseNoteHe =
-        "יש טעויות בודדות אך בלי דפוס שחוזר מספיק פעמים — עדיין לא ניתן לקבוע חולשה יציבה.";
+        "יש טעויות בודדות אך בלי דפוס שחוזר מספיק פעמים — עדיין לא ניתן לקבוע קושי שחוזר.";
       if (!parentRecommendationsImprove.length) {
         parentRecommendationsImprove.push({
           id: `par-imp:${sid}:sparse`,
@@ -2286,7 +2286,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       wrongCount: 12,
       hasAnySignal: true,
       summaryHe:
-        "תמונת המקצוע בחשבון: נראית הצלחה יציבה בחיבור. יש גם מקום לחיזוק בהשוואת כמויות או מספרים.",
+        "תמונת המקצוע בחשבון: הילד מצליח בחיבור לאורך זמן. יש גם מקום לחיזוק בהשוואת כמויות או מספרים.",
       stableExcellence: [
         {
           id: "math:addition:learning",
@@ -2296,7 +2296,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
           confidence: "high",
           needsPractice: false,
           excellent: true,
-          tierHe: "הצלחה יציבה",
+          tierHe: "הילד מצליח בנושא הזה לאורך זמן",
         },
       ],
       topStrengths: [],
@@ -2357,7 +2357,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
         {
           id: "stu-maint:math:addition:learning",
           textHe:
-            "להמשיך לתרגל בנוחות בנושא חיבור — יש כאן עקביות (דיוק כ־93%).",
+            "להמשיך לתרגל בנוחות בנושא חיבור — הרמה שם נשמרת (דיוק כ־93%).",
           strength: "strong",
         },
       ],
@@ -2393,7 +2393,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       insufficientData: [
         {
           mistakeCount: 2,
-          note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה",
+          note: "פחות מ־5 טעויות באותו דפוס — עדיין מוקדם לקבוע קושי שחוזר",
         },
       ],
       diagnosticSparseNoteHe: null,
@@ -2602,7 +2602,7 @@ export const EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD = {
       insufficientData: [
         {
           mistakeCount: 3,
-          note: "פחות מ־5 טעויות באותו דפוס — לא מספיק לקביעת חולשה יציבה",
+          note: "פחות מ־5 טעויות באותו דפוס — עדיין מוקדם לקבוע קושי שחוזר",
         },
       ],
       diagnosticSparseNoteHe: null,

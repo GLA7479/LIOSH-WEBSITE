@@ -173,7 +173,7 @@ function topicBarColor(accuracy) {
   return "#ef4444";
 }
 
-/** סדר תצוגת אבחון מקצועי — תואם `patternDiagnostics.subjects` (הצטיינות היציבה → חוזקות → מומלץ לשמר → נקודות לשיפור → תחומים דורשים תשומת לב) */
+/** סדר תצוגת אבחון מקצועי — תואם `patternDiagnostics.subjects` (הצטיינות עקבית → חוזקות → מומלץ לשמר → נקודות לשיפור → תחומים דורשים תשומת לב) */
 const PATTERN_DIAGNOSTIC_SUBJECT_ORDER = [
   "math",
   "geometry",
@@ -187,7 +187,7 @@ const MAX_DIAGNOSTIC_EVIDENCE_CHARS = 200;
 
 /** תאימות ל-tierHe ישן בדוחות שמורים */
 function weaknessTierHeDisplay(tierHe) {
-  return tierHe === "קושי חוזר / חולשה יציבה" ? "קושי חוזר" : tierHe;
+  return tierHe === "קושי חוזר / קושי עקבי" ? "קושי חוזר" : tierHe;
 }
 
 /** תאימות ל-tierHe ישן בשורות שימור */
@@ -267,7 +267,7 @@ function migrateDiagnosticSubjectV1ToRow(sub, subjectId) {
   }));
   const topStrengths = excellent.map((e) => ({
     ...e,
-    tierHe: e.questions >= 20 ? "חוזקה יציבה" : "חוזקה בולטת",
+    tierHe: e.questions >= 20 ? "חוזקה עקבית" : "חוזקה בולטת",
   }));
   const evidenceExamples = [];
   if (evidenceMistake) evidenceExamples.push({ type: "mistake", ...evidenceMistake });
@@ -2455,7 +2455,7 @@ export default function ParentReport() {
                   (diagnosticsView.mode === "new" &&
                     diagnosticsView.rows.length === 0)) && (
                   <p className="parent-report-print-muted-text text-center text-sm md:text-base text-white/75 px-2 py-3">
-                    עדיין אין מספיק נתונים לאבחון מקצועי יציב
+                    עדיין אין מספיק נתונים לאבחון מקצועי ברור
                   </p>
                 )}
 
@@ -2471,7 +2471,7 @@ export default function ParentReport() {
                         tierHe:
                           x.tierHe ||
                           (x.excellent && (x.questions || 0) >= 20
-                            ? "חוזקה יציבה"
+                            ? "חוזקה עקבית"
                             : "חוזקה בולטת"),
                       }));
                       const topStr = s.topStrengths?.length ? s.topStrengths : legacyStrength;
@@ -2565,7 +2565,7 @@ export default function ParentReport() {
                             )}
                             {sx.length > 0 && (
                               <div className="parent-report-print-section-label text-[11px] font-semibold text-violet-200/85 pt-1">
-                                הצטיינות היציבה
+                                הצטיינות עקבית
                               </div>
                             )}
                             {sx.map((x) => (
@@ -2577,7 +2577,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">🏆</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      {x.tierHe || "הצטיינות היציבה"}
+                                      {x.tierHe || "הצטיינות עקבית"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {diagnosticParentVisibleTextHe(x.labelHe)} — דיוק {x.accuracy}% ({x.questions} שאלות)

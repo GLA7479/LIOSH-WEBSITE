@@ -10,9 +10,9 @@ const BEHAVIOR_OR_DIAGNOSTIC_HE = {
   knowledge_gap: "פער ידע",
   speed_pressure: "לחץ מהירות",
   instruction_friction: "חיכוך הוראה / רמזים",
-  careless_pattern: "רשלנות / אי־יציבות",
+  careless_pattern: "חוסר תשומת לב שחוזר",
   fragile_success: "הצלחה שבירה",
-  stable_mastery: "שליטה טובה ויציבה בנושא",
+  stable_mastery: "שליטה טובה בנושא לאורך זמן",
   undetermined: "לא נקבע",
   mixed: "מעורב",
   mixed_low_signal: "אות חלש",
@@ -45,7 +45,7 @@ const RISK_FLAG_HE = {
 const TREND_DIR_HE = {
   up: "בשיפור",
   down: "בירידה",
-  flat: "יציבה",
+  flat: "ללא שינוי",
   unknown: "לא ברורה מספיק",
 };
 
@@ -198,8 +198,8 @@ export const ROOT_CAUSE_LABEL_HE = {
   speed_pressure: "לחץ מהירות או תחרותיות",
   careless_execution: "רשלנות ביצוע למרות שליטה סבירה",
   weak_independence: "עצמאות נמוכה בפתרון",
-  early_stage_instability: "שלב מוקדם — התמונה עדיין לא יציבה",
-  mixed_signal: "אותות מעורבים",
+  early_stage_instability: "שלב מוקדם — התמונה עדיין לא מספיק ברורה",
+  mixed_signal: "נתונים מעורבים",
   insufficient_evidence: "אין מספיק נתון לשורש קושי ברור",
   retention_fragility: "שימור שביר (מוקדם)",
   language_load: "עומס שפה או ניסוח (מוקדם)",
@@ -233,7 +233,7 @@ export const MISTAKE_PATTERN_LABEL_HE = {
 export const LEARNING_STAGE_LABEL_HE = {
   early_acquisition: "רכישה מוקדמת",
   partial_stabilization: "ייצוב חלקי",
-  stable_control: "שליטה טובה ועקבית בפתרון",
+  stable_control: "פתרון טוב שנשמר לאורך זמן",
   fragile_retention: "שימור שביר",
   regression_signal: "אות לרגרסיה — לשים לב",
   transfer_emerging: "העברה מתחילה להתגבש",
@@ -414,7 +414,7 @@ export const FRESHNESS_STATE_LABEL_HE = {
 export const CONCLUSION_FRESHNESS_LABEL_HE = {
   high: "ביטחון במסקנה: גבוה יחסית",
   medium: "ביטחון במסקנה: בינוני",
-  low: "ביטחון במסקנה: נמוך — לעדכן תצפית",
+  low: "ביטחון במסקנה: נמוך — כדאי לאסוף עוד מידע",
   expired: "המסקנה כבר לא עדכנית — לבדוק מחדש",
 };
 
@@ -431,7 +431,7 @@ export const NEXT_SUPPORT_ADJUSTMENT_LABEL_HE = {
   continue_and_reduce_support: "להמשיך ולהפחית מעט ליווי כשיש סימן לעצמאות",
   continue_and_tighten_focus: "להמשיך, לדייק מיקוד ולקצר מפגש אם צריך",
   pause_and_observe: "לעצור רגע, לצפות ולאסוף עוד מידע לפני שינוי",
-  recheck_before_advancing: "סבב תצפית לפני העלאת קושי או קידום",
+  recheck_before_advancing: "בדיקה קצרה נוספת לפני העלאת קושי או קידום",
   switch_strategy: "לשנות גישה — מה שניסינו לא מספיק כרגע",
 };
 
@@ -439,8 +439,8 @@ export const NEXT_SUPPORT_ADJUSTMENT_LABEL_HE = {
 export const SUPPORT_SEQUENCE_STATE_LABEL_HE = {
   new_support_cycle: "מתחילים מחזור תמיכה חדש — עדיין מוקדם לסגור תמונה",
   early_sequence: "תחילת רצף תמיכה — לעקוב בלי להעמיס",
-  continuing_sequence: "ממשיכים ברצף שנראה עקבי",
-  sequence_ready_for_release: "אפשר לנסות צעד שחרור זהיר מהתמיכה",
+  continuing_sequence: "ממשיכים ברצף שנראה טוב",
+  sequence_ready_for_release: "אפשר לנסות להפחית מעט את התמיכה",
   sequence_stalled: "הרצף נתקע — לדייק מטרה או לשנות כלי",
   sequence_exhausted: "הרצף מתיש — לא לחזור על אותו סוג תרגול בלי בדיקה מחודשת",
   insufficient_sequence_evidence: "אין עדיין מספיק בסיס לספר את רצף התמיכה בביטחון",
@@ -448,9 +448,9 @@ export const SUPPORT_SEQUENCE_STATE_LABEL_HE = {
 
 export const PRIOR_SUPPORT_PATTERN_LABEL_HE = {
   guided_repeat: "חזרה על תמיכה מונחית דומה לאורך זמן",
-  guided_then_release: "מונחה ואז שחרור הדרגתי",
+  guided_then_release: "מונחה ואז מעבר הדרגתי ליותר עצמאות",
   review_hold_repeat: "מעגל חזרה והחזקה לפני שינוי",
-  observe_then_retry: "תצפית ואז ניסיון נוסף",
+  observe_then_retry: "בדיקה קצרה ואז ניסיון נוסף",
   mixed_support_history: "תערובת תמיכות לא אחידה",
   unknown: "לא ברור איך נראתה התמיכה קודם",
 };
@@ -471,7 +471,7 @@ export const STRATEGY_FATIGUE_RISK_LABEL_HE = {
 
 export const NEXT_BEST_SEQUENCE_STEP_LABEL_HE = {
   continue_current_sequence: "להמשיך ברצף הנוכחי עוד קצת, עם מעקב",
-  begin_release_step: "להתחיל צעד שחרור זהיר — לא לזרוק תמיכה פתאום",
+  begin_release_step: "להתחיל להפחית תמיכה בזהירות — לא לעבור בבת אחת",
   tighten_same_goal: "לדייק את אותה מטרה במקום להרחיב",
   switch_support_type: "להחליף סוג תמיכה — לא רק עוד חזרה",
   reset_with_short_review: "איפוס קצר ובדיקה מחודשת לפני דחיפה נוספת",
@@ -482,7 +482,7 @@ export const NEXT_BEST_SEQUENCE_STEP_LABEL_HE = {
 export const NEXT_SUPPORT_SEQUENCE_ACTION_LABEL_HE = {
   continue_same_sequence: "להמשיך באותו רצף — בלי שינוי דרמטי",
   continue_with_tighter_target: "להמשיך ברצף עם מטרה צרה יותר",
-  begin_release_sequence: "להתחיל רצף שחרור מבוקר",
+  begin_release_sequence: "להתחיל תהליך הדרגתי להפחתת תמיכה",
   pause_repeat_and_switch: "לעצור חזרות ולעבור לכיוון אחר",
   short_reset_then_retry: "איפוס קצר ואז ניסיון מחודש",
   observe_without_new_push: "לצפות בלי דחיפה חדשה עכשיו",
@@ -521,9 +521,9 @@ export const PRIOR_RECOMMENDATION_SIGNATURE_LABEL_HE = {
   guided_accuracy_path: "קו שייצב דיוק בתרגול מונחה",
   review_hold_path: "קו של חזרה והחזקה לפני שינוי",
   release_transition_path: "קו של מעבר הדרגתי מתמיכה לעצמאות",
-  observe_monitor_path: "קו של תצפית ואיסוף מידע",
-  mixed_prior_path: "תערובת מסלולים — בלי נקודה אחת ברורה",
-  unknown: "לא ברור איזה מסלול תמיכה הופיע קודם",
+  observe_monitor_path: "בדיקה קצרה ואיסוף מידע",
+  mixed_prior_path: "ניסו כמה דרכי עבודה, בלי כיוון אחד ברור",
+  unknown: "לא ברור איזו דרך תמיכה הופיעה קודם",
 };
 
 export const SUPPORT_HISTORY_DEPTH_LABEL_HE = {
@@ -537,7 +537,7 @@ export const RECOMMENDATION_CARRYOVER_LABEL_HE = {
   not_visible: "לא רואים המשכיות ברורה מהכיוון הקודם",
   partly_visible: "אולי נמשך אותו קו — אבל לא חד־משמעי",
   clearly_visible: "נראה שאותו קו תמיכה נמשך גם לתקופה הזו",
-  unclear: "לא ברור אם זה אותו מסלול או שינוי קטן",
+  unclear: "לא ברור אם זו אותה דרך עבודה או שינוי קטן",
 };
 
 export const MEMORY_OF_PRIOR_SUPPORT_CONFIDENCE_LABEL_HE = {
@@ -553,9 +553,9 @@ export const EXPECTED_OUTCOME_TYPE_LABEL_HE = {
   independence_growth: "המטרה: לחזק עצמאות",
   error_reduction: "המטרה: להפחית טעויות חוזרות",
   retention_hold: "המטרה: שימור והחזקה",
-  release_readiness: "המטרה: סימני מוכנות לשחרור זהיר",
+  release_readiness: "המטרה: סימנים שאפשר להפחית תמיכה בזהירות",
   evidence_collection: "המטרה: לאסוף עוד מידע",
-  unknown: "לא ברור מה המסלול הקודם ניסה לשפר",
+  unknown: "לא ברור מה הכיוון הקודם ניסה לשפר",
 };
 
 export const OBSERVED_OUTCOME_STATE_LABEL_HE = {
@@ -576,16 +576,16 @@ export const EXPECTED_VS_OBSERVED_MATCH_LABEL_HE = {
 export const FOLLOW_THROUGH_SIGNAL_LABEL_HE = {
   likely_followed: "סביר שהכיוון בבית נשמר",
   possibly_followed: "אולי נשמר כיוון — לא לנעול",
-  unclear: "לא ברור אם זה אותו מסלול בבית",
+  unclear: "לא ברור אם זה אותו כיוון בבית",
   not_inferable: "אי אפשר להסיק מהנתונים",
 };
 
 export const RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE = {
   continue_with_same_core: "להמשיך באותו ליבה — הנראה בפועל תומך",
   continue_but_refine: "להמשיך באותו כיוון, בצורה מדויקת יותר",
-  begin_controlled_release: "להתחיל שחרור מבוקר — כשיש בסיס",
-  do_not_repeat_without_new_evidence: "לא לחזור על אותו מסלול בלי מידע חדש",
-  pivot_from_prior_path: "לפנות ממסלול שלא הוביל",
+  begin_controlled_release: "להתחיל להפחית תמיכה לאט — כשיש בסיס",
+  do_not_repeat_without_new_evidence: "לא לחזור על אותו כיוון בלי מידע חדש",
+  pivot_from_prior_path: "לפנות מכיוון שלא הוביל",
   reset_and_rebuild_signal: "איפוס קצר ובניית מחדש של האות לפני דחיפה",
 };
 
@@ -594,7 +594,7 @@ export const OUTCOME_BASED_NEXT_MOVE_LABEL_HE = {
   tighten_goal_definition: "לדייק מטרה — לא להרחיב",
   reduce_support_and_check_transfer: "להפחית תמיכה מעט ולבדוק העברה קצרה",
   collect_new_evidence_first: "לאסוף עוד מידע לפני החלטה מהותית",
-  switch_path_type: "להחליף סוג מסלול — לא רק עוד סיבוב",
+  switch_path_type: "להחליף דרך עבודה — לא רק עוד סיבוב",
   brief_reset_then_compare: "איפוס קצר והשוואה מחדש",
 };
 
@@ -602,18 +602,18 @@ export const OUTCOME_BASED_NEXT_MOVE_LABEL_HE = {
 export const GATE_STATE_LABEL_HE = {
   gates_not_ready: "עדיין אין מספיק בסיס — להישאר עם החלטה זהירה",
   continue_gate_active: "הכיוון הנוכחי עדיין צריך הוכחה קצרה לפני שינוי",
-  release_gate_forming: "מתקרבים לשחרור זהיר — חסר עוד אות עצמאות קצר",
-  pivot_gate_visible: "אם גם בסבב הבא אין שיפור — לשקול מסלול מעט שונה",
+  release_gate_forming: "מתקרבים להפחתת תמיכה — חסר עוד סימן קצר לעצמאות",
+  pivot_gate_visible: "אם גם בסבב הבא אין שיפור — לשקול כיוון מעט שונה",
   recheck_gate_visible: "חסר מידע עדכני — לאסוף סבב נוסף לפני החלטה",
-  advance_gate_forming: "יש בסיס טוב — לא לקפוץ רמה בלי יציבות ברורה",
+  advance_gate_forming: "יש בסיס טוב — לא לקפוץ רמה בלי הצלחה שחוזרת בצורה ברורה",
   mixed_gate_state: "כמה דרישות במקביל — צעד אחד ברור קודם",
 };
 
 export const GATE_READINESS_LABEL_HE = {
   low: "מוכנות נמוכה — לא לנעול מסקנה חזקה",
   moderate: "מוכנות בינונית — אפשר לצמצם לצעד אחד",
-  high: "מוכנות גבוהה יחסית — עדיין עם תנאים לפני שחרור או קידום",
-  insufficient: "אין עדיין מספיק בסיס לשערים מדויקים",
+  high: "מוכנות גבוהה יחסית — עדיין עם תנאים לפני הפחתת תמיכה או קידום",
+  insufficient: "אין עדיין מספיק בסיס להחלטה מדויקת",
 };
 
 export const GATE_LEVEL_LABEL_HE = {
@@ -626,7 +626,7 @@ export const GATE_LEVEL_LABEL_HE = {
 
 /** Phase 13 — יעדי ראיה לסבב הבא */
 export const TARGET_EVIDENCE_TYPE_LABEL_HE = {
-  accuracy_confirmation: "לוודא דיוק יציב בלי לחץ מיותר",
+  accuracy_confirmation: "לוודא שהדיוק נשמר בלי לחץ מיותר",
   independence_confirmation: "לראות הצלחה קצרה בלי הכוונה באמצע",
   retention_confirmation: "לראות שהחומר נשמר אחרי הפסקה קצרה",
   mistake_reduction_confirmation: "לראות פחות טעויות מאותו סוג",
@@ -638,35 +638,35 @@ export const TARGET_EVIDENCE_TYPE_LABEL_HE = {
 export const TARGET_OBSERVATION_WINDOW_LABEL_HE = {
   next_short_cycle: "בסבב הקצר הבא (מפגש אחד או שניים)",
   next_two_cycles: "בשני סבבים קצרים",
-  needs_fresh_baseline: "אחרי ריענון קצר של בסיס התצפית",
+  needs_fresh_baseline: "אחרי בדיקה קצרה כדי לרענן את התמונה",
   unknown: "לא ברור כמה זמן נדרש",
 };
 
 /** Phase 13 — מיקוד החלטה לסבב הבא */
 export const NEXT_CYCLE_DECISION_FOCUS_LABEL_HE = {
   prove_current_direction: "לבדוק שהכיוון הנוכחי באמת עוזר",
-  check_independence_before_release: "לבדוק עצמאות קצרה לפני שחרור תמיכה",
+  check_independence_before_release: "לבדוק עצמאות קצרה לפני הפחתת תמיכה",
   stabilize_before_advance: "לייצב לפני קפיצת רמה",
-  test_if_path_is_working: "לבדוק אם המסלול עובד בפועל בסבב הבא",
+  test_if_path_is_working: "לבדוק אם הכיוון עובד בפועל בסבב הבא",
   refresh_baseline_before_decision: "לרענן בסיס לפני החלטה מהותית",
-  prepare_for_controlled_release: "להתכונן לשחרור מבוקר — לא לבד פתאום",
+  prepare_for_controlled_release: "להתכונן להפחתת תמיכה בהדרגה — לא לעבור לבד בבת אחת",
 };
 
 /** Phase 14 — תלות יסוד */
 export const DEPENDENCY_STATE_LABEL_HE = {
   likely_local_issue: "נראה שהקושי מקומי — אפשר לטפל במיקוד",
   /* QA wording: פחות «ייתכן» מוערם — ניסוח ישיר יותר */
-  likely_foundational_block: "האותות מצביעים על בסיס שעדיין לא התייצב — לא רק נקודה צרה",
+  likely_foundational_block: "הנתונים מצביעים על בסיס שעדיין לא התייצב — לא רק נקודה צרה",
   mixed_dependency_signal: "תמונה מעורבת בין בסיס לנקודתי",
   insufficient_dependency_evidence: "אין מספיק בסיס לקבוע אם זה בסיס רחב או קושי נקודתי",
 };
 
 export const FOUNDATIONAL_BLOCKER_LABEL_HE = {
   accuracy_foundation_gap: "פער יסוד בדיוק או בחזרה על טעויות דומות",
-  procedure_automaticity_gap: "פער באוטומטיות וביצוע יציב",
+  procedure_automaticity_gap: "פער באוטומטיות ובביצוע שנשמר לאורך זמן",
   instruction_language_load: "עומס בהוראה ובניסוח משימה",
   independence_readiness_gap: "מוכנות לעבודה עצמאית עדיין לא בשלה",
-  retention_instability: "שימור לא יציב — הבסיס «זז» מהר",
+  retention_instability: "השימור עדיין לא נשמר לאורך זמן — הבסיס נחלש מהר",
   unknown: "לא נקבע סוג בסיס ספציפי",
 };
 
@@ -697,7 +697,7 @@ export const NEXT_CYCLE_SUPPORT_LEVEL_LABEL_HE = {
   narrow_local: "תמיכה צרה וממוקדת בנושא",
   foundation_targeted: "תמיכה ממוקדת ביסוד שזוהה",
   blended_light: "תערובת קלה — לא עומס כפול",
-  evidence_first: "תצפית קצרה לפני החלטה על רמת התמיכה",
+  evidence_first: "בדיקה קצרה לפני החלטה על רמת התמיכה",
 };
 
 /**
@@ -793,7 +793,7 @@ export function releaseReadinessLineHe(rowOrRec) {
   const seq = String(src.supportSequenceState || "").trim();
   if (seq === "sequence_ready_for_release") {
     return truncateHe(
-      "נראה שהתמיכה עוזרת — אפשר לנסות צעד שחרור קצר ומבוקר, עדיין לא לגמרי לבד.",
+      "נראה שהתמיכה עוזרת — אפשר לנסות צעד קצר ומבוקר של הפחתת תמיכה, עדיין לא לגמרי לבד.",
       170
     );
   }
@@ -920,7 +920,7 @@ export function releaseGateLineHe(rowOrRec) {
   const w = String(src.whatWouldJustifyReleaseHe || "").trim();
   if (w) return truncateHe(w, 168);
   return truncateHe(
-    "הכיוון נראה סביר — לפני שחרור תמיכה צריך עוד הצלחה קצרה בלי הכוונה באמצע.",
+    "הכיוון נראה סביר — לפני הפחתת תמיכה צריך עוד הצלחה קצרה בלי הכוונה באמצע.",
     168
   );
 }

@@ -27,7 +27,7 @@ export function executiveV2MajorTrendsLinesHe(p) {
   const stable = Math.max(0, Number(p.stable) || 0);
   return [
     `בטווח התקופה נבדקו ${units} נושאים.`,
-    `ב־${diagnosed} מהם אפשר כבר לנסח כיוון; ב־${uncertain} התמונה עדיין לא יציבה; נקודות חוזק יציבות: ${stable}.`,
+    `ב־${diagnosed} מהם אפשר כבר לנסח כיוון; ב־${uncertain} התמונה עדיין לא מספיק ברורה; נקודות חוזק שנשמרו לאורך זמן: ${stable}.`,
   ];
 }
 
@@ -55,7 +55,7 @@ export function executiveV2EvidenceBalanceHe(stable, diagnosed) {
   const s = Math.max(0, Number(stable) || 0);
   const diag = Math.max(0, Number(diagnosed) || 0);
   const rest = Math.max(0, diag - s);
-  return `נקודות חוזק יציבות: ${s}; נושאים שצריך לחזק או לאסוף עוד תרגול לפני מסקנה חדה: ${rest}.`;
+  return `נקודות חוזק שנשמרו לאורך זמן: ${s}; נושאים שצריך לחזק או לאסוף עוד תרגול לפני מסקנה חדה: ${rest}.`;
 }
 
 /**
@@ -65,7 +65,7 @@ export function executiveV2CautionNoteHe(p) {
   const p4 = Math.max(0, Number(p.p4Length) || 0);
   const u = Math.max(0, Number(p.uncertainLength) || 0);
   if (p4 > 0) return "יש נושאים שדורשים תשומת לב גבוהה השבוע — כדאי לתאם עם המורה או המטפל.";
-  if (u > 0) return "בחלק מהנושאים עדיין אין מסקנה יציבה — נשמור על ניסוח זהיר.";
+  if (u > 0) return "בחלק מהנושאים עדיין אין מסקנה ברורה — נשמור על ניסוח זהיר.";
   return "";
 }
 
@@ -115,7 +115,7 @@ export function subjectV2TrendNarrativeHighPriorityHe() {
 }
 
 export function subjectV2TrendNarrativeStableHe() {
-  return "הדפוסים בטווח הזה נראים יחסית יציבים.";
+  return "הדפוסים בטווח הזה נשמרים יחסית לאורך זמן.";
 }
 
 export function subjectV2RecalibrationNeedYesHe() {

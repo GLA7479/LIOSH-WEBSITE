@@ -546,14 +546,14 @@ export function SubjectPhase3Insights({ sp, compact }) {
     });
   const beh = sp?.dominantBehaviorProfileAcrossRows;
   if (beh && String(beh).trim() && String(beh) !== "undetermined") {
-    rows.push({ k: "פרופיל התנהגות נפוף בשורות", v: behaviorDominantLabelHe(beh) });
+    rows.push({ k: "דפוס התנהגות נפוץ בשורות", v: behaviorDominantLabelHe(beh) });
   }
   const fr = Number(sp?.fragileSuccessRowCount) || 0;
   const stb = Number(sp?.stableMasteryRowCount) || 0;
   if (fr > 0 || stb > 0) {
     rows.push({
       k: SUBJECT_PHASE3_ROW_LABEL_HE.topicPatternCounts,
-      v: `${stb} שליטה טובה ויציבה · ${fr} הצלחה שבירה`,
+      v: `${stb} שליטה טובה ועקבית · ${fr} הצלחה שבירה`,
     });
   }
   const modeNote = String(sp?.modeConcentrationNoteHe || "").trim();

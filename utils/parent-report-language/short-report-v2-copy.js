@@ -9,7 +9,7 @@ export function insufficientSubjectQuestionsLineHe(subjectLabel, q) {
 }
 
 export function tierStableStrengthHe() {
-  return "חוזק יציב";
+  return "חוזקה עקבית";
 }
 
 export function tierWeaknessRecurringHe() {
