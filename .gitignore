@@ -45,3 +45,6 @@ gradle-wrapper.jar
 data/_audio_store/
 data/hebrew-audio-review-queue.json
 
+# Generated Hebrew narration MP3s (on-demand via /api/hebrew-audio-ensure)
+public/audio/hebrew/gen/v1/
+

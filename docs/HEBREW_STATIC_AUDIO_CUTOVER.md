@@ -2,45 +2,33 @@
 
 ## First-pass envelope (Core v1)
 
-- Grades: `g1`, `g2`
-- Topics: `reading`, `comprehension`
-- Task modes: `listen_and_choose`, `oral_comprehension_mcq`
-- Pool: 4 slots per `(grade, topic, task_mode)` → `audio_asset_id` = `he.core.v1.<g>.<topic>.<mode>.p<0..3>`
+- Grades: `g1`, `g2` בלבד  
+- Topics: `reading`, `comprehension`  
+- Task modes: `listen_and_choose`, `oral_comprehension_mcq`  
+- **אין pool קבוע:** כל שאלה מקבלת `narration_plaintext` עם **תוכן השאלה + אפשרויות**, ו־`audio_asset_id = he.gen.v1.<sha16>` לפי hash על הטקסט המנורמל.  
+- קובץ שמע: `public/audio/hebrew/gen/v1/<sha16>.mp3` — נוצר ב־**שרת** דרך [`pages/api/hebrew-audio-ensure.js`](../pages/api/hebrew-audio-ensure.js) (Edge neural `he-IL-HilaNeural`), **לא** `speechSynthesis` בדפדפן.
 
-## Registry
+## API
 
-- File: [`data/hebrew-audio/he-core-v1.registry.json`](../data/hebrew-audio/he-core-v1.registry.json)
-- Lookup: [`utils/hebrew-static-audio-registry.js`](../utils/hebrew-static-audio-registry.js)
-- קבצי שמע (Core v1): תחת `public/audio/hebrew/core/v1/<grade>/<topic>/<task_mode>/` בשם  
-  `<audio_asset_id>__<voice_id>__v<asset_version>.wav` — נוצרים/מתעדכנים עם  
-  [`scripts/build-hebrew-core-v1-static-wavs.mjs`](../scripts/build-hebrew-core-v1-static-wavs.mjs) (טון דו-שלבי נשמע לכל slot; ניתן להחליף בקלטות דיבור בעברית באותם נתיבים ובאותו registry).
+- `POST /api/hebrew-audio-ensure` — גוף JSON: `{ "text": "<narration_plaintext>" }`  
+- מחזיר `{ ok, hash16, url }` — הלקוח משמיע את `url` דרך `Audio()`.
 
-## Runtime
+## שדות stem (תוספת לחוזה)
 
-- [`utils/hebrew-audio-attach.js`](../utils/hebrew-audio-attach.js) sets `playback_kind: "static_url"` when a registry row exists; otherwise `audio_source: "tts_fallback"` (Hebrew browser TTS) for the same envelope.
-- Stem field `audio_source`: `"static_registry"` | `"tts_fallback"` (telemetry / QA).
+- `narration_plaintext` — טקסט מלא להקראה (כולל גוף השאלה).  
+- `audio_source`: `static_registry_bound` — first-pass מקושר לתוכן.
 
-## Hard cutover (no Hebrew TTS fallback)
+## מדיניות קבצים
 
-Set environment variable:
+- תיקיית `public/audio/hebrew/gen/v1/` — קבצים שנוצרו בזמן ריצה (ניתן ל־`.gitignore` בפרויקטים שלא רוצים לקמיט).
 
-`NEXT_PUBLIC_HEBREW_STATIC_NO_TTS_FALLBACK=1`
+## בדיקת UI
 
-When set, if a first-pass row has **no** registry match, `attachHebrewAudioToQuestion` returns `false` (no audio attach). Use only after registry coverage is 100% for the envelope.
+- ראו [HEBREW_STATIC_FIRST_PASS_QA.md](./HEBREW_STATIC_FIRST_PASS_QA.md)
 
-## Verification
+## `Hebrew static audio pass achieved` (מעודכן)
 
-```bash
-npm run verify:hebrew-static-audio
-npm run verify:hebrew-audio
-```
-
-Browser: `נגן` on a first-pass question must play the WAV/MP3 via `Audio()` (no device Hebrew TTS required).
-
-## `Hebrew static audio pass achieved`
-
-1. Registry contains real clips (replace placeholder) per slot or expanded pool as product requires.
-2. `sha256` in registry matches committed files (CI check).
-3. `NEXT_PUBLIC_HEBREW_STATIC_NO_TTS_FALLBACK=1` in production build and attach still succeeds for all first-pass combinations used in the app.
-4. Manual matrix: Chrome / Safari (iOS) / Android Chrome — audible play, no `speechSynthesis` use for first-pass stems (`audio_source === "static_registry"`).
-5. `npm run verify:hebrew-audio` green.
+1. `narration_plaintext` כולל את גוף השאלה והאפשרויות.  
+2. אין שימוש ב־`speechSynthesis` ב־first-pass כשהשמעה הצליחה.  
+3. `npm run verify:hebrew-audio` ירוק.  
+4. מטריצת דפדפנים ידנית — נגן משמיע MP3 מלא.

@@ -3,12 +3,11 @@
  */
 
 import { validateAudioStemV2 } from "./audio-task-contract.js";
-import { resolveHebrewStaticCoreV1 } from "./hebrew-static-audio-registry.js";
 import {
-  buildHebrewStaticCoreV1AssetId,
-  hebrewStaticCoreV1NoTtsFallback,
-  isHebrewStaticCoreV1FirstPass,
-} from "./hebrew-static-audio-scope.js";
+  buildFirstPassNarrationPlaintext,
+  narrationContentHash16,
+} from "./hebrew-audio-narration-binding.js";
+import { isHebrewStaticCoreV1FirstPass } from "./hebrew-static-audio-scope.js";
 
 /** @param {string} s */
 function clipForTts(s, maxLen) {
@@ -122,21 +121,23 @@ export function attachHebrewAudioToQuestion(question, ctx) {
   let audio_asset_id = `he.attach.${g}.${topic}.${task_mode}.${seq}`;
   /** @type {string|undefined} */
   let audio_source;
+  /** @type {string|undefined} */
+  let narration_plaintext;
 
   if (!isRecording && isHebrewStaticCoreV1FirstPass({ gradeKey: g, topic, task_mode })) {
-    const coreId = buildHebrewStaticCoreV1AssetId(g, topic, task_mode, seq);
-    const row = resolveHebrewStaticCoreV1(coreId);
-    if (row && row.relative_url && String(row.relative_url).trim()) {
-      playback_kind = "static_url";
-      stem_audio_url = String(row.relative_url).trim();
-      audio_asset_id = coreId;
-      tts_text = null;
-      audio_source = "static_registry";
-    } else if (hebrewStaticCoreV1NoTtsFallback()) {
-      return false;
-    } else {
-      audio_source = "tts_fallback";
-    }
+    narration_plaintext = buildFirstPassNarrationPlaintext({
+      gradeKey: g,
+      topic,
+      task_mode,
+      qText,
+      answers: question.answers,
+    });
+    const hash16 = narrationContentHash16(narration_plaintext);
+    playback_kind = "static_url";
+    stem_audio_url = `/audio/hebrew/gen/v1/${hash16}.mp3`;
+    audio_asset_id = `he.gen.v1.${hash16}`;
+    tts_text = null;
+    audio_source = "static_registry_bound";
   }
 
   const stem = {
@@ -155,6 +156,7 @@ export function attachHebrewAudioToQuestion(question, ctx) {
     fallback_mode: "degraded_skip",
     review_route: isRecording ? "manual_pending" : "none",
     ...(audio_source != null ? { audio_source } : {}),
+    ...(narration_plaintext != null ? { narration_plaintext } : {}),
   };
 
   if (!validateAudioStemV2(stem)) return false;

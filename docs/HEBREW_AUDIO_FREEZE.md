@@ -11,7 +11,7 @@
 3. **מדיניות ציון** — [`utils/audio-scoring-policy.js`](../utils/audio-scoring-policy.js): אוטו־בטוח רק ל־MCQ אחרי האזנה; דיבור = ידני בראש; `borderline_transcript_assist` ללא ציון מוצר אוטומטי מלא.
 4. **פרטיות / retention** — ברירת מחדל פיתוח: `retention_policy: dev_local_default_30d_advisory` במטא־ארטיפקט; מחיקת `data/_audio_store/` ו־`data/hebrew-audio-review-queue.json` לפי מדיניות ארגון לפני פרוד.
 5. **מoderation** — שדה `moderation_flag` בשורת תור ([`utils/hebrew-audio-review-queue.js`](../utils/hebrew-audio-review-queue.js)); ניתוב ידני לפני סגירת סקירה.
-6. **אימות** — `npm run verify:hebrew-audio-final` + `npm run verify:hebrew-audio-build1` ירוקים לפני freeze.
+6. **אימות** — `npm run verify:hebrew-audio` (כולל `verify:hebrew-static-audio`) ירוק לפני freeze.
 
 ## K.2 `Shared audio platform English-ready`
 

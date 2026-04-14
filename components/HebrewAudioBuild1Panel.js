@@ -51,6 +51,46 @@ export default function HebrewAudioBuild1Panel({
     };
   }, [stem]);
 
+  /** הקראה סטטית לפי תוכן שאלה — יוצרת MP3 בשרת (לא TTS בדפדפן) */
+  const ensureServerNarrationMp3 = useCallback(async () => {
+    const t = stem?.narration_plaintext;
+    if (!t || !String(stem?.stem_audio_url || "").includes("/audio/hebrew/gen/v1/")) return;
+    const r = await fetch("/api/hebrew-audio-ensure", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: t }),
+    });
+    if (!r.ok) {
+      let err = `ensure_${r.status}`;
+      try {
+        const j = await r.json();
+        if (j && j.error) err = String(j.error);
+      } catch {
+        /* ignore */
+      }
+      throw new Error(err);
+    }
+  }, [stem?.narration_plaintext, stem?.stem_audio_url]);
+
+  useEffect(() => {
+    if (!stem?.narration_plaintext || !String(stem?.stem_audio_url || "").includes("/audio/hebrew/gen/v1/")) {
+      return () => {};
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        await ensureServerNarrationMp3();
+      } catch {
+        if (!cancelled && process.env.NODE_ENV === "development") {
+          console.warn("[HebrewAudioBuild1Panel] prefetch ensure failed");
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [stem?.narration_plaintext, stem?.stem_audio_url, ensureServerNarrationMp3]);
+
   const playStem = useCallback(async () => {
     if (!gameActive || busy) return;
     if (replayCount >= stem.max_replays) {
@@ -60,6 +100,12 @@ export default function HebrewAudioBuild1Panel({
     setBusy(true);
     setStatusMsg("משמיעים…");
     try {
+      if (stem?.narration_plaintext && String(stem?.stem_audio_url || "").includes("/audio/hebrew/gen/v1/")) {
+        setStatusMsg("מכינים שמע…");
+        await ensureServerNarrationMp3();
+        ctrlRef.current = createStemPlaybackController(stem, {});
+        setStatusMsg("משמיעים…");
+      }
       await ctrlRef.current?.play();
       const n = ctrlRef.current?.bumpReplay() ?? replayCount + 1;
       setReplayCount(n);
@@ -78,7 +124,7 @@ export default function HebrewAudioBuild1Panel({
     } finally {
       setBusy(false);
     }
-  }, [busy, gameActive, replayCount, stem.max_replays]);
+  }, [busy, gameActive, replayCount, stem, ensureServerNarrationMp3]);
 
   const runGuidedCapture = useCallback(async () => {
     if (!gameActive || busy || !guidedMode) return;
