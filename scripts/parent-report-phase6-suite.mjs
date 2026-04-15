@@ -9,6 +9,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import * as diagnosticEngineModule from "../utils/diagnostic-engine-v2/index.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -78,6 +79,9 @@ const { getLevelConfig } = await importUtils("utils/math-storage.js");
 const { generateQuestion: genGeo } = await importUtils("utils/geometry-question-generator.js");
 const { generateQuestion: genHe } = await importUtils("utils/hebrew-question-generator.js");
 const { getLevelConfig: getHebrewLevelConfig } = await importUtils("utils/hebrew-storage.js");
+const runDiagnosticEngineV2 =
+  diagnosticEngineModule.runDiagnosticEngineV2 ||
+  diagnosticEngineModule.default?.runDiagnosticEngineV2;
 
 const REQUIRED_DETAILED_TOP_KEYS = [
   "version",
@@ -501,6 +505,8 @@ const REQUIRED_TOPIC_RECOMMENDATION_KEYS = [
   "nextCycleSupportLevelHe",
   "foundationBeforeExpansion",
   "foundationBeforeExpansionHe",
+  "contractsV1",
+  "recommendationContractV1",
 ];
 
 const REQUIRED_CROSS_RISK_FLAG_KEYS = [
@@ -1014,6 +1020,99 @@ function runQaCalibrationRedTeam() {
   assert.ok(typeof dMixed.executiveSummary.crossSubjectDependencyState === "string");
 }
 
+function runInvariantHighVolumePerfectNoReducedComplexityWithoutExplicitContradiction() {
+  assert.equal(typeof runDiagnosticEngineV2, "function", "runDiagnosticEngineV2 missing");
+  const START = Date.UTC(2026, 3, 1, 0, 0, 0, 0);
+  const END = Date.UTC(2026, 3, 14, 23, 59, 59, 999);
+  const rowKey = "multiplication\u0001learning\u0001g3\u0001easy";
+  const maps = {
+    math: {
+      [rowKey]: {
+        displayName: "כפל — כיתה ג׳ — רמה קלה",
+        questions: 21,
+        correct: 21,
+        wrong: 0,
+        accuracy: 100,
+        modeKey: "learning",
+        lastSessionMs: END - 3600_000,
+        needsPractice: false,
+        confidence01: 0.9,
+        dataSufficiencyLevel: "strong",
+        isEarlySignalOnly: false,
+        behaviorProfile: { version: 1, dominantType: "stable_mastery", signals: {}, decisionTrace: [] },
+      },
+    },
+    geometry: {},
+    english: {},
+    science: {},
+    hebrew: {},
+    "moledet-geography": {},
+  };
+  const rawMistakesBySubject = {
+    math: [],
+    geometry: [],
+    english: [],
+    science: [],
+    hebrew: [],
+    "moledet-geography": [],
+  };
+  const diag = runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs: START, endMs: END });
+  const base = {
+    period: "week",
+    playerName: "_phase5_invariant_",
+    startDate: "2026-04-01",
+    endDate: "2026-04-14",
+    summary: {
+      totalQuestions: 21,
+      totalTimeMinutes: 10,
+      overallAccuracy: 100,
+      mathQuestions: 21,
+      mathCorrect: 21,
+      mathAccuracy: 100,
+      geometryQuestions: 0,
+      geometryCorrect: 0,
+      geometryAccuracy: 0,
+      englishQuestions: 0,
+      englishCorrect: 0,
+      englishAccuracy: 0,
+      scienceQuestions: 0,
+      scienceCorrect: 0,
+      scienceAccuracy: 0,
+      hebrewQuestions: 0,
+      hebrewCorrect: 0,
+      hebrewAccuracy: 0,
+      moledetGeographyQuestions: 0,
+      moledetGeographyCorrect: 0,
+      moledetGeographyAccuracy: 0,
+    },
+    diagnosticEngineV2: diag,
+  };
+  const detailed = buildDetailedParentReportFromBaseReport(base, { period: "week" });
+  const tr = detailed?.subjectProfiles?.find((s) => s.subject === "math")?.topicRecommendations?.[0];
+  assert.ok(tr, "invariant: missing topic recommendation row");
+  assert.ok((Number(tr.questions) || 0) >= 21, "invariant fixture: expected high volume row");
+  assert.equal(Math.round(Number(tr.accuracy) || 0), 100, "invariant fixture: expected 100% row");
+  const decision = tr?.contractsV1?.decision || {};
+  const recContract = tr?.contractsV1?.recommendation || {};
+  const narrative = tr?.contractsV1?.narrative || {};
+  const explicitContradiction =
+    decision?.cannotConcludeYet === true ||
+    (Array.isArray(recContract?.forbiddenBecause) &&
+      recContract.forbiddenBecause.includes("cannot_conclude_yet"));
+  const reducedActionRegex = /מורכבות מופחתת|להנמיך|פחות מורכב|אותה רמה נמוכה/u;
+  const actionText = `${String(tr?.interventionPlanHe || "")} ${String(tr?.doNowHe || "")}`.trim();
+  if (!explicitContradiction) {
+    assert.ok(
+      !["WE0", "WE1"].includes(String(narrative?.wordingEnvelope || "")),
+      "invariant: 21+ / 100% without explicit contradiction must not render WE0/WE1"
+    );
+    assert.ok(
+      !reducedActionRegex.test(actionText),
+      "invariant: 21+ / 100% without explicit contradiction must not render reduced-complexity action"
+    );
+  }
+}
+
 function runPhase15NarrativeCompactAndStack() {
   const gateDup = {
     topicEngineRowSignals: {
@@ -1083,6 +1182,44 @@ function runPhase15NarrativeCompactAndStack() {
       topicFoundationDependencyCompactLineHe(firstTr),
     ].filter(Boolean);
     assert.ok(Array.isArray(strip), "phase15: strip helpers accept detailed topic rec");
+  }
+}
+
+function runPhase5ContractIntegrityAndContradictions() {
+  const d = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.mixed_signals_cross_subjects(), {
+    period: "week",
+  });
+  const esText = [
+    String(d.executiveSummary?.mainHomeRecommendationHe || ""),
+    String(d.executiveSummary?.overallConfidenceHe || ""),
+    String(d.executiveSummary?.reportReadinessHe || ""),
+  ].join(" ");
+  const overstated = /בטוח|בוודאות|חד[- ]?משמעית|יציב לחלוטין|מוכח/giu;
+
+  for (const sp of d.subjectProfiles || []) {
+    for (const tr of sp.topicRecommendations || []) {
+      const c = tr?.contractsV1;
+      assert.ok(c && typeof c === "object", `phase5/${sp.subject}: topic contractsV1 missing`);
+      assert.ok(c.evidence && typeof c.evidence === "object", `phase5/${sp.subject}: evidence contract missing`);
+      assert.ok(c.decision && typeof c.decision === "object", `phase5/${sp.subject}: decision contract missing`);
+      assert.ok(c.readiness && typeof c.readiness === "object", `phase5/${sp.subject}: readiness contract missing`);
+      assert.equal(typeof c.readiness.readiness, "string", `phase5/${sp.subject}: non-canonical readiness path`);
+      assert.ok(c.confidence && typeof c.confidence === "object", `phase5/${sp.subject}: confidence contract missing`);
+      assert.ok(c.recommendation && typeof c.recommendation === "object", `phase5/${sp.subject}: recommendation contract missing`);
+      assert.ok(c.narrative && typeof c.narrative === "object", `phase5/${sp.subject}: narrative contract missing`);
+      assert.ok(c.narrativeValidation?.ok === true, `phase5/${sp.subject}: narrative validation failed`);
+      const hasRecAnchors = Array.isArray(c.recommendation.anchorEvidenceIds) && c.recommendation.anchorEvidenceIds.length > 0;
+      if (c.recommendation.eligible) {
+        assert.ok(hasRecAnchors, `phase5/${sp.subject}: eligible recommendation without anchors`);
+      }
+      const we = String(c.narrative.wordingEnvelope || "");
+      if (we === "WE0" || we === "WE1") {
+        assert.ok(!c.narrative.textSlots.action, `phase5/${sp.subject}: WE0/WE1 must not carry action slot`);
+      }
+      if ((we === "WE0" || we === "WE1") && overstated.test(esText)) {
+        throw new Error(`phase5/${sp.subject}: executive wording overstated against restrained topic envelope`);
+      }
+    }
   }
 }
 
@@ -2008,6 +2145,8 @@ function main() {
   runPhase13DecisionsAndEvidenceTargets();
   runPhase14FoundationDependencyAndOrdering();
   runPhase15NarrativeCompactAndStack();
+  runInvariantHighVolumePerfectNoReducedComplexityWithoutExplicitContradiction();
+  runPhase5ContractIntegrityAndContradictions();
   runQaCalibrationRedTeam();
   runReactServerSmoke();
 

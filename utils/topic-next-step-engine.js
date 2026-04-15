@@ -49,6 +49,24 @@ import { buildEvidenceTargetsPhase13 } from "./parent-report-evidence-targets.js
 import { buildFoundationDependencyPhase14 } from "./parent-report-foundation-dependency.js";
 import { buildPhase14RecommendationOverlay } from "./parent-report-foundation-ordering.js";
 import { glossTopicRecommendationHeFields } from "./parent-report-language/index.js";
+import {
+  applyRecommendationContractToRecord,
+  buildRecommendationContractV1,
+  validateRecommendationContractV1,
+} from "./contracts/recommendation-contract-v1.js";
+import {
+  buildDecisionReadinessContractsBundleV1,
+  isDecisionReadinessContractsBundleV1,
+} from "./contracts/decision-readiness-contract-v1.js";
+import {
+  applyNarrativeContractToRecord,
+  buildNarrativeContractV1,
+  validateNarrativeContractV1,
+} from "./contracts/narrative-contract-v1.js";
+import {
+  buildEvidenceContractV1,
+  validateEvidenceContractV1,
+} from "./contracts/parent-report-contracts-v1.js";
 
 /** @typedef {'advance_level'|'advance_grade_topic_only'|'maintain_and_strengthen'|'remediate_same_level'|'drop_one_level_topic_only'|'drop_one_grade_topic_only'} RecommendedNextStep */
 
@@ -1149,7 +1167,73 @@ export function buildTopicRecommendationRecord(
     recommendedParentActionHe = cautionLines[2];
   }
 
-  return glossTopicRecommendationHeFields({
+  const decisionContracts =
+    decision?.contractsV1 && typeof decision.contractsV1 === "object"
+      ? decision.contractsV1
+      : null;
+  const canonicalDecisionReadinessBundle = isDecisionReadinessContractsBundleV1(decisionContracts)
+    ? decisionContracts
+    : buildDecisionReadinessContractsBundleV1({
+        topicKey: String(topicRowKey),
+        subjectId: String(subjectId),
+        q,
+        evidenceStrength: String(signals?.evidenceStrength || decision?.evidenceStrength || "low"),
+        dataSufficiencyLevel: String(signals?.dataSufficiencyLevel || decision?.dataSufficiencyLevel || "low"),
+        conclusionStrength: String(decision?.conclusionStrength || "tentative"),
+        cannotConcludeYet: !!decision?.shouldAvoidStrongConclusion,
+        weak: !!decision?.shouldAvoidStrongConclusion,
+        internalGateReadinessBand: String(decision?.gateReadiness || "insufficient"),
+        gateState: String(decision?.gateState || "gates_not_ready"),
+        dev2ConfidenceLevel: String(decision?.diagnosticConfidenceBand || ""),
+        confidence: String(decision?.diagnosticConfidenceBand || ""),
+      });
+  const existingEvidenceContract =
+    row?.contractsV1 && row.contractsV1.evidence && typeof row.contractsV1.evidence === "object"
+      ? row.contractsV1.evidence
+      : null;
+  const evidenceContract = existingEvidenceContract
+    || buildEvidenceContractV1({
+      subjectId: String(subjectId),
+      topicKey: String(topicRowKey),
+      periodStartMs: null,
+      periodEndMs: endMs,
+      row,
+      signals,
+      trend: row?.trend || null,
+      behaviorProfile: row?.behaviorProfile || null,
+    });
+  const evidenceValidation = validateEvidenceContractV1(evidenceContract);
+  const anchorEvidenceIds = Array.isArray(evidenceContract?.anchorEventIds)
+    ? evidenceContract.anchorEventIds
+    : [];
+  const recommendationContractV1 = buildRecommendationContractV1({
+    topicKey: String(topicRowKey),
+    subjectId: String(subjectId),
+    q,
+    accuracy: Number(row?.accuracy) || 0,
+    decisionTier: canonicalDecisionReadinessBundle?.decision?.decisionTier ?? 0,
+    readiness: canonicalDecisionReadinessBundle?.readiness?.readiness ?? "insufficient",
+    confidenceBand: canonicalDecisionReadinessBundle?.confidence?.confidenceBand ?? "low",
+    cannotConcludeYet: canonicalDecisionReadinessBundle?.decision?.cannotConcludeYet ?? false,
+    interventionIntensity: decision?.interventionIntensity ?? "focused",
+    diagnosticType: decision?.diagnosticType ?? "undetermined",
+    rootCause: decision?.rootCause ?? null,
+    retentionRisk: decision?.retentionRisk ?? null,
+    evidenceStrength: signals.evidenceStrength,
+    anchorEvidenceIds,
+  });
+  const recValidation = validateRecommendationContractV1(recommendationContractV1);
+  const recommendationContractV1Checked = recValidation.ok
+    ? recommendationContractV1
+    : {
+        ...recommendationContractV1,
+        eligible: false,
+        intensity: "RI0",
+        family: null,
+        forbiddenBecause: [...(recommendationContractV1.forbiddenBecause || []), ...recValidation.errors],
+      };
+
+  const baseRecord = {
     subject: subjectId,
     topicRowKey: String(topicRowKey),
     displayName: String(row?.displayName || bucketKey || topicRowKey),
@@ -1175,6 +1259,24 @@ export function buildTopicRecommendationRecord(
     patternStabilityHe: signals.patternStabilityHe,
     decisionTrace,
     recommendationDecisionTrace,
+    contractsV1: {
+      ...(row?.contractsV1 && typeof row.contractsV1 === "object" ? row.contractsV1 : {}),
+      evidence: evidenceContract,
+      evidenceValidation: {
+        ok: !!evidenceValidation.ok,
+        errors: Array.isArray(evidenceValidation.errors) ? evidenceValidation.errors : [],
+      },
+      decision: canonicalDecisionReadinessBundle.decision,
+      readiness: canonicalDecisionReadinessBundle.readiness,
+      confidence: canonicalDecisionReadinessBundle.confidence,
+      recommendation: recommendationContractV1Checked,
+      recommendationValidation: {
+        ok: !!recValidation.ok,
+        errors: Array.isArray(recValidation.errors) ? recValidation.errors : [],
+      },
+    },
+    // Backward compatibility mirror only (temporary).
+    recommendationContractV1: recommendationContractV1Checked,
     trend: row?.trend ?? null,
     behaviorProfile: row?.behaviorProfile ?? null,
     recommendedNextStep: decision.step,
@@ -1404,7 +1506,26 @@ export function buildTopicRecommendationRecord(
     nextCycleSupportLevelHe: decision.nextCycleSupportLevelHe ?? "",
     foundationBeforeExpansion: !!decision.foundationBeforeExpansion,
     foundationBeforeExpansionHe: decision.foundationBeforeExpansionHe ?? "",
+  };
+
+  const contractAppliedRecord = applyRecommendationContractToRecord(
+    baseRecord,
+    recommendationContractV1Checked,
+    recValidation
+  );
+  const narrativeContract = buildNarrativeContractV1({
+    ...contractAppliedRecord,
+    topicKey: String(topicRowKey),
+    subjectId: String(subjectId),
+    contractsV1: contractAppliedRecord?.contractsV1 ?? {},
   });
+  const narrativeValidation = validateNarrativeContractV1(narrativeContract);
+  const withNarrative = applyNarrativeContractToRecord(
+    contractAppliedRecord,
+    narrativeContract,
+    narrativeValidation
+  );
+  return glossTopicRecommendationHeFields(withNarrative);
 }
 
 /**

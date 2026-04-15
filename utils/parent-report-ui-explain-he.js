@@ -5,6 +5,7 @@
 
 import { normalizeParentFacingHe } from "./parent-report-language/parent-facing-normalize-he.js";
 import { SUBJECT_V2_RECALIBRATION_NEED_NO_HE } from "./parent-report-language/v2-parent-copy.js";
+import { narrativeSectionTextHe } from "./contracts/narrative-contract-v1.js";
 
 const BEHAVIOR_OR_DIAGNOSTIC_HE = {
   knowledge_gap: "פער ידע",
@@ -1021,11 +1022,30 @@ function pr15HayContainsProbe(hay, needle, minProbe = 16) {
   return probe.length >= 10 && H.includes(probe);
 }
 
+function topicNarrativeSectionLineHe(rowOrRec, section, max = 180) {
+  const c =
+    rowOrRec?.contractsV1?.narrative && typeof rowOrRec.contractsV1.narrative === "object"
+      ? rowOrRec.contractsV1.narrative
+      : null;
+  if (!c) return "";
+  const line = narrativeSectionTextHe(section, c);
+  return line ? truncateHe(normalizeParentFacingHe(line), max) : "";
+}
+
+function hasTopicNarrativeContract(rowOrRec) {
+  return !!(
+    rowOrRec?.contractsV1?.narrative &&
+    typeof rowOrRec.contractsV1.narrative === "object"
+  );
+}
+
 /**
  * עדכניות + ריענון + «ראיה טרייה» בשורה אחת (לא שלוש שורות זהירות כמעט זהות).
  * קדימות: freshness > fresh-evidence (מסונן) > recalibration.
  */
 export function topicFreshnessUnifiedLineHe(rowOrRec) {
+  const fromContract = topicNarrativeSectionLineHe(rowOrRec, "limitations", 195);
+  if (hasTopicNarrativeContract(rowOrRec)) return fromContract;
   const fr = freshnessLineHe(rowOrRec);
   if (fr) return fr;
   const fe = freshEvidenceNeedLineHe(rowOrRec);
@@ -1041,6 +1061,8 @@ export function topicFreshnessUnifiedLineHe(rowOrRec) {
  * התאמת תמיכה / צעד ברצף / ניסוח רצף — שורה אחת; קדימות ל-adjustment כי הוא מכסה לעיתים את הרצף.
  */
 export function topicSupportFlowUnifiedLineHe(rowOrRec) {
+  const fromContract = topicNarrativeSectionLineHe(rowOrRec, "recommendation", 190);
+  if (hasTopicNarrativeContract(rowOrRec)) return fromContract;
   const adj = supportAdjustmentLineHe(rowOrRec);
   if (adj) return adj;
   const seqA = sequenceActionLineHe(rowOrRec);
@@ -1082,6 +1104,8 @@ export function topicMemoryOutcomeContinuationCompactLineHe(rowOrRec) {
  * קדימות: gate narrative > focus > evidence target > trigger (רק אם מוסיף מידע).
  */
 export function topicGatesEvidenceDecisionCompactLineHe(rowOrRec) {
+  const fromContract = topicNarrativeSectionLineHe(rowOrRec, "finding", 200);
+  if (hasTopicNarrativeContract(rowOrRec)) return fromContract;
   const gate = gateStateLineHe(rowOrRec);
   const focus = decisionFocusLineHe(rowOrRec);
   const ev = evidenceTargetLineHe(rowOrRec);

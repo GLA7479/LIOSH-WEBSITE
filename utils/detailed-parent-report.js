@@ -58,6 +58,12 @@ import {
   mergeSubjectConclusionReadinessContract,
   v2UnitsToContractRows,
 } from "./minimal-safe-scope-enforcement.js";
+import {
+  NARRATIVE_CONTRACT_VERSION,
+  applyNarrativeContractToRecord,
+  buildNarrativeContractV1,
+  validateNarrativeContractV1,
+} from "./contracts/narrative-contract-v1.js";
 
 const SUBJECT_IDS = [
   "math",
@@ -1566,21 +1572,24 @@ function buildSubjectProfiles(baseReport) {
     if (sid === "math" && topicMap && typeof topicMap === "object") {
       applyMathScopedParentDisplayNames(topicMap);
     }
-    const topicRecommendations = applyGateToTextClampToTopicRecommendations(
-      buildTopicRecommendationsForSubject(
-        sid,
-        topicMap,
-        analysis,
-        undefined,
-        periodEndMs,
-        {
-          parentTopicToneByKey:
-            s.parentTopicToneByKey && typeof s.parentTopicToneByKey === "object" ? s.parentTopicToneByKey : {},
-          parentStrengthWithCautionLinesByKey:
-            s.parentStrengthWithCautionLinesByKey && typeof s.parentStrengthWithCautionLinesByKey === "object"
-              ? s.parentStrengthWithCautionLinesByKey
-              : {},
-        }
+    const topicRecommendations = attachNarrativeContractsToTopicRecommendations(
+      sid,
+      applyGateToTextClampToTopicRecommendations(
+        buildTopicRecommendationsForSubject(
+          sid,
+          topicMap,
+          analysis,
+          undefined,
+          periodEndMs,
+          {
+            parentTopicToneByKey:
+              s.parentTopicToneByKey && typeof s.parentTopicToneByKey === "object" ? s.parentTopicToneByKey : {},
+            parentStrengthWithCautionLinesByKey:
+              s.parentStrengthWithCautionLinesByKey && typeof s.parentStrengthWithCautionLinesByKey === "object"
+                ? s.parentStrengthWithCautionLinesByKey
+                : {},
+          }
+        )
       )
     );
     out.push({
@@ -1738,8 +1747,71 @@ function recommendationFromV2Unit(u) {
   if (confLev === "high") evidenceStrength = "strong";
   const gated = !!u?.outputGating?.cannotConcludeYet;
   const cautionAdditive = !!u?.outputGating?.additiveCautionAllowed && !gated;
+  const topicKey = String(u?.topicRowKey || "");
+  const subjectId = String(u?.subjectId || "__unknown_subject__");
+  const gatingContracts =
+    u?.outputGating?.contractsV1 && typeof u.outputGating.contractsV1 === "object"
+      ? u.outputGating.contractsV1
+      : null;
+  const baseDecision =
+    gatingContracts?.decision && typeof gatingContracts.decision === "object" ? gatingContracts.decision : {};
+  const baseReadiness =
+    gatingContracts?.readiness && typeof gatingContracts.readiness === "object" ? gatingContracts.readiness : {};
+  const baseConfidence =
+    gatingContracts?.confidence && typeof gatingContracts.confidence === "object" ? gatingContracts.confidence : {};
+  const positiveConclusionAllowed = !!u?.outputGating?.positiveConclusionAllowed;
+  const effectiveDecisionTier = Math.max(
+    Number(baseDecision?.decisionTier) || 0,
+    positiveConclusionAllowed && !gated ? 2 : 0
+  );
+  const effectiveReadiness = (() => {
+    const raw = String(baseReadiness?.readiness || "").trim().toLowerCase();
+    if (raw === "ready" || raw === "forming" || raw === "emerging") return raw;
+    return positiveConclusionAllowed && !gated ? "ready" : "insufficient";
+  })();
+  const effectiveConfidenceBand = (() => {
+    const raw = String(baseConfidence?.confidenceBand || "").trim().toLowerCase();
+    if (raw === "high" || raw === "medium" || raw === "moderate") return raw === "moderate" ? "medium" : raw;
+    return positiveConclusionAllowed && !gated ? "medium" : "low";
+  })();
+  const contractsV1 = {
+    ...(gatingContracts || {}),
+    decision: {
+      ...baseDecision,
+      contractVersion: String(baseDecision?.contractVersion || "v1"),
+      topicKey: topicKey || String(baseDecision?.topicKey || "__unknown_topic__"),
+      subjectId,
+      decisionTier: effectiveDecisionTier,
+      cannotConcludeYet: gated,
+    },
+    readiness: {
+      ...baseReadiness,
+      contractVersion: String(baseReadiness?.contractVersion || "v1"),
+      topicKey: topicKey || String(baseReadiness?.topicKey || "__unknown_topic__"),
+      subjectId,
+      readiness: effectiveReadiness,
+    },
+    confidence: {
+      ...baseConfidence,
+      contractVersion: String(baseConfidence?.contractVersion || "v1"),
+      topicKey: topicKey || String(baseConfidence?.topicKey || "__unknown_topic__"),
+      subjectId,
+      confidenceBand: effectiveConfidenceBand,
+    },
+  };
+  const gateReadiness =
+    effectiveReadiness === "ready" ? "ready" : effectiveReadiness === "forming" ? "moderate" : "insufficient";
+  const conclusionStrength = gated
+    ? "withheld"
+    : effectiveDecisionTier >= 3
+      ? "strong"
+      : effectiveDecisionTier >= 2
+        ? "moderate"
+        : "tentative";
   return {
-    topicRowKey: String(u?.topicRowKey || ""),
+    topicRowKey: topicKey,
+    topicKey,
+    subjectId,
     displayName: String(u?.displayName || ""),
     recommendedNextStep: step,
     recommendedStepLabelHe: label,
@@ -1750,16 +1822,16 @@ function recommendationFromV2Unit(u) {
     isEarlySignalOnly: Boolean(u?.confidence?.rowSignals?.isEarlySignalOnly),
     evidenceStrength,
     confidenceLevel: confLev,
-    gateReadiness: gated ? "insufficient" : "moderate",
+    gateReadiness,
     gateState: gated ? "gates_not_ready" : "continue_gate_active",
-    conclusionStrength: gated ? "withheld" : "moderate",
+    conclusionStrength,
     suppressAggressiveStep: gated,
     whyThisRecommendationHe:
       String(u?.diagnosis?.lineHe || "")
       || String(u?.taxonomy?.patternHe || "")
       || "נדרש מיקוד עדין לפי ראיות השורה.",
     interventionPlanHe: String(u?.intervention?.shortPracticeHe || ""),
-    doNowHe: String(u?.intervention?.immediateActionHe || u?.probe?.specificationHe || ""),
+    doNowHe: String(u?.intervention?.immediateActionHe || ""),
     avoidNowHe: String(u?.intervention?.avoidHe || ""),
     cautionLineHe:
       u?.outputGating?.cannotConcludeYet || cautionAdditive
@@ -1770,6 +1842,45 @@ function recommendationFromV2Unit(u) {
       priorityLevel: u?.priority?.level || null,
       gating: u?.outputGating || null,
     },
+    contractsV1,
+  };
+}
+
+function attachNarrativeContractsToTopicRecommendations(subjectId, topicRecommendations) {
+  const list = Array.isArray(topicRecommendations) ? topicRecommendations : [];
+  return list.map((tr) => {
+    const narrativeContract = buildNarrativeContractV1({
+      ...tr,
+      subjectId: tr?.subjectId || subjectId,
+      topicKey: tr?.topicKey || tr?.topicRowKey,
+      contractsV1: tr?.contractsV1 && typeof tr.contractsV1 === "object" ? tr.contractsV1 : {},
+      cannotConcludeYet:
+        tr?.cannotConcludeYet === true ||
+        tr?.suppressAggressiveStep === true ||
+        String(tr?.conclusionStrength || "") === "withheld" ||
+        String(tr?.conclusionStrength || "") === "tentative",
+    });
+    const validation = validateNarrativeContractV1(narrativeContract);
+    return applyNarrativeContractToRecord(tr, narrativeContract, validation);
+  });
+}
+
+function applyNarrativeConsistencyToExecutiveSummary(executiveSummary, subjectProfiles) {
+  const es = executiveSummary && typeof executiveSummary === "object" ? executiveSummary : {};
+  const profiles = Array.isArray(subjectProfiles) ? subjectProfiles : [];
+  const topicRows = profiles.flatMap((sp) => (Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : []));
+  const restrainedRows = topicRows.filter((tr) => {
+    const envelope = String(tr?.contractsV1?.narrative?.wordingEnvelope || "");
+    return envelope === "WE0" || envelope === "WE1";
+  });
+  if (restrainedRows.length === 0) return es;
+  const restrainedLine = "בחלק מהנושאים המסקנה עדיין זהירה, ולכן נשארים בצעדים קטנים עד להתבססות נתון נוסף.";
+  return {
+    ...es,
+    mainHomeRecommendationHe: restrainedLine,
+    cautionNoteHe: String(es.cautionNoteHe || "").trim()
+      ? `${String(es.cautionNoteHe).trim()} ${restrainedLine}`
+      : restrainedLine,
   };
 }
 
@@ -1791,11 +1902,14 @@ function buildSubjectProfilesFromV2(baseReport) {
       null;
     const topWeakUnit = topicWeakLeader || positiveUnits[0] || units[0] || null;
 
-    const topicRecommendations = applyGateToTextClampToTopicRecommendations(
-      units
-        .filter((u) => u?.probe || u?.intervention || u?.diagnosis?.allowed)
-        .map(recommendationFromV2Unit)
-        .slice(0, 8)
+    const topicRecommendations = attachNarrativeContractsToTopicRecommendations(
+      sid,
+      applyGateToTextClampToTopicRecommendations(
+        units
+          .filter((u) => u?.probe || u?.intervention || u?.diagnosis?.allowed)
+          .map(recommendationFromV2Unit)
+          .slice(0, 8)
+      )
     );
 
     const excellentList = positiveUnits.filter(
@@ -2120,6 +2234,7 @@ export function buildDetailedParentReportFromBaseReport(baseReport, meta = {}) {
       subjectAccuracy: Number(cov?.accuracy) || 0,
     };
   });
+  executiveSummary = applyNarrativeConsistencyToExecutiveSummary(executiveSummary, subjectProfiles);
 
   return {
     version: 2,
@@ -2147,6 +2262,14 @@ export function buildDetailedParentReportFromBaseReport(baseReport, meta = {}) {
     homePlan,
     nextPeriodGoals,
     dataIntegrityReport: baseReport.dataIntegrityReport ?? null,
+    contractsV1: {
+      ...(baseReport?.contractsV1 && typeof baseReport.contractsV1 === "object" ? baseReport.contractsV1 : {}),
+      narrative: {
+        version: NARRATIVE_CONTRACT_VERSION,
+        scope: "gate-to-text",
+        attached: true,
+      },
+    },
   };
 }
 

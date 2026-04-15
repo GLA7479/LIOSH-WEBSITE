@@ -20,6 +20,7 @@ import { mistakeTimestampMs, normalizeMistakeEvent } from "./mistake-event";
 import { analyzeLearningPatterns } from "./learning-patterns-analysis";
 import {
   enrichTopicMapsWithRowDiagnostics,
+  attachEvidenceContractsV1ToTopicMaps,
   splitBucketModeRowKey,
   splitTopicRowKey,
   TRACK_ROW_MODE_SEP,
@@ -49,6 +50,7 @@ import {
   v2SubjectMemoryPartialEvidenceHe,
   topicRecommendationV2CautionGatedHe,
 } from "./parent-report-language/index.js";
+import { EVIDENCE_CONTRACT_VERSION } from "./contracts/parent-report-contracts-v1.js";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
 
@@ -63,6 +65,18 @@ const MODE_LABELS = {
   mistakes: "טעויות",
   practice_mistakes: "חזרה על שגיאות",
 };
+
+function evidenceContractsV1Enabled() {
+  const envFlag = String(process?.env?.NEXT_PUBLIC_PARENT_REPORT_CONTRACTS_V1 ?? "1").trim().toLowerCase();
+  if (envFlag === "0" || envFlag === "false" || envFlag === "off") return false;
+  try {
+    const runtimeFlag = String(localStorage.getItem("mleo_parent_report_contracts_v1") || "").trim().toLowerCase();
+    if (runtimeFlag === "0" || runtimeFlag === "false" || runtimeFlag === "off") return false;
+  } catch {
+    // Ignore storage read errors - keep additive trace enabled by default.
+  }
+  return true;
+}
 
 function modeLabel(m) {
   if (m == null || m === "") return "לא זמין";
@@ -1182,6 +1196,10 @@ export function generateParentReportV2(
   enrichTopicMapsWithRowDiagnostics(maps, mistakesBySubjectMaps, endMs);
   enrichTopicMapsWithRowTrends(maps, trackingSnapshots, rawMistakesBySubject, startMs, endMs);
   enrichTopicMapsWithRowBehaviorProfiles(maps, rawMistakesBySubject, startMs, endMs);
+  const contractsV1TraceEnabled = evidenceContractsV1Enabled();
+  if (contractsV1TraceEnabled) {
+    attachEvidenceContractsV1ToTopicMaps(maps, startMs, endMs);
+  }
   enrichReportMapsWithTopicStepHints(maps, mistakesBySubjectMaps, endMs);
 
   const diagnosticEngineV2 = runDiagnosticEngineV2({
@@ -1346,5 +1364,13 @@ export function generateParentReportV2(
     diagnosticEngineV2,
     /** AI-hybrid layer (V2 remains hard authority; ranking/probe/explanation bounded). */
     hybridRuntime,
+    /** Phase 1 additive trace metadata only (no decisioning/wording behavior change). */
+    contractsV1: {
+      version: EVIDENCE_CONTRACT_VERSION,
+      scope: "evidence-only",
+      traceAttached: contractsV1TraceEnabled,
+      enabled: contractsV1TraceEnabled,
+      validationMode: "soft",
+    },
   };
 }

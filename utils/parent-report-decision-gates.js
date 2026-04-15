@@ -7,6 +7,7 @@ import {
   GATE_READINESS_LABEL_HE,
   GATE_STATE_LABEL_HE,
 } from "./parent-report-ui-explain-he.js";
+import { buildDecisionReadinessContractsBundleV1 } from "./contracts/decision-readiness-contract-v1.js";
 
 /**
  * @param {object} ctx
@@ -141,8 +142,26 @@ export function buildDecisionGatesPhase13(ctx) {
     advanceGate,
   };
 
+  const contractsV1 = buildDecisionReadinessContractsBundleV1({
+    contractsV1: ctx?.contractsV1,
+    topicKey: String(ctx?.topicKey || ctx?.topicRowKey || ctx?.displayName || "__unknown_topic__"),
+    subjectId: String(ctx?.subjectId || "__unknown_subject__"),
+    q,
+    evidenceStrength: ev,
+    dataSufficiencyLevel: suff,
+    conclusionStrength: cs,
+    cannotConcludeYet: weak,
+    weak,
+    internalGateReadinessBand: gateReadiness,
+    gateState,
+    dev2ConfidenceLevel: String(ctx?.dev2ConfidenceLevel || ""),
+    confidence: String(ctx?.dev2ConfidenceLevel || ""),
+  });
+  decisionGates.contractsV1 = contractsV1;
+
   return {
     decisionGates,
+    contractsV1,
     gateState,
     gateStateLabelHe,
     continueGate,

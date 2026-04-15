@@ -32,6 +32,47 @@ const SCENARIO_IDS = [
   ["S12", "strong_executive_case"],
 ];
 
+const OVERSTATED_HE_REGEX = /בטוח|בוודאות|חד[- ]?משמעית|יציב לחלוטין|מוכח/giu;
+
+function assertTopicContractsChain(detailed, scenarioId) {
+  const profiles = Array.isArray(detailed?.subjectProfiles) ? detailed.subjectProfiles : [];
+  for (const sp of profiles) {
+    const trs = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
+    for (const tr of trs) {
+      const c = tr?.contractsV1;
+      assert.ok(c && typeof c === "object", `${scenarioId}: missing contractsV1 on topic recommendation`);
+      assert.ok(c.evidence && typeof c.evidence === "object", `${scenarioId}: missing contractsV1.evidence`);
+      assert.ok(c.decision && typeof c.decision === "object", `${scenarioId}: missing contractsV1.decision`);
+      assert.ok(c.readiness && typeof c.readiness === "object", `${scenarioId}: missing contractsV1.readiness`);
+      assert.ok(c.confidence && typeof c.confidence === "object", `${scenarioId}: missing contractsV1.confidence`);
+      assert.ok(c.recommendation && typeof c.recommendation === "object", `${scenarioId}: missing contractsV1.recommendation`);
+      assert.ok(c.narrative && typeof c.narrative === "object", `${scenarioId}: missing contractsV1.narrative`);
+      assert.ok(
+        typeof c.readiness.readiness === "string",
+        `${scenarioId}: non-canonical readiness path (contractsV1.readiness.readiness)`
+      );
+    }
+  }
+}
+
+function assertCrossSurfaceContradictions(detailed, scenarioId) {
+  const esText = [
+    String(detailed?.executiveSummary?.mainHomeRecommendationHe || ""),
+    String(detailed?.executiveSummary?.overallConfidenceHe || ""),
+    String(detailed?.executiveSummary?.reportReadinessHe || ""),
+  ].join(" ");
+  const profiles = Array.isArray(detailed?.subjectProfiles) ? detailed.subjectProfiles : [];
+  const hasRestrainedTopic = profiles.some((sp) =>
+    (Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : []).some((tr) => {
+      const we = String(tr?.contractsV1?.narrative?.wordingEnvelope || "");
+      return we === "WE0" || we === "WE1";
+    })
+  );
+  if (hasRestrainedTopic && OVERSTATED_HE_REGEX.test(esText)) {
+    throw new Error(`${scenarioId}: executive surface overstates while restrained topic narratives exist`);
+  }
+}
+
 function runOne(id, key) {
   const builder = PARENT_REPORT_SCENARIOS[key];
   if (typeof builder !== "function") {
@@ -41,6 +82,17 @@ function runOne(id, key) {
   const detailed = buildDetailedParentReportFromBaseReport(base, { playerName: "_mss_", period: "week" });
   if (!detailed) {
     return { id, key, status: "FAIL", error: "null detailed report" };
+  }
+  try {
+    assertTopicContractsChain(detailed, id);
+    assertCrossSurfaceContradictions(detailed, id);
+  } catch (e) {
+    return {
+      id,
+      key,
+      status: "FAIL",
+      error: e instanceof Error ? e.message : String(e),
+    };
   }
   const { fails } = scanDetailedReportForContractViolations(detailed, base);
   if (fails.length) {

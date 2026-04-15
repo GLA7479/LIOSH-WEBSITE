@@ -5,6 +5,10 @@
 
 import { pickVariant } from "./parent-report-language/variants.js";
 import { normalizeParentFacingHe } from "./parent-report-language/parent-facing-normalize-he.js";
+import {
+  buildNarrativeContractV1,
+  narrativeSectionTextHe,
+} from "./contracts/narrative-contract-v1.js";
 
 /** הסרת מירכאות צרפתיות / גוילמטים */
 export function stripGuillemetsHe(s) {
@@ -312,6 +316,28 @@ function buildSubjectClosingLineHe(sp, lab) {
   return stripGuillemetsHe(`ב${lab} עדיף עקביות בתרגולים קצרים מאשר מפגש ארוך אחד.`);
 }
 
+function collectTopicNarrativeContracts(sp) {
+  const list = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
+  return list
+    .map((tr) => tr?.contractsV1?.narrative)
+    .filter((x) => x && typeof x === "object");
+}
+
+function applySubjectNarrativeGuardrails(sp, letter) {
+  const contracts = collectTopicNarrativeContracts(sp);
+  if (!contracts.length) return letter;
+  const hasStrictRestraint = contracts.some((c) => String(c.wordingEnvelope) === "WE0" || String(c.wordingEnvelope) === "WE1");
+  if (!hasStrictRestraint) return letter;
+  const lab = sp?.subjectLabelHe || "המקצוע";
+  return {
+    ...letter,
+    opening: `ב${lab} התמונה כרגע חלקית וזהירה — המסקנות נשארות מדודות עד שנאסף עוד נתון עקבי.`,
+    diagnosisHe: letter.diagnosisHe,
+    homeAction: letter.homeAction || `ב${lab} מומלץ להתמקד בצעד קצר אחד ולא להרחיב עומס.`,
+    closing: `עדיין מוקדם לקבוע מסקנה יציבה ב${lab}; נמשיך לעקוב בסבב הקרוב ונעדכן בהתאם.`,
+  };
+}
+
 export function buildSubjectParentLetterCompact(sp) {
   const full = buildSubjectParentLetter(sp, { compact: true });
   const lead = [full.opening, full.diagnosisHe].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
@@ -335,7 +361,7 @@ export function buildSubjectParentLetter(sp, opts = {}) {
   const homeAction = buildSubjectHomeLineHe(sp, lab);
   const closing = buildSubjectClosingLineHe(sp, lab);
 
-  return {
+  const base = {
     opening: normalizeParentFacingHe(stripGuillemetsHe(opening)),
     diagnosisHe: normalizeParentFacingHe(stripGuillemetsHe(diagnosisHe)),
     homeAction: normalizeParentFacingHe(String(homeAction || "")),
@@ -345,9 +371,22 @@ export function buildSubjectParentLetter(sp, opts = {}) {
     fragile: "",
     reliabilityNoteHe: null,
   };
+  return applySubjectNarrativeGuardrails(sp, base);
 }
 
 export function buildTopicRecommendationNarrative(tr) {
+  const hasCanonicalNarrative = !!(tr?.contractsV1?.narrative && typeof tr.contractsV1.narrative === "object");
+  const canonicalNarrative = hasCanonicalNarrative
+    ? tr.contractsV1.narrative
+    : buildNarrativeContractV1({
+        ...tr,
+        subjectId: tr?.subjectId,
+        topicKey: tr?.topicKey || tr?.topicRowKey,
+      });
+  const summarySlot = narrativeSectionTextHe("summary", canonicalNarrative);
+  const findingSlot = narrativeSectionTextHe("finding", canonicalNarrative);
+  const recommendationSlot = narrativeSectionTextHe("recommendation", canonicalNarrative);
+  const limitationsSlot = narrativeSectionTextHe("limitations", canonicalNarrative);
   const nameRaw = String(tr?.displayName || "הנושא").trim();
   const core = displayTopicCoreHe(nameRaw) || stripGuillemetsHe(nameRaw);
   const q = Number(tr?.questions) || 0;
@@ -404,10 +443,13 @@ export function buildTopicRecommendationNarrative(tr) {
     reasoning && q >= 10
       ? `${homeLine} ${takeFirstSentence(reasoning)}`
       : homeLine;
+  const snapshotFromContract = [summarySlot, findingSlot].filter(Boolean).join(" ");
+  const homeFromContract = hasCanonicalNarrative ? recommendationSlot || "" : recommendationSlot || homeAug;
+  const cautionFromContract = limitationsSlot || (whyHold ? stripGuillemetsHe(takeFirstSentence(whyHold)) : "");
   return {
-    snapshot: normalizeParentFacingHe(stripGuillemetsHe(snap)),
-    homeLine: normalizeParentFacingHe(stripGuillemetsHe(homeAug)),
-    cautionLineHe: whyHold ? normalizeParentFacingHe(stripGuillemetsHe(takeFirstSentence(whyHold))) : "",
+    snapshot: normalizeParentFacingHe(stripGuillemetsHe(snapshotFromContract || snap)),
+    homeLine: normalizeParentFacingHe(stripGuillemetsHe(homeFromContract)),
+    cautionLineHe: cautionFromContract ? normalizeParentFacingHe(stripGuillemetsHe(cautionFromContract)) : "",
   };
 }
 

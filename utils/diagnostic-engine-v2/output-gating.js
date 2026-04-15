@@ -1,6 +1,7 @@
 /**
  * שערי פלט — stage1 §11 (מימוש כללי לפי ביטחון + עדיפות + ראיות).
  */
+import { buildDecisionReadinessContractsBundleV1 } from "../contracts/decision-readiness-contract-v1.js";
 
 /**
  * @param {object} p
@@ -18,6 +19,9 @@
  * @param {boolean} [p.needsPractice]
  * @param {boolean} [p.stableMasteryTag]
  * @param {number} [p.wrongCountForRules]
+ * @param {string} [p.subjectId]
+ * @param {string} [p.topicKey]
+ * @param {object} [p.contractsV1]
  */
 export function applyOutputGating(p) {
   const {
@@ -35,6 +39,9 @@ export function applyOutputGating(p) {
     needsPractice = false,
     stableMasteryTag = false,
     wrongCountForRules = 0,
+    subjectId = "__unknown_subject__",
+    topicKey = "__unknown_topic__",
+    contractsV1 = null,
   } = p;
 
   const q = Math.max(0, Number(questions) || 0);
@@ -101,6 +108,31 @@ export function applyOutputGating(p) {
     positiveAuthorityReasonCodes,
   });
 
+  const buildContractsBundle = (cannotConcludeFlag) =>
+    buildDecisionReadinessContractsBundleV1({
+      contractsV1,
+      subjectId,
+      topicKey,
+      q,
+      evidenceStrength: weakEvidence ? "low" : confidence === "high" ? "strong" : "medium",
+      dataSufficiencyLevel:
+        confidence === "insufficient_data" || q < 4 ? "low" : q < 12 ? "medium" : "strong",
+      conclusionStrength: cannotConcludeFlag
+        ? "withheld"
+        : confidence === "high"
+          ? "strong"
+          : confidence === "moderate"
+            ? "moderate"
+            : "tentative",
+      cannotConcludeYet: !!cannotConcludeFlag,
+      weak: !!weakEvidence || narrowSample,
+      internalGateReadinessBand:
+        confidence === "high" ? "high" : confidence === "moderate" ? "moderate" : "insufficient",
+      gateState: cannotConcludeFlag ? "gates_not_ready" : "continue_gate_active",
+      dev2ConfidenceLevel: confidence,
+      confidence,
+    });
+
   if (hardDeny) {
     const out = base();
     out.cannotConcludeYet = true;
@@ -120,6 +152,7 @@ export function applyOutputGating(p) {
       out.confidenceOnly = true;
       reasons.push("אות מוקדם בלבד — כדאי עוד תרגול קצר או מעקב לפני מסקנה חזקה");
     }
+    out.contractsV1 = buildContractsBundle(true);
     return out;
   }
 
@@ -129,6 +162,7 @@ export function applyOutputGating(p) {
   if (!hasTaxonomyMatch) {
     out.probeOnly = true;
     reasons.push("אין התאמת טקסונומיה מספקת לצבר");
+    out.contractsV1 = buildContractsBundle(false);
     return out;
   }
 
@@ -181,5 +215,6 @@ export function applyOutputGating(p) {
     out.diagnosisAllowed = confidence === "moderate" || confidence === "high";
   }
 
+  out.contractsV1 = buildContractsBundle(false);
   return out;
 }

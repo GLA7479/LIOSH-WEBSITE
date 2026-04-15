@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://liosh-web-try.local/schemas/parent-report/evidence-contract-v1.schema.json",
+  "title": "EvidenceContractV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "topicKey",
+    "subjectId",
+    "periodStartMs",
+    "periodEndMs",
+    "questionCount",
+    "accuracyPct",
+    "wrongCount",
+    "responseSpeedMsMedian",
+    "repetitionRate01",
+    "hintRate01",
+    "retryRate01",
+    "recencyScore01",
+    "stability01",
+    "confidence01",
+    "varianceState",
+    "trendState",
+    "evidenceStrength",
+    "evidenceBand",
+    "signalQuality",
+    "anchorEventIds",
+    "dataSufficiency"
+  ],
+  "properties": {
+    "contractVersion": { "const": "v1" },
+    "topicKey": { "type": "string", "minLength": 1 },
+    "subjectId": { "type": "string", "minLength": 1 },
+    "periodStartMs": { "type": "number", "minimum": 0 },
+    "periodEndMs": { "type": "number", "minimum": 0 },
+    "questionCount": { "type": "integer", "minimum": 0 },
+    "accuracyPct": { "type": "number", "minimum": 0, "maximum": 100 },
+    "wrongCount": { "type": "integer", "minimum": 0 },
+    "responseSpeedMsMedian": {
+      "anyOf": [
+        { "type": "number", "minimum": 0 },
+        { "type": "null" }
+      ]
+    },
+    "repetitionRate01": { "type": "number", "minimum": 0, "maximum": 1 },
+    "hintRate01": { "type": "number", "minimum": 0, "maximum": 1 },
+    "retryRate01": { "type": "number", "minimum": 0, "maximum": 1 },
+    "recencyScore01": { "type": "number", "minimum": 0, "maximum": 1 },
+    "stability01": { "type": "number", "minimum": 0, "maximum": 1 },
+    "confidence01": { "type": "number", "minimum": 0, "maximum": 1 },
+    "varianceState": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "trendState": {
+      "type": "string",
+      "enum": ["improving", "stable", "regressing", "mixed", "unknown"]
+    },
+    "evidenceStrength": {
+      "type": "string",
+      "enum": ["low", "medium", "strong"]
+    },
+    "evidenceBand": {
+      "type": "string",
+      "enum": ["E0", "E1", "E2", "E3", "E4"]
+    },
+    "signalQuality": {
+      "type": "string",
+      "enum": ["clean", "noisy", "contradictory"]
+    },
+    "anchorEventIds": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "dataSufficiency": {
+      "type": "string",
+      "enum": ["insufficient", "partial", "sufficient"]
+    },
+    "modeDiff": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "speedGapMs": { "type": "number" },
+            "accuracyGapPct": { "type": "number" }
+          }
+        },
+        { "type": "null" }
+      ]
+    },
+    "errorConcentration": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["topPatternKey", "share01"],
+          "properties": {
+            "topPatternKey": { "type": "string", "minLength": 1 },
+            "share01": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        { "type": "null" }
+      ]
+    }
+  }
+}

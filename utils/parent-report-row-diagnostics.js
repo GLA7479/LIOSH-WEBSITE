@@ -5,6 +5,7 @@
 
 import { mathReportBaseOperationKey, canonicalParentReportGradeKey } from "./math-report-generator";
 import { DEFAULT_TOPIC_NEXT_STEP_CONFIG } from "./topic-next-step-config";
+import { buildEvidenceContractV1, validateEvidenceContractV1 } from "./contracts/parent-report-contracts-v1.js";
 export const TRACK_ROW_MODE_SEP = "\u0001";
 
 /** placeholder פנימי לסשנים/טעויות בלי כיתה או בלי רמה — לא מאחדים כמה ערכים אמיתיים */
@@ -449,7 +450,12 @@ export function computeRowDiagnosticSignals(subjectId, topicRowKey, row, mistake
  * @param {number} periodEndMs
  * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} [cfg]
  */
-export function enrichTopicMapsWithRowDiagnostics(maps, mistakesBySubject, periodEndMs, cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG) {
+export function enrichTopicMapsWithRowDiagnostics(
+  maps,
+  mistakesBySubject,
+  periodEndMs,
+  cfg = DEFAULT_TOPIC_NEXT_STEP_CONFIG
+) {
   const entries = Object.entries(maps || {});
   for (const [subjectId, topicMap] of entries) {
     if (!topicMap || typeof topicMap !== "object") continue;
@@ -465,6 +471,44 @@ export function enrichTopicMapsWithRowDiagnostics(maps, mistakesBySubject, perio
         cfg
       );
       Object.assign(row, signals);
+    }
+  }
+}
+
+/**
+ * Phase 1 additive evidence trace attachment.
+ * Must run after trend + behavior enrichment so contract includes those signals.
+ * Runtime is soft-validated: never throws, only records validation status.
+ *
+ * @param {Record<string, Record<string, unknown>>} maps
+ * @param {number} periodStartMs
+ * @param {number} periodEndMs
+ */
+export function attachEvidenceContractsV1ToTopicMaps(maps, periodStartMs, periodEndMs) {
+  const entries = Object.entries(maps || {});
+  for (const [subjectId, topicMap] of entries) {
+    if (!topicMap || typeof topicMap !== "object") continue;
+    for (const [topicRowKey, row] of Object.entries(topicMap)) {
+      if (!row || typeof row !== "object") continue;
+      const evidenceContract = buildEvidenceContractV1({
+        subjectId,
+        topicKey: topicRowKey,
+        periodStartMs,
+        periodEndMs,
+        row,
+        signals: row,
+        trend: row?.trend || null,
+        behaviorProfile: row?.behaviorProfile || null,
+      });
+      const validation = validateEvidenceContractV1(evidenceContract);
+      row.contractsV1 = {
+        ...(row.contractsV1 && typeof row.contractsV1 === "object" ? row.contractsV1 : {}),
+        evidence: evidenceContract,
+        evidenceValidation: {
+          ok: !!validation.ok,
+          errors: Array.isArray(validation.errors) ? validation.errors : [],
+        },
+      };
     }
   }
 }

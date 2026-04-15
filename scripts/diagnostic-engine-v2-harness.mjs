@@ -334,6 +334,16 @@ for (const tc of MATRIX) {
     reason = "missing core unit structure";
   } else {
     try {
+      const c = unit?.outputGating?.contractsV1;
+      assert.ok(c && typeof c === "object", `${tc.id}: missing outputGating.contractsV1 bundle`);
+      assert.ok(c.decision && typeof c.decision === "object", `${tc.id}: missing decision contract`);
+      assert.ok(c.readiness && typeof c.readiness === "object", `${tc.id}: missing readiness contract`);
+      assert.ok(c.confidence && typeof c.confidence === "object", `${tc.id}: missing confidence contract`);
+      assert.equal(typeof c.readiness.readiness, "string", `${tc.id}: readiness canonical field missing`);
+      if (c.decision.cannotConcludeYet) {
+        assert.equal(unit.outputGating.positiveConclusionAllowed, false, `${tc.id}: cannotConcludeYet with positive conclusion`);
+        assert.equal(unit.outputGating.interventionAllowed, false, `${tc.id}: cannotConcludeYet with intervention`);
+      }
       tc.assertCase(unit);
       // guard: weak evidence cannot produce overclaim intervention
       if ((Number(unit?.evidenceTrace?.[0]?.value?.questions) || 0) < 8 && unit?.outputGating?.interventionAllowed) {

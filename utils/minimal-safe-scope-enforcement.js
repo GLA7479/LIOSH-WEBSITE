@@ -3,6 +3,11 @@
  * מקור מדיניות: docs/decision-contract-v1.md, gate-to-text-binding-v1.md,
  * subject-overall-readiness-policy-v1.md, recommendation-intensity-contract-v1.md
  */
+import { buildDecisionReadinessContractsBundleV1 } from "./contracts/decision-readiness-contract-v1.js";
+import {
+  buildRecommendationContractV1,
+  validateRecommendationContractV1,
+} from "./contracts/recommendation-contract-v1.js";
 
 /** @typedef {"not_ready"|"partial"|"ready"} Readiness */
 
@@ -192,6 +197,7 @@ export function mergeCrossSubjectConclusionReadinessContract(phase7, subjectCove
 }
 
 const RI_RANK = { light: 1, focused: 2, targeted: 3 };
+const RI_TEXT_FROM_CONTRACT = { RI0: "light", RI1: "light", RI2: "focused", RI3: "targeted" };
 
 /**
  * @param {"light"|"focused"|"targeted"} intensity
@@ -222,6 +228,11 @@ export function applyGateToTextClampToTopicRecord(rec) {
   const q = Number(rec?.questions ?? rec?.q) || 0;
   const ev = String(rec?.evidenceStrength || "low");
   const cs = String(rec?.conclusionStrength || "tentative");
+  const recCannotConcludeYet = !!(
+    rec?.cannotConcludeYet ||
+    rec?.outputGating?.cannotConcludeYet ||
+    rec?.contractsV1?.decision?.cannotConcludeYet
+  );
   const weak = q < 12 || ev === "low" || cs === "withheld" || cs === "tentative";
 
   const maxPS = computeEffectiveMaxPS({
@@ -229,9 +240,80 @@ export function applyGateToTextClampToTopicRecord(rec) {
     gateState: rec?.gateState,
     weak,
     conclusionStrength: cs,
-    cannotConcludeYet: false,
+    cannotConcludeYet: recCannotConcludeYet,
     dev2ConfidenceLevel: null,
   });
+
+  const contractsV1 = buildDecisionReadinessContractsBundleV1({
+    contractsV1: rec?.contractsV1 || rec?.minimalSafeScope?.contractsV1,
+    topicKey: String(rec?.topicKey || rec?.topicRowKey || rec?.displayName || "__unknown_topic__"),
+    subjectId: String(rec?.subjectId || "__unknown_subject__"),
+    q,
+    accuracy: Number(rec?.accuracy) || 0,
+    evidenceStrength: ev,
+    dataSufficiencyLevel: String(rec?.dataSufficiencyLevel || "low"),
+    conclusionStrength: cs,
+    cannotConcludeYet: recCannotConcludeYet,
+    weak,
+    internalGateReadinessBand: rec?.gateReadiness,
+    gateState: rec?.gateState,
+    dev2ConfidenceLevel: String(rec?.dev2ConfidenceLevel || ""),
+    confidence: String(rec?.dev2ConfidenceLevel || ""),
+  });
+
+  const sourceRecommendationContract =
+    rec?.contractsV1?.recommendation && typeof rec.contractsV1.recommendation === "object"
+      ? rec.contractsV1.recommendation
+      : rec?.recommendationContractV1 && typeof rec.recommendationContractV1 === "object"
+        ? rec.recommendationContractV1
+        : null;
+  const recAnchorIds =
+    sourceRecommendationContract && Array.isArray(sourceRecommendationContract.anchorEvidenceIds)
+      ? sourceRecommendationContract.anchorEvidenceIds
+      : Array.isArray(rec?.contractsV1?.evidence?.anchorEventIds)
+        ? rec.contractsV1.evidence.anchorEventIds
+        : [];
+  let recommendationContractV1 =
+    sourceRecommendationContract ||
+    buildRecommendationContractV1({
+      topicKey: String(rec?.topicKey || rec?.topicRowKey || rec?.displayName || "__unknown_topic__"),
+      subjectId: String(rec?.subjectId || "__unknown_subject__"),
+      decisionTier: contractsV1?.decision?.decisionTier ?? 0,
+      readiness: contractsV1?.readiness?.readiness ?? "insufficient",
+      confidenceBand: contractsV1?.confidence?.confidenceBand ?? "low",
+      cannotConcludeYet: contractsV1?.decision?.cannotConcludeYet ?? false,
+      interventionIntensity: String(rec?.interventionIntensity || "focused"),
+      diagnosticType: String(rec?.diagnosticType || ""),
+      rootCause: String(rec?.rootCause || ""),
+      retentionRisk: String(rec?.retentionRisk || ""),
+      evidenceStrength: String(rec?.evidenceStrength || "low"),
+      anchorEvidenceIds: recAnchorIds,
+    });
+  const recContractValidation = validateRecommendationContractV1(recommendationContractV1);
+  const recValidationPayload = recContractValidation.ok
+    ? rec?.contractsV1?.recommendationValidation && typeof rec.contractsV1.recommendationValidation === "object"
+      ? {
+          ok: !!rec.contractsV1.recommendationValidation.ok,
+          errors: Array.isArray(rec.contractsV1.recommendationValidation.errors)
+            ? rec.contractsV1.recommendationValidation.errors
+            : [],
+        }
+      : { ok: true, errors: [] }
+    : { ok: false, errors: recContractValidation.errors };
+  if (!recContractValidation.ok) {
+    recommendationContractV1 = {
+      ...recommendationContractV1,
+      eligible: false,
+      intensity: "RI0",
+      family: null,
+      forbiddenBecause: [
+        ...(Array.isArray(recommendationContractV1.forbiddenBecause)
+          ? recommendationContractV1.forbiddenBecause
+          : []),
+        ...recContractValidation.errors,
+      ],
+    };
+  }
 
   const band = deriveEvidenceBandFromRowSignals({
     q,
@@ -247,6 +329,9 @@ export function applyGateToTextClampToTopicRecord(rec) {
     suppressAggressiveStep: !!rec?.suppressAggressiveStep,
     interventionAllowed: true,
   });
+  const contractIntensityText = RI_TEXT_FROM_CONTRACT[recommendationContractV1.intensity] || "light";
+  const nextIntensityFinal =
+    RI_RANK[nextIntensity] <= RI_RANK[contractIntensityText] ? nextIntensity : contractIntensityText;
 
   const parentHe = clampHebrewParentTextToMaxPS(rec.parentHe, maxPS, "support");
   const reasonHe = clampHebrewParentTextToMaxPS(rec.reasonHe, maxPS, "diagnosis");
@@ -261,12 +346,20 @@ export function applyGateToTextClampToTopicRecord(rec) {
     whyThisRecommendationHe: why,
     doNowHe: doNow,
     interventionPlanHe: plan,
-    interventionIntensity: nextIntensity,
+    interventionIntensity: nextIntensityFinal,
+    contractsV1: {
+      ...(rec?.contractsV1 && typeof rec.contractsV1 === "object" ? rec.contractsV1 : {}),
+      recommendation: recommendationContractV1,
+      recommendationValidation: recValidationPayload,
+    },
+    // Backward compatibility mirror only (temporary).
+    recommendationContractV1,
     minimalSafeScope: {
       version: 1,
       effectiveMaxPS: maxPS,
       evidenceBand: band,
       gateToTextApplied: true,
+      contractsV1,
     },
   };
 }
@@ -346,6 +439,14 @@ export function scanDetailedReportForContractViolations(detailedReport, baseRepo
         fails.push({ code: "fail_too_early", detail: "decisive wording under E0–E1" });
       }
       const riN = RI_RANK[String(tr?.interventionIntensity)] || 0;
+      const recContract =
+        tr?.contractsV1?.recommendation && typeof tr.contractsV1.recommendation === "object"
+          ? tr.contractsV1.recommendation
+          : tr?.recommendationContractV1;
+      const contractAnchors = Array.isArray(recContract?.anchorEvidenceIds) ? recContract.anchorEvidenceIds : [];
+      if (riN >= 1 && contractAnchors.length === 0) {
+        fails.push({ code: "fail_unsupported", detail: "recommendation without evidence anchors" });
+      }
       if (
         riN >= 3 &&
         band <= 1 &&

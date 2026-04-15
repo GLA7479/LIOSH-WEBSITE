@@ -21,6 +21,7 @@ import {
   SUBJECT_V2_RECALIBRATION_NEED_NO_HE,
   normalizeParentFacingHe,
 } from "../utils/parent-report-language/index.js";
+import { narrativeSectionTextHe } from "../utils/contracts/narrative-contract-v1.js";
 
 const PR1_RETENTION_LABEL_HE = {
   low: "נמוך",
@@ -773,6 +774,18 @@ function topicStripNorm(s) {
 /** פס על המלצת נושא — עד 3 שכבות הוריות: מה ראינו / מה זה אומר / כיוון עבודה */
 export function TopicRecommendationExplainStrip({ tr }) {
   const sig = tr?.topicEngineRowSignals && typeof tr.topicEngineRowSignals === "object" ? tr.topicEngineRowSignals : null;
+  const narrative =
+    tr?.contractsV1?.narrative && typeof tr.contractsV1.narrative === "object" ? tr.contractsV1.narrative : null;
+  const recommendation =
+    tr?.contractsV1?.recommendation && typeof tr.contractsV1.recommendation === "object"
+      ? tr.contractsV1.recommendation
+      : null;
+  const decision =
+    tr?.contractsV1?.decision && typeof tr.contractsV1.decision === "object" ? tr.contractsV1.decision : null;
+  const explicitContradictoryContractEvidence =
+    decision?.cannotConcludeYet === true ||
+    (Array.isArray(recommendation?.forbiddenBecause) &&
+      recommendation.forbiddenBecause.includes("cannot_conclude_yet"));
 
   const mp = topicStripParentClean(mistakePatternLineHe(tr || sig) || "");
   const lm = topicStripParentClean(learningMemoryLineHe(tr || sig) || "");
@@ -786,16 +799,16 @@ export function TopicRecommendationExplainStrip({ tr }) {
     meaning = "";
   }
 
-  const ip = topicStripParentClean(String(tr?.interventionPlanHe || sig?.interventionPlanHe || ""));
-  const dn = topicStripParentClean(String(tr?.doNowHe || sig?.doNowHe || ""));
-  const av = topicStripParentClean(String(tr?.avoidNowHe || sig?.avoidNowHe || ""));
-  const caut = topicStripParentClean(String(tr?.cautionLineHe || sig?.cautionLineHe || ""));
-
-  const dirParts = [];
-  if (ip) dirParts.push(ip);
-  if (dn) dirParts.push(`מה כדאי לעשות עכשיו: ${dn}`);
-  if (av) dirParts.push(`מה כדאי לדחות כרגע: ${av}`);
-  let direction = truncateHe(dirParts.join(" "), 238);
+  const canonicalAction = topicStripParentClean(
+    narrative ? narrativeSectionTextHe("recommendation", narrative) || narrative?.textSlots?.action || "" : ""
+  );
+  const actionBlockedByContract =
+    !explicitContradictoryContractEvidence &&
+    (recommendation?.eligible === false || String(narrative?.recommendationIntensityCap || "") === "RI0");
+  let direction = actionBlockedByContract ? "" : truncateHe(canonicalAction, 238);
+  const caut = topicStripParentClean(
+    narrative ? narrativeSectionTextHe("limitations", narrative) || tr?.cautionLineHe || sig?.cautionLineHe || "" : tr?.cautionLineHe || sig?.cautionLineHe || ""
+  );
   if (caut) {
     direction = direction ? `${direction} שימו לב: ${truncateHe(caut, 148)}` : `שימו לב: ${truncateHe(caut, 168)}`;
   }
