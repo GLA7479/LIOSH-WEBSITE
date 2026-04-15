@@ -2414,9 +2414,9 @@ export default function ParentReport() {
 
                 {diagnosticsView.mode === "legacy" && (
                   <div className="space-y-2 md:space-y-3">
-                    {diagnosticsView.legacyRecommendations.map((rec, idx) => (
+                    {diagnosticsView.legacyRecommendations.map((rec) => (
                       <div
-                        key={idx}
+                        key={`${String(rec.operationName || "rec")}::${String(rec.priority || "")}`}
                         className={`parent-report-rec-item p-2 md:p-3 rounded-lg border ${
                           rec.priority === "success"
                             ? "bg-green-500/20 border-green-400/50"
@@ -2461,9 +2461,10 @@ export default function ParentReport() {
 
                 {diagnosticsView.mode === "new" && diagnosticsView.rows.length > 0 && (
                   <div className="space-y-3 md:space-y-4">
-                    {diagnosticsView.rows.map((row) => {
+                    {diagnosticsView.rows
+                      .filter((row) => row?.sub)
+                      .map((row) => {
                       const s = row.sub;
-                      if (!s) return null;
                       const ex = s.excellent || [];
                       const st = s.strengths || [];
                       const legacyStrength = [...ex, ...st].slice(0, 3).map((x) => ({
@@ -2516,7 +2517,7 @@ export default function ParentReport() {
 
                       return (
                         <div
-                          key={row.subjectId}
+                          key={`${row.subjectId}-${row.subjectLabelHe}`}
                           className="parent-report-diagnostic-subject-block rounded-lg border border-white/15 bg-black/20 p-2 md:p-3"
                         >
                           <div className="parent-report-diagnostic-subject-title font-bold text-sm md:text-base mb-2 text-white/95 border-b border-white/10 pb-1">
@@ -2568,9 +2569,9 @@ export default function ParentReport() {
                                 הצטיינות עקבית
                               </div>
                             )}
-                            {sx.map((x) => (
+                            {sx.map((x, sxIdx) => (
                               <div
-                                key={x.id}
+                                key={`${row.subjectId}-sx-${sxIdx}`}
                                 className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-violet-500/12 border-violet-400/40 parent-report-print-stable-excellence"
                               >
                                 <div className="flex items-start gap-2">
@@ -2591,9 +2592,9 @@ export default function ParentReport() {
                                 חוזקות מובילות
                               </div>
                             )}
-                            {topStr.map((x) => (
+                            {topStr.map((x, tsIdx) => (
                               <div
-                                key={x.id}
+                                key={`${row.subjectId}-ts-${tsIdx}`}
                                 className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-emerald-500/15 border-emerald-400/45"
                               >
                                 <div className="flex items-start gap-2">
@@ -2614,9 +2615,9 @@ export default function ParentReport() {
                                 מומלץ לשמר
                               </div>
                             )}
-                            {mn.map((x) => (
+                            {mn.map((x, mnIdx) => (
                               <div
-                                key={x.id}
+                                key={`${row.subjectId}-mn-${mnIdx}`}
                                 className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-sky-500/10 border-sky-400/35"
                               >
                                 <div className="flex items-start gap-2">
@@ -2637,9 +2638,9 @@ export default function ParentReport() {
                                 נקודות לשיפור
                               </div>
                             )}
-                            {im.map((x) => (
+                            {im.map((x, imIdx) => (
                               <div
-                                key={x.id}
+                                key={`${row.subjectId}-im-${imIdx}`}
                                 className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-amber-500/12 border-amber-400/40"
                               >
                                 <div className="flex items-start gap-2">
@@ -2663,9 +2664,9 @@ export default function ParentReport() {
                                 תחומים הדורשים תשומת לב
                               </div>
                             )}
-                            {topWk.map((w) => (
+                            {topWk.map((w, wkIdx) => (
                               <div
-                                key={w.id}
+                                key={w.id != null ? w.id : `${row.subjectId}-wk-${wkIdx}`}
                                 className="parent-report-rec-item p-2 md:p-3 rounded-lg border bg-red-500/20 border-red-400/50"
                               >
                                 <div className="flex items-start gap-2">
@@ -3375,9 +3376,9 @@ export default function ParentReport() {
             <div className="bg-black/30 border border-white/10 rounded-lg p-2 md:p-4 mb-3 md:mb-6">
               <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-center">🏆 הישגים</h2>
               <div className="flex flex-wrap gap-2 justify-center">
-                {report.achievements.map((achievement, idx) => (
+                {report.achievements.map((achievement) => (
                   <div
-                    key={idx}
+                    key={String(achievement.name || "achievement")}
                     className="px-2 md:px-3 py-1 md:py-2 bg-emerald-500/20 border border-emerald-400/50 rounded-lg text-xs md:text-sm break-words"
                   >
                     {achievement.name}
