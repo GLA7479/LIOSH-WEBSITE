@@ -8,7 +8,13 @@ import { canUseLlmPath } from "./rollout-gates.js";
 const DEFAULT_TIMEOUT_MS = 9000;
 
 function env(name, fallback = "") {
-  const v = String(process.env?.[name] || "").trim();
+  let raw;
+  try {
+    raw = typeof process !== "undefined" && process?.env ? process.env[name] : undefined;
+  } catch {
+    raw = undefined;
+  }
+  const v = String(raw ?? "").trim();
   return v || fallback;
 }
 

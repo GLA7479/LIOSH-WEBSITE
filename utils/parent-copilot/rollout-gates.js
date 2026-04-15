@@ -2,18 +2,28 @@
  * Rollout and KPI gating for Parent Copilot advanced generation.
  */
 
+/** Browser bundles may not define `process`; bare `process.env` throws ReferenceError. */
+function envRaw(name) {
+  try {
+    if (typeof process !== "undefined" && process?.env) return process.env[name];
+  } catch {
+    /* ignore */
+  }
+  return undefined;
+}
+
 function envNum(name, fallback) {
-  const n = Number(process.env?.[name]);
+  const n = Number(envRaw(name));
   return Number.isFinite(n) ? n : fallback;
 }
 
 function envBool(name) {
-  return String(process.env?.[name] || "")
+  return String(envRaw(name) || "")
     .trim()
     .toLowerCase() === "true";
 }
 
-export const COPILOT_ROLLOUT_STAGE = String(process.env?.PARENT_COPILOT_ROLLOUT_STAGE || "internal").trim();
+export const COPILOT_ROLLOUT_STAGE = String(envRaw("PARENT_COPILOT_ROLLOUT_STAGE") || "internal").trim();
 
 export function readKpiThresholds() {
   return {

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
 import { AiHybridInternalReviewerPanel } from "../../components/ai-hybrid-internal-reviewer-panel.jsx";
 import Head from "next/head";
 import Link from "next/link";
@@ -20,11 +19,7 @@ import {
   TopicRecommendationExplainStrip,
 } from "../../components/parent-report-detailed-surface.jsx";
 import { normalizeExecutiveSummary } from "../../utils/parent-report-payload-normalize";
-
-const ParentCopilotShell = dynamic(
-  () => import("../../components/parent-copilot/parent-copilot-shell.jsx"),
-  { ssr: false }
-);
+import ParentCopilotShell from "../../components/parent-copilot/parent-copilot-shell.jsx";
 
 /**
  * מיפוי ויזואלי בלבד לפי recommendedNextStep מה־payload — לא משנה מנוע או תוכן.
