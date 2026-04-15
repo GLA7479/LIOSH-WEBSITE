@@ -1,5 +1,6 @@
 /**
  * Phase B: scored follow-up ranking + Phase A memory consumption (dedup, scope, clicks).
+ * Polish: value gate, overlap vs answer / last-2 suggestions, 2-turn family reuse avoidance.
  * Deterministic only — parent-only, contract-bound families from TruthPacket.
  */
 
@@ -75,6 +76,50 @@ function sameScopeStreak(priorScopes, scopeKey) {
 }
 
 /**
+ * @param {string} family
+ * @param {string} intent
+ * @param {string} scopeLabelHe
+ */
+function followUpTextForSurface(family, intent, scopeLabelHe) {
+  const base = TEXT[family] || TEXT.uncertainty_boundary;
+  const lab = String(scopeLabelHe || "").trim();
+  if (!lab || lab.length < 2) return base;
+  const short = lab.length > 22 ? `${lab.slice(0, 20)}…` : lab;
+  if (family === "action_today" || family === "action_week") {
+    return base.replace(/\?$/, ` — סביב «${short}»?`);
+  }
+  if (family === "uncertainty_boundary" || family === "advance_or_hold") {
+    return base.replace(/\?$/, ` (${short})?`);
+  }
+  return base;
+}
+
+/**
+ * @param {string[]} answerBlockTypes
+ */
+function shouldOmitFollowUpForSufficientAnswer(answerBlockTypes) {
+  const t = Array.isArray(answerBlockTypes) ? answerBlockTypes : [];
+  return t.includes("next_step") && t.includes("caution");
+}
+
+/**
+ * @param {string} chosen
+ * @param {object} ctx
+ */
+function followUpPassesValueGate(chosen, ctx) {
+  if (ctx.omitFollowUpEntirely) return false;
+  const t = followUpTextForSurface(chosen, ctx.intent, ctx.scopeLabelHe || "");
+  if (ctx.answerBodyTextHe && tokenOverlapCount(t, ctx.answerBodyTextHe) >= 2) return false;
+  const lastTwo = Array.isArray(ctx.lastTwoSuggestedTexts) ? ctx.lastTwoSuggestedTexts : [];
+  for (const prev of lastTwo) {
+    if (prev && tokenOverlapCount(t, String(prev)) >= 2) return false;
+  }
+  const s = scoreFamilyPhaseB(chosen, ctx);
+  if (s < -5) return false;
+  return true;
+}
+
+/**
  * Phase B: score families for ordering (higher = better).
  * @param {string} family
  * @param {object} ctx
@@ -87,21 +132,38 @@ function scoreFamilyPhaseB(family, ctx) {
     recentTags,
     streak,
     scopeType,
+    answerBodyTextHe,
+    lastTwoSuggestedTexts,
+    scopeLabelHe,
   } = ctx;
   let s = INTENT_FOLLOWUP_AFFINITY[intent]?.[family] ?? 0;
 
   const recentSuggest = Array.isArray(conv.recentSuggestedFollowupTexts) ? conv.recentSuggestedFollowupTexts : [];
   const answerFp = Array.isArray(conv.answerSummaryFingerprints) ? conv.answerSummaryFingerprints : [];
-  const t = TEXT[family] || "";
+  const t = followUpTextForSurface(family, intent, scopeLabelHe || "");
 
   for (const prev of recentSuggest) {
     const o = tokenOverlapCount(t, prev);
     if (o >= 2) s -= 8;
     else if (o >= 1) s -= 4;
   }
+  const last2 = Array.isArray(lastTwoSuggestedTexts) ? lastTwoSuggestedTexts : recentSuggest.slice(-2);
+  for (const prev of last2) {
+    const o = tokenOverlapCount(t, String(prev || ""));
+    if (o >= 2) s -= 14;
+    else if (o >= 1) s -= 6;
+  }
+
   for (const fp of answerFp.slice(-2)) {
     const o = tokenOverlapCount(t, fp);
     s -= o * 5;
+  }
+
+  if (answerBodyTextHe) {
+    const oa = tokenOverlapCount(t, answerBodyTextHe);
+    if (oa >= 3) s -= 22;
+    else if (oa >= 2) s -= 14;
+    else if (oa >= 1) s -= 6;
   }
 
   if (prior.slice(-2).includes(family)) s -= 6;
@@ -137,9 +199,14 @@ function rankFamiliesPhaseB(ranked, ctx) {
  * @param {number} hits
  */
 function firstOpenFamily(ranked, blocked, prior, hits) {
+  const recentTwo = prior.slice(-2).filter(Boolean);
   for (const fam of ranked) {
     if (blocked.has(fam)) continue;
     if (prior.slice(-2).includes(fam) && hits >= 1) continue;
+    if (recentTwo.includes(fam)) {
+      const hasAlt = ranked.some((f) => f !== fam && !blocked.has(f) && !recentTwo.includes(f));
+      if (hasAlt) continue;
+    }
     return fam;
   }
   return null;
@@ -151,6 +218,9 @@ function firstOpenFamily(ranked, blocked, prior, hits) {
  * @param {string} [input.scopeType]
  * @param {string} [input.scopeKey]
  * @param {string|null} [input.clickedFollowupFamilyThisTurn]
+ * @param {string} [input.scopeLabelHe]
+ * @param {string} [input.answerBodyTextHe]
+ * @param {string[]} [input.answerBlockTypes]
  * @param {object} input.truthPacket
  * @param {object} input.conversationState
  */
@@ -161,6 +231,9 @@ export function selectFollowUp(input) {
   const scopeType = String(input?.scopeType || "");
   const scopeKey = String(input?.scopeKey || "").trim();
   const clickedThis = String(input?.clickedFollowupFamilyThisTurn || "").trim() || null;
+  const scopeLabelHe = String(input?.scopeLabelHe || "").trim();
+  const answerBodyTextHe = String(input?.answerBodyTextHe || "").trim();
+  const answerBlockTypes = Array.isArray(input?.answerBlockTypes) ? input.answerBlockTypes : [];
 
   const families = Array.isArray(tp?.allowedFollowupFamilies) ? tp.allowedFollowupFamilies : [];
   const prior = Array.isArray(conv.priorFollowupFamilies) ? conv.priorFollowupFamilies : [];
@@ -168,6 +241,10 @@ export function selectFollowUp(input) {
   const clicked = Array.isArray(conv.clickedFollowups) ? conv.clickedFollowups : [];
   const answered = Array.isArray(conv.answeredConstraints) ? conv.answeredConstraints : [];
   const priorScopes = Array.isArray(conv.priorScopes) ? conv.priorScopes : [];
+  const recentSuggest = Array.isArray(conv.recentSuggestedFollowupTexts) ? conv.recentSuggestedFollowupTexts : [];
+  const lastTwoSuggestedTexts = recentSuggest.slice(-2);
+
+  const omitFollowUpEntirely = shouldOmitFollowUpForSufficientAnswer(answerBlockTypes);
 
   /** @type {string[]} */
   let ranked = [];
@@ -193,7 +270,18 @@ export function selectFollowUp(input) {
     }
   }
 
-  const ctx = { intent, prior, conv, recentTags, streak, scopeType };
+  const ctx = {
+    intent,
+    prior,
+    conv,
+    recentTags,
+    streak,
+    scopeType,
+    answerBodyTextHe,
+    lastTwoSuggestedTexts,
+    scopeLabelHe,
+    omitFollowUpEntirely,
+  };
   ranked = rankFamiliesPhaseB(ranked, ctx);
 
   function buildBlocked(softClicked) {
@@ -265,10 +353,20 @@ export function selectFollowUp(input) {
     };
   }
 
+  if (!followUpPassesValueGate(chosen, ctx)) {
+    return {
+      selected: null,
+      candidateFamiliesRanked: ranked,
+      noneReasonCode: "low_value_followup_suppressed",
+    };
+  }
+
+  const textHe = followUpTextForSurface(chosen, intent, scopeLabelHe);
+
   return {
     selected: {
       family: chosen,
-      textHe: TEXT[chosen] || TEXT.uncertainty_boundary,
+      textHe,
       reasonCode: reasonForChoice(chosen, relax),
     },
     candidateFamiliesRanked: ranked,

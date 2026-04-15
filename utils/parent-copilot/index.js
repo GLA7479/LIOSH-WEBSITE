@@ -84,11 +84,16 @@ export function runParentCopilotTurn(input) {
   const priorIntents = Array.isArray(conv.priorIntents) ? conv.priorIntents : [];
   const lastIntent = priorIntents.length ? String(priorIntents[priorIntents.length - 1] || "") : "";
   const continuityRepeat = lastIntent === intent && lastIntent.length > 0;
-  const plan = planConversation(intent, truthPacket, { continuityRepeat });
+  const plan = planConversation(intent, truthPacket, {
+    continuityRepeat,
+    turnOrdinal: priorIntents.length,
+    scopeType: truthPacket.scopeType,
+  });
   let draft = composeAnswerDraft(plan, truthPacket, {
     intent,
     continuityRepeat,
     conversationState: conv,
+    turnOrdinal: priorIntents.length,
   });
   let vDraft = validateAnswerDraft(draft, truthPacket);
   let fallbackUsed = false;
@@ -114,11 +119,17 @@ export function runParentCopilotTurn(input) {
     vDraft = validateAnswerDraft(draft, truthPacket);
   }
 
+  const answerBlockTypes = draft.answerBlocks.map((b) => b.type);
+  const answerBodyTextHe = draft.answerBlocks.map((b) => b.textHe).join(" ").trim();
+
   const follow = selectFollowUp({
     audience: "parent",
     intent,
     scopeType: truthPacket.scopeType,
     scopeKey: `${truthPacket.scopeType}:${truthPacket.scopeId}`,
+    scopeLabelHe: truthPacket.scopeLabel || "",
+    answerBodyTextHe,
+    answerBlockTypes,
     clickedFollowupFamilyThisTurn: input?.clickedFollowupFamily ? String(input.clickedFollowupFamily).trim() : null,
     truthPacket: {
       cannotConcludeYet: truthPacket.derivedLimits.cannotConcludeYet,

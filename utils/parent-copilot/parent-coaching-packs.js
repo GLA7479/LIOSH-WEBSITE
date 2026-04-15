@@ -8,16 +8,17 @@
  * @param {string[]} [conv.priorIntents]
  * @param {number} [conv.repeatedPhraseHits]
  * @param {string} intent
+ * @param {number} [turnOrdinal]
  * @returns {number}
  */
-export function coachingVariantIndex(conv, intent) {
+export function coachingVariantIndex(conv, intent, turnOrdinal = 0) {
   const pi = Array.isArray(conv?.priorIntents) ? conv.priorIntents.slice(-6).join("|") : "";
   const n = Number(conv?.repeatedPhraseHits) || 0;
   let h = 0;
   for (let i = 0; i < pi.length; i++) h = (h * 31 + pi.charCodeAt(i)) >>> 0;
   const s = String(intent || "");
   for (let i = 0; i < s.length; i++) h = (h * 17 + s.charCodeAt(i)) >>> 0;
-  h = (h + (n % 11) * 5 + (conv?.priorIntents?.length || 0)) >>> 0;
+  h = (h + (n % 11) * 5 + (conv?.priorIntents?.length || 0) + (Number(turnOrdinal) || 0) * 13) >>> 0;
   return h % 24;
 }
 
@@ -159,12 +160,15 @@ function personalizedLine(truthPacket, ix) {
  *   truthPacket: object;
  *   conversationState?: object;
  *   continuityRepeat?: boolean;
+ *   turnOrdinal?: number;
  * }} ctx
  */
 export function applyParentCoachingPacks(blocks, ctx) {
   const intent = String(ctx.intent || "");
   const conv = ctx.conversationState || {};
-  const ix = coachingVariantIndex(conv, intent);
+  const turnOrd =
+    ctx.turnOrdinal != null ? Number(ctx.turnOrdinal) : Number(conv?.priorIntents?.length) || 0;
+  const ix = coachingVariantIndex(conv, intent, turnOrd);
   const hits = Number(conv.repeatedPhraseHits) || 0;
   const effIx = hits >= 2 ? ix % 4 : ix;
   const cont = !!ctx.continuityRepeat;
