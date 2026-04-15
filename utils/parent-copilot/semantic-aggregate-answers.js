@@ -204,6 +204,226 @@ function ensureRequiredHedges(truthPacket, obs, meaning) {
 }
 
 /**
+ * @param {NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>} truthPacket
+ */
+function narrativeTextSlots(truthPacket) {
+  const nar =
+    truthPacket.contracts?.narrative?.textSlots && typeof truthPacket.contracts.narrative.textSlots === "object"
+      ? truthPacket.contracts.narrative.textSlots
+      : {};
+  return {
+    observation: String(nar.observation || "").trim(),
+    interpretation: String(nar.interpretation || "").trim(),
+    action: String(nar.action || "").trim(),
+    uncertainty: String(nar.uncertainty || "").trim(),
+  };
+}
+
+/**
+ * Answer-first: plain-language re-explain from narrative slots (not generic report summary).
+ * @param {{
+ *   utterance?: string;
+ *   truthPacket: NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>;
+ * }} input
+ * @returns {{ answerBlocks: Array<{ type: string; textHe: string; source: "composed" }> } | null}
+ */
+function buildClarifyReexplainDraft(input) {
+  const truthPacket = input?.truthPacket;
+  if (!truthPacket) return null;
+  const { observation, interpretation, uncertainty } = narrativeTextSlots(truthPacket);
+  const hedges = Array.isArray(truthPacket.allowedClaimEnvelope?.requiredHedges)
+    ? truthPacket.allowedClaimEnvelope.requiredHedges.map((h) => String(h || "").trim()).filter(Boolean)
+    : [];
+  const lead = hedges[0] ? `${hedges[0]} — ` : "";
+
+  /** @type {string} */
+  let obs = "";
+  /** @type {string} */
+  let meaning = "";
+
+  if (interpretation.length >= 8) {
+    obs = `${lead}במילים פשוטות, זה אומר: ${interpretation}`;
+  } else if (observation.length >= 8) {
+    obs = `${lead}במילים פשוטות, זה אומר: מה שרואים בדוח הוא ש־${observation.charAt(0).toLowerCase()}${observation.slice(1)}`;
+  } else if (uncertainty.length >= 8) {
+    obs = `${lead}${uncertainty}`;
+  } else {
+    return null;
+  }
+
+  if (observation.length >= 8 && interpretation.length >= 8 && obs !== `${lead}${uncertainty}`) {
+    meaning = `במסגרת המספרים בדוח: ${observation}`;
+  } else if (uncertainty.length >= 8 && !obs.includes(uncertainty.slice(0, Math.min(24, uncertainty.length)))) {
+    meaning = uncertainty;
+  } else if (interpretation.length >= 8 && obs.includes(interpretation.slice(0, Math.min(24, interpretation.length))) && observation.length >= 8) {
+    meaning = `רק כדי לעגן לדוח: ${observation}`;
+  } else {
+    meaning =
+      uncertainty.length >= 8
+        ? uncertainty
+        : "זה עדיין תמונה מהדוח עצמו, בלי להוסיף הסבר שלא הופיע שם.";
+  }
+
+  ({ obs, meaning } = ensureRequiredHedges(truthPacket, obs, meaning));
+  obs = norm(obs);
+  meaning = norm(meaning);
+  if (obs.length < 8 || meaning.length < 8) return null;
+  if (!passesEnvelope(truthPacket, obs, meaning)) return null;
+  return {
+    answerBlocks: [
+      { type: "observation", textHe: obs, source: "composed" },
+      { type: "meaning", textHe: meaning, source: "composed" },
+    ],
+  };
+}
+
+/**
+ * Answer-first: advance vs hold from derivedLimits + decision (bounded, parent language).
+ * @param {{
+ *   utterance?: string;
+ *   truthPacket: NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>;
+ * }} input
+ * @returns {{ answerBlocks: Array<{ type: string; textHe: string; source: "composed" }> } | null}
+ */
+function buildAdvanceOrHoldDraft(input) {
+  const truthPacket = input?.truthPacket;
+  if (!truthPacket) return null;
+  const dl = truthPacket.derivedLimits || {};
+  const d =
+    truthPacket.contracts?.decision && typeof truthPacket.contracts.decision === "object"
+      ? truthPacket.contracts.decision
+      : {};
+  const tier = Number(d.decisionTier) || 0;
+  const { observation, interpretation, uncertainty, action } = narrativeTextSlots(truthPacket);
+  const hedges = Array.isArray(truthPacket.allowedClaimEnvelope?.requiredHedges)
+    ? truthPacket.allowedClaimEnvelope.requiredHedges.map((h) => String(h || "").trim()).filter(Boolean)
+    : [];
+  const lead = hedges[0] ? `${hedges[0]} — ` : "";
+
+  const holdStrong =
+    dl.cannotConcludeYet === true ||
+    dl.readiness === "insufficient" ||
+    dl.confidenceBand === "low" ||
+    tier < 2;
+
+  const hasConcreteStep =
+    dl.recommendationEligible === true &&
+    dl.recommendationIntensityCap !== "RI0" &&
+    action.length >= 8;
+
+  /** @type {string} */
+  let obs = "";
+  /** @type {string} */
+  let meaning = "";
+
+  if (holdStrong) {
+    obs = `${lead}כרגע עדיף להמתין ולא לדחוף התקדמות גדולה: בדוח עדיין אין בסיס מספיק יציב כדי לומר שכדאי «ללחוץ על הגז».`;
+    meaning = norm(
+      uncertainty ||
+        interpretation ||
+        (observation.length >= 8 ? `לפי מה שמופיע בדוח: ${observation}` : "אפשר להמשיך בתרגול רגיל ולבדוק שוב אחרי עוד קצת נתונים."),
+    );
+  } else if (hasConcreteStep) {
+    obs = `${lead}אפשר להתקדם, אבל בזהירות ובצעדים קטנים — לא לקפוץ צעדים גדולים בבת אחת.`;
+    const tail = interpretation.length >= 8 ? ` ${interpretation}` : "";
+    meaning = norm(`${action}${tail}`);
+  } else {
+    obs = `${lead}אפשר להתקדם רק בקצב איטי: קצת תרגול, עצירה לבדיקה, ואז החלטה שוב לפי מה שיופיע בדוח.`;
+    meaning = norm(
+      interpretation ||
+        uncertainty ||
+        (observation.length >= 8 ? observation : "זה עדיין לא שלב לפתיחת יעדים חדשים שלא נבנו מהדוח."),
+    );
+  }
+
+  ({ obs, meaning } = ensureRequiredHedges(truthPacket, obs, meaning));
+  obs = norm(obs);
+  meaning = norm(meaning);
+  if (obs.length < 8 || meaning.length < 8) return null;
+  if (!passesEnvelope(truthPacket, obs, meaning)) return null;
+  return {
+    answerBlocks: [
+      { type: "observation", textHe: obs, source: "composed" },
+      { type: "meaning", textHe: meaning, source: "composed" },
+    ],
+  };
+}
+
+/**
+ * Answer-first: recommendation / next-step / focus questions from contract slots only.
+ * @param {{
+ *   utterance?: string;
+ *   truthPacket: NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>;
+ * }} input
+ * @returns {{ answerBlocks: Array<{ type: string; textHe: string; source: "composed" }> } | null}
+ */
+function buildRecommendationActionDraft(input) {
+  const truthPacket = input?.truthPacket;
+  const utterance = String(input?.utterance || "");
+  if (!truthPacket) return null;
+
+  const t = norm(utterance).toLowerCase();
+  const { action, interpretation: interp, uncertainty: unc } = narrativeTextSlots(truthPacket);
+
+  const dl = truthPacket.derivedLimits || {};
+  const eligible =
+    dl.recommendationEligible === true &&
+    dl.recommendationIntensityCap !== "RI0" &&
+    dl.cannotConcludeYet !== true;
+
+  const hedges = Array.isArray(truthPacket.allowedClaimEnvelope?.requiredHedges)
+    ? truthPacket.allowedClaimEnvelope.requiredHedges.map((h) => String(h || "").trim()).filter(Boolean)
+    : [];
+  const lead = hedges[0] ? `${hedges[0]} — ` : "";
+
+  /** @type {string} */
+  let obs = "";
+  /** @type {string} */
+  let meaning = "";
+
+  if (eligible && action) {
+    obs = `${lead}${action}`;
+    if (/השבוע|בשבוע|שבוע\s+הקרוב/.test(t)) {
+      meaning = interp
+        ? `${interp} במסגרת השבוע: לפרק את הצעד שמופיע בדוח ליחידות קטנות לאורך הימים, בלי להוסיף יעדים שלא מופיעים שם.`
+        : `במסגרת השבוע: לפרק את הצעד שמופיע בדוח ליחידות קטנות לאורך הימים, בלי להוסיף יעדים שלא מופיעים שם.`;
+    } else if (/עכשיו|היום|מיד|כרגע/.test(t) || /על\s+מה\s+להתמקד/.test(t)) {
+      meaning = interp
+        ? `${interp} כעת: להתחיל מהצעד שמופיע בדוח לפני הרחבה נוספת.`
+        : `כעת: להתחיל מהצעד שמופיע בדוח לפני הרחבה נוספת.`;
+    } else {
+      meaning = interp
+        ? `ההקשר מהדוח: ${interp} זהו הצעד המעשי שמופיע בדוח כרגע, בלי להרחיק מעבר למה שמוסבר שם בשלב הזה.`
+        : `זהו הצעד המעשי שמופיע בדוח כרגע, בלי להרחיק מעבר למה שמוסבר שם בשלב הזה.`;
+    }
+  } else {
+    if (dl.cannotConcludeYet === true) {
+      obs = `${lead}עדיין מוקדם מדי בדוח כדי להציע צעד הבית הבא בצורה ברורה — התמונה עדיין לא סגורה.`;
+    } else if (dl.recommendationEligible !== true || dl.recommendationIntensityCap === "RI0") {
+      obs = `${lead}הדוח לא מכוון כרגע להמלצת צעד מוגדרת מהבית; במצב כזה נכון יותר להמשיך לתרגל ולאסוף עוד תמונה לפני שמחליטים מה הלאה.`;
+    } else if (!action) {
+      obs = `${lead}בדוח אין כרגע ניסוח מעשי של הצעד הבא — רק תיאור של מה שנראה עד כה.`;
+    } else {
+      obs = `${lead}לא הצלחנו לגזור מהדוח צעד הבית הבא בצורה ברורה; עדיף עוד קצת בסיס לפני שמחליטים.`;
+    }
+    meaning = unc || interp || `מומלץ לחזור לנושא אחרי עוד תרגול, או כשתופיע בדוח שורת כיוון ברורה יותר.`;
+  }
+
+  ({ obs, meaning } = ensureRequiredHedges(truthPacket, obs, meaning));
+  obs = norm(obs);
+  meaning = norm(meaning);
+  if (obs.length < 8 || meaning.length < 8) return null;
+  if (!passesEnvelope(truthPacket, obs, meaning)) return null;
+
+  return {
+    answerBlocks: [
+      { type: "observation", textHe: obs, source: "composed" },
+      { type: "meaning", textHe: meaning, source: "composed" },
+    ],
+  };
+}
+
+/**
  * @param {{
  *   questionClass: string;
  *   utterance?: string;
@@ -218,6 +438,17 @@ export function buildSemanticAggregateDraft(input) {
   const payload = input?.payload;
   const truthPacket = input?.truthPacket;
   if (!truthPacket || !payload || typeof payload !== "object") return null;
+
+  if (qc === "clarify_reexplain") {
+    return buildClarifyReexplainDraft({ utterance, truthPacket });
+  }
+  if (qc === "advance_or_hold_question") {
+    return buildAdvanceOrHoldDraft({ utterance, truthPacket });
+  }
+  if (qc === "recommendation_action") {
+    return buildRecommendationActionDraft({ utterance, truthPacket });
+  }
+
   if (
     qc !== "strongest_subject" &&
     qc !== "weakest_subject" &&
@@ -339,7 +570,7 @@ export function buildSemanticAggregateDraft(input) {
     })[0];
     if (!atRisk) {
       obs = `${lead}אין כרגע נתונים מספיקים בדוח כדי לזהות מוקד תשומת לב ברור.`;
-      meaning = "כשמופיעים נתוני תרגול וחוזים פעילים לפי מקצוע, אפשר לזהות מוקד שדורש תשומת לב.";
+      meaning = "כשמופיעים נתוני תרגול מלאים לפי מקצוע בדוח, אפשר לזהות מוקד שדורש תשומת לב.";
     } else {
       obs = `${lead}המוקד שדורש כרגע הכי הרבה תשומת לב הוא ${atRisk.label}.`;
       meaning =
@@ -351,11 +582,11 @@ export function buildSemanticAggregateDraft(input) {
     const unclear = roll.filter((r) => r.cannotConcludeTopics > 0 || r.lowConfidenceTopics > 0 || r.insufficientTopics > 0);
     if (!unclear.length) {
       obs = `${lead}אין כרגע בדוח אינדיקציה חזקה ל״עדיין לא ברור״ ברמת מקצוע.`;
-      meaning = "עדיין נכון לשמור מעקב שוטף, אבל אין כאן כרגע סימן חוזי מובהק לחוסר בהירות.";
+      meaning = "עדיין נכון לשמור מעקב שוטף, אבל אין כאן כרגע סימן מובהק מהדוח לחוסר בהירות.";
     } else {
       const names = unclear.map((r) => r.label).join(" · ");
       obs = `${lead}עדיין לא ברור מספיק בעיקר ב: ${names}.`;
-      meaning = "הזיהוי מבוסס על חוזי חוסר ודאות/ביטחון נמוך/אי-בשלות שמופיעים בדוח עצמו.";
+      meaning = "הזיהוי מבוסס על סימנים של חוסר ודאות, ביטחון נמוך או דלות נתונים שמופיעים בדוח עצמו.";
     }
   } else if (qc === "most_stable") {
     if (roll.length < 2) {
@@ -368,12 +599,29 @@ export function buildSemanticAggregateDraft(input) {
         meaning = "נדרש בסיס נתונים רחב יותר (כמות שאלות ורצף ביצועים) כדי לדרג יציבות בצורה אמינה.";
       } else {
         obs = `${lead}לפי נתוני התקופה בדוח, המקצוע היציב ביותר כרגע הוא ${stable.label}.`;
-        meaning = `ההערכה מבוססת על שילוב של נפח תרגול, יציבות ביצועים וביטחון/בשלות חוזיים, לא על שורת נושא בודדת.`;
+        meaning = `ההערכה מבוססת על שילוב של נפח תרגול, יציבות ביצועים וביטחון ובשלות לפי הדוח, לא על שורת נושא בודדת.`;
       }
     }
   } else {
-    if (withAvg.length < 2) {
-      obs = `${lead} בדוח אין כרגע מספיק תרגול מספרי על לפחות שני מקצועות שונים, ולכן לא נדרגים כאן מקצועות אחד מול השני.`;
+    if (withAvg.length === 1 && (qc === "strongest_subject" || qc === "weakest_subject" || qc === "hardest_subject")) {
+      const only = withAvg[0];
+      const pct =
+        only.avg == null
+          ? "עדיין בלי ממוצע דיוק יציב שאפשר לסמוך עליו בביטחון"
+          : `עם דיוק ממוצע של כ־${only.avg}%`;
+      obs = `${lead}בתקופה שמופיעה בדוח יש כרגע בעיקר מקצוע אחד עם תרגול מספרי (${only.label}), ${pct}.`;
+      if (qc === "strongest_subject") {
+        meaning =
+          "כשיש מקצוע אחד עם נתונים, «הכי חזק» פשוט מתאר את מה שמופיע בפועל במקצוע הזה, בלי השוואה לאחרים. כדי לדרג בין מקצועות צריך שיופיעו לפחות שני מקצועות עם תרגול בדוח.";
+      } else if (qc === "weakest_subject") {
+        meaning =
+          "כשיש מקצוע אחד עם נתונים, «הכי חלש» לא אומר השוואה בין מקצועות — רק את הרף במקצוע היחיד שמופיע. להשוואה אמיתית צריך שני מקצועות ומעלה עם תרגול.";
+      } else {
+        meaning =
+          "כשיש רק מקצוע אחד עם נתונים, «הכי קשה» מתייחס למצב בתוך המקצוע הזה מהדוח, לא למי נוח יותר לעומת מקצוע אחר.";
+      }
+    } else if (withAvg.length < 2) {
+      obs = `${lead}בדוח אין כרגע מספיק תרגול מספרי על לפחות שני מקצועות שונים, ולכן לא נדרגים כאן מקצועות אחד מול השני.`;
       meaning = "כשמופיעים נתונים לשני מקצועות ומעלה, אפשר לשאול שוב ולקבל דירוג לפי הממוצעים שמוצגים בדוח.";
     } else {
       const sortedStrength = [...withAvg].sort((a, b) => (b.avg || 0) - (a.avg || 0) || b.totalQ - a.totalQ);

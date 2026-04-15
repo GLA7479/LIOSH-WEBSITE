@@ -38,6 +38,8 @@
     "test:parent-copilot-phaseB": "node scripts/parent-copilot-phaseB-suite.mjs",
     "test:parent-copilot-phaseC": "node scripts/parent-copilot-phaseC-suite.mjs",
     "test:parent-copilot-executive-answer-safe-matrix": "node scripts/parent-copilot-executive-answer-safe-matrix.mjs",
+    "test:parent-copilot-recommendation-semantic": "node scripts/parent-copilot-recommendation-semantic-suite.mjs",
+    "test:parent-copilot-parent-language-semantic": "node scripts/parent-copilot-parent-language-semantic-suite.mjs",
     "test:e2e-hebrew-niqqud": "node scripts/e2e-hebrew-niqqud-browser.mjs",
     "test:e2e-hebrew-g1-g2-ab": "node scripts/e2e-hebrew-g1-g2-product-fit.mjs"
   },

@@ -4,6 +4,7 @@
  */
 
 import {
+  findFirstAnchoredTopicRowForSubject,
   findFirstAnchoredTopicRow,
   findTopicRowByKey,
   subjectLabelHe,
@@ -36,7 +37,9 @@ function listTopicDisplayIndex(payload) {
     for (const tr of list) {
       const displayName = norm(tr?.displayName);
       const topicRowKey = String(tr?.topicRowKey || tr?.topicKey || "").trim();
-      if (!topicRowKey || displayName.length < 2) continue;
+      const nar = tr?.contractsV1?.narrative;
+      const anchored = !!(nar && typeof nar === "object" && String(nar?.textSlots?.observation || "").trim());
+      if (!topicRowKey || displayName.length < 2 || !anchored) continue;
       out.push({ subjectId: sid, topicRowKey, displayName });
     }
   }
@@ -46,11 +49,15 @@ function listTopicDisplayIndex(payload) {
 /**
  * @param {string} utterance
  * @param {unknown} payload
- * @returns {{ subjectId: string; topicRowKey: string; displayName: string } | null}
+ * @returns {{
+ *   best: { subjectId: string; topicRowKey: string; displayName: string; score: number } | null;
+ *   ambiguous: boolean;
+ *   candidates: Array<{ subjectId: string; topicRowKey: string; displayName: string; score: number }>;
+ * }}
  */
 function matchTopicFromUtterance(utterance, payload) {
   const u = norm(utterance);
-  if (u.length < 2) return null;
+  if (u.length < 2) return { best: null, ambiguous: false, candidates: [] };
   const rows = listTopicDisplayIndex(payload);
   /** @type {Array<{ subjectId: string; topicRowKey: string; displayName: string; score: number }>} */
   const hits = [];
@@ -60,10 +67,16 @@ function matchTopicFromUtterance(utterance, payload) {
     if (!u.includes(d)) continue;
     hits.push({ ...row, score: d.length });
   }
-  if (!hits.length) return null;
+  if (!hits.length) return { best: null, ambiguous: false, candidates: [] };
   hits.sort((a, b) => b.score - a.score || SUBJECT_ORDER.indexOf(a.subjectId) - SUBJECT_ORDER.indexOf(b.subjectId));
-  const best = hits[0];
-  return { subjectId: best.subjectId, topicRowKey: best.topicRowKey, displayName: best.displayName };
+  const best = hits[0] || null;
+  const second = hits[1] || null;
+  const ambiguous = !!(
+    best &&
+    second &&
+    (best.score - second.score <= 2 || best.displayName.startsWith(second.displayName) || second.displayName.startsWith(best.displayName))
+  );
+  return { best, ambiguous, candidates: hits.slice(0, 3) };
 }
 
 /**
@@ -120,6 +133,8 @@ export function resolveScope(input) {
       resolutionStatus: "clarification_required",
       clarificationQuestionHe:
         "לא נטען דוח מקיף — לא ניתן לענות מתוך נתוני התקופה. רעננו את הדף או בחרו תקופה אחרת.",
+      scopeConfidence: 0,
+      scopeReason: "missing_payload",
     };
   }
 
@@ -132,6 +147,8 @@ export function resolveScope(input) {
         scopeId: "executive",
         scopeLabel: "הדוח בתקופה הנבחרה",
       },
+      scopeConfidence: 0.98,
+      scopeReason: `aggregate_class:${aggregateClass}`,
     };
   }
 
@@ -141,6 +158,14 @@ export function resolveScope(input) {
 
   if (st === "topic" && sid) {
     const hit = findTopicRowByKey(payload, sid, subj);
+    if (!hit) {
+      return {
+        resolutionStatus: "clarification_required",
+        clarificationQuestionHe: "הנושא שנבחר לא כולל כרגע ניסוח מעוגן בדוח. בחרו נושא אחר עם נתוני תרגול.",
+        scopeConfidence: 0.2,
+        scopeReason: "selected_context_topic_missing_anchor",
+      };
+    }
     const label =
       String(hit?.tr?.displayName || "").trim() ||
       (subj ? `${subjectLabelHe(subj)} · נושא` : "נושא נבחר");
@@ -151,10 +176,21 @@ export function resolveScope(input) {
         scopeId: sid,
         scopeLabel: label,
       },
+      scopeConfidence: hit ? 0.99 : 0.35,
+      scopeReason: hit ? "selected_context_topic" : "selected_context_topic_missing_anchor",
     };
   }
   if (st === "subject" && (sid || subj)) {
     const subjectId = sid || subj;
+    const subjectHasAnchor = !!findFirstAnchoredTopicRowForSubject(payload, subjectId);
+    if (!subjectHasAnchor) {
+      return {
+        resolutionStatus: "clarification_required",
+        clarificationQuestionHe: "במקצוע שנבחר עדיין אין נושא מעוגן עם מספיק נתונים. בחרו מקצוע או נושא אחר.",
+        scopeConfidence: 0.24,
+        scopeReason: "selected_context_subject_missing_anchor",
+      };
+    }
     return {
       resolutionStatus: "resolved",
       scope: {
@@ -162,18 +198,32 @@ export function resolveScope(input) {
         scopeId: subjectId,
         scopeLabel: subjectLabelHe(subjectId),
       },
+      scopeConfidence: 0.9,
+      scopeReason: "selected_context_subject",
     };
   }
 
-  const topicHit = matchTopicFromUtterance(utterance, payload);
-  if (topicHit) {
+  const topicMatch = matchTopicFromUtterance(utterance, payload);
+  if (topicMatch.ambiguous) {
+    return {
+      resolutionStatus: "clarification_required",
+      clarificationQuestionHe: `נראה שהשאלה מתייחסת לכמה נושאים (${topicMatch.candidates
+        .map((x) => x.displayName)
+        .join(" / ")}). כתבו את שם הנושא המדויק כדי שאענה רק עליו.`,
+      scopeConfidence: 0.25,
+      scopeReason: "utterance_topic_ambiguous",
+    };
+  }
+  if (topicMatch.best) {
     return {
       resolutionStatus: "resolved",
       scope: {
         scopeType: "topic",
-        scopeId: topicHit.topicRowKey,
-        scopeLabel: topicHit.displayName,
+        scopeId: topicMatch.best.topicRowKey,
+        scopeLabel: topicMatch.best.displayName,
       },
+      scopeConfidence: 0.84,
+      scopeReason: "utterance_topic_match",
     };
   }
 
@@ -186,6 +236,8 @@ export function resolveScope(input) {
         scopeId: subjectId,
         scopeLabel: subjectLabelHe(subjectId),
       },
+      scopeConfidence: 0.73,
+      scopeReason: "utterance_subject_match",
     };
   }
 
@@ -195,6 +247,8 @@ export function resolveScope(input) {
       resolutionStatus: "clarification_required",
       clarificationQuestionHe:
         "אין כרגע נתוני נושא מספיקים בדוח כדי לבסס תשובה. נסו שוב אחרי שמופיעים נושאים עם תרגול בטווח התאריכים.",
+      scopeConfidence: 0,
+      scopeReason: "no_anchor_available",
     };
   }
 
@@ -205,6 +259,8 @@ export function resolveScope(input) {
       scopeId: "executive",
       scopeLabel: "הדוח בתקופה הנבחרה",
     },
+    scopeConfidence: 0.56,
+    scopeReason: "executive_fallback",
   };
 }
 

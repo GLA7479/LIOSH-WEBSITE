@@ -115,6 +115,7 @@ export function buildResolvedParentCopilotResponse(parts) {
     fallbackUsed,
     contractSourcesUsed,
     priorRepeated,
+    metadata,
   } = parts;
 
   const answerValidatorOk = validatorStatus === "pass";
@@ -140,6 +141,7 @@ export function buildResolvedParentCopilotResponse(parts) {
       ...(suggestedFollowUp ? { addedFollowUpFamily: suggestedFollowUp.family } : {}),
       repeatedPhraseHits: priorRepeated || 0,
     },
+    metadata: metadata && typeof metadata === "object" ? metadata : undefined,
   };
 }
 
@@ -147,7 +149,7 @@ export function buildResolvedParentCopilotResponse(parts) {
  * @param {object} parts
  */
 export function buildClarificationParentCopilotResponse(parts) {
-  const { clarificationQuestionHe, intent, priorRepeated } = parts;
+  const { clarificationQuestionHe, intent, priorRepeated, metadata } = parts;
   return {
     schemaVersion: "v1",
     audience: "parent",
@@ -166,6 +168,7 @@ export function buildClarificationParentCopilotResponse(parts) {
       addedScope: "",
       repeatedPhraseHits: priorRepeated || 0,
     },
+    metadata: metadata && typeof metadata === "object" ? metadata : undefined,
   };
 }
 

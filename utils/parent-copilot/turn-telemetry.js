@@ -1,0 +1,106 @@
+/**
+ * Turn-level quality telemetry for Parent Copilot.
+ * Pure helpers only (no side effects).
+ */
+
+/**
+ * @param {Array<{ type?: string; textHe?: string; source?: string }>} answerBlocks
+ * @param {NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>> | null} truthPacket
+ */
+export function measureGroundedness(answerBlocks, truthPacket) {
+  const blocks = Array.isArray(answerBlocks) ? answerBlocks : [];
+  if (!blocks.length || !truthPacket) return { score: 0, coveredBlocks: 0, totalBlocks: blocks.length };
+
+  const nar = truthPacket.contracts?.narrative?.textSlots || {};
+  const slotBundle = [
+    String(nar.observation || ""),
+    String(nar.interpretation || ""),
+    String(nar.action || ""),
+    String(nar.uncertainty || ""),
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  let covered = 0;
+  for (const b of blocks) {
+    const txt = String(b?.textHe || "").trim();
+    if (!txt) continue;
+    if (String(b?.source || "") === "contract_slot") {
+      covered += 1;
+      continue;
+    }
+    const firstChunk = txt.slice(0, Math.min(42, txt.length));
+    if (firstChunk && slotBundle.includes(firstChunk)) covered += 1;
+  }
+  const score = Math.round((covered / Math.max(1, blocks.length)) * 100);
+  return { score, coveredBlocks: covered, totalBlocks: blocks.length };
+}
+
+/**
+ * @param {Array<{ textHe?: string }>} answerBlocks
+ */
+export function measureGenericness(answerBlocks) {
+  const blocks = Array.isArray(answerBlocks) ? answerBlocks : [];
+  const text = blocks.map((b) => String(b?.textHe || "")).join(" ").trim();
+  if (!text) return { score: 100, repeatedCueCount: 0 };
+  const cues = ["נכון לעכשיו", "בשלב זה", "ממשיכים לעקוב", "עדיין מוקדם לקבוע", "כדאי להמשיך לעקוב"];
+  let hits = 0;
+  for (const cue of cues) {
+    if (text.includes(cue)) hits += 1;
+  }
+  const uniqWords = new Set(text.split(/\s+/).filter((x) => x.length > 2));
+  const lexicalRichness = uniqWords.size / Math.max(1, text.split(/\s+/).length);
+  const score = Math.max(0, Math.min(100, Math.round(35 + hits * 12 + (1 - lexicalRichness) * 45)));
+  return { score, repeatedCueCount: hits };
+}
+
+/**
+ * @param {object} input
+ * @param {string} input.intent
+ * @param {number} input.intentConfidence
+ * @param {string} input.intentReason
+ * @param {number} input.scopeConfidence
+ * @param {string} input.scopeReason
+ * @param {Array<{ type?: string; textHe?: string; source?: string }>} input.answerBlocks
+ * @param {boolean} input.fallbackUsed
+ * @param {string[]} input.validatorFailCodes
+ * @param {boolean} input.semanticAggregateSatisfied
+ * @param {string} input.generationPath
+ * @param {NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>> | null} input.truthPacket
+ */
+export function buildTurnTelemetry(input) {
+  const groundedness = measureGroundedness(input.answerBlocks, input.truthPacket);
+  const genericness = measureGenericness(input.answerBlocks);
+  return {
+    intent: {
+      value: input.intent,
+      confidence: Number(input.intentConfidence || 0),
+      reason: String(input.intentReason || "unknown"),
+    },
+    scope: {
+      confidence: Number(input.scopeConfidence || 0),
+      reason: String(input.scopeReason || "unknown"),
+    },
+    generationPath: String(input.generationPath || "deterministic"),
+    fallbackUsed: !!input.fallbackUsed,
+    semanticAggregateSatisfied: !!input.semanticAggregateSatisfied,
+    quality: {
+      groundednessScore: groundedness.score,
+      genericnessScore: genericness.score,
+      groundedCoveredBlocks: groundedness.coveredBlocks,
+      groundedTotalBlocks: groundedness.totalBlocks,
+      repeatedCueCount: genericness.repeatedCueCount,
+    },
+    validator: {
+      failCodes: Array.isArray(input.validatorFailCodes) ? [...input.validatorFailCodes] : [],
+      status: Array.isArray(input.validatorFailCodes) && input.validatorFailCodes.length ? "fail" : "pass",
+    },
+    timestampMs: Date.now(),
+  };
+}
+
+export default {
+  buildTurnTelemetry,
+  measureGroundedness,
+  measureGenericness,
+};

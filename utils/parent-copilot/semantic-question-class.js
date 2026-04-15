@@ -7,7 +7,8 @@
  * @param {string} utterance
  * @returns {
  *   "strongest_subject"|"weakest_subject"|"hardest_subject"|"subject_listing"|"period_highlight"|
- *   "comparison"|"most_practice"|"least_data"|"improved"|"needs_attention"|"still_unclear"|"most_stable"|"none"
+ *   "comparison"|"most_practice"|"least_data"|"improved"|"needs_attention"|"still_unclear"|"most_stable"|
+ *   "recommendation_action"|"clarify_reexplain"|"advance_or_hold_question"|"none"
  * }
  */
 export function detectAggregateQuestionClass(utterance) {
@@ -17,6 +18,27 @@ export function detectAggregateQuestionClass(utterance) {
     .toLowerCase();
 
   if (t.length < 3) return "none";
+
+  if (
+    /לא\s+הבנתי|לא\s+הבנתי\.|תסביר\s+פשוט|מה\s+זה\s+אומר\s+בעצם|^למה\s*\??$|^למה\?$|למה\s+זה\s+אומר/.test(t)
+  ) {
+    return "clarify_reexplain";
+  }
+
+  if (/להתקדם\s+או\s+להמתין|כדאי\s+להתקדם|לחכות\s+או\s+להמשיך|להמשיך\s+או\s+להמתין|להמתין\s+או\s+להתקדם/.test(t)) {
+    return "advance_or_hold_question";
+  }
+
+  if (
+    /המלצות?\s+להמשך|המלצה\s+להמשך|מה\s+ההמלצות|המלצות\s+למה\s+להמשיך/.test(t) ||
+    /מה\s+לעשות\s+עכשיו|מה\s+עושים\s+עכשיו|מה\s+לעשות\s+היום/.test(t) ||
+    /מה\s+לעשות\s+בשבוע|מה\s+לעשות\s+השבוע|מה\s+לעשות\s+בשבוע\s+הקרוב/.test(t) ||
+    /מה\s+הצעד\s+הבא|הצעד\s+הבא/.test(t) ||
+    /על\s+מה\s+להתמקד\s+עכשיו|על\s+מה\s+להתמקד/.test(t) ||
+    /מה\s+הכי\s+חשוב\s+(כרגע|עכשיו|היום)/.test(t)
+  ) {
+    return "recommendation_action";
+  }
 
   const hasSubjectWord = /מקצוע|מקצועות|חומר|חומרים/.test(t);
   const hasMore = /יש\s+עוד|עוד\s+מק|אילו\s+מק|כל\s+המק|רשימת\s+מק|כמה\s+מק/.test(t);

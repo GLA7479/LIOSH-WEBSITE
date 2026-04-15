@@ -26,4 +26,7 @@ jobs:
       - run: npm run test:parent-copilot-phaseA
       - run: npm run test:parent-copilot-phaseB
       - run: npm run test:parent-copilot-phaseC
+      - run: npm run test:parent-copilot-executive-answer-safe-matrix
+      - run: npm run test:parent-copilot-recommendation-semantic
+      - run: npm run test:parent-copilot-parent-language-semantic
       - run: npx next build

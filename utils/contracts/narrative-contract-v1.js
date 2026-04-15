@@ -3,6 +3,8 @@
  * Deterministic gate-to-text binding for parent-facing wording.
  */
 
+import { pickVariant } from "../parent-report-language/variants.js";
+
 export const NARRATIVE_CONTRACT_VERSION = "v1";
 
 export const WORDING_ENVELOPES = Object.freeze(["WE0", "WE1", "WE2", "WE3", "WE4"]);
@@ -102,31 +104,95 @@ function deriveEnvelope(input) {
   return "WE3";
 }
 
-function buildObservationSlot(displayName, q, acc) {
-  if (q <= 0) return `ב${displayName} עדיין אין מספיק תרגול בטווח כדי לסכם תמונה יציבה.`;
-  return `ב${displayName} נצפו ${q} שאלות, עם דיוק של כ־${acc}%.`;
-}
-
-function buildInterpretationSlot(envelope, cannotConcludeYet) {
-  if (cannotConcludeYet || envelope === "WE0") {
-    return "בשלב זה לא קובעים מסקנה יציבה, והכיוון עדיין בבדיקה.";
+function buildObservationSlot(displayName, q, acc, seed) {
+  if (q <= 0) {
+    return pickVariant(seed, [
+      `ב${displayName} עדיין אין מספיק תרגול בטווח כדי לסכם תמונה יציבה.`,
+      `ב${displayName} כמות התרגול בטווח הנוכחי עדיין קטנה מדי לקביעה יציבה.`,
+      `ב${displayName} חסר כרגע נפח תרגול מספק כדי לבסס מסקנה בטוחה.`,
+    ]);
   }
-  if (envelope === "WE1") return "יש סימנים התחלתיים, אך עדיין חסרה בשלות לקביעה חזקה.";
-  if (envelope === "WE2") return "יש כיוון עבודה סביר, ועדיין נדרש אישור נוסף לפני מסקנה חזקה.";
-  if (envelope === "WE3") return "הכיוון נראה עקבי יחסית בטווח הנוכחי, תוך המשך מעקב.";
-  return "נראית עקביות טובה יחסית בטווח, ועדיין ממשיכים לאמת אותה לאורך זמן.";
+  return pickVariant(seed, [
+    `ב${displayName} נצפו ${q} שאלות, עם דיוק של כ־${acc}%.`,
+    `ב${displayName} בתקופה הזו נרשמו ${q} שאלות, ברמת דיוק של כ־${acc}%.`,
+    `ב${displayName} יש כרגע ${q} תרגולים מתועדים, עם דיוק ממוצע של כ־${acc}%.`,
+  ]);
 }
 
-function buildActionSlot(capIntensity, eligible) {
+function buildInterpretationSlot(envelope, cannotConcludeYet, seed) {
+  if (cannotConcludeYet || envelope === "WE0") {
+    return pickVariant(seed, [
+      "בשלב זה לא קובעים מסקנה יציבה, והכיוון עדיין בבדיקה.",
+      "נכון לעכשיו מוקדם לקבוע תמונה סופית, ולכן נשארים עם מסקנה זהירה.",
+      "עדיין אין בסיס רחב מספיק כדי לקבוע מסקנה חזקה, ולכן ממשיכים באיסוף נתונים.",
+    ]);
+  }
+  if (envelope === "WE1") {
+    return pickVariant(seed, [
+      "יש סימנים התחלתיים, אך עדיין חסרה בשלות לקביעה חזקה.",
+      "מתחילה להופיע מגמה חיובית, אבל עדיין צריך עוד ביסוס לפני מסקנה יציבה.",
+      "רואים כיוון ראשוני, ועדיין לא שלב לקביעה חד-משמעית.",
+    ]);
+  }
+  if (envelope === "WE2") {
+    return pickVariant(seed, [
+      "יש כיוון עבודה סביר, ועדיין נדרש אישור נוסף לפני מסקנה חזקה.",
+      "התמונה נראית מתקדמת, אך עדיין חשוב לאמת בסבב נוסף.",
+      "הכיוון בדוח חיובי יחסית, ועדיין נדרש חיזוק לפני קביעה חזקה.",
+    ]);
+  }
+  if (envelope === "WE3") {
+    return pickVariant(seed, [
+      "הכיוון נראה עקבי יחסית בטווח הנוכחי, תוך המשך מעקב.",
+      "נראה שהביצוע נשמר באופן יציב יחסית בתקופה הזו, יחד עם מעקב רציף.",
+      "יש עקביות טובה יחסית בתוצאות, ובמקביל ממשיכים לעקוב כדי לשמר אותה.",
+    ]);
+  }
+  return pickVariant(seed, [
+    "נראית עקביות טובה יחסית בטווח, ועדיין ממשיכים לאמת אותה לאורך זמן.",
+    "התמונה מצביעה על יציבות גבוהה יחסית בתקופה הזו, לצד המשך בדיקה שוטפת.",
+    "ניכר כיוון יציב וחזק יחסית, ובכל זאת נשארים עם בקרה רציפה לאורך זמן.",
+  ]);
+}
+
+function buildActionSlot(capIntensity, eligible, seed) {
   if (!eligible || capIntensity === "RI0") return null;
-  if (capIntensity === "RI1") return "מומלץ תרגול קצר וממוקד באותה רמה לפני שינוי.";
-  if (capIntensity === "RI2") return "מומלץ חיזוק ממוקד ובדיקת עצמאות קצרה לפני קידום.";
-  return "אפשר לשקול צעד התקדמות מדוד בנושא זה בלבד.";
+  if (capIntensity === "RI1") {
+    return pickVariant(seed, [
+      "מומלץ תרגול קצר וממוקד באותה רמה לפני שינוי.",
+      "כדאי לבצע חזרה קצרה ומדויקת ברמה הנוכחית לפני מעבר שלב.",
+      "מומלץ לחזק עוד מעט באותה רמה ורק אחר כך לבדוק שינוי.",
+    ]);
+  }
+  if (capIntensity === "RI2") {
+    return pickVariant(seed, [
+      "מומלץ חיזוק ממוקד ובדיקת עצמאות קצרה לפני קידום.",
+      "כדאי לתרגל באופן ממוקד ואז לבדוק עצמאות קצרה לפני מעבר.",
+      "מומלץ להוסיף תרגול חיזוק קצר ולבצע בדיקת עצמאות לפני התקדמות.",
+    ]);
+  }
+  return pickVariant(seed, [
+    "אפשר לשקול צעד התקדמות מדוד בנושא זה בלבד.",
+    "ניתן לשקול קידום קטן ומבוקר בנושא הזה בלבד.",
+    "אפשר לעבור צעד אחד קדימה באופן זהיר ומוגבל בנושא זה.",
+  ]);
 }
 
-function buildUncertaintySlot(hedgeLevel) {
-  if (hedgeLevel === "mandatory") return "בשלב זה ועדיין מוקדם לקבוע סופית, לכן ממשיכים במעקב זהיר.";
-  if (hedgeLevel === "light") return "נכון לעכשיו כדאי להמשיך לעקוב ולאמת את הכיוון בסבב הקרוב.";
+function buildUncertaintySlot(hedgeLevel, seed) {
+  if (hedgeLevel === "mandatory") {
+    return pickVariant(seed, [
+      "בשלב זה ועדיין מוקדם לקבוע סופית, לכן ממשיכים במעקב זהיר.",
+      "עדיין מוקדם לקבוע באופן סופי, ולכן נשארים עם מעקב הדוק וזהיר.",
+      "בשלב זה לא סוגרים מסקנה סופית וממשיכים לאסוף תמונה לפני החלטה חזקה.",
+    ]);
+  }
+  if (hedgeLevel === "light") {
+    return pickVariant(seed, [
+      "נכון לעכשיו כדאי להמשיך לעקוב ולאמת את הכיוון בסבב הקרוב.",
+      "נכון לעכשיו מומלץ להמשיך במעקב קצר כדי לאשר שהמגמה נשמרת.",
+      "כדאי להמשיך לבדוק את הכיוון בסבב הבא לפני קביעה חזקה יותר.",
+    ]);
+  }
   return null;
 }
 
@@ -146,6 +212,7 @@ export function buildNarrativeContractV1(input) {
   const existingIntensity = normalizeRecommendationIntensity(input?.contractsV1?.recommendation?.intensity);
   const capIntensity = ENVELOPE_CAP[envelope] || "RI0";
   const cappedIntensity = RI_RANK[existingIntensity] > RI_RANK[capIntensity] ? capIntensity : existingIntensity;
+  const baseSeed = `${topicKey}|${subjectId}|${displayName}|${envelope}|${q}|${acc}|${cappedIntensity}|${hedgeLevel}`;
 
   return {
     contractVersion: NARRATIVE_CONTRACT_VERSION,
@@ -159,10 +226,10 @@ export function buildNarrativeContractV1(input) {
     allowedSections: [...ALLOWED_SECTIONS],
     recommendationIntensityCap: capIntensity,
     textSlots: {
-      observation: buildObservationSlot(displayName, q, acc),
-      interpretation: buildInterpretationSlot(envelope, cannotConcludeYet),
-      action: buildActionSlot(cappedIntensity, recommendationEligible),
-      uncertainty: buildUncertaintySlot(hedgeLevel),
+      observation: buildObservationSlot(displayName, q, acc, `${baseSeed}:obs`),
+      interpretation: buildInterpretationSlot(envelope, cannotConcludeYet, `${baseSeed}:int`),
+      action: buildActionSlot(cappedIntensity, recommendationEligible, `${baseSeed}:act`),
+      uncertainty: buildUncertaintySlot(hedgeLevel, `${baseSeed}:unc`),
     },
   };
 }

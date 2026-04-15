@@ -98,14 +98,23 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
       await sleep(PROCESSING_UI_MS);
 
       try {
-        const res = parentCopilot.runParentCopilotTurn({
-          audience: "parent",
-          payload,
-          utterance: q,
-          sessionId,
-          selectedContextRef,
-          clickedFollowupFamily: meta.clickedFollowupFamily || null,
-        });
+        const res = await (typeof parentCopilot.runParentCopilotTurnAsync === "function"
+          ? parentCopilot.runParentCopilotTurnAsync({
+              audience: "parent",
+              payload,
+              utterance: q,
+              sessionId,
+              selectedContextRef,
+              clickedFollowupFamily: meta.clickedFollowupFamily || null,
+            })
+          : parentCopilot.runParentCopilotTurn({
+              audience: "parent",
+              payload,
+              utterance: q,
+              sessionId,
+              selectedContextRef,
+              clickedFollowupFamily: meta.clickedFollowupFamily || null,
+            }));
 
         let answerCore = "";
         let fullText = "";

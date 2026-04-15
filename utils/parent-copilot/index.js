@@ -4,7 +4,7 @@
 
 import { resolveScope } from "./scope-resolver.js";
 import { buildTruthPacketV1 } from "./truth-packet-v1.js";
-import { resolveIntent } from "./intent-resolver.js";
+import { resolveIntentWithConfidence } from "./intent-resolver.js";
 import { planConversation } from "./conversation-planner.js";
 import { composeAnswerDraft } from "./answer-composer.js";
 import { detectAggregateQuestionClass } from "./semantic-question-class.js";
@@ -18,17 +18,22 @@ import {
   buildClarificationParentCopilotResponse,
   buildQuickActions,
 } from "./render-adapter.js";
+import { normalizeParentFacingHe } from "../parent-report-language/parent-facing-normalize-he.js";
+import { buildTurnTelemetry } from "./turn-telemetry.js";
+import { maybeGenerateGroundedLlmDraft } from "./llm-orchestrator.js";
+
+function normalizeAnswerBlocksHe(answerBlocks) {
+  return (Array.isArray(answerBlocks) ? answerBlocks : []).map((b) => ({
+    ...b,
+    textHe: normalizeParentFacingHe(String(b?.textHe || "").trim()),
+  }));
+}
 
 /**
+ * Deterministic baseline path used by both sync and async runtimes.
  * @param {object} input
- * @param {"parent"|"teacher"} [input.audience]
- * @param {unknown} input.payload
- * @param {string} [input.utterance]
- * @param {string} [input.sessionId]
- * @param {null|{ scopeType?: string; scopeId?: string; subjectId?: string }} [input.selectedContextRef]
- * @param {string|null} [input.clickedFollowupFamily] quick-action chip → maps to session clickedFollowups
  */
-export function runParentCopilotTurn(input) {
+function runDeterministicCore(input) {
   const audience = String(input?.audience || "parent");
   const sessionId = String(input?.sessionId || "default");
   const conv = getConversationState(sessionId);
@@ -39,13 +44,16 @@ export function runParentCopilotTurn(input) {
       clarificationQuestionHe: "מצב זה מיועד להורה בלבד.",
       intent: "uncertainty_boundary",
       priorRepeated,
+      metadata: { intentConfidence: 1, intentReason: "audience_guard", scopeConfidence: 1, scopeReason: "audience_guard" },
     });
     validateParentCopilotResponseV1(r);
-    return r;
+    return { response: r, audience, sessionId, conv, truthPacket: null, intent: "uncertainty_boundary", scopeMeta: null, utteranceStr: "" };
   }
 
   const utteranceStr = String(input?.utterance || "");
   const aggregateQuestionClass = detectAggregateQuestionClass(utteranceStr);
+  const intentResolution = resolveIntentWithConfidence(utteranceStr);
+  const intent = intentResolution.intent;
 
   const scopeRes = resolveScope({
     payload: input?.payload,
@@ -53,39 +61,59 @@ export function runParentCopilotTurn(input) {
     selectedContextRef: input?.selectedContextRef ?? null,
   });
 
+  const scopeMeta = {
+    scopeConfidence: Number(scopeRes?.scopeConfidence || 0),
+    scopeReason: String(scopeRes?.scopeReason || "unknown_scope_reason"),
+    intentConfidence: Number(intentResolution.confidence || 0),
+    intentReason: String(intentResolution.reason || "unknown_intent_reason"),
+  };
+
   if (scopeRes.resolutionStatus === "clarification_required") {
     const r = buildClarificationParentCopilotResponse({
       clarificationQuestionHe: scopeRes.clarificationQuestionHe || "נדרש הקשר נוסף.",
-      intent: "uncertainty_boundary",
+      intent,
       priorRepeated,
+      metadata: scopeMeta,
     });
     validateParentCopilotResponseV1(r);
-    return r;
+    return { response: r, audience, sessionId, conv, truthPacket: null, intent, scopeMeta, utteranceStr };
   }
 
   const scope = scopeRes.scope;
   if (!scope) {
     const r = buildClarificationParentCopilotResponse({
       clarificationQuestionHe: "לא ניתן לזהות הקשר מהדוח.",
-      intent: "uncertainty_boundary",
+      intent,
       priorRepeated,
+      metadata: scopeMeta,
     });
     validateParentCopilotResponseV1(r);
-    return r;
+    return { response: r, audience, sessionId, conv, truthPacket: null, intent, scopeMeta, utteranceStr };
   }
 
   const truthPacket = buildTruthPacketV1(input.payload, scope);
   if (!truthPacket) {
     const r = buildClarificationParentCopilotResponse({
       clarificationQuestionHe: "לא נמצאו חוזים תואמים לנושא שנבחר בדוח.",
-      intent: "uncertainty_boundary",
+      intent,
       priorRepeated,
+      metadata: scopeMeta,
     });
     validateParentCopilotResponseV1(r);
-    return r;
+    return { response: r, audience, sessionId, conv, truthPacket: null, intent, scopeMeta, utteranceStr };
   }
 
-  const intent = resolveIntent(utteranceStr);
+  if (intentResolution.shouldClarify && aggregateQuestionClass === "none" && utteranceStr.trim().length >= 2) {
+    const r = buildClarificationParentCopilotResponse({
+      clarificationQuestionHe: "כדי לענות מדויק על הדוח, כתבו בקצרה אם השאלה על מה רואים, מה המשמעות, או מה כדאי לעשות.",
+      intent,
+      priorRepeated,
+      metadata: scopeMeta,
+    });
+    validateParentCopilotResponseV1(r);
+    return { response: r, audience, sessionId, conv, truthPacket, intent, scopeMeta, utteranceStr };
+  }
+
   const priorIntents = Array.isArray(conv.priorIntents) ? conv.priorIntents : [];
   const lastIntent = priorIntents.length ? String(priorIntents[priorIntents.length - 1] || "") : "";
   const continuityRepeat = lastIntent === intent && lastIntent.length > 0;
@@ -122,6 +150,7 @@ export function runParentCopilotTurn(input) {
     });
   }
 
+  draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
   let vDraft = validateAnswerDraft(draft, truthPacket);
   let fallbackUsed = false;
 
@@ -129,6 +158,7 @@ export function runParentCopilotTurn(input) {
     semanticAggregateSatisfied = false;
     draft = buildDeterministicFallbackAnswer(truthPacket, vDraft.failCodes);
     fallbackUsed = true;
+    draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
     vDraft = validateAnswerDraft(draft, truthPacket);
   }
   if (!vDraft.ok) {
@@ -145,6 +175,7 @@ export function runParentCopilotTurn(input) {
       draft = buildDeterministicFallbackAnswer(truthPacket, ["emergency_fallback"]);
     }
     fallbackUsed = true;
+    draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
     vDraft = validateAnswerDraft(draft, truthPacket);
   }
 
@@ -176,7 +207,7 @@ export function runParentCopilotTurn(input) {
     ? {
         kind: /** @type {const} */ ("question"),
         family: follow.selected.family,
-        textHe: follow.selected.textHe,
+        textHe: normalizeParentFacingHe(follow.selected.textHe),
         reasonCode: follow.selected.reasonCode,
       }
     : null;
@@ -206,6 +237,7 @@ export function runParentCopilotTurn(input) {
     fallbackUsed,
     contractSourcesUsed: [...new Set(contractSourcesUsed)],
     priorRepeated,
+    metadata: scopeMeta,
   });
 
   const finalCheck = validateParentCopilotResponseV1(response);
@@ -217,6 +249,21 @@ export function runParentCopilotTurn(input) {
       quickActions: buildQuickActions(truthPacket, false),
     };
   }
+
+  const telemetry = buildTurnTelemetry({
+    intent,
+    intentConfidence: scopeMeta.intentConfidence,
+    intentReason: scopeMeta.intentReason,
+    scopeConfidence: scopeMeta.scopeConfidence,
+    scopeReason: scopeMeta.scopeReason,
+    answerBlocks: draft.answerBlocks,
+    fallbackUsed,
+    validatorFailCodes,
+    semanticAggregateSatisfied,
+    generationPath: "deterministic",
+    truthPacket,
+  });
+  response = { ...response, telemetry };
 
   const constraintParts = [vDraft.ok ? "turn:validator_pass" : "turn:validator_fail"];
   if (draft.answerBlocks.some((b) => b.type === "uncertainty_reason")) constraintParts.push("surface:uncertainty");
@@ -241,10 +288,97 @@ export function runParentCopilotTurn(input) {
     ...(assistantAnswerSummary ? { assistantAnswerSummary } : {}),
   });
 
-  return response;
+  return { response, audience, sessionId, conv, truthPacket, intent, scopeMeta, utteranceStr, draft, validatorFailCodes };
+}
+
+/**
+ * @param {object} input
+ * @param {"parent"|"teacher"} [input.audience]
+ * @param {unknown} input.payload
+ * @param {string} [input.utterance]
+ * @param {string} [input.sessionId]
+ * @param {null|{ scopeType?: string; scopeId?: string; subjectId?: string }} [input.selectedContextRef]
+ * @param {string|null} [input.clickedFollowupFamily] quick-action chip → maps to session clickedFollowups
+ */
+export function runParentCopilotTurn(input) {
+  return runDeterministicCore(input).response;
+}
+
+/**
+ * Async path with optional grounded LLM override and deterministic fallback.
+ * Sync API stays available via `runParentCopilotTurn`.
+ * @param {object} input
+ */
+export async function runParentCopilotTurnAsync(input) {
+  const core = runDeterministicCore(input);
+  const baseResponse = core.response;
+  if (baseResponse?.resolutionStatus !== "resolved" || !core.truthPacket || !core.utteranceStr) return baseResponse;
+
+  const llmResult = await maybeGenerateGroundedLlmDraft({
+    utterance: core.utteranceStr,
+    truthPacket: core.truthPacket,
+  });
+  if (!llmResult.ok || !llmResult.draft) {
+    return {
+      ...baseResponse,
+      telemetry: {
+        ...(baseResponse.telemetry || {}),
+        llmAttempt: { ok: false, reason: llmResult.reason || "llm_unavailable" },
+      },
+    };
+  }
+
+  const llmDraft = {
+    ...llmResult.draft,
+    answerBlocks: normalizeAnswerBlocksHe(llmResult.draft.answerBlocks),
+  };
+  const vLlm = validateAnswerDraft(llmDraft, core.truthPacket);
+  if (!vLlm.ok) {
+    return {
+      ...baseResponse,
+      telemetry: {
+        ...(baseResponse.telemetry || {}),
+        llmAttempt: { ok: false, reason: "llm_draft_validator_fail", failCodes: vLlm.failCodes },
+      },
+    };
+  }
+
+  let llmResponse = buildResolvedParentCopilotResponse({
+    truthPacket: core.truthPacket,
+    intent: core.intent,
+    answerBlocks: llmDraft.answerBlocks,
+    suggestedFollowUp: baseResponse.suggestedFollowUp || null,
+    validatorStatus: "pass",
+    validatorFailCodes: [],
+    fallbackUsed: false,
+    contractSourcesUsed: baseResponse.contractSourcesUsed || ["contractsV1.narrative"],
+    priorRepeated: Number(core?.conv?.repeatedPhraseHits || 0),
+    metadata: core.scopeMeta,
+  });
+  const llmFinalCheck = validateParentCopilotResponseV1(llmResponse);
+  if (!llmFinalCheck.ok) return baseResponse;
+
+  llmResponse = {
+    ...llmResponse,
+    telemetry: buildTurnTelemetry({
+      intent: core.intent,
+      intentConfidence: Number(core.scopeMeta?.intentConfidence || 0),
+      intentReason: String(core.scopeMeta?.intentReason || "unknown"),
+      scopeConfidence: Number(core.scopeMeta?.scopeConfidence || 0),
+      scopeReason: String(core.scopeMeta?.scopeReason || "unknown"),
+      answerBlocks: llmDraft.answerBlocks,
+      fallbackUsed: false,
+      validatorFailCodes: [],
+      semanticAggregateSatisfied: false,
+      generationPath: "llm_grounded",
+      truthPacket: core.truthPacket,
+    }),
+  };
+  llmResponse.telemetry.llmAttempt = { ok: true, provider: llmResult.provider || "unknown" };
+  return llmResponse;
 }
 
 export { buildTruthPacketV1 } from "./truth-packet-v1.js";
 export { readContractsSliceForScope } from "./contract-reader.js";
 
-export default { runParentCopilotTurn };
+export default { runParentCopilotTurn, runParentCopilotTurnAsync };
