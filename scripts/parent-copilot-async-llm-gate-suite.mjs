@@ -1,0 +1,226 @@
+import assert from "node:assert/strict";
+import parentCopilot from "../utils/parent-copilot/index.js";
+import guardrail from "../utils/parent-copilot/guardrail-validator.js";
+
+function setEnv(name, value) {
+  if (value == null) delete process.env[name];
+  else process.env[name] = String(value);
+}
+
+function resetLlmEnv() {
+  for (const k of [
+    "PARENT_COPILOT_FORCE_DETERMINISTIC",
+    "PARENT_COPILOT_LLM_ENABLED",
+    "PARENT_COPILOT_LLM_EXPERIMENT",
+    "PARENT_COPILOT_LLM_API_KEY",
+    "PARENT_COPILOT_LLM_TIMEOUT_MS",
+  ]) {
+    delete process.env[k];
+  }
+}
+
+function syntheticPayload({ eligible = true } = {}) {
+  const recommendation = eligible
+    ? {
+        contractVersion: "v1",
+        topicKey: "t1",
+        subjectId: "math",
+        eligible: true,
+        intensity: "RI2",
+        family: "general_practice",
+        anchorEvidenceIds: ["ev1"],
+        forbiddenBecause: [],
+      }
+    : {
+        contractVersion: "v1",
+        topicKey: "t1",
+        subjectId: "math",
+        eligible: false,
+        intensity: "RI0",
+        family: null,
+        anchorEvidenceIds: [],
+        forbiddenBecause: ["cannot_conclude_yet"],
+      };
+  const tr = {
+    topicRowKey: "t1",
+    displayName: "שברים",
+    questions: 12,
+    accuracy: 75,
+    contractsV1: {
+      evidence: { contractVersion: "v1", topicKey: "t1", subjectId: "math" },
+      decision: {
+        contractVersion: "v1",
+        topicKey: "t1",
+        subjectId: "math",
+        decisionTier: eligible ? 2 : 0,
+        cannotConcludeYet: !eligible,
+      },
+      readiness: {
+        contractVersion: "v1",
+        topicKey: "t1",
+        subjectId: "math",
+        readiness: eligible ? "emerging" : "insufficient",
+      },
+      confidence: {
+        contractVersion: "v1",
+        topicKey: "t1",
+        subjectId: "math",
+        confidenceBand: eligible ? "medium" : "low",
+      },
+      recommendation,
+      narrative: {
+        contractVersion: "v1",
+        topicKey: "t1",
+        subjectId: "math",
+        wordingEnvelope: eligible ? "WE2" : "WE0",
+        hedgeLevel: eligible ? "light" : "mandatory",
+        allowedTone: "parent_professional_warm",
+        forbiddenPhrases: ["בטוח לחלוטין"],
+        requiredHedges: ["נכון לעכשיו"],
+        allowedSections: ["summary", "finding", "recommendation", "limitations"],
+        recommendationIntensityCap: eligible ? "RI2" : "RI0",
+        textSlots: {
+          observation: "נכון לעכשיו בשברים נצפו 12 שאלות עם דיוק של כ־75%.",
+          interpretation: "נכון לעכשיו יש כיוון עבודה סביר אך עדיין נדרש אישור נוסף.",
+          action: eligible ? "נכון לעכשיו מומלץ חיזוק ממוקד ובדיקת עצמאות קצרה." : null,
+          uncertainty: "נכון לעכשיו כדאי להמשיך לעקוב ולאמת את הכיוון בסבב הקרוב.",
+        },
+      },
+    },
+  };
+  return {
+    version: 2,
+    subjectProfiles: [{ subject: "math", topicRecommendations: [tr] }],
+    executiveSummary: { majorTrendsHe: ["קו ראשון לתקופה"] },
+  };
+}
+
+async function runAsyncWith(payload, utterance, sessionId) {
+  const out = await parentCopilot.runParentCopilotTurnAsync({
+    audience: "parent",
+    payload,
+    utterance,
+    sessionId,
+    selectedContextRef: null,
+  });
+  assert.ok(guardrail.validateParentCopilotResponseV1(out).ok);
+  return out;
+}
+
+const originalFetch = globalThis.fetch;
+
+try {
+  // A) Default OFF in practice.
+  resetLlmEnv();
+  const a = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-a");
+  assert.equal(a?.telemetry?.generationPath, "deterministic");
+  assert.equal(a?.telemetry?.llmAttempt?.ok, false);
+  assert.equal(a?.telemetry?.llmAttempt?.reason, "llm_disabled_by_rollout_gate");
+
+  // B) Kill-switch beats all.
+  let calledB = false;
+  setEnv("PARENT_COPILOT_LLM_ENABLED", "true");
+  setEnv("PARENT_COPILOT_LLM_EXPERIMENT", "true");
+  setEnv("PARENT_COPILOT_FORCE_DETERMINISTIC", "true");
+  setEnv("PARENT_COPILOT_LLM_API_KEY", "x");
+  globalThis.fetch = async () => {
+    calledB = true;
+    throw new Error("fetch must not be called when force deterministic is true");
+  };
+  const b = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-b");
+  assert.equal(calledB, false);
+  assert.equal(b?.telemetry?.llmAttempt?.ok, false);
+  assert.equal(b?.telemetry?.llmAttempt?.reason, "llm_disabled_by_rollout_gate");
+
+  // C) Explicit experiment flag is required (LLM remains OFF in practice by default).
+  setEnv("PARENT_COPILOT_FORCE_DETERMINISTIC", "false");
+  setEnv("PARENT_COPILOT_LLM_EXPERIMENT", null);
+  let calledC = false;
+  globalThis.fetch = async () => {
+    calledC = true;
+    throw new Error("fetch must not be called without explicit experiment flag");
+  };
+  const c = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-c");
+  assert.equal(calledC, false);
+  assert.equal(c?.telemetry?.llmAttempt?.ok, false);
+  assert.equal(c?.telemetry?.llmAttempt?.reason, "llm_disabled_by_rollout_gate");
+  assert.ok(Array.isArray(c?.telemetry?.llmAttempt?.gateReasonCodes));
+  assert.ok(c.telemetry.llmAttempt.gateReasonCodes.includes("llm_experiment_flag_missing"));
+
+  // D) Enabled path, invalid JSON response.
+  setEnv("PARENT_COPILOT_LLM_EXPERIMENT", "true");
+  setEnv("PARENT_COPILOT_FORCE_DETERMINISTIC", "false");
+  let calledD = 0;
+  globalThis.fetch = async () => {
+    calledD += 1;
+    return {
+      ok: true,
+      async json() {
+        return { output_text: "not-json" };
+      },
+    };
+  };
+  const d = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-d");
+  assert.equal(calledD > 0, true);
+  assert.equal(d?.telemetry?.llmAttempt?.ok, false);
+  assert.equal(d?.telemetry?.llmAttempt?.reason, "invalid_json_output");
+
+  // E) Enabled path, invalid block shape.
+  globalThis.fetch = async () => ({
+    ok: true,
+    async json() {
+      return {
+        output_text: JSON.stringify({
+          answerBlocks: [
+            { type: "bad_type", textHe: "נכון לעכשיו טקסט ראשון" },
+            { type: "meaning", textHe: "נכון לעכשיו טקסט שני" },
+          ],
+        }),
+      };
+    },
+  });
+  const e = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-e");
+  assert.equal(e?.telemetry?.llmAttempt?.ok, false);
+  assert.equal(e?.telemetry?.llmAttempt?.reason, "llm_invalid_block_shape");
+
+  // F) Enabled path, next_step on ineligible packet must fail strict LLM validation.
+  globalThis.fetch = async () => ({
+    ok: true,
+    async json() {
+      return {
+        output_text: JSON.stringify({
+          answerBlocks: [
+            { type: "observation", textHe: "נכון לעכשיו זה מה שרואים בדוח." },
+            { type: "next_step", textHe: "נכון לעכשיו מומלץ להתקדם מיד." },
+          ],
+        }),
+      };
+    },
+  });
+  const f = await runAsyncWith(syntheticPayload({ eligible: false }), "מה לעשות עכשיו?", "llm-gate-f");
+  assert.equal(f?.telemetry?.llmAttempt?.ok, false);
+  assert.equal(f?.telemetry?.llmAttempt?.reason, "llm_next_step_not_eligible");
+
+  // G) Enabled path, valid output accepted.
+  globalThis.fetch = async () => ({
+    ok: true,
+    async json() {
+      return {
+        output_text: JSON.stringify({
+          answerBlocks: [
+            { type: "observation", textHe: "נכון לעכשיו בשברים יש תמונה ברורה יותר בדוח." },
+            { type: "meaning", textHe: "נכון לעכשיו המשמעות היא חיזוק ממוקד ושמירה על זהירות." },
+          ],
+        }),
+      };
+    },
+  });
+  const g = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-g");
+  assert.equal(g?.telemetry?.generationPath, "llm_grounded");
+  assert.equal(g?.telemetry?.llmAttempt?.ok, true);
+} finally {
+  resetLlmEnv();
+  globalThis.fetch = originalFetch;
+}
+
+console.log("parent-copilot-async-llm-gate-suite: OK");

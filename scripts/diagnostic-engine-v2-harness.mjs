@@ -277,6 +277,40 @@ const MATRIX = [
     },
   },
   {
+    id: "math_taxonomy_weak_fallback_blocked",
+    subject: "math",
+    scenarioType: "weak-taxonomy-fallback",
+    rowKey: "addition\u0001learning\u0001g4\u0001medium",
+    row: row({
+      displayName: "חיבור",
+      questions: 10,
+      correct: 8,
+      wrong: 2,
+      accuracy: 80,
+      behaviorType: "knowledge_gap",
+    }),
+    mistakes: wrongEvents({
+      subject: "math",
+      bucketKey: "addition",
+      count: 2,
+      patternFamily: "pf:weak_fallback",
+      grade: "g4",
+      level: "medium",
+    }),
+    assertCase: (u) => {
+      assert.equal(u.taxonomy, null);
+      assert.equal(u.diagnosis?.taxonomyId ?? null, null);
+      assert.equal(u.classification?.state, "unclassified_weak_evidence");
+      assert.equal(u.classification?.reasonCode, "weak_taxonomy_fallback_blocked");
+      assert.equal(u.outputGating.interventionAllowed, false);
+      assert.equal(u.outputGating.probeOnly, true);
+      assert.ok(
+        Array.isArray(u.explainability?.cannotConcludeYetHe) &&
+          u.explainability.cannotConcludeYetHe.some((line) => String(line || "").includes("עדיין לא מסווג")),
+      );
+    },
+  },
+  {
     id: "moledet_contradiction_probe",
     subject: "moledet-geography",
     scenarioType: "contradiction+probe",

@@ -29,4 +29,17 @@ jobs:
       - run: npm run test:parent-copilot-executive-answer-safe-matrix
       - run: npm run test:parent-copilot-recommendation-semantic
       - run: npm run test:parent-copilot-parent-language-semantic
+      - run: npm run test:parent-copilot-async-llm-gate
+      - run: npm run test:parent-copilot-telemetry-trace
+      - run: npm run test:parent-rollout-stage:s2-classifier
+      - run: npm run test:parent-rollout-stage:s2-hebrew-drift
+      - run: npm run test:parent-rollout-stage:s3-observability
+      - run: npm run test:parent-rollout-release-matrix
+        env:
+          PARENT_RELEASE_STAGE: s3
+          PARENT_SIGNOFF_ENG: "true"
+          PARENT_SIGNOFF_QA: "true"
+          PARENT_SIGNOFF_PRODUCT: "true"
+          PARENT_SIGNOFF_LANG: "true"
+          PARENT_SIGNOFF_OPS: "true"
       - run: npx next build

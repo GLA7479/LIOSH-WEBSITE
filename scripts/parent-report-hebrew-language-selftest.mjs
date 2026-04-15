@@ -20,7 +20,7 @@ const {
 } = await import(u("utils/parent-report-language/forbidden-terms.js"));
 const { normalizePedagogyForParentReportHe } = await import(u("utils/parent-report-language/pedagogy-glossary-he.js"));
 const { normalizeParentFacingHe } = await import(u("utils/parent-report-language/parent-facing-normalize-he.js"));
-const { buildWhyThisRecommendationHe } = await import(u("utils/topic-next-step-phase2.js"));
+const { buildWhyThisRecommendationHe, interventionTypeLabelHe } = await import(u("utils/topic-next-step-phase2.js"));
 const { confidenceLevelParentSummaryHe } = await import(u("utils/parent-report-language/confidence-parent-he.js"));
 const { priorityLevelParentLabelHe } = await import(u("utils/parent-report-language/priority-parent-he.js"));
 const { diagnosticPrimarySourceParentLabelHe } = await import(
@@ -158,5 +158,29 @@ const whyHe = buildWhyThisRecommendationHe({
 assert.ok(!whyHe.includes("stable_mastery"), whyHe);
 assertNoForbidden("why.phase2", whyHe);
 assertNoReadabilityLeaks("why.phase2", whyHe);
+
+const whyUnknownStep = buildWhyThisRecommendationHe({
+  displayName: "חיבור",
+  finalStep: "internal_unknown_step_token",
+  riskFlags: {
+    falsePromotionRisk: false,
+    falseRemediationRisk: false,
+    speedOnlyRisk: false,
+    hintDependenceRisk: false,
+    insufficientEvidenceRisk: false,
+    recentTransitionRisk: false,
+  },
+  trendDer: { unclearTrend: false, fragileProgressPattern: false, progressSupportsAdvance: false },
+  behaviorType: "undetermined",
+  legacyRuleId: "",
+});
+assert.ok(!whyUnknownStep.includes("internal_unknown_step_token"), whyUnknownStep);
+assertNoForbidden("why.phase2.unknown_step", whyUnknownStep);
+assertNoReadabilityLeaks("why.phase2.unknown_step", whyUnknownStep);
+
+const unknownInterventionLabel = interventionTypeLabelHe("internal_unknown_intervention_type");
+assert.ok(!unknownInterventionLabel.includes("internal_unknown_intervention_type"), unknownInterventionLabel);
+assertNoForbidden("phase2.unknown_intervention_label", unknownInterventionLabel);
+assertNoReadabilityLeaks("phase2.unknown_intervention_label", unknownInterventionLabel);
 
 console.log("parent-report-hebrew-language-selftest: OK", samples.length, "samples scanned");

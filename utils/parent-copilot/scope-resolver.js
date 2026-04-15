@@ -252,15 +252,26 @@ export function resolveScope(input) {
     };
   }
 
+  // Preserve deterministic continuity for empty input when payload is anchored.
+  if (utterance.length < 2) {
+    return {
+      resolutionStatus: "resolved",
+      scope: {
+        scopeType: "executive",
+        scopeId: "executive",
+        scopeLabel: "הדוח בתקופה הנבחרה",
+      },
+      scopeConfidence: 0.56,
+      scopeReason: "executive_fallback_empty_utterance",
+    };
+  }
+
   return {
-    resolutionStatus: "resolved",
-    scope: {
-      scopeType: "executive",
-      scopeId: "executive",
-      scopeLabel: "הדוח בתקופה הנבחרה",
-    },
-    scopeConfidence: 0.56,
-    scopeReason: "executive_fallback",
+    resolutionStatus: "clarification_required",
+    clarificationQuestionHe:
+      "כדי לענות מדויק על הדוח, כתבו אם השאלה על מקצוע מסוים או על נושא מדויק מתוך הדוח.",
+    scopeConfidence: 0.18,
+    scopeReason: "no_clear_scope_match",
   };
 }
 

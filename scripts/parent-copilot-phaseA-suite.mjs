@@ -112,6 +112,15 @@ assert.equal(scopeAgg.resolutionStatus, "resolved");
 assert.equal(scopeAgg.scope?.scopeType, "executive");
 assert.equal(scopeAgg.scope?.scopeLabel, "הדוח בתקופה הנבחרה");
 
+const scopeWeakNoAnchor = scopeResolver.resolveScope({
+  payload,
+  utterance: "אפשר הסבר נוסף?",
+  selectedContextRef: null,
+});
+assert.equal(scopeWeakNoAnchor.resolutionStatus, "clarification_required");
+assert.equal(scopeWeakNoAnchor.scope, undefined);
+assert.equal(scopeWeakNoAnchor.scopeReason, "no_clear_scope_match");
+
 // Blocker 3 — session memory contract fields
 sessionMemory.resetParentCopilotSessionForTests("mem-contract");
 sessionMemory.applyConversationStateDelta("mem-contract", {

@@ -21,12 +21,81 @@ import {
 import { normalizeParentFacingHe } from "../parent-report-language/parent-facing-normalize-he.js";
 import { buildTurnTelemetry } from "./turn-telemetry.js";
 import { maybeGenerateGroundedLlmDraft } from "./llm-orchestrator.js";
+import { appendTurnTelemetryTrace } from "./telemetry-store.js";
 
 function normalizeAnswerBlocksHe(answerBlocks) {
   return (Array.isArray(answerBlocks) ? answerBlocks : []).map((b) => ({
     ...b,
     textHe: normalizeParentFacingHe(String(b?.textHe || "").trim()),
   }));
+}
+
+function ensureResponseTelemetry(response, context) {
+  if (response?.telemetry && typeof response.telemetry === "object") return response;
+  const metadata = response?.metadata && typeof response.metadata === "object" ? response.metadata : {};
+  const fallbackUsed = !!response?.fallbackUsed;
+  const validatorFailCodes = Array.isArray(response?.validatorFailCodes) ? response.validatorFailCodes : [];
+  const telemetry = buildTurnTelemetry({
+    intent: String(response?.intent || context.intent || "unknown"),
+    intentConfidence: Number(metadata.intentConfidence || 0),
+    intentReason: String(metadata.intentReason || "unknown_intent_reason"),
+    scopeConfidence: Number(metadata.scopeConfidence || 0),
+    scopeReason: String(metadata.scopeReason || "unknown_scope_reason"),
+    answerBlocks: Array.isArray(response?.answerBlocks) ? response.answerBlocks : [],
+    fallbackUsed,
+    fallbackReasonCodes: fallbackUsed ? validatorFailCodes : [],
+    validatorFailCodes,
+    semanticAggregateSatisfied: false,
+    generationPath: String(context.generationPath || "deterministic"),
+    truthPacket: context.truthPacket || null,
+    resolutionStatus: String(response?.resolutionStatus || "clarification_required"),
+    scopeType: response?.scopeType ?? null,
+    scopeId: response?.scopeId ?? null,
+    llmAttempt: context.llmAttempt || null,
+  });
+  return { ...response, telemetry };
+}
+
+function persistTelemetryBestEffort(response, context) {
+  const telemetry = response?.telemetry && typeof response.telemetry === "object" ? response.telemetry : null;
+  if (!telemetry) return;
+  const trace = telemetry.trace && typeof telemetry.trace === "object" ? telemetry.trace : {};
+  const branchOutcomes = trace.branchOutcomes && typeof trace.branchOutcomes === "object" ? trace.branchOutcomes : {};
+  const llmAttempt = telemetry.llmAttempt || branchOutcomes.llmAttempt || null;
+  appendTurnTelemetryTrace({
+    schemaVersion: "v1",
+    traceId: String(telemetry.traceId || ""),
+    sessionId: String(context.sessionId || "default"),
+    audience: String(response?.audience || context.audience || "parent"),
+    resolutionStatus: String(response?.resolutionStatus || trace.resolutionStatus || "unknown"),
+    intent: String(response?.intent || telemetry?.intent?.value || "unknown"),
+    intentReason: String(telemetry?.intent?.reason || response?.metadata?.intentReason || "unknown_intent_reason"),
+    scopeReason: String(telemetry?.scope?.reason || response?.metadata?.scopeReason || "unknown_scope_reason"),
+    scopeType: response?.scopeType ?? trace.scopeType ?? null,
+    scopeId: response?.scopeId ?? trace.scopeId ?? null,
+    generationPath: String(telemetry.generationPath || branchOutcomes.generationPath || "deterministic"),
+    fallbackUsed: !!(response?.fallbackUsed || telemetry.fallbackUsed),
+    fallbackReasonCodes: Array.isArray(telemetry.fallbackReasonCodes) ? [...telemetry.fallbackReasonCodes] : [],
+    validatorStatus: String(response?.validatorStatus || telemetry?.validator?.status || "unknown"),
+    validatorFailCodes: Array.isArray(response?.validatorFailCodes)
+      ? [...response.validatorFailCodes]
+      : Array.isArray(telemetry?.validator?.failCodes)
+        ? [...telemetry.validator.failCodes]
+        : [],
+    semanticAggregateSatisfied: !!telemetry.semanticAggregateSatisfied,
+    llmAttempt:
+      llmAttempt && typeof llmAttempt === "object"
+        ? { ok: !!llmAttempt.ok, reason: String(llmAttempt.reason || ""), provider: llmAttempt.provider || undefined }
+        : null,
+    utteranceLength: Number(context.utteranceLength || 0),
+    timestampMs: Number(telemetry.timestampMs || Date.now()),
+  });
+}
+
+function finalizeTurnResponse(response, context) {
+  const withTelemetry = ensureResponseTelemetry(response, context);
+  persistTelemetryBestEffort(withTelemetry, context);
+  return withTelemetry;
 }
 
 /**
@@ -153,8 +222,11 @@ function runDeterministicCore(input) {
   draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
   let vDraft = validateAnswerDraft(draft, truthPacket);
   let fallbackUsed = false;
+  /** @type {string[]} */
+  const fallbackReasonCodes = [];
 
   if (!vDraft.ok) {
+    fallbackReasonCodes.push(...vDraft.failCodes);
     semanticAggregateSatisfied = false;
     draft = buildDeterministicFallbackAnswer(truthPacket, vDraft.failCodes);
     fallbackUsed = true;
@@ -162,6 +234,7 @@ function runDeterministicCore(input) {
     vDraft = validateAnswerDraft(draft, truthPacket);
   }
   if (!vDraft.ok) {
+    fallbackReasonCodes.push(...vDraft.failCodes);
     semanticAggregateSatisfied = false;
     const nar = truthPacket.contracts?.narrative;
     const slots = nar?.textSlots || {};
@@ -258,10 +331,14 @@ function runDeterministicCore(input) {
     scopeReason: scopeMeta.scopeReason,
     answerBlocks: draft.answerBlocks,
     fallbackUsed,
+    fallbackReasonCodes,
     validatorFailCodes,
     semanticAggregateSatisfied,
     generationPath: "deterministic",
     truthPacket,
+    resolutionStatus: "resolved",
+    scopeType: truthPacket.scopeType,
+    scopeId: truthPacket.scopeId,
   });
   response = { ...response, telemetry };
 
@@ -301,7 +378,15 @@ function runDeterministicCore(input) {
  * @param {string|null} [input.clickedFollowupFamily] quick-action chip → maps to session clickedFollowups
  */
 export function runParentCopilotTurn(input) {
-  return runDeterministicCore(input).response;
+  const core = runDeterministicCore(input);
+  return finalizeTurnResponse(core.response, {
+    audience: core.audience,
+    sessionId: core.sessionId,
+    truthPacket: core.truthPacket,
+    intent: core.intent,
+    utteranceLength: String(core.utteranceStr || "").trim().length,
+    generationPath: "deterministic",
+  });
 }
 
 /**
@@ -312,20 +397,41 @@ export function runParentCopilotTurn(input) {
 export async function runParentCopilotTurnAsync(input) {
   const core = runDeterministicCore(input);
   const baseResponse = core.response;
-  if (baseResponse?.resolutionStatus !== "resolved" || !core.truthPacket || !core.utteranceStr) return baseResponse;
+  if (baseResponse?.resolutionStatus !== "resolved" || !core.truthPacket || !core.utteranceStr) {
+    return finalizeTurnResponse(baseResponse, {
+      audience: core.audience,
+      sessionId: core.sessionId,
+      truthPacket: core.truthPacket,
+      intent: core.intent,
+      utteranceLength: String(core.utteranceStr || "").trim().length,
+      generationPath: "deterministic",
+    });
+  }
 
   const llmResult = await maybeGenerateGroundedLlmDraft({
     utterance: core.utteranceStr,
     truthPacket: core.truthPacket,
   });
   if (!llmResult.ok || !llmResult.draft) {
-    return {
+    return finalizeTurnResponse({
       ...baseResponse,
       telemetry: {
         ...(baseResponse.telemetry || {}),
-        llmAttempt: { ok: false, reason: llmResult.reason || "llm_unavailable" },
+        llmAttempt: {
+          ok: false,
+          reason: llmResult.reason || "llm_unavailable",
+          ...(Array.isArray(llmResult.gateReasonCodes) ? { gateReasonCodes: llmResult.gateReasonCodes } : {}),
+        },
       },
-    };
+    }, {
+      audience: core.audience,
+      sessionId: core.sessionId,
+      truthPacket: core.truthPacket,
+      intent: core.intent,
+      utteranceLength: String(core.utteranceStr || "").trim().length,
+      generationPath: "deterministic",
+      llmAttempt: { ok: false, reason: llmResult.reason || "llm_unavailable" },
+    });
   }
 
   const llmDraft = {
@@ -334,13 +440,21 @@ export async function runParentCopilotTurnAsync(input) {
   };
   const vLlm = validateAnswerDraft(llmDraft, core.truthPacket);
   if (!vLlm.ok) {
-    return {
+    return finalizeTurnResponse({
       ...baseResponse,
       telemetry: {
         ...(baseResponse.telemetry || {}),
         llmAttempt: { ok: false, reason: "llm_draft_validator_fail", failCodes: vLlm.failCodes },
       },
-    };
+    }, {
+      audience: core.audience,
+      sessionId: core.sessionId,
+      truthPacket: core.truthPacket,
+      intent: core.intent,
+      utteranceLength: String(core.utteranceStr || "").trim().length,
+      generationPath: "deterministic",
+      llmAttempt: { ok: false, reason: "llm_draft_validator_fail" },
+    });
   }
 
   let llmResponse = buildResolvedParentCopilotResponse({
@@ -356,7 +470,17 @@ export async function runParentCopilotTurnAsync(input) {
     metadata: core.scopeMeta,
   });
   const llmFinalCheck = validateParentCopilotResponseV1(llmResponse);
-  if (!llmFinalCheck.ok) return baseResponse;
+  if (!llmFinalCheck.ok) {
+    return finalizeTurnResponse(baseResponse, {
+      audience: core.audience,
+      sessionId: core.sessionId,
+      truthPacket: core.truthPacket,
+      intent: core.intent,
+      utteranceLength: String(core.utteranceStr || "").trim().length,
+      generationPath: "deterministic",
+      llmAttempt: { ok: false, reason: "llm_final_response_validator_fail" },
+    });
+  }
 
   llmResponse = {
     ...llmResponse,
@@ -372,10 +496,22 @@ export async function runParentCopilotTurnAsync(input) {
       semanticAggregateSatisfied: false,
       generationPath: "llm_grounded",
       truthPacket: core.truthPacket,
+      resolutionStatus: "resolved",
+      scopeType: core.truthPacket.scopeType,
+      scopeId: core.truthPacket.scopeId,
+      llmAttempt: { ok: true, reason: "llm_draft_accepted" },
     }),
   };
   llmResponse.telemetry.llmAttempt = { ok: true, provider: llmResult.provider || "unknown" };
-  return llmResponse;
+  return finalizeTurnResponse(llmResponse, {
+    audience: core.audience,
+    sessionId: core.sessionId,
+    truthPacket: core.truthPacket,
+    intent: core.intent,
+    utteranceLength: String(core.utteranceStr || "").trim().length,
+    generationPath: "llm_grounded",
+    llmAttempt: { ok: true, reason: "llm_draft_accepted" },
+  });
 }
 
 export { buildTruthPacketV1 } from "./truth-packet-v1.js";

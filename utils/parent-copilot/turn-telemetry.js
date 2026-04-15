@@ -71,7 +71,24 @@ export function measureGenericness(answerBlocks) {
 export function buildTurnTelemetry(input) {
   const groundedness = measureGroundedness(input.answerBlocks, input.truthPacket);
   const genericness = measureGenericness(input.answerBlocks);
+  const fallbackReasonCodes = Array.isArray(input.fallbackReasonCodes)
+    ? input.fallbackReasonCodes
+    : Array.isArray(input.validatorFailCodes) && input.fallbackUsed
+      ? input.validatorFailCodes
+      : [];
+  const traceId = String(input.traceId || `pc_trace_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`);
+  const resolutionStatus = String(input.resolutionStatus || "resolved");
+  const scopeType = input.scopeType == null ? null : String(input.scopeType);
+  const scopeId = input.scopeId == null ? null : String(input.scopeId);
+  const llmAttempt = input.llmAttempt && typeof input.llmAttempt === "object"
+    ? {
+        ok: !!input.llmAttempt.ok,
+        reason: String(input.llmAttempt.reason || ""),
+      }
+    : null;
   return {
+    schemaVersion: "v1",
+    traceId,
     intent: {
       value: input.intent,
       confidence: Number(input.intentConfidence || 0),
@@ -84,6 +101,18 @@ export function buildTurnTelemetry(input) {
     generationPath: String(input.generationPath || "deterministic"),
     fallbackUsed: !!input.fallbackUsed,
     semanticAggregateSatisfied: !!input.semanticAggregateSatisfied,
+    fallbackReasonCodes: [...new Set(fallbackReasonCodes.map((x) => String(x || "")).filter(Boolean))],
+    trace: {
+      resolutionStatus,
+      scopeType,
+      scopeId,
+      branchOutcomes: {
+        generationPath: String(input.generationPath || "deterministic"),
+        fallbackUsed: !!input.fallbackUsed,
+        semanticAggregateSatisfied: !!input.semanticAggregateSatisfied,
+        llmAttempt,
+      },
+    },
     quality: {
       groundednessScore: groundedness.score,
       genericnessScore: genericness.score,

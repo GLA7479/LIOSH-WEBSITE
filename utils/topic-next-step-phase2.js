@@ -28,6 +28,14 @@ export function isAdvanceOnlyStep(step) {
   return step === "advance_level" || step === "advance_grade_topic_only";
 }
 
+const STEP_LABEL_FALLBACK_HE = "המשך תמיכה מדודה באותו נושא";
+const INTERVENTION_LABEL_FALLBACK_HE = "תמיכה מדודה ומעקב קצר לפני שינוי נוסף";
+
+export function interventionTypeLabelHe(intervention) {
+  const key = String(intervention || "").trim();
+  return INTERVENTION_TYPE_LABEL_HE[key] || INTERVENTION_LABEL_FALLBACK_HE;
+}
+
 /**
  * @param {Record<string, unknown>|null|undefined} trend
  * @param {Record<string, unknown>} row
@@ -527,7 +535,7 @@ export function buildPhase7RecommendationFields(p) {
   } = p;
   const rc = String(rootCause?.rootCause || "mixed_signal");
   const intervention = pickRecommendedInterventionType(rc, finalStep);
-  const interventionLabelHe = INTERVENTION_TYPE_LABEL_HE[intervention] || intervention;
+  const interventionLabelHe = interventionTypeLabelHe(intervention);
   const evidenceAction = pickRecommendedEvidenceAction(rc, restraint?.conclusionStrength);
   const evidenceActionHe =
     evidenceAction === "collect_controlled_practice"
@@ -1185,5 +1193,5 @@ function stepLabelHe(step) {
     drop_one_level_topic_only: "ירידת רמת קושי בנושא",
     drop_one_grade_topic_only: "ירידת כיתה בנושא",
   };
-  return m[step] || String(step);
+  return m[String(step || "").trim()] || STEP_LABEL_FALLBACK_HE;
 }

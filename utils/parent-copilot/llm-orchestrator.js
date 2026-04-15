@@ -3,7 +3,7 @@
  * This module is optional and must degrade safely to deterministic flow.
  */
 
-import { canUseLlmPath } from "./rollout-gates.js";
+import { getLlmGateDecision } from "./rollout-gates.js";
 
 const DEFAULT_TIMEOUT_MS = 9000;
 
@@ -98,7 +98,16 @@ async function callOpenAiCompatible(signal, prompt) {
 function validateLlmDraft(payload, truthPacket) {
   const blocks = Array.isArray(payload?.answerBlocks) ? payload.answerBlocks : [];
   if (blocks.length < 2) return { ok: false, reason: "llm_answer_too_short" };
+  if (blocks.length > 4) return { ok: false, reason: "llm_answer_too_long" };
   const allowedTypes = new Set(["observation", "meaning", "next_step", "caution", "uncertainty_reason"]);
+  const hasObs = blocks.some((b) => String(b?.type || "") === "observation");
+  const hasMean = blocks.some((b) => String(b?.type || "") === "meaning");
+  if (!hasObs && !hasMean) return { ok: false, reason: "llm_missing_observation_or_meaning" };
+
+  const joined = blocks.map((b) => String(b?.textHe || "").trim()).join(" ");
+  for (const hedge of truthPacket?.allowedClaimEnvelope?.requiredHedges || []) {
+    if (hedge && !joined.includes(String(hedge))) return { ok: false, reason: "llm_missing_required_hedge" };
+  }
   for (const b of blocks) {
     const type = String(b?.type || "");
     const textHe = String(b?.textHe || "").trim();
@@ -106,6 +115,11 @@ function validateLlmDraft(payload, truthPacket) {
     for (const ph of truthPacket?.allowedClaimEnvelope?.forbiddenPhrases || []) {
       if (ph && textHe.includes(String(ph))) return { ok: false, reason: "llm_forbidden_phrase" };
     }
+  }
+  const hasNext = blocks.some((b) => String(b?.type || "") === "next_step");
+  const dl = truthPacket?.derivedLimits || {};
+  if (hasNext && (!dl.recommendationEligible || dl.recommendationIntensityCap === "RI0")) {
+    return { ok: false, reason: "llm_next_step_not_eligible" };
   }
   return {
     ok: true,
@@ -123,7 +137,14 @@ function validateLlmDraft(payload, truthPacket) {
  * @param {{ utterance: string; truthPacket: NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>; }} input
  */
 export async function maybeGenerateGroundedLlmDraft(input) {
-  if (!canUseLlmPath()) return { ok: false, reason: "llm_disabled_by_rollout_gate" };
+  const gate = getLlmGateDecision();
+  if (!gate.enabled) {
+    return {
+      ok: false,
+      reason: "llm_disabled_by_rollout_gate",
+      gateReasonCodes: gate.reasonCodes,
+    };
+  }
   const prompt = buildGroundedPrompt(input.utterance, input.truthPacket);
   const controller = new AbortController();
   const timeoutMs = Number(env("PARENT_COPILOT_LLM_TIMEOUT_MS", String(DEFAULT_TIMEOUT_MS))) || DEFAULT_TIMEOUT_MS;

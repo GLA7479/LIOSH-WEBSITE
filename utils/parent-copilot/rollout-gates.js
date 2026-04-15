@@ -59,9 +59,30 @@ export function evaluateKpiGate(stats) {
 }
 
 export function canUseLlmPath() {
-  if (envBool("PARENT_COPILOT_FORCE_DETERMINISTIC")) return false;
-  if (!envBool("PARENT_COPILOT_LLM_ENABLED")) return false;
-  return COPILOT_ROLLOUT_STAGE === "internal" || COPILOT_ROLLOUT_STAGE === "beta" || COPILOT_ROLLOUT_STAGE === "full";
+  return getLlmGateDecision().enabled;
+}
+
+export function getLlmGateDecision() {
+  /** @type {string[]} */
+  const reasonCodes = [];
+  if (envBool("PARENT_COPILOT_FORCE_DETERMINISTIC")) {
+    reasonCodes.push("force_deterministic");
+  }
+  if (!envBool("PARENT_COPILOT_LLM_ENABLED")) {
+    reasonCodes.push("llm_env_disabled");
+  }
+  // P0 policy: keep LLM OFF in practice unless explicit experiment opt-in exists.
+  if (!envBool("PARENT_COPILOT_LLM_EXPERIMENT")) {
+    reasonCodes.push("llm_experiment_flag_missing");
+  }
+  if (!(COPILOT_ROLLOUT_STAGE === "internal" || COPILOT_ROLLOUT_STAGE === "beta" || COPILOT_ROLLOUT_STAGE === "full")) {
+    reasonCodes.push("rollout_stage_not_allowed");
+  }
+  return {
+    enabled: reasonCodes.length === 0,
+    reasonCodes,
+    stage: COPILOT_ROLLOUT_STAGE,
+  };
 }
 
 export default {
@@ -69,4 +90,5 @@ export default {
   readKpiThresholds,
   evaluateKpiGate,
   canUseLlmPath,
+  getLlmGateDecision,
 };

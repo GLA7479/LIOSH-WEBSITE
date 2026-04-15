@@ -91,9 +91,17 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
           break;
         }
       }
-      if (!chosenId && candidateIds.length && wrongCountForRules >= 2) {
-        chosenId = candidateIds[0];
-      }
+      const weakTaxonomyFallbackBlocked = !chosenId && candidateIds.length > 0 && wrongCountForRules >= 2;
+      const classificationState = weakTaxonomyFallbackBlocked
+        ? "unclassified_weak_evidence"
+        : chosenId
+          ? "classified"
+          : "unclassified_no_taxonomy_match";
+      const classificationReasonCode = weakTaxonomyFallbackBlocked
+        ? "weak_taxonomy_fallback_blocked"
+        : !chosenId
+          ? "taxonomy_not_matched"
+          : null;
 
       const recurrenceFull = !!(() => {
         if (!chosenId) return false;
@@ -169,6 +177,9 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
       /** @type {string[]} */
       const cannotConclude = [];
       if (gating.cannotConcludeYet) cannotConclude.push("לא ניתן להסיק מסקנה יציבה כרגע — כדאי עוד תרגול בטווח");
+      if (weakTaxonomyFallbackBlocked) {
+        cannotConclude.push("האות עדיין לא מסווג לטקסונומיה יציבה — נשארים בשאלת בדיקה לפני מסקנה.");
+      }
       if (!chosenId && wrongCountForRules > 0) cannotConclude.push("לא נמצאה התאמה ברורה לסוג טעות אחרי סינון חזרתיות");
 
       const unit = {
@@ -179,6 +190,11 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
         topicRowKey,
         bucketKey,
         displayName: row.displayName || bucketKey,
+        classification: {
+          state: classificationState,
+          reasonCode: classificationReasonCode,
+          weakFallbackBlocked: weakTaxonomyFallbackBlocked,
+        },
         evidenceTrace,
         taxonomy: tax
           ? {
