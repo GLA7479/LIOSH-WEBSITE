@@ -73,7 +73,12 @@ export function applyOutputGating(p) {
     confidence === "insufficient_data" ||
     (hintInvalidates && confidence === "early_signal_only");
 
+  /**
+   * @deprecated Read-only backward-compat mirror. NO code may use this for decisioning.
+   * Derive from canonicalState.actionState instead.
+   */
   const positiveConclusionAllowed = positiveAuthorityEligible && !hardDeny;
+  const _deprecated_positiveConclusionAllowed = positiveConclusionAllowed;
 
   const confStr = String(confidence || "");
   const additiveCautionAllowed =
@@ -104,6 +109,7 @@ export function applyOutputGating(p) {
     positiveAuthorityEligible,
     positiveAuthorityLevel,
     positiveConclusionAllowed,
+    _deprecated_positiveConclusionAllowed,
     additiveCautionAllowed,
     positiveAuthorityReasonCodes,
   });

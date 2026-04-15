@@ -80,30 +80,47 @@ export function buildTruthPacketV1(payload, scope) {
   let recommendationIntensityCap = "RI0";
   let relevantSummaryLines = [];
 
+  let topicStateId = null;
+  let stateHash = null;
+
   if (scope.scopeType !== "executive") {
     const slice = readContractsSliceForScope(scope.scopeType, scope.scopeId, "", payload);
     if (!slice) return null;
     ({ contracts, topicRow, subjectId } = slice);
-    const narrative = contracts.narrative && typeof contracts.narrative === "object" ? contracts.narrative : {};
-    const decision = contracts.decision && typeof contracts.decision === "object" ? contracts.decision : {};
-    const readinessC = contracts.readiness && typeof contracts.readiness === "object" ? contracts.readiness : {};
-    const confidenceC = contracts.confidence && typeof contracts.confidence === "object" ? contracts.confidence : {};
-    const recommendation =
-      contracts.recommendation && typeof contracts.recommendation === "object" ? contracts.recommendation : {};
 
-    cannotConcludeYet = decision.cannotConcludeYet === true;
-    recommendationEligible = recommendation.eligible === true;
-    const capFromNarrative = String(narrative.recommendationIntensityCap || "RI0").toUpperCase();
-    recommendationIntensityCap =
-      capFromNarrative === "RI1" || capFromNarrative === "RI2" || capFromNarrative === "RI3"
-        ? capFromNarrative
-        : "RI0";
+    const cs = topicRow?.canonicalState || slice.canonicalState || null;
+    if (cs) {
+      topicStateId = cs.topicStateId;
+      stateHash = cs.stateHash;
+      readiness = cs.assessment?.readiness || "insufficient";
+      const cl = cs.assessment?.confidenceLevel;
+      confidenceBand = cl === "high" ? "high" : cl === "moderate" ? "medium" : "low";
+      cannotConcludeYet = !!cs.assessment?.cannotConcludeYet;
+      recommendationEligible = !!cs.recommendation?.allowed;
+      recommendationIntensityCap = cs.recommendation?.intensityCap || "RI0";
+    } else {
+      const narrative = contracts.narrative && typeof contracts.narrative === "object" ? contracts.narrative : {};
+      const decision = contracts.decision && typeof contracts.decision === "object" ? contracts.decision : {};
+      const readinessC = contracts.readiness && typeof contracts.readiness === "object" ? contracts.readiness : {};
+      const confidenceC = contracts.confidence && typeof contracts.confidence === "object" ? contracts.confidence : {};
+      const recommendation =
+        contracts.recommendation && typeof contracts.recommendation === "object" ? contracts.recommendation : {};
 
-    readiness = mapReadinessForTruthPacket(readinessC.readiness);
-    confidenceBand = mapConfidenceBand(confidenceC.confidenceBand);
+      cannotConcludeYet = decision.cannotConcludeYet === true;
+      recommendationEligible = recommendation.eligible === true;
+      const capFromNarrative = String(narrative.recommendationIntensityCap || "RI0").toUpperCase();
+      recommendationIntensityCap =
+        capFromNarrative === "RI1" || capFromNarrative === "RI2" || capFromNarrative === "RI3"
+          ? capFromNarrative
+          : "RI0";
+
+      readiness = mapReadinessForTruthPacket(readinessC.readiness);
+      confidenceBand = mapConfidenceBand(confidenceC.confidenceBand);
+    }
 
     q = Math.max(0, Number(topicRow?.questions ?? topicRow?.q) || 0);
     acc = Math.max(0, Math.min(100, Math.round(Number(topicRow?.accuracy) || 0)));
+    const narrative = contracts.narrative && typeof contracts.narrative === "object" ? contracts.narrative : {};
     displayName = String(topicRow?.displayName || narrative?.topicKey || "הנושא").trim() || "הנושא";
     const obsLine = String(narrative?.textSlots?.observation || "").trim();
     relevantSummaryLines = obsLine ? [obsLine] : [displayName];
@@ -237,6 +254,8 @@ export function buildTruthPacketV1(payload, scope) {
     scopeType: scope.scopeType,
     scopeId: scope.scopeId,
     scopeLabel: scope.scopeLabel,
+    topicStateId,
+    stateHash,
     contracts,
     derivedLimits: {
       cannotConcludeYet,

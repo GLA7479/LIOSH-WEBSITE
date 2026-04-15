@@ -710,35 +710,59 @@ const POSITIVE_LEVEL_RANK = { excellent: 3, very_good: 2, good: 1, none: 0 };
 
 /** Positive-first evidence line: approved tier text (no diagnosis/taxonomy dependency). */
 function v2PositiveStrengthBodyHe() {
-  return tierStableStrengthHe();
+  return "ביצועים גבוהים ועקביים — נראה שליטה טובה בנושא.";
 }
 
 function summarizeV2UnitsForSubject(units) {
   const list = Array.isArray(units) ? units : [];
+  if (list.length === 0) {
+    return { hasAnySignal: false };
+  }
+
+  const cs = (u) => u?.canonicalState;
+  const actionOf = (u) => {
+    if (cs(u)) return cs(u).actionState;
+    if (u?.outputGating?._deprecated_positiveConclusionAllowed || u?.outputGating?.positiveConclusionAllowed) {
+      const r = u?.outputGating?.contractsV1?.readiness?.readiness;
+      if (r === "insufficient" || r === "cannot_conclude") return "probe_only";
+      return "maintain";
+    }
+    return "probe_only";
+  };
+
   const diagnosed = list.filter((u) => !!u?.diagnosis?.allowed);
-  const positiveAllowed = list.filter((u) => !!u?.outputGating?.positiveConclusionAllowed);
-  const uncertain = list.filter((u) => !!u?.outputGating?.cannotConcludeYet);
+  const strengthUnits = list.filter((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
+  const uncertain = list.filter((u) => cs(u)?.assessment?.cannotConcludeYet);
+
   const topWeak =
     diagnosed.find((u) => String(u?.priority?.level || "") === "P4") ||
     diagnosed.find((u) => String(u?.priority?.level || "") === "P3") ||
     diagnosed[0] ||
     null;
-  const actionAnchor = topWeak || positiveAllowed[0] || list[0] || null;
 
+  const actionAnchor = (() => {
+    if (topWeak) return topWeak;
+    const maintainUnit = list.find((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
+    if (maintainUnit) return maintainUnit;
+    return list[0] || null;
+  })();
+
+  const POSITIVE_LEVEL_RANK_LOCAL = { excellent: 3, very_good: 2, good: 1, none: 0 };
+  const posLevel = (u) => cs(u)?.evidence?.positiveAuthorityLevel || u?.outputGating?.positiveAuthorityLevel || "none";
   const rankPositive = (a, b) => {
-    const la = String(a?.outputGating?.positiveAuthorityLevel || "none");
-    const lb = String(b?.outputGating?.positiveAuthorityLevel || "none");
-    return (POSITIVE_LEVEL_RANK[lb] || 0) - (POSITIVE_LEVEL_RANK[la] || 0);
+    const la = String(posLevel(a));
+    const lb = String(posLevel(b));
+    return (POSITIVE_LEVEL_RANK_LOCAL[lb] || 0) - (POSITIVE_LEVEL_RANK_LOCAL[la] || 0);
   };
 
-  const excellentUnits = positiveAllowed
-    .filter((u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "excellent")
+  const excellentUnits = strengthUnits
+    .filter((u) => posLevel(u) === "excellent")
     .sort(rankPositive);
-  const veryGoodUnits = positiveAllowed
-    .filter((u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "very_good")
+  const veryGoodUnits = strengthUnits
+    .filter((u) => posLevel(u) === "very_good")
     .sort(rankPositive);
-  const goodUnits = positiveAllowed
-    .filter((u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "good")
+  const goodUnits = strengthUnits
+    .filter((u) => posLevel(u) === "good")
     .sort(rankPositive);
 
   const mapStrengthRow = (u, /** @type {boolean} */ excellentFlag) => ({
@@ -747,6 +771,8 @@ function summarizeV2UnitsForSubject(units) {
     accuracy: safeNumber(u?.evidenceTrace?.[0]?.value?.accuracy),
     excellent: excellentFlag,
     tierHe: tierStableStrengthHe(),
+    topicStateId: cs(u)?.topicStateId || null,
+    stateHash: cs(u)?.stateHash || null,
   });
 
   const stableExcellence = excellentUnits.slice(0, 5).map((u) => mapStrengthRow(u, true));
@@ -760,13 +786,15 @@ function summarizeV2UnitsForSubject(units) {
       labelHe: normalizeParentFacingHe(String(u?.taxonomy?.patternHe || "")),
       mistakeCount: safeNumber(u?.recurrence?.wrongCountForRules),
       tierHe: safeNumber(u?.recurrence?.wrongCountForRules) >= 5 ? tierWeaknessRecurringHe() : tierWeaknessSupportHe(),
+      topicStateId: cs(u)?.topicStateId || null,
+      stateHash: cs(u)?.stateHash || null,
     }));
 
-  const rankedForEvidence = [...positiveAllowed].sort(rankPositive);
+  const rankedForEvidence = [...strengthUnits].sort(rankPositive);
   const evidenceExamples = [];
   for (const u of rankedForEvidence.slice(0, 2)) {
-    const lev = String(u?.outputGating?.positiveAuthorityLevel || "");
-    const confidence = lev === "excellent" || lev === "very_good" ? "high" : "moderate";
+    const level = cs(u)?.evidence?.positiveAuthorityLevel || "none";
+    const confidence = level === "excellent" || level === "very_good" ? "high" : "moderate";
     evidenceExamples.push({
       type: "success",
       titleHe: normalizeParentFacingHe(String(u?.displayName || evidenceExampleTitleFallbackHe())),
@@ -776,7 +804,7 @@ function summarizeV2UnitsForSubject(units) {
   }
   for (const u of diagnosed) {
     if (evidenceExamples.length >= 2) break;
-    const confidence = String(u?.confidence?.level || "");
+    const confidence = cs(u)?.assessment?.confidenceLevel || String(u?.confidence?.level || "");
     if (confidence !== "high" && confidence !== "moderate") continue;
     evidenceExamples.push({
       type: "mistake",
@@ -796,8 +824,8 @@ function summarizeV2UnitsForSubject(units) {
           ),
           bodyHe: normalizeParentFacingHe(v2PositiveStrengthBodyHe()),
           confidence:
-            String(rankedForEvidence[0]?.outputGating?.positiveAuthorityLevel || "") === "excellent" ||
-            String(rankedForEvidence[0]?.outputGating?.positiveAuthorityLevel || "") === "very_good"
+            (cs(rankedForEvidence[0])?.evidence?.positiveAuthorityLevel === "excellent" ||
+             cs(rankedForEvidence[0])?.evidence?.positiveAuthorityLevel === "very_good")
               ? "high"
               : "moderate",
         }
@@ -805,39 +833,36 @@ function summarizeV2UnitsForSubject(units) {
 
   const p4Unit = diagnosed.find((u) => String(u?.priority?.level || "") === "P4");
   const leadPositive = rankedForEvidence[0] || null;
-  const leadLevel = String(leadPositive?.outputGating?.positiveAuthorityLevel || "none");
-  const strongPositiveLead =
-    !!leadPositive && (leadLevel === "excellent" || leadLevel === "very_good");
+  const leadAction = actionOf(leadPositive);
+  const isStrengthLead = leadAction === "maintain" || leadAction === "expand_cautiously";
   const additiveOnLead = !!leadPositive?.outputGating?.additiveCautionAllowed;
+
   const summaryHe = (() => {
     if (p4Unit) {
       return normalizeParentFacingHe(
         `בנושא ${String(p4Unit?.displayName || evidenceExampleTitleFallbackHe())}: ${String(
-          p4Unit?.taxonomy?.patternHe || "עדיף עוד קצת תרגול לפני מסקנה סופית."
+          p4Unit?.taxonomy?.patternHe || "עדיף עוד קצת תרגול לפני שמקבעים מסקנה."
         )}`
       );
     }
-    if (strongPositiveLead && leadPositive) {
+    if (isStrengthLead && leadPositive) {
+      const leadLevel = cs(leadPositive)?.evidence?.positiveAuthorityLevel || "none";
+      const isStrongLead = leadLevel === "excellent" || leadLevel === "very_good";
       const name = String(leadPositive.displayName || evidenceExampleTitleFallbackHe());
       const base = `בנושא ${name}: ${tierStableStrengthHe()}`;
       const pattern = String(topWeak?.taxonomy?.patternHe || "").trim();
-      if (additiveOnLead && pattern) {
+      if (isStrongLead && additiveOnLead && pattern) {
         return normalizeParentFacingHe(`${base} · ${pattern}`);
       }
-      if (additiveOnLead && topWeak) {
+      if (isStrongLead && additiveOnLead && topWeak) {
         return normalizeParentFacingHe(`${base} ${topicRecommendationV2CautionGatedHe()}`);
       }
       return normalizeParentFacingHe(base);
     }
-    if (leadPositive && leadLevel === "good") {
-      return normalizeParentFacingHe(
-        `בנושא ${String(leadPositive.displayName || evidenceExampleTitleFallbackHe())}: ${tierStableStrengthHe()}`
-      );
-    }
     if (topWeak) {
       return normalizeParentFacingHe(
         `בנושא ${String(topWeak?.displayName || evidenceExampleTitleFallbackHe())}: ${String(
-          topWeak?.taxonomy?.patternHe || "עדיף עוד קצת תרגול לפני מסקנה סופית."
+          topWeak?.taxonomy?.patternHe || "עדיף עוד קצת תרגול לפני שמקבעים מסקנה."
         )}`
       );
     }
@@ -1316,6 +1341,15 @@ export function generateParentReportV2(
     attachEvidenceContractsV1ToTopicMaps(maps, startMs, endMs);
   }
   enrichReportMapsWithTopicStepHints(maps, mistakesBySubjectMaps, endMs);
+
+  for (const [sid, topicMap] of Object.entries(maps)) {
+    if (!topicMap || typeof topicMap !== "object") continue;
+    for (const key of Object.keys(topicMap)) {
+      if (key.includes("\u0001")) {
+        throw new Error(`generateParentReportV2: topic key "${key}" in subject "${sid}" contains composite separator — must be collapsed before engine`);
+      }
+    }
+  }
 
   const diagnosticEngineV2 = runDiagnosticEngineV2({
     maps,

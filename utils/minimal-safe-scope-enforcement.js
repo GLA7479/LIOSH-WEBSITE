@@ -204,6 +204,16 @@ const RI_TEXT_FROM_CONTRACT = { RI0: "light", RI1: "light", RI2: "focused", RI3:
  * @param {object} ctx
  */
 export function capInterventionIntensityByContract(intensity, ctx) {
+  const canonicalCap = ctx?.canonicalIntensityCap;
+  if (canonicalCap) {
+    const capRank = { RI0: 0, RI1: 1, RI2: 2, RI3: 3 }[canonicalCap] ?? 2;
+    const baseRank = RI_RANK[intensity] ?? 2;
+    const ri = Math.min(baseRank, capRank);
+    if (ri <= 1) return "light";
+    if (ri === 2) return "focused";
+    return "targeted";
+  }
+
   const base = RI_RANK[intensity] ?? 2;
   const band = Number(ctx?.evidenceBand);
   const ebMax =

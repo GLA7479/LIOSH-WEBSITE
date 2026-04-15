@@ -1107,14 +1107,15 @@ function runInvariantHighVolumePerfectNoReducedComplexityWithoutExplicitContradi
       recContract.forbiddenBecause.includes("cannot_conclude_yet"));
   const reducedActionRegex = /מורכבות מופחתת|להנמיך|פחות מורכב|אותה רמה נמוכה/u;
   const actionText = `${String(tr?.interventionPlanHe || "")} ${String(tr?.doNowHe || "")}`.trim();
-  if (!explicitContradiction) {
+  const cs = diag.units?.[0]?.canonicalState;
+  if (cs && (cs.actionState === "maintain" || cs.actionState === "expand_cautiously") && !explicitContradiction) {
     assert.ok(
       !["WE0", "WE1"].includes(String(narrative?.wordingEnvelope || "")),
-      "invariant: 21+ / 100% without explicit contradiction must not render WE0/WE1"
+      "invariant: strength actionState without explicit contradiction must not render WE0/WE1"
     );
     assert.ok(
       !reducedActionRegex.test(actionText),
-      "invariant: 21+ / 100% without explicit contradiction must not render reduced-complexity action"
+      "invariant: strength actionState without explicit contradiction must not render reduced-complexity action"
     );
   }
 }

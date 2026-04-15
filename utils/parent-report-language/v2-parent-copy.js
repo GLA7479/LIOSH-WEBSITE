@@ -40,7 +40,7 @@ export function executiveV2MajorTrendsLinesHe(p) {
   }
   return [
     `בטווח התקופה נבדקו ${units} נושאים.`,
-    `יש בסיס פעולה ב־${actionable} נושאים; ב־${uncertain} נושאים התמונה עדיין חלקית; מתוך זה ${stable} נושאים מראים חוזקה יציבה.`,
+    `יש בסיס פעולה ב־${actionable} נושאים; ב־${uncertain} נושאים התמונה עדיין חלקית; מתוך זה ${stable} נושאים מראים חוזקה עקבית.`,
   ];
 }
 

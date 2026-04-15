@@ -140,12 +140,16 @@ export function buildHybridRuntimeForReport({ diagnosticEngineV2, maps, rawMista
       ranking: rankingForDisagreement,
       probeIntel,
       gate: { mode: effectiveMode },
+      canonicalState: unit.canonicalState || null,
     });
 
     const mergedFlags = [...new Set([...gate.suppressionFlags, ...extraSuppression])];
 
+    const cs = unit.canonicalState;
     const hybridUnit = {
       unitKey: unit.unitKey,
+      topicStateId: cs?.topicStateId || null,
+      canonicalStateHash: cs?.stateHash || null,
       v2AuthoritySnapshot,
       aiAssist: {
         eligible: effectiveMode !== "suppressed",

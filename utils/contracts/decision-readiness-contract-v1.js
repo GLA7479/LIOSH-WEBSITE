@@ -256,3 +256,92 @@ export function buildDecisionReadinessContractsBundleV1(input) {
     confidence,
   };
 }
+
+/**
+ * Build contracts as a pure mirror of a CanonicalTopicState.
+ * Contracts become read-only projections — no independent derivation.
+ * @param {import("../canonical-topic-state/schema.js").CanonicalTopicState} canonicalState
+ */
+export function buildContractsFromCanonicalState(canonicalState) {
+  if (!canonicalState || typeof canonicalState !== "object") {
+    throw new Error("buildContractsFromCanonicalState: canonicalState is required");
+  }
+
+  const cs = canonicalState;
+  const confBand =
+    cs.assessment.confidenceLevel === "high" ? "high" :
+    cs.assessment.confidenceLevel === "moderate" ? "medium" :
+    "low";
+
+  return {
+    version: DECISION_READINESS_CONTRACT_VERSION,
+    sourceOfTruth: "canonical-topic-state",
+    canonicalStateId: cs.topicStateId,
+    canonicalStateHash: cs.stateHash,
+    source: {
+      topicKey: cs.topicKey,
+      subjectId: cs.subjectId,
+      q: cs.evidence.questions,
+      evidenceStrength: cs.evidence.dataSufficiencyLevel,
+      dataSufficiencyLevel: cs.evidence.dataSufficiencyLevel,
+      conclusionStrength:
+        cs.actionState === "withhold" ? "withheld" :
+        cs.assessment.confidenceLevel === "high" ? "strong" :
+        cs.assessment.confidenceLevel === "moderate" ? "moderate" :
+        "tentative",
+      cannotConcludeYet: cs.assessment.cannotConcludeYet,
+      weak: cs.decisionInputs.weakEvidence || cs.decisionInputs.narrowSample,
+      internalGateReadinessBand:
+        cs.assessment.confidenceLevel === "high" ? "high" :
+        cs.assessment.confidenceLevel === "moderate" ? "moderate" :
+        "insufficient",
+      gateState: cs.assessment.cannotConcludeYet ? "gates_not_ready" : "continue_gate_active",
+      dev2ConfidenceLevel: cs.assessment.confidenceLevel,
+      confidence: cs.assessment.confidenceLevel,
+    },
+    decision: {
+      contractVersion: DECISION_READINESS_CONTRACT_VERSION,
+      topicKey: cs.topicKey,
+      subjectId: cs.subjectId,
+      decisionTier: cs.assessment.decisionTier,
+      evidenceBand: cs.assessment.decisionTier,
+      allowedClaimClasses: CLAIM_CLASSES.slice(0, Math.max(1, cs.assessment.decisionTier + 1)),
+      forbiddenClaimClasses: CLAIM_CLASSES.slice(Math.max(1, cs.assessment.decisionTier + 1)),
+      cannotConcludeYet: cs.assessment.cannotConcludeYet,
+      gateReadiness:
+        cs.assessment.readiness === "ready" ? "ready" :
+        cs.assessment.readiness === "emerging" || cs.assessment.readiness === "forming" ? "forming" :
+        "insufficient",
+      internalGateReadinessBand:
+        cs.assessment.confidenceLevel === "high" ? "high" :
+        cs.assessment.confidenceLevel === "moderate" ? "moderate" :
+        "insufficient",
+      denialReasons: cs.assessment.cannotConcludeYet ? ["weak_evidence"] : [],
+    },
+    readiness: {
+      contractVersion: DECISION_READINESS_CONTRACT_VERSION,
+      topicKey: cs.topicKey,
+      subjectId: cs.subjectId,
+      readiness: cs.assessment.readiness,
+      readinessReasonCodes: [
+        `canonical_action:${cs.actionState}`,
+        `canonical_readiness:${cs.assessment.readiness}`,
+      ],
+      maxAllowedTier:
+        cs.assessment.readiness === "ready" ? 4 :
+        cs.assessment.readiness === "emerging" ? 2 :
+        1,
+    },
+    confidence: {
+      contractVersion: DECISION_READINESS_CONTRACT_VERSION,
+      topicKey: cs.topicKey,
+      subjectId: cs.subjectId,
+      confidenceBand: confBand,
+      confidenceScore01:
+        confBand === "high" ? 0.85 :
+        confBand === "medium" ? 0.55 :
+        0.25,
+      confidenceDrivers: ["canonical_state"],
+    },
+  };
+}

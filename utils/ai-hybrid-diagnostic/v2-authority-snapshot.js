@@ -24,8 +24,11 @@ export function buildV2AuthoritySnapshot(unit) {
     taxonomyId: unit?.taxonomy?.id ?? diagnosis.taxonomyId ?? null,
     explainability: unit?.explainability ?? null,
   };
+  const cs = unit?.canonicalState;
   return {
     ...snap,
+    topicStateId: cs?.topicStateId || null,
+    canonicalStateHash: cs?.stateHash || null,
     snapshotHash: stableJsonHash(snap),
   };
 }

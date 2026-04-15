@@ -1,65 +1,55 @@
 import { normalizeParentFacingHe } from "./parent-report-language/index.js";
 
-const POSITIVE_LEVEL_RANK = { excellent: 3, very_good: 2, good: 1, none: 0 };
-const READY_STATES = new Set(["ready", "forming"]);
-const STRONG_POSITIVE_MIN_QUESTIONS = 18;
-const STRONG_POSITIVE_MIN_ACCURACY = 88;
-const STRONG_POSITIVE_MIN_AUTHORITY_RANK = 2; // very_good or excellent
-const BLOCKED_FAMILY_MARKERS = [
+function canonicalState(unit) {
+  return unit?.canonicalState || null;
+}
+
+function actionState(unit) {
+  const cs = canonicalState(unit);
+  if (cs) return cs.actionState;
+  if (unit?.outputGating?._deprecated_positiveConclusionAllowed || unit?.outputGating?.positiveConclusionAllowed) {
+    const r = unit?.outputGating?.contractsV1?.readiness?.readiness;
+    if (r === "insufficient" || r === "cannot_conclude") return "probe_only";
+    return "maintain";
+  }
+  return "probe_only";
+}
+
+function isStrengthAction(unit) {
+  const a = actionState(unit);
+  return a === "maintain" || a === "expand_cautiously";
+}
+
+function positiveAuthorityLevel(unit) {
+  const csLevel = canonicalState(unit)?.evidence?.positiveAuthorityLevel;
+  if (csLevel) return csLevel;
+  return unit?.outputGating?.positiveAuthorityLevel || "none";
+}
+
+const STRONG_POSITIVE_BLOCKED_FAMILIES = [
   "reduced_complexity",
-  "remedial_support_first",
-  "collect_more_signal",
   "monitoring_only",
+  "collect_signal",
+  "remedial",
+  "diagnose_only",
+  "probe_only",
 ];
 
-function readVolumeSignals(unit) {
-  const trace = Array.isArray(unit?.evidenceTrace) ? unit.evidenceTrace : [];
-  const volume = trace.find((x) => String(x?.type || "") === "volume")?.value || {};
-  const questions = Number(volume?.questions);
-  const accuracy = Number(volume?.accuracy);
-  const q = Number.isFinite(questions) ? questions : 0;
-  const acc = Number.isFinite(accuracy) ? accuracy : 0;
-  return { q, acc };
-}
-
-function positiveAuthorityRank(unit) {
-  const level = String(unit?.outputGating?.positiveAuthorityLevel || "none");
-  return POSITIVE_LEVEL_RANK[level] || 0;
-}
-
-function readinessState(unit) {
-  return String(unit?.outputGating?.contractsV1?.readiness?.readiness || "").trim().toLowerCase();
-}
-
-function evidenceSufficientForStrongPositive(unit) {
-  const { q, acc } = readVolumeSignals(unit);
-  return q >= STRONG_POSITIVE_MIN_QUESTIONS && acc >= STRONG_POSITIVE_MIN_ACCURACY;
-}
-
-function hasStrongPositiveShape(unit) {
-  const positive = !!unit?.outputGating?.positiveConclusionAllowed;
-  if (!positive) return false;
-  const readiness = readinessState(unit);
-  const levelOk = positiveAuthorityRank(unit) >= STRONG_POSITIVE_MIN_AUTHORITY_RANK;
-  const metricsOk = evidenceSufficientForStrongPositive(unit);
-  const readinessOk = READY_STATES.has(readiness) || readiness === "";
-  return levelOk && metricsOk && readinessOk;
-}
-
 /**
- * Strong-positive recommendation class for parent-facing guidance.
- * This class explicitly blocks remedial/support-first recommendation families.
+ * Classify recommendation state from canonical state only.
  */
 export function classifyParentRecommendationState(unit) {
-  if (hasStrongPositiveShape(unit)) {
+  if (isStrengthAction(unit)) {
+    const level = positiveAuthorityLevel(unit);
+    const RANK = { excellent: 3, very_good: 2, good: 1, none: 0 };
     return {
       classId: "strong_positive_actionable",
-      blockedFamilies: [...BLOCKED_FAMILY_MARKERS],
+      blockedFamilies: STRONG_POSITIVE_BLOCKED_FAMILIES,
       state: {
-        positiveConclusionAllowed: true,
-        authorityRank: positiveAuthorityRank(unit),
-        sufficientEvidence: evidenceSufficientForStrongPositive(unit),
-        readiness: readinessState(unit) || "ready_or_forming_unspecified",
+        actionState: actionState(unit),
+        authorityRank: RANK[level] || 0,
+        readiness: canonicalState(unit)?.assessment?.readiness || "insufficient",
+        family: canonicalState(unit)?.recommendation?.family || "probe_only",
       },
     };
   }
@@ -67,10 +57,10 @@ export function classifyParentRecommendationState(unit) {
     classId: "regular_flow",
     blockedFamilies: [],
     state: {
-      positiveConclusionAllowed: !!unit?.outputGating?.positiveConclusionAllowed,
-      authorityRank: positiveAuthorityRank(unit),
-      sufficientEvidence: evidenceSufficientForStrongPositive(unit),
-      readiness: readinessState(unit) || "unspecified",
+      actionState: actionState(unit),
+      authorityRank: 0,
+      readiness: canonicalState(unit)?.assessment?.readiness || "insufficient",
+      family: canonicalState(unit)?.recommendation?.family || "probe_only",
     },
   };
 }
@@ -85,11 +75,26 @@ function bestEffortText(s) {
 }
 
 export function resolveUnitParentActionHe(unit) {
-  const cls = classifyParentRecommendationState(unit);
-  if (cls.classId === "strong_positive_actionable") {
-    const level = String(unit?.outputGating?.positiveAuthorityLevel || "none");
-    const name = topicName(unit);
-    if (level === "excellent") {
+  const cs = canonicalState(unit);
+  const action = actionState(unit);
+  const name = topicName(unit);
+
+  if (cs?.recommendation?.allowed) {
+    const family = cs.recommendation.family;
+    if (family === "expand_cautiously") {
+      return normalizeParentFacingHe(
+        `ב${name} מומלץ לשמר את אותה רמת מורכבות, ולהוסיף הרחבה זהירה ומדודה רק אם העקביות נשמרת גם בסבב הבא.`
+      );
+    }
+    if (family === "maintain") {
+      return normalizeParentFacingHe(
+        `ב${name} מומלץ להמשיך באותה רמת קושי, לשמר עקביות, ורק אחר כך לשקול הרחבה עדינה בתוך אותו עיקרון.`
+      );
+    }
+  }
+
+  if (!cs && isStrengthAction(unit)) {
+    if (action === "expand_cautiously") {
       return normalizeParentFacingHe(
         `ב${name} מומלץ לשמר את אותה רמת מורכבות, ולהוסיף הרחבה זהירה ומדודה רק אם העקביות נשמרת גם בסבב הבא.`
       );
@@ -98,6 +103,8 @@ export function resolveUnitParentActionHe(unit) {
       `ב${name} מומלץ להמשיך באותה רמת קושי, לשמר עקביות, ורק אחר כך לשקול הרחבה עדינה בתוך אותו עיקרון.`
     );
   }
+
+  if (action === "withhold") return null;
   const fallback = bestEffortText(
     unit?.intervention?.immediateActionHe || unit?.probe?.specificationHe || ""
   );
@@ -105,8 +112,8 @@ export function resolveUnitParentActionHe(unit) {
 }
 
 export function resolveUnitNextGoalHe(unit) {
-  const cls = classifyParentRecommendationState(unit);
-  if (cls.classId === "strong_positive_actionable") {
+  const cs = canonicalState(unit);
+  if (isStrengthAction(unit) && (cs?.recommendation?.allowed || !cs)) {
     const name = topicName(unit);
     return normalizeParentFacingHe(
       `לשבוע הקרוב ב${name}: לשמור על דיוק גבוה באותה מורכבות, ואם נשמרת יציבות — לנסות הרחבה קלה ומבוקרת.`
@@ -119,8 +126,8 @@ export function resolveUnitNextGoalHe(unit) {
 }
 
 export function resolveUnitHomeMethodHe(unit) {
-  const cls = classifyParentRecommendationState(unit);
-  if (cls.classId === "strong_positive_actionable") {
+  const cs = canonicalState(unit);
+  if (isStrengthAction(unit) && (cs?.recommendation?.allowed || !cs)) {
     const name = topicName(unit);
     return normalizeParentFacingHe(
       `ב${name} הדגש הוא שימור יציבות באותה רמה, עם תרגול קצר ועקבי והעשרה עדינה בלבד.`
@@ -131,6 +138,5 @@ export function resolveUnitHomeMethodHe(unit) {
 }
 
 export function isStrongPositiveUnitForParentGuidance(unit) {
-  return hasStrongPositiveShape(unit);
+  return isStrengthAction(unit);
 }
-

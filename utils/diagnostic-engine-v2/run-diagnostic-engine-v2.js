@@ -15,6 +15,7 @@ import { buildProbePlan } from "./probe-layer.js";
 import { buildInterventionPlan } from "./intervention-layer.js";
 import { deriveStrengthProfile } from "./strength-profile.js";
 import { sanitizePedagogicLine } from "./human-boundaries.js";
+import { buildCanonicalState, COMPOSITE_KEY_SEPARATOR } from "../canonical-topic-state/index.js";
 
 const ENGINE_VERSION = "2.0.0";
 const BLUEPRINT_REF = "docs/stage1-scientific-blueprint-source-of-truth.md v1.0";
@@ -140,6 +141,10 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
       const strengthProfile = deriveStrengthProfile(row);
       const stableMasteryTag =
         Array.isArray(strengthProfile.tags) && strengthProfile.tags.includes("stable_mastery");
+      if (bucketKey && bucketKey.includes(COMPOSITE_KEY_SEPARATOR)) {
+        throw new Error(`runDiagnosticEngineV2: topicKey/bucketKey "${bucketKey}" contains composite separator — must be collapsed before engine`);
+      }
+
       const gating = applyOutputGating({
         confidence,
         priority,
@@ -155,6 +160,8 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
         needsPractice: !!row.needsPractice,
         stableMasteryTag,
         wrongCountForRules,
+        subjectId,
+        topicKey: bucketKey,
       });
 
       const behaviorDom = row?.behaviorProfile?.dominantType;
@@ -249,6 +256,45 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
           cannotConcludeYetHe: cannotConclude,
         },
       };
+      try {
+        unit.canonicalState = buildCanonicalState({
+          subjectId,
+          topicKey: bucketKey,
+          bucketKey,
+          displayName: row.displayName || bucketKey,
+          evidence: {
+            questions: Number(row.questions) || 0,
+            correct: Number(row.correct) || 0,
+            wrong: Number(row.wrong) || 0,
+            wrongEventCount: wrongs.length,
+            recurrenceFull,
+            taxonomyMatch: !!chosenId,
+            dataSufficiencyLevel: row.dataSufficiencyLevel || "low",
+            confidence01: row.confidence01 ?? null,
+            stableMastery: stableMasteryTag,
+            needsPractice: !!row.needsPractice,
+            positiveAuthorityLevel: gating.positiveAuthorityLevel || "none",
+          },
+          decisionInputs: {
+            priorityLevel: priority,
+            breadth,
+            counterEvidenceStrong,
+            weakEvidence,
+            hintInvalidates,
+            narrowSample,
+          },
+          classification: {
+            taxonomyId: chosenId,
+            classificationState,
+            classificationReasonCode,
+          },
+          confidenceLevel: confidence,
+        });
+      } catch (err) {
+        unit.canonicalState = null;
+        unit.canonicalStateError = String(err?.message || err);
+      }
+
       units.push(unit);
       allEvidenceRefs.push({ unitKey: unit.unitKey, evidenceTrace });
     }

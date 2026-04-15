@@ -9,16 +9,22 @@ import { validateExplanationOutput } from "./explanation-validator.js";
  * @param {object} p.probeIntel
  * @param {object} p.gate
  */
-export function buildHybridExplanations({ snapshot, ranking, probeIntel, gate }) {
+export function buildHybridExplanations({ snapshot, ranking, probeIntel, gate, canonicalState }) {
   const taxonomyId = snapshot?.taxonomyId || snapshot?.diagnosis?.taxonomyId || "";
   const conf = String(snapshot?.confidence?.level || "");
   const g = snapshot?.outputGating || {};
-  const cannot = !!g.cannotConcludeYet;
+  const cannot = !!g.cannotConcludeYet || !!canonicalState?.assessment?.cannotConcludeYet;
   const ambiguity = Number(ranking?.ambiguityScore);
+
+  const canonicalFamily = canonicalState?.recommendation?.family;
+  const canonicalUncertainty = canonicalState?.narrativeConstraints?.uncertaintyRequired;
   const requireUncertainty =
+    canonicalUncertainty === true ||
     (Number.isFinite(ambiguity) && ambiguity >= NUMERIC_GATES.ambiguityUncertaintyLineThreshold) ||
     conf !== "high" ||
     cannot;
+
+  const isProbeOnly = canonicalFamily === "probe_only" || canonicalFamily === "withhold";
 
   const evidenceRefs = [
     taxonomyId ? `taxonomy:${taxonomyId}` : "evidence:volume",
@@ -59,6 +65,13 @@ export function buildHybridExplanations({ snapshot, ranking, probeIntel, gate })
   let textTeacher = templateTeacher();
   let outputStatus = /** @type {"ok"|"fallback"|"failed"} */ ("ok");
   let failureReason = "";
+
+  if (isProbeOnly && !cannot && textParent.includes("דפוס לימודי פעיל")) {
+    textParent =
+      "לפי הראיות המאורגנות במערכת אין די נתונים לקביעה חד־משמעית כרגע. מומלץ מעקב נוסף או ביצוע הבדיקה המוצעת לפני מסקנות מעשיות.";
+    outputStatus = "fallback";
+    failureReason = "probe_only_framed_as_success";
+  }
 
   let validator = validateExplanationOutput({ text: textParent, requireUncertainty, evidenceRefs });
   if (!validator.overallPass) {

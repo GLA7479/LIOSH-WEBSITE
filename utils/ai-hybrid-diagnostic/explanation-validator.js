@@ -21,13 +21,23 @@ const UNCERTAINTY_MARKERS = [
   "לא ניתן לקבוע",
 ];
 
+const SUCCESS_MARKERS = [
+  "שליטה מלאה",
+  "מומלץ להרחיב",
+  "מוכן להתקדם",
+  "נקודת חוזק",
+  "שליטה טובה",
+  "דפוס לימודי פעיל",
+];
+
 /**
  * @param {object} p
  * @param {string} p.text
  * @param {boolean} p.requireUncertainty
  * @param {string[]} p.evidenceRefs
+ * @param {object} [p.canonicalState]
  */
-export function validateExplanationOutput({ text, requireUncertainty, evidenceRefs }) {
+export function validateExplanationOutput({ text, requireUncertainty, evidenceRefs, canonicalState }) {
   const t = String(text || "");
   /** @type {string[]} */
   const reasonCodes = [];
@@ -52,18 +62,54 @@ export function validateExplanationOutput({ text, requireUncertainty, evidenceRe
 
   if (!evidenceLinkPass) reasonCodes.push("evidence_refs_invalid");
 
+  let stateCoherencePass = true;
+  let familyCoherencePass = true;
+  let readinessConfidenceCoherencePass = true;
+
+  if (canonicalState) {
+    const action = canonicalState.actionState;
+    const family = canonicalState.recommendation?.family;
+
+    if ((action === "probe_only" || action === "withhold") && SUCCESS_MARKERS.some((m) => t.includes(m))) {
+      stateCoherencePass = false;
+      reasonCodes.push("state_coherence:success_text_for_probe_or_withhold");
+    }
+
+    if (family && family !== action) {
+      familyCoherencePass = false;
+      reasonCodes.push(`family_coherence:family=${family}_action=${action}`);
+    }
+
+    const readiness = canonicalState.assessment?.readiness;
+    const confidence = canonicalState.assessment?.confidenceLevel;
+    if (readiness === "insufficient" && t.includes("מוכן להתקדם")) {
+      readinessConfidenceCoherencePass = false;
+      reasonCodes.push("readiness_coherence:ready_text_for_insufficient");
+    }
+    if ((confidence === "low" || confidence === "early_signal_only") && t.includes("מידת הוודאות גבוהה")) {
+      readinessConfidenceCoherencePass = false;
+      reasonCodes.push("confidence_coherence:high_text_for_low_confidence");
+    }
+  }
+
   const boundaryPass = forbiddenClaimPass;
   const overallPass =
     boundaryPass &&
     evidenceLinkPass &&
     uncertaintyCompliancePass &&
-    forbiddenClaimPass;
+    forbiddenClaimPass &&
+    stateCoherencePass &&
+    familyCoherencePass &&
+    readinessConfidenceCoherencePass;
 
   return {
     boundaryPass,
     evidenceLinkPass,
     uncertaintyCompliancePass,
     forbiddenClaimPass,
+    stateCoherencePass,
+    familyCoherencePass,
+    readinessConfidenceCoherencePass,
     overallPass,
     reasonCodes,
     gateRef: {

@@ -1219,7 +1219,7 @@ function buildCrossSubjectPhase14Fields(subjects) {
   const crossSubjectFoundationFirstPriority = foundationFirstSubjects >= 2 || downstreamHigh >= 2;
   const crossSubjectFoundationFirstPriorityHe = crossSubjectFoundationFirstPriority
     ? "בכמה מקצועות כדאי לחזק קודם בסיס לפני הרחבה או ליטוש עמוק."
-    : "רוב המקצועות נראים יותר מקומיים או עם ראיה חלקית — לא חייבים «בסיס גדול» בכל מקום.";
+    : "רוב המקצועות נראים יותר מקומיים או עם ראיה חלקית — לא חייבים בסיס רחב בכל מקום.";
 
   return {
     crossSubjectDependencyState,
@@ -1767,21 +1767,16 @@ function recommendationFromV2Unit(u) {
     gatingContracts?.readiness && typeof gatingContracts.readiness === "object" ? gatingContracts.readiness : {};
   const baseConfidence =
     gatingContracts?.confidence && typeof gatingContracts.confidence === "object" ? gatingContracts.confidence : {};
-  const positiveConclusionAllowed = !!u?.outputGating?.positiveConclusionAllowed;
-  const effectiveDecisionTier = Math.max(
-    Number(baseDecision?.decisionTier) || 0,
-    positiveConclusionAllowed && !gated ? 2 : 0
-  );
-  const effectiveReadiness = (() => {
-    const raw = String(baseReadiness?.readiness || "").trim().toLowerCase();
-    if (raw === "ready" || raw === "forming" || raw === "emerging") return raw;
-    return positiveConclusionAllowed && !gated ? "ready" : "insufficient";
+  const cs = u?.canonicalState;
+  const canonicalReadiness = cs?.assessment?.readiness || String(baseReadiness?.readiness || "insufficient");
+  const canonicalConfidenceBand = (() => {
+    const cl = cs?.assessment?.confidenceLevel;
+    if (cl === "high") return "high";
+    if (cl === "moderate") return "medium";
+    return "low";
   })();
-  const effectiveConfidenceBand = (() => {
-    const raw = String(baseConfidence?.confidenceBand || "").trim().toLowerCase();
-    if (raw === "high" || raw === "medium" || raw === "moderate") return raw === "moderate" ? "medium" : raw;
-    return positiveConclusionAllowed && !gated ? "medium" : "low";
-  })();
+  const canonicalDecisionTier = cs?.assessment?.decisionTier ?? (Number(baseDecision?.decisionTier) || 0);
+
   const contractsV1 = {
     ...(gatingContracts || {}),
     decision: {
@@ -1789,7 +1784,7 @@ function recommendationFromV2Unit(u) {
       contractVersion: String(baseDecision?.contractVersion || "v1"),
       topicKey: topicKey || String(baseDecision?.topicKey || "__unknown_topic__"),
       subjectId,
-      decisionTier: effectiveDecisionTier,
+      decisionTier: canonicalDecisionTier,
       cannotConcludeYet: gated,
     },
     readiness: {
@@ -1797,23 +1792,23 @@ function recommendationFromV2Unit(u) {
       contractVersion: String(baseReadiness?.contractVersion || "v1"),
       topicKey: topicKey || String(baseReadiness?.topicKey || "__unknown_topic__"),
       subjectId,
-      readiness: effectiveReadiness,
+      readiness: canonicalReadiness,
     },
     confidence: {
       ...baseConfidence,
       contractVersion: String(baseConfidence?.contractVersion || "v1"),
       topicKey: topicKey || String(baseConfidence?.topicKey || "__unknown_topic__"),
       subjectId,
-      confidenceBand: effectiveConfidenceBand,
+      confidenceBand: canonicalConfidenceBand,
     },
   };
   const gateReadiness =
-    effectiveReadiness === "ready" ? "ready" : effectiveReadiness === "forming" ? "moderate" : "insufficient";
+    canonicalReadiness === "ready" ? "ready" : canonicalReadiness === "forming" ? "moderate" : "insufficient";
   const conclusionStrength = gated
     ? "withheld"
-    : effectiveDecisionTier >= 3
+    : canonicalDecisionTier >= 3
       ? "strong"
-      : effectiveDecisionTier >= 2
+      : canonicalDecisionTier >= 2
         ? "moderate"
         : "tentative";
   return {
@@ -1821,6 +1816,8 @@ function recommendationFromV2Unit(u) {
     topicKey,
     subjectId,
     displayName: String(u?.displayName || ""),
+    topicStateId: cs?.topicStateId || null,
+    stateHash: cs?.stateHash || null,
     recommendedNextStep: step,
     recommendedStepLabelHe: label,
     questions,
@@ -1899,16 +1896,52 @@ function buildSubjectProfilesFromV2(baseReport) {
 
   for (const sid of SUBJECT_IDS) {
     const units = grouped[sid] || [];
+    if (units.length === 0) {
+      out.push({
+        subject: sid,
+        subjectLabelHe: SUBJECT_LABEL_HE[sid],
+        summaryHe: "אין מספיק נתונים בתקופה הנבחנת.",
+        hasAnySignal: false,
+        topStrengths: [],
+        topWeaknesses: [],
+        maintain: [],
+        improving: [],
+        excellence: [],
+        topicRecommendations: [],
+        parentActionHe: null,
+        nextWeekGoalHe: null,
+        confidenceSummaryHe: "עדיין לא הצטבר מספיק מידע למסקנה ברורה.",
+        recommendedHomeMethodHe: null,
+        trendNarrativeHe: null,
+        subjectMonitoringOnly: true,
+      });
+      continue;
+    }
+    const csOf = (u) => u?.canonicalState;
+    const actionOf = (u) => {
+      if (csOf(u)) return csOf(u).actionState;
+      if (u?.outputGating?._deprecated_positiveConclusionAllowed || u?.outputGating?.positiveConclusionAllowed) {
+        const r = u?.outputGating?.contractsV1?.readiness?.readiness;
+        if (r === "insufficient" || r === "cannot_conclude") return "probe_only";
+        return "maintain";
+      }
+      return "probe_only";
+    };
     const highPriority = units.filter((u) => String(u?.priority?.level || "") === "P4").length;
-    const positiveUnits = units.filter((u) => !!u?.outputGating?.positiveConclusionAllowed);
-    const stable = positiveUnits.length;
+    const strengthUnits = units.filter((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
+    const stable = strengthUnits.length;
     const fragile = units.filter((u) => Array.isArray(u?.strengthProfile?.tags) && u.strengthProfile.tags.includes("fragile_success")).length;
     const diagnosed = units.filter((u) => !!u?.diagnosis?.allowed);
     const topicWeakLeader =
       diagnosed.find((u) => String(u?.priority?.level || "") === "P4") ||
       diagnosed.find((u) => String(u?.priority?.level || "") === "P3") ||
       null;
-    const topWeakUnit = topicWeakLeader || positiveUnits[0] || units[0] || null;
+    const topWeakUnit = (() => {
+      if (topicWeakLeader) return topicWeakLeader;
+      const maintainUnit = units.find((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
+      if (maintainUnit) return maintainUnit;
+      return units[0] || null;
+    })();
 
     const topicRecommendations = attachNarrativeContractsToTopicRecommendations(
       sid,
@@ -1920,13 +1953,13 @@ function buildSubjectProfilesFromV2(baseReport) {
       )
     );
 
-    const excellentList = positiveUnits.filter(
-      (u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "excellent"
+    const excellentList = strengthUnits.filter(
+      (u) => csOf(u)?.evidence?.positiveAuthorityLevel === "excellent"
     );
-    const veryGoodList = positiveUnits.filter(
-      (u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "very_good"
+    const veryGoodList = strengthUnits.filter(
+      (u) => csOf(u)?.evidence?.positiveAuthorityLevel === "very_good"
     );
-    const goodList = positiveUnits.filter((u) => String(u?.outputGating?.positiveAuthorityLevel || "") === "good");
+    const goodList = strengthUnits.filter((u) => csOf(u)?.evidence?.positiveAuthorityLevel === "good");
 
     const topStrengths = veryGoodList.slice(0, 3).map((u) => ({
       labelHe: String(u?.displayName || ""),
@@ -1951,20 +1984,21 @@ function buildSubjectProfilesFromV2(baseReport) {
 
     const POSITIVE_LEVEL_RANK_D = { excellent: 3, very_good: 2, good: 1, none: 0 };
     const rankPosD = (a, b) => {
-      const la = String(a?.outputGating?.positiveAuthorityLevel || "none");
-      const lb = String(b?.outputGating?.positiveAuthorityLevel || "none");
+      const la = csOf(a)?.evidence?.positiveAuthorityLevel || "none";
+      const lb = csOf(b)?.evidence?.positiveAuthorityLevel || "none";
       return (POSITIVE_LEVEL_RANK_D[lb] || 0) - (POSITIVE_LEVEL_RANK_D[la] || 0);
     };
-    const rankedPositiveD = [...positiveUnits].sort(rankPosD);
+    const rankedPositiveD = [...strengthUnits].sort(rankPosD);
     const leadPosD = rankedPositiveD[0] || null;
-    const leadLevD = String(leadPosD?.outputGating?.positiveAuthorityLevel || "none");
-    const strongPosD = !!leadPosD && (leadLevD === "excellent" || leadLevD === "very_good");
+    const leadLevD = csOf(leadPosD)?.evidence?.positiveAuthorityLevel || "none";
+    const isStrengthLeadD = actionOf(leadPosD) === "maintain" || actionOf(leadPosD) === "expand_cautiously";
+    const strongPosD = isStrengthLeadD && (leadLevD === "excellent" || leadLevD === "very_good");
     const additiveLeadD = !!leadPosD?.outputGating?.additiveCautionAllowed;
     const p4UnitD = diagnosed.find((u) => String(u?.priority?.level || "") === "P4");
 
     const summaryHe = (() => {
       if (p4UnitD) {
-        return `ברמת ${p4UnitD.displayName}: ${p4UnitD.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
+        return `בנושא ${p4UnitD.displayName}: ${p4UnitD.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
       }
       if (strongPosD && leadPosD) {
         const base = `בנושא ${leadPosD.displayName}: ${tierStableStrengthHe()}`;
@@ -1977,11 +2011,11 @@ function buildSubjectProfilesFromV2(baseReport) {
         }
         return base;
       }
-      if (leadPosD && leadLevD === "good") {
+      if (isStrengthLeadD && leadPosD && leadLevD === "good") {
         return `בנושא ${leadPosD.displayName}: ${tierStableStrengthHe()}`;
       }
       if (topicWeakLeader) {
-        return `ברמת ${topicWeakLeader.displayName}: ${topicWeakLeader.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
+        return `בנושא ${topicWeakLeader.displayName}: ${topicWeakLeader.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
       }
       return "אין מספיק ראיות בשלב זה.";
     })();
@@ -2013,8 +2047,8 @@ function buildSubjectProfilesFromV2(baseReport) {
         ? subjectV2TrendNarrativeHighPriorityHe()
         : subjectV2TrendNarrativeStableHe(),
       confidenceSummaryHe: topWeakUnit
-        ? subjectV2ConfidenceSummaryHe(topWeakUnit?.confidence?.level)
-        : "אין ביטחון מספק למסקנה מקצועית רחבה.",
+        ? subjectV2ConfidenceSummaryHe(csOf(topWeakUnit)?.assessment?.confidenceLevel || topWeakUnit?.confidence?.level)
+        : "עדיין לא הצטבר מספיק מידע למסקנה מקצועית רחבה.",
       recommendedHomeMethodHe: resolveUnitHomeMethodHe(topWeakUnit),
       whatNotToDoHe: topWeakUnit?.intervention?.avoidHe || null,
       majorRiskFlagsAcrossRows: {
@@ -2035,11 +2069,11 @@ function buildSubjectProfilesFromV2(baseReport) {
       dominantRootCauseLabelHe: topWeakUnit?.taxonomy?.rootsHe?.[0] || null,
       secondaryRootCause: topWeakUnit?.taxonomy?.competitorsHe?.[0] || null,
       rootCauseDistribution: {},
-      subjectDiagnosticRestraintHe: units.some((u) => u?.outputGating?.cannotConcludeYet)
+      subjectDiagnosticRestraintHe: units.some((u) => csOf(u)?.assessment?.cannotConcludeYet ?? u?.outputGating?.cannotConcludeYet)
         ? "בחלק מהשורות הראיות עדיין לא מספיקות למסקנה חזקה."
         : null,
       subjectConclusionReadiness: mergeSubjectConclusionReadinessContract({
-        internalReadiness: units.some((u) => u?.outputGating?.cannotConcludeYet) ? "partial" : "ready",
+        internalReadiness: units.some((u) => csOf(u)?.assessment?.cannotConcludeYet ?? u?.outputGating?.cannotConcludeYet) ? "partial" : "ready",
         rows: v2UnitsToContractRows(units),
         withheldStrengthRows: units.filter((u) => u?.outputGating?.cannotConcludeYet).length,
         tentativeStrengthRows: 0,
@@ -2074,21 +2108,29 @@ function buildSubjectProfilesFromV2(baseReport) {
 function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
   const diag = baseReport?.diagnosticEngineV2;
   const units = Array.isArray(diag?.units) ? diag.units : [];
+  const csOf = (u) => u?.canonicalState;
+  const actionOf = (u) => {
+    if (csOf(u)) return csOf(u).actionState;
+    if (u?.outputGating?._deprecated_positiveConclusionAllowed || u?.outputGating?.positiveConclusionAllowed) {
+      const r = u?.outputGating?.contractsV1?.readiness?.readiness;
+      if (r === "insufficient" || r === "cannot_conclude") return "probe_only";
+      return "maintain";
+    }
+    return "probe_only";
+  };
   const diagnosed = units.filter((u) => u?.diagnosis?.allowed);
-  const stable = units.filter((u) => !!u?.outputGating?.positiveConclusionAllowed);
-  const uncertain = units.filter((u) => u?.outputGating?.cannotConcludeYet);
+  const stable = units.filter((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
+  const uncertain = units.filter((u) => csOf(u)?.assessment?.cannotConcludeYet || u?.outputGating?.cannotConcludeYet);
   const p4 = units.filter((u) => String(u?.priority?.level || "") === "P4");
 
   const POSITIVE_LEVEL_RANK_X = { excellent: 3, very_good: 2, good: 1, none: 0 };
   const rankPosX = (a, b) => {
-    const la = String(a?.outputGating?.positiveAuthorityLevel || "none");
-    const lb = String(b?.outputGating?.positiveAuthorityLevel || "none");
+    const la = csOf(a)?.evidence?.positiveAuthorityLevel || "none";
+    const lb = csOf(b)?.evidence?.positiveAuthorityLevel || "none";
     return (POSITIVE_LEVEL_RANK_X[lb] || 0) - (POSITIVE_LEVEL_RANK_X[la] || 0);
   };
   const stableRanked = [...stable].sort(rankPosX);
   const leadPosX = stableRanked[0] || null;
-  const leadLevX = String(leadPosX?.outputGating?.positiveAuthorityLevel || "none");
-  const strongPosExec = !!leadPosX && (leadLevX === "excellent" || leadLevX === "very_good");
 
   const topStrengthsAcrossHe = stable.slice(0, 3).map((u) => `${u.displayName} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`);
   const diagnosedFocus = diagnosed
@@ -2116,8 +2158,8 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
     }),
     mainHomeRecommendationHe:
       resolveUnitParentActionHe(p4[0])
-      || (strongPosExec && resolveUnitParentActionHe(leadPosX))
       || resolveUnitParentActionHe(diagnosed[0])
+      || resolveUnitParentActionHe(leadPosX)
       || "להמשיך עם תרגול ממוקד לפני שינוי רחב בבית.",
     cautionNoteHe: executiveV2CautionNoteHe({ p4Length: p4.length, uncertainLength: uncertain.length }),
     overallConfidenceHe: executiveV2OverallConfidenceHe(diagnosed.length, units.length, stable.length),
@@ -2132,13 +2174,14 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
     evidenceBalanceHe: executiveV2EvidenceBalanceHe(stable.length, diagnosed.length),
     topImmediateParentActionHe: diagnosed[0]?.intervention?.immediateActionHe || "",
     secondPriorityActionHe: diagnosed[1]?.intervention?.immediateActionHe || "",
-    monitoringOnlyAreasHe: uncertain.slice(0, 4).map((u) => `${u.displayName} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`),
+    monitoringOnlyAreasHe: units.filter((u) => actionOf(u) === "withhold" || actionOf(u) === "probe_only").slice(0, 4).map((u) => `${u.displayName} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`),
     deferForNowAreasHe: [],
     reviewBeforeAdvanceAreasHe: diagnosed
       .filter((u) => u?.probe?.objectiveHe)
       .slice(0, 4)
       .map((u) => `${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId}: ${u.probe.objectiveHe}`),
     transferReadyAreasHe: stable.slice(0, 3).map((u) => `${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId}: ${u.displayName}`),
+    anchoredTopicStateIds: stable.slice(0, 3).map((u) => csOf(u)?.topicStateId || null).filter(Boolean),
   };
 }
 

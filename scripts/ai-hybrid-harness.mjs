@@ -71,8 +71,11 @@ const cases = [
     raw: { math: wrongEvents("math", "addition", 1) },
     assertHybrid: (hr) => {
       const u = hr.units[0];
-      assert.equal(u.aiAssist.mode, "explain_only");
-      assert.ok(!u.aiAssist.suppressionFlags.includes("v2_cannot_conclude"));
+      assert.equal(u.aiAssist.mode, "suppressed");
+      assert.ok(
+        u.aiAssist.suppressionFlags.includes("canonical_action_blocked"),
+        "suppressed by canonical action probe_only/withhold"
+      );
     },
   },
   {

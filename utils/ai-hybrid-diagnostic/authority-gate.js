@@ -24,6 +24,18 @@ export function resolveAuthorityGate({ unit, features, consent, rolloutStage }) 
     return { mode: "suppressed", suppressionFlags, eligible: false };
   }
 
+  const cs = unit?.canonicalState;
+  if (cs) {
+    const action = cs.actionState;
+    if (action === "withhold" || action === "probe_only") {
+      if (cs.evidence?.positiveAuthorityLevel && cs.evidence.positiveAuthorityLevel !== "none") {
+        suppressionFlags.push("incoherent_canonical_state");
+      }
+      suppressionFlags.push("canonical_action_blocked");
+      return { mode: "suppressed", suppressionFlags, eligible: false };
+    }
+  }
+
   const g = unit?.outputGating && typeof unit.outputGating === "object" ? unit.outputGating : {};
   const fv = validateFeatureVector(features, { strictAssist: true });
   if (!fv.complete) suppressionFlags.push("feature_incomplete");
