@@ -50,6 +50,11 @@ import {
   v2SubjectMemoryPartialEvidenceHe,
   topicRecommendationV2CautionGatedHe,
 } from "./parent-report-language/index.js";
+import {
+  resolveUnitHomeMethodHe,
+  resolveUnitNextGoalHe,
+  resolveUnitParentActionHe,
+} from "./parent-report-recommendation-consistency.js";
 import { EVIDENCE_CONTRACT_VERSION } from "./contracts/parent-report-contracts-v1.js";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
@@ -233,6 +238,120 @@ function dominantKey(counts) {
   const keys = Object.keys(counts);
   if (keys.length === 0) return null;
   return keys.sort((a, b) => counts[b] - counts[a])[0];
+}
+
+function countsToSortedList(counts) {
+  return Object.entries(counts || {})
+    .map(([key, count]) => ({ key, count: Number(count) || 0 }))
+    .filter((x) => x.count > 0)
+    .sort((a, b) => b.count - a.count);
+}
+
+/**
+ * Canonical parent-report entity: child + subject + pedagogical topic.
+ * Mode/grade/level are retained only as sub-signals.
+ * @param {string} subjectId
+ * @param {Record<string, Record<string, unknown>>} rowsByKey
+ */
+export function collapseTopicRowsToCanonicalTopicEntity(subjectId, rowsByKey) {
+  const input = rowsByKey && typeof rowsByKey === "object" ? rowsByKey : {};
+  /** @type {Record<string, { rows: Array<Record<string, unknown>>, rowKeys: string[] }>} */
+  const grouped = {};
+  for (const [rowKey, row] of Object.entries(input)) {
+    if (!row || typeof row !== "object") continue;
+    const split = splitTopicRowKey(String(rowKey || ""));
+    const canonicalBucket =
+      subjectId === "math"
+        ? mathReportBaseOperationKey(String(row?.bucketKey || split.bucketKey || rowKey || ""))
+        : String(row?.bucketKey || split.bucketKey || rowKey || "").trim();
+    if (!canonicalBucket) continue;
+    if (!grouped[canonicalBucket]) grouped[canonicalBucket] = { rows: [], rowKeys: [] };
+    grouped[canonicalBucket].rows.push(row);
+    grouped[canonicalBucket].rowKeys.push(String(rowKey));
+  }
+
+  /** @type {Record<string, Record<string, unknown>>} */
+  const collapsed = {};
+  for (const [bucketKey, pack] of Object.entries(grouped)) {
+    const rows = Array.isArray(pack?.rows) ? pack.rows : [];
+    if (!rows.length) continue;
+    let questions = 0;
+    let correct = 0;
+    let wrong = 0;
+    let timeMinutes = 0;
+    let lastSessionMs = null;
+    let lastSessionAt = null;
+    const modeCounts = {};
+    const gradeCounts = {};
+    const levelCounts = {};
+    let representative = rows[0];
+    for (const r of rows) {
+      const q = Number(r?.questions) || 0;
+      const c = Number(r?.correct) || 0;
+      const w = Number(r?.wrong) || Math.max(0, q - c);
+      const tm = Number(r?.timeMinutes) || 0;
+      questions += q;
+      correct += c;
+      wrong += w;
+      timeMinutes += tm;
+      const mKey = String(r?.modeKey || "").trim();
+      if (mKey) modeCounts[mKey] = (modeCounts[mKey] || 0) + q;
+      const gKey = String(r?.gradeKey || "").trim();
+      if (gKey) gradeCounts[gKey] = (gradeCounts[gKey] || 0) + q;
+      const lKey = String(r?.levelKey || "").trim();
+      if (lKey) levelCounts[lKey] = (levelCounts[lKey] || 0) + q;
+      const lms = Number(r?.lastSessionMs);
+      if (Number.isFinite(lms) && (lastSessionMs == null || lms > lastSessionMs)) {
+        lastSessionMs = lms;
+        lastSessionAt = r?.lastSessionAt || null;
+      }
+      const repQ = Number(representative?.questions) || 0;
+      const repMs = Number(representative?.lastSessionMs);
+      if (q > repQ || (q === repQ && Number.isFinite(lms) && (!Number.isFinite(repMs) || lms > repMs))) {
+        representative = r;
+      }
+    }
+    const modeKey = dominantKey(modeCounts) || String(representative?.modeKey || "").trim() || "learning";
+    const gradeKey = dominantKey(gradeCounts) || String(representative?.gradeKey || "").trim() || null;
+    const levelKey = dominantKey(levelCounts) || String(representative?.levelKey || "").trim() || null;
+    const accuracy = questions > 0 ? Math.round((correct / questions) * 100) : 0;
+    const merged = {
+      ...representative,
+      bucketKey,
+      questions,
+      correct,
+      wrong,
+      accuracy,
+      timeMinutes,
+      timeHours: (timeMinutes / 60).toFixed(2),
+      needsPractice: accuracy < 70,
+      excellent: accuracy >= 90 && questions >= 10,
+      modeKey,
+      mode: modeLabel(modeKey),
+      gradeKey: gradeKey || null,
+      grade: formatParentReportGradeLabel(gradeKey),
+      levelKey: levelKey || null,
+      level: levelKey ? LEVEL_LABELS[levelKey] || levelKey : "לא זמין",
+      displayName: String(representative?.displayName || "").trim() || String(representative?.bucketKey || bucketKey),
+      lastSessionMs: Number.isFinite(Number(lastSessionMs)) ? Number(lastSessionMs) : null,
+      lastSessionAt: lastSessionAt || representative?.lastSessionAt || "לא זמין",
+      canonicalTopicEntity: true,
+      rowCountMerged: rows.length,
+      parentTopicSubSignals: {
+        modeBreakdown: countsToSortedList(modeCounts),
+        gradeBreakdown: countsToSortedList(gradeCounts),
+        levelBreakdown: countsToSortedList(levelCounts),
+        sourceRowKeys: Array.isArray(pack?.rowKeys) ? [...pack.rowKeys] : [],
+      },
+    };
+    collapsed[bucketKey] = merged;
+  }
+  return collapsed;
+}
+
+/** Test hook. */
+export function collapseTopicRowsToCanonicalTopicEntityForTests(subjectId, rowsByKey) {
+  return collapseTopicRowsToCanonicalTopicEntity(subjectId, rowsByKey);
 }
 
 /** כיתה/רמה לתצוגה: הערך מהסשן העדכני ביותר בטווח (לא שכיחות היסטורית). */
@@ -742,24 +861,13 @@ function summarizeV2UnitsForSubject(units) {
     evidenceMistake: null,
     evidenceSuccess,
     evidenceExamples,
-    parentActionHe: (() => {
-      const t = String(
-        actionAnchor?.intervention?.immediateActionHe || actionAnchor?.probe?.specificationHe || ""
-      ).trim();
-      return t ? normalizeParentFacingHe(t) : null;
-    })(),
-    nextWeekGoalHe: (() => {
-      const t = String(actionAnchor?.probe?.objectiveHe || actionAnchor?.intervention?.shortPracticeHe || "").trim();
-      return t ? normalizeParentFacingHe(t) : null;
-    })(),
+    parentActionHe: actionAnchor ? resolveUnitParentActionHe(actionAnchor) : null,
+    nextWeekGoalHe: actionAnchor ? resolveUnitNextGoalHe(actionAnchor) : null,
     subjectPriorityReasonHe: (() => {
       const t = String(topWeak?.taxonomy?.patternHe || "").trim();
       return t ? normalizeParentFacingHe(t) : null;
     })(),
-    subjectDoNowHe: (() => {
-      const t = String(actionAnchor?.intervention?.immediateActionHe || "").trim();
-      return t ? normalizeParentFacingHe(t) : null;
-    })(),
+    subjectDoNowHe: actionAnchor ? resolveUnitParentActionHe(actionAnchor) : null,
     subjectAvoidNowHe: (() => {
       const t = String(actionAnchor?.intervention?.avoidHe || "").trim();
       return t ? normalizeParentFacingHe(t) : null;
@@ -768,9 +876,15 @@ function summarizeV2UnitsForSubject(units) {
       const t = String(topWeak?.taxonomy?.patternHe || "").trim();
       return t ? normalizeParentFacingHe(t) : null;
     })(),
+    recommendedHomeMethodHe: actionAnchor ? resolveUnitHomeMethodHe(actionAnchor) : null,
     subjectMemoryNarrativeHe: uncertain.length ? v2SubjectMemoryPartialEvidenceHe() : null,
     subjectDiagnosticRestraintHe: uncertain.length ? v2SubjectDiagnosticRestraintHe() : null,
   };
+}
+
+/** Test hook: keep regular-report recommendation mapping verifiable in phase suites. */
+export function summarizeV2UnitsForSubjectForTests(units) {
+  return summarizeV2UnitsForSubject(units);
 }
 
 function buildPatternDiagnosticsFromV2(diagnosticEngineV2) {
@@ -856,7 +970,7 @@ export function generateParentReportV2(
     const bucket = saved[def.container] || {};
     const targetMap = maps[def.id];
 
-    const built = buildMapFromBucket({
+    const builtRaw = buildMapFromBucket({
       bucket,
       progressData,
       startMs,
@@ -864,6 +978,7 @@ export function generateParentReportV2(
       subject: def.id === "moledet-geography" ? "moledet-geography" : def.id,
       displayNameFn: def.displayName,
     });
+    const built = collapseTopicRowsToCanonicalTopicEntity(def.id, builtRaw);
 
     Object.assign(targetMap, built);
 

@@ -21,6 +21,12 @@ async function importUtils(rel) {
 
 const { buildDetailedParentReportFromBaseReport } = await importUtils("utils/detailed-parent-report.js");
 const { normalizeExecutiveSummary } = await importUtils("utils/parent-report-payload-normalize.js");
+const { summarizeV2UnitsForSubjectForTests, collapseTopicRowsToCanonicalTopicEntityForTests } = await importUtils(
+  "utils/parent-report-v2.js"
+);
+const { classifyParentRecommendationState } = await importUtils(
+  "utils/parent-report-recommendation-consistency.js"
+);
 const { analyzeLearningPatterns, EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD } = await importUtils(
   "utils/learning-patterns-analysis.js"
 );
@@ -1355,6 +1361,338 @@ function runOutputQualityLockedRegression() {
   );
 }
 
+function runStrongPositiveRecommendationConsistencyCrossSurfaces() {
+  const blockedFamilyRegex =
+    /מורכבות מופחתת|להנמיך|פחות מורכב|אותה רמה נמוכה|איסוף אות|מעקב בלבד|חיזוק באותה רמה/u;
+  const buildUnit = ({
+    subjectId,
+    topicRowKey,
+    displayName,
+    q,
+    acc,
+    positive = true,
+    authority = "very_good",
+    readiness = "ready",
+    cannotConcludeYet = false,
+  }) => ({
+    subjectId,
+    topicRowKey,
+    displayName,
+    diagnosis: { allowed: false, lineHe: "" },
+    taxonomy: null,
+    recurrence: { wrongCountForRules: 0, totalQuestions: q },
+    confidence: { level: "high", rowSignals: { dataSufficiencyLevel: "strong", isEarlySignalOnly: false } },
+    priority: { level: "P2" },
+    outputGating: {
+      cannotConcludeYet,
+      positiveConclusionAllowed: positive,
+      positiveAuthorityLevel: authority,
+      additiveCautionAllowed: false,
+      contractsV1: { readiness: { readiness } },
+    },
+    probe: {
+      specificationHe: "משימה מקבילה באותו עקרון עם מורכבות מופחתת",
+      objectiveHe: "להמשיך לאסוף אות",
+    },
+    intervention: {
+      immediateActionHe: "",
+      shortPracticeHe: "",
+      avoidHe: "",
+    },
+    evidenceTrace: [{ type: "volume", value: { questions: q, correct: Math.round((q * acc) / 100), wrong: 0, accuracy: acc } }],
+  });
+
+  const strongCases = [
+    // locked original regression case
+    {
+      name: "locked-multiplication-21-100",
+      unit: buildUnit({
+        subjectId: "math",
+        topicRowKey: "multiplication\u0001learning\u0001g4\u0001medium",
+        displayName: "כפל",
+        q: 21,
+        acc: 100,
+        authority: "excellent",
+        readiness: "ready",
+      }),
+      summarySubject: "math",
+      summaryQuestions: 21,
+      summaryAccuracy: 100,
+    },
+    {
+      name: "generalized-19-very-high",
+      unit: buildUnit({
+        subjectId: "math",
+        topicRowKey: "fractions\u0001practice\u0001g4\u0001medium",
+        displayName: "שברים",
+        q: 19,
+        acc: 95,
+        authority: "very_good",
+        readiness: "forming",
+      }),
+      summarySubject: "math",
+      summaryQuestions: 19,
+      summaryAccuracy: 95,
+    },
+    {
+      name: "generalized-32-high",
+      unit: buildUnit({
+        subjectId: "math",
+        topicRowKey: "division\u0001practice\u0001g4\u0001hard",
+        displayName: "חילוק",
+        q: 32,
+        acc: 92,
+        authority: "very_good",
+        readiness: "ready",
+      }),
+      summarySubject: "math",
+      summaryQuestions: 32,
+      summaryAccuracy: 92,
+    },
+    {
+      name: "generalized-other-subject-english",
+      unit: buildUnit({
+        subjectId: "english",
+        topicRowKey: "vocabulary\u0001learning",
+        displayName: "אוצר מילים",
+        q: 24,
+        acc: 93,
+        authority: "excellent",
+        readiness: "ready",
+      }),
+      summarySubject: "english",
+      summaryQuestions: 24,
+      summaryAccuracy: 93,
+    },
+  ];
+
+  for (const c of strongCases) {
+    const cls = classifyParentRecommendationState(c.unit);
+    assert.equal(
+      cls.classId,
+      "strong_positive_actionable",
+      `${c.name}: expected strong-positive class`
+    );
+    assert.ok(
+      Array.isArray(cls.blockedFamilies) && cls.blockedFamilies.length >= 4,
+      `${c.name}: blocked recommendation families must exist for strong-positive class`
+    );
+    const regularMapped = summarizeV2UnitsForSubjectForTests([c.unit]);
+    assert.ok(
+      !blockedFamilyRegex.test(String(regularMapped.parentActionHe || "")),
+      `${c.name}: regular report parent action must not map to blocked families`
+    );
+    assert.ok(
+      !blockedFamilyRegex.test(String(regularMapped.nextWeekGoalHe || "")),
+      `${c.name}: regular report next goal must not map to blocked families`
+    );
+    assert.ok(
+      !blockedFamilyRegex.test(String(regularMapped.recommendedHomeMethodHe || "")),
+      `${c.name}: regular report home method must not map to blocked families`
+    );
+
+    const base = {
+      period: "week",
+      playerName: `_strong_cross_surface_${c.name}`,
+      startDate: "2026-04-01",
+      endDate: "2026-04-14",
+      summary: {
+        totalQuestions: c.summaryQuestions,
+        totalTimeMinutes: 14,
+        overallAccuracy: c.summaryAccuracy,
+        mathQuestions: c.summarySubject === "math" ? c.summaryQuestions : 0,
+        mathCorrect: c.summarySubject === "math" ? Math.round((c.summaryQuestions * c.summaryAccuracy) / 100) : 0,
+        mathAccuracy: c.summarySubject === "math" ? c.summaryAccuracy : 0,
+        geometryQuestions: 0,
+        geometryCorrect: 0,
+        geometryAccuracy: 0,
+        englishQuestions: c.summarySubject === "english" ? c.summaryQuestions : 0,
+        englishCorrect:
+          c.summarySubject === "english" ? Math.round((c.summaryQuestions * c.summaryAccuracy) / 100) : 0,
+        englishAccuracy: c.summarySubject === "english" ? c.summaryAccuracy : 0,
+        scienceQuestions: 0,
+        scienceCorrect: 0,
+        scienceAccuracy: 0,
+        hebrewQuestions: 0,
+        hebrewCorrect: 0,
+        hebrewAccuracy: 0,
+        moledetGeographyQuestions: 0,
+        moledetGeographyCorrect: 0,
+        moledetGeographyAccuracy: 0,
+      },
+      diagnosticEngineV2: { units: [c.unit] },
+    };
+    const detailed = buildDetailedParentReportFromBaseReport(base, { period: "week" });
+    const esAction = String(detailed?.executiveSummary?.mainHomeRecommendationHe || "");
+    assert.ok(
+      !blockedFamilyRegex.test(esAction),
+      `${c.name}: detailed executive home action must avoid blocked families`
+    );
+    const homeItems = Array.isArray(detailed?.homePlan?.itemsHe) ? detailed.homePlan.itemsHe : [];
+    const goalItems = Array.isArray(detailed?.nextPeriodGoals?.itemsHe) ? detailed.nextPeriodGoals.itemsHe : [];
+    assert.ok(
+      !homeItems.some((x) => blockedFamilyRegex.test(String(x || ""))),
+      `${c.name}: detailed home plan must avoid blocked families`
+    );
+    assert.ok(
+      !goalItems.some((x) => blockedFamilyRegex.test(String(x || ""))),
+      `${c.name}: detailed next goals must avoid blocked families`
+    );
+  }
+
+  // control: nearby case where readiness/evidence is not sufficient -> class must not trigger
+  const controlUnit = buildUnit({
+    subjectId: "math",
+    topicRowKey: "algebra\u0001learning\u0001g4\u0001medium",
+    displayName: "אלגברה",
+    q: 17, // below strong-positive evidence floor
+    acc: 94,
+    authority: "very_good",
+    readiness: "insufficient",
+    positive: true,
+  });
+  const controlClass = classifyParentRecommendationState(controlUnit);
+  assert.equal(controlClass.classId, "regular_flow", "control: strong-positive class must not trigger");
+  const controlMapped = summarizeV2UnitsForSubjectForTests([controlUnit]);
+  assert.ok(
+    String(controlMapped.parentActionHe || "").length > 0,
+    "control: regular mapping still produces action without forced strong-positive family"
+  );
+}
+
+function runParentReportOutputStabilizationGoldenMatrix() {
+  const goldenCaseIds = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10"];
+  assert.ok(
+    goldenCaseIds.length >= 8 && goldenCaseIds.length <= 12,
+    "stabilization sprint requires locked golden set sized 8-12"
+  );
+
+  // G6: math rows split by mode/level collapse into one canonical pedagogical topic.
+  const mathCollapsed = collapseTopicRowsToCanonicalTopicEntityForTests("math", {
+    "addition\u0001learning\u0001g4\u0001easy": {
+      bucketKey: "addition",
+      displayName: "חיבור",
+      questions: 8,
+      correct: 7,
+      wrong: 1,
+      timeMinutes: 10,
+      modeKey: "learning",
+      gradeKey: "g4",
+      levelKey: "easy",
+      lastSessionMs: Date.UTC(2026, 3, 10, 11, 0, 0),
+    },
+    "addition\u0001practice\u0001g4\u0001medium": {
+      bucketKey: "addition",
+      displayName: "חיבור",
+      questions: 9,
+      correct: 8,
+      wrong: 1,
+      timeMinutes: 12,
+      modeKey: "practice",
+      gradeKey: "g4",
+      levelKey: "medium",
+      lastSessionMs: Date.UTC(2026, 3, 10, 12, 0, 0),
+    },
+    "addition\u0001speed\u0001g4\u0001hard": {
+      bucketKey: "addition",
+      displayName: "חיבור",
+      questions: 5,
+      correct: 4,
+      wrong: 1,
+      timeMinutes: 5,
+      modeKey: "speed",
+      gradeKey: "g4",
+      levelKey: "hard",
+      lastSessionMs: Date.UTC(2026, 3, 10, 13, 0, 0),
+    },
+  });
+  assert.equal(Object.keys(mathCollapsed).length, 1, "G6: math topic must collapse to canonical single entity");
+  const g6 = mathCollapsed.addition;
+  assert.equal(Number(g6?.questions) || 0, 22, "G6: merged questions must be summed");
+  assert.ok(
+    Array.isArray(g6?.parentTopicSubSignals?.modeBreakdown) && g6.parentTopicSubSignals.modeBreakdown.length >= 2,
+    "G6: mode split must survive only as sub-signal"
+  );
+
+  // G7: non-math rows split by mode collapse into one topic entity.
+  const englishCollapsed = collapseTopicRowsToCanonicalTopicEntityForTests("english", {
+    "vocabulary\u0001learning": {
+      bucketKey: "vocabulary",
+      displayName: "אוצר מילים",
+      questions: 11,
+      correct: 10,
+      wrong: 1,
+      timeMinutes: 9,
+      modeKey: "learning",
+      lastSessionMs: Date.UTC(2026, 3, 9, 11, 0, 0),
+    },
+    "vocabulary\u0001practice": {
+      bucketKey: "vocabulary",
+      displayName: "אוצר מילים",
+      questions: 7,
+      correct: 6,
+      wrong: 1,
+      timeMinutes: 6,
+      modeKey: "practice",
+      lastSessionMs: Date.UTC(2026, 3, 9, 12, 0, 0),
+    },
+  });
+  assert.equal(Object.keys(englishCollapsed).length, 1, "G7: non-math topic must collapse by pedagogical bucket");
+  assert.equal(Number(englishCollapsed.vocabulary?.questions) || 0, 18, "G7: non-math merged questions must be summed");
+
+  // G8: different pedagogical topics must stay separate.
+  const noOverMerge = collapseTopicRowsToCanonicalTopicEntityForTests("math", {
+    "addition\u0001learning\u0001g4\u0001easy": {
+      bucketKey: "addition",
+      displayName: "חיבור",
+      questions: 10,
+      correct: 8,
+      wrong: 2,
+      timeMinutes: 8,
+      modeKey: "learning",
+      gradeKey: "g4",
+      levelKey: "easy",
+    },
+    "subtraction\u0001learning\u0001g4\u0001easy": {
+      bucketKey: "subtraction",
+      displayName: "חיסור",
+      questions: 10,
+      correct: 8,
+      wrong: 2,
+      timeMinutes: 8,
+      modeKey: "learning",
+      gradeKey: "g4",
+      levelKey: "easy",
+    },
+  });
+  assert.equal(Object.keys(noOverMerge).length, 2, "G8: canonical merge must not collapse different topics");
+
+  // G9: sparse data must suppress deep cross-subject padding.
+  const sparseDetailed = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.all_sparse(), { period: "week" });
+  const sparseNorm = normalizeExecutiveSummary(sparseDetailed);
+  assert.equal(
+    String(sparseNorm.crossSubjectConclusionReadiness || ""),
+    "",
+    "G9: sparse report must suppress deep cross-subject readiness block"
+  );
+  assert.equal(
+    Array.isArray(sparseNorm.majorDiagnosticCautionsHe) ? sparseNorm.majorDiagnosticCautionsHe.length : 0,
+    0,
+    "G9: sparse report must suppress deep diagnostic caution list"
+  );
+
+  // G10: one active subject must not render deep cross-subject template padding.
+  const oneDominant = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.one_dominant_subject(), {
+    period: "week",
+  });
+  const oneNorm = normalizeExecutiveSummary(oneDominant);
+  assert.equal(
+    String(oneNorm.crossSubjectConclusionReadiness || ""),
+    "",
+    "G10: single active subject must suppress deep cross-subject readiness"
+  );
+}
+
 function runPhase9MistakeMemoryAndExecutive() {
   const sparse = buildMistakeIntelligencePhase9({
     rootCause: "insufficient_evidence",
@@ -2260,6 +2598,8 @@ function main() {
   runQaCalibrationRedTeam();
   runReactServerSmoke();
   runOutputQualityLockedRegression();
+  runStrongPositiveRecommendationConsistencyCrossSurfaces();
+  runParentReportOutputStabilizationGoldenMatrix();
 
   const reportDir = join(ROOT, "reports", "parent-report-phase6");
   try {

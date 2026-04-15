@@ -64,6 +64,12 @@ import {
   buildNarrativeContractV1,
   validateNarrativeContractV1,
 } from "./contracts/narrative-contract-v1.js";
+import {
+  isStrongPositiveUnitForParentGuidance,
+  resolveUnitHomeMethodHe,
+  resolveUnitNextGoalHe,
+  resolveUnitParentActionHe,
+} from "./parent-report-recommendation-consistency.js";
 
 const SUBJECT_IDS = [
   "math",
@@ -1996,8 +2002,8 @@ function buildSubjectProfilesFromV2(baseReport) {
       })),
       diagnosticSectionsHe: null,
       subSkillInsightsHe: [],
-      parentActionHe: topWeakUnit?.intervention?.immediateActionHe || topWeakUnit?.probe?.specificationHe || null,
-      nextWeekGoalHe: topWeakUnit?.probe?.objectiveHe || null,
+      parentActionHe: resolveUnitParentActionHe(topWeakUnit),
+      nextWeekGoalHe: resolveUnitNextGoalHe(topWeakUnit),
       evidenceExamples: [],
       trendVsPreviousPeriod: null,
       topicRecommendations,
@@ -2009,7 +2015,7 @@ function buildSubjectProfilesFromV2(baseReport) {
       confidenceSummaryHe: topWeakUnit
         ? subjectV2ConfidenceSummaryHe(topWeakUnit?.confidence?.level)
         : "אין ביטחון מספק למסקנה מקצועית רחבה.",
-      recommendedHomeMethodHe: topWeakUnit?.intervention?.shortPracticeHe || null,
+      recommendedHomeMethodHe: resolveUnitHomeMethodHe(topWeakUnit),
       whatNotToDoHe: topWeakUnit?.intervention?.avoidHe || null,
       majorRiskFlagsAcrossRows: {
         insufficientEvidenceRisk: units.some((u) => u?.outputGating?.cannotConcludeYet),
@@ -2043,10 +2049,13 @@ function buildSubjectProfilesFromV2(baseReport) {
       subjectInterventionPriorityHe: priorityLevelParentLabelHe(topWeakUnit?.priority?.level),
       subjectPriorityLevel: highPriority > 0 ? "immediate" : "soon",
       subjectPriorityReasonHe: topWeakUnit?.taxonomy?.patternHe || null,
-      subjectImmediateActionHe: topWeakUnit?.intervention?.immediateActionHe || null,
-      subjectDeferredActionHe: topWeakUnit?.probe?.specificationHe || null,
+      subjectImmediateActionHe: resolveUnitParentActionHe(topWeakUnit),
+      subjectDeferredActionHe:
+        topWeakUnit && isStrongPositiveUnitForParentGuidance(topWeakUnit)
+          ? "להמשיך באותה מורכבות ולבחון הרחבה זהירה רק אחרי עקביות נוספת."
+          : topWeakUnit?.probe?.specificationHe || null,
       subjectMonitoringOnly: units.length === 0,
-      subjectDoNowHe: topWeakUnit?.intervention?.immediateActionHe || null,
+      subjectDoNowHe: resolveUnitParentActionHe(topWeakUnit),
       subjectAvoidNowHe: topWeakUnit?.intervention?.avoidHe || null,
       subjectReviewBeforeAdvanceHe: topWeakUnit?.probe?.objectiveHe || null,
       subjectTransferReadiness: units.some((u) => u?.diagnosis?.allowed) ? "emerging" : "not_ready",
@@ -2106,13 +2115,9 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
       stable: stable.length,
     }),
     mainHomeRecommendationHe:
-      p4[0]?.intervention?.immediateActionHe
-      || (strongPosExec &&
-        String(
-          leadPosX?.intervention?.immediateActionHe || leadPosX?.probe?.specificationHe || ""
-        ).trim()) ||
-      diagnosed[0]?.intervention?.immediateActionHe
-      || diagnosed[0]?.probe?.specificationHe
+      resolveUnitParentActionHe(p4[0])
+      || (strongPosExec && resolveUnitParentActionHe(leadPosX))
+      || resolveUnitParentActionHe(diagnosed[0])
       || "להמשיך עם תרגול ממוקד לפני שינוי רחב בבית.",
     cautionNoteHe: executiveV2CautionNoteHe({ p4Length: p4.length, uncertainLength: uncertain.length }),
     overallConfidenceHe: executiveV2OverallConfidenceHe(diagnosed.length, units.length, stable.length),
@@ -2155,10 +2160,10 @@ function buildCrossSubjectInsightsFromV2(baseReport) {
 function buildHomePlanFromV2(baseReport) {
   const units = Array.isArray(baseReport?.diagnosticEngineV2?.units) ? baseReport.diagnosticEngineV2.units : [];
   const itemsHe = units
-    .filter((u) => u?.intervention?.immediateActionHe || u?.probe?.specificationHe)
+    .filter((u) => resolveUnitParentActionHe(u))
     .slice(0, 6)
     .map((u) => {
-      const action = u?.intervention?.immediateActionHe || u?.probe?.specificationHe || "";
+      const action = resolveUnitParentActionHe(u) || "";
       return `ב${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId} (${u.displayName}): ${rewriteParentRecommendationForDetailedHe(String(action))}`;
     });
   return { itemsHe: itemsHe.length ? itemsHe : [homePlanV2EmptyFallbackHe()] };
@@ -2167,10 +2172,10 @@ function buildHomePlanFromV2(baseReport) {
 function buildNextPeriodGoalsFromV2(baseReport) {
   const units = Array.isArray(baseReport?.diagnosticEngineV2?.units) ? baseReport.diagnosticEngineV2.units : [];
   const itemsHe = units
-    .filter((u) => u?.probe?.objectiveHe || u?.intervention?.shortPracticeHe)
+    .filter((u) => resolveUnitNextGoalHe(u))
     .slice(0, 6)
     .map((u) => {
-      const goal = u?.probe?.objectiveHe || u?.intervention?.shortPracticeHe || "";
+      const goal = resolveUnitNextGoalHe(u) || "";
       return `ב${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId}: ${rewriteParentRecommendationForDetailedHe(String(goal))}`;
     });
   return { itemsHe: itemsHe.length ? itemsHe : [nextPeriodGoalsV2EmptyFallbackHe()] };
