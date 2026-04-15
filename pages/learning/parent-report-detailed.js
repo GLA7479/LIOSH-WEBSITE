@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { AiHybridInternalReviewerPanel } from "../../components/ai-hybrid-internal-reviewer-panel.jsx";
 import Head from "next/head";
 import Link from "next/link";
@@ -19,6 +20,15 @@ import {
   TopicRecommendationExplainStrip,
 } from "../../components/parent-report-detailed-surface.jsx";
 import { normalizeExecutiveSummary } from "../../utils/parent-report-payload-normalize";
+
+const ParentCopilotShell = dynamic(
+  () => import("../../components/parent-copilot/parent-copilot-shell.jsx"),
+  { ssr: false }
+);
+
+const parentCopilotV1Enabled =
+  typeof process !== "undefined" &&
+  String(process.env.NEXT_PUBLIC_PARENT_COPILOT_V1 || "").trim() === "1";
 
 /**
  * מיפוי ויזואלי בלבד לפי recommendedNextStep מה־payload — לא משנה מנוע או תוכן.
@@ -1105,6 +1115,11 @@ export default function ParentReportDetailedPage() {
               </Link>
             </div>
             <ModeToggle />
+            {parentCopilotV1Enabled && payload ? (
+              <div className="no-pdf rounded-lg border border-cyan-500/20 bg-cyan-950/15 px-3 py-2">
+                <ParentCopilotShell payload={payload} />
+              </div>
+            ) : null}
             {payload ? (
               <div className="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-xs text-white/75 space-y-2">
                 <div className="font-bold text-white/90">ביקורת פנימית (AI Hybrid)</div>

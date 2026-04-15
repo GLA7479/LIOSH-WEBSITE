@@ -34,6 +34,9 @@
     "test:parent-report-phase6": "tsx scripts/parent-report-hebrew-language-selftest.mjs && tsx scripts/parent-report-phase6-suite.mjs && tsx scripts/parent-report-pages-ssr.mjs",
     "test:parent-report-hebrew-language": "tsx scripts/parent-report-hebrew-language-selftest.mjs",
     "test:minimal-safe-scope": "tsx scripts/minimal-safe-scope-scenarios.mjs",
+    "test:parent-copilot-phaseA": "tsx scripts/parent-copilot-phaseA-suite.mjs",
+    "test:parent-copilot-phaseB": "node scripts/parent-copilot-phaseB-suite.mjs",
+    "test:parent-copilot-phaseC": "node scripts/parent-copilot-phaseC-suite.mjs",
     "test:e2e-hebrew-niqqud": "node scripts/e2e-hebrew-niqqud-browser.mjs",
     "test:e2e-hebrew-g1-g2-ab": "node scripts/e2e-hebrew-g1-g2-product-fit.mjs"
   },

@@ -1,6 +1,8 @@
 /**
  * רכיבי פני שטח מהדוח המקיף — מופרדים ל-import בבדיקות SSR בלי Layout/router.
+ * Parent Copilot Phase A: אין שינוי מבנה דוח/הדפסה כאן — שילוב Copilot רק בדף `parent-report-detailed.js`.
  */
+export const PARENT_COPILOT_PHASE_A_SURFACE_TAG = "phaseA-no-layout-change";
 import React, { useMemo } from "react";
 import {
   buildSubjectParentLetter,

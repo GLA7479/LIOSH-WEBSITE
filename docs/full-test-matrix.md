@@ -10,6 +10,7 @@
 | Scenario regressions | `npm run test:topic-next-step-engine-scenarios` | sparse/contradictory/fragile/mastery/regression/recovery | pass (15/15) |
 | End-to-end parent flow | `npm run test:parent-report-phase6` | parent+detailed pipeline + SSR + topic contract-chain + narrative consistency | pass |
 | Hard gates matrix | `npm run test:minimal-safe-scope` | fail_overstated/fail_gate_text/fail_unsupported + cross-surface contradiction guards | pass (S1–S12) |
+| Parent Copilot Phase A | `npm run test:parent-copilot-phaseA` | TruthPacketV1 + response contract + parent-only + clarification branch | pass |
 | Production stability | `npm run build` | production compile/pages/routes integrity | pass |
 
 ## Coverage declaration
