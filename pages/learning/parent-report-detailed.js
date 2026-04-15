@@ -26,10 +26,6 @@ const ParentCopilotShell = dynamic(
   { ssr: false }
 );
 
-const parentCopilotV1Enabled =
-  typeof process !== "undefined" &&
-  String(process.env.NEXT_PUBLIC_PARENT_COPILOT_V1 || "").trim() === "1";
-
 /**
  * מיפוי ויזואלי בלבד לפי recommendedNextStep מה־payload — לא משנה מנוע או תוכן.
  * @param {string | undefined} step
@@ -1115,7 +1111,7 @@ export default function ParentReportDetailedPage() {
               </Link>
             </div>
             <ModeToggle />
-            {parentCopilotV1Enabled && payload ? (
+            {payload ? (
               <div className="no-pdf rounded-lg border border-cyan-500/20 bg-cyan-950/15 px-3 py-2">
                 <ParentCopilotShell payload={payload} />
               </div>

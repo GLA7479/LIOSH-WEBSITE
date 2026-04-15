@@ -242,7 +242,10 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
   const activeExchangeBusy = busy;
 
   return (
-    <div className="flex flex-col h-[min(420px,52vh)] min-h-[260px] max-h-[52vh] rounded-xl border border-white/12 bg-black/25 p-3 text-right text-white/90">
+    <div
+      className="w-full flex flex-col rounded-xl border border-white/12 bg-black/25 p-3 text-right text-white/90"
+      style={{ height: "min(52vh, 520px)", minHeight: "320px" }}
+    >
       <div className="text-xs font-extrabold tracking-wide text-white/70 shrink-0 mb-2">Parent Copilot (v1)</div>
 
       <div

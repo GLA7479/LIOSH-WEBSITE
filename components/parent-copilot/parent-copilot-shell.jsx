@@ -7,7 +7,7 @@ import { ParentCopilotPanel } from "./parent-copilot-panel.jsx";
 export default function ParentCopilotShell({ payload, selectedContextRef = null }) {
   if (!payload) return null;
   return (
-    <div className="min-h-0 flex flex-col">
+    <div className="w-full min-h-0 flex flex-col">
       <ParentCopilotPanel payload={payload} selectedContextRef={selectedContextRef} />
     </div>
   );
