@@ -5,14 +5,7 @@ function canonicalState(unit) {
 }
 
 function actionState(unit) {
-  const cs = canonicalState(unit);
-  if (cs) return cs.actionState;
-  if (unit?.outputGating?._deprecated_positiveConclusionAllowed || unit?.outputGating?.positiveConclusionAllowed) {
-    const r = unit?.outputGating?.contractsV1?.readiness?.readiness;
-    if (r === "insufficient" || r === "cannot_conclude") return "probe_only";
-    return "maintain";
-  }
-  return "probe_only";
+  return canonicalState(unit)?.actionState || "probe_only";
 }
 
 function isStrengthAction(unit) {
@@ -21,9 +14,7 @@ function isStrengthAction(unit) {
 }
 
 function positiveAuthorityLevel(unit) {
-  const csLevel = canonicalState(unit)?.evidence?.positiveAuthorityLevel;
-  if (csLevel) return csLevel;
-  return unit?.outputGating?.positiveAuthorityLevel || "none";
+  return canonicalState(unit)?.evidence?.positiveAuthorityLevel || "none";
 }
 
 const STRONG_POSITIVE_BLOCKED_FAMILIES = [
@@ -76,7 +67,6 @@ function bestEffortText(s) {
 
 export function resolveUnitParentActionHe(unit) {
   const cs = canonicalState(unit);
-  const action = actionState(unit);
   const name = topicName(unit);
 
   if (cs?.recommendation?.allowed) {
@@ -93,18 +83,7 @@ export function resolveUnitParentActionHe(unit) {
     }
   }
 
-  if (!cs && isStrengthAction(unit)) {
-    if (action === "expand_cautiously") {
-      return normalizeParentFacingHe(
-        `ב${name} מומלץ לשמר את אותה רמת מורכבות, ולהוסיף הרחבה זהירה ומדודה רק אם העקביות נשמרת גם בסבב הבא.`
-      );
-    }
-    return normalizeParentFacingHe(
-      `ב${name} מומלץ להמשיך באותה רמת קושי, לשמר עקביות, ורק אחר כך לשקול הרחבה עדינה בתוך אותו עיקרון.`
-    );
-  }
-
-  if (action === "withhold") return null;
+  if (actionState(unit) === "withhold") return null;
   const fallback = bestEffortText(
     unit?.intervention?.immediateActionHe || unit?.probe?.specificationHe || ""
   );
@@ -113,7 +92,7 @@ export function resolveUnitParentActionHe(unit) {
 
 export function resolveUnitNextGoalHe(unit) {
   const cs = canonicalState(unit);
-  if (isStrengthAction(unit) && (cs?.recommendation?.allowed || !cs)) {
+  if (isStrengthAction(unit) && cs?.recommendation?.allowed) {
     const name = topicName(unit);
     return normalizeParentFacingHe(
       `לשבוע הקרוב ב${name}: לשמור על דיוק גבוה באותה מורכבות, ואם נשמרת יציבות — לנסות הרחבה קלה ומבוקרת.`
@@ -127,7 +106,7 @@ export function resolveUnitNextGoalHe(unit) {
 
 export function resolveUnitHomeMethodHe(unit) {
   const cs = canonicalState(unit);
-  if (isStrengthAction(unit) && (cs?.recommendation?.allowed || !cs)) {
+  if (isStrengthAction(unit) && cs?.recommendation?.allowed) {
     const name = topicName(unit);
     return normalizeParentFacingHe(
       `ב${name} הדגש הוא שימור יציבות באותה רמה, עם תרגול קצר ועקבי והעשרה עדינה בלבד.`

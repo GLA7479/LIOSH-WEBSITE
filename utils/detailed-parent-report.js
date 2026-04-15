@@ -1918,15 +1918,7 @@ function buildSubjectProfilesFromV2(baseReport) {
       continue;
     }
     const csOf = (u) => u?.canonicalState;
-    const actionOf = (u) => {
-      if (csOf(u)) return csOf(u).actionState;
-      if (u?.outputGating?._deprecated_positiveConclusionAllowed || u?.outputGating?.positiveConclusionAllowed) {
-        const r = u?.outputGating?.contractsV1?.readiness?.readiness;
-        if (r === "insufficient" || r === "cannot_conclude") return "probe_only";
-        return "maintain";
-      }
-      return "probe_only";
-    };
+    const actionOf = (u) => csOf(u)?.actionState || "probe_only";
     const highPriority = units.filter((u) => String(u?.priority?.level || "") === "P4").length;
     const strengthUnits = units.filter((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
     const stable = strengthUnits.length;
@@ -2109,15 +2101,7 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
   const diag = baseReport?.diagnosticEngineV2;
   const units = Array.isArray(diag?.units) ? diag.units : [];
   const csOf = (u) => u?.canonicalState;
-  const actionOf = (u) => {
-    if (csOf(u)) return csOf(u).actionState;
-    if (u?.outputGating?._deprecated_positiveConclusionAllowed || u?.outputGating?.positiveConclusionAllowed) {
-      const r = u?.outputGating?.contractsV1?.readiness?.readiness;
-      if (r === "insufficient" || r === "cannot_conclude") return "probe_only";
-      return "maintain";
-    }
-    return "probe_only";
-  };
+  const actionOf = (u) => csOf(u)?.actionState || "probe_only";
   const diagnosed = units.filter((u) => u?.diagnosis?.allowed);
   const stable = units.filter((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
   const uncertain = units.filter((u) => csOf(u)?.assessment?.cannotConcludeYet || u?.outputGating?.cannotConcludeYet);

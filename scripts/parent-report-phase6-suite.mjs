@@ -524,6 +524,93 @@ const REQUIRED_CROSS_RISK_FLAG_KEYS = [
   "recentTransitionRisk",
 ];
 
+/**
+ * TEST-ONLY: Build a minimal synthetic canonicalState for manually-constructed
+ * test fixtures that don't go through the real engine pipeline.
+ * Production code NEVER falls back to legacy fields — it requires canonicalState.
+ */
+function syntheticCanonicalState({
+  subjectId,
+  topicKey,
+  displayName = "",
+  actionState = "probe_only",
+  family = null,
+  readiness = "insufficient",
+  confidenceLevel = "low",
+  positiveAuthorityLevel = "none",
+  allowed = false,
+  cannotConcludeYet = false,
+  questions = 0,
+  correct = 0,
+  stableMastery = false,
+  taxonomyMatch = true,
+}) {
+  const resolvedFamily = family || actionState;
+  const resolvedAllowed = allowed || (actionState === "maintain" || actionState === "expand_cautiously");
+  return Object.freeze({
+    topicStateId: `${subjectId}::${topicKey}`,
+    stateHash: `test_${subjectId}_${topicKey}_${actionState}`,
+    subjectId,
+    topicKey,
+    bucketKey: topicKey,
+    displayName,
+    evidence: {
+      questions,
+      correct,
+      wrong: questions - correct,
+      wrongEventCount: 0,
+      recurrenceFull: false,
+      taxonomyMatch,
+      dataSufficiencyLevel: questions >= 20 ? "strong" : questions >= 10 ? "medium" : "low",
+      confidence01: null,
+      stableMastery,
+      needsPractice: false,
+      positiveAuthorityLevel,
+    },
+    decisionInputs: {
+      priorityLevel: "P2",
+      breadth: "moderate",
+      counterEvidenceStrong: false,
+      weakEvidence: false,
+      hintInvalidates: false,
+      narrowSample: questions < 10,
+      hardDenyReason: null,
+      taxonomyMismatchReason: taxonomyMatch ? null : "taxonomy_not_matched",
+    },
+    classification: {
+      taxonomyId: null,
+      classificationState: taxonomyMatch ? "classified" : "unclassified_no_taxonomy_match",
+      classificationReasonCode: null,
+    },
+    assessment: {
+      confidenceLevel,
+      readiness,
+      decisionTier: readiness === "ready" ? 3 : readiness === "emerging" ? 2 : 1,
+      cannotConcludeYet,
+      allowedClaimClass: readiness === "ready" ? "stable_pattern" : "descriptive_observation",
+    },
+    actionState,
+    recommendation: {
+      family: resolvedFamily,
+      allowed: resolvedAllowed,
+      intensityCap: resolvedAllowed ? "RI1" : "RI0",
+      reasonCodes: [],
+    },
+    narrativeConstraints: {
+      uncertaintyRequired: !resolvedAllowed,
+      allowedSections: [],
+      forbiddenPhrases: [],
+    },
+    renderFlags: {
+      showAsStrength: actionState === "maintain" || actionState === "expand_cautiously",
+      showAsWeakness: actionState === "intervene",
+      showAsMonitoring: actionState === "probe_only" || actionState === "withhold",
+      suppressActionText: actionState === "withhold",
+    },
+    _deprecated_positiveConclusionAllowed: actionState === "maintain" || actionState === "expand_cautiously",
+  });
+}
+
 function assertDetailedPayloadShape(detailed, label) {
   assert.ok(detailed && typeof detailed === "object", `${label}: detailed missing`);
   for (const k of REQUIRED_DETAILED_TOP_KEYS) {
@@ -1280,35 +1367,46 @@ function runOutputQualityLockedRegression() {
       timeMinutes: 24,
     },
   };
+  const lockedUnit = {
+    subjectId: "math",
+    topicRowKey: FIXTURE_MATH_ROW_ADD_LEARN_G4_MED,
+    displayName: "חיבור",
+    diagnosis: { allowed: false, lineHe: "" },
+    taxonomy: { patternHe: "דפוס הצלחה יציב" },
+    recurrence: { wrongCountForRules: 0, totalQuestions: 21 },
+    confidence: { level: "moderate", rowSignals: { dataSufficiencyLevel: "strong", isEarlySignalOnly: false } },
+    priority: { level: "P2" },
+    outputGating: {
+      cannotConcludeYet: false,
+      positiveConclusionAllowed: true,
+      positiveAuthorityLevel: "very_good",
+      additiveCautionAllowed: false,
+    },
+    evidenceTrace: [{ type: "volume", value: { questions: 21, correct: 21, wrong: 0, accuracy: 100 } }],
+    intervention: {
+      immediateActionHe: "להמשיך בשני תרגולים קצרים ולשמר את הדפוס.",
+      shortPracticeHe: "תרגול קצר לשימור עקביות.",
+      avoidHe: "לא להעמיס קפיצת רמה חדה באותו שבוע.",
+    },
+    probe: {
+      objectiveHe: "לוודא שהעקביות נשמרת גם בסוגי שאלה דומים.",
+      specificationHe: "לעקוב אחרי אותו נושא עוד סבב קצר.",
+    },
+  };
+  lockedUnit.canonicalState = syntheticCanonicalState({
+    subjectId: "math",
+    topicKey: "addition",
+    displayName: "חיבור",
+    actionState: "maintain",
+    readiness: "emerging",
+    confidenceLevel: "moderate",
+    positiveAuthorityLevel: "very_good",
+    questions: 21,
+    correct: 21,
+    stableMastery: true,
+  });
   base.diagnosticEngineV2 = {
-    units: [
-      {
-        subjectId: "math",
-        topicRowKey: FIXTURE_MATH_ROW_ADD_LEARN_G4_MED,
-        displayName: "חיבור",
-        diagnosis: { allowed: false, lineHe: "" },
-        taxonomy: { patternHe: "דפוס הצלחה יציב" },
-        recurrence: { wrongCountForRules: 0, totalQuestions: 21 },
-        confidence: { level: "moderate", rowSignals: { dataSufficiencyLevel: "strong", isEarlySignalOnly: false } },
-        priority: { level: "P2" },
-        outputGating: {
-          cannotConcludeYet: false,
-          positiveConclusionAllowed: true,
-          positiveAuthorityLevel: "very_good",
-          additiveCautionAllowed: false,
-        },
-        evidenceTrace: [{ type: "volume", value: { questions: 21, correct: 21, wrong: 0, accuracy: 100 } }],
-        intervention: {
-          immediateActionHe: "להמשיך בשני תרגולים קצרים ולשמר את הדפוס.",
-          shortPracticeHe: "תרגול קצר לשימור עקביות.",
-          avoidHe: "לא להעמיס קפיצת רמה חדה באותו שבוע.",
-        },
-        probe: {
-          objectiveHe: "לוודא שהעקביות נשמרת גם בסוגי שאלה דומים.",
-          specificationHe: "לעקוב אחרי אותו נושא עוד סבב קצר.",
-        },
-      },
-    ],
+    units: [lockedUnit],
   };
   const d = buildDetailedParentReportFromBaseReport(
     base,
@@ -1375,33 +1473,52 @@ function runStrongPositiveRecommendationConsistencyCrossSurfaces() {
     authority = "very_good",
     readiness = "ready",
     cannotConcludeYet = false,
-  }) => ({
-    subjectId,
-    topicRowKey,
-    displayName,
-    diagnosis: { allowed: false, lineHe: "" },
-    taxonomy: null,
-    recurrence: { wrongCountForRules: 0, totalQuestions: q },
-    confidence: { level: "high", rowSignals: { dataSufficiencyLevel: "strong", isEarlySignalOnly: false } },
-    priority: { level: "P2" },
-    outputGating: {
-      cannotConcludeYet,
-      positiveConclusionAllowed: positive,
+    actionStateOverride = null,
+  }) => {
+    const derivedAction = actionStateOverride || (positive && readiness !== "insufficient" && readiness !== "cannot_conclude" ? "maintain" : "probe_only");
+    const topicKey = topicRowKey.split("\u0001")[0] || topicRowKey;
+    const unit = {
+      subjectId,
+      topicRowKey,
+      displayName,
+      diagnosis: { allowed: false, lineHe: "" },
+      taxonomy: null,
+      recurrence: { wrongCountForRules: 0, totalQuestions: q },
+      confidence: { level: "high", rowSignals: { dataSufficiencyLevel: "strong", isEarlySignalOnly: false } },
+      priority: { level: "P2" },
+      outputGating: {
+        cannotConcludeYet,
+        positiveConclusionAllowed: positive,
+        positiveAuthorityLevel: authority,
+        additiveCautionAllowed: false,
+        contractsV1: { readiness: { readiness } },
+      },
+      probe: {
+        specificationHe: "משימה מקבילה באותו עקרון עם מורכבות מופחתת",
+        objectiveHe: "להמשיך לאסוף אות",
+      },
+      intervention: {
+        immediateActionHe: "",
+        shortPracticeHe: "",
+        avoidHe: "",
+      },
+      evidenceTrace: [{ type: "volume", value: { questions: q, correct: Math.round((q * acc) / 100), wrong: 0, accuracy: acc } }],
+    };
+    unit.canonicalState = syntheticCanonicalState({
+      subjectId,
+      topicKey,
+      displayName,
+      actionState: derivedAction,
+      readiness,
+      confidenceLevel: "high",
       positiveAuthorityLevel: authority,
-      additiveCautionAllowed: false,
-      contractsV1: { readiness: { readiness } },
-    },
-    probe: {
-      specificationHe: "משימה מקבילה באותו עקרון עם מורכבות מופחתת",
-      objectiveHe: "להמשיך לאסוף אות",
-    },
-    intervention: {
-      immediateActionHe: "",
-      shortPracticeHe: "",
-      avoidHe: "",
-    },
-    evidenceTrace: [{ type: "volume", value: { questions: q, correct: Math.round((q * acc) / 100), wrong: 0, accuracy: acc } }],
-  });
+      questions: q,
+      correct: Math.round((q * acc) / 100),
+      stableMastery: positive,
+      cannotConcludeYet,
+    });
+    return unit;
+  };
 
   const strongCases = [
     // locked original regression case

@@ -720,15 +720,7 @@ function summarizeV2UnitsForSubject(units) {
   }
 
   const cs = (u) => u?.canonicalState;
-  const actionOf = (u) => {
-    if (cs(u)) return cs(u).actionState;
-    if (u?.outputGating?._deprecated_positiveConclusionAllowed || u?.outputGating?.positiveConclusionAllowed) {
-      const r = u?.outputGating?.contractsV1?.readiness?.readiness;
-      if (r === "insufficient" || r === "cannot_conclude") return "probe_only";
-      return "maintain";
-    }
-    return "probe_only";
-  };
+  const actionOf = (u) => cs(u)?.actionState || "probe_only";
 
   const diagnosed = list.filter((u) => !!u?.diagnosis?.allowed);
   const strengthUnits = list.filter((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
@@ -748,7 +740,7 @@ function summarizeV2UnitsForSubject(units) {
   })();
 
   const POSITIVE_LEVEL_RANK_LOCAL = { excellent: 3, very_good: 2, good: 1, none: 0 };
-  const posLevel = (u) => cs(u)?.evidence?.positiveAuthorityLevel || u?.outputGating?.positiveAuthorityLevel || "none";
+  const posLevel = (u) => cs(u)?.evidence?.positiveAuthorityLevel || "none";
   const rankPositive = (a, b) => {
     const la = String(posLevel(a));
     const lb = String(posLevel(b));
