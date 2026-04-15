@@ -79,6 +79,8 @@ export function buildSyntheticBaseReport(partial) {
     allItems: {},
     dailyActivity: [],
     dataIntegrityReport: partial.dataIntegrityReport ?? { version: 1, issues: [] },
+    diagnosticEngineV2: partial.diagnosticEngineV2 ?? null,
+    hybridRuntime: partial.hybridRuntime ?? null,
   };
   const mistakes = partial.mistakes || {};
   if (partial.patternDiagnostics) {

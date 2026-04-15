@@ -1245,6 +1245,116 @@ function runReactServerSmoke() {
   assert.ok(html.length > 50);
 }
 
+function runOutputQualityLockedRegression() {
+  const base = PARENT_REPORT_SCENARIOS.one_dominant_subject();
+  base.summary = {
+    ...base.summary,
+    totalQuestions: 21,
+    totalTimeMinutes: 24,
+    overallAccuracy: 100,
+    mathQuestions: 21,
+    mathCorrect: 21,
+    mathAccuracy: 100,
+  };
+  base.mathOperations = {
+    [FIXTURE_MATH_ROW_ADD_LEARN_G4_MED]: {
+      bucketKey: "addition",
+      displayName: "חיבור",
+      questions: 21,
+      correct: 21,
+      wrong: 0,
+      accuracy: 100,
+      needsPractice: false,
+      excellent: true,
+      modeKey: "learning",
+      gradeKey: "g4",
+      levelKey: "medium",
+      lastSessionMs: Date.UTC(2026, 3, 10, 12, 0, 0),
+      timeMinutes: 24,
+    },
+  };
+  base.diagnosticEngineV2 = {
+    units: [
+      {
+        subjectId: "math",
+        topicRowKey: FIXTURE_MATH_ROW_ADD_LEARN_G4_MED,
+        displayName: "חיבור",
+        diagnosis: { allowed: false, lineHe: "" },
+        taxonomy: { patternHe: "דפוס הצלחה יציב" },
+        recurrence: { wrongCountForRules: 0, totalQuestions: 21 },
+        confidence: { level: "moderate", rowSignals: { dataSufficiencyLevel: "strong", isEarlySignalOnly: false } },
+        priority: { level: "P2" },
+        outputGating: {
+          cannotConcludeYet: false,
+          positiveConclusionAllowed: true,
+          positiveAuthorityLevel: "very_good",
+          additiveCautionAllowed: false,
+        },
+        evidenceTrace: [{ type: "volume", value: { questions: 21, correct: 21, wrong: 0, accuracy: 100 } }],
+        intervention: {
+          immediateActionHe: "להמשיך בשני תרגולים קצרים ולשמר את הדפוס.",
+          shortPracticeHe: "תרגול קצר לשימור עקביות.",
+          avoidHe: "לא להעמיס קפיצת רמה חדה באותו שבוע.",
+        },
+        probe: {
+          objectiveHe: "לוודא שהעקביות נשמרת גם בסוגי שאלה דומים.",
+          specificationHe: "לעקוב אחרי אותו נושא עוד סבב קצר.",
+        },
+      },
+    ],
+  };
+  const d = buildDetailedParentReportFromBaseReport(
+    base,
+    { period: "week" }
+  );
+  const es = d.executiveSummary || {};
+  const trends = Array.isArray(es.majorTrendsHe) ? es.majorTrendsHe.join(" ") : "";
+  assert.ok(
+    !trends.includes("ב־0 מהם אפשר כבר לנסח כיוון"),
+    "locked sample: executive trends must not claim 0 actionable topics under strong signal"
+  );
+  assert.ok(
+    !String(es.overallConfidenceHe || "").includes("ב־0 מתוך 1"),
+    "locked sample: overall confidence must not claim 0/1 under strong signal"
+  );
+  assert.ok((es.topStrengthsAcrossHe || []).length >= 1, "locked sample: must include at least one strength");
+  assert.ok(
+    !(d.overallSnapshot?.notableSubjectsHe || []).some((line) =>
+      String(line || "").includes("אין עדיין מקצוע בולט")
+    ),
+    "locked sample: must not emit 'no notable subject' fallback"
+  );
+  const math = (d.subjectProfiles || []).find((s) => s.subject === "math");
+  const strengths = new Set(
+    [
+      ...(Array.isArray(math?.topStrengths) ? math.topStrengths : []),
+      ...(Array.isArray(math?.excellence) ? math.excellence : []),
+      ...(Array.isArray(math?.maintain) ? math.maintain : []),
+    ]
+      .map((x) => String(x?.labelHe || "").trim())
+      .filter(Boolean)
+  );
+  const weaknesses = new Set(
+    (Array.isArray(math?.topWeaknesses) ? math.topWeaknesses : [])
+      .map((x) => String(x?.labelHe || "").trim())
+      .filter(Boolean)
+  );
+  const overlap = [...weaknesses].filter((w) => strengths.has(w));
+  assert.equal(overlap.length, 0, "locked sample: topic cannot appear in both strength and weakness");
+
+  const norm = normalizeExecutiveSummary(d);
+  assert.equal(
+    String(norm.crossSubjectSupportSequenceStateLabelHe || ""),
+    "",
+    "locked sample: deep cross-subject section must be suppressed for single active subject"
+  );
+  assert.equal(
+    Array.isArray(norm.majorRecheckAreasHe) ? norm.majorRecheckAreasHe.length : 0,
+    0,
+    "locked sample: recheck list must be suppressed for single active subject"
+  );
+}
+
 function runPhase9MistakeMemoryAndExecutive() {
   const sparse = buildMistakeIntelligencePhase9({
     rootCause: "insufficient_evidence",
@@ -2149,6 +2259,7 @@ function main() {
   runPhase5ContractIntegrityAndContradictions();
   runQaCalibrationRedTeam();
   runReactServerSmoke();
+  runOutputQualityLockedRegression();
 
   const reportDir = join(ROOT, "reports", "parent-report-phase6");
   try {

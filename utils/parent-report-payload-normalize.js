@@ -9,7 +9,12 @@ export function normalizeExecutiveSummary(payload) {
   const cautions = Array.isArray(d.majorDiagnosticCautionsHe)
     ? d.majorDiagnosticCautionsHe.map((x) => String(x || "").trim()).filter(Boolean)
     : [];
-  return {
+  const coverage = Array.isArray(payload?.overallSnapshot?.subjectCoverage)
+    ? payload.overallSnapshot.subjectCoverage
+    : [];
+  const activeSubjects = coverage.filter((row) => (Number(row?.questionCount) || 0) > 0).length;
+  const suppressDeepCrossSubject = activeSubjects <= 1;
+  const normalized = {
     topStrengthsAcrossHe: Array.isArray(d.topStrengthsAcrossHe) ? d.topStrengthsAcrossHe : [],
     topFocusAreasHe: Array.isArray(d.topFocusAreasHe) ? d.topFocusAreasHe : [],
     homeFocusHe: typeof d.homeFocusHe === "string" ? d.homeFocusHe : "",
@@ -145,5 +150,74 @@ export function normalizeExecutiveSummary(payload) {
     subjectsSafeForLocalInterventionHe: Array.isArray(d.subjectsSafeForLocalInterventionHe)
       ? d.subjectsSafeForLocalInterventionHe
       : [],
+  };
+  if (!suppressDeepCrossSubject) return normalized;
+  return {
+    ...normalized,
+    majorDiagnosticCautionsHe: [],
+    crossSubjectConclusionReadiness: "",
+    recommendedParentPriorityType: "",
+    topImmediateParentActionHe: "",
+    secondPriorityActionHe: "",
+    monitoringOnlyAreasHe: [],
+    deferForNowAreasHe: [],
+    dominantCrossSubjectMistakePattern: "",
+    dominantCrossSubjectMistakePatternLabelHe: "",
+    crossSubjectLearningStage: "",
+    crossSubjectLearningStageLabelHe: "",
+    crossSubjectRetentionRisk: "",
+    crossSubjectTransferReadiness: "",
+    reviewBeforeAdvanceAreasHe: [],
+    transferReadyAreasHe: [],
+    crossSubjectResponseToIntervention: "",
+    crossSubjectResponseToInterventionLabelHe: "",
+    crossSubjectSupportAdjustmentNeed: "",
+    crossSubjectSupportAdjustmentNeedHe: "",
+    crossSubjectConclusionFreshness: "",
+    crossSubjectRecalibrationNeed: "",
+    crossSubjectRecalibrationNeedHe: "",
+    majorRecheckAreasHe: [],
+    areasWhereSupportCanBeReducedHe: [],
+    areasNeedingStrategyChangeHe: [],
+    crossSubjectSupportSequenceState: "",
+    crossSubjectSupportSequenceStateLabelHe: "",
+    crossSubjectStrategyRepetitionRisk: "",
+    crossSubjectStrategyFatigueRisk: "",
+    crossSubjectNextBestSequenceStep: "",
+    crossSubjectNextBestSequenceStepHe: "",
+    subjectsReadyForReleaseHe: [],
+    subjectsAtRiskOfSupportRepetitionHe: [],
+    subjectsNeedingSupportResetHe: [],
+    crossSubjectRecommendationMemoryState: "",
+    crossSubjectRecommendationMemoryStateLabelHe: "",
+    crossSubjectSupportHistoryDepth: "",
+    crossSubjectSupportHistoryDepthLabelHe: "",
+    crossSubjectExpectedVsObservedMatch: "",
+    crossSubjectExpectedVsObservedMatchHe: "",
+    crossSubjectContinuationDecision: "",
+    crossSubjectContinuationDecisionHe: "",
+    subjectsWithClearCarryoverHe: [],
+    subjectsNeedingFreshEvidenceHe: [],
+    subjectsWherePriorPathSeemsMisalignedHe: [],
+    crossSubjectGateState: "",
+    crossSubjectGateStateLabelHe: "",
+    crossSubjectNextCycleDecisionFocus: "",
+    crossSubjectNextCycleDecisionFocusHe: "",
+    crossSubjectEvidenceTargetType: "",
+    crossSubjectEvidenceTargetTypeLabelHe: "",
+    crossSubjectTargetObservationWindow: "",
+    crossSubjectTargetObservationWindowLabelHe: "",
+    subjectsNearReleaseButNotThereHe: [],
+    subjectsNeedingRecheckBeforeDecisionHe: [],
+    subjectsWithVisiblePivotTriggerHe: [],
+    crossSubjectDependencyState: "",
+    crossSubjectDependencyStateLabelHe: "",
+    crossSubjectLikelyFoundationalBlocker: "",
+    crossSubjectLikelyFoundationalBlockerLabelHe: "",
+    crossSubjectFoundationFirstPriority: false,
+    crossSubjectFoundationFirstPriorityHe: "",
+    subjectsLikelyShowingDownstreamSymptomsHe: [],
+    subjectsNeedingFoundationFirstHe: [],
+    subjectsSafeForLocalInterventionHe: [],
   };
 }

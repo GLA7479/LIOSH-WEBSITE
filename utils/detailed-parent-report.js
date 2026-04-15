@@ -1469,7 +1469,9 @@ function buildOverallSnapshot(baseReport, subjectCoverage) {
         `${row.subjectLabelHe} — מספר שאלות נמוך (${row.questionCount} שאלות)`
       );
     }
-    if (row.questionCount >= 40 && row.accuracy >= 85) {
+    const isHighVolumeStrong = row.questionCount >= 40 && row.accuracy >= 85;
+    const isMediumVolumeStrong = row.questionCount >= 18 && row.accuracy >= 88;
+    if (isHighVolumeStrong || isMediumVolumeStrong) {
       notableSubjectsHe.push(
         `${row.subjectLabelHe} — נפח גבוה ודיוק טוב (${row.accuracy}%, ${row.questionCount} שאלות)`
       );
@@ -1933,8 +1935,8 @@ function buildSubjectProfilesFromV2(baseReport) {
       accuracy: Number(u?.evidenceTrace?.[0]?.value?.accuracy) || 0,
     }));
 
-    const topWeaknesses = units
-      .filter((u) => u?.taxonomy?.patternHe)
+    const topWeaknesses = diagnosed
+      .filter((u) => String(u?.taxonomy?.patternHe || "").trim())
       .slice(0, 3)
       .map((u) => ({
         labelHe: String(u?.taxonomy?.patternHe || ""),
@@ -2113,7 +2115,7 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
       || diagnosed[0]?.probe?.specificationHe
       || "להמשיך עם תרגול ממוקד לפני שינוי רחב בבית.",
     cautionNoteHe: executiveV2CautionNoteHe({ p4Length: p4.length, uncertainLength: uncertain.length }),
-    overallConfidenceHe: executiveV2OverallConfidenceHe(diagnosed.length, units.length),
+    overallConfidenceHe: executiveV2OverallConfidenceHe(diagnosed.length, units.length, stable.length),
     dominantCrossSubjectRiskLabelHe: diagnosed[0]?.taxonomy?.patternHe || "",
     dominantCrossSubjectSuccessPatternLabelHe: stable[0]?.taxonomy?.subskillHe
       ? normalizeParentFacingHe(`שליטה טובה ועקבית ב${stable[0].taxonomy.subskillHe}`)

@@ -77,17 +77,25 @@ function pr1ParentVisibleTextHe(s) {
   t = t.replace(/\(ct:[^)]*\)/gi, "");
   t = t.replace(/\b[a-z][a-z0-9_]{10,}\b/g, "");
   t = t.replace(/\s{2,}/g, " ").trim();
-  return normalizeParentFacingHe(t);
+  t = normalizeParentFacingHe(t);
+  if (!t) return "";
+  const numericOnly = /^[\d\s.,/%\-–—]+$/u.test(t);
+  if (numericOnly) return "";
+  if (/^0{2,}$/u.test(t)) return "";
+  return t;
 }
 
 export function Bullets({ items, className = "" }) {
-  if (!items?.length)
+  const safeItems = (Array.isArray(items) ? items : [])
+    .map((x) => pr1ParentVisibleTextHe(x))
+    .filter(Boolean);
+  if (!safeItems.length)
     return <p className={`pr-detailed-muted text-sm ${className}`.trim()}>אין נתונים להצגה.</p>;
   return (
     <ul
       className={`pr-detailed-body-text list-disc pr-5 space-y-1.5 text-sm md:text-base text-white/[0.88] leading-relaxed ${className}`.trim()}
     >
-      {items.map((t, i) => (
+      {safeItems.map((t, i) => (
         <li key={i} className="pr-detailed-bullet-li">
           {t}
         </li>
@@ -763,7 +771,12 @@ function topicStripParentClean(s) {
   t = t.replace(/\blow_?confidence\b|\bmin_?questions\b|\btier\b/gi, "");
   t = t.replace(/\b[a-z][a-z0-9_]{10,}\b/g, "");
   t = t.replace(/\s{2,}/g, " ").trim();
-  return normalizeParentFacingHe(t);
+  t = normalizeParentFacingHe(t);
+  if (!t) return "";
+  const numericOnly = /^[\d\s.,/%\-–—]+$/u.test(t);
+  if (numericOnly) return "";
+  if (/^0{2,}$/u.test(t)) return "";
+  return t;
 }
 
 function topicStripNorm(s) {

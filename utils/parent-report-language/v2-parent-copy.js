@@ -25,9 +25,22 @@ export function executiveV2MajorTrendsLinesHe(p) {
   const diagnosed = Math.max(0, Number(p.diagnosed) || 0);
   const uncertain = Math.max(0, Number(p.uncertain) || 0);
   const stable = Math.max(0, Number(p.stable) || 0);
+  const actionable = Math.max(diagnosed, stable);
+  if (units === 0) {
+    return [
+      "בטווח התקופה עדיין לא נאספו נושאים מספקים להשוואה.",
+      "ממשיכים תרגול קצר ועקבי כדי לייצר תמונה שאפשר לסכם בצורה אמינה.",
+    ];
+  }
+  if (units === 1 && stable > 0 && diagnosed === 0) {
+    return [
+      "בטווח התקופה נבדק נושא אחד.",
+      "הכיוון באותו נושא חיובי ועקבי, ועדיין נשארים זהירים לפני הרחבה לנושאים נוספים.",
+    ];
+  }
   return [
     `בטווח התקופה נבדקו ${units} נושאים.`,
-    `ב־${diagnosed} מהם אפשר כבר לנסח כיוון; ב־${uncertain} התמונה עדיין לא מספיק ברורה; נקודות חוזק שנשמרו לאורך זמן: ${stable}.`,
+    `יש בסיס פעולה ב־${actionable} נושאים; ב־${uncertain} נושאים התמונה עדיין חלקית; מתוך זה ${stable} נושאים מראים חוזקה יציבה.`,
   ];
 }
 
@@ -40,11 +53,20 @@ export function executiveV2MixedSignalNoticeHe(hasUncertain) {
 /**
  * @param {number} diagnosed
  * @param {number} units
+ * @param {number} stable
  */
-export function executiveV2OverallConfidenceHe(diagnosed, units) {
+export function executiveV2OverallConfidenceHe(diagnosed, units, stable = 0) {
   const d = Math.max(0, Number(diagnosed) || 0);
   const u = Math.max(0, Number(units) || 0);
-  return `מבט כולל: ב־${d} מתוך ${u} נושאים שנבדקו יש מספיק בסיס לשיחה בבית על כיוון ממוקד.`;
+  const s = Math.max(0, Number(stable) || 0);
+  const actionable = Math.max(d, s);
+  if (u === 0) {
+    return "מבט כולל: עדיין אין מספיק נושאים בטווח כדי לבנות כיוון ביתי יציב.";
+  }
+  if (u === 1 && actionable === 0) {
+    return "מבט כולל: יש כרגע נושא יחיד בטווח, ולכן נשארים עם מסקנה זהירה וממשיכים לאסוף ראיות.";
+  }
+  return `מבט כולל: ב־${actionable} מתוך ${u} נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.`;
 }
 
 /**

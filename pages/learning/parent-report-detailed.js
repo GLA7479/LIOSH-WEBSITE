@@ -308,6 +308,10 @@ export default function ParentReportDetailedPage() {
   const pi = payload?.periodInfo;
   const noPlayer =
     typeof window !== "undefined" && !loading && !localStorage.getItem("mleo_player_name");
+  const allSubjectProfiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
+  const visibleSubjectProfiles = allSubjectProfiles.filter(
+    (sp) => (Number(sp?.subjectQuestionCount) || 0) > 0
+  );
 
   return (
     <Layout>
@@ -1266,9 +1270,12 @@ export default function ParentReportDetailedPage() {
                       מקוצר: מילה לכל מקצוע
                     </h2>
                     <div className="space-y-4">
-                      {payload.subjectProfiles.map((sp) => (
+                      {visibleSubjectProfiles.map((sp) => (
                         <SubjectSummaryBlock key={sp.subject} sp={sp} />
                       ))}
+                      {!visibleSubjectProfiles.length ? (
+                        <p className="pr-detailed-muted text-sm">אין מקצועות עם נפח נתונים להצגה בטווח הזה.</p>
+                      ) : null}
                     </div>
                   </section>
                 ) : (
@@ -1283,7 +1290,7 @@ export default function ParentReportDetailedPage() {
                       מקצועות הלימוד
                     </h2>
                     <div className="space-y-6">
-                      {payload.subjectProfiles.map((sp) => (
+                      {visibleSubjectProfiles.map((sp) => (
                         <div key={sp.subject} className="pr-detailed-subject-block pr-detailed-subject-stack min-w-0">
                           <div className="pr-detailed-subject-heading">
                             <h3 className="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">
@@ -1316,7 +1323,18 @@ export default function ParentReportDetailedPage() {
 
                             {sp.topicRecommendations?.length ? (
                               <div className="pr-detailed-topic-rec-block">
-                                <p className="pr-detailed-topic-rec-head">נושאים שדורשים ליווי בטווח זה</p>
+                                <p className="pr-detailed-topic-rec-head">
+                                  {(sp.topicRecommendations || []).some((tr) => {
+                                    const step = String(tr?.recommendedNextStep || "");
+                                    const isSupportStep =
+                                      step === "remediate_same_level" ||
+                                      step === "drop_one_level_topic_only" ||
+                                      step === "drop_one_grade_topic_only";
+                                    return isSupportStep || (Number(tr?.accuracy) || 0) < 75;
+                                  })
+                                    ? "נושאים שדורשים ליווי בטווח זה"
+                                    : "נושאים שנבדקו בטווח זה"}
+                                </p>
                                 <div className="space-y-2.5">
                                   {sp.topicRecommendations.map((tr, idx) => {
                                     const tv = topicNextStepVisualVariant(tr.recommendedNextStep);
@@ -1355,6 +1373,9 @@ export default function ParentReportDetailedPage() {
                           </div>
                         </div>
                       ))}
+                      {!visibleSubjectProfiles.length ? (
+                        <p className="pr-detailed-muted text-sm">אין מקצועות עם נפח נתונים להצגה בטווח הזה.</p>
+                      ) : null}
                     </div>
                   </section>
                 )}
