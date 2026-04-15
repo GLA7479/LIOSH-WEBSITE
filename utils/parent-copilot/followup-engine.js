@@ -80,10 +80,12 @@ function sameScopeStreak(priorScopes, scopeKey) {
  * @param {string} intent
  * @param {string} scopeLabelHe
  */
-function followUpTextForSurface(family, intent, scopeLabelHe) {
+function followUpTextForSurface(family, intent, scopeLabelHe, scopeType = "") {
   const base = TEXT[family] || TEXT.uncertainty_boundary;
+  if (String(scopeType || "").trim() === "executive") return base;
+  const internalLabels = new Set(["מבט על התקופה", "הדוח בתקופה הנבחרה", "executive"]);
   const lab = String(scopeLabelHe || "").trim();
-  if (!lab || lab.length < 2) return base;
+  if (!lab || lab.length < 2 || internalLabels.has(lab)) return base;
   const short = lab.length > 22 ? `${lab.slice(0, 20)}…` : lab;
   if (family === "action_today" || family === "action_week") {
     return base.replace(/\?$/, ` — סביב «${short}»?`);
@@ -108,7 +110,7 @@ function shouldOmitFollowUpForSufficientAnswer(answerBlockTypes) {
  */
 function followUpPassesValueGate(chosen, ctx) {
   if (ctx.omitFollowUpEntirely) return false;
-  const t = followUpTextForSurface(chosen, ctx.intent, ctx.scopeLabelHe || "");
+  const t = followUpTextForSurface(chosen, ctx.intent, ctx.scopeLabelHe || "", ctx.scopeType || "");
   if (ctx.answerBodyTextHe && tokenOverlapCount(t, ctx.answerBodyTextHe) >= 2) return false;
   const lastTwo = Array.isArray(ctx.lastTwoSuggestedTexts) ? ctx.lastTwoSuggestedTexts : [];
   for (const prev of lastTwo) {
@@ -140,7 +142,7 @@ function scoreFamilyPhaseB(family, ctx) {
 
   const recentSuggest = Array.isArray(conv.recentSuggestedFollowupTexts) ? conv.recentSuggestedFollowupTexts : [];
   const answerFp = Array.isArray(conv.answerSummaryFingerprints) ? conv.answerSummaryFingerprints : [];
-  const t = followUpTextForSurface(family, intent, scopeLabelHe || "");
+  const t = followUpTextForSurface(family, intent, scopeLabelHe || "", scopeType);
 
   for (const prev of recentSuggest) {
     const o = tokenOverlapCount(t, prev);
@@ -223,6 +225,7 @@ function firstOpenFamily(ranked, blocked, prior, hits) {
  * @param {string[]} [input.answerBlockTypes]
  * @param {object} input.truthPacket
  * @param {object} input.conversationState
+ * @param {boolean} [input.omitFollowUpEntirely]
  */
 export function selectFollowUp(input) {
   const tp = input?.truthPacket || {};
@@ -244,7 +247,8 @@ export function selectFollowUp(input) {
   const recentSuggest = Array.isArray(conv.recentSuggestedFollowupTexts) ? conv.recentSuggestedFollowupTexts : [];
   const lastTwoSuggestedTexts = recentSuggest.slice(-2);
 
-  const omitFollowUpEntirely = shouldOmitFollowUpForSufficientAnswer(answerBlockTypes);
+  const omitFollowUpEntirely =
+    Boolean(input?.omitFollowUpEntirely) || shouldOmitFollowUpForSufficientAnswer(answerBlockTypes);
 
   /** @type {string[]} */
   let ranked = [];
@@ -361,7 +365,7 @@ export function selectFollowUp(input) {
     };
   }
 
-  const textHe = followUpTextForSurface(chosen, intent, scopeLabelHe);
+  const textHe = followUpTextForSurface(chosen, intent, scopeLabelHe, scopeType);
 
   return {
     selected: {

@@ -9,6 +9,7 @@ import {
   subjectLabelHe,
   SUBJECT_ORDER,
 } from "./contract-reader.js";
+import { detectAggregateQuestionClass } from "./semantic-question-class.js";
 
 /**
  * @param {string} s
@@ -122,6 +123,18 @@ export function resolveScope(input) {
     };
   }
 
+  const aggregateClass = detectAggregateQuestionClass(utterance);
+  if (aggregateClass !== "none") {
+    return {
+      resolutionStatus: "resolved",
+      scope: {
+        scopeType: "executive",
+        scopeId: "executive",
+        scopeLabel: "הדוח בתקופה הנבחרה",
+      },
+    };
+  }
+
   const st = String(selected?.scopeType || "").trim();
   const sid = String(selected?.scopeId || "").trim();
   const subj = String(selected?.subjectId || "").trim();
@@ -190,7 +203,7 @@ export function resolveScope(input) {
     scope: {
       scopeType: "executive",
       scopeId: "executive",
-      scopeLabel: "מבט על התקופה",
+      scopeLabel: "הדוח בתקופה הנבחרה",
     },
   };
 }

@@ -37,6 +37,7 @@
     "test:parent-copilot-phaseA": "tsx scripts/parent-copilot-phaseA-suite.mjs",
     "test:parent-copilot-phaseB": "node scripts/parent-copilot-phaseB-suite.mjs",
     "test:parent-copilot-phaseC": "node scripts/parent-copilot-phaseC-suite.mjs",
+    "test:parent-copilot-executive-answer-safe-matrix": "node scripts/parent-copilot-executive-answer-safe-matrix.mjs",
     "test:e2e-hebrew-niqqud": "node scripts/e2e-hebrew-niqqud-browser.mjs",
     "test:e2e-hebrew-g1-g2-ab": "node scripts/e2e-hebrew-g1-g2-product-fit.mjs"
   },

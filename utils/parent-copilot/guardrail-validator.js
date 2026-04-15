@@ -113,3 +113,5 @@ export function validateParentCopilotResponseV1(response) {
   const ok = hardFails.length === 0;
   return { ok, hardFails, softFails };
 }
+
+export default { validateAnswerDraft, validateParentCopilotResponseV1 };

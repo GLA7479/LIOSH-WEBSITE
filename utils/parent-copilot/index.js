@@ -7,6 +7,8 @@ import { buildTruthPacketV1 } from "./truth-packet-v1.js";
 import { resolveIntent } from "./intent-resolver.js";
 import { planConversation } from "./conversation-planner.js";
 import { composeAnswerDraft } from "./answer-composer.js";
+import { detectAggregateQuestionClass } from "./semantic-question-class.js";
+import { buildSemanticAggregateDraft } from "./semantic-aggregate-answers.js";
 import { validateAnswerDraft, validateParentCopilotResponseV1 } from "./guardrail-validator.js";
 import { buildDeterministicFallbackAnswer } from "./fallback-templates.js";
 import { selectFollowUp } from "./followup-engine.js";
@@ -42,9 +44,12 @@ export function runParentCopilotTurn(input) {
     return r;
   }
 
+  const utteranceStr = String(input?.utterance || "");
+  const aggregateQuestionClass = detectAggregateQuestionClass(utteranceStr);
+
   const scopeRes = resolveScope({
     payload: input?.payload,
-    utterance: String(input?.utterance || ""),
+    utterance: utteranceStr,
     selectedContextRef: input?.selectedContextRef ?? null,
   });
 
@@ -80,30 +85,54 @@ export function runParentCopilotTurn(input) {
     return r;
   }
 
-  const intent = resolveIntent(String(input?.utterance || ""));
+  const intent = resolveIntent(utteranceStr);
   const priorIntents = Array.isArray(conv.priorIntents) ? conv.priorIntents : [];
   const lastIntent = priorIntents.length ? String(priorIntents[priorIntents.length - 1] || "") : "";
   const continuityRepeat = lastIntent === intent && lastIntent.length > 0;
-  const plan = planConversation(intent, truthPacket, {
-    continuityRepeat,
-    turnOrdinal: priorIntents.length,
-    scopeType: truthPacket.scopeType,
-  });
-  let draft = composeAnswerDraft(plan, truthPacket, {
-    intent,
-    continuityRepeat,
-    conversationState: conv,
-    turnOrdinal: priorIntents.length,
-  });
+
+  let draft;
+  let semanticAggregateSatisfied = false;
+  if (aggregateQuestionClass !== "none") {
+    const aggDraft = buildSemanticAggregateDraft({
+      questionClass: aggregateQuestionClass,
+      utterance: utteranceStr,
+      payload: input.payload,
+      truthPacket,
+    });
+    if (aggDraft) {
+      const vAgg = validateAnswerDraft(aggDraft, truthPacket);
+      if (vAgg.ok) {
+        draft = aggDraft;
+        semanticAggregateSatisfied = true;
+      }
+    }
+  }
+
+  if (!draft) {
+    const plan = planConversation(intent, truthPacket, {
+      continuityRepeat,
+      turnOrdinal: priorIntents.length,
+      scopeType: truthPacket.scopeType,
+    });
+    draft = composeAnswerDraft(plan, truthPacket, {
+      intent,
+      continuityRepeat,
+      conversationState: conv,
+      turnOrdinal: priorIntents.length,
+    });
+  }
+
   let vDraft = validateAnswerDraft(draft, truthPacket);
   let fallbackUsed = false;
 
   if (!vDraft.ok) {
+    semanticAggregateSatisfied = false;
     draft = buildDeterministicFallbackAnswer(truthPacket, vDraft.failCodes);
     fallbackUsed = true;
     vDraft = validateAnswerDraft(draft, truthPacket);
   }
   if (!vDraft.ok) {
+    semanticAggregateSatisfied = false;
     const nar = truthPacket.contracts?.narrative;
     const slots = nar?.textSlots || {};
     draft = {
@@ -131,6 +160,7 @@ export function runParentCopilotTurn(input) {
     answerBodyTextHe,
     answerBlockTypes,
     clickedFollowupFamilyThisTurn: input?.clickedFollowupFamily ? String(input.clickedFollowupFamily).trim() : null,
+    omitFollowUpEntirely: aggregateQuestionClass !== "none" || (semanticAggregateSatisfied && vDraft.ok),
     truthPacket: {
       cannotConcludeYet: truthPacket.derivedLimits.cannotConcludeYet,
       readiness: truthPacket.derivedLimits.readiness,

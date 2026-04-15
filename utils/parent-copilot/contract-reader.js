@@ -55,6 +55,28 @@ export function findFirstAnchoredTopicRow(payload) {
 
 /**
  * @param {unknown} payload
+ * @returns {Array<{ subject: string, tr: object }>}
+ */
+export function listAllAnchoredTopicRows(payload) {
+  /** @type {Array<{ subject: string, tr: object }>} */
+  const out = [];
+  const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
+  const bySubject = Object.fromEntries(profiles.map((sp) => [String(sp?.subject || ""), sp]));
+  for (const sid of SUBJECT_ORDER) {
+    const sp = bySubject[sid];
+    const list = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
+    for (const tr of list) {
+      const nar = tr?.contractsV1?.narrative;
+      if (nar && typeof nar === "object" && String(nar?.textSlots?.observation || "").trim()) {
+        out.push({ subject: sid, tr });
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * @param {unknown} payload
  * @param {string} subjectId
  * @returns {{ subject: string, tr: object } | null}
  */
@@ -141,3 +163,14 @@ export function readContractsSliceForScope(scopeType, scopeId, subjectId, payloa
   if (!hit) return null;
   return { subjectId: hit.subject, topicRow: hit.tr, contracts: contractsFromTopicRow(hit.tr) };
 }
+
+export default {
+  readContractsSliceForScope,
+  subjectLabelHe,
+  SUBJECT_ORDER,
+  listAllAnchoredTopicRows,
+  findFirstAnchoredTopicRow,
+  findFirstAnchoredTopicRowForSubject,
+  findTopicRowByKey,
+  contractsFromTopicRow,
+};

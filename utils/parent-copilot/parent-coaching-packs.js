@@ -26,6 +26,7 @@ export function coachingVariantIndex(conv, intent, turnOrdinal = 0) {
 function scopeSnippet(label) {
   const t = String(label || "").trim();
   if (t.length < 2) return "בנושא שנבחר";
+  if (t === "מבט על התקופה" || t === "הדוח בתקופה הנבחרה" || t === "executive") return "מהדוח";
   if (t.length > 32) return `בנושא «${t.slice(0, 30)}…»`;
   return `בנושא «${t}»`;
 }

@@ -1,0 +1,410 @@
+/**
+ * Answer-first composed replies for aggregate question classes (ranking / listing / period).
+ * Uses only payload.subjectProfiles numeric fields + executiveSummary lines; no new contract facts.
+ */
+
+import { SUBJECT_ORDER, subjectLabelHe } from "./contract-reader.js";
+
+/**
+ * @param {string} s
+ */
+function norm(s) {
+  return String(s || "")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+function readinessScore(v) {
+  const x = String(v || "").trim().toLowerCase();
+  if (x === "ready") return 3;
+  if (x === "emerging") return 2;
+  if (x === "forming" || x === "partial" || x === "moderate") return 1;
+  return 0;
+}
+
+function confidenceScore(v) {
+  const x = String(v || "").trim().toLowerCase();
+  if (x === "high") return 2;
+  if (x === "medium" || x === "moderate") return 1;
+  return 0;
+}
+
+/**
+ * @param {unknown} payload
+ */
+function subjectRollups(payload) {
+  const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
+  const bySubject = Object.fromEntries(profiles.map((sp) => [String(sp?.subject || "").trim(), sp]));
+  /** @type {Array<{
+   *   sid: string; label: string; totalQ: number; avg: number | null; topicRows: number; dataTopics: number;
+   *   lowConfidenceTopics: number; insufficientTopics: number; cannotConcludeTopics: number; accStdDev: number | null;
+   *   readinessAvg: number; confidenceAvg: number;
+   * }>} */
+  const rows = [];
+  for (const sid of SUBJECT_ORDER) {
+    const sp = bySubject[sid];
+    if (!sp) continue;
+    const list = Array.isArray(sp.topicRecommendations) ? sp.topicRecommendations : [];
+    let totalQ = 0;
+    let wAcc = 0;
+    let dataTopics = 0;
+    let lowConfidenceTopics = 0;
+    let insufficientTopics = 0;
+    let cannotConcludeTopics = 0;
+    let readinessSum = 0;
+    let confidenceSum = 0;
+    /** @type {number[]} */
+    const accList = [];
+    for (const tr of list) {
+      const q = Math.max(0, Number(tr?.questions ?? tr?.q) || 0);
+      const acc = Math.max(0, Math.min(100, Math.round(Number(tr?.accuracy) || 0)));
+      const cv = tr?.contractsV1 && typeof tr.contractsV1 === "object" ? tr.contractsV1 : {};
+      const r = readinessScore(cv?.readiness?.readiness);
+      const c = confidenceScore(cv?.confidence?.confidenceBand);
+      readinessSum += r;
+      confidenceSum += c;
+      if (cv?.decision?.cannotConcludeYet === true) cannotConcludeTopics += 1;
+      if (c <= 0) lowConfidenceTopics += 1;
+      if (r <= 0) insufficientTopics += 1;
+      if (q > 0) {
+        totalQ += q;
+        wAcc += acc * q;
+        dataTopics += 1;
+        accList.push(acc);
+      }
+    }
+    const avg = totalQ > 0 ? Math.round(wAcc / totalQ) : null;
+    const mean = accList.length ? accList.reduce((a, b) => a + b, 0) / accList.length : null;
+    const variance =
+      mean == null
+        ? null
+        : accList.reduce((sum, x) => sum + Math.pow(x - mean, 2), 0) / Math.max(1, accList.length);
+    rows.push({
+      sid,
+      label: subjectLabelHe(sid),
+      totalQ,
+      avg,
+      topicRows: list.length,
+      dataTopics,
+      lowConfidenceTopics,
+      insufficientTopics,
+      cannotConcludeTopics,
+      accStdDev: variance == null ? null : Math.round(Math.sqrt(variance)),
+      readinessAvg: list.length ? readinessSum / list.length : 0,
+      confidenceAvg: list.length ? confidenceSum / list.length : 0,
+    });
+  }
+  return rows;
+}
+
+/**
+ * Subjects that appear in the report with at least one topic row (chronological order).
+ * @param {unknown} payload
+ */
+function subjectsListedInReport(payload) {
+  const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
+  const present = new Set(profiles.map((p) => String(p?.subject || "").trim()).filter(Boolean));
+  /** @type {string[]} */
+  const out = [];
+  for (const sid of SUBJECT_ORDER) {
+    if (!present.has(sid)) continue;
+    const sp = profiles.find((p) => String(p?.subject || "") === sid);
+    const list = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
+    if (list.length > 0) out.push(sid);
+  }
+  return out;
+}
+
+/**
+ * @param {string} utterance
+ * @param {unknown} payload
+ * @returns {string[]} subject ids in order of first mention in utterance
+ */
+function subjectsMentionedInUtterance(utterance, payload) {
+  const u = norm(utterance);
+  const listed = subjectsListedInReport(payload);
+  /** @type {Array<{ sid: string; idx: number; len: number }>} */
+  const hits = [];
+  for (const sid of listed) {
+    const lab = subjectLabelHe(sid);
+    const idx = u.indexOf(lab);
+    if (idx >= 0) hits.push({ sid, idx, len: lab.length });
+  }
+  hits.sort((a, b) => a.idx - b.idx || b.len - a.len);
+  const seen = new Set();
+  /** @type {string[]} */
+  const ordered = [];
+  for (const h of hits) {
+    if (seen.has(h.sid)) continue;
+    seen.add(h.sid);
+    ordered.push(h.sid);
+  }
+  return ordered;
+}
+
+/**
+ * @param {ReturnType<typeof subjectRollups>} rows
+ */
+function mostStableSubject(rows) {
+  if (!rows.length) return null;
+  const scored = rows.map((r) => {
+    const qFactor = Math.min(1, Math.log10(Math.max(1, r.totalQ + 1)));
+    const conf = r.confidenceAvg / 2;
+    const read = r.readinessAvg / 3;
+    const variancePenalty = r.accStdDev == null ? 0.45 : Math.min(1, r.accStdDev / 40);
+    const score = conf * 0.45 + read * 0.35 + qFactor * 0.35 - variancePenalty * 0.35;
+    return { r, score };
+  });
+  scored.sort((a, b) => b.score - a.score || b.r.totalQ - a.r.totalQ);
+  return scored[0]?.r || null;
+}
+
+/**
+ * @param {NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>} truthPacket
+ * @param {string} obs
+ * @param {string} meaning
+ */
+function passesEnvelope(truthPacket, obs, meaning) {
+  const joined = `${obs} ${meaning}`;
+  for (const ph of truthPacket?.allowedClaimEnvelope?.forbiddenPhrases || []) {
+    if (ph && joined.includes(String(ph))) return false;
+  }
+  const nar = truthPacket?.contracts?.narrative;
+  const slotText = [
+    String(nar?.textSlots?.observation || ""),
+    String(nar?.textSlots?.interpretation || ""),
+    String(nar?.textSlots?.action || ""),
+    String(nar?.textSlots?.uncertainty || ""),
+  ].join(" ");
+  const slotBundle = slotText + joined;
+  for (const hedge of truthPacket?.allowedClaimEnvelope?.requiredHedges || []) {
+    if (hedge && !slotBundle.includes(String(hedge))) return false;
+  }
+  return true;
+}
+
+/**
+ * @param {NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>} truthPacket
+ * @param {string} obs
+ * @param {string} meaning
+ */
+function ensureRequiredHedges(truthPacket, obs, meaning) {
+  let o = obs;
+  let m = meaning;
+  const req = Array.isArray(truthPacket?.allowedClaimEnvelope?.requiredHedges)
+    ? truthPacket.allowedClaimEnvelope.requiredHedges.map((x) => String(x || "").trim()).filter(Boolean)
+    : [];
+  for (const h of req) {
+    const bundle = `${o} ${m}`;
+    if (h && !bundle.includes(h)) {
+      o = `${h} ${o}`.trim();
+    }
+  }
+  return { obs: o, meaning: m };
+}
+
+/**
+ * @param {{
+ *   questionClass: string;
+ *   utterance?: string;
+ *   payload: unknown;
+ *   truthPacket: NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>;
+ * }} input
+ * @returns {{ answerBlocks: Array<{ type: string; textHe: string; source: "composed" }> } | null}
+ */
+export function buildSemanticAggregateDraft(input) {
+  const qc = String(input?.questionClass || "");
+  const utterance = String(input?.utterance || "");
+  const payload = input?.payload;
+  const truthPacket = input?.truthPacket;
+  if (!truthPacket || !payload || typeof payload !== "object") return null;
+  if (
+    qc !== "strongest_subject" &&
+    qc !== "weakest_subject" &&
+    qc !== "hardest_subject" &&
+    qc !== "subject_listing" &&
+    qc !== "period_highlight" &&
+    qc !== "comparison" &&
+    qc !== "most_practice" &&
+    qc !== "least_data" &&
+    qc !== "improved" &&
+    qc !== "needs_attention" &&
+    qc !== "still_unclear" &&
+    qc !== "most_stable"
+  ) {
+    return null;
+  }
+
+  const hedges = Array.isArray(truthPacket.allowedClaimEnvelope?.requiredHedges)
+    ? truthPacket.allowedClaimEnvelope.requiredHedges.map((h) => String(h || "").trim()).filter(Boolean)
+    : [];
+  const lead = hedges[0] ? `${hedges[0]} — ` : "";
+
+  const roll = subjectRollups(payload);
+  const withAvg = roll.filter((r) => r.avg != null);
+
+  /** @type {string} */
+  let obs = "";
+  /** @type {string} */
+  let meaning = "";
+
+  if (qc === "subject_listing") {
+    const ids = subjectsListedInReport(payload);
+    if (!ids.length) {
+      obs = `${lead}בדוח לא מופיעים כרגע מקצועות עם שורות נושא.`;
+      meaning = "כשיופיעו מקצועות בטווח התאריכים, אפשר לשאול שוב ולקבל רשימה מסודרת.";
+    } else {
+      const names = ids.map((sid) => subjectLabelHe(sid)).join(" · ");
+      obs = `${lead}בדוח מופיעים המקצועות הבאים: ${names}.`;
+      meaning = "הרשימה מבוססת על המקצועות שמוצגים בדוח לתקופה הנבחרה, לפי סדר התצוגה.";
+    }
+  } else if (qc === "period_highlight") {
+    const es = payload?.executiveSummary && typeof payload.executiveSummary === "object" ? payload.executiveSummary : {};
+    const trends = Array.isArray(es.majorTrendsHe)
+      ? es.majorTrendsHe.map((x) => String(x || "").trim()).filter(Boolean)
+      : [];
+    if (trends.length) {
+      obs = `${lead} לפי שורות הסיכום שמופיעות בדוח לתקופה: ${trends.slice(0, 4).join(" · ")}.`;
+      meaning = "אלה הניסוחים הבולטים ברמת התקופה כפי שהוגדרו בדוח; לפרטים לפי מקצוע אפשר לעבור למסך המקצוע.";
+    } else if (withAvg.length) {
+      const sorted = [...withAvg].sort((a, b) => (b.avg || 0) - (a.avg || 0) || b.totalQ - a.totalQ);
+      const top = sorted.slice(0, 2);
+      obs = `${lead} בולטים במיוחד לפי ממוצע הדיוק על פני הנושאים עם תרגול בדוח: ${top
+        .map((r) => `${r.label} (כ־${r.avg}% בממוצע משוקלל)`)
+        .join(" · ")}.`;
+      meaning = "זה סיכום מספרי ברמת מקצוע מהנתונים שמוצגים בדוח, בלי להחליף ניסוח נושא ספציפי.";
+    } else {
+      obs = `${lead} אין כרגע בדוח מספיק תרגול מספרי מגוזר על פני מקצועות כדי לתאר «מה הכי בולט» בביטחון.`;
+      meaning = "כשמופיעים נתוני תרגול לפחות בנושא אחד עם שאלות, אפשר לחזור לשאלה ולקבל תמונה ברורה יותר.";
+    }
+  } else if (qc === "comparison") {
+    const mentioned = subjectsMentionedInUtterance(utterance, payload);
+    if (mentioned.length < 2) {
+      obs = `${lead} כדי להשוואה ישירה בין מקצועות צריך לציין בבירור שני מקצועות משמות המקצועות שמופיעים בדוח.`;
+      meaning = "אפשר לנסח שוב עם שני שמות מקצוע, או לשאול שאלה אחת על דירוג לפי קושי או חוזק לפי הנתונים בדוח.";
+    } else {
+      const a = roll.find((r) => r.sid === mentioned[0]);
+      const b = roll.find((r) => r.sid === mentioned[1]);
+    if (!a || !b || a.avg == null || b.avg == null) {
+      obs = `${lead} יש אזכור לשני מקצועות בשאלה, אבל בדוח חסרים מספיק נתוני תרגול מספריים לשניהם כדי להשוות בצורה יציבה.`;
+      meaning = "כשמופיעים שאלות ודיוק לשני המקצועות, אפשר לשאול שוב ולקבל השוואה ישירה לפי הממוצעים בדוח.";
+    } else if (a.avg === b.avg) {
+      obs = `${lead} לפי הממוצעים בדוח, ${a.label} ו־${b.label} נמצאים כרגע על אותו קו דיוק משוקלל (כ־${a.avg}%).`;
+      meaning = "כדי להבדיל בין הכיוונים כדאי להסתכל גם על כמות השאלות בכל מקצוע ובניסוח הנושאים עצמם בדוח.";
+    } else {
+      const hi = a.avg > b.avg ? a : b;
+      const lo = a.avg > b.avg ? b : a;
+      obs = `${lead} לפי ממוצע הדיוק המשוקלל בדוח, ${hi.label} גבוה יותר מ־${lo.label} (בערך ${hi.avg}% לעומת ${lo.avg}%).`;
+      meaning = "ההשוואה מבוססת על ממוצעים על פני הנושאים שיש להם תרגול בדוח, לא על ניסוח של נושא בודד.";
+      }
+    }
+  } else if (qc === "most_practice") {
+    const listed = roll.filter((r) => r.topicRows > 0);
+    if (!listed.length) {
+      obs = `${lead}אין כרגע מקצועות פעילים בדוח לתקופה הנבחרה.`;
+      meaning = "כשמופיעים מקצועות עם שורות נושא, אפשר לחזור לשאלה ולקבל דירוג תרגול.";
+    } else {
+      const best = [...listed].sort((a, b) => b.totalQ - a.totalQ || b.topicRows - a.topicRows)[0];
+      obs = `${lead}לפי ספירת התרגול בדוח, המקצוע עם הכי הרבה תרגול הוא ${best.label} (${best.totalQ} שאלות מתועדות).`;
+      meaning = "ההשוואה כאן מבוססת על כמות שאלות בפועל בדוח התקופה, לא על תחושת עומס.";
+    }
+  } else if (qc === "least_data") {
+    const listed = roll.filter((r) => r.topicRows > 0);
+    if (!listed.length) {
+      obs = `${lead}בדוח אין כרגע מקצועות פעילים עם נתונים להשוואה.`;
+      meaning = "כשיופיעו מקצועות פעילים, אפשר לזהות במדויק איפה הנתונים הכי דלים.";
+    } else {
+      const weakestData = [...listed].sort((a, b) => a.totalQ - b.totalQ || a.dataTopics - b.dataTopics)[0];
+      obs = `${lead}המקצוע עם הכי מעט נתונים כרגע הוא ${weakestData.label} (${weakestData.totalQ} שאלות מתועדות).`;
+      meaning = "זו אינדיקציה לדלות נתונים בדוח התקופה; במקרה כזה נכון להיות זהירים במסקנות.";
+    }
+  } else if (qc === "improved") {
+    const es = payload?.executiveSummary && typeof payload.executiveSummary === "object" ? payload.executiveSummary : {};
+    const trends = Array.isArray(es.majorTrendsHe)
+      ? es.majorTrendsHe.map((x) => String(x || "").trim()).filter(Boolean)
+      : [];
+    const improvementLines = trends.filter((t) => /שיפור|התקדמות|עלייה|התחזק|משתפר/.test(t));
+    if (improvementLines.length) {
+      obs = `${lead}לפי ניסוחי הסיכום בדוח התקופתי, ניכרים סימני שיפור: ${improvementLines.slice(0, 3).join(" · ")}.`;
+      meaning = "זו תשובה על בסיס שורות הסיכום בדוח בלבד, בלי להמציא מגמת זמן שלא הופיעה במפורש.";
+    } else {
+      obs = `${lead}בדוח הנוכחי אין שורת מגמה מפורשת שמסמנת שיפור לאורך זמן.`;
+      meaning = "כדי לענות על «מה השתפר» באופן חד יותר צריך או מגמות מפורשות בסיכום התקופה או השוואת תקופות.";
+    }
+  } else if (qc === "needs_attention") {
+    const atRisk = [...roll].sort((a, b) => {
+      const aRisk = (a.avg == null ? 1 : 0) * 100 + (a.avg == null ? 0 : 100 - a.avg) + a.lowConfidenceTopics * 8 + a.insufficientTopics * 8;
+      const bRisk = (b.avg == null ? 1 : 0) * 100 + (b.avg == null ? 0 : 100 - b.avg) + b.lowConfidenceTopics * 8 + b.insufficientTopics * 8;
+      return bRisk - aRisk || a.totalQ - b.totalQ;
+    })[0];
+    if (!atRisk) {
+      obs = `${lead}אין כרגע נתונים מספיקים בדוח כדי לזהות מוקד תשומת לב ברור.`;
+      meaning = "כשמופיעים נתוני תרגול וחוזים פעילים לפי מקצוע, אפשר לזהות מוקד שדורש תשומת לב.";
+    } else {
+      obs = `${lead}המוקד שדורש כרגע הכי הרבה תשומת לב הוא ${atRisk.label}.`;
+      meaning =
+        atRisk.avg == null
+          ? "הסיבה המרכזית היא דלות נתונים במקצוע הזה בתקופה הנוכחית."
+          : `הדירוג מבוסס על שילוב של דיוק ממוצע (כ־${atRisk.avg}%) יחד עם אותות חוסר יציבות בדוח.`;
+    }
+  } else if (qc === "still_unclear") {
+    const unclear = roll.filter((r) => r.cannotConcludeTopics > 0 || r.lowConfidenceTopics > 0 || r.insufficientTopics > 0);
+    if (!unclear.length) {
+      obs = `${lead}אין כרגע בדוח אינדיקציה חזקה ל״עדיין לא ברור״ ברמת מקצוע.`;
+      meaning = "עדיין נכון לשמור מעקב שוטף, אבל אין כאן כרגע סימן חוזי מובהק לחוסר בהירות.";
+    } else {
+      const names = unclear.map((r) => r.label).join(" · ");
+      obs = `${lead}עדיין לא ברור מספיק בעיקר ב: ${names}.`;
+      meaning = "הזיהוי מבוסס על חוזי חוסר ודאות/ביטחון נמוך/אי-בשלות שמופיעים בדוח עצמו.";
+    }
+  } else if (qc === "most_stable") {
+    if (roll.length < 2) {
+      obs = `${lead}בדוח מופיע כרגע מקצוע אחד בלבד, ולכן אי אפשר להשוות יציבות בין מקצועות.`;
+      meaning = "אפשר עדיין לתאר את המצב במקצוע היחיד, אבל לא לקבוע מי «הכי יציב» בהשוואה.";
+    } else {
+      const stable = mostStableSubject(roll);
+      if (!stable || stable.totalQ <= 0) {
+        obs = `${lead}אין כרגע מספיק תרגול עקבי בין מקצועות כדי לקבוע מי הכי יציב.`;
+        meaning = "נדרש בסיס נתונים רחב יותר (כמות שאלות ורצף ביצועים) כדי לדרג יציבות בצורה אמינה.";
+      } else {
+        obs = `${lead}לפי נתוני התקופה בדוח, המקצוע היציב ביותר כרגע הוא ${stable.label}.`;
+        meaning = `ההערכה מבוססת על שילוב של נפח תרגול, יציבות ביצועים וביטחון/בשלות חוזיים, לא על שורת נושא בודדת.`;
+      }
+    }
+  } else {
+    if (withAvg.length < 2) {
+      obs = `${lead} בדוח אין כרגע מספיק תרגול מספרי על לפחות שני מקצועות שונים, ולכן לא נדרגים כאן מקצועות אחד מול השני.`;
+      meaning = "כשמופיעים נתונים לשני מקצועות ומעלה, אפשר לשאול שוב ולקבל דירוג לפי הממוצעים שמוצגים בדוח.";
+    } else {
+      const sortedStrength = [...withAvg].sort((a, b) => (b.avg || 0) - (a.avg || 0) || b.totalQ - a.totalQ);
+      const sortedWeak = [...withAvg].sort((a, b) => (a.avg || 0) - (b.avg || 0) || a.totalQ - b.totalQ);
+      const strongest = sortedStrength[0];
+      const weakest = sortedWeak[0];
+      if (qc === "strongest_subject") {
+        obs = `${lead} לפי ממוצע הדיוק המשוקלל על פני הנושאים עם תרגול בדוח, המקצוע החזק ביותר הוא ${strongest.label} (בערך ${strongest.avg}%).`;
+        meaning = `המספר משקף ממוצע דיוק על פני כל שורות הנושא עם תרגול תחת ${strongest.label} בדוח, לא שורת נושא בודדת.`;
+      } else if (qc === "weakest_subject") {
+        obs = `${lead} לפי אותו מדד ממוצע על פני נושאים עם תרגול, המקצוע הנמוך ביותר כרגע הוא ${weakest.label} (בערך ${weakest.avg}%).`;
+        meaning = "זה עדיין תיאור ברמת מקצוע מהדוח; לפרטים מדויקים לפי נושא צריך לפתוח את המקצוע בדוח.";
+      } else {
+        obs = `${lead} לפי ממוצע הדיוק המשוקלל בדוח, המקצוע שבו הכי «קשה» כרגע מבחינת התוצאות הוא ${weakest.label} (בערך ${weakest.avg}%).`;
+        meaning = "כאן «קשה» מתורגם לפי הדיוק הממוצע בנושאים עם תרגול בדוח, לא לפי רושם בלי נתונים.";
+      }
+    }
+  }
+
+  ({ obs, meaning } = ensureRequiredHedges(truthPacket, obs, meaning));
+  obs = norm(obs);
+  meaning = norm(meaning);
+  if (obs.length < 8 || meaning.length < 8) return null;
+  if (!passesEnvelope(truthPacket, obs, meaning)) return null;
+
+  return {
+    answerBlocks: [
+      { type: "observation", textHe: obs, source: "composed" },
+      { type: "meaning", textHe: meaning, source: "composed" },
+    ],
+  };
+}
+
+export default { buildSemanticAggregateDraft };

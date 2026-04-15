@@ -103,6 +103,15 @@ assert.equal(scopeSubject.resolutionStatus, "resolved");
 assert.equal(scopeSubject.scope?.scopeType, "subject");
 assert.equal(scopeSubject.scope?.scopeId, "math");
 
+const scopeAgg = scopeResolver.resolveScope({
+  payload,
+  utterance: "מה המקצוע החזק?",
+  selectedContextRef: null,
+});
+assert.equal(scopeAgg.resolutionStatus, "resolved");
+assert.equal(scopeAgg.scope?.scopeType, "executive");
+assert.equal(scopeAgg.scope?.scopeLabel, "הדוח בתקופה הנבחרה");
+
 // Blocker 3 — session memory contract fields
 sessionMemory.resetParentCopilotSessionForTests("mem-contract");
 sessionMemory.applyConversationStateDelta("mem-contract", {
@@ -397,5 +406,94 @@ const res2 = parentCopilot.runParentCopilotTurn({
   sessionId: "t4",
 });
 assert.ok(guardrail.validateParentCopilotResponseV1(res2).ok);
+
+/**
+ * Three subjects with distinct weighted averages for aggregate semantic QA.
+ * @param {ReturnType<typeof syntheticPayload>} basePayload
+ */
+function multiSubjectPayloadFrom(basePayload) {
+  const baseTr = structuredClone(basePayload.subjectProfiles[0].topicRecommendations[0]);
+  /**
+   * @param {typeof baseTr} tr
+   * @param {string} sid
+   */
+  const fixIds = (tr, sid) => {
+    const cv = tr.contractsV1;
+    for (const p of ["narrative", "decision", "readiness", "confidence", "recommendation"]) {
+      if (cv[p] && typeof cv[p] === "object") cv[p].subjectId = sid;
+    }
+    if (cv.evidence && typeof cv.evidence === "object") cv.evidence.subjectId = sid;
+  };
+  const m1 = structuredClone(baseTr);
+  m1.topicRowKey = "m1";
+  m1.displayName = "כפל";
+  m1.questions = 30;
+  m1.accuracy = 60;
+  fixIds(m1, "math");
+  const e1 = structuredClone(baseTr);
+  e1.topicRowKey = "e1";
+  e1.displayName = "מילים";
+  e1.questions = 10;
+  e1.accuracy = 95;
+  fixIds(e1, "english");
+  const h1 = structuredClone(baseTr);
+  h1.topicRowKey = "h1";
+  h1.displayName = "דיקדוק";
+  h1.questions = 5;
+  h1.accuracy = 40;
+  fixIds(h1, "hebrew");
+  return {
+    version: 2,
+    executiveSummary: { majorTrendsHe: ["קו מגמה ראשון לתקופה", "קו משני לתקופה"] },
+    subjectProfiles: [
+      { subject: "math", topicRecommendations: [m1] },
+      { subject: "english", topicRecommendations: [e1] },
+      { subject: "hebrew", topicRecommendations: [h1] },
+    ],
+  };
+}
+
+const multiPayload = multiSubjectPayloadFrom(payload);
+
+const rStrongest = parentCopilot.runParentCopilotTurn({
+  audience: "parent",
+  payload: multiPayload,
+  utterance: "מה המקצוע החזק?",
+  sessionId: "semantic-strongest",
+});
+assert.equal(rStrongest.resolutionStatus, "resolved");
+assert.ok(guardrail.validateParentCopilotResponseV1(rStrongest).ok);
+assert.ok(rStrongest.answerBlocks[0].textHe.includes("אנגלית"));
+assert.ok(!rStrongest.answerBlocks.map((b) => b.textHe).join(" ").includes("כפל"));
+assert.equal(rStrongest.suggestedFollowUp, null);
+
+const rSubjectsList = parentCopilot.runParentCopilotTurn({
+  audience: "parent",
+  payload: multiPayload,
+  utterance: "יש עוד מקצועות?",
+  sessionId: "semantic-subjects-list",
+});
+assert.ok(rSubjectsList.answerBlocks[0].textHe.includes("חשבון"));
+assert.ok(rSubjectsList.answerBlocks[0].textHe.includes("אנגלית"));
+assert.ok(rSubjectsList.answerBlocks[0].textHe.includes("עברית"));
+assert.equal(rSubjectsList.suggestedFollowUp, null);
+
+const rHardest = parentCopilot.runParentCopilotTurn({
+  audience: "parent",
+  payload: multiPayload,
+  utterance: "באיזה מקצוע הכי קשה?",
+  sessionId: "semantic-hardest",
+});
+assert.ok(rHardest.answerBlocks[0].textHe.includes("עברית"));
+assert.equal(rHardest.suggestedFollowUp, null);
+
+const rPeriod = parentCopilot.runParentCopilotTurn({
+  audience: "parent",
+  payload: multiPayload,
+  utterance: "מה הכי בולט בתקופה?",
+  sessionId: "semantic-period",
+});
+assert.ok(rPeriod.answerBlocks[0].textHe.includes("קו מגמה ראשון"));
+assert.equal(rPeriod.suggestedFollowUp, null);
 
 console.log("parent-copilot-phaseA-suite: OK");
