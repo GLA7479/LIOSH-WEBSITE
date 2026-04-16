@@ -112,12 +112,60 @@ assert.ok(v.ok, `answer draft must validate: ${v.failCodes?.join(",")}`);
 const joined = res.answerBlocks.map((b) => b.textHe).join(" ");
 assert.ok(!/\bcontractsV1\b|validatorFailCodes|schemaVersion/i.test(joined), "no internal tokens in parent-facing blocks");
 
-// 5) Clarification path still valid shape (ambiguous scope, not empty utterance)
+// 5) Clarification path still valid shape (selected topic missing anchor in payload)
+const clarPayload = {
+  version: 2,
+  subjectProfiles: [
+    {
+      subject: "math",
+      topicRecommendations: [
+        {
+          topicRowKey: "ghost",
+          displayName: "נושא בלי עיגון",
+          questions: 1,
+          accuracy: 50,
+          contractsV1: {
+            narrative: {
+              contractVersion: "v1",
+              topicKey: "ghost",
+              subjectId: "math",
+              wordingEnvelope: "WE0",
+              hedgeLevel: "mandatory",
+              allowedTone: "parent_professional_warm",
+              forbiddenPhrases: [],
+              requiredHedges: [],
+              allowedSections: ["summary"],
+              recommendationIntensityCap: "RI0",
+              textSlots: { observation: "", interpretation: "", action: null, uncertainty: "" },
+            },
+            decision: { contractVersion: "v1", topicKey: "ghost", subjectId: "math", decisionTier: 0, cannotConcludeYet: true },
+            readiness: { contractVersion: "v1", topicKey: "ghost", subjectId: "math", readiness: "insufficient" },
+            confidence: { contractVersion: "v1", topicKey: "ghost", subjectId: "math", confidenceBand: "low" },
+            recommendation: {
+              contractVersion: "v1",
+              topicKey: "ghost",
+              subjectId: "math",
+              eligible: false,
+              intensity: "RI0",
+              family: null,
+              anchorEvidenceIds: [],
+              rationaleCodes: [],
+              forbiddenBecause: [],
+            },
+            evidence: { contractVersion: "v1", topicKey: "ghost", subjectId: "math" },
+          },
+        },
+      ],
+    },
+  ],
+  executiveSummary: { majorTrendsHe: ["א"] },
+};
 const clar = runParentCopilotTurn({
   audience: "parent",
-  payload,
-  utterance: "אפשר הסבר נוסף?",
+  payload: clarPayload,
+  utterance: "מה קורה?",
   sessionId: "freeform-hebrew-suite-2",
+  selectedContextRef: { scopeType: "topic", scopeId: "ghost", subjectId: "math" },
 });
 assert.equal(clar.resolutionStatus, "clarification_required");
 const finalCheck = guardrail.validateParentCopilotResponseV1(clar);

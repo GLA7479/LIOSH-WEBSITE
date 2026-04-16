@@ -47,16 +47,7 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
   const formId = useId();
   const [sessionId] = useState(() => makeSessionId());
   const [utterance, setUtterance] = useState("");
-  const [lines, setLines] = useState(() => [
-    {
-      id: lineId(),
-      role: "assistant",
-      kind: "message",
-      text:
-        "אפשר לשאול כאן בחופשיות על הדוח, למשל: מה הכי חשוב כרגע, במה להתמקד השבוע, מה הולך טוב, או איך להסביר את זה לילד.",
-      intro: true,
-    },
-  ]);
+  const [lines, setLines] = useState(() => []);
   const [busy, setBusy] = useState(false);
   const scrollRef = useRef(null);
   const userPinnedBottomRef = useRef(true);
@@ -243,6 +234,9 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
       style={{ height: "420px", minHeight: "420px" }}
     >
       <div className="text-xs font-extrabold tracking-wide text-white/70 shrink-0 mb-2">שאלו על הדוח</div>
+      <p className="text-[11px] leading-snug text-white/45 shrink-0 mb-2 pr-0.5">
+        אפשר לשאול כאן בחופשיות על הדוח, למשל: מה הכי חשוב כרגע, במה להתמקד השבוע, מה הולך טוב, או איך להסביר את זה לילד.
+      </p>
 
       <div
         ref={scrollRef}
@@ -252,8 +246,7 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
         {lines.map((ln, i) => {
           if (ln.kind === "processing") {
             return (
-              <div key={ln.id} className="text-white/60 whitespace-pre-wrap animate-pulse">
-                <span className="font-bold text-white/40">תשובה: </span>
+              <div key={ln.id} className="text-white/50 whitespace-pre-wrap animate-pulse text-xs">
                 {ln.text}
               </div>
             );
@@ -288,7 +281,7 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
                   : "text-white/85 whitespace-pre-wrap"
               }
             >
-              <span className="font-bold text-white/50">{isUser ? "אתם: " : "תשובה: "}</span>
+              {isUser ? <span className="font-bold text-white/50">אתם: </span> : null}
               {body}
             </div>
           );

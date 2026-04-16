@@ -313,16 +313,10 @@ export function resolveScope(input) {
     };
   }
 
-  if (stageA.shouldClarifyIntent) {
-    return {
-      resolutionStatus: "clarification_required",
-      clarificationQuestionHe: "השאלה נוגעת ליותר מכיוון אחד — על מה לענות קודם?",
-      scopeConfidence: 0.35,
-      scopeReason: "stage_a_intent_tie",
-      stageA,
-    };
-  }
-
+  /**
+   * After explicit topic/subject anchors: require at least one anchored row for any answer.
+   * Clarification for missing data stays before broad-executive defaults.
+   */
   const anchor = findFirstAnchoredTopicRow(payload);
   if (!anchor) {
     return {
@@ -334,18 +328,35 @@ export function resolveScope(input) {
     };
   }
 
+  /**
+   * Broad report-as-a-whole (Stage A + payload anchor): default entity scope to executive.
+   * Order: selected context → explicit topic → explicit subject → this path → clarification only when above failed and no anchor.
+   */
+  const executiveScope = () =>
+    attachScopeInterpretation(
+      {
+        scopeType: "executive",
+        scopeId: "executive",
+        scopeLabel: "הדוח בתקופה הנבחרה",
+      },
+      stageA,
+    );
+
+  if (stageA.shouldClarifyIntent) {
+    return {
+      resolutionStatus: "resolved",
+      scope: executiveScope(),
+      scopeConfidence: 0.58,
+      scopeReason: "stage_a_intent_tie_executive_default",
+      stageA,
+    };
+  }
+
   // Preserve deterministic continuity for empty input when payload is anchored.
   if (utterance.length < 2) {
     return {
       resolutionStatus: "resolved",
-      scope: attachScopeInterpretation(
-        {
-          scopeType: "executive",
-          scopeId: "executive",
-          scopeLabel: "הדוח בתקופה הנבחרה",
-        },
-        stageA,
-      ),
+      scope: executiveScope(),
       scopeConfidence: 0.56,
       scopeReason: "executive_fallback_empty_utterance",
       stageA,
@@ -353,10 +364,10 @@ export function resolveScope(input) {
   }
 
   return {
-    resolutionStatus: "clarification_required",
-    clarificationQuestionHe: "לא זוהה מוקד ברור — על הדוח הכללי, מקצוע, או נושא?",
-    scopeConfidence: 0.18,
-    scopeReason: "no_clear_scope_match",
+    resolutionStatus: "resolved",
+    scope: executiveScope(),
+    scopeConfidence: 0.61,
+    scopeReason: "broad_report_executive_fallback",
     stageA,
   };
 }

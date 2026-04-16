@@ -23,8 +23,8 @@ const cases = [
   },
   {
     utterance: "אפשר הסבר נוסף?",
-    expectedStatus: "clarification_required",
-    expectedScopeType: null,
+    expectedStatus: "resolved",
+    expectedScopeType: "executive",
   },
   {
     utterance: "מה המקצוע החזק בשברים?",

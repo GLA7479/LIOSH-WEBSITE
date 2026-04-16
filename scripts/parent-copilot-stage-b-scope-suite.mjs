@@ -178,13 +178,14 @@ const tieOut = resolveScope({
   selectedContextRef: null,
   stageA: { ...baseStageA, shouldClarifyIntent: true, ambiguityLevel: "high" },
 });
-assert.equal(tieOut.resolutionStatus, "clarification_required");
-assert.equal(tieOut.scopeReason, "stage_a_intent_tie");
-assertClarificationParentFacing(tieOut.clarificationQuestionHe, "intent_tie");
+assert.equal(tieOut.resolutionStatus, "resolved");
+assert.equal(tieOut.scope?.scopeType, "executive");
+assert.equal(tieOut.scopeReason, "stage_a_intent_tie_executive_default");
 
-// Vague scope (no tie injection): parent-facing clarification only
+// Vague free-form without entity anchor: defaults to executive when payload has anchors (broad report class)
 const vague = resolveScope({ payload, utterance: "אפשר הסבר נוסף?", selectedContextRef: null });
-assert.equal(vague.resolutionStatus, "clarification_required");
-assertClarificationParentFacing(vague.clarificationQuestionHe, "no_clear_scope");
+assert.equal(vague.resolutionStatus, "resolved");
+assert.equal(vague.scope?.scopeType, "executive");
+assert.equal(vague.scopeReason, "broad_report_executive_fallback");
 
 console.log("parent-copilot-stage-b-scope-suite: OK");

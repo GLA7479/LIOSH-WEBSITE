@@ -7,11 +7,11 @@ import { pct, writeArtifact } from "./rollout-artifacts-lib.mjs";
 const payload = syntheticPayload();
 
 const classificationCases = [
-  { utterance: "מהזה אומר", expectedIntent: "clarify_term", expectedScopeStatus: "clarification_required" },
-  { utterance: "מחר?", expectedIntent: "what_to_do_this_week", expectedScopeStatus: "clarification_required" },
+  { utterance: "מהזה אומר", expectedIntent: "clarify_term", expectedScopeStatus: "resolved" },
+  { utterance: "מחר?", expectedIntent: "what_to_do_this_week", expectedScopeStatus: "resolved" },
   { utterance: "חשבון", expectedIntent: "unclear", expectedScopeStatus: "resolved" },
   { utterance: "שברים?", expectedIntent: "unclear", expectedScopeStatus: "resolved" },
-  { utterance: "לא ברור", expectedIntent: "is_intervention_needed", expectedScopeStatus: "clarification_required" },
+  { utterance: "לא ברור", expectedIntent: "is_intervention_needed", expectedScopeStatus: "resolved" },
   { utterance: "מה המקצוע החזק", expectedIntent: "what_is_going_well", expectedScopeStatus: "resolved" },
 ];
 

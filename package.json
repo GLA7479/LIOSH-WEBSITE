@@ -47,6 +47,7 @@
     "test:parent-copilot-semantic-nearmiss": "node scripts/parent-copilot-semantic-nearmiss-suite.mjs",
     "test:parent-copilot-short-noisy-phrasing": "node scripts/parent-copilot-short-noisy-phrasing-suite.mjs",
     "test:parent-copilot-freeform-hebrew": "node scripts/parent-copilot-freeform-hebrew-suite.mjs",
+    "test:parent-copilot-broad-report-routing": "node scripts/parent-copilot-broad-report-routing-suite.mjs",
     "test:parent-copilot-stage-a-paraphrase": "node scripts/parent-copilot-stage-a-paraphrase-clusters.mjs",
     "test:parent-copilot-stage-b-scope": "node scripts/parent-copilot-stage-b-scope-suite.mjs",
     "test:parent-copilot-phase4": "node scripts/parent-copilot-phase4-truth-path-suite.mjs",

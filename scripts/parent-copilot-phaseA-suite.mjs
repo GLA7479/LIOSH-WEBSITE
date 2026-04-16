@@ -112,14 +112,14 @@ assert.equal(scopeAgg.resolutionStatus, "resolved");
 assert.equal(scopeAgg.scope?.scopeType, "executive");
 assert.equal(scopeAgg.scope?.scopeLabel, "הדוח בתקופה הנבחרה");
 
-const scopeWeakNoAnchor = scopeResolver.resolveScope({
+const scopeBroadExecutiveFallback = scopeResolver.resolveScope({
   payload,
   utterance: "אפשר הסבר נוסף?",
   selectedContextRef: null,
 });
-assert.equal(scopeWeakNoAnchor.resolutionStatus, "clarification_required");
-assert.equal(scopeWeakNoAnchor.scope, undefined);
-assert.equal(scopeWeakNoAnchor.scopeReason, "no_clear_scope_match");
+assert.equal(scopeBroadExecutiveFallback.resolutionStatus, "resolved");
+assert.equal(scopeBroadExecutiveFallback.scope?.scopeType, "executive");
+assert.equal(scopeBroadExecutiveFallback.scopeReason, "broad_report_executive_fallback");
 
 // Blocker 3 — session memory contract fields
 sessionMemory.resetParentCopilotSessionForTests("mem-contract");
