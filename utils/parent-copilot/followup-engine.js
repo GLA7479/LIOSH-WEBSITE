@@ -315,6 +315,14 @@ export function selectFollowUp(input) {
       }
     }
     if (streak >= 3 && scopeType === "executive") blocked.add("action_today");
+    if (
+      scopeType === "executive" &&
+      (tp?.recommendationEligible === false || String(tp?.recommendationIntensityCap || "RI0").toUpperCase() === "RI0")
+    ) {
+      blocked.add("action_today");
+      blocked.add("action_week");
+      blocked.add("advance_or_hold");
+    }
     return blocked;
   }
 

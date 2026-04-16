@@ -170,7 +170,7 @@ function runDeterministicCore(input) {
     return { response: r, audience, sessionId, conv, truthPacket: null, intent, scopeMeta, utteranceStr };
   }
 
-  const truthPacket = buildTruthPacketV1(input.payload, scope);
+  const truthPacket = buildTruthPacketV1(input.payload, { ...scope, canonicalIntent: intent });
   if (!truthPacket) {
     const r = buildClarificationParentCopilotResponse({
       clarificationQuestionHe: "לא נמצאו חוזים תואמים לנושא שנבחר בדוח.",
