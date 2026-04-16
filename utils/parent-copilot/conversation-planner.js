@@ -2,12 +2,25 @@
  * Plans allowed answer blocks from canonical parent intent + TruthPacketV1 (contract-bound only).
  * @param {string} intent canonical intent (stage-a-freeform-interpretation.js)
  * @param {ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>} truthPacket
- * @param {null|{ continuityRepeat?: boolean; turnOrdinal?: number; scopeType?: string }} [hints]
+ * @param {null|{
+ *   continuityRepeat?: boolean;
+ *   turnOrdinal?: number;
+ *   scopeType?: string;
+ *   interpretationScope?: string;
+ * }} [hints]
  */
 export function planConversation(intent, truthPacket, hints = null) {
   const limits = truthPacket?.derivedLimits || {};
   const eligible = !!limits.recommendationEligible;
   const cap = String(limits.recommendationIntensityCap || "RI0");
+  const interpretationScope = String(
+    truthPacket?.interpretationScope || hints?.interpretationScope || "executive",
+  ).trim();
+  const strengthFramingOk =
+    interpretationScope === "strengths" &&
+    !limits.cannotConcludeYet &&
+    limits.readiness !== "insufficient" &&
+    limits.confidenceBand !== "low";
   const continuityRepeat = !!(hints && hints.continuityRepeat);
   const turnOrdinal = Number(hints?.turnOrdinal) || 0;
   const rot = turnOrdinal % 3;
@@ -42,6 +55,12 @@ export function planConversation(intent, truthPacket, hints = null) {
     else blocks.push("meaning", "uncertainty_reason");
   };
 
+  /** Action intents without recommendation framing → contract slots + uncertainty only (no next_step in plan). */
+  const actionIntentWithoutRecScope = () => {
+    if (continuityRepeat || rot % 2 === 1) blocks.push("meaning", "uncertainty_reason", "observation");
+    else blocks.push("observation", "meaning", "uncertainty_reason");
+  };
+
   switch (intent) {
     case "explain_report":
     case "clarify_term":
@@ -53,15 +72,30 @@ export function planConversation(intent, truthPacket, hints = null) {
       break;
     case "what_to_do_today":
     case "what_to_do_this_week":
-      actionOrProbe();
+      if (interpretationScope === "recommendation") actionOrProbe();
+      else actionIntentWithoutRecScope();
       break;
     case "why_not_advance":
-      if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
+      if (interpretationScope === "blocked_advance") {
+        if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning", "observation");
+        else blocks.push("uncertainty_reason", "observation", "meaning");
+      } else if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
       else blocks.push("meaning", "uncertainty_reason");
       break;
     case "what_is_going_well":
+      if (strengthFramingOk) obsMeanCaut();
+      else probeHeavy();
+      break;
     case "strength_vs_weakness_summary":
-      obsMeanCaut();
+      if (interpretationScope === "strengths") {
+        if (strengthFramingOk) obsMeanCaut();
+        else probeHeavy();
+      } else if (interpretationScope === "weaknesses") {
+        if (continuityRepeat || rot % 2 === 1) blocks.push("caution", "meaning", "observation");
+        else blocks.push("observation", "meaning", "caution");
+      } else {
+        obsMeanCaut();
+      }
       break;
     case "what_is_still_difficult":
       if (continuityRepeat || rot % 2 === 1) blocks.push("caution", "meaning", "observation");
@@ -71,11 +105,17 @@ export function planConversation(intent, truthPacket, hints = null) {
       obsMean();
       break;
     case "question_for_teacher":
-      if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
+      if (interpretationScope === "confidence_uncertainty") {
+        if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning", "observation");
+        else blocks.push("uncertainty_reason", "meaning");
+      } else if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
       else blocks.push("meaning", "uncertainty_reason");
       break;
     case "is_intervention_needed":
-      if (continuityRepeat || rot % 2 === 1) blocks.push("meaning", "uncertainty_reason");
+      if (interpretationScope === "confidence_uncertainty") {
+        if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
+        else blocks.push("uncertainty_reason", "meaning", "observation");
+      } else if (continuityRepeat || rot % 2 === 1) blocks.push("meaning", "uncertainty_reason");
       else blocks.push("uncertainty_reason", "meaning");
       break;
     case "unclear":

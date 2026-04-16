@@ -10,6 +10,9 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
+const { STAGE_A_PARAPHRASE_CLUSTERS } = await import(
+  pathToFileURL(join(ROOT, "tests/fixtures/parent-copilot-stage-a-paraphrase-bank.mjs")).href
+);
 const { interpretFreeformStageA, CANONICAL_PARENT_INTENTS } = await import(
   pathToFileURL(join(ROOT, "utils/parent-copilot/stage-a-freeform-interpretation.js")).href
 );
@@ -19,108 +22,7 @@ const { planConversation } = await import(pathToFileURL(join(ROOT, "utils/parent
 const parentCopilot = await import(pathToFileURL(join(ROOT, "utils/parent-copilot/index.js")).href);
 const runTurn = parentCopilot.default?.runParentCopilotTurn ?? parentCopilot.runParentCopilotTurn;
 
-const PARAPHRASE_BANK = {
-  explain_report: [
-    "מה רואים בדוח?",
-    "מה כתוב בדוח בפועל?",
-    "איך נראית תמונת המצב לפי הדוח?",
-    "מה הנתונים אומרים כאן?",
-    "מה המצב בדוח?",
-    "מה מספרים אומרים?",
-    "תן לי סיכום קצר של הדוח",
-    "מה למדנו מהדוח?",
-  ],
-  what_to_do_today: [
-    "מה לעשות היום?",
-    "מה עושים היום בבית?",
-    "מה הצעד להיום?",
-    "משימה קטנה להיום",
-    "מה לתרגל היום?",
-    "מה מומלץ לעשות היום?",
-    "פעולה להיום אחד",
-    "מה לעשות מיד אחרי הבית ספר",
-  ],
-  what_is_going_well: [
-    "מה הולך טוב?",
-    "מה חזק בדוח?",
-    "איפה יש הצלחה?",
-    "מה עובד טוב?",
-    "מה מצוין לפי הדוח?",
-    "מה החוזקות?",
-    "מה התקדמות חיובית?",
-    "מה בולט לטובה?",
-  ],
-  what_to_do_this_week: [
-    "מה לעשות השבוע?",
-    "במה להתמקד השבוע?",
-    "מה הכי חשוב עכשיו בבית?",
-    "מה היית מציע לנו לימים הקרובים?",
-    "מה כדאי שנעשה בשבוע הקרוב?",
-    "מה לתרגל השבוע?",
-    "מה התוכנית לשבוע הקרוב?",
-    "מה לעשות בימים הקרובים?",
-  ],
-  why_not_advance: [
-    "למה לא להתקדם?",
-    "למה אתה לא ממליץ להעלות רמה?",
-    "למה לעצור כאן?",
-    "מה הסיבה שלא ממשיכים?",
-    "למה לא מתקדמים?",
-    "למה לא עולים רמה?",
-    "מה חוסם קידום?",
-    "למה לא משפרים?",
-  ],
-  strength_vs_weakness_summary: [
-    "מה טוב ומה חלש?",
-    "איפה הוא מצליח ואיפה פחות?",
-    "מה עובד טוב ומה דורש חיזוק?",
-    "תסכם לי חוזקות מול קושי",
-    "סיכום חוזקות וחולשות",
-    "מאזן חיובי שלילי",
-    "תמונה מלאה של חוזקות וחולשות",
-    "פערים בין מקצועות",
-  ],
-  how_to_tell_child: [
-    "איך להגיד את זה לילד?",
-    "איך להסביר לו את זה?",
-    "באיזה ניסוח לדבר איתו?",
-    "מה לומר לו בלי להלחיץ?",
-    "איך לדבר עם הילד על הדוח?",
-    "איך לא להלחיץ אותו?",
-    "משפט לילד על התוצאה",
-    "איך להסביר בבית בלי לחץ",
-  ],
-  question_for_teacher: [
-    "מה לשאול את המורה?",
-    "יש משהו שכדאי לשאול את המורה?",
-    "איך לנסח שאלה למורה?",
-    "מה חשוב לברר מול המורה?",
-    "מה לכתוב למורה?",
-    "פנייה למורה על הדוח",
-    "נקודות לשיחה עם המורה",
-    "איך לשאול במייל את המורה?",
-  ],
-  is_intervention_needed: [
-    "האם צריך התערבות?",
-    "זה דורש עזרה מעבר לבית?",
-    "יש פה משהו מדאיג?",
-    "צריך לפנות למורה או לאיש מקצוע?",
-    "האם זה דחוף?",
-    "האם זה חמור?",
-    "האם לדאוג מהמצב?",
-    "צריך טיפול מקצועי?",
-  ],
-  clarify_term: [
-    "מה זה אומר?",
-    "תסביר לי את המושג הזה",
-    "מה המשמעות של זה?",
-    "לא הבנתי את הניסוח הזה",
-    "לא הבנתי את המושג",
-    "תסביר מונח",
-    "מה ההגדרה של זה?",
-    "מה ההסבר למילה?",
-  ],
-};
+const PARAPHRASE_BANK = STAGE_A_PARAPHRASE_CLUSTERS;
 
 for (const [intent, phrases] of Object.entries(PARAPHRASE_BANK)) {
   assert.ok(phrases.length >= 8, `${intent}: need >=8 paraphrases`);

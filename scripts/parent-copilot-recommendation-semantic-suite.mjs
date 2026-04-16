@@ -145,7 +145,9 @@ for (const q of questions) {
   assert.equal(r.suggestedFollowUp, null);
   const body = r.answerBlocks.map((b) => b.textHe).join(" ");
   assert.ok(
-    /עדיין מוקדם מדי|לא מכוון כרגע|אין כרגע ניסוח מעשי|לא הצלחנו לגזור|לא סגורה/.test(body),
+    /עדיין מוקדם מדי|לא מכוון כרגע|אין כרגע ניסוח מעשי|לא הצלחנו לגזור|לא סגורה|עדיין לא ניתן לסגור|לא ניתן לסגור|לא קובעים מסקנה|מוקדם לקבוע|לא ניתן לסגור מסקנה/.test(
+      body,
+    ),
     `${q} must state insufficiency in parent-facing language when contract blocks concrete recommendation`,
   );
   assert.ok(!/\bRI0\b|\bRI1\b|\bRI2\b|\bRI3\b/.test(body), `${q} must not expose intensity codes in parent copy`);

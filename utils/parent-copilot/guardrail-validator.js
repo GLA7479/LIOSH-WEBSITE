@@ -1,15 +1,118 @@
 /**
  * Validates draft answers and final ParentCopilotResponseV1-shaped payloads.
+ * Phase 5: truth consistency, recommendation boundary, forbidden surfaces, parent-facing Hebrew.
  */
 
 /** Filler-only closings (avoid substrings that appear inside approved narrative contract slots). */
 const FILLER_BLACKLIST = ["נמשיך ונראה", "הכול תלוי בהמשך", "נראה בסדר באופן כללי"];
 
+/** Must never appear in parent-facing answer blocks (product QA + internal labels). */
+const FORBIDDEN_PARENT_SURFACE_TOKENS = [
+  "AI Hybrid",
+  "reviewHybrid",
+  "Parent Copilot",
+  "AiHybridInternalReviewerPanel",
+  "ai-hybrid-internal-reviewer",
+  "contractsV1",
+  "validatorFailCodes",
+  "schemaVersion",
+  "telemetry.trace",
+  "interpretationScope",
+  "truthPacket",
+  "selectedContextRef",
+  "topicStateId",
+  "stateHash",
+  "forbiddenMoves",
+  "allowedFollowupFamilies",
+];
+
+/** Dev / schema / enum leaks (parent must never see these). */
+const INTERNAL_DEV_PATTERNS = [
+  /\bJSON\.stringify\b/i,
+  /\bundefined\b/,
+  /\bnull\b/,
+  /\b(?:true|false)\b(?=\s*[,\}\]]|\s*$)/i,
+  /\bconsole\.(log|debug|warn|error)\b/i,
+  /\bhttps?:\/\//i,
+  /\bscope_type\b|\bresolution_status\b/i,
+];
+
+/** Raw recommendation intensity codes in parent copy. */
+const RAW_INTENSITY_RE = /\bRI[0-3]\b/i;
+
+/** Strength celebration / ranking hype (composed glue only when truth forbids strength framing). */
+const STRENGTH_HYPE_COMPOSED_RE =
+  /(מצטיין|מצטיינים|חוזק\s*יוצא\s*דופן|חוזקות\s*יוצאות\s*דופן|מובילים\s*בציונים|הכי\s*חזקים\s*בכיתה|top\s*tier|#\s*1\s*במקצוע)/iu;
+
+/** Concrete home-action imperatives when recommendation is not allowed (composed only). */
+const INELIGIBLE_HOME_ACTION_COMPOSED_RE =
+  /(מומלץ\s+לכם\s+לתרגל|עליכם\s+היום\s+ל|כדאי\s+שתתחילו\s+בתרגול|תבחרו\s+נושא\s+ו?לתרגלו|תתרגלו\s+היום\s+חמש|בצעו\s+היום\s+דקות)/u;
+
+/** Over-absolute conclusion tone when contract says cannot conclude yet (composed only). */
+const PREMATURE_CONCLUSION_COMPOSED_RE =
+  /(אין\s*על\s*מה\s*להתווכח|זה\s*סופי\s*ש|הוכח\s*מעל\s*כל\s*ספק|חד[\s\-]*משמעית\s*לחלוטין)/u;
+
+/** Dismisses uncertainty when interpretation demands uncertainty framing (composed only). */
+const CONFIDENCE_UNCERTAINTY_CONTRADICTION_RE =
+  /(אין\s*ספק\s*שזה|בוודאות\s*מוחלטת|וודאות\s*של\s*מאה\s*אחוז)/u;
+
+/** Under blocked_advance framing, must not push immediate promotion (composed only). */
+const BLOCKED_ADVANCE_CONTRADICTION_RE = /(אפשר\s+לקדם\s+מיד|להעלות\s+רמה\s+עכשיו\s+בלי\s*הסתייגות|קדמו\s*כבר\s*לשלב\s*הבא)/u;
+
+/** Parent-facing adaptation / meta instructions (composed). */
+const PARENT_META_INSTRUCTION_RE =
+  /(התאימו\s+את\s+התשובה|נא\s+לנסח\s+מחדש|עדכנו\s+את\s+הפרומפט|שכתבו\s+את\s+המודל|עליכם\s+לשנות\s+את\s+הניסוח\s*שלכם)/u;
+
+/** Robotic / system phrasing. */
+const ROBOTIC_SYSTEM_RE = /(\[object\s+Object\]|TODO:|FIXME:|stack\s*trace|error\s*code\s*\d+)/i;
+
+/**
+ * @param {ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>} truthPacket
+ */
+function strengthFramingOk(truthPacket) {
+  const dl = truthPacket?.derivedLimits || {};
+  const interp = String(truthPacket?.interpretationScope || "executive").trim();
+  return (
+    interp === "strengths" &&
+    !dl.cannotConcludeYet &&
+    dl.readiness !== "insufficient" &&
+    dl.confidenceBand !== "low"
+  );
+}
+
+/**
+ * @param {Array<{ type: string; textHe: string; source: string }>} blocks
+ */
+function composedTextJoin(blocks) {
+  return blocks
+    .filter((b) => b && String(b.source || "") !== "contract_slot")
+    .map((b) => String(b.textHe || ""))
+    .join(" ")
+    .trim();
+}
+
+/**
+ * @param {string} s
+ */
+function latinToHebrewLetterRatio(s) {
+  const t = String(s || "");
+  let lat = 0;
+  let he = 0;
+  for (let i = 0; i < t.length; i++) {
+    const c = t.charCodeAt(i);
+    if ((c >= 0x41 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a)) lat += 1;
+    else if (c >= 0x0590 && c <= 0x05ff) he += 1;
+  }
+  const sum = lat + he;
+  return sum ? lat / sum : 0;
+}
+
 /**
  * @param {{ answerBlocks: Array<{ type: string; textHe: string; source: string }> }} draft
  * @param {NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>} truthPacket
+ * @param {{ intent?: string }} [hints]
  */
-export function validateAnswerDraft(draft, truthPacket) {
+export function validateAnswerDraft(draft, truthPacket, hints = null) {
   /** @type {string[]} */
   const failCodes = [];
   const blocks = Array.isArray(draft?.answerBlocks) ? draft.answerBlocks : [];
@@ -20,9 +123,36 @@ export function validateAnswerDraft(draft, truthPacket) {
   if (!hasObs && !hasMean) failCodes.push("missing_observation_or_meaning");
 
   const joined = blocks.map((b) => String(b.textHe || "")).join(" ");
+  const composedJoined = composedTextJoin(blocks);
+  const intent = String(hints?.intent || "").trim();
+
   if (/\bcontractsV1\b|validatorFailCodes|schemaVersion|fail_codes\b|telemetry\.trace\b/i.test(joined)) {
     failCodes.push("internal_surface_leak");
   }
+  const joinedLower = joined.toLowerCase();
+  for (const tok of FORBIDDEN_PARENT_SURFACE_TOKENS) {
+    if (!tok) continue;
+    const needle = tok.toLowerCase();
+    if (joinedLower.includes(needle)) failCodes.push("forbidden_parent_surface_token");
+  }
+  if (/\bcanonical\b/i.test(joined) || /\bdebug\b/i.test(joined)) {
+    failCodes.push("forbidden_parent_surface_token");
+  }
+
+  for (const re of INTERNAL_DEV_PATTERNS) {
+    if (re.test(joined)) {
+      failCodes.push("forbidden_internal_dev_string");
+      break;
+    }
+  }
+  if (RAW_INTENSITY_RE.test(joined)) failCodes.push("raw_intensity_code_leak");
+
+  if (ROBOTIC_SYSTEM_RE.test(joined)) failCodes.push("robotic_system_phrasing");
+  if (PARENT_META_INSTRUCTION_RE.test(composedJoined)) failCodes.push("parent_meta_instruction_wording");
+
+  const latinRatio = latinToHebrewLetterRatio(joined);
+  if (latinRatio > 0.34 && joined.length > 24) failCodes.push("excess_latin_in_parent_copy");
+
   const nar = truthPacket?.contracts?.narrative;
   const slotText = [
     String(nar?.textSlots?.observation || ""),
@@ -42,10 +172,43 @@ export function validateAnswerDraft(draft, truthPacket) {
     if (hedge && !slotBundle.includes(String(hedge))) failCodes.push("missing_required_hedge");
   }
 
-  const hasNext = blocks.some((b) => b.type === "next_step");
   const dl = truthPacket?.derivedLimits || {};
+  const hasNext = blocks.some((b) => b.type === "next_step");
   if (hasNext && (!dl.recommendationEligible || dl.recommendationIntensityCap === "RI0")) {
     failCodes.push("next_step_not_eligible");
+  }
+
+  const recOk = dl.recommendationEligible === true && dl.recommendationIntensityCap !== "RI0";
+  if (!recOk && INELIGIBLE_HOME_ACTION_COMPOSED_RE.test(composedJoined)) {
+    failCodes.push("ineligible_recommendation_wording");
+  }
+
+  if (!strengthFramingOk(truthPacket) && STRENGTH_HYPE_COMPOSED_RE.test(composedJoined)) {
+    failCodes.push("strength_framing_not_allowed");
+  }
+
+  if (dl.cannotConcludeYet === true && PREMATURE_CONCLUSION_COMPOSED_RE.test(composedJoined)) {
+    failCodes.push("truth_contradiction_premature_conclusion");
+  }
+
+  const interp = String(truthPacket?.interpretationScope || "executive").trim();
+  if (interp === "confidence_uncertainty" && CONFIDENCE_UNCERTAINTY_CONTRADICTION_RE.test(composedJoined)) {
+    failCodes.push("interpretation_scope_contradiction");
+  }
+  if (interp === "blocked_advance" && BLOCKED_ADVANCE_CONTRADICTION_RE.test(composedJoined)) {
+    failCodes.push("interpretation_scope_contradiction");
+  }
+
+  if (interp === "weaknesses" && /(חוזק\s*יוצא\s*דופן|מצטיינים\s*במקצוע)/u.test(composedJoined)) {
+    failCodes.push("interpretation_scope_contradiction");
+  }
+
+  if (intent === "what_is_going_well" && !strengthFramingOk(truthPacket) && STRENGTH_HYPE_COMPOSED_RE.test(composedJoined)) {
+    failCodes.push("strength_framing_intent_mismatch");
+  }
+
+  if (dl.readiness === "insufficient" && /(מוכנים\s*לקידום|מקודמים\s*כבר\s*לשלב|מספיק\s*יציבים\s*לקידום\s*מיידי)/u.test(composedJoined)) {
+    failCodes.push("truth_contradiction_readiness");
   }
 
   for (const b of blocks) {
@@ -102,10 +265,15 @@ export function validateParentCopilotResponseV1(response) {
         if (b.source !== "contract_slot") hardFails.push("fallback_non_slot_source");
       }
     }
-    for (const qa of response.quickActions || []) {
-      if (qa.enabled === true && qa.validatorCompatible !== true) hardFails.push("quick_action_enabled_incompatible");
-      if (!qa.sourceContract) hardFails.push("quick_action_missing_source");
+    const allowedTypes = new Set(["observation", "meaning", "next_step", "caution", "uncertainty_reason"]);
+    for (const b of ab) {
+      if (!allowedTypes.has(String(b.type || ""))) hardFails.push("invalid_answer_block_family");
     }
+    for (const tok of FORBIDDEN_PARENT_SURFACE_TOKENS) {
+      const body = ab.map((x) => String(x.textHe || "")).join(" ").toLowerCase();
+      if (tok && body.includes(tok.toLowerCase())) hardFails.push("resolved_forbidden_surface");
+    }
+    if (RAW_INTENSITY_RE.test(ab.map((x) => String(x.textHe || "")).join(" "))) hardFails.push("resolved_raw_intensity");
   } else {
     hardFails.push("resolution_status");
   }

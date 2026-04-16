@@ -191,7 +191,25 @@ function personalizedLine(truthPacket, ix) {
  */
 export function applyParentCoachingPacks(blocks, ctx) {
   const intent = String(ctx.intent || "");
-  const packGroup = mapCanonicalIntentToPackGroup(intent);
+  let packGroup = mapCanonicalIntentToPackGroup(intent);
+  const dl = ctx.truthPacket?.derivedLimits || {};
+  const interp = String(ctx.truthPacket?.interpretationScope || "executive").trim();
+  if (intent === "what_is_going_well") {
+    const strengthOk =
+      interp === "strengths" &&
+      !dl.cannotConcludeYet &&
+      dl.readiness !== "insufficient" &&
+      dl.confidenceBand !== "low";
+    if (!strengthOk) packGroup = "uncertainty_boundary";
+  }
+  if (intent === "strength_vs_weakness_summary") {
+    if (interp === "weaknesses") packGroup = "avoid_now";
+    else if (interp === "strengths") {
+      const strengthOk =
+        !dl.cannotConcludeYet && dl.readiness !== "insufficient" && dl.confidenceBand !== "low";
+      if (!strengthOk) packGroup = "uncertainty_boundary";
+    }
+  }
   const conv = ctx.conversationState || {};
   const turnOrd =
     ctx.turnOrdinal != null ? Number(ctx.turnOrdinal) : Number(conv?.priorIntents?.length) || 0;

@@ -248,13 +248,24 @@ export function buildTruthPacketV1(payload, scope) {
       ? (relevantSummaryLines.length ? relevantSummaryLines.slice(0, 4) : [displayName])
       : (relevantSummaryLines.length ? relevantSummaryLines : [displayName]);
 
+  const interpretationScopes = new Set([
+    "recommendation",
+    "confidence_uncertainty",
+    "strengths",
+    "weaknesses",
+    "blocked_advance",
+    "executive",
+  ]);
+  const rawInterp = String(scope?.interpretationScope || scope?.scopeClass || "").trim();
+  const interpretationScope = interpretationScopes.has(rawInterp) ? rawInterp : "executive";
+
   return {
     schemaVersion: "v1",
     audience: "parent",
     scopeType: scope.scopeType,
     scopeId: scope.scopeId,
     scopeLabel: scope.scopeLabel,
-    interpretationScope: String(scope?.scopeClass || scope?.scopeType || "executive"),
+    interpretationScope,
     topicStateId,
     stateHash,
     contracts,

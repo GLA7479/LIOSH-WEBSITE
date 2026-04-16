@@ -24,24 +24,10 @@ const { ExecutiveSummarySection } = detailedSurface;
 const ParentCopilotShell = (await import(pathToFileURL(join(ROOT, "components/parent-copilot/parent-copilot-shell.jsx")).href))
   .default;
 
-const forbiddenTokens = [
-  "AI Hybrid",
-  "reviewHybrid",
-  "Parent Copilot",
-  "debug",
-  "canonical",
-  "AiHybridInternalReviewerPanel",
-  "ai-hybrid-internal-reviewer",
-];
-
-/** Raw contract / engine tokens must not leak into parent HTML */
-const rawEnumLeak = /\b(knowledge_gap|insufficient_evidence|advance_level|maintain_and_strengthen|WE\d+|RI\d+)\b/i;
+import { assertParentFacingHtmlHasNoLeaks } from "../tests/fixtures/parent-copilot-parent-facing-surface-qa.mjs";
 
 function assertNoForbidden(html, label) {
-  for (const token of forbiddenTokens) {
-    assert.ok(!html.includes(token), `${label} must not include: ${token}`);
-  }
-  assert.ok(!rawEnumLeak.test(html), `${label} must not include raw enum-like tokens`);
+  assertParentFacingHtmlHasNoLeaks(html, label);
 }
 
 /** Mirrors the parent detailed page no-pdf chrome + first visible report block (same components as the page). */

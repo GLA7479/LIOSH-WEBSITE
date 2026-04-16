@@ -188,7 +188,19 @@ function runDeterministicCore(input) {
 
   let draft;
   let semanticAggregateSatisfied = false;
-  if (aggregateQuestionClass !== "none") {
+  const dlForAgg = truthPacket.derivedLimits || {};
+  const skipSemanticAggregateForIneligibleRec =
+    aggregateQuestionClass === "recommendation_action" &&
+    (!dlForAgg.recommendationEligible || dlForAgg.recommendationIntensityCap === "RI0");
+  /** When aggregate asks for recommendations but contracts forbid them, plan as action intent (truth slots + uncertainty), not unrelated Stage A labels. */
+  const plannerIntent =
+    skipSemanticAggregateForIneligibleRec &&
+    /השבוע|בשבוע|שבוע\s*הקרוב|המלצות|להמשך|מה\s*ההמלצות/.test(utteranceStr)
+      ? "what_to_do_this_week"
+      : skipSemanticAggregateForIneligibleRec
+        ? "what_to_do_today"
+        : intent;
+  if (aggregateQuestionClass !== "none" && !skipSemanticAggregateForIneligibleRec) {
     const aggDraft = buildSemanticAggregateDraft({
       questionClass: aggregateQuestionClass,
       utterance: utteranceStr,
@@ -196,7 +208,7 @@ function runDeterministicCore(input) {
       truthPacket,
     });
     if (aggDraft) {
-      const vAgg = validateAnswerDraft(aggDraft, truthPacket);
+      const vAgg = validateAnswerDraft(aggDraft, truthPacket, { intent: plannerIntent });
       if (vAgg.ok) {
         draft = aggDraft;
         semanticAggregateSatisfied = true;
@@ -205,13 +217,14 @@ function runDeterministicCore(input) {
   }
 
   if (!draft) {
-    const plan = planConversation(intent, truthPacket, {
+    const plan = planConversation(plannerIntent, truthPacket, {
       continuityRepeat,
       turnOrdinal: priorIntents.length,
       scopeType: truthPacket.scopeType,
+      interpretationScope: truthPacket.interpretationScope,
     });
     draft = composeAnswerDraft(plan, truthPacket, {
-      intent,
+      intent: plannerIntent,
       continuityRepeat,
       conversationState: conv,
       turnOrdinal: priorIntents.length,
@@ -219,7 +232,7 @@ function runDeterministicCore(input) {
   }
 
   draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
-  let vDraft = validateAnswerDraft(draft, truthPacket);
+  let vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
   let fallbackUsed = false;
   /** @type {string[]} */
   const fallbackReasonCodes = [];
@@ -230,7 +243,7 @@ function runDeterministicCore(input) {
     draft = buildDeterministicFallbackAnswer(truthPacket, vDraft.failCodes);
     fallbackUsed = true;
     draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
-    vDraft = validateAnswerDraft(draft, truthPacket);
+    vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
   }
   if (!vDraft.ok) {
     fallbackReasonCodes.push(...vDraft.failCodes);
@@ -248,7 +261,7 @@ function runDeterministicCore(input) {
     }
     fallbackUsed = true;
     draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
-    vDraft = validateAnswerDraft(draft, truthPacket);
+    vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
   }
 
   const answerBlockTypes = draft.answerBlocks.map((b) => b.type);
@@ -256,7 +269,7 @@ function runDeterministicCore(input) {
 
   const follow = selectFollowUp({
     audience: "parent",
-    intent,
+    intent: plannerIntent,
     scopeType: truthPacket.scopeType,
     scopeKey: `${truthPacket.scopeType}:${truthPacket.scopeId}`,
     scopeLabelHe: truthPacket.scopeLabel || "",
@@ -286,13 +299,13 @@ function runDeterministicCore(input) {
 
   /** @type {Array<"contractsV1.evidence"|"contractsV1.decision"|"contractsV1.readiness"|"contractsV1.confidence"|"contractsV1.recommendation"|"contractsV1.narrative">} */
   const contractSourcesUsed = ["contractsV1.narrative"];
-  if (intent !== "explain_report") {
+  if (plannerIntent !== "explain_report") {
     contractSourcesUsed.push("contractsV1.decision", "contractsV1.readiness", "contractsV1.confidence");
   }
   if (draft.answerBlocks.some((b) => b.type === "next_step")) {
     contractSourcesUsed.push("contractsV1.recommendation");
   }
-  if (intent === "explain_report") {
+  if (plannerIntent === "explain_report") {
     contractSourcesUsed.push("contractsV1.evidence");
   }
 
@@ -301,7 +314,7 @@ function runDeterministicCore(input) {
 
   let response = buildResolvedParentCopilotResponse({
     truthPacket,
-    intent,
+    intent: plannerIntent,
     answerBlocks: draft.answerBlocks,
     suggestedFollowUp,
     validatorStatus,
@@ -323,7 +336,7 @@ function runDeterministicCore(input) {
   }
 
   const telemetry = buildTurnTelemetry({
-    intent,
+    intent: plannerIntent,
     intentConfidence: scopeMeta.intentConfidence,
     intentReason: scopeMeta.intentReason,
     scopeConfidence: scopeMeta.scopeConfidence,
@@ -352,7 +365,7 @@ function runDeterministicCore(input) {
     .slice(0, 480);
 
   applyConversationStateDelta(sessionId, {
-    addedIntent: intent,
+    addedIntent: plannerIntent,
     addedFollowUpFamily: suggestedFollowUp?.family,
     ...(input?.clickedFollowupFamily
       ? { clickedFollowupFamily: String(input.clickedFollowupFamily).trim() }
@@ -364,7 +377,7 @@ function runDeterministicCore(input) {
     ...(assistantAnswerSummary ? { assistantAnswerSummary } : {}),
   });
 
-  return { response, audience, sessionId, conv, truthPacket, intent, scopeMeta, utteranceStr, draft, validatorFailCodes };
+  return { response, audience, sessionId, conv, truthPacket, intent: plannerIntent, scopeMeta, utteranceStr, draft, validatorFailCodes };
 }
 
 /**
@@ -437,7 +450,7 @@ export async function runParentCopilotTurnAsync(input) {
     ...llmResult.draft,
     answerBlocks: normalizeAnswerBlocksHe(llmResult.draft.answerBlocks),
   };
-  const vLlm = validateAnswerDraft(llmDraft, core.truthPacket);
+  const vLlm = validateAnswerDraft(llmDraft, core.truthPacket, { intent: core.intent });
   if (!vLlm.ok) {
     return finalizeTurnResponse({
       ...baseResponse,

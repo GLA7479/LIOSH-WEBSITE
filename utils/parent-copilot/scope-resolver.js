@@ -115,31 +115,37 @@ function matchSubjectFromUtterance(utterance, payload) {
   return null;
 }
 
+/** Interpretation framing (Stage B) — distinct from entity scopeType. */
+const INTERPRETATION_SCOPES = new Set([
+  "recommendation",
+  "confidence_uncertainty",
+  "strengths",
+  "weaknesses",
+  "blocked_advance",
+  "executive",
+]);
+
 /**
- * @param {"executive"|"subject"|"topic"} entityScopeType
  * @param {ReturnType<typeof interpretFreeformStageA>} stageA
+ * @returns {"recommendation"|"confidence_uncertainty"|"strengths"|"weaknesses"|"blocked_advance"|"executive"}
  */
-function finalizeScopeClass(entityScopeType, stageA) {
-  let sc = String(stageA.scopeClass || entityScopeType);
-  if (entityScopeType === "topic") {
-    if (sc === "executive" || sc === "subject") sc = "topic";
-  } else if (entityScopeType === "subject") {
-    if (sc === "executive" || sc === "topic") sc = "subject";
-  } else if (entityScopeType === "executive") {
-    if (sc === "topic" || sc === "subject") sc = "executive";
-  }
-  return sc;
+function resolveInterpretationScope(stageA) {
+  const sc = String(stageA?.scopeClass || "executive").trim();
+  if (INTERPRETATION_SCOPES.has(sc)) return /** @type {any} */ (sc);
+  return "executive";
 }
 
 /**
  * @param {object} scope
- * @param {string} entityScopeType
  * @param {ReturnType<typeof interpretFreeformStageA>} stageA
  */
-function scopeWithClass(scope, entityScopeType, stageA) {
+function attachScopeInterpretation(scope, stageA) {
+  const interpretationScope = resolveInterpretationScope(stageA);
   return {
     ...scope,
-    scopeClass: finalizeScopeClass(entityScopeType, stageA),
+    interpretationScope,
+    /** @deprecated prefer interpretationScope; kept for truth-packet fallbacks */
+    scopeClass: interpretationScope,
   };
 }
 
@@ -152,7 +158,13 @@ function scopeWithClass(scope, entityScopeType, stageA) {
  * @returns {{
  *   resolutionStatus: "resolved"|"clarification_required";
  *   clarificationQuestionHe?: string;
- *   scope?: { scopeType: "topic"|"subject"|"executive"; scopeId: string; scopeLabel: string; scopeClass: string };
+ *   scope?: {
+ *     scopeType: "topic"|"subject"|"executive";
+ *     scopeId: string;
+ *     scopeLabel: string;
+ *     interpretationScope: "recommendation"|"confidence_uncertainty"|"strengths"|"weaknesses"|"blocked_advance"|"executive";
+ *     scopeClass: string;
+ *   };
  *   stageA?: ReturnType<typeof interpretFreeformStageA>;
  * }}
  */
@@ -181,14 +193,13 @@ export function resolveScope(input) {
   if (aggregateClass !== "none") {
     return {
       resolutionStatus: "resolved",
-      scope: scopeWithClass(
+      scope: attachScopeInterpretation(
         {
           scopeType: "executive",
           scopeId: "executive",
           scopeLabel: "הדוח בתקופה הנבחרה",
         },
-        "executive",
-        stageA
+        stageA,
       ),
       scopeConfidence: 0.98,
       scopeReason: `aggregate_class:${aggregateClass}`,
@@ -205,7 +216,7 @@ export function resolveScope(input) {
     if (!hit) {
       return {
         resolutionStatus: "clarification_required",
-        clarificationQuestionHe: "הנושא שנבחר לא כולל כרגע ניסוח מעוגן בדוח. בחרו נושא אחר עם נתוני תרגול.",
+        clarificationQuestionHe: "הנושא הזה עדיין בלי ניסוח מעוגן בדוח — כדאי לעבור לנושא עם תרגול.",
         scopeConfidence: 0.2,
         scopeReason: "selected_context_topic_missing_anchor",
         stageA,
@@ -216,14 +227,13 @@ export function resolveScope(input) {
       (subj ? `${subjectLabelHe(subj)} · נושא` : "נושא נבחר");
     return {
       resolutionStatus: "resolved",
-      scope: scopeWithClass(
+      scope: attachScopeInterpretation(
         {
           scopeType: "topic",
           scopeId: sid,
           scopeLabel: label,
         },
-        "topic",
-        stageA
+        stageA,
       ),
       scopeConfidence: hit ? 0.99 : 0.35,
       scopeReason: hit ? "selected_context_topic" : "selected_context_topic_missing_anchor",
@@ -236,7 +246,7 @@ export function resolveScope(input) {
     if (!subjectHasAnchor) {
       return {
         resolutionStatus: "clarification_required",
-        clarificationQuestionHe: "במקצוע שנבחר עדיין אין נושא מעוגן עם מספיק נתונים. בחרו מקצוע או נושא אחר.",
+        clarificationQuestionHe: "במקצוע הזה אין עדיין נושא מעוגן עם מספיק נתונים — אפשר לנסות מקצוע אחר.",
         scopeConfidence: 0.24,
         scopeReason: "selected_context_subject_missing_anchor",
         stageA,
@@ -244,14 +254,13 @@ export function resolveScope(input) {
     }
     return {
       resolutionStatus: "resolved",
-      scope: scopeWithClass(
+      scope: attachScopeInterpretation(
         {
           scopeType: "subject",
           scopeId: subjectId,
           scopeLabel: subjectLabelHe(subjectId),
         },
-        "subject",
-        stageA
+        stageA,
       ),
       scopeConfidence: 0.9,
       scopeReason: "selected_context_subject",
@@ -263,7 +272,7 @@ export function resolveScope(input) {
   if (topicMatch.ambiguous) {
     return {
       resolutionStatus: "clarification_required",
-      clarificationQuestionHe: "נראית התאמה ליותר מנושא אחד בדוח. נסחו שוב באופן ממוקד.",
+      clarificationQuestionHe: "יש כאן יותר מנושא אחד — על איזה נושא לענות?",
       scopeConfidence: 0.25,
       scopeReason: "utterance_topic_ambiguous",
       stageA,
@@ -272,14 +281,13 @@ export function resolveScope(input) {
   if (topicMatch.best) {
     return {
       resolutionStatus: "resolved",
-      scope: scopeWithClass(
+      scope: attachScopeInterpretation(
         {
           scopeType: "topic",
           scopeId: topicMatch.best.topicRowKey,
           scopeLabel: topicMatch.best.displayName,
         },
-        "topic",
-        stageA
+        stageA,
       ),
       scopeConfidence: 0.84,
       scopeReason: "utterance_topic_match",
@@ -291,17 +299,26 @@ export function resolveScope(input) {
   if (subjectId) {
     return {
       resolutionStatus: "resolved",
-      scope: scopeWithClass(
+      scope: attachScopeInterpretation(
         {
           scopeType: "subject",
           scopeId: subjectId,
           scopeLabel: subjectLabelHe(subjectId),
         },
-        "subject",
-        stageA
+        stageA,
       ),
       scopeConfidence: 0.73,
       scopeReason: "utterance_subject_match",
+      stageA,
+    };
+  }
+
+  if (stageA.shouldClarifyIntent) {
+    return {
+      resolutionStatus: "clarification_required",
+      clarificationQuestionHe: "השאלה נוגעת ליותר מכיוון אחד — על מה לענות קודם?",
+      scopeConfidence: 0.35,
+      scopeReason: "stage_a_intent_tie",
       stageA,
     };
   }
@@ -310,8 +327,7 @@ export function resolveScope(input) {
   if (!anchor) {
     return {
       resolutionStatus: "clarification_required",
-      clarificationQuestionHe:
-        "אין כרגע נתוני נושא מספיקים בדוח כדי לבסס תשובה. נסו שוב אחרי שמופיעים נושאים עם תרגול בטווח התאריכים.",
+      clarificationQuestionHe: "אין כרגע מספיק נתוני נושא בדוח כדי לענות — כדאי לנסות שוב אחרי שמופיע תרגול בטווח התאריכים.",
       scopeConfidence: 0,
       scopeReason: "no_anchor_available",
       stageA,
@@ -322,14 +338,13 @@ export function resolveScope(input) {
   if (utterance.length < 2) {
     return {
       resolutionStatus: "resolved",
-      scope: scopeWithClass(
+      scope: attachScopeInterpretation(
         {
           scopeType: "executive",
           scopeId: "executive",
           scopeLabel: "הדוח בתקופה הנבחרה",
         },
-        "executive",
-        stageA
+        stageA,
       ),
       scopeConfidence: 0.56,
       scopeReason: "executive_fallback_empty_utterance",
@@ -339,7 +354,7 @@ export function resolveScope(input) {
 
   return {
     resolutionStatus: "clarification_required",
-    clarificationQuestionHe: "לא הצלחנו לזהות את מוקד השאלה. נסחו שוב בקצרה.",
+    clarificationQuestionHe: "לא זוהה מוקד ברור — על הדוח הכללי, מקצוע, או נושא?",
     scopeConfidence: 0.18,
     scopeReason: "no_clear_scope_match",
     stageA,

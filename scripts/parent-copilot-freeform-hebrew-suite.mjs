@@ -12,6 +12,9 @@ const ROOT = join(__dirname, "..");
 const { normalizeFreeformParentUtteranceHe, foldUtteranceForHeMatch } = await import(
   pathToFileURL(join(ROOT, "utils/parent-copilot/utterance-normalize-he.js")).href
 );
+const { interpretFreeformStageA } = await import(
+  pathToFileURL(join(ROOT, "utils/parent-copilot/stage-a-freeform-interpretation.js")).href
+);
 const { resolveScope } = await import(pathToFileURL(join(ROOT, "utils/parent-copilot/scope-resolver.js")).href);
 const parentMod = await import(pathToFileURL(join(ROOT, "utils/parent-copilot/index.js")).href);
 const runParentCopilotTurn = parentMod.default?.runParentCopilotTurn ?? parentMod.runParentCopilotTurn;
@@ -119,5 +122,25 @@ const clar = runParentCopilotTurn({
 assert.equal(clar.resolutionStatus, "clarification_required");
 const finalCheck = guardrail.validateParentCopilotResponseV1(clar);
 assert.ok(finalCheck.ok, `response contract: ${finalCheck.hardFails?.join(",")}`);
+
+// 6) Stage A: typo-tolerant parity + intentHitSignals + home-week disambiguation
+const typoWhy = interpretFreeformStageA("למה לא מתקדמיםם?", null);
+const cleanWhy = interpretFreeformStageA("למה לא מתקדמים?", null);
+assert.equal(typoWhy.canonicalIntent, cleanWhy.canonicalIntent);
+assert.equal(typoWhy.canonicalIntent, "why_not_advance");
+assert.ok(
+  typoWhy.intentHitSignals && typeof typoWhy.intentHitSignals.why_not_advance === "number",
+  "intentHitSignals telemetry shape",
+);
+
+const homeWeek = interpretFreeformStageA("מה הכי חשוב עכשיו בבית?", null);
+assert.equal(
+  homeWeek.canonicalIntent,
+  "what_to_do_this_week",
+  '"עכשיו בבית" should map to weekly home focus, not generic importance',
+);
+
+const importanceNow = interpretFreeformStageA("מה הכי חשוב עכשיו?", null);
+assert.equal(importanceNow.canonicalIntent, "what_is_most_important");
 
 console.log("parent-copilot-freeform-hebrew-suite: OK");

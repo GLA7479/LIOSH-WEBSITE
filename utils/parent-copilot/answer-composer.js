@@ -90,7 +90,13 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
     }
     if (b === "uncertainty_reason") {
       const dl = truthPacket.derivedLimits || {};
-      const reason = pickUncertaintyReasonScript(dl, intent, scriptIx);
+      let reason = pickUncertaintyReasonScript(dl, intent, scriptIx);
+      const hedges = Array.isArray(truthPacket.allowedClaimEnvelope?.requiredHedges)
+        ? truthPacket.allowedClaimEnvelope.requiredHedges.map((h) => String(h || "").trim()).filter(Boolean)
+        : [];
+      for (const h of hedges) {
+        if (h && !reason.includes(h)) reason = `${h} — ${reason}`;
+      }
       answerBlocks.push({ type: "uncertainty_reason", textHe: reason, source: "composed" });
     }
   }

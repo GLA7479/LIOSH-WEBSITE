@@ -152,6 +152,11 @@ function inferToneHint(t) {
 /** @type {Record<CanonicalParentIntent, RegExp[]>} */
 const INTENT_PARAPHRASES = {
   explain_report: [
+    /תעשה\s*לי\s*סדר|תעשו\s*לי\s*סדר|תסדר\s*לי\s*את\s*זה|לעשות\s*סדר/u,
+    /אני\s*לא\s*מבין\s*מה\s*רואים|אני\s*לא\s*מבין\s*כלום|לא\s*מבין\s*מה\s*רואים|לא\s*מבין\s*כלום/u,
+    /אז\s*מה\s*בעצם\s*הדוח\s*אומר|מה\s*בעצם\s*הדוח\s*אומר|מה\s*הדוח\s*אומר\s*בעצם/u,
+    /איך\s*אתה\s*קורא\s*את\s*הדוח|איך\s*לקרוא\s*את\s*הדוח|מה\s*המשמעות\s*של\s*זה|מה\s*המשמעות/u,
+    /תסביר\s*פשוט|תסבירו\s*פשוט|במילים\s*פשוטות|פשוט\s*בלי\s*מילים\s*מסובכות/u,
     /תמונת\s*מצב|איך\s*נראית\s*תמונת|איך\s*נראית\s*התמונה|מבט\s*על\s*הדוח|מבט\s*כללי/u,
     /מה\s*רואים|מה\s*נמדד|מה\s*כתוב\s*בדוח|מה\s*הנתונים|מה\s*מופיע|תמונת\s*מצב|סיכום\s*הדוח|מה\s*המצב\s*בדוח|מה\s*המצב\s*בנושא|איך\s*המצב|מה\s*קורה\s*בדוח|מה\s*קורה\s*בנושא/u,
     /הסבר\s*על\s*הדוח|מה\s*אומר\s*הדוח|מה\s*מספרים\s*אומרים|מה\s*המספרים|נתוני\s*התקופה/u,
@@ -161,17 +166,21 @@ const INTENT_PARAPHRASES = {
     /מה\s*המצב|מה\s*התמונה|תמונה\s*כללית|מבט\s*על/u,
     /פרטי\s*הדוח|תוכן\s*הדוח|מה\s*יש\s*בדוח/u,
     /הסבר\s*קצר|תסביר\s*לי\s*את\s*הדוח/u,
+    /תסביר\s*לי\s*מה\s*חשוב\s*כאן|מה\s*חשוב\s*כאן\s*בדוח/u,
   ],
   what_is_most_important: [
     /להתקדם\s*או\s*להמתין|לחכות\s*או\s*להמשיך|להמשיך\s*או\s*להמתין|להמתין\s*או\s*להתקדם|כדאי\s*להתקדם/u,
     /מה\s*הכי\s*חשוב|מה\s*חשוב\s*ביותר|מה\s*העיקר|על\s*מה\s*להתמקד|מה\s*דחוף|מה\s*דורש\s*תשומת\s*לב\s*ראשונה/u,
     /מה\s*הדבר\s*הראשון|מה\s*לטפל\s*בו\s*קודם|מה\s*הכי\s*דחוף|מה\s*הכי\s*קריטי/u,
     /איפה\s*להתחיל|מאיפה\s*להתחיל|מה\s*העדיפות/u,
-    /מה\s*הכי\s*חשוב\s*כרגע|מה\s*הכי\s*חשוב\s*עכשיו|מה\s*הכי\s*חשוב\s*היום/u,
+    /מה\s*הכי\s*חשוב\s*כרגע|מה\s*הכי\s*חשוב\s*עכשיו(?!\s*בבית)|מה\s*הכי\s*חשוב\s*היום/u,
     /מה\s*לשים\s*על\s*הכוונת|מה\s*לשים\s*בראש/u,
     /מה\s*הכי\s*בולט\s*לטיפול|מה\s*דורש\s*טיפול\s*ראשון/u,
     /מה\s*הכי\s*משמעותי|מה\s*משמעותי\s*ביותר/u,
     /מה\s*הכי\s*חשוב\s*לשים\s*לב/u,
+    /מה\s*העיקר\s*לטפל|מה\s*העיקר\s*כרגע/u,
+    /מה\s*דחוף\s*לטפל|מה\s*דחוף\s*לטפל\s*בו/u,
+    /מה\s*הכי\s*משמעותי\s*כרגע/u,
   ],
   what_to_do_today: [
     /מה\s*הצעד\s*להיום|הצעד\s*להיום|צעד\s*קטן\s*להיום|פעולה\s*להיום|משימה\s*קטנה\s*להיום/u,
@@ -203,6 +212,7 @@ const INTENT_PARAPHRASES = {
   why_not_advance: [
     /למה\s*לא\s*להתקדם|למה\s*לא\s*להעלות\s*רמה|למה\s*לעצור\s*כאן|מה\s*הסיבה\s*שלא\s*ממשיכים/u,
     /למה\s*אתה\s*לא\s*ממליץ\s*להעלות\s*רמה|למה\s*לא\s*ממליצים\s*להעלות\s*רמה/u,
+    /למה\s*לא\s*מתקדמים+|למה\s*לא\s*מתקדם+/u,
     /למה\s*לא\s*מתקדמים|למה\s*לא\s*מתקדם|למה\s*עדיין\s*לא|למה\s*לא\s*עולים\s*רמה|למה\s*נשארים/u,
     /למה\s*לא\s*מקדמים|למה\s*לא\s*מקדמים\s*רמה|למה\s*לא\s*עולים/u,
     /למה\s*לא\s*משפרים|למה\s*אין\s*קידום|למה\s*הקידום\s*נעצר/u,
@@ -213,6 +223,7 @@ const INTENT_PARAPHRASES = {
     /למה\s*נתקעים|למה\s*זה\s*נתקע/u,
   ],
   what_is_going_well: [
+    /יש\s*כאן\s*חוזקה\s*אמיתית|חוזקה\s*אמיתית|יש\s*פה\s*חוזקה/u,
     /מקצוע\s*החזק|המקצוע\s*החזק|מה\s*המקצוע\s*החזק|המקצוע\s*החזק\s*ביותר/u,
     /מה\s*הולך\s*טוב|מה\s*עובד\s*טוב|מה\s*חזק|איפה\s*החוזקות|מה\s*מצוין|מה\s*טוב\s*בדוח/u,
     /מה\s*משתפר|איפה\s*יש\s*הצלחה|מה\s*ההצלחות|מה\s*עובד|מה\s*יציב/u,
@@ -226,13 +237,14 @@ const INTENT_PARAPHRASES = {
   what_is_still_difficult: [
     /מה\s*לא\s*כדאי\s*לעשות|מה\s*לא\s*לעשות\s*עכשיו|לא\s*כדאי\s*עכשיו|מה\s*לא\s*לעשות|להימנע\s*מ/u,
     /מה\s*עדיין\s*קשה|מה\s*קשה|איפה\s*הקושי|מה\s*דורש\s*חיזוק|מה\s*חלש|מה\s*מתקשים/u,
-    /מה\s*עדיין\s*לא\s*יושב|מה\s*לא\s*יושב|מה\s*לא\s*הולך|מה\s*לא\s*צולח/u,
+    /מה\s*עדיין\s*לא\s*יושב|מה\s*עדיין\s*לא\s*הולך|מה\s*לא\s*יושב|מה\s*לא\s*הולך|מה\s*לא\s*צולח/u,
     /איפה\s*החולשות|מה\s*החולשות|מה\s*חלש\s*בדוח/u,
     /מה\s*דורש\s*עבודה|מה\s*דורש\s*תרגול|מה\s*עדיין\s*נופל/u,
     /מה\s*עדיין\s*בעייתי|מה\s*בעייתי|מה\s*עדיין\s*קורה/u,
     /מה\s*הכי\s*קשה|מה\s*הכי\s*חלש|איפה\s*הכי\s*קשה/u,
     /מה\s*לא\s*מסתדר|מה\s*לא\s*סגור|מה\s*עדיין\s*פתוח/u,
     /מה\s*דורש\s*ליווי|מה\s*דורש\s*תשומת\s*לב/u,
+    /מה\s*דורש\s*חיזוק/u,
   ],
   how_to_tell_child: [
     /איך\s*להגיד\s*את\s*זה\s*לילד|איך\s*להסביר\s*לו\s*את\s*זה|באיזה\s*ניסוח\s*לדבר\s*איתו/u,
@@ -246,6 +258,8 @@ const INTENT_PARAPHRASES = {
     /איך\s*לבנות\s*משפט|משפט\s*לילד|משפטים\s*לילד/u,
     /איך\s*להסביר\s*בבית|איך\s*לדבר\s*בבית/u,
     /איך\s*להראות\s*לילד|איך\s*להדריך\s*את\s*הילד/u,
+    /איך\s*לספר\s*לילד|ספר\s*לילד\s*בלי/u,
+    /ניסוח\s*רך\s*לילד/u,
   ],
   question_for_teacher: [
     /מה\s*חשוב\s*לברר\s*מול\s*המורה|מה\s*לברר\s*מול\s*המורה/u,
@@ -259,6 +273,8 @@ const INTENT_PARAPHRASES = {
     /מה\s*חשוב\s*להעלות\s*למורה|מה\s*להעלות\s*בשיחה/u,
   ],
   is_intervention_needed: [
+    /לבדוק\s*יותר\s*לעומק|לעומק\s*יותר|בדיקה\s*יותר\s*מעמיקה|משהו\s*שצריך\s*לבדוק/u,
+    /אני\s*לא\s*בטוח\s*אם\s*זו\s*בעיה\s*אמיתית|לא\s*בטוחים\s*אם\s*זו\s*בעיה/u,
     /זה\s*דורש\s*עזרה\s*מעבר\s*לבית|צריך\s*לפנות\s*למורה\s*או\s*לאיש\s*מקצוע/u,
     /יש\s*פה\s*משהו\s*מדאיג|זה\s*משהו\s*מדאיג|האם\s*יש\s*פה\s*דאגה/u,
     /חוסר\s*ודאות|לא\s*ברור\s*לי|לא\s*ברור|ביטחון\s*נמוך|יש\s*חוסר\s*ודאות/u,
@@ -270,6 +286,7 @@ const INTENT_PARAPHRASES = {
     /האם\s*יש\s*בעיה|האם\s*יש\s*משהו\s*לא\s*תקין/u,
     /האם\s*צריך\s*לדאוג|האם\s*כדאי\s*לדאוג/u,
     /האם\s*נדרשת\s*התערבות|האם\s*נדרש\s*ליווי\s*מיוחד/u,
+    /התערבות\s*מקצועית|נדרשת\s*התערבות\s*מקצועית/u,
   ],
   strength_vs_weakness_summary: [
     /מה\s*טוב\s*ומה\s*חלש|מה\s*עובד\s*טוב\s*ומה\s*דורש\s*חיזוק|חוזקות\s*מול\s*קושי/u,
@@ -284,11 +301,12 @@ const INTENT_PARAPHRASES = {
     /סיכום\s*מאוזן|מבט\s*מאוזן|תמונה\s*מאוזנת/u,
     /מה\s*בולט\s*לטובה\s*ולרעה|מה\s*עובד\s*ומה\s*נופל/u,
     /פערים\s*בין\s*נושאים|פערים\s*בין\s*מקצועות/u,
+    /מבט\s*משווה\s*בין\s*נושאים/u,
   ],
   clarify_term: [
     /תסביר\s*לי\s*את\s*המושג\s*הזה|לא\s*הבנתי\s*את\s*הניסוח\s*הזה/u,
     /מהזה\s*אומר|מהזה|מה\s*זה\s*אומר/u,
-    /מה\s*המשמעות\s*של|מה\s*הכוונה\s*של|מה\s*זה\s*אומר|מה\s*זה\s*אומר\s*בפועל|מה\s*המונח/u,
+    /מה\s*המשמעות{1,2}ת*\s*של|משמעותת\s*של|מה\s*הכוונה\s*של|מה\s*זה\s*אומר|מה\s*זה\s*אומר\s*בפועל|מה\s*המונח/u,
     /לא\s*הבנתי\s*את\s*המושג|לא\s*הבנתי\s*את\s*המילה|תסביר\s*מונח/u,
     /מה\s*ההגדרה|מה\s*ההסבר|מה\s*המשמעות/u,
     /מה\s*הכוונה|מה\s*הכוונה\s*במילה|מה\s*הכוונה\s*בביטוי/u,
@@ -296,6 +314,7 @@ const INTENT_PARAPHRASES = {
     /מה\s*זה\s*אומר\s*במילים\s*פשוטות|מה\s*זה\s*בקצרה/u,
     /לא\s*הבנתי\s*את\s*המושגים|לא\s*הבנתי\s*את\s*הטקסט/u,
     /מה\s*ההבדל\s*בין|מה\s*ההבדל\s*ל/u,
+    /מה\s*זה\s*אומר\s*בפשטות/u,
   ],
   unclear: [/^$/u],
 };
@@ -313,10 +332,12 @@ const SCOPE_CLASS_SIGNALS = {
   strengths: [
     /חוזק|חזקים|חזקה|מה\s*הולך\s*טוב|מצטיין|הצלח|מתקדמים\s*טוב|מה\s*טוב/u,
     /מה\s*עובד|נקודות\s*חיוביות|מה\s*מרגיש\s*טוב/u,
+    /מה\s*חזק|חזק\s*ו/u,
   ],
   weaknesses: [
     /חולש|חלשים|חלשה|קושי|קשה\s*ל|מתקשים|מה\s*לא\s*הולך|מה\s*נופל/u,
     /נקודות\s*לשיפור|מה\s*דורש\s*חיזוק|מה\s*עדיין\s*קשה/u,
+    /מה\s*חלש|חלש\s*ו/u,
   ],
   blocked_advance: [
     /למה\s*לא\s*מתקדמים|למה\s*לא\s*עולים|למה\s*נשארים|למה\s*עדיין\s*לא|נתקעים|חוסם\s*קידום/u,
@@ -343,6 +364,28 @@ function bestScopeClassFromSignals(folded) {
   }
   scores.sort((a, b) => b.s - a.s);
   return scores[0]?.k || null;
+}
+
+/**
+ * Strength-vs-weakness: one-sided wording → strengths/weaknesses; both sides → executive.
+ * @param {string} folded
+ * @returns {ScopeClass}
+ */
+function strengthVsInterpretationScopeFromFolded(folded) {
+  const st = SCOPE_CLASS_SIGNALS.strengths;
+  const wk = SCOPE_CLASS_SIGNALS.weaknesses;
+  let sStr = 0;
+  let sWeak = 0;
+  for (const re of st) {
+    if (re.test(folded)) sStr += 1;
+  }
+  for (const re of wk) {
+    if (re.test(folded)) sWeak += 1;
+  }
+  if (sStr > 0 && sWeak > 0) return "executive";
+  if (sWeak > sStr) return "weaknesses";
+  if (sStr > sWeak) return "strengths";
+  return "executive";
 }
 
 /**
@@ -378,10 +421,15 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
   ) {
     scores.strength_vs_weakness_summary += 3;
   }
+  if (/מה\s*חזק\s*ומה\s*חלש/.test(t) || /מה\s*חזק\s*ומה\s*חלש/.test(folded)) {
+    scores.strength_vs_weakness_summary += 4;
+  }
 
   let best = /** @type {CanonicalParentIntent} */ ("unclear");
   let bestScore = 0;
   let second = 0;
+  /** How many distinct intents share the top score (for ties). */
+  let topIntentCount = 0;
   for (const intent of CANONICAL_PARENT_INTENTS) {
     if (intent === "unclear") continue;
     const v = scores[intent] || 0;
@@ -394,6 +442,12 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
     }
   }
   if (bestScore === 0) best = "unclear";
+  else {
+    for (const intent of CANONICAL_PARENT_INTENTS) {
+      if (intent === "unclear") continue;
+      if ((scores[intent] || 0) === bestScore) topIntentCount += 1;
+    }
+  }
 
   const scopeSignal = bestScopeClassFromSignals(folded);
   /** @type {ScopeClass} */
@@ -413,19 +467,28 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
   const subjectHint = payload ? extractSubjectHint(folded, payload) : null;
 
   if (best === "strength_vs_weakness_summary") {
-    scopeClass = "executive";
+    scopeClass = strengthVsInterpretationScopeFromFolded(folded);
   }
 
   const timeframeHint = inferTimeframeHint(t);
   const toneHint = inferToneHint(t);
 
   let ambiguityLevel = "low";
-  if (bestScore > 0 && second > 0 && second >= bestScore - 1 && bestScore <= 3) ambiguityLevel = "medium";
-  if (bestScore > 0 && second === bestScore) ambiguityLevel = "high";
+  if (bestScore > 0 && topIntentCount >= 2) ambiguityLevel = "high";
+  else if (bestScore > 0 && second > 0 && second >= bestScore - 1 && bestScore <= 3) ambiguityLevel = "medium";
 
-  const canonicalIntentScore = best === "unclear" ? 0.25 : Math.min(0.98, 0.45 + bestScore * 0.07);
-  /** Scope resolver owns clarification; intent never forces extra system prompts. */
-  const shouldClarifyIntent = false;
+  const margin = best === "unclear" ? 0 : Math.max(0, bestScore - second);
+  const canonicalIntentScore =
+    best === "unclear"
+      ? t.length >= 4
+        ? 0.28
+        : 0.22
+      : Math.min(0.98, 0.4 + bestScore * 0.065 + Math.min(0.18, margin * 0.045));
+
+  /** True when two+ intents tie for the top score — downstream may ask one short clarification. */
+  const shouldClarifyIntent = ambiguityLevel === "high" && best !== "unclear";
+
+  const intentHitSignals = { ...scores };
 
   return {
     canonicalIntent: best,
@@ -439,8 +502,10 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
     toneHint,
     ambiguityLevel,
     shouldClarifyIntent,
-    /** Raw per-intent hit counts for tests / telemetry */
-    intentHitCounts: { ...scores },
+    /** Per-intent evidence counts — telemetry / tests only */
+    intentHitSignals,
+    /** @deprecated use intentHitSignals */
+    intentHitCounts: intentHitSignals,
   };
 }
 
