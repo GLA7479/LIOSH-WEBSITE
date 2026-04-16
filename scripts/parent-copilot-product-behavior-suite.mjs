@@ -50,6 +50,76 @@ const PARAPHRASE_BANK = {
     "מה התקדמות חיובית?",
     "מה בולט לטובה?",
   ],
+  what_to_do_this_week: [
+    "מה לעשות השבוע?",
+    "במה להתמקד השבוע?",
+    "מה הכי חשוב עכשיו בבית?",
+    "מה היית מציע לנו לימים הקרובים?",
+    "מה כדאי שנעשה בשבוע הקרוב?",
+    "מה לתרגל השבוע?",
+    "מה התוכנית לשבוע הקרוב?",
+    "מה לעשות בימים הקרובים?",
+  ],
+  why_not_advance: [
+    "למה לא להתקדם?",
+    "למה אתה לא ממליץ להעלות רמה?",
+    "למה לעצור כאן?",
+    "מה הסיבה שלא ממשיכים?",
+    "למה לא מתקדמים?",
+    "למה לא עולים רמה?",
+    "מה חוסם קידום?",
+    "למה לא משפרים?",
+  ],
+  strength_vs_weakness_summary: [
+    "מה טוב ומה חלש?",
+    "איפה הוא מצליח ואיפה פחות?",
+    "מה עובד טוב ומה דורש חיזוק?",
+    "תסכם לי חוזקות מול קושי",
+    "סיכום חוזקות וחולשות",
+    "מאזן חיובי שלילי",
+    "תמונה מלאה של חוזקות וחולשות",
+    "פערים בין מקצועות",
+  ],
+  how_to_tell_child: [
+    "איך להגיד את זה לילד?",
+    "איך להסביר לו את זה?",
+    "באיזה ניסוח לדבר איתו?",
+    "מה לומר לו בלי להלחיץ?",
+    "איך לדבר עם הילד על הדוח?",
+    "איך לא להלחיץ אותו?",
+    "משפט לילד על התוצאה",
+    "איך להסביר בבית בלי לחץ",
+  ],
+  question_for_teacher: [
+    "מה לשאול את המורה?",
+    "יש משהו שכדאי לשאול את המורה?",
+    "איך לנסח שאלה למורה?",
+    "מה חשוב לברר מול המורה?",
+    "מה לכתוב למורה?",
+    "פנייה למורה על הדוח",
+    "נקודות לשיחה עם המורה",
+    "איך לשאול במייל את המורה?",
+  ],
+  is_intervention_needed: [
+    "האם צריך התערבות?",
+    "זה דורש עזרה מעבר לבית?",
+    "יש פה משהו מדאיג?",
+    "צריך לפנות למורה או לאיש מקצוע?",
+    "האם זה דחוף?",
+    "האם זה חמור?",
+    "האם לדאוג מהמצב?",
+    "צריך טיפול מקצועי?",
+  ],
+  clarify_term: [
+    "מה זה אומר?",
+    "תסביר לי את המושג הזה",
+    "מה המשמעות של זה?",
+    "לא הבנתי את הניסוח הזה",
+    "לא הבנתי את המושג",
+    "תסביר מונח",
+    "מה ההגדרה של זה?",
+    "מה ההסבר למילה?",
+  ],
 };
 
 for (const [intent, phrases] of Object.entries(PARAPHRASE_BANK)) {
@@ -67,10 +137,34 @@ for (const [intent, phrases] of Object.entries(PARAPHRASE_BANK)) {
 const EQUIVALENCE = [
   ["מה רואים בנתונים?", "מה כתוב בדוח?", "מה המצב בדוח?"],
   ["מה לעשות היום בבית?", "מה עושים היום?", "צעד קטן להיום"],
+  ["מה לעשות השבוע?", "במה להתמקד השבוע?", "מה הכי חשוב עכשיו בבית?", "מה היית מציע לנו לימים הקרובים?"],
+  ["למה לא להתקדם?", "למה אתה לא ממליץ להעלות רמה?", "למה לעצור כאן?", "מה הסיבה שלא ממשיכים?"],
+  ["מה טוב ומה חלש?", "איפה הוא מצליח ואיפה פחות?", "מה עובד טוב ומה דורש חיזוק?", "תסכם לי חוזקות מול קושי"],
+  ["איך להגיד את זה לילד?", "איך להסביר לו את זה?", "באיזה ניסוח לדבר איתו?", "מה לומר לו בלי להלחיץ?"],
+  ["מה לשאול את המורה?", "יש משהו שכדאי לשאול את המורה?", "איך לנסח שאלה למורה?", "מה חשוב לברר מול המורה?"],
+  ["האם צריך התערבות?", "זה דורש עזרה מעבר לבית?", "יש פה משהו מדאיג?", "צריך לפנות למורה או לאיש מקצוע?"],
+  ["מה זה אומר?", "תסביר לי את המושג הזה", "מה המשמעות של זה?", "לא הבנתי את הניסוח הזה"],
 ];
 for (const cluster of EQUIVALENCE) {
-  const intents = new Set(cluster.map((u) => interpretFreeformStageA(u, null).canonicalIntent));
+  const parsed = cluster.map((u) => interpretFreeformStageA(u, null));
+  const intents = new Set(parsed.map((p) => p.canonicalIntent));
+  const scopeClasses = new Set(parsed.map((p) => p.scopeClass));
+  const basePlan = planConversation(parsed[0].canonicalIntent, buildTruthPacketV1(payloadIneligibleRec(), { scopeType: "topic", scopeId: "t1", scopeLabel: "שברים", scopeClass: parsed[0].scopeClass }), {
+    continuityRepeat: false,
+    turnOrdinal: 0,
+    scopeType: "topic",
+  }).blockPlan.join("|");
+  const sameStructure = parsed.every((p) => {
+    const blockPlan = planConversation(p.canonicalIntent, buildTruthPacketV1(payloadIneligibleRec(), { scopeType: "topic", scopeId: "t1", scopeLabel: "שברים", scopeClass: p.scopeClass }), {
+      continuityRepeat: false,
+      turnOrdinal: 0,
+      scopeType: "topic",
+    }).blockPlan.join("|");
+    return blockPlan === basePlan;
+  });
   assert.equal(intents.size, 1, `equivalence cluster should map to one intent: ${[...intents].join(",")}`);
+  assert.equal(scopeClasses.size, 1, `equivalence cluster should map to one scopeClass: ${[...scopeClasses].join(",")}`);
+  assert.ok(sameStructure, "equivalence cluster should map to materially equivalent answer structure");
 }
 
 /** Withhold next_step: narrative allows action but recommendation ineligible */
