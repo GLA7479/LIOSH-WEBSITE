@@ -57,6 +57,7 @@
     "test:parent-rollout-release-matrix": "node scripts/parent-rollout-release-matrix-checklist.mjs",
     "test:e2e-hebrew-niqqud": "node scripts/e2e-hebrew-niqqud-browser.mjs",
     "test:e2e-hebrew-g1-g2-ab": "node scripts/e2e-hebrew-g1-g2-product-fit.mjs",
+    "test:oracle-conformance": "tsx scripts/oracle-conformance-tests.mjs",
     "test:canonical-state-e2e": "tsx scripts/canonical-topic-state-e2e.mjs",
     "test:no-positive-conclusion-decisioning": "node -e \"const { execSync } = require('child_process'); const out = execSync('npx rg positiveConclusionAllowed --glob=*.js --glob=!*output-gating.js --glob=!*build-canonical-state.js --glob=!*node_modules* utils/', { encoding: 'utf8', stdio: ['pipe','pipe','pipe'] }).toString(); const lines = out.split('\\n').filter(l => /if\\s*\\(|\\?|&&|\\|\\|/.test(l) && !/deprecated|_deprecated/.test(l)); if(lines.length > 0) { console.error('FAIL: positiveConclusionAllowed used in decisioning:', lines); process.exit(1); } console.log('PASS: no decisioning usage of positiveConclusionAllowed found');\""
   },

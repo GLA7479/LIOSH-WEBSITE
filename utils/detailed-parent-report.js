@@ -2055,7 +2055,7 @@ function buildSubjectProfilesFromV2(baseReport) {
       modeConcentrationNoteHe: null,
       dominantLearningRiskLabelHe: topWeakUnit?.taxonomy?.patternHe || null,
       dominantSuccessPatternLabelHe:
-        stable > 0 ? normalizeParentFacingHe("שליטה טובה ועקבית בחלק מהשורות") : null,
+        stable > 0 ? normalizeParentFacingHe("התקדמות יציבה וטובה בחלק מהנושאים") : null,
       improvingButSupportedHe: null,
       dominantRootCause: topWeakUnit?.taxonomy?.rootsHe?.[0] || null,
       dominantRootCauseLabelHe: topWeakUnit?.taxonomy?.rootsHe?.[0] || null,
@@ -2144,14 +2144,14 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
       resolveUnitParentActionHe(p4[0])
       || resolveUnitParentActionHe(diagnosed[0])
       || resolveUnitParentActionHe(leadPosX)
-      || "להמשיך עם תרגול ממוקד לפני שינוי רחב בבית.",
+      || "כרגע אין המלצה ביתית אחת מרכזית, כי עדיין צריך עוד מידע.",
     cautionNoteHe: executiveV2CautionNoteHe({ p4Length: p4.length, uncertainLength: uncertain.length }),
     overallConfidenceHe: executiveV2OverallConfidenceHe(diagnosed.length, units.length, stable.length),
     dominantCrossSubjectRiskLabelHe: diagnosed[0]?.taxonomy?.patternHe || "",
     dominantCrossSubjectSuccessPatternLabelHe: stable[0]?.taxonomy?.subskillHe
-      ? normalizeParentFacingHe(`שליטה טובה ועקבית ב${stable[0].taxonomy.subskillHe}`)
+      ? normalizeParentFacingHe(`התקדמות יציבה וטובה ב${stable[0].taxonomy.subskillHe}`)
       : stable[0]
-        ? normalizeParentFacingHe(`שליטה טובה ועקבית ב${stable[0].displayName}`)
+        ? normalizeParentFacingHe(`התקדמות יציבה וטובה ב${stable[0].displayName}`)
         : "",
     mixedSignalNoticeHe: executiveV2MixedSignalNoticeHe(uncertain.length > 0),
     reportReadinessHe: executiveV2ReportReadinessHe(units.length),

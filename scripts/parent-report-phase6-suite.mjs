@@ -1672,9 +1672,10 @@ function runStrongPositiveRecommendationConsistencyCrossSurfaces() {
   const controlClass = classifyParentRecommendationState(controlUnit);
   assert.equal(controlClass.classId, "regular_flow", "control: strong-positive class must not trigger");
   const controlMapped = summarizeV2UnitsForSubjectForTests([controlUnit]);
-  assert.ok(
-    String(controlMapped.parentActionHe || "").length > 0,
-    "control: regular mapping still produces action without forced strong-positive family"
+  assert.equal(
+    controlMapped.parentActionHe,
+    null,
+    "control: probe_only unit must not produce parentActionHe (oracle rule: probe_only → null)"
   );
 }
 

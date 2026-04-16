@@ -174,7 +174,7 @@ function runDeterministicCore(input) {
 
   if (intentResolution.shouldClarify && aggregateQuestionClass === "none" && utteranceStr.trim().length >= 2) {
     const r = buildClarificationParentCopilotResponse({
-      clarificationQuestionHe: "כדי לענות מדויק על הדוח, כתבו בקצרה אם השאלה על מה רואים, מה המשמעות, או מה כדאי לעשות.",
+      clarificationQuestionHe: "כדי שאענה בצורה מדויקת על הדוח, כתבו אם אתם רוצים להבין מה רואים, מה זה אומר, או מה כדאי לעשות בבית.",
       intent,
       priorRepeated,
       metadata: scopeMeta,

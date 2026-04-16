@@ -19,6 +19,8 @@ const UNCERTAINTY_MARKERS = [
   "אי־ודאות",
   "אין מספיק ראיות",
   "לא ניתן לקבוע",
+  "אין מספיק בסיס",
+  "עדיין מוקדם",
 ];
 
 const SUCCESS_MARKERS = [

@@ -42,11 +42,11 @@ export function buildHybridExplanations({ snapshot, ranking, probeIntel, gate, c
 
   function templateParent() {
     if (cannot) {
-      return "לפי הראיות המאורגנות במערכת אין מספיק בסיס לקביעה חד־משמעית כרגע. מומלץ מעקב נוסף או ביצוע הבדיקה המוצעת לפני מסקנות מעשיות.";
+      return "לפי מה שנאסף עד עכשיו, עדיין אין מספיק בסיס לקבוע מסקנה ברורה בנושא הזה.";
     }
     const base = taxonomyId
-      ? `המערכת מזהה דפוס לימודי פעיל (${taxonomyId}) בהתאם לנתוני התרגול בטווח התאריכים. `
-      : "המערכת מציגה תמונת מצב לפי נתוני התרגול בטווח התאריכים. ";
+      ? `זוהה דפוס לימודי פעיל (${taxonomyId}) בהתאם לנתוני התרגול בטווח התאריכים. `
+      : "לפי נתוני התרגול בטווח הזה, יש תמונת מצב ראשונית. ";
     const tail =
       gate.mode === "rank_only"
         ? "מידת הוודאות בינונית — כדאי לקרוא את ההסבר יחד עם המורה לפני החלטות."
@@ -68,7 +68,7 @@ export function buildHybridExplanations({ snapshot, ranking, probeIntel, gate, c
 
   if (isProbeOnly && !cannot && textParent.includes("דפוס לימודי פעיל")) {
     textParent =
-      "לפי הראיות המאורגנות במערכת אין די נתונים לקביעה חד־משמעית כרגע. מומלץ מעקב נוסף או ביצוע הבדיקה המוצעת לפני מסקנות מעשיות.";
+      "לפי מה שנאסף עד עכשיו, עדיין אין מספיק בסיס לקבוע מסקנה ברורה בנושא הזה.";
     outputStatus = "fallback";
     failureReason = "probe_only_framed_as_success";
   }
@@ -76,7 +76,7 @@ export function buildHybridExplanations({ snapshot, ranking, probeIntel, gate, c
   let validator = validateExplanationOutput({ text: textParent, requireUncertainty, evidenceRefs });
   if (!validator.overallPass) {
     textParent =
-      "לפי הראיות המאורגנות במערכת אין די נתונים לקביעה חד־משמעית כרגע. מומלץ מעקב נוסף או ביצוע הבדיקה המוצעת לפני מסקנות מעשיות.";
+      "לפי מה שנאסף עד עכשיו, עדיין אין מספיק בסיס לקבוע מסקנה ברורה בנושא הזה.";
     outputStatus = "fallback";
     failureReason = validator.reasonCodes.join(";");
     validator = validateExplanationOutput({

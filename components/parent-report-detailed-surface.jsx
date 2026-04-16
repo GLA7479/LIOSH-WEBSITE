@@ -564,7 +564,7 @@ export function SubjectPhase3Insights({ sp, compact }) {
   if (fr > 0 || stb > 0) {
     rows.push({
       k: SUBJECT_PHASE3_ROW_LABEL_HE.topicPatternCounts,
-      v: `${stb} שליטה טובה ועקבית · ${fr} הצלחה שבירה`,
+      v: `${stb} התקדמות יציבה וטובה · ${fr} הצלחה שבירה`,
     });
   }
   const modeNote = String(sp?.modeConcentrationNoteHe || "").trim();

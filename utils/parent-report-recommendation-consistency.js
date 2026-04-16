@@ -73,17 +73,18 @@ export function resolveUnitParentActionHe(unit) {
     const family = cs.recommendation.family;
     if (family === "expand_cautiously") {
       return normalizeParentFacingHe(
-        `ב${name} מומלץ לשמר את אותה רמת מורכבות, ולהוסיף הרחבה זהירה ומדודה רק אם העקביות נשמרת גם בסבב הבא.`
+        `ב${name} מומלץ להישאר בינתיים באותה רמה, ורק אם ההצלחה נמשכת גם בהמשך — להוסיף קושי קטן ומדוד.`
       );
     }
     if (family === "maintain") {
       return normalizeParentFacingHe(
-        `ב${name} מומלץ להמשיך באותה רמת קושי, לשמר עקביות, ורק אחר כך לשקול הרחבה עדינה בתוך אותו עיקרון.`
+        `ב${name} מומלץ להמשיך באותה רמה, ורק אם זה ממשיך להצליח באופן יציב — להוסיף מעט קושי.`
       );
     }
   }
 
-  if (actionState(unit) === "withhold") return null;
+  const action = actionState(unit);
+  if (action === "withhold" || action === "probe_only") return null;
   const fallback = bestEffortText(
     unit?.intervention?.immediateActionHe || unit?.probe?.specificationHe || ""
   );
@@ -95,7 +96,7 @@ export function resolveUnitNextGoalHe(unit) {
   if (isStrengthAction(unit) && cs?.recommendation?.allowed) {
     const name = topicName(unit);
     return normalizeParentFacingHe(
-      `לשבוע הקרוב ב${name}: לשמור על דיוק גבוה באותה מורכבות, ואם נשמרת יציבות — לנסות הרחבה קלה ומבוקרת.`
+      `לשבוע הקרוב ב${name}: להמשיך באותה רמה, ואם ההצלחה נשמרת — לנסות צעד אחד מעט מאתגר יותר.`
     );
   }
   const fallback = bestEffortText(
@@ -109,7 +110,7 @@ export function resolveUnitHomeMethodHe(unit) {
   if (isStrengthAction(unit) && cs?.recommendation?.allowed) {
     const name = topicName(unit);
     return normalizeParentFacingHe(
-      `ב${name} הדגש הוא שימור יציבות באותה רמה, עם תרגול קצר ועקבי והעשרה עדינה בלבד.`
+      `ב${name} עדיף תרגול קצר וקבוע באותה רמה, בלי לקפוץ מהר קדימה.`
     );
   }
   const fallback = bestEffortText(unit?.intervention?.shortPracticeHe || "");

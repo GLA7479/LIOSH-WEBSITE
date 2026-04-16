@@ -34,6 +34,7 @@ jobs:
       - run: npm run test:parent-rollout-stage:s2-classifier
       - run: npm run test:parent-rollout-stage:s2-hebrew-drift
       - run: npm run test:parent-rollout-stage:s3-observability
+      - run: npm run test:oracle-conformance
       - run: npm run test:canonical-state-e2e
       - run: npm run test:parent-rollout-release-matrix
         env:

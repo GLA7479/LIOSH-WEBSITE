@@ -246,7 +246,7 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
       className="w-full flex flex-col rounded-xl border border-white/12 bg-black/25 p-3 text-right text-white/90"
       style={{ height: "420px", minHeight: "420px" }}
     >
-      <div className="text-xs font-extrabold tracking-wide text-white/70 shrink-0 mb-2">Parent Copilot (v1)</div>
+      <div className="text-xs font-extrabold tracking-wide text-white/70 shrink-0 mb-2">שאלו על הדוח</div>
 
       <div
         ref={scrollRef}

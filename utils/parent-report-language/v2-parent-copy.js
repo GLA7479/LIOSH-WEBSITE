@@ -87,7 +87,7 @@ export function executiveV2CautionNoteHe(p) {
   const p4 = Math.max(0, Number(p.p4Length) || 0);
   const u = Math.max(0, Number(p.uncertainLength) || 0);
   if (p4 > 0) return "יש נושאים שדורשים תשומת לב גבוהה השבוע — כדאי לתאם עם המורה או המטפל.";
-  if (u > 0) return "בחלק מהנושאים עדיין אין מסקנה ברורה — נשמור על ניסוח זהיר.";
+  if (u > 0) return "בחלק מהנושאים עדיין אין מסקנה ברורה — עוד קצת תרגול יבהיר את התמונה.";
   return "";
 }
 
