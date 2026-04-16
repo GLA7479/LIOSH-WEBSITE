@@ -4,16 +4,18 @@ import { detectAggregateQuestionClass } from "../utils/parent-copilot/semantic-q
 import { pct, writeArtifact } from "./rollout-artifacts-lib.mjs";
 
 const intentCases = [
-  { utterance: "מה לעשות היום בנושא הזה?", expected: "action_today" },
-  { utterance: "מה כדאי לעשות בשבוע הקרוב?", expected: "action_week" },
-  { utterance: "מה לא כדאי לעשות עכשיו?", expected: "avoid_now" },
-  { utterance: "להתקדם או להמתין כרגע?", expected: "advance_or_hold" },
-  { utterance: "איך להסביר לילד את זה?", expected: "explain_to_child" },
-  { utterance: "מה לשאול את המורה?", expected: "ask_teacher" },
-  { utterance: "מה רואים בנתונים?", expected: "understand_observation" },
-  { utterance: "מה המשמעות של הנתונים?", expected: "understand_observation" },
-  { utterance: "לא ברור לי, יש חוסר ודאות", expected: "uncertainty_boundary" },
-  { utterance: "מה המשמעותת של המספרים", expected: "understand_meaning" },
+  { utterance: "מה לעשות היום בנושא הזה?", expected: "what_to_do_today" },
+  { utterance: "מה כדאי לעשות בשבוע הקרוב?", expected: "what_to_do_this_week" },
+  { utterance: "מה לא כדאי לעשות עכשיו?", expected: "what_is_still_difficult" },
+  { utterance: "להתקדם או להמתין כרגע?", expected: "what_is_most_important" },
+  { utterance: "איך להסביר לילד את זה?", expected: "how_to_tell_child" },
+  { utterance: "מה לשאול את המורה?", expected: "question_for_teacher" },
+  { utterance: "מה רואים בנתונים?", expected: "explain_report" },
+  { utterance: "מה המשמעות של הנתונים?", expected: "clarify_term" },
+  { utterance: "לא ברור לי, יש חוסר ודאות", expected: "is_intervention_needed" },
+  { utterance: "מה המשמעותת של המספרים", expected: "clarify_term" },
+  { utterance: "מה הכי חשוב כרגע בדוח?", expected: "what_is_most_important" },
+  { utterance: "איך לומר את זה לילד בבית?", expected: "how_to_tell_child" },
 ];
 
 const semanticCases = [
@@ -50,7 +52,7 @@ const summary = {
 
 writeArtifact("classifier-edge-matrix", summary);
 
-assert.ok(intentCases.length >= 10, "intent sample size too small");
+assert.ok(intentCases.length >= 12, "intent sample size too small");
 assert.ok(semanticCases.length >= 8, "semantic sample size too small");
 assert.ok(intentAccuracy >= 97, `intent accuracy below threshold: ${intentAccuracy.toFixed(2)}%`);
 assert.ok(semanticAccuracy >= 96, `semantic accuracy below threshold: ${semanticAccuracy.toFixed(2)}%`);

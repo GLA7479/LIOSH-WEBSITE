@@ -7,12 +7,12 @@ import { pct, writeArtifact } from "./rollout-artifacts-lib.mjs";
 const payload = syntheticPayload();
 
 const classificationCases = [
-  { utterance: "מהזה אומר", expectedIntent: "understand_meaning", expectedScopeStatus: "clarification_required" },
-  { utterance: "מחר?", expectedIntent: "action_tomorrow", expectedScopeStatus: "clarification_required" },
-  { utterance: "חשבון", expectedIntent: "understand_meaning", expectedScopeStatus: "resolved" },
-  { utterance: "שברים?", expectedIntent: "understand_meaning", expectedScopeStatus: "resolved" },
-  { utterance: "לא ברור", expectedIntent: "uncertainty_boundary", expectedScopeStatus: "clarification_required" },
-  { utterance: "מה המקצוע החזק", expectedIntent: "understand_meaning", expectedScopeStatus: "resolved" },
+  { utterance: "מהזה אומר", expectedIntent: "clarify_term", expectedScopeStatus: "clarification_required" },
+  { utterance: "מחר?", expectedIntent: "what_to_do_this_week", expectedScopeStatus: "clarification_required" },
+  { utterance: "חשבון", expectedIntent: "unclear", expectedScopeStatus: "resolved" },
+  { utterance: "שברים?", expectedIntent: "unclear", expectedScopeStatus: "resolved" },
+  { utterance: "לא ברור", expectedIntent: "is_intervention_needed", expectedScopeStatus: "clarification_required" },
+  { utterance: "מה המקצוע החזק", expectedIntent: "what_is_going_well", expectedScopeStatus: "resolved" },
 ];
 
 let pass = 0;
@@ -44,6 +44,6 @@ writeArtifact("short-noisy-phrasing", {
 assert.ok(classificationCases.length >= 6, "short/noisy sample size too small");
 assert.ok(accuracy >= 93, `short/noisy accuracy below threshold: ${accuracy.toFixed(2)}%`);
 assert.ok(falseClarificationRate <= 8, `false clarification rate too high: ${falseClarificationRate.toFixed(2)}%`);
-assert.ok(falseConfidentRate <= 6, `false confident classification too high: ${falseConfidentRate.toFixed(2)}%`);
+assert.ok(falseConfidentRate <= 3, `false confident classification too high: ${falseConfidentRate.toFixed(2)}%`);
 
 console.log("parent-copilot-short-noisy-phrasing-suite: OK");

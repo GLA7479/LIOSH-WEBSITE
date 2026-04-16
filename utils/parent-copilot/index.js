@@ -4,7 +4,7 @@
 
 import { resolveScope } from "./scope-resolver.js";
 import { buildTruthPacketV1 } from "./truth-packet-v1.js";
-import { resolveIntentWithConfidence } from "./intent-resolver.js";
+import { interpretFreeformStageA } from "./stage-a-freeform-interpretation.js";
 import { planConversation } from "./conversation-planner.js";
 import { composeAnswerDraft } from "./answer-composer.js";
 import { detectAggregateQuestionClass } from "./semantic-question-class.js";
@@ -19,6 +19,7 @@ import {
   buildQuickActions,
 } from "./render-adapter.js";
 import { normalizeParentFacingHe } from "../parent-report-language/parent-facing-normalize-he.js";
+import { normalizeFreeformParentUtteranceHe } from "./utterance-normalize-he.js";
 import { buildTurnTelemetry } from "./turn-telemetry.js";
 import { maybeGenerateGroundedLlmDraft } from "./llm-orchestrator.js";
 import { appendTurnTelemetryTrace } from "./telemetry-store.js";
@@ -119,15 +120,24 @@ function runDeterministicCore(input) {
     return { response: r, audience, sessionId, conv, truthPacket: null, intent: "uncertainty_boundary", scopeMeta: null, utteranceStr: "" };
   }
 
-  const utteranceStr = String(input?.utterance || "");
+  const utteranceStr = normalizeFreeformParentUtteranceHe(String(input?.utterance || ""));
   const aggregateQuestionClass = detectAggregateQuestionClass(utteranceStr);
-  const intentResolution = resolveIntentWithConfidence(utteranceStr);
-  const intent = intentResolution.intent;
+  const stageA = interpretFreeformStageA(String(input?.utterance || ""), input?.payload);
+  const intent = stageA.canonicalIntent;
+  const intentResolution = {
+    intent,
+    confidence: stageA.canonicalIntentScore,
+    reason: stageA.intentReason,
+    normalizedUtterance: stageA.normalizedUtterance,
+    shouldClarify: stageA.shouldClarifyIntent,
+    stageA,
+  };
 
   const scopeRes = resolveScope({
     payload: input?.payload,
     utterance: utteranceStr,
     selectedContextRef: input?.selectedContextRef ?? null,
+    stageA,
   });
 
   const scopeMeta = {
@@ -170,17 +180,6 @@ function runDeterministicCore(input) {
     });
     validateParentCopilotResponseV1(r);
     return { response: r, audience, sessionId, conv, truthPacket: null, intent, scopeMeta, utteranceStr };
-  }
-
-  if (intentResolution.shouldClarify && aggregateQuestionClass === "none" && utteranceStr.trim().length >= 2) {
-    const r = buildClarificationParentCopilotResponse({
-      clarificationQuestionHe: "כדי שאענה בצורה מדויקת על הדוח, כתבו אם אתם רוצים להבין מה רואים, מה זה אומר, או מה כדאי לעשות בבית.",
-      intent,
-      priorRepeated,
-      metadata: scopeMeta,
-    });
-    validateParentCopilotResponseV1(r);
-    return { response: r, audience, sessionId, conv, truthPacket, intent, scopeMeta, utteranceStr };
   }
 
   const priorIntents = Array.isArray(conv.priorIntents) ? conv.priorIntents : [];
@@ -287,13 +286,13 @@ function runDeterministicCore(input) {
 
   /** @type {Array<"contractsV1.evidence"|"contractsV1.decision"|"contractsV1.readiness"|"contractsV1.confidence"|"contractsV1.recommendation"|"contractsV1.narrative">} */
   const contractSourcesUsed = ["contractsV1.narrative"];
-  if (intent !== "understand_observation") {
+  if (intent !== "explain_report") {
     contractSourcesUsed.push("contractsV1.decision", "contractsV1.readiness", "contractsV1.confidence");
   }
   if (draft.answerBlocks.some((b) => b.type === "next_step")) {
     contractSourcesUsed.push("contractsV1.recommendation");
   }
-  if (intent === "understand_observation") {
+  if (intent === "explain_report") {
     contractSourcesUsed.push("contractsV1.evidence");
   }
 

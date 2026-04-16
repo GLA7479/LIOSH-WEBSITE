@@ -20,6 +20,9 @@ export function validateAnswerDraft(draft, truthPacket) {
   if (!hasObs && !hasMean) failCodes.push("missing_observation_or_meaning");
 
   const joined = blocks.map((b) => String(b.textHe || "")).join(" ");
+  if (/\bcontractsV1\b|validatorFailCodes|schemaVersion|fail_codes\b|telemetry\.trace\b/i.test(joined)) {
+    failCodes.push("internal_surface_leak");
+  }
   const nar = truthPacket?.contracts?.narrative;
   const slotText = [
     String(nar?.textSlots?.observation || ""),

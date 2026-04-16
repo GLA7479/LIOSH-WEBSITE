@@ -254,6 +254,7 @@ export function buildTruthPacketV1(payload, scope) {
     scopeType: scope.scopeType,
     scopeId: scope.scopeId,
     scopeLabel: scope.scopeLabel,
+    interpretationScope: String(scope?.scopeClass || scope?.scopeType || "executive"),
     topicStateId,
     stateHash,
     contracts,

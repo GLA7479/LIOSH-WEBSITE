@@ -88,35 +88,36 @@ const tp = buildTruthPacketV1(payload, {
 });
 assert.ok(tp);
 
-const plan = planConversation("understand_meaning", tp, { continuityRepeat: false });
+const canonicalMeaningIntent = "what_is_most_important";
+const plan = planConversation(canonicalMeaningIntent, tp, { continuityRepeat: false });
 const draftPlain = composeAnswerDraft(plan, tp, null);
 const draftC = composeAnswerDraft(plan, tp, {
-  intent: "understand_meaning",
+  intent: canonicalMeaningIntent,
   continuityRepeat: false,
   conversationState: { priorIntents: [], repeatedPhraseHits: 0 },
 });
 const hasComposedMeaningCoach = draftC.answerBlocks.some(
   (b) => b.type === "meaning" && b.source === "composed",
 );
-assert.ok(hasComposedMeaningCoach, "expected composed meaning coaching for understand_meaning");
+assert.ok(hasComposedMeaningCoach, "expected composed meaning coaching for canonical meaning intent");
 assert.ok(draftC.answerBlocks.length > draftPlain.answerBlocks.length);
 
 const v = validateAnswerDraft(draftC, tp);
 assert.ok(v.ok, v.failCodes.join(","));
 
-const ixA = coachingVariantIndex({ priorIntents: ["understand_meaning"], repeatedPhraseHits: 0 }, "understand_meaning");
-const ixB = coachingVariantIndex({ priorIntents: ["action_today", "avoid_now"], repeatedPhraseHits: 0 }, "understand_meaning");
+const ixA = coachingVariantIndex({ priorIntents: [canonicalMeaningIntent], repeatedPhraseHits: 0 }, canonicalMeaningIntent);
+const ixB = coachingVariantIndex({ priorIntents: ["what_to_do_today", "what_to_do_this_week"], repeatedPhraseHits: 0 }, canonicalMeaningIntent);
 assert.notEqual(ixA, ixB);
 
-const u0 = pickUncertaintyReasonScript({ cannotConcludeYet: false, confidenceBand: "high" }, "understand_meaning", 0);
-const u1 = pickUncertaintyReasonScript({ cannotConcludeYet: false, confidenceBand: "high" }, "understand_meaning", 1);
+const u0 = pickUncertaintyReasonScript({ cannotConcludeYet: false, confidenceBand: "high" }, canonicalMeaningIntent, 0);
+const u1 = pickUncertaintyReasonScript({ cannotConcludeYet: false, confidenceBand: "high" }, canonicalMeaningIntent, 1);
 assert.notEqual(u0, u1);
 
 sessionMemory.resetParentCopilotSessionForTests("phaseC-e2e");
 const r = parentCopilot.runParentCopilotTurn({
   audience: "parent",
   payload,
-  utterance: "מה המשמעות של המספרים?",
+  utterance: "מה המשמעות של המספרים בשברים?",
   sessionId: "phaseC-e2e",
   selectedContextRef: null,
 });

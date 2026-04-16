@@ -1,6 +1,9 @@
 import { useMemo, useState } from "react";
 import { summarizeHybridRuntimeForReview } from "../utils/ai-hybrid-diagnostic/hybrid-review-summary.js";
 
+const INTERNAL_HYBRID_REVIEWER_UI =
+  typeof process !== "undefined" && process.env.NEXT_PUBLIC_INTERNAL_HYBRID_REVIEWER === "1";
+
 function FieldRow({ label, children, mono = false }) {
   return (
     <div className="ai-hybrid-rev-row grid grid-cols-1 sm:grid-cols-[minmax(0,140px)_1fr] gap-1 sm:gap-3 text-sm border-b border-white/10 py-2 last:border-0">
@@ -159,6 +162,8 @@ function UnitBlock({ unit, idx }) {
 export function AiHybridInternalReviewerPanel({ hybridRuntime }) {
   const summary = useMemo(() => summarizeHybridRuntimeForReview(hybridRuntime), [hybridRuntime]);
   const [jsonOpen, setJsonOpen] = useState(false);
+
+  if (!INTERNAL_HYBRID_REVIEWER_UI) return null;
 
   if (!hybridRuntime) {
     return (

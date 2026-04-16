@@ -1,0 +1,9 @@
+{
+  "artifact": "short-noisy-phrasing",
+  "generatedAt": "2026-04-16T07:16:23.749Z",
+  "shortNoisyAccuracy": 100,
+  "falseClarificationRate": 0,
+  "falseConfidentRate": 0,
+  "sampleSize": 6,
+  "pass": true
+}

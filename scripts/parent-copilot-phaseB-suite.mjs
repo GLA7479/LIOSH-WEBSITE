@@ -87,8 +87,8 @@ const tp = buildTruthPacketV1(payload, {
 assert.ok(tp);
 
 // Continuity: repeated intent rotates block order (same contract slots).
-const plan1 = planConversation("understand_observation", tp, { continuityRepeat: false });
-const plan2 = planConversation("understand_observation", tp, { continuityRepeat: true });
+const plan1 = planConversation("explain_report", tp, { continuityRepeat: false });
+const plan2 = planConversation("explain_report", tp, { continuityRepeat: true });
 assert.deepEqual(plan1.blockPlan.slice(0, 2), ["observation", "meaning"]);
 assert.deepEqual(plan2.blockPlan.slice(0, 2), ["meaning", "observation"]);
 
@@ -111,7 +111,7 @@ sessionMemory.applyConversationStateDelta("phaseB-dedup", {
 const convDedup = sessionMemory.getConversationState("phaseB-dedup");
 const fu = selectFollowUp({
   audience: "parent",
-  intent: "action_week",
+  intent: "what_to_do_this_week",
   scopeType: "topic",
   scopeKey: "topic:t1",
   clickedFollowupFamilyThisTurn: null,
@@ -129,7 +129,7 @@ assert.notEqual(fu.selected?.family, "avoid_now");
 
 // End-to-end: same session + same observation intent → second answer leads with meaning block.
 sessionMemory.resetParentCopilotSessionForTests("phaseB-e2e");
-const utteranceObs = "מה רואים בנתונים";
+const utteranceObs = "מה רואים בנתונים בשברים";
 const r1 = parentCopilot.runParentCopilotTurn({
   audience: "parent",
   payload,

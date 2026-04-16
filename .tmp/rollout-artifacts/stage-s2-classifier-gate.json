@@ -1,0 +1,15 @@
+{
+  "artifact": "stage-s2-classifier-gate",
+  "generatedAt": "2026-04-16T07:16:23.827Z",
+  "checks": {
+    "intentAccuracy": true,
+    "semanticAccuracy": true,
+    "collisionAccuracy": true,
+    "nearmissAccuracy": true,
+    "shortNoisyAccuracy": true,
+    "falseClarificationRate": true,
+    "falseConfidentRate": true
+  },
+  "failed": [],
+  "pass": true
+}

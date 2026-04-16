@@ -11,6 +11,8 @@ import {
   SUBJECT_ORDER,
 } from "./contract-reader.js";
 import { detectAggregateQuestionClass } from "./semantic-question-class.js";
+import { foldUtteranceForHeMatch, normalizeFreeformParentUtteranceHe } from "./utterance-normalize-he.js";
+import { interpretFreeformStageA } from "./stage-a-freeform-interpretation.js";
 
 /**
  * @param {string} s
@@ -56,13 +58,13 @@ function listTopicDisplayIndex(payload) {
  * }}
  */
 function matchTopicFromUtterance(utterance, payload) {
-  const u = norm(utterance);
+  const u = foldUtteranceForHeMatch(utterance);
   if (u.length < 2) return { best: null, ambiguous: false, candidates: [] };
   const rows = listTopicDisplayIndex(payload);
   /** @type {Array<{ subjectId: string; topicRowKey: string; displayName: string; score: number }>} */
   const hits = [];
   for (const row of rows) {
-    const d = row.displayName;
+    const d = foldUtteranceForHeMatch(row.displayName);
     if (d.length < 2) continue;
     if (!u.includes(d)) continue;
     hits.push({ ...row, score: d.length });
@@ -86,7 +88,7 @@ function matchTopicFromUtterance(utterance, payload) {
  * @returns {string | null} subjectId
  */
 function matchSubjectFromUtterance(utterance, payload) {
-  const u = norm(utterance);
+  const u = foldUtteranceForHeMatch(utterance);
   if (u.length < 2) return null;
   const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
   const present = new Set(profiles.map((p) => String(p?.subject || "")).filter(Boolean));
@@ -101,10 +103,11 @@ function matchSubjectFromUtterance(utterance, payload) {
   }
   pairs.sort((a, b) => b.label.length - a.label.length);
   for (const { id, label } of pairs) {
-    if (label.length >= 4) {
-      if (u.includes(label)) return id;
-    } else if (label.length >= 2) {
-      if (u === label || u.startsWith(`${label} `) || u.endsWith(` ${label}`) || u.includes(` ${label} `)) {
+    const lf = foldUtteranceForHeMatch(label);
+    if (lf.length >= 4) {
+      if (u.includes(lf)) return id;
+    } else if (lf.length >= 2) {
+      if (u === lf || u.startsWith(`${lf} `) || u.endsWith(` ${lf}`) || u.includes(` ${lf} `)) {
         return id;
       }
     }
@@ -113,19 +116,54 @@ function matchSubjectFromUtterance(utterance, payload) {
 }
 
 /**
+ * @param {"executive"|"subject"|"topic"} entityScopeType
+ * @param {ReturnType<typeof interpretFreeformStageA>} stageA
+ */
+function finalizeScopeClass(entityScopeType, stageA) {
+  let sc = String(stageA.scopeClass || entityScopeType);
+  if (entityScopeType === "topic") {
+    if (sc === "executive" || sc === "subject") sc = "topic";
+  } else if (entityScopeType === "subject") {
+    if (sc === "executive" || sc === "topic") sc = "subject";
+  } else if (entityScopeType === "executive") {
+    if (sc === "topic" || sc === "subject") sc = "executive";
+  }
+  return sc;
+}
+
+/**
+ * @param {object} scope
+ * @param {string} entityScopeType
+ * @param {ReturnType<typeof interpretFreeformStageA>} stageA
+ */
+function scopeWithClass(scope, entityScopeType, stageA) {
+  return {
+    ...scope,
+    scopeClass: finalizeScopeClass(entityScopeType, stageA),
+  };
+}
+
+/**
  * @param {object} input
  * @param {unknown} input.payload
  * @param {string} input.utterance
  * @param {null|{ scopeType?: string; scopeId?: string; subjectId?: string }} input.selectedContextRef
+ * @param {ReturnType<typeof interpretFreeformStageA>} [input.stageA]
  * @returns {{
  *   resolutionStatus: "resolved"|"clarification_required";
  *   clarificationQuestionHe?: string;
- *   scope?: { scopeType: "topic"|"subject"|"executive"; scopeId: string; scopeLabel: string };
+ *   scope?: { scopeType: "topic"|"subject"|"executive"; scopeId: string; scopeLabel: string; scopeClass: string };
+ *   stageA?: ReturnType<typeof interpretFreeformStageA>;
  * }}
  */
 export function resolveScope(input) {
   const payload = input?.payload;
-  const utterance = norm(input?.utterance || "");
+  const rawUtterance = String(input?.utterance || "");
+  const normalizedUtterance = normalizeFreeformParentUtteranceHe(rawUtterance);
+  const stageA =
+    input?.stageA ||
+    interpretFreeformStageA(rawUtterance, payload && typeof payload === "object" ? payload : null);
+  const utterance = foldUtteranceForHeMatch(normalizedUtterance);
   const selected = input?.selectedContextRef && typeof input.selectedContextRef === "object" ? input.selectedContextRef : null;
 
   if (!payload || typeof payload !== "object") {
@@ -135,20 +173,26 @@ export function resolveScope(input) {
         "לא נטען דוח מקיף — לא ניתן לענות מתוך נתוני התקופה. רעננו את הדף או בחרו תקופה אחרת.",
       scopeConfidence: 0,
       scopeReason: "missing_payload",
+      stageA,
     };
   }
 
-  const aggregateClass = detectAggregateQuestionClass(utterance);
+  const aggregateClass = detectAggregateQuestionClass(normalizedUtterance);
   if (aggregateClass !== "none") {
     return {
       resolutionStatus: "resolved",
-      scope: {
-        scopeType: "executive",
-        scopeId: "executive",
-        scopeLabel: "הדוח בתקופה הנבחרה",
-      },
+      scope: scopeWithClass(
+        {
+          scopeType: "executive",
+          scopeId: "executive",
+          scopeLabel: "הדוח בתקופה הנבחרה",
+        },
+        "executive",
+        stageA
+      ),
       scopeConfidence: 0.98,
       scopeReason: `aggregate_class:${aggregateClass}`,
+      stageA,
     };
   }
 
@@ -164,6 +208,7 @@ export function resolveScope(input) {
         clarificationQuestionHe: "הנושא שנבחר לא כולל כרגע ניסוח מעוגן בדוח. בחרו נושא אחר עם נתוני תרגול.",
         scopeConfidence: 0.2,
         scopeReason: "selected_context_topic_missing_anchor",
+        stageA,
       };
     }
     const label =
@@ -171,13 +216,18 @@ export function resolveScope(input) {
       (subj ? `${subjectLabelHe(subj)} · נושא` : "נושא נבחר");
     return {
       resolutionStatus: "resolved",
-      scope: {
-        scopeType: "topic",
-        scopeId: sid,
-        scopeLabel: label,
-      },
+      scope: scopeWithClass(
+        {
+          scopeType: "topic",
+          scopeId: sid,
+          scopeLabel: label,
+        },
+        "topic",
+        stageA
+      ),
       scopeConfidence: hit ? 0.99 : 0.35,
       scopeReason: hit ? "selected_context_topic" : "selected_context_topic_missing_anchor",
+      stageA,
     };
   }
   if (st === "subject" && (sid || subj)) {
@@ -189,17 +239,23 @@ export function resolveScope(input) {
         clarificationQuestionHe: "במקצוע שנבחר עדיין אין נושא מעוגן עם מספיק נתונים. בחרו מקצוע או נושא אחר.",
         scopeConfidence: 0.24,
         scopeReason: "selected_context_subject_missing_anchor",
+        stageA,
       };
     }
     return {
       resolutionStatus: "resolved",
-      scope: {
-        scopeType: "subject",
-        scopeId: subjectId,
-        scopeLabel: subjectLabelHe(subjectId),
-      },
+      scope: scopeWithClass(
+        {
+          scopeType: "subject",
+          scopeId: subjectId,
+          scopeLabel: subjectLabelHe(subjectId),
+        },
+        "subject",
+        stageA
+      ),
       scopeConfidence: 0.9,
       scopeReason: "selected_context_subject",
+      stageA,
     };
   }
 
@@ -207,23 +263,27 @@ export function resolveScope(input) {
   if (topicMatch.ambiguous) {
     return {
       resolutionStatus: "clarification_required",
-      clarificationQuestionHe: `נראה שהשאלה מתייחסת לכמה נושאים (${topicMatch.candidates
-        .map((x) => x.displayName)
-        .join(" / ")}). כתבו את שם הנושא המדויק כדי שאענה רק עליו.`,
+      clarificationQuestionHe: "נראית התאמה ליותר מנושא אחד בדוח. נסחו שוב באופן ממוקד.",
       scopeConfidence: 0.25,
       scopeReason: "utterance_topic_ambiguous",
+      stageA,
     };
   }
   if (topicMatch.best) {
     return {
       resolutionStatus: "resolved",
-      scope: {
-        scopeType: "topic",
-        scopeId: topicMatch.best.topicRowKey,
-        scopeLabel: topicMatch.best.displayName,
-      },
+      scope: scopeWithClass(
+        {
+          scopeType: "topic",
+          scopeId: topicMatch.best.topicRowKey,
+          scopeLabel: topicMatch.best.displayName,
+        },
+        "topic",
+        stageA
+      ),
       scopeConfidence: 0.84,
       scopeReason: "utterance_topic_match",
+      stageA,
     };
   }
 
@@ -231,13 +291,18 @@ export function resolveScope(input) {
   if (subjectId) {
     return {
       resolutionStatus: "resolved",
-      scope: {
-        scopeType: "subject",
-        scopeId: subjectId,
-        scopeLabel: subjectLabelHe(subjectId),
-      },
+      scope: scopeWithClass(
+        {
+          scopeType: "subject",
+          scopeId: subjectId,
+          scopeLabel: subjectLabelHe(subjectId),
+        },
+        "subject",
+        stageA
+      ),
       scopeConfidence: 0.73,
       scopeReason: "utterance_subject_match",
+      stageA,
     };
   }
 
@@ -249,6 +314,7 @@ export function resolveScope(input) {
         "אין כרגע נתוני נושא מספיקים בדוח כדי לבסס תשובה. נסו שוב אחרי שמופיעים נושאים עם תרגול בטווח התאריכים.",
       scopeConfidence: 0,
       scopeReason: "no_anchor_available",
+      stageA,
     };
   }
 
@@ -256,22 +322,27 @@ export function resolveScope(input) {
   if (utterance.length < 2) {
     return {
       resolutionStatus: "resolved",
-      scope: {
-        scopeType: "executive",
-        scopeId: "executive",
-        scopeLabel: "הדוח בתקופה הנבחרה",
-      },
+      scope: scopeWithClass(
+        {
+          scopeType: "executive",
+          scopeId: "executive",
+          scopeLabel: "הדוח בתקופה הנבחרה",
+        },
+        "executive",
+        stageA
+      ),
       scopeConfidence: 0.56,
       scopeReason: "executive_fallback_empty_utterance",
+      stageA,
     };
   }
 
   return {
     resolutionStatus: "clarification_required",
-    clarificationQuestionHe:
-      "כדי לענות מדויק על הדוח, כתבו אם השאלה על מקצוע מסוים או על נושא מדויק מתוך הדוח.",
+    clarificationQuestionHe: "לא הצלחנו לזהות את מוקד השאלה. נסחו שוב בקצרה.",
     scopeConfidence: 0.18,
     scopeReason: "no_clear_scope_match",
+    stageA,
   };
 }
 

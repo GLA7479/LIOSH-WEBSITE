@@ -4,6 +4,31 @@
  */
 
 /**
+ * Map canonical Stage A intents to legacy pack keys (OBS_PREFIX / MEANING_COACH / NEXT_STEP_COACH).
+ * @param {string} intent
+ */
+export function mapCanonicalIntentToPackGroup(intent) {
+  const k = String(intent || "");
+  /** @type {Record<string, string>} */
+  const t = {
+    explain_report: "understand_observation",
+    what_is_most_important: "understand_meaning",
+    what_to_do_today: "action_today",
+    what_to_do_this_week: "action_week",
+    why_not_advance: "advance_or_hold",
+    what_is_going_well: "understand_observation",
+    what_is_still_difficult: "avoid_now",
+    how_to_tell_child: "explain_to_child",
+    question_for_teacher: "ask_teacher",
+    is_intervention_needed: "uncertainty_boundary",
+    strength_vs_weakness_summary: "understand_meaning",
+    clarify_term: "understand_meaning",
+    unclear: "understand_meaning",
+  };
+  return t[k] || "understand_meaning";
+}
+
+/**
  * @param {object} [conv]
  * @param {string[]} [conv.priorIntents]
  * @param {number} [conv.repeatedPhraseHits]
@@ -166,6 +191,7 @@ function personalizedLine(truthPacket, ix) {
  */
 export function applyParentCoachingPacks(blocks, ctx) {
   const intent = String(ctx.intent || "");
+  const packGroup = mapCanonicalIntentToPackGroup(intent);
   const conv = ctx.conversationState || {};
   const turnOrd =
     ctx.turnOrdinal != null ? Number(ctx.turnOrdinal) : Number(conv?.priorIntents?.length) || 0;
@@ -177,10 +203,10 @@ export function applyParentCoachingPacks(blocks, ctx) {
   /** @type {Array<{ type: string; textHe: string; source: string }>} */
   const out = [];
 
-  const obsArr = OBS_PREFIX[intent] || ["לפי הדוח: ", "", "מה שמוצג בדוח: ", "בקשר לנתון בדוח: "];
+  const obsArr = OBS_PREFIX[packGroup] || ["לפי הדוח: ", "", "מה שמוצג בדוח: ", "בקשר לנתון בדוח: "];
   const obsPrefix = obsArr[effIx % obsArr.length];
 
-  const meaningLines = MEANING_COACH[intent];
+  const meaningLines = MEANING_COACH[packGroup];
   const addMeaningCoach = Array.isArray(meaningLines) && meaningLines.length > 0;
   const meaningCoachText = addMeaningCoach ? meaningLines[effIx % meaningLines.length] : "";
 
@@ -208,8 +234,18 @@ export function applyParentCoachingPacks(blocks, ctx) {
       continue;
     }
 
-    if (b.type === "next_step" && b.source === "contract_slot" && intent.startsWith("action")) {
-      const arr = NEXT_STEP_COACH[intent] || NEXT_STEP_COACH.action_week;
+    if (
+      b.type === "next_step" &&
+      b.source === "contract_slot" &&
+      (intent.startsWith("action") || intent === "what_to_do_today" || intent === "what_to_do_this_week")
+    ) {
+      const coachKey =
+        intent === "what_to_do_today"
+          ? "action_today"
+          : intent === "what_to_do_this_week"
+            ? "action_week"
+            : intent;
+      const arr = NEXT_STEP_COACH[coachKey] || NEXT_STEP_COACH.action_week;
       const line = arr[effIx % arr.length];
       if (line) {
         out.push({ type: "next_step", textHe: line, source: "composed" });
@@ -257,7 +293,12 @@ export function pickUncertaintyReasonScript(dl, intent, ix) {
     "נכון לעכשיו, אין כאן מידע שלא מגיע מהדוח — כך שומרים על עקביות מול המורה והילד.",
     "כהורה, אפשר להשתמש בזה כמילון משמעויות לדוח, בלי להוסיף שכבת פרשנות חיצונית.",
   ];
-  if (intent === "uncertainty_boundary") {
+  if (
+    intent === "uncertainty_boundary" ||
+    intent === "is_intervention_needed" ||
+    intent === "unclear" ||
+    mapCanonicalIntentToPackGroup(intent) === "uncertainty_boundary"
+  ) {
     const extra = [
       ...lines,
       "זה בדיוק המקום לשאול מה עוד חסר בדוח כדי להרגיש בטוחים יותר — לא למלא חוסר בדיעות.",

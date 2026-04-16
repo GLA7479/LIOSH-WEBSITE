@@ -4,6 +4,8 @@
  * Deterministic only — parent-only, contract-bound families from TruthPacket.
  */
 
+import { mapCanonicalIntentToPackGroup } from "./parent-coaching-packs.js";
+
 const TEXT = {
   action_today: "רוצים לפרק לצעד קטן היום בבית לפי אותו נושא?",
   action_week: "רוצים לבנות יחד תוכנית קצרה לשבוע הקרוב סביב הנושא הזה?",
@@ -138,7 +140,8 @@ function scoreFamilyPhaseB(family, ctx) {
     lastTwoSuggestedTexts,
     scopeLabelHe,
   } = ctx;
-  let s = INTENT_FOLLOWUP_AFFINITY[intent]?.[family] ?? 0;
+  const affKey = mapCanonicalIntentToPackGroup(intent);
+  let s = INTENT_FOLLOWUP_AFFINITY[affKey]?.[family] ?? INTENT_FOLLOWUP_AFFINITY.understand_meaning?.[family] ?? 0;
 
   const recentSuggest = Array.isArray(conv.recentSuggestedFollowupTexts) ? conv.recentSuggestedFollowupTexts : [];
   const answerFp = Array.isArray(conv.answerSummaryFingerprints) ? conv.answerSummaryFingerprints : [];
@@ -175,7 +178,7 @@ function scoreFamilyPhaseB(family, ctx) {
   if (streak >= 2 && scopeType === "executive" && family === "action_today") s -= 5;
   if (streak >= 3 && scopeType === "executive" && family === "action_today") s -= 10;
 
-  if (intent !== "uncertainty_boundary") {
+  if (affKey !== "uncertainty_boundary") {
     if (recentTags.includes("surface:uncertainty") && family === "uncertainty_boundary") s -= 7;
     if (recentTags.includes("turn:validator_fail") && family === "uncertainty_boundary") s -= 6;
     if (recentTags.includes("turn:validator_fail") && family === "explain_to_child") s -= 3;
@@ -231,6 +234,7 @@ export function selectFollowUp(input) {
   const tp = input?.truthPacket || {};
   const conv = input?.conversationState || {};
   const intent = String(input?.intent || "");
+  const affKeyFollow = mapCanonicalIntentToPackGroup(intent);
   const scopeType = String(input?.scopeType || "");
   const scopeKey = String(input?.scopeKey || "").trim();
   const clickedThis = String(input?.clickedFollowupFamilyThisTurn || "").trim() || null;
@@ -266,7 +270,7 @@ export function selectFollowUp(input) {
     .slice(-6)
     .join("|")
     .toLowerCase();
-  if (intent !== "uncertainty_boundary") {
+  if (affKeyFollow !== "uncertainty_boundary") {
     if (recentTags.includes("surface:uncertainty")) ranked = deprioritizeFamily(ranked, "uncertainty_boundary");
     if (recentTags.includes("turn:validator_fail")) {
       ranked = deprioritizeFamily(ranked, "uncertainty_boundary");
@@ -298,13 +302,13 @@ export function selectFollowUp(input) {
       const last = prior[prior.length - 1];
       if (last) blocked.add(last);
     }
-    if (intent.startsWith("action")) {
+    if (intent.startsWith("action") || intent === "what_to_do_today" || intent === "what_to_do_this_week") {
       blocked.add("action_today");
     }
     const lastClicked = clicked.length ? String(clicked[clicked.length - 1] || "").trim() : null;
     if (lastClicked && !softClicked.has("relax_last_clicked")) blocked.add(lastClicked);
     if (clickedThis && !softClicked.has("relax_this_click")) blocked.add(clickedThis);
-    if (intent !== "uncertainty_boundary") {
+    if (affKeyFollow !== "uncertainty_boundary") {
       if (recentTags.includes("surface:uncertainty")) blocked.add("uncertainty_boundary");
       if (recentTags.includes("turn:validator_fail")) {
         blocked.add("uncertainty_boundary");

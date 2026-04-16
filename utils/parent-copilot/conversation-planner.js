@@ -1,8 +1,6 @@
 /**
- * Plans allowed answer blocks from intent + TruthPacketV1 (no independent truth).
- * Phase B: optional continuity hints rotate block order on repeated intent (same contract slots).
- * Polish: mild block-order rotation by turnOrdinal (same slot types only).
- * @param {string} intent
+ * Plans allowed answer blocks from canonical parent intent + TruthPacketV1 (contract-bound only).
+ * @param {string} intent canonical intent (stage-a-freeform-interpretation.js)
  * @param {ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>} truthPacket
  * @param {null|{ continuityRepeat?: boolean; turnOrdinal?: number; scopeType?: string }} [hints]
  */
@@ -17,43 +15,76 @@ export function planConversation(intent, truthPacket, hints = null) {
   /** @type {Array<"observation"|"meaning"|"next_step"|"caution"|"uncertainty_reason">} */
   const blocks = [];
 
-  if (intent === "understand_observation") {
+  const probeHeavy = () => {
+    if (continuityRepeat) blocks.push("uncertainty_reason", "meaning");
+    else if (rot === 1) blocks.push("meaning", "uncertainty_reason", "observation");
+    else if (rot === 2) blocks.push("observation", "meaning", "uncertainty_reason");
+    else blocks.push("observation", "uncertainty_reason", "meaning");
+  };
+
+  const obsMean = () => {
     if (continuityRepeat) blocks.push("meaning", "observation");
     else blocks.push("observation", "meaning");
-  } else if (intent === "understand_meaning") {
-    if (continuityRepeat) {
-      blocks.push("meaning", "observation", "caution");
-    } else if (rot === 1) {
-      blocks.push("observation", "caution", "meaning");
-    } else if (rot === 2) {
-      blocks.push("meaning", "observation", "caution");
-    } else {
-      blocks.push("observation", "meaning", "caution");
-    }
-  } else if (intent === "action_today" || intent === "action_tomorrow" || intent === "action_week") {
+  };
+
+  const obsMeanCaut = () => {
+    if (continuityRepeat) blocks.push("meaning", "observation", "caution");
+    else if (rot === 1) blocks.push("observation", "caution", "meaning");
+    else if (rot === 2) blocks.push("meaning", "observation", "caution");
+    else blocks.push("observation", "meaning", "caution");
+  };
+
+  const actionOrProbe = () => {
     if (eligible && cap !== "RI0") {
       if (continuityRepeat || rot % 2 === 1) blocks.push("caution", "next_step");
       else blocks.push("next_step", "caution");
     } else if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
     else blocks.push("meaning", "uncertainty_reason");
-  } else if (intent === "avoid_now") {
-    if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "caution");
-    else blocks.push("caution", "uncertainty_reason");
-  } else if (intent === "advance_or_hold") {
-    if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
-    else blocks.push("meaning", "uncertainty_reason");
-  } else if (intent === "explain_to_child") {
-    if (continuityRepeat || rot % 2 === 1) blocks.push("meaning", "observation");
-    else blocks.push("observation", "meaning");
-  } else if (intent === "ask_teacher") {
-    if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
-    else blocks.push("meaning", "uncertainty_reason");
-  } else {
-    if (continuityRepeat) blocks.push("meaning", "observation", "uncertainty_reason");
-    else if (rot === 1) blocks.push("observation", "uncertainty_reason", "meaning");
-    else if (rot === 2) blocks.push("meaning", "observation", "uncertainty_reason");
-    else blocks.push("observation", "meaning", "uncertainty_reason");
+  };
+
+  switch (intent) {
+    case "explain_report":
+    case "clarify_term":
+      obsMeanCaut();
+      break;
+    case "what_is_most_important":
+      if (continuityRepeat) blocks.push("meaning", "caution", "observation");
+      else blocks.push("observation", "meaning", "caution");
+      break;
+    case "what_to_do_today":
+    case "what_to_do_this_week":
+      actionOrProbe();
+      break;
+    case "why_not_advance":
+      if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
+      else blocks.push("meaning", "uncertainty_reason");
+      break;
+    case "what_is_going_well":
+    case "strength_vs_weakness_summary":
+      obsMeanCaut();
+      break;
+    case "what_is_still_difficult":
+      if (continuityRepeat || rot % 2 === 1) blocks.push("caution", "meaning", "observation");
+      else blocks.push("observation", "meaning", "caution");
+      break;
+    case "how_to_tell_child":
+      obsMean();
+      break;
+    case "question_for_teacher":
+      if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
+      else blocks.push("meaning", "uncertainty_reason");
+      break;
+    case "is_intervention_needed":
+      if (continuityRepeat || rot % 2 === 1) blocks.push("meaning", "uncertainty_reason");
+      else blocks.push("uncertainty_reason", "meaning");
+      break;
+    case "unclear":
+    default:
+      probeHeavy();
+      break;
   }
+
+  if (!blocks.length) probeHeavy();
 
   return {
     intent,

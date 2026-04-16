@@ -52,7 +52,8 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
       id: lineId(),
       role: "assistant",
       kind: "message",
-      text: "שאלו על הדוח — התשובה מבוססת רק על נתוני התקופה שמוצגים למעלה.",
+      text:
+        "כאן אפשר לשאול בחופשיות על הדוח — התשובה נשענת רק על מה שמופיע בדוח לתקופה שבחרתם.\n\nאפשר לשאול כאן בחופשיות על הדוח, למשל: מה הכי חשוב כרגע, במה להתמקד השבוע, מה הולך טוב, או איך להסביר את זה לילד.",
       intro: true,
     },
   ]);
@@ -127,9 +128,6 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
           if (res.suggestedFollowUp?.textHe) {
             fullText += `\n\n— ${res.suggestedFollowUp.textHe}`;
           }
-          if (res.fallbackUsed) {
-            fullText += "\n\n(תצוגה בטוחה מהחוזה)";
-          }
         }
 
         const processingId = processingLine.id;
@@ -143,7 +141,6 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
           text: fullText,
           answerCore,
           followUpText: followUpHe,
-          fallbackNote: !isClarification && !!res.fallbackUsed,
           revealFollowUp: isClarification || !followUpHe,
           response: isClarification ? null : res,
         };
@@ -171,7 +168,6 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
               text: "אירעה שגיאה טכנית. נסו שוב בעוד רגע.",
               answerCore: "אירעה שגיאה טכנית. נסו שוב בעוד רגע.",
               followUpText: "",
-              fallbackNote: false,
               revealFollowUp: true,
               response: null,
             },
@@ -257,7 +253,7 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
           if (ln.kind === "processing") {
             return (
               <div key={ln.id} className="text-white/60 whitespace-pre-wrap animate-pulse">
-                <span className="font-bold text-white/40">Copilot: </span>
+                <span className="font-bold text-white/40">תשובה: </span>
                 {ln.text}
               </div>
             );
@@ -272,8 +268,7 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
           if (ln.role === "assistant" && ln.kind === "message" && ln.answerCore != null) {
             const core = String(ln.answerCore || "");
             const fu = ln.followUpText && ln.revealFollowUp ? `\n\n— ${ln.followUpText}` : "";
-            const fb = ln.fallbackNote && ln.revealFollowUp ? "\n\n(תצוגה בטוחה מהחוזה)" : "";
-            displayText = core + fu + fb;
+            displayText = core + fu;
           }
 
           let compact = false;
@@ -293,7 +288,7 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
                   : "text-white/85 whitespace-pre-wrap"
               }
             >
-              <span className="font-bold text-white/50">{isUser ? "אתם: " : "Copilot: "}</span>
+              <span className="font-bold text-white/50">{isUser ? "אתם: " : "תשובה: "}</span>
               {body}
             </div>
           );

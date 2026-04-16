@@ -1,0 +1,7 @@
+{
+  "artifact": "scope-collision",
+  "generatedAt": "2026-04-16T07:16:22.884Z",
+  "collisionAccuracy": 100,
+  "sampleSize": 5,
+  "pass": true
+}

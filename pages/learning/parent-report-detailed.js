@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AiHybridInternalReviewerPanel } from "../../components/ai-hybrid-internal-reviewer-panel.jsx";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -141,7 +140,6 @@ function buildDetailedReportQueryFromQueryObject(query, mode) {
   if (typeof start === "string" && start) q.start = start;
   if (typeof end === "string" && end) q.end = end;
   if (next === "summary") q.mode = "summary";
-  if (query?.reviewHybrid === "1") q.reviewHybrid = "1";
   return q;
 }
 
@@ -156,7 +154,6 @@ export default function ParentReportDetailedPage() {
   const queryStart = typeof router.query.start === "string" ? router.query.start : null;
   const queryEnd = typeof router.query.end === "string" ? router.query.end : null;
   const queryModeRaw = router.query.mode;
-  const queryReviewHybrid = router.query.reviewHybrid;
 
   const backHref = useMemo(() => {
     const q = { period: queryPeriod };
@@ -210,7 +207,7 @@ export default function ParentReportDetailedPage() {
       });
       setDisplayMode(next);
     },
-    [router.replace, queryPeriod, queryStart, queryEnd, queryModeRaw, queryReviewHybrid]
+    [router.replace, queryPeriod, queryStart, queryEnd, queryModeRaw]
   );
 
   const printWithMode = useCallback(
@@ -223,46 +220,8 @@ export default function ParentReportDetailedPage() {
       });
       window.setTimeout(() => window.print(), 120);
     },
-    [router.replace, queryPeriod, queryStart, queryEnd, queryModeRaw, queryReviewHybrid]
+    [router.replace, queryPeriod, queryStart, queryEnd, queryModeRaw]
   );
-
-  const internalHybridOn = useMemo(() => {
-    if (!router.isReady) return false;
-    if (router.query.reviewHybrid === "1") return true;
-    if (typeof window !== "undefined") {
-      try {
-        return localStorage.getItem("mleo_internal_hybrid_reviewer") === "1";
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  }, [router.isReady, router.query.reviewHybrid]);
-
-  const enableInternalHybridReviewer = useCallback(() => {
-    const q = { ...buildDetailedReportQueryFromQueryObject(router.query, displayMode), reviewHybrid: "1" };
-    router.replace({ pathname: "/learning/parent-report-detailed", query: q }, undefined, { shallow: true });
-  }, [router.replace, displayMode, queryPeriod, queryStart, queryEnd, queryModeRaw, queryReviewHybrid]);
-
-  const persistInternalHybridReviewer = useCallback(() => {
-    try {
-      localStorage.setItem("mleo_internal_hybrid_reviewer", "1");
-    } catch {
-      /* ignore */
-    }
-    enableInternalHybridReviewer();
-  }, [enableInternalHybridReviewer]);
-
-  const disableInternalHybridReviewer = useCallback(() => {
-    try {
-      localStorage.removeItem("mleo_internal_hybrid_reviewer");
-    } catch {
-      /* ignore */
-    }
-    const q = { ...buildDetailedReportQueryFromQueryObject(router.query, displayMode) };
-    delete q.reviewHybrid;
-    router.replace({ pathname: "/learning/parent-report-detailed", query: q }, undefined, { shallow: true });
-  }, [router.replace, displayMode, queryPeriod, queryStart, queryEnd, queryModeRaw, queryReviewHybrid]);
 
   const ModeToggle = ({ className = "" }) => (
     <div
@@ -1115,42 +1074,6 @@ export default function ParentReportDetailedPage() {
                 <ParentCopilotShell payload={payload} />
               </div>
             ) : null}
-            {payload ? (
-              <div className="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-xs text-white/75 space-y-2">
-                <div className="font-bold text-white/90">ביקורת פנימית (AI Hybrid)</div>
-                {internalHybridOn ? (
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <span className="text-emerald-300/95 font-semibold">מופעל — תצוגת ביקורת מוצגת מתחת</span>
-                    <button
-                      type="button"
-                      className="px-2 py-1 rounded border border-white/25 bg-white/5 hover:bg-white/10 text-white text-xs font-bold"
-                      onClick={disableInternalHybridReviewer}
-                    >
-                      כבה ביקורת
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <button
-                      type="button"
-                      className="px-2 py-1 rounded border border-emerald-400/40 bg-emerald-900/30 hover:bg-emerald-900/45 text-emerald-100 text-xs font-bold"
-                      onClick={enableInternalHybridReviewer}
-                    >
-                      הצג ביקורת (מסך בלבד)
-                    </button>
-                    <button
-                      type="button"
-                      className="px-2 py-1 rounded border border-white/20 bg-white/5 hover:bg-white/10 text-white text-xs font-bold"
-                      onClick={persistInternalHybridReviewer}
-                      title="שומר ב-localStorage ומפעיל — לשימוש חוזר באותו דפדפן"
-                    >
-                      הפעל ושמור בדפדפן
-                    </button>
-                    <span className="text-white/45">או הוסף לכתובת: ?reviewHybrid=1</span>
-                  </div>
-                )}
-              </div>
-            ) : null}
           </div>
 
           {noPlayer ? (
@@ -1161,11 +1084,6 @@ export default function ParentReportDetailedPage() {
             <p className="text-center text-white/80">לא ניתן לטעון את הדוח המקיף.</p>
           ) : (
             <>
-              {internalHybridOn ? (
-                <div className="no-pdf mb-4">
-                  <AiHybridInternalReviewerPanel hybridRuntime={payload.hybridRuntime} />
-                </div>
-              ) : null}
               <div
                 id="parent-report-detailed-print"
                 data-display-mode={displayMode}

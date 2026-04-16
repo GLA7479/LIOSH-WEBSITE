@@ -16,7 +16,6 @@ export function ParentCopilotQuickActions({ items, compact = false }) {
           key={it.id}
           type="button"
           disabled={!it.enabled}
-          title={it.disabledReasonCode || ""}
           onClick={() => {
             if (it.enabled) it.onPress();
           }}

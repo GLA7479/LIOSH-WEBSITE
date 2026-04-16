@@ -1,0 +1,7 @@
+{
+  "artifact": "semantic-nearmiss",
+  "generatedAt": "2026-04-16T07:16:23.316Z",
+  "nearmissAccuracy": 100,
+  "sampleSize": 10,
+  "pass": true
+}

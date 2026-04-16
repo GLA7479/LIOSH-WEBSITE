@@ -1,0 +1,9 @@
+{
+  "artifact": "hebrew-drift",
+  "generatedAt": "2026-04-16T07:15:27.773Z",
+  "sampleSize": 180,
+  "roboticityRate": 0,
+  "leakagePer1000": 0,
+  "authorityPer1000": 0,
+  "pass": true
+}

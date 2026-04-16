@@ -46,6 +46,8 @@
     "test:parent-copilot-scope-collision": "node scripts/parent-copilot-scope-collision-suite.mjs",
     "test:parent-copilot-semantic-nearmiss": "node scripts/parent-copilot-semantic-nearmiss-suite.mjs",
     "test:parent-copilot-short-noisy-phrasing": "node scripts/parent-copilot-short-noisy-phrasing-suite.mjs",
+    "test:parent-copilot-freeform-hebrew": "node scripts/parent-copilot-freeform-hebrew-suite.mjs",
+    "test:parent-copilot-product-behavior": "node scripts/parent-copilot-product-behavior-suite.mjs",
     "test:parent-hebrew-drift": "node scripts/parent-hebrew-drift-suite.mjs",
     "test:parent-hebrew-normalization-semantic-parity": "node scripts/parent-hebrew-normalization-semantic-parity-suite.mjs",
     "test:parent-hebrew-repetition-sequence": "node scripts/parent-hebrew-repetition-sequence-suite.mjs",
