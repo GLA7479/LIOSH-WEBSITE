@@ -23,6 +23,8 @@ import { normalizeFreeformParentUtteranceHe } from "./utterance-normalize-he.js"
 import { buildTurnTelemetry } from "./turn-telemetry.js";
 import { maybeGenerateGroundedLlmDraft } from "./llm-orchestrator.js";
 import { appendTurnTelemetryTrace } from "./telemetry-store.js";
+import { tryBuildParentShortFollowupDraft } from "./short-followup-composer.js";
+import { compactParentAnswerBlocks } from "./answer-compaction.js";
 
 function normalizeAnswerBlocksHe(answerBlocks) {
   return (Array.isArray(answerBlocks) ? answerBlocks : []).map((b) => ({
@@ -121,6 +123,174 @@ function runDeterministicCore(input) {
   }
 
   const utteranceStr = normalizeFreeformParentUtteranceHe(String(input?.utterance || ""));
+
+  const shortFb = tryBuildParentShortFollowupDraft({
+    utteranceStr,
+    conv,
+    payload: input?.payload,
+  });
+  if (shortFb) {
+    const truthPacket = shortFb.truthPacket;
+    const plannerIntent = shortFb.plannerIntent;
+    const scopeMeta = shortFb.scopeMeta;
+    let draft = {
+      answerBlocks: compactParentAnswerBlocks(normalizeAnswerBlocksHe(shortFb.answerBlocks), {
+        scopeType: String(truthPacket.scopeType || ""),
+        maxBlocks: 4,
+        maxTotalChars: 2100,
+      }),
+    };
+    const semanticAggregateSatisfied = false;
+    const aggregateQuestionClass = "none";
+    let vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
+    let fallbackUsed = false;
+    /** @type {string[]} */
+    const fallbackReasonCodes = [];
+
+    if (!vDraft.ok) {
+      fallbackReasonCodes.push(...vDraft.failCodes);
+      draft = buildDeterministicFallbackAnswer(truthPacket, vDraft.failCodes);
+      fallbackUsed = true;
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+      vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
+    }
+    if (!vDraft.ok) {
+      fallbackReasonCodes.push(...vDraft.failCodes);
+      const nar = truthPacket.contracts?.narrative;
+      const slots = nar?.textSlots || {};
+      draft = {
+        answerBlocks: [
+          { type: "observation", textHe: String(slots.observation || "").trim(), source: "contract_slot" },
+          { type: "meaning", textHe: String(slots.interpretation || "").trim(), source: "contract_slot" },
+        ].filter((b) => b.textHe),
+      };
+      if (draft.answerBlocks.length < 2) {
+        draft = buildDeterministicFallbackAnswer(truthPacket, ["emergency_fallback"]);
+      }
+      fallbackUsed = true;
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+      vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
+    }
+
+    const answerBlockTypes = draft.answerBlocks.map((b) => b.type);
+    const answerBodyTextHe = draft.answerBlocks.map((b) => b.textHe).join(" ").trim();
+
+    const follow = selectFollowUp({
+      audience: "parent",
+      intent: plannerIntent,
+      scopeType: truthPacket.scopeType,
+      scopeKey: `${truthPacket.scopeType}:${truthPacket.scopeId}`,
+      scopeLabelHe: truthPacket.scopeLabel || "",
+      answerBodyTextHe,
+      answerBlockTypes,
+      clickedFollowupFamilyThisTurn: input?.clickedFollowupFamily ? String(input.clickedFollowupFamily).trim() : null,
+      omitFollowUpEntirely: false,
+      truthPacket: {
+        cannotConcludeYet: truthPacket.derivedLimits.cannotConcludeYet,
+        readiness: truthPacket.derivedLimits.readiness,
+        confidenceBand: truthPacket.derivedLimits.confidenceBand,
+        recommendationEligible: truthPacket.derivedLimits.recommendationEligible,
+        recommendationIntensityCap: truthPacket.derivedLimits.recommendationIntensityCap,
+        allowedFollowupFamilies: truthPacket.allowedFollowupFamilies,
+      },
+      conversationState: conv,
+    });
+
+    const suggestedFollowUp = follow.selected
+      ? {
+          kind: /** @type {const} */ ("question"),
+          family: follow.selected.family,
+          textHe: normalizeParentFacingHe(follow.selected.textHe),
+          reasonCode: follow.selected.reasonCode,
+        }
+      : null;
+
+    /** @type {Array<"contractsV1.evidence"|"contractsV1.decision"|"contractsV1.readiness"|"contractsV1.confidence"|"contractsV1.recommendation"|"contractsV1.narrative">} */
+    const contractSourcesUsed = ["contractsV1.narrative"];
+    if (plannerIntent !== "explain_report") {
+      contractSourcesUsed.push("contractsV1.decision", "contractsV1.readiness", "contractsV1.confidence");
+    }
+    if (draft.answerBlocks.some((b) => b.type === "next_step")) {
+      contractSourcesUsed.push("contractsV1.recommendation");
+    }
+    if (plannerIntent === "explain_report") {
+      contractSourcesUsed.push("contractsV1.evidence");
+    }
+
+    const validatorFailCodes = vDraft.ok ? [] : [...vDraft.failCodes];
+    const validatorStatus = vDraft.ok ? "pass" : "fail";
+
+    let response = buildResolvedParentCopilotResponse({
+      truthPacket,
+      intent: plannerIntent,
+      answerBlocks: draft.answerBlocks,
+      suggestedFollowUp,
+      validatorStatus,
+      validatorFailCodes,
+      fallbackUsed,
+      contractSourcesUsed: [...new Set(contractSourcesUsed)],
+      priorRepeated,
+      metadata: scopeMeta,
+    });
+
+    const finalCheck = validateParentCopilotResponseV1(response);
+    if (!finalCheck.ok && response.resolutionStatus === "resolved") {
+      response = {
+        ...response,
+        validatorStatus: "fail",
+        validatorFailCodes: [...new Set([...(response.validatorFailCodes || []), ...finalCheck.hardFails])],
+        quickActions: buildQuickActions(truthPacket, false),
+      };
+    }
+
+    const telemetry = buildTurnTelemetry({
+      intent: plannerIntent,
+      intentConfidence: scopeMeta.intentConfidence,
+      intentReason: scopeMeta.intentReason,
+      scopeConfidence: scopeMeta.scopeConfidence,
+      scopeReason: scopeMeta.scopeReason,
+      answerBlocks: draft.answerBlocks,
+      fallbackUsed,
+      fallbackReasonCodes,
+      validatorFailCodes,
+      semanticAggregateSatisfied,
+      generationPath: "deterministic",
+      truthPacket,
+      resolutionStatus: "resolved",
+      scopeType: truthPacket.scopeType,
+      scopeId: truthPacket.scopeId,
+    });
+    response = { ...response, telemetry };
+
+    const constraintParts = [vDraft.ok ? "turn:validator_pass" : "turn:validator_fail"];
+    if (draft.answerBlocks.some((b) => b.type === "uncertainty_reason")) constraintParts.push("surface:uncertainty");
+    if (draft.answerBlocks.some((b) => b.type === "caution")) constraintParts.push("surface:caution");
+
+    const assistantAnswerSummary = draft.answerBlocks
+      .map((b) => b.textHe)
+      .join(" ")
+      .trim()
+      .slice(0, 480);
+
+    applyConversationStateDelta(sessionId, {
+      addedIntent: plannerIntent,
+      addedFollowUpFamily: suggestedFollowUp?.family,
+      ...(input?.clickedFollowupFamily
+        ? { clickedFollowupFamily: String(input.clickedFollowupFamily).trim() }
+        : {}),
+      addedScopeKey: `${truthPacket.scopeType}:${truthPacket.scopeId}`,
+      answeredConstraintTag: constraintParts.join(","),
+      closingSnippet: draft.answerBlocks.map((b) => b.textHe).join(" ").slice(-48),
+      ...(suggestedFollowUp?.textHe ? { suggestedFollowupTextHe: suggestedFollowUp.textHe } : {}),
+      ...(assistantAnswerSummary ? { assistantAnswerSummary } : {}),
+      scopeLabelSnapshotHe: truthPacket.scopeLabel || "",
+      plannerIntentSnapshot: plannerIntent,
+      lastOfferedFollowupFamily: suggestedFollowUp?.family ?? null,
+    });
+
+    return { response, audience, sessionId, conv, truthPacket, intent: plannerIntent, scopeMeta, utteranceStr, draft, validatorFailCodes };
+  }
+
   const aggregateQuestionClass = detectAggregateQuestionClass(utteranceStr);
   const stageA = interpretFreeformStageA(String(input?.utterance || ""), input?.payload);
   const intent = stageA.canonicalIntent;
@@ -375,6 +545,9 @@ function runDeterministicCore(input) {
     closingSnippet: draft.answerBlocks.map((b) => b.textHe).join(" ").slice(-48),
     ...(suggestedFollowUp?.textHe ? { suggestedFollowupTextHe: suggestedFollowUp.textHe } : {}),
     ...(assistantAnswerSummary ? { assistantAnswerSummary } : {}),
+    scopeLabelSnapshotHe: truthPacket.scopeLabel || "",
+    plannerIntentSnapshot: plannerIntent,
+    lastOfferedFollowupFamily: suggestedFollowUp?.family ?? null,
   });
 
   return { response, audience, sessionId, conv, truthPacket, intent: plannerIntent, scopeMeta, utteranceStr, draft, validatorFailCodes };

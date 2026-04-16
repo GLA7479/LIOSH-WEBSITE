@@ -96,11 +96,10 @@ const draftC = composeAnswerDraft(plan, tp, {
   continuityRepeat: false,
   conversationState: { priorIntents: [], repeatedPhraseHits: 0 },
 });
-const hasComposedMeaningCoach = draftC.answerBlocks.some(
-  (b) => b.type === "meaning" && b.source === "composed",
-);
-assert.ok(hasComposedMeaningCoach, "expected composed meaning coaching for canonical meaning intent");
-assert.ok(draftC.answerBlocks.length > draftPlain.answerBlocks.length);
+const obs0 = String(draftC.answerBlocks.find((b) => b.type === "observation")?.textHe || "");
+assert.ok(/בקצרה/u.test(obs0), "expected direct parent-facing opener on primary observation");
+const joinedDraftC = draftC.answerBlocks.map((b) => b.textHe).join(" ");
+assert.ok(!joinedDraftC.includes("מבחינה הורית אפשר לשאול"), "parent-visible draft must not include meta-coaching filler");
 
 const v = validateAnswerDraft(draftC, tp);
 assert.ok(v.ok, v.failCodes.join(","));

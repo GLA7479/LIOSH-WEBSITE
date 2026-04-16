@@ -36,6 +36,10 @@ function emptyState() {
     phraseLedger: Object.create(null),
     recentSuggestedFollowupTexts: [],
     answerSummaryFingerprints: [],
+    lastOfferedFollowupFamily: null,
+    lastScopeLabelHe: "",
+    lastPlannerIntent: "",
+    lastAssistantAnswerDigestHe: "",
     lastActivityMs: now,
     createdAtMs: now,
   };
@@ -106,6 +110,9 @@ export function getConversationState(sessionId) {
  *   closingSnippet?: string;
  *   suggestedFollowupTextHe?: string;
  *   assistantAnswerSummary?: string;
+ *   scopeLabelSnapshotHe?: string;
+ *   plannerIntentSnapshot?: string;
+ *   lastOfferedFollowupFamily?: string|null;
  * }} delta
  */
 export function applyConversationStateDelta(sessionId, delta) {
@@ -160,8 +167,19 @@ export function applyConversationStateDelta(sessionId, delta) {
       s.recentSuggestedFollowupTexts.shift();
     }
   }
+  if (delta.scopeLabelSnapshotHe != null && String(delta.scopeLabelSnapshotHe).trim()) {
+    s.lastScopeLabelHe = String(delta.scopeLabelSnapshotHe).trim();
+  }
+  if (delta.plannerIntentSnapshot != null && String(delta.plannerIntentSnapshot).trim()) {
+    s.lastPlannerIntent = String(delta.plannerIntentSnapshot).trim();
+  }
+  if (delta.lastOfferedFollowupFamily !== undefined) {
+    const lf = String(delta.lastOfferedFollowupFamily || "").trim();
+    s.lastOfferedFollowupFamily = lf || null;
+  }
   const ans = String(delta.assistantAnswerSummary || "").trim();
   if (ans) {
+    s.lastAssistantAnswerDigestHe = ans.slice(0, 480);
     const fp = fingerprintAnswerSummaryHe(ans);
     if (fp) {
       if (!Array.isArray(s.answerSummaryFingerprints)) s.answerSummaryFingerprints = [];

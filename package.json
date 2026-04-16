@@ -50,6 +50,8 @@
     "test:parent-copilot-broad-report-routing": "node scripts/parent-copilot-question-class-behavior-suite.mjs",
     "test:parent-copilot-question-class-behavior": "node scripts/parent-copilot-question-class-behavior-suite.mjs",
     "test:parent-copilot-executive-answer-quality": "node scripts/parent-copilot-executive-answer-quality-suite.mjs",
+    "test:parent-copilot-answer-quality-conversation": "node scripts/parent-copilot-answer-quality-conversation-suite.mjs && node scripts/parent-copilot-reply-class-paraphrase-suite.mjs",
+    "test:parent-copilot-reply-class-paraphrase": "node scripts/parent-copilot-reply-class-paraphrase-suite.mjs",
     "test:parent-copilot-stage-a-paraphrase": "node scripts/parent-copilot-stage-a-paraphrase-clusters.mjs",
     "test:parent-copilot-stage-b-scope": "node scripts/parent-copilot-stage-b-scope-suite.mjs",
     "test:parent-copilot-phase4": "node scripts/parent-copilot-phase4-truth-path-suite.mjs",

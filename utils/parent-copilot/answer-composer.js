@@ -6,6 +6,8 @@
 
 import { narrativeSectionTextHe } from "../contracts/narrative-contract-v1.js";
 import { coachingVariantIndex, applyParentCoachingPacks, pickUncertaintyReasonScript } from "./parent-coaching-packs.js";
+import { parentDirectOpenerHe } from "./direct-answer-openers.js";
+import { compactParentAnswerBlocks } from "./answer-compaction.js";
 
 /**
  * @param {string} text
@@ -118,9 +120,27 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
     conversationState: coachingCtx.conversationState,
     continuityRepeat: !!coachingCtx.continuityRepeat,
     turnOrdinal: turnOrd,
+    stripParentFacingMeta: true,
+  });
+
+  let composed = dedupeAdjacentOverlappingComposed(packed);
+  const opener = parentDirectOpenerHe(intent, truthPacket);
+  const firstObsIx = composed.findIndex((b) => b.type === "observation" && String(b.textHe || "").trim());
+  if (opener && firstObsIx >= 0) {
+    const cur = String(composed[firstObsIx].textHe || "").trim();
+    composed[firstObsIx] = {
+      ...composed[firstObsIx],
+      textHe: cur.includes(opener.slice(0, 12)) ? cur : `${opener}\n\n${cur}`.trim(),
+    };
+  }
+
+  composed = compactParentAnswerBlocks(composed, {
+    scopeType: String(truthPacket?.scopeType || ""),
+    maxBlocks: truthPacket?.scopeType === "executive" ? 4 : 5,
+    maxTotalChars: truthPacket?.scopeType === "executive" ? 1900 : 2400,
   });
 
   return {
-    answerBlocks: dedupeAdjacentOverlappingComposed(packed),
+    answerBlocks: composed,
   };
 }

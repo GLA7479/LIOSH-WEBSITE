@@ -190,6 +190,9 @@ function personalizedLine(truthPacket, ix) {
  * }} ctx
  */
 export function applyParentCoachingPacks(blocks, ctx) {
+  if (ctx.stripParentFacingMeta) {
+    return (Array.isArray(blocks) ? blocks : []).map((b) => ({ ...b, textHe: String(b.textHe || "").trim() }));
+  }
   const intent = String(ctx.intent || "");
   let packGroup = mapCanonicalIntentToPackGroup(intent);
   const dl = ctx.truthPacket?.derivedLimits || {};
