@@ -250,7 +250,7 @@ const PHASE8_DURATION_BAND_HE = {
 const PHASE8_INTENSITY_HE = {
   light: "קל",
   focused: "ממוקד",
-  targeted: "יעדני",
+  targeted: "מדויק",
 };
 
 const PHASE8_FORMAT_HE = {
