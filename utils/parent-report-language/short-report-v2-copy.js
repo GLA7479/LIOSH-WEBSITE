@@ -9,7 +9,7 @@ export function insufficientSubjectQuestionsLineHe(subjectLabel, q) {
 }
 
 export function tierStableStrengthHe() {
-  return "חוזק שמחזיק";
+  return "חוזק יציב";
 }
 
 export function tierWeaknessRecurringHe() {
@@ -17,7 +17,7 @@ export function tierWeaknessRecurringHe() {
 }
 
 export function tierWeaknessSupportHe() {
-  return "מקום לחיזוק עדין";
+  return "חיזוק עדין";
 }
 
 export function evidenceExampleTitleFallbackHe() {

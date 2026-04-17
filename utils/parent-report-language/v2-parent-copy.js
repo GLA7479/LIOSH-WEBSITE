@@ -47,7 +47,7 @@ export function executiveV2MajorTrendsLinesHe(p) {
 /** @param {boolean} hasUncertain */
 export function executiveV2MixedSignalNoticeHe(hasUncertain) {
   if (!hasUncertain) return "";
-  return "בכמה נושאים התוצאות עדיין לא יציבות — עוד קצת תרגול ייעזר לפני מסקנה חדה.";
+  return "בכמה נושאים התוצאות עדיין לא יציבות — עוד קצת תרגול יעזור לפני מסקנה חדה.";
 }
 
 /**
@@ -96,7 +96,7 @@ export function executiveV2ReportReadinessHe(unitsLength) {
   const n = Math.max(0, Number(unitsLength) || 0);
   return n >= 8
     ? "יש מספיק תרגול בתקופה כדי לדבר על מגמות בבית."
-    : "התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בעיניים פקוחות ולהמשיך לאסוף תרגול.";
+    : "התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בעיון ולהמשיך לאסוף תרגול.";
 }
 
 export function homePlanV2EmptyFallbackHe() {
@@ -117,7 +117,7 @@ export function crossSubjectV2BulletsHe(p) {
   const c = Math.max(0, Number(p.contradictoryCount) || 0);
   const bullets = [
     `במבט על כל המקצועות יחד: ${units} נושאים בטווח התקופה.`,
-    `${hi} נושאים ששווה לעמוד עליהם השבוע בעיניים פקוחות.`,
+    `${hi} נושאים שכדאי לעקוב אחריהם השבוע מקרוב.`,
   ];
   if (c > 0) {
     bullets.push(

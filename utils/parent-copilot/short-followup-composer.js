@@ -45,7 +45,7 @@ function acceptanceHookHe(family, truthPacket) {
     String(truthPacket.scopeType || "") === "subject" && String(truthPacket.scopeLabel || "").trim()
       ? ` (במסגרת ${String(truthPacket.scopeLabel).trim()})`
       : "";
-  return `נמשיכים עם מה שבחרתם מההצעות — ${base}${scopeTail}: `;
+  return `ממשיכים לפי ההצעה שבחרתם — ${base}${scopeTail}: `;
 }
 
 /**
@@ -281,7 +281,7 @@ export function tryBuildParentShortFollowupDraft(ctx) {
       answerBlocks = [
         {
           type: "observation",
-          textHe: `נשארים על אותו ניסוח מהדוח ${scopeBit}, בלי להוסיף עובדה חדשה מעבר למה שכבר מעוגן.${tail}`,
+          textHe: `נשארים על אותו ניסוח מהדוח ${scopeBit}, בלי להוסיף עובדה חדשה מעבר למה שכבר מופיע בדוח.${tail}`,
           source: "composed",
         },
       ];
