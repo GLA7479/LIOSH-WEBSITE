@@ -7,13 +7,13 @@
 import { mapCanonicalIntentToPackGroup } from "./parent-coaching-packs.js";
 
 const TEXT = {
-  action_today: "רוצים לפרק לצעד קטן היום בבית לפי אותו נושא?",
-  action_week: "רוצים לבנות יחד תוכנית קצרה לשבוע הקרוב סביב הנושא הזה?",
-  avoid_now: "רוצים לזהות יחד מה כדאי להימנע ממנו בשבוע הקרוב?",
+  action_today: "אפשר לפרק יחד לצעד קטן היום בבית סביב אותו נושא?",
+  action_week: "אפשר לשרטט יחד תוכנית קצרה לשבוע הקרוב סביב הנושא הזה?",
+  avoid_now: "רוצים לסמן יחד מה כדאי להימנע ממנו בשבוע הקרוב?",
   advance_or_hold: "רוצים לבדוק יחד מתי כדאי לקדם ומתי לעצור באותו נושא?",
   explain_to_child: "רוצים ניסוח קצר להסבר לילד בלי לחץ?",
   ask_teacher: "רוצים ניסוח לשאלה ממוקדת למורה לפי מה שמופיע בדוח?",
-  uncertainty_boundary: "רוצים לפרק מה עדיין לא ברור לפי הנתונים בדוח?",
+  uncertainty_boundary: "רוצים לפרק מה עדיין לא ברור מהנתונים בדוח?",
 };
 
 /** @type {Record<string, Partial<Record<string, number>>>} */

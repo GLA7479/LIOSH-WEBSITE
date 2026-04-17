@@ -36,7 +36,7 @@ const PR1_TRANSFER_LABEL_HE = {
   not_ready: "לא עכשיו",
   limited: "מוגבלת",
   emerging: "מתחילה",
-  ready: "זהירה",
+  ready: "מוכנים לשלב הבא",
 };
 
 /** PR1 — טקסט הורה גלוי בלבד; לא משנה payload. */
@@ -48,7 +48,7 @@ function pr1CrossSubjectRetentionDisplayHe(raw) {
   return PR1_RETENTION_LABEL_HE[k] || "לא ברור";
 }
 
-/** PR1 — מוכנות להעברה חוצה־מקצועית; לא מציג מזהה גולמי. */
+/** PR1 — מוכנות להמשך בין מקצועות; לא מציג מזהה גולמי. */
 function pr1CrossSubjectTransferDisplayHe(raw) {
   const k = String(raw ?? "")
     .trim()
@@ -114,12 +114,12 @@ export function ExecutiveSummarySection({ es, compact }) {
         }`.trim()}
       >
         <div>
-          <h4 className="pr-detailed-subheading text-emerald-200/95">חוזקות חוצות־מקצועות</h4>
+          <h4 className="pr-detailed-subheading text-emerald-200/95">חוזקות בכל המקצועות</h4>
           <Bullets items={(es.topStrengthsAcrossHe || []).map(pr1ParentVisibleTextHe)} />
         </div>
         {(es.topFocusAreasHe || []).length > 0 ? (
           <div>
-            <h4 className="pr-detailed-subheading text-amber-200/95">מיקוד חוצה־מקצועות</h4>
+            <h4 className="pr-detailed-subheading text-amber-200/95">מה לשים בפוקוס (בכמה מקצועות)</h4>
             <Bullets items={(es.topFocusAreasHe || []).map(pr1ParentVisibleTextHe)} />
           </div>
         ) : null}
@@ -134,13 +134,13 @@ export function ExecutiveSummarySection({ es, compact }) {
         <div className="flex flex-wrap gap-2 text-[11px] md:text-xs text-white/78">
           {es.dominantCrossSubjectRiskLabelHe ? (
             <span className="rounded border border-white/15 bg-white/[0.05] px-2 py-1">
-              <span className="text-white/45 font-bold">דפוס קושי בולט: </span>
+              <span className="text-white/45 font-bold">איפה זה נשמע קשה יותר: </span>
               {pr1ParentVisibleTextHe(es.dominantCrossSubjectRiskLabelHe)}
             </span>
           ) : null}
           {es.dominantCrossSubjectSuccessPatternLabelHe ? (
             <span className="rounded border border-white/15 bg-white/[0.05] px-2 py-1">
-              <span className="text-white/45 font-bold">דפוס הצלחה בולט: </span>
+              <span className="text-white/45 font-bold">איפה זה נשמע חזק יותר: </span>
               {pr1ParentVisibleTextHe(es.dominantCrossSubjectSuccessPatternLabelHe)}
             </span>
           ) : null}
@@ -197,23 +197,23 @@ export function ExecutiveSummarySection({ es, compact }) {
         (es.reviewBeforeAdvanceAreasHe && es.reviewBeforeAdvanceAreasHe.length) ||
         (es.transferReadyAreasHe && es.transferReadyAreasHe.length)) && (
         <div className="rounded-lg border border-emerald-400/22 bg-emerald-950/10 px-3 py-2.5 pr-detailed-avoid-split">
-          <h4 className="pr-detailed-subheading text-emerald-100/95 mb-1.5 border-0 pb-0">טעות חוזרת ושימור למידה</h4>
+          <h4 className="pr-detailed-subheading text-emerald-100/95 mb-1.5 border-0 pb-0">טעויות חוזרות ושימור מה שלומדים</h4>
           <div className="space-y-1 text-[11px] md:text-sm text-white/[0.86] leading-snug">
             {es.dominantCrossSubjectMistakePatternLabelHe ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">דפוס בולט: </span>
+                <span className="text-white/45 font-bold">מה בולט: </span>
                 {pr1ParentVisibleTextHe(es.dominantCrossSubjectMistakePatternLabelHe)}
               </p>
             ) : null}
             {es.crossSubjectLearningStageLabelHe ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">מצב לאורך זמן: </span>
+                <span className="text-white/45 font-bold">לאורך זמן: </span>
                 {pr1ParentVisibleTextHe(es.crossSubjectLearningStageLabelHe)}
                 {es.crossSubjectRetentionRisk
                   ? ` · סיכון שימור: ${pr1CrossSubjectRetentionDisplayHe(es.crossSubjectRetentionRisk)}`
                   : ""}
                 {es.crossSubjectTransferReadiness
-                  ? ` · מוכנות להעברה: ${pr1CrossSubjectTransferDisplayHe(es.crossSubjectTransferReadiness)}`
+                  ? ` · מוכנות לשלב הבא: ${pr1CrossSubjectTransferDisplayHe(es.crossSubjectTransferReadiness)}`
                   : ""}
               </p>
             ) : null}
@@ -287,7 +287,7 @@ export function ExecutiveSummarySection({ es, compact }) {
         (es.subjectsAtRiskOfSupportRepetitionHe && es.subjectsAtRiskOfSupportRepetitionHe.length) ||
         (es.subjectsNeedingSupportResetHe && es.subjectsNeedingSupportResetHe.length)) && (
         <div className="rounded-lg border border-indigo-400/22 bg-indigo-950/10 px-3 py-2.5 pr-detailed-avoid-split">
-          <h4 className="pr-detailed-subheading text-indigo-100/95 mb-1.5 border-0 pb-0">רצף תמיכה — מבט על התקופה</h4>
+          <h4 className="pr-detailed-subheading text-indigo-100/95 mb-1.5 border-0 pb-0">רצף התמיכה לאורך התקופה</h4>
           <div className="space-y-1 text-[11px] md:text-sm text-white/[0.86] leading-snug">
             {String(es.crossSubjectSupportSequenceStateLabelHe || "").trim() ? (
               <p className="m-0">
@@ -481,7 +481,7 @@ export function ExecutiveSummarySection({ es, compact }) {
       ) : null}
       {es.overallConfidenceHe ? (
         <div>
-          <h4 className="pr-detailed-subheading text-sky-200/95">ביטחון בנתונים (חוצה־מקצועות)</h4>
+          <h4 className="pr-detailed-subheading text-sky-200/95">ביטחון בנתונים (על כל המקצועות)</h4>
           <p className="pr-detailed-body-text text-sm m-0 leading-relaxed">
             {pr1ParentVisibleTextHe(es.overallConfidenceHe)}
           </p>

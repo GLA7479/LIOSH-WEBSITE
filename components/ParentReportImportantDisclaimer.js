@@ -14,7 +14,7 @@ export function ParentReportImportantDisclaimer() {
       </h2>
       <div className="parent-report-important-disclaimer-body space-y-2 text-[0.8125rem] md:text-sm leading-relaxed text-white/76">
         <p className="m-0">
-          הדוח, ההמלצות והתובנות במסמך זה הופקו באופן ממוחשב על בסיס נתוני התרגול והשימוש במערכת.
+          הדוח, ההמלצות והתובנות במסמך זה נגזרות מתוך נתוני התרגול והשימוש במערכת.
         </p>
         <p className="m-0">
           הם נועדו לשמש{" "}

@@ -45,7 +45,7 @@ function acceptanceHookHe(family, truthPacket) {
     String(truthPacket.scopeType || "") === "subject" && String(truthPacket.scopeLabel || "").trim()
       ? ` (במסגרת ${String(truthPacket.scopeLabel).trim()})`
       : "";
-  return `מבצעים את ההמשך שהוצע — ${base}${scopeTail}: `;
+  return `נמשיכים עם מה שבחרתם מההצעות — ${base}${scopeTail}: `;
 }
 
 /**

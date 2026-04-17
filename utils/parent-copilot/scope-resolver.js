@@ -216,7 +216,7 @@ export function resolveScope(input) {
     if (!hit) {
       return {
         resolutionStatus: "clarification_required",
-        clarificationQuestionHe: "הנושא הזה עדיין בלי ניסוח מעוגן בדוח — כדאי לעבור לנושא עם תרגול.",
+        clarificationQuestionHe: "בנושא הזה עדיין אין מספיק תרגול שמופיע בדוח — כדאי לבחור נושא שכבר יש בו תרגול.",
         scopeConfidence: 0.2,
         scopeReason: "selected_context_topic_missing_anchor",
         stageA,
@@ -246,7 +246,7 @@ export function resolveScope(input) {
     if (!subjectHasAnchor) {
       return {
         resolutionStatus: "clarification_required",
-        clarificationQuestionHe: "במקצוע הזה אין עדיין נושא מעוגן עם מספיק נתונים — אפשר לנסות מקצוע אחר.",
+        clarificationQuestionHe: "במקצוע הזה אין עדיין נושא עם מספיק תרגול כדי לדבר עליו — אפשר לנסות מקצוע אחר.",
         scopeConfidence: 0.24,
         scopeReason: "selected_context_subject_missing_anchor",
         stageA,
@@ -321,7 +321,7 @@ export function resolveScope(input) {
   if (!anchor) {
     return {
       resolutionStatus: "clarification_required",
-      clarificationQuestionHe: "אין כרגע מספיק נתוני נושא בדוח כדי לענות — כדאי לנסות שוב אחרי שמופיע תרגול בטווח התאריכים.",
+      clarificationQuestionHe: "אין כרגע מספיק תרגול בנושאים בדוח כדי לענות — כדאי לנסות שוב אחרי שמופיע תרגול בטווח התאריכים.",
       scopeConfidence: 0,
       scopeReason: "no_anchor_available",
       stageA,

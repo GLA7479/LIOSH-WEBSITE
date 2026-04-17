@@ -28,26 +28,26 @@ export function executiveV2MajorTrendsLinesHe(p) {
   const actionable = Math.max(diagnosed, stable);
   if (units === 0) {
     return [
-      "בטווח התקופה עדיין לא נאספו נושאים מספקים להשוואה.",
-      "ממשיכים תרגול קצר ועקבי כדי לייצר תמונה שאפשר לסכם בצורה אמינה.",
+      "בטווח התקופה טרם נאספו מספיק נושאים כדי להשוות ביניהם.",
+      "תרגול קצר ועקבי יוסיף תמונה שאפשר לסמוך עליה.",
     ];
   }
   if (units === 1 && stable > 0 && diagnosed === 0) {
     return [
       "בטווח התקופה נבדק נושא אחד.",
-      "הכיוון באותו נושא חיובי ועקבי, ועדיין נשארים זהירים לפני הרחבה לנושאים נוספים.",
+      "הכיוון שם חיובי ועקבי; לפני הרחבה לנושאים נוספים עדיף לייצב עוד קצת תרגול באותו נושא.",
     ];
   }
   return [
     `בטווח התקופה נבדקו ${units} נושאים.`,
-    `יש בסיס פעולה ב־${actionable} נושאים; ב־${uncertain} נושאים התמונה עדיין חלקית; מתוך זה ${stable} נושאים מראים חוזקה עקבית.`,
+    `חוזקה עקבית מופיעה ב־${stable} מתוך הנושאים שנבדקו; ב־${actionable} נושאים יש בסיס לשיחה ביתית ממוקדת; ב־${uncertain} נושאים עדיין מדובר בתמונה חלקית.`,
   ];
 }
 
 /** @param {boolean} hasUncertain */
 export function executiveV2MixedSignalNoticeHe(hasUncertain) {
   if (!hasUncertain) return "";
-  return "בכמה נושאים התוצאות עדיין קופצות — עוד קצת תרגול לפני מסקנה חדה.";
+  return "בכמה נושאים התוצאות עדיין לא יציבות — עוד קצת תרגול ייעזר לפני מסקנה חדה.";
 }
 
 /**
@@ -61,10 +61,10 @@ export function executiveV2OverallConfidenceHe(diagnosed, units, stable = 0) {
   const s = Math.max(0, Number(stable) || 0);
   const actionable = Math.max(d, s);
   if (u === 0) {
-    return "מבט כולל: עדיין אין מספיק נושאים בטווח כדי לבנות כיוון ביתי יציב.";
+    return "מבט כולל: עדיין אין מספיק נושאים בטווח כדי לבנות תמונה ביתית יציבה.";
   }
   if (u === 1 && actionable === 0) {
-    return "מבט כולל: יש כרגע נושא יחיד בטווח, ולכן נשארים עם מסקנה זהירה וממשיכים לאסוף ראיות.";
+    return "מבט כולל: יש כרגע נושא יחיד בטווח — נשארים עם מסקנה זהירה וממשיכים לאסוף עוד תרגול.";
   }
   return `מבט כולל: ב־${actionable} מתוך ${u} נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.`;
 }
@@ -77,7 +77,7 @@ export function executiveV2EvidenceBalanceHe(stable, diagnosed) {
   const s = Math.max(0, Number(stable) || 0);
   const diag = Math.max(0, Number(diagnosed) || 0);
   const rest = Math.max(0, diag - s);
-  return `נקודות חוזק שנשמרו לאורך זמן: ${s}; נושאים שצריך לחזק או לאסוף עוד תרגול לפני מסקנה חדה: ${rest}.`;
+  return `נקודות שממשיכות להישמר בצורה טובה: ${s}; נושאים שכדאי לחזק או ללמוד עליהם עוד לפני מסקנה חדה: ${rest}.`;
 }
 
 /**
@@ -86,8 +86,8 @@ export function executiveV2EvidenceBalanceHe(stable, diagnosed) {
 export function executiveV2CautionNoteHe(p) {
   const p4 = Math.max(0, Number(p.p4Length) || 0);
   const u = Math.max(0, Number(p.uncertainLength) || 0);
-  if (p4 > 0) return "יש נושאים שדורשים תשומת לב גבוהה השבוע — כדאי לתאם עם המורה או המטפל.";
-  if (u > 0) return "בחלק מהנושאים עדיין אין מסקנה ברורה — עוד קצת תרגול יבהיר את התמונה.";
+  if (p4 > 0) return "יש נושאים שכדאי לשים עליהם לב השבוע — אפשר לתאם עם המורה או עם מטפל אם זה רלוונטי.";
+  if (u > 0) return "בחלק מהנושאים עדיין אין מסקנה חדה — עוד קצת תרגול יבהיר את התמונה.";
   return "";
 }
 
@@ -96,7 +96,7 @@ export function executiveV2ReportReadinessHe(unitsLength) {
   const n = Math.max(0, Number(unitsLength) || 0);
   return n >= 8
     ? "יש מספיק תרגול בתקופה כדי לדבר על מגמות בבית."
-    : "התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בזהירות ולהמשיך לאסוף תרגול.";
+    : "התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בעיניים פקוחות ולהמשיך לאסוף תרגול.";
 }
 
 export function homePlanV2EmptyFallbackHe() {
@@ -116,12 +116,12 @@ export function crossSubjectV2BulletsHe(p) {
   const hi = Math.max(0, Number(p.highPriorityCount) || 0);
   const c = Math.max(0, Number(p.contradictoryCount) || 0);
   const bullets = [
-    `בסיכום חוצה־מקצועות: ${units} נושאים בטווח התקופה.`,
-    `מתוכם ${hi} נושאים דורשים תשומת לב גבוהה בשבוע הקרוב.`,
+    `במבט על כל המקצועות יחד: ${units} נושאים בטווח התקופה.`,
+    `${hi} נושאים ששווה לעמוד עליהם השבוע בעיניים פקוחות.`,
   ];
   if (c > 0) {
     bullets.push(
-      `ב־${c} נושאים התשובות לא מסתדרות זו עם זו — עוד סיבוב תרגול קצר יראה אם הדפוס נשמר.`
+      `ב־${c} נושאים התוצאות עדיין לא אחידות — עוד סיבוב תרגול קצר יראה אם זה נשאר או מתייצב.`
     );
   }
   return bullets;
@@ -129,7 +129,7 @@ export function crossSubjectV2BulletsHe(p) {
 
 export function crossSubjectV2DataQualityNoteHe(unitsLength) {
   const n = Math.max(0, Number(unitsLength) || 0);
-  return n < 8 ? "מספר הנושאים שנבדקו נמוך יחסית — התמונה תתחדד ככל שיצטבר עוד תרגול." : null;
+  return n < 8 ? "מספר הנושאים שנבדקו נמוך יחסית — ככל שיצטבר עוד תרגול התמונה תתבהר." : null;
 }
 
 export function subjectV2TrendNarrativeHighPriorityHe() {
