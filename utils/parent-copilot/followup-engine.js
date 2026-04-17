@@ -143,6 +143,12 @@ function scoreFamilyPhaseB(family, ctx) {
   const affKey = mapCanonicalIntentToPackGroup(intent);
   let s = INTENT_FOLLOWUP_AFFINITY[affKey]?.[family] ?? INTENT_FOLLOWUP_AFFINITY.understand_meaning?.[family] ?? 0;
 
+  if (intent === "what_not_to_do_now") {
+    if (family === "avoid_now") s += 3;
+    if (family === "uncertainty_boundary") s += 1.5;
+    if (family === "action_today" || family === "action_week") s -= 5;
+  }
+
   const recentSuggest = Array.isArray(conv.recentSuggestedFollowupTexts) ? conv.recentSuggestedFollowupTexts : [];
   const answerFp = Array.isArray(conv.answerSummaryFingerprints) ? conv.answerSummaryFingerprints : [];
   const t = followUpTextForSurface(family, intent, scopeLabelHe || "", scopeType);

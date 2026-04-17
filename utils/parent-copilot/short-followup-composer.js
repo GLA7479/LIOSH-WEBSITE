@@ -15,7 +15,7 @@ import { normalizeParentFacingHe } from "../parent-report-language/parent-facing
  */
 function plannerIntentForAcceptedFollowupFamily(family) {
   const f = String(family || "").trim();
-  if (f === "avoid_now") return "what_is_still_difficult";
+  if (f === "avoid_now") return "what_not_to_do_now";
   if (f === "advance_or_hold") return "why_not_advance";
   if (f === "explain_to_child") return "how_to_tell_child";
   if (f === "ask_teacher") return "question_for_teacher";
@@ -49,6 +49,65 @@ function acceptanceHookHe(family, truthPacket) {
 }
 
 /**
+ * @param {object} conv
+ */
+function lastPlannerIntentFromConv(conv) {
+  const lp = String(conv.lastPlannerIntent || "").trim();
+  if (lp) return lp;
+  const pi = Array.isArray(conv.priorIntents) ? conv.priorIntents : [];
+  return pi.length ? String(pi[pi.length - 1] || "").trim() : "";
+}
+
+/**
+ * @param {object} conv
+ */
+function priorTurnWasStrengthSide(conv) {
+  const k = lastPlannerIntentFromConv(conv);
+  return k === "what_is_going_well" || k === "strength_vs_weakness_summary" || k === "what_is_most_important";
+}
+
+/**
+ * @param {object} conv
+ */
+function priorTurnWasDifficultySide(conv) {
+  const k = lastPlannerIntentFromConv(conv);
+  return (
+    k === "what_is_still_difficult" ||
+    k === "what_not_to_do_now" ||
+    k === "why_not_advance" ||
+    k === "is_intervention_needed"
+  );
+}
+
+/**
+ * @param {string} plannerIntent
+ * @param {object} truthPacket
+ * @param {object} conv
+ */
+function composeBlocksForPlannerIntent(plannerIntent, truthPacket, conv) {
+  const turnOrd = Array.isArray(conv.priorIntents) ? conv.priorIntents.length : 0;
+  const plan = planConversation(plannerIntent, truthPacket, {
+    continuityRepeat: false,
+    turnOrdinal: turnOrd,
+    scopeType: truthPacket.scopeType,
+    interpretationScope: truthPacket.interpretationScope,
+  });
+  const composed = composeAnswerDraft(plan, truthPacket, {
+    intent: plannerIntent,
+    continuityRepeat: false,
+    conversationState: conv,
+    turnOrdinal: turnOrd,
+  });
+  return compactParentAnswerBlocks(
+    (composed.answerBlocks || []).map((b) => ({
+      ...b,
+      textHe: normalizeParentFacingHe(String(b.textHe || "").trim()),
+    })),
+    { scopeType: String(truthPacket.scopeType || ""), maxBlocks: 5, maxTotalChars: 2400 },
+  );
+}
+
+/**
  * @param {{ utteranceStr: string; conv: object; payload: unknown }} ctx
  * @returns {null|{ truthPacket: object; plannerIntent: string; answerBlocks: Array<{ type: string; textHe: string; source: string }>; scopeMeta: object; replyClass: string }}
  */
@@ -63,7 +122,13 @@ export function tryBuildParentShortFollowupDraft(ctx) {
   const fam = String(conv.lastOfferedFollowupFamily || "").trim();
   const scopes = Array.isArray(conv.priorScopes) ? conv.priorScopes : [];
   const scopeKey = scopes.length ? String(scopes[scopes.length - 1] || "").trim() : "";
-  if (!fam || !scopeKey) return null;
+  if (!scopeKey) return null;
+  const chipOptional =
+    replyClass === "contrast_follow_negative" ||
+    replyClass === "contrast_follow_positive" ||
+    replyClass === "vague_summary_follow" ||
+    replyClass === "short_action_follow";
+  if (!fam && !chipOptional) return null;
   const colon = scopeKey.indexOf(":");
   if (colon < 1) return null;
   const scopeType = scopeKey.slice(0, colon);
@@ -236,6 +301,53 @@ export function tryBuildParentShortFollowupDraft(ctx) {
       ];
       if (interp) answerBlocks.push({ type: "meaning", textHe: interp.slice(0, 400), source: "composed" });
       break;
+
+    case "contrast_follow_negative": {
+      if (!priorTurnWasStrengthSide(conv)) return null;
+      plannerIntent = "what_is_still_difficult";
+      answerBlocks = composeBlocksForPlannerIntent(plannerIntent, truthPacket, conv);
+      break;
+    }
+
+    case "contrast_follow_positive": {
+      if (!priorTurnWasDifficultySide(conv)) return null;
+      plannerIntent = "what_is_going_well";
+      answerBlocks = composeBlocksForPlannerIntent(plannerIntent, truthPacket, conv);
+      break;
+    }
+
+    case "vague_summary_follow": {
+      plannerIntent = "explain_report";
+      answerBlocks = composeBlocksForPlannerIntent(plannerIntent, truthPacket, conv);
+      break;
+    }
+
+    case "short_action_follow": {
+      const recOk = !!dl.recommendationEligible && String(dl.recommendationIntensityCap || "RI0") !== "RI0";
+      const lastFam = String(fam || "").trim();
+      const lastP = lastPlannerIntentFromConv(conv);
+      const wantsWeek = /מחר|השבוע|שבוע/u.test(utteranceStr);
+      const priorActs = Array.isArray(conv.priorIntents)
+        ? conv.priorIntents.slice(-4).filter((x) => x === "what_to_do_today" || x === "what_to_do_this_week")
+        : [];
+      const hadActionContext =
+        lastFam === "action_today" ||
+        lastFam === "action_week" ||
+        lastP === "what_to_do_today" ||
+        lastP === "what_to_do_this_week" ||
+        priorActs.length > 0;
+      if (!recOk || !hadActionContext) {
+        plannerIntent = "explain_report";
+      } else if (lastFam === "action_week" || lastP === "what_to_do_this_week" || wantsWeek) {
+        plannerIntent = "what_to_do_this_week";
+      } else if (lastFam === "action_today" || lastP === "what_to_do_today") {
+        plannerIntent = "what_to_do_today";
+      } else {
+        plannerIntent = wantsWeek ? "what_to_do_this_week" : "what_to_do_today";
+      }
+      answerBlocks = composeBlocksForPlannerIntent(plannerIntent, truthPacket, conv);
+      break;
+    }
 
     default:
       return null;

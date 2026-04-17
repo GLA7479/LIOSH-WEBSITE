@@ -15,6 +15,7 @@ import { SUBJECT_ORDER, subjectLabelHe } from "./contract-reader.js";
  *   "why_not_advance" |
  *   "what_is_going_well" |
  *   "what_is_still_difficult" |
+ *   "what_not_to_do_now" |
  *   "how_to_tell_child" |
  *   "question_for_teacher" |
  *   "is_intervention_needed" |
@@ -47,6 +48,7 @@ export const CANONICAL_PARENT_INTENTS = [
   "why_not_advance",
   "what_is_going_well",
   "what_is_still_difficult",
+  "what_not_to_do_now",
   "how_to_tell_child",
   "question_for_teacher",
   "is_intervention_needed",
@@ -169,6 +171,9 @@ const INTENT_PARAPHRASES = {
     /פרטי\s*הדוח|תוכן\s*הדוח|מה\s*יש\s*בדוח/u,
     /הסבר\s*קצר|תסביר\s*לי\s*את\s*הדוח/u,
     /תסביר\s*לי\s*מה\s*חשוב\s*כאן|מה\s*חשוב\s*כאן\s*בדוח/u,
+    /^בקיצור\??$/u,
+    /^ו?בקיצור\??$/u,
+    /אז\s*מה\s*בעצם|מה\s*השורה\s*התחתונה|מה\s*לקחת\s*מזה/u,
   ],
   what_is_most_important: [
     /להתקדם\s*או\s*להמתין|לחכות\s*או\s*להמשיך|להמשיך\s*או\s*להמתין|להמתין\s*או\s*להתקדם|כדאי\s*להתקדם/u,
@@ -236,8 +241,15 @@ const INTENT_PARAPHRASES = {
     /מה\s*משביע\s*רצון|מה\s*מרשים/u,
     /מה\s*התקדמות\s*חיובית|מה\s*משתפר\s*בדוח/u,
   ],
+  what_not_to_do_now: [
+    /מה\s*לא\s*לעשות\s*עכשיו/u,
+    /מה\s*לא\s*לעשות/u,
+    /ממה\s*להימנע\s*עכשיו/u,
+    /מה\s*לא\s*כדאי\s*עכשיו/u,
+    /מה\s*לא\s*כדאי\s*לעשות\s*עכשיו/u,
+  ],
   what_is_still_difficult: [
-    /מה\s*לא\s*כדאי\s*לעשות|מה\s*לא\s*לעשות\s*עכשיו|לא\s*כדאי\s*עכשיו|מה\s*לא\s*לעשות|להימנע\s*מ/u,
+    /מה\s*לא\s*כדאי\s*לעשות(?!\s*עכשיו)|לא\s*כדאי\s*עכשיו|להימנע\s*מ/u,
     /מה\s*עדיין\s*קשה|מה\s*קשה|איפה\s*הקושי|מה\s*דורש\s*חיזוק|מה\s*חלש|מה\s*מתקשים/u,
     /מה\s*עדיין\s*לא\s*יושב|מה\s*עדיין\s*לא\s*הולך|מה\s*לא\s*יושב|מה\s*לא\s*הולך|מה\s*לא\s*צולח/u,
     /איפה\s*החולשות|מה\s*החולשות|מה\s*חלש\s*בדוח/u,
@@ -470,13 +482,24 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
     second = 0;
   }
 
+  if ((scores.what_not_to_do_now || 0) > 0 && best !== "clinical_boundary") {
+    const n = scores.what_not_to_do_now || 0;
+    const d = scores.what_is_still_difficult || 0;
+    if (n >= d) {
+      best = "what_not_to_do_now";
+      bestScore = n;
+      topIntentCount = 1;
+      second = 0;
+    }
+  }
+
   const scopeSignal = bestScopeClassFromSignals(folded);
   /** @type {ScopeClass} */
   let scopeClass =
     scopeSignal ||
     (best === "what_is_going_well"
       ? "strengths"
-      : best === "what_is_still_difficult"
+      : best === "what_is_still_difficult" || best === "what_not_to_do_now"
         ? "weaknesses"
         : best === "why_not_advance"
           ? "blocked_advance"

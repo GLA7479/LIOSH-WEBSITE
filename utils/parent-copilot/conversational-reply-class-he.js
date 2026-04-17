@@ -3,7 +3,7 @@
  * Uses normalization, token/phrase lexicons, fuzzy short-token match, and simple structural signals — not a tiny exact-phrase gate.
  */
 
-/** @typedef {'affirmation_continue'|'rejection_not_now'|'concern_reaction'|'confusion_simpler'|'clarify_previous'|'brief_continue'} ReplyClassId */
+/** @typedef {'affirmation_continue'|'rejection_not_now'|'concern_reaction'|'confusion_simpler'|'clarify_previous'|'brief_continue'|'contrast_follow_negative'|'contrast_follow_positive'|'vague_summary_follow'|'short_action_follow'} ReplyClassId */
 
 /** @type {ReplyClassId[]} */
 export const REPLY_CLASS_ORDER = [
@@ -13,6 +13,10 @@ export const REPLY_CLASS_ORDER = [
   "rejection_not_now",
   "affirmation_continue",
   "brief_continue",
+  "contrast_follow_negative",
+  "contrast_follow_positive",
+  "vague_summary_follow",
+  "short_action_follow",
 ];
 
 const MAX_NORMALIZED_CHARS = 72;
@@ -185,6 +189,30 @@ const CLARIFY_PREVIOUS_PHRASES = [
   "אפשר לחדד",
 ];
 
+/** Contrastive follow-up — weaker / harder side (leading ו optional). */
+const CONTRAST_NEGATIVE_PHRASES = [
+  "ומה פחות",
+  "ממה פחות",
+  "ומה קשה",
+  "ממה קשה",
+  "ומה לא טוב",
+  "ממה לא טוב",
+];
+
+/** Contrastive follow-up — positive / stronger side. */
+const CONTRAST_POSITIVE_PHRASES = ["ומה כן", "ממה כן", "ומה טוב", "ממה טוב", "מה כן עובד"];
+
+/** Vague summary / bottom-line ask (prefer explain-style downstream). */
+const VAGUE_SUMMARY_PHRASES = [
+  "בקיצור",
+  "אז מה בעצם",
+  "מה השורה התחתונה",
+  "מה לקחת מזה",
+];
+
+/** Short action continuation (prior context in composer). */
+const SHORT_ACTION_PHRASES = ["ומה עכשיו", "ממה עכשיו", "אז מה עושים", "ומה בבית", "ממה בבית", "ומה מחר", "ממה מחר"];
+
 const BRIEF_CONTINUE_PHRASES = [
   "אז מה",
   "ואז",
@@ -254,6 +282,22 @@ function scorePhrases(t, phrases, weight) {
 }
 
 /**
+ * Score phrases on `t` and common leading variants (ו / אז).
+ * @param {string} t
+ * @param {string[]} phrases
+ * @param {number} weight
+ */
+function scorePhrasesWithLeadingVariants(t, phrases, weight) {
+  const variants = [t, t.replace(/^ו+\s*/u, "").trim(), t.replace(/^אז\s+/u, "").trim()];
+  let mx = 0;
+  for (const v of variants) {
+    if (!v) continue;
+    mx = Math.max(mx, scorePhrases(v, phrases, weight));
+  }
+  return mx;
+}
+
+/**
  * @param {string[]} tokens
  * @param {Set<string>} lex
  * @param {number} w
@@ -303,13 +347,25 @@ export function classifyShortParentReplyClassHe(utteranceRaw, ctx = null) {
     confusion_simpler: 0,
     clarify_previous: 0,
     brief_continue: 0,
+    contrast_follow_negative: 0,
+    contrast_follow_positive: 0,
+    vague_summary_follow: 0,
+    short_action_follow: 0,
   };
+
+  sc.contrast_follow_negative += scorePhrasesWithLeadingVariants(t, CONTRAST_NEGATIVE_PHRASES, 2.28);
+  sc.contrast_follow_positive += scorePhrasesWithLeadingVariants(t, CONTRAST_POSITIVE_PHRASES, 2.28);
+  sc.vague_summary_follow += scorePhrasesWithLeadingVariants(t, VAGUE_SUMMARY_PHRASES, 2.45);
+  sc.short_action_follow += scorePhrasesWithLeadingVariants(t, SHORT_ACTION_PHRASES, 2.22);
 
   sc.concern_reaction += scorePhrases(t, CONCERN_PHRASES, 2.4);
   sc.rejection_not_now += scorePhrases(t, REJECTION_PHRASES, 2.2);
   sc.confusion_simpler += scorePhrases(t, CONFUSION_PHRASES, 2.3);
   sc.clarify_previous += scorePhrases(t, CLARIFY_PREVIOUS_PHRASES, 2.5);
   sc.brief_continue += scorePhrases(t, BRIEF_CONTINUE_PHRASES, 2.1);
+  if (/ומה\s*עכשיו|ממה\s*עכשיו|אז\s*מה\s*עושים|ומה\s*בבית|ממה\s*בבית|ומה\s*מחר|ממה\s*מחר/u.test(t)) {
+    sc.brief_continue *= 0.38;
+  }
 
   sc.affirmation_continue += scorePhrases(t, AFFIRMATION_PHRASES, 2.15);
   sc.affirmation_continue += scoreLexTokens(tokens, AFFIRMATION_TOKENS, 2.15);
@@ -322,7 +378,7 @@ export function classifyShortParentReplyClassHe(utteranceRaw, ctx = null) {
 
   /** Leading "אז" / "ואז" as continuation (not "אז לא"). */
   if (/^(אז|ואז)([?!…\s]*$|\s+מה)/u.test(t) && !/^אז\s+לא/u.test(t)) {
-    sc.brief_continue += 2.0;
+    if (sc.vague_summary_follow < 2.2) sc.brief_continue += 2.0;
   }
   if (/^תמשיכ/i.test(t) || /^המשך/i.test(t) || /^נמשיך$/u.test(t)) {
     sc.brief_continue += 2.2;
@@ -344,7 +400,10 @@ export function classifyShortParentReplyClassHe(utteranceRaw, ctx = null) {
     } else if (levenshteinLeq1(one, "כן")) {
       sc.affirmation_continue += 2.35;
     }
-    if (one === "אז" || one === "ואז") sc.brief_continue += 2.6;
+    if (one === "אז" || one === "ואז") {
+      if (sc.vague_summary_follow < 2.2) sc.brief_continue += 2.6;
+    }
+    if (one === "פחות" || one === "פחות?") sc.contrast_follow_negative += 2.18;
     if (one === "מה" || one === "מה?") sc.confusion_simpler += 1.4;
   }
 
@@ -378,7 +437,18 @@ export function classifyShortParentReplyClassHe(utteranceRaw, ctx = null) {
   }
 
   /** @type {ReplyClassId[]} */
-  const ALL_KEYS = ["affirmation_continue", "rejection_not_now", "concern_reaction", "confusion_simpler", "clarify_previous", "brief_continue"];
+  const ALL_KEYS = [
+    "affirmation_continue",
+    "rejection_not_now",
+    "concern_reaction",
+    "confusion_simpler",
+    "clarify_previous",
+    "brief_continue",
+    "contrast_follow_negative",
+    "contrast_follow_positive",
+    "vague_summary_follow",
+    "short_action_follow",
+  ];
   let best = /** @type {ReplyClassId|null} */ (null);
   let bestV = -1;
   let second = -1;

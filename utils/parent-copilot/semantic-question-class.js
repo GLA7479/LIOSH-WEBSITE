@@ -8,7 +8,7 @@
  * @returns {
  *   "strongest_subject"|"weakest_subject"|"hardest_subject"|"subject_listing"|"period_highlight"|
  *   "comparison"|"most_practice"|"least_data"|"improved"|"needs_attention"|"still_unclear"|"most_stable"|
- *   "recommendation_action"|"clarify_reexplain"|"advance_or_hold_question"|"none"
+ *   "recommendation_action"|"clarify_reexplain"|"advance_or_hold_question"|"vague_summary_question"|"none"
  * }
  */
 export function detectAggregateQuestionClass(utterance) {
@@ -18,6 +18,15 @@ export function detectAggregateQuestionClass(utterance) {
     .toLowerCase();
 
   if (t.length < 3) return "none";
+
+  if (
+    /^ו?בקיצור\??$/u.test(t) ||
+    /^אז\s*מה\s*בעצם\??$/u.test(t) ||
+    /מה\s*השורה\s*התחתונה/u.test(t) ||
+    /מה\s*לקחת\s*מזה/u.test(t)
+  ) {
+    return "vague_summary_question";
+  }
 
   if (
     /לא\s+הבנתי|לא\s+הבנתי\.|תסביר\s+פשוט|מה\s+זה\s+אומר\s+בעצם|^למה\s*\??$|^למה\?$|למה\s+זה\s+אומר/.test(t)

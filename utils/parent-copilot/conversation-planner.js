@@ -105,6 +105,10 @@ export function planConversation(intent, truthPacket, hints = null) {
       if (continuityRepeat || rot % 2 === 1) blocks.push("caution", "meaning", "observation");
       else blocks.push("observation", "meaning", "caution");
       break;
+    case "what_not_to_do_now":
+      if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "caution", "observation");
+      else blocks.push("observation", "uncertainty_reason", "caution");
+      break;
     case "how_to_tell_child":
       obsMean();
       break;

@@ -367,6 +367,11 @@ function runDeterministicCore(input) {
 
   const utteranceStr = normalizeFreeformParentUtteranceHe(String(input?.utterance || ""));
   const stageA = interpretFreeformStageA(String(input?.utterance || ""), input?.payload);
+  const aggregateQuestionClass = detectAggregateQuestionClass(utteranceStr);
+  let intent = stageA.canonicalIntent;
+  if (aggregateQuestionClass === "vague_summary_question" && intent !== "clinical_boundary") {
+    intent = "explain_report";
+  }
 
   const shortFb = tryBuildParentShortFollowupDraft({
     utteranceStr,
@@ -397,8 +402,6 @@ function runDeterministicCore(input) {
     });
   }
 
-  const aggregateQuestionClass = detectAggregateQuestionClass(utteranceStr);
-  const intent = stageA.canonicalIntent;
   const intentResolution = {
     intent,
     confidence: stageA.canonicalIntentScore,
@@ -477,7 +480,12 @@ function runDeterministicCore(input) {
       : skipSemanticAggregateForIneligibleRec
         ? "what_to_do_today"
         : intent;
-  if (aggregateQuestionClass !== "none" && !skipSemanticAggregateForIneligibleRec && intent !== "clinical_boundary") {
+  if (
+    aggregateQuestionClass !== "none" &&
+    aggregateQuestionClass !== "vague_summary_question" &&
+    !skipSemanticAggregateForIneligibleRec &&
+    intent !== "clinical_boundary"
+  ) {
     const aggDraft = buildSemanticAggregateDraft({
       questionClass: aggregateQuestionClass,
       utterance: utteranceStr,
@@ -580,7 +588,9 @@ function runDeterministicCore(input) {
     answerBodyTextHe,
     answerBlockTypes,
     clickedFollowupFamilyThisTurn: input?.clickedFollowupFamily ? String(input.clickedFollowupFamily).trim() : null,
-    omitFollowUpEntirely: aggregateQuestionClass !== "none" || (semanticAggregateSatisfied && vDraft.ok),
+    omitFollowUpEntirely:
+      (aggregateQuestionClass !== "none" && aggregateQuestionClass !== "vague_summary_question") ||
+      (semanticAggregateSatisfied && vDraft.ok),
     truthPacket: {
       cannotConcludeYet: truthPacket.derivedLimits.cannotConcludeYet,
       readiness: truthPacket.derivedLimits.readiness,

@@ -47,6 +47,9 @@ function scorePracticalFollowupMode(t) {
   ) {
     action += 2.4;
   }
+  if (/ומה\s*עכשיו|ממה\s*עכשיו|אז\s*מה\s*עושים|ומה\s*בבית|ממה\s*בבית|ומה\s*מחר|ממה\s*מחר/u.test(t)) {
+    action += 1.85;
+  }
   if (/המלצות|הצעד\s+הבא|מה\s+לעשות\s+היום|מה\s+לעשות\s+בשבוע|שבוע\s*הקרוב/.test(t)) action += 1.6;
   if (/להתקדם|לקדם|כדאי\s+לקדם|האם\s+לקדם|מתי\s+לקדם|להעלות\s+רמה|לעלות\s+רמה|קידום|להמשיך\s+לקדם/.test(t)) advance += 2.5;
   if (/להמתין|לעצור|לא\s+לקדם|לחכות/.test(t)) advance += 0.8;
@@ -98,7 +101,7 @@ export function tryBuildComparisonPracticalFollowupDraft(ctx) {
   else if (aggQ === "advance_or_hold_question") mode = "advance";
   else {
     const best = Math.max(scores.action, scores.advance, scores.strengthen);
-    if (best < 1.9) return null;
+    if (best < 1.65) return null;
     if (best === scores.action && scores.action >= scores.advance && scores.action >= scores.strengthen) mode = "action";
     else if (best === scores.advance && scores.advance >= scores.strengthen) mode = "advance";
     else mode = "strengthen";
