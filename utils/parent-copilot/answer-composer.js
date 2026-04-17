@@ -60,6 +60,23 @@ function tokenOverlapCount4(a, b) {
 }
 
 /**
+ * Avoid prepending the same required-hedge fragment when observation/meaning/caution already carry it.
+ * Wording-layer only: does not remove hedges from the packet, only skips redundant prefix glue.
+ * @param {string} hedge
+ * @param {string} reason
+ * @param {string} priorSlots
+ */
+function requiredHedgeAlreadyCoveredInDraft(hedge, reason, priorSlots) {
+  const h = String(hedge || "").trim();
+  if (!h) return true;
+  const bucket = `${priorSlots} ${reason}`.replace(/\s+/g, " ").trim();
+  if (!bucket) return false;
+  if (bucket.includes(h)) return true;
+  if (h === "עדיין מוקדם לקבוע" && (bucket.includes("מוקדם לקבוע") || bucket.includes("עדיין מוקדם"))) return true;
+  return false;
+}
+
+/**
  * Drop adjacent composed blocks that repeat the same framing (high token overlap).
  * @param {Array<{ type: string; textHe: string; source: string }>} blocks
  */
@@ -129,8 +146,11 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
       const hedges = Array.isArray(truthPacket.allowedClaimEnvelope?.requiredHedges)
         ? truthPacket.allowedClaimEnvelope.requiredHedges.map((h) => String(h || "").trim()).filter(Boolean)
         : [];
+      const priorSlotsForHedgeDedup = [obs, interp, lim].filter(Boolean).join(" ");
       for (const h of hedges) {
-        if (h && !reason.includes(h)) reason = `${h} — ${reason}`;
+        if (h && !requiredHedgeAlreadyCoveredInDraft(h, reason, priorSlotsForHedgeDedup)) {
+          reason = `${h} — ${reason}`;
+        }
       }
       answerBlocks.push({ type: "uncertainty_reason", textHe: reason, source: "composed" });
     }

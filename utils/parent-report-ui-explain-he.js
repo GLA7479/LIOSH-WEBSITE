@@ -11,7 +11,7 @@ const BEHAVIOR_OR_DIAGNOSTIC_HE = {
   knowledge_gap: "פער ידע",
   speed_pressure: "לחץ מהירות",
   instruction_friction: "חיכוך הוראה / רמזים",
-  careless_pattern: "חוסר תשומת לב שחוזר",
+  careless_pattern: "רגעים של חוסר ריכוז שחוזרים",
   fragile_success: "הצלחה שבירה",
   stable_mastery: "שליטה טובה בנושא לאורך זמן",
   undetermined: "לא נקבע",
@@ -23,9 +23,9 @@ const BEHAVIOR_OR_DIAGNOSTIC_HE = {
 };
 
 const CONF_BADGE_HE = {
-  high: "ביטחון בנתונים: גבוה",
-  medium: "ביטחון בנתונים: בינוני",
-  low: "ביטחון בנתונים: נמוך",
+  high: "איכות הנתון: טובה",
+  medium: "איכות הנתון: בינונית",
+  low: "איכות הנתון: דלה — מתייחסים בזהירות",
 };
 
 const SUFF_BADGE_HE = {
@@ -110,7 +110,7 @@ export function shortReportDiagnosticsParentVisibleHe(s) {
 
 export function diagnosticTypeLabelHe(id) {
   const k = String(id || "").trim();
-  return BEHAVIOR_OR_DIAGNOSTIC_HE[k] || (k ? "אבחון" : "לא נקבע");
+  return BEHAVIOR_OR_DIAGNOSTIC_HE[k] || (k ? "דפוס שנצפה" : "לא נקבע");
 }
 
 export function behaviorDominantLabelHe(id) {
@@ -162,7 +162,7 @@ export function trendCompactLineHe(trend) {
   const ind = String(t.independenceDirection ?? "unknown").trim().toLowerCase();
   const a = TREND_DIR_HE[ad] || TREND_DIR_HE.unknown;
   const i = TREND_DIR_HE[ind] || TREND_DIR_HE.unknown;
-  return `דיוק ${a} · עצמאות ${i}`;
+  return `מגמת הדיוק: ${a}; העצמאות בפתרון: ${i}`;
 }
 
 /**
@@ -179,7 +179,7 @@ export function formatDecisionTraceBulletsHe(trace, maxItems = 4) {
     .slice(-maxItems)
     .map((e) => {
       const ph = String(e?.phase || "").trim();
-      return ph ? `שלב בביצוע: ${ph}` : "";
+      return ph ? `איפה בתהליך: ${ph}` : "";
     })
     .filter(Boolean);
 }
@@ -194,51 +194,51 @@ export function subjectMajorRiskLabelsHe(majorRiskFlagsAcrossRows, maxLabels = 5
 
 /** שורש קושי Phase 7 — מזהים לעומת תוויות UI */
 export const ROOT_CAUSE_LABEL_HE = {
-  knowledge_gap: "פער ידע מהותי",
-  instruction_friction: "חיכוך בהוראה / תלות בהכוונה",
+  knowledge_gap: "פער ידע שמורגש בשאלות",
+  instruction_friction: "המשימה לא תמיד ברורה, או שיש תלות בהכוונה",
   speed_pressure: "לחץ מהירות או תחרותיות",
-  careless_execution: "רשלנות ביצוע למרות שליטה סבירה",
-  weak_independence: "עצמאות נמוכה בפתרון",
-  early_stage_instability: "שלב מוקדם — התמונה עדיין לא מספיק ברורה",
-  mixed_signal: "נתונים מעורבים",
-  insufficient_evidence: "אין מספיק נתון לשורש קושי ברור",
-  retention_fragility: "שימור שביר (מוקדם)",
-  language_load: "עומס שפה או ניסוח (מוקדם)",
-  transition_gap: "פער במעבר בין רמות (מוקדם)",
+  careless_execution: "טעויות מיהרות למרות שהחומר מוכר",
+  weak_independence: "עדיין נשענים קצת על ליווי בפתרון",
+  early_stage_instability: "שלב מוקדם — עדיין לא ברור איך זה יתיישב",
+  mixed_signal: "התמונה מעורבת — יש גם כאן וגם שם",
+  insufficient_evidence: "עדיין לא ברור מה בדיוק מסבך מעבר לזיהוי ראשוני",
+  retention_fragility: "החומר נשמר בקושי (שלב מוקדם)",
+  language_load: "עומס בשפה או בניסוח המשימה (מוקדם)",
+  transition_gap: "קשה קצת במעבר בין רמות (מוקדם)",
 };
 
 /** סוג התערבות מומלץ Phase 7 */
 export const INTERVENTION_TYPE_LABEL_HE = {
-  stabilize_accuracy: "לייצב דיוק לפני שינוי רמה",
-  reduce_time_pressure: "להפחית לחץ זמן ולשמור על דיוק",
-  guided_to_independent_transition: "מעבר הדרגתי מהכוונה לעצמאות",
-  clarify_instruction_pattern: "להבהיר משימה ולפרק לצעדים קטנים",
-  target_core_skill_gap: "חיזוק ממוקד בפער מיומנות",
-  monitor_before_escalation: "מעקב ותרגול מבוקר לפני החמרה",
+  stabilize_accuracy: "לחזק דיוק לפני שמשנים רמה",
+  reduce_time_pressure: "להוריד קצת את לחץ הזמן ולשמור על דיוק",
+  guided_to_independent_transition: "לעבור לאט מהליווי לעצמאות",
+  clarify_instruction_pattern: "להסביר את המשימה ולפרק לצעדים קטנים",
+  target_core_skill_gap: "חיזוק ממוקד איפה שחסר",
+  monitor_before_escalation: "עוד קצת תרגול מבוקר לפני שמחמירים",
 };
 
 /** Phase 9 — דפוס טעות דומיננטי (מזהה → עברית להורה) */
 export const MISTAKE_PATTERN_LABEL_HE = {
   concept_confusion: "בלבול מושגי חוזר",
-  procedure_break: "שבירה בסדר פעולות",
-  instruction_misread: "טעות בקריאה או בהבנת משימה",
-  speed_driven_error: "טעות בגלל מהירות",
-  careless_flip: "רשלנות או קפיצה בביצוע",
-  support_dependent_success: "הצלחה בעיקר עם ליווי",
-  early_learning_noise: "רעש למידה מוקדמת",
-  mixed_mistake_pattern: "תערובת טעויות לא אחידה",
-  insufficient_mistake_evidence: "אין מספיק אות לדפוס טעות ברור",
+  procedure_break: "בלבול בסדר הפעולות",
+  instruction_misread: "טעות בקריאה או בהבנת המשימה",
+  speed_driven_error: "טעות שנובעת ממהירות",
+  careless_flip: "טעות קטנה או קפיצה בביצוע",
+  support_dependent_success: "הצלחה בעיקר כשיש ליווי ליד",
+  early_learning_noise: "רעש טבעי של למידה מוקדמת",
+  mixed_mistake_pattern: "תערובת טעויות — בלי דפוס אחד ברור",
+  insufficient_mistake_evidence: "עדיין אין מספיק דוגמאות לדפוס טעות ברור",
 };
 
 /** Phase 9 — שלב למידה לאורך זמן */
 export const LEARNING_STAGE_LABEL_HE = {
-  early_acquisition: "רכישה מוקדמת",
-  partial_stabilization: "ייצוב חלקי",
+  early_acquisition: "שלב ראשון של רכישה",
+  partial_stabilization: "מתחיל להתייצב, עדיין לא במלואו",
   stable_control: "פתרון טוב שנשמר לאורך זמן",
-  fragile_retention: "שימור שביר",
-  regression_signal: "אות לרגרסיה — לשים לב",
-  transfer_emerging: "העברה מתחילה להתגבש",
-  insufficient_longitudinal_evidence: "אין מספיק מידע לאורך זמן",
+  fragile_retention: "החומר נשמר בקושי",
+  regression_signal: "יש אות שמציץ לרגרסיה — שווה לשים לב",
+  transfer_emerging: "מתחילה התאמה גם מחוץ לתרגול המדויק",
+  insufficient_longitudinal_evidence: "עדיין חסר מידע לאורך זמן",
 };
 
 const PHASE8_DURATION_BAND_HE = {
@@ -378,12 +378,12 @@ export function transferReadinessLineHe(rowOrRec) {
 
 /** Phase 10 — תגובה להתערבות */
 export const RESPONSE_TO_INTERVENTION_LABEL_HE = {
-  not_enough_evidence: "עדיין אין מספיק בסיס לדעת אם התמיכה עוזרת",
-  early_positive_response: "סימנים ראשונים לשיפור — עדיין מוקדם לסגור",
-  stalled_response: "ההתקדמות נתקעה — לדייק או לשנות כיוון",
-  over_supported_progress: "הצלחה בעיקר עם ליווי — עדיין לא עצמאות מלאה",
-  independence_growing: "עצמאות עולה לצד התקדמות",
-  regression_under_support: "מגמה שלילית תחת התמיכה הנוכחית",
+  not_enough_evidence: "עדיין אין מספיק ניסיון כדי לדעת אם מה שניסינו באמת עוזר",
+  early_positive_response: "יש סימנים ראשונים לשיפור — עדיין לא חותמים על זה",
+  stalled_response: "מרגישים שההתקדמות נתקעה — כדאי לדייק או לשנות קצת כיוון",
+  over_supported_progress: "הצלחה בעיקר כשיש ליד — עדיין לא עצמאות מלאה",
+  independence_growing: "העצמאות עולה לצד ההתקדמות",
+  regression_under_support: "מגמה שלילית תוך כדי אותה תמיכה",
   mixed_response: "תגובה מעורבת — חלק מתקדם, חלק עדיין תלוי",
 };
 
@@ -413,10 +413,10 @@ export const FRESHNESS_STATE_LABEL_HE = {
 };
 
 export const CONCLUSION_FRESHNESS_LABEL_HE = {
-  high: "ביטחון במסקנה: גבוה יחסית",
-  medium: "ביטחון במסקנה: בינוני",
-  low: "ביטחון במסקנה: נמוך — כדאי לאסוף עוד מידע",
-  expired: "המסקנה כבר לא עדכנית — לבדוק מחדש",
+  high: "המסקנה נשמעת סבירה יחסית כרגע",
+  medium: "המסקנה בינונית מבחינת יציבות — נמשיך לבדוק",
+  low: "המסקנה עדיין רכה — כדאי לאסוף עוד קצת מידע",
+  expired: "המסקנה כבר לא עדכנית — כדאי לעבור על זה שוב",
 };
 
 export const RECALIBRATION_NEED_LABEL_HE = {
@@ -438,7 +438,7 @@ export const NEXT_SUPPORT_ADJUSTMENT_LABEL_HE = {
 
 /** Phase 11 — מצב רצף תמיכה */
 export const SUPPORT_SEQUENCE_STATE_LABEL_HE = {
-  new_support_cycle: "מתחילים מחזור תמיכה חדש — עדיין מוקדם לסגור תמונה",
+  new_support_cycle: "מתחילים תמיכה חדשה — בימים הראשונים נשארים עם מעקב קל ולא ממהרים לסיכום",
   early_sequence: "תחילת רצף תמיכה — לעקוב בלי להעמיס",
   continuing_sequence: "ממשיכים ברצף שנראה טוב",
   sequence_ready_for_release: "אפשר לנסות להפחית מעט את התמיכה",
@@ -490,41 +490,41 @@ export const NEXT_SUPPORT_SEQUENCE_ACTION_LABEL_HE = {
 };
 
 export const ADVICE_SIMILARITY_LEVEL_LABEL_HE = {
-  clearly_new: "הכיוון נראה חדש יחסית למה שחזר עד כה",
-  partly_repeated: "חלק מהעצה חוזר — אפשר לגוון קל",
-  mostly_repeated: "רוב הניסוח חוזר — לשנות זווית",
+  clearly_new: "נשמע כיוון חדש יחסית לעומת מה שחזר עד עכשיו",
+  partly_repeated: "חלק מהדברים חוזרים — אפשר לגוון קל",
+  mostly_repeated: "רוב הניסוח חוזר על עצמו — שווה לשנות זווית",
   unknown: "לא ברור אם זו חזרה",
 };
 
 export const ADVICE_NOVELTY_LABEL_HE = {
-  high: "חידוש גבוה בניסוח ובפעולה",
-  medium: "חידוש בינוני",
-  low: "חידוש נמוך — דומה לפעמים קודמות",
+  high: "הרבה רעננות בניסוח ובמה שעושים בפועל",
+  medium: "רמת רעננות בינונית",
+  low: "דומה למה שכבר ניסינו — אולי לעדכן קצת",
   unknown: "לא ברור",
 };
 
 export const RECOMMENDATION_ROTATION_NEED_LABEL_HE = {
-  none: "אין צורך לסובב את ההמלצה",
-  light_variation: "מספיק גיוון קטן בניסוח או בצעד",
-  meaningful_rotation: "לסובב בצורה משמעותית — לא אותו תרגיל מנטלי",
-  do_not_repeat_yet: "לא לחזור על אותו סוג תרגול בלי בדיקה",
+  none: "אין צורך לעדכן את כיוון ההמלצה",
+  light_variation: "מספיק לעדכן קלות את הניסוח או את הצעד",
+  meaningful_rotation: "כדאי לשנות משמעותית — לא אותו תרגיל חוזר",
+  do_not_repeat_yet: "לא לחזור על אותו סוג תרגול בלי לעצור ובדיקה קצרה",
 };
 
 /** Phase 12 — זיכרון המלצה */
 export const RECOMMENDATION_MEMORY_STATE_LABEL_HE = {
-  no_memory: "אין מספיק בסיס מהעבר כדי להניח שהכיוון הקודם עדיין נכון",
-  light_memory: "יש רק זיכרון חלש — בעיקר מהתקופה הנוכחית",
-  usable_memory: "יש מספיק בסיס להשוות המשך מול עבר קרוב",
-  strong_memory: "יש כמה תקופות השוואה — אפשר לסמוך יותר על המשכיות",
+  no_memory: "אין עדיין מספיק רקע מהעבר כדי לדעת אם מה שניסינו קודם עדיין מתאים",
+  light_memory: "יש רק מעט רקע מהעבר — בעיקר מהתקופה הנוכחית",
+  usable_memory: "יש מספיק רקע להשוות המשך מול מה שהיה לאחרונה",
+  strong_memory: "יש כמה תקופות להשוואה — אפשר לסמוך קצת יותר על המשכיות",
 };
 
 export const PRIOR_RECOMMENDATION_SIGNATURE_LABEL_HE = {
-  guided_accuracy_path: "קו שייצב דיוק בתרגול מונחה",
-  review_hold_path: "קו של חזרה והחזקה לפני שינוי",
-  release_transition_path: "קו של מעבר הדרגתי מתמיכה לעצמאות",
+  guided_accuracy_path: "ניסיון קודם לייצב דיוק בתרגול מונחה",
+  review_hold_path: "חזרה והחזקה לפני שינוי",
+  release_transition_path: "מעבר הדרגתי מתמיכה לעצמאות",
   observe_monitor_path: "בדיקה קצרה ואיסוף מידע",
-  mixed_prior_path: "ניסו כמה דרכי עבודה, בלי כיוון אחד ברור",
-  unknown: "לא ברור איזו דרך תמיכה הופיעה קודם",
+  mixed_prior_path: "ניסו כמה דרכים, בלי כיוון אחד ברור",
+  unknown: "לא ברור איך נראתה התמיכה קודם",
 };
 
 export const SUPPORT_HISTORY_DEPTH_LABEL_HE = {
@@ -536,41 +536,41 @@ export const SUPPORT_HISTORY_DEPTH_LABEL_HE = {
 
 export const RECOMMENDATION_CARRYOVER_LABEL_HE = {
   not_visible: "לא רואים המשכיות ברורה מהכיוון הקודם",
-  partly_visible: "אולי נמשך אותו קו — אבל לא חד־משמעי",
-  clearly_visible: "נראה שאותו קו תמיכה נמשך גם לתקופה הזו",
+  partly_visible: "אולי נמשך אותו כיוון — אבל לא חד משמעית",
+  clearly_visible: "נראה שאותו כיוון תמיכה נמשך גם לתקופה הזו",
   unclear: "לא ברור אם זו אותה דרך עבודה או שינוי קטן",
 };
 
 export const MEMORY_OF_PRIOR_SUPPORT_CONFIDENCE_LABEL_HE = {
-  none: "אין בסיס לביטחון בהשוואה לעבר",
-  low: "ביטחון נמוך בהשוואה לעבר",
-  medium: "ביטחון בינוני — מספיק להשוואה זהירה",
-  high: "ביטחון גבוה יחסית בהשוואת המשך מול עבר",
+  none: "אין עדיין בסיס חזק להשוואה לעבר",
+  low: "ההשוואה לעבר עדיין חלשה",
+  medium: "מספיק רקע להשוואה זהירה לעבר",
+  high: "יש די רקע להשוואה אמינה יחסית לעבר",
 };
 
 /** Phase 12 — מעקב אחרי תוצאה */
 export const EXPECTED_OUTCOME_TYPE_LABEL_HE = {
-  accuracy_stabilization: "המטרה: לייצב דיוק",
-  independence_growth: "המטרה: לחזק עצמאות",
-  error_reduction: "המטרה: להפחית טעויות חוזרות",
-  retention_hold: "המטרה: שימור והחזקה",
-  release_readiness: "המטרה: סימנים שאפשר להפחית תמיכה בזהירות",
-  evidence_collection: "המטרה: לאסוף עוד מידע",
-  unknown: "לא ברור מה הכיוון הקודם ניסה לשפר",
+  accuracy_stabilization: "רצינו לייצב דיוק",
+  independence_growth: "רצינו לחזק עצמאות",
+  error_reduction: "רצינו להפחית טעויות חוזרות",
+  retention_hold: "רצינו שימור והחזקה",
+  release_readiness: "רצינו לראות אם אפשר להפחית תמיכה בזהירות",
+  evidence_collection: "רצינו לאסוף עוד קצת מידע",
+  unknown: "לא ברור מה ניסינו לשפר בפועל",
 };
 
 export const OBSERVED_OUTCOME_STATE_LABEL_HE = {
-  clear_progress: "בפועל: שיפור ברור בכיוון הצפוי",
-  partial_progress: "בפועל: התקדמות חלקית",
-  flat_response: "בפועל: תמונה שטוחה יחסית",
-  contradictory_response: "בפועל: כיוון שונה מהצפוי",
-  not_observable_yet: "בפועל: עדיין מוקדם לראות תוצאה",
+  clear_progress: "בפועל רואים שיפור ברור בכיוון שרצינו",
+  partial_progress: "בפועל יש התקדמות חלקית",
+  flat_response: "בפועל התמונה די שטוחה",
+  contradictory_response: "בפועל הכיוון שונה ממה שציפינו",
+  not_observable_yet: "עדיין מוקדם מדי לראות תוצאה ברורה",
 };
 
 export const EXPECTED_VS_OBSERVED_MATCH_LABEL_HE = {
-  aligned: "המטרה והמצב בפועל נראים מתואמים",
-  partly_aligned: "חפיפה חלקית בין מה שציפינו למה שרואים",
-  misaligned: "המטרה לא התיישרה עם מה שרואים עכשיו",
+  aligned: "מה שרצינו ומה שרואים עכשיו נראים מתואמים",
+  partly_aligned: "יש חפיפה חלקית בין מה שציפינו למה שרואים",
+  misaligned: "מה שרצינו לא התיישב עם מה שרואים עכשיו",
   not_enough_evidence: "אין עדיין מספיק בסיס להשוואה בביטחון",
 };
 
@@ -582,12 +582,12 @@ export const FOLLOW_THROUGH_SIGNAL_LABEL_HE = {
 };
 
 export const RECOMMENDATION_CONTINUATION_DECISION_LABEL_HE = {
-  continue_with_same_core: "להמשיך באותו ליבה — הנראה בפועל תומך",
+  continue_with_same_core: "להמשיך באותו מיקוד — מה שרואים בפועל תומך בזה",
   continue_but_refine: "להמשיך באותו כיוון, בצורה מדויקת יותר",
   begin_controlled_release: "להתחיל להפחית תמיכה לאט — כשיש בסיס",
   do_not_repeat_without_new_evidence: "לא לחזור על אותו כיוון בלי מידע חדש",
   pivot_from_prior_path: "לפנות מכיוון שלא הוביל",
-  reset_and_rebuild_signal: "איפוס קצר ובניית מחדש של האות לפני דחיפה",
+  reset_and_rebuild_signal: "איפוס קצר ולבנות מחדש את התמונה לפני דחיפה נוספת",
 };
 
 export const OUTCOME_BASED_NEXT_MOVE_LABEL_HE = {
@@ -601,17 +601,17 @@ export const OUTCOME_BASED_NEXT_MOVE_LABEL_HE = {
 
 /** Phase 13 — שערי החלטה */
 export const GATE_STATE_LABEL_HE = {
-  gates_not_ready: "עדיין אין מספיק בסיס — להישאר עם החלטה זהירה",
-  continue_gate_active: "הכיוון הנוכחי עדיין צריך הוכחה קצרה לפני שינוי",
+  gates_not_ready: "עדיין אין מספיק בסיס — נשארים עם החלטה זהירה",
+  continue_gate_active: "הכיוון הנוכחי צריך עוד קצת הוכחה לפני שינוי",
   release_gate_forming: "מתקרבים להפחתת תמיכה — חסר עוד סימן קצר לעצמאות",
-  pivot_gate_visible: "אם גם בסבב הבא אין שיפור — לשקול כיוון מעט שונה",
-  recheck_gate_visible: "חסר מידע עדכני — לאסוף סבב נוסף לפני החלטה",
+  pivot_gate_visible: "אם גם אחרי עוד קצת תרגול אין שיפור — שווה לשקול כיוון קצת אחר",
+  recheck_gate_visible: "חסר מידע עדכני — כדאי לאסוף עוד קצת לפני החלטה",
   advance_gate_forming: "יש בסיס טוב — לא לקפוץ רמה בלי הצלחה שחוזרת בצורה ברורה",
-  mixed_gate_state: "כמה דרישות במקביל — צעד אחד ברור קודם",
+  mixed_gate_state: "כמה דברים במקביל — צעד אחד ברור קודם",
 };
 
 export const GATE_READINESS_LABEL_HE = {
-  low: "מוכנות נמוכה — לא לנעול מסקנה חזקה",
+  low: "מוכנות נמוכה — לא ננעול על מסקנה חזקה",
   moderate: "מוכנות בינונית — אפשר לצמצם לצעד אחד",
   high: "מוכנות גבוהה יחסית — עדיין עם תנאים לפני הפחתת תמיכה או קידום",
   insufficient: "אין עדיין מספיק בסיס להחלטה מדויקת",
@@ -619,10 +619,10 @@ export const GATE_READINESS_LABEL_HE = {
 
 export const GATE_LEVEL_LABEL_HE = {
   off: "לא רלוונטי כרגע",
-  pending: "ממתין לאות קצר",
+  pending: "מחכים לאות קצר",
   forming: "נבנה בהדרגה",
-  ready_watch: "כמעט שם — נשאר תנאי אחרון",
-  blocked: "חסום עד שמתקדמים",
+  ready_watch: "כמעט שם — נשאר תנאי אחרון אחד",
+  blocked: "נעצרים זמנית עד שיש התקדמות קטנה",
 };
 
 /** Phase 13 — יעדי ראיה לסבב הבא */
@@ -632,13 +632,13 @@ export const TARGET_EVIDENCE_TYPE_LABEL_HE = {
   retention_confirmation: "לראות שהחומר נשמר אחרי הפסקה קצרה",
   mistake_reduction_confirmation: "לראות פחות טעויות מאותו סוג",
   response_confirmation: "לראות איך הילד מגיב לכיוון בבית",
-  fresh_data_needed: "לאסוף נתון עדכני לפני סגירת תמונה",
+  fresh_data_needed: "לאסוף עוד קצת נתון עדכני לפני שסוגרים תמונה",
   mixed_target: "לשלב שני סימנים קצרים — לא הכל בבת אחת",
 };
 
 export const TARGET_OBSERVATION_WINDOW_LABEL_HE = {
-  next_short_cycle: "בסבב הקצר הבא (מפגש אחד או שניים)",
-  next_two_cycles: "בשני סבבים קצרים",
+  next_short_cycle: "בימים הקרובים (מפגש אחד או שניים)",
+  next_two_cycles: "בעוד שני רצפי תרגול קצרים",
   needs_fresh_baseline: "אחרי בדיקה קצרה כדי לרענן את התמונה",
   unknown: "לא ברור כמה זמן נדרש",
 };
@@ -648,7 +648,7 @@ export const NEXT_CYCLE_DECISION_FOCUS_LABEL_HE = {
   prove_current_direction: "לבדוק שהכיוון הנוכחי באמת עוזר",
   check_independence_before_release: "לבדוק עצמאות קצרה לפני הפחתת תמיכה",
   stabilize_before_advance: "לייצב לפני קפיצת רמה",
-  test_if_path_is_working: "לבדוק אם הכיוון עובד בפועל בסבב הבא",
+  test_if_path_is_working: "לבדוק אם הכיוון עובד בפועל אחרי עוד קצת תרגול",
   refresh_baseline_before_decision: "לרענן בסיס לפני החלטה מהותית",
   prepare_for_controlled_release: "להתכונן להפחתת תמיכה בהדרגה — לא לעבור לבד בבת אחת",
 };
@@ -672,9 +672,9 @@ export const FOUNDATIONAL_BLOCKER_LABEL_HE = {
 };
 
 export const LIKELIHOOD_LOW_MOD_HIGH_HE = {
-  low: "סבירות נמוכה",
+  low: "פחות סביר",
   moderate: "סבירות בינונית",
-  high: "סבירות גבוהה יחסית",
+  high: "סביר יחסית",
   unknown: "לא ברור",
 };
 
@@ -921,7 +921,7 @@ export function releaseGateLineHe(rowOrRec) {
   const w = String(src.whatWouldJustifyReleaseHe || "").trim();
   if (w) return truncateHe(w, 168);
   return truncateHe(
-    "הכיוון נראה סביר — לפני הפחתת תמיכה צריך עוד הצלחה קצרה בלי הכוונה באמצע.",
+    "הכיוון נראה סביר — לפני שמורידים תמיכה כדאי לראות עוד הצלחה קצרה בלי הכוונה באמצע.",
     168
   );
 }
