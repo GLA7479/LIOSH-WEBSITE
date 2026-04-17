@@ -25,15 +25,17 @@ export function resolveAuthorityGate({ unit, features, consent, rolloutStage }) 
   }
 
   const cs = unit?.canonicalState;
-  if (cs) {
-    const action = cs.actionState;
-    if (action === "withhold" || action === "probe_only") {
-      if (cs.evidence?.positiveAuthorityLevel && cs.evidence.positiveAuthorityLevel !== "none") {
-        suppressionFlags.push("incoherent_canonical_state");
-      }
-      suppressionFlags.push("canonical_action_blocked");
-      return { mode: "suppressed", suppressionFlags, eligible: false };
+  if (!cs) {
+    suppressionFlags.push("canonical_missing");
+    return { mode: "suppressed", suppressionFlags, eligible: false };
+  }
+  const action = cs.actionState;
+  if (action === "withhold" || action === "probe_only") {
+    if (cs.evidence?.positiveAuthorityLevel && cs.evidence.positiveAuthorityLevel !== "none") {
+      suppressionFlags.push("incoherent_canonical_state");
     }
+    suppressionFlags.push("canonical_action_blocked");
+    return { mode: "suppressed", suppressionFlags, eligible: false };
   }
 
   const g = unit?.outputGating && typeof unit.outputGating === "object" ? unit.outputGating : {};

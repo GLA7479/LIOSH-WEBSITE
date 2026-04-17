@@ -1851,6 +1851,32 @@ function recommendationFromV2Unit(u) {
   };
 }
 
+/**
+ * Subject anchor aligned with short-report summarizeV2UnitsForSubject (weak chain → ranked strength → units[0]).
+ * @param {object[]} units
+ * @param {(u: object) => unknown} csOf
+ */
+function selectSubjectAnchorUnitForV2Profile(units, csOf) {
+  const actionOf = (u) => csOf(u)?.actionState || "withhold";
+  const diagnosed = units.filter((u) => !!u?.diagnosis?.allowed);
+  const weakLikeShort =
+    diagnosed.find((u) => String(u?.priority?.level || "") === "P4") ||
+    diagnosed.find((u) => String(u?.priority?.level || "") === "P3") ||
+    diagnosed[0] ||
+    null;
+  if (weakLikeShort) return weakLikeShort;
+  const strengthUnits = units.filter((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
+  const POSITIVE_LEVEL_RANK_D = { excellent: 3, very_good: 2, good: 1, none: 0 };
+  const rankPosD = (a, b) => {
+    const la = csOf(a)?.evidence?.positiveAuthorityLevel || "none";
+    const lb = csOf(b)?.evidence?.positiveAuthorityLevel || "none";
+    return (POSITIVE_LEVEL_RANK_D[lb] || 0) - (POSITIVE_LEVEL_RANK_D[la] || 0);
+  };
+  const rankedPositiveD = [...strengthUnits].sort(rankPosD);
+  if (rankedPositiveD[0]) return rankedPositiveD[0];
+  return units[0] || null;
+}
+
 function attachNarrativeContractsToTopicRecommendations(subjectId, topicRecommendations) {
   const list = Array.isArray(topicRecommendations) ? topicRecommendations : [];
   return list.map((tr) => {
@@ -1880,6 +1906,8 @@ function applyNarrativeConsistencyToExecutiveSummary(executiveSummary, subjectPr
   });
   if (restrainedRows.length === 0) return es;
   const restrainedLine = "בחלק מהנושאים המסקנה עדיין זהירה, ולכן נשארים בצעדים קטנים עד להתבססות נתון נוסף.";
+  const existingMain = String(es.mainHomeRecommendationHe || "").trim();
+  if (existingMain) return es;
   return {
     ...es,
     mainHomeRecommendationHe: restrainedLine,
@@ -1918,28 +1946,27 @@ function buildSubjectProfilesFromV2(baseReport) {
       continue;
     }
     const csOf = (u) => u?.canonicalState;
-    const actionOf = (u) => csOf(u)?.actionState || "probe_only";
+    const actionOf = (u) => csOf(u)?.actionState || "withhold";
     const highPriority = units.filter((u) => String(u?.priority?.level || "") === "P4").length;
     const strengthUnits = units.filter((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
     const stable = strengthUnits.length;
     const fragile = units.filter((u) => Array.isArray(u?.strengthProfile?.tags) && u.strengthProfile.tags.includes("fragile_success")).length;
     const diagnosed = units.filter((u) => !!u?.diagnosis?.allowed);
-    const topicWeakLeader =
+    const diagnosticLeadSource =
       diagnosed.find((u) => String(u?.priority?.level || "") === "P4") ||
       diagnosed.find((u) => String(u?.priority?.level || "") === "P3") ||
+      diagnosed[0] ||
       null;
-    const topWeakUnit = (() => {
-      if (topicWeakLeader) return topicWeakLeader;
-      const maintainUnit = units.find((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
-      if (maintainUnit) return maintainUnit;
-      return units[0] || null;
-    })();
+    const subjectAnchorUnit = selectSubjectAnchorUnitForV2Profile(units, csOf);
 
     const topicRecommendations = attachNarrativeContractsToTopicRecommendations(
       sid,
       applyGateToTextClampToTopicRecommendations(
         units
-          .filter((u) => u?.probe || u?.intervention || u?.diagnosis?.allowed)
+          .filter((u) => {
+            const a = actionOf(u);
+            return a === "diagnose_only" || a === "intervene";
+          })
           .map(recommendationFromV2Unit)
           .slice(0, 8)
       )
@@ -1994,11 +2021,11 @@ function buildSubjectProfilesFromV2(baseReport) {
       }
       if (strongPosD && leadPosD) {
         const base = `בנושא ${leadPosD.displayName}: ${tierStableStrengthHe()}`;
-        const pattern = String(topicWeakLeader?.taxonomy?.patternHe || "").trim();
+        const pattern = String(diagnosticLeadSource?.taxonomy?.patternHe || "").trim();
         if (additiveLeadD && pattern) {
           return `${base} · ${pattern}`;
         }
-        if (additiveLeadD && topicWeakLeader) {
+        if (additiveLeadD && diagnosticLeadSource) {
           return `${base} ${topicRecommendationV2CautionGatedHe()}`;
         }
         return base;
@@ -2006,8 +2033,8 @@ function buildSubjectProfilesFromV2(baseReport) {
       if (isStrengthLeadD && leadPosD && leadLevD === "good") {
         return `בנושא ${leadPosD.displayName}: ${tierStableStrengthHe()}`;
       }
-      if (topicWeakLeader) {
-        return `בנושא ${topicWeakLeader.displayName}: ${topicWeakLeader.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
+      if (diagnosticLeadSource) {
+        return `בנושא ${diagnosticLeadSource.displayName}: ${diagnosticLeadSource.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
       }
       return "אין מספיק ראיות בשלב זה.";
     })();
@@ -2028,38 +2055,40 @@ function buildSubjectProfilesFromV2(baseReport) {
       })),
       diagnosticSectionsHe: null,
       subSkillInsightsHe: [],
-      parentActionHe: resolveUnitParentActionHe(topWeakUnit),
-      nextWeekGoalHe: resolveUnitNextGoalHe(topWeakUnit),
+      parentActionHe: resolveUnitParentActionHe(subjectAnchorUnit),
+      nextWeekGoalHe: resolveUnitNextGoalHe(subjectAnchorUnit),
       evidenceExamples: [],
       trendVsPreviousPeriod: null,
       topicRecommendations,
-      dominantLearningRisk: topWeakUnit?.competingHypotheses?.hypotheses?.[0]?.hypothesisId || null,
+      dominantLearningRisk: subjectAnchorUnit?.competingHypotheses?.hypotheses?.[0]?.hypothesisId || null,
       dominantSuccessPattern: stable > 0 ? "stable_mastery" : null,
       trendNarrativeHe: highPriority > 0
         ? subjectV2TrendNarrativeHighPriorityHe()
         : subjectV2TrendNarrativeStableHe(),
-      confidenceSummaryHe: topWeakUnit
-        ? subjectV2ConfidenceSummaryHe(csOf(topWeakUnit)?.assessment?.confidenceLevel || topWeakUnit?.confidence?.level)
+      confidenceSummaryHe: subjectAnchorUnit
+        ? subjectV2ConfidenceSummaryHe(
+            csOf(subjectAnchorUnit)?.assessment?.confidenceLevel || subjectAnchorUnit?.confidence?.level
+          )
         : "עדיין לא הצטבר מספיק מידע למסקנה מקצועית רחבה.",
-      recommendedHomeMethodHe: resolveUnitHomeMethodHe(topWeakUnit),
-      whatNotToDoHe: topWeakUnit?.intervention?.avoidHe || null,
+      recommendedHomeMethodHe: resolveUnitHomeMethodHe(subjectAnchorUnit),
+      whatNotToDoHe: subjectAnchorUnit?.intervention?.avoidHe || null,
       majorRiskFlagsAcrossRows: {
         insufficientEvidenceRisk: units.some((u) => u?.outputGating?.cannotConcludeYet),
         hintDependenceRisk: false,
       },
-      dominantBehaviorProfileAcrossRows: topWeakUnit?.strengthProfile?.dominantBehavior || null,
+      dominantBehaviorProfileAcrossRows: subjectAnchorUnit?.strengthProfile?.dominantBehavior || null,
       strongestPositiveTrendRowHe: stable > 0 ? "נראים כיסי שליטה יציבה." : null,
       strongestCautionTrendRowHe: fragile > 0 ? "יש הצלחות שבירות שדורשות ייצוב." : null,
       fragileSuccessRowCount: fragile,
       stableMasteryRowCount: stable,
       modeConcentrationNoteHe: null,
-      dominantLearningRiskLabelHe: topWeakUnit?.taxonomy?.patternHe || null,
+      dominantLearningRiskLabelHe: subjectAnchorUnit?.taxonomy?.patternHe || null,
       dominantSuccessPatternLabelHe:
         stable > 0 ? normalizeParentFacingHe("התקדמות יציבה וטובה בחלק מהנושאים") : null,
       improvingButSupportedHe: null,
-      dominantRootCause: topWeakUnit?.taxonomy?.rootsHe?.[0] || null,
-      dominantRootCauseLabelHe: topWeakUnit?.taxonomy?.rootsHe?.[0] || null,
-      secondaryRootCause: topWeakUnit?.taxonomy?.competitorsHe?.[0] || null,
+      dominantRootCause: subjectAnchorUnit?.taxonomy?.rootsHe?.[0] || null,
+      dominantRootCauseLabelHe: subjectAnchorUnit?.taxonomy?.rootsHe?.[0] || null,
+      secondaryRootCause: subjectAnchorUnit?.taxonomy?.competitorsHe?.[0] || null,
       rootCauseDistribution: {},
       subjectDiagnosticRestraintHe: units.some((u) => csOf(u)?.assessment?.cannotConcludeYet ?? u?.outputGating?.cannotConcludeYet)
         ? "בחלק מהשורות הראיות עדיין לא מספיקות למסקנה חזקה."
@@ -2072,25 +2101,25 @@ function buildSubjectProfilesFromV2(baseReport) {
         rowCount: Math.max(1, units.length),
         hasCannotConcludeYet: units.some((u) => u?.outputGating?.cannotConcludeYet),
       }),
-      subjectInterventionPriorityHe: priorityLevelParentLabelHe(topWeakUnit?.priority?.level),
+      subjectInterventionPriorityHe: priorityLevelParentLabelHe(subjectAnchorUnit?.priority?.level),
       subjectPriorityLevel: highPriority > 0 ? "immediate" : "soon",
-      subjectPriorityReasonHe: topWeakUnit?.taxonomy?.patternHe || null,
-      subjectImmediateActionHe: resolveUnitParentActionHe(topWeakUnit),
+      subjectPriorityReasonHe: subjectAnchorUnit?.taxonomy?.patternHe || null,
+      subjectImmediateActionHe: resolveUnitParentActionHe(subjectAnchorUnit),
       subjectDeferredActionHe:
-        topWeakUnit && isStrongPositiveUnitForParentGuidance(topWeakUnit)
+        subjectAnchorUnit && isStrongPositiveUnitForParentGuidance(subjectAnchorUnit)
           ? "להמשיך באותה מורכבות ולבחון הרחבה זהירה רק אחרי עקביות נוספת."
-          : topWeakUnit?.probe?.specificationHe || null,
+          : subjectAnchorUnit?.probe?.specificationHe || null,
       subjectMonitoringOnly: units.length === 0,
-      subjectDoNowHe: resolveUnitParentActionHe(topWeakUnit),
-      subjectAvoidNowHe: topWeakUnit?.intervention?.avoidHe || null,
-      subjectReviewBeforeAdvanceHe: topWeakUnit?.probe?.objectiveHe || null,
+      subjectDoNowHe: resolveUnitParentActionHe(subjectAnchorUnit),
+      subjectAvoidNowHe: subjectAnchorUnit?.intervention?.avoidHe || null,
+      subjectReviewBeforeAdvanceHe: subjectAnchorUnit?.probe?.objectiveHe || null,
       subjectTransferReadiness: units.some((u) => u?.diagnosis?.allowed) ? "emerging" : "not_ready",
       subjectSupportAdjustmentNeedHe: highPriority > 0 ? "להדק תמיכה ולבחון מחדש." : "שימור ומעקב.",
       subjectRecalibrationNeedHe: units.some((u) => u?.outputGating?.cannotConcludeYet)
         ? subjectV2RecalibrationNeedYesHe()
         : subjectV2RecalibrationNeedNoHe(),
-      subjectDependencyNarrativeHe: topWeakUnit?.taxonomy?.competitorsHe?.[0]
-        ? `יש לבדוק גם חלופה: ${topWeakUnit.taxonomy.competitorsHe[0]}.`
+      subjectDependencyNarrativeHe: subjectAnchorUnit?.taxonomy?.competitorsHe?.[0]
+        ? `יש לבדוק גם חלופה: ${subjectAnchorUnit.taxonomy.competitorsHe[0]}.`
         : null,
     });
   }
@@ -2101,7 +2130,7 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
   const diag = baseReport?.diagnosticEngineV2;
   const units = Array.isArray(diag?.units) ? diag.units : [];
   const csOf = (u) => u?.canonicalState;
-  const actionOf = (u) => csOf(u)?.actionState || "probe_only";
+  const actionOf = (u) => csOf(u)?.actionState || "withhold";
   const diagnosed = units.filter((u) => u?.diagnosis?.allowed);
   const stable = units.filter((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
   const uncertain = units.filter((u) => csOf(u)?.assessment?.cannotConcludeYet || u?.outputGating?.cannotConcludeYet);
@@ -2117,17 +2146,10 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
   const leadPosX = stableRanked[0] || null;
 
   const topStrengthsAcrossHe = stable.slice(0, 3).map((u) => `${u.displayName} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`);
-  const diagnosedFocus = diagnosed
+  const topFocusAreasHe = diagnosed
     .filter((u) => u?.taxonomy?.patternHe)
     .slice(0, 3)
     .map((u) => `${u.taxonomy.patternHe} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`);
-  const strengthFocus =
-    diagnosedFocus.length > 0
-      ? []
-      : stableRanked
-          .slice(0, 3)
-          .map((u) => `${u.displayName} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`);
-  const topFocusAreasHe = diagnosedFocus.length > 0 ? diagnosedFocus : strengthFocus;
 
   return {
     version: 2,

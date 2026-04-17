@@ -5,7 +5,7 @@ function canonicalState(unit) {
 }
 
 function actionState(unit) {
-  return canonicalState(unit)?.actionState || "probe_only";
+  return canonicalState(unit)?.actionState || "withhold";
 }
 
 function isStrengthAction(unit) {
@@ -40,7 +40,7 @@ export function classifyParentRecommendationState(unit) {
         actionState: actionState(unit),
         authorityRank: RANK[level] || 0,
         readiness: canonicalState(unit)?.assessment?.readiness || "insufficient",
-        family: canonicalState(unit)?.recommendation?.family || "probe_only",
+        family: canonicalState(unit)?.recommendation?.family || "withhold",
       },
     };
   }
@@ -51,7 +51,7 @@ export function classifyParentRecommendationState(unit) {
       actionState: actionState(unit),
       authorityRank: 0,
       readiness: canonicalState(unit)?.assessment?.readiness || "insufficient",
-      family: canonicalState(unit)?.recommendation?.family || "probe_only",
+      family: canonicalState(unit)?.recommendation?.family || "withhold",
     },
   };
 }

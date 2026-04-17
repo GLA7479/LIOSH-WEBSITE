@@ -108,15 +108,21 @@ export function Bullets({ items, className = "" }) {
 export function ExecutiveSummarySection({ es, compact }) {
   return (
     <div className="pr-detailed-exec-summary space-y-3 md:space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+      <div
+        className={`grid grid-cols-1 gap-3 md:gap-4 ${
+          (es.topFocusAreasHe || []).length > 0 ? "md:grid-cols-2" : ""
+        }`.trim()}
+      >
         <div>
           <h4 className="pr-detailed-subheading text-emerald-200/95">חוזקות חוצות־מקצועות</h4>
           <Bullets items={(es.topStrengthsAcrossHe || []).map(pr1ParentVisibleTextHe)} />
         </div>
-        <div>
-          <h4 className="pr-detailed-subheading text-amber-200/95">מיקוד חוצה־מקצועות</h4>
-          <Bullets items={(es.topFocusAreasHe || []).map(pr1ParentVisibleTextHe)} />
-        </div>
+        {(es.topFocusAreasHe || []).length > 0 ? (
+          <div>
+            <h4 className="pr-detailed-subheading text-amber-200/95">מיקוד חוצה־מקצועות</h4>
+            <Bullets items={(es.topFocusAreasHe || []).map(pr1ParentVisibleTextHe)} />
+          </div>
+        ) : null}
       </div>
       {es.majorTrendsHe?.length ? (
         <div>

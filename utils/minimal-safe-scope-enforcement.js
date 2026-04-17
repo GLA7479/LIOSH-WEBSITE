@@ -199,6 +199,24 @@ export function mergeCrossSubjectConclusionReadinessContract(phase7, subjectCove
 const RI_RANK = { light: 1, focused: 2, targeted: 3 };
 const RI_TEXT_FROM_CONTRACT = { RI0: "light", RI1: "light", RI2: "focused", RI3: "targeted" };
 
+const RI_ORDINAL = { RI0: 0, RI1: 1, RI2: 2, RI3: 3 };
+
+/**
+ * @param {string|undefined|null} contractRi
+ * @param {string|undefined|null} canonicalRi
+ */
+function minRecommendationIntensityRi(contractRi, canonicalRi) {
+  const a = String(contractRi || "RI0").toUpperCase();
+  const b = String(canonicalRi || "RI0").toUpperCase();
+  const va = RI_ORDINAL[/** @type {keyof typeof RI_ORDINAL} */ (a)] ?? 0;
+  const vb = RI_ORDINAL[/** @type {keyof typeof RI_ORDINAL} */ (b)] ?? 0;
+  const m = Math.min(va, vb);
+  if (m <= 0) return "RI0";
+  if (m === 1) return "RI1";
+  if (m === 2) return "RI2";
+  return "RI3";
+}
+
 /**
  * @param {"light"|"focused"|"targeted"} intensity
  * @param {object} ctx
@@ -325,6 +343,16 @@ export function applyGateToTextClampToTopicRecord(rec) {
     };
   }
 
+  const canonCapRaw = rec?.canonicalState?.recommendation?.intensityCap;
+  const canonRiCap =
+    canonCapRaw && /^RI[0-3]$/i.test(String(canonCapRaw)) ? String(canonCapRaw).toUpperCase() : null;
+  if (canonRiCap) {
+    recommendationContractV1 = {
+      ...recommendationContractV1,
+      intensity: minRecommendationIntensityRi(recommendationContractV1.intensity, canonRiCap),
+    };
+  }
+
   const band = deriveEvidenceBandFromRowSignals({
     q,
     evidenceStrength: ev,
@@ -338,6 +366,7 @@ export function applyGateToTextClampToTopicRecord(rec) {
     weak,
     suppressAggressiveStep: !!rec?.suppressAggressiveStep,
     interventionAllowed: true,
+    canonicalIntensityCap: canonRiCap || undefined,
   });
   const contractIntensityText = RI_TEXT_FROM_CONTRACT[recommendationContractV1.intensity] || "light";
   const nextIntensityFinal =

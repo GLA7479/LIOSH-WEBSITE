@@ -432,23 +432,11 @@ export function buildTruthPacketV1(payload, scope) {
       recommendationEligible = !!cs.recommendation?.allowed;
       recommendationIntensityCap = cs.recommendation?.intensityCap || "RI0";
     } else {
-      const narrative = contracts.narrative && typeof contracts.narrative === "object" ? contracts.narrative : {};
-      const decision = contracts.decision && typeof contracts.decision === "object" ? contracts.decision : {};
-      const readinessC = contracts.readiness && typeof contracts.readiness === "object" ? contracts.readiness : {};
-      const confidenceC = contracts.confidence && typeof contracts.confidence === "object" ? contracts.confidence : {};
-      const recommendation =
-        contracts.recommendation && typeof contracts.recommendation === "object" ? contracts.recommendation : {};
-
-      cannotConcludeYet = decision.cannotConcludeYet === true;
-      recommendationEligible = recommendation.eligible === true;
-      const capFromNarrative = String(narrative.recommendationIntensityCap || "RI0").toUpperCase();
-      recommendationIntensityCap =
-        capFromNarrative === "RI1" || capFromNarrative === "RI2" || capFromNarrative === "RI3"
-          ? capFromNarrative
-          : "RI0";
-
-      readiness = mapReadinessForTruthPacket(readinessC.readiness);
-      confidenceBand = mapConfidenceBand(confidenceC.confidenceBand);
+      cannotConcludeYet = true;
+      recommendationEligible = false;
+      recommendationIntensityCap = "RI0";
+      readiness = "insufficient";
+      confidenceBand = "low";
     }
 
     q = Math.max(0, Number(topicRow?.questions ?? topicRow?.q) || 0);

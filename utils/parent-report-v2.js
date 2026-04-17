@@ -720,7 +720,7 @@ function summarizeV2UnitsForSubject(units) {
   }
 
   const cs = (u) => u?.canonicalState;
-  const actionOf = (u) => cs(u)?.actionState || "probe_only";
+  const actionOf = (u) => cs(u)?.actionState || "withhold";
 
   const diagnosed = list.filter((u) => !!u?.diagnosis?.allowed);
   const strengthUnits = list.filter((u) => actionOf(u) === "maintain" || actionOf(u) === "expand_cautiously");
@@ -858,7 +858,24 @@ function summarizeV2UnitsForSubject(units) {
         )}`
       );
     }
-    return null;
+    const name =
+      String(p4Unit?.displayName || "").trim() ||
+      String(topWeak?.displayName || "").trim() ||
+      String(leadPositive?.displayName || "").trim() ||
+      String(list[0]?.displayName || "").trim() ||
+      evidenceExampleTitleFallbackHe();
+    const anchorU = p4Unit || topWeak || leadPositive || list[0] || null;
+    const rawAct = anchorU ? cs(anchorU)?.actionState : null;
+    const act = rawAct || "withhold";
+    if (act === "withhold") {
+      return normalizeParentFacingHe(`בנושא ${name}: עדיין אין מספיק ראיות כדי לקבוע מסקנה.`);
+    }
+    if (act === "probe_only") {
+      return normalizeParentFacingHe(`בנושא ${name}: עדיף עוד קצת תרגול לפני שמקבעים מסקנה.`);
+    }
+    return normalizeParentFacingHe(
+      `בנושא ${name}: עדיף עוד קצת תרגול לפני שמקבעים מסקנה.`
+    );
   })();
 
   return {
