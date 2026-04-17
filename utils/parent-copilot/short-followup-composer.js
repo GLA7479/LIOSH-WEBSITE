@@ -4,6 +4,49 @@
 
 import { buildTruthPacketV1 } from "./truth-packet-v1.js";
 import { classifyShortParentReplyClassHe } from "./conversational-reply-class-he.js";
+import { planConversation } from "./conversation-planner.js";
+import { composeAnswerDraft } from "./answer-composer.js";
+import { compactParentAnswerBlocks } from "./answer-compaction.js";
+import { normalizeParentFacingHe } from "../parent-report-language/parent-facing-normalize-he.js";
+
+/**
+ * @param {string} family
+ * @returns {string|null}
+ */
+function plannerIntentForAcceptedFollowupFamily(family) {
+  const f = String(family || "").trim();
+  if (f === "avoid_now") return "what_is_still_difficult";
+  if (f === "advance_or_hold") return "why_not_advance";
+  if (f === "explain_to_child") return "how_to_tell_child";
+  if (f === "ask_teacher") return "question_for_teacher";
+  if (f === "uncertainty_boundary") return "clarify_term";
+  return null;
+}
+
+/**
+ * @param {string} family
+ * @param {object} truthPacket
+ */
+function acceptanceHookHe(family, truthPacket) {
+  const f = String(family || "").trim();
+  const base =
+    f === "avoid_now"
+      ? "מה כדאי להימנע ממנו בשבוע הקרוב"
+      : f === "advance_or_hold"
+        ? "מתי כדאי לקדם ומתי לעצור"
+        : f === "explain_to_child"
+          ? "ניסוח קצר להסבר לילד"
+          : f === "ask_teacher"
+            ? "שאלה ממוקדת למורה"
+            : f === "uncertainty_boundary"
+              ? "מה עדיין לא ברור לפי הדוח"
+              : "ההמשך שהוצע";
+  const scopeTail =
+    String(truthPacket.scopeType || "") === "subject" && String(truthPacket.scopeLabel || "").trim()
+      ? ` (במסגרת ${String(truthPacket.scopeLabel).trim()})`
+      : "";
+  return `מבצעים את ההמשך שהוצע — ${base}${scopeTail}: `;
+}
 
 /**
  * @param {{ utteranceStr: string; conv: object; payload: unknown }} ctx
@@ -82,14 +125,48 @@ export function tryBuildParentShortFollowupDraft(ctx) {
           else answerBlocks.push({ type: "meaning", textHe: interp.slice(0, 420), source: "composed" });
         }
       } else {
-        answerBlocks = [
-          {
-            type: "observation",
-            textHe: "מובן — נשארים עם אותו ניסוח מהדוח ומתקדמים בצעד קטן הבא כשמתאים.",
-            source: "composed",
-          },
-          { type: "meaning", textHe: interp ? interp.slice(0, 420) : obs.slice(0, 420), source: "composed" },
-        ];
+        const mapped = plannerIntentForAcceptedFollowupFamily(fam);
+        if (mapped) {
+          plannerIntent = mapped;
+          const turnOrd = Array.isArray(conv.priorIntents) ? conv.priorIntents.length : 0;
+          const plan = planConversation(mapped, truthPacket, {
+            continuityRepeat: false,
+            turnOrdinal: turnOrd,
+            scopeType: truthPacket.scopeType,
+            interpretationScope: truthPacket.interpretationScope,
+          });
+          const composed = composeAnswerDraft(plan, truthPacket, {
+            intent: mapped,
+            continuityRepeat: false,
+            conversationState: conv,
+            turnOrdinal: turnOrd,
+          });
+          answerBlocks = compactParentAnswerBlocks(
+            (composed.answerBlocks || []).map((b) => ({
+              ...b,
+              textHe: normalizeParentFacingHe(String(b.textHe || "").trim()),
+            })),
+            { scopeType: String(truthPacket.scopeType || ""), maxBlocks: 5, maxTotalChars: 2400 },
+          );
+          const hook = acceptanceHookHe(fam, truthPacket);
+          const oix = answerBlocks.findIndex((b) => b.type === "observation" && String(b.textHe || "").trim());
+          if (oix >= 0 && hook && !String(answerBlocks[oix].textHe || "").includes("מבצעים את ההמשך")) {
+            answerBlocks[oix] = {
+              ...answerBlocks[oix],
+              textHe: `${hook}${String(answerBlocks[oix].textHe || "").trim()}`,
+              source: "composed",
+            };
+          }
+        } else {
+          answerBlocks = [
+            {
+              type: "observation",
+              textHe: "מובן — נשארים עם אותו ניסוח מהדוח ומתקדמים בצעד קטן הבא כשמתאים.",
+              source: "composed",
+            },
+            { type: "meaning", textHe: interp ? interp.slice(0, 420) : obs.slice(0, 420), source: "composed" },
+          ];
+        }
       }
       break;
 

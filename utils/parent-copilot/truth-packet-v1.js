@@ -413,6 +413,8 @@ export function buildTruthPacketV1(payload, scope) {
 
   let topicStateId = null;
   let stateHash = null;
+  /** Anchored rows with cannotConclude (executive rollup) or subject/topic risk flag. */
+  let anchorUncertaintyRows = 0;
 
   if (scope.scopeType !== "executive") {
     const slice = readContractsSliceForScope(scope.scopeType, scope.scopeId, "", payload);
@@ -455,6 +457,9 @@ export function buildTruthPacketV1(payload, scope) {
     displayName = String(topicRow?.displayName || narrative?.topicKey || "הנושא").trim() || "הנושא";
     const obsLine = String(narrative?.textSlots?.observation || "").trim();
     relevantSummaryLines = obsLine ? [obsLine] : [displayName];
+    if (cannotConcludeYet || confidenceBand === "low" || readiness === "insufficient" || readiness === "forming") {
+      anchorUncertaintyRows = 1;
+    }
   } else {
     const anchor = allAnchored[0];
     subjectId = String(anchor.subject || "");
@@ -471,6 +476,7 @@ export function buildTruthPacketV1(payload, scope) {
     const capOrder = { RI0: 0, RI1: 1, RI2: 2, RI3: 3 };
     const subSet = new Set();
     let uncertainRows = 0;
+    let partialDataRowSignals = 0;
 
     for (const row of allAnchored) {
       subSet.add(String(row.subject || ""));
@@ -490,6 +496,7 @@ export function buildTruthPacketV1(payload, scope) {
         anyCannotConclude = true;
         uncertainRows += 1;
       }
+      if (rx === "forming" || rx === "insufficient" || cx === "low") partialDataRowSignals += 1;
       if (cv?.recommendation?.eligible === true) anyEligible = true;
       const narx = cv?.narrative && typeof cv.narrative === "object" ? cv.narrative : {};
       const capFromNarrative = String(narx.recommendationIntensityCap || "RI0").toUpperCase();
@@ -559,6 +566,7 @@ export function buildTruthPacketV1(payload, scope) {
     };
     topicRow = { displayName, questions: totalQ, accuracy: avgAcc };
     relevantSummaryLines = trendsForSurface;
+    anchorUncertaintyRows = uncertainRows + partialDataRowSignals;
   }
 
   const narrative = contracts.narrative && typeof contracts.narrative === "object" ? contracts.narrative : {};
@@ -569,6 +577,16 @@ export function buildTruthPacketV1(payload, scope) {
   const forbiddenPhrases = Array.isArray(narrative.forbiddenPhrases) ? [...narrative.forbiddenPhrases] : [];
   const requiredHedges = Array.isArray(narrative.requiredHedges) ? [...narrative.requiredHedges] : [];
 
+  const narTs = narrative.textSlots && typeof narrative.textSlots === "object" ? narrative.textSlots : {};
+  const slotObs = String(narTs.observation || "").trim();
+  const slotInterp = String(narTs.interpretation || "").trim();
+  const slotUnc = String(narTs.uncertainty || "").trim();
+  const narrativeCoreOk = slotObs.length >= 14 && (slotInterp.length >= 14 || slotUnc.length >= 14);
+  const narrativeSignalsOpenPartial =
+    /עדיין|זהיר|חלקי|מוקדם|לא\s+ברור|חוסר|בינוני|נדרש|חיזוק|פתוח|מוגבל|לא\s+סגור|מוקדם\s+ל|מצומצם|לא\s+אפשר\s+לקבוע|לא\s+להתקדם|לעצור|להמתין|דורש\s+חיזוק|תשומת\s+לב|אינם\s+סגורים|בלי\s+בסיס\s+מספיק|לא\s+סוגרים/u.test(
+      `${slotInterp} ${slotUnc}`,
+    );
+
   /** @type {Array<"action_today"|"action_week"|"avoid_now"|"advance_or_hold"|"explain_to_child"|"ask_teacher"|"uncertainty_boundary">} */
   const allowedFollowupFamilies = [];
   if (cannotConcludeYet || confidenceBand === "low" || readiness === "insufficient") {
@@ -577,11 +595,33 @@ export function buildTruthPacketV1(payload, scope) {
   if (recommendationEligible && recommendationIntensityCap !== "RI0") {
     allowedFollowupFamilies.push("action_today", "action_week");
   }
-  if (readiness === "forming" || readiness === "emerging" || readiness === "insufficient") {
+  /** Offer «מה להימנע» only when continuation can lean on real partial-risk signals, not «emerging» alone. */
+  const avoidNowGrounded =
+    narrativeCoreOk &&
+    (cannotConcludeYet ||
+      confidenceBand === "low" ||
+      readiness === "insufficient" ||
+      readiness === "forming" ||
+      anchorUncertaintyRows > 0 ||
+      (readiness === "emerging" && narrativeSignalsOpenPartial));
+  if (avoidNowGrounded) {
     allowedFollowupFamilies.push("avoid_now");
   }
-  allowedFollowupFamilies.push("advance_or_hold");
-  const uniq = [...new Set(allowedFollowupFamilies)];
+  /** Offer advance/hold only when the packet supports a non-generic tradeoff (risk rows, limits, or open partial copy). */
+  const advanceHoldGrounded =
+    narrativeCoreOk &&
+    (cannotConcludeYet ||
+      anchorUncertaintyRows > 0 ||
+      !recommendationEligible ||
+      String(recommendationIntensityCap || "RI0").toUpperCase() === "RI0" ||
+      readiness === "insufficient" ||
+      confidenceBand === "low" ||
+      (readiness !== "ready" && narrativeSignalsOpenPartial));
+  if (advanceHoldGrounded) {
+    allowedFollowupFamilies.push("advance_or_hold");
+  }
+  let uniq = [...new Set(allowedFollowupFamilies)];
+  if (!uniq.length) uniq = ["uncertainty_boundary"];
 
   const summaryLines =
     scope.scopeType === "executive"

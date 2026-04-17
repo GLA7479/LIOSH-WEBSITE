@@ -164,8 +164,8 @@ function mostStableSubject(rows) {
  * @param {string} obs
  * @param {string} meaning
  */
-function passesEnvelope(truthPacket, obs, meaning) {
-  const joined = `${obs} ${meaning}`;
+function passesEnvelope(truthPacket, obs, meaning, caution = "") {
+  const joined = `${obs} ${meaning} ${caution || ""}`;
   for (const ph of truthPacket?.allowedClaimEnvelope?.forbiddenPhrases || []) {
     if (ph && joined.includes(String(ph))) return false;
   }
@@ -198,6 +198,22 @@ function ensureRequiredHedges(truthPacket, obs, meaning) {
     const bundle = `${o} ${m}`;
     if (h && !bundle.includes(h)) {
       o = `${h} ${o}`.trim();
+    }
+  }
+  return { obs: o, meaning: m };
+}
+
+/** Keeps comparison answers direct-first: add required hedges to meaning tail, not observation lead. */
+function ensureRequiredHedgesTrailing(truthPacket, obs, meaning) {
+  let o = String(obs || "").trim();
+  let m = String(meaning || "").trim();
+  const req = Array.isArray(truthPacket?.allowedClaimEnvelope?.requiredHedges)
+    ? truthPacket.allowedClaimEnvelope.requiredHedges.map((x) => String(x || "").trim()).filter(Boolean)
+    : [];
+  for (const h of req) {
+    const bundle = `${o} ${m}`;
+    if (h && !bundle.includes(h)) {
+      m = `${m} · ${h}.`.trim();
     }
   }
   return { obs: o, meaning: m };
@@ -430,7 +446,7 @@ function buildRecommendationActionDraft(input) {
  *   payload: unknown;
  *   truthPacket: NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>;
  * }} input
- * @returns {{ answerBlocks: Array<{ type: string; textHe: string; source: "composed" }> } | null}
+ * @returns {{ answerBlocks: Array<{ type: string; textHe: string; source: "composed" }>; aggregateContinuity?: { questionClass: string; subjectId: string; role: string } | null } | null}
  */
 export function buildSemanticAggregateDraft(input) {
   const qc = String(input?.questionClass || "");
@@ -478,6 +494,8 @@ export function buildSemanticAggregateDraft(input) {
   let obs = "";
   /** @type {string} */
   let meaning = "";
+  /** @type {{ questionClass: string; subjectId: string; role: string } | null} */
+  let aggregateContinuity = null;
 
   if (qc === "subject_listing") {
     const ids = subjectsListedInReport(payload);
@@ -495,17 +513,17 @@ export function buildSemanticAggregateDraft(input) {
       ? es.majorTrendsHe.map((x) => String(x || "").trim()).filter(Boolean)
       : [];
     if (trends.length) {
-      obs = `${lead} לפי שורות הסיכום שמופיעות בדוח לתקופה: ${trends.slice(0, 4).join(" · ")}.`;
-      meaning = "אלה הניסוחים הבולטים ברמת התקופה כפי שהוגדרו בדוח; לפרטים לפי מקצוע אפשר לעבור למסך המקצוע.";
+      obs = `מה שבולט ביותר בתקופה: ${trends.slice(0, 4).join(" · ")}.`;
+      meaning = "אלה ניסוחי הסיכום לתקופה כפי שהם מופיעים בדוח; לפרטים לפי מקצוע אפשר לעבור למסך המקצועות.";
+      aggregateContinuity = { questionClass: qc, subjectId: "", role: "period_highlight" };
     } else if (withAvg.length) {
       const sorted = [...withAvg].sort((a, b) => (b.avg || 0) - (a.avg || 0) || b.totalQ - a.totalQ);
       const top = sorted.slice(0, 2);
-      obs = `${lead} בולטים במיוחד לפי ממוצע הדיוק על פני הנושאים עם תרגול בדוח: ${top
-        .map((r) => `${r.label} (כ־${r.avg}% בממוצע משוקלל)`)
-        .join(" · ")}.`;
-      meaning = "זה סיכום מספרי ברמת מקצוע מהנתונים שמוצגים בדוח, בלי להחליף ניסוח נושא ספציפי.";
+      obs = `הכי גבוהים כרגע בממוצע דיוק משוקלל בדוח: ${top.map((r) => `${r.label} (כ־${r.avg}%)`).join(" · ")}.`;
+      meaning = "הדירוג מבוסס על ממוצעים על פני נושאים עם תרגול בכל מקצוע, לא על ניסוח נושא בודד.";
+      aggregateContinuity = { questionClass: qc, subjectId: top[0]?.sid || "", role: "period_numeric" };
     } else {
-      obs = `${lead} אין כרגע בדוח מספיק תרגול מספרי מגוזר על פני מקצועות כדי לתאר «מה הכי בולט» בביטחון.`;
+      obs = `אין כרגע בדוח מספיק תרגול מספרי על פני מקצועות כדי לתאר «מה הכי בולט» בביטחון.`;
       meaning = "כשמופיעים נתוני תרגול לפחות בנושא אחד עם שאלות, אפשר לחזור לשאלה ולקבל תמונה ברורה יותר.";
     }
   } else if (qc === "comparison") {
@@ -525,9 +543,10 @@ export function buildSemanticAggregateDraft(input) {
     } else {
       const hi = a.avg > b.avg ? a : b;
       const lo = a.avg > b.avg ? b : a;
-      obs = `${lead} לפי ממוצע הדיוק המשוקלל בדוח, ${hi.label} גבוה יותר מ־${lo.label} (בערך ${hi.avg}% לעומת ${lo.avg}%).`;
+      obs = `${hi.label} גבוה יותר כרגע מ־${lo.label} — לפי ממוצע הדיוק המשוקלל בדוח (בערך ${hi.avg}% לעומת ${lo.avg}%).`;
       meaning = "ההשוואה מבוססת על ממוצעים על פני הנושאים שיש להם תרגול בדוח, לא על ניסוח של נושא בודד.";
-      }
+      aggregateContinuity = { questionClass: qc, subjectId: hi.sid, role: "comparison_hi" };
+    }
     }
   } else if (qc === "most_practice") {
     const listed = roll.filter((r) => r.topicRows > 0);
@@ -536,8 +555,9 @@ export function buildSemanticAggregateDraft(input) {
       meaning = "כשמופיעים מקצועות עם שורות נושא, אפשר לחזור לשאלה ולקבל דירוג תרגול.";
     } else {
       const best = [...listed].sort((a, b) => b.totalQ - a.totalQ || b.topicRows - a.topicRows)[0];
-      obs = `${lead}לפי ספירת התרגול בדוח, המקצוע עם הכי הרבה תרגול הוא ${best.label} (${best.totalQ} שאלות מתועדות).`;
-      meaning = "ההשוואה כאן מבוססת על כמות שאלות בפועל בדוח התקופה, לא על תחושת עומס.";
+      obs = `הכי הרבה תרגול בדוח כרגע: ${best.label} (${best.totalQ} שאלות מתועדות).`;
+      meaning = "הדירוג לפי כמות שאלות בפועל בדוח התקופה, לא לפי תחושת עומס.";
+      aggregateContinuity = { questionClass: qc, subjectId: best.sid, role: "most_practice" };
     }
   } else if (qc === "least_data") {
     const listed = roll.filter((r) => r.topicRows > 0);
@@ -546,8 +566,9 @@ export function buildSemanticAggregateDraft(input) {
       meaning = "כשיופיעו מקצועות פעילים, אפשר לזהות במדויק איפה הנתונים הכי דלים.";
     } else {
       const weakestData = [...listed].sort((a, b) => a.totalQ - b.totalQ || a.dataTopics - b.dataTopics)[0];
-      obs = `${lead}המקצוע עם הכי מעט נתונים כרגע הוא ${weakestData.label} (${weakestData.totalQ} שאלות מתועדות).`;
+      obs = `הכי מעט נתונים בדוח כרגע: ${weakestData.label} (${weakestData.totalQ} שאלות מתועדות).`;
       meaning = "זו אינדיקציה לדלות נתונים בדוח התקופה; במקרה כזה נכון להיות זהירים במסקנות.";
+      aggregateContinuity = { questionClass: qc, subjectId: weakestData.sid, role: "least_data" };
     }
   } else if (qc === "improved") {
     const es = payload?.executiveSummary && typeof payload.executiveSummary === "object" ? payload.executiveSummary : {};
@@ -556,8 +577,9 @@ export function buildSemanticAggregateDraft(input) {
       : [];
     const improvementLines = trends.filter((t) => /שיפור|התקדמות|עלייה|התחזק|משתפר/.test(t));
     if (improvementLines.length) {
-      obs = `${lead}לפי ניסוחי הסיכום בדוח התקופתי, ניכרים סימני שיפור: ${improvementLines.slice(0, 3).join(" · ")}.`;
+      obs = `סימני שיפור שמופיעים בניסוח הסיכום לתקופה: ${improvementLines.slice(0, 3).join(" · ")}.`;
       meaning = "זו תשובה על בסיס שורות הסיכום בדוח בלבד, בלי להמציא מגמת זמן שלא הופיעה במפורש.";
+      aggregateContinuity = { questionClass: qc, subjectId: "", role: "improved" };
     } else {
       obs = `${lead}בדוח הנוכחי אין שורת מגמה מפורשת שמסמנת שיפור לאורך זמן.`;
       meaning = "כדי לענות על «מה השתפר» באופן חד יותר צריך או מגמות מפורשות בסיכום התקופה או השוואת תקופות.";
@@ -572,11 +594,12 @@ export function buildSemanticAggregateDraft(input) {
       obs = `${lead}אין כרגע נתונים מספיקים בדוח כדי לזהות מוקד תשומת לב ברור.`;
       meaning = "כשמופיעים נתוני תרגול מלאים לפי מקצוע בדוח, אפשר לזהות מוקד שדורש תשומת לב.";
     } else {
-      obs = `${lead}המוקד שדורש כרגע הכי הרבה תשומת לב הוא ${atRisk.label}.`;
+      obs = `המוקד שדורש כרגע הכי הרבה חיזוק הוא ${atRisk.label}.`;
       meaning =
         atRisk.avg == null
           ? "הסיבה המרכזית היא דלות נתונים במקצוע הזה בתקופה הנוכחית."
           : `הדירוג מבוסס על שילוב של דיוק ממוצע (כ־${atRisk.avg}%) יחד עם אותות חוסר יציבות בדוח.`;
+      aggregateContinuity = { questionClass: qc, subjectId: atRisk.sid, role: "needs_attention" };
     }
   } else if (qc === "still_unclear") {
     const unclear = roll.filter((r) => r.cannotConcludeTopics > 0 || r.lowConfidenceTopics > 0 || r.insufficientTopics > 0);
@@ -598,8 +621,9 @@ export function buildSemanticAggregateDraft(input) {
         obs = `${lead}אין כרגע מספיק תרגול עקבי בין מקצועות כדי לקבוע מי הכי יציב.`;
         meaning = "נדרש בסיס נתונים רחב יותר (כמות שאלות ורצף ביצועים) כדי לדרג יציבות בצורה אמינה.";
       } else {
-        obs = `${lead}לפי נתוני התקופה בדוח, המקצוע היציב ביותר כרגע הוא ${stable.label}.`;
+        obs = `המקצוע היציב ביותר כרגע לפי נתוני התקופה בדוח הוא ${stable.label}.`;
         meaning = `ההערכה מבוססת על שילוב של נפח תרגול, יציבות ביצועים וביטחון ובשלות לפי הדוח, לא על שורת נושא בודדת.`;
+        aggregateContinuity = { questionClass: qc, subjectId: stable.sid, role: "most_stable" };
       }
     }
   } else {
@@ -609,16 +633,19 @@ export function buildSemanticAggregateDraft(input) {
         only.avg == null
           ? "עדיין בלי ממוצע דיוק יציב שאפשר לסמוך עליו בביטחון"
           : `עם דיוק ממוצע של כ־${only.avg}%`;
-      obs = `${lead}בתקופה שמופיעה בדוח יש כרגע בעיקר מקצוע אחד עם תרגול מספרי (${only.label}), ${pct}.`;
+      obs = `יש כרגע בעיקר מקצוע אחד עם מספיק תרגול מספרי בדוח — ${only.label}, ${pct}.`;
       if (qc === "strongest_subject") {
         meaning =
           "כשיש מקצוע אחד עם נתונים, «הכי חזק» פשוט מתאר את מה שמופיע בפועל במקצוע הזה, בלי השוואה לאחרים. כדי לדרג בין מקצועות צריך שיופיעו לפחות שני מקצועות עם תרגול בדוח.";
+        aggregateContinuity = { questionClass: qc, subjectId: only.sid, role: "strongest" };
       } else if (qc === "weakest_subject") {
         meaning =
           "כשיש מקצוע אחד עם נתונים, «הכי חלש» לא אומר השוואה בין מקצועות — רק את הרף במקצוע היחיד שמופיע. להשוואה אמיתית צריך שני מקצועות ומעלה עם תרגול.";
+        aggregateContinuity = { questionClass: qc, subjectId: only.sid, role: "weakest" };
       } else {
         meaning =
           "כשיש רק מקצוע אחד עם נתונים, «הכי קשה» מתייחס למצב בתוך המקצוע הזה מהדוח, לא למי נוח יותר לעומת מקצוע אחר.";
+        aggregateContinuity = { questionClass: qc, subjectId: only.sid, role: "hardest" };
       }
     } else if (withAvg.length < 2) {
       obs = `${lead}בדוח אין כרגע מספיק תרגול מספרי על לפחות שני מקצועות שונים, ולכן לא נדרגים כאן מקצועות אחד מול השני.`;
@@ -629,29 +656,63 @@ export function buildSemanticAggregateDraft(input) {
       const strongest = sortedStrength[0];
       const weakest = sortedWeak[0];
       if (qc === "strongest_subject") {
-        obs = `${lead} לפי ממוצע הדיוק המשוקלל על פני הנושאים עם תרגול בדוח, המקצוע החזק ביותר הוא ${strongest.label} (בערך ${strongest.avg}%).`;
-        meaning = `המספר משקף ממוצע דיוק על פני כל שורות הנושא עם תרגול תחת ${strongest.label} בדוח, לא שורת נושא בודדת.`;
+        obs = `המקצוע החזק ביותר כרגע הוא ${strongest.label} — לפי ממוצע הדיוק המשוקלל על פני הנושאים עם תרגול בדוח (בערך ${strongest.avg}%).`;
+        meaning = `המדד משקף ממוצע על כל שורות הנושא עם תרגול תחת ${strongest.label}, לא ניסוח של נושא בודד.`;
+        aggregateContinuity = { questionClass: qc, subjectId: strongest.sid, role: "strongest" };
       } else if (qc === "weakest_subject") {
-        obs = `${lead} לפי אותו מדד ממוצע על פני נושאים עם תרגול, המקצוע הנמוך ביותר כרגע הוא ${weakest.label} (בערך ${weakest.avg}%).`;
-        meaning = "זה עדיין תיאור ברמת מקצוע מהדוח; לפרטים מדויקים לפי נושא צריך לפתוח את המקצוע בדוח.";
+        obs = `המקצוע הנמוך ביותר כרגע הוא ${weakest.label} — לפי אותו ממוצע משוקלל על פני נושאים עם תרגול (בערך ${weakest.avg}%).`;
+        meaning = "זה תיאור ברמת מקצוע מהדוח; לפרטים מדויקים לפי נושא צריך לפתוח את המקצוע בדוח.";
+        aggregateContinuity = { questionClass: qc, subjectId: weakest.sid, role: "weakest" };
       } else {
-        obs = `${lead} לפי ממוצע הדיוק המשוקלל בדוח, המקצוע שבו הכי «קשה» כרגע מבחינת התוצאות הוא ${weakest.label} (בערך ${weakest.avg}%).`;
+        obs = `המקצוע שבו הכי «קשה» כרגע מבחינת התוצאות הוא ${weakest.label} — לפי ממוצע הדיוק המשוקלל בדוח (בערך ${weakest.avg}%).`;
         meaning = "כאן «קשה» מתורגם לפי הדיוק הממוצע בנושאים עם תרגול בדוח, לא לפי רושם בלי נתונים.";
+        aggregateContinuity = { questionClass: qc, subjectId: weakest.sid, role: "hardest" };
       }
     }
   }
 
-  ({ obs, meaning } = ensureRequiredHedges(truthPacket, obs, meaning));
+  const directOpenQ = new Set([
+    "strongest_subject",
+    "weakest_subject",
+    "hardest_subject",
+    "period_highlight",
+    "comparison",
+    "most_practice",
+    "least_data",
+    "improved",
+    "needs_attention",
+    "most_stable",
+  ]);
+  const uncSlot = String(truthPacket.contracts?.narrative?.textSlots?.uncertainty || "").trim();
+  let cautionHe = "";
+  let cautionSource = /** @type {"composed"|"contract_slot"} */ ("composed");
+  if (directOpenQ.has(qc) && uncSlot.length >= 12) {
+    cautionHe = norm(uncSlot.length <= 420 ? uncSlot : `${uncSlot.slice(0, 400)}…`);
+    cautionSource = uncSlot.length <= 420 ? "contract_slot" : "composed";
+  }
+
+  if (directOpenQ.has(qc)) {
+    ({ obs, meaning } = ensureRequiredHedgesTrailing(truthPacket, obs, meaning));
+  } else {
+    ({ obs, meaning } = ensureRequiredHedges(truthPacket, obs, meaning));
+  }
   obs = norm(obs);
   meaning = norm(meaning);
   if (obs.length < 8 || meaning.length < 8) return null;
-  if (!passesEnvelope(truthPacket, obs, meaning)) return null;
+  if (!passesEnvelope(truthPacket, obs, meaning, cautionHe)) return null;
+
+  /** @type {Array<{ type: string; textHe: string; source: "composed"|"contract_slot" }>} */
+  const answerBlocks = [
+    { type: "observation", textHe: obs, source: "composed" },
+    { type: "meaning", textHe: meaning, source: "composed" },
+  ];
+  if (cautionHe) {
+    answerBlocks.push({ type: "caution", textHe: cautionHe, source: cautionSource });
+  }
 
   return {
-    answerBlocks: [
-      { type: "observation", textHe: obs, source: "composed" },
-      { type: "meaning", textHe: meaning, source: "composed" },
-    ],
+    answerBlocks,
+    aggregateContinuity,
   };
 }
 

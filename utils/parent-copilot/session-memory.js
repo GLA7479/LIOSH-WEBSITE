@@ -40,6 +40,9 @@ function emptyState() {
     lastScopeLabelHe: "",
     lastPlannerIntent: "",
     lastAssistantAnswerDigestHe: "",
+    lastAnswerAggregateClass: "",
+    lastComparisonSubjectId: "",
+    lastComparisonRole: "",
     lastActivityMs: now,
     createdAtMs: now,
   };
@@ -113,6 +116,9 @@ export function getConversationState(sessionId) {
  *   scopeLabelSnapshotHe?: string;
  *   plannerIntentSnapshot?: string;
  *   lastOfferedFollowupFamily?: string|null;
+ *   lastAnswerAggregateClass?: string;
+ *   lastComparisonSubjectId?: string;
+ *   lastComparisonRole?: string;
  * }} delta
  */
 export function applyConversationStateDelta(sessionId, delta) {
@@ -176,6 +182,15 @@ export function applyConversationStateDelta(sessionId, delta) {
   if (delta.lastOfferedFollowupFamily !== undefined) {
     const lf = String(delta.lastOfferedFollowupFamily || "").trim();
     s.lastOfferedFollowupFamily = lf || null;
+  }
+  if (delta.lastAnswerAggregateClass !== undefined) {
+    s.lastAnswerAggregateClass = String(delta.lastAnswerAggregateClass || "").trim();
+  }
+  if (delta.lastComparisonSubjectId !== undefined) {
+    s.lastComparisonSubjectId = String(delta.lastComparisonSubjectId || "").trim();
+  }
+  if (delta.lastComparisonRole !== undefined) {
+    s.lastComparisonRole = String(delta.lastComparisonRole || "").trim();
   }
   const ans = String(delta.assistantAnswerSummary || "").trim();
   if (ans) {
