@@ -62,6 +62,10 @@ export function planConversation(intent, truthPacket, hints = null) {
   };
 
   switch (intent) {
+    case "clinical_boundary":
+      if (continuityRepeat) blocks.push("uncertainty_reason", "observation");
+      else blocks.push("observation", "uncertainty_reason", "caution");
+      break;
     case "explain_report":
     case "clarify_term":
       obsMeanCaut();

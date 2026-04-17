@@ -6,7 +6,11 @@ import { resolveScope } from "./scope-resolver.js";
 import { buildTruthPacketV1 } from "./truth-packet-v1.js";
 import { interpretFreeformStageA } from "./stage-a-freeform-interpretation.js";
 import { planConversation } from "./conversation-planner.js";
-import { composeAnswerDraft } from "./answer-composer.js";
+import {
+  composeAnswerDraft,
+  buildClinicalBoundaryAnswerDraft,
+  clinicalBoundaryJoinedFingerprintHe,
+} from "./answer-composer.js";
 import { detectAggregateQuestionClass } from "./semantic-question-class.js";
 import { buildSemanticAggregateDraft } from "./semantic-aggregate-answers.js";
 import { validateAnswerDraft, validateParentCopilotResponseV1 } from "./guardrail-validator.js";
@@ -26,6 +30,42 @@ import { appendTurnTelemetryTrace } from "./telemetry-store.js";
 import { tryBuildParentShortFollowupDraft } from "./short-followup-composer.js";
 import { tryBuildComparisonPracticalFollowupDraft } from "./comparison-practical-continuity.js";
 import { compactParentAnswerBlocks } from "./answer-compaction.js";
+
+const CLINICAL_GUARDRAIL_FAIL_CODES = new Set([
+  "clinical_diagnosis_language",
+  "clinical_certainty_language",
+  "llm_clinical_diagnosis_language",
+  "llm_clinical_certainty_language",
+]);
+
+const CLINICAL_LLM_FAIL_REASONS = new Set(["llm_clinical_diagnosis_language", "llm_clinical_certainty_language"]);
+
+/**
+ * @param {unknown} failCodes
+ */
+function draftHasClinicalGuardrailFailure(failCodes) {
+  const list = Array.isArray(failCodes) ? failCodes : [];
+  return list.some((c) => CLINICAL_GUARDRAIL_FAIL_CODES.has(String(c)));
+}
+
+/**
+ * @param {string} s
+ */
+function normalizeWsHeJoin(s) {
+  return String(s || "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * @param {{ answerBlocks?: Array<{ textHe?: string }> }} draft
+ */
+function isClinicalBoundaryDraft(draft) {
+  const joined = (Array.isArray(draft?.answerBlocks) ? draft.answerBlocks : [])
+    .map((b) => String(b?.textHe || ""))
+    .join(" ");
+  return normalizeWsHeJoin(joined) === normalizeWsHeJoin(clinicalBoundaryJoinedFingerprintHe());
+}
 
 function normalizeAnswerBlocksHe(answerBlocks) {
   return (Array.isArray(answerBlocks) ? answerBlocks : []).map((b) => ({
@@ -128,35 +168,51 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
 
   if (!vDraft.ok) {
     fallbackReasonCodes.push(...vDraft.failCodes);
-    draft = buildDeterministicFallbackAnswer(truthPacket, vDraft.failCodes);
-    fallbackUsed = true;
-    draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
-    vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
+    if (draftHasClinicalGuardrailFailure(vDraft.failCodes)) {
+      draft = buildClinicalBoundaryAnswerDraft();
+      fallbackUsed = false;
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+      vDraft = validateAnswerDraft(draft, truthPacket, { intent: "clinical_boundary" });
+    } else {
+      draft = buildDeterministicFallbackAnswer(truthPacket, vDraft.failCodes);
+      fallbackUsed = true;
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+      vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
+    }
   }
   if (!vDraft.ok) {
     fallbackReasonCodes.push(...vDraft.failCodes);
-    const nar = truthPacket.contracts?.narrative;
-    const slots = nar?.textSlots || {};
-    draft = {
-      answerBlocks: [
-        { type: "observation", textHe: String(slots.observation || "").trim(), source: "contract_slot" },
-        { type: "meaning", textHe: String(slots.interpretation || "").trim(), source: "contract_slot" },
-      ].filter((b) => b.textHe),
-    };
-    if (draft.answerBlocks.length < 2) {
-      draft = buildDeterministicFallbackAnswer(truthPacket, ["emergency_fallback"]);
+    if (draftHasClinicalGuardrailFailure(vDraft.failCodes)) {
+      draft = buildClinicalBoundaryAnswerDraft();
+      fallbackUsed = false;
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+      vDraft = validateAnswerDraft(draft, truthPacket, { intent: "clinical_boundary" });
+    } else {
+      const nar = truthPacket.contracts?.narrative;
+      const slots = nar?.textSlots || {};
+      draft = {
+        answerBlocks: [
+          { type: "observation", textHe: String(slots.observation || "").trim(), source: "contract_slot" },
+          { type: "meaning", textHe: String(slots.interpretation || "").trim(), source: "contract_slot" },
+        ].filter((b) => b.textHe),
+      };
+      if (draft.answerBlocks.length < 2) {
+        draft = buildDeterministicFallbackAnswer(truthPacket, ["emergency_fallback"]);
+      }
+      fallbackUsed = true;
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+      vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
     }
-    fallbackUsed = true;
-    draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
-    vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
   }
+
+  const responseIntentEarly = isClinicalBoundaryDraft(draft) ? "clinical_boundary" : plannerIntent;
 
   const answerBlockTypes = draft.answerBlocks.map((b) => b.type);
   const answerBodyTextHe = draft.answerBlocks.map((b) => b.textHe).join(" ").trim();
 
   const follow = selectFollowUp({
     audience: "parent",
-    intent: plannerIntent,
+    intent: responseIntentEarly,
     scopeType: truthPacket.scopeType,
     scopeKey: `${truthPacket.scopeType}:${truthPacket.scopeId}`,
     scopeLabelHe: truthPacket.scopeLabel || "",
@@ -201,7 +257,7 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
 
   let response = buildResolvedParentCopilotResponse({
     truthPacket,
-    intent: plannerIntent,
+    intent: responseIntentEarly,
     answerBlocks: draft.answerBlocks,
     suggestedFollowUp,
     validatorStatus,
@@ -223,7 +279,7 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
   }
 
   const telemetry = buildTurnTelemetry({
-    intent: plannerIntent,
+    intent: responseIntentEarly,
     intentConfidence: scopeMeta.intentConfidence,
     intentReason: scopeMeta.intentReason,
     scopeConfidence: scopeMeta.scopeConfidence,
@@ -252,7 +308,7 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
     .slice(0, 480);
 
   applyConversationStateDelta(sessionId, {
-    addedIntent: plannerIntent,
+    addedIntent: responseIntentEarly,
     addedFollowUpFamily: suggestedFollowUp?.family,
     ...(input?.clickedFollowupFamily
       ? { clickedFollowupFamily: String(input.clickedFollowupFamily).trim() }
@@ -263,7 +319,7 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
     ...(suggestedFollowUp?.textHe ? { suggestedFollowupTextHe: suggestedFollowUp.textHe } : {}),
     ...(assistantAnswerSummary ? { assistantAnswerSummary } : {}),
     scopeLabelSnapshotHe: truthPacket.scopeLabel || "",
-    plannerIntentSnapshot: plannerIntent,
+    plannerIntentSnapshot: responseIntentEarly,
     lastOfferedFollowupFamily: suggestedFollowUp?.family ?? null,
     ...(memoryHints && memoryHints.lastAnswerAggregateClass !== undefined
       ? {
@@ -280,7 +336,7 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
     sessionId,
     conv,
     truthPacket,
-    intent: plannerIntent,
+    intent: responseIntentEarly,
     scopeMeta,
     utteranceStr,
     draft,
@@ -421,7 +477,7 @@ function runDeterministicCore(input) {
       : skipSemanticAggregateForIneligibleRec
         ? "what_to_do_today"
         : intent;
-  if (aggregateQuestionClass !== "none" && !skipSemanticAggregateForIneligibleRec) {
+  if (aggregateQuestionClass !== "none" && !skipSemanticAggregateForIneligibleRec && intent !== "clinical_boundary") {
     const aggDraft = buildSemanticAggregateDraft({
       questionClass: aggregateQuestionClass,
       utterance: utteranceStr,
@@ -472,36 +528,52 @@ function runDeterministicCore(input) {
   if (!vDraft.ok) {
     fallbackReasonCodes.push(...vDraft.failCodes);
     semanticAggregateSatisfied = false;
-    draft = buildDeterministicFallbackAnswer(truthPacket, vDraft.failCodes);
-    fallbackUsed = true;
-    draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
-    vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
+    if (draftHasClinicalGuardrailFailure(vDraft.failCodes)) {
+      draft = buildClinicalBoundaryAnswerDraft();
+      fallbackUsed = false;
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+      vDraft = validateAnswerDraft(draft, truthPacket, { intent: "clinical_boundary" });
+    } else {
+      draft = buildDeterministicFallbackAnswer(truthPacket, vDraft.failCodes);
+      fallbackUsed = true;
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+      vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
+    }
   }
   if (!vDraft.ok) {
     fallbackReasonCodes.push(...vDraft.failCodes);
     semanticAggregateSatisfied = false;
-    const nar = truthPacket.contracts?.narrative;
-    const slots = nar?.textSlots || {};
-    draft = {
-      answerBlocks: [
-        { type: "observation", textHe: String(slots.observation || "").trim(), source: "contract_slot" },
-        { type: "meaning", textHe: String(slots.interpretation || "").trim(), source: "contract_slot" },
-      ].filter((b) => b.textHe),
-    };
-    if (draft.answerBlocks.length < 2) {
-      draft = buildDeterministicFallbackAnswer(truthPacket, ["emergency_fallback"]);
+    if (draftHasClinicalGuardrailFailure(vDraft.failCodes)) {
+      draft = buildClinicalBoundaryAnswerDraft();
+      fallbackUsed = false;
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+      vDraft = validateAnswerDraft(draft, truthPacket, { intent: "clinical_boundary" });
+    } else {
+      const nar = truthPacket.contracts?.narrative;
+      const slots = nar?.textSlots || {};
+      draft = {
+        answerBlocks: [
+          { type: "observation", textHe: String(slots.observation || "").trim(), source: "contract_slot" },
+          { type: "meaning", textHe: String(slots.interpretation || "").trim(), source: "contract_slot" },
+        ].filter((b) => b.textHe),
+      };
+      if (draft.answerBlocks.length < 2) {
+        draft = buildDeterministicFallbackAnswer(truthPacket, ["emergency_fallback"]);
+      }
+      fallbackUsed = true;
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+      vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
     }
-    fallbackUsed = true;
-    draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
-    vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
   }
+
+  const responseIntent = isClinicalBoundaryDraft(draft) ? "clinical_boundary" : plannerIntent;
 
   const answerBlockTypes = draft.answerBlocks.map((b) => b.type);
   const answerBodyTextHe = draft.answerBlocks.map((b) => b.textHe).join(" ").trim();
 
   const follow = selectFollowUp({
     audience: "parent",
-    intent: plannerIntent,
+    intent: responseIntent,
     scopeType: truthPacket.scopeType,
     scopeKey: `${truthPacket.scopeType}:${truthPacket.scopeId}`,
     scopeLabelHe: truthPacket.scopeLabel || "",
@@ -546,7 +618,7 @@ function runDeterministicCore(input) {
 
   let response = buildResolvedParentCopilotResponse({
     truthPacket,
-    intent: plannerIntent,
+    intent: responseIntent,
     answerBlocks: draft.answerBlocks,
     suggestedFollowUp,
     validatorStatus,
@@ -568,7 +640,7 @@ function runDeterministicCore(input) {
   }
 
   const telemetry = buildTurnTelemetry({
-    intent: plannerIntent,
+    intent: responseIntent,
     intentConfidence: scopeMeta.intentConfidence,
     intentReason: scopeMeta.intentReason,
     scopeConfidence: scopeMeta.scopeConfidence,
@@ -597,7 +669,7 @@ function runDeterministicCore(input) {
     .slice(0, 480);
 
   applyConversationStateDelta(sessionId, {
-    addedIntent: plannerIntent,
+    addedIntent: responseIntent,
     addedFollowUpFamily: suggestedFollowUp?.family,
     ...(input?.clickedFollowupFamily
       ? { clickedFollowupFamily: String(input.clickedFollowupFamily).trim() }
@@ -608,7 +680,7 @@ function runDeterministicCore(input) {
     ...(suggestedFollowUp?.textHe ? { suggestedFollowupTextHe: suggestedFollowUp.textHe } : {}),
     ...(assistantAnswerSummary ? { assistantAnswerSummary } : {}),
     scopeLabelSnapshotHe: truthPacket.scopeLabel || "",
-    plannerIntentSnapshot: plannerIntent,
+    plannerIntentSnapshot: responseIntent,
     lastOfferedFollowupFamily: suggestedFollowUp?.family ?? null,
     ...(semanticAggregateSatisfied && aggregateContinuityHint
       ? {
@@ -619,7 +691,7 @@ function runDeterministicCore(input) {
       : {}),
   });
 
-  return { response, audience, sessionId, conv, truthPacket, intent: plannerIntent, scopeMeta, utteranceStr, draft, validatorFailCodes };
+  return { response, audience, sessionId, conv, truthPacket, intent: responseIntent, scopeMeta, utteranceStr, draft, validatorFailCodes };
 }
 
 /**
@@ -662,11 +734,80 @@ export async function runParentCopilotTurnAsync(input) {
     });
   }
 
+  if (core.intent === "clinical_boundary") {
+    return finalizeTurnResponse(baseResponse, {
+      audience: core.audience,
+      sessionId: core.sessionId,
+      truthPacket: core.truthPacket,
+      intent: core.intent,
+      utteranceLength: String(core.utteranceStr || "").trim().length,
+      generationPath: "deterministic",
+      llmAttempt: { ok: false, reason: "llm_skipped_clinical_boundary" },
+    });
+  }
+
   const llmResult = await maybeGenerateGroundedLlmDraft({
     utterance: core.utteranceStr,
     truthPacket: core.truthPacket,
+    parentIntent: core.intent,
   });
   if (!llmResult.ok || !llmResult.draft) {
+    if (CLINICAL_LLM_FAIL_REASONS.has(String(llmResult.reason || "")) && core.truthPacket) {
+      const rawBoundary = buildClinicalBoundaryAnswerDraft();
+      const boundaryDraft = {
+        ...rawBoundary,
+        answerBlocks: normalizeAnswerBlocksHe(rawBoundary.answerBlocks),
+      };
+      const vBoundary = validateAnswerDraft(boundaryDraft, core.truthPacket, { intent: "clinical_boundary" });
+      if (vBoundary.ok) {
+        const boundaryResponse = buildResolvedParentCopilotResponse({
+          truthPacket: core.truthPacket,
+          intent: "clinical_boundary",
+          answerBlocks: boundaryDraft.answerBlocks,
+          suggestedFollowUp: baseResponse.suggestedFollowUp || null,
+          validatorStatus: "pass",
+          validatorFailCodes: [],
+          fallbackUsed: false,
+          contractSourcesUsed: baseResponse.contractSourcesUsed || ["contractsV1.narrative"],
+          priorRepeated: Number(core?.conv?.repeatedPhraseHits || 0),
+          metadata: core.scopeMeta,
+        });
+        const boundaryFinal = validateParentCopilotResponseV1(boundaryResponse);
+        if (boundaryFinal.ok) {
+          return finalizeTurnResponse(
+            {
+              ...boundaryResponse,
+              telemetry: buildTurnTelemetry({
+                intent: "clinical_boundary",
+                intentConfidence: Number(core.scopeMeta?.intentConfidence || 0),
+                intentReason: String(core.scopeMeta?.intentReason || "unknown"),
+                scopeConfidence: Number(core.scopeMeta?.scopeConfidence || 0),
+                scopeReason: String(core.scopeMeta?.scopeReason || "unknown"),
+                answerBlocks: boundaryDraft.answerBlocks,
+                fallbackUsed: false,
+                validatorFailCodes: [],
+                semanticAggregateSatisfied: false,
+                generationPath: "deterministic",
+                truthPacket: core.truthPacket,
+                resolutionStatus: "resolved",
+                scopeType: core.truthPacket.scopeType,
+                scopeId: core.truthPacket.scopeId,
+                llmAttempt: { ok: false, reason: String(llmResult.reason || "llm_clinical_rejected") },
+              }),
+            },
+            {
+              audience: core.audience,
+              sessionId: core.sessionId,
+              truthPacket: core.truthPacket,
+              intent: "clinical_boundary",
+              utteranceLength: String(core.utteranceStr || "").trim().length,
+              generationPath: "deterministic",
+              llmAttempt: { ok: false, reason: String(llmResult.reason || "llm_clinical_rejected") },
+            },
+          );
+        }
+      }
+    }
     return finalizeTurnResponse({
       ...baseResponse,
       telemetry: {
@@ -694,6 +835,62 @@ export async function runParentCopilotTurnAsync(input) {
   };
   const vLlm = validateAnswerDraft(llmDraft, core.truthPacket, { intent: core.intent });
   if (!vLlm.ok) {
+    if (draftHasClinicalGuardrailFailure(vLlm.failCodes) && core.truthPacket) {
+      const rawBoundary = buildClinicalBoundaryAnswerDraft();
+      const boundaryDraft = {
+        ...rawBoundary,
+        answerBlocks: normalizeAnswerBlocksHe(rawBoundary.answerBlocks),
+      };
+      const vBoundary = validateAnswerDraft(boundaryDraft, core.truthPacket, { intent: "clinical_boundary" });
+      if (vBoundary.ok) {
+        const boundaryResponse = buildResolvedParentCopilotResponse({
+          truthPacket: core.truthPacket,
+          intent: "clinical_boundary",
+          answerBlocks: boundaryDraft.answerBlocks,
+          suggestedFollowUp: baseResponse.suggestedFollowUp || null,
+          validatorStatus: "pass",
+          validatorFailCodes: [],
+          fallbackUsed: false,
+          contractSourcesUsed: baseResponse.contractSourcesUsed || ["contractsV1.narrative"],
+          priorRepeated: Number(core?.conv?.repeatedPhraseHits || 0),
+          metadata: core.scopeMeta,
+        });
+        const boundaryFinal = validateParentCopilotResponseV1(boundaryResponse);
+        if (boundaryFinal.ok) {
+          return finalizeTurnResponse(
+            {
+              ...boundaryResponse,
+              telemetry: buildTurnTelemetry({
+                intent: "clinical_boundary",
+                intentConfidence: Number(core.scopeMeta?.intentConfidence || 0),
+                intentReason: String(core.scopeMeta?.intentReason || "unknown"),
+                scopeConfidence: Number(core.scopeMeta?.scopeConfidence || 0),
+                scopeReason: String(core.scopeMeta?.scopeReason || "unknown"),
+                answerBlocks: boundaryDraft.answerBlocks,
+                fallbackUsed: false,
+                validatorFailCodes: [],
+                semanticAggregateSatisfied: false,
+                generationPath: "deterministic",
+                truthPacket: core.truthPacket,
+                resolutionStatus: "resolved",
+                scopeType: core.truthPacket.scopeType,
+                scopeId: core.truthPacket.scopeId,
+                llmAttempt: { ok: false, reason: "llm_draft_clinical_guardrail", failCodes: vLlm.failCodes },
+              }),
+            },
+            {
+              audience: core.audience,
+              sessionId: core.sessionId,
+              truthPacket: core.truthPacket,
+              intent: "clinical_boundary",
+              utteranceLength: String(core.utteranceStr || "").trim().length,
+              generationPath: "deterministic",
+              llmAttempt: { ok: false, reason: "llm_draft_clinical_guardrail" },
+            },
+          );
+        }
+      }
+    }
     return finalizeTurnResponse({
       ...baseResponse,
       telemetry: {

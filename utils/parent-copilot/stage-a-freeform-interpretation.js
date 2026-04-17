@@ -20,6 +20,7 @@ import { SUBJECT_ORDER, subjectLabelHe } from "./contract-reader.js";
  *   "is_intervention_needed" |
  *   "strength_vs_weakness_summary" |
  *   "clarify_term" |
+ *   "clinical_boundary" |
  *   "unclear"
  * )} CanonicalParentIntent
  */
@@ -51,6 +52,7 @@ export const CANONICAL_PARENT_INTENTS = [
   "is_intervention_needed",
   "strength_vs_weakness_summary",
   "clarify_term",
+  "clinical_boundary",
   "unclear",
 ];
 
@@ -303,6 +305,18 @@ const INTENT_PARAPHRASES = {
     /פערים\s*בין\s*נושאים|פערים\s*בין\s*מקצועות/u,
     /מבט\s*משווה\s*בין\s*נושאים/u,
   ],
+  clinical_boundary: [
+    /דיסלקציה|דיסלקסיה|דיסקלקוליה/u,
+    /לקות\s*למידה/u,
+    /הפרעת\s*קשב/u,
+    /\bADHD\b/i,
+    /מה\s*האבחון|מה\s*האבחנה|איזה\s*אבחון|מי\s*מאבחן|מי\s*מאבחנים/u,
+    /האבחון\s*הוא|האבחנה\s*היא/u,
+    /מה\s*הבעיה\s*האמיתית/u,
+    /האם\s*זה\s*(דיסלקציה|דיסלקסיה|דיסקלקוליה|ADHD|לקות|הפרעת\s*קשב|אבחון|אבחנה)/iu,
+    /(?:יש\s*לילד|לילד\s*יש).{0,48}(?:דיסלקציה|דיסלקסיה|דיסקלקוליה|לקות\s*למידה|הפרעת\s*קשב|ADHD)/iu,
+    /(?:דיסלקציה|דיסלקסיה|דיסקלקוליה|לקות\s*למידה|הפרעת\s*קשב|ADHD).{0,48}(?:יש\s*לילד|לילד\s*יש)/iu,
+  ],
   clarify_term: [
     /תסביר\s*לי\s*את\s*המושג\s*הזה|לא\s*הבנתי\s*את\s*הניסוח\s*הזה/u,
     /מהזה\s*אומר|מהזה|מה\s*זה\s*אומר/u,
@@ -449,6 +463,13 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
     }
   }
 
+  if ((scores.clinical_boundary || 0) > 0) {
+    best = "clinical_boundary";
+    bestScore = scores.clinical_boundary || 0;
+    topIntentCount = 1;
+    second = 0;
+  }
+
   const scopeSignal = bestScopeClassFromSignals(folded);
   /** @type {ScopeClass} */
   let scopeClass =
@@ -459,9 +480,13 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
         ? "weaknesses"
         : best === "why_not_advance"
           ? "blocked_advance"
-          : best === "what_to_do_today" || best === "what_to_do_this_week" || best === "is_intervention_needed"
+            : best === "what_to_do_today" || best === "what_to_do_this_week" || best === "is_intervention_needed"
             ? "recommendation"
             : "executive");
+
+  if (best === "clinical_boundary") {
+    scopeClass = "confidence_uncertainty";
+  }
 
   const topicHint = payload ? extractTopicHint(folded, payload) : null;
   const subjectHint = payload ? extractSubjectHint(folded, payload) : null;

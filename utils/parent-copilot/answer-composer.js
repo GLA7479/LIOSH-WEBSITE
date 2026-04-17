@@ -9,6 +9,34 @@ import { coachingVariantIndex, applyParentCoachingPacks, pickUncertaintyReasonSc
 import { parentDirectOpenerHe } from "./direct-answer-openers.js";
 import { compactParentAnswerBlocks } from "./answer-compaction.js";
 
+/** Fixed Copilot-only clinical boundary copy (Task C / Task G). */
+export const CLINICAL_BOUNDARY_LINE_1_HE =
+  "על סמך הדוח הזה אי אפשר לקבוע אבחנה או להצמיד תווית קלינית.";
+export const CLINICAL_BOUNDARY_LINE_2_HE =
+  "הדוח יכול להצביע על תחומים שדורשים חיזוק או המשך מעקב, אבל הוא לא מחליף אבחון מקצועי.";
+export const CLINICAL_BOUNDARY_LINE_3_HE =
+  "אם יש חשש אמיתי, נכון לשתף מורה או איש מקצוע במה שנראה בפועל, בלי להסיק אבחנה מתוך הדוח בלבד.";
+
+/**
+ * @returns {{ answerBlocks: Array<{ type: string; textHe: string; source: "composed" }> }}
+ */
+export function buildClinicalBoundaryAnswerDraft() {
+  return {
+    answerBlocks: [
+      { type: "observation", textHe: CLINICAL_BOUNDARY_LINE_1_HE, source: "composed" },
+      { type: "meaning", textHe: CLINICAL_BOUNDARY_LINE_2_HE, source: "composed" },
+      { type: "caution", textHe: CLINICAL_BOUNDARY_LINE_3_HE, source: "composed" },
+    ],
+  };
+}
+
+/**
+ * Normalized join of boundary blocks — matches `validateAnswerDraft` joined shape (single spaces between blocks).
+ */
+export function clinicalBoundaryJoinedFingerprintHe() {
+  return [CLINICAL_BOUNDARY_LINE_1_HE, CLINICAL_BOUNDARY_LINE_2_HE, CLINICAL_BOUNDARY_LINE_3_HE].join(" ");
+}
+
 /**
  * @param {string} text
  */
@@ -65,6 +93,11 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
   const interp = String(slots.interpretation || narrativeSectionTextHe("finding", nar) || "").trim();
   const act = String(slots.action || narrativeSectionTextHe("recommendation", nar) || "").trim();
   const lim = String(slots.uncertainty || narrativeSectionTextHe("limitations", nar) || "").trim();
+
+  const intentEarly = String(coachingCtx?.intent || plan.intent || "").trim();
+  if (intentEarly === "clinical_boundary") {
+    return buildClinicalBoundaryAnswerDraft();
+  }
 
   const intent = String(coachingCtx?.intent || plan.intent || "");
   const conv = coachingCtx?.conversationState || null;

@@ -3,6 +3,32 @@
  * Phase 5: truth consistency, recommendation boundary, forbidden surfaces, parent-facing Hebrew.
  */
 
+import { clinicalBoundaryJoinedFingerprintHe } from "./answer-composer.js";
+
+/** Deterministic clinical / diagnostic labeling (joined parent copy + contract slots). Not the fixed boundary fingerprint. */
+const CLINICAL_DIAGNOSIS_SURFACE_RES = [
+  /דיסלקציה|דיסלקסיה|דיסקלקוליה/u,
+  /לקות\s*למידה/u,
+  /הפרעת\s*קשב/u,
+  /\bADHD\b/i,
+  /האבחון\s*הוא/u,
+  /האבחנה\s*היא/u,
+  /(?:יש\s*לילד|לילד\s*יש).{0,64}(?:דיסלקציה|דיסלקסיה|דיסקלקוליה|לקות\s*למידה|הפרעת\s*קשב|ADHD)/iu,
+  /(?:דיסלקציה|דיסלקסיה|דיסקלקוליה|לקות\s*למידה|הפרעת\s*קשב|ADHD).{0,64}(?:יש\s*לילד|לילד\s*יש)/iu,
+];
+
+/** Over-certain tone when answering a clinical-boundary-class turn. */
+const CLINICAL_CERTAINTY_RE = /(בוודאות|חד[\s-]*משמעית|אין\s*ספק|ברור\s*ש)/u;
+
+/**
+ * @param {string} s
+ */
+function normalizeWsHe(s) {
+  return String(s || "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /** Filler-only closings (avoid substrings that appear inside approved narrative contract slots). */
 const FILLER_BLACKLIST = ["נמשיך ונראה", "הכול תלוי בהמשך", "נראה בסדר באופן כללי"];
 
@@ -125,6 +151,9 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
   const joined = blocks.map((b) => String(b.textHe || "")).join(" ");
   const composedJoined = composedTextJoin(blocks);
   const intent = String(hints?.intent || "").trim();
+  const joinedNorm = normalizeWsHe(joined);
+  const boundaryNorm = normalizeWsHe(clinicalBoundaryJoinedFingerprintHe());
+  const isApprovedClinicalBoundaryCopy = joinedNorm === boundaryNorm;
 
   if (/\bcontractsV1\b|validatorFailCodes|schemaVersion|fail_codes\b|telemetry\.trace\b/i.test(joined)) {
     failCodes.push("internal_surface_leak");
@@ -168,8 +197,10 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
     if (joined.includes(ph)) failCodes.push("filler_blacklist");
   }
   const slotBundle = String(slotText + joined);
-  for (const hedge of truthPacket?.allowedClaimEnvelope?.requiredHedges || []) {
-    if (hedge && !slotBundle.includes(String(hedge))) failCodes.push("missing_required_hedge");
+  if (intent !== "clinical_boundary") {
+    for (const hedge of truthPacket?.allowedClaimEnvelope?.requiredHedges || []) {
+      if (hedge && !slotBundle.includes(String(hedge))) failCodes.push("missing_required_hedge");
+    }
   }
 
   const dl = truthPacket?.derivedLimits || {};
@@ -218,6 +249,18 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
         failCodes.push("contract_slot_mismatch");
         break;
       }
+    }
+  }
+
+  if (!isApprovedClinicalBoundaryCopy) {
+    for (const re of CLINICAL_DIAGNOSIS_SURFACE_RES) {
+      if (re.test(joined)) {
+        failCodes.push("clinical_diagnosis_language");
+        break;
+      }
+    }
+    if (intent === "clinical_boundary" && CLINICAL_CERTAINTY_RE.test(joined)) {
+      failCodes.push("clinical_certainty_language");
     }
   }
 

@@ -563,6 +563,22 @@ export function buildTruthPacketV1(payload, scope) {
     ? narrative.allowedSections.filter((s) => ["summary", "finding", "recommendation", "limitations"].includes(String(s)))
     : ["summary", "finding", "recommendation", "limitations"];
   const forbiddenPhrases = Array.isArray(narrative.forbiddenPhrases) ? [...narrative.forbiddenPhrases] : [];
+  /** Copilot-only systemic envelope: block clinical labeling in composed/LLM surfaces (additive). */
+  const systemicCopilotClinicalForbidden = [
+    "דיסלקציה",
+    "דיסלקסיה",
+    "דיסקלקוליה",
+    "לקות למידה",
+    "הפרעת קשב",
+    "ADHD",
+    "האבחון הוא",
+    "האבחנה היא",
+  ];
+  if (scope.scopeType === "topic" || scope.scopeType === "subject" || scope.scopeType === "executive") {
+    for (const ph of systemicCopilotClinicalForbidden) {
+      if (ph && !forbiddenPhrases.includes(ph)) forbiddenPhrases.push(ph);
+    }
+  }
   const requiredHedges = Array.isArray(narrative.requiredHedges) ? [...narrative.requiredHedges] : [];
 
   const narTs = narrative.textSlots && typeof narrative.textSlots === "object" ? narrative.textSlots : {};

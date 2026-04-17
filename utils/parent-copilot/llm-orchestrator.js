@@ -4,8 +4,31 @@
  */
 
 import { getLlmGateDecision } from "./rollout-gates.js";
+import { clinicalBoundaryJoinedFingerprintHe } from "./answer-composer.js";
 
 const DEFAULT_TIMEOUT_MS = 9000;
+
+const LLM_CLINICAL_DIAGNOSIS_RES = [
+  /דיסלקציה|דיסלקסיה|דיסקלקוליה/u,
+  /לקות\s*למידה/u,
+  /הפרעת\s*קשב/u,
+  /\bADHD\b/i,
+  /האבחון\s*הוא/u,
+  /האבחנה\s*היא/u,
+  /(?:יש\s*לילד|לילד\s*יש).{0,64}(?:דיסלקציה|דיסלקסיה|דיסקלקוליה|לקות\s*למידה|הפרעת\s*קשב|ADHD)/iu,
+  /(?:דיסלקציה|דיסלקסיה|דיסקלקוליה|לקות\s*למידה|הפרעת\s*קשב|ADHD).{0,64}(?:יש\s*לילד|לילד\s*יש)/iu,
+];
+
+const LLM_CLINICAL_CERTAINTY_RE = /(בוודאות|חד[\s-]*משמעית|אין\s*ספק|ברור\s*ש)/u;
+
+/**
+ * @param {string} s
+ */
+function normalizeWsHe(s) {
+  return String(s || "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 function env(name, fallback = "") {
   let raw;
@@ -52,6 +75,7 @@ function buildGroundedPrompt(utterance, truthPacket) {
     "אתה עוזר הורים מקצועי.",
     "השתמש רק בעובדות מה-JSON הבא. אסור להמציא עובדות.",
     "תענה בעברית בלבד, בטון מקצועי וחם, עם 2-3 בלוקים קצרים.",
+    "Clinical safety: never assign a diagnosis or a clinical label; never state or imply the child has dyslexia, ADHD, or a learning disability; never present the report as a diagnosis.",
     'החזר JSON בלבד בפורמט {"answerBlocks":[{"type":"observation|meaning|next_step|caution","textHe":"...","source":"composed"}]}',
     `שאלת הורה: ${String(utterance || "").trim()}`,
     `FACTS_JSON: ${JSON.stringify(facts)}`,
@@ -95,7 +119,12 @@ async function callOpenAiCompatible(signal, prompt) {
   return { ok: true, payload: parsed.value };
 }
 
-function validateLlmDraft(payload, truthPacket) {
+/**
+ * @param {unknown} payload
+ * @param {NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>} truthPacket
+ * @param {{ intent?: string }} [hints]
+ */
+function validateLlmDraft(payload, truthPacket, hints = null) {
   const blocks = Array.isArray(payload?.answerBlocks) ? payload.answerBlocks : [];
   if (blocks.length < 2) return { ok: false, reason: "llm_answer_too_short" };
   if (blocks.length > 4) return { ok: false, reason: "llm_answer_too_long" };
@@ -105,8 +134,24 @@ function validateLlmDraft(payload, truthPacket) {
   if (!hasObs && !hasMean) return { ok: false, reason: "llm_missing_observation_or_meaning" };
 
   const joined = blocks.map((b) => String(b?.textHe || "").trim()).join(" ");
-  for (const hedge of truthPacket?.allowedClaimEnvelope?.requiredHedges || []) {
-    if (hedge && !joined.includes(String(hedge))) return { ok: false, reason: "llm_missing_required_hedge" };
+  const intent = String(hints?.intent || "").trim();
+  const joinedNorm = normalizeWsHe(joined);
+  const boundaryNorm = normalizeWsHe(clinicalBoundaryJoinedFingerprintHe());
+  const isApprovedClinicalBoundaryCopy = joinedNorm === boundaryNorm;
+
+  if (!isApprovedClinicalBoundaryCopy) {
+    for (const re of LLM_CLINICAL_DIAGNOSIS_RES) {
+      if (re.test(joined)) return { ok: false, reason: "llm_clinical_diagnosis_language" };
+    }
+    if (intent === "clinical_boundary" && LLM_CLINICAL_CERTAINTY_RE.test(joined)) {
+      return { ok: false, reason: "llm_clinical_certainty_language" };
+    }
+  }
+
+  if (intent !== "clinical_boundary") {
+    for (const hedge of truthPacket?.allowedClaimEnvelope?.requiredHedges || []) {
+      if (hedge && !joined.includes(String(hedge))) return { ok: false, reason: "llm_missing_required_hedge" };
+    }
   }
   for (const b of blocks) {
     const type = String(b?.type || "");
@@ -134,7 +179,7 @@ function validateLlmDraft(payload, truthPacket) {
 }
 
 /**
- * @param {{ utterance: string; truthPacket: NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>; }} input
+ * @param {{ utterance: string; truthPacket: NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>; parentIntent?: string }} input
  */
 export async function maybeGenerateGroundedLlmDraft(input) {
   const gate = getLlmGateDecision();
@@ -152,7 +197,9 @@ export async function maybeGenerateGroundedLlmDraft(input) {
   try {
     const response = await callOpenAiCompatible(controller.signal, prompt);
     if (!response.ok) return { ok: false, reason: response.reason || "llm_provider_error" };
-    const validated = validateLlmDraft(response.payload, input.truthPacket);
+    const validated = validateLlmDraft(response.payload, input.truthPacket, {
+      intent: String(input?.parentIntent || "").trim(),
+    });
     if (!validated.ok) return { ok: false, reason: validated.reason || "llm_validation_failed" };
     return { ok: true, draft: validated.draft, provider: "openai_compatible" };
   } catch (error) {
