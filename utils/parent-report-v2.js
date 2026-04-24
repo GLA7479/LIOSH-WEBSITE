@@ -36,6 +36,13 @@ import { buildWeaknessConfidencePatternsV1 } from "./intelligence-layer-v1/weakn
 import { enrichTopicMapsWithRowBehaviorProfiles } from "./parent-report-row-behavior";
 import { validateParentReportDataIntegrity } from "./parent-report-data-integrity";
 import { enrichReportMapsWithTopicStepHints } from "./topic-next-step-engine";
+import { applyConsistencyGuards } from "./system-intelligence/consistency-engine.js";
+import { applyDependencyGuards } from "./system-intelligence/dependency-engine.js";
+import { attachFeedbackSignal } from "./system-intelligence/feedback-engine.js";
+import { applyTimeDecisionGuards } from "./system-intelligence/time-decision-engine.js";
+import { applyFeedbackDecisionGuards } from "./system-intelligence/feedback-decision-engine.js";
+import { computeTopicPriority } from "./system-intelligence/priority-engine.js";
+import { computeGlobalScore } from "./system-intelligence/global-score.js";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
 import { runDiagnosticEngineV2 } from "./diagnostic-engine-v2/index.js";
 import { safeBuildHybridRuntimeForReport } from "./ai-hybrid-diagnostic/safe-build-hybrid-runtime.js";
@@ -955,6 +962,121 @@ function buildPatternDiagnosticsFromV2(diagnosticEngineV2) {
   return { version: 2, subjects };
 }
 
+function systemIntelligenceTopicKey(subjectId, topicRowKey, row) {
+  const bk =
+    row && typeof row === "object" && row.bucketKey != null && row.bucketKey !== ""
+      ? String(row.bucketKey)
+      : String(splitBucketModeRowKey(String(topicRowKey || "")).bucketKey || topicRowKey || "");
+  if (String(subjectId) === "math") {
+    return String(mathReportBaseOperationKey(bk));
+  }
+  return String(splitTopicRowKey(String(topicRowKey || "")).bucketKey || topicRowKey || "");
+}
+
+function buildSystemIntelligenceHistoryMapFromMaps(maps) {
+  const historyMap = {};
+  for (const [subjectId, topicMap] of Object.entries(maps || {})) {
+    if (!topicMap || typeof topicMap !== "object") continue;
+    for (const [topicRowKey, row] of Object.entries(topicMap)) {
+      if (!row || typeof row !== "object") continue;
+      const w = row.trend?.windows;
+      if (!w || typeof w !== "object") continue;
+      const order = ["previousComparablePeriod", "recentShortWindow", "currentPeriod"];
+      const h = [];
+      for (const k of order) {
+        const acc = Number(w[k]?.accuracy);
+        if (Number.isFinite(acc)) h.push({ accuracy: acc });
+      }
+      if (h.length < 2) continue;
+      const topicKey = systemIntelligenceTopicKey(subjectId, topicRowKey, row);
+      historyMap[topicKey] = h;
+    }
+  }
+  return historyMap;
+}
+
+/**
+ * System-level downgrade guards + metadata (no Phase2/contract changes).
+ * @param {Record<string, Record<string, unknown>>} maps
+ * @returns {{ globalScore: { score: number, level: string } }}
+ */
+function applySystemIntelligenceLayerToMaps(maps) {
+  const topicResults = [];
+  for (const [subjectId, topicMap] of Object.entries(maps || {})) {
+    if (!topicMap || typeof topicMap !== "object") continue;
+    for (const [topicRowKey, row] of Object.entries(topicMap)) {
+      if (!row || typeof row !== "object") continue;
+      if (Number(row.questions) <= 0) continue;
+      const step = row.diagnosticRecommendedNextStep;
+      if (step == null || step === "") continue;
+      const topicKey = systemIntelligenceTopicKey(subjectId, topicRowKey, row);
+      topicResults.push({
+        topicKey,
+        topicRowKey,
+        subjectId,
+        recommendedNextStep: String(step),
+        __reportRow: row,
+      });
+    }
+  }
+  if (topicResults.length === 0) {
+    return { globalScore: computeGlobalScore([]) };
+  }
+
+  const historyMap = buildSystemIntelligenceHistoryMapFromMaps(maps);
+
+  let topics = topicResults;
+  topics = applyConsistencyGuards(topics);
+  topics = applyDependencyGuards(topics);
+  topics = attachFeedbackSignal(topics, historyMap || {});
+  topics = applyTimeDecisionGuards(topics, historyMap || {});
+  topics = applyFeedbackDecisionGuards(topics);
+  topics = computeTopicPriority(topics);
+
+  const globalScore = computeGlobalScore(topics);
+
+  for (const t of topics) {
+    const row = t.__reportRow;
+    if (!row || typeof row !== "object") continue;
+    row.diagnosticRecommendedNextStep = t.recommendedNextStep;
+    if (t._consistencyAdjusted) row._consistencyAdjusted = true;
+    if (t._dependencyAdjusted) row._dependencyAdjusted = true;
+    if (Object.prototype.hasOwnProperty.call(t, "_feedback")) {
+      row._feedback = t._feedback;
+    }
+    if (Object.prototype.hasOwnProperty.call(t, "_timeAdjusted")) {
+      row._timeAdjusted = t._timeAdjusted;
+    }
+    if (Object.prototype.hasOwnProperty.call(t, "_feedbackAdjusted")) {
+      row._feedbackAdjusted = t._feedbackAdjusted;
+    }
+    if (Object.prototype.hasOwnProperty.call(t, "_priorityScore")) {
+      row._priorityScore = t._priorityScore;
+    }
+    if (process.env.NODE_ENV !== "production") {
+      if (
+        t._consistencyAdjusted ||
+        t._dependencyAdjusted ||
+        Object.prototype.hasOwnProperty.call(t, "_feedback") ||
+        Object.prototype.hasOwnProperty.call(t, "_timeAdjusted") ||
+        Object.prototype.hasOwnProperty.call(t, "_feedbackAdjusted") ||
+        Object.prototype.hasOwnProperty.call(t, "_priorityScore")
+      ) {
+        row._systemIntelligenceTrace = {
+          consistencyAdjusted: !!t._consistencyAdjusted,
+          dependencyAdjusted: !!t._dependencyAdjusted,
+          feedback: Object.prototype.hasOwnProperty.call(t, "_feedback") ? t._feedback : null,
+          timeAdjusted: Object.prototype.hasOwnProperty.call(t, "_timeAdjusted") ? t._timeAdjusted : null,
+          feedbackAdjusted: Object.prototype.hasOwnProperty.call(t, "_feedbackAdjusted") ? t._feedbackAdjusted : null,
+          priorityScore: Object.prototype.hasOwnProperty.call(t, "_priorityScore") ? t._priorityScore : null,
+        };
+      }
+    }
+  }
+
+  return { globalScore };
+}
+
 /**
  * @param {string} playerName
  * @param {string} period 'week'|'month'|'custom'
@@ -1372,6 +1494,8 @@ export function generateParentReportV2(
   }
   enrichReportMapsWithTopicStepHints(maps, mistakesBySubjectMaps, endMs);
 
+  const systemIntelligenceLayer = applySystemIntelligenceLayerToMaps(maps);
+
   for (const [sid, topicMap] of Object.entries(maps)) {
     if (!topicMap || typeof topicMap !== "object") continue;
     for (const key of Object.keys(topicMap)) {
@@ -1576,6 +1700,9 @@ export function generateParentReportV2(
       traceAttached: contractsV1TraceEnabled,
       enabled: contractsV1TraceEnabled,
       validationMode: "soft",
+    },
+    systemIntelligence: {
+      globalScore: systemIntelligenceLayer?.globalScore ?? { score: 0, level: "unknown" },
     },
   };
 }

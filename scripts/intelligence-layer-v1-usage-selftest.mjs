@@ -40,6 +40,24 @@ const { normalizeRecommendationContract } = await import(
 const { assertContractMatchesStep } = await import(
   pathToFileURL(join(ROOT, "utils", "contracts", "assert-contract-step-consistency.js")).href
 );
+const { applyConsistencyGuards } = await import(
+  pathToFileURL(join(ROOT, "utils", "system-intelligence", "consistency-engine.js")).href
+);
+const { applyDependencyGuards } = await import(
+  pathToFileURL(join(ROOT, "utils", "system-intelligence", "dependency-engine.js")).href
+);
+const { attachFeedbackSignal } = await import(
+  pathToFileURL(join(ROOT, "utils", "system-intelligence", "feedback-engine.js")).href
+);
+const { applyTimeDecisionGuards } = await import(
+  pathToFileURL(join(ROOT, "utils", "system-intelligence", "time-decision-engine.js")).href
+);
+const { applyFeedbackDecisionGuards } = await import(
+  pathToFileURL(join(ROOT, "utils", "system-intelligence", "feedback-decision-engine.js")).href
+);
+const { computeGlobalScore } = await import(
+  pathToFileURL(join(ROOT, "utils", "system-intelligence", "global-score.js")).href
+);
 
 {
   const c = normalizeRecommendationContract({ intensity: "RI3", eligible: true }, "maintain_and_strengthen");
@@ -55,6 +73,58 @@ const { assertContractMatchesStep } = await import(
   assert.throws(() =>
     assertContractMatchesStep({ intensity: "RI1" }, "advance_level")
   );
+}
+
+{
+  const res = applyConsistencyGuards([
+    { topicKey: "a", recommendedNextStep: "advance_level" },
+    { topicKey: "b", recommendedNextStep: "drop_one_level_topic_only" },
+  ]);
+
+  assert.equal(res[0].recommendedNextStep, "maintain_and_strengthen");
+}
+
+{
+  const res = applyDependencyGuards([
+    { topicKey: "fractions", recommendedNextStep: "advance_level" },
+    { topicKey: "multiplication", recommendedNextStep: "drop_one_level_topic_only" },
+  ]);
+
+  assert.equal(res[0].recommendedNextStep, "maintain_and_strengthen");
+}
+
+{
+  const res = attachFeedbackSignal([{ topicKey: "t1" }], {
+    t1: [{ accuracy: 70 }, { accuracy: 80 }],
+  });
+
+  assert.equal(res[0]._feedback, "improved");
+}
+
+{
+  const res = applyTimeDecisionGuards(
+    [{ topicKey: "t1", recommendedNextStep: "advance_level" }],
+    { t1: [{ accuracy: 90 }, { accuracy: 80 }, { accuracy: 70 }] }
+  );
+
+  assert.equal(res[0].recommendedNextStep, "maintain_and_strengthen");
+}
+
+{
+  const res = applyFeedbackDecisionGuards([
+    { topicKey: "t1", recommendedNextStep: "advance_level", _feedback: "worsened" },
+  ]);
+
+  assert.equal(res[0].recommendedNextStep, "maintain_and_strengthen");
+}
+
+{
+  const g = computeGlobalScore([
+    { recommendedNextStep: "advance_level" },
+    { recommendedNextStep: "maintain_and_strengthen" },
+  ]);
+
+  assert.ok(g.score > 2);
 }
 
 {
