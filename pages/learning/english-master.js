@@ -27,6 +27,7 @@ import {
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
+import { compareAnswers } from "../../utils/answer-compare";
 import {
   learningHintTriggerBtn,
   learningExplainOpenBtn,
@@ -1923,22 +1924,17 @@ const refreshMonthlyProgress = useCallback(() => {
     });
     setSelectedAnswer(answer);
     solvedCountRef.current += 1;
-    const normalize = (v) =>
-      String(v ?? "")
-        .replace(/[“”״]/g, '"')
-        .replace(/[‘’׳]/g, "'")
-        .replace(/^[\s"'`.,!?;:()[\]{}\-–—]+|[\s"'`.,!?;:()[\]{}\-–—]+$/g, "")
-        .trim()
-        .replace(/\s+/g, " ")
-        .toLowerCase();
     const acceptedAnswers =
       Array.isArray(currentQuestion.acceptedAnswers) &&
       currentQuestion.acceptedAnswers.length > 0
         ? currentQuestion.acceptedAnswers
         : [currentQuestion.correctAnswer];
-    const isCorrect = acceptedAnswers.some(
-      (candidate) => normalize(candidate) === normalize(answer)
-    );
+    const { isCorrect } = compareAnswers({
+      mode: "exact_text",
+      user: answer,
+      expected: currentQuestion.correctAnswer,
+      acceptedList: acceptedAnswers,
+    });
     pendingEnglishTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
       total: 1,
