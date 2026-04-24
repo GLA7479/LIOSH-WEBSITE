@@ -16,6 +16,8 @@ const {
   compareGeometryLearnerAnswer,
   normalizeAnswerExactText,
   normalizeHebrewRelaxedAnswer,
+  MAX_NUMERIC_ABSOLUTE_TOLERANCE,
+  parsePureNumericDecimalString,
 } = m;
 
 const TOL = 0.01;
@@ -36,6 +38,20 @@ assert.equal(
 );
 assert.equal(
   compareAnswers({ mode: "exact_integer", user: "8", expected: 7 }).isCorrect,
+  false
+);
+assert.equal(
+  compareAnswers({ mode: "exact_integer", user: "42x", expected: 42 }).isCorrect,
+  false,
+  "exact_integer rejects parseInt-style prefix junk"
+);
+assert.equal(
+  compareAnswers({ mode: "exact_integer", user: "42.0", expected: 42 }).isCorrect,
+  false,
+  "exact_integer is whole-string integer only"
+);
+assert.equal(
+  compareAnswers({ mode: "exact_integer", user: "", expected: 0 }).isCorrect,
   false
 );
 assert.equal(
@@ -88,6 +104,27 @@ assert.throws(() =>
     user: 1,
     expected: 1,
   })
+);
+
+assert.equal(MAX_NUMERIC_ABSOLUTE_TOLERANCE, 0.05);
+assert.equal(
+  compareAnswers({
+    mode: "numeric_absolute_tolerance",
+    user: 2.04,
+    expected: 2,
+    tolerance: 100,
+  }).isCorrect,
+  true,
+  "oversized tolerance is clamped to MAX_NUMERIC_ABSOLUTE_TOLERANCE"
+);
+assert.equal(
+  compareAnswers({
+    mode: "numeric_absolute_tolerance",
+    user: 2.06,
+    expected: 2,
+    tolerance: 100,
+  }).isCorrect,
+  false
 );
 
 // --- numeric_scale_relative_tolerance (caller supplies all) ---
@@ -160,9 +197,40 @@ assert.equal(
   }).isCorrect,
   false
 );
+assert.equal(
+  compareMathLearnerAnswer({
+    user: "1,5",
+    correctAnswer: 1.5,
+    numericTolerance: TOL,
+  }).isCorrect,
+  true,
+  "comma decimal only on pure numeric branch"
+);
+assert.equal(
+  compareMathLearnerAnswer({
+    user: "2abc",
+    correctAnswer: 2,
+    numericTolerance: TOL,
+  }).isCorrect,
+  false,
+  "no parseFloat prefix: junk stays string path"
+);
+assert.equal(
+  compareMathLearnerAnswer({
+    user: "2.06",
+    correctAnswer: 2,
+    numericTolerance: 100,
+  }).isCorrect,
+  false,
+  "compareMathLearnerAnswer clamps numericTolerance"
+);
 assert.throws(() =>
   compareMathLearnerAnswer({ user: 1, correctAnswer: 1 })
 );
+
+assert.equal(parsePureNumericDecimalString("1,5"), 1.5);
+assert.equal(parsePureNumericDecimalString("1.2.3"), null);
+assert.equal(parsePureNumericDecimalString("1,2,3"), null);
 
 // --- compareGeometryLearnerAnswer ---
 assert.equal(

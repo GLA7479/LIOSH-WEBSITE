@@ -6,6 +6,40 @@
 import { normalizeAnswerForSpellingNiqqudStrict } from "./hebrew-spelling-niqqud";
 
 /**
+ * Upper bound for absolute numeric tolerance in {@link compareAnswers} (`numeric_absolute_tolerance`)
+ * and {@link compareMathLearnerAnswer}. Values above this are **clamped** (never widened)
+ * so a misconfigured caller cannot mark all answers correct.
+ * @type {number}
+ */
+export const MAX_NUMERIC_ABSOLUTE_TOLERANCE = 0.05;
+
+/**
+ * @param {number} tol
+ * @returns {number}
+ */
+function clampAbsoluteTolerance(tol) {
+  return Math.min(tol, MAX_NUMERIC_ABSOLUTE_TOLERANCE);
+}
+
+/**
+ * Parse a trimmed string as a plain decimal only: optional integer, optional single `.` or `,`
+ * as decimal separator (never both). No scientific notation, no thousands grouping, no suffix junk.
+ * Used for math learner numeric branch and geometry coordinate parsing (comma only here).
+ * @param {string} trimmed
+ * @returns {number|null}
+ */
+export function parsePureNumericDecimalString(trimmed) {
+  if (!trimmed) return null;
+  if (!/^-?\d+([.,]\d+)?$/.test(trimmed)) return null;
+  const dot = trimmed.includes(".");
+  const comma = trimmed.includes(",");
+  if (dot && comma) return null;
+  const normalized = comma ? trimmed.replace(",", ".") : trimmed;
+  const n = Number(normalized);
+  return Number.isFinite(n) ? n : null;
+}
+
+/**
  * English-style normalization: quotes, edge punctuation, collapse whitespace, ASCII lower.
  * @param {unknown} value
  * @returns {string}
@@ -44,10 +78,10 @@ export function normalizeHebrewRelaxedAnswer(value) {
  * @param {object} p
  * @param {"exact_text"|"mcq_index"|"exact_integer"|"trim_string_equal"|"numeric_absolute_tolerance"|"numeric_scale_relative_tolerance"|"hebrew_relaxed_text"|"hebrew_niqqud_strict"} p.mode
  * @param {unknown} p.user
- * @param {unknown} [p.expected] — for exact_text: canonical correct string; for exact_integer: numeric correct answer
+ * @param {unknown} [p.expected] — for exact_text: canonical correct string; for exact_integer: finite integer `expected`; `user` must be a trimmed string of ASCII digits only (full string, no `parseInt` prefix acceptance)
  * @param {unknown[]} [p.acceptedList] — optional extra accepted strings (exact_text, hebrew_*)
  * @param {unknown} [p.expectedIndex] — for mcq_index
- * @param {number} [p.tolerance] — required for numeric_absolute_tolerance (caller supplies; e.g. math 0.01)
+ * @param {number} [p.tolerance] — required for numeric_absolute_tolerance (caller supplies; e.g. 0.01). Clamped to {@link MAX_NUMERIC_ABSOLUTE_TOLERANCE} if larger.
  * @param {number} [p.scaleFloor] — required for numeric_scale_relative_tolerance
  * @param {number} [p.relativeFactor] — required for numeric_scale_relative_tolerance
  * @param {number} [p.minTolerance] — required for numeric_scale_relative_tolerance
@@ -62,10 +96,18 @@ export function compareAnswers(p) {
   }
   if (mode === "exact_integer") {
     const raw = String(p.user ?? "").trim();
-    const u = raw === "" ? NaN : parseInt(raw, 10);
     const e = Number(p.expected);
+    if (raw === "" || !/^-?\d+$/.test(raw)) {
+      return { isCorrect: false };
+    }
+    const u = Number(raw);
     return {
-      isCorrect: Number.isFinite(u) && Number.isFinite(e) && u === e,
+      isCorrect:
+        Number.isFinite(u) &&
+        Number.isFinite(e) &&
+        Number.isInteger(u) &&
+        Number.isInteger(e) &&
+        u === e,
     };
   }
   if (mode === "trim_string_equal") {
@@ -80,6 +122,7 @@ export function compareAnswers(p) {
         `compareAnswers: mode "${mode}" requires finite positive tolerance from caller`
       );
     }
+    const effectiveTol = clampAbsoluteTolerance(tol);
     const a = p.user;
     const b = p.expected;
     if (a === b) {
@@ -90,7 +133,7 @@ export function compareAnswers(p) {
       typeof b === "number" &&
       !isNaN(a) &&
       !isNaN(b) &&
-      Math.abs(a - b) < tol
+      Math.abs(a - b) < effectiveTol
     ) {
       return { isCorrect: true };
     }
@@ -164,7 +207,9 @@ export function compareAnswers(p) {
 
 /**
  * Math learner answer (same rules as math-master handleAnswer): fractions, comparison signs, numeric tolerance.
- * Caller must pass numericTolerance (e.g. 0.01 from math-master); no default inside.
+ * Caller must pass numericTolerance (e.g. 0.01 from math-master); no default inside. Tolerance is clamped to
+ * {@link MAX_NUMERIC_ABSOLUTE_TOLERANCE} if larger. Comma as decimal separator applies only on the pure-decimal
+ * string branch (not fractions, not mixed numbers with spaces, not comparison tokens).
  * @param {{ user: unknown, correctAnswer: unknown, numericTolerance: number }} p
  * @returns {{ isCorrect: boolean, rejectInvalidNumber: boolean, selectedValue: unknown }}
  */
@@ -175,6 +220,7 @@ export function compareMathLearnerAnswer(p) {
       "compareMathLearnerAnswer: numericTolerance must be a finite positive number from caller"
     );
   }
+  const effectiveTol = clampAbsoluteTolerance(tol);
   const user = p.user;
   const correctAnswer = p.correctAnswer;
 
@@ -186,23 +232,17 @@ export function compareMathLearnerAnswer(p) {
     if (trimmed === "<" || trimmed === ">" || trimmed === "=") {
       isStringAnswer = true;
       numericAnswer = trimmed;
-    } else if (
-      trimmed.includes("/") ||
-      trimmed.includes(" ") ||
-      isNaN(parseFloat(trimmed))
-    ) {
+    } else if (trimmed.includes("/") || trimmed.includes(" ")) {
       isStringAnswer = true;
       numericAnswer = trimmed;
     } else {
-      const parsed = parseFloat(trimmed);
-      if (isNaN(parsed)) {
-        return {
-          isCorrect: false,
-          rejectInvalidNumber: true,
-          selectedValue: trimmed,
-        };
+      const parsed = parsePureNumericDecimalString(trimmed);
+      if (parsed === null) {
+        isStringAnswer = true;
+        numericAnswer = trimmed;
+      } else {
+        numericAnswer = parsed;
       }
-      numericAnswer = parsed;
     }
   } else {
     numericAnswer = user;
@@ -215,28 +255,30 @@ export function compareMathLearnerAnswer(p) {
     correctAnswerStr === "=";
 
   let isCorrect;
+  const correctPure =
+    typeof correctAnswer === "string"
+      ? parsePureNumericDecimalString(correctAnswerStr)
+      : null;
   if (
     isStringAnswer ||
     isComparisonAnswer ||
     (typeof correctAnswer === "string" &&
-      (correctAnswer.includes("/") ||
-        correctAnswer.includes(" ") ||
-        isNaN(parseFloat(correctAnswer))))
+      (correctAnswerStr.includes("/") ||
+        correctAnswerStr.includes(" ") ||
+        correctPure === null))
   ) {
     isCorrect =
       String(numericAnswer).trim() === String(correctAnswer).trim();
   } else {
     const correctNumericAnswer =
-      typeof correctAnswer === "string"
-        ? parseFloat(correctAnswer.trim())
-        : correctAnswer;
+      typeof correctAnswer === "string" ? correctPure : correctAnswer;
     isCorrect =
       numericAnswer === correctNumericAnswer ||
       (typeof numericAnswer === "number" &&
         typeof correctNumericAnswer === "number" &&
         !isNaN(numericAnswer) &&
         !isNaN(correctNumericAnswer) &&
-        Math.abs(numericAnswer - correctNumericAnswer) < tol);
+        Math.abs(numericAnswer - correctNumericAnswer) < effectiveTol);
   }
 
   return {
@@ -249,6 +291,7 @@ export function compareMathLearnerAnswer(p) {
 /**
  * Geometry learner answer (same rules as geometry-master handleAnswer).
  * Caller passes scaleFloor, relativeFactor, minTolerance (e.g. 1e-6, 1e-5, 1e-9); no defaults inside.
+ * String inputs use the same pure-decimal comma rules as math ({@link parsePureNumericDecimalString}); no comma normalization on non-numeric shapes.
  * @param {{ user: unknown, correctAnswer: unknown, scaleFloor: number, relativeFactor: number, minTolerance: number }} p
  * @returns {{ isCorrect: boolean }}
  */
@@ -274,10 +317,8 @@ export function compareGeometryLearnerAnswer(p) {
   const toNumeric = (v) => {
     if (typeof v === "number" && Number.isFinite(v)) return v;
     if (typeof v !== "string") return null;
-    const cleaned = v.trim().replace(",", ".");
-    if (!cleaned) return null;
-    const num = Number(cleaned);
-    return Number.isFinite(num) ? num : null;
+    const t = v.trim();
+    return parsePureNumericDecimalString(t);
   };
 
   const answerNum = toNumeric(user);
