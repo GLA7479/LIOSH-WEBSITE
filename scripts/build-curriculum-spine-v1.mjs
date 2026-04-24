@@ -21,6 +21,11 @@ const { HEBREW_G4_CONTENT_MAP } = await import(u("data/hebrew-g4-content-map.js"
 const { HEBREW_G5_CONTENT_MAP } = await import(u("data/hebrew-g5-content-map.js"));
 const { HEBREW_G6_CONTENT_MAP } = await import(u("data/hebrew-g6-content-map.js"));
 const { SCIENCE_GRADES } = await import(u("data/science-curriculum.js"));
+const { SCIENCE_QUESTIONS } = await import(u("data/science-questions.js"));
+const {
+  deriveCanonicalScienceSpine,
+  countLegacyScienceDraftRows,
+} = await import(pathToFileURL(path.join(__dirname, "curriculum-spine-science-canonical.mjs")).href);
 const { ENGLISH_GRADES } = await import(u("data/english-curriculum.js"));
 const { MOLEDET_GEOGRAPHY_GRADES } = await import(u("data/moledet-geography-curriculum.js"));
 const { ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE } =
@@ -254,36 +259,15 @@ for (const [pool, range] of Object.entries(ENGLISH_SENTENCE_POOL_RANGE)) {
   });
 }
 
-for (const [gk, row] of Object.entries(SCIENCE_GRADES)) {
-  const g = parseInt(gk.replace("g", ""), 10);
-  for (const topic of row.topics || []) {
-    const cur = row.curriculum || {};
-    let idx = 0;
-    for (const line of [...(cur.focus || []), ...(cur.skills || [])]) {
-      const sub = `draft_${idx++}_${slug(line)}`;
-      skills.push({
-        schema_version: 1,
-        skill_id: `science:${gk}:${topic}:${sub}`,
-        subject: "science",
-        topic,
-        subtopic: sub,
-        minGrade: g,
-        maxGrade: g,
-        cognitive_level: cognitiveForGrade(g),
-        description: String(line).slice(0, 220),
-        source: "data/science-curriculum.js (draft subtopic from focus/skills lines)",
-      });
-    }
-    if (!(cur.focus || []).length && !(cur.skills || []).length) {
-      gaps.push({
-        severity: "important",
-        subject: "science",
-        topic,
-        grade: gk,
-        note: "No focus/skills lines to derive draft subtopics; needs SME split.",
-      });
-    }
-  }
+const scienceRowCountBefore = countLegacyScienceDraftRows(SCIENCE_GRADES);
+const scienceDerived = deriveCanonicalScienceSpine(SCIENCE_QUESTIONS, SCIENCE_GRADES, {
+  cognitiveForGrade,
+});
+for (const row of scienceDerived.skills) {
+  skills.push(row);
+}
+for (const g of scienceDerived.extraGaps) {
+  gaps.push(g);
 }
 
 for (const [gk, row] of Object.entries(MOLEDET_GEOGRAPHY_GRADES)) {
@@ -319,11 +303,6 @@ gaps.push({
   subject: "math",
   skill_ids: [...MATH_KINDS_GENERATOR_CURRICULUM_MISMATCH],
   note: "These kinds are only emitted on a g1-only path inside the `equations` branch (or via __LIOSH_MATH_FORCE), but `GRADES.g1.operations` in utils/math-constants.js does not list `equations`, so they do not appear under normal grade+op gating. Align GRADES or generator if they should be reachable.",
-});
-gaps.push({
-  severity: "important",
-  subject: "science",
-  note: "Subtopics are draft slugs from prose lines; not yet aligned to SCIENCE_QUESTIONS topic keys or ministry TOC.",
 });
 gaps.push({
   severity: "minor",
@@ -394,6 +373,13 @@ console.log(
       phase79_math_geometry_placeholder_rows: {
         before_all_math_and_geometry_kind_rows_were_1_to_6: mathGeometryPlaceholderBefore,
         after_count_min1_max6: mathGeometryPlaceholderAfter,
+      },
+      phase710_science_canonical: {
+        science_spine_rows_before_draft_prose: scienceRowCountBefore,
+        science_spine_rows_after_canonical_topics: scienceDerived.skills.length,
+        science_question_topics_unmapped_to_curriculum: scienceDerived.unmappedQuestionTopics,
+        science_curriculum_grade_topic_pairs_without_bank_items:
+          scienceDerived.curriculumPairsWithoutQuestions.length,
       },
     },
     null,

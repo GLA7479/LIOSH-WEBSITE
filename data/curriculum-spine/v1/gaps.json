@@ -1,8 +1,19 @@
 {
   "schema_version": 1,
-  "generatedAt": "2026-04-24T23:08:59.012Z",
+  "generatedAt": "2026-04-24T23:13:29.637Z",
   "count": 4,
   "gaps": [
+    {
+      "severity": "important",
+      "subject": "science",
+      "note": "SCIENCE_GRADES declares topic access for grade+topic pairs with no SCIENCE_QUESTIONS items carrying that exact grades[] tag (bank may still be usable via mixed mode or future items).",
+      "curriculum_topic_grade_pairs_without_questions": [
+        {
+          "grade": "g6",
+          "topic": "mixed"
+        }
+      ]
+    },
     {
       "severity": "important",
       "subject": "math",
@@ -11,11 +22,6 @@
         "math:kind:eq_sub_simple"
       ],
       "note": "These kinds are only emitted on a g1-only path inside the `equations` branch (or via __LIOSH_MATH_FORCE), but `GRADES.g1.operations` in utils/math-constants.js does not list `equations`, so they do not appear under normal grade+op gating. Align GRADES or generator if they should be reachable."
-    },
-    {
-      "severity": "important",
-      "subject": "science",
-      "note": "Subtopics are draft slugs from prose lines; not yet aligned to SCIENCE_QUESTIONS topic keys or ministry TOC."
     },
     {
       "severity": "minor",
