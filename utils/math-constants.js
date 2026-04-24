@@ -354,7 +354,8 @@ export const GRADES = {
       "compare",
       "number_sense",
       "word_problems", // שאלות חיבור וחיסור
-      "mixed",          // תרגילים מעורבים
+      "equations", // משוואות פשוטות (נעלם אחד) — מיושר עם utils/math-question-generator.js לכיתה א׳
+      "mixed", // תרגילים מעורבים
     ],
     allowFractions: false,
     allowNegatives: false,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-24T23:23:50.230Z",
+  "generatedAt": "2026-04-24T23:27:33.388Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -603,6 +603,13 @@
         "withSubtype": 0,
         "withPatternFamily": 240
       },
+      "equations": {
+        "rows": 240,
+        "staticRows": 0,
+        "sampleRows": 240,
+        "withSubtype": 0,
+        "withPatternFamily": 240
+      },
       "division": {
         "rows": 240,
         "staticRows": 0,
@@ -651,13 +658,6 @@
         "sampleRows": 48,
         "withSubtype": 0,
         "withPatternFamily": 48
-      },
-      "equations": {
-        "rows": 192,
-        "staticRows": 0,
-        "sampleRows": 192,
-        "withSubtype": 0,
-        "withPatternFamily": 192
       },
       "rounding": {
         "rows": 144,

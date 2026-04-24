@@ -1818,9 +1818,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
 
         const maxAdd = levelConfig.addition.max || 100;
         const maxSub = levelConfig.subtraction.max || 100;
-        const maxMul = levelConfig.multiplication.max || 10;
-        const maxDiv = levelConfig.division.max || 100;
-        const maxDivisor = levelConfig.division.maxDivisor || 12;
+        const maxMul = levelConfig.multiplication?.max ?? 10;
 
         if (t === "add") {
           const a = randInt(1, Math.floor(maxAdd / 2));
@@ -1871,6 +1869,8 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
           question = exerciseText;
           params = { kind: "eq_mul", form, a, b, c, exerciseText };
         } else {
+          const maxDiv = levelConfig.division?.max ?? 100;
+          const maxDivisor = levelConfig.division?.maxDivisor ?? 12;
           const divisor = randInt(2, maxDivisor);
           const quotient = randInt(2, Math.max(2, Math.floor(maxDiv / divisor)));
           const dividend = divisor * quotient;

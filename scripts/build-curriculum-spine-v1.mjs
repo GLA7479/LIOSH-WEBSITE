@@ -48,7 +48,6 @@ const {
   geometryKindGradeSpan,
   MATH_GRADE_TRUTH,
   GEOMETRY_GRADE_TRUTH,
-  MATH_KINDS_GENERATOR_CURRICULUM_MISMATCH,
 } = await import(pathToFileURL(path.join(__dirname, "curriculum-spine-grade-bindings.mjs")).href);
 
 const mathGeometryPlaceholderBefore =
@@ -260,12 +259,6 @@ for (const [gk, row] of Object.entries(MOLEDET_GEOGRAPHY_GRADES)) {
   }
 }
 
-gaps.push({
-  severity: "important",
-  subject: "math",
-  skill_ids: [...MATH_KINDS_GENERATOR_CURRICULUM_MISMATCH],
-  note: "These kinds are only emitted on a g1-only path inside the `equations` branch (or via __LIOSH_MATH_FORCE), but `GRADES.g1.operations` in utils/math-constants.js does not list `equations`, so they do not appear under normal grade+op gating. Align GRADES or generator if they should be reachable.",
-});
 const ranges = [];
 for (const row of skills) {
   if (row.subject !== "english") continue;

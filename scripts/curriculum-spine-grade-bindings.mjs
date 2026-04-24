@@ -237,5 +237,3 @@ export const MATH_GRADE_TRUTH =
 export const GEOMETRY_GRADE_TRUTH =
   "utils/geometry-constants.js GRADES[].topics, TOPIC_SHAPES, getShapesForTopic(); case/topic→kind mapping in utils/geometry-question-generator.js";
 
-/** Kinds whose declared span is conservative but not reachable under current GRADES.operations. */
-export const MATH_KINDS_GENERATOR_CURRICULUM_MISMATCH = ["math:kind:eq_add_simple", "math:kind:eq_sub_simple"];

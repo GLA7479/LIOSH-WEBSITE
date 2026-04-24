@@ -159,15 +159,7 @@ export const SCIENCE_GRADES = {
     key: "g6",
     name: "כיתה ו׳",
     stage: "רמה מתקדמת לפני חטיבה",
-    topics: [
-      "body",
-      "animals",
-      "materials",
-      "experiments",
-      "earth_space",
-      "environment",
-      "mixed",
-    ],
+    topics: ["body", "animals", "materials", "experiments", "earth_space", "environment"],
     curriculum: {
       summary:
         "חיבור בין תחומי מדע שונים: רב־מערכתיות בגוף האדם, כימיה בסיסית, כוח המשיכה, שינויי אקלים ופתרון בעיות הנדסיות.",

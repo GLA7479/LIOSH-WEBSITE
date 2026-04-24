@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-24T23:23:49.269Z",
+  "generatedAt": "2026-04-24T23:27:32.501Z",
   "seedsPerCombo": 128,
   "skipGeometryConceptual": true,
   "mathForcedKinds": [
@@ -79,6 +79,17 @@
       "errors": 0,
       "seeds": 128
     },
+    "g1|easy|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_add_simple",
+        "eq_sub",
+        "eq_sub_simple"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
     "g1|medium|addition": {
       "kinds": [
         "add_second_decade",
@@ -141,6 +152,17 @@
       "errors": 0,
       "seeds": 128
     },
+    "g1|medium|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_add_simple",
+        "eq_sub",
+        "eq_sub_simple"
+      ],
+      "kindCount": 4,
+      "errors": 0,
+      "seeds": 128
+    },
     "g1|hard|addition": {
       "kinds": [
         "add_second_decade",
@@ -200,6 +222,17 @@
         "wp_time_days"
       ],
       "kindCount": 7,
+      "errors": 0,
+      "seeds": 128
+    },
+    "g1|hard|equations": {
+      "kinds": [
+        "eq_add",
+        "eq_add_simple",
+        "eq_sub",
+        "eq_sub_simple"
+      ],
+      "kindCount": 4,
       "errors": 0,
       "seeds": 128
     },
