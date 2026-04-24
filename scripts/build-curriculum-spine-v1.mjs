@@ -26,6 +26,11 @@ const {
   deriveCanonicalScienceSpine,
   countLegacyScienceDraftRows,
 } = await import(pathToFileURL(path.join(__dirname, "curriculum-spine-science-canonical.mjs")).href);
+const { HEBREW_RICH_POOL } = await import(u("utils/hebrew-rich-question-bank.js"));
+const {
+  deriveHebrewRichBankSpine,
+  countHebrewContentMapRows,
+} = await import(pathToFileURL(path.join(__dirname, "curriculum-spine-hebrew-rich-canonical.mjs")).href);
 const { ENGLISH_GRADES } = await import(u("data/english-curriculum.js"));
 const { MOLEDET_GEOGRAPHY_GRADES } = await import(u("data/moledet-geography-curriculum.js"));
 const { ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE } =
@@ -100,6 +105,10 @@ const hebrewMaps = [
   ["g6", HEBREW_G6_CONTENT_MAP],
 ];
 
+const hebrewContentMapRowCount = countHebrewContentMapRows(hebrewMaps);
+/** @type {Array<{ skill_id: string, topic: string, minGrade: number, maxGrade: number }>} */
+const hebrewContentMapIndex = [];
+
 for (const [gKey, cmap] of hebrewMaps) {
   const g = parseInt(String(gKey).replace("g", ""), 10);
   for (const [topic, block] of Object.entries(cmap)) {
@@ -107,7 +116,7 @@ for (const [gKey, cmap] of hebrewMaps) {
     if (!Array.isArray(list)) continue;
     for (const st of list) {
       const sid = st.id;
-      skills.push({
+      const row = {
         schema_version: 1,
         skill_id: `hebrew:${gKey}:${topic}:${sid}`,
         subject: "hebrew",
@@ -118,9 +127,33 @@ for (const [gKey, cmap] of hebrewMaps) {
         cognitive_level: cognitiveForGrade(g),
         description: `Hebrew ${gKey} ${topic} — official content-map subtopic ${sid} (weights/modes in data/hebrew-${gKey}-content-map.js).`,
         source: `data/hebrew-${gKey}-content-map.js`,
+        spine_layer: "content_map",
+      };
+      skills.push(row);
+      hebrewContentMapIndex.push({
+        skill_id: row.skill_id,
+        topic: row.topic,
+        minGrade: row.minGrade,
+        maxGrade: row.maxGrade,
       });
     }
   }
+}
+
+const hebrewRichDerived = deriveHebrewRichBankSpine(HEBREW_RICH_POOL, hebrewContentMapIndex, {
+  slug,
+  cognitiveForGrade,
+});
+const usedRichSkillIds = new Set();
+for (const row of hebrewRichDerived.skills) {
+  if (usedRichSkillIds.has(row.skill_id)) {
+    throw new Error(`[build-curriculum-spine] Duplicate Hebrew rich spine skill_id: ${row.skill_id}`);
+  }
+  usedRichSkillIds.add(row.skill_id);
+  skills.push(row);
+}
+for (const g of hebrewRichDerived.extraGaps) {
+  gaps.push(g);
 }
 
 for (const kind of branches.math.kindLiterals) {
@@ -309,11 +342,6 @@ gaps.push({
   subject: "english",
   note: "Grammar curriculum lines duplicated per grade row; may merge into stable cross-grade skills in v2.",
 });
-gaps.push({
-  severity: "important",
-  subject: "hebrew",
-  note: "Rich-bank items may use gradeBand vs exact grade; spine uses content-map grades only — reconcile in v2.",
-});
 
 const ranges = [];
 for (const row of skills) {
@@ -380,6 +408,13 @@ console.log(
         science_question_topics_unmapped_to_curriculum: scienceDerived.unmappedQuestionTopics,
         science_curriculum_grade_topic_pairs_without_bank_items:
           scienceDerived.curriculumPairsWithoutQuestions.length,
+      },
+      phase711_hebrew_rich_reconciliation: {
+        hebrew_content_map_rows: hebrewContentMapRowCount,
+        hebrew_rich_bucket_rows: hebrewRichDerived.skills.length,
+        hebrew_rows_total: hebrewContentMapRowCount + hebrewRichDerived.skills.length,
+        rich_pool_items_mapped: hebrewRichDerived.mappedPoolItemCount,
+        rich_pool_items_unmapped: hebrewRichDerived.unmappedRichPoolRows.length,
       },
     },
     null,

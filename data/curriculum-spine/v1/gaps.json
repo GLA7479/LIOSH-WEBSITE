@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "generatedAt": "2026-04-24T23:13:29.637Z",
-  "count": 4,
+  "generatedAt": "2026-04-24T23:18:39.400Z",
+  "count": 3,
   "gaps": [
     {
       "severity": "important",
@@ -27,11 +27,6 @@
       "severity": "minor",
       "subject": "english",
       "note": "Grammar curriculum lines duplicated per grade row; may merge into stable cross-grade skills in v2."
-    },
-    {
-      "severity": "important",
-      "subject": "hebrew",
-      "note": "Rich-bank items may use gradeBand vs exact grade; spine uses content-map grades only — reconcile in v2."
     }
   ]
 }

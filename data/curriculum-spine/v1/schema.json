@@ -52,6 +52,15 @@
       "type": "string",
       "description": "Optional provenance: file path, map name, or audit artifact."
     },
+    "spine_layer": {
+      "type": "string",
+      "description": "Optional spine layer discriminator (e.g. content_map vs rich_bank)."
+    },
+    "linked_skill_ids": {
+      "type": "array",
+      "description": "Optional links to other spine skill_ids (e.g. Hebrew rich-bank → content-map rows).",
+      "items": { "type": "string" }
+    },
     "schema_version": {
       "type": "integer",
       "const": 1

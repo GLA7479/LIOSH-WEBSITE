@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "generatedAt": "2026-04-24T23:13:29.635Z",
-  "count": 414,
+  "generatedAt": "2026-04-24T23:18:39.397Z",
+  "count": 461,
   "skills": [
     {
       "schema_version": 1,
@@ -13,7 +13,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 reading — official content-map subtopic g1.phoneme_awareness (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -25,7 +26,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 reading — official content-map subtopic g1.open_close_syllable (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -37,7 +39,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 reading — official content-map subtopic g1.rhyme (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -49,7 +52,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 reading — official content-map subtopic g1.syllables (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -61,7 +65,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 reading — official content-map subtopic g1.letters (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -73,7 +78,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 reading — official content-map subtopic g1.final_letters (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -85,7 +91,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 reading — official content-map subtopic g1.basic_niqqud (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -97,7 +104,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 reading — official content-map subtopic g1.sound_letter_match (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -109,7 +117,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 reading — official content-map subtopic g1.simple_words_read (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -121,7 +130,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 comprehension — official content-map subtopic g1.word_meaning_concrete (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -133,7 +143,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 comprehension — official content-map subtopic g1.one_sentence_who_what (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -145,7 +156,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 comprehension — official content-map subtopic g1.simple_instruction (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -157,7 +169,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 writing — official content-map subtopic g1.copy_word (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -169,7 +182,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 writing — official content-map subtopic g1.spell_word_choice (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -181,7 +195,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 grammar — official content-map subtopic g1.grammar_pos_roles (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -193,7 +208,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 grammar — official content-map subtopic g1.grammar_wellformed (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -205,7 +221,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 grammar — official content-map subtopic g1.grammar_agreement_light (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -217,7 +234,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 grammar — official content-map subtopic g1.grammar_cloze_deixis (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -229,7 +247,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 grammar — official content-map subtopic g1.grammar_word_order (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -241,7 +260,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 grammar — official content-map subtopic g1.grammar_odd_category (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -253,7 +273,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 grammar — official content-map subtopic g1.grammar_punctuation (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -265,7 +286,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 grammar — official content-map subtopic g1.grammar_connectors_time (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -277,7 +299,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 vocabulary — official content-map subtopic g1.word_picture (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -289,7 +312,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 vocabulary — official content-map subtopic g1.word_meaning_concrete (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -301,7 +325,8 @@
       "maxGrade": 1,
       "cognitive_level": "recognition",
       "description": "Hebrew g1 speaking — official content-map subtopic g1.phrase_appropriateness (weights/modes in data/hebrew-g1-content-map.js).",
-      "source": "data/hebrew-g1-content-map.js"
+      "source": "data/hebrew-g1-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -313,7 +338,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 reading — official content-map subtopic g2.fluent_words (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -325,7 +351,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 reading — official content-map subtopic g2.short_sentence (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -337,7 +364,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 reading — official content-map subtopic g2.simple_punctuation_read (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -349,7 +377,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 comprehension — official content-map subtopic g2.detail_main_idea (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -361,7 +390,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 comprehension — official content-map subtopic g2.simple_sequence (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -373,7 +403,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 comprehension — official content-map subtopic g2.light_inference (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -385,7 +416,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 writing — official content-map subtopic g2.sentence_wellformed (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -397,7 +429,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 writing — official content-map subtopic g2.short_paragraph_choice (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -409,7 +442,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 writing — official content-map subtopic g2.punctuation_choice (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -421,7 +455,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 grammar — official content-map subtopic g2.pos_basic (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -433,7 +468,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 grammar — official content-map subtopic g2.simple_tense (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -445,7 +481,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 grammar — official content-map subtopic g2.number_gender_light (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -457,7 +494,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 vocabulary — official content-map subtopic g2.synonyms_basic (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -469,7 +507,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 vocabulary — official content-map subtopic g2.context_clue_easy (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -481,7 +520,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 speaking — official content-map subtopic g2.situation_register (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -493,7 +533,8 @@
       "maxGrade": 2,
       "cognitive_level": "recognition",
       "description": "Hebrew g2 speaking — official content-map subtopic g2.describe_prompt_choice (weights/modes in data/hebrew-g2-content-map.js).",
-      "source": "data/hebrew-g2-content-map.js"
+      "source": "data/hebrew-g2-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -505,7 +546,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 reading — official content-map subtopic g3.multi_sentence (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -517,7 +559,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 reading — official content-map subtopic g3.genre_tag_info_vs_story (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -529,7 +572,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 comprehension — official content-map subtopic g3.cause_effect (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -541,7 +585,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 comprehension — official content-map subtopic g3.compare_light (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -553,7 +598,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 comprehension — official content-map subtopic g3.explicit_only (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -565,7 +611,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 writing — official content-map subtopic g3.two_three_sentences_structure (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -577,7 +624,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 writing — official content-map subtopic g3.connector_use_choice (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -589,7 +637,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 grammar — official content-map subtopic g3.tense_system_intro (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -601,7 +650,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 grammar — official content-map subtopic g3.connectors (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -613,7 +663,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 grammar — official content-map subtopic g3.binyan_light (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -625,7 +676,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 vocabulary — official content-map subtopic g3.word_families (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -637,7 +689,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 vocabulary — official content-map subtopic g3.context_meaning (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -649,7 +702,8 @@
       "maxGrade": 3,
       "cognitive_level": "application",
       "description": "Hebrew g3 speaking — official content-map subtopic g3.discussion_prompt_choice (weights/modes in data/hebrew-g3-content-map.js).",
-      "source": "data/hebrew-g3-content-map.js"
+      "source": "data/hebrew-g3-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -661,7 +715,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 reading — official content-map subtopic g4.genre_mix (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -673,7 +728,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 reading — official content-map subtopic g4.info_lit_intro (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -685,7 +741,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 comprehension — official content-map subtopic g4.summary_intro (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -697,7 +754,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 comprehension — official content-map subtopic g4.text_structure (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -709,7 +767,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 writing — official content-map subtopic g4.intro_body_conclusion_choice (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -721,7 +780,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 writing — official content-map subtopic g4.genre_appropriate_language (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -733,7 +793,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 grammar — official content-map subtopic g4.dictation_spot_error (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -745,7 +806,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 grammar — official content-map subtopic g4.root_pattern_intro (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -757,7 +819,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 vocabulary — official content-map subtopic g4.literary_lexicon_light (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -769,7 +832,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 vocabulary — official content-map subtopic g4.idiom_light (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -781,7 +845,8 @@
       "maxGrade": 4,
       "cognitive_level": "application",
       "description": "Hebrew g4 speaking — official content-map subtopic g4.present_text_based_choice (weights/modes in data/hebrew-g4-content-map.js).",
-      "source": "data/hebrew-g4-content-map.js"
+      "source": "data/hebrew-g4-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -793,7 +858,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 reading — official content-map subtopic g5.multi_layer_read (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -805,7 +871,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 reading — official content-map subtopic g5.position_in_text (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -817,7 +884,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 comprehension — official content-map subtopic g5.inference (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -829,7 +897,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 comprehension — official content-map subtopic g5.multiple_perspectives_light (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -841,7 +910,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 writing — official content-map subtopic g5.full_composition_scaffold_choice (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -853,7 +923,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 writing — official content-map subtopic g5.genre_variety (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -865,7 +936,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 grammar — official content-map subtopic g5.syntax_agreement (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -877,7 +949,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 grammar — official content-map subtopic g5.verb_patterns (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -889,7 +962,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 vocabulary — official content-map subtopic g5.semantic_fields (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -901,7 +975,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 vocabulary — official content-map subtopic g5.academic_starter_words (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -913,7 +988,8 @@
       "maxGrade": 5,
       "cognitive_level": "reasoning",
       "description": "Hebrew g5 speaking — official content-map subtopic g5.argument_scaffold_choice (weights/modes in data/hebrew-g5-content-map.js).",
-      "source": "data/hebrew-g5-content-map.js"
+      "source": "data/hebrew-g5-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -925,7 +1001,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 reading — official content-map subtopic g6.complex_text_analysis (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -937,7 +1014,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 reading — official content-map subtopic g6.compare_genres (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -949,7 +1027,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 comprehension — official content-map subtopic g6.critical_evaluation_light (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -961,7 +1040,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 comprehension — official content-map subtopic g6.evidence_from_text (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -973,7 +1053,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 writing — official content-map subtopic g6.argumentative_full_scaffold (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -985,7 +1066,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 writing — official content-map subtopic g6.research_literacy_choice (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -997,7 +1079,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 grammar — official content-map subtopic g6.possession_prep (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -1009,7 +1092,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 grammar — official content-map subtopic g6.subject_verb_advanced (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -1021,7 +1105,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 grammar — official content-map subtopic g6.complex_syntax_spot (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -1033,7 +1118,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 vocabulary — official content-map subtopic g6.academic_vocab (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -1045,7 +1131,8 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 vocabulary — official content-map subtopic g6.discipline_words_light (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
     },
     {
       "schema_version": 1,
@@ -1057,7 +1144,913 @@
       "maxGrade": 6,
       "cognitive_level": "reasoning",
       "description": "Hebrew g6 speaking — official content-map subtopic g6.debate_scaffold_choice (weights/modes in data/hebrew-g6-content-map.js).",
-      "source": "data/hebrew-g6-content-map.js"
+      "source": "data/hebrew-g6-content-map.js",
+      "spine_layer": "content_map"
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:analogy_reasoning:parallel",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:analogy_reasoning:parallel",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"analogy_reasoning\", subtype \"parallel\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:comprehension:g3.cause_effect",
+        "hebrew:g3:comprehension:g3.compare_light",
+        "hebrew:g3:comprehension:g3.explicit_only",
+        "hebrew:g4:comprehension:g4.summary_intro",
+        "hebrew:g4:comprehension:g4.text_structure"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:binary_fact_early_g1:tf_science_simple",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:binary_fact_early_g1:tf_science_simple",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"binary_fact_early_g1\", subtype \"tf_science_simple\"; 1 pool row(s); grades 1–1 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g1:comprehension:g1.word_meaning_concrete",
+        "hebrew:g1:comprehension:g1.one_sentence_who_what",
+        "hebrew:g1:comprehension:g1.simple_instruction"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:binary_fact_early_g2:where_from_sentence",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:binary_fact_early_g2:where_from_sentence",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"binary_fact_early_g2\", subtype \"where_from_sentence\"; 1 pool row(s); grades 2–2 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g2:comprehension:g2.detail_main_idea",
+        "hebrew:g2:comprehension:g2.simple_sequence",
+        "hebrew:g2:comprehension:g2.light_inference"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:binary_fact_mid_grammar:tf",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:binary_fact_mid_grammar:tf",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"binary_fact_mid_grammar\", subtype \"tf\"; 2 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:comprehension:g3.cause_effect",
+        "hebrew:g3:comprehension:g3.compare_light",
+        "hebrew:g3:comprehension:g3.explicit_only",
+        "hebrew:g4:comprehension:g4.summary_intro",
+        "hebrew:g4:comprehension:g4.text_structure"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:cause_effect:because",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:cause_effect:because",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"cause_effect\", subtype \"because\"; 2 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:comprehension:g3.cause_effect",
+        "hebrew:g3:comprehension:g3.compare_light",
+        "hebrew:g3:comprehension:g3.explicit_only",
+        "hebrew:g4:comprehension:g4.summary_intro",
+        "hebrew:g4:comprehension:g4.text_structure"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:compare_statements:contrast",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:compare_statements:contrast",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"compare_statements\", subtype \"contrast\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:comprehension:g5.inference",
+        "hebrew:g5:comprehension:g5.multiple_perspectives_light",
+        "hebrew:g6:comprehension:g6.critical_evaluation_light",
+        "hebrew:g6:comprehension:g6.evidence_from_text"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:completion:context_clue",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:completion:context_clue",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"completion\", subtype \"context_clue\"; 2 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:comprehension:g3.cause_effect",
+        "hebrew:g3:comprehension:g3.compare_light",
+        "hebrew:g3:comprehension:g3.explicit_only",
+        "hebrew:g4:comprehension:g4.summary_intro",
+        "hebrew:g4:comprehension:g4.text_structure"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:implicit_tone:attitude",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:implicit_tone:attitude",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"implicit_tone\", subtype \"attitude\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:comprehension:g5.inference",
+        "hebrew:g5:comprehension:g5.multiple_perspectives_light",
+        "hebrew:g6:comprehension:g6.critical_evaluation_light",
+        "hebrew:g6:comprehension:g6.evidence_from_text"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:main_idea:summary",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:main_idea:summary",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"main_idea\", subtype \"summary\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:comprehension:g5.inference",
+        "hebrew:g5:comprehension:g5.multiple_perspectives_light",
+        "hebrew:g6:comprehension:g6.critical_evaluation_light",
+        "hebrew:g6:comprehension:g6.evidence_from_text"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:passage_explicit:detail",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:passage_explicit:detail",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"passage_explicit\", subtype \"detail\"; 2 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:comprehension:g3.cause_effect",
+        "hebrew:g3:comprehension:g3.compare_light",
+        "hebrew:g3:comprehension:g3.explicit_only",
+        "hebrew:g4:comprehension:g4.summary_intro",
+        "hebrew:g4:comprehension:g4.text_structure"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:passage_inference:implied",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:passage_inference:implied",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"passage_inference\", subtype \"implied\"; 2 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:comprehension:g3.cause_effect",
+        "hebrew:g3:comprehension:g3.compare_light",
+        "hebrew:g3:comprehension:g3.explicit_only",
+        "hebrew:g4:comprehension:g4.summary_intro",
+        "hebrew:g4:comprehension:g4.text_structure"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:reference:pronoun",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:reference:pronoun",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"reference\", subtype \"pronoun\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:comprehension:g5.inference",
+        "hebrew:g5:comprehension:g5.multiple_perspectives_light",
+        "hebrew:g6:comprehension:g6.critical_evaluation_light",
+        "hebrew:g6:comprehension:g6.evidence_from_text"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:sequence:order",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:sequence:order",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"sequence\", subtype \"order\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:comprehension:g5.inference",
+        "hebrew:g5:comprehension:g5.multiple_perspectives_light",
+        "hebrew:g6:comprehension:g6.critical_evaluation_light",
+        "hebrew:g6:comprehension:g6.evidence_from_text"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:comprehension:supporting_detail:evidence",
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "subtopic": "rich:supporting_detail:evidence",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"comprehension\", patternFamily \"supporting_detail\", subtype \"evidence\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:comprehension:g5.inference",
+        "hebrew:g5:comprehension:g5.multiple_perspectives_light",
+        "hebrew:g6:comprehension:g6.critical_evaluation_light",
+        "hebrew:g6:comprehension:g6.evidence_from_text"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:binary_grammar:tf",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:binary_grammar:tf",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"binary_grammar\", subtype \"tf\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:grammar:g5.syntax_agreement",
+        "hebrew:g5:grammar:g5.verb_patterns",
+        "hebrew:g6:grammar:g6.possession_prep",
+        "hebrew:g6:grammar:g6.subject_verb_advanced",
+        "hebrew:g6:grammar:g6.complex_syntax_spot"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:gender_number:plural",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:gender_number:plural",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"gender_number\", subtype \"plural\"; 2 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:grammar:g3.tense_system_intro",
+        "hebrew:g3:grammar:g3.connectors",
+        "hebrew:g3:grammar:g3.binyan_light",
+        "hebrew:g4:grammar:g4.dictation_spot_error",
+        "hebrew:g4:grammar:g4.root_pattern_intro"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:gender_number_early_g1:agreement_girl_singular",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:gender_number_early_g1:agreement_girl_singular",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"gender_number_early_g1\", subtype \"agreement_girl_singular\"; 1 pool row(s); grades 1–1 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g1:grammar:g1.grammar_pos_roles",
+        "hebrew:g1:grammar:g1.grammar_wellformed",
+        "hebrew:g1:grammar:g1.grammar_agreement_light",
+        "hebrew:g1:grammar:g1.grammar_cloze_deixis",
+        "hebrew:g1:grammar:g1.grammar_word_order",
+        "hebrew:g1:grammar:g1.grammar_odd_category",
+        "hebrew:g1:grammar:g1.grammar_punctuation",
+        "hebrew:g1:grammar:g1.grammar_connectors_time"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:gender_number_early_g2:agreement_boy_plural",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:gender_number_early_g2:agreement_boy_plural",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"gender_number_early_g2\", subtype \"agreement_boy_plural\"; 1 pool row(s); grades 2–2 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g2:grammar:g2.pos_basic",
+        "hebrew:g2:grammar:g2.simple_tense",
+        "hebrew:g2:grammar:g2.number_gender_light"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:morphology:binyan_fit",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:morphology:binyan_fit",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"morphology\", subtype \"binyan_fit\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:grammar:g3.tense_system_intro",
+        "hebrew:g3:grammar:g3.connectors",
+        "hebrew:g3:grammar:g3.binyan_light",
+        "hebrew:g4:grammar:g4.dictation_spot_error",
+        "hebrew:g4:grammar:g4.root_pattern_intro"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:part_of_speech:verb_noun",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:part_of_speech:verb_noun",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"part_of_speech\", subtype \"verb_noun\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:grammar:g3.tense_system_intro",
+        "hebrew:g3:grammar:g3.connectors",
+        "hebrew:g3:grammar:g3.binyan_light",
+        "hebrew:g4:grammar:g4.dictation_spot_error",
+        "hebrew:g4:grammar:g4.root_pattern_intro"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:prep_choice:collocation",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:prep_choice:collocation",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"prep_choice\", subtype \"collocation\"; 2 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:grammar:g3.tense_system_intro",
+        "hebrew:g3:grammar:g3.connectors",
+        "hebrew:g3:grammar:g3.binyan_light",
+        "hebrew:g4:grammar:g4.dictation_spot_error",
+        "hebrew:g4:grammar:g4.root_pattern_intro"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:sentence_correction:choose_correct",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:sentence_correction:choose_correct",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"sentence_correction\", subtype \"choose_correct\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:grammar:g5.syntax_agreement",
+        "hebrew:g5:grammar:g5.verb_patterns",
+        "hebrew:g6:grammar:g6.possession_prep",
+        "hebrew:g6:grammar:g6.subject_verb_advanced",
+        "hebrew:g6:grammar:g6.complex_syntax_spot"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:sentence_correction:sv_agreement_plural",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:sentence_correction:sv_agreement_plural",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"sentence_correction\", subtype \"sv_agreement_plural\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:grammar:g5.syntax_agreement",
+        "hebrew:g5:grammar:g5.verb_patterns",
+        "hebrew:g6:grammar:g6.possession_prep",
+        "hebrew:g6:grammar:g6.subject_verb_advanced",
+        "hebrew:g6:grammar:g6.complex_syntax_spot"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:tense_shift:past_present",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:tense_shift:past_present",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"tense_shift\", subtype \"past_present\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:grammar:g5.syntax_agreement",
+        "hebrew:g5:grammar:g5.verb_patterns",
+        "hebrew:g6:grammar:g6.possession_prep",
+        "hebrew:g6:grammar:g6.subject_verb_advanced",
+        "hebrew:g6:grammar:g6.complex_syntax_spot"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:transform:negation",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:transform:negation",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"transform\", subtype \"negation\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:grammar:g5.syntax_agreement",
+        "hebrew:g5:grammar:g5.verb_patterns",
+        "hebrew:g6:grammar:g6.possession_prep",
+        "hebrew:g6:grammar:g6.subject_verb_advanced",
+        "hebrew:g6:grammar:g6.complex_syntax_spot"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:grammar:verb_agreement:plural_subject",
+      "subject": "hebrew",
+      "topic": "grammar",
+      "subtopic": "rich:verb_agreement:plural_subject",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"grammar\", patternFamily \"verb_agreement\", subtype \"plural_subject\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:grammar:g5.syntax_agreement",
+        "hebrew:g5:grammar:g5.verb_patterns",
+        "hebrew:g6:grammar:g6.possession_prep",
+        "hebrew:g6:grammar:g6.subject_verb_advanced",
+        "hebrew:g6:grammar:g6.complex_syntax_spot"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:reading:sentence_read:meaning",
+      "subject": "hebrew",
+      "topic": "reading",
+      "subtopic": "rich:sentence_read:meaning",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"reading\", patternFamily \"sentence_read\", subtype \"meaning\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:reading:g3.multi_sentence",
+        "hebrew:g3:reading:g3.genre_tag_info_vs_story",
+        "hebrew:g4:reading:g4.genre_mix",
+        "hebrew:g4:reading:g4.info_lit_intro"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:reading:structural:paragraph_role",
+      "subject": "hebrew",
+      "topic": "reading",
+      "subtopic": "rich:structural:paragraph_role",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"reading\", patternFamily \"structural\", subtype \"paragraph_role\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:reading:g5.multi_layer_read",
+        "hebrew:g5:reading:g5.position_in_text",
+        "hebrew:g6:reading:g6.complex_text_analysis",
+        "hebrew:g6:reading:g6.compare_genres"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:reading:word_level_early_g1:spelling_meaning_then_choice",
+      "subject": "hebrew",
+      "topic": "reading",
+      "subtopic": "rich:word_level_early_g1:spelling_meaning_then_choice",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"reading\", patternFamily \"word_level_early_g1\", subtype \"spelling_meaning_then_choice\"; 1 pool row(s); grades 1–1 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g1:reading:g1.phoneme_awareness",
+        "hebrew:g1:reading:g1.open_close_syllable",
+        "hebrew:g1:reading:g1.rhyme",
+        "hebrew:g1:reading:g1.syllables",
+        "hebrew:g1:reading:g1.letters",
+        "hebrew:g1:reading:g1.final_letters",
+        "hebrew:g1:reading:g1.basic_niqqud",
+        "hebrew:g1:reading:g1.sound_letter_match",
+        "hebrew:g1:reading:g1.simple_words_read"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:reading:word_level_early_g2:spelling_choice_niqqud",
+      "subject": "hebrew",
+      "topic": "reading",
+      "subtopic": "rich:word_level_early_g2:spelling_choice_niqqud",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"reading\", patternFamily \"word_level_early_g2\", subtype \"spelling_choice_niqqud\"; 1 pool row(s); grades 2–2 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g2:reading:g2.fluent_words",
+        "hebrew:g2:reading:g2.short_sentence",
+        "hebrew:g2:reading:g2.simple_punctuation_read"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:speaking:social_reply_early_g1:bump_sorry",
+      "subject": "hebrew",
+      "topic": "speaking",
+      "subtopic": "rich:social_reply_early_g1:bump_sorry",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"speaking\", patternFamily \"social_reply_early_g1\", subtype \"bump_sorry\"; 1 pool row(s); grades 1–1 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g1:speaking:g1.phrase_appropriateness"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:speaking:social_reply_early_g2:thanks_response",
+      "subject": "hebrew",
+      "topic": "speaking",
+      "subtopic": "rich:social_reply_early_g2:thanks_response",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"speaking\", patternFamily \"social_reply_early_g2\", subtype \"thanks_response\"; 1 pool row(s); grades 2–2 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g2:speaking:g2.situation_register",
+        "hebrew:g2:speaking:g2.describe_prompt_choice"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:speaking:social_reply_mid_help:request",
+      "subject": "hebrew",
+      "topic": "speaking",
+      "subtopic": "rich:social_reply_mid_help:request",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"speaking\", patternFamily \"social_reply_mid_help\", subtype \"request\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:speaking:g3.discussion_prompt_choice",
+        "hebrew:g4:speaking:g4.present_text_based_choice"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:vocabulary:antonym:opposite",
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "subtopic": "rich:antonym:opposite",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"vocabulary\", patternFamily \"antonym\", subtype \"opposite\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:vocabulary:g3.word_families",
+        "hebrew:g3:vocabulary:g3.context_meaning",
+        "hebrew:g4:vocabulary:g4.literary_lexicon_light",
+        "hebrew:g4:vocabulary:g4.idiom_light"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:vocabulary:category_exclusion:odd_out",
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "subtopic": "rich:category_exclusion:odd_out",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"vocabulary\", patternFamily \"category_exclusion\", subtype \"odd_out\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:vocabulary:g5.semantic_fields",
+        "hebrew:g5:vocabulary:g5.academic_starter_words",
+        "hebrew:g6:vocabulary:g6.academic_vocab",
+        "hebrew:g6:vocabulary:g6.discipline_words_light"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:vocabulary:collocation:verb_noun_fit",
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "subtopic": "rich:collocation:verb_noun_fit",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"vocabulary\", patternFamily \"collocation\", subtype \"verb_noun_fit\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:vocabulary:g5.semantic_fields",
+        "hebrew:g5:vocabulary:g5.academic_starter_words",
+        "hebrew:g6:vocabulary:g6.academic_vocab",
+        "hebrew:g6:vocabulary:g6.discipline_words_light"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:vocabulary:context_fit:register",
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "subtopic": "rich:context_fit:register",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"vocabulary\", patternFamily \"context_fit\", subtype \"register\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:vocabulary:g5.semantic_fields",
+        "hebrew:g5:vocabulary:g5.academic_starter_words",
+        "hebrew:g6:vocabulary:g6.academic_vocab",
+        "hebrew:g6:vocabulary:g6.discipline_words_light"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:vocabulary:precision:best_word",
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "subtopic": "rich:precision:best_word",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"vocabulary\", patternFamily \"precision\", subtype \"best_word\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:vocabulary:g3.word_families",
+        "hebrew:g3:vocabulary:g3.context_meaning",
+        "hebrew:g4:vocabulary:g4.literary_lexicon_light",
+        "hebrew:g4:vocabulary:g4.idiom_light"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:vocabulary:semantic_field:education_lexicon",
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "subtopic": "rich:semantic_field:education_lexicon",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"vocabulary\", patternFamily \"semantic_field\", subtype \"education_lexicon\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:vocabulary:g3.word_families",
+        "hebrew:g3:vocabulary:g3.context_meaning",
+        "hebrew:g4:vocabulary:g4.literary_lexicon_light",
+        "hebrew:g4:vocabulary:g4.idiom_light"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:vocabulary:synonym:near_meaning",
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "subtopic": "rich:synonym:near_meaning",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"vocabulary\", patternFamily \"synonym\", subtype \"near_meaning\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:vocabulary:g3.word_families",
+        "hebrew:g3:vocabulary:g3.context_meaning",
+        "hebrew:g4:vocabulary:g4.literary_lexicon_light",
+        "hebrew:g4:vocabulary:g4.idiom_light"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:vocabulary:word_context_early_g1:cloze_morning",
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "subtopic": "rich:word_context_early_g1:cloze_morning",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"vocabulary\", patternFamily \"word_context_early_g1\", subtype \"cloze_morning\"; 1 pool row(s); grades 1–1 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g1:vocabulary:g1.word_picture",
+        "hebrew:g1:vocabulary:g1.word_meaning_concrete"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:vocabulary:word_context_early_g2:cloze_school",
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "subtopic": "rich:word_context_early_g2:cloze_school",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"vocabulary\", patternFamily \"word_context_early_g2\", subtype \"cloze_school\"; 1 pool row(s); grades 2–2 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g2:vocabulary:g2.synonyms_basic",
+        "hebrew:g2:vocabulary:g2.context_clue_easy"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:writing:logic_completion:conclusion",
+      "subject": "hebrew",
+      "topic": "writing",
+      "subtopic": "rich:logic_completion:conclusion",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"writing\", patternFamily \"logic_completion\", subtype \"conclusion\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:writing:g3.two_three_sentences_structure",
+        "hebrew:g3:writing:g3.connector_use_choice",
+        "hebrew:g4:writing:g4.intro_body_conclusion_choice",
+        "hebrew:g4:writing:g4.genre_appropriate_language"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:writing:rephrase:clarity",
+      "subject": "hebrew",
+      "topic": "writing",
+      "subtopic": "rich:rephrase:clarity",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "reasoning",
+      "description": "Hebrew rich-bank coverage: topic \"writing\", patternFamily \"rephrase\", subtype \"clarity\"; 1 pool row(s); grades 5–6 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g5:writing:g5.full_composition_scaffold_choice",
+        "hebrew:g5:writing:g5.genre_variety",
+        "hebrew:g6:writing:g6.argumentative_full_scaffold",
+        "hebrew:g6:writing:g6.research_literacy_choice"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:writing:spell_word_early_ab_writing:object_riddle",
+      "subject": "hebrew",
+      "topic": "writing",
+      "subtopic": "rich:spell_word_early_ab_writing:object_riddle",
+      "minGrade": 1,
+      "maxGrade": 2,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"writing\", patternFamily \"spell_word_early_ab_writing\", subtype \"object_riddle\"; 1 pool row(s); grades 1–2 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g1:writing:g1.copy_word",
+        "hebrew:g1:writing:g1.spell_word_choice",
+        "hebrew:g2:writing:g2.sentence_wellformed",
+        "hebrew:g2:writing:g2.short_paragraph_choice",
+        "hebrew:g2:writing:g2.punctuation_choice"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:writing:spell_word_early_ab_writing:role_meaning",
+      "subject": "hebrew",
+      "topic": "writing",
+      "subtopic": "rich:spell_word_early_ab_writing:role_meaning",
+      "minGrade": 1,
+      "maxGrade": 2,
+      "cognitive_level": "recognition",
+      "description": "Hebrew rich-bank coverage: topic \"writing\", patternFamily \"spell_word_early_ab_writing\", subtype \"role_meaning\"; 1 pool row(s); grades 1–2 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g1:writing:g1.copy_word",
+        "hebrew:g1:writing:g1.spell_word_choice",
+        "hebrew:g2:writing:g2.sentence_wellformed",
+        "hebrew:g2:writing:g2.short_paragraph_choice",
+        "hebrew:g2:writing:g2.punctuation_choice"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "hebrew:rich:writing:structured_completion:polite_phrase",
+      "subject": "hebrew",
+      "topic": "writing",
+      "subtopic": "rich:structured_completion:polite_phrase",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Hebrew rich-bank coverage: topic \"writing\", patternFamily \"structured_completion\", subtype \"polite_phrase\"; 1 pool row(s); grades 3–4 (Phase 7.11).",
+      "source": "utils/hebrew-rich-question-bank.js HEBREW_RICH_POOL; gradeBand → grades via utils/grade-gating.js (early=g1–g2, mid=g3–g4, late=g5–g6); links overlap data/hebrew-g*-content-map.js spine rows",
+      "spine_layer": "rich_bank",
+      "linked_skill_ids": [
+        "hebrew:g3:writing:g3.two_three_sentences_structure",
+        "hebrew:g3:writing:g3.connector_use_choice",
+        "hebrew:g4:writing:g4.intro_body_conclusion_choice",
+        "hebrew:g4:writing:g4.genre_appropriate_language"
+      ]
     },
     {
       "schema_version": 1,
