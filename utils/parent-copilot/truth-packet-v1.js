@@ -1,5 +1,17 @@
 /**
- * Canonical owner: TruthPacketV1 builder. Downstream modules consume this object only.
+ * TruthPacketV1 — **canonical owner of “what may be said”** for a Copilot turn for a given scope.
+ *
+ * **Ownership:** `buildTruthPacketV1` is the single builder; consumers (`answer-composer`, `conversation-planner`,
+ * `guardrail-validator`, optional `llm-orchestrator`) read the packet — they must not invent facts outside it.
+ *
+ * **`allowedClaimEnvelope`:** Carries `requiredHedges`, `forbiddenPhrases`, and related narrative limits derived
+ * from contracts. Deterministic composition and LLM drafts must respect it: required hedges must appear in parent
+ * copy where applicable; forbidden phrases (including systemic clinical terms added for Copilot surfaces) must not.
+ *
+ * **What Copilot / LLM may say:** Only content grounded in the packet’s contracts (`narrative.textSlots`,
+ * `derivedLimits`, recommendation eligibility, follow-up families). The LLM prompt is restricted to a JSON
+ * “facts” projection of this packet; validators reject drafts that add diagnoses, forbidden phrases, ineligible
+ * `next_step`, or missing hedges. See `./README.md` and `guardrail-validator.js` for policy detail.
  */
 
 import {

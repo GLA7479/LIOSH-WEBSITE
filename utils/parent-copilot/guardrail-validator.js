@@ -1,6 +1,14 @@
 /**
  * Validates draft answers and final ParentCopilotResponseV1-shaped payloads.
  * Phase 5: truth consistency, recommendation boundary, forbidden surfaces, parent-facing Hebrew.
+ *
+ * **Fail-code categories (documentation only — see implementation for exact codes):**
+ * - **Clinical / diagnostic surface:** patterns that imply diagnosis, disability labels, or forbidden certainty on boundary turns.
+ * - **Recommendation / contract boundary:** `next_step` or imperative coaching when contracts forbid it; premature “closed” conclusions when `cannotConcludeYet`; strength hype / blocked-advance contradictions per truth.
+ * - **Internal or dev leakage:** internal tokens, raw intensity codes, URLs, JSON/debug vocabulary in parent-facing text.
+ * - **Hebrew / parent-facing hygiene:** normalization and filler/blacklist rules for composed glue.
+ *
+ * Deterministic and LLM paths both pass through `validateAnswerDraft` / `validateParentCopilotResponseV1` as appropriate.
  */
 
 import { clinicalBoundaryJoinedFingerprintHe } from "./answer-composer.js";

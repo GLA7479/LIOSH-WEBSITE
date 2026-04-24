@@ -708,6 +708,15 @@ function runDeterministicCore(input) {
 }
 
 /**
+ * Synchronous Parent Copilot turn: **deterministic only**.
+ *
+ * Always runs {@link runDeterministicCore} first and last. There is **no** LLM overlay on this path;
+ * telemetry reports `generationPath: "deterministic"`.
+ *
+ * **Fallback:** If the composed draft fails `validateAnswerDraft`, the pipeline may replace it with
+ * a deterministic fallback (`buildDeterministicFallbackAnswer`), clinical-boundary copy, or emergency
+ * slot extraction (see `packageParentResolvedEarlyTurn` and the main resolved path in this file).
+ *
  * @param {object} input
  * @param {"parent"|"teacher"} [input.audience]
  * @param {unknown} input.payload
@@ -729,9 +738,22 @@ export function runParentCopilotTurn(input) {
 }
 
 /**
- * Async path with optional grounded LLM override and deterministic fallback.
- * Sync API stays available via `runParentCopilotTurn`.
- * @param {object} input
+ * Asynchronous Parent Copilot turn: **deterministic first; LLM optional overlay only**.
+ *
+ * 1. **Always** runs {@link runDeterministicCore} — same baseline as {@link runParentCopilotTurn}.
+ * 2. **LLM skipped** (no provider call; response unchanged from deterministic) when:
+ *    - `resolutionStatus !== "resolved"`, or missing `truthPacket` / utterance;
+ *    - `core.intent === "clinical_boundary"`;
+ *    - `getLlmGateDecision().enabled === false` (`maybeGenerateGroundedLlmDraft` returns immediately);
+ *    - LLM or post-LLM validation fails — then deterministic baseline (or clinical-boundary branch) is kept.
+ * 3. **LLM may run** only if gates pass **and** the resolved path calls `maybeGenerateGroundedLlmDraft` and the
+ *    draft passes `validateLlmDraft`, `validateAnswerDraft`, and `validateParentCopilotResponseV1` — then
+ *    telemetry `generationPath` is `llm_grounded`.
+ *
+ * **Fallback:** Same validator-driven fallbacks as the sync path when the final LLM-backed response is not used.
+ *
+ * @param {object} input — same shape as {@link runParentCopilotTurn}
+ * @see ./README.md for env flags and `generationPath` semantics
  */
 export async function runParentCopilotTurnAsync(input) {
   const core = runDeterministicCore(input);

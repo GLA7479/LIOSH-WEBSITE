@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import parentCopilot from "../utils/parent-copilot/index.js";
 import guardrail from "../utils/parent-copilot/guardrail-validator.js";
+import { getLlmGateDecision } from "../utils/parent-copilot/rollout-gates.js";
 
 function setEnv(name, value) {
   if (value == null) delete process.env[name];
@@ -110,12 +111,20 @@ async function runAsyncWith(payload, utterance, sessionId) {
 const originalFetch = globalThis.fetch;
 
 try {
-  // A) Default OFF in practice.
+  // A) Default OFF in practice: gate disabled, async still deterministic, zero fetch calls.
   resetLlmEnv();
+  assert.equal(getLlmGateDecision().enabled, false, "default env must keep LLM disabled");
+  let asyncGateFetchCalls = 0;
+  globalThis.fetch = async () => {
+    asyncGateFetchCalls += 1;
+    throw new Error("fetch must not run when LLM rollout gate is disabled");
+  };
   const a = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-a");
+  assert.equal(asyncGateFetchCalls, 0, "no network when gate disables LLM");
   assert.equal(a?.telemetry?.generationPath, "deterministic");
   assert.equal(a?.telemetry?.llmAttempt?.ok, false);
   assert.equal(a?.telemetry?.llmAttempt?.reason, "llm_disabled_by_rollout_gate");
+  globalThis.fetch = originalFetch;
 
   // B) Kill-switch beats all.
   let calledB = false;
