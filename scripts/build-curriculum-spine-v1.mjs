@@ -1,0 +1,402 @@
+/**
+ * Builds data/curriculum-spine/v1/skills.json (+ gaps, conflicts) from existing
+ * curriculum maps and audit branch extract. Does not modify questions or generators.
+ *
+ * Run: npx tsx scripts/build-curriculum-spine-v1.mjs
+ */
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.join(__dirname, "..");
+const OUT = path.join(ROOT, "data", "curriculum-spine", "v1");
+
+const u = (rel) => pathToFileURL(path.join(ROOT, rel)).href;
+
+const { HEBREW_G1_CONTENT_MAP } = await import(u("data/hebrew-g1-content-map.js"));
+const { HEBREW_G2_CONTENT_MAP } = await import(u("data/hebrew-g2-content-map.js"));
+const { HEBREW_G3_CONTENT_MAP } = await import(u("data/hebrew-g3-content-map.js"));
+const { HEBREW_G4_CONTENT_MAP } = await import(u("data/hebrew-g4-content-map.js"));
+const { HEBREW_G5_CONTENT_MAP } = await import(u("data/hebrew-g5-content-map.js"));
+const { HEBREW_G6_CONTENT_MAP } = await import(u("data/hebrew-g6-content-map.js"));
+const { SCIENCE_GRADES } = await import(u("data/science-curriculum.js"));
+const { ENGLISH_GRADES } = await import(u("data/english-curriculum.js"));
+const { MOLEDET_GEOGRAPHY_GRADES } = await import(u("data/moledet-geography-curriculum.js"));
+const { ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE } =
+  await import(u("utils/grade-gating.js"));
+
+const branchesPath = path.join(ROOT, "reports", "question-audit", "declared-branches.json");
+const branches = JSON.parse(fs.readFileSync(branchesPath, "utf8"));
+
+const {
+  MATH_KIND_GRADE_SPAN,
+  geometryKindGradeSpan,
+  MATH_GRADE_TRUTH,
+  GEOMETRY_GRADE_TRUTH,
+  MATH_KINDS_GENERATOR_CURRICULUM_MISMATCH,
+} = await import(pathToFileURL(path.join(__dirname, "curriculum-spine-grade-bindings.mjs")).href);
+
+const mathGeometryPlaceholderBefore =
+  branches.math.kindLiterals.length + branches.geometry.kindLiterals.length;
+
+function slug(s) {
+  return String(s || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 80);
+}
+
+function cognitiveForGrade(g) {
+  if (g <= 2) return "recognition";
+  if (g <= 4) return "application";
+  return "reasoning";
+}
+
+function mathTopicForKind(kind) {
+  const k = String(kind);
+  if (/^wp_|_wp$|word|shop|coins|distance|time_sum|time_days|time_date|leftover|comparison|groups|unit_/.test(k))
+    return "word_problems";
+  if (/^frac_|mixed_to|perc_/.test(k)) return "fractions";
+  if (/^dec_|round/.test(k)) return "decimals";
+  if (/^div|divisibility|prime_|fm_/.test(k)) return "division_and_number_theory";
+  if (/^mul|^zero_mul|^one_mul/.test(k)) return "multiplication";
+  if (/^add|^sub|^eq_|^order_|^cmp|^zero_|^est_|^sequence|^ns_/.test(k)) return "number_sense_and_operations";
+  if (/^power_|^ratio_|^scale_/.test(k)) return "ratio_scale_and_powers";
+  return "general";
+}
+
+function geometryTopicForKind(kind) {
+  const k = String(kind);
+  if (/volume|prism|pyramid|cylinder|cone|sphere|solids/.test(k)) return "volume";
+  if (/pythagoras|diagonal/.test(k)) return "pythagoras_and_diagonals";
+  if (/circle|square_area|square_perimeter|rectangle|parallelogram|trapezoid|triangle|quadrilateral|shapes_basic|tiling|heights_/.test(k))
+    return "area_and_shapes";
+  if (/angle|parallel|perpendicular|rotation|symmetry|transform/.test(k)) return "angles_and_transformations";
+  if (k === "no_question") return "meta";
+  return "geometry_general";
+}
+
+/** @type {Array<Record<string, unknown>>} */
+const skills = [];
+/** @type {Array<Record<string, unknown>>} */
+const gaps = [];
+/** @type {Array<Record<string, unknown>>} */
+const conflicts = [];
+
+const hebrewMaps = [
+  ["g1", HEBREW_G1_CONTENT_MAP],
+  ["g2", HEBREW_G2_CONTENT_MAP],
+  ["g3", HEBREW_G3_CONTENT_MAP],
+  ["g4", HEBREW_G4_CONTENT_MAP],
+  ["g5", HEBREW_G5_CONTENT_MAP],
+  ["g6", HEBREW_G6_CONTENT_MAP],
+];
+
+for (const [gKey, cmap] of hebrewMaps) {
+  const g = parseInt(String(gKey).replace("g", ""), 10);
+  for (const [topic, block] of Object.entries(cmap)) {
+    const list = block?.subtopics;
+    if (!Array.isArray(list)) continue;
+    for (const st of list) {
+      const sid = st.id;
+      skills.push({
+        schema_version: 1,
+        skill_id: `hebrew:${gKey}:${topic}:${sid}`,
+        subject: "hebrew",
+        topic,
+        subtopic: sid,
+        minGrade: g,
+        maxGrade: g,
+        cognitive_level: cognitiveForGrade(g),
+        description: `Hebrew ${gKey} ${topic} — official content-map subtopic ${sid} (weights/modes in data/hebrew-${gKey}-content-map.js).`,
+        source: `data/hebrew-${gKey}-content-map.js`,
+      });
+    }
+  }
+}
+
+for (const kind of branches.math.kindLiterals) {
+  const topic = mathTopicForKind(kind);
+  const span = MATH_KIND_GRADE_SPAN[kind];
+  if (!span) {
+    throw new Error(
+      `[build-curriculum-spine] Missing MATH_KIND_GRADE_SPAN for kind "${kind}" — extend scripts/curriculum-spine-grade-bindings.mjs`,
+    );
+  }
+  skills.push({
+    schema_version: 1,
+    skill_id: `math:kind:${kind}`,
+    subject: "math",
+    topic,
+    subtopic: kind,
+    minGrade: span.minGrade,
+    maxGrade: span.maxGrade,
+    cognitive_level: "application",
+    description: `Math generator kind "${kind}" (topic inferred as ${topic}). Grades ${span.minGrade}–${span.maxGrade} bound in Phase 7.9 from math constants + generator branches.`,
+    source: `${MATH_GRADE_TRUTH}; reports/question-audit/declared-branches.json`,
+  });
+}
+
+for (const kind of branches.geometry.kindLiterals) {
+  const topic = geometryTopicForKind(kind);
+  const span = geometryKindGradeSpan(kind);
+  if (!span) {
+    throw new Error(
+      `[build-curriculum-spine] Missing geometryKindGradeSpan for kind "${kind}" — extend scripts/curriculum-spine-grade-bindings.mjs`,
+    );
+  }
+  skills.push({
+    schema_version: 1,
+    skill_id: `geometry:kind:${kind}`,
+    subject: "geometry",
+    topic,
+    subtopic: kind,
+    minGrade: span.minGrade,
+    maxGrade: span.maxGrade,
+    cognitive_level: "application",
+    description: `Geometry generator kind "${kind}" (topic inferred as ${topic}). Grades ${span.minGrade}–${span.maxGrade} bound in Phase 7.9 from geometry constants + topic/shape matrix.`,
+    source: `${GEOMETRY_GRADE_TRUTH}; reports/question-audit/declared-branches.json`,
+  });
+}
+
+for (const [gk, row] of Object.entries(ENGLISH_GRADES)) {
+  const g = parseInt(gk.replace("g", ""), 10);
+  for (const topic of row.topics || []) {
+    skills.push({
+      schema_version: 1,
+      skill_id: `english:${gk}:topic:${topic}`,
+      subject: "english",
+      topic,
+      subtopic: `${gk}_${topic}_access`,
+      minGrade: g,
+      maxGrade: g,
+      cognitive_level: cognitiveForGrade(g),
+      description: `English curriculum declares topic "${topic}" for ${gk} (${row.name}).`,
+      source: "data/english-curriculum.js",
+    });
+  }
+  for (const wl of row.wordLists || []) {
+    skills.push({
+      schema_version: 1,
+      skill_id: `english:${gk}:vocabulary:wordlist_${slug(wl)}`,
+      subject: "english",
+      topic: "vocabulary",
+      subtopic: wl,
+      minGrade: g,
+      maxGrade: g,
+      cognitive_level: "recognition",
+      description: `Vocabulary word-list dimension "${wl}" for ${gk}.`,
+      source: "data/english-curriculum.js",
+    });
+  }
+  const cur = row.curriculum || {};
+  let gi = 0;
+  for (const line of cur.grammar || []) {
+    const sub = `grammar_line_${gi++}_${slug(line)}`;
+    skills.push({
+      schema_version: 1,
+      skill_id: `english:${gk}:grammar:${sub}`,
+      subject: "english",
+      topic: "grammar",
+      subtopic: sub,
+      minGrade: g,
+      maxGrade: g,
+      cognitive_level: cognitiveForGrade(g),
+      description: String(line).slice(0, 200),
+      source: "data/english-curriculum.js",
+    });
+  }
+}
+
+for (const [pool, range] of Object.entries(ENGLISH_GRAMMAR_POOL_RANGE)) {
+  skills.push({
+    schema_version: 1,
+    skill_id: `english:pool:grammar:${pool}`,
+    subject: "english",
+    topic: "grammar",
+    subtopic: pool,
+    minGrade: range.minGrade,
+    maxGrade: range.maxGrade,
+    cognitive_level: "application",
+    description: `Grammar pool "${pool}" from ENGLISH_GRAMMAR_POOL_RANGE.`,
+    source: "utils/grade-gating.js",
+  });
+}
+for (const [pool, range] of Object.entries(ENGLISH_TRANSLATION_POOL_RANGE)) {
+  skills.push({
+    schema_version: 1,
+    skill_id: `english:pool:translation:${pool}`,
+    subject: "english",
+    topic: "translation",
+    subtopic: pool,
+    minGrade: range.minGrade,
+    maxGrade: range.maxGrade,
+    cognitive_level: "application",
+    description: `Translation pool "${pool}".`,
+    source: "utils/grade-gating.js",
+  });
+}
+for (const [pool, range] of Object.entries(ENGLISH_SENTENCE_POOL_RANGE)) {
+  skills.push({
+    schema_version: 1,
+    skill_id: `english:pool:sentence:${pool}`,
+    subject: "english",
+    topic: "sentences",
+    subtopic: pool,
+    minGrade: range.minGrade,
+    maxGrade: range.maxGrade,
+    cognitive_level: "application",
+    description: `Sentence pool "${pool}".`,
+    source: "utils/grade-gating.js",
+  });
+}
+
+for (const [gk, row] of Object.entries(SCIENCE_GRADES)) {
+  const g = parseInt(gk.replace("g", ""), 10);
+  for (const topic of row.topics || []) {
+    const cur = row.curriculum || {};
+    let idx = 0;
+    for (const line of [...(cur.focus || []), ...(cur.skills || [])]) {
+      const sub = `draft_${idx++}_${slug(line)}`;
+      skills.push({
+        schema_version: 1,
+        skill_id: `science:${gk}:${topic}:${sub}`,
+        subject: "science",
+        topic,
+        subtopic: sub,
+        minGrade: g,
+        maxGrade: g,
+        cognitive_level: cognitiveForGrade(g),
+        description: String(line).slice(0, 220),
+        source: "data/science-curriculum.js (draft subtopic from focus/skills lines)",
+      });
+    }
+    if (!(cur.focus || []).length && !(cur.skills || []).length) {
+      gaps.push({
+        severity: "important",
+        subject: "science",
+        topic,
+        grade: gk,
+        note: "No focus/skills lines to derive draft subtopics; needs SME split.",
+      });
+    }
+  }
+}
+
+for (const [gk, row] of Object.entries(MOLEDET_GEOGRAPHY_GRADES)) {
+  const g = parseInt(gk.replace("g", ""), 10);
+  const cur = row.curriculum || {};
+  const buckets = [
+    ["geography", cur.geography || []],
+    ["citizenship", cur.citizenship || []],
+    ["skills", cur.skills || []],
+  ];
+  for (const [topic, arr] of buckets) {
+    let i = 0;
+    for (const line of arr) {
+      const sub = `${topic}_${i++}_${slug(line)}`;
+      skills.push({
+        schema_version: 1,
+        skill_id: `geography:${gk}:${topic}:${sub}`,
+        subject: "geography",
+        topic,
+        subtopic: sub,
+        minGrade: g,
+        maxGrade: g,
+        cognitive_level: cognitiveForGrade(g),
+        description: String(line).slice(0, 220),
+        source: "data/moledet-geography-curriculum.js",
+      });
+    }
+  }
+}
+
+gaps.push({
+  severity: "important",
+  subject: "math",
+  skill_ids: [...MATH_KINDS_GENERATOR_CURRICULUM_MISMATCH],
+  note: "These kinds are only emitted on a g1-only path inside the `equations` branch (or via __LIOSH_MATH_FORCE), but `GRADES.g1.operations` in utils/math-constants.js does not list `equations`, so they do not appear under normal grade+op gating. Align GRADES or generator if they should be reachable.",
+});
+gaps.push({
+  severity: "important",
+  subject: "science",
+  note: "Subtopics are draft slugs from prose lines; not yet aligned to SCIENCE_QUESTIONS topic keys or ministry TOC.",
+});
+gaps.push({
+  severity: "minor",
+  subject: "english",
+  note: "Grammar curriculum lines duplicated per grade row; may merge into stable cross-grade skills in v2.",
+});
+gaps.push({
+  severity: "important",
+  subject: "hebrew",
+  note: "Rich-bank items may use gradeBand vs exact grade; spine uses content-map grades only — reconcile in v2.",
+});
+
+const ranges = [];
+for (const row of skills) {
+  if (row.subject !== "english") continue;
+  if (!String(row.skill_id).includes(":pool:")) continue;
+  ranges.push({
+    skill_id: row.skill_id,
+    minGrade: row.minGrade,
+    maxGrade: row.maxGrade,
+    subtopic: row.subtopic,
+  });
+}
+for (let i = 0; i < ranges.length; i++) {
+  for (let j = i + 1; j < ranges.length; j++) {
+    const a = ranges[i];
+    const b = ranges[j];
+    if (a.subtopic !== b.subtopic) continue;
+    if (a.minGrade <= b.maxGrade && b.minGrade <= a.maxGrade) {
+      if (a.skill_id !== b.skill_id)
+        conflicts.push({
+          type: "duplicate_pool_key_different_skill_id_unlikely",
+          a: a.skill_id,
+          b: b.skill_id,
+        });
+    }
+  }
+}
+
+conflicts.push({
+  type: "english_pool_vs_grade_topic",
+  note: "english:gN:topic:* rows are single-grade while pool:* rows span grades — learners may see overlapping labels until unified.",
+});
+
+fs.mkdirSync(OUT, { recursive: true });
+fs.writeFileSync(path.join(OUT, "skills.json"), JSON.stringify({ schema_version: 1, generatedAt: new Date().toISOString(), count: skills.length, skills }, null, 2), "utf8");
+fs.writeFileSync(path.join(OUT, "gaps.json"), JSON.stringify({ schema_version: 1, generatedAt: new Date().toISOString(), count: gaps.length, gaps }, null, 2), "utf8");
+fs.writeFileSync(
+  path.join(OUT, "conflicts.json"),
+  JSON.stringify({ schema_version: 1, generatedAt: new Date().toISOString(), count: conflicts.length, conflicts }, null, 2),
+  "utf8"
+);
+
+const mathGeometryPlaceholderAfter = skills.filter(
+  (s) =>
+    (s.subject === "math" || s.subject === "geometry") &&
+    s.minGrade === 1 &&
+    s.maxGrade === 6,
+).length;
+
+console.log(
+  JSON.stringify(
+    {
+      skills: skills.length,
+      gaps: gaps.length,
+      conflicts: conflicts.length,
+      out: OUT,
+      phase79_math_geometry_placeholder_rows: {
+        before_all_math_and_geometry_kind_rows_were_1_to_6: mathGeometryPlaceholderBefore,
+        after_count_min1_max6: mathGeometryPlaceholderAfter,
+      },
+    },
+    null,
+    2,
+  ),
+);

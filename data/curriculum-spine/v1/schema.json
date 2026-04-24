@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://liosh.local/curriculum-spine/skill-row-v1.json",
+  "title": "CurriculumSpineSkillV1",
+  "type": "object",
+  "required": [
+    "skill_id",
+    "subject",
+    "topic",
+    "subtopic",
+    "minGrade",
+    "maxGrade",
+    "cognitive_level",
+    "description"
+  ],
+  "properties": {
+    "skill_id": {
+      "type": "string",
+      "description": "Stable unique identifier; never repurpose for a different skill."
+    },
+    "subject": {
+      "type": "string",
+      "enum": ["hebrew", "math", "geometry", "english", "science", "geography"]
+    },
+    "topic": {
+      "type": "string",
+      "description": "Course topic (UI topic, generator branch, or science topic key)."
+    },
+    "subtopic": {
+      "type": "string",
+      "description": "Finer grain: Hebrew subtopic id, math kind, science draft leaf, etc."
+    },
+    "minGrade": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 6
+    },
+    "maxGrade": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 6
+    },
+    "cognitive_level": {
+      "type": "string",
+      "enum": ["recognition", "understanding", "application", "reasoning"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable scope; may cite source file or generator kind."
+    },
+    "source": {
+      "type": "string",
+      "description": "Optional provenance: file path, map name, or audit artifact."
+    },
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    }
+  },
+  "additionalProperties": false
+}
