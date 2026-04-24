@@ -9,6 +9,7 @@
     "audit:hebrew-subtopics": "tsx scripts/hebrew-subtopic-coverage-audit.mjs",
     "audit:questions": "tsx scripts/generator-deterministic-harness.mjs && tsx scripts/audit-question-banks.mjs",
     "test:answer-compare": "tsx scripts/answer-compare-selftest.mjs",
+    "test:safe-local-storage": "tsx scripts/safe-local-storage-selftest.mjs",
     "test:intelligence-layer-v1": "tsx scripts/intelligence-layer-v1-selftest.mjs",
     "test:intelligence-layer-v1-usage": "tsx scripts/intelligence-layer-v1-usage-selftest.mjs",
     "audit:branches": "tsx scripts/extract-generator-branches.mjs",

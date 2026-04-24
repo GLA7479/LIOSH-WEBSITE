@@ -64,6 +64,11 @@ import {
   resolveUnitParentActionHe,
 } from "./parent-report-recommendation-consistency.js";
 import { EVIDENCE_CONTRACT_VERSION } from "./contracts/parent-report-contracts-v1.js";
+import {
+  safeGetItem,
+  safeGetJsonArray,
+  safeGetJsonObject,
+} from "./safe-local-storage.js";
 
 const LEVEL_LABELS = { easy: "קל", medium: "בינוני", hard: "קשה" };
 
@@ -83,7 +88,11 @@ function evidenceContractsV1Enabled() {
   const envFlag = String(process?.env?.NEXT_PUBLIC_PARENT_REPORT_CONTRACTS_V1 ?? "1").trim().toLowerCase();
   if (envFlag === "0" || envFlag === "false" || envFlag === "off") return false;
   try {
-    const runtimeFlag = String(localStorage.getItem("mleo_parent_report_contracts_v1") || "").trim().toLowerCase();
+    const runtimeFlag = String(
+      safeGetItem("mleo_parent_report_contracts_v1") || ""
+    )
+      .trim()
+      .toLowerCase();
     if (runtimeFlag === "0" || runtimeFlag === "false" || runtimeFlag === "off") return false;
   } catch {
     // Ignore storage read errors - keep additive trace enabled by default.
@@ -557,7 +566,7 @@ const SUBJECTS = [
 
 function loadTracking(rawKey) {
   try {
-    return JSON.parse(localStorage.getItem(rawKey) || "{}");
+    return JSON.parse(safeGetItem(rawKey) || "{}");
   } catch {
     return {};
   }
@@ -565,50 +574,7 @@ function loadTracking(rawKey) {
 
 function loadProgress(path) {
   try {
-    return JSON.parse(localStorage.getItem(path) || "{}");
-  } catch {
-    return {};
-  }
-}
-
-/**
- * Read JSON array from localStorage; never throws. Invalid JSON or non-array → [].
- * @param {string} key
- * @returns {unknown[]}
- */
-function safeLocalStorageJsonArray(key) {
-  let raw;
-  try {
-    raw = localStorage.getItem(key);
-  } catch {
-    return [];
-  }
-  try {
-    const parsed = JSON.parse(raw == null || raw === "" ? "[]" : raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-/**
- * Read JSON object from localStorage; never throws. Invalid JSON or non-plain-object → {}.
- * @param {string} key
- * @returns {Record<string, unknown>}
- */
-function safeLocalStorageJsonObject(key) {
-  let raw;
-  try {
-    raw = localStorage.getItem(key);
-  } catch {
-    return {};
-  }
-  try {
-    const parsed = JSON.parse(raw == null || raw === "" ? "{}" : raw);
-    if (parsed != null && typeof parsed === "object" && !Array.isArray(parsed)) {
-      return /** @type {Record<string, unknown>} */ (parsed);
-    }
-    return {};
+    return JSON.parse(safeGetItem(path) || "{}");
   } catch {
     return {};
   }
@@ -1291,12 +1257,12 @@ export function generateParentReportV2(
     ...moledetGeographyAchievements,
   ];
 
-  const mathMistakesRaw = safeLocalStorageJsonArray("mleo_mistakes");
-  const geometryMistakesRaw = safeLocalStorageJsonArray("mleo_geometry_mistakes");
-  const englishMistakesRaw = safeLocalStorageJsonArray("mleo_english_mistakes");
-  const scienceMistakesRaw = safeLocalStorageJsonArray("mleo_science_mistakes");
-  const hebrewMistakesRaw = safeLocalStorageJsonArray("mleo_hebrew_mistakes");
-  const moledetGeographyMistakesRaw = safeLocalStorageJsonArray(
+  const mathMistakesRaw = safeGetJsonArray("mleo_mistakes");
+  const geometryMistakesRaw = safeGetJsonArray("mleo_geometry_mistakes");
+  const englishMistakesRaw = safeGetJsonArray("mleo_english_mistakes");
+  const scienceMistakesRaw = safeGetJsonArray("mleo_science_mistakes");
+  const hebrewMistakesRaw = safeGetJsonArray("mleo_hebrew_mistakes");
+  const moledetGeographyMistakesRaw = safeGetJsonArray(
     "mleo_moledet_geography_mistakes"
   );
 
@@ -1448,8 +1414,8 @@ export function generateParentReportV2(
       ),
   ];
 
-  const dailyChallenge = safeLocalStorageJsonObject("mleo_daily_challenge");
-  const weeklyChallenge = safeLocalStorageJsonObject("mleo_weekly_challenge");
+  const dailyChallenge = safeGetJsonObject("mleo_daily_challenge");
+  const weeklyChallenge = safeGetJsonObject("mleo_weekly_challenge");
 
   const allItems = {
     ...Object.fromEntries(

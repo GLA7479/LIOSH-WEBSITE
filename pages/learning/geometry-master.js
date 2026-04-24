@@ -80,6 +80,14 @@ import {
 import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
 import { compareGeometryLearnerAnswer } from "../../utils/answer-compare";
+import {
+  safeGetItem,
+  safeSetItem,
+  safeRemoveItem,
+  safeGetJsonObject,
+  safeGetJsonArray,
+  safeSetJson,
+} from "../../utils/safe-local-storage";
 
 /** Passed into compareGeometryLearnerAnswer — not defaulted inside answer-compare. */
 const GEOMETRY_NUMERIC_SCALE_FLOOR = 1e-6;
@@ -168,12 +176,7 @@ export default function GeometryMaster() {
   const [practiceFocus, setPracticeFocus] = useState("default");
   const [mistakes, setMistakes] = useState(() => {
     if (typeof window !== "undefined") {
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_geometry_mistakes") || "[]");
-        return saved;
-      } catch {
-        return [];
-      }
+      return safeGetJsonArray("mleo_geometry_mistakes");
     }
     return [];
   });
@@ -197,7 +200,7 @@ export default function GeometryMaster() {
   const [dailyChallenge, setDailyChallenge] = useState(() => {
     if (typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem("mleo_geometry_daily_challenge") || "{}");
+        const saved = safeGetJsonObject("mleo_geometry_daily_challenge");
         const todayKey = getTodayKey();
         if (saved.date === todayKey) {
           return saved;
@@ -215,7 +218,7 @@ export default function GeometryMaster() {
   const [weeklyChallenge, setWeeklyChallenge] = useState(() => {
     if (typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem("mleo_weekly_challenge") || "{}");
+        const saved = safeGetJsonObject("mleo_weekly_challenge");
         const today = new Date();
         const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
         const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
@@ -267,11 +270,7 @@ export default function GeometryMaster() {
   
 const [playerName, setPlayerName] = useState(() => {
     if (typeof window !== "undefined") {
-      try {
-        return localStorage.getItem("mleo_player_name") || "";
-      } catch {
-        return "";
-      }
+      return safeGetItem("mleo_player_name") || "";
     }
     return "";
   });
@@ -308,8 +307,8 @@ const refreshMonthlyProgress = useCallback(() => {
   // טעינת אווטר מ-localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("mleo_player_avatar");
-      const savedImage = localStorage.getItem("mleo_player_avatar_image");
+      const saved = safeGetItem("mleo_player_avatar");
+      const savedImage = safeGetItem("mleo_player_avatar_image");
       
       if (savedImage) {
         setPlayerAvatarImage(savedImage);
@@ -344,8 +343,8 @@ const refreshMonthlyProgress = useCallback(() => {
       setPlayerAvatarImage(imageUrl);
       setPlayerAvatar(null);
       if (typeof window !== "undefined") {
-        localStorage.setItem("mleo_player_avatar_image", imageUrl);
-        localStorage.removeItem("mleo_player_avatar"); // הסר אמוג'י אם נבחרה תמונה
+        safeSetItem("mleo_player_avatar_image", imageUrl);
+        safeRemoveItem("mleo_player_avatar"); // הסר אמוג'י אם נבחרה תמונה
       }
     };
     reader.readAsDataURL(file);
@@ -355,11 +354,11 @@ const refreshMonthlyProgress = useCallback(() => {
   const handleRemoveAvatarImage = () => {
     setPlayerAvatarImage(null);
     if (typeof window !== "undefined") {
-      localStorage.removeItem("mleo_player_avatar_image");
+      safeRemoveItem("mleo_player_avatar_image");
       // החזר אמוג'י ברירת מחדל
       const defaultAvatar = "👤";
       setPlayerAvatar(defaultAvatar);
-      localStorage.setItem("mleo_player_avatar", defaultAvatar);
+      safeSetItem("mleo_player_avatar", defaultAvatar);
     }
   };
 
@@ -379,7 +378,7 @@ const refreshMonthlyProgress = useCallback(() => {
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+      const saved = safeGetJsonObject(STORAGE_KEY + "_progress");
       if (saved.stars) setStars(saved.stars);
       if (saved.badges) setBadges(saved.badges);
       if (saved.playerLevel) setPlayerLevel(saved.playerLevel);
@@ -392,9 +391,9 @@ const refreshMonthlyProgress = useCallback(() => {
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+      const saved = safeGetJsonObject(STORAGE_KEY + "_progress");
       saved.progress = progress;
-      localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+      safeSetJson(STORAGE_KEY + "_progress", saved);
     } catch {}
   }, [progress]);
 
@@ -427,7 +426,7 @@ const refreshMonthlyProgress = useCallback(() => {
   useEffect(() => {
     if (showLeaderboard && typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        const saved = safeGetJsonObject(STORAGE_KEY);
         const topScores = buildTop10ByScore(saved, leaderboardLevel);
         setLeaderboardData(topScores);
       } catch (e) {
@@ -843,7 +842,7 @@ useEffect(() => {
           const next = prev.filter((m) => m.id !== currentQuestion._mistakeId);
           if (typeof window !== "undefined") {
             try {
-              localStorage.setItem("mleo_geometry_mistakes", JSON.stringify(next));
+              safeSetJson("mleo_geometry_mistakes", next);
             } catch {}
           }
           return next;
@@ -886,9 +885,9 @@ useEffect(() => {
           // שמירה ל-localStorage
           if (typeof window !== "undefined") {
             try {
-              const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+              const saved = safeGetJsonObject(STORAGE_KEY + "_progress");
               saved.stars = newStars;
-              localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+              safeSetJson(STORAGE_KEY + "_progress", saved);
             } catch {}
           }
           return newStars;
@@ -905,9 +904,9 @@ useEffect(() => {
         setTimeout(() => setShowBadge(null), 3000);
         if (typeof window !== "undefined") {
           try {
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+            const saved = safeGetJsonObject(STORAGE_KEY + "_progress");
             saved.badges = [...badges, newBadge];
-            localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+            safeSetJson(STORAGE_KEY + "_progress", saved);
           } catch {}
         }
       } else if (newStreak === 25 && !badges.includes("⚡ Lightning Fast")) {
@@ -918,9 +917,9 @@ useEffect(() => {
         setTimeout(() => setShowBadge(null), 3000);
         if (typeof window !== "undefined") {
           try {
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+            const saved = safeGetJsonObject(STORAGE_KEY + "_progress");
             saved.badges = [...badges, newBadge];
-            localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+            safeSetJson(STORAGE_KEY + "_progress", saved);
           } catch {}
         }
       } else if (newStreak === 50 && !badges.includes("🌟 Master")) {
@@ -931,9 +930,9 @@ useEffect(() => {
         setTimeout(() => setShowBadge(null), 3000);
         if (typeof window !== "undefined") {
           try {
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+            const saved = safeGetJsonObject(STORAGE_KEY + "_progress");
             saved.badges = [...badges, newBadge];
-            localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+            safeSetJson(STORAGE_KEY + "_progress", saved);
           } catch {}
         }
       }
@@ -952,10 +951,10 @@ useEffect(() => {
             setTimeout(() => setShowLevelUp(false), 3000);
             if (typeof window !== "undefined") {
               try {
-                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+                const saved = safeGetJsonObject(STORAGE_KEY + "_progress");
                 saved.playerLevel = newLevel;
                 saved.xp = newXp - xpNeeded;
-                localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+                safeSetJson(STORAGE_KEY + "_progress", saved);
               } catch {}
             }
             return newLevel;
@@ -965,9 +964,9 @@ useEffect(() => {
         
         if (typeof window !== "undefined") {
           try {
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
+            const saved = safeGetJsonObject(STORAGE_KEY + "_progress");
             saved.xp = newXp;
-            localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
+            safeSetJson(STORAGE_KEY + "_progress", saved);
           } catch {}
         }
         return newXp;
@@ -983,7 +982,7 @@ useEffect(() => {
         };
         if (typeof window !== "undefined") {
           try {
-            localStorage.setItem("mleo_geometry_daily_challenge", JSON.stringify(updated));
+            safeSetJson("mleo_geometry_daily_challenge", updated);
           } catch {}
         }
         return updated;
@@ -999,7 +998,7 @@ useEffect(() => {
         };
         if (typeof window !== "undefined") {
           try {
-            localStorage.setItem("mleo_weekly_challenge", JSON.stringify(updated));
+            safeSetJson("mleo_weekly_challenge", updated);
           } catch {}
         }
         return updated;
@@ -1108,7 +1107,7 @@ useEffect(() => {
             const next = [...filtered, entry].slice(-80);
             if (typeof window !== "undefined") {
               try {
-                localStorage.setItem("mleo_geometry_mistakes", JSON.stringify(next));
+                safeSetJson("mleo_geometry_mistakes", next);
               } catch {}
             }
             return next;
@@ -1220,7 +1219,7 @@ useEffect(() => {
   function saveRunToStorage() {
     if (typeof window === "undefined" || !playerName.trim()) return;
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      const saved = safeGetJsonObject(STORAGE_KEY);
       const key = `${level}_${topic}`;
       saveScoreEntry(saved, key, {
         playerName: playerName.trim(),
@@ -1228,7 +1227,7 @@ useEffect(() => {
         bestStreak: streak,
         timestamp: Date.now(),
       });
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      safeSetJson(STORAGE_KEY, saved);
       const playerScores = (saved[key] || []).filter(
         (s) => s.playerName === playerName.trim()
       );
@@ -1368,10 +1367,10 @@ useEffect(() => {
     setBestStreak(0);
     if (typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        const saved = safeGetJsonObject(STORAGE_KEY);
         const key = `${level}_${topic}`;
         delete saved[key];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+        safeSetJson(STORAGE_KEY, saved);
       } catch {}
     }
   }
@@ -1759,7 +1758,7 @@ useEffect(() => {
                     setPlayerName(newName);
                     if (typeof window !== "undefined") {
                       try {
-                        localStorage.setItem("mleo_player_name", newName);
+                        safeSetItem("mleo_player_name", newName);
                       } catch {}
                     }
                   }}
@@ -2488,9 +2487,7 @@ useEffect(() => {
                         setLeaderboardLevel(lvl);
                         if (typeof window !== "undefined") {
                           try {
-                            const saved = JSON.parse(
-                              localStorage.getItem(STORAGE_KEY) || "{}"
-                            );
+                            const saved = safeGetJsonObject(STORAGE_KEY);
                             const topScores = buildTop10ByScore(saved, lvl);
                             setLeaderboardData(topScores);
                           } catch (e) {
@@ -2840,8 +2837,8 @@ useEffect(() => {
                           setPlayerAvatar(avatar);
                           setPlayerAvatarImage(null);
                           if (typeof window !== "undefined") {
-                            localStorage.setItem("mleo_player_avatar", avatar);
-                            localStorage.removeItem("mleo_player_avatar_image");
+                            safeSetItem("mleo_player_avatar", avatar);
+                            safeRemoveItem("mleo_player_avatar_image");
                           }
                         }}
                         className={`text-3xl p-2 rounded-lg transition-all ${
@@ -3108,7 +3105,7 @@ useEffect(() => {
                   onClick={() => {
                     setMistakes([]);
                     if (typeof window !== "undefined") {
-                      localStorage.setItem("mleo_geometry_mistakes", JSON.stringify([]));
+                      safeSetJson("mleo_geometry_mistakes", []);
                     }
                   }}
                   className="w-full px-4 py-2 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm mb-2"

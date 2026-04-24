@@ -2,6 +2,7 @@ import {
   isTrackingDebugEnabled,
   trackingDebugRecordSession,
 } from "./tracking-debug";
+import { safeGetItem, safeSetJson, safeGetJsonArray } from "./safe-local-storage.js";
 
 const PROGRESS_STORAGE_KEY = "LEO_MONTHLY_PROGRESS";
 const PROGRESS_LOG_KEY = "LEO_PROGRESS_LOG";
@@ -14,9 +15,9 @@ function getYearMonth(date = new Date()) {
 
 export function loadMonthlyProgress() {
   if (typeof window === "undefined") return {};
+  const raw = safeGetItem(PROGRESS_STORAGE_KEY);
+  if (!raw) return {};
   try {
-    const raw = localStorage.getItem(PROGRESS_STORAGE_KEY);
-    if (!raw) return {};
     return JSON.parse(raw);
   } catch {
     return {};
@@ -25,11 +26,7 @@ export function loadMonthlyProgress() {
 
 export function saveMonthlyProgress(data) {
   if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(data));
-  } catch {
-    // ignore
-  }
+  safeSetJson(PROGRESS_STORAGE_KEY, data);
 }
 
 export function addSessionProgress(durationMinutes, exercisesSolved, meta = {}) {
@@ -69,9 +66,9 @@ const REWARD_CELEBRATION_KEY = "LEO_REWARD_CELEBRATION";
 
 export function loadRewardChoice(yearMonth) {
   if (typeof window === "undefined") return null;
+  const raw = safeGetItem(REWARD_CHOICE_KEY);
+  if (!raw) return null;
   try {
-    const raw = localStorage.getItem(REWARD_CHOICE_KEY);
-    if (!raw) return null;
     const all = JSON.parse(raw);
     return all[yearMonth] || null;
   } catch {
@@ -81,14 +78,20 @@ export function loadRewardChoice(yearMonth) {
 
 export function saveRewardChoice(yearMonth, choiceKey) {
   if (typeof window === "undefined") return;
-  try {
-    const raw = localStorage.getItem(REWARD_CHOICE_KEY);
-    const all = raw ? JSON.parse(raw) : {};
-    all[yearMonth] = choiceKey;
-    localStorage.setItem(REWARD_CHOICE_KEY, JSON.stringify(all));
-  } catch {
-    // ignore
+  const raw = safeGetItem(REWARD_CHOICE_KEY);
+  let all = {};
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed != null && typeof parsed === "object" && !Array.isArray(parsed)) {
+        all = parsed;
+      }
+    } catch {
+      /* keep {} */
+    }
   }
+  all[yearMonth] = choiceKey;
+  safeSetJson(REWARD_CHOICE_KEY, all);
 }
 
 export function getCurrentYearMonth() {
@@ -97,9 +100,9 @@ export function getCurrentYearMonth() {
 
 export function loadProgressLog() {
   if (typeof window === "undefined") return [];
+  const raw = safeGetItem(PROGRESS_LOG_KEY);
+  if (!raw) return [];
   try {
-    const raw = localStorage.getItem(PROGRESS_LOG_KEY);
-    if (!raw) return [];
     const list = JSON.parse(raw);
     return Array.isArray(list) ? list : [];
   } catch {
@@ -110,28 +113,22 @@ export function loadProgressLog() {
 function appendProgressLog(entry) {
   if (typeof window === "undefined") return;
   try {
-    const raw = localStorage.getItem(PROGRESS_LOG_KEY);
-    const list = raw ? JSON.parse(raw) : [];
-    if (Array.isArray(list)) {
-      list.push(entry);
-      // שמירה על היסטוריה בגודל סביר
-      while (list.length > 1000) {
-        list.shift();
-      }
-      localStorage.setItem(PROGRESS_LOG_KEY, JSON.stringify(list));
-    } else {
-      localStorage.setItem(PROGRESS_LOG_KEY, JSON.stringify([entry]));
+    const list = safeGetJsonArray(PROGRESS_LOG_KEY);
+    list.push(entry);
+    while (list.length > 1000) {
+      list.shift();
     }
+    safeSetJson(PROGRESS_LOG_KEY, list);
   } catch {
-    // ignore
+    /* ignore */
   }
 }
 
 export function hasRewardCelebrationShown(yearMonth) {
   if (typeof window === "undefined") return false;
+  const raw = safeGetItem(REWARD_CELEBRATION_KEY);
+  if (!raw) return false;
   try {
-    const raw = localStorage.getItem(REWARD_CELEBRATION_KEY);
-    if (!raw) return false;
     const all = JSON.parse(raw);
     return Boolean(all[yearMonth]);
   } catch {
@@ -141,13 +138,18 @@ export function hasRewardCelebrationShown(yearMonth) {
 
 export function markRewardCelebrationShown(yearMonth) {
   if (typeof window === "undefined") return;
-  try {
-    const raw = localStorage.getItem(REWARD_CELEBRATION_KEY);
-    const all = raw ? JSON.parse(raw) : {};
-    all[yearMonth] = true;
-    localStorage.setItem(REWARD_CELEBRATION_KEY, JSON.stringify(all));
-  } catch {
-    // ignore
+  const raw = safeGetItem(REWARD_CELEBRATION_KEY);
+  let all = {};
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed != null && typeof parsed === "object" && !Array.isArray(parsed)) {
+        all = parsed;
+      }
+    } catch {
+      /* keep {} */
+    }
   }
+  all[yearMonth] = true;
+  safeSetJson(REWARD_CELEBRATION_KEY, all);
 }
-
