@@ -1,11 +1,6 @@
 {
   "schema_version": 1,
-  "generatedAt": "2026-04-24T23:18:39.400Z",
-  "count": 1,
-  "conflicts": [
-    {
-      "type": "english_pool_vs_grade_topic",
-      "note": "english:gN:topic:* rows are single-grade while pool:* rows span grades — learners may see overlapping labels until unified."
-    }
-  ]
+  "generatedAt": "2026-04-24T23:23:48.353Z",
+  "count": 0,
+  "conflicts": []
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "generatedAt": "2026-04-24T23:18:39.397Z",
-  "count": 461,
+  "generatedAt": "2026-04-24T23:23:48.351Z",
+  "count": 423,
   "skills": [
     {
       "schema_version": 1,
@@ -3609,104 +3609,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "cognitive_level": "recognition",
-      "description": "English curriculum declares topic \"vocabulary\" for g1 (כיתה א׳ · Grade 1).",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g1:vocabulary:wordlist_colors",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "colors",
-      "minGrade": 1,
-      "maxGrade": 1,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"colors\" for g1.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g1:vocabulary:wordlist_numbers",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "numbers",
-      "minGrade": 1,
-      "maxGrade": 1,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"numbers\" for g1.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g1:vocabulary:wordlist_family",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "family",
-      "minGrade": 1,
-      "maxGrade": 1,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"family\" for g1.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g1:vocabulary:wordlist_animals",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "animals",
-      "minGrade": 1,
-      "maxGrade": 1,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"animals\" for g1.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g1:vocabulary:wordlist_emotions",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "emotions",
-      "minGrade": 1,
-      "maxGrade": 1,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"emotions\" for g1.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g1:vocabulary:wordlist_actions",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "actions",
-      "minGrade": 1,
-      "maxGrade": 1,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"actions\" for g1.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g1:vocabulary:wordlist_school",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "school",
-      "minGrade": 1,
-      "maxGrade": 1,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"school\" for g1.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g1:grammar:grammar_line_0_חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות",
-      "subject": "english",
-      "topic": "grammar",
-      "subtopic": "grammar_line_0_חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות",
-      "minGrade": 1,
-      "maxGrade": 1,
-      "cognitive_level": "recognition",
-      "description": "חשיפה ל-I am / You are ולכינויי גוף בסיסיים בתוך תבניות קבועות.",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"vocabulary\" for g1 (כיתה א׳ · Grade 1). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -3717,8 +3623,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "cognitive_level": "recognition",
-      "description": "English curriculum declares topic \"vocabulary\" for g2 (כיתה ב׳ · Grade 2).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"vocabulary\" for g2 (כיתה ב׳ · Grade 2). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -3729,8 +3637,13 @@
       "minGrade": 2,
       "maxGrade": 2,
       "cognitive_level": "recognition",
-      "description": "English curriculum declares topic \"translation\" for g2 (כיתה ב׳ · Grade 2).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"translation\" for g2 (כיתה ב׳ · Grade 2). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:translation:classroom",
+        "english:pool:translation:routines"
+      ]
     },
     {
       "schema_version": 1,
@@ -3741,140 +3654,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "cognitive_level": "recognition",
-      "description": "English curriculum declares topic \"writing\" for g2 (כיתה ב׳ · Grade 2).",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:vocabulary:wordlist_colors",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "colors",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"colors\" for g2.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:vocabulary:wordlist_numbers",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "numbers",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"numbers\" for g2.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:vocabulary:wordlist_family",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "family",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"family\" for g2.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:vocabulary:wordlist_animals",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "animals",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"animals\" for g2.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:vocabulary:wordlist_emotions",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "emotions",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"emotions\" for g2.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:vocabulary:wordlist_school",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "school",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"school\" for g2.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:vocabulary:wordlist_food",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "food",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"food\" for g2.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:vocabulary:wordlist_actions",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "actions",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"actions\" for g2.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:vocabulary:wordlist_house",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "house",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"house\" for g2.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:grammar:grammar_line_0_חיזוק_to_be_am_is_are_וכינויי_גוף",
-      "subject": "english",
-      "topic": "grammar",
-      "subtopic": "grammar_line_0_חיזוק_to_be_am_is_are_וכינויי_גוף",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "חיזוק to be (am/is/are) וכינויי גוף.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g2:grammar:grammar_line_1_ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים",
-      "subject": "english",
-      "topic": "grammar",
-      "subtopic": "grammar_line_1_ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים",
-      "minGrade": 2,
-      "maxGrade": 2,
-      "cognitive_level": "recognition",
-      "description": "ריבוי שמות עצם והיכרות עם מבני שאלות פשוטים.",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"writing\" for g2 (כיתה ב׳ · Grade 2). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -3885,8 +3668,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"vocabulary\" for g3 (כיתה ג׳ · Grade 3).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"vocabulary\" for g3 (כיתה ג׳ · Grade 3). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -3897,8 +3682,13 @@
       "minGrade": 3,
       "maxGrade": 3,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"grammar\" for g3 (כיתה ג׳ · Grade 3).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"grammar\" for g3 (כיתה ג׳ · Grade 3). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:grammar:question_frames",
+        "english:pool:grammar:present_simple"
+      ]
     },
     {
       "schema_version": 1,
@@ -3909,8 +3699,13 @@
       "minGrade": 3,
       "maxGrade": 3,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"translation\" for g3 (כיתה ג׳ · Grade 3).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"translation\" for g3 (כיתה ג׳ · Grade 3). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:translation:routines",
+        "english:pool:translation:hobbies"
+      ]
     },
     {
       "schema_version": 1,
@@ -3921,8 +3716,13 @@
       "minGrade": 3,
       "maxGrade": 3,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"sentences\" for g3 (כיתה ג׳ · Grade 3).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"sentences\" for g3 (כיתה ג׳ · Grade 3). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:sentence:routine",
+        "english:pool:sentence:descriptive"
+      ]
     },
     {
       "schema_version": 1,
@@ -3933,8 +3733,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"writing\" for g3 (כיתה ג׳ · Grade 3).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"writing\" for g3 (כיתה ג׳ · Grade 3). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -3945,164 +3747,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"mixed\" for g3 (כיתה ג׳ · Grade 3).",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_animals",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "animals",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"animals\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_colors",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "colors",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"colors\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_numbers",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "numbers",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"numbers\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_family",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "family",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"family\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_body",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "body",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"body\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_food",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "food",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"food\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_school",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "school",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"school\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_weather",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "weather",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"weather\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_sports",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "sports",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"sports\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_actions",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "actions",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"actions\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:vocabulary:wordlist_house",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "house",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"house\" for g3.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:grammar:grammar_line_0_present_simple_בחיובי_שלילי_שאלה",
-      "subject": "english",
-      "topic": "grammar",
-      "subtopic": "grammar_line_0_present_simple_בחיובי_שלילי_שאלה",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "application",
-      "description": "Present Simple בחיובי/שלילי/שאלה.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g3:grammar:grammar_line_1_תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under",
-      "subject": "english",
-      "topic": "grammar",
-      "subtopic": "grammar_line_1_תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under",
-      "minGrade": 3,
-      "maxGrade": 3,
-      "cognitive_level": "application",
-      "description": "תארים בסיסיים, יידוע (a/an/the) ומילות יחס מקום (in/on/under).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"mixed\" for g3 (כיתה ג׳ · Grade 3). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4113,8 +3761,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"vocabulary\" for g4 (כיתה ד׳ · Grade 4).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"vocabulary\" for g4 (כיתה ד׳ · Grade 4). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4125,8 +3775,14 @@
       "minGrade": 4,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"grammar\" for g4 (כיתה ד׳ · Grade 4).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"grammar\" for g4 (כיתה ד׳ · Grade 4). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:grammar:present_simple",
+        "english:pool:grammar:progressive",
+        "english:pool:grammar:quantifiers"
+      ]
     },
     {
       "schema_version": 1,
@@ -4137,8 +3793,13 @@
       "minGrade": 4,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"translation\" for g4 (כיתה ד׳ · Grade 4).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"translation\" for g4 (כיתה ד׳ · Grade 4). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:translation:hobbies",
+        "english:pool:translation:community"
+      ]
     },
     {
       "schema_version": 1,
@@ -4149,8 +3810,14 @@
       "minGrade": 4,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"sentences\" for g4 (כיתה ד׳ · Grade 4).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"sentences\" for g4 (כיתה ד׳ · Grade 4). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:sentence:routine",
+        "english:pool:sentence:descriptive",
+        "english:pool:sentence:narrative"
+      ]
     },
     {
       "schema_version": 1,
@@ -4161,8 +3828,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"writing\" for g4 (כיתה ד׳ · Grade 4).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"writing\" for g4 (כיתה ד׳ · Grade 4). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4173,164 +3842,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "English curriculum declares topic \"mixed\" for g4 (כיתה ד׳ · Grade 4).",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_animals",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "animals",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"animals\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_family",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "family",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"family\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_body",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "body",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"body\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_food",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "food",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"food\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_school",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "school",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"school\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_weather",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "weather",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"weather\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_sports",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "sports",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"sports\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_travel",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "travel",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"travel\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_community",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "community",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"community\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_environment",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "environment",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"environment\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:vocabulary:wordlist_emotions",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "emotions",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"emotions\" for g4.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:grammar:grammar_line_0_present_simple_לעומת_present_continuous",
-      "subject": "english",
-      "topic": "grammar",
-      "subtopic": "grammar_line_0_present_simple_לעומת_present_continuous",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "application",
-      "description": "Present Simple לעומת Present Continuous.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g4:grammar:grammar_line_1_some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly",
-      "subject": "english",
-      "topic": "grammar",
-      "subtopic": "grammar_line_1_some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly",
-      "minGrade": 4,
-      "maxGrade": 4,
-      "cognitive_level": "application",
-      "description": "some/any, much/many, כינויי שייכות ותוארי פועל (slowly/quickly).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"mixed\" for g4 (כיתה ד׳ · Grade 4). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4341,8 +3856,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"vocabulary\" for g5 (כיתה ה׳ · Grade 5).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"vocabulary\" for g5 (כיתה ה׳ · Grade 5). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4353,8 +3870,16 @@
       "minGrade": 5,
       "maxGrade": 5,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"grammar\" for g5 (כיתה ה׳ · Grade 5).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"grammar\" for g5 (כיתה ה׳ · Grade 5). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:grammar:quantifiers",
+        "english:pool:grammar:past_simple",
+        "english:pool:grammar:modals",
+        "english:pool:grammar:comparatives",
+        "english:pool:grammar:future_forms"
+      ]
     },
     {
       "schema_version": 1,
@@ -4365,8 +3890,14 @@
       "minGrade": 5,
       "maxGrade": 5,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"translation\" for g5 (כיתה ה׳ · Grade 5).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"translation\" for g5 (כיתה ה׳ · Grade 5). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:translation:community",
+        "english:pool:translation:technology",
+        "english:pool:translation:global"
+      ]
     },
     {
       "schema_version": 1,
@@ -4377,8 +3908,13 @@
       "minGrade": 5,
       "maxGrade": 5,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"sentences\" for g5 (כיתה ה׳ · Grade 5).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"sentences\" for g5 (כיתה ה׳ · Grade 5). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:sentence:narrative",
+        "english:pool:sentence:advanced"
+      ]
     },
     {
       "schema_version": 1,
@@ -4389,8 +3925,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"writing\" for g5 (כיתה ה׳ · Grade 5).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"writing\" for g5 (כיתה ה׳ · Grade 5). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4401,152 +3939,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"mixed\" for g5 (כיתה ה׳ · Grade 5).",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:vocabulary:wordlist_animals",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "animals",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"animals\" for g5.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:vocabulary:wordlist_family",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "family",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"family\" for g5.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:vocabulary:wordlist_food",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "food",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"food\" for g5.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:vocabulary:wordlist_school",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "school",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"school\" for g5.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:vocabulary:wordlist_sports",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "sports",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"sports\" for g5.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:vocabulary:wordlist_travel",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "travel",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"travel\" for g5.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:vocabulary:wordlist_environment",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "environment",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"environment\" for g5.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:vocabulary:wordlist_health",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "health",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"health\" for g5.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:vocabulary:wordlist_technology",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "technology",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"technology\" for g5.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:vocabulary:wordlist_emotions",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "emotions",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"emotions\" for g5.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:grammar:grammar_line_0_past_simple_סדירים_חריגים_נפוצים",
-      "subject": "english",
-      "topic": "grammar",
-      "subtopic": "grammar_line_0_past_simple_סדירים_חריגים_נפוצים",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "reasoning",
-      "description": "Past Simple (סדירים + חריגים נפוצים).",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g5:grammar:grammar_line_1_מודאליים_בסיסיים_future_will_going_to_והשוואתיים",
-      "subject": "english",
-      "topic": "grammar",
-      "subtopic": "grammar_line_1_מודאליים_בסיסיים_future_will_going_to_והשוואתיים",
-      "minGrade": 5,
-      "maxGrade": 5,
-      "cognitive_level": "reasoning",
-      "description": "מודאליים בסיסיים, Future (will / going to) והשוואתיים.",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"mixed\" for g5 (כיתה ה׳ · Grade 5). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4557,8 +3953,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"vocabulary\" for g6 (כיתה ו׳ · Grade 6).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"vocabulary\" for g6 (כיתה ו׳ · Grade 6). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4569,8 +3967,15 @@
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"grammar\" for g6 (כיתה ו׳ · Grade 6).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"grammar\" for g6 (כיתה ו׳ · Grade 6). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:grammar:modals",
+        "english:pool:grammar:comparatives",
+        "english:pool:grammar:complex_tenses",
+        "english:pool:grammar:conditionals"
+      ]
     },
     {
       "schema_version": 1,
@@ -4581,8 +3986,13 @@
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"translation\" for g6 (כיתה ו׳ · Grade 6).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"translation\" for g6 (כיתה ו׳ · Grade 6). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:translation:technology",
+        "english:pool:translation:global"
+      ]
     },
     {
       "schema_version": 1,
@@ -4593,8 +4003,12 @@
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"sentences\" for g6 (כיתה ו׳ · Grade 6).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"sentences\" for g6 (כיתה ו׳ · Grade 6). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": [
+        "english:pool:sentence:advanced"
+      ]
     },
     {
       "schema_version": 1,
@@ -4605,8 +4019,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"writing\" for g6 (כיתה ו׳ · Grade 6).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"writing\" for g6 (כיתה ו׳ · Grade 6). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4617,152 +4033,538 @@
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "reasoning",
-      "description": "English curriculum declares topic \"mixed\" for g6 (כיתה ו׳ · Grade 6).",
-      "source": "data/english-curriculum.js"
+      "description": "English curriculum declares topic \"mixed\" for g6 (כיתה ו׳ · Grade 6). Linked pools cover generator bank items allowed in this grade for this topic.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_topic_access",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
-      "skill_id": "english:g6:vocabulary:wordlist_animals",
+      "skill_id": "english:vocabulary:wordlist:actions",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "actions",
+      "minGrade": 1,
+      "maxGrade": 3,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"actions\" (grades 1–3; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g1:topic:vocabulary",
+        "english:g2:topic:vocabulary",
+        "english:g3:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:animals",
       "subject": "english",
       "topic": "vocabulary",
       "subtopic": "animals",
-      "minGrade": 6,
+      "minGrade": 1,
       "maxGrade": 6,
       "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"animals\" for g6.",
-      "source": "data/english-curriculum.js"
+      "description": "Vocabulary word-list \"animals\" (grades 1–6; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g1:topic:vocabulary",
+        "english:g2:topic:vocabulary",
+        "english:g3:topic:vocabulary",
+        "english:g4:topic:vocabulary",
+        "english:g5:topic:vocabulary",
+        "english:g6:topic:vocabulary"
+      ]
     },
     {
       "schema_version": 1,
-      "skill_id": "english:g6:vocabulary:wordlist_travel",
+      "skill_id": "english:vocabulary:wordlist:body",
       "subject": "english",
       "topic": "vocabulary",
-      "subtopic": "travel",
-      "minGrade": 6,
-      "maxGrade": 6,
+      "subtopic": "body",
+      "minGrade": 3,
+      "maxGrade": 4,
       "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"travel\" for g6.",
-      "source": "data/english-curriculum.js"
+      "description": "Vocabulary word-list \"body\" (grades 3–4; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g3:topic:vocabulary",
+        "english:g4:topic:vocabulary"
+      ]
     },
     {
       "schema_version": 1,
-      "skill_id": "english:g6:vocabulary:wordlist_environment",
+      "skill_id": "english:vocabulary:wordlist:colors",
       "subject": "english",
       "topic": "vocabulary",
-      "subtopic": "environment",
-      "minGrade": 6,
-      "maxGrade": 6,
+      "subtopic": "colors",
+      "minGrade": 1,
+      "maxGrade": 3,
       "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"environment\" for g6.",
-      "source": "data/english-curriculum.js"
+      "description": "Vocabulary word-list \"colors\" (grades 1–3; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g1:topic:vocabulary",
+        "english:g2:topic:vocabulary",
+        "english:g3:topic:vocabulary"
+      ]
     },
     {
       "schema_version": 1,
-      "skill_id": "english:g6:vocabulary:wordlist_health",
+      "skill_id": "english:vocabulary:wordlist:community",
       "subject": "english",
       "topic": "vocabulary",
-      "subtopic": "health",
-      "minGrade": 6,
+      "subtopic": "community",
+      "minGrade": 4,
       "maxGrade": 6,
       "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"health\" for g6.",
-      "source": "data/english-curriculum.js"
+      "description": "Vocabulary word-list \"community\" (grades 4–6; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g4:topic:vocabulary",
+        "english:g6:topic:vocabulary"
+      ]
     },
     {
       "schema_version": 1,
-      "skill_id": "english:g6:vocabulary:wordlist_technology",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "technology",
-      "minGrade": 6,
-      "maxGrade": 6,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"technology\" for g6.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g6:vocabulary:wordlist_global_issues",
-      "subject": "english",
-      "topic": "vocabulary",
-      "subtopic": "global_issues",
-      "minGrade": 6,
-      "maxGrade": 6,
-      "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"global_issues\" for g6.",
-      "source": "data/english-curriculum.js"
-    },
-    {
-      "schema_version": 1,
-      "skill_id": "english:g6:vocabulary:wordlist_culture",
+      "skill_id": "english:vocabulary:wordlist:culture",
       "subject": "english",
       "topic": "vocabulary",
       "subtopic": "culture",
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"culture\" for g6.",
-      "source": "data/english-curriculum.js"
+      "description": "Vocabulary word-list \"culture\" (grades 6–6; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g6:topic:vocabulary"
+      ]
     },
     {
       "schema_version": 1,
-      "skill_id": "english:g6:vocabulary:wordlist_history",
+      "skill_id": "english:vocabulary:wordlist:emotions",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "emotions",
+      "minGrade": 1,
+      "maxGrade": 6,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"emotions\" (grades 1–6; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g1:topic:vocabulary",
+        "english:g2:topic:vocabulary",
+        "english:g4:topic:vocabulary",
+        "english:g5:topic:vocabulary",
+        "english:g6:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:environment",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "environment",
+      "minGrade": 4,
+      "maxGrade": 6,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"environment\" (grades 4–6; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g4:topic:vocabulary",
+        "english:g5:topic:vocabulary",
+        "english:g6:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:family",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "family",
+      "minGrade": 1,
+      "maxGrade": 5,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"family\" (grades 1–5; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g1:topic:vocabulary",
+        "english:g2:topic:vocabulary",
+        "english:g3:topic:vocabulary",
+        "english:g4:topic:vocabulary",
+        "english:g5:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:food",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "food",
+      "minGrade": 2,
+      "maxGrade": 5,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"food\" (grades 2–5; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g2:topic:vocabulary",
+        "english:g3:topic:vocabulary",
+        "english:g4:topic:vocabulary",
+        "english:g5:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:global_issues",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "global_issues",
+      "minGrade": 6,
+      "maxGrade": 6,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"global_issues\" (grades 6–6; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g6:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:health",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "health",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"health\" (grades 5–6; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g5:topic:vocabulary",
+        "english:g6:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:history",
       "subject": "english",
       "topic": "vocabulary",
       "subtopic": "history",
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"history\" for g6.",
-      "source": "data/english-curriculum.js"
+      "description": "Vocabulary word-list \"history\" (grades 6–6; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g6:topic:vocabulary"
+      ]
     },
     {
       "schema_version": 1,
-      "skill_id": "english:g6:vocabulary:wordlist_community",
+      "skill_id": "english:vocabulary:wordlist:house",
       "subject": "english",
       "topic": "vocabulary",
-      "subtopic": "community",
-      "minGrade": 6,
-      "maxGrade": 6,
+      "subtopic": "house",
+      "minGrade": 2,
+      "maxGrade": 3,
       "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"community\" for g6.",
-      "source": "data/english-curriculum.js"
+      "description": "Vocabulary word-list \"house\" (grades 2–3; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g2:topic:vocabulary",
+        "english:g3:topic:vocabulary"
+      ]
     },
     {
       "schema_version": 1,
-      "skill_id": "english:g6:vocabulary:wordlist_emotions",
+      "skill_id": "english:vocabulary:wordlist:numbers",
       "subject": "english",
       "topic": "vocabulary",
-      "subtopic": "emotions",
-      "minGrade": 6,
-      "maxGrade": 6,
+      "subtopic": "numbers",
+      "minGrade": 1,
+      "maxGrade": 3,
       "cognitive_level": "recognition",
-      "description": "Vocabulary word-list dimension \"emotions\" for g6.",
-      "source": "data/english-curriculum.js"
+      "description": "Vocabulary word-list \"numbers\" (grades 1–3; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g1:topic:vocabulary",
+        "english:g2:topic:vocabulary",
+        "english:g3:topic:vocabulary"
+      ]
     },
     {
       "schema_version": 1,
-      "skill_id": "english:g6:grammar:grammar_line_0_past_continuous_לצד_past_simple_היכרות_עם_present_perfect",
+      "skill_id": "english:vocabulary:wordlist:school",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "school",
+      "minGrade": 1,
+      "maxGrade": 5,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"school\" (grades 1–5; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g1:topic:vocabulary",
+        "english:g2:topic:vocabulary",
+        "english:g3:topic:vocabulary",
+        "english:g4:topic:vocabulary",
+        "english:g5:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:sports",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "sports",
+      "minGrade": 3,
+      "maxGrade": 5,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"sports\" (grades 3–5; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g3:topic:vocabulary",
+        "english:g4:topic:vocabulary",
+        "english:g5:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:technology",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "technology",
+      "minGrade": 5,
+      "maxGrade": 6,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"technology\" (grades 5–6; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g5:topic:vocabulary",
+        "english:g6:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:travel",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "travel",
+      "minGrade": 4,
+      "maxGrade": 6,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"travel\" (grades 4–6; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g4:topic:vocabulary",
+        "english:g5:topic:vocabulary",
+        "english:g6:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:vocabulary:wordlist:weather",
+      "subject": "english",
+      "topic": "vocabulary",
+      "subtopic": "weather",
+      "minGrade": 3,
+      "maxGrade": 4,
+      "cognitive_level": "recognition",
+      "description": "Vocabulary word-list \"weather\" (grades 3–4; merged across ENGLISH_GRADES where the list name appears).",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "vocabulary_wordlist",
+      "linked_skill_ids": [
+        "english:g3:topic:vocabulary",
+        "english:g4:topic:vocabulary"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:grammar:line:חיזוק_to_be_am_is_are_וכינויי_גוף",
       "subject": "english",
       "topic": "grammar",
-      "subtopic": "grammar_line_0_past_continuous_לצד_past_simple_היכרות_עם_present_perfect",
+      "subtopic": "חיזוק_to_be_am_is_are_וכינויי_גוף",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "cognitive_level": "recognition",
+      "description": "חיזוק to be (am/is/are) וכינויי גוף. — curriculum grammar line for grade 2 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": []
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:grammar:line:חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות",
+      "subject": "english",
+      "topic": "grammar",
+      "subtopic": "חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "cognitive_level": "recognition",
+      "description": "חשיפה ל-I am / You are ולכינויי גוף בסיסיים בתוך תבניות קבועות. — curriculum grammar line for grade 1 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": []
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:grammar:line:מודאליים_בסיסיים_future_will_going_to_והשוואתיים",
+      "subject": "english",
+      "topic": "grammar",
+      "subtopic": "מודאליים_בסיסיים_future_will_going_to_והשוואתיים",
+      "minGrade": 5,
+      "maxGrade": 5,
+      "cognitive_level": "reasoning",
+      "description": "מודאליים בסיסיים, Future (will / going to) והשוואתיים. — curriculum grammar line for grade 5 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": [
+        "english:g5:topic:grammar"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:grammar:line:ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים",
+      "subject": "english",
+      "topic": "grammar",
+      "subtopic": "ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "cognitive_level": "recognition",
+      "description": "ריבוי שמות עצם והיכרות עם מבני שאלות פשוטים. — curriculum grammar line for grade 2 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": []
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:grammar:line:תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under",
+      "subject": "english",
+      "topic": "grammar",
+      "subtopic": "תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under",
+      "minGrade": 3,
+      "maxGrade": 3,
+      "cognitive_level": "application",
+      "description": "תארים בסיסיים, יידוע (a/an/the) ומילות יחס מקום (in/on/under). — curriculum grammar line for grade 3 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": [
+        "english:g3:topic:grammar"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:grammar:line:conditionals_type_0_1_ומודאליים_should_might_could",
+      "subject": "english",
+      "topic": "grammar",
+      "subtopic": "conditionals_type_0_1_ומודאליים_should_might_could",
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "reasoning",
-      "description": "Past Continuous לצד Past Simple, היכרות עם Present Perfect.",
-      "source": "data/english-curriculum.js"
+      "description": "Conditionals type 0/1 ומודאליים should / might / could. — curriculum grammar line for grade 6 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": [
+        "english:g6:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
-      "skill_id": "english:g6:grammar:grammar_line_1_conditionals_type_0_1_ומודאליים_should_might_could",
+      "skill_id": "english:grammar:line:past_continuous_לצד_past_simple_היכרות_עם_present_perfect",
       "subject": "english",
       "topic": "grammar",
-      "subtopic": "grammar_line_1_conditionals_type_0_1_ומודאליים_should_might_could",
+      "subtopic": "past_continuous_לצד_past_simple_היכרות_עם_present_perfect",
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "reasoning",
-      "description": "Conditionals type 0/1 ומודאליים should / might / could.",
-      "source": "data/english-curriculum.js"
+      "description": "Past Continuous לצד Past Simple, היכרות עם Present Perfect. — curriculum grammar line for grade 6 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": [
+        "english:g6:topic:grammar"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:grammar:line:past_simple_סדירים_חריגים_נפוצים",
+      "subject": "english",
+      "topic": "grammar",
+      "subtopic": "past_simple_סדירים_חריגים_נפוצים",
+      "minGrade": 5,
+      "maxGrade": 5,
+      "cognitive_level": "reasoning",
+      "description": "Past Simple (סדירים + חריגים נפוצים). — curriculum grammar line for grade 5 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": [
+        "english:g5:topic:grammar"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:grammar:line:present_simple_בחיובי_שלילי_שאלה",
+      "subject": "english",
+      "topic": "grammar",
+      "subtopic": "present_simple_בחיובי_שלילי_שאלה",
+      "minGrade": 3,
+      "maxGrade": 3,
+      "cognitive_level": "application",
+      "description": "Present Simple בחיובי/שלילי/שאלה. — curriculum grammar line for grade 3 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": [
+        "english:g3:topic:grammar"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:grammar:line:present_simple_לעומת_present_continuous",
+      "subject": "english",
+      "topic": "grammar",
+      "subtopic": "present_simple_לעומת_present_continuous",
+      "minGrade": 4,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "Present Simple לעומת Present Continuous. — curriculum grammar line for grade 4 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": [
+        "english:g4:topic:grammar"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "skill_id": "english:grammar:line:some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly",
+      "subject": "english",
+      "topic": "grammar",
+      "subtopic": "some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly",
+      "minGrade": 4,
+      "maxGrade": 4,
+      "cognitive_level": "application",
+      "description": "some/any, much/many, כינויי שייכות ותוארי פועל (slowly/quickly). — curriculum grammar line for grade 4 only.",
+      "source": "data/english-curriculum.js ENGLISH_GRADES",
+      "spine_layer": "curriculum_grammar_line",
+      "linked_skill_ids": [
+        "english:g4:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4773,8 +4575,10 @@
       "minGrade": 1,
       "maxGrade": 2,
       "cognitive_level": "application",
-      "description": "Grammar pool \"be_basic\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"be_basic\" (1–2) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4785,8 +4589,12 @@
       "minGrade": 2,
       "maxGrade": 3,
       "cognitive_level": "application",
-      "description": "Grammar pool \"question_frames\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"question_frames\" (2–3) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g3:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4797,8 +4605,13 @@
       "minGrade": 3,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "Grammar pool \"present_simple\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"present_simple\" (3–4) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g3:topic:grammar",
+        "english:g4:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4809,8 +4622,12 @@
       "minGrade": 4,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "Grammar pool \"progressive\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"progressive\" (4–4) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g4:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4821,8 +4638,13 @@
       "minGrade": 4,
       "maxGrade": 5,
       "cognitive_level": "application",
-      "description": "Grammar pool \"quantifiers\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"quantifiers\" (4–5) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g4:topic:grammar",
+        "english:g5:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4833,8 +4655,12 @@
       "minGrade": 5,
       "maxGrade": 5,
       "cognitive_level": "application",
-      "description": "Grammar pool \"past_simple\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"past_simple\" (5–5) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g5:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4845,8 +4671,13 @@
       "minGrade": 5,
       "maxGrade": 6,
       "cognitive_level": "application",
-      "description": "Grammar pool \"modals\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"modals\" (5–6) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g5:topic:grammar",
+        "english:g6:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4857,8 +4688,13 @@
       "minGrade": 5,
       "maxGrade": 6,
       "cognitive_level": "application",
-      "description": "Grammar pool \"comparatives\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"comparatives\" (5–6) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g5:topic:grammar",
+        "english:g6:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4869,8 +4705,12 @@
       "minGrade": 5,
       "maxGrade": 5,
       "cognitive_level": "application",
-      "description": "Grammar pool \"future_forms\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"future_forms\" (5–5) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g5:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4881,8 +4721,12 @@
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "application",
-      "description": "Grammar pool \"complex_tenses\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"complex_tenses\" (6–6) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g6:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4893,8 +4737,12 @@
       "minGrade": 6,
       "maxGrade": 6,
       "cognitive_level": "application",
-      "description": "Grammar pool \"conditionals\" from ENGLISH_GRAMMAR_POOL_RANGE.",
-      "source": "utils/grade-gating.js"
+      "description": "Grammar pool \"conditionals\" (6–6) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g6:topic:grammar"
+      ]
     },
     {
       "schema_version": 1,
@@ -4905,8 +4753,12 @@
       "minGrade": 1,
       "maxGrade": 2,
       "cognitive_level": "application",
-      "description": "Translation pool \"classroom\".",
-      "source": "utils/grade-gating.js"
+      "description": "Translation pool \"classroom\" (1–2) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g2:topic:translation"
+      ]
     },
     {
       "schema_version": 1,
@@ -4917,8 +4769,13 @@
       "minGrade": 2,
       "maxGrade": 3,
       "cognitive_level": "application",
-      "description": "Translation pool \"routines\".",
-      "source": "utils/grade-gating.js"
+      "description": "Translation pool \"routines\" (2–3) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g2:topic:translation",
+        "english:g3:topic:translation"
+      ]
     },
     {
       "schema_version": 1,
@@ -4929,8 +4786,13 @@
       "minGrade": 3,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "Translation pool \"hobbies\".",
-      "source": "utils/grade-gating.js"
+      "description": "Translation pool \"hobbies\" (3–4) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g3:topic:translation",
+        "english:g4:topic:translation"
+      ]
     },
     {
       "schema_version": 1,
@@ -4941,8 +4803,13 @@
       "minGrade": 4,
       "maxGrade": 5,
       "cognitive_level": "application",
-      "description": "Translation pool \"community\".",
-      "source": "utils/grade-gating.js"
+      "description": "Translation pool \"community\" (4–5) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g4:topic:translation",
+        "english:g5:topic:translation"
+      ]
     },
     {
       "schema_version": 1,
@@ -4953,8 +4820,13 @@
       "minGrade": 5,
       "maxGrade": 6,
       "cognitive_level": "application",
-      "description": "Translation pool \"technology\".",
-      "source": "utils/grade-gating.js"
+      "description": "Translation pool \"technology\" (5–6) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g5:topic:translation",
+        "english:g6:topic:translation"
+      ]
     },
     {
       "schema_version": 1,
@@ -4965,8 +4837,13 @@
       "minGrade": 5,
       "maxGrade": 6,
       "cognitive_level": "application",
-      "description": "Translation pool \"global\".",
-      "source": "utils/grade-gating.js"
+      "description": "Translation pool \"global\" (5–6) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g5:topic:translation",
+        "english:g6:topic:translation"
+      ]
     },
     {
       "schema_version": 1,
@@ -4977,8 +4854,10 @@
       "minGrade": 1,
       "maxGrade": 2,
       "cognitive_level": "application",
-      "description": "Sentence pool \"base\".",
-      "source": "utils/grade-gating.js"
+      "description": "Sentence pool \"base\" (1–2) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": []
     },
     {
       "schema_version": 1,
@@ -4989,8 +4868,13 @@
       "minGrade": 2,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "Sentence pool \"routine\".",
-      "source": "utils/grade-gating.js"
+      "description": "Sentence pool \"routine\" (2–4) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g3:topic:sentences",
+        "english:g4:topic:sentences"
+      ]
     },
     {
       "schema_version": 1,
@@ -5001,8 +4885,13 @@
       "minGrade": 3,
       "maxGrade": 4,
       "cognitive_level": "application",
-      "description": "Sentence pool \"descriptive\".",
-      "source": "utils/grade-gating.js"
+      "description": "Sentence pool \"descriptive\" (3–4) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g3:topic:sentences",
+        "english:g4:topic:sentences"
+      ]
     },
     {
       "schema_version": 1,
@@ -5013,8 +4902,13 @@
       "minGrade": 4,
       "maxGrade": 5,
       "cognitive_level": "application",
-      "description": "Sentence pool \"narrative\".",
-      "source": "utils/grade-gating.js"
+      "description": "Sentence pool \"narrative\" (4–5) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g4:topic:sentences",
+        "english:g5:topic:sentences"
+      ]
     },
     {
       "schema_version": 1,
@@ -5025,8 +4919,13 @@
       "minGrade": 5,
       "maxGrade": 6,
       "cognitive_level": "application",
-      "description": "Sentence pool \"advanced\".",
-      "source": "utils/grade-gating.js"
+      "description": "Sentence pool \"advanced\" (5–6) — generator bank coverage; linked to per-grade topic access rows where that topic is declared.",
+      "source": "utils/grade-gating.js ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE",
+      "spine_layer": "question_bank_pool",
+      "linked_skill_ids": [
+        "english:g5:topic:sentences",
+        "english:g6:topic:sentences"
+      ]
     },
     {
       "schema_version": 1,

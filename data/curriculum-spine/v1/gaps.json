@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "generatedAt": "2026-04-24T23:18:39.400Z",
-  "count": 3,
+  "generatedAt": "2026-04-24T23:23:48.353Z",
+  "count": 2,
   "gaps": [
     {
       "severity": "important",
@@ -22,11 +22,6 @@
         "math:kind:eq_sub_simple"
       ],
       "note": "These kinds are only emitted on a g1-only path inside the `equations` branch (or via __LIOSH_MATH_FORCE), but `GRADES.g1.operations` in utils/math-constants.js does not list `equations`, so they do not appear under normal grade+op gating. Align GRADES or generator if they should be reachable."
-    },
-    {
-      "severity": "minor",
-      "subject": "english",
-      "note": "Grammar curriculum lines duplicated per grade row; may merge into stable cross-grade skills in v2."
     }
   ]
 }

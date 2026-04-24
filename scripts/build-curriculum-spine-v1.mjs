@@ -32,6 +32,10 @@ const {
   countHebrewContentMapRows,
 } = await import(pathToFileURL(path.join(__dirname, "curriculum-spine-hebrew-rich-canonical.mjs")).href);
 const { ENGLISH_GRADES } = await import(u("data/english-curriculum.js"));
+const {
+  buildUnifiedEnglishSpine,
+  countLegacyEnglishSpineRows,
+} = await import(pathToFileURL(path.join(__dirname, "curriculum-spine-english-canonical.mjs")).href);
 const { MOLEDET_GEOGRAPHY_GRADES } = await import(u("data/moledet-geography-curriculum.js"));
 const { ENGLISH_GRAMMAR_POOL_RANGE, ENGLISH_TRANSLATION_POOL_RANGE, ENGLISH_SENTENCE_POOL_RANGE } =
   await import(u("utils/grade-gating.js"));
@@ -200,96 +204,21 @@ for (const kind of branches.geometry.kindLiterals) {
   });
 }
 
-for (const [gk, row] of Object.entries(ENGLISH_GRADES)) {
-  const g = parseInt(gk.replace("g", ""), 10);
-  for (const topic of row.topics || []) {
-    skills.push({
-      schema_version: 1,
-      skill_id: `english:${gk}:topic:${topic}`,
-      subject: "english",
-      topic,
-      subtopic: `${gk}_${topic}_access`,
-      minGrade: g,
-      maxGrade: g,
-      cognitive_level: cognitiveForGrade(g),
-      description: `English curriculum declares topic "${topic}" for ${gk} (${row.name}).`,
-      source: "data/english-curriculum.js",
-    });
-  }
-  for (const wl of row.wordLists || []) {
-    skills.push({
-      schema_version: 1,
-      skill_id: `english:${gk}:vocabulary:wordlist_${slug(wl)}`,
-      subject: "english",
-      topic: "vocabulary",
-      subtopic: wl,
-      minGrade: g,
-      maxGrade: g,
-      cognitive_level: "recognition",
-      description: `Vocabulary word-list dimension "${wl}" for ${gk}.`,
-      source: "data/english-curriculum.js",
-    });
-  }
-  const cur = row.curriculum || {};
-  let gi = 0;
-  for (const line of cur.grammar || []) {
-    const sub = `grammar_line_${gi++}_${slug(line)}`;
-    skills.push({
-      schema_version: 1,
-      skill_id: `english:${gk}:grammar:${sub}`,
-      subject: "english",
-      topic: "grammar",
-      subtopic: sub,
-      minGrade: g,
-      maxGrade: g,
-      cognitive_level: cognitiveForGrade(g),
-      description: String(line).slice(0, 200),
-      source: "data/english-curriculum.js",
-    });
-  }
-}
-
-for (const [pool, range] of Object.entries(ENGLISH_GRAMMAR_POOL_RANGE)) {
-  skills.push({
-    schema_version: 1,
-    skill_id: `english:pool:grammar:${pool}`,
-    subject: "english",
-    topic: "grammar",
-    subtopic: pool,
-    minGrade: range.minGrade,
-    maxGrade: range.maxGrade,
-    cognitive_level: "application",
-    description: `Grammar pool "${pool}" from ENGLISH_GRAMMAR_POOL_RANGE.`,
-    source: "utils/grade-gating.js",
-  });
-}
-for (const [pool, range] of Object.entries(ENGLISH_TRANSLATION_POOL_RANGE)) {
-  skills.push({
-    schema_version: 1,
-    skill_id: `english:pool:translation:${pool}`,
-    subject: "english",
-    topic: "translation",
-    subtopic: pool,
-    minGrade: range.minGrade,
-    maxGrade: range.maxGrade,
-    cognitive_level: "application",
-    description: `Translation pool "${pool}".`,
-    source: "utils/grade-gating.js",
-  });
-}
-for (const [pool, range] of Object.entries(ENGLISH_SENTENCE_POOL_RANGE)) {
-  skills.push({
-    schema_version: 1,
-    skill_id: `english:pool:sentence:${pool}`,
-    subject: "english",
-    topic: "sentences",
-    subtopic: pool,
-    minGrade: range.minGrade,
-    maxGrade: range.maxGrade,
-    cognitive_level: "application",
-    description: `Sentence pool "${pool}".`,
-    source: "utils/grade-gating.js",
-  });
+const englishLegacyRowCount = countLegacyEnglishSpineRows(
+  ENGLISH_GRADES,
+  ENGLISH_GRAMMAR_POOL_RANGE,
+  ENGLISH_TRANSLATION_POOL_RANGE,
+  ENGLISH_SENTENCE_POOL_RANGE,
+);
+const englishUnified = buildUnifiedEnglishSpine(
+  ENGLISH_GRADES,
+  ENGLISH_GRAMMAR_POOL_RANGE,
+  ENGLISH_TRANSLATION_POOL_RANGE,
+  ENGLISH_SENTENCE_POOL_RANGE,
+  { slug, cognitiveForGrade },
+);
+for (const row of englishUnified.skills) {
+  skills.push(row);
 }
 
 const scienceRowCountBefore = countLegacyScienceDraftRows(SCIENCE_GRADES);
@@ -337,12 +266,6 @@ gaps.push({
   skill_ids: [...MATH_KINDS_GENERATOR_CURRICULUM_MISMATCH],
   note: "These kinds are only emitted on a g1-only path inside the `equations` branch (or via __LIOSH_MATH_FORCE), but `GRADES.g1.operations` in utils/math-constants.js does not list `equations`, so they do not appear under normal grade+op gating. Align GRADES or generator if they should be reachable.",
 });
-gaps.push({
-  severity: "minor",
-  subject: "english",
-  note: "Grammar curriculum lines duplicated per grade row; may merge into stable cross-grade skills in v2.",
-});
-
 const ranges = [];
 for (const row of skills) {
   if (row.subject !== "english") continue;
@@ -369,11 +292,6 @@ for (let i = 0; i < ranges.length; i++) {
     }
   }
 }
-
-conflicts.push({
-  type: "english_pool_vs_grade_topic",
-  note: "english:gN:topic:* rows are single-grade while pool:* rows span grades — learners may see overlapping labels until unified.",
-});
 
 fs.mkdirSync(OUT, { recursive: true });
 fs.writeFileSync(path.join(OUT, "skills.json"), JSON.stringify({ schema_version: 1, generatedAt: new Date().toISOString(), count: skills.length, skills }, null, 2), "utf8");
@@ -415,6 +333,16 @@ console.log(
         hebrew_rows_total: hebrewContentMapRowCount + hebrewRichDerived.skills.length,
         rich_pool_items_mapped: hebrewRichDerived.mappedPoolItemCount,
         rich_pool_items_unmapped: hebrewRichDerived.unmappedRichPoolRows.length,
+      },
+      phase712_english_unification: {
+        english_rows_before: englishLegacyRowCount,
+        english_rows_after: englishUnified.stats.english_rows_total,
+        topic_access_rows: englishUnified.stats.topic_access_rows,
+        vocabulary_wordlist_merged_rows: englishUnified.stats.vocabulary_wordlist_merged_rows,
+        curriculum_grammar_merged_rows: englishUnified.stats.curriculum_grammar_merged_rows,
+        grammar_lines_deduped_across_multiple_grades:
+          englishUnified.stats.grammar_lines_deduped_across_multiple_grades,
+        pool_rows: englishUnified.stats.pool_rows,
       },
     },
     null,
