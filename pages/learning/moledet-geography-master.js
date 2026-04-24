@@ -50,6 +50,7 @@ import {
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
+import { compareAnswers } from "../../utils/answer-compare";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -870,6 +871,10 @@ useEffect(() => {
       );
       attempts++;
 
+      if (question?.emptyPool) {
+        break;
+      }
+
       // יצירת מפתח ייחודי לשאלה
       const questionKey = question.question;
 
@@ -884,6 +889,22 @@ useEffect(() => {
         break;
       }
     } while (attempts < maxAttempts);
+
+    if (question?.emptyPool) {
+      if (
+        currentQuestion &&
+        Array.isArray(currentQuestion.answers) &&
+        currentQuestion.answers.length > 0
+      ) {
+        trackCurrentQuestionTime();
+        setQuestionStartTime(Date.now());
+        setSelectedAnswer(null);
+        setFeedback(null);
+        return;
+      }
+      setFeedback("אין שאלות בנושא זה כרגע");
+      return;
+    }
 
     // עדכון state רק פעם אחת אחרי הלולאה
     if (attempts >= maxAttempts) {
@@ -1068,11 +1089,14 @@ useEffect(() => {
 
   const checkPracticeAnswer = () => {
     if (!practiceQuestion) return;
-    
-    const userAnswer = parseInt(practiceAnswer);
-    const correctAnswer = practiceQuestion.answer;
-    
-    if (userAnswer === correctAnswer) {
+
+    const { isCorrect } = compareAnswers({
+      mode: "exact_integer",
+      user: practiceAnswer,
+      expected: practiceQuestion.answer,
+    });
+
+    if (isCorrect) {
       // תשובה נכונה - אנימציה והצגת שאלה חדשה
       setShowCorrectAnimation(true);
       setTimeout(() => setShowCorrectAnimation(false), 1000);
@@ -1097,8 +1121,15 @@ useEffect(() => {
     if (!topic) return;
     const duration = (Date.now() - questionStartTime) / 1000;
     if (duration > 0 && duration < 300) {
-      const qGrade = currentQuestion?.gradeKey || `g${grade}`;
-      const qLevel = currentQuestion?.levelKey || level;
+      const qGrade =
+        currentQuestion?.gradeKey ||
+        currentQuestion?.params?.gradeKey ||
+        grade;
+      const qLevel =
+        currentQuestion?.params?.contentPoolLevel ??
+        currentQuestion?.params?.levelKey ??
+        currentQuestion?.levelKey ??
+        level;
       const meta = pendingMoledetGeographyTrackMetaRef.current;
       pendingMoledetGeographyTrackMetaRef.current = null;
       trackMoledetGeographyTopicTime(
@@ -1119,6 +1150,13 @@ useEffect(() => {
 
   function handleAnswer(answer) {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
+    if (
+      currentQuestion.emptyPool ||
+      !Array.isArray(currentQuestion.answers) ||
+      currentQuestion.answers.length === 0
+    ) {
+      return;
+    }
 
     // סטטיסטיקה – ספירת שאלה וזמן
     setTotalQuestions((prevCount) => {
@@ -1133,7 +1171,12 @@ useEffect(() => {
     });
 
     setSelectedAnswer(answer);
-    const isCorrect = answer === currentQuestion.correctAnswer;
+    const { isCorrect } = compareAnswers({
+      mode: "exact_text",
+      user: answer,
+      expected: currentQuestion.correctAnswer,
+      acceptedList: [currentQuestion.correctAnswer],
+    });
     pendingMoledetGeographyTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
       total: 1,
@@ -1387,6 +1430,12 @@ useEffect(() => {
       const topicKey = currentQuestion.topic || currentQuestion.operation || "homeland";
       const mgPrm = currentQuestion.params || {};
       const ts = Date.now();
+      const storedLevel =
+        mgPrm.contentPoolLevel != null
+          ? mgPrm.contentPoolLevel
+          : mgPrm.uiLevel != null
+            ? mgPrm.uiLevel
+            : level;
       const mistake = {
         operation: topicKey,
         topic: topicKey,
@@ -1400,7 +1449,8 @@ useEffect(() => {
         userAnswer: answer,
         isCorrect: false,
         grade: grade,
-        level: level,
+        level: storedLevel,
+        params: { ...mgPrm },
         timestamp: ts,
         storedAt: ts,
         kind: mgPrm.kind != null ? String(mgPrm.kind) : null,
@@ -2798,8 +2848,13 @@ useEffect(() => {
                   <div className="grid grid-cols-2 gap-3 w-full mb-3">
                     {currentQuestion.answers.map((answer, idx) => {
                       const isSelected = selectedAnswer === answer;
-                      const isCorrect = answer === currentQuestion.correctAnswer;
-                      const isWrong = isSelected && !isCorrect;
+                      const { isCorrect: isCorrectChoice } = compareAnswers({
+                        mode: "exact_text",
+                        user: answer,
+                        expected: currentQuestion.correctAnswer,
+                        acceptedList: [currentQuestion.correctAnswer],
+                      });
+                      const isWrong = isSelected && !isCorrectChoice;
 
                       return (
                         <button
@@ -2807,12 +2862,11 @@ useEffect(() => {
                           onClick={() => handleAnswer(answer)}
                           disabled={!!selectedAnswer}
                           className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
-                            isCorrect && isSelected
+                            isCorrectChoice && isSelected
                               ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
                               : isWrong
                               ? "bg-red-500/30 border-red-400 text-red-200"
-                              : selectedAnswer &&
-                                answer === currentQuestion.correctAnswer
+                              : selectedAnswer && isCorrectChoice
                               ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
                               : "bg-black/30 border-white/15 text-white hover:border-white/40"
                           }`}

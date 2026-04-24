@@ -48,6 +48,7 @@ import {
   learningExplainOpenBtn,
 } from "../../utils/learning-ui-classes";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
+import { warnDuplicateMcqOptionsDevOnly } from "../../utils/answer-compare";
 
 // ================== CONFIG ==================
 
@@ -1341,13 +1342,15 @@ function recordSessionProgress() {
     if (typeof window === "undefined" || !question) return;
     try {
       const ts = Date.now();
+      const assignedGrade = question.assignedGrade || question.grades?.[0] || grade;
+      const assignedLevel = question.assignedLevel || question.minLevel || level;
       const entry = {
         id: question.id,
         topic: question.topic,
         topicOrOperation: question.topic,
         bucketKey: question.topic,
-        grade: question.assignedGrade || question.grades?.[0] || grade,
-        level: question.assignedLevel || question.minLevel || level,
+        grade: assignedGrade,
+        level: assignedLevel,
         stem: question.stem,
         correct: question.options?.[question.correctIndex],
         wrong: wrongAnswer,
@@ -1359,6 +1362,12 @@ function recordSessionProgress() {
         mode,
         timestamp: ts,
         storedAt: ts,
+        params: {
+          uiLevel: level,
+          contentPoolLevel: assignedLevel,
+          gradeKey: assignedGrade,
+          poolFallbackCode: "none",
+        },
       };
       const stored = loadScienceMistakesFromStorage();
       stored.push(entry);
@@ -1458,6 +1467,8 @@ function recordSessionProgress() {
     // מציאת המיקום החדש של התשובה הנכונה
     const originalCorrectAnswer = q.options?.[originalCorrectIndex];
     const newCorrectIndex = shuffledOptions.findIndex(opt => opt === originalCorrectAnswer);
+
+    warnDuplicateMcqOptionsDevOnly(shuffledOptions, q.id);
 
     scienceTrackingTopicKeyRef.current = q.topic;
     setCurrentQuestion({
@@ -1640,6 +1651,7 @@ function recordSessionProgress() {
     });
     setSelectedAnswer(idx);
     solvedCountRef.current += 1;
+    // MCQ uses index-based comparison by design
     const isCorrect = idx === currentQuestion.correctIndex;
     pendingScienceTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
