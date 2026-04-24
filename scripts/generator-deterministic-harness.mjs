@@ -65,10 +65,18 @@ const MATH_FORCE_PROBES = [
   { force: "frac_quarter_reverse", gk: "g2", lev: "easy", op: "fractions" },
   { force: "dec_repeating", gk: "g6", lev: "hard", op: "decimals" },
   { force: "dec_divide", gk: "g6", lev: "hard", op: "decimals" },
+  { force: "dec_multiply", gk: "g6", lev: "medium", op: "decimals" },
+  { force: "dec_multiply_10_100", gk: "g6", lev: "easy", op: "decimals" },
   { force: "div_two_digit", gk: "g5", lev: "medium", op: "division" },
-  { force: "eq_add_simple", gk: "g3", lev: "easy", op: "equations" },
-  { force: "eq_sub_simple", gk: "g3", lev: "easy", op: "equations" },
+  { force: "eq_add_simple", gk: "g1", lev: "easy", op: "equations" },
+  { force: "eq_sub_simple", gk: "g1", lev: "easy", op: "equations" },
   { force: "wp_comparison_more", gk: "g3", lev: "medium", op: "word_problems" },
+  { force: "wp_shop_discount", gk: "g5", lev: "medium", op: "word_problems" },
+  { force: "ratio_find", gk: "g6", lev: "hard", op: "ratio" },
+  { force: "scale_find", gk: "g6", lev: "hard", op: "scale" },
+  { force: "fm_gcd", gk: "g5", lev: "medium", op: "factors_multiples" },
+  { force: "est_add", gk: "g4", lev: "easy", op: "estimation" },
+  { force: "perc_part_of", gk: "g5", lev: "medium", op: "percentages" },
 ];
 
 function runMathForcedKinds() {

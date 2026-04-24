@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-24T23:34:19.669Z",
-  "totalRows": 8125,
+  "generatedAt": "2026-04-24T23:43:06.042Z",
+  "totalRows": 11631,
   "exactDuplicateCrossGrade": [],
   "exactDuplicateCrossGradeStaticBanksOnly": [],
   "nearDuplicateCrossGrade": [],
@@ -15,6 +15,48 @@
     }
   ],
   "topicsSpanManyGrades": [
+    {
+      "key": "geography::homeland",
+      "distinctGrades": 6,
+      "totalRows": 620,
+      "dominantPatternFamily": "moledet_geography_bank",
+      "dominantShare": 1
+    },
+    {
+      "key": "geography::geography",
+      "distinctGrades": 6,
+      "totalRows": 584,
+      "dominantPatternFamily": "moledet_geography_bank",
+      "dominantShare": 1
+    },
+    {
+      "key": "geography::maps",
+      "distinctGrades": 6,
+      "totalRows": 583,
+      "dominantPatternFamily": "moledet_geography_bank",
+      "dominantShare": 1
+    },
+    {
+      "key": "geography::citizenship",
+      "distinctGrades": 6,
+      "totalRows": 575,
+      "dominantPatternFamily": "moledet_geography_bank",
+      "dominantShare": 1
+    },
+    {
+      "key": "geography::values",
+      "distinctGrades": 6,
+      "totalRows": 573,
+      "dominantPatternFamily": "moledet_geography_bank",
+      "dominantShare": 1
+    },
+    {
+      "key": "geography::community",
+      "distinctGrades": 6,
+      "totalRows": 571,
+      "dominantPatternFamily": "moledet_geography_bank",
+      "dominantShare": 1
+    },
     {
       "key": "hebrew::reading",
       "distinctGrades": 6,

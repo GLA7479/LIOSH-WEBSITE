@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-24T23:34:19.671Z",
+  "generatedAt": "2026-04-24T23:43:06.045Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -337,6 +337,50 @@
   ],
   "weakLevelSeparationCombos": [],
   "topicMetadataCoverage": {
+    "geography": {
+      "homeland": {
+        "rows": 620,
+        "staticRows": 620,
+        "sampleRows": 0,
+        "withSubtype": 620,
+        "withPatternFamily": 620
+      },
+      "community": {
+        "rows": 571,
+        "staticRows": 571,
+        "sampleRows": 0,
+        "withSubtype": 571,
+        "withPatternFamily": 571
+      },
+      "citizenship": {
+        "rows": 575,
+        "staticRows": 575,
+        "sampleRows": 0,
+        "withSubtype": 575,
+        "withPatternFamily": 575
+      },
+      "geography": {
+        "rows": 584,
+        "staticRows": 584,
+        "sampleRows": 0,
+        "withSubtype": 584,
+        "withPatternFamily": 584
+      },
+      "values": {
+        "rows": 573,
+        "staticRows": 573,
+        "sampleRows": 0,
+        "withSubtype": 573,
+        "withPatternFamily": 573
+      },
+      "maps": {
+        "rows": 583,
+        "staticRows": 583,
+        "sampleRows": 0,
+        "withSubtype": 583,
+        "withPatternFamily": 583
+      }
+    },
     "hebrew": {
       "reading": {
         "rows": 183,

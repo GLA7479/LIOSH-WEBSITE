@@ -1,22 +1,29 @@
 {
-  "generatedAt": "2026-04-24T23:34:29.337Z",
+  "generatedAt": "2026-04-24T23:43:17.443Z",
+  "phase_7_14_baseline_counts": {
+    "note": "Snapshot before Phase 7.15 audit join hardening (same 423 spine skills).",
+    "zero": 88,
+    "weak": 60,
+    "adequate": 244,
+    "uncertain": 31
+  },
   "spinePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\curriculum-spine\\v1\\skills.json",
   "itemsPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-audit\\items.json",
-  "itemsRowCount": 8125,
+  "itemsRowCount": 11631,
   "total_skills_checked": 423,
   "spine_skill_rows_by_source_kind": {
     "static_bank_curriculum_map": {
       "total": 88,
-      "adequate": 55,
+      "adequate": 66,
       "weak": 22,
-      "zero": 11,
+      "zero": 0,
       "uncertain": 0
     },
     "static_bank": {
       "total": 147,
-      "adequate": 69,
-      "weak": 16,
-      "zero": 62,
+      "adequate": 81,
+      "weak": 66,
+      "zero": 0,
       "uncertain": 0
     },
     "deterministic_generator": {
@@ -28,43 +35,38 @@
     },
     "curriculum_structure": {
       "total": 59,
-      "adequate": 9,
-      "weak": 4,
-      "zero": 15,
-      "uncertain": 31
+      "adequate": 26,
+      "weak": 33,
+      "zero": 0,
+      "uncertain": 0
     }
   },
   "coverage_class_counts": {
-    "zero": 88,
-    "weak": 60,
-    "adequate": 244,
-    "uncertain": 31
+    "zero": 0,
+    "weak": 139,
+    "adequate": 284,
+    "uncertain": 0
   },
-  "uncertain_mapping_count": 31,
-  "hebrew_content_map_rows_using_stem_inference": 88,
-  "zero_by_subject": {
-    "hebrew": 11,
-    "english": 15,
-    "geography": 62
-  },
+  "uncertain_mapping_count": 0,
+  "hebrew_content_map_spine_rows": 88,
+  "zero_by_subject": {},
   "weak_by_subject": {
     "hebrew": 22,
     "math": 12,
     "geometry": 6,
-    "english": 10,
+    "english": 39,
     "science": 1,
-    "geography": 9
+    "geography": 59
   },
   "adequate_by_subject": {
-    "hebrew": 102,
+    "hebrew": 113,
     "math": 79,
     "geometry": 32,
-    "english": 25,
-    "science": 6
+    "english": 42,
+    "science": 6,
+    "geography": 12
   },
-  "uncertain_by_subject": {
-    "english": 31
-  },
+  "uncertain_by_subject": {},
   "coverage_rows_by_subject_grade_topic": {
     "hebrew": {
       "total": 135,
@@ -210,16 +212,17 @@
   "per_skill_id_detail_file": "reports/curriculum-spine/skill-coverage.json",
   "methodology": {
     "math_geometry": "Counts math_generator_sample / geometry_generator_sample in items.json; union with harness JSON kinds; stage2 kindsNotHitInRun for zero hints.",
-    "hebrew_content_map": "Per-item stem inference to content-map id (inferG1/G2/upper resolve); heuristic — mis-bucketing possible.",
+    "hebrew_content_map": "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; fallback stem inference only if spine_skill_id absent.",
+    "geography": "Explicit geography_bank_item rows per question + SPINE_BUCKET_BANK_TOPICS join to moledet curriculum buckets; line-hit upgrades weak→adequate when curriculum description substring appears in bank stems.",
+    "english_wordlist_grammar": "Wordlists: pool activity in grade span + subtopic token in stems. Grammar lines: grammar pool span + optional description substring in stems.",
     "science": "SCIENCE_QUESTIONS counts by topic and by grade|topic pair vs spine min/max grade.",
     "english_pool": "english_pool_item rows keyed as english:pool:{topic}:{subtopic}.",
-    "english_curriculum_layers": "Topic access uses pool item counts for grade|topic; wordlists/grammar lines marked uncertain (no stable join).",
-    "geography": "First-48-char description substring match against flattened geography question corpus for that grade — high uncertainty."
+    "english_curriculum_layers": "Topic access uses pool item counts for grade|topic; wordlists/grammar lines use Phase 7.15 pool-span joins (see english_wordlist_grammar)."
   },
   "recommended_next_fixes": [
-    "Add explicit skill_id or subtopicId fields to Hebrew audit rows (or export content-map join from generator) to remove stem-inference uncertainty for hebrew:* content_map skills.",
-    "Join english:vocabulary:wordlist:* and english:grammar:line:* spine rows to english_pool_item or generator metadata with stable keys.",
-    "Replace geography description substring heuristic with explicit curriculum-line ↔ question-bank keys in data (or emit geography rows into question-audit items.json).",
-    "For math/geometry kinds listed as zero, run harness with expanded op/grade combos or narrow declared-branches regex if kinds are dead code."
+    "Optional: tag english_pool_item rows with vocabulary_list_key / grammar_line_id for exact wordlist/grammar-line joins (Phase 7.15 uses heuristics).",
+    "Optional: per-curriculum-line spine_skill_id on geography bank rows to upgrade weak→adequate without substring heuristics.",
+    "Triage any remaining zero Hebrew content_map rows (true bank gaps vs. resolver edge cases).",
+    "Triage remaining weak math kinds — expand harness further or accept low-frequency kinds."
   ]
 }

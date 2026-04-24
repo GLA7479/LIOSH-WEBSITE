@@ -1,24 +1,31 @@
 {
   "schema_version": 1,
   "summary": {
-    "generatedAt": "2026-04-24T23:34:29.337Z",
+    "generatedAt": "2026-04-24T23:43:17.443Z",
+    "phase_7_14_baseline_counts": {
+      "note": "Snapshot before Phase 7.15 audit join hardening (same 423 spine skills).",
+      "zero": 88,
+      "weak": 60,
+      "adequate": 244,
+      "uncertain": 31
+    },
     "spinePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\curriculum-spine\\v1\\skills.json",
     "itemsPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-audit\\items.json",
-    "itemsRowCount": 8125,
+    "itemsRowCount": 11631,
     "total_skills_checked": 423,
     "spine_skill_rows_by_source_kind": {
       "static_bank_curriculum_map": {
         "total": 88,
-        "adequate": 55,
+        "adequate": 66,
         "weak": 22,
-        "zero": 11,
+        "zero": 0,
         "uncertain": 0
       },
       "static_bank": {
         "total": 147,
-        "adequate": 69,
-        "weak": 16,
-        "zero": 62,
+        "adequate": 81,
+        "weak": 66,
+        "zero": 0,
         "uncertain": 0
       },
       "deterministic_generator": {
@@ -30,43 +37,38 @@
       },
       "curriculum_structure": {
         "total": 59,
-        "adequate": 9,
-        "weak": 4,
-        "zero": 15,
-        "uncertain": 31
+        "adequate": 26,
+        "weak": 33,
+        "zero": 0,
+        "uncertain": 0
       }
     },
     "coverage_class_counts": {
-      "zero": 88,
-      "weak": 60,
-      "adequate": 244,
-      "uncertain": 31
+      "zero": 0,
+      "weak": 139,
+      "adequate": 284,
+      "uncertain": 0
     },
-    "uncertain_mapping_count": 31,
-    "hebrew_content_map_rows_using_stem_inference": 88,
-    "zero_by_subject": {
-      "hebrew": 11,
-      "english": 15,
-      "geography": 62
-    },
+    "uncertain_mapping_count": 0,
+    "hebrew_content_map_spine_rows": 88,
+    "zero_by_subject": {},
     "weak_by_subject": {
       "hebrew": 22,
       "math": 12,
       "geometry": 6,
-      "english": 10,
+      "english": 39,
       "science": 1,
-      "geography": 9
+      "geography": 59
     },
     "adequate_by_subject": {
-      "hebrew": 102,
+      "hebrew": 113,
       "math": 79,
       "geometry": 32,
-      "english": 25,
-      "science": 6
+      "english": 42,
+      "science": 6,
+      "geography": 12
     },
-    "uncertain_by_subject": {
-      "english": 31
-    },
+    "uncertain_by_subject": {},
     "coverage_rows_by_subject_grade_topic": {
       "hebrew": {
         "total": 135,
@@ -212,17 +214,18 @@
     "per_skill_id_detail_file": "reports/curriculum-spine/skill-coverage.json",
     "methodology": {
       "math_geometry": "Counts math_generator_sample / geometry_generator_sample in items.json; union with harness JSON kinds; stage2 kindsNotHitInRun for zero hints.",
-      "hebrew_content_map": "Per-item stem inference to content-map id (inferG1/G2/upper resolve); heuristic — mis-bucketing possible.",
+      "hebrew_content_map": "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; fallback stem inference only if spine_skill_id absent.",
+      "geography": "Explicit geography_bank_item rows per question + SPINE_BUCKET_BANK_TOPICS join to moledet curriculum buckets; line-hit upgrades weak→adequate when curriculum description substring appears in bank stems.",
+      "english_wordlist_grammar": "Wordlists: pool activity in grade span + subtopic token in stems. Grammar lines: grammar pool span + optional description substring in stems.",
       "science": "SCIENCE_QUESTIONS counts by topic and by grade|topic pair vs spine min/max grade.",
       "english_pool": "english_pool_item rows keyed as english:pool:{topic}:{subtopic}.",
-      "english_curriculum_layers": "Topic access uses pool item counts for grade|topic; wordlists/grammar lines marked uncertain (no stable join).",
-      "geography": "First-48-char description substring match against flattened geography question corpus for that grade — high uncertainty."
+      "english_curriculum_layers": "Topic access uses pool item counts for grade|topic; wordlists/grammar lines use Phase 7.15 pool-span joins (see english_wordlist_grammar)."
     },
     "recommended_next_fixes": [
-      "Add explicit skill_id or subtopicId fields to Hebrew audit rows (or export content-map join from generator) to remove stem-inference uncertainty for hebrew:* content_map skills.",
-      "Join english:vocabulary:wordlist:* and english:grammar:line:* spine rows to english_pool_item or generator metadata with stable keys.",
-      "Replace geography description substring heuristic with explicit curriculum-line ↔ question-bank keys in data (or emit geography rows into question-audit items.json).",
-      "For math/geometry kinds listed as zero, run harness with expanded op/grade combos or narrow declared-branches regex if kinds are dead code."
+      "Optional: tag english_pool_item rows with vocabulary_list_key / grammar_line_id for exact wordlist/grammar-line joins (Phase 7.15 uses heuristics).",
+      "Optional: per-curriculum-line spine_skill_id on geography bank rows to upgrade weak→adequate without substring heuristics.",
+      "Triage any remaining zero Hebrew content_map rows (true bank gaps vs. resolver edge cases).",
+      "Triage remaining weak math kinds — expand harness further or accept low-frequency kinds."
     ]
   },
   "skills": [
@@ -234,10 +237,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 8,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.open_close_syllable",
@@ -250,7 +253,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.rhyme",
@@ -260,10 +263,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 10,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.syllables",
@@ -273,10 +276,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 10,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.letters",
@@ -287,9 +290,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 7,
+      "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.final_letters",
@@ -300,9 +303,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 36,
+      "primary_evidence_count": 15,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.basic_niqqud",
@@ -313,9 +316,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 21,
+      "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.sound_letter_match",
@@ -325,10 +328,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 8,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.simple_words_read",
@@ -339,9 +342,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 45,
+      "primary_evidence_count": 36,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:comprehension:g1.word_meaning_concrete",
@@ -352,9 +355,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 14,
+      "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:comprehension:g1.one_sentence_who_what",
@@ -365,9 +368,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 29,
+      "primary_evidence_count": 30,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:comprehension:g1.simple_instruction",
@@ -378,9 +381,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 10,
+      "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:writing:g1.copy_word",
@@ -390,10 +393,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 26,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:writing:g1.spell_word_choice",
@@ -404,9 +407,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 34,
+      "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_pos_roles",
@@ -417,9 +420,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 23,
+      "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_wellformed",
@@ -430,9 +433,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 8,
+      "primary_evidence_count": 13,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_agreement_light",
@@ -442,10 +445,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 2,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 15,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_cloze_deixis",
@@ -455,10 +458,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_word_order",
@@ -471,7 +474,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_odd_category",
@@ -484,7 +487,7 @@
       "coverage_class": "weak",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_punctuation",
@@ -495,9 +498,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 29,
+      "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_connectors_time",
@@ -507,10 +510,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:vocabulary:g1.word_picture",
@@ -520,10 +523,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 22,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:vocabulary:g1.word_meaning_concrete",
@@ -534,9 +537,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 47,
+      "primary_evidence_count": 24,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g1:speaking:g1.phrase_appropriateness",
@@ -547,9 +550,9 @@
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 20,
+      "primary_evidence_count": 19,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:reading:g2.fluent_words",
@@ -562,7 +565,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:reading:g2.short_sentence",
@@ -573,9 +576,9 @@
       "maxGrade": 2,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 22,
+      "primary_evidence_count": 20,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:reading:g2.simple_punctuation_read",
@@ -586,9 +589,9 @@
       "maxGrade": 2,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 6,
+      "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:comprehension:g2.detail_main_idea",
@@ -599,9 +602,9 @@
       "maxGrade": 2,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 17,
+      "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:comprehension:g2.simple_sequence",
@@ -614,7 +617,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:comprehension:g2.light_inference",
@@ -624,10 +627,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 3,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 10,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:writing:g2.sentence_wellformed",
@@ -638,9 +641,9 @@
       "maxGrade": 2,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 11,
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:writing:g2.short_paragraph_choice",
@@ -653,7 +656,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:writing:g2.punctuation_choice",
@@ -666,7 +669,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 25,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:grammar:g2.pos_basic",
@@ -677,9 +680,9 @@
       "maxGrade": 2,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 19,
+      "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:grammar:g2.simple_tense",
@@ -690,9 +693,9 @@
       "maxGrade": 2,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 13,
+      "primary_evidence_count": 15,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:grammar:g2.number_gender_light",
@@ -702,10 +705,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 3,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:vocabulary:g2.synonyms_basic",
@@ -718,7 +721,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:vocabulary:g2.context_clue_easy",
@@ -729,9 +732,9 @@
       "maxGrade": 2,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 12,
+      "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:speaking:g2.situation_register",
@@ -742,9 +745,9 @@
       "maxGrade": 2,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 7,
+      "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g2:speaking:g2.describe_prompt_choice",
@@ -757,7 +760,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 19,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:reading:g3.multi_sentence",
@@ -768,9 +771,9 @@
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 7,
+      "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:reading:g3.genre_tag_info_vs_story",
@@ -783,7 +786,7 @@
       "coverage_class": "weak",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g3:comprehension:g3.cause_effect",
@@ -793,10 +796,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 3,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:comprehension:g3.compare_light",
@@ -807,9 +810,9 @@
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 5,
+      "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:comprehension:g3.explicit_only",
@@ -819,10 +822,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "adequate",
-      "primary_evidence_count": 15,
+      "coverage_class": "weak",
+      "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g3:writing:g3.two_three_sentences_structure",
@@ -833,9 +836,9 @@
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 15,
+      "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:writing:g3.connector_use_choice",
@@ -845,10 +848,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:grammar:g3.tense_system_intro",
@@ -858,10 +861,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "adequate",
-      "primary_evidence_count": 8,
+      "coverage_class": "weak",
+      "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g3:grammar:g3.connectors",
@@ -874,7 +877,7 @@
       "coverage_class": "weak",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g3:grammar:g3.binyan_light",
@@ -887,7 +890,7 @@
       "coverage_class": "weak",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g3:vocabulary:g3.word_families",
@@ -900,7 +903,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:vocabulary:g3.context_meaning",
@@ -911,9 +914,9 @@
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 14,
+      "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:speaking:g3.discussion_prompt_choice",
@@ -923,10 +926,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "adequate",
-      "primary_evidence_count": 5,
+      "coverage_class": "weak",
+      "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g4:reading:g4.genre_mix",
@@ -936,10 +939,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "adequate",
-      "primary_evidence_count": 5,
+      "coverage_class": "weak",
+      "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g4:reading:g4.info_lit_intro",
@@ -952,7 +955,7 @@
       "coverage_class": "weak",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g4:comprehension:g4.summary_intro",
@@ -963,9 +966,9 @@
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 19,
+      "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g4:comprehension:g4.text_structure",
@@ -976,9 +979,9 @@
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 5,
+      "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g4:writing:g4.intro_body_conclusion_choice",
@@ -989,9 +992,9 @@
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 13,
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g4:writing:g4.genre_appropriate_language",
@@ -1001,10 +1004,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g4:grammar:g4.dictation_spot_error",
@@ -1017,7 +1020,7 @@
       "coverage_class": "weak",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g4:grammar:g4.root_pattern_intro",
@@ -1028,9 +1031,9 @@
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 17,
+      "primary_evidence_count": 13,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g4:vocabulary:g4.literary_lexicon_light",
@@ -1041,9 +1044,9 @@
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 17,
+      "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g4:vocabulary:g4.idiom_light",
@@ -1054,9 +1057,9 @@
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "weak",
-      "primary_evidence_count": 2,
+      "primary_evidence_count": 3,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g4:speaking:g4.present_text_based_choice",
@@ -1066,10 +1069,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "adequate",
-      "primary_evidence_count": 5,
+      "coverage_class": "weak",
+      "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g5:reading:g5.multi_layer_read",
@@ -1080,9 +1083,9 @@
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "weak",
-      "primary_evidence_count": 4,
+      "primary_evidence_count": 3,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g5:reading:g5.position_in_text",
@@ -1095,7 +1098,7 @@
       "coverage_class": "weak",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g5:comprehension:g5.inference",
@@ -1106,9 +1109,9 @@
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 21,
+      "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g5:comprehension:g5.multiple_perspectives_light",
@@ -1119,9 +1122,9 @@
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g5:writing:g5.full_composition_scaffold_choice",
@@ -1132,9 +1135,9 @@
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 17,
+      "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g5:writing:g5.genre_variety",
@@ -1144,10 +1147,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g5:grammar:g5.syntax_agreement",
@@ -1158,9 +1161,9 @@
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 17,
+      "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g5:grammar:g5.verb_patterns",
@@ -1170,10 +1173,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g5:vocabulary:g5.semantic_fields",
@@ -1184,9 +1187,9 @@
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 20,
+      "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g5:vocabulary:g5.academic_starter_words",
@@ -1196,10 +1199,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 2,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 8,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g5:speaking:g5.argument_scaffold_choice",
@@ -1212,7 +1215,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g6:reading:g6.complex_text_analysis",
@@ -1223,9 +1226,9 @@
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "weak",
-      "primary_evidence_count": 2,
+      "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g6:reading:g6.compare_genres",
@@ -1238,7 +1241,7 @@
       "coverage_class": "weak",
       "primary_evidence_count": 3,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g6:comprehension:g6.critical_evaluation_light",
@@ -1249,9 +1252,9 @@
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 21,
+      "primary_evidence_count": 13,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g6:comprehension:g6.evidence_from_text",
@@ -1262,9 +1265,9 @@
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "primary_evidence_count": 3,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g6:writing:g6.argumentative_full_scaffold",
@@ -1277,7 +1280,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g6:writing:g6.research_literacy_choice",
@@ -1288,9 +1291,9 @@
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 6,
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g6:grammar:g6.possession_prep",
@@ -1303,7 +1306,7 @@
       "coverage_class": "weak",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g6:grammar:g6.subject_verb_advanced",
@@ -1316,7 +1319,7 @@
       "coverage_class": "weak",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_stem_heuristic_1_4;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g6:grammar:g6.complex_syntax_spot",
@@ -1326,10 +1329,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "adequate",
-      "primary_evidence_count": 10,
+      "coverage_class": "weak",
+      "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
     {
       "skill_id": "hebrew:g6:vocabulary:g6.academic_vocab",
@@ -1340,9 +1343,9 @@
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
-      "primary_evidence_count": 21,
+      "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g6:vocabulary:g6.discipline_words_light",
@@ -1352,10 +1355,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "no_items_mapped_to_this_content_map_id;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g6:speaking:g6.debate_scaffold_choice",
@@ -1368,7 +1371,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "inferred_subtopic_item_hits>=5;mapping=stem_subtopic_inference"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:rich:comprehension:analogy_reasoning:parallel",
@@ -1381,7 +1384,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:binary_fact_early_g1:tf_science_simple",
@@ -1394,7 +1397,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:binary_fact_early_g2:where_from_sentence",
@@ -1407,7 +1410,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:binary_fact_mid_grammar:tf",
@@ -1420,7 +1423,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:cause_effect:because",
@@ -1433,7 +1436,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:compare_statements:contrast",
@@ -1446,7 +1449,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:completion:context_clue",
@@ -1459,7 +1462,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:implicit_tone:attitude",
@@ -1472,7 +1475,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:main_idea:summary",
@@ -1485,7 +1488,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:passage_explicit:detail",
@@ -1498,7 +1501,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:passage_inference:implied",
@@ -1511,7 +1514,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:reference:pronoun",
@@ -1524,7 +1527,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:sequence:order",
@@ -1537,7 +1540,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:comprehension:supporting_detail:evidence",
@@ -1550,7 +1553,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:binary_grammar:tf",
@@ -1563,7 +1566,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:gender_number:plural",
@@ -1576,7 +1579,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:gender_number_early_g1:agreement_girl_singular",
@@ -1589,7 +1592,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:gender_number_early_g2:agreement_boy_plural",
@@ -1602,7 +1605,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:morphology:binyan_fit",
@@ -1615,7 +1618,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:part_of_speech:verb_noun",
@@ -1628,7 +1631,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:prep_choice:collocation",
@@ -1641,7 +1644,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:sentence_correction:choose_correct",
@@ -1654,7 +1657,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:sentence_correction:sv_agreement_plural",
@@ -1667,7 +1670,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:tense_shift:past_present",
@@ -1680,7 +1683,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:transform:negation",
@@ -1693,7 +1696,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:grammar:verb_agreement:plural_subject",
@@ -1706,7 +1709,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:reading:sentence_read:meaning",
@@ -1719,7 +1722,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:reading:structural:paragraph_role",
@@ -1732,7 +1735,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:reading:word_level_early_g1:spelling_meaning_then_choice",
@@ -1745,7 +1748,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:reading:word_level_early_g2:spelling_choice_niqqud",
@@ -1758,7 +1761,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:speaking:social_reply_early_g1:bump_sorry",
@@ -1771,7 +1774,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:speaking:social_reply_early_g2:thanks_response",
@@ -1784,7 +1787,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:speaking:social_reply_mid_help:request",
@@ -1797,7 +1800,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:vocabulary:antonym:opposite",
@@ -1810,7 +1813,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:vocabulary:category_exclusion:odd_out",
@@ -1823,7 +1826,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:vocabulary:collocation:verb_noun_fit",
@@ -1836,7 +1839,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:vocabulary:context_fit:register",
@@ -1849,7 +1852,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:vocabulary:precision:best_word",
@@ -1862,7 +1865,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:vocabulary:semantic_field:education_lexicon",
@@ -1875,7 +1878,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:vocabulary:synonym:near_meaning",
@@ -1888,7 +1891,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:vocabulary:word_context_early_g1:cloze_morning",
@@ -1901,7 +1904,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:vocabulary:word_context_early_g2:cloze_school",
@@ -1914,7 +1917,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:writing:logic_completion:conclusion",
@@ -1927,7 +1930,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:writing:rephrase:clarity",
@@ -1940,7 +1943,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:writing:spell_word_early_ab_writing:object_riddle",
@@ -1953,7 +1956,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:writing:spell_word_early_ab_writing:role_meaning",
@@ -1966,7 +1969,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "hebrew:rich:writing:structured_completion:polite_phrase",
@@ -1979,7 +1982,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "rich_pool_rows_in_audit"
+      "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
     {
       "skill_id": "math:kind:add_second_decade",
@@ -4670,10 +4673,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 23,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g2:topic:vocabulary",
@@ -4683,10 +4686,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 99,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g2:topic:translation",
@@ -4699,7 +4702,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "english_pool_items_touching_grade_topic"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g2:topic:writing",
@@ -4709,10 +4712,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 99,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g3:topic:vocabulary",
@@ -4722,10 +4725,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 105,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g3:topic:grammar",
@@ -4738,7 +4741,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 78,
       "evidence": [],
-      "mapping_note": "english_pool_items_touching_grade_topic"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g3:topic:translation",
@@ -4751,7 +4754,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
       "evidence": [],
-      "mapping_note": "english_pool_items_touching_grade_topic"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g3:topic:sentences",
@@ -4774,10 +4777,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 105,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g3:topic:mixed",
@@ -4787,10 +4790,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 105,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g4:topic:vocabulary",
@@ -4800,10 +4803,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 150,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g4:topic:grammar",
@@ -4816,7 +4819,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 116,
       "evidence": [],
-      "mapping_note": "english_pool_items_touching_grade_topic"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g4:topic:translation",
@@ -4829,7 +4832,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "english_pool_items_touching_grade_topic"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g4:topic:sentences",
@@ -4852,10 +4855,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 150,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g4:topic:mixed",
@@ -4865,10 +4868,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 150,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g5:topic:vocabulary",
@@ -4878,10 +4881,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 290,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g5:topic:grammar",
@@ -4894,7 +4897,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 243,
       "evidence": [],
-      "mapping_note": "english_pool_items_touching_grade_topic"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g5:topic:translation",
@@ -4907,7 +4910,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
       "evidence": [],
-      "mapping_note": "english_pool_items_touching_grade_topic"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g5:topic:sentences",
@@ -4930,10 +4933,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 290,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g5:topic:mixed",
@@ -4943,10 +4946,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 290,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g6:topic:vocabulary",
@@ -4956,10 +4959,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 228,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g6:topic:grammar",
@@ -4972,7 +4975,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 195,
       "evidence": [],
-      "mapping_note": "english_pool_items_touching_grade_topic"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g6:topic:translation",
@@ -4985,7 +4988,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "english_pool_items_touching_grade_topic"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g6:topic:sentences",
@@ -5008,10 +5011,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 228,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:g6:topic:mixed",
@@ -5021,10 +5024,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 228,
       "evidence": [],
-      "mapping_note": "no_pool_items_in_span"
+      "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
     {
       "skill_id": "english:vocabulary:wordlist:actions",
@@ -5034,10 +5037,10 @@
       "minGrade": 1,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 178,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:animals",
@@ -5047,10 +5050,10 @@
       "minGrade": 1,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "thin_wordlist_stem_token_match"
     },
     {
       "skill_id": "english:vocabulary:wordlist:body",
@@ -5060,10 +5063,10 @@
       "minGrade": 3,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 255,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:colors",
@@ -5073,10 +5076,10 @@
       "minGrade": 1,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 178,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:community",
@@ -5086,10 +5089,10 @@
       "minGrade": 4,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 620,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:culture",
@@ -5099,10 +5102,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 1,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "thin_wordlist_stem_token_match"
     },
     {
       "skill_id": "english:vocabulary:wordlist:emotions",
@@ -5112,10 +5115,10 @@
       "minGrade": 1,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 798,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:environment",
@@ -5125,10 +5128,10 @@
       "minGrade": 4,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "wordlist_subtopic_token_in_pool_stems"
     },
     {
       "skill_id": "english:vocabulary:wordlist:family",
@@ -5138,10 +5141,10 @@
       "minGrade": 1,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 570,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:food",
@@ -5151,10 +5154,10 @@
       "minGrade": 2,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 2,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "thin_wordlist_stem_token_match"
     },
     {
       "skill_id": "english:vocabulary:wordlist:global_issues",
@@ -5164,10 +5167,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 228,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:health",
@@ -5177,10 +5180,10 @@
       "minGrade": 5,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 518,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:history",
@@ -5190,10 +5193,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 228,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:house",
@@ -5203,10 +5206,10 @@
       "minGrade": 2,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 155,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:numbers",
@@ -5216,10 +5219,10 @@
       "minGrade": 1,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 178,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:school",
@@ -5229,10 +5232,10 @@
       "minGrade": 1,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 30,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "wordlist_subtopic_token_in_pool_stems"
     },
     {
       "skill_id": "english:vocabulary:wordlist:sports",
@@ -5242,10 +5245,10 @@
       "minGrade": 3,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 497,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:technology",
@@ -5255,10 +5258,10 @@
       "minGrade": 5,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 518,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:travel",
@@ -5268,10 +5271,10 @@
       "minGrade": 4,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 620,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:vocabulary:wordlist:weather",
@@ -5281,10 +5284,10 @@
       "minGrade": 3,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 255,
       "evidence": [],
-      "mapping_note": "wordlist_spine_not_joined_to_per_item_audit_rows"
+      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
     },
     {
       "skill_id": "english:grammar:line:חיזוק_to_be_am_is_are_וכינויי_גוף",
@@ -5294,10 +5297,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 84,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:grammar:line:חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות",
@@ -5307,10 +5310,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 15,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:grammar:line:מודאליים_בסיסיים_future_will_going_to_והשוואתיים",
@@ -5320,10 +5323,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 243,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:grammar:line:ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים",
@@ -5333,10 +5336,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 84,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:grammar:line:תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under",
@@ -5346,10 +5349,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 78,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:grammar:line:conditionals_type_0_1_ומודאליים_should_might_could",
@@ -5359,10 +5362,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 195,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:grammar:line:past_continuous_לצד_past_simple_היכרות_עם_present_perfect",
@@ -5372,10 +5375,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 195,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:grammar:line:past_simple_סדירים_חריגים_נפוצים",
@@ -5385,10 +5388,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 243,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:grammar:line:present_simple_בחיובי_שלילי_שאלה",
@@ -5398,10 +5401,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 78,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:grammar:line:present_simple_לעומת_present_continuous",
@@ -5411,10 +5414,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 116,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:grammar:line:some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly",
@@ -5424,10 +5427,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "uncertain",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 116,
       "evidence": [],
-      "mapping_note": "grammar_line_spine_not_joined_to_pool_keys_without_nlp"
+      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
     },
     {
       "skill_id": "english:pool:grammar:be_basic",
@@ -6015,10 +6018,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 203,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g1:geography:geography_1_מפת_בית_ספר",
@@ -6028,10 +6031,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 203,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g1:geography:geography_2_כיוונים_בסיסיים",
@@ -6041,10 +6044,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 203,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g1:citizenship:citizenship_0_כללי_התנהגות",
@@ -6054,10 +6057,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 302,
       "evidence": [],
-      "mapping_note": "description_snippet_found_in_geography_question_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g1:citizenship:citizenship_1_שיתוף_פעולה",
@@ -6067,10 +6070,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 302,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g1:citizenship:citizenship_2_השתייכות_לקהילה",
@@ -6080,10 +6083,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 302,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g1:skills:skills_0_הכרת_המשפחה_ותפקידיה",
@@ -6093,10 +6096,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 313,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g1:skills:skills_1_הבנת_הקהילה_הקרובה",
@@ -6106,10 +6109,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 313,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g1:skills:skills_2_היכרות_עם_מפות_בסיסיות",
@@ -6119,10 +6122,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 313,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g1:skills:skills_3_הבנת_כללי_התנהגות_ושיתוף_פעולה",
@@ -6132,10 +6135,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 313,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g2:geography:geography_0_מפת_שכונה",
@@ -6145,10 +6148,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 211,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g2:geography:geography_1_מבנים_וסביבות",
@@ -6158,10 +6161,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 211,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g2:geography:geography_2_שירותים_בקהילה",
@@ -6172,9 +6175,9 @@
       "maxGrade": 2,
       "source_kind": "static_bank",
       "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "primary_evidence_count": 211,
       "evidence": [],
-      "mapping_note": "description_snippet_found_in_geography_question_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g2:citizenship:citizenship_0_קבלת_החלטות_בקבוצה",
@@ -6184,10 +6187,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 308,
       "evidence": [],
-      "mapping_note": "description_snippet_found_in_geography_question_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g2:citizenship:citizenship_1_חברה_ואחריות",
@@ -6197,10 +6200,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 308,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g2:citizenship:citizenship_2_השתתפות_בקהילה",
@@ -6210,10 +6213,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 308,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g2:skills:skills_0_הכרת_השכונה_ומבניה",
@@ -6223,10 +6226,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 322,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g2:skills:skills_1_הבנת_שירותים_בקהילה",
@@ -6236,10 +6239,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 322,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g2:skills:skills_2_קריאת_מפת_שכונה",
@@ -6249,10 +6252,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 322,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g2:skills:skills_3_הבנת_מושגים_בסיסיים_על_ארץ_ישראל",
@@ -6262,10 +6265,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 322,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g2:skills:skills_4_הבנת_קבלת_החלטות_בקבוצה",
@@ -6275,10 +6278,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 322,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g3:geography:geography_0_מפת_ישראל",
@@ -6288,10 +6291,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 212,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g3:geography:geography_1_אזורים_וערים",
@@ -6301,10 +6304,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 212,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g3:geography:geography_2_סוגי_נופים",
@@ -6314,10 +6317,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 212,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g3:geography:geography_3_מקורות_מים",
@@ -6327,10 +6330,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 212,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g3:citizenship:citizenship_0_כללי_אזרחות_בסיסיים",
@@ -6340,10 +6343,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 292,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g3:citizenship:citizenship_1_השתתפות_חברתית",
@@ -6353,10 +6356,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 292,
       "evidence": [],
-      "mapping_note": "description_snippet_found_in_geography_question_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g3:citizenship:citizenship_2_זכויות_וחובות",
@@ -6366,10 +6369,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 292,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g3:skills:skills_0_קריאת_מפת_ישראל",
@@ -6379,10 +6382,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 307,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g3:skills:skills_1_זיהוי_אזורים_וערים_גדולות",
@@ -6392,10 +6395,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 307,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g3:skills:skills_2_הכרת_סוגי_נופים",
@@ -6405,10 +6408,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 307,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g3:skills:skills_3_הבנת_מחוזות_וגבולות",
@@ -6418,10 +6421,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 307,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g3:skills:skills_4_הבנת_כללי_אזרחות_בסיסיים",
@@ -6431,10 +6434,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 307,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g4:geography:geography_0_סוגי_יישובים",
@@ -6445,9 +6448,9 @@
       "maxGrade": 4,
       "source_kind": "static_bank",
       "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "description_snippet_found_in_geography_question_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g4:geography:geography_1_מפות_קנה_מידה_סימנים",
@@ -6457,10 +6460,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g4:geography:geography_2_משאבי_טבע",
@@ -6470,10 +6473,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g4:citizenship:citizenship_0_מבנה_ממשל",
@@ -6483,10 +6486,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 274,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g4:citizenship:citizenship_1_ארגונים",
@@ -6496,10 +6499,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 274,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g4:citizenship:citizenship_2_מוסדות_שלטון",
@@ -6509,10 +6512,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 274,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g4:skills:skills_0_הכרת_סוגי_יישובים",
@@ -6522,10 +6525,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 281,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g4:skills:skills_1_הבנת_התפתחות_היישובים",
@@ -6535,10 +6538,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 281,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g4:skills:skills_2_קריאת_מפות_מתקדמות",
@@ -6548,10 +6551,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 281,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g4:skills:skills_3_הבנת_משאבי_טבע",
@@ -6561,10 +6564,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 281,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g4:skills:skills_4_הבנת_מבנה_הממשל",
@@ -6574,10 +6577,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 281,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:geography:geography_0_קואורדינטות",
@@ -6587,10 +6590,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 181,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g5:geography:geography_1_אקלים_ישראל",
@@ -6600,10 +6603,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 181,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:geography:geography_2_סכנות_טבע",
@@ -6613,10 +6616,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 181,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:geography:geography_3_משאבים",
@@ -6626,10 +6629,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 181,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g5:citizenship:citizenship_0_מוסדות_שלטון",
@@ -6639,10 +6642,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:citizenship:citizenship_1_חוק_וכללי_חברה",
@@ -6652,10 +6655,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:citizenship:citizenship_2_זהות_אישית_וקהילתית",
@@ -6665,10 +6668,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:skills:skills_0_קריאת_מפות_עם_קואורדינטות",
@@ -6678,10 +6681,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:skills:skills_1_הבנת_אקלים_ישראל",
@@ -6691,10 +6694,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:skills:skills_2_הבנת_סכנות_טבע",
@@ -6704,10 +6707,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:skills:skills_3_הבנת_משאבים_וניהולם",
@@ -6717,10 +6720,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:skills:skills_4_הבנת_מוסדות_שלטון",
@@ -6730,10 +6733,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g5:skills:skills_5_הבנת_חוק_וכללי_חברה",
@@ -6743,10 +6746,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:geography:geography_0_אוכלוסיית_ישראל",
@@ -6757,9 +6760,9 @@
       "maxGrade": 6,
       "source_kind": "static_bank",
       "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "description_snippet_found_in_geography_question_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:geography:geography_1_תופעות_טבע",
@@ -6769,10 +6772,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:geography:geography_2_איכות_הסביבה",
@@ -6782,10 +6785,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:geography:geography_3_יחסי_אדם_סביבה",
@@ -6796,9 +6799,9 @@
       "maxGrade": 6,
       "source_kind": "static_bank",
       "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "description_snippet_found_in_geography_question_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:citizenship:citizenship_0_דמוקרטיה_בישראל",
@@ -6808,10 +6811,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 273,
       "evidence": [],
-      "mapping_note": "description_snippet_found_in_geography_question_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g6:citizenship:citizenship_1_ערכים",
@@ -6821,10 +6824,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 273,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g6:citizenship:citizenship_2_מוסדות_המדינה",
@@ -6834,10 +6837,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 273,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:citizenship:citizenship_3_מעורבות_חברתית",
@@ -6847,10 +6850,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 273,
       "evidence": [],
-      "mapping_note": "description_snippet_found_in_geography_question_corpus_heuristic"
+      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
     },
     {
       "skill_id": "geography:g6:skills:skills_0_הבנת_מגוון_האוכלוסייה_בישראל",
@@ -6860,10 +6863,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:skills:skills_1_הבנת_תופעות_טבע_ואיכות_סביבה",
@@ -6873,10 +6876,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:skills:skills_2_הבנת_הדמוקרטיה_בישראל",
@@ -6886,10 +6889,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:skills:skills_3_הבנת_ערכי_המדינה",
@@ -6899,10 +6902,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:skills:skills_4_הבנת_מוסדות_המדינה",
@@ -6912,10 +6915,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     },
     {
       "skill_id": "geography:g6:skills:skills_5_הבנת_קבלת_החלטות_ומעורבות_חברתית",
@@ -6925,126 +6928,37 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "zero",
-      "primary_evidence_count": 0,
+      "coverage_class": "weak",
+      "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "no_description_snippet_match_in_geography_corpus_heuristic"
+      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
     }
   ],
   "lists": {
-    "zero_coverage_skill_ids": [
-      "hebrew:g1:reading:g1.phoneme_awareness",
-      "hebrew:g1:reading:g1.rhyme",
-      "hebrew:g1:reading:g1.syllables",
-      "hebrew:g1:writing:g1.copy_word",
-      "hebrew:g1:grammar:g1.grammar_cloze_deixis",
-      "hebrew:g1:vocabulary:g1.word_picture",
-      "hebrew:g3:writing:g3.connector_use_choice",
-      "hebrew:g4:writing:g4.genre_appropriate_language",
-      "hebrew:g5:writing:g5.genre_variety",
-      "hebrew:g5:grammar:g5.verb_patterns",
-      "hebrew:g6:vocabulary:g6.discipline_words_light",
-      "english:g1:topic:vocabulary",
-      "english:g2:topic:vocabulary",
-      "english:g2:topic:writing",
-      "english:g3:topic:vocabulary",
-      "english:g3:topic:writing",
-      "english:g3:topic:mixed",
-      "english:g4:topic:vocabulary",
-      "english:g4:topic:writing",
-      "english:g4:topic:mixed",
-      "english:g5:topic:vocabulary",
-      "english:g5:topic:writing",
-      "english:g5:topic:mixed",
-      "english:g6:topic:vocabulary",
-      "english:g6:topic:writing",
-      "english:g6:topic:mixed",
-      "geography:g1:geography:geography_0_מפת_כיתה",
-      "geography:g1:geography:geography_1_מפת_בית_ספר",
-      "geography:g1:geography:geography_2_כיוונים_בסיסיים",
-      "geography:g1:citizenship:citizenship_1_שיתוף_פעולה",
-      "geography:g1:citizenship:citizenship_2_השתייכות_לקהילה",
-      "geography:g1:skills:skills_0_הכרת_המשפחה_ותפקידיה",
-      "geography:g1:skills:skills_1_הבנת_הקהילה_הקרובה",
-      "geography:g1:skills:skills_2_היכרות_עם_מפות_בסיסיות",
-      "geography:g1:skills:skills_3_הבנת_כללי_התנהגות_ושיתוף_פעולה",
-      "geography:g2:geography:geography_0_מפת_שכונה",
-      "geography:g2:geography:geography_1_מבנים_וסביבות",
-      "geography:g2:citizenship:citizenship_1_חברה_ואחריות",
-      "geography:g2:citizenship:citizenship_2_השתתפות_בקהילה",
-      "geography:g2:skills:skills_0_הכרת_השכונה_ומבניה",
-      "geography:g2:skills:skills_1_הבנת_שירותים_בקהילה",
-      "geography:g2:skills:skills_2_קריאת_מפת_שכונה",
-      "geography:g2:skills:skills_3_הבנת_מושגים_בסיסיים_על_ארץ_ישראל",
-      "geography:g2:skills:skills_4_הבנת_קבלת_החלטות_בקבוצה",
-      "geography:g3:geography:geography_0_מפת_ישראל",
-      "geography:g3:geography:geography_1_אזורים_וערים",
-      "geography:g3:geography:geography_2_סוגי_נופים",
-      "geography:g3:geography:geography_3_מקורות_מים",
-      "geography:g3:citizenship:citizenship_0_כללי_אזרחות_בסיסיים",
-      "geography:g3:citizenship:citizenship_2_זכויות_וחובות",
-      "geography:g3:skills:skills_0_קריאת_מפת_ישראל",
-      "geography:g3:skills:skills_1_זיהוי_אזורים_וערים_גדולות",
-      "geography:g3:skills:skills_2_הכרת_סוגי_נופים",
-      "geography:g3:skills:skills_3_הבנת_מחוזות_וגבולות",
-      "geography:g3:skills:skills_4_הבנת_כללי_אזרחות_בסיסיים",
-      "geography:g4:geography:geography_1_מפות_קנה_מידה_סימנים",
-      "geography:g4:geography:geography_2_משאבי_טבע",
-      "geography:g4:citizenship:citizenship_0_מבנה_ממשל",
-      "geography:g4:citizenship:citizenship_1_ארגונים",
-      "geography:g4:citizenship:citizenship_2_מוסדות_שלטון",
-      "geography:g4:skills:skills_0_הכרת_סוגי_יישובים",
-      "geography:g4:skills:skills_1_הבנת_התפתחות_היישובים",
-      "geography:g4:skills:skills_2_קריאת_מפות_מתקדמות",
-      "geography:g4:skills:skills_3_הבנת_משאבי_טבע",
-      "geography:g4:skills:skills_4_הבנת_מבנה_הממשל",
-      "geography:g5:geography:geography_0_קואורדינטות",
-      "geography:g5:geography:geography_1_אקלים_ישראל",
-      "geography:g5:geography:geography_2_סכנות_טבע",
-      "geography:g5:geography:geography_3_משאבים",
-      "geography:g5:citizenship:citizenship_0_מוסדות_שלטון",
-      "geography:g5:citizenship:citizenship_1_חוק_וכללי_חברה",
-      "geography:g5:citizenship:citizenship_2_זהות_אישית_וקהילתית",
-      "geography:g5:skills:skills_0_קריאת_מפות_עם_קואורדינטות",
-      "geography:g5:skills:skills_1_הבנת_אקלים_ישראל",
-      "geography:g5:skills:skills_2_הבנת_סכנות_טבע",
-      "geography:g5:skills:skills_3_הבנת_משאבים_וניהולם",
-      "geography:g5:skills:skills_4_הבנת_מוסדות_שלטון",
-      "geography:g5:skills:skills_5_הבנת_חוק_וכללי_חברה",
-      "geography:g6:geography:geography_1_תופעות_טבע",
-      "geography:g6:geography:geography_2_איכות_הסביבה",
-      "geography:g6:citizenship:citizenship_1_ערכים",
-      "geography:g6:citizenship:citizenship_2_מוסדות_המדינה",
-      "geography:g6:skills:skills_0_הבנת_מגוון_האוכלוסייה_בישראל",
-      "geography:g6:skills:skills_1_הבנת_תופעות_טבע_ואיכות_סביבה",
-      "geography:g6:skills:skills_2_הבנת_הדמוקרטיה_בישראל",
-      "geography:g6:skills:skills_3_הבנת_ערכי_המדינה",
-      "geography:g6:skills:skills_4_הבנת_מוסדות_המדינה",
-      "geography:g6:skills:skills_5_הבנת_קבלת_החלטות_ומעורבות_חברתית"
-    ],
+    "zero_coverage_skill_ids": [],
     "weak_coverage_skill_ids": [
-      "hebrew:g1:reading:g1.sound_letter_match",
-      "hebrew:g1:grammar:g1.grammar_agreement_light",
       "hebrew:g1:grammar:g1.grammar_odd_category",
-      "hebrew:g1:grammar:g1.grammar_connectors_time",
-      "hebrew:g2:comprehension:g2.light_inference",
-      "hebrew:g2:grammar:g2.number_gender_light",
       "hebrew:g3:reading:g3.genre_tag_info_vs_story",
-      "hebrew:g3:comprehension:g3.cause_effect",
+      "hebrew:g3:comprehension:g3.explicit_only",
+      "hebrew:g3:grammar:g3.tense_system_intro",
       "hebrew:g3:grammar:g3.connectors",
       "hebrew:g3:grammar:g3.binyan_light",
+      "hebrew:g3:speaking:g3.discussion_prompt_choice",
+      "hebrew:g4:reading:g4.genre_mix",
       "hebrew:g4:reading:g4.info_lit_intro",
       "hebrew:g4:grammar:g4.dictation_spot_error",
       "hebrew:g4:vocabulary:g4.idiom_light",
+      "hebrew:g4:speaking:g4.present_text_based_choice",
       "hebrew:g5:reading:g5.multi_layer_read",
       "hebrew:g5:reading:g5.position_in_text",
       "hebrew:g5:comprehension:g5.multiple_perspectives_light",
-      "hebrew:g5:vocabulary:g5.academic_starter_words",
+      "hebrew:g5:grammar:g5.verb_patterns",
       "hebrew:g6:reading:g6.complex_text_analysis",
       "hebrew:g6:reading:g6.compare_genres",
       "hebrew:g6:comprehension:g6.evidence_from_text",
       "hebrew:g6:grammar:g6.possession_prep",
       "hebrew:g6:grammar:g6.subject_verb_advanced",
+      "hebrew:g6:grammar:g6.complex_syntax_spot",
       "math:kind:dec_divide",
       "math:kind:dec_divide_10_100",
       "math:kind:dec_multiply",
@@ -7067,24 +6981,6 @@
       "english:g4:topic:sentences",
       "english:g5:topic:sentences",
       "english:g6:topic:sentences",
-      "english:pool:translation:classroom",
-      "english:pool:translation:routines",
-      "english:pool:translation:hobbies",
-      "english:pool:translation:community",
-      "english:pool:translation:technology",
-      "english:pool:translation:global",
-      "science:topic:earth_space",
-      "geography:g1:citizenship:citizenship_0_כללי_התנהגות",
-      "geography:g2:geography:geography_2_שירותים_בקהילה",
-      "geography:g2:citizenship:citizenship_0_קבלת_החלטות_בקבוצה",
-      "geography:g3:citizenship:citizenship_1_השתתפות_חברתית",
-      "geography:g4:geography:geography_0_סוגי_יישובים",
-      "geography:g6:geography:geography_0_אוכלוסיית_ישראל",
-      "geography:g6:geography:geography_3_יחסי_אדם_סביבה",
-      "geography:g6:citizenship:citizenship_0_דמוקרטיה_בישראל",
-      "geography:g6:citizenship:citizenship_3_מעורבות_חברתית"
-    ],
-    "uncertain_coverage_skill_ids": [
       "english:vocabulary:wordlist:actions",
       "english:vocabulary:wordlist:animals",
       "english:vocabulary:wordlist:body",
@@ -7092,7 +6988,6 @@
       "english:vocabulary:wordlist:community",
       "english:vocabulary:wordlist:culture",
       "english:vocabulary:wordlist:emotions",
-      "english:vocabulary:wordlist:environment",
       "english:vocabulary:wordlist:family",
       "english:vocabulary:wordlist:food",
       "english:vocabulary:wordlist:global_issues",
@@ -7100,7 +6995,6 @@
       "english:vocabulary:wordlist:history",
       "english:vocabulary:wordlist:house",
       "english:vocabulary:wordlist:numbers",
-      "english:vocabulary:wordlist:school",
       "english:vocabulary:wordlist:sports",
       "english:vocabulary:wordlist:technology",
       "english:vocabulary:wordlist:travel",
@@ -7115,7 +7009,74 @@
       "english:grammar:line:past_simple_סדירים_חריגים_נפוצים",
       "english:grammar:line:present_simple_בחיובי_שלילי_שאלה",
       "english:grammar:line:present_simple_לעומת_present_continuous",
-      "english:grammar:line:some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly"
-    ]
+      "english:grammar:line:some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly",
+      "english:pool:translation:classroom",
+      "english:pool:translation:routines",
+      "english:pool:translation:hobbies",
+      "english:pool:translation:community",
+      "english:pool:translation:technology",
+      "english:pool:translation:global",
+      "science:topic:earth_space",
+      "geography:g1:geography:geography_0_מפת_כיתה",
+      "geography:g1:geography:geography_1_מפת_בית_ספר",
+      "geography:g1:geography:geography_2_כיוונים_בסיסיים",
+      "geography:g1:citizenship:citizenship_2_השתייכות_לקהילה",
+      "geography:g1:skills:skills_0_הכרת_המשפחה_ותפקידיה",
+      "geography:g1:skills:skills_1_הבנת_הקהילה_הקרובה",
+      "geography:g1:skills:skills_2_היכרות_עם_מפות_בסיסיות",
+      "geography:g1:skills:skills_3_הבנת_כללי_התנהגות_ושיתוף_פעולה",
+      "geography:g2:geography:geography_0_מפת_שכונה",
+      "geography:g2:geography:geography_1_מבנים_וסביבות",
+      "geography:g2:geography:geography_2_שירותים_בקהילה",
+      "geography:g2:citizenship:citizenship_1_חברה_ואחריות",
+      "geography:g2:citizenship:citizenship_2_השתתפות_בקהילה",
+      "geography:g2:skills:skills_0_הכרת_השכונה_ומבניה",
+      "geography:g2:skills:skills_1_הבנת_שירותים_בקהילה",
+      "geography:g2:skills:skills_2_קריאת_מפת_שכונה",
+      "geography:g2:skills:skills_3_הבנת_מושגים_בסיסיים_על_ארץ_ישראל",
+      "geography:g2:skills:skills_4_הבנת_קבלת_החלטות_בקבוצה",
+      "geography:g3:geography:geography_1_אזורים_וערים",
+      "geography:g3:geography:geography_2_סוגי_נופים",
+      "geography:g3:citizenship:citizenship_0_כללי_אזרחות_בסיסיים",
+      "geography:g3:citizenship:citizenship_2_זכויות_וחובות",
+      "geography:g3:skills:skills_0_קריאת_מפת_ישראל",
+      "geography:g3:skills:skills_1_זיהוי_אזורים_וערים_גדולות",
+      "geography:g3:skills:skills_2_הכרת_סוגי_נופים",
+      "geography:g3:skills:skills_3_הבנת_מחוזות_וגבולות",
+      "geography:g3:skills:skills_4_הבנת_כללי_אזרחות_בסיסיים",
+      "geography:g4:geography:geography_0_סוגי_יישובים",
+      "geography:g4:geography:geography_1_מפות_קנה_מידה_סימנים",
+      "geography:g4:citizenship:citizenship_0_מבנה_ממשל",
+      "geography:g4:citizenship:citizenship_1_ארגונים",
+      "geography:g4:citizenship:citizenship_2_מוסדות_שלטון",
+      "geography:g4:skills:skills_0_הכרת_סוגי_יישובים",
+      "geography:g4:skills:skills_1_הבנת_התפתחות_היישובים",
+      "geography:g4:skills:skills_2_קריאת_מפות_מתקדמות",
+      "geography:g4:skills:skills_3_הבנת_משאבי_טבע",
+      "geography:g4:skills:skills_4_הבנת_מבנה_הממשל",
+      "geography:g5:geography:geography_1_אקלים_ישראל",
+      "geography:g5:geography:geography_2_סכנות_טבע",
+      "geography:g5:citizenship:citizenship_0_מוסדות_שלטון",
+      "geography:g5:citizenship:citizenship_1_חוק_וכללי_חברה",
+      "geography:g5:citizenship:citizenship_2_זהות_אישית_וקהילתית",
+      "geography:g5:skills:skills_0_קריאת_מפות_עם_קואורדינטות",
+      "geography:g5:skills:skills_1_הבנת_אקלים_ישראל",
+      "geography:g5:skills:skills_2_הבנת_סכנות_טבע",
+      "geography:g5:skills:skills_3_הבנת_משאבים_וניהולם",
+      "geography:g5:skills:skills_4_הבנת_מוסדות_שלטון",
+      "geography:g5:skills:skills_5_הבנת_חוק_וכללי_חברה",
+      "geography:g6:geography:geography_0_אוכלוסיית_ישראל",
+      "geography:g6:geography:geography_1_תופעות_טבע",
+      "geography:g6:geography:geography_2_איכות_הסביבה",
+      "geography:g6:geography:geography_3_יחסי_אדם_סביבה",
+      "geography:g6:citizenship:citizenship_2_מוסדות_המדינה",
+      "geography:g6:skills:skills_0_הבנת_מגוון_האוכלוסייה_בישראל",
+      "geography:g6:skills:skills_1_הבנת_תופעות_טבע_ואיכות_סביבה",
+      "geography:g6:skills:skills_2_הבנת_הדמוקרטיה_בישראל",
+      "geography:g6:skills:skills_3_הבנת_ערכי_המדינה",
+      "geography:g6:skills:skills_4_הבנת_מוסדות_המדינה",
+      "geography:g6:skills:skills_5_הבנת_קבלת_החלטות_ומעורבות_חברתית"
+    ],
+    "uncertain_coverage_skill_ids": []
   }
 }

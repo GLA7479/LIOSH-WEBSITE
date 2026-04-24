@@ -1,24 +1,21 @@
-# Skill coverage audit (Phase 7.14)
+# Skill coverage audit (Phase 7.15)
 
-- **Generated:** 2026-04-24T23:34:29.337Z
+- **Generated:** 2026-04-24T23:43:17.443Z
+- **Phase 7.14 baseline (pre-join hardening):** zero 88, weak 60, adequate 244, uncertain 31
 - **Skills checked:** 423
-- **Zero / weak / adequate / uncertain:** 88 / 60 / 244 / 31
-- **Uncertain (coverage class):** 31
-- **Hebrew content-map rows (stem inference used in audit):** 88
+- **Zero / weak / adequate / uncertain:** 0 / 139 / 284 / 0
+- **Uncertain (coverage class):** 0
+- **Hebrew content-map spine rows:** 88
 
 ## By subject (zero)
 
 ```json
-{
-  "hebrew": 11,
-  "english": 15,
-  "geography": 62
-}
+{}
 ```
 
 ## Recommended next fixes
 
-- Add explicit skill_id or subtopicId fields to Hebrew audit rows (or export content-map join from generator) to remove stem-inference uncertainty for hebrew:* content_map skills.
-- Join english:vocabulary:wordlist:* and english:grammar:line:* spine rows to english_pool_item or generator metadata with stable keys.
-- Replace geography description substring heuristic with explicit curriculum-line ↔ question-bank keys in data (or emit geography rows into question-audit items.json).
-- For math/geometry kinds listed as zero, run harness with expanded op/grade combos or narrow declared-branches regex if kinds are dead code.
+- Optional: tag english_pool_item rows with vocabulary_list_key / grammar_line_id for exact wordlist/grammar-line joins (Phase 7.15 uses heuristics).
+- Optional: per-curriculum-line spine_skill_id on geography bank rows to upgrade weak→adequate without substring heuristics.
+- Triage any remaining zero Hebrew content_map rows (true bank gaps vs. resolver edge cases).
+- Triage remaining weak math kinds — expand harness further or accept low-frequency kinds.

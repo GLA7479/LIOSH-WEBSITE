@@ -1,20 +1,27 @@
 {
-  "generatedAt": "2026-04-24T23:34:18.814Z",
+  "generatedAt": "2026-04-24T23:43:05.136Z",
   "seedsPerCombo": 128,
   "skipGeometryConceptual": true,
   "mathForcedKinds": [
+    "dec_add",
     "dec_divide",
     "dec_repeating",
     "div_two_digit",
     "eq_add_simple",
     "eq_sub_simple",
+    "est_quantity",
+    "fm_factor",
     "frac_half",
     "frac_half_reverse",
     "frac_quarter",
     "frac_quarter_reverse",
     "mul_hundreds",
     "mul_tens",
-    "wp_comparison_more"
+    "perc_part_of",
+    "ratio_second",
+    "scale_find",
+    "wp_comparison_more",
+    "wp_distance_time"
   ],
   "combos": {
     "g1|easy|addition": {
@@ -2302,6 +2309,13 @@
       "errors": 0,
       "seeds": 128
     },
+    "__forced__|dec_add": {
+      "kinds": [
+        "dec_add"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
     "__forced__|dec_divide": {
       "kinds": [
         "dec_divide"
@@ -2333,6 +2347,20 @@
     "__forced__|eq_sub_simple": {
       "kinds": [
         "eq_sub_simple"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|est_quantity": {
+      "kinds": [
+        "est_quantity"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|fm_factor": {
+      "kinds": [
+        "fm_factor"
       ],
       "kindCount": 1,
       "forced": true
@@ -2379,9 +2407,37 @@
       "kindCount": 1,
       "forced": true
     },
+    "__forced__|perc_part_of": {
+      "kinds": [
+        "perc_part_of"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|ratio_second": {
+      "kinds": [
+        "ratio_second"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|scale_find": {
+      "kinds": [
+        "scale_find"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
     "__forced__|wp_comparison_more": {
       "kinds": [
         "wp_comparison_more"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|wp_distance_time": {
+      "kinds": [
+        "wp_distance_time"
       ],
       "kindCount": 1,
       "forced": true

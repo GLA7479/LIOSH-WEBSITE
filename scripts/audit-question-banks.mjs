@@ -96,6 +96,18 @@ const { getLevelConfig } = await import(modUrl("utils/math-storage.js"));
 const { inferHebrewLegacyMeta, scopeHebrewStemForGrade } = await import(
   modUrl("utils/hebrew-legacy-metadata.js")
 );
+const { resolveG1ItemSubtopicId } = await import(modUrl("utils/hebrew-g1-subtopic.js"));
+const { resolveG2ItemSubtopicId } = await import(modUrl("utils/hebrew-g2-subtopic.js"));
+const { resolveUpperGradeItemSubtopicId } = await import(modUrl("utils/hebrew-g3456-subtopic.js"));
+
+const GEO_Q = {
+  1: await import(modUrl("data/geography-questions/g1.js")),
+  2: await import(modUrl("data/geography-questions/g2.js")),
+  3: await import(modUrl("data/geography-questions/g3.js")),
+  4: await import(modUrl("data/geography-questions/g4.js")),
+  5: await import(modUrl("data/geography-questions/g5.js")),
+  6: await import(modUrl("data/geography-questions/g6.js")),
+};
 
 function normalizeStem(s) {
   return String(s || "")
@@ -176,8 +188,64 @@ function pushRow(rows, row) {
     rowKind: "",
     poolKey: "",
     itemHasExplicitGate: "",
+    spine_skill_id: "",
+    geography_bank_topic: "",
+    spine_grade_key: "",
     ...row,
   });
+}
+
+function resolveHebrewContentMapSpineId(g, topic, item) {
+  const gk = `g${g}`;
+  if (g === 1) return resolveG1ItemSubtopicId(item, topic);
+  if (g === 2) return resolveG2ItemSubtopicId(item, topic);
+  return resolveUpperGradeItemSubtopicId(gk, item, topic);
+}
+
+function collectGeographyBankItems(rows) {
+  for (let g = 1; g <= 6; g++) {
+    const pack = GEO_Q[g];
+    const gk = `g${g}`;
+    const names = [
+      `G${g}_EASY_QUESTIONS`,
+      `G${g}_MEDIUM_QUESTIONS`,
+      `G${g}_HARD_QUESTIONS`,
+    ];
+    for (const nm of names) {
+      const obj = pack[nm];
+      if (!obj || typeof obj !== "object") continue;
+      for (const [bankTopicKey, list] of Object.entries(obj)) {
+        if (!Array.isArray(list)) continue;
+        list.forEach((row, idx) => {
+          const stem = String(row?.question ?? row?.prompt ?? "").trim();
+          if (!stem) return;
+          pushRow(rows, {
+            subject: "geography",
+            topic: bankTopicKey,
+            subtopic: bankTopicKey,
+            patternFamily: "moledet_geography_bank",
+            subtype: String(idx),
+            difficulty: nm.includes("EASY") ? "easy" : nm.includes("MEDIUM") ? "medium" : "hard",
+            gradeBand: gradeBandForKey(gk) || "",
+            minGrade: g,
+            maxGrade: g,
+            allowedGrades: JSON.stringify([gk]),
+            allowedLevels: JSON.stringify([]),
+            answerMode: "mcq",
+            optionCount: (row.answers || []).length || "",
+            sourceFile: `data/geography-questions/g${g}.js`,
+            stemText: stem.slice(0, 2000),
+            stemHash: stemHash(stem),
+            rowKind: "geography_bank_item",
+            poolKey: `${nm}:${bankTopicKey}#${idx}`,
+            itemHasExplicitGate: "1",
+            geography_bank_topic: bankTopicKey,
+            spine_grade_key: gk,
+          });
+        });
+      }
+    }
+  }
 }
 
 function collectHebrewLegacy(rows) {
@@ -227,6 +295,9 @@ function collectHebrewLegacy(rows) {
           sub = inf.subtype;
         }
         const opts = item.answers || item.options || [];
+        const spineSub = resolveHebrewContentMapSpineId(g, topic, item);
+        const spine_skill_id =
+          spineSub && topic ? `hebrew:g${g}:${topic}:${spineSub}` : "";
         pushRow(rows, {
           subject: "hebrew",
           topic,
@@ -246,6 +317,7 @@ function collectHebrewLegacy(rows) {
           stemHash: stemHash(stem),
           rowKind: "hebrew_legacy",
           poolKey: exportName,
+          spine_skill_id,
         });
       });
     }
@@ -261,6 +333,9 @@ function collectHebrewRich(rows) {
     const topic = item.topic || "general";
     for (let g = lo; g <= hi; g++) {
       const scoped = scopeHebrewStemForGrade(topic, stem, `g${g}`);
+      const pf = item.patternFamily || "_";
+      const st = item.subtype || "general";
+      const spine_skill_id = `hebrew:rich:${topic}:${pf}:${st}`;
       pushRow(rows, {
         subject: "hebrew",
         topic,
@@ -284,6 +359,7 @@ function collectHebrewRich(rows) {
         stemHash: stemHash(scoped),
         rowKind: "hebrew_rich",
         poolKey: `rich#${idx}_g${g}`,
+        spine_skill_id,
       });
     }
   });
@@ -522,12 +598,17 @@ function stemUsableRow(r) {
   return String(r.stemText || "").trim().length >= 4;
 }
 
+/** Moledet bank rows reuse stems across grades — exclude from duplicate/cross-grade heuristics. */
+function omitFromCrossGradeDupHeuristics(r) {
+  return r.rowKind === "geography_bank_item";
+}
+
 function withinBandClassPairOverlaps(rows) {
   const isSample = (r) =>
     typeof r.rowKind === "string" && r.rowKind.endsWith("_sample");
   const map = new Map();
   for (const r of rows) {
-    if (isSample(r) || !stemUsableRow(r)) continue;
+    if (isSample(r) || !stemUsableRow(r) || omitFromCrossGradeDupHeuristics(r)) continue;
     const k = `${r.subject}|${r.patternFamily}|${r.stemHash}|${r.subtopic || ""}`;
     if (!map.has(k)) map.set(k, new Set());
     const lo = Number(r.minGrade);
@@ -749,6 +830,9 @@ function rowsToCsv(rows) {
     "rowKind",
     "poolKey",
     "itemHasExplicitGate",
+    "spine_skill_id",
+    "geography_bank_topic",
+    "spine_grade_key",
     "stemHash",
     "stemText",
   ];
@@ -769,6 +853,7 @@ function analyze(rows) {
   const byNorm = new Map();
   for (const r of rows) {
     if (!stemUsable(r)) continue;
+    if (omitFromCrossGradeDupHeuristics(r)) continue;
     const h = r.stemHash;
     if (!byHash.has(h)) byHash.set(h, []);
     byHash.get(h).push(r);
@@ -882,6 +967,7 @@ function analyze(rows) {
   const byFam = new Map();
   for (const r of rows) {
     if (isGeneratorSample(r)) continue;
+    if (omitFromCrossGradeDupHeuristics(r)) continue;
     const fam = r.patternFamily || "";
     if (!fam) continue;
     const k = `${r.subject}::${fam}`;
@@ -1035,6 +1121,7 @@ function analyze(rows) {
 
 async function main() {
   const rows = [];
+  collectGeographyBankItems(rows);
   collectHebrewLegacy(rows);
   collectHebrewRich(rows);
   collectEnglishPool(rows, "grammar", GRAMMAR_POOLS);
