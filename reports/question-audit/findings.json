@@ -1,52 +1,61 @@
 {
-  "generatedAt": "2026-04-10T22:13:49.861Z",
-  "totalRows": 7624,
+  "generatedAt": "2026-04-24T22:46:33.778Z",
+  "totalRows": 8077,
   "exactDuplicateCrossGrade": [],
   "exactDuplicateCrossGradeStaticBanksOnly": [],
   "nearDuplicateCrossGrade": [],
-  "patternFamilyWideGradeSpan": [],
+  "patternFamilyWideGradeSpan": [
+    {
+      "key": "hebrew::vocabulary_typed",
+      "gradeSpan": [
+        1,
+        6
+      ],
+      "rowCount": 95
+    }
+  ],
   "topicsSpanManyGrades": [
+    {
+      "key": "hebrew::reading",
+      "distinctGrades": 6,
+      "totalRows": 183,
+      "dominantPatternFamily": "reading_passage_style_band_early_g1_g2",
+      "dominantShare": 0.3005464480874317
+    },
     {
       "key": "hebrew::comprehension",
       "distinctGrades": 6,
-      "totalRows": 91,
-      "dominantPatternFamily": "comprehension_lexical",
-      "dominantShare": 0.3076923076923077
+      "totalRows": 173,
+      "dominantPatternFamily": "comprehension_typed_band_early_g1_g2",
+      "dominantShare": 0.27167630057803466
     },
     {
       "key": "hebrew::grammar",
       "distinctGrades": 6,
-      "totalRows": 81,
-      "dominantPatternFamily": "grammar_pos",
-      "dominantShare": 0.24691358024691357
-    },
-    {
-      "key": "hebrew::reading",
-      "distinctGrades": 6,
-      "totalRows": 74,
-      "dominantPatternFamily": "reading_passage_style_band_early_g1_g2",
-      "dominantShare": 0.28378378378378377
-    },
-    {
-      "key": "hebrew::writing",
-      "distinctGrades": 6,
-      "totalRows": 73,
-      "dominantPatternFamily": "writing_spelling_band_late_g5_g6",
-      "dominantShare": 0.273972602739726
+      "totalRows": 166,
+      "dominantPatternFamily": "grammar_morphology",
+      "dominantShare": 0.06626506024096386
     },
     {
       "key": "hebrew::vocabulary",
       "distinctGrades": 6,
-      "totalRows": 70,
-      "dominantPatternFamily": "vocab_definition",
-      "dominantShare": 0.4714285714285714
+      "totalRows": 154,
+      "dominantPatternFamily": "vocabulary_typed",
+      "dominantShare": 0.6168831168831169
+    },
+    {
+      "key": "hebrew::writing",
+      "distinctGrades": 6,
+      "totalRows": 141,
+      "dominantPatternFamily": "writing_typed",
+      "dominantShare": 0.14184397163120568
     },
     {
       "key": "hebrew::speaking",
       "distinctGrades": 6,
-      "totalRows": 49,
+      "totalRows": 74,
       "dominantPatternFamily": "speaking_phrase_band_early_g1_g2",
-      "dominantShare": 0.2857142857142857
+      "dominantShare": 0.16216216216216217
     },
     {
       "key": "geometry::area",
@@ -57,7 +66,24 @@
     }
   ],
   "englishItemsRelyingOnPoolGateOnly": [],
-  "hebrewLegacySameStemThreeLevels": [],
+  "hebrewLegacySameStemThreeLevels": [
+    {
+      "key": "grammar::איזה משפט לא תקין?",
+      "levels": [
+        "easy",
+        "hard",
+        "medium"
+      ]
+    },
+    {
+      "key": "grammar::בחרו משפט תקין:",
+      "levels": [
+        "easy",
+        "hard",
+        "medium"
+      ]
+    }
+  ],
   "exactCrossGradeClassification": {
     "note": "רוב המקרים עם דגימות math ונרמול ספרות ל-# משקפים אותה תבנית ניסוח עם מספרים שונים — מוצדק פדגוגית. מקרים סטטיים או לא־מתמטיים דורשים סקירה.",
     "totalListed": 0,
@@ -83,7 +109,7 @@
     "note": "שורות math/geometry עם rowKind *_sample נוצרות עם RNG דטרמיניסטי באודיט; מיפוי kind מלא משתמש גם בקובצי harness."
   },
   "stage2Summary": {
-    "withinBandOverlapCount": 0,
+    "withinBandOverlapCount": 37,
     "weakLevelSeparationCount": 0,
     "mathKindsNotHitSample": 0,
     "geoKindsNotHitSample": 0

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-10T22:13:49.865Z",
+  "generatedAt": "2026-04-24T22:46:33.781Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -74,51 +74,311 @@
       "coverageNote": "דגימת אודיט דטרמיניסטית + harness נוסחתי וקונספטואלי + כפיית צורה (prism / parallelogram) בקובץ harness."
     }
   },
-  "withinBandClassPairOverlaps": [],
+  "withinBandClassPairOverlaps": [
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "comprehension_typed_band_early_g1_g2",
+      "stemHash": "de0354911b95de9ad44cc026",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "spell_word_early_ab_writing",
+      "stemHash": "79e4f72cad1d20cee05e3bbf",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g1_vs_g2_early_band",
+      "subject": "hebrew",
+      "patternFamily": "spell_word_early_ab_writing",
+      "stemHash": "9ad685219c7ad324c02010b9",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "part_of_speech",
+      "stemHash": "6a2ad9857e86dff48e858111",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "synonym",
+      "stemHash": "da37a5314178ed76542fda0b",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "antonym",
+      "stemHash": "0ec045a82811fa8a310f7927",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "precision",
+      "stemHash": "826be299e3b427c278a74f00",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "sentence_read",
+      "stemHash": "cdf008e5d4f15b5cd67a6c71",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "structured_completion",
+      "stemHash": "c04754a184986189a40939e8",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "logic_completion",
+      "stemHash": "52dc1d2cd2c01bbbd6c60d66",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "social_reply_mid_help",
+      "stemHash": "66b9c746ea637db24013c7ed",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "analogy_reasoning",
+      "stemHash": "fc28241b872907c379e234da",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "morphology",
+      "stemHash": "8883e640b6f4ce786f35c7d3",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g3_vs_g4_mid_band",
+      "subject": "hebrew",
+      "patternFamily": "semantic_field",
+      "stemHash": "d4661209298d073b68d1745a",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "vocabulary_typed",
+      "stemHash": "67896186392d1f45166a2066",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "comprehension_infer",
+      "stemHash": "68a9da2f2c17757224d1811c",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "comprehension_typed_band_late_g5_g6",
+      "stemHash": "1464d31153471210d8d526a5",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "writing_spelling_band_late_g5_g6",
+      "stemHash": "ac17ef3c224d5be5d7d1e881",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "speaking_phrase_band_late_g5_g6",
+      "stemHash": "2f364c7a884f52a5d42b5fda",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "speaking_phrase_band_late_g5_g6",
+      "stemHash": "71d28944b66247a8ba283ae8",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "sequence",
+      "stemHash": "84e223a5922743f1d11d7a80",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "reference",
+      "stemHash": "da6619e7587165fc79840b03",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "main_idea",
+      "stemHash": "453ec8757b98350c03136d3c",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "compare_statements",
+      "stemHash": "8bbed894472c308de3622b3e",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "tense_shift",
+      "stemHash": "37e7037da668504ff33543d6",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "sentence_correction",
+      "stemHash": "6cbab1e1865511d21807383f",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "transform",
+      "stemHash": "783dff40552f725071ae8482",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "binary_grammar",
+      "stemHash": "2ba0538b85ed2a5ec5cb13d3",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "context_fit",
+      "stemHash": "b5b0f104f36af44a37800ab7",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "category_exclusion",
+      "stemHash": "a25f1e14e63cd06340950f6a",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "rephrase",
+      "stemHash": "9bb273f6e0ee68a816efbccd",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "implicit_tone",
+      "stemHash": "1e818e598517ea5380f83953",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "supporting_detail",
+      "stemHash": "71a97fec43ae213bc60e9805",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "sentence_correction",
+      "stemHash": "42682abfc4af20a01f81d36a",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "verb_agreement",
+      "stemHash": "42682abfc4af20a01f81d36a",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "collocation",
+      "stemHash": "ad4b531737604021084585a5",
+      "subtopic": ""
+    },
+    {
+      "bandPair": "g5_vs_g6_late_band",
+      "subject": "hebrew",
+      "patternFamily": "structural",
+      "stemHash": "0755dab1d0b6bbdaa7561382",
+      "subtopic": ""
+    }
+  ],
   "weakLevelSeparationCombos": [],
   "topicMetadataCoverage": {
     "hebrew": {
       "reading": {
+        "rows": 183,
+        "staticRows": 183,
+        "sampleRows": 0,
+        "withSubtype": 131,
+        "withPatternFamily": 183
+      },
+      "comprehension": {
+        "rows": 173,
+        "staticRows": 173,
+        "sampleRows": 0,
+        "withSubtype": 95,
+        "withPatternFamily": 173
+      },
+      "writing": {
+        "rows": 141,
+        "staticRows": 141,
+        "sampleRows": 0,
+        "withSubtype": 116,
+        "withPatternFamily": 141
+      },
+      "grammar": {
+        "rows": 166,
+        "staticRows": 166,
+        "sampleRows": 0,
+        "withSubtype": 166,
+        "withPatternFamily": 166
+      },
+      "vocabulary": {
+        "rows": 154,
+        "staticRows": 154,
+        "sampleRows": 0,
+        "withSubtype": 59,
+        "withPatternFamily": 154
+      },
+      "speaking": {
         "rows": 74,
         "staticRows": 74,
         "sampleRows": 0,
-        "withSubtype": 74,
+        "withSubtype": 62,
         "withPatternFamily": 74
-      },
-      "comprehension": {
-        "rows": 91,
-        "staticRows": 91,
-        "sampleRows": 0,
-        "withSubtype": 78,
-        "withPatternFamily": 91
-      },
-      "writing": {
-        "rows": 73,
-        "staticRows": 73,
-        "sampleRows": 0,
-        "withSubtype": 48,
-        "withPatternFamily": 73
-      },
-      "grammar": {
-        "rows": 81,
-        "staticRows": 81,
-        "sampleRows": 0,
-        "withSubtype": 81,
-        "withPatternFamily": 81
-      },
-      "vocabulary": {
-        "rows": 70,
-        "staticRows": 70,
-        "sampleRows": 0,
-        "withSubtype": 50,
-        "withPatternFamily": 70
-      },
-      "speaking": {
-        "rows": 49,
-        "staticRows": 49,
-        "sampleRows": 0,
-        "withSubtype": 43,
-        "withPatternFamily": 49
       }
     },
     "english": {
