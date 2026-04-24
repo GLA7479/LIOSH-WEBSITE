@@ -1723,7 +1723,11 @@ function groupV2UnitsBySubject(diag) {
   return grouped;
 }
 
-function recommendationFromV2Unit(u) {
+/**
+ * @param {object} u — diagnosticEngineV2 unit
+ * @param {object|null|undefined} mapRow — same-topic row from generateParentReportV2 maps (mathOperations / …Topics)
+ */
+function recommendationFromV2Unit(u, mapRow) {
   const traces = Array.isArray(u?.evidenceTrace) ? u.evidenceTrace : [];
   const volume = traces.find((t) => String(t?.type || "") === "volume")?.value || {};
   const recurrence = u?.recurrence && typeof u.recurrence === "object" ? u.recurrence : {};
@@ -1777,6 +1781,11 @@ function recommendationFromV2Unit(u) {
   })();
   const canonicalDecisionTier = cs?.assessment?.decisionTier ?? (Number(baseDecision?.decisionTier) || 0);
 
+  const mapCv = mapRow?.contractsV1 && typeof mapRow.contractsV1 === "object" ? mapRow.contractsV1 : null;
+  const mapEvidence = mapCv?.evidence && typeof mapCv.evidence === "object" ? mapCv.evidence : null;
+  const mapEvidenceValidation =
+    mapCv?.evidenceValidation && typeof mapCv.evidenceValidation === "object" ? mapCv.evidenceValidation : null;
+
   const contractsV1 = {
     ...(gatingContracts || {}),
     decision: {
@@ -1802,6 +1811,25 @@ function recommendationFromV2Unit(u) {
       confidenceBand: canonicalConfidenceBand,
     },
   };
+  if (mapEvidence) {
+    contractsV1.evidence = { ...mapEvidence };
+    if (mapEvidenceValidation) {
+      contractsV1.evidenceValidation = {
+        ok: !!mapEvidenceValidation.ok,
+        errors: Array.isArray(mapEvidenceValidation.errors) ? [...mapEvidenceValidation.errors] : [],
+      };
+    }
+  }
+
+  let outQuestions = questions;
+  let outAccuracy = accuracy;
+  if (mapEvidence) {
+    const qc = Number(mapEvidence.questionCount);
+    const ap = Number(mapEvidence.accuracyPct);
+    if (Number.isFinite(qc) && qc >= 0) outQuestions = Math.round(qc);
+    if (Number.isFinite(ap)) outAccuracy = Math.max(0, Math.min(100, Math.round(ap)));
+  }
+
   const gateReadiness =
     canonicalReadiness === "ready" ? "ready" : canonicalReadiness === "forming" ? "moderate" : "insufficient";
   const conclusionStrength = gated
@@ -1820,8 +1848,8 @@ function recommendationFromV2Unit(u) {
     stateHash: cs?.stateHash || null,
     recommendedNextStep: step,
     recommendedStepLabelHe: label,
-    questions,
-    accuracy,
+    questions: outQuestions,
+    accuracy: outAccuracy,
     mistakeEventCount,
     dataSufficiencyLevel: String(u?.confidence?.rowSignals?.dataSufficiencyLevel || "medium"),
     isEarlySignalOnly: Boolean(u?.confidence?.rowSignals?.isEarlySignalOnly),
@@ -1917,6 +1945,18 @@ function applyNarrativeConsistencyToExecutiveSummary(executiveSummary, subjectPr
   };
 }
 
+/**
+ * Align detailed subject trend copy with row-level `trend.summaryHe` when present (same maps as V2).
+ * @param {object|null|undefined} mapRow
+ * @param {number} highPriority
+ */
+function subjectTrendNarrativeHeFromMapRow(mapRow, highPriority) {
+  const t = mapRow?.trend && typeof mapRow.trend === "object" ? mapRow.trend : null;
+  const sh = t?.summaryHe != null && String(t.summaryHe).trim() ? String(t.summaryHe).trim() : "";
+  if (sh) return sh;
+  return highPriority > 0 ? subjectV2TrendNarrativeHighPriorityHe() : subjectV2TrendNarrativeStableHe();
+}
+
 function buildSubjectProfilesFromV2(baseReport) {
   const diag = baseReport?.diagnosticEngineV2;
   const grouped = groupV2UnitsBySubject(diag);
@@ -1959,6 +1999,18 @@ function buildSubjectProfilesFromV2(baseReport) {
       null;
     const subjectAnchorUnit = selectSubjectAnchorUnitForV2Profile(units, csOf);
 
+    const mapKey = REPORT_MAP_KEY[sid];
+    const topicMapForSid =
+      baseReport?.[mapKey] && typeof baseReport[mapKey] === "object" ? baseReport[mapKey] : {};
+    if (sid === "math") {
+      applyMathScopedParentDisplayNames(topicMapForSid);
+    }
+    const anchorTrk = subjectAnchorUnit ? String(subjectAnchorUnit.topicRowKey || "") : "";
+    const anchorMapRow =
+      anchorTrk && topicMapForSid[anchorTrk] && typeof topicMapForSid[anchorTrk] === "object"
+        ? topicMapForSid[anchorTrk]
+        : null;
+
     const topicRecommendations = attachNarrativeContractsToTopicRecommendations(
       sid,
       applyGateToTextClampToTopicRecommendations(
@@ -1967,7 +2019,7 @@ function buildSubjectProfilesFromV2(baseReport) {
             const a = actionOf(u);
             return a === "diagnose_only" || a === "intervene";
           })
-          .map(recommendationFromV2Unit)
+          .map((u) => recommendationFromV2Unit(u, topicMapForSid[String(u?.topicRowKey || "")] || null))
           .slice(0, 8)
       )
     );
@@ -2062,9 +2114,7 @@ function buildSubjectProfilesFromV2(baseReport) {
       topicRecommendations,
       dominantLearningRisk: subjectAnchorUnit?.competingHypotheses?.hypotheses?.[0]?.hypothesisId || null,
       dominantSuccessPattern: stable > 0 ? "stable_mastery" : null,
-      trendNarrativeHe: highPriority > 0
-        ? subjectV2TrendNarrativeHighPriorityHe()
-        : subjectV2TrendNarrativeStableHe(),
+      trendNarrativeHe: subjectTrendNarrativeHeFromMapRow(anchorMapRow, highPriority),
       confidenceSummaryHe: subjectAnchorUnit
         ? subjectV2ConfidenceSummaryHe(
             csOf(subjectAnchorUnit)?.assessment?.confidenceLevel || subjectAnchorUnit?.confidence?.level
@@ -2346,4 +2396,21 @@ export function generateDetailedParentReport(
   const base = generateParentReportV2(playerName, period, customStartDate, customEndDate);
   if (!base) return null;
   return buildDetailedParentReportFromBaseReport(base, { playerName, period });
+}
+
+/**
+ * Test hook: one `topicRecommendations` row from a synthetic v2 unit + `baseReport` topic map (phase 6 evidence parity).
+ * @param {object} unit
+ * @param {Record<string, unknown>} baseReport
+ * @param {string} subjectId
+ */
+export function buildTopicRecommendationFromV2UnitForPhaseTests(unit, baseReport, subjectId) {
+  const sid = String(subjectId || "");
+  const mk = REPORT_MAP_KEY[sid];
+  const tm =
+    mk && baseReport?.[mk] && typeof baseReport[mk] === "object"
+      ? /** @type {Record<string, object>} */ (baseReport[mk])
+      : {};
+  const trk = String(unit?.topicRowKey || "");
+  return recommendationFromV2Unit(unit, trk ? tm[trk] || null : null);
 }

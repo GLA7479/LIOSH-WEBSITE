@@ -258,4 +258,34 @@ const aBalanced = interpretFreeformStageA("מה חזק ומה חלש בדוח?",
 assert.equal(aBalanced.canonicalIntent, "strength_vs_weakness_summary");
 assert.equal(aBalanced.scopeClass, "executive");
 
+// --- Phase 2: no anchored topic rows → safe generic TruthPacket (option 4b) ---
+const emptyAnchorsPayload = {
+  subjectProfiles: [{ subject: "math", topicRecommendations: [] }],
+  executiveSummary: {},
+  diagnosticEngineV2: { units: [] },
+};
+const tpNoAnchorExec = buildTruthPacketV1(emptyAnchorsPayload, {
+  scopeType: "executive",
+  scopeId: "exec",
+  scopeLabel: "הדוח",
+  interpretationScope: "executive",
+  scopeClass: "executive",
+});
+assert.ok(tpNoAnchorExec, "no-anchor executive must return fallback truth packet");
+const obsNa = String(tpNoAnchorExec.contracts?.narrative?.textSlots?.observation || "");
+assert.ok(
+  obsNa.includes("אין כרגע ניסוח מעוגן") || obsNa.includes("מעוגן משורות"),
+  "no-anchor observation must stay generic (no topic-level claims)"
+);
+assert.equal(tpNoAnchorExec.surfaceFacts?.questions, 0);
+const tpNoAnchorTopic = buildTruthPacketV1(emptyAnchorsPayload, {
+  scopeType: "topic",
+  scopeId: "missing",
+  scopeLabel: "נושא",
+  interpretationScope: "recommendation",
+  scopeClass: "recommendation",
+});
+assert.ok(tpNoAnchorTopic);
+assert.equal(tpNoAnchorTopic.surfaceFacts?.questions, 0);
+
 console.log("parent-copilot-phase4-truth-path-suite: PASS");

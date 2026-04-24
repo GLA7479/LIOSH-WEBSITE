@@ -457,13 +457,212 @@ function wordingEnvelopeFromNarrative(narrative) {
 }
 
 /**
+ * No anchored `topicRecommendations` rows (or missing contract slice): generic explanation only — no topic-level claims, no inferred evidence.
+ * @param {{ scopeType: "topic"|"subject"|"executive"; scopeId: string; scopeLabel: string; canonicalIntent?: string; interpretationScope?: string; scopeClass?: string }} scope
+ */
+function buildTruthPacketV1NoAnchoredFallback(scope) {
+  const s = scope && typeof scope === "object" ? scope : {};
+  const scopeLabel = String(s.scopeLabel || "הדוח").trim() || "הדוח";
+  const interpretationScopes = new Set([
+    "recommendation",
+    "confidence_uncertainty",
+    "strengths",
+    "weaknesses",
+    "blocked_advance",
+    "executive",
+  ]);
+  const rawInterp = String(s.interpretationScope || s.scopeClass || "").trim();
+  const interpretationScope = interpretationScopes.has(rawInterp) ? rawInterp : "executive";
+
+  const contracts = {
+    narrative: {
+      contractVersion: "v1",
+      topicKey: "__no_anchor__",
+      subjectId: "__no_anchor__",
+      wordingEnvelope: "WE0",
+      hedgeLevel: "mandatory",
+      allowedTone: "parent_professional_warm",
+      forbiddenPhrases: ["בטוח לחלוטין", "בוודאות מלאה", "ללא ספק בכלל", "חד משמעית"],
+      requiredHedges: ["בשלב זה", "עדיין מוקדם לקבוע"],
+      allowedSections: ["summary", "finding", "recommendation", "limitations"],
+      recommendationIntensityCap: "RI0",
+      textSlots: {
+        observation:
+          "בדוח שבחרת אין כרגע ניסוח מעוגן משורות ההמלצות המפורטות של המקצועות — ולכן אי אפשר לבנות ממנו כאן תמונת נושא קונקרטית מהדוח.",
+        interpretation:
+          "נשארים בהסבר כללי ובגבולות המסך בלבד, בלי לנסוח מסקנות על נושאים שלא הופיעו בניסוח המעוגן, ובלי להסיק מעבר למה שהורה רואה בדוח עצמו.",
+        action: null,
+        uncertainty:
+          "בשלב זה עדיין מוקדם לקבוע מסקנות על בסיס שורות לא מעוגנות; כדאי לפתוח את הדוח במסך או להמתין עד שמופיע ניסוח מעוגן לנושא.",
+      },
+    },
+    decision: {
+      contractVersion: "v1",
+      topicKey: "__no_anchor__",
+      subjectId: "__no_anchor__",
+      decisionTier: 0,
+      cannotConcludeYet: true,
+    },
+    readiness: {
+      contractVersion: "v1",
+      topicKey: "__no_anchor__",
+      subjectId: "__no_anchor__",
+      readiness: "insufficient",
+    },
+    confidence: {
+      contractVersion: "v1",
+      topicKey: "__no_anchor__",
+      subjectId: "__no_anchor__",
+      confidenceBand: "low",
+    },
+    recommendation: {
+      contractVersion: "v1",
+      topicKey: "__no_anchor__",
+      subjectId: "__no_anchor__",
+      eligible: false,
+      intensity: "RI0",
+      forbiddenBecause: ["cannot_conclude_yet"],
+    },
+    evidence: null,
+  };
+
+  const narrative = contracts.narrative;
+  const wordingEnvelope = wordingEnvelopeFromNarrative(narrative);
+  const allowedSections = Array.isArray(narrative.allowedSections)
+    ? narrative.allowedSections.filter((x) => ["summary", "finding", "recommendation", "limitations"].includes(String(x)))
+    : ["summary", "finding", "recommendation", "limitations"];
+  const forbiddenPhrases = Array.isArray(narrative.forbiddenPhrases) ? [...narrative.forbiddenPhrases] : [];
+  const systemicCopilotClinicalForbidden = [
+    "דיסלקציה",
+    "דיסלקסיה",
+    "דיסקלקוליה",
+    "לקות למידה",
+    "הפרעת קשב",
+    "ADHD",
+    "האבחון הוא",
+    "האבחנה היא",
+  ];
+  for (const ph of systemicCopilotClinicalForbidden) {
+    if (ph && !forbiddenPhrases.includes(ph)) forbiddenPhrases.push(ph);
+  }
+  const requiredHedges = Array.isArray(narrative.requiredHedges) ? [...narrative.requiredHedges] : [];
+
+  const cannotConcludeYet = true;
+  const recommendationEligible = false;
+  const recommendationIntensityCap = "RI0";
+  const readiness = "insufficient";
+  const confidenceBand = "low";
+  const anchorUncertaintyRows = 1;
+  const intelligenceV1Snapshot = {
+    weaknessLevel: "none",
+    confidenceBand: "low",
+    recurrence: false,
+    hasPattern: false,
+  };
+  const q = 0;
+  const acc = 0;
+  const displayName = scopeLabel;
+  const subjectId = "";
+  const topicStateId = null;
+  const stateHash = null;
+  const relevantSummaryLines = [String(narrative.textSlots?.observation || "").trim()].filter(Boolean);
+
+  const narTs = narrative.textSlots && typeof narrative.textSlots === "object" ? narrative.textSlots : {};
+  const slotObs = String(narTs.observation || "").trim();
+  const slotInterp = String(narTs.interpretation || "").trim();
+  const slotUnc = String(narTs.uncertainty || "").trim();
+  const narrativeCoreOk = slotObs.length >= 14 && (slotInterp.length >= 14 || slotUnc.length >= 14);
+  const narrativeSignalsOpenPartial =
+    /עדיין|זהיר|חלקי|מוקדם|לא\s+ברור|חוסר|בינוני|נדרש|חיזוק|פתוח|מוגבל|לא\s+סגור|מוקדם\s+ל|מצומצם|לא\s+אפשר\s+לקבוע|לא\s+להתקדם|לעצור|להמתין|דורש\s+חיזוק|תשומת\s+לב|אינם\s+סגורים|בלי\s+בסיס\s+מספיק|לא\s+סוגרים/u.test(
+      `${slotInterp} ${slotUnc}`,
+    );
+
+  const allowedFollowupFamilies = [];
+  if (cannotConcludeYet || confidenceBand === "low" || readiness === "insufficient") {
+    allowedFollowupFamilies.push("uncertainty_boundary", "explain_to_child", "ask_teacher");
+  }
+  const avoidNowGrounded =
+    narrativeCoreOk &&
+    (cannotConcludeYet ||
+      confidenceBand === "low" ||
+      readiness === "insufficient" ||
+      readiness === "forming" ||
+      anchorUncertaintyRows > 0 ||
+      (readiness === "emerging" && narrativeSignalsOpenPartial));
+  if (avoidNowGrounded) {
+    allowedFollowupFamilies.push("avoid_now");
+  }
+  const advanceHoldGrounded =
+    narrativeCoreOk &&
+    (cannotConcludeYet ||
+      anchorUncertaintyRows > 0 ||
+      !recommendationEligible ||
+      String(recommendationIntensityCap || "RI0").toUpperCase() === "RI0" ||
+      readiness === "insufficient" ||
+      confidenceBand === "low" ||
+      (readiness !== "ready" && narrativeSignalsOpenPartial));
+  if (advanceHoldGrounded) {
+    allowedFollowupFamilies.push("advance_or_hold");
+  }
+  let uniq = [...new Set(allowedFollowupFamilies)];
+  if (!uniq.length) uniq = ["uncertainty_boundary"];
+
+  const summaryLines =
+    s.scopeType === "executive"
+      ? (relevantSummaryLines.length ? relevantSummaryLines.slice(0, 4) : [displayName])
+      : relevantSummaryLines.length
+        ? relevantSummaryLines
+        : [displayName];
+
+  return {
+    schemaVersion: "v1",
+    audience: "parent",
+    scopeType: s.scopeType,
+    scopeId: s.scopeId,
+    scopeLabel: s.scopeLabel,
+    interpretationScope,
+    topicStateId,
+    stateHash,
+    contracts,
+    derivedLimits: {
+      cannotConcludeYet,
+      recommendationEligible,
+      recommendationIntensityCap: "RI0",
+      readiness,
+      confidenceBand,
+    },
+    signals: {
+      intelligenceV1: intelligenceV1Snapshot,
+    },
+    surfaceFacts: {
+      questions: q,
+      accuracy: acc,
+      displayName,
+      subjectLabelHe: subjectLabelHe(subjectId),
+      relevantSummaryLines: summaryLines,
+    },
+    allowedClaimEnvelope: {
+      wordingEnvelope,
+      allowedSections,
+      forbiddenPhrases,
+      requiredHedges,
+    },
+    allowedFollowupFamilies: uniq,
+    forbiddenMoves: ["teacher_runtime", "non_contract_metrics", "cross_session_inference", "autonomous_planning"],
+    debug: {
+      intelligenceV1: intelligenceV1Snapshot,
+    },
+  };
+}
+
+/**
  * @param {unknown} payload
  * @param {{ scopeType: "topic"|"subject"|"executive"; scopeId: string; scopeLabel: string; canonicalIntent?: string }} scope
  * @returns {object|null}
  */
 export function buildTruthPacketV1(payload, scope) {
   const allAnchored = listAllAnchoredTopicRows(payload);
-  if (!allAnchored.length) return null;
+  if (!allAnchored.length) return buildTruthPacketV1NoAnchoredFallback(scope);
 
   const es = payload?.executiveSummary && typeof payload.executiveSummary === "object" ? payload.executiveSummary : {};
   const trendLines = Array.isArray(es.majorTrendsHe) ? es.majorTrendsHe.map((x) => String(x || "").trim()).filter(Boolean) : [];
@@ -495,7 +694,7 @@ export function buildTruthPacketV1(payload, scope) {
 
   if (scope.scopeType !== "executive") {
     const slice = readContractsSliceForScope(scope.scopeType, scope.scopeId, "", payload);
-    if (!slice) return null;
+    if (!slice) return buildTruthPacketV1NoAnchoredFallback(scope);
     ({ contracts, topicRow, subjectId } = slice);
 
     const cs = topicRow?.canonicalState || slice.canonicalState || null;
@@ -535,7 +734,7 @@ export function buildTruthPacketV1(payload, scope) {
     const anchor = allAnchored[0];
     subjectId = String(anchor.subject || "");
     const anchorContracts = readContractsSliceForScope("topic", String(anchor.tr?.topicRowKey || anchor.tr?.topicKey || ""), subjectId, payload);
-    if (!anchorContracts) return null;
+    if (!anchorContracts) return buildTruthPacketV1NoAnchoredFallback(scope);
 
     let totalQ = 0;
     let weightedAcc = 0;

@@ -203,8 +203,20 @@ export function buildNarrativeContractV1(input) {
   const topicKey = normalizeTopicKey(input?.topicKey || input?.topicRowKey);
   const subjectId = normalizeSubjectId(input?.subjectId);
   const displayName = normalizeDisplayName(input?.displayName);
-  const q = Math.max(0, Number(input?.questions ?? input?.q) || 0);
-  const acc = Math.max(0, Math.min(100, Math.round(Number(input?.accuracy) || 0)));
+  const qRaw = Math.max(0, Number(input?.questions ?? input?.q) || 0);
+  const accRaw = Math.max(0, Math.min(100, Math.round(Number(input?.accuracy) || 0)));
+  const ev =
+    input?.contractsV1?.evidence && typeof input.contractsV1.evidence === "object"
+      ? input.contractsV1.evidence
+      : null;
+  const qFromEv =
+    ev && Number.isFinite(Number(ev.questionCount)) ? Math.max(0, Math.round(Number(ev.questionCount))) : null;
+  const accFromEv =
+    ev && Number.isFinite(Number(ev.accuracyPct))
+      ? Math.max(0, Math.min(100, Math.round(Number(ev.accuracyPct))))
+      : null;
+  const q = qFromEv != null ? qFromEv : qRaw;
+  const acc = accFromEv != null ? accFromEv : accRaw;
   const envelope = deriveEnvelope(input);
   const hedgeLevel = ENVELOPE_HEDGE[envelope] || "mandatory";
   const cannotConcludeYet = deriveCannotConcludeYet(input);

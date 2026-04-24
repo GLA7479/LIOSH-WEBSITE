@@ -19,7 +19,10 @@ async function importUtils(rel) {
   return m.default && typeof m.default === "object" ? m.default : m;
 }
 
-const { buildDetailedParentReportFromBaseReport } = await importUtils("utils/detailed-parent-report.js");
+const {
+  buildDetailedParentReportFromBaseReport,
+  buildTopicRecommendationFromV2UnitForPhaseTests,
+} = await importUtils("utils/detailed-parent-report.js");
 const { normalizeExecutiveSummary } = await importUtils("utils/parent-report-payload-normalize.js");
 const { summarizeV2UnitsForSubjectForTests, collapseTopicRowsToCanonicalTopicEntityForTests } = await importUtils(
   "utils/parent-report-v2.js"
@@ -31,7 +34,12 @@ const { analyzeLearningPatterns, EXAMPLE_PATTERN_DIAGNOSTICS_PAYLOAD } = await i
   "utils/learning-patterns-analysis.js"
 );
 const { normalizeMistakeEvent } = await importUtils("utils/mistake-event.js");
-const { computeRowDiagnosticSignals } = await importUtils("utils/parent-report-row-diagnostics.js");
+const {
+  computeRowDiagnosticSignals,
+  enrichTopicMapsWithRowDiagnostics,
+  attachEvidenceContractsV1ToTopicMaps,
+} = await importUtils("utils/parent-report-row-diagnostics.js");
+const { enrichTopicMapsWithRowTrends } = await importUtils("utils/parent-report-row-trend.js");
 const { confidenceBadgeFromScore, sufficiencyBadgeFromLevel } = await importUtils("utils/topic-next-step-phase2.js");
 const {
   applyAggressiveEvidenceCap,
@@ -1235,6 +1243,164 @@ function runInvariantHighVolumePerfectNoReducedComplexityWithoutExplicitContradi
  * V2 detailed profile lists topicRecommendations only for diagnose_only / intervene units.
  * High-volume stable-mastery rows are maintain/expand — topicRecommendations must stay empty.
  */
+function runPhase2EvidenceContractParityTopicRecommendationsV2() {
+  const START = Date.UTC(2026, 3, 1, 0, 0, 0, 0);
+  const END = Date.UTC(2026, 3, 14, 23, 59, 59, 999);
+  const rowKey = FIXTURE_MATH_ROW_ADD_LEARN_G4_MED;
+  const maps = {
+    math: {
+      [rowKey]: {
+        displayName: "חיבור",
+        questions: 16,
+        correct: 3,
+        wrong: 13,
+        accuracy: 19,
+        modeKey: "learning",
+        lastSessionMs: END - 3600_000,
+        needsPractice: true,
+        behaviorProfile: { version: 1, dominantType: "knowledge_gap", signals: {}, decisionTrace: [] },
+      },
+    },
+    geometry: {},
+    english: {},
+    science: {},
+    hebrew: {},
+    "moledet-geography": {},
+  };
+  const mistakesBySubjectCounts = {
+    math: { [rowKey]: { count: 12 } },
+    geometry: {},
+    english: {},
+    science: {},
+    hebrew: {},
+    "moledet-geography": {},
+  };
+  const rawMistakesBySubject = {
+    math: [],
+    geometry: [],
+    english: [],
+    science: [],
+    hebrew: [],
+    "moledet-geography": [],
+  };
+  enrichTopicMapsWithRowDiagnostics(maps, mistakesBySubjectCounts, END);
+  const trackingSnapshots = { math: {}, geometry: {}, english: {}, science: {}, hebrew: {}, "moledet-geography": {} };
+  enrichTopicMapsWithRowTrends(maps, trackingSnapshots, rawMistakesBySubject, START, END);
+  attachEvidenceContractsV1ToTopicMaps(maps, START, END);
+  const mapRow = maps.math[rowKey];
+  assert.ok(mapRow?.contractsV1?.evidence, "phase2: map row must carry evidence contract after attach");
+
+  const syntheticUnit = {
+    blueprintRef: "phase2_fixture",
+    engineVersion: "phase2_fixture",
+    unitKey: `math::${rowKey}`,
+    subjectId: "math",
+    topicRowKey: rowKey,
+    bucketKey: "addition",
+    displayName: "חיבור",
+    classification: { state: "classified", reasonCode: null, weakFallbackBlocked: false },
+    evidenceTrace: [{ type: "volume", value: { questions: 16, correct: 3, wrong: 13, accuracy: 19 } }],
+    taxonomy: { patternHe: "דפוס לבדיקה" },
+    recurrence: {
+      full: false,
+      minWrongRequired: null,
+      wrongEventCount: 12,
+      rowWrongTotal: 13,
+      wrongCountForRules: 12,
+    },
+    confidence: {
+      level: "moderate",
+      rowSignals: { confidence01: 0.45, dataSufficiencyLevel: "medium", isEarlySignalOnly: false },
+    },
+    priority: { level: "P3", breadth: "moderate" },
+    competingHypotheses: { hypotheses: [] },
+    strengthProfile: { tags: [] },
+    outputGating: {
+      diagnosisAllowed: true,
+      confidenceOnly: false,
+      probeOnly: false,
+      interventionAllowed: true,
+      cannotConcludeYet: false,
+      humanReviewRecommended: false,
+      reasons: [],
+      positiveAuthorityEligible: false,
+      positiveAuthorityLevel: "none",
+      positiveConclusionAllowed: false,
+      _deprecated_positiveConclusionAllowed: false,
+      additiveCautionAllowed: false,
+      positiveAuthorityReasonCodes: [],
+    },
+    diagnosis: {
+      allowed: true,
+      conditional: false,
+      taxonomyId: "tid_fixture",
+      lineHe: "שורת אבחון לבדיקה.",
+      humanBoundaryStripped: null,
+      forbiddenInferencesHe: [],
+    },
+    probe: null,
+    intervention: {
+      shortPracticeHe: "תרגול קצר לבדיקה.",
+      immediateActionHe: "צעד מיידי לבדיקה.",
+      avoidHe: "לא לדלג על הבסיס.",
+    },
+    explainability: { whyNotStrongerConclusionHe: [], cannotConcludeYetHe: [] },
+  };
+  syntheticUnit.canonicalState = syntheticCanonicalState({
+    subjectId: "math",
+    topicKey: "addition",
+    displayName: "חיבור",
+    actionState: "intervene",
+    readiness: "forming",
+    confidenceLevel: "moderate",
+    questions: 16,
+    correct: 3,
+  });
+
+  const base = {
+    period: "week",
+    playerName: "_phase2_evidence_parity_",
+    startDate: "2026-04-01",
+    endDate: "2026-04-14",
+    summary: {
+      totalQuestions: 16,
+      totalTimeMinutes: 20,
+      overallAccuracy: 19,
+      mathQuestions: 16,
+      mathCorrect: 3,
+      mathAccuracy: 19,
+    },
+    mathOperations: maps.math,
+    geometryTopics: {},
+    englishTopics: {},
+    scienceTopics: {},
+    hebrewTopics: {},
+    moledetGeographyTopics: {},
+    diagnosticEngineV2: { units: [syntheticUnit] },
+    dataIntegrityReport: { version: 1, issues: [] },
+  };
+
+  const trDirect = buildTopicRecommendationFromV2UnitForPhaseTests(syntheticUnit, base, "math");
+  const trEvDirect = trDirect?.contractsV1?.evidence;
+  assert.ok(trEvDirect, "phase2: direct builder must merge evidence contract");
+  assert.equal(trEvDirect.questionCount, mapRow.contractsV1.evidence.questionCount);
+  assert.equal(trEvDirect.evidenceBand, mapRow.contractsV1.evidence.evidenceBand);
+
+  const detailed = buildDetailedParentReportFromBaseReport(base, { period: "week" });
+  const mathP = detailed.subjectProfiles.find((s) => s.subject === "math");
+  const tr = (mathP?.topicRecommendations || [])[0];
+  assert.ok(tr, "phase2: first math topic recommendation must exist");
+  const trEv = tr?.contractsV1?.evidence;
+  assert.ok(trEv, "phase2: topicRecommendation must include merged evidence contract");
+  assert.equal(trEv.questionCount, mapRow.contractsV1.evidence.questionCount);
+  assert.equal(trEv.evidenceBand, mapRow.contractsV1.evidence.evidenceBand);
+  assert.equal(
+    tr?.contractsV1?.evidenceValidation?.ok,
+    mapRow.contractsV1.evidenceValidation?.ok,
+    "phase2: evidenceValidation parity"
+  );
+}
+
 function runInvariantMaintainOnlyProfileEmptyTopicRecommendations() {
   assert.equal(typeof runDiagnosticEngineV2, "function", "runDiagnosticEngineV2 missing");
   const START = Date.UTC(2026, 3, 1, 0, 0, 0, 0);
@@ -2823,6 +2989,7 @@ function main() {
   runPhase15NarrativeCompactAndStack();
   runInvariantHighVolumePerfectNoReducedComplexityWithoutExplicitContradiction();
   runInvariantMaintainOnlyProfileEmptyTopicRecommendations();
+  runPhase2EvidenceContractParityTopicRecommendationsV2();
   runPhase5ContractIntegrityAndContradictions();
   runQaCalibrationRedTeam();
   runReactServerSmoke();

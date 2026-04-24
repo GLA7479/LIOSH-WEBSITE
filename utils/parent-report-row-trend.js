@@ -275,7 +275,13 @@ export function computeRowTrend({
   if (accPrev != null && nPrev > 0) parts.push(`בתקופה המקבילה הקודמת כ-${accPrev}% (${nPrev} שאלות)`);
   if (accRecent != null && recentSessions.length) parts.push(`בחלון האחרון בטווח כ-${accRecent}% דיוק`);
   if (!parts.length) parts.push("אין מספיק מפגשים בטווח כדי להשוות מגמה");
-  const summaryHe = parts.join(" · ") + ".";
+  let summaryHe = parts.join(" · ") + ".";
+  if (trendConfidence < 0.35) {
+    summaryHe +=
+      " בשלב הזה ההשוואה בין תקופות רגישה לרעש — כדאי לאמת שוב אחרי עוד תרגול.";
+  } else if (trendConfidence < 0.55) {
+    summaryHe += " ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.";
+  }
 
   return {
     version: 1,
