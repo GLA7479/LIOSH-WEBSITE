@@ -49,6 +49,8 @@ import { buildEvidenceTargetsPhase13 } from "./parent-report-evidence-targets.js
 import { buildFoundationDependencyPhase14 } from "./parent-report-foundation-dependency.js";
 import { buildPhase14RecommendationOverlay } from "./parent-report-foundation-ordering.js";
 import { glossTopicRecommendationHeFields } from "./parent-report-language/index.js";
+import { assertContractMatchesStep } from "./contracts/assert-contract-step-consistency.js";
+import { normalizeRecommendationContract } from "./contracts/recommendation-contract-normalizer.js";
 import {
   applyRecommendationContractToRecord,
   buildRecommendationContractV1,
@@ -599,6 +601,7 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
     behaviorType,
     sufficiencyStrong,
     strongKnowledgeGapEvidence,
+    intelligenceV1: row?.intelligenceV1 || null,
   });
 
   const afterP7 = applyPhase7RestraintGuards(afterP2.step, {
@@ -668,6 +671,9 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
     recentTransitionRisk: !!riskFlags.recentTransitionRisk,
   };
 
+  const iv1ForStructuredTrace =
+    row?.intelligenceV1 && typeof row.intelligenceV1 === "object" ? intelligenceV1SliceFromRow(row) : null;
+
   const structured = buildRecommendationStructuredTrace({
     inputs: {
       questions: q,
@@ -702,6 +708,7 @@ export function decideTopicNextStep(row, mistakeEventCount, cfg = DEFAULT_TOPIC_
       stepAfterPhase7: afterP7.step,
     },
     postCapAdjustments: [],
+    intelligenceV1: iv1ForStructuredTrace || undefined,
   });
 
   merged.recommendationDecisionTrace = [
@@ -1118,6 +1125,22 @@ const MISTAKE_ANALYSIS_KEY = {
 };
 
 /**
+ * Read-only projection from row.intelligenceV1 for contracts / traces (no decisions).
+ * @param {object|null|undefined} row
+ */
+function intelligenceV1SliceFromRow(row) {
+  const iv = row?.intelligenceV1;
+  if (!iv || typeof iv !== "object") {
+    return { weaknessLevel: "none", confidenceBand: "low", recurrence: false };
+  }
+  return {
+    weaknessLevel: String(iv.weakness?.level || "none"),
+    confidenceBand: String(iv.confidence?.band || "low"),
+    recurrence: !!iv.patterns?.recurrenceFull,
+  };
+}
+
+/**
  * @param {typeof DEFAULT_TOPIC_NEXT_STEP_CONFIG} [cfg]
  */
 export function buildTopicRecommendationRecord(
@@ -1162,6 +1185,7 @@ export function buildTopicRecommendationRecord(
 
   let whyThisRecommendationHe = decision.whyThisRecommendationHe || "";
   let recommendedParentActionHe = decision.parentHe;
+  let recommendedStudentActionHe = decision.studentHe;
   if (rowTone === "strength_with_caution" && Array.isArray(cautionLines) && cautionLines.length >= 3) {
     whyThisRecommendationHe = `${cautionLines[0]} ${cautionLines[1]} ${cautionLines[2]}`.trim();
     recommendedParentActionHe = cautionLines[2];
@@ -1233,6 +1257,19 @@ export function buildTopicRecommendationRecord(
         forbiddenBecause: [...(recommendationContractV1.forbiddenBecause || []), ...recValidation.errors],
       };
 
+  const recommendationContractV1Normalized = normalizeRecommendationContract(
+    recommendationContractV1Checked,
+    decision.step
+  );
+
+  if (process.env.NODE_ENV !== "production") {
+    assertContractMatchesStep(recommendationContractV1Normalized, decision.step);
+  }
+
+  const recValidationNormalized = validateRecommendationContractV1(recommendationContractV1Normalized);
+
+  const recommendedNextStepEffective = decision.step;
+
   const baseRecord = {
     subject: subjectId,
     topicRowKey: String(topicRowKey),
@@ -1269,22 +1306,24 @@ export function buildTopicRecommendationRecord(
       decision: canonicalDecisionReadinessBundle.decision,
       readiness: canonicalDecisionReadinessBundle.readiness,
       confidence: canonicalDecisionReadinessBundle.confidence,
-      recommendation: recommendationContractV1Checked,
+      intelligence: intelligenceV1SliceFromRow(row),
+      recommendation: recommendationContractV1Normalized,
       recommendationValidation: {
-        ok: !!recValidation.ok,
-        errors: Array.isArray(recValidation.errors) ? recValidation.errors : [],
+        ok: !!recValidationNormalized.ok,
+        errors: Array.isArray(recValidationNormalized.errors) ? recValidationNormalized.errors : [],
       },
     },
     // Backward compatibility mirror only (temporary).
-    recommendationContractV1: recommendationContractV1Checked,
+    recommendationContractV1: recommendationContractV1Normalized,
     trend: row?.trend ?? null,
     behaviorProfile: row?.behaviorProfile ?? null,
-    recommendedNextStep: decision.step,
+    recommendedNextStep: recommendedNextStepEffective,
     recommendedStepLabelHe:
-      RECOMMENDED_STEP_LABEL_HE[decision.step] || RECOMMENDED_STEP_LABEL_HE.maintain_and_strengthen,
+      RECOMMENDED_STEP_LABEL_HE[recommendedNextStepEffective] ||
+      RECOMMENDED_STEP_LABEL_HE.maintain_and_strengthen,
     recommendedStepReasonHe: decision.reasonHe,
     recommendedParentActionHe,
-    recommendedStudentActionHe: decision.studentHe,
+    recommendedStudentActionHe,
     recommendedEvidenceLevelHe:
       signals.evidenceStrength === "strong"
         ? "איכות ראיות גבוהה"
@@ -1510,8 +1549,8 @@ export function buildTopicRecommendationRecord(
 
   const contractAppliedRecord = applyRecommendationContractToRecord(
     baseRecord,
-    recommendationContractV1Checked,
-    recValidation
+    recommendationContractV1Normalized,
+    recValidationNormalized
   );
   const narrativeContract = buildNarrativeContractV1({
     ...contractAppliedRecord,

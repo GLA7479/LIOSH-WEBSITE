@@ -150,8 +150,9 @@ export function validateRecommendationContractV1(contract) {
   if (c.eligible === true && c.family == null) {
     errors.push("eligible recommendation requires family");
   }
-  if (c.eligible === false && c.intensity !== "RI0") {
-    errors.push("ineligible recommendation must be RI0");
+  const intStr = String(c.intensity || "");
+  if (c.eligible === false && intStr !== "RI0" && intStr !== "RI1") {
+    errors.push("ineligible recommendation must be RI0 or RI1");
   }
 
   return { ok: errors.length === 0, errors };

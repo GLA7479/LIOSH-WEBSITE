@@ -116,9 +116,19 @@ export function buildResolvedParentCopilotResponse(parts) {
     contractSourcesUsed,
     priorRepeated,
     metadata,
+    debug: partsDebug,
   } = parts;
 
   const answerValidatorOk = validatorStatus === "pass";
+
+  /** @type {Record<string, unknown>} */
+  const debugMerged = {};
+  if (truthPacket?.debug && typeof truthPacket.debug === "object") {
+    Object.assign(debugMerged, truthPacket.debug);
+  }
+  if (partsDebug && typeof partsDebug === "object") {
+    Object.assign(debugMerged, partsDebug);
+  }
 
   return {
     schemaVersion: "v1",
@@ -142,6 +152,9 @@ export function buildResolvedParentCopilotResponse(parts) {
       repeatedPhraseHits: priorRepeated || 0,
     },
     metadata: metadata && typeof metadata === "object" ? metadata : undefined,
+    ...(process.env.NODE_ENV !== "production" && Object.keys(debugMerged).length
+      ? { debug: debugMerged }
+      : {}),
   };
 }
 

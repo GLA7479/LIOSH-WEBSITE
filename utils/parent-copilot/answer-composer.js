@@ -103,6 +103,11 @@ function dedupeAdjacentOverlappingComposed(blocks) {
  * @param {NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>} truthPacket
  * @param {null|{ intent?: string; continuityRepeat?: boolean; conversationState?: object; turnOrdinal?: number }} [coachingCtx]
  */
+function intelligenceV1DebugSnapshot(truthPacket) {
+  const iv = truthPacket?.signals?.intelligenceV1;
+  return iv && typeof iv === "object" ? { ...iv } : null;
+}
+
 export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
   const nar = truthPacket.contracts?.narrative;
   const slots = nar?.textSlots && typeof nar.textSlots === "object" ? nar.textSlots : {};
@@ -111,9 +116,17 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
   const act = String(slots.action || narrativeSectionTextHe("recommendation", nar) || "").trim();
   const lim = String(slots.uncertainty || narrativeSectionTextHe("limitations", nar) || "").trim();
 
+  const iv = truthPacket?.signals?.intelligenceV1;
+  const hasIntelligenceSignals = iv && typeof iv === "object";
+  const ivWeak = hasIntelligenceSignals ? String(iv.weaknessLevel || "none") : "";
+  const ivConf = hasIntelligenceSignals ? String(iv.confidenceBand || "low") : "";
+
   const intentEarly = String(coachingCtx?.intent || plan.intent || "").trim();
   if (intentEarly === "clinical_boundary") {
-    return buildClinicalBoundaryAnswerDraft();
+    return {
+      ...buildClinicalBoundaryAnswerDraft(),
+      debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
+    };
   }
 
   const intent = String(coachingCtx?.intent || plan.intent || "");
@@ -135,6 +148,9 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
       answerBlocks.push({ type: "meaning", textHe: interp, source: "contract_slot" });
     }
     if (b === "next_step" && act) {
+      if (hasIntelligenceSignals && ivWeak === "none") {
+        continue;
+      }
       answerBlocks.push({ type: "next_step", textHe: act, source: "contract_slot" });
     }
     if (b === "caution" && lim) {
@@ -142,7 +158,19 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
     }
     if (b === "uncertainty_reason") {
       const dl = truthPacket.derivedLimits || {};
-      let reason = pickUncertaintyReasonScript(dl, intent, scriptIx);
+      const iv1 = hasIntelligenceSignals ? iv : null;
+      const iv1Low = hasIntelligenceSignals && String(iv1?.confidenceBand || "") === "low";
+      const dlForUncertainty = {
+        ...dl,
+        confidenceBand: String(dl.confidenceBand || "") === "low" || iv1Low ? "low" : dl.confidenceBand,
+      };
+      let reason = pickUncertaintyReasonScript(dlForUncertainty, intent, scriptIx);
+      if (hasIntelligenceSignals && ivConf === "low") {
+        reason = "רמת הביטחון בתמונה נמוכה כרגע — " + reason;
+      }
+      if (hasIntelligenceSignals && ivWeak === "tentative") {
+        reason = "יש סימן ראשוני בלבד לחולשה — " + reason;
+      }
       const hedges = Array.isArray(truthPacket.allowedClaimEnvelope?.requiredHedges)
         ? truthPacket.allowedClaimEnvelope.requiredHedges.map((h) => String(h || "").trim()).filter(Boolean)
         : [];
@@ -164,7 +192,10 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
   }
 
   if (!coachingCtx || !intent) {
-    return { answerBlocks };
+    return {
+      answerBlocks,
+      debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
+    };
   }
 
   const packed = applyParentCoachingPacks(answerBlocks, {
@@ -195,5 +226,6 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
 
   return {
     answerBlocks: composed,
+    debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
   };
 }

@@ -3,6 +3,8 @@
  * נקרא מ־topic-next-step-engine.js בלבד.
  */
 
+import { applyIntelligenceDecisionGuards } from "./intelligence-layer-v1/intelligence-decision-guards.js";
+import { getIntelligencePriority } from "./intelligence-layer-v1/signal-priority.js";
 import {
   INTERVENTION_TYPE_LABEL_HE,
   NEXT_SUPPORT_ADJUSTMENT_LABEL_HE,
@@ -382,6 +384,25 @@ export function applyPhase2GuardsToStep(proposed, ctx) {
       "זוהה דפוס סיכון/שבריריות — מעדיפים חיזוק ממוקד באותה רמה על פני עבודה כללית בלבד.",
       "remediate_same_level"
     );
+  }
+
+  const originalStep = step;
+  const ivResult = applyIntelligenceDecisionGuards(step, {
+    intelligenceV1: ctx?.intelligenceV1 || null,
+  });
+  if (ivResult.applied) {
+    step = ivResult.step;
+    traceAdds.push({
+      source: "intelligence",
+      phase: "phase5_intelligence_guard",
+      ruleId: "intelligence_decision_guards",
+      data: {
+        beforeStep: originalStep,
+        afterStep: ivResult.step,
+        blockers: ivResult.blockers,
+        intelligenceSnapshot: ctx.intelligenceV1 || null,
+      },
+    });
   }
 
   return { step, blockers, traceAdds, phase2RuleId };
@@ -1142,8 +1163,8 @@ export function confidenceBadgeFromScore(confidenceScore) {
 }
 
 export function buildRecommendationStructuredTrace(p) {
-  const { inputs, derivedFlags, blockers, appliedRules, chosenRule, postCapAdjustments } = p;
-  return {
+  const { inputs, derivedFlags, blockers, appliedRules, chosenRule, postCapAdjustments, intelligenceV1 } = p;
+  const out = {
     version: 2,
     inputs: inputs || {},
     derivedFlags: derivedFlags || {},
@@ -1152,6 +1173,15 @@ export function buildRecommendationStructuredTrace(p) {
     chosenRule: chosenRule || {},
     postCapAdjustments: postCapAdjustments || [],
   };
+  if (intelligenceV1 && typeof intelligenceV1 === "object") {
+    out.intelligenceV1 = {
+      weaknessLevel: String(intelligenceV1.weaknessLevel || "none"),
+      confidenceBand: String(intelligenceV1.confidenceBand || "low"),
+      recurrence: !!intelligenceV1.recurrence,
+    };
+    out.intelligencePriority = getIntelligencePriority(out.intelligenceV1);
+  }
+  return out;
 }
 
 export function buildWhyThisRecommendationHe(p) {

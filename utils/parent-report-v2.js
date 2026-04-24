@@ -31,7 +31,8 @@ import {
   MATH_MISTAKE_UNSCOPED_MARKER,
   MATH_SCOPE_UNKNOWN,
 } from "./parent-report-row-diagnostics";
-import { enrichTopicMapsWithRowTrends } from "./parent-report-row-trend";
+import { enrichTopicMapsWithRowTrends, filterMistakesForRow } from "./parent-report-row-trend";
+import { buildWeaknessConfidencePatternsV1 } from "./intelligence-layer-v1/weakness-confidence-patterns.js";
 import { enrichTopicMapsWithRowBehaviorProfiles } from "./parent-report-row-behavior";
 import { validateParentReportDataIntegrity } from "./parent-report-data-integrity";
 import { enrichReportMapsWithTopicStepHints } from "./topic-next-step-engine";
@@ -713,10 +714,27 @@ function v2PositiveStrengthBodyHe() {
   return "ביצועים גבוהים ועקביים — נראה שליטה טובה בנושא.";
 }
 
+function intelligenceSummaryFromV2Units(list) {
+  let lowConfidenceCount = 0;
+  let noWeaknessCount = 0;
+  let recurrenceCount = 0;
+  for (const u of list) {
+    const iv = u?.intelligenceV1;
+    if (!iv || typeof iv !== "object") continue;
+    if (String(iv.confidence?.band || "") === "low") lowConfidenceCount += 1;
+    if (String(iv.weakness?.level || "") === "none") noWeaknessCount += 1;
+    if (iv.patterns?.recurrenceFull) recurrenceCount += 1;
+  }
+  return { lowConfidenceCount, noWeaknessCount, recurrenceCount };
+}
+
 function summarizeV2UnitsForSubject(units) {
   const list = Array.isArray(units) ? units : [];
   if (list.length === 0) {
-    return { hasAnySignal: false };
+    return {
+      hasAnySignal: false,
+      intelligenceSummary: { lowConfidenceCount: 0, noWeaknessCount: 0, recurrenceCount: 0 },
+    };
   }
 
   const cs = (u) => u?.canonicalState;
@@ -878,8 +896,11 @@ function summarizeV2UnitsForSubject(units) {
     );
   })();
 
+  const intelligenceSummary = intelligenceSummaryFromV2Units(list);
+
   return {
     hasAnySignal: list.length > 0,
+    intelligenceSummary,
     summaryHe,
     topStrengths,
     topWeaknesses,
@@ -1366,6 +1387,32 @@ export function generateParentReportV2(
     startMs,
     endMs,
   });
+
+  if (Array.isArray(diagnosticEngineV2?.units)) {
+    for (const u of diagnosticEngineV2.units) {
+      if (!u || typeof u !== "object") continue;
+      const sid = String(u.subjectId || "");
+      const trk = String(u.topicRowKey || "");
+      const row = maps[sid]?.[trk];
+      const mistakes = filterMistakesForRow(
+        sid,
+        trk,
+        row,
+        rawMistakesBySubject[sid],
+        startMs,
+        endMs
+      );
+      const iv1 = buildWeaknessConfidencePatternsV1({
+        row: row && typeof row === "object" ? row : {},
+        mistakes,
+        unit: u,
+      });
+      u.intelligenceV1 = iv1;
+      if (row && typeof row === "object") {
+        row.intelligenceV1 = iv1;
+      }
+    }
+  }
 
   /** Best-effort only: failures must not break the parent report (V2 remains primary). */
   const hybridRuntime = safeBuildHybridRuntimeForReport({

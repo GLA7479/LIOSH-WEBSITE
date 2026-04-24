@@ -146,6 +146,24 @@ export function subjectLabelHe(subjectId) {
  * @param {unknown} payload
  * @returns {{ subjectId: string, topicRow: object, contracts: ReturnType<typeof contractsFromTopicRow> } | null}
  */
+/**
+ * Read-only mapping of intelligenceV1 for Copilot / planning (no decisions).
+ * @param {unknown} unit — diagnosticEngineV2 unit (optional `intelligenceV1` sibling)
+ * @returns {{ weaknessLevel: string, confidenceBand: string, recurrence: boolean }}
+ */
+export function getIntelligenceSignals(unit) {
+  const iv = unit?.intelligenceV1;
+  if (!iv || typeof iv !== "object") {
+    return { weaknessLevel: "none", confidenceBand: "low", recurrence: false };
+  }
+  const p = iv.patterns && typeof iv.patterns === "object" ? iv.patterns : {};
+  return {
+    weaknessLevel: String(iv.weakness?.level || "none"),
+    confidenceBand: String(iv.confidence?.band || "low"),
+    recurrence: !!p.recurrenceFull,
+  };
+}
+
 export function readContractsSliceForScope(scopeType, scopeId, subjectId, payload) {
   if (!payload || typeof payload !== "object") return null;
   if (scopeType === "topic") {
@@ -173,4 +191,5 @@ export default {
   findFirstAnchoredTopicRowForSubject,
   findTopicRowByKey,
   contractsFromTopicRow,
+  getIntelligenceSignals,
 };

@@ -266,6 +266,7 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
     contractSourcesUsed: [...new Set(contractSourcesUsed)],
     priorRepeated,
     metadata: scopeMeta,
+    debug: draft?.debug && typeof draft.debug === "object" ? draft.debug : undefined,
   });
 
   const finalCheck = validateParentCopilotResponseV1(response);
@@ -504,6 +505,7 @@ function runDeterministicCore(input) {
 
   if (semanticAggregateSatisfied && draft) {
     draft = {
+      ...draft,
       answerBlocks: compactParentAnswerBlocks(draft.answerBlocks, {
         scopeType: String(truthPacket.scopeType || ""),
         maxBlocks: 5,
@@ -637,6 +639,7 @@ function runDeterministicCore(input) {
     contractSourcesUsed: [...new Set(contractSourcesUsed)],
     priorRepeated,
     metadata: scopeMeta,
+    debug: draft?.debug && typeof draft.debug === "object" ? draft.debug : undefined,
   });
 
   const finalCheck = validateParentCopilotResponseV1(response);
@@ -976,6 +979,6 @@ export async function runParentCopilotTurnAsync(input) {
 }
 
 export { buildTruthPacketV1 } from "./truth-packet-v1.js";
-export { readContractsSliceForScope } from "./contract-reader.js";
+export { readContractsSliceForScope, getIntelligenceSignals } from "./contract-reader.js";
 
 export default { runParentCopilotTurn, runParentCopilotTurnAsync };

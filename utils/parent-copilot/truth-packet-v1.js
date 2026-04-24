@@ -10,6 +10,76 @@ import {
 } from "./contract-reader.js";
 
 /**
+ * @param {unknown} payload
+ * @param {string} subjectId
+ * @param {string} topicRowKey
+ */
+function findDiagnosticUnitForIntelligence(payload, subjectId, topicRowKey) {
+  const units = payload?.diagnosticEngineV2?.units;
+  if (!Array.isArray(units)) return null;
+  const sid = String(subjectId || "");
+  const trk = String(topicRowKey || "");
+  for (const u of units) {
+    if (!u || typeof u !== "object") continue;
+    if (String(u.subjectId || "") === sid && String(u.topicRowKey || "") === trk) return u;
+  }
+  return null;
+}
+
+/**
+ * @param {object|null|undefined} unit
+ */
+function intelligenceV1DerivedSnapshotFromUnit(unit) {
+  const iv = unit?.intelligenceV1;
+  if (!iv || typeof iv !== "object") {
+    return {
+      weaknessLevel: "none",
+      confidenceBand: "low",
+      recurrence: false,
+      hasPattern: false,
+    };
+  }
+  const p = iv.patterns && typeof iv.patterns === "object" ? iv.patterns : {};
+  const recurrence = !!p.recurrenceFull;
+  const taxonomyId =
+    p.taxonomyId != null && String(p.taxonomyId).trim() !== "" ? String(p.taxonomyId).trim() : null;
+  const noPatternClaims = !!p.noPatternClaims;
+  const weaknessLevel = String(iv.weakness?.level || "none");
+  const confidenceBand = String(iv.confidence?.band || "low");
+  const hasPattern =
+    !!recurrence && !!taxonomyId && !noPatternClaims && weaknessLevel !== "none";
+  return { weaknessLevel, confidenceBand, recurrence, hasPattern };
+}
+
+/**
+ * Conservative rollup for executive scope (additive read-only).
+ * @param {unknown} payload
+ * @param {Array<{ subject: string; tr: object }>} allAnchored
+ */
+function rollupIntelligenceV1Executive(payload, allAnchored) {
+  const wRank = (l) => (l === "stable" ? 2 : l === "tentative" ? 1 : 0);
+  const cRank = (b) => (b === "high" ? 2 : b === "medium" ? 1 : 0);
+  let weaknessRank = 0;
+  let confRank = 2;
+  let anyRec = false;
+  let anyPat = false;
+  for (const row of allAnchored || []) {
+    const sid = String(row?.subject || "");
+    const tr = row?.tr && typeof row.tr === "object" ? row.tr : {};
+    const trk = String(tr.topicRowKey || tr.topicKey || "");
+    const unit = findDiagnosticUnitForIntelligence(payload, sid, trk);
+    const snap = intelligenceV1DerivedSnapshotFromUnit(unit);
+    weaknessRank = Math.max(weaknessRank, wRank(snap.weaknessLevel));
+    confRank = Math.min(confRank, cRank(snap.confidenceBand));
+    if (snap.recurrence) anyRec = true;
+    if (snap.hasPattern) anyPat = true;
+  }
+  const weaknessLevel = weaknessRank >= 2 ? "stable" : weaknessRank === 1 ? "tentative" : "none";
+  const confidenceBand = confRank >= 2 ? "high" : confRank === 1 ? "medium" : "low";
+  return { weaknessLevel, confidenceBand, recurrence: anyRec, hasPattern: anyPat };
+}
+
+/**
  * @param {unknown} readinessRaw
  * @returns {"insufficient"|"forming"|"ready"|"emerging"}
  */
@@ -416,6 +486,13 @@ export function buildTruthPacketV1(payload, scope) {
   /** Anchored rows with cannotConclude (executive rollup) or subject/topic risk flag. */
   let anchorUncertaintyRows = 0;
 
+  let intelligenceV1Snapshot = {
+    weaknessLevel: "none",
+    confidenceBand: "low",
+    recurrence: false,
+    hasPattern: false,
+  };
+
   if (scope.scopeType !== "executive") {
     const slice = readContractsSliceForScope(scope.scopeType, scope.scopeId, "", payload);
     if (!slice) return null;
@@ -448,6 +525,12 @@ export function buildTruthPacketV1(payload, scope) {
     if (cannotConcludeYet || confidenceBand === "low" || readiness === "insufficient" || readiness === "forming") {
       anchorUncertaintyRows = 1;
     }
+    const trkIv = String(
+      topicRow?.topicRowKey || topicRow?.topicKey || scope.scopeId || ""
+    );
+    intelligenceV1Snapshot = intelligenceV1DerivedSnapshotFromUnit(
+      findDiagnosticUnitForIntelligence(payload, subjectId, trkIv)
+    );
   } else {
     const anchor = allAnchored[0];
     subjectId = String(anchor.subject || "");
@@ -500,6 +583,8 @@ export function buildTruthPacketV1(payload, scope) {
     cannotConcludeYet = anyCannotConclude || totalQ <= 0;
     recommendationIntensityCap = minCapRank >= 3 ? "RI3" : minCapRank === 2 ? "RI2" : minCapRank === 1 ? "RI1" : "RI0";
     recommendationEligible = anyEligible && !cannotConcludeYet && confidenceBand !== "low";
+
+    intelligenceV1Snapshot = rollupIntelligenceV1Executive(payload, allAnchored);
 
     const trendsForSurface = trendLines.length
       ? trendLines.slice(0, 4)
@@ -666,6 +751,9 @@ export function buildTruthPacketV1(payload, scope) {
       readiness,
       confidenceBand,
     },
+    signals: {
+      intelligenceV1: intelligenceV1Snapshot,
+    },
     surfaceFacts: {
       questions: q,
       accuracy: acc,
@@ -681,6 +769,9 @@ export function buildTruthPacketV1(payload, scope) {
     },
     allowedFollowupFamilies: uniq,
     forbiddenMoves: ["teacher_runtime", "non_contract_metrics", "cross_session_inference", "autonomous_planning"],
+    debug: {
+      intelligenceV1: intelligenceV1Snapshot,
+    },
   };
 }
 
