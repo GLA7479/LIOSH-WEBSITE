@@ -114,4 +114,57 @@ assert.ok(rec.decisionTrace.length >= signals.decisionTrace.length);
 assert.ok(rec.recommendationDecisionTrace.length >= 1);
 assert.ok(rec.trend == null || typeof rec.trend === "object");
 
+/** Phase 1: generateParentReportV2 must not throw on corrupt mistakes / challenge JSON. */
+{
+  const store = new Map();
+  const emptyMath = JSON.stringify({ operations: {} });
+  const emptyTopics = JSON.stringify({ topics: {} });
+  const emptyProgress = JSON.stringify({ progress: {} });
+  for (const [k, v] of [
+    ["mleo_time_tracking", emptyMath],
+    ["mleo_math_master_progress", emptyProgress],
+    ["mleo_geometry_time_tracking", emptyTopics],
+    ["mleo_geometry_master_progress", emptyProgress],
+    ["mleo_english_time_tracking", emptyTopics],
+    ["mleo_english_master_progress", emptyProgress],
+    ["mleo_science_time_tracking", emptyTopics],
+    ["mleo_science_master_progress", emptyProgress],
+    ["mleo_hebrew_time_tracking", emptyTopics],
+    ["mleo_hebrew_master_progress", emptyProgress],
+    ["mleo_moledet_geography_time_tracking", emptyTopics],
+    ["mleo_moledet_geography_master_progress", emptyProgress],
+  ]) {
+    store.set(k, v);
+  }
+  store.set("mleo_mistakes", "NOT_VALID_JSON[[[");
+  store.set("mleo_geometry_mistakes", "{}");
+  store.set("mleo_english_mistakes", "null");
+  store.set("mleo_science_mistakes", "[}");
+  store.set("mleo_hebrew_mistakes", "");
+  store.set("mleo_moledet_geography_mistakes", "42");
+  store.set("mleo_daily_challenge", "[1,2,3]");
+  store.set("mleo_weekly_challenge", "null");
+  const prevWindow = globalThis.window;
+  const prevLS = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => store.set(k, String(v)),
+    removeItem: (k) => store.delete(k),
+  };
+  globalThis.window = globalThis;
+  try {
+    const { generateParentReportV2 } = await importUtils("../utils/parent-report-v2.js");
+    const report = generateParentReportV2("ResilienceQA", "week");
+    assert.ok(report && typeof report === "object");
+    assert.equal(report.challenges.daily.questions, 0);
+    assert.equal(report.challenges.daily.correct, 0);
+    assert.equal(report.challenges.weekly.current, 0);
+    assert.equal(report.challenges.weekly.completed, false);
+    assert.ok(Array.isArray(report.analysis.recommendations));
+  } finally {
+    globalThis.window = prevWindow;
+    globalThis.localStorage = prevLS;
+  }
+}
+
 console.log("parent-report phase1 selftest: OK");

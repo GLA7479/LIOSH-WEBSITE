@@ -572,6 +572,49 @@ function loadProgress(path) {
 }
 
 /**
+ * Read JSON array from localStorage; never throws. Invalid JSON or non-array → [].
+ * @param {string} key
+ * @returns {unknown[]}
+ */
+function safeLocalStorageJsonArray(key) {
+  let raw;
+  try {
+    raw = localStorage.getItem(key);
+  } catch {
+    return [];
+  }
+  try {
+    const parsed = JSON.parse(raw == null || raw === "" ? "[]" : raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Read JSON object from localStorage; never throws. Invalid JSON or non-plain-object → {}.
+ * @param {string} key
+ * @returns {Record<string, unknown>}
+ */
+function safeLocalStorageJsonObject(key) {
+  let raw;
+  try {
+    raw = localStorage.getItem(key);
+  } catch {
+    return {};
+  }
+  try {
+    const parsed = JSON.parse(raw == null || raw === "" ? "{}" : raw);
+    if (parsed != null && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return /** @type {Record<string, unknown>} */ (parsed);
+    }
+    return {};
+  } catch {
+    return {};
+  }
+}
+
+/**
  * מתמטיקה: ספירת טעויות לפי מפתח שורה scoped (פעולה+מצב+כיתה+רמה); טעויות בלי scope מלא → מפתח `op__UNSCOPED__`.
  * @param {unknown[]} mistakes
  * @param {number} startMs
@@ -1248,21 +1291,13 @@ export function generateParentReportV2(
     ...moledetGeographyAchievements,
   ];
 
-  const mathMistakesRaw = JSON.parse(localStorage.getItem("mleo_mistakes") || "[]");
-  const geometryMistakesRaw = JSON.parse(
-    localStorage.getItem("mleo_geometry_mistakes") || "[]"
-  );
-  const englishMistakesRaw = JSON.parse(
-    localStorage.getItem("mleo_english_mistakes") || "[]"
-  );
-  const scienceMistakesRaw = JSON.parse(
-    localStorage.getItem("mleo_science_mistakes") || "[]"
-  );
-  const hebrewMistakesRaw = JSON.parse(
-    localStorage.getItem("mleo_hebrew_mistakes") || "[]"
-  );
-  const moledetGeographyMistakesRaw = JSON.parse(
-    localStorage.getItem("mleo_moledet_geography_mistakes") || "[]"
+  const mathMistakesRaw = safeLocalStorageJsonArray("mleo_mistakes");
+  const geometryMistakesRaw = safeLocalStorageJsonArray("mleo_geometry_mistakes");
+  const englishMistakesRaw = safeLocalStorageJsonArray("mleo_english_mistakes");
+  const scienceMistakesRaw = safeLocalStorageJsonArray("mleo_science_mistakes");
+  const hebrewMistakesRaw = safeLocalStorageJsonArray("mleo_hebrew_mistakes");
+  const moledetGeographyMistakesRaw = safeLocalStorageJsonArray(
+    "mleo_moledet_geography_mistakes"
   );
 
   const mathMistakesByOperation = buildMathMistakesScopedCounts(mathMistakesRaw, startMs, endMs);
@@ -1413,12 +1448,8 @@ export function generateParentReportV2(
       ),
   ];
 
-  const dailyChallenge = JSON.parse(
-    localStorage.getItem("mleo_daily_challenge") || "{}"
-  );
-  const weeklyChallenge = JSON.parse(
-    localStorage.getItem("mleo_weekly_challenge") || "{}"
-  );
+  const dailyChallenge = safeLocalStorageJsonObject("mleo_daily_challenge");
+  const weeklyChallenge = safeLocalStorageJsonObject("mleo_weekly_challenge");
 
   const allItems = {
     ...Object.fromEntries(

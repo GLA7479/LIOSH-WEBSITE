@@ -39,6 +39,9 @@ const {
   decideTopicNextStep,
   DEFAULT_TOPIC_NEXT_STEP_CONFIG,
 } = await importUtils("utils/topic-next-step-engine.js");
+const { buildNarrativeContractV1, validateNarrativeContractV1 } = await importUtils(
+  "utils/contracts/narrative-contract-v1.js"
+);
 const { buildInterventionPlanPhase8 } = await importUtils("utils/parent-report-intervention-plan.js");
 const { buildPracticeCalibration, buildPhase9RecommendationOverlay } = await importUtils("utils/topic-next-step-phase2.js");
 const { buildMistakeIntelligencePhase9 } = await importUtils("utils/parent-report-mistake-intelligence.js");
@@ -1150,9 +1153,128 @@ function runInvariantHighVolumePerfectNoReducedComplexityWithoutExplicitContradi
     "moledet-geography": [],
   };
   const diag = runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs: START, endMs: END });
+  const u0 = diag.units?.[0];
+  assert.ok(u0, "invariant: diagnosticEngineV2 must emit at least one unit for math fixture row");
+  const traces = Array.isArray(u0.evidenceTrace) ? u0.evidenceTrace : [];
+  const vol = traces.find((t) => String(t?.type || "") === "volume")?.value || {};
+  const rowQuestions = Number(vol.questions) || 0;
+  const rowAccuracy = Number(vol.accuracy) || 0;
+  assert.ok(rowQuestions >= 21, "invariant fixture: expected high volume row (diag unit evidence)");
+  assert.equal(Math.round(rowAccuracy), 100, "invariant fixture: expected 100% row (diag unit evidence)");
+
+  const gc =
+    u0.outputGating?.contractsV1 && typeof u0.outputGating.contractsV1 === "object"
+      ? u0.outputGating.contractsV1
+      : {};
+  const decision = gc.decision && typeof gc.decision === "object" ? gc.decision : {};
+  const recContract = gc.recommendation && typeof gc.recommendation === "object" ? gc.recommendation : {};
+  const explicitContradiction =
+    decision?.cannotConcludeYet === true ||
+    (Array.isArray(recContract?.forbiddenBecause) &&
+      recContract.forbiddenBecause.includes("cannot_conclude_yet"));
+
+  const cs = u0.canonicalState;
+  const gated = !!u0.outputGating?.cannotConcludeYet;
+  const canonicalDecisionTier =
+    Number(cs?.assessment?.decisionTier) || Number(decision?.decisionTier) || 0;
+  const conclusionStrength = gated
+    ? "withheld"
+    : canonicalDecisionTier >= 3
+      ? "strong"
+      : canonicalDecisionTier >= 2
+        ? "moderate"
+        : "tentative";
+  const narrativeContract = buildNarrativeContractV1({
+    subjectId: u0.subjectId,
+    topicKey: u0.topicRowKey,
+    topicRowKey: u0.topicRowKey,
+    displayName: String(u0.displayName || ""),
+    questions: rowQuestions,
+    accuracy: rowAccuracy,
+    suppressAggressiveStep: gated,
+    conclusionStrength,
+    contractsV1: gc,
+  });
+  const narrativeValidation = validateNarrativeContractV1(narrativeContract);
+  assert.ok(narrativeValidation.ok, `narrative contract invalid: ${narrativeValidation.errors?.join("; ")}`);
+  const narrative = { wordingEnvelope: narrativeContract.wordingEnvelope };
+
+  const row = maps.math[rowKey];
+  const topicEngineRec = buildTopicRecommendationRecord(
+    "math",
+    rowKey,
+    row,
+    {},
+    DEFAULT_TOPIC_NEXT_STEP_CONFIG,
+    END
+  );
+  assert.ok(
+    Array.isArray(topicEngineRec.recommendationDecisionTrace),
+    "invariant: topic engine must expose recommendationDecisionTrace"
+  );
+  assert.ok(
+    topicEngineRec.recommendationDecisionTrace.length >= 1,
+    "invariant: topic engine must emit at least one recommendationDecisionTrace step"
+  );
+
+  const reducedActionRegex = /מורכבות מופחתת|להנמיך|פחות מורכב|אותה רמה נמוכה/u;
+  const actionText = `${String(u0.intervention?.shortPracticeHe || "")} ${String(u0.intervention?.immediateActionHe || "")}`.trim();
+  if (cs && (cs.actionState === "maintain" || cs.actionState === "expand_cautiously") && !explicitContradiction) {
+    assert.ok(
+      !["WE0", "WE1"].includes(String(narrative?.wordingEnvelope || "")),
+      "invariant: strength actionState without explicit contradiction must not render WE0/WE1"
+    );
+    assert.ok(
+      !reducedActionRegex.test(actionText),
+      "invariant: strength actionState without explicit contradiction must not render reduced-complexity action"
+    );
+  }
+}
+
+/**
+ * V2 detailed profile lists topicRecommendations only for diagnose_only / intervene units.
+ * High-volume stable-mastery rows are maintain/expand — topicRecommendations must stay empty.
+ */
+function runInvariantMaintainOnlyProfileEmptyTopicRecommendations() {
+  assert.equal(typeof runDiagnosticEngineV2, "function", "runDiagnosticEngineV2 missing");
+  const START = Date.UTC(2026, 3, 1, 0, 0, 0, 0);
+  const END = Date.UTC(2026, 3, 14, 23, 59, 59, 999);
+  const rowKey = "multiplication\u0001learning\u0001g3\u0001easy";
+  const maps = {
+    math: {
+      [rowKey]: {
+        displayName: "כפל — כיתה ג׳ — רמה קלה",
+        questions: 21,
+        correct: 21,
+        wrong: 0,
+        accuracy: 100,
+        modeKey: "learning",
+        lastSessionMs: END - 3600_000,
+        needsPractice: false,
+        confidence01: 0.9,
+        dataSufficiencyLevel: "strong",
+        isEarlySignalOnly: false,
+        behaviorProfile: { version: 1, dominantType: "stable_mastery", signals: {}, decisionTrace: [] },
+      },
+    },
+    geometry: {},
+    english: {},
+    science: {},
+    hebrew: {},
+    "moledet-geography": {},
+  };
+  const rawMistakesBySubject = {
+    math: [],
+    geometry: [],
+    english: [],
+    science: [],
+    hebrew: [],
+    "moledet-geography": [],
+  };
+  const diag = runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs: START, endMs: END });
   const base = {
     period: "week",
-    playerName: "_phase5_invariant_",
+    playerName: "_phase5_invariant_maintain_empty_topics_",
     startDate: "2026-04-01",
     endDate: "2026-04-14",
     summary: {
@@ -1181,28 +1303,15 @@ function runInvariantHighVolumePerfectNoReducedComplexityWithoutExplicitContradi
     diagnosticEngineV2: diag,
   };
   const detailed = buildDetailedParentReportFromBaseReport(base, { period: "week" });
-  const tr = detailed?.subjectProfiles?.find((s) => s.subject === "math")?.topicRecommendations?.[0];
-  assert.ok(tr, "invariant: missing topic recommendation row");
-  assert.ok((Number(tr.questions) || 0) >= 21, "invariant fixture: expected high volume row");
-  assert.equal(Math.round(Number(tr.accuracy) || 0), 100, "invariant fixture: expected 100% row");
-  const decision = tr?.contractsV1?.decision || {};
-  const recContract = tr?.contractsV1?.recommendation || {};
-  const narrative = tr?.contractsV1?.narrative || {};
-  const explicitContradiction =
-    decision?.cannotConcludeYet === true ||
-    (Array.isArray(recContract?.forbiddenBecause) &&
-      recContract.forbiddenBecause.includes("cannot_conclude_yet"));
-  const reducedActionRegex = /מורכבות מופחתת|להנמיך|פחות מורכב|אותה רמה נמוכה/u;
-  const actionText = `${String(tr?.interventionPlanHe || "")} ${String(tr?.doNowHe || "")}`.trim();
+  const mathSp = detailed?.subjectProfiles?.find((s) => s.subject === "math");
+  assert.ok(mathSp, "invariant: math subject profile must exist");
   const cs = diag.units?.[0]?.canonicalState;
-  if (cs && (cs.actionState === "maintain" || cs.actionState === "expand_cautiously") && !explicitContradiction) {
-    assert.ok(
-      !["WE0", "WE1"].includes(String(narrative?.wordingEnvelope || "")),
-      "invariant: strength actionState without explicit contradiction must not render WE0/WE1"
-    );
-    assert.ok(
-      !reducedActionRegex.test(actionText),
-      "invariant: strength actionState without explicit contradiction must not render reduced-complexity action"
+  if (cs && (cs.actionState === "maintain" || cs.actionState === "expand_cautiously")) {
+    const topicRecs = Array.isArray(mathSp.topicRecommendations) ? mathSp.topicRecommendations : [];
+    assert.equal(
+      topicRecs.length,
+      0,
+      "invariant: maintain-only profile must have empty topicRecommendations"
     );
   }
 }
@@ -2713,6 +2822,7 @@ function main() {
   runPhase14FoundationDependencyAndOrdering();
   runPhase15NarrativeCompactAndStack();
   runInvariantHighVolumePerfectNoReducedComplexityWithoutExplicitContradiction();
+  runInvariantMaintainOnlyProfileEmptyTopicRecommendations();
   runPhase5ContractIntegrityAndContradictions();
   runQaCalibrationRedTeam();
   runReactServerSmoke();
