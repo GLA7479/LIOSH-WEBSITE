@@ -86,6 +86,13 @@ import {
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
+import {
+  compareAnswers,
+  compareMathLearnerAnswer,
+} from "../../utils/answer-compare";
+
+/** Passed into compareMathLearnerAnswer — tolerance is not defaulted inside answer-compare. */
+const MATH_NUMERIC_TOLERANCE = 0.01;
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -1476,11 +1483,14 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
   const checkPracticeAnswer = () => {
     if (!practiceQuestion) return;
-    
-    const userAnswer = parseInt(practiceAnswer);
-    const correctAnswer = practiceQuestion.answer;
-    
-    if (userAnswer === correctAnswer) {
+
+    const { isCorrect } = compareAnswers({
+      mode: "exact_integer",
+      user: practiceAnswer,
+      expected: practiceQuestion.answer,
+    });
+
+    if (isCorrect) {
       // תשובה נכונה - אנימציה והצגת שאלה חדשה
       setShowCorrectAnimation(true);
       setTimeout(() => setShowCorrectAnimation(false), 1000);
@@ -1509,57 +1519,19 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       return newCount;
     });
 
-    // התאמה לתשובה - טיפול במספרים ומחרוזות (כמו שברים)
-    let numericAnswer;
-    let isStringAnswer = false;
-    
-    // בדיקה אם התשובה היא מחרוזת שאינה מספר (כמו שברים: "3/4", "2 1/2", או סימני השוואה: "<", ">", "=")
-    if (typeof answer === "string") {
-      const trimmed = answer.trim();
-      // אם המחרוזת היא סימן השוואה (<, >, =) - זה תמיד מחרוזת
-      if (trimmed === "<" || trimmed === ">" || trimmed === "=") {
-        isStringAnswer = true;
-        numericAnswer = trimmed;
-      } else if (trimmed.includes("/") || trimmed.includes(" ") || isNaN(parseFloat(trimmed))) {
-        // אם המחרוזת מכילה שבר או תווים שאינם מספרים
-        isStringAnswer = true;
-        numericAnswer = trimmed;
-      } else {
-        // מחרוזת מספרית - המר למספר
-        const parsed = parseFloat(trimmed);
-        if (isNaN(parsed)) {
-          setFeedback("נא להזין מספר תקין");
-          setTimeout(() => setFeedback(null), 2000);
-          return;
-        }
-        numericAnswer = parsed;
-      }
-    } else {
-      numericAnswer = answer;
-    }
-    
-    // בדיקת שוויון
-    let isCorrect;
-    // בדיקה אם התשובה הנכונה היא סימן השוואה
-    const correctAnswerStr = String(currentQuestion.correctAnswer).trim();
-    const isComparisonAnswer = correctAnswerStr === "<" || correctAnswerStr === ">" || correctAnswerStr === "=";
-    
-    if (isStringAnswer || isComparisonAnswer || (typeof currentQuestion.correctAnswer === "string" && 
-        (currentQuestion.correctAnswer.includes("/") || 
-         currentQuestion.correctAnswer.includes(" ") || 
-         isNaN(parseFloat(currentQuestion.correctAnswer))))) {
-      // השוואה מחרוזת ישירה (לשברים, תשובות טקסט, וסימני השוואה)
-      isCorrect = String(numericAnswer).trim() === String(currentQuestion.correctAnswer).trim();
-    } else {
-      // השוואה מספרית
-      const correctNumericAnswer = typeof currentQuestion.correctAnswer === "string" 
-        ? parseFloat(currentQuestion.correctAnswer.trim()) 
-        : currentQuestion.correctAnswer;
-      
-      isCorrect = numericAnswer === correctNumericAnswer || 
-                  (typeof numericAnswer === "number" && typeof correctNumericAnswer === "number" &&
-                   !isNaN(numericAnswer) && !isNaN(correctNumericAnswer) &&
-                   Math.abs(numericAnswer - correctNumericAnswer) < 0.01);
+    const {
+      isCorrect,
+      rejectInvalidNumber,
+      selectedValue: numericAnswer,
+    } = compareMathLearnerAnswer({
+      user: answer,
+      correctAnswer: currentQuestion.correctAnswer,
+      numericTolerance: MATH_NUMERIC_TOLERANCE,
+    });
+    if (rejectInvalidNumber) {
+      setFeedback("נא להזין מספר תקין");
+      setTimeout(() => setFeedback(null), 2000);
+      return;
     }
 
     setSelectedAnswer(numericAnswer);
@@ -3591,7 +3563,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           <div className={`grid ${gridCols} gap-3 w-full`}>
                             {currentQuestion.answers.map((answer, idx) => {
                               const isSelected = selectedAnswer === answer;
-                              const isCorrect = answer === currentQuestion.correctAnswer;
+                              const isCorrect = compareMathLearnerAnswer({
+                                user: answer,
+                                correctAnswer: currentQuestion.correctAnswer,
+                                numericTolerance: MATH_NUMERIC_TOLERANCE,
+                              }).isCorrect;
                               const isWrong = isSelected && !isCorrect;
 
                               return (
@@ -3604,8 +3580,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                       ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
                                       : isWrong
                                       ? "bg-red-500/30 border-red-400 text-red-200"
-                                      : selectedAnswer &&
-                                        answer === currentQuestion.correctAnswer
+                                      : selectedAnswer && isCorrect
                                       ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
                                       : "bg-black/30 border-white/15 text-white hover:border-white/40"
                                   }`}
@@ -3684,7 +3659,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           <div className={`grid ${gridCols} gap-3 w-full`}>
                             {currentQuestion.answers.map((answer, idx) => {
                               const isSelected = selectedAnswer === answer;
-                              const isCorrect = answer === currentQuestion.correctAnswer;
+                              const isCorrect = compareMathLearnerAnswer({
+                                user: answer,
+                                correctAnswer: currentQuestion.correctAnswer,
+                                numericTolerance: MATH_NUMERIC_TOLERANCE,
+                              }).isCorrect;
                               const isWrong = isSelected && !isCorrect;
 
                               return (
@@ -3697,8 +3676,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                                       ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
                                       : isWrong
                                       ? "bg-red-500/30 border-red-400 text-red-200"
-                                      : selectedAnswer &&
-                                        answer === currentQuestion.correctAnswer
+                                      : selectedAnswer && isCorrect
                                       ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
                                       : "bg-black/30 border-white/15 text-white hover:border-white/40"
                                   }`}

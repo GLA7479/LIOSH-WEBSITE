@@ -8,6 +8,7 @@
     "start": "next start",
     "audit:hebrew-subtopics": "tsx scripts/hebrew-subtopic-coverage-audit.mjs",
     "audit:questions": "tsx scripts/generator-deterministic-harness.mjs && tsx scripts/audit-question-banks.mjs",
+    "test:answer-compare": "tsx scripts/answer-compare-selftest.mjs",
     "audit:branches": "tsx scripts/extract-generator-branches.mjs",
     "audit:harness": "tsx scripts/generator-deterministic-harness.mjs",
     "audit:hebrew-g1-g2": "tsx scripts/audit-hebrew-g1-g2-hard.mjs",

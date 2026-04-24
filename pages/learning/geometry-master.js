@@ -79,6 +79,12 @@ import {
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
+import { compareGeometryLearnerAnswer } from "../../utils/answer-compare";
+
+/** Passed into compareGeometryLearnerAnswer — not defaulted inside answer-compare. */
+const GEOMETRY_NUMERIC_SCALE_FLOOR = 1e-6;
+const GEOMETRY_NUMERIC_RELATIVE_FACTOR = 1e-5;
+const GEOMETRY_NUMERIC_MIN_TOLERANCE = 1e-9;
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -817,27 +823,13 @@ useEffect(() => {
 
     setSelectedAnswer(answer);
     solvedCountRef.current += 1;
-    const normalizeText = (v) => String(v ?? "").trim();
-    const toNumeric = (v) => {
-      if (typeof v === "number" && Number.isFinite(v)) return v;
-      if (typeof v !== "string") return null;
-      const cleaned = v.trim().replace(",", ".");
-      if (!cleaned) return null;
-      const num = Number(cleaned);
-      return Number.isFinite(num) ? num : null;
-    };
-    const answerNum = toNumeric(answer);
-    const correctNum = toNumeric(currentQuestion.correctAnswer);
-    const nearlyNumericEqual = (a, b) => {
-      if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
-      const scale = Math.max(Math.abs(a), Math.abs(b), 1e-6);
-      const tol = Math.max(1e-9, scale * 1e-5);
-      return Math.abs(a - b) <= tol;
-    };
-    const isCorrect =
-      answerNum != null && correctNum != null
-        ? nearlyNumericEqual(answerNum, correctNum)
-        : normalizeText(answer) === normalizeText(currentQuestion.correctAnswer);
+    const { isCorrect } = compareGeometryLearnerAnswer({
+      user: answer,
+      correctAnswer: currentQuestion.correctAnswer,
+      scaleFloor: GEOMETRY_NUMERIC_SCALE_FLOOR,
+      relativeFactor: GEOMETRY_NUMERIC_RELATIVE_FACTOR,
+      minTolerance: GEOMETRY_NUMERIC_MIN_TOLERANCE,
+    });
 
     pendingGeometryTimeTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
@@ -2196,8 +2188,13 @@ useEffect(() => {
                           <div className="grid grid-cols-2 gap-2.5 w-full mb-3">
                             {currentQuestion.answers.map((answer, idx) => {
                               const isSelected = selectedAnswer === answer;
-                              const isCorrect =
-                                answer === currentQuestion.correctAnswer;
+                              const isCorrect = compareGeometryLearnerAnswer({
+                                user: answer,
+                                correctAnswer: currentQuestion.correctAnswer,
+                                scaleFloor: GEOMETRY_NUMERIC_SCALE_FLOOR,
+                                relativeFactor: GEOMETRY_NUMERIC_RELATIVE_FACTOR,
+                                minTolerance: GEOMETRY_NUMERIC_MIN_TOLERANCE,
+                              }).isCorrect;
                               const isWrong = isSelected && !isCorrect;
 
                               return (
@@ -2210,8 +2207,7 @@ useEffect(() => {
                                       ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
                                       : isWrong
                                       ? "bg-red-500/30 border-red-400 text-red-200"
-                                      : selectedAnswer &&
-                                        answer === currentQuestion.correctAnswer
+                                      : selectedAnswer && isCorrect
                                       ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
                                       : "bg-black/30 border-white/15 text-white hover:border-white/40"
                                   }`}

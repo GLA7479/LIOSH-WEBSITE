@@ -56,6 +56,7 @@ import {
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
+import { compareAnswers } from "../../utils/answer-compare";
 import {
   hebrewScriptLikely,
   isChildHebrewNiqqudGradeKey,
@@ -65,7 +66,6 @@ import {
   spellingStemForNiqqudDetect,
   isSpellingTargetWordInQuotesContextFromStem,
   stripNiqqudInsideQuotedHebrewWordSpans,
-  normalizeAnswerForSpellingNiqqudStrict,
 } from "../../utils/hebrew-spelling-niqqud";
 import { isHebrewFullCompetitiveScoringGrade } from "../../utils/hebrew-scoring-policy";
 import { attachHebrewAudioToQuestion } from "../../utils/hebrew-audio-build1";
@@ -1246,11 +1246,14 @@ useEffect(() => {
 
   const checkPracticeAnswer = () => {
     if (!practiceQuestion) return;
-    
-    const userAnswer = parseInt(practiceAnswer);
-    const correctAnswer = practiceQuestion.answer;
-    
-    if (userAnswer === correctAnswer) {
+
+    const { isCorrect } = compareAnswers({
+      mode: "exact_integer",
+      user: practiceAnswer,
+      expected: practiceQuestion.answer,
+    });
+
+    if (isCorrect) {
       // תשובה נכונה - אנימציה והצגת שאלה חדשה
       setShowCorrectAnimation(true);
       setTimeout(() => setShowCorrectAnimation(false), 1000);
@@ -1386,18 +1389,6 @@ useEffect(() => {
           })()
         : currentQuestion.correctAnswer;
 
-    const HEBREW_NIQQUD_RE = /[\u0591-\u05C7]/g;
-    const SURROUNDING_PUNCT_RE = /^[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+|[\s"'`׳״“”‘’.,!?;:()[\]{}\-–—]+$/g;
-    const normalize = (value) =>
-      String(value ?? "")
-        .replace(/[“”״]/g, '"')
-        .replace(/[‘’׳]/g, "'")
-        .replace(HEBREW_NIQQUD_RE, "")
-        .replace(SURROUNDING_PUNCT_RE, "")
-        .trim()
-        .replace(/\s+/g, " ")
-        .toLowerCase();
-    // Keep final-letter spelling strict (ך/ם/ן/ף/ץ) to preserve pedagogy.
     const acceptedAnswers =
       Array.isArray(currentQuestion.acceptedAnswers) &&
       currentQuestion.acceptedAnswers.length > 0
@@ -1406,15 +1397,11 @@ useEffect(() => {
     const strictNiqqudSpelling = isSpellingTargetWordInQuotesContextFromStem(
       spellingStemForNiqqudDetect(currentQuestion)
     );
-    const isCorrect = strictNiqqudSpelling
-      ? acceptedAnswers.some(
-          (candidate) =>
-            normalizeAnswerForSpellingNiqqudStrict(candidate) ===
-            normalizeAnswerForSpellingNiqqudStrict(answer)
-        )
-      : acceptedAnswers.some(
-          (candidate) => normalize(candidate) === normalize(answer)
-        );
+    const { isCorrect } = compareAnswers({
+      mode: strictNiqqudSpelling ? "hebrew_niqqud_strict" : "hebrew_relaxed_text",
+      user: answer,
+      acceptedList: acceptedAnswers,
+    });
     pendingHebrewTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
       total: 1,
@@ -3298,7 +3285,22 @@ useEffect(() => {
                     >
                       {currentQuestion.answers.map((answer, idx) => {
                         const isSelected = selectedAnswer === answer;
-                        const isCorrect = answer === currentQuestion.correctAnswer;
+                        const acceptedAnswersMcq =
+                          Array.isArray(currentQuestion.acceptedAnswers) &&
+                          currentQuestion.acceptedAnswers.length > 0
+                            ? currentQuestion.acceptedAnswers
+                            : [currentQuestion.correctAnswer];
+                        const strictNiqqudMcq =
+                          isSpellingTargetWordInQuotesContextFromStem(
+                            spellingStemForNiqqudDetect(currentQuestion)
+                          );
+                        const { isCorrect } = compareAnswers({
+                          mode: strictNiqqudMcq
+                            ? "hebrew_niqqud_strict"
+                            : "hebrew_relaxed_text",
+                          user: answer,
+                          acceptedList: acceptedAnswersMcq,
+                        });
                         const isWrong = isSelected && !isCorrect;
 
                         return (
@@ -3311,8 +3313,7 @@ useEffect(() => {
                                 ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
                                 : isWrong
                                 ? "bg-red-500/30 border-red-400 text-red-200"
-                                : selectedAnswer &&
-                                  answer === currentQuestion.correctAnswer
+                                : selectedAnswer && isCorrect
                                 ? "bg-emerald-500/30 border-emerald-400 text-emerald-200"
                                 : "bg-black/30 border-white/15 text-white hover:border-white/40"
                             }`}
