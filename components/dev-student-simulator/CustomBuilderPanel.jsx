@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   SUBJECT_BUCKETS,
   CUSTOM_BUILDER_UI_SUBJECT_ORDER,
@@ -29,6 +30,7 @@ const LABEL = {
   pace: "\u05D3\u05E4\u05D5\u05E1 \u05D6\u05DE\u05DF \u05EA\u05D2\u05D5\u05D1\u05D4",
   debug: "\u05DE\u05E6\u05D1 \u05D1\u05D3\u05D9\u05E7\u05D4 \u05E7\u05E6\u05E8\u05D4 (\u05DE\u05E4\u05D7\u05D9\u05EA \u05E1\u05E4\u05D9 \u05DE\u05EA\u05D7\u05EA \u05D0\u05D9\u05DE\u05D5\u05EA)",
   topicsDisabledHint: "\u05D1\u05D7\u05E8 \u05DE\u05E7\u05E6\u05D5\u05E2 \u05DB\u05D3\u05D9 \u05DC\u05D4\u05E6\u05D9\u05D2 \u05E0\u05D5\u05E9\u05D0\u05D9\u05DD.",
+  showInternalKeys: "\u05D4\u05E6\u05D2 \u05DE\u05E4\u05EA\u05D7\u05D5\u05EA \u05E4\u05E0\u05D9\u05DE\u05D9\u05D9\u05DD (\u05DC\u05E4\u05D9\u05EA\u05D5\u05D7)",
 };
 
 const FALLBACK_SUBJECT_ROW = {
@@ -76,13 +78,19 @@ const fieldStyle = { display: "block", marginBottom: 10, fontSize: 14 };
 const inputStyle = { width: "100%", maxWidth: 360, padding: 8, borderRadius: 8, border: "1px solid #cbd5e1", fontSize: 14 };
 
 export default function CustomBuilderPanel({ value, setValue, disabled }) {
+  const [showInternalTopicKeys, setShowInternalTopicKeys] = useState(false);
+
   const setField = (k, v) => setValue((s) => ({ ...s, [k]: v }));
 
   const setSubject = (sid, patch) =>
-    setValue((s) => ({
-      ...s,
-      subjects: { ...s.subjects, [sid]: { ...s.subjects[sid], ...patch } },
-    }));
+    setValue((s) => {
+      const prevSubjects = s.subjects && typeof s.subjects === "object" ? s.subjects : {};
+      const prevRow = prevSubjects[sid] && typeof prevSubjects[sid] === "object" ? prevSubjects[sid] : {};
+      return {
+        ...s,
+        subjects: { ...prevSubjects, [sid]: { ...prevRow, ...patch } },
+      };
+    });
 
   const toggleTopic = (sid, topic, on) => {
     const sub = value.subjects?.[sid];
@@ -206,7 +214,29 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
       </div>
 
       <div style={{ border: "1px solid #cbd5e1", borderRadius: 12, padding: 14, background: "#f8fafc" }}>
-        <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>{LABEL.subjects}</h3>
+        <h3 style={{ margin: "0 0 8px", fontSize: 16 }}>{LABEL.subjects}</h3>
+        <label
+          dir="rtl"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            gap: 6,
+            marginBottom: 10,
+            fontSize: 12,
+            color: "#475569",
+            cursor: disabled ? "default" : "pointer",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={showInternalTopicKeys}
+            onChange={(e) => setShowInternalTopicKeys(e.target.checked)}
+            disabled={disabled}
+            style={{ width: 14, height: 14, flexShrink: 0 }}
+          />
+          <span style={{ textAlign: "right" }}>{LABEL.showInternalKeys}</span>
+        </label>
         {CUSTOM_BUILDER_UI_SUBJECT_ORDER.map((sid) => {
           const row = value.subjects?.[sid] ? { ...FALLBACK_SUBJECT_ROW, ...value.subjects[sid] } : { ...FALLBACK_SUBJECT_ROW };
           const topicList = Array.isArray(row.topics) ? row.topics : [];
@@ -215,23 +245,33 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
             <div
               key={sid}
               style={{
-                marginBottom: 14,
-                padding: 12,
-                borderRadius: 10,
+                marginBottom: 10,
+                padding: 10,
+                borderRadius: 8,
                 border: "1px solid #e2e8f0",
                 background: row.enabled ? "#fff" : "#f1f5f9",
               }}
             >
               <label
                 dir="rtl"
-                style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, cursor: disabled ? "default" : "pointer" }}
+                title={`${hebrewSubjectLabel(sid)} · ${sid}`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  gap: 8,
+                  marginBottom: 6,
+                  cursor: disabled ? "default" : "pointer",
+                }}
               >
                 <input type="checkbox" checked={row.enabled} onChange={(e) => toggleSubjectEnabled(sid, e.target.checked)} disabled={disabled} />
-                <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, flex: 1, minWidth: 0 }}>
-                  <span style={{ fontWeight: 700, fontSize: 15 }}>{hebrewSubjectLabel(sid)}</span>
-                  <code dir="ltr" style={{ fontSize: 11, color: "#94a3b8", unicodeBidi: "embed" }}>
-                    {sid}
-                  </code>
+                <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, textAlign: "right" }}>
+                  <span style={{ fontWeight: 700, fontSize: 14 }}>{hebrewSubjectLabel(sid)}</span>
+                  {showInternalTopicKeys ? (
+                    <code dir="ltr" style={{ fontSize: 10, color: "#94a3b8", unicodeBidi: "embed" }}>
+                      {sid}
+                    </code>
+                  ) : null}
                 </span>
               </label>
               {!row.enabled ? (
@@ -308,31 +348,39 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
                 </div>
               ) : null}
               {row.enabled ? (
-                <fieldset style={{ marginTop: 10, border: "none", padding: 0 }}>
-                  <legend style={{ fontWeight: 600, marginBottom: 8, textAlign: "right", width: "100%" }}>{LABEL.topics}</legend>
+                <fieldset style={{ marginTop: 6, border: "none", padding: 0, marginInline: 0, minWidth: 0 }}>
+                  <legend style={{ fontWeight: 600, marginBottom: 4, padding: 0, textAlign: "right", width: "100%", fontSize: 13 }}>
+                    {LABEL.topics}
+                  </legend>
                   <div
+                    dir="rtl"
                     style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-                      gap: 10,
-                      alignItems: "stretch",
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "2px 10px",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      rowGap: 2,
+                      textAlign: "right",
                     }}
                   >
                     {buckets.map((topic) => (
                       <label
                         key={`${sid}:${topic}`}
                         dir="rtl"
+                        title={topic}
                         style={{
-                          display: "flex",
+                          display: "inline-flex",
                           flexDirection: "row",
-                          alignItems: "flex-start",
-                          gap: 8,
-                          padding: "8px 10px",
-                          borderRadius: 8,
-                          border: "1px solid #e2e8f0",
-                          background: "#f8fafc",
+                          alignItems: "center",
+                          justifyContent: "flex-start",
+                          gap: 5,
+                          fontSize: 13,
+                          lineHeight: 1.25,
                           cursor: disabled ? "default" : "pointer",
-                          fontSize: 14,
+                          whiteSpace: "nowrap",
+                          margin: 0,
+                          padding: 0,
                         }}
                       >
                         <input
@@ -340,23 +388,15 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
                           checked={topicList.includes(topic)}
                           onChange={(e) => toggleTopic(sid, topic, e.target.checked)}
                           disabled={disabled}
-                          style={{ marginTop: 3, flexShrink: 0 }}
+                          style={{ width: 14, height: 14, flexShrink: 0, margin: 0 }}
                         />
-                        <span style={{ flex: 1, minWidth: 0, textAlign: "right" }}>
-                          <span style={{ fontWeight: 600, color: "#0f172a" }}>{hebrewTopicPrimary(topic)}</span>
-                          <code
-                            dir="ltr"
-                            style={{
-                              display: "block",
-                              marginTop: 4,
-                              fontSize: 11,
-                              color: "#64748b",
-                              unicodeBidi: "embed",
-                              wordBreak: "break-all",
-                            }}
-                          >
-                            {topic}
-                          </code>
+                        <span style={{ textAlign: "right", userSelect: "none" }}>
+                          {hebrewTopicPrimary(topic)}
+                          {showInternalTopicKeys ? (
+                            <code dir="ltr" style={{ fontSize: 10, color: "#94a3b8", marginInlineStart: 4, unicodeBidi: "embed" }}>
+                              {topic}
+                            </code>
+                          ) : null}
                         </span>
                       </label>
                     ))}
