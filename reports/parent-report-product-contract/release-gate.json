@@ -1,0 +1,80 @@
+{
+  "generatedAt": "2026-04-25T11:56:23.589Z",
+  "automated_release_gate": "PASS",
+  "manual_browser_qa": "BLOCKED",
+  "checks": [
+    {
+      "id": "product_contract_audit",
+      "label": "Product contract audit",
+      "pass": true,
+      "details": {
+        "total": 16,
+        "passed": 16,
+        "failed": 0
+      }
+    },
+    {
+      "id": "ui_binding_audit",
+      "label": "UI binding audit",
+      "pass": true,
+      "details": {
+        "topContractRendered": true,
+        "duplicatePrimaryActionDetected": false,
+        "forbiddenInternalTermsInRenderedUi": 0,
+        "trendGuardInRenderedUi": true,
+        "pdfExportChecked": true
+      }
+    },
+    {
+      "id": "readability_audit",
+      "label": "Readability audit",
+      "pass": true,
+      "details": {
+        "total": 10,
+        "pass": 10,
+        "fail": 0,
+        "forbiddenInternalTermsCount": 0,
+        "duplicatePrimaryActionExists": false,
+        "unsupportedTrendWordingExists": false
+      }
+    },
+    {
+      "id": "short_vs_detailed_consistency",
+      "label": "Short vs detailed consistency",
+      "pass": true,
+      "details": {
+        "scenarioCount": 10,
+        "passCount": 10,
+        "failCount": 0,
+        "hasDetailedLink": true
+      }
+    },
+    {
+      "id": "skill_coverage",
+      "label": "Skill coverage gate",
+      "pass": true,
+      "details": {
+        "total": 423,
+        "weak": 7,
+        "zero": 0,
+        "uncertain": 0
+      }
+    },
+    {
+      "id": "question_audit",
+      "label": "Question audit gate",
+      "pass": true,
+      "details": {
+        "exactDuplicateCrossGradeStaticBanksOnly": 0,
+        "mathKindsNotHitSample": 0,
+        "geoKindsNotHitSample": 0,
+        "criticalMisses": 0
+      }
+    }
+  ],
+  "knownRisks": [
+    "Manual browser QA blocked: no interactive browser environment available in this agent runtime.",
+    "Short report computes detailed contract for preview; monitor runtime cost on low-end devices."
+  ],
+  "launchRecommendation": "AUTOMATED PASS / MANUAL QA REQUIRED"
+}

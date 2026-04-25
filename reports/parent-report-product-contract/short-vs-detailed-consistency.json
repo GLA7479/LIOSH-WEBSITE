@@ -1,0 +1,368 @@
+{
+  "summary": {
+    "generatedAt": "2026-04-25T11:56:23.022Z",
+    "scenarioCount": 10,
+    "passCount": 10,
+    "failCount": 0,
+    "hasDetailedLink": true,
+    "contractAvailableInShortReport": [
+      {
+        "scenarioId": "new_user_no_data",
+        "available": true
+      },
+      {
+        "scenarioId": "weak_enough_evidence",
+        "available": true
+      },
+      {
+        "scenarioId": "weak_thin_evidence",
+        "available": true
+      },
+      {
+        "scenarioId": "strong_stable_mastery",
+        "available": true
+      },
+      {
+        "scenarioId": "strong_accuracy_fragile_success",
+        "available": true
+      },
+      {
+        "scenarioId": "speed_issue_only_no_knowledge_gap",
+        "available": true
+      },
+      {
+        "scenarioId": "multiple_subjects_one_clear_priority",
+        "available": true
+      },
+      {
+        "scenarioId": "trend_insufficient",
+        "available": true
+      },
+      {
+        "scenarioId": "trend_sufficient_up",
+        "available": true
+      },
+      {
+        "scenarioId": "trend_sufficient_down",
+        "available": true
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "scenarioId": "new_user_no_data",
+      "contractAvailableInShortReport": true,
+      "detailedTop": {
+        "mainStatusHe": "אין עדיין מספיק נתונים כדי לקבוע תמונת מצב מקצועית.",
+        "mainPriorityHe": "להתחיל בתרגול קצר ועקבי כדי לבנות בסיס מדידה.",
+        "doNowHe": "לבחור נושא אחד ולתרגל 10–15 דקות בכל מפגש.",
+        "evidenceSummaryHe": "הנתונים הקיימים עדיין חלקיים.",
+        "trendEvidenceStatus": "insufficient"
+      },
+      "shortSnapshot": {
+        "topVisibleSummaryLines": [
+          "מצב: אין עדיין מספיק נתונים כדי לקבוע תמונת מצב מקצועית.",
+          "מיקוד עיקרי: להתחיל בתרגול קצר ועקבי כדי לבנות בסיס מדידה.",
+          "מה עושים עכשיו: לבחור נושא אחד ולתרגל 10–15 דקות בכל מפגש.",
+          "נתונים חלקיים במקצועות: אין מספיק נתונים"
+        ],
+        "recommendationLines": [
+          "נתונים חלקיים במקצועות: אין מספיק נתונים"
+        ],
+        "trendDiagnosticLines": [
+          "נתונים חלקיים במקצועות: אין מספיק נתונים"
+        ],
+        "primaryActions": [
+          "להתחיל בתרגול קצר ועקבי כדי לבנות בסיס מדידה."
+        ]
+      },
+      "beforeFix": {
+        "pass": true,
+        "contradictions": []
+      },
+      "afterFix": {
+        "pass": true,
+        "contradictions": []
+      }
+    },
+    {
+      "scenarioId": "weak_enough_evidence",
+      "contractAvailableInShortReport": true,
+      "detailedTop": {
+        "mainStatusHe": "יש גם מקום לחיזוק בנושא חיבור.",
+        "mainPriorityHe": "חזרה ממוקדת על טעויות דומות באותה רמת קושי.",
+        "doNowHe": "חזרה ממוקדת על טעויות דומות באותה רמת קושי.",
+        "evidenceSummaryHe": "נאספו 18 שאלות, דיוק 50%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+        "trendEvidenceStatus": "insufficient"
+      },
+      "shortSnapshot": {
+        "topVisibleSummaryLines": [
+          "מצב: יש גם מקום לחיזוק בנושא חיבור.",
+          "מיקוד עיקרי: חזרה ממוקדת על טעויות דומות באותה רמת קושי.",
+          "מה עושים עכשיו: חזרה ממוקדת על טעויות דומות באותה רמת קושי."
+        ],
+        "recommendationLines": [],
+        "trendDiagnosticLines": [],
+        "primaryActions": [
+          "חזרה ממוקדת על טעויות דומות באותה רמת קושי."
+        ]
+      },
+      "beforeFix": {
+        "pass": true,
+        "contradictions": []
+      },
+      "afterFix": {
+        "pass": true,
+        "contradictions": []
+      }
+    },
+    {
+      "scenarioId": "weak_thin_evidence",
+      "contractAvailableInShortReport": true,
+      "detailedTop": {
+        "mainStatusHe": "יש גם מקום לחיזוק בנושא חיבור.",
+        "mainPriorityHe": "חזרה ממוקדת על טעויות דומות באותה רמת קושי.",
+        "doNowHe": "חזרה ממוקדת על טעויות דומות באותה רמת קושי.",
+        "evidenceSummaryHe": "נאספו 10 שאלות, דיוק 50%, זמן תרגול 0 דקות. אין מספיק נתוני מגמה תקינים כדי לקבוע כיוון שינוי.",
+        "trendEvidenceStatus": "insufficient"
+      },
+      "shortSnapshot": {
+        "topVisibleSummaryLines": [
+          "מצב: יש גם מקום לחיזוק בנושא חיבור.",
+          "מיקוד עיקרי: חזרה ממוקדת על טעויות דומות באותה רמת קושי.",
+          "מה עושים עכשיו: חזרה ממוקדת על טעויות דומות באותה רמת קושי."
+        ],
+        "recommendationLines": [],
+        "trendDiagnosticLines": [],
+        "primaryActions": [
+          "חזרה ממוקדת על טעויות דומות באותה רמת קושי."
+        ]
+      },
+      "beforeFix": {
+        "pass": true,
+        "contradictions": []
+      },
+      "afterFix": {
+        "pass": true,
+        "contradictions": []
+      }
+    },
+    {
+      "scenarioId": "strong_stable_mastery",
+      "contractAvailableInShortReport": true,
+      "detailedTop": {
+        "mainStatusHe": "נראה שהילד מצליח בחיבור — כיתה ד׳ — רמה בינונית לאורך זמן.",
+        "mainPriorityHe": "להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+        "doNowHe": "להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+        "evidenceSummaryHe": "נאספו 24 שאלות, דיוק 93%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+        "trendEvidenceStatus": "insufficient"
+      },
+      "shortSnapshot": {
+        "topVisibleSummaryLines": [
+          "מצב: נראה שהילד מצליח בחיבור — כיתה ד׳ — רמה בינונית לאורך זמן.",
+          "מיקוד עיקרי: להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+          "מה עושים עכשיו: להמשיך באותה רמה עם מעקב קצר אחרי דיוק."
+        ],
+        "recommendationLines": [],
+        "trendDiagnosticLines": [],
+        "primaryActions": [
+          "להמשיך באותה רמה עם מעקב קצר אחרי דיוק."
+        ]
+      },
+      "beforeFix": {
+        "pass": true,
+        "contradictions": []
+      },
+      "afterFix": {
+        "pass": true,
+        "contradictions": []
+      }
+    },
+    {
+      "scenarioId": "strong_accuracy_fragile_success",
+      "contractAvailableInShortReport": true,
+      "detailedTop": {
+        "mainStatusHe": "יש גם מקום לחיזוק בנושא חיבור.",
+        "mainPriorityHe": "להפריד בבירור בין «ניסיון לבד» לבין «בדיקה יחד בסוף».",
+        "doNowHe": "להפריד בבירור בין «ניסיון לבד» לבין «בדיקה יחד בסוף».",
+        "evidenceSummaryHe": "נאספו 20 שאלות, דיוק 78%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+        "trendEvidenceStatus": "insufficient"
+      },
+      "shortSnapshot": {
+        "topVisibleSummaryLines": [
+          "מצב: יש גם מקום לחיזוק בנושא חיבור.",
+          "מיקוד עיקרי: להפריד בבירור בין «ניסיון לבד» לבין «בדיקה יחד בסוף».",
+          "מה עושים עכשיו: להפריד בבירור בין «ניסיון לבד» לבין «בדיקה יחד בסוף»."
+        ],
+        "recommendationLines": [],
+        "trendDiagnosticLines": [],
+        "primaryActions": [
+          "להפריד בבירור בין «ניסיון לבד» לבין «בדיקה יחד בסוף»."
+        ]
+      },
+      "beforeFix": {
+        "pass": true,
+        "contradictions": []
+      },
+      "afterFix": {
+        "pass": true,
+        "contradictions": []
+      }
+    },
+    {
+      "scenarioId": "speed_issue_only_no_knowledge_gap",
+      "contractAvailableInShortReport": true,
+      "detailedTop": {
+        "mainStatusHe": "יש גם מקום לחיזוק בנושא חיבור.",
+        "mainPriorityHe": "תרגול אחד קצר בלי טיימר, עם עצירה לפני שליחה.",
+        "doNowHe": "תרגול אחד קצר בלי טיימר, עם עצירה לפני שליחה.",
+        "evidenceSummaryHe": "נאספו 22 שאלות, דיוק 77%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+        "trendEvidenceStatus": "insufficient"
+      },
+      "shortSnapshot": {
+        "topVisibleSummaryLines": [
+          "מצב: יש גם מקום לחיזוק בנושא חיבור.",
+          "מיקוד עיקרי: תרגול אחד קצר בלי טיימר, עם עצירה לפני שליחה.",
+          "מה עושים עכשיו: תרגול אחד קצר בלי טיימר, עם עצירה לפני שליחה."
+        ],
+        "recommendationLines": [],
+        "trendDiagnosticLines": [],
+        "primaryActions": [
+          "תרגול אחד קצר בלי טיימר, עם עצירה לפני שליחה."
+        ]
+      },
+      "beforeFix": {
+        "pass": true,
+        "contradictions": []
+      },
+      "afterFix": {
+        "pass": true,
+        "contradictions": []
+      }
+    },
+    {
+      "scenarioId": "multiple_subjects_one_clear_priority",
+      "contractAvailableInShortReport": true,
+      "detailedTop": {
+        "mainStatusHe": "רואים שמירה טובה על הרמה ב־חיבור — כיתה ד׳ — רמה בינונית. יש גם מקום לחיזוק בנושא חיבור.",
+        "mainPriorityHe": "כל משימה עם עצירת בדיקה קצרה לפני סיום.",
+        "doNowHe": "כל משימה עם עצירת בדיקה קצרה לפני סיום.",
+        "evidenceSummaryHe": "נאספו 22 שאלות, דיוק 82%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+        "trendEvidenceStatus": "insufficient"
+      },
+      "shortSnapshot": {
+        "topVisibleSummaryLines": [
+          "מצב: רואים שמירה טובה על הרמה ב־חיבור — כיתה ד׳ — רמה בינונית. יש גם מקום לחיזוק בנושא חיבור.",
+          "מיקוד עיקרי: כל משימה עם עצירת בדיקה קצרה לפני סיום.",
+          "מה עושים עכשיו: כל משימה עם עצירת בדיקה קצרה לפני סיום."
+        ],
+        "recommendationLines": [],
+        "trendDiagnosticLines": [],
+        "primaryActions": [
+          "כל משימה עם עצירת בדיקה קצרה לפני סיום."
+        ]
+      },
+      "beforeFix": {
+        "pass": true,
+        "contradictions": []
+      },
+      "afterFix": {
+        "pass": true,
+        "contradictions": []
+      }
+    },
+    {
+      "scenarioId": "trend_insufficient",
+      "contractAvailableInShortReport": true,
+      "detailedTop": {
+        "mainStatusHe": "יש גם מקום לחיזוק בנושא חיבור.",
+        "mainPriorityHe": "חזרה ממוקדת על טעויות דומות באותה רמת קושי.",
+        "doNowHe": "חזרה ממוקדת על טעויות דומות באותה רמת קושי.",
+        "evidenceSummaryHe": "נאספו 10 שאלות, דיוק 50%, זמן תרגול 0 דקות. אין מספיק נתוני מגמה תקינים כדי לקבוע כיוון שינוי.",
+        "trendEvidenceStatus": "insufficient"
+      },
+      "shortSnapshot": {
+        "topVisibleSummaryLines": [
+          "מצב: יש גם מקום לחיזוק בנושא חיבור.",
+          "מיקוד עיקרי: חזרה ממוקדת על טעויות דומות באותה רמת קושי.",
+          "מה עושים עכשיו: חזרה ממוקדת על טעויות דומות באותה רמת קושי."
+        ],
+        "recommendationLines": [],
+        "trendDiagnosticLines": [],
+        "primaryActions": [
+          "חזרה ממוקדת על טעויות דומות באותה רמת קושי."
+        ]
+      },
+      "beforeFix": {
+        "pass": true,
+        "contradictions": []
+      },
+      "afterFix": {
+        "pass": true,
+        "contradictions": []
+      }
+    },
+    {
+      "scenarioId": "trend_sufficient_up",
+      "contractAvailableInShortReport": true,
+      "detailedTop": {
+        "mainStatusHe": "הטעויות שיש עדיין לא מספרות סיפור אחד ברור — זה בסדר; נמשיך לעקוב. רואים גם תחומים במגמת שיפור: חיבור — כיתה ד׳ — רמה בינונית.",
+        "mainPriorityHe": "כל משימה עם עצירת בדיקה קצרה לפני סיום.",
+        "doNowHe": "כל משימה עם עצירת בדיקה קצרה לפני סיום.",
+        "evidenceSummaryHe": "נאספו 24 שאלות, דיוק 82%, זמן תרגול 0 דקות. נראית מגמת שיפור מבוססת.",
+        "trendEvidenceStatus": "sufficient"
+      },
+      "shortSnapshot": {
+        "topVisibleSummaryLines": [
+          "מצב: הטעויות שיש עדיין לא מספרות סיפור אחד ברור — זה בסדר; נמשיך לעקוב. רואים גם תחומים במגמת שיפור: חיבור — כיתה ד׳ — רמה בינונית.",
+          "מיקוד עיקרי: כל משימה עם עצירת בדיקה קצרה לפני סיום.",
+          "מה עושים עכשיו: כל משימה עם עצירת בדיקה קצרה לפני סיום."
+        ],
+        "recommendationLines": [],
+        "trendDiagnosticLines": [],
+        "primaryActions": [
+          "כל משימה עם עצירת בדיקה קצרה לפני סיום."
+        ]
+      },
+      "beforeFix": {
+        "pass": true,
+        "contradictions": []
+      },
+      "afterFix": {
+        "pass": true,
+        "contradictions": []
+      }
+    },
+    {
+      "scenarioId": "trend_sufficient_down",
+      "contractAvailableInShortReport": true,
+      "detailedTop": {
+        "mainStatusHe": "יש גם מקום לחיזוק בנושא חיבור.",
+        "mainPriorityHe": "להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+        "doNowHe": "להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+        "evidenceSummaryHe": "נאספו 22 שאלות, דיוק 58%, זמן תרגול 0 דקות. אין מספיק נתוני מגמה תקינים כדי לקבוע כיוון שינוי.",
+        "trendEvidenceStatus": "insufficient"
+      },
+      "shortSnapshot": {
+        "topVisibleSummaryLines": [
+          "מצב: יש גם מקום לחיזוק בנושא חיבור.",
+          "מיקוד עיקרי: להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+          "מה עושים עכשיו: להמשיך באותה רמה עם מעקב קצר אחרי דיוק."
+        ],
+        "recommendationLines": [],
+        "trendDiagnosticLines": [],
+        "primaryActions": [
+          "להמשיך באותה רמה עם מעקב קצר אחרי דיוק."
+        ]
+      },
+      "beforeFix": {
+        "pass": true,
+        "contradictions": []
+      },
+      "afterFix": {
+        "pass": true,
+        "contradictions": []
+      }
+    }
+  ]
+}

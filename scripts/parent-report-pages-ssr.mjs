@@ -34,6 +34,10 @@ const {
 } = detailedMod;
 const contractUiMod = await import(pathToFileURL(join(ROOT, "components/parent-report-contract-ui-blocks.jsx")).href);
 const { ParentTopContractSummaryBlock, ParentSubjectContractSummaryBlock } = contractUiMod;
+const shortContractUiMod = await import(
+  pathToFileURL(join(ROOT, "components/parent-report-short-contract-preview.jsx")).href
+);
+const { ParentReportShortContractPreview } = shortContractUiMod;
 
 const parentMod = await import(pathToFileURL(join(ROOT, "components/parent-report-topic-explain-row.jsx")).href);
 const { ParentReportTopicExplainRow, ParentReportTopicExplainBlock } = parentMod;
@@ -353,6 +357,16 @@ function runContractBindingChunks() {
 
   const legacyFallbackHtml = renderToStaticMarkup(h(ParentTopContractSummaryBlock, { top: null }));
   assert.equal(legacyFallbackHtml, "", "missing top contract should render empty safely");
+
+  const shortPreviewHtml = render(
+    "contract-ui:short-preview",
+    h(ParentReportShortContractPreview, { top })
+  );
+  assert.ok(shortPreviewHtml.includes("סיכום קצר להורה"), "short preview title should render");
+  assert.ok(shortPreviewHtml.includes("מה עושים עכשיו"), "short preview should include do-now line");
+  assert.ok(!shortPreviewHtml.includes("פער ידע"), "stable short preview should avoid remediation wording");
+  const shortFallbackHtml = renderToStaticMarkup(h(ParentReportShortContractPreview, { top: null }));
+  assert.equal(shortFallbackHtml, "", "missing short contract preview should render empty safely");
 }
 
 function runParentReportPageChunks() {

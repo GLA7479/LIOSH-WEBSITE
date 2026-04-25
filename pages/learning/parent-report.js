@@ -4,6 +4,7 @@ import { ParentReportImportantDisclaimer } from "../../components/ParentReportIm
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
+import { generateDetailedParentReport } from "../../utils/detailed-parent-report";
 import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
 import {
   stripTechnicalParensForParentDiagnosticsHe as stripTechnicalParensHe,
@@ -26,6 +27,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import ParentReportShortContractPreview from "../../components/parent-report-short-contract-preview.jsx";
 
 function parentReportChartLabelFromAllItemKey(key, data) {
   if (data?.displayName) return data.displayName;
@@ -553,6 +555,7 @@ export default function ParentReport() {
   useIOSViewportFix();
   const router = useRouter();
   const [report, setReport] = useState(null);
+  const [shortContractTop, setShortContractTop] = useState(null);
   const [period, setPeriod] = useState('week');
   const [playerName, setPlayerName] = useState("");
   const [loading, setLoading] = useState(true);
@@ -644,6 +647,8 @@ export default function ParentReport() {
       if (name) {
         const data = generateParentReportV2(name, period);
         setReport(data);
+        const detailed = generateDetailedParentReport(name, period);
+        setShortContractTop(detailed?.parentProductContractV1?.top || null);
       }
       setLoading(false);
     }
@@ -668,6 +673,10 @@ export default function ParentReport() {
       }
       if (data) {
         setReport(data);
+        const detailed = customDates && appliedStartDate && appliedEndDate
+          ? generateDetailedParentReport(playerName, "custom", appliedStartDate, appliedEndDate)
+          : generateDetailedParentReport(playerName, period);
+        setShortContractTop(detailed?.parentProductContractV1?.top || null);
       }
     }
   }, [period, customDates, appliedStartDate, appliedEndDate, playerName, loading]);
@@ -1427,17 +1436,19 @@ export default function ParentReport() {
             </div>
           </div>
 
+          <ParentReportShortContractPreview top={shortContractTop} />
+
           {report.summary?.diagnosticOverviewHe ? (
             <div className="mb-3 md:mb-5 avoid-break rounded-lg border border-amber-400/25 bg-amber-950/15 p-3 md:p-4 text-sm text-white/90 space-y-2">
               <p className="font-bold text-amber-100/95 m-0 text-sm md:text-base">מיקוד אבחוני (לפי הנתונים בטווח)</p>
-              {report.summary.diagnosticOverviewHe.mainFocusAreaLineHe ? (
+              {!shortContractTop && report.summary.diagnosticOverviewHe.mainFocusAreaLineHe ? (
                 <p className="m-0 leading-relaxed">
                   <span className="text-white/55">דורש תשומת לב כעת: </span>
                   {report.summary.diagnosticOverviewHe.mainFocusAreaLineHe}
                 </p>
-              ) : (
+              ) : !shortContractTop ? (
                 <p className="m-0 text-white/55 text-xs">אין עדיין תחום שזוהה כדורש תשומת לב מיידית בטווח זה.</p>
-              )}
+              ) : null}
               {report.summary.diagnosticOverviewHe.strongestAreaLineHe ? (
                 <p className="m-0 leading-relaxed">
                   <span className="text-white/55">חוזק לשימור: </span>

@@ -1,49 +1,82 @@
-# Manual Browser QA Checklist — Parent Detailed Report
+# Manual Browser QA Checklist — Parent Reports Release Gate
 
 ## Preconditions
-- Run app in dev mode.
-- Ensure test player data exists (or use seeded scenarios).
+- Run app in dev mode with real UI rendering.
+- Use at least one player with data and one without data.
+- Device targets: mobile 360px and desktop >=1280px.
+- Execution context note: interactive browser QA is not available in this agent runtime.
 
-## 1) Open detailed report (full mode)
-1. Open `/learning/parent-report`.
-2. Click to open detailed report (`/learning/parent-report-detailed`).
-3. Confirm first major block is `סיכום להורה`.
-4. Confirm `סיכום לתקופה` appears after `סיכום להורה`.
-5. Confirm no competing top "main action" line appears above the contract block.
+## A. Short report — mobile 360px
+- [ ] Open `/learning/parent-report`.
+- [ ] Verify `סיכום קצר להורה` appears near top.
+- [ ] Verify no horizontal scroll.
+- [ ] Verify first screen clearly says what to do now.
+- [ ] Verify no duplicate top action.
+- [ ] Verify link to detailed report is visible.
+- Status: BLOCKED
+- Evidence / note: No interactive browser/devtools viewport available in agent runtime; cannot visually validate.
+- Exact route tested: `/learning/parent-report`
+- Viewport tested: `360x800` (required, not executable here)
+- Screenshot path: N/A (blocked)
 
-## 2) Open detailed report (summary mode)
-1. Toggle to `תקציר להדפסה`.
-2. Confirm top contract block still appears first.
-3. Confirm subject contract mini-block appears in each subject card.
-4. Confirm text is readable and not duplicated word-for-word from top action.
+## B. Short report — desktop
+- [ ] Open `/learning/parent-report` at >=1280px.
+- [ ] Verify `סיכום קצר להורה` still appears near top.
+- [ ] Verify no horizontal scroll.
+- [ ] Verify no duplicate top action.
+- [ ] Verify charts/metrics do not push contract preview too far down.
+- Status: BLOCKED
+- Evidence / note: No interactive browser/devtools desktop rendering available in agent runtime.
+- Exact route tested: `/learning/parent-report`
+- Viewport tested: `1366x768` (required, not executable here)
+- Screenshot path: N/A (blocked)
 
-## 3) Print full report
-1. Click `הדפס מלא`.
-2. In print preview, confirm black text on white background.
-3. Confirm contract summary appears before legacy summary.
-4. Confirm no duplicate "main action" in first printed page.
+## C. Detailed report full mode — mobile 360px
+- [ ] Open `/learning/parent-report-detailed`.
+- [ ] Verify `סיכום להורה` appears before `סיכום לתקופה`.
+- [ ] Verify first screen has `מצב` / `מיקוד` / `מה עושים עכשיו`.
+- [ ] Verify subject sections are readable.
+- [ ] Verify no duplicate main action.
+- [ ] Verify no horizontal overflow.
+- Status: BLOCKED
+- Evidence / note: Browser-like visual execution unavailable; cannot verify layout, order, and first-screen readability visually.
+- Exact route tested: `/learning/parent-report-detailed`
+- Viewport tested: `360x800` (required, not executable here)
+- Screenshot path: N/A (blocked)
 
-## 4) Print summary report
-1. Click `הדפס תקציר`.
-2. Confirm contract summary appears and remains readable.
-3. Confirm subject contract blocks are visible.
-4. Confirm no horizontal clipping.
+## D. Detailed report summary mode
+- [ ] Open `/learning/parent-report-detailed?mode=summary`.
+- [ ] Verify top contract appears.
+- [ ] Verify subject contract mini-blocks appear.
+- [ ] Verify summary mode is shorter than full mode.
+- Status: BLOCKED
+- Evidence / note: No interactive browser run available for visual comparison between full and summary mode.
+- Exact route tested: `/learning/parent-report-detailed?mode=summary`
+- Viewport tested: `360x800` and `1366x768` (required, not executable here)
+- Screenshot path: N/A (blocked)
 
-## 5) Mobile width (~360px)
-1. Open browser responsive mode at 360px width.
-2. Reload detailed report in full and summary modes.
-3. Confirm no horizontal overflow (no sideways scroll on main content).
-4. Confirm first screen clearly states what to do now.
-5. Confirm subject blocks remain readable and separated.
+## E. Print / PDF
+- [ ] Print full mode.
+- [ ] Print summary mode.
+- [ ] Verify black text on white.
+- [ ] Verify first page includes parent summary.
+- [ ] Verify no washed-out text.
+- [ ] Verify no section is cut in a confusing way.
+- Status: BLOCKED
+- Evidence / note: Print preview/PDF visual validation requires browser print dialog; not available in current runtime.
+- Exact route tested: `/learning/parent-report-detailed` and `/learning/parent-report-detailed?mode=summary`
+- Viewport tested: Browser print preview (required, not executable here)
+- Screenshot path: N/A (blocked)
 
-## 6) Desktop width
-1. Open at >=1280px width.
-2. Confirm section order and spacing remain stable.
-3. Confirm no contradictory recommendation lines between top and subject blocks.
-
-## 7) Final contradiction checks
-- `רעיונות קצרים לבית` does not contradict top `מה עושים עכשיו`.
-- `כיוון לימים הבאים` does not override top action for current cycle.
-- No internal terms (e.g., P1/P2/gate/canonical) visible.
-- For trend-insufficient data, no strong trend wording.
-- For stable mastery, no remediation wording in top contract area.
+## F. Edge cases
+- [ ] No player name.
+- [ ] No data.
+- [ ] Partial data.
+- [ ] Stable mastery case.
+- [ ] Weak thin evidence case.
+- [ ] Trend insufficient case.
+- Status: BLOCKED
+- Evidence / note: Requires interactive scenario switching and visual confirmation per route; not available in current runtime.
+- Exact route tested: `/learning/parent-report` and `/learning/parent-report-detailed` (scenario-specific runs required)
+- Viewport tested: `360x800` and `1366x768` (required, not executable here)
+- Screenshot path: N/A (blocked)
