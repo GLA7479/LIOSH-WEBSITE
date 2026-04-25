@@ -105,6 +105,33 @@ function topicRowValue(value, sid, topic) {
   return { ...DEFAULT_TOPIC_ROW, enabled: false, targetQuestions: 0, ...value?.topicSettings?.[sid]?.[topic] };
 }
 
+/** @returns {string[]} topic keys that are active and have questions > 0 (same rule as listAffectedTopicUnits) */
+function activeTopicKeysFromSettings(ts, sid) {
+  const m = ts?.[sid];
+  if (!m || typeof m !== "object") return [];
+  return (SUBJECT_BUCKETS[sid] || []).filter((k) => {
+    const r = m[k];
+    if (!r || !r.enabled) return false;
+    return Math.max(0, Math.floor(Number(r.targetQuestions) || 0)) > 0;
+  });
+}
+
+/**
+ * Clones the whole topicSettings object and ensures `sid` is a new object
+ * with every canonical bucket key present (preserves existing rows).
+ * Prevents React updates from dropping sibling topic rows when a subject map was {} or missing keys.
+ */
+function ensureSubjectTopicMapShape(baseSpec, topicSettingsRoot, sid) {
+  const prev =
+    topicSettingsRoot?.[sid] && typeof topicSettingsRoot[sid] === "object" ? { ...topicSettingsRoot[sid] } : {};
+  for (const tk of SUBJECT_BUCKETS[sid] || []) {
+    if (prev[tk] == null || typeof prev[tk] !== "object") {
+      prev[tk] = { ...topicRowValue(baseSpec, sid, tk) };
+    }
+  }
+  return prev;
+}
+
 export default function CustomBuilderPanel({ value, setValue, disabled }) {
   const [showInternalTopicKeys, setShowInternalTopicKeys] = useState(false);
 
@@ -126,27 +153,29 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
       const prevRow = prevSubjects[sid] && typeof prevSubjects[sid] === "object" ? prevSubjects[sid] : {};
       return {
         ...s,
-        subjects: { ...prevSubjects, [sid]: { ...prevRow, ...patch } },
+        subjects: { ...prevSubjects, [sid]: { ...FALLBACK_SUBJECT_ROW, ...prevRow, ...patch } },
       };
     });
 
   const setTopicField = (sid, topic, patch) => {
     setValue((s) => {
-      const prevRow = topicRowValue(s, sid, topic);
+      const baseTS = s.topicSettings && typeof s.topicSettings === "object" ? s.topicSettings : {};
+      const nextSid = ensureSubjectTopicMapShape(s, baseTS, sid);
+      const prevRow = { ...nextSid[topic] };
       const nextRow = { ...prevRow, ...patch };
-      const nextTS = { ...s.topicSettings, [sid]: { ...s.topicSettings?.[sid], [topic]: nextRow } };
-      let nextTopicList = [...(s.subjects?.[sid]?.topics || [])];
-      if (nextRow.enabled) {
-        if (!nextTopicList.includes(topic)) nextTopicList.push(topic);
-      } else {
-        nextTopicList = nextTopicList.filter((t) => t !== topic);
+      if (nextRow.targetQuestions != null) {
+        nextRow.targetQuestions = Math.max(0, Math.floor(Number(nextRow.targetQuestions) || 0));
       }
+      nextSid[topic] = nextRow;
+      const topicListFromSettings = activeTopicKeysFromSettings({ ...baseTS, [sid]: nextSid }, sid);
+      const prevSub =
+        s.subjects?.[sid] && typeof s.subjects[sid] === "object" ? { ...s.subjects[sid] } : { ...FALLBACK_SUBJECT_ROW };
       return {
         ...s,
-        topicSettings: nextTS,
+        topicSettings: { ...baseTS, [sid]: nextSid },
         subjects: {
-          ...s.subjects,
-          [sid]: { ...s.subjects?.[sid], topics: nextTopicList },
+          ...(s.subjects && typeof s.subjects === "object" ? s.subjects : {}),
+          [sid]: { ...prevSub, topics: topicListFromSettings },
         },
       };
     });
@@ -154,48 +183,47 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
 
   const toggleSubjectEnabled = (sid, on) => {
     const buckets = SUBJECT_BUCKETS[sid] || [];
-    const prev = value.subjects?.[sid] || { ...FALLBACK_SUBJECT_ROW };
-    const prevTopics = Array.isArray(prev.topics) ? prev.topics : [];
     setValue((s) => {
-      const nextSubject = {
-        ...prev,
-        enabled: on,
-        topics: on ? (prevTopics.length > 0 ? prevTopics : []) : [],
-      };
-      const nextTS = { ...s.topicSettings };
-      if (!nextTS[sid] || typeof nextTS[sid] !== "object") nextTS[sid] = {};
+      const baseTS = s.topicSettings && typeof s.topicSettings === "object" ? s.topicSettings : {};
+      const nextSid = ensureSubjectTopicMapShape(s, baseTS, sid);
+      const prevSub =
+        s.subjects?.[sid] && typeof s.subjects[sid] === "object" ? { ...s.subjects[sid] } : { ...FALLBACK_SUBJECT_ROW };
+      const nextSubject = { ...prevSub, enabled: on, topics: on ? [] : [] };
       for (const t of buckets) {
         if (!on) {
-          nextTS[sid][t] = { ...topicRowValue(s, sid, t), enabled: false, targetQuestions: 0 };
-        } else if (!nextTS[sid][t]) {
-          nextTS[sid][t] = {
-            ...DEFAULT_TOPIC_ROW,
-            enabled: false,
-            targetQuestions: 0,
-            targetAccuracyPct: nextSubject.targetAccuracyPct || 76,
-            avgSessionDurationSec: nextSubject.avgSessionDurationSec || 900,
-            level: nextSubject.level || "medium",
-            mode: nextSubject.mode || "learning",
-            topicTrend: s.customTrend || "stable",
-            repeatedMistakeStrengthPct: s.repeatedMistakeStrengthPct || 40,
-            responseMsBehavior: s.responseMsBehavior || "balanced",
-          };
-        }
-      }
-      if (on) {
-        const sel = new Set([...(nextSubject.topics || [])]);
-        for (const t of buckets) {
-          if (sel.has(t)) {
-            const base = { ...nextTS[sid][t] };
-            if (base.targetQuestions < 1 && base.enabled) {
-              nextTS[sid][t] = { ...base, targetQuestions: 20 };
-            } else {
-              nextTS[sid][t] = base;
-            }
+          const cur = { ...nextSid[t] };
+          nextSid[t] = { ...cur, enabled: false, targetQuestions: 0 };
+        } else {
+          if (!nextSid[t] || typeof nextSid[t] !== "object") {
+            nextSid[t] = {
+              ...DEFAULT_TOPIC_ROW,
+              enabled: false,
+              targetQuestions: 0,
+              targetAccuracyPct: nextSubject.targetAccuracyPct || 76,
+              avgSessionDurationSec: nextSubject.avgSessionDurationSec || 900,
+              level: nextSubject.level || "medium",
+              mode: nextSubject.mode || "learning",
+              topicTrend: s.customTrend || "stable",
+              repeatedMistakeStrengthPct: s.repeatedMistakeStrengthPct || 40,
+              responseMsBehavior: s.responseMsBehavior || "balanced",
+            };
           }
         }
       }
-      return { ...s, subjects: { ...s.subjects, [sid]: nextSubject }, topicSettings: nextTS };
+      if (on) {
+        for (const t of buckets) {
+          const r = nextSid[t];
+          if (r?.enabled && Math.max(0, Math.floor(Number(r?.targetQuestions) || 0)) < 1) {
+            nextSid[t] = { ...r, targetQuestions: 20 };
+          }
+        }
+      }
+      nextSubject.topics = on ? activeTopicKeysFromSettings({ [sid]: nextSid }, sid) : [];
+      return {
+        ...s,
+        topicSettings: { ...baseTS, [sid]: nextSid },
+        subjects: { ...(s.subjects && typeof s.subjects === "object" ? s.subjects : {}), [sid]: nextSubject },
+      };
     });
   };
 
@@ -329,7 +357,13 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
           </label>
         ) : null}
         <label style={{ ...fieldStyle, display: "flex", alignItems: "center", gap: 8 }}>
-          <input type="checkbox" checked={value.debugShortMode} onChange={(e) => setField("debugShortMode", e.target.checked)} disabled={disabled} />
+          <input
+            type="checkbox"
+            data-testid="dev-sim-debug-short"
+            checked={value.debugShortMode}
+            onChange={(e) => setField("debugShortMode", e.target.checked)}
+            disabled={disabled}
+          />
           {LABEL.debug}
         </label>
       </div>
@@ -385,7 +419,13 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
                   cursor: disabled ? "default" : "pointer",
                 }}
               >
-                <input type="checkbox" checked={row.enabled} onChange={(e) => toggleSubjectEnabled(sid, e.target.checked)} disabled={disabled} />
+                <input
+                  type="checkbox"
+                  data-testid={`dev-sim-subject-enable-${sid}`}
+                  checked={row.enabled}
+                  onChange={(e) => toggleSubjectEnabled(sid, e.target.checked)}
+                  disabled={disabled}
+                />
                 <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, textAlign: "right" }}>
                   <span style={{ fontWeight: 700, fontSize: 14 }}>{hebrewSubjectLabel(sid)}</span>
                   {showInternalTopicKeys ? (
@@ -450,6 +490,7 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
                             <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>
                               <input
                                 type="checkbox"
+                                data-testid={`dev-sim-topic-active-${sid}-${topic}`}
                                 checked={tr.enabled}
                                 onChange={(e) => setTopicField(sid, topic, { enabled: e.target.checked, targetQuestions: e.target.checked && tr.targetQuestions < 1 ? 20 : tr.targetQuestions })}
                                 disabled={disabled}
@@ -465,6 +506,7 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
                               <input
                                 type="number"
                                 min={0}
+                                data-testid={`dev-sim-topic-questions-${sid}-${topic}`}
                                 style={tableInput}
                                 value={tr.targetQuestions}
                                 onChange={(e) => setTopicField(sid, topic, { targetQuestions: Math.max(0, Math.floor(Number(e.target.value) || 0)) })}

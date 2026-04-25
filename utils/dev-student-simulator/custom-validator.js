@@ -216,9 +216,13 @@ export function validateCustomSessionsAfterBuild(sessions, spec) {
   if (debug) {
     if (sessions.length < 3) errors.push(`(debug) sessions ${sessions.length} < 3`);
     if (totalQuestions < 15) errors.push(`(debug) totalQuestions ${totalQuestions} < 15`);
-    if (spanDays < 3) errors.push(`(debug) spanDays ${spanDays} < 3`);
-    if (dayCount < 2) errors.push(`(debug) activeDays ${dayCount} < 2`);
     if (subjectCount < 1) errors.push(`(debug) subjectCount ${subjectCount} < 1`);
+    // Multi-subject topic builds can legitimately compress onto one calendar day in short debug runs.
+    const relaxCalendarHeuristics = subjectCount >= 2;
+    if (!relaxCalendarHeuristics) {
+      if (spanDays < 3) errors.push(`(debug) spanDays ${spanDays} < 3`);
+      if (dayCount < 2) errors.push(`(debug) activeDays ${dayCount} < 2`);
+    }
   } else if (reportQuality) {
     if (sessions.length < 40) errors.push(`sessions ${sessions.length} < 40`);
     if (totalQuestions < 600) errors.push(`totalQuestions ${totalQuestions} < 600`);

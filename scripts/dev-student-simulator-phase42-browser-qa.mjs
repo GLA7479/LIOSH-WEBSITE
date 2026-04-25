@@ -228,6 +228,10 @@ async function runOnTests() {
           ["summary", "/learning/parent-report-detailed?mode=summary"],
         ];
         for (const [key, path] of routes) {
+          const probe = await page.request.get(`${BASE_ON}${path}`);
+          const st = probe.status();
+          if (st === 404) throw new Error(`${key}: ${path} returned HTTP 404 (route missing or blocked)`);
+          if (st < 200 || st >= 400) throw new Error(`${key}: ${path} returned HTTP ${st}`);
           await page.goto(`${BASE_ON}${path}`, { waitUntil: "networkidle", timeout: 120_000 });
           await sleep(2500);
           const text = await page.innerText("body");

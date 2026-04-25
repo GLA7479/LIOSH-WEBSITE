@@ -12,6 +12,7 @@
     "test:safe-local-storage": "tsx scripts/safe-local-storage-selftest.mjs",
     "test:dev-student-simulator-browser-storage": "tsx scripts/dev-student-simulator-browser-storage-selftest.mjs",
     "test:dev-student-simulator-topic-merge": "tsx scripts/dev-student-simulator-topic-merge-test.mjs",
+    "test:dev-student-simulator-custom-builder-ui": "tsx scripts/dev-student-simulator-custom-builder-multi-topic-qa.mjs",
     "test:intelligence-layer-v1": "tsx scripts/intelligence-layer-v1-selftest.mjs",
     "test:intelligence-layer-v1-usage": "tsx scripts/intelligence-layer-v1-usage-selftest.mjs",
     "audit:branches": "tsx scripts/extract-generator-branches.mjs",

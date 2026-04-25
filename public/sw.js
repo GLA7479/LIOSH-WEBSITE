@@ -80,6 +80,8 @@ const ESSENTIAL_PAGES = [
   '/game',
   '/learning',
   '/learning/index',
+  '/learning/parent-report',
+  '/learning/parent-report-detailed',
   '/offline',
 ];
 

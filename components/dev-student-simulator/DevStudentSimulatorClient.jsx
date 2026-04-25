@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import CustomBuilderPanel from "./CustomBuilderPanel.jsx";
 import {
   DEV_STUDENT_PRESETS,
@@ -28,6 +27,11 @@ import {
   stringifyForLocalStorage,
 } from "../../utils/dev-student-simulator/browser-storage.js";
 import { SIMULATOR_METADATA_KEY } from "../../utils/dev-student-simulator/metadata.js";
+import {
+  LEARNING_PARENT_REPORT_SHORT_PATH,
+  LEARNING_PARENT_REPORT_DETAILED_PATH,
+  learningParentReportDetailedSummaryHref,
+} from "../../utils/learning-parent-report-routes.js";
 
 /**
  * UI-only Hebrew labels (preset ids unchanged).
@@ -538,6 +542,10 @@ export default function DevStudentSimulatorClient() {
     valCurWin: "\u05E4\u05D2\u05D9\u05E9\u05D5\u05EA \u05D1\u05D7\u05DC\u05D5\u05DF \u05E0\u05D5\u05DB\u05D7\u05D9 (30 \u05D9\u05D5\u05DD):",
     valPrevWin: "\u05E4\u05D2\u05D9\u05E9\u05D5\u05EA \u05D1\u05D7\u05DC\u05D5\u05DF \u05E7\u05D5\u05D3\u05DD (30\u201360 \u05D9\u05D5\u05DD):",
     valTopicKeys: "\u05E1\u05D4\u05DB \u05DE\u05E4\u05EA\u05D7\u05D9 \u05E0\u05D5\u05E9\u05D0\u05D9\u05DD \u05D9\u05D7\u05D5\u05D3\u05D9\u05D9\u05DD:",
+    previewTopicSummaryTitle:
+      "\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD \u05E1\u05D5\u05DB\u05DE\u05D9\u05DD \u05D1\u05EA\u05E6\u05D5\u05D2\u05D4 \u05D4\u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 (\u05DC\u05E4\u05D9 \u05E0\u05D5\u05E9\u05D0)",
+    previewTopicRowSessions: "\u05E4\u05D2\u05D9\u05E9\u05D5\u05EA",
+    previewTopicRowQuestions: "\u05E9\u05D0\u05DC\u05D5\u05EA",
   };
 
   return (
@@ -563,7 +571,12 @@ export default function DevStudentSimulatorClient() {
         <div style={{ ...sectionCard, marginBottom: 16, borderColor: "#86efac", background: "#f0fdf4", color: "#166534" }}>{message}</div>
       ) : null}
       {error ? (
-        <div style={{ ...sectionCard, marginBottom: 16, borderColor: "#fecaca", background: "#fef2f2", color: "#991b1b" }}>{error}</div>
+        <div
+          data-testid="dev-sim-error"
+          style={{ ...sectionCard, marginBottom: 16, borderColor: "#fecaca", background: "#fef2f2", color: "#991b1b" }}
+        >
+          {error}
+        </div>
       ) : null}
 
       <div style={{ ...sectionCard, marginBottom: 16 }}>
@@ -571,6 +584,7 @@ export default function DevStudentSimulatorClient() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
           <button
             type="button"
+            data-testid="dev-sim-mode-quick"
             style={makeButtonStyle(simMode === "quick" ? "primary" : "secondary", busy)}
             onClick={() => setSimMode("quick")}
             disabled={busy}
@@ -579,6 +593,7 @@ export default function DevStudentSimulatorClient() {
           </button>
           <button
             type="button"
+            data-testid="dev-sim-mode-custom"
             style={makeButtonStyle(simMode === "custom" ? "primary" : "secondary", busy)}
             onClick={() => setSimMode("custom")}
             disabled={busy}
@@ -643,16 +658,23 @@ export default function DevStudentSimulatorClient() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
           <button
             type="button"
+            data-testid="dev-sim-preview"
             style={makeButtonStyle("primary", busy || (simMode === "quick" && !presetId))}
             onClick={handlePreview}
             disabled={busy || (simMode === "quick" && !presetId)}
           >
             {simMode === "custom" ? t.btnPreviewCustom : t.btnPreview}
           </button>
-          <button type="button" style={makeButtonStyle("primary", busy || !canApplyStaged)} onClick={handleApply} disabled={busy || !canApplyStaged}>
+          <button
+            type="button"
+            data-testid="dev-sim-apply"
+            style={makeButtonStyle("primary", busy || !canApplyStaged)}
+            onClick={handleApply}
+            disabled={busy || !canApplyStaged}
+          >
             {t.btnApply}
           </button>
-          <button type="button" style={makeButtonStyle("danger", busy)} onClick={handleReset} disabled={busy}>
+          <button type="button" data-testid="dev-sim-reset" style={makeButtonStyle("danger", busy)} onClick={handleReset} disabled={busy}>
             {t.btnReset}
           </button>
           <button type="button" style={makeButtonStyle("secondary", busy)} onClick={handleExport} disabled={busy}>
@@ -681,15 +703,27 @@ export default function DevStudentSimulatorClient() {
       <div style={{ ...sectionCard, marginBottom: 16 }}>
         <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>{t.secReports}</h2>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-          <Link href="/learning/parent-report" legacyBehavior>
-            <a style={makeButtonStyle("link", false)}>{t.linkShort}</a>
-          </Link>
-          <Link href="/learning/parent-report-detailed" legacyBehavior>
-            <a style={makeButtonStyle("link", false)}>{t.linkDetailed}</a>
-          </Link>
-          <Link href="/learning/parent-report-detailed?mode=summary" legacyBehavior>
-            <a style={makeButtonStyle("link", false)}>{t.linkSummary}</a>
-          </Link>
+          <a
+            data-testid="dev-sim-link-parent-report-short"
+            href={LEARNING_PARENT_REPORT_SHORT_PATH}
+            style={makeButtonStyle("link", false)}
+          >
+            {t.linkShort}
+          </a>
+          <a
+            data-testid="dev-sim-link-parent-report-detailed"
+            href={LEARNING_PARENT_REPORT_DETAILED_PATH}
+            style={makeButtonStyle("link", false)}
+          >
+            {t.linkDetailed}
+          </a>
+          <a
+            data-testid="dev-sim-link-parent-report-summary"
+            href={learningParentReportDetailedSummaryHref()}
+            style={makeButtonStyle("link", false)}
+          >
+            {t.linkSummary}
+          </a>
         </div>
       </div>
 
@@ -757,6 +791,7 @@ export default function DevStudentSimulatorClient() {
             ) : null}
             {preview?.applySource === "custom" && Array.isArray(preview?.sessions) && preview.sessions.length ? (
               <div
+                data-testid="dev-sim-preview-topic-summary"
                 style={{
                   marginTop: 10,
                   padding: 10,
@@ -765,11 +800,15 @@ export default function DevStudentSimulatorClient() {
                   borderRadius: 8,
                 }}
               >
-                <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: COLORS.pageText }}>?????? ?????? ?????? (?? ???????)</p>
-                <ul style={{ margin: "6px 0 0", paddingRight: 18, fontSize: 13, color: COLORS.muted, listStyle: "disc" }}>
+                <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: COLORS.pageText }}>{t.previewTopicSummaryTitle}</p>
+                <ul
+                  data-testid="dev-sim-preview-topic-list"
+                  style={{ margin: "6px 0 0", paddingRight: 18, fontSize: 13, color: COLORS.muted, listStyle: "disc" }}
+                >
                   {aggregateTopicPreviewBySession(preview.sessions).map((row) => (
                     <li key={`${row.subject}:${row.topic}`} style={{ marginBottom: 4 }}>
-                      {hebrewSubjectLabel(row.subject)} ? {hebrewTopicPrimary(row.topic)}: {row.sessionRows} ??????, {row.questions} ?????
+                      {hebrewSubjectLabel(row.subject)} / {hebrewTopicPrimary(row.topic)}: {row.sessionRows} {t.previewTopicRowSessions},{" "}
+                      {row.questions} {t.previewTopicRowQuestions}
                     </li>
                   ))}
                 </ul>

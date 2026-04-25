@@ -177,6 +177,28 @@ function main() {
   const mAfter2 = countSessionsForOp(a2.snapshot, "multiplication");
   assert("append grows", mAfter2 > mAfter1, `${mAfter1} -> ${mAfter2}`);
 
+  // 4b) Browser QA parity: math (3 ops) + Hebrew (2 topics) — same selection as Playwright script
+  const qa = defaultCustomSpec();
+  for (const sid of SUBJECTS || []) {
+    if (qa.subjects[sid]) qa.subjects[sid].enabled = sid === "math" || sid === "hebrew";
+  }
+  for (const t of SUBJECT_BUCKETS.math) {
+    qa.topicSettings.math[t] = { ...qa.topicSettings.math[t], enabled: false, targetQuestions: 0 };
+  }
+  for (const t of ["division_with_remainder", "multiplication", "fractions"]) {
+    qa.topicSettings.math[t] = { ...qa.topicSettings.math[t], enabled: true, targetQuestions: 20 };
+  }
+  for (const t of SUBJECT_BUCKETS.hebrew) {
+    qa.topicSettings.hebrew[t] = { ...qa.topicSettings.hebrew[t], enabled: false, targetQuestions: 0 };
+  }
+  for (const t of ["reading", "comprehension"]) {
+    qa.topicSettings.hebrew[t] = { ...qa.topicSettings.hebrew[t], enabled: true, targetQuestions: 20 };
+  }
+  resolveCustomSpecTopicSettings(qa);
+  const coreQA = buildSimulatorCoreFromCustomSpec({ spec: qa, anchorEndMs: anchor, existingStorageMap: emptyMap });
+  const bucketsQA = new Set(coreQA.sessions.map((x) => `${x.subject}:${x.bucket}`));
+  assert("browser QA 5 topic buckets in sessions", bucketsQA.size === 5, [...bucketsQA].sort().join("|"));
+
   // 5) Tags on rows
   const mtag = onlyMul(defaultCustomSpec());
   const partial = buildStorageSnapshotFromSessions(
