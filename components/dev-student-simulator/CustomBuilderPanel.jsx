@@ -19,7 +19,8 @@ const LABEL = {
   subjects: "\u05DE\u05E7\u05E6\u05D5\u05E2\u05D5\u05EA",
   weight: "\u05DE\u05E9\u05E7\u05DC \u05E4\u05E2\u05D9\u05DC\u05D5\u05EA",
   acc: "\u05D3\u05D9\u05D5\u05E7 \u05D9\u05E2\u05D3 (% \u05E0\u05DB\u05D5\u05DF)",
-  dur: "\u05DE\u05DE\u05D5\u05E6\u05E2 \u05E4\u05D2\u05D9\u05E9\u05D4 (\u05E9\u05E0\u05D9\u05D5\u05EA)",
+  /** Visible label — value is still stored as `avgSessionDurationSec` in spec */
+  sessionAvgMin: "משך סשן ממוצע (דקות)",
   level: "\u05E8\u05DE\u05D4",
   mode: "\u05DE\u05E6\u05D1",
   topics: "\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD (\u05DE\u05E4\u05EA\u05D7\u05D5\u05EA \u05D3\u05D9\u05D5\u05D5\u05D7)",
@@ -77,6 +78,17 @@ const GRADES = ["g1", "g2", "g3", "g4", "g5", "g6"];
 const fieldStyle = { display: "block", marginBottom: 10, fontSize: 14 };
 const inputStyle = { width: "100%", maxWidth: 360, padding: 8, borderRadius: 8, border: "1px solid #cbd5e1", fontSize: 14 };
 
+/** UI minutes ↔ internal `avgSessionDurationSec` (validator 30–7200) */
+function durationMinFromSec(sec) {
+  const s = Number(sec);
+  if (!Number.isFinite(s) || s <= 0) return 15;
+  return Math.max(1, Math.min(120, Math.round(s / 60)));
+}
+function durationSecFromMin(min) {
+  const m = Math.max(1, Math.min(120, Math.round(Number(min) || 15)));
+  return m * 60;
+}
+
 export default function CustomBuilderPanel({ value, setValue, disabled }) {
   const [showInternalTopicKeys, setShowInternalTopicKeys] = useState(false);
 
@@ -113,7 +125,7 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ border: "1px solid #cbd5e1", borderRadius: 12, padding: 14, background: "#f8fafc" }}>
-        <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>\u05EA\u05DC\u05DE\u05D9\u05D3</h3>
+        <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>תלמיד</h3>
         <label style={fieldStyle}>
           {LABEL.student}
           <input
@@ -304,14 +316,17 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
                     />
                   </label>
                   <label style={fieldStyle}>
-                    {LABEL.dur}
+                    {LABEL.sessionAvgMin}
                     <input
                       type="number"
-                      min={30}
-                      max={7200}
+                      min={1}
+                      max={120}
+                      step={1}
                       style={{ ...inputStyle, marginTop: 4 }}
-                      value={row.avgSessionDurationSec}
-                      onChange={(e) => setSubject(sid, { avgSessionDurationSec: Number(e.target.value) })}
+                      value={durationMinFromSec(row.avgSessionDurationSec)}
+                      onChange={(e) =>
+                        setSubject(sid, { avgSessionDurationSec: durationSecFromMin(e.target.value) })
+                      }
                       disabled={disabled}
                     />
                   </label>
