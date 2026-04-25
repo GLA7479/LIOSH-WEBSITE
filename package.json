@@ -45,6 +45,8 @@
     "audit:parent-report-readability": "tsx scripts/parent-report-product-readability-audit.mjs",
     "audit:parent-report-short-consistency": "tsx scripts/parent-report-short-vs-detailed-consistency-audit.mjs",
     "audit:parent-report-release-gate": "tsx scripts/parent-report-release-gate.mjs",
+    "audit:parent-report-limited-test-gate": "tsx scripts/parent-report-limited-test-gate.mjs",
+    "qa:parent-report-browser": "node scripts/parent-report-browser-qa.mjs",
     "test:parent-report-hebrew-language": "tsx scripts/parent-report-hebrew-language-selftest.mjs",
     "test:minimal-safe-scope": "tsx scripts/minimal-safe-scope-scenarios.mjs",
     "test:parent-copilot-phaseA": "tsx scripts/parent-copilot-phaseA-suite.mjs",

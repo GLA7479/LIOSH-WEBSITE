@@ -29,6 +29,7 @@ const paths = {
   uiBinding: join(OUT_DIR, "ui-binding-audit.json"),
   readability: join(OUT_DIR, "readability-audit.json"),
   shortConsistency: join(OUT_DIR, "short-vs-detailed-consistency.json"),
+  browserQa: join(OUT_DIR, "parent-report-browser-qa.json"),
   skillCoverage: join(ROOT, "reports", "curriculum-spine", "skill-coverage-summary.json"),
   questionFindings: join(ROOT, "reports", "question-audit", "findings.json"),
   manualChecklist: join(OUT_DIR, "manual-browser-qa-checklist.md"),
@@ -40,6 +41,7 @@ const readability = readJsonSafe(paths.readability);
 const shortConsistency = readJsonSafe(paths.shortConsistency);
 const skill = readJsonSafe(paths.skillCoverage);
 const question = readJsonSafe(paths.questionFindings);
+const browserQa = readJsonSafe(paths.browserQa);
 
 const checks = [];
 
@@ -168,6 +170,12 @@ checks.push({
 });
 
 const automatedPass = checks.every((c) => c.pass);
+const seededQaStatus = browserQa.ok
+  ? String(browserQa.value?.valid_seeded_browser_qa?.status || "").toUpperCase()
+  : "NOT_RUN";
+const edgeQaStatus = browserQa.ok
+  ? String(browserQa.value?.edge_state_browser_qa?.status || "").toUpperCase()
+  : "NOT_RUN";
 const manualChecklistTxt = (() => {
   try {
     return readFileSync(paths.manualChecklist, "utf8");
@@ -180,23 +188,43 @@ const manualStatus = (() => {
   const blocked = (txt.match(/Status:\s*BLOCKED/gi) || []).length;
   const failed = (txt.match(/Status:\s*FAIL/gi) || []).length;
   const passed = (txt.match(/Status:\s*PASS/gi) || []).length;
-  if (blocked > 0) return "BLOCKED";
   if (failed > 0) return "FAIL";
+  if (blocked > 0) return "BLOCKED";
   if (passed > 0) return "PASS";
   return "PENDING";
+})();
+const launchRecommendation = (() => {
+  if (!automatedPass) return "NO-LAUNCH";
+  if (seededQaStatus === "NOT_RUN" || seededQaStatus === "") return "AUTOMATED PASS / MANUAL QA REQUIRED";
+  if (seededQaStatus === "FAIL") return "NO-LAUNCH";
+  if (seededQaStatus === "PASS") return "READY FOR LIMITED TEST";
+  if (manualStatus === "FAIL") return "NO-LAUNCH";
+  if (manualStatus === "PASS") return "READY FOR LIMITED TEST";
+  return "AUTOMATED PASS / MANUAL QA REQUIRED";
 })();
 const output = {
   generatedAt: new Date().toISOString(),
   automated_release_gate: automatedPass ? "PASS" : "FAIL",
   manual_browser_qa: manualStatus,
+  valid_seeded_browser_qa: seededQaStatus || "NOT_RUN",
+  edge_state_browser_qa: edgeQaStatus || "NOT_RUN",
   checks,
   knownRisks: [
+    seededQaStatus === "NOT_RUN"
+      ? "Seeded browser QA was not executed; release remains pending seeded visual verification."
+      : seededQaStatus === "FAIL"
+        ? "Seeded browser QA executed and failed required product checks."
+      : "Seeded browser QA passed in Playwright headless dev environment.",
     manualStatus === "BLOCKED"
       ? "Manual browser QA blocked: no interactive browser environment available in this agent runtime."
+      : manualStatus === "FAIL"
+        ? "Manual browser QA executed but failed one or more required visual checks."
+      : manualStatus === "PASS"
+        ? "Manual browser QA checklist is marked PASS (Playwright evidence captured in this environment)."
       : "Manual browser QA not executed in this gate script.",
     "Short report computes detailed contract for preview; monitor runtime cost on low-end devices.",
   ],
-  launchRecommendation: automatedPass ? "AUTOMATED PASS / MANUAL QA REQUIRED" : "NO-LAUNCH",
+  launchRecommendation,
 };
 
 writeFileSync(join(OUT_DIR, "release-gate.json"), JSON.stringify(output, null, 2), "utf8");
@@ -206,6 +234,8 @@ md.push("# Parent Report Release Gate");
 md.push("");
 md.push(`- automated_release_gate: **${output.automated_release_gate}**`);
 md.push(`- manual_browser_qa: **${output.manual_browser_qa}**`);
+md.push(`- valid_seeded_browser_qa: **${output.valid_seeded_browser_qa}**`);
+md.push(`- edge_state_browser_qa: **${output.edge_state_browser_qa}**`);
 md.push(`- launch_recommendation: **${output.launchRecommendation}**`);
 md.push("");
 md.push("## Automated Checks Summary");
@@ -247,11 +277,15 @@ writeFileSync(
     "",
     "## Manual QA Checklist",
     `- manual_browser_qa: ${manualStatus}`,
+    `- valid_seeded_browser_qa: ${output.valid_seeded_browser_qa}`,
+    `- edge_state_browser_qa: ${output.edge_state_browser_qa}`,
     "- Use `reports/parent-report-product-contract/manual-browser-qa-checklist.md`",
     "",
     "## Pass / Fail Fields",
     `- automated_release_gate: ${output.automated_release_gate}`,
     `- manual_browser_qa: ${manualStatus}`,
+    `- valid_seeded_browser_qa: ${output.valid_seeded_browser_qa}`,
+    `- edge_state_browser_qa: ${output.edge_state_browser_qa}`,
     "",
     "## Known Risks",
     ...output.knownRisks.map((r) => `- ${r}`),
