@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-24T23:43:06.045Z",
+  "generatedAt": "2026-04-25T00:03:04.763Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -383,11 +383,11 @@
     },
     "hebrew": {
       "reading": {
-        "rows": 183,
-        "staticRows": 183,
+        "rows": 199,
+        "staticRows": 199,
         "sampleRows": 0,
-        "withSubtype": 131,
-        "withPatternFamily": 183
+        "withSubtype": 147,
+        "withPatternFamily": 199
       },
       "comprehension": {
         "rows": 173,
@@ -404,11 +404,11 @@
         "withPatternFamily": 141
       },
       "grammar": {
-        "rows": 166,
-        "staticRows": 166,
+        "rows": 182,
+        "staticRows": 182,
         "sampleRows": 0,
-        "withSubtype": 166,
-        "withPatternFamily": 166
+        "withSubtype": 182,
+        "withPatternFamily": 182
       },
       "vocabulary": {
         "rows": 154,

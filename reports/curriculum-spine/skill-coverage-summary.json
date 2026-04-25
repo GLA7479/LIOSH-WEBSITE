@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-24T23:43:17.443Z",
+  "generatedAt": "2026-04-25T00:03:05.623Z",
   "phase_7_14_baseline_counts": {
     "note": "Snapshot before Phase 7.15 audit join hardening (same 423 spine skills).",
     "zero": 88,
@@ -9,20 +9,20 @@
   },
   "spinePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\curriculum-spine\\v1\\skills.json",
   "itemsPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-audit\\items.json",
-  "itemsRowCount": 11631,
+  "itemsRowCount": 11663,
   "total_skills_checked": 423,
   "spine_skill_rows_by_source_kind": {
     "static_bank_curriculum_map": {
       "total": 88,
-      "adequate": 66,
-      "weak": 22,
+      "adequate": 74,
+      "weak": 14,
       "zero": 0,
       "uncertain": 0
     },
     "static_bank": {
       "total": 147,
-      "adequate": 81,
-      "weak": 66,
+      "adequate": 82,
+      "weak": 65,
       "zero": 0,
       "uncertain": 0
     },
@@ -43,27 +43,26 @@
   },
   "coverage_class_counts": {
     "zero": 0,
-    "weak": 139,
-    "adequate": 284,
+    "weak": 130,
+    "adequate": 293,
     "uncertain": 0
   },
   "uncertain_mapping_count": 0,
   "hebrew_content_map_spine_rows": 88,
   "zero_by_subject": {},
   "weak_by_subject": {
-    "hebrew": 22,
+    "hebrew": 14,
     "math": 12,
     "geometry": 6,
     "english": 39,
-    "science": 1,
     "geography": 59
   },
   "adequate_by_subject": {
-    "hebrew": 113,
+    "hebrew": 121,
     "math": 79,
     "geometry": 32,
     "english": 42,
-    "science": 6,
+    "science": 7,
     "geography": 12
   },
   "uncertain_by_subject": {},

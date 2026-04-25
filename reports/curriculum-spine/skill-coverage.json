@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "summary": {
-    "generatedAt": "2026-04-24T23:43:17.443Z",
+    "generatedAt": "2026-04-25T00:03:05.623Z",
     "phase_7_14_baseline_counts": {
       "note": "Snapshot before Phase 7.15 audit join hardening (same 423 spine skills).",
       "zero": 88,
@@ -11,20 +11,20 @@
     },
     "spinePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\curriculum-spine\\v1\\skills.json",
     "itemsPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-audit\\items.json",
-    "itemsRowCount": 11631,
+    "itemsRowCount": 11663,
     "total_skills_checked": 423,
     "spine_skill_rows_by_source_kind": {
       "static_bank_curriculum_map": {
         "total": 88,
-        "adequate": 66,
-        "weak": 22,
+        "adequate": 74,
+        "weak": 14,
         "zero": 0,
         "uncertain": 0
       },
       "static_bank": {
         "total": 147,
-        "adequate": 81,
-        "weak": 66,
+        "adequate": 82,
+        "weak": 65,
         "zero": 0,
         "uncertain": 0
       },
@@ -45,27 +45,26 @@
     },
     "coverage_class_counts": {
       "zero": 0,
-      "weak": 139,
-      "adequate": 284,
+      "weak": 130,
+      "adequate": 293,
       "uncertain": 0
     },
     "uncertain_mapping_count": 0,
     "hebrew_content_map_spine_rows": 88,
     "zero_by_subject": {},
     "weak_by_subject": {
-      "hebrew": 22,
+      "hebrew": 14,
       "math": 12,
       "geometry": 6,
       "english": 39,
-      "science": 1,
       "geography": 59
     },
     "adequate_by_subject": {
-      "hebrew": 113,
+      "hebrew": 121,
       "math": 79,
       "geometry": 32,
       "english": 42,
-      "science": 6,
+      "science": 7,
       "geography": 12
     },
     "uncertain_by_subject": {},
@@ -783,10 +782,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:comprehension:g3.cause_effect",
@@ -874,10 +873,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:grammar:g3.binyan_light",
@@ -887,10 +886,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g3:vocabulary:g3.word_families",
@@ -952,10 +951,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g4:comprehension:g4.summary_intro",
@@ -1017,10 +1016,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g4:grammar:g4.root_pattern_intro",
@@ -1095,10 +1094,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g5:comprehension:g5.inference",
@@ -1225,10 +1224,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g6:reading:g6.compare_genres",
@@ -1316,10 +1315,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g6:grammar:g6.complex_syntax_spot",
@@ -5814,12 +5813,12 @@
       "minGrade": 1,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
-      "primary_evidence_count": 60,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 63,
       "evidence": [
         {
           "type": "science_question_bank",
-          "total": 60,
+          "total": 63,
           "pairHits": [
             {
               "grade": "g1",
@@ -5827,7 +5826,7 @@
             },
             {
               "grade": "g2",
-              "count": 0
+              "count": 3
             },
             {
               "grade": "g3",
@@ -5848,7 +5847,7 @@
           ]
         }
       ],
-      "mapping_note": "topic_has_items_but_sparse_grade_tags_vs_spine_span"
+      "mapping_note": ""
     },
     {
       "skill_id": "science:topic:environment",
@@ -6938,26 +6937,18 @@
     "zero_coverage_skill_ids": [],
     "weak_coverage_skill_ids": [
       "hebrew:g1:grammar:g1.grammar_odd_category",
-      "hebrew:g3:reading:g3.genre_tag_info_vs_story",
       "hebrew:g3:comprehension:g3.explicit_only",
       "hebrew:g3:grammar:g3.tense_system_intro",
-      "hebrew:g3:grammar:g3.connectors",
-      "hebrew:g3:grammar:g3.binyan_light",
       "hebrew:g3:speaking:g3.discussion_prompt_choice",
       "hebrew:g4:reading:g4.genre_mix",
-      "hebrew:g4:reading:g4.info_lit_intro",
-      "hebrew:g4:grammar:g4.dictation_spot_error",
       "hebrew:g4:vocabulary:g4.idiom_light",
       "hebrew:g4:speaking:g4.present_text_based_choice",
       "hebrew:g5:reading:g5.multi_layer_read",
-      "hebrew:g5:reading:g5.position_in_text",
       "hebrew:g5:comprehension:g5.multiple_perspectives_light",
       "hebrew:g5:grammar:g5.verb_patterns",
-      "hebrew:g6:reading:g6.complex_text_analysis",
       "hebrew:g6:reading:g6.compare_genres",
       "hebrew:g6:comprehension:g6.evidence_from_text",
       "hebrew:g6:grammar:g6.possession_prep",
-      "hebrew:g6:grammar:g6.subject_verb_advanced",
       "hebrew:g6:grammar:g6.complex_syntax_spot",
       "math:kind:dec_divide",
       "math:kind:dec_divide_10_100",
@@ -7016,7 +7007,6 @@
       "english:pool:translation:community",
       "english:pool:translation:technology",
       "english:pool:translation:global",
-      "science:topic:earth_space",
       "geography:g1:geography:geography_0_מפת_כיתה",
       "geography:g1:geography:geography_1_מפת_בית_ספר",
       "geography:g1:geography:geography_2_כיוונים_בסיסיים",

@@ -39,7 +39,7 @@ export const SCIENCE_GRADES = {
     key: "g2",
     name: "כיתה ב׳",
     stage: "בסיס ללמידה מדעית",
-    topics: ["body", "animals", "plants", "materials", "experiments", "environment"],
+    topics: ["body", "animals", "plants", "materials", "experiments", "earth_space", "environment"],
     curriculum: {
       summary:
         "העמקת מושגים בסיסיים: מחזורי חיים, הרגלי גוף בריא, תכונות חומרים ומצבי צבירה.",

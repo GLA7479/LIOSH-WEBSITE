@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-24T23:43:06.042Z",
-  "totalRows": 11631,
+  "generatedAt": "2026-04-25T00:03:04.760Z",
+  "totalRows": 11663,
   "exactDuplicateCrossGrade": [],
   "exactDuplicateCrossGradeStaticBanksOnly": [],
   "nearDuplicateCrossGrade": [],
@@ -60,9 +60,16 @@
     {
       "key": "hebrew::reading",
       "distinctGrades": 6,
-      "totalRows": 183,
+      "totalRows": 199,
       "dominantPatternFamily": "reading_passage_style_band_early_g1_g2",
-      "dominantShare": 0.3005464480874317
+      "dominantShare": 0.27638190954773867
+    },
+    {
+      "key": "hebrew::grammar",
+      "distinctGrades": 6,
+      "totalRows": 182,
+      "dominantPatternFamily": "grammar_morphology",
+      "dominantShare": 0.06043956043956044
     },
     {
       "key": "hebrew::comprehension",
@@ -70,13 +77,6 @@
       "totalRows": 173,
       "dominantPatternFamily": "comprehension_typed_band_early_g1_g2",
       "dominantShare": 0.27167630057803466
-    },
-    {
-      "key": "hebrew::grammar",
-      "distinctGrades": 6,
-      "totalRows": 166,
-      "dominantPatternFamily": "grammar_morphology",
-      "dominantShare": 0.06626506024096386
     },
     {
       "key": "hebrew::vocabulary",
