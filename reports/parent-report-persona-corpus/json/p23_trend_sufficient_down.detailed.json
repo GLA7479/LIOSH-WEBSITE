@@ -1,0 +1,2219 @@
+{
+  "version": 2,
+  "generatedAt": "2026-04-25T16:09:29.110Z",
+  "diagnosticEngineV2": null,
+  "hybridRuntime": null,
+  "diagnosticPrimarySource": "legacy_patternDiagnostics_fallback",
+  "periodInfo": {
+    "period": "week",
+    "startDate": "2026-04-01",
+    "endDate": "2026-04-10",
+    "startDateLabelHe": "01/04/2026",
+    "endDateLabelHe": "10/04/2026",
+    "playerName": "_fixture_"
+  },
+  "executiveSummary": {
+    "version": 2,
+    "topStrengthsAcrossHe": [],
+    "topFocusAreasHe": [
+      "בנושא חיבור (חשבון)"
+    ],
+    "homeFocusHe": "השבוע מומלץ לשים דגש על הנושא חיבור (חשבון) — ההמלצה שלנו: תרגול משותף עם הילד. אחרי טעות, לקרוא שוב את השאלה, להיכנס לחלון התרגיל הקודם ולהבין ביחד איפה הטעות.",
+    "majorTrendsHe": [
+      "זהירות (חשבון): חיבור — כיתה ד׳ — רמה קשה: ירידה בדיוק בחלון האחרון לעומת ריכוז טוב יותר בתקופה.",
+      "נקודת זהירות ב־חיבור — כיתה ד׳ — רמה קשה: ירידה בדיוק בחלון האחרון לעומת ריכוז טוב יותר בתקופה."
+    ],
+    "mainHomeRecommendationHe": "דגש ביתי: להמשיך לאסוף תרגול קצר עד שהתמונה במקצוע מתייצבת.",
+    "cautionNoteHe": "לא לבנות תוכנית ארוכה לפני שיש עוד תרגול בטווח.",
+    "overallConfidenceHe": "בטווח: 1 מקצועות עם פעילות; 0 עם נפח נמוך יחסית — הביטחון בין המקצועות לא אחיד.",
+    "dominantCrossSubjectRisk": "mixed",
+    "dominantCrossSubjectRiskLabelHe": "כמה סוגי קשיים במקביל",
+    "dominantCrossSubjectSuccessPattern": "mixed",
+    "dominantCrossSubjectSuccessPatternLabelHe": "כמה דפוסי הצלחה במקביל",
+    "supportingSignals": {
+      "crossRiskFlags": {
+        "falsePromotionRisk": false,
+        "falseRemediationRisk": false,
+        "speedOnlyRisk": false,
+        "hintDependenceRisk": false,
+        "insufficientEvidenceRisk": false,
+        "recentTransitionRisk": false
+      },
+      "dominantSubjectId": "math",
+      "dominantSubjectLabelHe": "חשבון",
+      "dominantSubjectQuestionCount": 44,
+      "fragileSuccessRowsTotal": 0,
+      "stableMasteryRowsTotal": 0,
+      "subjectsWithModeConcentrationNote": 0,
+      "dataIntegrityIssueCount": 0
+    },
+    "mixedSignalNoticeHe": null,
+    "reportReadinessHe": "הדוח בשל לקריאה הורית — נפח סביר וללא בעיות שלמות קריטיות.",
+    "evidenceBalanceHe": "איזון הכוונה: כ־0 שורות עם שליטה טובה ויציבה מול 0 שבירות; 0 כיווני חוזק מובחרים מול 1 מוקדי חולשה מובחרים.",
+    "dominantCrossSubjectRootCause": "insufficient_evidence",
+    "dominantCrossSubjectRootCauseLabelHe": "עדיין לא ברור מה בדיוק מסבך מעבר לזיהוי ראשוני",
+    "crossSubjectConclusionReadiness": "not_ready",
+    "majorDiagnosticCautionsHe": [
+      "חלק מהמקצועות עם אותות מוקדמים או מעורבים — לא מגיעים למסקנה חדה על כל הבית בשלב זה.",
+      "חשבון: יש בסיס אבל גם שורות עם מסקנה זהירה — כדאי לעקוב ולא לדרוס בהנחות חזקות.",
+      "גאומטריה: אין מספיק שורות דוח בטווח — לא מסיקים שורש קושי חוצה־נושאים ולא ממליצים על שינוי אגרסיבי.",
+      "אנגלית: אין מספיק שורות דוח בטווח — לא מסיקים שורש קושי חוצה־נושאים ולא ממליצים על שינוי אגרסיבי.",
+      "מדעים: אין מספיק שורות דוח בטווח — לא מסיקים שורש קושי חוצה־נושאים ולא ממליצים על שינוי אגרסיבי.",
+      "עברית: אין מספיק שורות דוח בטווח — לא מסיקים שורש קושי חוצה־נושאים ולא ממליצים על שינוי אגרסיבי."
+    ],
+    "recommendedParentPriorityType": "monitor_before_escalation",
+    "parentPriorityLadder": {
+      "version": 1,
+      "rankedSubjects": [
+        {
+          "subject": "math",
+          "subjectLabelHe": "חשבון",
+          "score": -36,
+          "priorityLevel": "monitor",
+          "monitoringOnly": true
+        },
+        {
+          "subject": "geometry",
+          "subjectLabelHe": "גאומטריה",
+          "score": -72,
+          "priorityLevel": "monitor",
+          "monitoringOnly": true
+        },
+        {
+          "subject": "english",
+          "subjectLabelHe": "אנגלית",
+          "score": -72,
+          "priorityLevel": "monitor",
+          "monitoringOnly": true
+        },
+        {
+          "subject": "science",
+          "subjectLabelHe": "מדעים",
+          "score": -72,
+          "priorityLevel": "monitor",
+          "monitoringOnly": true
+        },
+        {
+          "subject": "hebrew",
+          "subjectLabelHe": "עברית",
+          "score": -72,
+          "priorityLevel": "monitor",
+          "monitoringOnly": true
+        },
+        {
+          "subject": "moledet-geography",
+          "subjectLabelHe": "מולדת וגאוגרפיה",
+          "score": -72,
+          "priorityLevel": "monitor",
+          "monitoringOnly": true
+        }
+      ]
+    },
+    "topImmediateParentActionHe": "בחשבון: שני מפגשים קצרים (5–8 דקות) באותה רמת קושי — לצפות ולתעד בלבד.",
+    "secondPriorityActionHe": "",
+    "monitoringOnlyAreasHe": [
+      "חשבון: בחשבון הראיות עדיין חלקיות — עדיפות להקלה ומעקב ולא לטיפול כבד.",
+      "גאומטריה: אין שורות דוח בטווח — לא מדרגים עדיפות.",
+      "אנגלית: אין שורות דוח בטווח — לא מדרגים עדיפות.",
+      "מדעים: אין שורות דוח בטווח — לא מדרגים עדיפות.",
+      "עברית: אין שורות דוח בטווח — לא מדרגים עדיפות."
+    ],
+    "deferForNowAreasHe": [],
+    "dominantCrossSubjectMistakePattern": "insufficient_mistake_evidence",
+    "dominantCrossSubjectMistakePatternLabelHe": "עדיין אין מספיק דוגמאות לדפוס טעות ברור",
+    "crossSubjectLearningStage": "insufficient_longitudinal_evidence",
+    "crossSubjectLearningStageLabelHe": "עדיין חסר מידע לאורך זמן",
+    "crossSubjectRetentionRisk": "unknown",
+    "crossSubjectTransferReadiness": "not_ready",
+    "reviewBeforeAdvanceAreasHe": [
+      "חשבון: לוודא חזרה על טעויות דומות באותה רמה לפני פתיחת נושא חדש."
+    ],
+    "transferReadyAreasHe": [],
+    "crossSubjectResponseToIntervention": "not_enough_evidence",
+    "crossSubjectResponseToInterventionLabelHe": "עדיין אין מספיק ניסיון כדי לדעת אם מה שניסינו באמת עוזר",
+    "crossSubjectSupportAdjustmentNeed": "monitor_only",
+    "crossSubjectSupportAdjustmentNeedHe": "לצפות ולאסוף עוד מידע לפני החלטה",
+    "crossSubjectConclusionFreshness": "low",
+    "crossSubjectRecalibrationNeed": "do_not_rely_yet",
+    "crossSubjectRecalibrationNeedHe": "עדיין לא להסתמך על המסקנה לבדה",
+    "majorRecheckAreasHe": [
+      "גאומטריה: עדיין לא להסתמך על המסקנה לבדה",
+      "אנגלית: עדיין לא להסתמך על המסקנה לבדה",
+      "מדעים: עדיין לא להסתמך על המסקנה לבדה",
+      "עברית: עדיין לא להסתמך על המסקנה לבדה",
+      "מולדת וגאוגרפיה: עדיין לא להסתמך על המסקנה לבדה"
+    ],
+    "areasWhereSupportCanBeReducedHe": [],
+    "areasNeedingStrategyChangeHe": [],
+    "crossSubjectSupportSequenceState": "insufficient_sequence_evidence",
+    "crossSubjectSupportSequenceStateLabelHe": "אין עדיין מספיק בסיס לספר את רצף התמיכה בביטחון",
+    "crossSubjectStrategyRepetitionRisk": "unknown",
+    "crossSubjectStrategyFatigueRisk": "unknown",
+    "crossSubjectNextBestSequenceStep": "observe_before_next_cycle",
+    "crossSubjectNextBestSequenceStepHe": "לצפות ולאסוף מידע לפני מחזור חדש",
+    "subjectsReadyForReleaseHe": [],
+    "subjectsAtRiskOfSupportRepetitionHe": [],
+    "subjectsNeedingSupportResetHe": [],
+    "crossSubjectRecommendationMemoryState": "no_memory",
+    "crossSubjectRecommendationMemoryStateLabelHe": "אין עדיין מספיק רקע מהעבר כדי לדעת אם מה שניסינו קודם עדיין מתאים",
+    "crossSubjectSupportHistoryDepth": "unknown",
+    "crossSubjectSupportHistoryDepthLabelHe": "לא ברור עומק ההיסטוריה מהנתון",
+    "crossSubjectExpectedVsObservedMatch": "not_enough_evidence",
+    "crossSubjectExpectedVsObservedMatchHe": "אין עדיין מספיק בסיס להשוואה בביטחון",
+    "crossSubjectContinuationDecision": "continue_but_refine",
+    "crossSubjectContinuationDecisionHe": "להמשיך באותו כיוון, בצורה מדויקת יותר",
+    "subjectsWithClearCarryoverHe": [],
+    "subjectsNeedingFreshEvidenceHe": [
+      "חשבון: כדאי לאסוף עוד אות לפני שממשיכים אותו מסלול.",
+      "גאומטריה: כדאי לאסוף עוד אות לפני שממשיכים אותו מסלול.",
+      "אנגלית: כדאי לאסוף עוד אות לפני שממשיכים אותו מסלול.",
+      "מדעים: כדאי לאסוף עוד אות לפני שממשיכים אותו מסלול.",
+      "עברית: כדאי לאסוף עוד אות לפני שממשיכים אותו מסלול."
+    ],
+    "subjectsWherePriorPathSeemsMisalignedHe": [],
+    "crossSubjectGateState": "gates_not_ready",
+    "crossSubjectGateStateLabelHe": "עדיין אין מספיק בסיס — נשארים עם החלטה זהירה",
+    "crossSubjectNextCycleDecisionFocus": "prove_current_direction",
+    "crossSubjectNextCycleDecisionFocusHe": "לבדוק שהכיוון הנוכחי באמת עוזר",
+    "crossSubjectEvidenceTargetType": "fresh_data_needed",
+    "crossSubjectEvidenceTargetTypeLabelHe": "לאסוף עוד קצת נתון עדכני לפני שסוגרים תמונה",
+    "crossSubjectTargetObservationWindow": "unknown",
+    "crossSubjectTargetObservationWindowLabelHe": "לא ברור כמה זמן נדרש",
+    "subjectsNearReleaseButNotThereHe": [],
+    "subjectsNeedingRecheckBeforeDecisionHe": [],
+    "subjectsWithVisiblePivotTriggerHe": [],
+    "crossSubjectDependencyState": "insufficient_dependency_evidence",
+    "crossSubjectDependencyStateLabelHe": "אין מספיק בסיס לקבוע אם זה בסיס רחב או קושי נקודתי",
+    "crossSubjectLikelyFoundationalBlocker": "unknown",
+    "crossSubjectLikelyFoundationalBlockerLabelHe": "לא נקבע סוג בסיס ספציפי",
+    "crossSubjectFoundationFirstPriority": false,
+    "crossSubjectFoundationFirstPriorityHe": "רוב המקצועות נראים יותר מקומיים או עם ראיה חלקית — לא חייבים בסיס רחב בכל מקום.",
+    "subjectsLikelyShowingDownstreamSymptomsHe": [],
+    "subjectsNeedingFoundationFirstHe": [],
+    "subjectsSafeForLocalInterventionHe": []
+  },
+  "overallSnapshot": {
+    "totalTime": 0,
+    "totalQuestions": 44,
+    "overallAccuracy": 59,
+    "subjectCoverage": [
+      {
+        "subject": "math",
+        "subjectLabelHe": "חשבון",
+        "questionCount": 44,
+        "correctCount": 26,
+        "accuracy": 59,
+        "timeMinutes": 20
+      },
+      {
+        "subject": "geometry",
+        "subjectLabelHe": "גאומטריה",
+        "questionCount": 0,
+        "correctCount": 0,
+        "accuracy": 0,
+        "timeMinutes": 0
+      },
+      {
+        "subject": "english",
+        "subjectLabelHe": "אנגלית",
+        "questionCount": 0,
+        "correctCount": 0,
+        "accuracy": 0,
+        "timeMinutes": 0
+      },
+      {
+        "subject": "science",
+        "subjectLabelHe": "מדעים",
+        "questionCount": 0,
+        "correctCount": 0,
+        "accuracy": 0,
+        "timeMinutes": 0
+      },
+      {
+        "subject": "hebrew",
+        "subjectLabelHe": "עברית",
+        "questionCount": 0,
+        "correctCount": 0,
+        "accuracy": 0,
+        "timeMinutes": 0
+      },
+      {
+        "subject": "moledet-geography",
+        "subjectLabelHe": "מולדת וגאוגרפיה",
+        "questionCount": 0,
+        "correctCount": 0,
+        "accuracy": 0,
+        "timeMinutes": 0
+      }
+    ],
+    "lowExposureSubjectsHe": [
+      "גאומטריה — אין שאלות בטווח",
+      "אנגלית — אין שאלות בטווח",
+      "מדעים — אין שאלות בטווח",
+      "עברית — אין שאלות בטווח",
+      "מולדת וגאוגרפיה — אין שאלות בטווח"
+    ],
+    "notableSubjectsHe": [
+      "אין עדיין מקצוע בולט לפי סף הנפח/דיוק — המשך תרגול יעשה את ההבדל."
+    ]
+  },
+  "subjectProfiles": [
+    {
+      "subject": "math",
+      "subjectLabelHe": "חשבון",
+      "summaryHe": "יש גם מקום לחיזוק בנושא חיבור.",
+      "topStrengths": [],
+      "topWeaknesses": [
+        {
+          "id": "math:w:0",
+          "labelHe": "בנושא חיבור",
+          "mistakeCount": 9,
+          "confidence": "moderate",
+          "tierHe": "קושי נקודתי"
+        }
+      ],
+      "parentTopicToneByKey": {
+        "addition\u0001learning\u0001g4\u0001medium": "true_weakness"
+      },
+      "parentStrengthWithCautionLinesByKey": {},
+      "maintain": [],
+      "improving": [
+        {
+          "id": "math:addition\u0001learning\u0001g4\u0001medium",
+          "labelHe": "חיבור — כיתה ד׳ — רמה קשה",
+          "questions": 22,
+          "accuracy": 58,
+          "confidence": "moderate",
+          "needsPractice": true,
+          "excellent": false,
+          "tierHe": "תחום במגמת שיפור"
+        }
+      ],
+      "excellence": [],
+      "diagnosticSectionsHe": {
+        "strongHe": [],
+        "maintainHe": [],
+        "improveHe": [
+          "חיבור — כיתה ד׳ — רמה קשה — דיוק 58% (22 שאלות)"
+        ],
+        "urgentAttentionHe": [
+          "בנושא חיבור — כ־9 אירועי טעות דומים בטווח"
+        ],
+        "insufficientDataHe": [],
+        "concreteHomeActionHe": "כדאי פעמיים בשבוע, כרבע שעה בחשבון בנושא חיבור — לקרוא יחד את הניסוח, לפרק למשפטים קצרים, ורק אז לנסח תשובה.",
+        "nextShortGoalHe": "מומלץ לבחור כמה דוגמאות לעבור ביחד עם הילד צעד־צעד, ולנסות השבוע להעלות את אחוזי ההצלחה — מספיק אפילו שיפור קטן באחוזי ההצלחה."
+      },
+      "subSkillInsightsHe": [
+        {
+          "lineHe": "בנושא חיבור",
+          "evidenceNoteHe": "דפוס חוזר בינוני — מומלץ מעקב."
+        }
+      ],
+      "parentActionHe": "כדאי פעמיים בשבוע, כרבע שעה בחשבון בנושא חיבור — לקרוא יחד את הניסוח, לפרק למשפטים קצרים, ורק אז לנסח תשובה.",
+      "nextWeekGoalHe": "מומלץ לבחור כמה דוגמאות לעבור ביחד עם הילד צעד־צעד, ולנסות השבוע להעלות את אחוזי ההצלחה — מספיק אפילו שיפור קטן באחוזי ההצלחה.",
+      "evidenceExamples": [
+        {
+          "type": "mistake",
+          "exerciseText": "שאלת חיבור 8",
+          "questionLabel": null,
+          "correctAnswer": 8,
+          "userAnswer": 3,
+          "confidence": "moderate"
+        }
+      ],
+      "trendVsPreviousPeriod": null,
+      "topicRecommendations": [
+        {
+          "subject": "math",
+          "topicRowKey": "addition\u0001learning\u0001g4\u0001medium",
+          "displayName": "חיבור — כיתה ד׳ — רמה קשה",
+          "bucketKey": "addition",
+          "modeKey": "learning",
+          "questions": 22,
+          "accuracy": 58,
+          "wrong": 9,
+          "mistakeEventCount": 9,
+          "gradeKey": null,
+          "levelKey": "hard",
+          "currentMastery": 58,
+          "stability": 0.43,
+          "confidence": 0.67,
+          "masteryScore": 58,
+          "stabilityScore": 43,
+          "confidenceScore": 67,
+          "recencyScore": 100,
+          "evidenceStrength": "strong",
+          "dataSufficiencyLevel": "strong",
+          "dataSufficiencyLabelHe": "נפח ואותות מספקים — ההסקות לשורה זו מהימנות יחסית.",
+          "recommendationContextHe": "ההמלצה מבוססת על שילוב דיוק, נפח, טעויות ועדכניות בטווח.",
+          "patternStabilityHe": "דפוס מוקדם — עדיין לא ניתן לקבוע יציבות ארוכת טווח לפי הנתונים בלבד.",
+          "decisionTrace": [
+            {
+              "source": "diagnostics",
+              "phase": "inputs",
+              "detailHe": "קלטים לשורה לפני חישוב אותות.",
+              "data": {
+                "subjectId": "math",
+                "topicRowKey": "addition\u0001learning\u0001g4\u0001medium",
+                "questions": 22,
+                "wrong": 9,
+                "wrongRatio": 0.409,
+                "mistakeEventCountResolved": 9,
+                "periodEndMs": 1775854799999,
+                "cfg": {
+                  "stabilityVolumeDivisor": 28,
+                  "confidenceExpDivisor": 20
+                }
+              }
+            },
+            {
+              "source": "diagnostics",
+              "phase": "stability_01",
+              "data": {
+                "stability01": 0.43,
+                "formula": "volume*(1-mistakePressure), mistakePressure from wrongRatio+mistake/q"
+              }
+            },
+            {
+              "source": "diagnostics",
+              "phase": "confidence_01",
+              "data": {
+                "confidence01": 0.67,
+                "formula": "(1-exp(-q/divisor))*noise(mistakesVsQ)"
+              }
+            },
+            {
+              "source": "diagnostics",
+              "phase": "recency_score",
+              "data": {
+                "recencyScore": 100,
+                "lastSessionMs": 1775779199999
+              }
+            },
+            {
+              "source": "diagnostics",
+              "phase": "mastery_score",
+              "data": {
+                "masteryScore": 58
+              }
+            },
+            {
+              "source": "diagnostics",
+              "phase": "evidence_strength",
+              "data": {
+                "evidenceStrength": "strong"
+              }
+            },
+            {
+              "source": "diagnostics",
+              "phase": "data_sufficiency",
+              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "data": {
+                "dataSufficiencyLevel": "strong",
+                "suppressAggressiveStep": false,
+                "labelHe": "נפח ואותות מספקים — ההסקות לשורה זו מהימנות יחסית."
+              }
+            },
+            {
+              "source": "diagnostics",
+              "phase": "pattern_flags",
+              "data": {
+                "isStablePattern": false,
+                "isEarlySignalOnly": false
+              }
+            },
+            {
+              "source": "recommendation",
+              "phase": "structured_trace",
+              "version": 2,
+              "sections": {
+                "version": 2,
+                "inputs": {
+                  "questions": 22,
+                  "accuracy": 58,
+                  "wrongRatio": 0.409,
+                  "mistakeEventCount": 9,
+                  "trendDirections": {
+                    "accuracy": "down",
+                    "independence": "flat",
+                    "fluency": "flat",
+                    "trendConfidence01": 0.55
+                  },
+                  "behaviorType": "undetermined",
+                  "modeKey": "learning"
+                },
+                "derivedFlags": {
+                  "riskFlags": {
+                    "falsePromotionRisk": false,
+                    "falseRemediationRisk": false,
+                    "speedOnlyRisk": false,
+                    "hintDependenceRisk": false,
+                    "insufficientEvidenceRisk": false,
+                    "recentTransitionRisk": true
+                  },
+                  "trendDerived": {
+                    "accuracyDirection": "down",
+                    "independenceDirection": "flat",
+                    "fluencyDirection": "flat",
+                    "trendConfidence01": 0.55,
+                    "trendConfOk": true,
+                    "positiveAccuracy": false,
+                    "negativeAccuracy": true,
+                    "unclearTrend": false,
+                    "fragileProgressPattern": false,
+                    "independenceDeteriorating": false,
+                    "fluencySupportWithoutAccuracyDrop": false,
+                    "recentDifficultyIncrease": true,
+                    "negativeTrendAfterRecentDifficultyIncrease": true,
+                    "periodRegression": false,
+                    "progressSupportsAdvance": false
+                  },
+                  "strongKnowledgeGapEvidence": false
+                },
+                "blockers": [],
+                "appliedRules": [
+                  {
+                    "source": "recommendation",
+                    "phase": "inputs",
+                    "ruleId": "engine_context",
+                    "data": {
+                      "q": 22,
+                      "acc": 58,
+                      "wrong": 9,
+                      "wrongRatio": 0.409,
+                      "levelKey": "hard",
+                      "gradeKey": null,
+                      "levelIndex": 2,
+                      "gradeIndex": -1,
+                      "mistakeEventCount": 9,
+                      "stability01": 0.43,
+                      "confidence01": 0.67,
+                      "recencyScore": 100
+                    }
+                  },
+                  {
+                    "source": "recommendation",
+                    "phase": "decision",
+                    "ruleId": "remediate_band",
+                    "data": {
+                      "q": 22,
+                      "acc": 58,
+                      "step": "remediate_same_level"
+                    }
+                  }
+                ],
+                "chosenRule": {
+                  "legacyRuleId": "remediate_band",
+                  "phase2RuleId": "phase2_pass_through",
+                  "stepAfterPhase2": "remediate_same_level",
+                  "phase7RuleId": "phase7_pass",
+                  "stepAfterPhase7": "remediate_same_level",
+                  "finalStep": "remediate_same_level"
+                },
+                "postCapAdjustments": []
+              }
+            },
+            {
+              "source": "recommendation",
+              "phase": "inputs",
+              "ruleId": "engine_context",
+              "data": {
+                "q": 22,
+                "acc": 58,
+                "wrong": 9,
+                "wrongRatio": 0.409,
+                "levelKey": "hard",
+                "gradeKey": null,
+                "levelIndex": 2,
+                "gradeIndex": -1,
+                "mistakeEventCount": 9,
+                "stability01": 0.43,
+                "confidence01": 0.67,
+                "recencyScore": 100
+              }
+            },
+            {
+              "source": "recommendation",
+              "phase": "decision",
+              "ruleId": "remediate_band",
+              "data": {
+                "q": 22,
+                "acc": 58,
+                "step": "remediate_same_level"
+              }
+            }
+          ],
+          "recommendationDecisionTrace": [
+            {
+              "source": "recommendation",
+              "phase": "structured_trace",
+              "version": 2,
+              "sections": {
+                "version": 2,
+                "inputs": {
+                  "questions": 22,
+                  "accuracy": 58,
+                  "wrongRatio": 0.409,
+                  "mistakeEventCount": 9,
+                  "trendDirections": {
+                    "accuracy": "down",
+                    "independence": "flat",
+                    "fluency": "flat",
+                    "trendConfidence01": 0.55
+                  },
+                  "behaviorType": "undetermined",
+                  "modeKey": "learning"
+                },
+                "derivedFlags": {
+                  "riskFlags": {
+                    "falsePromotionRisk": false,
+                    "falseRemediationRisk": false,
+                    "speedOnlyRisk": false,
+                    "hintDependenceRisk": false,
+                    "insufficientEvidenceRisk": false,
+                    "recentTransitionRisk": true
+                  },
+                  "trendDerived": {
+                    "accuracyDirection": "down",
+                    "independenceDirection": "flat",
+                    "fluencyDirection": "flat",
+                    "trendConfidence01": 0.55,
+                    "trendConfOk": true,
+                    "positiveAccuracy": false,
+                    "negativeAccuracy": true,
+                    "unclearTrend": false,
+                    "fragileProgressPattern": false,
+                    "independenceDeteriorating": false,
+                    "fluencySupportWithoutAccuracyDrop": false,
+                    "recentDifficultyIncrease": true,
+                    "negativeTrendAfterRecentDifficultyIncrease": true,
+                    "periodRegression": false,
+                    "progressSupportsAdvance": false
+                  },
+                  "strongKnowledgeGapEvidence": false
+                },
+                "blockers": [],
+                "appliedRules": [
+                  {
+                    "source": "recommendation",
+                    "phase": "inputs",
+                    "ruleId": "engine_context",
+                    "data": {
+                      "q": 22,
+                      "acc": 58,
+                      "wrong": 9,
+                      "wrongRatio": 0.409,
+                      "levelKey": "hard",
+                      "gradeKey": null,
+                      "levelIndex": 2,
+                      "gradeIndex": -1,
+                      "mistakeEventCount": 9,
+                      "stability01": 0.43,
+                      "confidence01": 0.67,
+                      "recencyScore": 100
+                    }
+                  },
+                  {
+                    "source": "recommendation",
+                    "phase": "decision",
+                    "ruleId": "remediate_band",
+                    "data": {
+                      "q": 22,
+                      "acc": 58,
+                      "step": "remediate_same_level"
+                    }
+                  }
+                ],
+                "chosenRule": {
+                  "legacyRuleId": "remediate_band",
+                  "phase2RuleId": "phase2_pass_through",
+                  "stepAfterPhase2": "remediate_same_level",
+                  "phase7RuleId": "phase7_pass",
+                  "stepAfterPhase7": "remediate_same_level",
+                  "finalStep": "remediate_same_level"
+                },
+                "postCapAdjustments": []
+              }
+            },
+            {
+              "source": "recommendation",
+              "phase": "inputs",
+              "ruleId": "engine_context",
+              "data": {
+                "q": 22,
+                "acc": 58,
+                "wrong": 9,
+                "wrongRatio": 0.409,
+                "levelKey": "hard",
+                "gradeKey": null,
+                "levelIndex": 2,
+                "gradeIndex": -1,
+                "mistakeEventCount": 9,
+                "stability01": 0.43,
+                "confidence01": 0.67,
+                "recencyScore": 100
+              }
+            },
+            {
+              "source": "recommendation",
+              "phase": "decision",
+              "ruleId": "remediate_band",
+              "data": {
+                "q": 22,
+                "acc": 58,
+                "step": "remediate_same_level"
+              }
+            }
+          ],
+          "contractsV1": {
+            "evidence": {
+              "contractVersion": "v1",
+              "topicKey": "addition\u0001learning\u0001g4\u0001medium",
+              "subjectId": "math",
+              "periodStartMs": 0,
+              "periodEndMs": 1775854799999,
+              "questionCount": 22,
+              "accuracyPct": 58,
+              "wrongCount": 9,
+              "responseSpeedMsMedian": null,
+              "repetitionRate01": 0,
+              "hintRate01": 0,
+              "retryRate01": 0,
+              "recencyScore01": 1,
+              "stability01": 0.43,
+              "confidence01": 0.67,
+              "varianceState": "medium",
+              "trendState": "regressing",
+              "evidenceStrength": "strong",
+              "evidenceBand": "E3",
+              "signalQuality": "clean",
+              "anchorEventIds": [
+                "row:math:addition\u0001learning\u0001g4\u0001medium:q:22:acc:58"
+              ],
+              "dataSufficiency": "sufficient",
+              "modeDiff": null,
+              "errorConcentration": null
+            },
+            "evidenceValidation": {
+              "ok": true,
+              "errors": []
+            },
+            "decision": {
+              "contractVersion": "v1",
+              "topicKey": "חיבור — כיתה ד׳ — רמה קשה",
+              "subjectId": "__unknown_subject__",
+              "decisionTier": 4,
+              "evidenceBand": 4,
+              "allowedClaimClasses": [
+                "descriptive_observation",
+                "gentle_pattern",
+                "stable_pattern",
+                "actionable_guidance"
+              ],
+              "forbiddenClaimClasses": [
+                "no_claim"
+              ],
+              "cannotConcludeYet": false,
+              "gateReadiness": "forming",
+              "internalGateReadinessBand": "low",
+              "denialReasons": []
+            },
+            "readiness": {
+              "contractVersion": "v1",
+              "topicKey": "חיבור — כיתה ד׳ — רמה קשה",
+              "subjectId": "__unknown_subject__",
+              "readiness": "emerging",
+              "readinessReasonCodes": [
+                "gate_readiness:low",
+                "gate_state:gates_not_ready",
+                "cannot_conclude:false"
+              ],
+              "maxAllowedTier": 2
+            },
+            "confidence": {
+              "contractVersion": "v1",
+              "topicKey": "חיבור — כיתה ד׳ — רמה קשה",
+              "subjectId": "__unknown_subject__",
+              "confidenceBand": "low",
+              "confidenceScore01": 0.25,
+              "confidenceDrivers": [
+                "sample_size",
+                "stability",
+                "recency",
+                "variance",
+                "mode_alignment",
+                "contradiction"
+              ]
+            },
+            "intelligence": {
+              "weaknessLevel": "none",
+              "confidenceBand": "low",
+              "recurrence": false
+            },
+            "recommendation": {
+              "contractVersion": "v1",
+              "topicKey": "addition\u0001learning\u0001g4\u0001medium",
+              "subjectId": "math",
+              "eligible": true,
+              "intensity": "RI2",
+              "family": "retention_consolidation",
+              "anchorEvidenceIds": [
+                "row:math:addition\u0001learning\u0001g4\u0001medium:q:22:acc:58"
+              ],
+              "rationaleCodes": [
+                "decision_tier:4",
+                "readiness:emerging",
+                "confidence:low"
+              ],
+              "forbiddenBecause": []
+            },
+            "recommendationValidation": {
+              "ok": true,
+              "errors": []
+            },
+            "narrative": {
+              "contractVersion": "v1",
+              "topicKey": "addition\u0001learning\u0001g4\u0001medium",
+              "subjectId": "math",
+              "wordingEnvelope": "WE0",
+              "hedgeLevel": "mandatory",
+              "allowedTone": "parent_professional_warm",
+              "forbiddenPhrases": [
+                "בטוח לחלוטין",
+                "בוודאות מלאה",
+                "ללא ספק בכלל",
+                "חד משמעית"
+              ],
+              "requiredHedges": [
+                "בשלב זה",
+                "עדיין מוקדם לקבוע"
+              ],
+              "allowedSections": [
+                "summary",
+                "finding",
+                "recommendation",
+                "limitations"
+              ],
+              "recommendationIntensityCap": "RI0",
+              "textSlots": {
+                "observation": "בחיבור — כיתה ד׳ — רמה קשה בתקופה הזו יש 22 שאלות, עם דיוק של כ־58%.",
+                "interpretation": "הבסיס עדיין צר מדי כדי לחדד מסקנה — נמשיך לאט ובזהירות.",
+                "action": null,
+                "uncertainty": "עדיין מוקדם לסגור מסקנה סופית; נשארים עם מעקב צמוד ועם צעדים קטנים."
+              }
+            },
+            "narrativeValidation": {
+              "ok": true,
+              "errors": []
+            }
+          },
+          "recommendationContractV1": {
+            "contractVersion": "v1",
+            "topicKey": "addition\u0001learning\u0001g4\u0001medium",
+            "subjectId": "math",
+            "eligible": true,
+            "intensity": "RI2",
+            "family": "retention_consolidation",
+            "anchorEvidenceIds": [
+              "row:math:addition\u0001learning\u0001g4\u0001medium:q:22:acc:58"
+            ],
+            "rationaleCodes": [
+              "decision_tier:4",
+              "readiness:emerging",
+              "confidence:low"
+            ],
+            "forbiddenBecause": []
+          },
+          "trend": {
+            "version": 1,
+            "accuracyDirection": "down",
+            "independenceDirection": "flat",
+            "fluencyDirection": "flat",
+            "confidence": 0.55,
+            "summaryHe": "ירידה בדיוק בחלון האחרון לעומת ריכוז טוב יותר בתקופה.",
+            "windows": {
+              "currentPeriod": {
+                "accuracy": 72
+              },
+              "recentShortWindow": {
+                "accuracy": 56
+              },
+              "previousComparablePeriod": {
+                "accuracy": 74
+              }
+            }
+          },
+          "behaviorProfile": null,
+          "recommendedNextStep": "remediate_same_level",
+          "recommendedStepLabelHe": "חיזוק באותה רמה",
+          "recommendedStepReasonHe": "ב«חיבור — כיתה ד׳ — רמה קשה» הדיוק בינוני (58%) עם 22 שאלות נרשמו בטווח 9 אירועי טעות בנושא הזה — לקרוא את המשימה לאט לפני מענה.. עדיף לחזק את הבסיס באותה רמת קושי לפני שמנסים משהו חדש.",
+          "recommendedParentActionHe": "כדאי להמשיך על אותה רמת קושי ולהתמקד בהבנת הטעויות: לתרגל ביחד עם הילד, ואחרי תשובה שגויה לעצור ולברר ביחד איפה זה הסתבך. עדיף לא לעלות רמה לפני שיש תחושה של התקדמות ועקביות.",
+          "recommendedStudentActionHe": "נחזק קודם את הבסיס ב«חיבור — כיתה ד׳ — רמה קשה» באותה רמה — ואז נתקדם.",
+          "recommendedEvidenceLevelHe": "איכות ראיות גבוהה",
+          "recommendedWhyNowHe": "ההמלצה מבוססת על שילוב דיוק, נפח, טעויות ועדכניות בטווח.",
+          "recommendationStabilityNoteHe": "דפוס מוקדם — עדיין לא ניתן לקבוע יציבות ארוכת טווח לפי הנתונים בלבד.",
+          "isEarlySignalOnly": false,
+          "needsPractice": true,
+          "excellent": false,
+          "confidenceBadge": "medium",
+          "sufficiencyBadge": "high",
+          "diagnosticType": "undetermined",
+          "riskFlags": {
+            "falsePromotionRisk": false,
+            "falseRemediationRisk": false,
+            "speedOnlyRisk": false,
+            "hintDependenceRisk": false,
+            "insufficientEvidenceRisk": false,
+            "recentTransitionRisk": true
+          },
+          "whyThisRecommendationHe": "המלצה לגבי «חיבור — כיתה ד׳ — רמה קשה»: חיזוק באותה רמה. הדפוס הנראה בביצוע: לא נקבע. נשמרו גם שיקולי זהירות. נקודות לשימת לב: מגמה אחרונה עדינה. נקודה שכדאי לשים עליה לב: התמונה מעורבת — יש גם כאן וגם שם. המערכת מצמצמת ניסוח: הנתונים בטווח לא מאפשרים מסקנה חד־משמעית חזקה לגבי מקור הקושי. עדיף לא לחזור על אותו סוג תרגול בלי בדיקה מחודשת — אחרת זה נשמע חדש אבל לא באמת משתנה. פתרון נכון אחרי הפסקה קצרה או למחרת — בלי חזרה מיידית לרמז. · בעוד שני רצפי תרגול קצרים. כדאי לפתוח מיקוד קצר בהשימור עדיין לא נשמר לאורך זמן — הבסיס נחלש מהר לפני שמנסים «להספיק הכל» בנושא הזה.",
+          "parentTopicTone": "true_weakness",
+          "whatCouldChangeThisHe": "איסוף יותר מ־22 שאלות בטווח, עוד פרטים על טעויות (זמן תגובה, ניסיונות חוזרים, שימוש ברמזים) כדי לחדד את התמונה, ומגמת דיוק ברורה בין תקופה נוכחית לקודמת — יכולים לשנות את הצעד. דפוס ההתנהגות עדיין לא מספיק ברור — נתונים נוספים יצמצמו אי־ודאות.",
+          "recommendationStructuredTrace": {
+            "version": 2,
+            "inputs": {
+              "questions": 22,
+              "accuracy": 58,
+              "wrongRatio": 0.409,
+              "mistakeEventCount": 9,
+              "trendDirections": {
+                "accuracy": "down",
+                "independence": "flat",
+                "fluency": "flat",
+                "trendConfidence01": 0.55
+              },
+              "behaviorType": "undetermined",
+              "modeKey": "learning"
+            },
+            "derivedFlags": {
+              "riskFlags": {
+                "falsePromotionRisk": false,
+                "falseRemediationRisk": false,
+                "speedOnlyRisk": false,
+                "hintDependenceRisk": false,
+                "insufficientEvidenceRisk": false,
+                "recentTransitionRisk": true
+              },
+              "trendDerived": {
+                "accuracyDirection": "down",
+                "independenceDirection": "flat",
+                "fluencyDirection": "flat",
+                "trendConfidence01": 0.55,
+                "trendConfOk": true,
+                "positiveAccuracy": false,
+                "negativeAccuracy": true,
+                "unclearTrend": false,
+                "fragileProgressPattern": false,
+                "independenceDeteriorating": false,
+                "fluencySupportWithoutAccuracyDrop": false,
+                "recentDifficultyIncrease": true,
+                "negativeTrendAfterRecentDifficultyIncrease": true,
+                "periodRegression": false,
+                "progressSupportsAdvance": false
+              },
+              "strongKnowledgeGapEvidence": false
+            },
+            "blockers": [],
+            "appliedRules": [
+              {
+                "source": "recommendation",
+                "phase": "inputs",
+                "ruleId": "engine_context",
+                "data": {
+                  "q": 22,
+                  "acc": 58,
+                  "wrong": 9,
+                  "wrongRatio": 0.409,
+                  "levelKey": "hard",
+                  "gradeKey": null,
+                  "levelIndex": 2,
+                  "gradeIndex": -1,
+                  "mistakeEventCount": 9,
+                  "stability01": 0.43,
+                  "confidence01": 0.67,
+                  "recencyScore": 100
+                }
+              },
+              {
+                "source": "recommendation",
+                "phase": "decision",
+                "ruleId": "remediate_band",
+                "data": {
+                  "q": 22,
+                  "acc": 58,
+                  "step": "remediate_same_level"
+                }
+              }
+            ],
+            "chosenRule": {
+              "legacyRuleId": "remediate_band",
+              "phase2RuleId": "phase2_pass_through",
+              "stepAfterPhase2": "remediate_same_level",
+              "phase7RuleId": "phase7_pass",
+              "stepAfterPhase7": "remediate_same_level",
+              "finalStep": "remediate_same_level"
+            },
+            "postCapAdjustments": []
+          },
+          "diagnosticRestraint": {
+            "level": "confirmed",
+            "reasons": [],
+            "behaviorTypeObserved": "undetermined"
+          },
+          "conclusionStrength": "strong",
+          "shouldAvoidStrongConclusion": false,
+          "alternativeExplanations": [],
+          "diagnosticCautionHe": "המערכת מצמצמת ניסוח: הנתונים בטווח לא מאפשרים מסקנה חד־משמעית חזקה לגבי מקור הקושי.",
+          "diagnosticConfidenceBand": "high",
+          "rootCause": "mixed_signal",
+          "rootCauseLabelHe": "התמונה מעורבת — יש גם כאן וגם שם",
+          "rootCauseConfidence": 0.45,
+          "rootCauseEvidence": [
+            "ללא נעילה ברורה — ברירת מחדל זהירה"
+          ],
+          "secondaryPossibleCause": null,
+          "rootCauseNarrativeHe": "כמה אותות מצביעים לכיוונים שונים — לא ננעלים על הסבר יחיד בשלב זה. (דיוק 58%, טעויות יחסיות 41%, 22 שאלות; פרופיל )",
+          "recommendationReasoningHe": "לגבי «חיבור — כיתה ד׳ — רמה קשה»: כמה אותות מצביעים לכיוונים שונים — לא ננעלים על הסבר יחיד בשלב זה. (דיוק 58%, טעויות יחסיות 41%, 22 שאלות; פרופיל ) הצעד שנבחר: חיזוק באותה רמה. מה מומלץ לעשות עכשיו: עוד קצת תרגול מבוקר לפני שמחמירים. נשמרו גם שיקולי זהירות.",
+          "recommendedInterventionType": "monitor_before_escalation",
+          "recommendedEvidenceAction": "continue_short_sessions",
+          "recommendedEvidenceActionHe": "להמשיך מפגשים קצרים כדי לחדד את התמונה.",
+          "whatWouldIncreaseConfidenceHe": "עוד שאלות בטווח, מגמת דיוק ברורה יותר, ופחות תלות ברמזים — יגבירו את הביטחון במסקנה.",
+          "whyNotAStrongerConclusionHe": "המערכת מצמצמת ניסוח: הנתונים בטווח לא מאפשרים מסקנה חד־משמעית חזקה לגבי מקור הקושי.",
+          "interventionPlan": {
+            "version": 1,
+            "rootCause": "mixed_signal",
+            "headlineHe": "תוכנית מיקרו ל«חיבור — כיתה ד׳ — רמה קשה»",
+            "stepsHe": [
+              "ב«חיבור — כיתה ד׳ — רמה קשה» לשמור על אותה הגדרה ולתעד הצלחות קטנות — לא לשנות משתנים רבים."
+            ],
+            "cadenceHe": "2–3 מפגשים קצרים בשבוע (5–8 דקות)"
+          },
+          "interventionPlanHe": "תוכנית מיקרו ל«חיבור — כיתה ד׳ — רמה קשה» ב«חיבור — כיתה ד׳ — רמה קשה» לשמור על אותה הגדרה ולתעד הצלחות קטנות — לא לשנות משתנים רבים. 2–3 מפגשים קצרים בשבוע (5–8 דקות)",
+          "interventionDurationBand": "very_short",
+          "interventionIntensity": "focused",
+          "interventionFormat": "observation_block",
+          "interventionGoal": "observe_and_stabilize",
+          "interventionSuccessSignalHe": "כששני מפגשים רצופים נראים דומים — אפשר לבחור כיוון אחד.",
+          "interventionStopSignalHe": "אם התמונה משתנה דרסטית בין מפגשים — להישאר במעקב בלבד.",
+          "interventionParentEffort": "low",
+          "doNowHe": "להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+          "avoidNowHe": "לא לנעול הסבר יחיד כשיש אותות מנוגדים. לא להרחיב רמה לפני חיזוק חוזר קצר.",
+          "recommendedPracticeLoad": "minimal",
+          "recommendedSessionCount": 2,
+          "recommendedSessionLengthBand": "very_short",
+          "escalationThresholdHe": "להוסיף עומס רק אם שני מפגשים רצופים מראים שיפור בדיוק או בפחות טעויות חוזרות.",
+          "deescalationThresholdHe": "התנגדות חזקה או ירידה בדיוק — לחזור למפגש קצר יותר ולפשט את המשימה לשבוע.",
+          "practiceReadiness": "building",
+          "cautionLineHe": "המערכת מצמצמת ניסוח: הנתונים בטווח לא מאפשרים מסקנה חד־משמעית חזקה לגבי מקור הקושי.",
+          "mistakeIntelligence": {
+            "version": 1,
+            "dominantMistakePattern": "mixed_mistake_pattern",
+            "mistakeRecurrenceLevel": "persistent",
+            "mistakeSpecificity": "narrow",
+            "mistakePatternConfidence": 0.45
+          },
+          "dominantMistakePattern": "mixed_mistake_pattern",
+          "dominantMistakePatternLabelHe": "תערובת טעויות — בלי דפוס אחד ברור",
+          "mistakePatternConfidence": 0.45,
+          "mistakePatternEvidence": [
+            "תערובת אותות — דפוס טעות לא חד־משמעי."
+          ],
+          "secondaryMistakePattern": null,
+          "mistakePatternNarrativeHe": "ב«חיבור — כיתה ד׳ — רמה קשה» הדפוס הבולט: תערובת טעויות — בלי דפוס אחד ברור — חוזר לאורך הטווח.",
+          "mistakeSpecificity": "narrow",
+          "mistakeRecurrenceLevel": "persistent",
+          "learningMemory": {
+            "version": 1,
+            "learningStage": "regression_signal",
+            "retentionRisk": "high",
+            "stabilizationState": "unstable",
+            "transferReadiness": "not_ready",
+            "independenceProgress": "unknown"
+          },
+          "learningStage": "regression_signal",
+          "learningStageLabelHe": "יש אות שמציץ לרגרסיה — שווה לשים לב",
+          "retentionRisk": "high",
+          "stabilizationState": "unstable",
+          "transferReadiness": "not_ready",
+          "independenceProgress": "unknown",
+          "memoryNarrativeHe": "יש אות שמציץ לרגרסיה — שווה לשים לב. שימור: לטפל בחזרה ובדיוק לפני הרחבה.",
+          "learningMemoryEvidence": [
+            "מגמת דיוק שלילית עם אינדיקציה לרגרסיה — לא מקפצים קדימה."
+          ],
+          "recommendedPracticeMode": "review_and_hold",
+          "recommendedTransferStep": "hold_same_conditions",
+          "reviewBeforeAdvanceHe": "לחזור על אותה רמה בכמה תרגולים קצרים לפני שינוי רמת קושי או פתיחת נושא חדש.",
+          "mistakeFocusedActionHe": "",
+          "memoryFocusedActionHe": "לפשט משימה ולקצר מפגש עד שיתייצב דיוק.",
+          "interventionEffectiveness": {
+            "version": 1,
+            "responseToIntervention": "regression_under_support",
+            "supportFit": "poor_fit",
+            "supportAdjustmentNeed": "change_strategy",
+            "effectivenessConfidence": 0.62
+          },
+          "responseToIntervention": "regression_under_support",
+          "responseToInterventionLabelHe": "מגמה שלילית תוך כדי אותה תמיכה",
+          "effectivenessConfidence": 0.62,
+          "effectivenessEvidence": [
+            "מגמת דיוק שלילית בטווח — חשוב לבחון אם התמיכה מספיקת או מכוונת נכון."
+          ],
+          "supportFit": "poor_fit",
+          "supportFitLabelHe": "התאמה חלשה — לשקול שינוי בגישה",
+          "supportAdjustmentNeed": "change_strategy",
+          "supportAdjustmentNeedHe": "לשנות גישה — מה שניסינו לא מספיק",
+          "interventionEffectNarrativeHe": "ב«חיבור — כיתה ד׳ — רמה קשה»: מגמה שלילית תוך כדי אותה תמיכה. לשנות גישה — מה שניסינו לא מספיק",
+          "confidenceAging": {
+            "version": 1,
+            "freshnessState": "fresh",
+            "conclusionFreshness": "high",
+            "recalibrationNeed": "light_review",
+            "confidenceDecayApplied": false
+          },
+          "freshnessState": "fresh",
+          "freshnessStateLabelHe": "המידע עדכני יחסית",
+          "conclusionFreshness": "high",
+          "conclusionFreshnessLabelHe": "המסקנה נשמעת סבירה יחסית כרגע",
+          "confidenceDecayApplied": false,
+          "recalibrationNeed": "light_review",
+          "recalibrationNeedHe": "סקירה קלה לפני שינוי מהותי",
+          "nextSupportAdjustment": "switch_strategy",
+          "nextSupportAdjustmentHe": "לשנות גישה — מה שניסינו לא מספיק כרגע",
+          "continueWhatWorksHe": "",
+          "changeBecauseHe": "התמונה לא משתפרת מספיק עם אותה נוסחה — לדייק מיקוד או לשנות כיוון, לא לחזור על אותו טקסט בלי שינוי.",
+          "recheckBeforeEscalationHe": "המידע פחות עדכני — לא להסתמך עליו לבד לפני העלאת קושי או החמרה.",
+          "evidenceStillMissingHe": "",
+          "supportSequencing": {
+            "version": 1,
+            "supportSequenceState": "sequence_stalled",
+            "priorSupportPattern": "review_hold_repeat",
+            "strategyRepetitionRisk": "low",
+            "strategyFatigueRisk": "low",
+            "nextBestSequenceStep": "tighten_same_goal"
+          },
+          "supportSequenceState": "sequence_stalled",
+          "supportSequenceStateLabelHe": "הרצף נתקע — לדייק מטרה או לשנות כלי",
+          "priorSupportPattern": "review_hold_repeat",
+          "priorSupportPatternLabelHe": "מעגל חזרה והחזקה לפני שינוי",
+          "strategyRepetitionRisk": "low",
+          "strategyRepetitionRiskHe": "סיכון נמוך לחזרה מיותרת על אותה שיטה",
+          "strategyFatigueRisk": "low",
+          "strategyFatigueRiskHe": "עומס נמוך כרגע",
+          "nextBestSequenceStep": "tighten_same_goal",
+          "nextBestSequenceStepHe": "לדייק את אותה מטרה במקום להרחיב",
+          "supportSequenceNarrativeHe": "ב«חיבור — כיתה ד׳ — רמה קשה»: הרצף נתקע — לדייק מטרה או לשנות כלי. לדייק את אותה מטרה במקום להרחיב",
+          "adviceDrift": {
+            "version": 1,
+            "adviceSimilarityLevel": "mostly_repeated",
+            "adviceNovelty": "low",
+            "recommendationRotationNeed": "meaningful_rotation",
+            "repeatAdviceWarning": false
+          },
+          "adviceSimilarityLevel": "mostly_repeated",
+          "adviceSimilarityLevelHe": "רוב הניסוח חוזר על עצמו — שווה לשנות זווית",
+          "adviceNovelty": "low",
+          "adviceNoveltyHe": "דומה למה שכבר ניסינו — אולי לעדכן קצת",
+          "repeatAdviceWarning": false,
+          "repeatAdviceWarningHe": "",
+          "recommendationRotationNeed": "meaningful_rotation",
+          "recommendationRotationNeedHe": "כדאי לשנות משמעותית — לא אותו תרגיל חוזר",
+          "nextSupportSequenceAction": "pause_repeat_and_switch",
+          "nextSupportSequenceActionHe": "לעצור חזרות ולעבור לכיוון אחר",
+          "whyThisIsDifferentNowHe": "",
+          "whyWeShouldNotRepeatSameSupportHe": "עדיף לא לחזור על אותו סוג תרגול בלי בדיקה מחודשת — אחרת זה נשמע חדש אבל לא באמת משתנה.",
+          "whatMustHappenBeforeReleaseHe": "",
+          "whatSignalsSequenceSuccessHe": "",
+          "recommendationMemory": {
+            "version": 1,
+            "recommendationMemoryState": "strong_memory",
+            "priorRecommendationSignature": "review_hold_path",
+            "supportHistoryDepth": "multi_window",
+            "recommendationCarryover": "clearly_visible",
+            "memoryOfPriorSupportConfidence": "high"
+          },
+          "recommendationMemoryState": "strong_memory",
+          "recommendationMemoryStateLabelHe": "יש כמה תקופות להשוואה — אפשר לסמוך קצת יותר על המשכיות",
+          "priorRecommendationSignature": "review_hold_path",
+          "priorRecommendationSignatureLabelHe": "חזרה והחזקה לפני שינוי",
+          "supportHistoryDepth": "multi_window",
+          "supportHistoryDepthLabelHe": "כמה תקופות — בסיס חזק יותר",
+          "recommendationCarryover": "clearly_visible",
+          "recommendationCarryoverLabelHe": "נראה שאותו כיוון תמיכה נמשך גם לתקופה הזו",
+          "memoryOfPriorSupportConfidence": "high",
+          "recommendationMemoryNarrativeHe": "ב«חיבור — כיתה ד׳ — רמה קשה»: יש כמה תקופות להשוואה — אפשר לסמוך קצת יותר על המשכיות · כמה תקופות — בסיס חזק יותר · חזרה והחזקה לפני שינוי — נראה שאותו כיוון תמיכה נמשך גם לתקופה הזו.",
+          "outcomeTracking": {
+            "version": 1,
+            "expectedOutcomeType": "retention_hold",
+            "observedOutcomeState": "not_observable_yet",
+            "expectedVsObservedMatch": "not_enough_evidence",
+            "followThroughSignal": "possibly_followed",
+            "outcomeTrackingConfidence": "low"
+          },
+          "expectedOutcomeType": "retention_hold",
+          "expectedOutcomeTypeLabelHe": "רצינו שימור והחזקה",
+          "observedOutcomeState": "not_observable_yet",
+          "observedOutcomeStateLabelHe": "עדיין מוקדם מדי לראות תוצאה ברורה",
+          "expectedVsObservedMatch": "not_enough_evidence",
+          "expectedVsObservedMatchHe": "אין עדיין מספיק בסיס להשוואה בביטחון",
+          "followThroughSignal": "possibly_followed",
+          "followThroughSignalHe": "אולי נשמר כיוון — לא לנעול",
+          "outcomeTrackingConfidence": "low",
+          "outcomeTrackingNarrativeHe": "ב«חיבור — כיתה ד׳ — רמה קשה»: רצינו שימור והחזקה · עדיין מוקדם מדי לראות תוצאה ברורה · אין עדיין מספיק בסיס להשוואה בביטחון.",
+          "recommendationContinuationDecision": "do_not_repeat_without_new_evidence",
+          "recommendationContinuationDecisionHe": "לא לחזור על אותו כיוון בלי מידע חדש",
+          "outcomeBasedNextMove": "collect_new_evidence_first",
+          "outcomeBasedNextMoveHe": "לאסוף עוד מידע לפני החלטה מהותית",
+          "whyWeThinkThisPathWorkedHe": "",
+          "whyWeThinkThisPathDidNotLandHe": "",
+          "whatNeedsFreshEvidenceNowHe": "בלי לבנות על ניחוש: שני מפגשים קצרים עם רישום קטן בסוף — מה הצליח בלי עזרה באמצע.",
+          "whatShouldCarryForwardHe": "",
+          "decisionGates": {
+            "version": 1,
+            "gateState": "gates_not_ready",
+            "gateReadiness": "low",
+            "continueGate": "pending",
+            "releaseGate": "off",
+            "pivotGate": "off",
+            "recheckGate": "off",
+            "advanceGate": "off",
+            "contractsV1": {
+              "version": "v1",
+              "sourceOfTruth": "decision-readiness-contract-v1",
+              "source": {
+                "topicKey": "חיבור — כיתה ד׳ — רמה קשה",
+                "subjectId": "__unknown_subject__",
+                "q": 22,
+                "evidenceStrength": "strong",
+                "dataSufficiencyLevel": "strong",
+                "conclusionStrength": "strong",
+                "cannotConcludeYet": false,
+                "weak": false,
+                "internalGateReadinessBand": "low",
+                "gateState": "gates_not_ready",
+                "dev2ConfidenceLevel": "",
+                "confidence": ""
+              },
+              "decision": {
+                "contractVersion": "v1",
+                "topicKey": "חיבור — כיתה ד׳ — רמה קשה",
+                "subjectId": "__unknown_subject__",
+                "decisionTier": 4,
+                "evidenceBand": 4,
+                "allowedClaimClasses": [
+                  "descriptive_observation",
+                  "gentle_pattern",
+                  "stable_pattern",
+                  "actionable_guidance"
+                ],
+                "forbiddenClaimClasses": [
+                  "no_claim"
+                ],
+                "cannotConcludeYet": false,
+                "gateReadiness": "forming",
+                "internalGateReadinessBand": "low",
+                "denialReasons": []
+              },
+              "readiness": {
+                "contractVersion": "v1",
+                "topicKey": "חיבור — כיתה ד׳ — רמה קשה",
+                "subjectId": "__unknown_subject__",
+                "readiness": "emerging",
+                "readinessReasonCodes": [
+                  "gate_readiness:low",
+                  "gate_state:gates_not_ready",
+                  "cannot_conclude:false"
+                ],
+                "maxAllowedTier": 2
+              },
+              "confidence": {
+                "contractVersion": "v1",
+                "topicKey": "חיבור — כיתה ד׳ — רמה קשה",
+                "subjectId": "__unknown_subject__",
+                "confidenceBand": "low",
+                "confidenceScore01": 0.25,
+                "confidenceDrivers": [
+                  "sample_size",
+                  "stability",
+                  "recency",
+                  "variance",
+                  "mode_alignment",
+                  "contradiction"
+                ]
+              }
+            }
+          },
+          "gateState": "gates_not_ready",
+          "gateStateLabelHe": "עדיין אין מספיק בסיס — נשארים עם החלטה זהירה",
+          "continueGate": "pending",
+          "releaseGate": "off",
+          "pivotGate": "off",
+          "recheckGate": "off",
+          "advanceGate": "off",
+          "gateReadiness": "low",
+          "gateReadinessLabelHe": "מוכנות נמוכה — לא ננעול על מסקנה חזקה",
+          "gateNarrativeHe": "ב«חיבור — כיתה ד׳ — רמה קשה»: עדיין אין מספיק בסיס — נשארים עם החלטה זהירה · מוכנות נמוכה — לא ננעול על מסקנה חזקה · שחרור: לא רלוונטי כרגע · מעבר מסלול: לא רלוונטי כרגע · ריענון: לא רלוונטי כרגע.",
+          "evidenceTargets": {
+            "version": 1,
+            "targetEvidenceType": "retention_confirmation",
+            "targetObservationWindow": "next_two_cycles"
+          },
+          "targetEvidenceType": "retention_confirmation",
+          "targetEvidenceTypeLabelHe": "לראות שהחומר נשמר אחרי הפסקה קצרה",
+          "targetObservationWindow": "next_two_cycles",
+          "targetObservationWindowLabelHe": "בעוד שני רצפי תרגול קצרים",
+          "targetSuccessSignalHe": "פתרון נכון אחרי הפסקה קצרה או למחרת — בלי חזרה מיידית לרמז.",
+          "targetFailureSignalHe": "אם חוזרים בדיוק אותו סוג טעות בלי שינוי — עוצרים ומצמצמים מטרה.",
+          "targetIndependenceSignalHe": "פחות עצירות לאמצע משימה כשההוראות ברורות.",
+          "targetStabilitySignalHe": "אותה רמת קושי עם תוצאות דומות בשני מפגשים רצופים.",
+          "targetFreshnessNeedHe": "מספיק לעקוב אחרי שני מפגשים קצרים לפני שינוי מהותי.",
+          "evidenceTargetNarrativeHe": "ב«חיבור — כיתה ד׳ — רמה קשה»: לראות שהחומר נשמר אחרי הפסקה קצרה · בעוד שני רצפי תרגול קצרים.",
+          "nextCycleDecisionFocus": "stabilize_before_advance",
+          "nextCycleDecisionFocusHe": "לייצב לפני קפיצת רמה",
+          "whatWouldJustifyReleaseHe": "לפני שמפחיתים תמיכה: שני מפגשים קצרים עם הצלחה בסוף בלי הכוונה באמצע — עדיין לא עצמאות מלאה.",
+          "whatWouldJustifyAdvanceHe": "לפני קפיצת רמה: הצלחה שחוזרת באותה רמת קושי, סיכון שימור לא גבוה, ונתון עדכני.",
+          "whatWouldTriggerPivotHe": "אם גם בסבב הבא אותו דפוס בלי שיפור — לעבור לכיוון מעט שונה, לא עוד אותה חזרה.",
+          "whatWouldTriggerRecheckHe": "כשהמידע חלקי או מתיישן — סבב בדיקה קצר לפני החמרה או מסקנה חזקה.",
+          "whatEvidenceWeStillNeedHe": "פתרון נכון אחרי הפסקה קצרה או למחרת — בלי חזרה מיידית לרמז. · בעוד שני רצפי תרגול קצרים.",
+          "foundationDependency": {
+            "version": 1,
+            "dependencyState": "likely_foundational_block",
+            "likelyFoundationalBlocker": "retention_instability",
+            "downstreamSymptomLikelihood": "high",
+            "localIssueLikelihood": "low",
+            "shouldTreatAsFoundationFirst": true
+          },
+          "dependencyState": "likely_foundational_block",
+          "dependencyStateLabelHe": "הנתונים מצביעים על בסיס שעדיין לא התייצב — לא רק נקודה צרה",
+          "likelyFoundationalBlocker": "retention_instability",
+          "likelyFoundationalBlockerLabelHe": "השימור עדיין לא נשמר לאורך זמן — הבסיס נחלש מהר",
+          "dependencyConfidence": "high",
+          "dependencyEvidence": [
+            "שימור שביר/רגרסיה"
+          ],
+          "downstreamSymptomLikelihood": "high",
+          "downstreamSymptomLikelihoodHe": "סביר יחסית",
+          "localIssueLikelihood": "low",
+          "localIssueLikelihoodHe": "פחות סביר",
+          "shouldTreatAsFoundationFirst": true,
+          "foundationDependencyNarrativeHe": "ב«חיבור — כיתה ד׳ — רמה קשה»: הנתונים מצביעים על בסיס שעדיין לא התייצב — לא רק נקודה צרה · השימור עדיין לא נשמר לאורך זמן — הבסיס נחלש מהר · סביר יחסית.",
+          "interventionOrdering": "foundation_first",
+          "interventionOrderingHe": "קודם לייצב בסיס — ואז לחדד בנושא",
+          "whyThisMayBeSymptomNotCoreHe": "כאן ייתכן שהקושי הנראה הוא לא רק נקודתי, אלא קשור לבסיס שעדיין לא התייצב — לכן לא לסגור רק על ליטוש נושאי.",
+          "whyFoundationFirstHe": "כדאי לפתוח מיקוד קצר בהשימור עדיין לא נשמר לאורך זמן — הבסיס נחלש מהר לפני שמנסים «להספיק הכל» בנושא הזה.",
+          "whyLocalSupportFirstHe": "",
+          "whatCanWaitUntilFoundationStabilizesHe": "אפשר להמתין עם הרחבת עומס, עם קפיצת רמה, ועם ליטוש עמוק של פרטים — עד שיש שני מפגשים קצרים עם אות עקבי.",
+          "foundationDecision": "stabilize_foundation_first",
+          "foundationDecisionLabelHe": "לייצב יסוד לפני הרחבה או ליטוש נקודתי",
+          "nextCycleSupportLevel": "foundation_targeted",
+          "nextCycleSupportLevelHe": "תמיכה ממוקדת ביסוד שזוהה",
+          "foundationBeforeExpansion": true,
+          "foundationBeforeExpansionHe": "לפני שמרחיבים את הדרישה בנושא הזה, כדאי לחזק קודם את היסוד שעליו הוא נשען — ואז לחדד.",
+          "minimalSafeScope": {
+            "version": 1,
+            "effectiveMaxPS": 2,
+            "evidenceBand": 3,
+            "gateToTextApplied": true,
+            "contractsV1": {
+              "version": "v1",
+              "sourceOfTruth": "decision-readiness-contract-v1",
+              "source": {
+                "topicKey": "addition\u0001learning\u0001g4\u0001medium",
+                "subjectId": "__unknown_subject__",
+                "q": 22,
+                "evidenceStrength": "strong",
+                "dataSufficiencyLevel": "strong",
+                "conclusionStrength": "strong",
+                "cannotConcludeYet": false,
+                "weak": false,
+                "internalGateReadinessBand": "low",
+                "gateState": "gates_not_ready",
+                "dev2ConfidenceLevel": "",
+                "confidence": ""
+              },
+              "decision": {
+                "contractVersion": "v1",
+                "topicKey": "addition\u0001learning\u0001g4\u0001medium",
+                "subjectId": "__unknown_subject__",
+                "decisionTier": 4,
+                "evidenceBand": 4,
+                "allowedClaimClasses": [
+                  "descriptive_observation",
+                  "gentle_pattern",
+                  "stable_pattern",
+                  "actionable_guidance"
+                ],
+                "forbiddenClaimClasses": [
+                  "no_claim"
+                ],
+                "cannotConcludeYet": false,
+                "gateReadiness": "forming",
+                "internalGateReadinessBand": "low",
+                "denialReasons": []
+              },
+              "readiness": {
+                "contractVersion": "v1",
+                "topicKey": "addition\u0001learning\u0001g4\u0001medium",
+                "subjectId": "__unknown_subject__",
+                "readiness": "emerging",
+                "readinessReasonCodes": [
+                  "gate_readiness:low",
+                  "gate_state:gates_not_ready",
+                  "cannot_conclude:false"
+                ],
+                "maxAllowedTier": 2
+              },
+              "confidence": {
+                "contractVersion": "v1",
+                "topicKey": "addition\u0001learning\u0001g4\u0001medium",
+                "subjectId": "__unknown_subject__",
+                "confidenceBand": "low",
+                "confidenceScore01": 0.25,
+                "confidenceDrivers": [
+                  "sample_size",
+                  "stability",
+                  "recency",
+                  "variance",
+                  "mode_alignment",
+                  "contradiction"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "dominantLearningRisk": "none_sparse",
+      "dominantSuccessPattern": "mixed",
+      "trendNarrativeHe": "נקודת זהירות ב־חיבור — כיתה ד׳ — רמה קשה: ירידה בדיוק בחלון האחרון לעומת ריכוז טוב יותר בתקופה.",
+      "confidenceSummaryHe": "בשורות הדוח: 0 עם ראיות חזקות, 0 בינוניות, 1 דלות; 0 שורות עם ביטחון מחושב גבוה מתוך 1. התמונה במקצוע עדיין חלקית — מסקנות זהירות בלבד.",
+      "recommendedHomeMethodHe": "דגש ביתי: להמשיך לאסוף תרגול קצר עד שהתמונה במקצוע מתייצבת.",
+      "whatNotToDoHe": "לא לקבוע שינוי דרמטי בלי עוד תרגול בטווח.",
+      "majorRiskFlagsAcrossRows": {
+        "falsePromotionRisk": false,
+        "falseRemediationRisk": false,
+        "speedOnlyRisk": false,
+        "hintDependenceRisk": false,
+        "insufficientEvidenceRisk": false,
+        "recentTransitionRisk": false
+      },
+      "dominantBehaviorProfileAcrossRows": "undetermined",
+      "strongestPositiveTrendRowHe": null,
+      "strongestCautionTrendRowHe": "חיבור — כיתה ד׳ — רמה קשה: ירידה בדיוק בחלון האחרון לעומת ריכוז טוב יותר בתקופה.",
+      "fragileSuccessRowCount": 0,
+      "stableMasteryRowCount": 0,
+      "modeConcentrationNoteHe": null,
+      "dominantLearningRiskLabelHe": "דל נתון",
+      "dominantSuccessPatternLabelHe": "תערובת הצלחות",
+      "improvingButSupportedHe": null,
+      "dominantRootCause": "insufficient_evidence",
+      "dominantRootCauseLabelHe": "עדיין לא ברור מה בדיוק מסבך מעבר לזיהוי ראשוני",
+      "secondaryRootCause": null,
+      "rootCauseDistribution": {},
+      "subjectDiagnosticRestraintHe": "יש בסיס אבל גם שורות עם מסקנה זהירה — כדאי לעקוב ולא לדרוס בהנחות חזקות.",
+      "subjectConclusionReadiness": "partial",
+      "subjectInterventionPriorityHe": "עוד קצת תרגול מבוקר לפני שמחמירים",
+      "subjectPriorityLevel": "monitor",
+      "subjectPriorityReasonHe": "בחשבון הראיות עדיין חלקיות — עדיפות להקלה ומעקב ולא לטיפול כבד.",
+      "subjectImmediateActionHe": "בחשבון: שני מפגשים קצרים (5–8 דקות) באותה רמת קושי — לצפות ולתעד בלבד.",
+      "subjectDeferredActionHe": "בחשבון: לדחות שינוי רמה/כיתה ותוכנית ארוכה עד שיתייצב נתון.",
+      "subjectMonitoringOnly": true,
+      "subjectDoNowHe": "מעקב קצר וקבוע; משימה אחת ברורה לכל מפגש.",
+      "subjectAvoidNowHe": "לא להסיק מסקנות חזקות ולא להעמיס סדרת חיזוקים.",
+      "dominantMistakePattern": "insufficient_mistake_evidence",
+      "dominantMistakePatternLabelHe": "עדיין אין מספיק דוגמאות לדפוס טעות ברור",
+      "mistakePatternDistribution": {},
+      "subjectLearningStage": "insufficient_longitudinal_evidence",
+      "subjectLearningStageLabelHe": "עדיין חסר מידע לאורך זמן",
+      "subjectRetentionRisk": "unknown",
+      "subjectTransferReadiness": "not_ready",
+      "subjectMemoryNarrativeHe": "עדיין חסר מידע לאורך זמן ברוב השורות — שימור: אפשר להמשיך בקצב קבוע עם מעקב קל.",
+      "subjectReviewBeforeAdvanceHe": "לוודא חזרה על טעויות דומות באותה רמה לפני פתיחת נושא חדש.",
+      "subjectResponseToIntervention": "not_enough_evidence",
+      "subjectResponseToInterventionLabelHe": "עדיין אין מספיק ניסיון כדי לדעת אם מה שניסינו באמת עוזר",
+      "subjectSupportFit": "unknown",
+      "subjectSupportAdjustmentNeed": "monitor_only",
+      "subjectSupportAdjustmentNeedHe": "לצפות ולאסוף עוד מידע לפני החלטה",
+      "subjectConclusionFreshness": "medium",
+      "subjectRecalibrationNeed": "none",
+      "subjectRecalibrationNeedHe": "אין צורך לשנות כיוון דחוף כרגע.",
+      "subjectEffectivenessNarrativeHe": "בחשבון: עדיין אין מספיק ניסיון כדי לדעת אם מה שניסינו באמת עוזר. לצפות ולאסוף עוד מידע לפני החלטה",
+      "subjectSupportSequenceState": "insufficient_sequence_evidence",
+      "subjectSupportSequenceStateLabelHe": "אין עדיין מספיק בסיס לספר את רצף התמיכה בביטחון",
+      "subjectStrategyRepetitionRisk": "unknown",
+      "subjectStrategyFatigueRisk": "unknown",
+      "subjectNextBestSequenceStep": "observe_before_next_cycle",
+      "subjectNextBestSequenceStepHe": "לצפות ולאסוף מידע לפני מחזור חדש",
+      "subjectAdviceNovelty": "unknown",
+      "subjectRecommendationRotationNeed": "none",
+      "subjectSequenceNarrativeHe": "בחשבון: אין עדיין מספיק בסיס לספר את רצף התמיכה בביטחון. לצפות ולאסוף מידע לפני מחזור חדש · אין צורך לעדכן את כיוון ההמלצה",
+      "subjectRecommendationMemoryState": "no_memory",
+      "subjectPriorRecommendationSignature": "unknown",
+      "subjectSupportHistoryDepth": "unknown",
+      "subjectRecommendationCarryover": "not_visible",
+      "subjectExpectedVsObservedMatch": "not_enough_evidence",
+      "subjectFollowThroughSignal": "not_inferable",
+      "subjectContinuationDecision": "continue_but_refine",
+      "subjectContinuationDecisionHe": "להמשיך באותו כיוון, בצורה מדויקת יותר",
+      "subjectOutcomeNarrativeHe": "בחשבון: אין עדיין מספיק רקע מהעבר כדי לדעת אם מה שניסינו קודם עדיין מתאים · לא ברור איך נראתה התמיכה קודם · אין עדיין מספיק בסיס להשוואה בביטחון · אי אפשר להסיק מהנתונים · להמשיך באותו כיוון, בצורה מדויקת יותר",
+      "subjectGateState": "gates_not_ready",
+      "subjectGateStateLabelHe": "עדיין אין מספיק בסיס — נשארים עם החלטה זהירה",
+      "subjectGateReadiness": "insufficient",
+      "subjectNextCycleDecisionFocus": "prove_current_direction",
+      "subjectNextCycleDecisionFocusHe": "לבדוק שהכיוון הנוכחי באמת עוזר",
+      "subjectEvidenceTargetType": "mixed_target",
+      "subjectTargetObservationWindow": "unknown",
+      "subjectGateNarrativeHe": "בחשבון: עדיין אין מספיק בסיס — נשארים עם החלטה זהירה · לבדוק שהכיוון הנוכחי באמת עוזר · לשלב שני סימנים קצרים — לא הכל בבת אחת · לא ברור כמה זמן נדרש",
+      "subjectDependencyState": "insufficient_dependency_evidence",
+      "subjectDependencyStateLabelHe": "אין מספיק בסיס לקבוע אם זה בסיס רחב או קושי נקודתי",
+      "subjectLikelyFoundationalBlocker": "unknown",
+      "subjectLikelyFoundationalBlockerLabelHe": "לא נקבע סוג בסיס ספציפי",
+      "subjectDownstreamSymptomRisk": "unknown",
+      "subjectFoundationFirstPriority": false,
+      "subjectFoundationFirstPriorityHe": "אפשר להישאר עם מיקוד מקומי או קל במקביל — בלי לפתוח סיפור רחב מיותר.",
+      "subjectDependencyNarrativeHe": "בחשבון: אין מספיק בסיס לקבוע אם זה בסיס רחב או קושי נקודתי · לא נקבע סוג בסיס ספציפי · אפשר להישאר עם מיקוד מקומי או קל במקביל — בלי לפתוח סיפור רחב מיותר.",
+      "subjectQuestionCount": 44,
+      "subjectAccuracy": 59
+    },
+    {
+      "subject": "geometry",
+      "subjectLabelHe": "גאומטריה",
+      "summaryHe": "לגבי גאומטריה: עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.",
+      "topStrengths": [],
+      "topWeaknesses": [],
+      "parentTopicToneByKey": {},
+      "parentStrengthWithCautionLinesByKey": {},
+      "maintain": [],
+      "improving": [],
+      "excellence": [],
+      "diagnosticSectionsHe": {
+        "strongHe": [],
+        "maintainHe": [],
+        "improveHe": [],
+        "urgentAttentionHe": [],
+        "insufficientDataHe": [],
+        "concreteHomeActionHe": null,
+        "nextShortGoalHe": null
+      },
+      "subSkillInsightsHe": [],
+      "parentActionHe": null,
+      "nextWeekGoalHe": null,
+      "evidenceExamples": [],
+      "trendVsPreviousPeriod": null,
+      "topicRecommendations": [],
+      "dominantLearningRisk": "none_sparse",
+      "dominantSuccessPattern": "none_sparse",
+      "trendNarrativeHe": "אין מספיק שורות דוח בטווח כדי לסכם מגמה במקצוע זה.",
+      "confidenceSummaryHe": "נתון דל — לא מסכמים ביטחון סטטיסטי ברמת המקצוע.",
+      "recommendedHomeMethodHe": null,
+      "whatNotToDoHe": "לא לבנות תוכנית ארוכה לפני שיש עוד תרגול בטווח.",
+      "majorRiskFlagsAcrossRows": {
+        "falsePromotionRisk": false,
+        "falseRemediationRisk": false,
+        "speedOnlyRisk": false,
+        "hintDependenceRisk": false,
+        "insufficientEvidenceRisk": false,
+        "recentTransitionRisk": false
+      },
+      "dominantBehaviorProfileAcrossRows": "undetermined",
+      "strongestPositiveTrendRowHe": null,
+      "strongestCautionTrendRowHe": null,
+      "fragileSuccessRowCount": 0,
+      "stableMasteryRowCount": 0,
+      "modeConcentrationNoteHe": null,
+      "dominantLearningRiskLabelHe": null,
+      "dominantSuccessPatternLabelHe": null,
+      "improvingButSupportedHe": null,
+      "dominantRootCause": "insufficient_evidence",
+      "dominantRootCauseLabelHe": "עדיין לא ברור מה בדיוק מסבך מעבר לזיהוי ראשוני",
+      "secondaryRootCause": null,
+      "rootCauseDistribution": {},
+      "subjectDiagnosticRestraintHe": "אין מספיק שורות דוח בטווח — לא מסיקים שורש קושי חוצה־נושאים ולא ממליצים על שינוי אגרסיבי.",
+      "subjectConclusionReadiness": "not_ready",
+      "subjectInterventionPriorityHe": "עוד קצת תרגול מבוקר לפני שמחמירים",
+      "subjectPriorityLevel": "monitor",
+      "subjectPriorityReasonHe": "אין שורות דוח בטווח — לא מדרגים עדיפות.",
+      "subjectImmediateActionHe": null,
+      "subjectDeferredActionHe": null,
+      "subjectMonitoringOnly": true,
+      "subjectDoNowHe": "לאסוף מעט תרגול קצר לפני החלטות.",
+      "subjectAvoidNowHe": "לא לבנות תוכנית ארוכה לפני שיש נתון.",
+      "dominantMistakePattern": "insufficient_mistake_evidence",
+      "dominantMistakePatternLabelHe": "עדיין אין מספיק דוגמאות לדפוס טעות ברור",
+      "mistakePatternDistribution": {},
+      "subjectLearningStage": "insufficient_longitudinal_evidence",
+      "subjectLearningStageLabelHe": "עדיין חסר מידע לאורך זמן",
+      "subjectRetentionRisk": "unknown",
+      "subjectTransferReadiness": "not_ready",
+      "subjectMemoryNarrativeHe": "אין שורות דוח בטווח — לא מסכמים דפוס טעות או מגמה לאורך זמן.",
+      "subjectReviewBeforeAdvanceHe": null,
+      "subjectResponseToIntervention": "not_enough_evidence",
+      "subjectResponseToInterventionLabelHe": "עדיין אין מספיק ניסיון כדי לדעת אם מה שניסינו באמת עוזר",
+      "subjectSupportFit": "unknown",
+      "subjectSupportAdjustmentNeed": "monitor_only",
+      "subjectSupportAdjustmentNeedHe": "לצפות ולאסוף עוד מידע לפני החלטה",
+      "subjectConclusionFreshness": "low",
+      "subjectRecalibrationNeed": "do_not_rely_yet",
+      "subjectRecalibrationNeedHe": "עדיין לא להסתמך על המסקנה לבדה",
+      "subjectEffectivenessNarrativeHe": "אין שורות דוח בטווח — לא מעריכים תגובה לתמיכה.",
+      "subjectSupportSequenceState": "insufficient_sequence_evidence",
+      "subjectSupportSequenceStateLabelHe": "אין עדיין מספיק בסיס לספר את רצף התמיכה בביטחון",
+      "subjectStrategyRepetitionRisk": "unknown",
+      "subjectStrategyFatigueRisk": "unknown",
+      "subjectNextBestSequenceStep": "observe_before_next_cycle",
+      "subjectNextBestSequenceStepHe": "לצפות ולאסוף מידע לפני מחזור חדש",
+      "subjectAdviceNovelty": "unknown",
+      "subjectRecommendationRotationNeed": "do_not_repeat_yet",
+      "subjectSequenceNarrativeHe": "אין שורות דוח בטווח — לא מסכמים רצף תמיכה.",
+      "subjectRecommendationMemoryState": "no_memory",
+      "subjectPriorRecommendationSignature": "unknown",
+      "subjectSupportHistoryDepth": "unknown",
+      "subjectRecommendationCarryover": "not_visible",
+      "subjectExpectedVsObservedMatch": "not_enough_evidence",
+      "subjectFollowThroughSignal": "not_inferable",
+      "subjectContinuationDecision": "continue_but_refine",
+      "subjectContinuationDecisionHe": "להמשיך באותו כיוון, בצורה מדויקת יותר",
+      "subjectOutcomeNarrativeHe": "אין שורות דוח בטווח — לא מסכמים זיכרון המלצה או תוצאה.",
+      "subjectGateState": "gates_not_ready",
+      "subjectGateStateLabelHe": "עדיין אין מספיק בסיס — נשארים עם החלטה זהירה",
+      "subjectGateReadiness": "insufficient",
+      "subjectNextCycleDecisionFocus": "prove_current_direction",
+      "subjectNextCycleDecisionFocusHe": "לבדוק שהכיוון הנוכחי באמת עוזר",
+      "subjectEvidenceTargetType": "fresh_data_needed",
+      "subjectTargetObservationWindow": "unknown",
+      "subjectGateNarrativeHe": "אין שורות דוח בטווח — עדיין מוקדם להחלטה בטוחה.",
+      "subjectDependencyState": "insufficient_dependency_evidence",
+      "subjectDependencyStateLabelHe": "אין מספיק בסיס לקבוע אם זה בסיס רחב או קושי נקודתי",
+      "subjectLikelyFoundationalBlocker": "unknown",
+      "subjectLikelyFoundationalBlockerLabelHe": "לא נקבע סוג בסיס ספציפי",
+      "subjectDownstreamSymptomRisk": "unknown",
+      "subjectFoundationFirstPriority": false,
+      "subjectFoundationFirstPriorityHe": "אין שורות דוח — לא מדרגים יסוד מול מקומי.",
+      "subjectDependencyNarrativeHe": "אין שורות דוח בטווח — לא מסכמים תלות יסוד.",
+      "subjectQuestionCount": 0,
+      "subjectAccuracy": 0
+    },
+    {
+      "subject": "english",
+      "subjectLabelHe": "אנגלית",
+      "summaryHe": "לגבי אנגלית: עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.",
+      "topStrengths": [],
+      "topWeaknesses": [],
+      "parentTopicToneByKey": {},
+      "parentStrengthWithCautionLinesByKey": {},
+      "maintain": [],
+      "improving": [],
+      "excellence": [],
+      "diagnosticSectionsHe": {
+        "strongHe": [],
+        "maintainHe": [],
+        "improveHe": [],
+        "urgentAttentionHe": [],
+        "insufficientDataHe": [],
+        "concreteHomeActionHe": null,
+        "nextShortGoalHe": null
+      },
+      "subSkillInsightsHe": [],
+      "parentActionHe": null,
+      "nextWeekGoalHe": null,
+      "evidenceExamples": [],
+      "trendVsPreviousPeriod": null,
+      "topicRecommendations": [],
+      "dominantLearningRisk": "none_sparse",
+      "dominantSuccessPattern": "none_sparse",
+      "trendNarrativeHe": "אין מספיק שורות דוח בטווח כדי לסכם מגמה במקצוע זה.",
+      "confidenceSummaryHe": "נתון דל — לא מסכמים ביטחון סטטיסטי ברמת המקצוע.",
+      "recommendedHomeMethodHe": null,
+      "whatNotToDoHe": "לא לבנות תוכנית ארוכה לפני שיש עוד תרגול בטווח.",
+      "majorRiskFlagsAcrossRows": {
+        "falsePromotionRisk": false,
+        "falseRemediationRisk": false,
+        "speedOnlyRisk": false,
+        "hintDependenceRisk": false,
+        "insufficientEvidenceRisk": false,
+        "recentTransitionRisk": false
+      },
+      "dominantBehaviorProfileAcrossRows": "undetermined",
+      "strongestPositiveTrendRowHe": null,
+      "strongestCautionTrendRowHe": null,
+      "fragileSuccessRowCount": 0,
+      "stableMasteryRowCount": 0,
+      "modeConcentrationNoteHe": null,
+      "dominantLearningRiskLabelHe": null,
+      "dominantSuccessPatternLabelHe": null,
+      "improvingButSupportedHe": null,
+      "dominantRootCause": "insufficient_evidence",
+      "dominantRootCauseLabelHe": "עדיין לא ברור מה בדיוק מסבך מעבר לזיהוי ראשוני",
+      "secondaryRootCause": null,
+      "rootCauseDistribution": {},
+      "subjectDiagnosticRestraintHe": "אין מספיק שורות דוח בטווח — לא מסיקים שורש קושי חוצה־נושאים ולא ממליצים על שינוי אגרסיבי.",
+      "subjectConclusionReadiness": "not_ready",
+      "subjectInterventionPriorityHe": "עוד קצת תרגול מבוקר לפני שמחמירים",
+      "subjectPriorityLevel": "monitor",
+      "subjectPriorityReasonHe": "אין שורות דוח בטווח — לא מדרגים עדיפות.",
+      "subjectImmediateActionHe": null,
+      "subjectDeferredActionHe": null,
+      "subjectMonitoringOnly": true,
+      "subjectDoNowHe": "לאסוף מעט תרגול קצר לפני החלטות.",
+      "subjectAvoidNowHe": "לא לבנות תוכנית ארוכה לפני שיש נתון.",
+      "dominantMistakePattern": "insufficient_mistake_evidence",
+      "dominantMistakePatternLabelHe": "עדיין אין מספיק דוגמאות לדפוס טעות ברור",
+      "mistakePatternDistribution": {},
+      "subjectLearningStage": "insufficient_longitudinal_evidence",
+      "subjectLearningStageLabelHe": "עדיין חסר מידע לאורך זמן",
+      "subjectRetentionRisk": "unknown",
+      "subjectTransferReadiness": "not_ready",
+      "subjectMemoryNarrativeHe": "אין שורות דוח בטווח — לא מסכמים דפוס טעות או מגמה לאורך זמן.",
+      "subjectReviewBeforeAdvanceHe": null,
+      "subjectResponseToIntervention": "not_enough_evidence",
+      "subjectResponseToInterventionLabelHe": "עדיין אין מספיק ניסיון כדי לדעת אם מה שניסינו באמת עוזר",
+      "subjectSupportFit": "unknown",
+      "subjectSupportAdjustmentNeed": "monitor_only",
+      "subjectSupportAdjustmentNeedHe": "לצפות ולאסוף עוד מידע לפני החלטה",
+      "subjectConclusionFreshness": "low",
+      "subjectRecalibrationNeed": "do_not_rely_yet",
+      "subjectRecalibrationNeedHe": "עדיין לא להסתמך על המסקנה לבדה",
+      "subjectEffectivenessNarrativeHe": "אין שורות דוח בטווח — לא מעריכים תגובה לתמיכה.",
+      "subjectSupportSequenceState": "insufficient_sequence_evidence",
+      "subjectSupportSequenceStateLabelHe": "אין עדיין מספיק בסיס לספר את רצף התמיכה בביטחון",
+      "subjectStrategyRepetitionRisk": "unknown",
+      "subjectStrategyFatigueRisk": "unknown",
+      "subjectNextBestSequenceStep": "observe_before_next_cycle",
+      "subjectNextBestSequenceStepHe": "לצפות ולאסוף מידע לפני מחזור חדש",
+      "subjectAdviceNovelty": "unknown",
+      "subjectRecommendationRotationNeed": "do_not_repeat_yet",
+      "subjectSequenceNarrativeHe": "אין שורות דוח בטווח — לא מסכמים רצף תמיכה.",
+      "subjectRecommendationMemoryState": "no_memory",
+      "subjectPriorRecommendationSignature": "unknown",
+      "subjectSupportHistoryDepth": "unknown",
+      "subjectRecommendationCarryover": "not_visible",
+      "subjectExpectedVsObservedMatch": "not_enough_evidence",
+      "subjectFollowThroughSignal": "not_inferable",
+      "subjectContinuationDecision": "continue_but_refine",
+      "subjectContinuationDecisionHe": "להמשיך באותו כיוון, בצורה מדויקת יותר",
+      "subjectOutcomeNarrativeHe": "אין שורות דוח בטווח — לא מסכמים זיכרון המלצה או תוצאה.",
+      "subjectGateState": "gates_not_ready",
+      "subjectGateStateLabelHe": "עדיין אין מספיק בסיס — נשארים עם החלטה זהירה",
+      "subjectGateReadiness": "insufficient",
+      "subjectNextCycleDecisionFocus": "prove_current_direction",
+      "subjectNextCycleDecisionFocusHe": "לבדוק שהכיוון הנוכחי באמת עוזר",
+      "subjectEvidenceTargetType": "fresh_data_needed",
+      "subjectTargetObservationWindow": "unknown",
+      "subjectGateNarrativeHe": "אין שורות דוח בטווח — עדיין מוקדם להחלטה בטוחה.",
+      "subjectDependencyState": "insufficient_dependency_evidence",
+      "subjectDependencyStateLabelHe": "אין מספיק בסיס לקבוע אם זה בסיס רחב או קושי נקודתי",
+      "subjectLikelyFoundationalBlocker": "unknown",
+      "subjectLikelyFoundationalBlockerLabelHe": "לא נקבע סוג בסיס ספציפי",
+      "subjectDownstreamSymptomRisk": "unknown",
+      "subjectFoundationFirstPriority": false,
+      "subjectFoundationFirstPriorityHe": "אין שורות דוח — לא מדרגים יסוד מול מקומי.",
+      "subjectDependencyNarrativeHe": "אין שורות דוח בטווח — לא מסכמים תלות יסוד.",
+      "subjectQuestionCount": 0,
+      "subjectAccuracy": 0
+    },
+    {
+      "subject": "science",
+      "subjectLabelHe": "מדעים",
+      "summaryHe": "לגבי מדעים: עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.",
+      "topStrengths": [],
+      "topWeaknesses": [],
+      "parentTopicToneByKey": {},
+      "parentStrengthWithCautionLinesByKey": {},
+      "maintain": [],
+      "improving": [],
+      "excellence": [],
+      "diagnosticSectionsHe": {
+        "strongHe": [],
+        "maintainHe": [],
+        "improveHe": [],
+        "urgentAttentionHe": [],
+        "insufficientDataHe": [],
+        "concreteHomeActionHe": null,
+        "nextShortGoalHe": null
+      },
+      "subSkillInsightsHe": [],
+      "parentActionHe": null,
+      "nextWeekGoalHe": null,
+      "evidenceExamples": [],
+      "trendVsPreviousPeriod": null,
+      "topicRecommendations": [],
+      "dominantLearningRisk": "none_sparse",
+      "dominantSuccessPattern": "none_sparse",
+      "trendNarrativeHe": "אין מספיק שורות דוח בטווח כדי לסכם מגמה במקצוע זה.",
+      "confidenceSummaryHe": "נתון דל — לא מסכמים ביטחון סטטיסטי ברמת המקצוע.",
+      "recommendedHomeMethodHe": null,
+      "whatNotToDoHe": "לא לבנות תוכנית ארוכה לפני שיש עוד תרגול בטווח.",
+      "majorRiskFlagsAcrossRows": {
+        "falsePromotionRisk": false,
+        "falseRemediationRisk": false,
+        "speedOnlyRisk": false,
+        "hintDependenceRisk": false,
+        "insufficientEvidenceRisk": false,
+        "recentTransitionRisk": false
+      },
+      "dominantBehaviorProfileAcrossRows": "undetermined",
+      "strongestPositiveTrendRowHe": null,
+      "strongestCautionTrendRowHe": null,
+      "fragileSuccessRowCount": 0,
+      "stableMasteryRowCount": 0,
+      "modeConcentrationNoteHe": null,
+      "dominantLearningRiskLabelHe": null,
+      "dominantSuccessPatternLabelHe": null,
+      "improvingButSupportedHe": null,
+      "dominantRootCause": "insufficient_evidence",
+      "dominantRootCauseLabelHe": "עדיין לא ברור מה בדיוק מסבך מעבר לזיהוי ראשוני",
+      "secondaryRootCause": null,
+      "rootCauseDistribution": {},
+      "subjectDiagnosticRestraintHe": "אין מספיק שורות דוח בטווח — לא מסיקים שורש קושי חוצה־נושאים ולא ממליצים על שינוי אגרסיבי.",
+      "subjectConclusionReadiness": "not_ready",
+      "subjectInterventionPriorityHe": "עוד קצת תרגול מבוקר לפני שמחמירים",
+      "subjectPriorityLevel": "monitor",
+      "subjectPriorityReasonHe": "אין שורות דוח בטווח — לא מדרגים עדיפות.",
+      "subjectImmediateActionHe": null,
+      "subjectDeferredActionHe": null,
+      "subjectMonitoringOnly": true,
+      "subjectDoNowHe": "לאסוף מעט תרגול קצר לפני החלטות.",
+      "subjectAvoidNowHe": "לא לבנות תוכנית ארוכה לפני שיש נתון.",
+      "dominantMistakePattern": "insufficient_mistake_evidence",
+      "dominantMistakePatternLabelHe": "עדיין אין מספיק דוגמאות לדפוס טעות ברור",
+      "mistakePatternDistribution": {},
+      "subjectLearningStage": "insufficient_longitudinal_evidence",
+      "subjectLearningStageLabelHe": "עדיין חסר מידע לאורך זמן",
+      "subjectRetentionRisk": "unknown",
+      "subjectTransferReadiness": "not_ready",
+      "subjectMemoryNarrativeHe": "אין שורות דוח בטווח — לא מסכמים דפוס טעות או מגמה לאורך זמן.",
+      "subjectReviewBeforeAdvanceHe": null,
+      "subjectResponseToIntervention": "not_enough_evidence",
+      "subjectResponseToInterventionLabelHe": "עדיין אין מספיק ניסיון כדי לדעת אם מה שניסינו באמת עוזר",
+      "subjectSupportFit": "unknown",
+      "subjectSupportAdjustmentNeed": "monitor_only",
+      "subjectSupportAdjustmentNeedHe": "לצפות ולאסוף עוד מידע לפני החלטה",
+      "subjectConclusionFreshness": "low",
+      "subjectRecalibrationNeed": "do_not_rely_yet",
+      "subjectRecalibrationNeedHe": "עדיין לא להסתמך על המסקנה לבדה",
+      "subjectEffectivenessNarrativeHe": "אין שורות דוח בטווח — לא מעריכים תגובה לתמיכה.",
+      "subjectSupportSequenceState": "insufficient_sequence_evidence",
+      "subjectSupportSequenceStateLabelHe": "אין עדיין מספיק בסיס לספר את רצף התמיכה בביטחון",
+      "subjectStrategyRepetitionRisk": "unknown",
+      "subjectStrategyFatigueRisk": "unknown",
+      "subjectNextBestSequenceStep": "observe_before_next_cycle",
+      "subjectNextBestSequenceStepHe": "לצפות ולאסוף מידע לפני מחזור חדש",
+      "subjectAdviceNovelty": "unknown",
+      "subjectRecommendationRotationNeed": "do_not_repeat_yet",
+      "subjectSequenceNarrativeHe": "אין שורות דוח בטווח — לא מסכמים רצף תמיכה.",
+      "subjectRecommendationMemoryState": "no_memory",
+      "subjectPriorRecommendationSignature": "unknown",
+      "subjectSupportHistoryDepth": "unknown",
+      "subjectRecommendationCarryover": "not_visible",
+      "subjectExpectedVsObservedMatch": "not_enough_evidence",
+      "subjectFollowThroughSignal": "not_inferable",
+      "subjectContinuationDecision": "continue_but_refine",
+      "subjectContinuationDecisionHe": "להמשיך באותו כיוון, בצורה מדויקת יותר",
+      "subjectOutcomeNarrativeHe": "אין שורות דוח בטווח — לא מסכמים זיכרון המלצה או תוצאה.",
+      "subjectGateState": "gates_not_ready",
+      "subjectGateStateLabelHe": "עדיין אין מספיק בסיס — נשארים עם החלטה זהירה",
+      "subjectGateReadiness": "insufficient",
+      "subjectNextCycleDecisionFocus": "prove_current_direction",
+      "subjectNextCycleDecisionFocusHe": "לבדוק שהכיוון הנוכחי באמת עוזר",
+      "subjectEvidenceTargetType": "fresh_data_needed",
+      "subjectTargetObservationWindow": "unknown",
+      "subjectGateNarrativeHe": "אין שורות דוח בטווח — עדיין מוקדם להחלטה בטוחה.",
+      "subjectDependencyState": "insufficient_dependency_evidence",
+      "subjectDependencyStateLabelHe": "אין מספיק בסיס לקבוע אם זה בסיס רחב או קושי נקודתי",
+      "subjectLikelyFoundationalBlocker": "unknown",
+      "subjectLikelyFoundationalBlockerLabelHe": "לא נקבע סוג בסיס ספציפי",
+      "subjectDownstreamSymptomRisk": "unknown",
+      "subjectFoundationFirstPriority": false,
+      "subjectFoundationFirstPriorityHe": "אין שורות דוח — לא מדרגים יסוד מול מקומי.",
+      "subjectDependencyNarrativeHe": "אין שורות דוח בטווח — לא מסכמים תלות יסוד.",
+      "subjectQuestionCount": 0,
+      "subjectAccuracy": 0
+    },
+    {
+      "subject": "hebrew",
+      "subjectLabelHe": "עברית",
+      "summaryHe": "לגבי עברית: עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.",
+      "topStrengths": [],
+      "topWeaknesses": [],
+      "parentTopicToneByKey": {},
+      "parentStrengthWithCautionLinesByKey": {},
+      "maintain": [],
+      "improving": [],
+      "excellence": [],
+      "diagnosticSectionsHe": {
+        "strongHe": [],
+        "maintainHe": [],
+        "improveHe": [],
+        "urgentAttentionHe": [],
+        "insufficientDataHe": [],
+        "concreteHomeActionHe": null,
+        "nextShortGoalHe": null
+      },
+      "subSkillInsightsHe": [],
+      "parentActionHe": null,
+      "nextWeekGoalHe": null,
+      "evidenceExamples": [],
+      "trendVsPreviousPeriod": null,
+      "topicRecommendations": [],
+      "dominantLearningRisk": "none_sparse",
+      "dominantSuccessPattern": "none_sparse",
+      "trendNarrativeHe": "אין מספיק שורות דוח בטווח כדי לסכם מגמה במקצוע זה.",
+      "confidenceSummaryHe": "נתון דל — לא מסכמים ביטחון סטטיסטי ברמת המקצוע.",
+      "recommendedHomeMethodHe": null,
+      "whatNotToDoHe": "לא לבנות תוכנית ארוכה לפני שיש עוד תרגול בטווח.",
+      "majorRiskFlagsAcrossRows": {
+        "falsePromotionRisk": false,
+        "falseRemediationRisk": false,
+        "speedOnlyRisk": false,
+        "hintDependenceRisk": false,
+        "insufficientEvidenceRisk": false,
+        "recentTransitionRisk": false
+      },
+      "dominantBehaviorProfileAcrossRows": "undetermined",
+      "strongestPositiveTrendRowHe": null,
+      "strongestCautionTrendRowHe": null,
+      "fragileSuccessRowCount": 0,
+      "stableMasteryRowCount": 0,
+      "modeConcentrationNoteHe": null,
+      "dominantLearningRiskLabelHe": null,
+      "dominantSuccessPatternLabelHe": null,
+      "improvingButSupportedHe": null,
+      "dominantRootCause": "insufficient_evidence",
+      "dominantRootCauseLabelHe": "עדיין לא ברור מה בדיוק מסבך מעבר לזיהוי ראשוני",
+      "secondaryRootCause": null,
+      "rootCauseDistribution": {},
+      "subjectDiagnosticRestraintHe": "אין מספיק שורות דוח בטווח — לא מסיקים שורש קושי חוצה־נושאים ולא ממליצים על שינוי אגרסיבי.",
+      "subjectConclusionReadiness": "not_ready",
+      "subjectInterventionPriorityHe": "עוד קצת תרגול מבוקר לפני שמחמירים",
+      "subjectPriorityLevel": "monitor",
+      "subjectPriorityReasonHe": "אין שורות דוח בטווח — לא מדרגים עדיפות.",
+      "subjectImmediateActionHe": null,
+      "subjectDeferredActionHe": null,
+      "subjectMonitoringOnly": true,
+      "subjectDoNowHe": "לאסוף מעט תרגול קצר לפני החלטות.",
+      "subjectAvoidNowHe": "לא לבנות תוכנית ארוכה לפני שיש נתון.",
+      "dominantMistakePattern": "insufficient_mistake_evidence",
+      "dominantMistakePatternLabelHe": "עדיין אין מספיק דוגמאות לדפוס טעות ברור",
+      "mistakePatternDistribution": {},
+      "subjectLearningStage": "insufficient_longitudinal_evidence",
+      "subjectLearningStageLabelHe": "עדיין חסר מידע לאורך זמן",
+      "subjectRetentionRisk": "unknown",
+      "subjectTransferReadiness": "not_ready",
+      "subjectMemoryNarrativeHe": "אין שורות דוח בטווח — לא מסכמים דפוס טעות או מגמה לאורך זמן.",
+      "subjectReviewBeforeAdvanceHe": null,
+      "subjectResponseToIntervention": "not_enough_evidence",
+      "subjectResponseToInterventionLabelHe": "עדיין אין מספיק ניסיון כדי לדעת אם מה שניסינו באמת עוזר",
+      "subjectSupportFit": "unknown",
+      "subjectSupportAdjustmentNeed": "monitor_only",
+      "subjectSupportAdjustmentNeedHe": "לצפות ולאסוף עוד מידע לפני החלטה",
+      "subjectConclusionFreshness": "low",
+      "subjectRecalibrationNeed": "do_not_rely_yet",
+      "subjectRecalibrationNeedHe": "עדיין לא להסתמך על המסקנה לבדה",
+      "subjectEffectivenessNarrativeHe": "אין שורות דוח בטווח — לא מעריכים תגובה לתמיכה.",
+      "subjectSupportSequenceState": "insufficient_sequence_evidence",
+      "subjectSupportSequenceStateLabelHe": "אין עדיין מספיק בסיס לספר את רצף התמיכה בביטחון",
+      "subjectStrategyRepetitionRisk": "unknown",
+      "subjectStrategyFatigueRisk": "unknown",
+      "subjectNextBestSequenceStep": "observe_before_next_cycle",
+      "subjectNextBestSequenceStepHe": "לצפות ולאסוף מידע לפני מחזור חדש",
+      "subjectAdviceNovelty": "unknown",
+      "subjectRecommendationRotationNeed": "do_not_repeat_yet",
+      "subjectSequenceNarrativeHe": "אין שורות דוח בטווח — לא מסכמים רצף תמיכה.",
+      "subjectRecommendationMemoryState": "no_memory",
+      "subjectPriorRecommendationSignature": "unknown",
+      "subjectSupportHistoryDepth": "unknown",
+      "subjectRecommendationCarryover": "not_visible",
+      "subjectExpectedVsObservedMatch": "not_enough_evidence",
+      "subjectFollowThroughSignal": "not_inferable",
+      "subjectContinuationDecision": "continue_but_refine",
+      "subjectContinuationDecisionHe": "להמשיך באותו כיוון, בצורה מדויקת יותר",
+      "subjectOutcomeNarrativeHe": "אין שורות דוח בטווח — לא מסכמים זיכרון המלצה או תוצאה.",
+      "subjectGateState": "gates_not_ready",
+      "subjectGateStateLabelHe": "עדיין אין מספיק בסיס — נשארים עם החלטה זהירה",
+      "subjectGateReadiness": "insufficient",
+      "subjectNextCycleDecisionFocus": "prove_current_direction",
+      "subjectNextCycleDecisionFocusHe": "לבדוק שהכיוון הנוכחי באמת עוזר",
+      "subjectEvidenceTargetType": "fresh_data_needed",
+      "subjectTargetObservationWindow": "unknown",
+      "subjectGateNarrativeHe": "אין שורות דוח בטווח — עדיין מוקדם להחלטה בטוחה.",
+      "subjectDependencyState": "insufficient_dependency_evidence",
+      "subjectDependencyStateLabelHe": "אין מספיק בסיס לקבוע אם זה בסיס רחב או קושי נקודתי",
+      "subjectLikelyFoundationalBlocker": "unknown",
+      "subjectLikelyFoundationalBlockerLabelHe": "לא נקבע סוג בסיס ספציפי",
+      "subjectDownstreamSymptomRisk": "unknown",
+      "subjectFoundationFirstPriority": false,
+      "subjectFoundationFirstPriorityHe": "אין שורות דוח — לא מדרגים יסוד מול מקומי.",
+      "subjectDependencyNarrativeHe": "אין שורות דוח בטווח — לא מסכמים תלות יסוד.",
+      "subjectQuestionCount": 0,
+      "subjectAccuracy": 0
+    },
+    {
+      "subject": "moledet-geography",
+      "subjectLabelHe": "מולדת וגאוגרפיה",
+      "summaryHe": "לגבי מולדת וגאוגרפיה: עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.",
+      "topStrengths": [],
+      "topWeaknesses": [],
+      "parentTopicToneByKey": {},
+      "parentStrengthWithCautionLinesByKey": {},
+      "maintain": [],
+      "improving": [],
+      "excellence": [],
+      "diagnosticSectionsHe": {
+        "strongHe": [],
+        "maintainHe": [],
+        "improveHe": [],
+        "urgentAttentionHe": [],
+        "insufficientDataHe": [],
+        "concreteHomeActionHe": null,
+        "nextShortGoalHe": null
+      },
+      "subSkillInsightsHe": [],
+      "parentActionHe": null,
+      "nextWeekGoalHe": null,
+      "evidenceExamples": [],
+      "trendVsPreviousPeriod": null,
+      "topicRecommendations": [],
+      "dominantLearningRisk": "none_sparse",
+      "dominantSuccessPattern": "none_sparse",
+      "trendNarrativeHe": "אין מספיק שורות דוח בטווח כדי לסכם מגמה במקצוע זה.",
+      "confidenceSummaryHe": "נתון דל — לא מסכמים ביטחון סטטיסטי ברמת המקצוע.",
+      "recommendedHomeMethodHe": null,
+      "whatNotToDoHe": "לא לבנות תוכנית ארוכה לפני שיש עוד תרגול בטווח.",
+      "majorRiskFlagsAcrossRows": {
+        "falsePromotionRisk": false,
+        "falseRemediationRisk": false,
+        "speedOnlyRisk": false,
+        "hintDependenceRisk": false,
+        "insufficientEvidenceRisk": false,
+        "recentTransitionRisk": false
+      },
+      "dominantBehaviorProfileAcrossRows": "undetermined",
+      "strongestPositiveTrendRowHe": null,
+      "strongestCautionTrendRowHe": null,
+      "fragileSuccessRowCount": 0,
+      "stableMasteryRowCount": 0,
+      "modeConcentrationNoteHe": null,
+      "dominantLearningRiskLabelHe": null,
+      "dominantSuccessPatternLabelHe": null,
+      "improvingButSupportedHe": null,
+      "dominantRootCause": "insufficient_evidence",
+      "dominantRootCauseLabelHe": "עדיין לא ברור מה בדיוק מסבך מעבר לזיהוי ראשוני",
+      "secondaryRootCause": null,
+      "rootCauseDistribution": {},
+      "subjectDiagnosticRestraintHe": "אין מספיק שורות דוח בטווח — לא מסיקים שורש קושי חוצה־נושאים ולא ממליצים על שינוי אגרסיבי.",
+      "subjectConclusionReadiness": "not_ready",
+      "subjectInterventionPriorityHe": "עוד קצת תרגול מבוקר לפני שמחמירים",
+      "subjectPriorityLevel": "monitor",
+      "subjectPriorityReasonHe": "אין שורות דוח בטווח — לא מדרגים עדיפות.",
+      "subjectImmediateActionHe": null,
+      "subjectDeferredActionHe": null,
+      "subjectMonitoringOnly": true,
+      "subjectDoNowHe": "לאסוף מעט תרגול קצר לפני החלטות.",
+      "subjectAvoidNowHe": "לא לבנות תוכנית ארוכה לפני שיש נתון.",
+      "dominantMistakePattern": "insufficient_mistake_evidence",
+      "dominantMistakePatternLabelHe": "עדיין אין מספיק דוגמאות לדפוס טעות ברור",
+      "mistakePatternDistribution": {},
+      "subjectLearningStage": "insufficient_longitudinal_evidence",
+      "subjectLearningStageLabelHe": "עדיין חסר מידע לאורך זמן",
+      "subjectRetentionRisk": "unknown",
+      "subjectTransferReadiness": "not_ready",
+      "subjectMemoryNarrativeHe": "אין שורות דוח בטווח — לא מסכמים דפוס טעות או מגמה לאורך זמן.",
+      "subjectReviewBeforeAdvanceHe": null,
+      "subjectResponseToIntervention": "not_enough_evidence",
+      "subjectResponseToInterventionLabelHe": "עדיין אין מספיק ניסיון כדי לדעת אם מה שניסינו באמת עוזר",
+      "subjectSupportFit": "unknown",
+      "subjectSupportAdjustmentNeed": "monitor_only",
+      "subjectSupportAdjustmentNeedHe": "לצפות ולאסוף עוד מידע לפני החלטה",
+      "subjectConclusionFreshness": "low",
+      "subjectRecalibrationNeed": "do_not_rely_yet",
+      "subjectRecalibrationNeedHe": "עדיין לא להסתמך על המסקנה לבדה",
+      "subjectEffectivenessNarrativeHe": "אין שורות דוח בטווח — לא מעריכים תגובה לתמיכה.",
+      "subjectSupportSequenceState": "insufficient_sequence_evidence",
+      "subjectSupportSequenceStateLabelHe": "אין עדיין מספיק בסיס לספר את רצף התמיכה בביטחון",
+      "subjectStrategyRepetitionRisk": "unknown",
+      "subjectStrategyFatigueRisk": "unknown",
+      "subjectNextBestSequenceStep": "observe_before_next_cycle",
+      "subjectNextBestSequenceStepHe": "לצפות ולאסוף מידע לפני מחזור חדש",
+      "subjectAdviceNovelty": "unknown",
+      "subjectRecommendationRotationNeed": "do_not_repeat_yet",
+      "subjectSequenceNarrativeHe": "אין שורות דוח בטווח — לא מסכמים רצף תמיכה.",
+      "subjectRecommendationMemoryState": "no_memory",
+      "subjectPriorRecommendationSignature": "unknown",
+      "subjectSupportHistoryDepth": "unknown",
+      "subjectRecommendationCarryover": "not_visible",
+      "subjectExpectedVsObservedMatch": "not_enough_evidence",
+      "subjectFollowThroughSignal": "not_inferable",
+      "subjectContinuationDecision": "continue_but_refine",
+      "subjectContinuationDecisionHe": "להמשיך באותו כיוון, בצורה מדויקת יותר",
+      "subjectOutcomeNarrativeHe": "אין שורות דוח בטווח — לא מסכמים זיכרון המלצה או תוצאה.",
+      "subjectGateState": "gates_not_ready",
+      "subjectGateStateLabelHe": "עדיין אין מספיק בסיס — נשארים עם החלטה זהירה",
+      "subjectGateReadiness": "insufficient",
+      "subjectNextCycleDecisionFocus": "prove_current_direction",
+      "subjectNextCycleDecisionFocusHe": "לבדוק שהכיוון הנוכחי באמת עוזר",
+      "subjectEvidenceTargetType": "fresh_data_needed",
+      "subjectTargetObservationWindow": "unknown",
+      "subjectGateNarrativeHe": "אין שורות דוח בטווח — עדיין מוקדם להחלטה בטוחה.",
+      "subjectDependencyState": "insufficient_dependency_evidence",
+      "subjectDependencyStateLabelHe": "אין מספיק בסיס לקבוע אם זה בסיס רחב או קושי נקודתי",
+      "subjectLikelyFoundationalBlocker": "unknown",
+      "subjectLikelyFoundationalBlockerLabelHe": "לא נקבע סוג בסיס ספציפי",
+      "subjectDownstreamSymptomRisk": "unknown",
+      "subjectFoundationFirstPriority": false,
+      "subjectFoundationFirstPriorityHe": "אין שורות דוח — לא מדרגים יסוד מול מקומי.",
+      "subjectDependencyNarrativeHe": "אין שורות דוח בטווח — לא מסכמים תלות יסוד.",
+      "subjectQuestionCount": 0,
+      "subjectAccuracy": 0
+    }
+  ],
+  "crossSubjectInsights": {
+    "bulletsHe": [
+      "במקצועות גאומטריה, אנגלית, מדעים, עברית, מולדת וגאוגרפיה נאספו מעט מאוד שאלות בטווח — ההערות שם יתייצבו כשייגדל נפח התרגול."
+    ],
+    "dataQualityNoteHe": null
+  },
+  "homePlan": {
+    "itemsHe": [
+      "בחשבון: כדאי פעמיים בשבוע, כרבע שעה בחשבון בנושא חיבור — לקרוא יחד את הניסוח, לפרק למשפטים קצרים, ורק אז לנסח תשובה."
+    ]
+  },
+  "nextPeriodGoals": {
+    "itemsHe": [
+      "בחשבון: מומלץ לבחור כמה דוגמאות לעבור ביחד עם הילד צעד־צעד, ולנסות השבוע להעלות את אחוזי ההצלחה — מספיק אפילו שיפור קטן באחוזי ההצלחה."
+    ]
+  },
+  "parentProductContractV1": {
+    "version": "v1",
+    "generatedAt": "2026-04-25T16:09:29.110Z",
+    "primarySubjectId": "math",
+    "top": {
+      "mainStatusHe": "יש גם מקום לחיזוק בנושא חיבור.",
+      "mainPriorityHe": "להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+      "whyHe": "המלצה לגבי «חיבור — כיתה ד׳ — רמה קשה»: חיזוק באותה רמה. הדפוס הנראה בביצוע: לא נקבע. נשמרו גם שיקולי זהירות. נקודות לשימת לב: מגמה אחרונה עדינה. נקודה שכדאי לשים עליה לב: התמונה מעורבת — יש גם כאן וגם שם. המערכת מצמצמת ניסוח: הנתונים בטווח לא מאפשרים מסקנה חד־משמעית חזקה לגבי מקור הקושי. עדיף לא לחזור על אותו סוג תרגול בלי בדיקה מחודשת — אחרת זה נשמע חדש אבל לא באמת משתנה. פתרון נכון אחרי הפסקה קצרה או למחרת — בלי חזרה מיידית לרמז. · בעוד שני רצפי תרגול קצרים. כדאי לפתוח מיקוד קצר בהשימור עדיין לא נשמר לאורך זמן — הבסיס נחלש מהר לפני שמנסים «להספיק הכל» בנושא הזה.",
+      "doNowHe": "להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+      "avoidNowHe": "לא לנעול הסבר יחיד כשיש אותות מנוגדים. לא להרחיב רמה לפני חיזוק חוזר קצר.",
+      "confidenceHe": "רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+      "evidenceSummaryHe": "נאספו 22 שאלות, דיוק 58%, זמן תרגול 0 דקות. אין מספיק נתוני מגמה תקינים כדי לקבוע כיוון שינוי.",
+      "nextCheckHe": "להמשיך מעקב מחזור נוסף ולבדוק יציבות לפני שינוי משמעותי.",
+      "evidence": {
+        "questionCount": 22,
+        "trendEvidencePoints": 0,
+        "minTrendPointsRequired": 3,
+        "validCurrentSessionCount": 0,
+        "validPreviousSessionCount": 0,
+        "trendEvidenceStatus": "insufficient",
+        "thinEvidenceDowngraded": false
+      }
+    },
+    "subjects": {
+      "math": {
+        "mainStatusHe": "יש גם מקום לחיזוק בנושא חיבור.",
+        "mainPriorityHe": "להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+        "whyHe": "המלצה לגבי «חיבור — כיתה ד׳ — רמה קשה»: חיזוק באותה רמה. הדפוס הנראה בביצוע: לא נקבע. נשמרו גם שיקולי זהירות. נקודות לשימת לב: מגמה אחרונה עדינה. נקודה שכדאי לשים עליה לב: התמונה מעורבת — יש גם כאן וגם שם. המערכת מצמצמת ניסוח: הנתונים בטווח לא מאפשרים מסקנה חד־משמעית חזקה לגבי מקור הקושי. עדיף לא לחזור על אותו סוג תרגול בלי בדיקה מחודשת — אחרת זה נשמע חדש אבל לא באמת משתנה. פתרון נכון אחרי הפסקה קצרה או למחרת — בלי חזרה מיידית לרמז. · בעוד שני רצפי תרגול קצרים. כדאי לפתוח מיקוד קצר בהשימור עדיין לא נשמר לאורך זמן — הבסיס נחלש מהר לפני שמנסים «להספיק הכל» בנושא הזה.",
+        "doNowHe": "להמשיך באותה רמה עם מעקב קצר אחרי דיוק.",
+        "avoidNowHe": "לא לנעול הסבר יחיד כשיש אותות מנוגדים. לא להרחיב רמה לפני חיזוק חוזר קצר.",
+        "confidenceHe": "רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+        "evidenceSummaryHe": "נאספו 22 שאלות, דיוק 58%, זמן תרגול 0 דקות. אין מספיק נתוני מגמה תקינים כדי לקבוע כיוון שינוי.",
+        "nextCheckHe": "להמשיך מעקב מחזור נוסף ולבדוק יציבות לפני שינוי משמעותי.",
+        "evidence": {
+          "questionCount": 22,
+          "trendEvidencePoints": 0,
+          "minTrendPointsRequired": 3,
+          "validCurrentSessionCount": 0,
+          "validPreviousSessionCount": 0,
+          "trendEvidenceStatus": "insufficient",
+          "thinEvidenceDowngraded": false
+        }
+      },
+      "geometry": {
+        "mainStatusHe": "לגבי גאומטריה: עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.",
+        "mainPriorityHe": "להמשיך איסוף נתונים בסיסי.",
+        "whyHe": "אין עדיין מספיק נתון כדי להגדיר כיוון ברור.",
+        "doNowHe": "תרגול קצר וממוקד בנושא אחד.",
+        "avoidNowHe": "לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+        "confidenceHe": "רמת ודאות נמוכה.",
+        "evidenceSummaryHe": "נתון חסר או חלקי.",
+        "nextCheckHe": "לצבור לפחות 8 שאלות לפני שינוי.",
+        "evidence": {
+          "questionCount": 0,
+          "trendEvidencePoints": 0,
+          "trendEvidenceStatus": "insufficient",
+          "thinEvidenceDowngraded": true
+        }
+      },
+      "english": {
+        "mainStatusHe": "לגבי אנגלית: עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.",
+        "mainPriorityHe": "להמשיך איסוף נתונים בסיסי.",
+        "whyHe": "אין עדיין מספיק נתון כדי להגדיר כיוון ברור.",
+        "doNowHe": "תרגול קצר וממוקד בנושא אחד.",
+        "avoidNowHe": "לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+        "confidenceHe": "רמת ודאות נמוכה.",
+        "evidenceSummaryHe": "נתון חסר או חלקי.",
+        "nextCheckHe": "לצבור לפחות 8 שאלות לפני שינוי.",
+        "evidence": {
+          "questionCount": 0,
+          "trendEvidencePoints": 0,
+          "trendEvidenceStatus": "insufficient",
+          "thinEvidenceDowngraded": true
+        }
+      },
+      "science": {
+        "mainStatusHe": "לגבי מדעים: עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.",
+        "mainPriorityHe": "להמשיך איסוף נתונים בסיסי.",
+        "whyHe": "אין עדיין מספיק נתון כדי להגדיר כיוון ברור.",
+        "doNowHe": "תרגול קצר וממוקד בנושא אחד.",
+        "avoidNowHe": "לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+        "confidenceHe": "רמת ודאות נמוכה.",
+        "evidenceSummaryHe": "נתון חסר או חלקי.",
+        "nextCheckHe": "לצבור לפחות 8 שאלות לפני שינוי.",
+        "evidence": {
+          "questionCount": 0,
+          "trendEvidencePoints": 0,
+          "trendEvidenceStatus": "insufficient",
+          "thinEvidenceDowngraded": true
+        }
+      },
+      "hebrew": {
+        "mainStatusHe": "לגבי עברית: עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.",
+        "mainPriorityHe": "להמשיך איסוף נתונים בסיסי.",
+        "whyHe": "אין עדיין מספיק נתון כדי להגדיר כיוון ברור.",
+        "doNowHe": "תרגול קצר וממוקד בנושא אחד.",
+        "avoidNowHe": "לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+        "confidenceHe": "רמת ודאות נמוכה.",
+        "evidenceSummaryHe": "נתון חסר או חלקי.",
+        "nextCheckHe": "לצבור לפחות 8 שאלות לפני שינוי.",
+        "evidence": {
+          "questionCount": 0,
+          "trendEvidencePoints": 0,
+          "trendEvidenceStatus": "insufficient",
+          "thinEvidenceDowngraded": true
+        }
+      },
+      "moledet-geography": {
+        "mainStatusHe": "לגבי מולדת וגאוגרפיה: עדיין מעט נתון בתקופה — אחרי עוד קצת תרגול אפשר יהיה לנסח תמונה מלאה יותר.",
+        "mainPriorityHe": "להמשיך איסוף נתונים בסיסי.",
+        "whyHe": "אין עדיין מספיק נתון כדי להגדיר כיוון ברור.",
+        "doNowHe": "תרגול קצר וממוקד בנושא אחד.",
+        "avoidNowHe": "לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+        "confidenceHe": "רמת ודאות נמוכה.",
+        "evidenceSummaryHe": "נתון חסר או חלקי.",
+        "nextCheckHe": "לצבור לפחות 8 שאלות לפני שינוי.",
+        "evidence": {
+          "questionCount": 0,
+          "trendEvidencePoints": 0,
+          "trendEvidenceStatus": "insufficient",
+          "thinEvidenceDowngraded": true
+        }
+      }
+    }
+  },
+  "dataIntegrityReport": {
+    "version": 1,
+    "issues": []
+  },
+  "contractsV1": {
+    "narrative": {
+      "version": "v1",
+      "scope": "gate-to-text",
+      "attached": true
+    }
+  }
+}

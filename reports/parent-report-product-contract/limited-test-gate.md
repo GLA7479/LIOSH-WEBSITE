@@ -27,7 +27,7 @@
 - details: `{"total":10,"pass":10,"fail":0}`
 ### short_consistency_10_10
 - status: PASS
-- details: `{"generatedAt":"2026-04-25T12:29:14.717Z","scenarioCount":10,"passCount":10,"failCount":0,"hasDetailedLink":true,"contractAvailableInShortReport":[{"scenarioId":"new_user_no_data","available":true},{"scenarioId":"weak_enough_evidence","available":true},{"scenarioId":"weak_thin_evidence","available":true},{"scenarioId":"strong_stable_mastery","available":true},{"scenarioId":"strong_accuracy_fragile_success","available":true},{"scenarioId":"speed_issue_only_no_knowledge_gap","available":true},{"scenarioId":"multiple_subjects_one_clear_priority","available":true},{"scenarioId":"trend_insufficient","available":true},{"scenarioId":"trend_sufficient_up","available":true},{"scenarioId":"trend_sufficient_down","available":true}]}`
+- details: `{"generatedAt":"2026-04-25T15:49:25.628Z","scenarioCount":10,"passCount":10,"failCount":0,"hasDetailedLink":true,"contractAvailableInShortReport":[{"scenarioId":"new_user_no_data","available":true},{"scenarioId":"weak_enough_evidence","available":true},{"scenarioId":"weak_thin_evidence","available":true},{"scenarioId":"strong_stable_mastery","available":true},{"scenarioId":"strong_accuracy_fragile_success","available":true},{"scenarioId":"speed_issue_only_no_knowledge_gap","available":true},{"scenarioId":"multiple_subjects_one_clear_priority","available":true},{"scenarioId":"trend_insufficient","available":true},{"scenarioId":"trend_sufficient_up","available":true},{"scenarioId":"trend_sufficient_down","available":true}]}`
 ### zero_uncertain_skills_are_zero
 - status: PASS
 - details: `{"zero":0,"weak":7,"adequate":416,"uncertain":0}`

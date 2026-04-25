@@ -1,0 +1,13 @@
+{
+  "parentProductContractPreview": {
+    "mainStatusHe": "יש גם מקום לחיזוק בנושא חיבור.",
+    "mainPriorityHe": "כל משימה עם עצירת בדיקה קצרה לפני סיום.",
+    "doNowHe": "כל משימה עם עצירת בדיקה קצרה לפני סיום.",
+    "avoidNowHe": "לא להניח מיד שזה פער ידע עמוק כשיש שליטה חלקית.",
+    "confidenceHe": "רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+    "evidenceSummaryHe": "נאספו 24 שאלות, דיוק 75%, זמן תרגול 0 דקות. נראית יציבות יחסית ללא שינוי מהותי.",
+    "nextCheckHe": "להמשיך מעקב מחזור נוסף ולבדוק יציבות לפני שינוי משמעותי.",
+    "trendEvidenceStatus": "sufficient",
+    "primaryFocusType": ""
+  }
+}
