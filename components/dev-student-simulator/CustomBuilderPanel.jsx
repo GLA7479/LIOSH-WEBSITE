@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   SUBJECT_BUCKETS,
   CUSTOM_BUILDER_UI_SUBJECT_ORDER,
   hebrewSubjectLabel,
   hebrewTopicPrimary,
+  CUSTOM_APPLY_MODE,
+  DEFAULT_TOPIC_ROW,
+  resolveCustomSpecTopicSettings,
 } from "../../utils/dev-student-simulator/index.js";
 
 const LABEL = {
@@ -12,26 +15,34 @@ const LABEL = {
   period: "\u05EA\u05E7\u05D5\u05E4\u05EA \u05DC\u05D9\u05DE\u05D5\u05D3",
   spanDays: "\u05D9\u05DE\u05D9\u05DD \u05D1\u05EA\u05E7\u05D5\u05E4\u05D4 \u05DB\u05D5\u05DC\u05DC\u05D9\u05EA",
   activeDays: "\u05D9\u05DE\u05D9\u05DD \u05E4\u05E2\u05D9\u05DC\u05D9\u05DD",
-  sessions: "\u05DE\u05E1\u05E4\u05E8 \u05E4\u05D2\u05D9\u05E9\u05D5\u05EA",
-  questions: "\u05E1\u05D4\u05DB \u05E9\u05D0\u05DC\u05D5\u05EA \u05DB\u05D5\u05DC\u05DC",
+  sessions: "\u05DE\u05E1\u05E4\u05E8 \u05E4\u05D2\u05D9\u05E9\u05D5\u05EA \u2014 \u05DE\u05D7\u05D5\u05E9\u05D1",
+  questions: "\u05E1\u05D4\u05DB \u05E9\u05D0\u05DC\u05D5\u05EA \u2014 \u05DE\u05D7\u05D5\u05E9\u05D1",
   anchor: "\u05EA\u05D0\u05E8\u05D9\u05DA \u05E2\u05D5\u05D2\u05DF (\u05E1\u05D5\u05E3 \u05D9\u05D5\u05DD)",
   useNow: "\u05D4\u05E9\u05EA\u05DE\u05E9 \u05D1\u05E9\u05E2\u05D4 \u05E0\u05D5\u05DB\u05D7\u05D9\u05EA \u05DB\u05E2\u05D5\u05D2\u05DF",
   subjects: "\u05DE\u05E7\u05E6\u05D5\u05E2\u05D5\u05EA",
-  weight: "\u05DE\u05E9\u05E7\u05DC \u05E4\u05E2\u05D9\u05DC\u05D5\u05EA",
+  weight: "\u05DE\u05E9\u05E7\u05DC (legacy)",
   acc: "\u05D3\u05D9\u05D5\u05E7 \u05D9\u05E2\u05D3 (% \u05E0\u05DB\u05D5\u05DF)",
-  /** Visible label — value is still stored as `avgSessionDurationSec` in spec */
   sessionAvgMin: "משך סשן ממוצע (דקות)",
   level: "\u05E8\u05DE\u05D4",
   mode: "\u05DE\u05E6\u05D1",
-  topics: "\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD (\u05DE\u05E4\u05EA\u05D7\u05D5\u05EA \u05D3\u05D9\u05D5\u05D5\u05D7)",
-  trend: "\u05DE\u05D2\u05DE\u05D4",
+  trend: "\u05DE\u05D2\u05DE\u05D4 \u05DB\u05DC\u05DC\u05D9\u05EA",
   mistakes: "\u05E9\u05D2\u05D9\u05D0\u05D5\u05EA \u05D5\u05E7\u05E6\u05D1",
   mistakeRate: "\u05E9\u05D9\u05E2\u05D5\u05E8 \u05E9\u05D2\u05D9\u05D0\u05D5\u05EA (% \u05DE\u05D4\u05E9\u05D0\u05DC\u05D5\u05EA)",
-  repeatStr: "\u05D7\u05D6\u05E7\u05EA \u05D7\u05D6\u05E8\u05D5\u05EA \u05D7\u05D5\u05D6\u05E8\u05EA (% \u05DE\u05E1\u05E4\u05E8 \u05E9\u05D2\u05D9\u05D0\u05D5\u05EA)",
+  repeatStr: "\u05D7\u05D6\u05E7\u05EA \u05D7\u05D6\u05E8\u05D5\u05EA \u05D7\u05D5\u05D6\u05E8\u05EA (% \u05DE\u05D4\u05E0\u05D5\u05E9\u05D0)",
   pace: "\u05D3\u05E4\u05D5\u05E1 \u05D6\u05DE\u05DF \u05EA\u05D2\u05D5\u05D1\u05D4",
-  debug: "\u05DE\u05E6\u05D1 \u05D1\u05D3\u05D9\u05E7\u05D4 \u05E7\u05E6\u05E8\u05D4 (\u05DE\u05E4\u05D7\u05D9\u05EA \u05E1\u05E4\u05D9 \u05DE\u05EA\u05D7\u05EA \u05D0\u05D9\u05DE\u05D5\u05EA)",
-  topicsDisabledHint: "\u05D1\u05D7\u05E8 \u05DE\u05E7\u05E6\u05D5\u05E2 \u05DB\u05D3\u05D9 \u05DC\u05D4\u05E6\u05D9\u05D2 \u05E0\u05D5\u05E9\u05D0\u05D9\u05DD.",
-  showInternalKeys: "\u05D4\u05E6\u05D2 \u05DE\u05E4\u05EA\u05D7\u05D5\u05EA \u05E4\u05E0\u05D9\u05DE\u05D9\u05D9\u05DD (\u05DC\u05E4\u05D9\u05EA\u05D5\u05D7)",
+  debug: "\u05DE\u05E6\u05D1 \u05D1\u05D3\u05D9\u05E7\u05D4 \u05E7\u05E6\u05E8\u05D4",
+  showInternalKeys: "\u05D4\u05E6\u05D2 \u05DE\u05E4\u05EA\u05D7\u05D5\u05EA \u05E4\u05E0\u05D9\u05DE\u05D9\u05D9\u05DD",
+  applyMode: "מצב יישום (Apply)",
+  applyReplaceSelected: "עדכון הנושאים שנבחרו בלבד",
+  applyAppend: "הוספה לנתונים קיימים",
+  applyFull: "החלפת כל הסימולציה",
+  fullReplaceWarn: "אזהרה: מצב זה מוחק ומייצר מחדש את כל נתוני הסימולטור. לא מומלץ.",
+  active: "פעיל",
+  nQuestions: "שאלות",
+  perTopicTopicTrend: "מגמה (נושא)",
+  computedTotals: "מחושב אוטומטית",
+  topicsDisabledHint: "לחצו לפתיחת הטבלה. עדכון (Apply) רק מסומני פעיל עם שאלות > 0 — לא מחייב בחירה בכל מקצוע.",
+  applySourceHint: "רק שורות נושא: פעיל + שאלות קובעות מה ייכלל ב־Apply.",
 };
 
 const FALLBACK_SUBJECT_ROW = {
@@ -77,8 +88,9 @@ const GRADES = ["g1", "g2", "g3", "g4", "g5", "g6"];
 
 const fieldStyle = { display: "block", marginBottom: 10, fontSize: 14 };
 const inputStyle = { width: "100%", maxWidth: 360, padding: 8, borderRadius: 8, border: "1px solid #cbd5e1", fontSize: 14 };
+const tableInput = { width: 52, padding: 4, fontSize: 11, borderRadius: 4, border: "1px solid #e2e8f0" };
+const tableSelect = { maxWidth: 100, padding: 4, fontSize: 11, borderRadius: 4, border: "1px solid #e2e8f0" };
 
-/** UI minutes ↔ internal `avgSessionDurationSec` (validator 30–7200) */
 function durationMinFromSec(sec) {
   const s = Number(sec);
   if (!Number.isFinite(s) || s <= 0) return 15;
@@ -89,8 +101,22 @@ function durationSecFromMin(min) {
   return m * 60;
 }
 
+function topicRowValue(value, sid, topic) {
+  return { ...DEFAULT_TOPIC_ROW, enabled: false, targetQuestions: 0, ...value?.topicSettings?.[sid]?.[topic] };
+}
+
 export default function CustomBuilderPanel({ value, setValue, disabled }) {
   const [showInternalTopicKeys, setShowInternalTopicKeys] = useState(false);
+
+  const computed = useMemo(() => {
+    try {
+      const c = JSON.parse(JSON.stringify(value || {}));
+      resolveCustomSpecTopicSettings(c);
+      return { totalQuestions: c.totalQuestions, sessionsCount: c.sessionsCount };
+    } catch {
+      return { totalQuestions: 0, sessionsCount: 0 };
+    }
+  }, [value]);
 
   const setField = (k, v) => setValue((s) => ({ ...s, [k]: v }));
 
@@ -104,21 +130,72 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
       };
     });
 
-  const toggleTopic = (sid, topic, on) => {
-    const sub = value.subjects?.[sid];
-    if (!sub) return;
-    const cur = Array.isArray(sub.topics) ? sub.topics : [];
-    const next = on ? [...new Set([...cur, topic])] : cur.filter((t) => t !== topic);
-    setSubject(sid, { topics: next });
+  const setTopicField = (sid, topic, patch) => {
+    setValue((s) => {
+      const prevRow = topicRowValue(s, sid, topic);
+      const nextRow = { ...prevRow, ...patch };
+      const nextTS = { ...s.topicSettings, [sid]: { ...s.topicSettings?.[sid], [topic]: nextRow } };
+      let nextTopicList = [...(s.subjects?.[sid]?.topics || [])];
+      if (nextRow.enabled) {
+        if (!nextTopicList.includes(topic)) nextTopicList.push(topic);
+      } else {
+        nextTopicList = nextTopicList.filter((t) => t !== topic);
+      }
+      return {
+        ...s,
+        topicSettings: nextTS,
+        subjects: {
+          ...s.subjects,
+          [sid]: { ...s.subjects?.[sid], topics: nextTopicList },
+        },
+      };
+    });
   };
 
   const toggleSubjectEnabled = (sid, on) => {
     const buckets = SUBJECT_BUCKETS[sid] || [];
     const prev = value.subjects?.[sid] || { ...FALLBACK_SUBJECT_ROW };
     const prevTopics = Array.isArray(prev.topics) ? prev.topics : [];
-    setSubject(sid, {
-      enabled: on,
-      topics: on && prevTopics.length === 0 ? [...buckets] : prevTopics,
+    setValue((s) => {
+      const nextSubject = {
+        ...prev,
+        enabled: on,
+        topics: on ? (prevTopics.length > 0 ? prevTopics : []) : [],
+      };
+      const nextTS = { ...s.topicSettings };
+      if (!nextTS[sid] || typeof nextTS[sid] !== "object") nextTS[sid] = {};
+      for (const t of buckets) {
+        if (!on) {
+          nextTS[sid][t] = { ...topicRowValue(s, sid, t), enabled: false, targetQuestions: 0 };
+        } else if (!nextTS[sid][t]) {
+          nextTS[sid][t] = {
+            ...DEFAULT_TOPIC_ROW,
+            enabled: false,
+            targetQuestions: 0,
+            targetAccuracyPct: nextSubject.targetAccuracyPct || 76,
+            avgSessionDurationSec: nextSubject.avgSessionDurationSec || 900,
+            level: nextSubject.level || "medium",
+            mode: nextSubject.mode || "learning",
+            topicTrend: s.customTrend || "stable",
+            repeatedMistakeStrengthPct: s.repeatedMistakeStrengthPct || 40,
+            responseMsBehavior: s.responseMsBehavior || "balanced",
+          };
+        }
+      }
+      if (on) {
+        const sel = new Set([...(nextSubject.topics || [])]);
+        for (const t of buckets) {
+          if (sel.has(t)) {
+            const base = { ...nextTS[sid][t] };
+            if (base.targetQuestions < 1 && base.enabled) {
+              nextTS[sid][t] = { ...base, targetQuestions: 20 };
+            } else {
+              nextTS[sid][t] = base;
+            }
+          }
+        }
+      }
+      return { ...s, subjects: { ...s.subjects, [sid]: nextSubject }, topicSettings: nextTS };
     });
   };
 
@@ -154,6 +231,40 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
         </label>
       </div>
 
+      <div
+        style={{
+          border: "1px solid #1e3a5f",
+          borderRadius: 12,
+          padding: 12,
+          background: "#f0f6ff",
+        }}
+      >
+        <label style={{ ...fieldStyle, fontWeight: 700, marginBottom: 6 }}>{LABEL.applyMode}</label>
+        <select
+          style={{ ...inputStyle, maxWidth: "100%" }}
+          value={value.customApplyMode || CUSTOM_APPLY_MODE.replaceSelectedTopics}
+          onChange={(e) => setField("customApplyMode", e.target.value)}
+          disabled={disabled}
+        >
+          <option value={CUSTOM_APPLY_MODE.replaceSelectedTopics}>{LABEL.applyReplaceSelected}</option>
+          <option value={CUSTOM_APPLY_MODE.append}>{LABEL.applyAppend}</option>
+          <option value={CUSTOM_APPLY_MODE.fullSimulationReplace}>{LABEL.applyFull}</option>
+        </select>
+        {value.customApplyMode === CUSTOM_APPLY_MODE.fullSimulationReplace ? (
+          <p
+            style={{
+              margin: "8px 0 0",
+              textAlign: "right",
+              fontSize: 13,
+              color: "#b91c1c",
+              fontWeight: 600,
+            }}
+          >
+            {LABEL.fullReplaceWarn}
+          </p>
+        ) : null}
+      </div>
+
       <div style={{ border: "1px solid #cbd5e1", borderRadius: 12, padding: 14, background: "#f8fafc" }}>
         <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>{LABEL.period}</h3>
         <div style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
@@ -180,25 +291,23 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
             />
           </label>
           <label style={fieldStyle}>
-            {LABEL.sessions}
+            {LABEL.questions} ({LABEL.computedTotals})
             <input
               type="number"
-              min={1}
-              style={{ ...inputStyle, marginTop: 4 }}
-              value={value.sessionsCount}
-              onChange={(e) => setField("sessionsCount", Number(e.target.value))}
-              disabled={disabled}
+              readOnly
+              style={{ ...inputStyle, marginTop: 4, background: "#e2e8f0" }}
+              value={computed.totalQuestions}
+              disabled
             />
           </label>
           <label style={fieldStyle}>
-            {LABEL.questions}
+            {LABEL.sessions} ({LABEL.computedTotals})
             <input
               type="number"
-              min={1}
-              style={{ ...inputStyle, marginTop: 4 }}
-              value={value.totalQuestions}
-              onChange={(e) => setField("totalQuestions", Number(e.target.value))}
-              disabled={disabled}
+              readOnly
+              style={{ ...inputStyle, marginTop: 4, background: "#e2e8f0" }}
+              value={computed.sessionsCount}
+              disabled
             />
           </label>
         </div>
@@ -226,7 +335,8 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
       </div>
 
       <div style={{ border: "1px solid #cbd5e1", borderRadius: 12, padding: 14, background: "#f8fafc" }}>
-        <h3 style={{ margin: "0 0 8px", fontSize: 16 }}>{LABEL.subjects}</h3>
+        <h3 style={{ margin: "0 0 4px", fontSize: 16 }}>{LABEL.subjects}</h3>
+        <p style={{ margin: "0 0 10px", fontSize: 12, color: "#64748b", textAlign: "right" }}>{LABEL.applySourceHint}</p>
         <label
           dir="rtl"
           style={{
@@ -251,13 +361,12 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
         </label>
         {CUSTOM_BUILDER_UI_SUBJECT_ORDER.map((sid) => {
           const row = value.subjects?.[sid] ? { ...FALLBACK_SUBJECT_ROW, ...value.subjects[sid] } : { ...FALLBACK_SUBJECT_ROW };
-          const topicList = Array.isArray(row.topics) ? row.topics : [];
           const buckets = SUBJECT_BUCKETS[sid] || [];
           return (
             <div
               key={sid}
               style={{
-                marginBottom: 10,
+                marginBottom: 14,
                 padding: 10,
                 borderRadius: 8,
                 border: "1px solid #e2e8f0",
@@ -286,11 +395,9 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
                   ) : null}
                 </span>
               </label>
-              {!row.enabled ? (
-                <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b", textAlign: "right" }}>{LABEL.topicsDisabledHint}</p>
-              ) : null}
+              {!row.enabled ? <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b", textAlign: "right" }}>{LABEL.topicsDisabledHint}</p> : null}
               {row.enabled ? (
-                <div style={{ display: "grid", gap: 8, gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
+                <div style={{ display: "grid", gap: 8, gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", marginBottom: 8 }}>
                   <label style={fieldStyle}>
                     {LABEL.weight}
                     <input
@@ -303,120 +410,162 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
                       disabled={disabled}
                     />
                   </label>
-                  <label style={fieldStyle}>
-                    {LABEL.acc}
-                    <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      style={{ ...inputStyle, marginTop: 4 }}
-                      value={row.targetAccuracyPct}
-                      onChange={(e) => setSubject(sid, { targetAccuracyPct: Number(e.target.value) })}
-                      disabled={disabled}
-                    />
-                  </label>
-                  <label style={fieldStyle}>
-                    {LABEL.sessionAvgMin}
-                    <input
-                      type="number"
-                      min={1}
-                      max={120}
-                      step={1}
-                      style={{ ...inputStyle, marginTop: 4 }}
-                      value={durationMinFromSec(row.avgSessionDurationSec)}
-                      onChange={(e) =>
-                        setSubject(sid, { avgSessionDurationSec: durationSecFromMin(e.target.value) })
-                      }
-                      disabled={disabled}
-                    />
-                  </label>
-                  <label style={fieldStyle}>
-                    {LABEL.level}
-                    <select
-                      style={{ ...inputStyle, marginTop: 4 }}
-                      value={row.level}
-                      onChange={(e) => setSubject(sid, { level: e.target.value })}
-                      disabled={disabled}
-                    >
-                      {LEVEL_OPTS.map((o) => (
-                        <option key={o.v} value={o.v}>
-                          {o.l}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label style={fieldStyle}>
-                    {LABEL.mode}
-                    <select
-                      style={{ ...inputStyle, marginTop: 4 }}
-                      value={row.mode}
-                      onChange={(e) => setSubject(sid, { mode: e.target.value })}
-                      disabled={disabled}
-                    >
-                      {MODE_OPTS.map((o) => (
-                        <option key={o.v} value={o.v}>
-                          {o.l}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
                 </div>
               ) : null}
               {row.enabled ? (
-                <fieldset style={{ marginTop: 6, border: "none", padding: 0, marginInline: 0, minWidth: 0 }}>
-                  <legend style={{ fontWeight: 600, marginBottom: 4, padding: 0, textAlign: "right", width: "100%", fontSize: 13 }}>
-                    {LABEL.topics}
-                  </legend>
-                  <div
-                    dir="rtl"
+                <div style={{ width: "100%", overflowX: "auto" }} dir="rtl">
+                  <table
                     style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: "2px 10px",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      rowGap: 2,
+                      borderCollapse: "collapse",
+                      width: "100%",
+                      fontSize: 11,
+                      minWidth: 720,
                       textAlign: "right",
                     }}
                   >
-                    {buckets.map((topic) => (
-                      <label
-                        key={`${sid}:${topic}`}
-                        dir="rtl"
-                        title={topic}
-                        style={{
-                          display: "inline-flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                          gap: 5,
-                          fontSize: 13,
-                          lineHeight: 1.25,
-                          cursor: disabled ? "default" : "pointer",
-                          whiteSpace: "nowrap",
-                          margin: 0,
-                          padding: 0,
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={topicList.includes(topic)}
-                          onChange={(e) => toggleTopic(sid, topic, e.target.checked)}
-                          disabled={disabled}
-                          style={{ width: 14, height: 14, flexShrink: 0, margin: 0 }}
-                        />
-                        <span style={{ textAlign: "right", userSelect: "none" }}>
-                          {hebrewTopicPrimary(topic)}
-                          {showInternalTopicKeys ? (
-                            <code dir="ltr" style={{ fontSize: 10, color: "#94a3b8", marginInlineStart: 4, unicodeBidi: "embed" }}>
-                              {topic}
-                            </code>
-                          ) : null}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
+                    <thead>
+                      <tr style={{ background: "#f1f5f9" }}>
+                        <th style={{ padding: 4, border: "1px solid #e2e8f0" }}>{LABEL.active}</th>
+                        <th style={{ padding: 4, border: "1px solid #e2e8f0" }}>נושא</th>
+                        {showInternalTopicKeys ? (
+                          <th style={{ padding: 4, border: "1px solid #e2e8f0" }} dir="ltr">
+                            key
+                          </th>
+                        ) : null}
+                        <th style={{ padding: 4, border: "1px solid #e2e8f0" }}>{LABEL.nQuestions}</th>
+                        <th style={{ padding: 4, border: "1px solid #e2e8f0" }}>{LABEL.acc}</th>
+                        <th style={{ padding: 4, border: "1px solid #e2e8f0" }}>{LABEL.level}</th>
+                        <th style={{ padding: 4, border: "1px solid #e2e8f0" }}>{LABEL.mode}</th>
+                        <th style={{ padding: 4, border: "1px solid #e2e8f0" }}>{LABEL.sessionAvgMin}</th>
+                        <th style={{ padding: 4, border: "1px solid #e2e8f0" }}>{LABEL.perTopicTopicTrend}</th>
+                        <th style={{ padding: 4, border: "1px solid #e2e8f0" }}>{LABEL.repeatStr}</th>
+                        <th style={{ padding: 4, border: "1px solid #e2e8f0" }}>{LABEL.pace}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {buckets.map((topic) => {
+                        const tr = topicRowValue(value, sid, topic);
+                        return (
+                          <tr key={`${sid}:${topic}`}>
+                            <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>
+                              <input
+                                type="checkbox"
+                                checked={tr.enabled}
+                                onChange={(e) => setTopicField(sid, topic, { enabled: e.target.checked, targetQuestions: e.target.checked && tr.targetQuestions < 1 ? 20 : tr.targetQuestions })}
+                                disabled={disabled}
+                              />
+                            </td>
+                            <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>{hebrewTopicPrimary(topic)}</td>
+                            {showInternalTopicKeys ? (
+                              <td style={{ padding: 4, border: "1px solid #e2e8f0" }} dir="ltr">
+                                <code style={{ fontSize: 10 }}>{topic}</code>
+                              </td>
+                            ) : null}
+                            <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>
+                              <input
+                                type="number"
+                                min={0}
+                                style={tableInput}
+                                value={tr.targetQuestions}
+                                onChange={(e) => setTopicField(sid, topic, { targetQuestions: Math.max(0, Math.floor(Number(e.target.value) || 0)) })}
+                                disabled={disabled}
+                              />
+                            </td>
+                            <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>
+                              <input
+                                type="number"
+                                min={0}
+                                max={100}
+                                style={tableInput}
+                                value={tr.targetAccuracyPct}
+                                onChange={(e) => setTopicField(sid, topic, { targetAccuracyPct: Number(e.target.value) })}
+                                disabled={disabled}
+                              />
+                            </td>
+                            <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>
+                              <select
+                                style={tableSelect}
+                                value={tr.level}
+                                onChange={(e) => setTopicField(sid, topic, { level: e.target.value })}
+                                disabled={disabled}
+                              >
+                                {LEVEL_OPTS.map((o) => (
+                                  <option key={o.v} value={o.v}>
+                                    {o.l}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                            <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>
+                              <select
+                                style={tableSelect}
+                                value={tr.mode}
+                                onChange={(e) => setTopicField(sid, topic, { mode: e.target.value })}
+                                disabled={disabled}
+                              >
+                                {MODE_OPTS.map((o) => (
+                                  <option key={o.v} value={o.v}>
+                                    {o.l}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                            <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>
+                              <input
+                                type="number"
+                                min={1}
+                                max={120}
+                                style={tableInput}
+                                value={durationMinFromSec(tr.avgSessionDurationSec)}
+                                onChange={(e) => setTopicField(sid, topic, { avgSessionDurationSec: durationSecFromMin(e.target.value) })}
+                                disabled={disabled}
+                              />
+                            </td>
+                            <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>
+                              <select
+                                style={tableSelect}
+                                value={tr.topicTrend || "stable"}
+                                onChange={(e) => setTopicField(sid, topic, { topicTrend: e.target.value })}
+                                disabled={disabled}
+                              >
+                                {TREND_OPTS.map((o) => (
+                                  <option key={o.v} value={o.v}>
+                                    {o.l}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                            <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>
+                              <input
+                                type="number"
+                                min={0}
+                                max={100}
+                                style={tableInput}
+                                value={tr.repeatedMistakeStrengthPct}
+                                onChange={(e) => setTopicField(sid, topic, { repeatedMistakeStrengthPct: Number(e.target.value) })}
+                                disabled={disabled}
+                              />
+                            </td>
+                            <td style={{ padding: 4, border: "1px solid #e2e8f0" }}>
+                              <select
+                                style={tableSelect}
+                                value={tr.responseMsBehavior || "balanced"}
+                                onChange={(e) => setTopicField(sid, topic, { responseMsBehavior: e.target.value })}
+                                disabled={disabled}
+                              >
+                                {PACE_OPTS.map((o) => (
+                                  <option key={o.v} value={o.v}>
+                                    {o.l}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               ) : null}
             </div>
           );
@@ -454,7 +603,7 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
           />
         </label>
         <label style={fieldStyle}>
-          {LABEL.repeatStr}
+          {LABEL.repeatStr} (global)
           <input
             type="number"
             min={0}
@@ -466,7 +615,7 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
           />
         </label>
         <label style={fieldStyle}>
-          {LABEL.pace}
+          {LABEL.pace} (default)
           <select
             style={{ ...inputStyle, marginTop: 4 }}
             value={value.responseMsBehavior}

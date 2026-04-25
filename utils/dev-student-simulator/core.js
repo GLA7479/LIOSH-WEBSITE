@@ -1,8 +1,15 @@
-import { CUSTOM_SIMULATOR_PRESET_ID } from "./constants";
+import { CUSTOM_SIMULATOR_PRESET_ID, CUSTOM_APPLY_MODE } from "./constants";
 import { getDevStudentPresetById } from "./presets";
 import { buildSessionsFromPreset } from "./session-builder";
-import { buildSessionsFromCustomSpec, anchorEndMsFromSpec } from "./custom-session-builder";
+import {
+  buildSessionsFromCustomSpec,
+  anchorEndMsFromSpec,
+  makeSimulatorRunId,
+  listAffectedTopicUnits,
+  resolveCustomSpecTopicSettings,
+} from "./custom-session-builder";
 import { buildStorageSnapshotFromSessions } from "./snapshot-builder";
+import { mergeStorageSnapshotForCustomApply } from "./snapshot-merge";
 import { buildBackupEnvelope, buildSimulatorMetadata } from "./metadata";
 import { validatePresetSessions, validateSnapshotNamespace } from "./validator";
 import { validateCustomSpecBeforeBuild, validateCustomSessionsAfterBuild } from "./custom-validator";
@@ -26,7 +33,7 @@ export function buildSimulatorCoreFromPreset({
   const { snapshot, touchedKeys } = buildStorageSnapshotFromSessions(sessions, playerName);
   const namespaceValidation = validateSnapshotNamespace(snapshot);
   if (!namespaceValidation.ok) {
-    throw new Error(`Snapshot namespace validation failed: ${namespaceValidation.errors.join(", ")}`);
+    throw new Error(`Snapshot namespace validation failed: ${namespaceValidation.errors.join("; ")}`);
   }
 
   const backupByKey = buildBackupEnvelope(touchedKeys, existingStorageMap);
@@ -52,7 +59,7 @@ export function buildSimulatorCoreFromPreset({
 
 /**
  * Build simulator package from manual custom controls (UI spec).
- * Does not touch report pages or storage keys beyond the existing snapshot contract.
+ * Default Apply merges into existing local snapshot for selected (subject, topic) only.
  */
 export function buildSimulatorCoreFromCustomSpec({
   spec,
@@ -60,14 +67,18 @@ export function buildSimulatorCoreFromCustomSpec({
   existingStorageMap = {},
   anchorEndMs: anchorEndMsArg,
 } = {}) {
-  const pre = validateCustomSpecBeforeBuild(spec);
+  const specClone =
+    spec && typeof spec === "object" ? JSON.parse(JSON.stringify(spec)) : {};
+  resolveCustomSpecTopicSettings(specClone);
+  const pre = validateCustomSpecBeforeBuild(specClone);
   if (!pre.ok) {
     throw new Error(`Custom spec invalid: ${pre.errors.join("; ")}`);
   }
 
-  const anchorEndMs = anchorEndMsArg != null ? anchorEndMsArg : anchorEndMsFromSpec(spec);
-  const sessions = buildSessionsFromCustomSpec(spec, anchorEndMs);
-  const sessionValidation = validateCustomSessionsAfterBuild(sessions, spec);
+  const anchorEndMs = anchorEndMsArg != null ? anchorEndMsArg : anchorEndMsFromSpec(specClone);
+  const runId = makeSimulatorRunId(anchorEndMs);
+  const sessions = buildSessionsFromCustomSpec(specClone, anchorEndMs, { simulatorRunId: runId });
+  const sessionValidation = validateCustomSessionsAfterBuild(sessions, specClone);
   const sessionBlock = {
     ...sessionValidation,
     warnings: [...(pre.warnings || []), ...(sessionValidation.warnings || [])],
@@ -77,8 +88,27 @@ export function buildSimulatorCoreFromCustomSpec({
     throw new Error(`Custom session validation failed: ${sessionValidation.errors.join("; ")}`);
   }
 
-  const playerName = (playerNameOverride || spec.studentName || "").trim() || "Student";
-  const { snapshot, touchedKeys } = buildStorageSnapshotFromSessions(sessions, playerName);
+  const playerName = (playerNameOverride || specClone.studentName || "").trim() || "Student";
+  const applyMode = specClone.customApplyMode || CUSTOM_APPLY_MODE.replaceSelectedTopics;
+  const affectedUnits = listAffectedTopicUnits(specClone);
+
+  let snapshot;
+  let touchedKeys;
+  if (applyMode === CUSTOM_APPLY_MODE.fullSimulationReplace) {
+    const b = buildStorageSnapshotFromSessions(sessions, playerName);
+    snapshot = b.snapshot;
+    touchedKeys = b.touchedKeys;
+  } else {
+    const b = mergeStorageSnapshotForCustomApply({
+      existingStorageMap: existingStorageMap,
+      newSessions: sessions,
+      playerName,
+      customApplyMode: applyMode,
+      affectedUnits,
+    });
+    snapshot = b.snapshot;
+    touchedKeys = b.touchedKeys;
+  }
   const namespaceValidation = validateSnapshotNamespace(snapshot);
   if (!namespaceValidation.ok) {
     throw new Error(`Snapshot namespace validation failed: ${namespaceValidation.errors.join("; ")}`);
@@ -90,6 +120,9 @@ export function buildSimulatorCoreFromCustomSpec({
     touchedKeys,
     backupByKey,
     playerName,
+    affectedUnits,
+    customApplyMode: applyMode,
+    simulatorRunId: runId,
   });
 
   return {
@@ -102,5 +135,8 @@ export function buildSimulatorCoreFromCustomSpec({
       sessions: sessionBlock,
       namespace: namespaceValidation,
     },
+    customApplyMode: applyMode,
+    affectedUnits,
+    simulatorRunId: runId,
   };
 }

@@ -1,10 +1,10 @@
-import { STORAGE_KEYS } from "./constants";
+import { STORAGE_KEYS, SIMULATOR_ORIGIN } from "./constants";
 
-function emptyMathTracking() {
+export function emptyMathTracking() {
   return { operations: {}, daily: {} };
 }
 
-function emptyTopicTracking() {
+export function emptyTopicTracking() {
   return { topics: {}, daily: {} };
 }
 
@@ -23,8 +23,20 @@ function responseMsForMistake(session, i) {
   return 2100 + i * 45;
 }
 
+function simulatorMistakeTags(session, subject, bucket) {
+  const runId = session?.simulatorRunId;
+  if (!runId) return {};
+  return {
+    origin: SIMULATOR_ORIGIN,
+    simulatorRunId: runId,
+    simulatorSubject: subject,
+    simulatorTopic: bucket,
+  };
+}
+
 function pushMistakes(target, session, subject, bucket, wrongCount) {
   const rotate = !!session.mistakePatternRotate;
+  const tag = simulatorMistakeTags(session, subject, bucket);
   for (let i = 0; i < wrongCount; i += 1) {
     const patternFamily = rotate ? `pf:${subject}:${bucket}:v${i % 7}` : `pf:${subject}:${bucket}`;
     const responseMs = responseMsForMistake(session, i);
@@ -44,11 +56,23 @@ function pushMistakes(target, session, subject, bucket, wrongCount) {
       patternFamily,
       hintUsed: i % 3 === 0,
       responseMs,
+      ...tag,
     });
   }
 }
 
-function toProgressMap(map, containerKey) {
+function sessionSimulatorTags(session) {
+  const runId = session?.simulatorRunId;
+  if (!runId) return {};
+  return {
+    origin: SIMULATOR_ORIGIN,
+    simulatorRunId: runId,
+    simulatorSubject: session.subject,
+    simulatorTopic: session.bucket,
+  };
+}
+
+export function toProgressMap(map, containerKey) {
   const source = map[containerKey] || {};
   const progress = {};
   for (const [key, bucket] of Object.entries(source)) {
@@ -91,6 +115,7 @@ function addMathSession(track, session) {
     mode: session.mode,
     total: session.total,
     correct: session.correct,
+    ...sessionSimulatorTags(session),
   });
 }
 
@@ -113,10 +138,11 @@ function addTopicSession(track, session) {
     mode: session.mode,
     total: session.total,
     correct: session.correct,
+    ...sessionSimulatorTags(session),
   });
 }
 
-function rebuildDailyMath(track) {
+export function rebuildDailyMath(track) {
   track.daily = {};
   for (const [op, bucket] of Object.entries(track.operations || {})) {
     for (const s of bucket.sessions || []) {
@@ -132,7 +158,7 @@ function rebuildDailyMath(track) {
   }
 }
 
-function rebuildDailyTopic(track) {
+export function rebuildDailyTopic(track) {
   track.daily = {};
   for (const [topic, bucket] of Object.entries(track.topics || {})) {
     for (const s of bucket.sessions || []) {

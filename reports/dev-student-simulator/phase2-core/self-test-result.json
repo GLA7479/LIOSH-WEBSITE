@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-04-25T21:13:04.725Z",
+  "generatedAt": "2026-04-25T21:45:45.478Z",
   "anchorNote": "anchorEndMs varies per preset (see presetResults[].anchorEndMs)",
   "presetCount": 6,
   "samplePresetId": "simDeep01_mixed_real_child",
@@ -149,7 +149,7 @@
     {
       "presetId": "simDeep01_mixed_real_child",
       "studentName": "LEOK Dev Mixed Child",
-      "anchorEndMs": 1777151584682,
+      "anchorEndMs": 1777153545441,
       "sessionsValidation": {
         "ok": true,
         "errors": [],
@@ -158,14 +158,14 @@
           "sessions": 84,
           "totalQuestions": 1500,
           "spanDays": 120,
-          "activeDays": 40,
+          "activeDays": 49,
           "subjectCount": 5,
           "topicsPerSubject": {
-            "math": 19,
+            "geometry": 14,
             "hebrew": 7,
-            "science": 8,
             "english": 6,
-            "geometry": 13
+            "math": 21,
+            "science": 8
           }
         }
       },
@@ -230,68 +230,71 @@
           "mleo_weekly_challenge"
         ],
         "totalQuestionsDaily": 1500,
-        "totalCorrectDaily": 1046,
+        "totalCorrectDaily": 1049,
         "mathOps": [
-          "sequences",
           "division",
-          "multiplication",
-          "equations",
-          "subtraction",
-          "addition",
-          "decimals",
-          "rounding",
-          "zero_one_properties",
-          "prime_composite",
-          "percentages",
-          "division_with_remainder",
-          "fractions",
-          "order_of_operations",
+          "sequences",
           "estimation",
-          "ratio",
+          "percentages",
+          "fractions",
+          "division_with_remainder",
           "divisibility",
           "powers",
-          "scale"
+          "rounding",
+          "order_of_operations",
+          "addition",
+          "prime_composite",
+          "equations",
+          "scale",
+          "ratio",
+          "zero_one_properties",
+          "subtraction",
+          "decimals",
+          "compare",
+          "multiplication",
+          "number_sense"
         ],
         "geometryTopics": [
-          "quadrilaterals",
           "perimeter",
-          "area",
-          "diagonal",
           "rotation",
-          "volume",
+          "diagonal",
           "transformations",
           "symmetry",
-          "triangles",
+          "angles",
           "shapes_basic",
+          "quadrilaterals",
+          "triangles",
+          "volume",
           "heights",
           "parallel_perpendicular",
-          "angles"
+          "tiling",
+          "area"
         ],
         "englishTopics": [
           "translation",
-          "grammar",
-          "writing",
-          "mixed",
+          "vocabulary",
           "sentences",
-          "vocabulary"
-        ],
-        "scienceTopics": [
-          "earth_space",
-          "body",
-          "plants",
-          "materials",
-          "experiments",
-          "environment",
-          "animals",
+          "writing",
+          "grammar",
           "mixed"
         ],
-        "hebrewTopics": [
+        "scienceTopics": [
+          "materials",
+          "body",
+          "environment",
+          "earth_space",
           "mixed",
+          "plants",
+          "experiments",
+          "animals"
+        ],
+        "hebrewTopics": [
+          "grammar",
           "comprehension",
           "writing",
-          "grammar",
-          "vocabulary",
           "reading",
+          "vocabulary",
+          "mixed",
           "speaking"
         ],
         "moledetTopics": []
@@ -304,7 +307,7 @@
     {
       "presetId": "simDeep02_strong_stable_child",
       "studentName": "LEOK Dev Strong Stable",
-      "anchorEndMs": 1777151584693,
+      "anchorEndMs": 1777153545450,
       "sessionsValidation": {
         "ok": true,
         "errors": [],
@@ -313,156 +316,12 @@
           "sessions": 68,
           "totalQuestions": 1120,
           "spanDays": 105,
-          "activeDays": 36,
+          "activeDays": 41,
           "subjectCount": 4,
           "topicsPerSubject": {
-            "hebrew": 7,
-            "math": 24,
+            "math": 19,
+            "science": 8,
             "english": 6,
-            "science": 7
-          }
-        }
-      },
-      "namespaceValidation": {
-        "ok": true,
-        "errors": []
-      },
-      "touchedKeys": [
-        "mleo_player_name",
-        "mleo_time_tracking",
-        "mleo_math_master_progress",
-        "mleo_mistakes",
-        "mleo_geometry_time_tracking",
-        "mleo_geometry_master_progress",
-        "mleo_geometry_mistakes",
-        "mleo_english_time_tracking",
-        "mleo_english_master_progress",
-        "mleo_english_mistakes",
-        "mleo_science_time_tracking",
-        "mleo_science_master_progress",
-        "mleo_science_mistakes",
-        "mleo_hebrew_time_tracking",
-        "mleo_hebrew_master_progress",
-        "mleo_hebrew_mistakes",
-        "mleo_moledet_geography_time_tracking",
-        "mleo_moledet_geography_master_progress",
-        "mleo_moledet_geography_mistakes",
-        "mleo_daily_challenge",
-        "mleo_weekly_challenge"
-      ],
-      "metadataShape": [
-        "version",
-        "simulator",
-        "presetId",
-        "playerName",
-        "generatedAt",
-        "touchedKeys",
-        "backupByKey"
-      ],
-      "snapshotSummary": {
-        "keys": [
-          "mleo_daily_challenge",
-          "mleo_english_master_progress",
-          "mleo_english_mistakes",
-          "mleo_english_time_tracking",
-          "mleo_geometry_master_progress",
-          "mleo_geometry_mistakes",
-          "mleo_geometry_time_tracking",
-          "mleo_hebrew_master_progress",
-          "mleo_hebrew_mistakes",
-          "mleo_hebrew_time_tracking",
-          "mleo_math_master_progress",
-          "mleo_mistakes",
-          "mleo_moledet_geography_master_progress",
-          "mleo_moledet_geography_mistakes",
-          "mleo_moledet_geography_time_tracking",
-          "mleo_player_name",
-          "mleo_science_master_progress",
-          "mleo_science_mistakes",
-          "mleo_science_time_tracking",
-          "mleo_time_tracking",
-          "mleo_weekly_challenge"
-        ],
-        "totalQuestionsDaily": 1120,
-        "totalCorrectDaily": 990,
-        "mathOps": [
-          "equations",
-          "powers",
-          "number_sense",
-          "divisibility",
-          "percentages",
-          "sequences",
-          "word_problems",
-          "multiplication",
-          "addition",
-          "compare",
-          "order_of_operations",
-          "prime_composite",
-          "rounding",
-          "division_with_remainder",
-          "decimals",
-          "mixed",
-          "factors_multiples",
-          "scale",
-          "ratio",
-          "zero_one_properties",
-          "estimation",
-          "fractions",
-          "division",
-          "subtraction"
-        ],
-        "geometryTopics": [],
-        "englishTopics": [
-          "grammar",
-          "mixed",
-          "writing",
-          "translation",
-          "sentences",
-          "vocabulary"
-        ],
-        "scienceTopics": [
-          "body",
-          "plants",
-          "animals",
-          "environment",
-          "materials",
-          "earth_space",
-          "experiments"
-        ],
-        "hebrewTopics": [
-          "speaking",
-          "writing",
-          "comprehension",
-          "grammar",
-          "mixed",
-          "vocabulary",
-          "reading"
-        ],
-        "moledetTopics": []
-      },
-      "output": {
-        "snapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep02_strong_stable_child.storage.json",
-        "packagePath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep02_strong_stable_child.package.json"
-      }
-    },
-    {
-      "presetId": "simDeep03_weak_math_long_term",
-      "studentName": "LEOK Dev Weak Math Long-Term",
-      "anchorEndMs": 1777151584696,
-      "sessionsValidation": {
-        "ok": true,
-        "errors": [],
-        "warnings": [],
-        "stats": {
-          "sessions": 72,
-          "totalQuestions": 1020,
-          "spanDays": 135,
-          "activeDays": 38,
-          "subjectCount": 4,
-          "topicsPerSubject": {
-            "math": 24,
-            "english": 6,
-            "geometry": 16,
             "hebrew": 7
           }
         }
@@ -527,98 +386,82 @@
           "mleo_time_tracking",
           "mleo_weekly_challenge"
         ],
-        "totalQuestionsDaily": 1020,
-        "totalCorrectDaily": 661,
+        "totalQuestionsDaily": 1120,
+        "totalCorrectDaily": 993,
         "mathOps": [
-          "subtraction",
-          "zero_one_properties",
-          "rounding",
-          "multiplication",
-          "percentages",
-          "addition",
-          "divisibility",
-          "division_with_remainder",
-          "powers",
-          "equations",
           "fractions",
-          "decimals",
-          "division",
-          "scale",
-          "factors_multiples",
+          "percentages",
+          "divisibility",
           "estimation",
+          "scale",
           "order_of_operations",
-          "compare",
-          "ratio",
-          "mixed",
-          "word_problems",
-          "sequences",
+          "addition",
+          "subtraction",
+          "powers",
+          "division",
+          "multiplication",
+          "zero_one_properties",
+          "decimals",
           "prime_composite",
-          "number_sense"
+          "rounding",
+          "division_with_remainder",
+          "sequences",
+          "equations",
+          "ratio"
         ],
-        "geometryTopics": [
-          "solids",
-          "heights",
-          "transformations",
-          "triangles",
-          "rotation",
-          "perimeter",
-          "symmetry",
-          "volume",
-          "quadrilaterals",
-          "area",
-          "shapes_basic",
-          "tiling",
-          "circles",
-          "diagonal",
-          "angles",
-          "parallel_perpendicular"
-        ],
+        "geometryTopics": [],
         "englishTopics": [
-          "sentences",
-          "mixed",
-          "vocabulary",
           "writing",
-          "translation",
-          "grammar"
-        ],
-        "scienceTopics": [],
-        "hebrewTopics": [
-          "mixed",
-          "comprehension",
-          "speaking",
           "vocabulary",
+          "mixed",
+          "grammar",
+          "translation",
+          "sentences"
+        ],
+        "scienceTopics": [
+          "body",
+          "environment",
+          "plants",
+          "animals",
+          "materials",
+          "earth_space",
+          "mixed",
+          "experiments"
+        ],
+        "hebrewTopics": [
+          "comprehension",
           "grammar",
           "writing",
-          "reading"
+          "reading",
+          "mixed",
+          "speaking",
+          "vocabulary"
         ],
         "moledetTopics": []
       },
       "output": {
-        "snapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep03_weak_math_long_term.storage.json",
-        "packagePath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep03_weak_math_long_term.package.json"
+        "snapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep02_strong_stable_child.storage.json",
+        "packagePath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep02_strong_stable_child.package.json"
       }
     },
     {
-      "presetId": "simDeep04_improving_child",
-      "studentName": "LEOK Dev Improving Child",
-      "anchorEndMs": 1777151584701,
+      "presetId": "simDeep03_weak_math_long_term",
+      "studentName": "LEOK Dev Weak Math Long-Term",
+      "anchorEndMs": 1777153545454,
       "sessionsValidation": {
         "ok": true,
         "errors": [],
-        "warnings": [
-          "math has low topic diversity (1)"
-        ],
+        "warnings": [],
         "stats": {
-          "sessions": 70,
-          "totalQuestions": 1160,
-          "spanDays": 120,
-          "activeDays": 40,
-          "subjectCount": 5,
+          "sessions": 72,
+          "totalQuestions": 1020,
+          "spanDays": 135,
+          "activeDays": 37,
+          "subjectCount": 4,
           "topicsPerSubject": {
-            "english": 6,
+            "math": 24,
             "hebrew": 7,
-            "math": 1,
-            "science": 4,
+            "english": 6,
             "geometry": 6
           }
         }
@@ -683,41 +526,189 @@
           "mleo_time_tracking",
           "mleo_weekly_challenge"
         ],
+        "totalQuestionsDaily": 1020,
+        "totalCorrectDaily": 637,
+        "mathOps": [
+          "addition",
+          "ratio",
+          "word_problems",
+          "powers",
+          "subtraction",
+          "percentages",
+          "prime_composite",
+          "division",
+          "zero_one_properties",
+          "multiplication",
+          "equations",
+          "scale",
+          "division_with_remainder",
+          "sequences",
+          "factors_multiples",
+          "decimals",
+          "fractions",
+          "rounding",
+          "order_of_operations",
+          "divisibility",
+          "compare",
+          "mixed",
+          "number_sense",
+          "estimation"
+        ],
+        "geometryTopics": [
+          "shapes_basic",
+          "volume",
+          "area",
+          "parallel_perpendicular",
+          "angles",
+          "perimeter"
+        ],
+        "englishTopics": [
+          "translation",
+          "vocabulary",
+          "grammar",
+          "mixed",
+          "sentences",
+          "writing"
+        ],
+        "scienceTopics": [],
+        "hebrewTopics": [
+          "speaking",
+          "grammar",
+          "vocabulary",
+          "comprehension",
+          "reading",
+          "writing",
+          "mixed"
+        ],
+        "moledetTopics": []
+      },
+      "output": {
+        "snapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep03_weak_math_long_term.storage.json",
+        "packagePath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep03_weak_math_long_term.package.json"
+      }
+    },
+    {
+      "presetId": "simDeep04_improving_child",
+      "studentName": "LEOK Dev Improving Child",
+      "anchorEndMs": 1777153545458,
+      "sessionsValidation": {
+        "ok": true,
+        "errors": [],
+        "warnings": [
+          "math has low topic diversity (1)"
+        ],
+        "stats": {
+          "sessions": 70,
+          "totalQuestions": 1160,
+          "spanDays": 120,
+          "activeDays": 40,
+          "subjectCount": 5,
+          "topicsPerSubject": {
+            "hebrew": 7,
+            "geometry": 6,
+            "math": 1,
+            "english": 6,
+            "science": 6
+          }
+        }
+      },
+      "namespaceValidation": {
+        "ok": true,
+        "errors": []
+      },
+      "touchedKeys": [
+        "mleo_player_name",
+        "mleo_time_tracking",
+        "mleo_math_master_progress",
+        "mleo_mistakes",
+        "mleo_geometry_time_tracking",
+        "mleo_geometry_master_progress",
+        "mleo_geometry_mistakes",
+        "mleo_english_time_tracking",
+        "mleo_english_master_progress",
+        "mleo_english_mistakes",
+        "mleo_science_time_tracking",
+        "mleo_science_master_progress",
+        "mleo_science_mistakes",
+        "mleo_hebrew_time_tracking",
+        "mleo_hebrew_master_progress",
+        "mleo_hebrew_mistakes",
+        "mleo_moledet_geography_time_tracking",
+        "mleo_moledet_geography_master_progress",
+        "mleo_moledet_geography_mistakes",
+        "mleo_daily_challenge",
+        "mleo_weekly_challenge"
+      ],
+      "metadataShape": [
+        "version",
+        "simulator",
+        "presetId",
+        "playerName",
+        "generatedAt",
+        "touchedKeys",
+        "backupByKey"
+      ],
+      "snapshotSummary": {
+        "keys": [
+          "mleo_daily_challenge",
+          "mleo_english_master_progress",
+          "mleo_english_mistakes",
+          "mleo_english_time_tracking",
+          "mleo_geometry_master_progress",
+          "mleo_geometry_mistakes",
+          "mleo_geometry_time_tracking",
+          "mleo_hebrew_master_progress",
+          "mleo_hebrew_mistakes",
+          "mleo_hebrew_time_tracking",
+          "mleo_math_master_progress",
+          "mleo_mistakes",
+          "mleo_moledet_geography_master_progress",
+          "mleo_moledet_geography_mistakes",
+          "mleo_moledet_geography_time_tracking",
+          "mleo_player_name",
+          "mleo_science_master_progress",
+          "mleo_science_mistakes",
+          "mleo_science_time_tracking",
+          "mleo_time_tracking",
+          "mleo_weekly_challenge"
+        ],
         "totalQuestionsDaily": 1160,
-        "totalCorrectDaily": 836,
+        "totalCorrectDaily": 845,
         "mathOps": [
           "addition"
         ],
         "geometryTopics": [
-          "volume",
-          "perimeter",
-          "area",
-          "parallel_perpendicular",
           "shapes_basic",
-          "angles"
+          "volume",
+          "area",
+          "angles",
+          "parallel_perpendicular",
+          "perimeter"
         ],
         "englishTopics": [
-          "mixed",
-          "writing",
           "vocabulary",
+          "mixed",
           "grammar",
-          "sentences",
-          "translation"
+          "writing",
+          "translation",
+          "sentences"
         ],
         "scienceTopics": [
-          "body",
           "plants",
           "materials",
+          "earth_space",
+          "body",
+          "environment",
           "animals"
         ],
         "hebrewTopics": [
+          "speaking",
+          "reading",
           "grammar",
           "writing",
-          "reading",
           "vocabulary",
           "comprehension",
-          "mixed",
-          "speaking"
+          "mixed"
         ],
         "moledetTopics": []
       },
@@ -729,7 +720,7 @@
     {
       "presetId": "simDeep05_declining_after_difficulty_jump",
       "studentName": "LEOK Dev Declining After Jump",
-      "anchorEndMs": 1777151584711,
+      "anchorEndMs": 1777153545464,
       "sessionsValidation": {
         "ok": true,
         "errors": [],
@@ -739,15 +730,15 @@
         "stats": {
           "sessions": 62,
           "totalQuestions": 920,
-          "spanDays": 109,
-          "activeDays": 40,
+          "spanDays": 110,
+          "activeDays": 42,
           "subjectCount": 5,
           "topicsPerSubject": {
-            "science": 7,
-            "hebrew": 4,
-            "math": 1,
-            "geometry": 10,
-            "english": 6
+            "science": 5,
+            "hebrew": 7,
+            "geometry": 8,
+            "english": 6,
+            "math": 1
           }
         }
       },
@@ -812,44 +803,43 @@
           "mleo_weekly_challenge"
         ],
         "totalQuestionsDaily": 920,
-        "totalCorrectDaily": 611,
+        "totalCorrectDaily": 636,
         "mathOps": [
           "multiplication"
         ],
         "geometryTopics": [
-          "rotation",
-          "perimeter",
-          "transformations",
           "triangles",
-          "parallel_perpendicular",
-          "angles",
-          "volume",
+          "shapes_basic",
           "area",
+          "parallel_perpendicular",
           "quadrilaterals",
-          "shapes_basic"
+          "volume",
+          "perimeter",
+          "angles"
         ],
         "englishTopics": [
-          "grammar",
-          "translation",
           "vocabulary",
-          "mixed",
+          "translation",
           "sentences",
+          "grammar",
+          "mixed",
           "writing"
         ],
         "scienceTopics": [
-          "animals",
-          "experiments",
-          "plants",
-          "environment",
-          "body",
           "earth_space",
+          "body",
+          "animals",
+          "plants",
           "materials"
         ],
         "hebrewTopics": [
+          "vocabulary",
           "grammar",
+          "reading",
           "comprehension",
+          "mixed",
           "writing",
-          "reading"
+          "speaking"
         ],
         "moledetTopics": []
       },
@@ -861,7 +851,7 @@
     {
       "presetId": "simDeep06_fast_careless_vs_slow_accurate_mix",
       "studentName": "LEOK Dev Pace Mix",
-      "anchorEndMs": 1777151592637,
+      "anchorEndMs": 1777153545474,
       "sessionsValidation": {
         "ok": true,
         "errors": [],
@@ -872,13 +862,13 @@
           "sessions": 58,
           "totalQuestions": 860,
           "spanDays": 110,
-          "activeDays": 27,
+          "activeDays": 29,
           "subjectCount": 4,
           "topicsPerSubject": {
-            "geometry": 9,
             "math": 2,
-            "english": 4,
-            "science": 3
+            "science": 4,
+            "geometry": 7,
+            "english": 4
           }
         }
       },
@@ -943,32 +933,31 @@
           "mleo_weekly_challenge"
         ],
         "totalQuestionsDaily": 860,
-        "totalCorrectDaily": 723,
+        "totalCorrectDaily": 725,
         "mathOps": [
           "addition",
           "multiplication"
         ],
         "geometryTopics": [
-          "parallel_perpendicular",
-          "heights",
-          "angles",
-          "pythagoras",
+          "area",
+          "diagonal",
+          "quadrilaterals",
+          "triangles",
           "mixed",
           "tiling",
-          "transformations",
-          "perimeter",
-          "solids"
+          "shapes_basic"
         ],
         "englishTopics": [
-          "translation",
+          "vocabulary",
           "mixed",
-          "writing",
-          "grammar"
+          "translation",
+          "writing"
         ],
         "scienceTopics": [
-          "mixed",
-          "animals",
-          "earth_space"
+          "environment",
+          "plants",
+          "experiments",
+          "animals"
         ],
         "hebrewTopics": [],
         "moledetTopics": []

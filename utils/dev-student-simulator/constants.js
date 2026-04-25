@@ -39,3 +39,13 @@ export { CANONICAL_SUBJECT_BUCKETS as SUBJECT_BUCKETS } from "./canonical-topic-
 
 /** Metadata presetId when sessions are built from the manual custom builder (not a DEV_STUDENT_PRESETS row). */
 export const CUSTOM_SIMULATOR_PRESET_ID = "custom_manual_v1";
+
+/** All generated simulator rows in storage must tag this `origin` (sessions + mistakes). */
+export const SIMULATOR_ORIGIN = "dev-student-simulator";
+
+/** Custom builder Apply: default replaces only selected subject/topic units; optional append / full replace. */
+export const CUSTOM_APPLY_MODE = Object.freeze({
+  replaceSelectedTopics: "replaceSelectedTopics",
+  append: "append",
+  fullSimulationReplace: "fullSimulationReplace",
+});

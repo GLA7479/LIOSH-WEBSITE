@@ -15,6 +15,8 @@ import {
   serializeSimulatorPackage,
   parseSimulatorPackage,
   buildBackupEnvelope,
+  hebrewSubjectLabel,
+  hebrewTopicPrimary,
 } from "../../utils/dev-student-simulator/index.js";
 import {
   readRawStorageMapForKeys,
@@ -158,6 +160,18 @@ function statusBadge(text, tone) {
 function presetOptionLabel(p) {
   const he = PRESET_HEBREW_LABEL[p.id] || p.studentName;
   return `${he} \u2014 \u05DE\u05D6\u05D4\u05D4: ${p.id}`;
+}
+
+function aggregateTopicPreviewBySession(sessions) {
+  const m = new Map();
+  for (const s of sessions || []) {
+    const k = `${s.subject}:::${s.bucket}`;
+    const o = m.get(k) || { subject: s.subject, topic: s.bucket, sessionRows: 0, questions: 0 };
+    o.sessionRows += 1;
+    o.questions += Number(s.total) || 0;
+    m.set(k, o);
+  }
+  return [...m.values()].sort((a, b) => `${a.subject}:${a.topic}`.localeCompare(`${b.subject}:${b.topic}`));
 }
 
 export default function DevStudentSimulatorClient() {
@@ -740,6 +754,26 @@ export default function DevStudentSimulatorClient() {
               <p style={{ margin: "10px 0 0", color: "#854d0e", fontSize: 13 }}>
                 \u05D0\u05D6\u05D4\u05E8\u05D5\u05EA: {preview.validation.sessions.warnings.join(" \u00B7 ")}
               </p>
+            ) : null}
+            {preview?.applySource === "custom" && Array.isArray(preview?.sessions) && preview.sessions.length ? (
+              <div
+                style={{
+                  marginTop: 10,
+                  padding: 10,
+                  background: "#f0fdf4",
+                  border: "1px solid #86efac",
+                  borderRadius: 8,
+                }}
+              >
+                <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: COLORS.pageText }}>?????? ?????? ?????? (?? ???????)</p>
+                <ul style={{ margin: "6px 0 0", paddingRight: 18, fontSize: 13, color: COLORS.muted, listStyle: "disc" }}>
+                  {aggregateTopicPreviewBySession(preview.sessions).map((row) => (
+                    <li key={`${row.subject}:${row.topic}`} style={{ marginBottom: 4 }}>
+                      {hebrewSubjectLabel(row.subject)} ? {hebrewTopicPrimary(row.topic)}: {row.sessionRows} ??????, {row.questions} ?????
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ) : null}
           </>
         ) : (
