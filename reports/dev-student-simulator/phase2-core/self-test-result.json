@@ -1,0 +1,897 @@
+{
+  "ok": true,
+  "generatedAt": "2026-04-25T18:59:27.037Z",
+  "anchorNote": "anchorEndMs varies per preset (see presetResults[].anchorEndMs)",
+  "presetCount": 6,
+  "samplePresetId": "simDeep01_mixed_real_child",
+  "sampleSnapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep01_mixed_real_child.storage.json",
+  "touchedKeysByPreset": {
+    "simDeep01_mixed_real_child": [
+      "mleo_player_name",
+      "mleo_time_tracking",
+      "mleo_math_master_progress",
+      "mleo_mistakes",
+      "mleo_geometry_time_tracking",
+      "mleo_geometry_master_progress",
+      "mleo_geometry_mistakes",
+      "mleo_english_time_tracking",
+      "mleo_english_master_progress",
+      "mleo_english_mistakes",
+      "mleo_science_time_tracking",
+      "mleo_science_master_progress",
+      "mleo_science_mistakes",
+      "mleo_hebrew_time_tracking",
+      "mleo_hebrew_master_progress",
+      "mleo_hebrew_mistakes",
+      "mleo_moledet_geography_time_tracking",
+      "mleo_moledet_geography_master_progress",
+      "mleo_moledet_geography_mistakes",
+      "mleo_daily_challenge",
+      "mleo_weekly_challenge"
+    ],
+    "simDeep02_strong_stable_child": [
+      "mleo_player_name",
+      "mleo_time_tracking",
+      "mleo_math_master_progress",
+      "mleo_mistakes",
+      "mleo_geometry_time_tracking",
+      "mleo_geometry_master_progress",
+      "mleo_geometry_mistakes",
+      "mleo_english_time_tracking",
+      "mleo_english_master_progress",
+      "mleo_english_mistakes",
+      "mleo_science_time_tracking",
+      "mleo_science_master_progress",
+      "mleo_science_mistakes",
+      "mleo_hebrew_time_tracking",
+      "mleo_hebrew_master_progress",
+      "mleo_hebrew_mistakes",
+      "mleo_moledet_geography_time_tracking",
+      "mleo_moledet_geography_master_progress",
+      "mleo_moledet_geography_mistakes",
+      "mleo_daily_challenge",
+      "mleo_weekly_challenge"
+    ],
+    "simDeep03_weak_math_long_term": [
+      "mleo_player_name",
+      "mleo_time_tracking",
+      "mleo_math_master_progress",
+      "mleo_mistakes",
+      "mleo_geometry_time_tracking",
+      "mleo_geometry_master_progress",
+      "mleo_geometry_mistakes",
+      "mleo_english_time_tracking",
+      "mleo_english_master_progress",
+      "mleo_english_mistakes",
+      "mleo_science_time_tracking",
+      "mleo_science_master_progress",
+      "mleo_science_mistakes",
+      "mleo_hebrew_time_tracking",
+      "mleo_hebrew_master_progress",
+      "mleo_hebrew_mistakes",
+      "mleo_moledet_geography_time_tracking",
+      "mleo_moledet_geography_master_progress",
+      "mleo_moledet_geography_mistakes",
+      "mleo_daily_challenge",
+      "mleo_weekly_challenge"
+    ],
+    "simDeep04_improving_child": [
+      "mleo_player_name",
+      "mleo_time_tracking",
+      "mleo_math_master_progress",
+      "mleo_mistakes",
+      "mleo_geometry_time_tracking",
+      "mleo_geometry_master_progress",
+      "mleo_geometry_mistakes",
+      "mleo_english_time_tracking",
+      "mleo_english_master_progress",
+      "mleo_english_mistakes",
+      "mleo_science_time_tracking",
+      "mleo_science_master_progress",
+      "mleo_science_mistakes",
+      "mleo_hebrew_time_tracking",
+      "mleo_hebrew_master_progress",
+      "mleo_hebrew_mistakes",
+      "mleo_moledet_geography_time_tracking",
+      "mleo_moledet_geography_master_progress",
+      "mleo_moledet_geography_mistakes",
+      "mleo_daily_challenge",
+      "mleo_weekly_challenge"
+    ],
+    "simDeep05_declining_after_difficulty_jump": [
+      "mleo_player_name",
+      "mleo_time_tracking",
+      "mleo_math_master_progress",
+      "mleo_mistakes",
+      "mleo_geometry_time_tracking",
+      "mleo_geometry_master_progress",
+      "mleo_geometry_mistakes",
+      "mleo_english_time_tracking",
+      "mleo_english_master_progress",
+      "mleo_english_mistakes",
+      "mleo_science_time_tracking",
+      "mleo_science_master_progress",
+      "mleo_science_mistakes",
+      "mleo_hebrew_time_tracking",
+      "mleo_hebrew_master_progress",
+      "mleo_hebrew_mistakes",
+      "mleo_moledet_geography_time_tracking",
+      "mleo_moledet_geography_master_progress",
+      "mleo_moledet_geography_mistakes",
+      "mleo_daily_challenge",
+      "mleo_weekly_challenge"
+    ],
+    "simDeep06_fast_careless_vs_slow_accurate_mix": [
+      "mleo_player_name",
+      "mleo_time_tracking",
+      "mleo_math_master_progress",
+      "mleo_mistakes",
+      "mleo_geometry_time_tracking",
+      "mleo_geometry_master_progress",
+      "mleo_geometry_mistakes",
+      "mleo_english_time_tracking",
+      "mleo_english_master_progress",
+      "mleo_english_mistakes",
+      "mleo_science_time_tracking",
+      "mleo_science_master_progress",
+      "mleo_science_mistakes",
+      "mleo_hebrew_time_tracking",
+      "mleo_hebrew_master_progress",
+      "mleo_hebrew_mistakes",
+      "mleo_moledet_geography_time_tracking",
+      "mleo_moledet_geography_master_progress",
+      "mleo_moledet_geography_mistakes",
+      "mleo_daily_challenge",
+      "mleo_weekly_challenge"
+    ]
+  },
+  "presetResults": [
+    {
+      "presetId": "simDeep01_mixed_real_child",
+      "studentName": "LEOK Dev Mixed Child",
+      "anchorEndMs": 1777143567008,
+      "sessionsValidation": {
+        "ok": true,
+        "errors": [],
+        "warnings": [],
+        "stats": {
+          "sessions": 84,
+          "totalQuestions": 1500,
+          "spanDays": 120,
+          "activeDays": 37,
+          "subjectCount": 5,
+          "topicsPerSubject": {
+            "english": 5,
+            "science": 6,
+            "geometry": 5,
+            "hebrew": 5,
+            "math": 6
+          }
+        }
+      },
+      "namespaceValidation": {
+        "ok": true,
+        "errors": []
+      },
+      "touchedKeys": [
+        "mleo_player_name",
+        "mleo_time_tracking",
+        "mleo_math_master_progress",
+        "mleo_mistakes",
+        "mleo_geometry_time_tracking",
+        "mleo_geometry_master_progress",
+        "mleo_geometry_mistakes",
+        "mleo_english_time_tracking",
+        "mleo_english_master_progress",
+        "mleo_english_mistakes",
+        "mleo_science_time_tracking",
+        "mleo_science_master_progress",
+        "mleo_science_mistakes",
+        "mleo_hebrew_time_tracking",
+        "mleo_hebrew_master_progress",
+        "mleo_hebrew_mistakes",
+        "mleo_moledet_geography_time_tracking",
+        "mleo_moledet_geography_master_progress",
+        "mleo_moledet_geography_mistakes",
+        "mleo_daily_challenge",
+        "mleo_weekly_challenge"
+      ],
+      "metadataShape": [
+        "version",
+        "simulator",
+        "presetId",
+        "playerName",
+        "generatedAt",
+        "touchedKeys",
+        "backupByKey"
+      ],
+      "snapshotSummary": {
+        "keys": [
+          "mleo_daily_challenge",
+          "mleo_english_master_progress",
+          "mleo_english_mistakes",
+          "mleo_english_time_tracking",
+          "mleo_geometry_master_progress",
+          "mleo_geometry_mistakes",
+          "mleo_geometry_time_tracking",
+          "mleo_hebrew_master_progress",
+          "mleo_hebrew_mistakes",
+          "mleo_hebrew_time_tracking",
+          "mleo_math_master_progress",
+          "mleo_mistakes",
+          "mleo_moledet_geography_master_progress",
+          "mleo_moledet_geography_mistakes",
+          "mleo_moledet_geography_time_tracking",
+          "mleo_player_name",
+          "mleo_science_master_progress",
+          "mleo_science_mistakes",
+          "mleo_science_time_tracking",
+          "mleo_time_tracking",
+          "mleo_weekly_challenge"
+        ],
+        "totalQuestionsDaily": 1500,
+        "totalCorrectDaily": 1075,
+        "mathOps": [
+          "fractions",
+          "word_problems",
+          "addition",
+          "division",
+          "multiplication",
+          "subtraction"
+        ],
+        "geometryTopics": [
+          "area",
+          "perimeter",
+          "volume",
+          "angles",
+          "shapes_basic"
+        ],
+        "englishTopics": [
+          "grammar",
+          "vocabulary",
+          "sentences",
+          "translation",
+          "writing"
+        ],
+        "scienceTopics": [
+          "animals",
+          "earth_space",
+          "plants",
+          "materials",
+          "environment",
+          "body"
+        ],
+        "hebrewTopics": [
+          "vocabulary",
+          "grammar",
+          "reading",
+          "comprehension",
+          "writing"
+        ],
+        "moledetTopics": []
+      },
+      "output": {
+        "snapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep01_mixed_real_child.storage.json",
+        "packagePath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep01_mixed_real_child.package.json"
+      }
+    },
+    {
+      "presetId": "simDeep02_strong_stable_child",
+      "studentName": "LEOK Dev Strong Stable",
+      "anchorEndMs": 1777143567017,
+      "sessionsValidation": {
+        "ok": true,
+        "errors": [],
+        "warnings": [],
+        "stats": {
+          "sessions": 68,
+          "totalQuestions": 1120,
+          "spanDays": 105,
+          "activeDays": 37,
+          "subjectCount": 4,
+          "topicsPerSubject": {
+            "hebrew": 5,
+            "math": 6,
+            "science": 6,
+            "english": 5
+          }
+        }
+      },
+      "namespaceValidation": {
+        "ok": true,
+        "errors": []
+      },
+      "touchedKeys": [
+        "mleo_player_name",
+        "mleo_time_tracking",
+        "mleo_math_master_progress",
+        "mleo_mistakes",
+        "mleo_geometry_time_tracking",
+        "mleo_geometry_master_progress",
+        "mleo_geometry_mistakes",
+        "mleo_english_time_tracking",
+        "mleo_english_master_progress",
+        "mleo_english_mistakes",
+        "mleo_science_time_tracking",
+        "mleo_science_master_progress",
+        "mleo_science_mistakes",
+        "mleo_hebrew_time_tracking",
+        "mleo_hebrew_master_progress",
+        "mleo_hebrew_mistakes",
+        "mleo_moledet_geography_time_tracking",
+        "mleo_moledet_geography_master_progress",
+        "mleo_moledet_geography_mistakes",
+        "mleo_daily_challenge",
+        "mleo_weekly_challenge"
+      ],
+      "metadataShape": [
+        "version",
+        "simulator",
+        "presetId",
+        "playerName",
+        "generatedAt",
+        "touchedKeys",
+        "backupByKey"
+      ],
+      "snapshotSummary": {
+        "keys": [
+          "mleo_daily_challenge",
+          "mleo_english_master_progress",
+          "mleo_english_mistakes",
+          "mleo_english_time_tracking",
+          "mleo_geometry_master_progress",
+          "mleo_geometry_mistakes",
+          "mleo_geometry_time_tracking",
+          "mleo_hebrew_master_progress",
+          "mleo_hebrew_mistakes",
+          "mleo_hebrew_time_tracking",
+          "mleo_math_master_progress",
+          "mleo_mistakes",
+          "mleo_moledet_geography_master_progress",
+          "mleo_moledet_geography_mistakes",
+          "mleo_moledet_geography_time_tracking",
+          "mleo_player_name",
+          "mleo_science_master_progress",
+          "mleo_science_mistakes",
+          "mleo_science_time_tracking",
+          "mleo_time_tracking",
+          "mleo_weekly_challenge"
+        ],
+        "totalQuestionsDaily": 1120,
+        "totalCorrectDaily": 994,
+        "mathOps": [
+          "addition",
+          "multiplication",
+          "fractions",
+          "subtraction",
+          "division",
+          "word_problems"
+        ],
+        "geometryTopics": [],
+        "englishTopics": [
+          "grammar",
+          "vocabulary",
+          "sentences",
+          "writing",
+          "translation"
+        ],
+        "scienceTopics": [
+          "materials",
+          "earth_space",
+          "animals",
+          "environment",
+          "body",
+          "plants"
+        ],
+        "hebrewTopics": [
+          "grammar",
+          "comprehension",
+          "writing",
+          "vocabulary",
+          "reading"
+        ],
+        "moledetTopics": []
+      },
+      "output": {
+        "snapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep02_strong_stable_child.storage.json",
+        "packagePath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep02_strong_stable_child.package.json"
+      }
+    },
+    {
+      "presetId": "simDeep03_weak_math_long_term",
+      "studentName": "LEOK Dev Weak Math Long-Term",
+      "anchorEndMs": 1777143567021,
+      "sessionsValidation": {
+        "ok": true,
+        "errors": [],
+        "warnings": [],
+        "stats": {
+          "sessions": 72,
+          "totalQuestions": 1020,
+          "spanDays": 135,
+          "activeDays": 34,
+          "subjectCount": 4,
+          "topicsPerSubject": {
+            "math": 6,
+            "geometry": 5,
+            "hebrew": 5,
+            "english": 5
+          }
+        }
+      },
+      "namespaceValidation": {
+        "ok": true,
+        "errors": []
+      },
+      "touchedKeys": [
+        "mleo_player_name",
+        "mleo_time_tracking",
+        "mleo_math_master_progress",
+        "mleo_mistakes",
+        "mleo_geometry_time_tracking",
+        "mleo_geometry_master_progress",
+        "mleo_geometry_mistakes",
+        "mleo_english_time_tracking",
+        "mleo_english_master_progress",
+        "mleo_english_mistakes",
+        "mleo_science_time_tracking",
+        "mleo_science_master_progress",
+        "mleo_science_mistakes",
+        "mleo_hebrew_time_tracking",
+        "mleo_hebrew_master_progress",
+        "mleo_hebrew_mistakes",
+        "mleo_moledet_geography_time_tracking",
+        "mleo_moledet_geography_master_progress",
+        "mleo_moledet_geography_mistakes",
+        "mleo_daily_challenge",
+        "mleo_weekly_challenge"
+      ],
+      "metadataShape": [
+        "version",
+        "simulator",
+        "presetId",
+        "playerName",
+        "generatedAt",
+        "touchedKeys",
+        "backupByKey"
+      ],
+      "snapshotSummary": {
+        "keys": [
+          "mleo_daily_challenge",
+          "mleo_english_master_progress",
+          "mleo_english_mistakes",
+          "mleo_english_time_tracking",
+          "mleo_geometry_master_progress",
+          "mleo_geometry_mistakes",
+          "mleo_geometry_time_tracking",
+          "mleo_hebrew_master_progress",
+          "mleo_hebrew_mistakes",
+          "mleo_hebrew_time_tracking",
+          "mleo_math_master_progress",
+          "mleo_mistakes",
+          "mleo_moledet_geography_master_progress",
+          "mleo_moledet_geography_mistakes",
+          "mleo_moledet_geography_time_tracking",
+          "mleo_player_name",
+          "mleo_science_master_progress",
+          "mleo_science_mistakes",
+          "mleo_science_time_tracking",
+          "mleo_time_tracking",
+          "mleo_weekly_challenge"
+        ],
+        "totalQuestionsDaily": 1020,
+        "totalCorrectDaily": 654,
+        "mathOps": [
+          "addition",
+          "multiplication",
+          "division",
+          "subtraction",
+          "fractions",
+          "word_problems"
+        ],
+        "geometryTopics": [
+          "area",
+          "shapes_basic",
+          "volume",
+          "perimeter",
+          "angles"
+        ],
+        "englishTopics": [
+          "vocabulary",
+          "sentences",
+          "translation",
+          "writing",
+          "grammar"
+        ],
+        "scienceTopics": [],
+        "hebrewTopics": [
+          "grammar",
+          "comprehension",
+          "writing",
+          "vocabulary",
+          "reading"
+        ],
+        "moledetTopics": []
+      },
+      "output": {
+        "snapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep03_weak_math_long_term.storage.json",
+        "packagePath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep03_weak_math_long_term.package.json"
+      }
+    },
+    {
+      "presetId": "simDeep04_improving_child",
+      "studentName": "LEOK Dev Improving Child",
+      "anchorEndMs": 1777143567024,
+      "sessionsValidation": {
+        "ok": true,
+        "errors": [],
+        "warnings": [
+          "math has low topic diversity (1)"
+        ],
+        "stats": {
+          "sessions": 70,
+          "totalQuestions": 1160,
+          "spanDays": 120,
+          "activeDays": 42,
+          "subjectCount": 5,
+          "topicsPerSubject": {
+            "english": 5,
+            "hebrew": 5,
+            "geometry": 5,
+            "math": 1,
+            "science": 5
+          }
+        }
+      },
+      "namespaceValidation": {
+        "ok": true,
+        "errors": []
+      },
+      "touchedKeys": [
+        "mleo_player_name",
+        "mleo_time_tracking",
+        "mleo_math_master_progress",
+        "mleo_mistakes",
+        "mleo_geometry_time_tracking",
+        "mleo_geometry_master_progress",
+        "mleo_geometry_mistakes",
+        "mleo_english_time_tracking",
+        "mleo_english_master_progress",
+        "mleo_english_mistakes",
+        "mleo_science_time_tracking",
+        "mleo_science_master_progress",
+        "mleo_science_mistakes",
+        "mleo_hebrew_time_tracking",
+        "mleo_hebrew_master_progress",
+        "mleo_hebrew_mistakes",
+        "mleo_moledet_geography_time_tracking",
+        "mleo_moledet_geography_master_progress",
+        "mleo_moledet_geography_mistakes",
+        "mleo_daily_challenge",
+        "mleo_weekly_challenge"
+      ],
+      "metadataShape": [
+        "version",
+        "simulator",
+        "presetId",
+        "playerName",
+        "generatedAt",
+        "touchedKeys",
+        "backupByKey"
+      ],
+      "snapshotSummary": {
+        "keys": [
+          "mleo_daily_challenge",
+          "mleo_english_master_progress",
+          "mleo_english_mistakes",
+          "mleo_english_time_tracking",
+          "mleo_geometry_master_progress",
+          "mleo_geometry_mistakes",
+          "mleo_geometry_time_tracking",
+          "mleo_hebrew_master_progress",
+          "mleo_hebrew_mistakes",
+          "mleo_hebrew_time_tracking",
+          "mleo_math_master_progress",
+          "mleo_mistakes",
+          "mleo_moledet_geography_master_progress",
+          "mleo_moledet_geography_mistakes",
+          "mleo_moledet_geography_time_tracking",
+          "mleo_player_name",
+          "mleo_science_master_progress",
+          "mleo_science_mistakes",
+          "mleo_science_time_tracking",
+          "mleo_time_tracking",
+          "mleo_weekly_challenge"
+        ],
+        "totalQuestionsDaily": 1160,
+        "totalCorrectDaily": 826,
+        "mathOps": [
+          "addition"
+        ],
+        "geometryTopics": [
+          "shapes_basic",
+          "volume",
+          "perimeter",
+          "angles",
+          "area"
+        ],
+        "englishTopics": [
+          "vocabulary",
+          "translation",
+          "grammar",
+          "sentences",
+          "writing"
+        ],
+        "scienceTopics": [
+          "earth_space",
+          "animals",
+          "materials",
+          "body",
+          "plants"
+        ],
+        "hebrewTopics": [
+          "vocabulary",
+          "writing",
+          "comprehension",
+          "grammar",
+          "reading"
+        ],
+        "moledetTopics": []
+      },
+      "output": {
+        "snapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep04_improving_child.storage.json",
+        "packagePath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep04_improving_child.package.json"
+      }
+    },
+    {
+      "presetId": "simDeep05_declining_after_difficulty_jump",
+      "studentName": "LEOK Dev Declining After Jump",
+      "anchorEndMs": 1777143567029,
+      "sessionsValidation": {
+        "ok": true,
+        "errors": [],
+        "warnings": [
+          "math has low topic diversity (1)",
+          "hebrew has low topic diversity (1)"
+        ],
+        "stats": {
+          "sessions": 62,
+          "totalQuestions": 920,
+          "spanDays": 109,
+          "activeDays": 37,
+          "subjectCount": 5,
+          "topicsPerSubject": {
+            "english": 5,
+            "science": 6,
+            "math": 1,
+            "geometry": 5,
+            "hebrew": 1
+          }
+        }
+      },
+      "namespaceValidation": {
+        "ok": true,
+        "errors": []
+      },
+      "touchedKeys": [
+        "mleo_player_name",
+        "mleo_time_tracking",
+        "mleo_math_master_progress",
+        "mleo_mistakes",
+        "mleo_geometry_time_tracking",
+        "mleo_geometry_master_progress",
+        "mleo_geometry_mistakes",
+        "mleo_english_time_tracking",
+        "mleo_english_master_progress",
+        "mleo_english_mistakes",
+        "mleo_science_time_tracking",
+        "mleo_science_master_progress",
+        "mleo_science_mistakes",
+        "mleo_hebrew_time_tracking",
+        "mleo_hebrew_master_progress",
+        "mleo_hebrew_mistakes",
+        "mleo_moledet_geography_time_tracking",
+        "mleo_moledet_geography_master_progress",
+        "mleo_moledet_geography_mistakes",
+        "mleo_daily_challenge",
+        "mleo_weekly_challenge"
+      ],
+      "metadataShape": [
+        "version",
+        "simulator",
+        "presetId",
+        "playerName",
+        "generatedAt",
+        "touchedKeys",
+        "backupByKey"
+      ],
+      "snapshotSummary": {
+        "keys": [
+          "mleo_daily_challenge",
+          "mleo_english_master_progress",
+          "mleo_english_mistakes",
+          "mleo_english_time_tracking",
+          "mleo_geometry_master_progress",
+          "mleo_geometry_mistakes",
+          "mleo_geometry_time_tracking",
+          "mleo_hebrew_master_progress",
+          "mleo_hebrew_mistakes",
+          "mleo_hebrew_time_tracking",
+          "mleo_math_master_progress",
+          "mleo_mistakes",
+          "mleo_moledet_geography_master_progress",
+          "mleo_moledet_geography_mistakes",
+          "mleo_moledet_geography_time_tracking",
+          "mleo_player_name",
+          "mleo_science_master_progress",
+          "mleo_science_mistakes",
+          "mleo_science_time_tracking",
+          "mleo_time_tracking",
+          "mleo_weekly_challenge"
+        ],
+        "totalQuestionsDaily": 920,
+        "totalCorrectDaily": 606,
+        "mathOps": [
+          "multiplication"
+        ],
+        "geometryTopics": [
+          "area",
+          "perimeter",
+          "angles",
+          "volume",
+          "shapes_basic"
+        ],
+        "englishTopics": [
+          "vocabulary",
+          "writing",
+          "sentences",
+          "translation",
+          "grammar"
+        ],
+        "scienceTopics": [
+          "animals",
+          "earth_space",
+          "body",
+          "plants",
+          "materials",
+          "environment"
+        ],
+        "hebrewTopics": [
+          "reading"
+        ],
+        "moledetTopics": []
+      },
+      "output": {
+        "snapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep05_declining_after_difficulty_jump.storage.json",
+        "packagePath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep05_declining_after_difficulty_jump.package.json"
+      }
+    },
+    {
+      "presetId": "simDeep06_fast_careless_vs_slow_accurate_mix",
+      "studentName": "LEOK Dev Pace Mix",
+      "anchorEndMs": 1777143582872,
+      "sessionsValidation": {
+        "ok": true,
+        "errors": [],
+        "warnings": [
+          "math has low topic diversity (2)"
+        ],
+        "stats": {
+          "sessions": 58,
+          "totalQuestions": 860,
+          "spanDays": 110,
+          "activeDays": 29,
+          "subjectCount": 4,
+          "topicsPerSubject": {
+            "science": 6,
+            "geometry": 4,
+            "math": 2,
+            "english": 4
+          }
+        }
+      },
+      "namespaceValidation": {
+        "ok": true,
+        "errors": []
+      },
+      "touchedKeys": [
+        "mleo_player_name",
+        "mleo_time_tracking",
+        "mleo_math_master_progress",
+        "mleo_mistakes",
+        "mleo_geometry_time_tracking",
+        "mleo_geometry_master_progress",
+        "mleo_geometry_mistakes",
+        "mleo_english_time_tracking",
+        "mleo_english_master_progress",
+        "mleo_english_mistakes",
+        "mleo_science_time_tracking",
+        "mleo_science_master_progress",
+        "mleo_science_mistakes",
+        "mleo_hebrew_time_tracking",
+        "mleo_hebrew_master_progress",
+        "mleo_hebrew_mistakes",
+        "mleo_moledet_geography_time_tracking",
+        "mleo_moledet_geography_master_progress",
+        "mleo_moledet_geography_mistakes",
+        "mleo_daily_challenge",
+        "mleo_weekly_challenge"
+      ],
+      "metadataShape": [
+        "version",
+        "simulator",
+        "presetId",
+        "playerName",
+        "generatedAt",
+        "touchedKeys",
+        "backupByKey"
+      ],
+      "snapshotSummary": {
+        "keys": [
+          "mleo_daily_challenge",
+          "mleo_english_master_progress",
+          "mleo_english_mistakes",
+          "mleo_english_time_tracking",
+          "mleo_geometry_master_progress",
+          "mleo_geometry_mistakes",
+          "mleo_geometry_time_tracking",
+          "mleo_hebrew_master_progress",
+          "mleo_hebrew_mistakes",
+          "mleo_hebrew_time_tracking",
+          "mleo_math_master_progress",
+          "mleo_mistakes",
+          "mleo_moledet_geography_master_progress",
+          "mleo_moledet_geography_mistakes",
+          "mleo_moledet_geography_time_tracking",
+          "mleo_player_name",
+          "mleo_science_master_progress",
+          "mleo_science_mistakes",
+          "mleo_science_time_tracking",
+          "mleo_time_tracking",
+          "mleo_weekly_challenge"
+        ],
+        "totalQuestionsDaily": 860,
+        "totalCorrectDaily": 721,
+        "mathOps": [
+          "addition",
+          "multiplication"
+        ],
+        "geometryTopics": [
+          "perimeter",
+          "volume",
+          "angles",
+          "shapes_basic"
+        ],
+        "englishTopics": [
+          "vocabulary",
+          "grammar",
+          "sentences",
+          "writing"
+        ],
+        "scienceTopics": [
+          "earth_space",
+          "body",
+          "plants",
+          "materials",
+          "environment",
+          "animals"
+        ],
+        "hebrewTopics": [],
+        "moledetTopics": []
+      },
+      "output": {
+        "snapshotPath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep06_fast_careless_vs_slow_accurate_mix.storage.json",
+        "packagePath": "reports/dev-student-simulator/phase2-core/snapshots/simDeep06_fast_careless_vs_slow_accurate_mix.package.json"
+      }
+    }
+  ],
+  "resetBackupMetadataShape": {
+    "version": "number",
+    "simulator": "string",
+    "presetId": "string",
+    "playerName": "string",
+    "generatedAt": "ISO string",
+    "touchedKeys": "string[]",
+    "backupByKey": "{ [key: string]: string|null }"
+  }
+}

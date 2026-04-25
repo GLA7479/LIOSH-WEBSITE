@@ -47,7 +47,16 @@ const LEARNING_GAMES = [
   },
 ];
 
-export default function LearningHub() {
+export async function getServerSideProps() {
+  return {
+    props: {
+      showDevStudentSimulator:
+        String(process.env.ENABLE_DEV_STUDENT_SIMULATOR || "").trim().toLowerCase() === "true",
+    },
+  };
+}
+
+export default function LearningHub({ showDevStudentSimulator }) {
   useIOSViewportFix();
   return (
     <Layout>
@@ -112,6 +121,18 @@ export default function LearningHub() {
               </p>
             </Link>
           </section>
+
+          {showDevStudentSimulator ? (
+            <section>
+              <Link
+                href="/learning/dev-student-simulator"
+                className="block rounded-2xl border border-indigo-300/40 bg-indigo-500/10 hover:bg-indigo-500/20 transition p-4 text-center"
+              >
+                <h2 className="font-bold text-lg">Dev Student Simulator</h2>
+                <p className="text-sm text-white/70">סימולטור תלמידים לפיתוח</p>
+              </Link>
+            </section>
+          ) : null}
         </div>
       </main>
     </Layout>

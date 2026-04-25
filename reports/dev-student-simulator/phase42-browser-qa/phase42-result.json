@@ -1,0 +1,107 @@
+{
+  "presets": [
+    {
+      "id": "simDeep01_mixed_real_child",
+      "preview": "pass",
+      "apply": "pass",
+      "reports": {
+        "short": "pass",
+        "detailed": "pass",
+        "summary": "pass"
+      },
+      "reset": "pass",
+      "storyHint": "manual: single parent priority",
+      "storyHeuristic": "n/a"
+    },
+    {
+      "id": "simDeep02_strong_stable_child",
+      "preview": "pass",
+      "apply": "pass",
+      "reports": {
+        "short": "pass",
+        "detailed": "pass",
+        "summary": "pass"
+      },
+      "reset": "pass",
+      "storyHint": "manual: no remediation main story",
+      "storyHeuristic": "n/a"
+    },
+    {
+      "id": "simDeep03_weak_math_long_term",
+      "preview": "pass",
+      "apply": "pass",
+      "reports": {
+        "short": "pass",
+        "detailed": "pass",
+        "summary": "pass"
+      },
+      "reset": "pass",
+      "storyHint": "heuristic: math emphasis",
+      "storyHeuristic": "pass (math visible)"
+    },
+    {
+      "id": "simDeep04_improving_child",
+      "preview": "pass",
+      "apply": "pass",
+      "reports": {
+        "short": "pass",
+        "detailed": "pass",
+        "summary": "pass"
+      },
+      "reset": "pass",
+      "storyHint": "manual: improvement signal",
+      "storyHeuristic": "n/a"
+    },
+    {
+      "id": "simDeep05_declining_after_difficulty_jump",
+      "preview": "pass",
+      "apply": "pass",
+      "reports": {
+        "short": "pass",
+        "detailed": "pass",
+        "summary": "pass"
+      },
+      "reset": "pass",
+      "storyHint": "manual: post-jump decline",
+      "storyHeuristic": "n/a"
+    },
+    {
+      "id": "simDeep06_fast_careless_vs_slow_accurate_mix",
+      "preview": "pass",
+      "apply": "pass",
+      "reports": {
+        "short": "pass",
+        "detailed": "pass",
+        "summary": "pass"
+      },
+      "reset": "pass",
+      "storyHint": "manual: pace / attention",
+      "storyHeuristic": "n/a"
+    }
+  ],
+  "exportImport": "pass",
+  "safetyImports": [
+    {
+      "name": "leok_* in snapshot",
+      "pass": true
+    },
+    {
+      "name": "unknown mleo_*",
+      "pass": true
+    },
+    {
+      "name": "empty snapshot",
+      "pass": true,
+      "note": "no mass wipe of mleo_*"
+    },
+    {
+      "name": "snapshot key missing from imported touchedKeys still in effective backup",
+      "pass": true
+    }
+  ],
+  "logout": "pass",
+  "errors": [],
+  "applyPolicy": "single_click_after_staged_preview_phase43",
+  "reportsChangeBetweenPresets": "pass",
+  "copyJson": "pass"
+}

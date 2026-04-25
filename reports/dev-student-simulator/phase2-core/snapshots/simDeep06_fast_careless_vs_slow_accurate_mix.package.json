@@ -1,0 +1,3204 @@
+{
+  "version": 1,
+  "type": "dev-student-simulator-snapshot",
+  "productDisplayName": "LEOK",
+  "presetId": "simDeep06_fast_careless_vs_slow_accurate_mix",
+  "createdAt": "2026-04-25T18:59:27.036Z",
+  "snapshot": {
+    "mleo_player_name": "LEOK Dev Pace Mix",
+    "mleo_time_tracking": {
+      "operations": {
+        "addition": {
+          "total": 10936,
+          "sessions": [
+            {
+              "date": "2026-01-30",
+              "duration": 535,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1769759883278,
+              "mode": "speed",
+              "total": 24,
+              "correct": 19
+            },
+            {
+              "date": "2026-02-12",
+              "duration": 542,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1770858873666,
+              "mode": "speed",
+              "total": 17,
+              "correct": 14
+            },
+            {
+              "date": "2026-03-25",
+              "duration": 704,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1774432445755,
+              "mode": "speed",
+              "total": 15,
+              "correct": 13
+            },
+            {
+              "date": "2026-03-27",
+              "duration": 459,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1774601976499,
+              "mode": "speed",
+              "total": 20,
+              "correct": 16
+            },
+            {
+              "date": "2026-04-07",
+              "duration": 731,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1775525997875,
+              "mode": "speed",
+              "total": 24,
+              "correct": 20
+            },
+            {
+              "date": "2026-04-13",
+              "duration": 666,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1776058430783,
+              "mode": "speed",
+              "total": 15,
+              "correct": 12
+            },
+            {
+              "date": "2026-04-18",
+              "duration": 728,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1776546512010,
+              "mode": "speed",
+              "total": 16,
+              "correct": 13
+            },
+            {
+              "date": "2026-04-19",
+              "duration": 427,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1776569088195,
+              "mode": "speed",
+              "total": 20,
+              "correct": 17
+            },
+            {
+              "date": "2026-04-19",
+              "duration": 432,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1776594360844,
+              "mode": "speed",
+              "total": 24,
+              "correct": 19
+            },
+            {
+              "date": "2026-04-20",
+              "duration": 772,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1776724626954,
+              "mode": "speed",
+              "total": 18,
+              "correct": 15
+            },
+            {
+              "date": "2026-04-21",
+              "duration": 643,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1776805654268,
+              "mode": "speed",
+              "total": 15,
+              "correct": 12
+            },
+            {
+              "date": "2026-04-23",
+              "duration": 559,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1776903817162,
+              "mode": "speed",
+              "total": 18,
+              "correct": 15
+            },
+            {
+              "date": "2026-04-23",
+              "duration": 539,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1776917327500,
+              "mode": "speed",
+              "total": 29,
+              "correct": 23
+            },
+            {
+              "date": "2026-04-23",
+              "duration": 717,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1776936072438,
+              "mode": "speed",
+              "total": 23,
+              "correct": 19
+            },
+            {
+              "date": "2026-04-23",
+              "duration": 523,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1776943403133,
+              "mode": "speed",
+              "total": 18,
+              "correct": 15
+            },
+            {
+              "date": "2026-04-25",
+              "duration": 753,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1777136380872,
+              "mode": "speed",
+              "total": 14,
+              "correct": 11
+            },
+            {
+              "date": "2026-04-26",
+              "duration": 696,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1777167601457,
+              "mode": "speed",
+              "total": 20,
+              "correct": 16
+            },
+            {
+              "date": "2026-04-26",
+              "duration": 510,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "addition",
+              "mathReportBucket": "addition",
+              "timestamp": 1777178436979,
+              "mode": "speed",
+              "total": 24,
+              "correct": 19
+            }
+          ],
+          "byGrade": {
+            "g4": 10936
+          },
+          "byLevel": {
+            "medium": 10936
+          }
+        },
+        "multiplication": {
+          "total": 10815,
+          "sessions": [
+            {
+              "date": "2026-03-23",
+              "duration": 757,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1774302349331,
+              "mode": "speed",
+              "total": 15,
+              "correct": 12
+            },
+            {
+              "date": "2026-03-25",
+              "duration": 675,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1774466502211,
+              "mode": "speed",
+              "total": 18,
+              "correct": 15
+            },
+            {
+              "date": "2026-03-30",
+              "duration": 674,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1774858172320,
+              "mode": "speed",
+              "total": 17,
+              "correct": 14
+            },
+            {
+              "date": "2026-03-31",
+              "duration": 458,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1774997027528,
+              "mode": "speed",
+              "total": 18,
+              "correct": 14
+            },
+            {
+              "date": "2026-04-05",
+              "duration": 728,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1775369058325,
+              "mode": "speed",
+              "total": 46,
+              "correct": 38
+            },
+            {
+              "date": "2026-04-10",
+              "duration": 552,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1775799033367,
+              "mode": "speed",
+              "total": 20,
+              "correct": 16
+            },
+            {
+              "date": "2026-04-18",
+              "duration": 620,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1776543184054,
+              "mode": "speed",
+              "total": 18,
+              "correct": 14
+            },
+            {
+              "date": "2026-04-20",
+              "duration": 663,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1776643300581,
+              "mode": "speed",
+              "total": 17,
+              "correct": 14
+            },
+            {
+              "date": "2026-04-20",
+              "duration": 721,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1776645175074,
+              "mode": "speed",
+              "total": 17,
+              "correct": 14
+            },
+            {
+              "date": "2026-04-20",
+              "duration": 426,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1776716883862,
+              "mode": "speed",
+              "total": 16,
+              "correct": 13
+            },
+            {
+              "date": "2026-04-21",
+              "duration": 648,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1776755813552,
+              "mode": "speed",
+              "total": 17,
+              "correct": 14
+            },
+            {
+              "date": "2026-04-21",
+              "duration": 547,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1776801484026,
+              "mode": "speed",
+              "total": 23,
+              "correct": 19
+            },
+            {
+              "date": "2026-04-22",
+              "duration": 487,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1776843807445,
+              "mode": "speed",
+              "total": 21,
+              "correct": 17
+            },
+            {
+              "date": "2026-04-23",
+              "duration": 465,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1776913382944,
+              "mode": "speed",
+              "total": 21,
+              "correct": 17
+            },
+            {
+              "date": "2026-04-23",
+              "duration": 666,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1776975309808,
+              "mode": "speed",
+              "total": 16,
+              "correct": 13
+            },
+            {
+              "date": "2026-04-23",
+              "duration": 512,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1776987985714,
+              "mode": "speed",
+              "total": 23,
+              "correct": 19
+            },
+            {
+              "date": "2026-04-24",
+              "duration": 456,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1777068169170,
+              "mode": "speed",
+              "total": 14,
+              "correct": 12
+            },
+            {
+              "date": "2026-04-25",
+              "duration": 760,
+              "grade": "g4",
+              "level": "medium",
+              "operation": "multiplication",
+              "mathReportBucket": "multiplication",
+              "timestamp": 1777106873594,
+              "mode": "speed",
+              "total": 14,
+              "correct": 11
+            }
+          ],
+          "byGrade": {
+            "g4": 10815
+          },
+          "byLevel": {
+            "medium": 10815
+          }
+        }
+      },
+      "daily": {
+        "2026-01-30": {
+          "total": 535,
+          "operations": {
+            "addition": 535
+          },
+          "byGrade": {
+            "g4": 535
+          },
+          "byLevel": {
+            "medium": 535
+          }
+        },
+        "2026-02-12": {
+          "total": 542,
+          "operations": {
+            "addition": 542
+          },
+          "byGrade": {
+            "g4": 542
+          },
+          "byLevel": {
+            "medium": 542
+          }
+        },
+        "2026-03-25": {
+          "total": 1379,
+          "operations": {
+            "addition": 704,
+            "multiplication": 675
+          },
+          "byGrade": {
+            "g4": 1379
+          },
+          "byLevel": {
+            "medium": 1379
+          }
+        },
+        "2026-03-27": {
+          "total": 459,
+          "operations": {
+            "addition": 459
+          },
+          "byGrade": {
+            "g4": 459
+          },
+          "byLevel": {
+            "medium": 459
+          }
+        },
+        "2026-04-07": {
+          "total": 731,
+          "operations": {
+            "addition": 731
+          },
+          "byGrade": {
+            "g4": 731
+          },
+          "byLevel": {
+            "medium": 731
+          }
+        },
+        "2026-04-13": {
+          "total": 666,
+          "operations": {
+            "addition": 666
+          },
+          "byGrade": {
+            "g4": 666
+          },
+          "byLevel": {
+            "medium": 666
+          }
+        },
+        "2026-04-18": {
+          "total": 1348,
+          "operations": {
+            "addition": 728,
+            "multiplication": 620
+          },
+          "byGrade": {
+            "g4": 1348
+          },
+          "byLevel": {
+            "medium": 1348
+          }
+        },
+        "2026-04-19": {
+          "total": 859,
+          "operations": {
+            "addition": 859
+          },
+          "byGrade": {
+            "g4": 859
+          },
+          "byLevel": {
+            "medium": 859
+          }
+        },
+        "2026-04-20": {
+          "total": 2582,
+          "operations": {
+            "addition": 772,
+            "multiplication": 1810
+          },
+          "byGrade": {
+            "g4": 2582
+          },
+          "byLevel": {
+            "medium": 2582
+          }
+        },
+        "2026-04-21": {
+          "total": 1838,
+          "operations": {
+            "addition": 643,
+            "multiplication": 1195
+          },
+          "byGrade": {
+            "g4": 1838
+          },
+          "byLevel": {
+            "medium": 1838
+          }
+        },
+        "2026-04-23": {
+          "total": 3981,
+          "operations": {
+            "addition": 2338,
+            "multiplication": 1643
+          },
+          "byGrade": {
+            "g4": 3981
+          },
+          "byLevel": {
+            "medium": 3981
+          }
+        },
+        "2026-04-25": {
+          "total": 1513,
+          "operations": {
+            "addition": 753,
+            "multiplication": 760
+          },
+          "byGrade": {
+            "g4": 1513
+          },
+          "byLevel": {
+            "medium": 1513
+          }
+        },
+        "2026-04-26": {
+          "total": 1206,
+          "operations": {
+            "addition": 1206
+          },
+          "byGrade": {
+            "g4": 1206
+          },
+          "byLevel": {
+            "medium": 1206
+          }
+        },
+        "2026-03-23": {
+          "total": 757,
+          "operations": {
+            "multiplication": 757
+          },
+          "byGrade": {
+            "g4": 757
+          },
+          "byLevel": {
+            "medium": 757
+          }
+        },
+        "2026-03-30": {
+          "total": 674,
+          "operations": {
+            "multiplication": 674
+          },
+          "byGrade": {
+            "g4": 674
+          },
+          "byLevel": {
+            "medium": 674
+          }
+        },
+        "2026-03-31": {
+          "total": 458,
+          "operations": {
+            "multiplication": 458
+          },
+          "byGrade": {
+            "g4": 458
+          },
+          "byLevel": {
+            "medium": 458
+          }
+        },
+        "2026-04-05": {
+          "total": 728,
+          "operations": {
+            "multiplication": 728
+          },
+          "byGrade": {
+            "g4": 728
+          },
+          "byLevel": {
+            "medium": 728
+          }
+        },
+        "2026-04-10": {
+          "total": 552,
+          "operations": {
+            "multiplication": 552
+          },
+          "byGrade": {
+            "g4": 552
+          },
+          "byLevel": {
+            "medium": 552
+          }
+        },
+        "2026-04-22": {
+          "total": 487,
+          "operations": {
+            "multiplication": 487
+          },
+          "byGrade": {
+            "g4": 487
+          },
+          "byLevel": {
+            "medium": 487
+          }
+        },
+        "2026-04-24": {
+          "total": 456,
+          "operations": {
+            "multiplication": 456
+          },
+          "byGrade": {
+            "g4": 456
+          },
+          "byLevel": {
+            "medium": 456
+          }
+        }
+      }
+    },
+    "mleo_math_master_progress": {
+      "progress": {
+        "addition": {
+          "total": 354,
+          "correct": 288
+        },
+        "multiplication": {
+          "total": 351,
+          "correct": 286
+        }
+      },
+      "stars": 4,
+      "playerLevel": 6,
+      "xp": 3525,
+      "badges": []
+    },
+    "mleo_mistakes": [
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1769759883278,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1769759883279,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1769759883280,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1770858873666,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1770858873667,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774302349331,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774302349332,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774432445755,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774466502211,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774466502212,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774601976499,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774601976500,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774601976501,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774858172320,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774858172321,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774997027528,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774997027529,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1774997027530,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775369058325,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775369058326,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775369058327,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775369058328,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v3",
+        "hintUsed": true,
+        "responseMs": 426
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775369058329,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v4",
+        "hintUsed": false,
+        "responseMs": 448
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775525997875,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775525997876,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775525997877,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775799033367,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775799033368,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1775799033369,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776058430783,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776058430784,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776543184054,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776543184055,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776543184056,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776546512010,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776546512011,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776569088195,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776569088196,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776594360844,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776594360845,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776594360846,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776643300581,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776643300582,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776645175074,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776645175075,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776716883862,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776716883863,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776724626954,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776724626955,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776755813552,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776755813553,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776801484026,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776801484027,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776801484028,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776805654268,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776805654269,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776843807445,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776843807446,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776843807447,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776903817162,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776903817163,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776913382944,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776913382945,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776913382946,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776917327500,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776917327501,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776917327502,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776917327503,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v3",
+        "hintUsed": true,
+        "responseMs": 426
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776936072438,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776936072439,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776936072440,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776943403133,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776943403134,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776975309808,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776975309809,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776987985714,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776987985715,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1776987985716,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777068169170,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777106873594,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "multiplication",
+        "operation": "multiplication",
+        "bucketKey": "multiplication",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777106873595,
+        "isCorrect": false,
+        "exerciseText": "math:multiplication",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:multiplication:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777136380872,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777136380873,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777167601457,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777167601458,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777167601459,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777178436979,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v0",
+        "hintUsed": true,
+        "responseMs": 360
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777178436980,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v1",
+        "hintUsed": false,
+        "responseMs": 382
+      },
+      {
+        "subject": "math",
+        "topic": "addition",
+        "operation": "addition",
+        "bucketKey": "addition",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "speed",
+        "timestamp": 1777178436981,
+        "isCorrect": false,
+        "exerciseText": "math:addition",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:math:addition:v2",
+        "hintUsed": false,
+        "responseMs": 404
+      }
+    ],
+    "mleo_geometry_time_tracking": {
+      "topics": {
+        "perimeter": {
+          "total": 3271,
+          "sessions": [
+            {
+              "date": "2026-01-22",
+              "duration": 1814,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "perimeter",
+              "timestamp": 1769045679923,
+              "mode": "learning",
+              "total": 5,
+              "correct": 5
+            },
+            {
+              "date": "2026-04-20",
+              "duration": 1457,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "perimeter",
+              "timestamp": 1776723686793,
+              "mode": "learning",
+              "total": 5,
+              "correct": 5
+            }
+          ],
+          "byGrade": {
+            "g4": 3271
+          },
+          "byLevel": {
+            "medium": 3271
+          }
+        },
+        "volume": {
+          "total": 1984,
+          "sessions": [
+            {
+              "date": "2026-04-21",
+              "duration": 1984,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "volume",
+              "timestamp": 1776735137647,
+              "mode": "learning",
+              "total": 7,
+              "correct": 6
+            }
+          ],
+          "byGrade": {
+            "g4": 1984
+          },
+          "byLevel": {
+            "medium": 1984
+          }
+        },
+        "angles": {
+          "total": 1239,
+          "sessions": [
+            {
+              "date": "2026-04-22",
+              "duration": 1239,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "angles",
+              "timestamp": 1776818320102,
+              "mode": "learning",
+              "total": 7,
+              "correct": 7
+            }
+          ],
+          "byGrade": {
+            "g4": 1239
+          },
+          "byLevel": {
+            "medium": 1239
+          }
+        },
+        "shapes_basic": {
+          "total": 1821,
+          "sessions": [
+            {
+              "date": "2026-04-26",
+              "duration": 1821,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "shapes_basic",
+              "timestamp": 1777170153033,
+              "mode": "learning",
+              "total": 7,
+              "correct": 7
+            }
+          ],
+          "byGrade": {
+            "g4": 1821
+          },
+          "byLevel": {
+            "medium": 1821
+          }
+        }
+      },
+      "daily": {
+        "2026-01-22": {
+          "total": 1814,
+          "topics": {
+            "perimeter": 1814
+          },
+          "byGrade": {
+            "g4": 1814
+          },
+          "byLevel": {
+            "medium": 1814
+          }
+        },
+        "2026-04-20": {
+          "total": 1457,
+          "topics": {
+            "perimeter": 1457
+          },
+          "byGrade": {
+            "g4": 1457
+          },
+          "byLevel": {
+            "medium": 1457
+          }
+        },
+        "2026-04-21": {
+          "total": 1984,
+          "topics": {
+            "volume": 1984
+          },
+          "byGrade": {
+            "g4": 1984
+          },
+          "byLevel": {
+            "medium": 1984
+          }
+        },
+        "2026-04-22": {
+          "total": 1239,
+          "topics": {
+            "angles": 1239
+          },
+          "byGrade": {
+            "g4": 1239
+          },
+          "byLevel": {
+            "medium": 1239
+          }
+        },
+        "2026-04-26": {
+          "total": 1821,
+          "topics": {
+            "shapes_basic": 1821
+          },
+          "byGrade": {
+            "g4": 1821
+          },
+          "byLevel": {
+            "medium": 1821
+          }
+        }
+      }
+    },
+    "mleo_geometry_master_progress": {
+      "progress": {
+        "perimeter": {
+          "total": 10,
+          "correct": 10
+        },
+        "volume": {
+          "total": 7,
+          "correct": 6
+        },
+        "angles": {
+          "total": 7,
+          "correct": 7
+        },
+        "shapes_basic": {
+          "total": 7,
+          "correct": 7
+        }
+      },
+      "stars": 5,
+      "playerLevel": 1,
+      "xp": 155,
+      "badges": []
+    },
+    "mleo_geometry_mistakes": [
+      {
+        "subject": "geometry",
+        "topic": "volume",
+        "bucketKey": "volume",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "learning",
+        "timestamp": 1776735137647,
+        "isCorrect": false,
+        "exerciseText": "geometry:volume",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:geometry:volume",
+        "hintUsed": true,
+        "responseMs": 2100
+      }
+    ],
+    "mleo_english_time_tracking": {
+      "topics": {
+        "vocabulary": {
+          "total": 1367,
+          "sessions": [
+            {
+              "date": "2026-03-04",
+              "duration": 1367,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "vocabulary",
+              "timestamp": 1772627214222,
+              "mode": "learning",
+              "total": 7,
+              "correct": 7
+            }
+          ],
+          "byGrade": {
+            "g4": 1367
+          },
+          "byLevel": {
+            "medium": 1367
+          }
+        },
+        "grammar": {
+          "total": 5013,
+          "sessions": [
+            {
+              "date": "2026-04-02",
+              "duration": 1704,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "grammar",
+              "timestamp": 1775090222590,
+              "mode": "learning",
+              "total": 5,
+              "correct": 5
+            },
+            {
+              "date": "2026-04-17",
+              "duration": 1902,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "grammar",
+              "timestamp": 1776389568659,
+              "mode": "learning",
+              "total": 6,
+              "correct": 5
+            },
+            {
+              "date": "2026-04-20",
+              "duration": 1407,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "grammar",
+              "timestamp": 1776648959601,
+              "mode": "learning",
+              "total": 7,
+              "correct": 7
+            }
+          ],
+          "byGrade": {
+            "g4": 5013
+          },
+          "byLevel": {
+            "medium": 5013
+          }
+        },
+        "sentences": {
+          "total": 3128,
+          "sessions": [
+            {
+              "date": "2026-04-10",
+              "duration": 1444,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "sentences",
+              "timestamp": 1775792826306,
+              "mode": "learning",
+              "total": 5,
+              "correct": 5
+            },
+            {
+              "date": "2026-04-20",
+              "duration": 1684,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "sentences",
+              "timestamp": 1776679235067,
+              "mode": "learning",
+              "total": 8,
+              "correct": 8
+            }
+          ],
+          "byGrade": {
+            "g4": 3128
+          },
+          "byLevel": {
+            "medium": 3128
+          }
+        },
+        "writing": {
+          "total": 1483,
+          "sessions": [
+            {
+              "date": "2026-04-13",
+              "duration": 1483,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "writing",
+              "timestamp": 1776075735960,
+              "mode": "learning",
+              "total": 6,
+              "correct": 5
+            }
+          ],
+          "byGrade": {
+            "g4": 1483
+          },
+          "byLevel": {
+            "medium": 1483
+          }
+        }
+      },
+      "daily": {
+        "2026-03-04": {
+          "total": 1367,
+          "topics": {
+            "vocabulary": 1367
+          },
+          "byGrade": {
+            "g4": 1367
+          },
+          "byLevel": {
+            "medium": 1367
+          }
+        },
+        "2026-04-02": {
+          "total": 1704,
+          "topics": {
+            "grammar": 1704
+          },
+          "byGrade": {
+            "g4": 1704
+          },
+          "byLevel": {
+            "medium": 1704
+          }
+        },
+        "2026-04-17": {
+          "total": 1902,
+          "topics": {
+            "grammar": 1902
+          },
+          "byGrade": {
+            "g4": 1902
+          },
+          "byLevel": {
+            "medium": 1902
+          }
+        },
+        "2026-04-20": {
+          "total": 3091,
+          "topics": {
+            "grammar": 1407,
+            "sentences": 1684
+          },
+          "byGrade": {
+            "g4": 3091
+          },
+          "byLevel": {
+            "medium": 3091
+          }
+        },
+        "2026-04-10": {
+          "total": 1444,
+          "topics": {
+            "sentences": 1444
+          },
+          "byGrade": {
+            "g4": 1444
+          },
+          "byLevel": {
+            "medium": 1444
+          }
+        },
+        "2026-04-13": {
+          "total": 1483,
+          "topics": {
+            "writing": 1483
+          },
+          "byGrade": {
+            "g4": 1483
+          },
+          "byLevel": {
+            "medium": 1483
+          }
+        }
+      }
+    },
+    "mleo_english_master_progress": {
+      "progress": {
+        "vocabulary": {
+          "total": 7,
+          "correct": 7
+        },
+        "grammar": {
+          "total": 18,
+          "correct": 17
+        },
+        "sentences": {
+          "total": 13,
+          "correct": 13
+        },
+        "writing": {
+          "total": 6,
+          "correct": 5
+        }
+      },
+      "stars": 5,
+      "playerLevel": 1,
+      "xp": 220,
+      "badges": []
+    },
+    "mleo_english_mistakes": [
+      {
+        "subject": "english",
+        "topic": "writing",
+        "bucketKey": "writing",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "learning",
+        "timestamp": 1776075735960,
+        "isCorrect": false,
+        "exerciseText": "english:writing",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:english:writing",
+        "hintUsed": true,
+        "responseMs": 2100
+      },
+      {
+        "subject": "english",
+        "topic": "grammar",
+        "bucketKey": "grammar",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "learning",
+        "timestamp": 1776389568659,
+        "isCorrect": false,
+        "exerciseText": "english:grammar",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:english:grammar",
+        "hintUsed": true,
+        "responseMs": 2100
+      }
+    ],
+    "mleo_science_time_tracking": {
+      "topics": {
+        "earth_space": {
+          "total": 1369,
+          "sessions": [
+            {
+              "date": "2026-01-06",
+              "duration": 1369,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "earth_space",
+              "timestamp": 1767725982872,
+              "mode": "learning",
+              "total": 10,
+              "correct": 9
+            }
+          ],
+          "byGrade": {
+            "g4": 1369
+          },
+          "byLevel": {
+            "medium": 1369
+          }
+        },
+        "body": {
+          "total": 3850,
+          "sessions": [
+            {
+              "date": "2026-02-16",
+              "duration": 1430,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "body",
+              "timestamp": 1771284683419,
+              "mode": "learning",
+              "total": 6,
+              "correct": 6
+            },
+            {
+              "date": "2026-04-18",
+              "duration": 1115,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "body",
+              "timestamp": 1776551198557,
+              "mode": "learning",
+              "total": 10,
+              "correct": 9
+            },
+            {
+              "date": "2026-04-23",
+              "duration": 1305,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "body",
+              "timestamp": 1776940464808,
+              "mode": "learning",
+              "total": 9,
+              "correct": 8
+            }
+          ],
+          "byGrade": {
+            "g4": 3850
+          },
+          "byLevel": {
+            "medium": 3850
+          }
+        },
+        "plants": {
+          "total": 3204,
+          "sessions": [
+            {
+              "date": "2026-02-18",
+              "duration": 2101,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "plants",
+              "timestamp": 1771452012748,
+              "mode": "learning",
+              "total": 12,
+              "correct": 11
+            },
+            {
+              "date": "2026-04-19",
+              "duration": 1103,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "plants",
+              "timestamp": 1776628463688,
+              "mode": "learning",
+              "total": 5,
+              "correct": 5
+            }
+          ],
+          "byGrade": {
+            "g4": 3204
+          },
+          "byLevel": {
+            "medium": 3204
+          }
+        },
+        "materials": {
+          "total": 2443,
+          "sessions": [
+            {
+              "date": "2026-02-19",
+              "duration": 1087,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "materials",
+              "timestamp": 1771465707148,
+              "mode": "learning",
+              "total": 8,
+              "correct": 7
+            },
+            {
+              "date": "2026-04-19",
+              "duration": 1356,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "materials",
+              "timestamp": 1776560519278,
+              "mode": "learning",
+              "total": 5,
+              "correct": 5
+            }
+          ],
+          "byGrade": {
+            "g4": 2443
+          },
+          "byLevel": {
+            "medium": 2443
+          }
+        },
+        "environment": {
+          "total": 1895,
+          "sessions": [
+            {
+              "date": "2026-04-04",
+              "duration": 1895,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "environment",
+              "timestamp": 1775300335657,
+              "mode": "learning",
+              "total": 8,
+              "correct": 8
+            }
+          ],
+          "byGrade": {
+            "g4": 1895
+          },
+          "byLevel": {
+            "medium": 1895
+          }
+        },
+        "animals": {
+          "total": 2035,
+          "sessions": [
+            {
+              "date": "2026-04-24",
+              "duration": 2035,
+              "grade": "g4",
+              "level": "medium",
+              "topic": "animals",
+              "timestamp": 1777011593242,
+              "mode": "learning",
+              "total": 7,
+              "correct": 7
+            }
+          ],
+          "byGrade": {
+            "g4": 2035
+          },
+          "byLevel": {
+            "medium": 2035
+          }
+        }
+      },
+      "daily": {
+        "2026-01-06": {
+          "total": 1369,
+          "topics": {
+            "earth_space": 1369
+          },
+          "byGrade": {
+            "g4": 1369
+          },
+          "byLevel": {
+            "medium": 1369
+          }
+        },
+        "2026-02-16": {
+          "total": 1430,
+          "topics": {
+            "body": 1430
+          },
+          "byGrade": {
+            "g4": 1430
+          },
+          "byLevel": {
+            "medium": 1430
+          }
+        },
+        "2026-04-18": {
+          "total": 1115,
+          "topics": {
+            "body": 1115
+          },
+          "byGrade": {
+            "g4": 1115
+          },
+          "byLevel": {
+            "medium": 1115
+          }
+        },
+        "2026-04-23": {
+          "total": 1305,
+          "topics": {
+            "body": 1305
+          },
+          "byGrade": {
+            "g4": 1305
+          },
+          "byLevel": {
+            "medium": 1305
+          }
+        },
+        "2026-02-18": {
+          "total": 2101,
+          "topics": {
+            "plants": 2101
+          },
+          "byGrade": {
+            "g4": 2101
+          },
+          "byLevel": {
+            "medium": 2101
+          }
+        },
+        "2026-04-19": {
+          "total": 2459,
+          "topics": {
+            "plants": 1103,
+            "materials": 1356
+          },
+          "byGrade": {
+            "g4": 2459
+          },
+          "byLevel": {
+            "medium": 2459
+          }
+        },
+        "2026-02-19": {
+          "total": 1087,
+          "topics": {
+            "materials": 1087
+          },
+          "byGrade": {
+            "g4": 1087
+          },
+          "byLevel": {
+            "medium": 1087
+          }
+        },
+        "2026-04-04": {
+          "total": 1895,
+          "topics": {
+            "environment": 1895
+          },
+          "byGrade": {
+            "g4": 1895
+          },
+          "byLevel": {
+            "medium": 1895
+          }
+        },
+        "2026-04-24": {
+          "total": 2035,
+          "topics": {
+            "animals": 2035
+          },
+          "byGrade": {
+            "g4": 2035
+          },
+          "byLevel": {
+            "medium": 2035
+          }
+        }
+      }
+    },
+    "mleo_science_master_progress": {
+      "progress": {
+        "earth_space": {
+          "total": 10,
+          "correct": 9
+        },
+        "body": {
+          "total": 25,
+          "correct": 23
+        },
+        "plants": {
+          "total": 17,
+          "correct": 16
+        },
+        "materials": {
+          "total": 13,
+          "correct": 12
+        },
+        "environment": {
+          "total": 8,
+          "correct": 8
+        },
+        "animals": {
+          "total": 7,
+          "correct": 7
+        }
+      },
+      "stars": 5,
+      "playerLevel": 1,
+      "xp": 400,
+      "badges": []
+    },
+    "mleo_science_mistakes": [
+      {
+        "subject": "science",
+        "topic": "earth_space",
+        "bucketKey": "earth_space",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "learning",
+        "timestamp": 1767725982872,
+        "isCorrect": false,
+        "exerciseText": "science:earth_space",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:science:earth_space",
+        "hintUsed": true,
+        "responseMs": 2100
+      },
+      {
+        "subject": "science",
+        "topic": "plants",
+        "bucketKey": "plants",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "learning",
+        "timestamp": 1771452012748,
+        "isCorrect": false,
+        "exerciseText": "science:plants",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:science:plants",
+        "hintUsed": true,
+        "responseMs": 2100
+      },
+      {
+        "subject": "science",
+        "topic": "materials",
+        "bucketKey": "materials",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "learning",
+        "timestamp": 1771465707148,
+        "isCorrect": false,
+        "exerciseText": "science:materials",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:science:materials",
+        "hintUsed": true,
+        "responseMs": 2100
+      },
+      {
+        "subject": "science",
+        "topic": "body",
+        "bucketKey": "body",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "learning",
+        "timestamp": 1776551198557,
+        "isCorrect": false,
+        "exerciseText": "science:body",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:science:body",
+        "hintUsed": true,
+        "responseMs": 2100
+      },
+      {
+        "subject": "science",
+        "topic": "body",
+        "bucketKey": "body",
+        "grade": "g4",
+        "level": "medium",
+        "mode": "learning",
+        "timestamp": 1776940464808,
+        "isCorrect": false,
+        "exerciseText": "science:body",
+        "correctAnswer": 1,
+        "userAnswer": 0,
+        "patternFamily": "pf:science:body",
+        "hintUsed": true,
+        "responseMs": 2100
+      }
+    ],
+    "mleo_hebrew_time_tracking": {
+      "topics": {},
+      "daily": {}
+    },
+    "mleo_hebrew_master_progress": {
+      "progress": {},
+      "stars": 1,
+      "playerLevel": 1,
+      "xp": 0,
+      "badges": []
+    },
+    "mleo_hebrew_mistakes": [],
+    "mleo_moledet_geography_time_tracking": {
+      "topics": {},
+      "daily": {}
+    },
+    "mleo_moledet_geography_master_progress": {
+      "progress": {},
+      "stars": 1,
+      "playerLevel": 1,
+      "xp": 0,
+      "badges": []
+    },
+    "mleo_moledet_geography_mistakes": [],
+    "mleo_daily_challenge": {
+      "questions": 860,
+      "correct": 721,
+      "bestScore": 721
+    },
+    "mleo_weekly_challenge": {
+      "current": 84,
+      "target": 100,
+      "completed": true
+    }
+  },
+  "metadata": {
+    "version": 1,
+    "simulator": "dev-student-simulator-core",
+    "presetId": "simDeep06_fast_careless_vs_slow_accurate_mix",
+    "playerName": "LEOK Dev Pace Mix",
+    "generatedAt": "2026-04-25T18:59:27.035Z",
+    "touchedKeys": [
+      "mleo_player_name",
+      "mleo_time_tracking",
+      "mleo_math_master_progress",
+      "mleo_mistakes",
+      "mleo_geometry_time_tracking",
+      "mleo_geometry_master_progress",
+      "mleo_geometry_mistakes",
+      "mleo_english_time_tracking",
+      "mleo_english_master_progress",
+      "mleo_english_mistakes",
+      "mleo_science_time_tracking",
+      "mleo_science_master_progress",
+      "mleo_science_mistakes",
+      "mleo_hebrew_time_tracking",
+      "mleo_hebrew_master_progress",
+      "mleo_hebrew_mistakes",
+      "mleo_moledet_geography_time_tracking",
+      "mleo_moledet_geography_master_progress",
+      "mleo_moledet_geography_mistakes",
+      "mleo_daily_challenge",
+      "mleo_weekly_challenge"
+    ],
+    "backupByKey": {
+      "mleo_player_name": null,
+      "mleo_time_tracking": null,
+      "mleo_math_master_progress": null,
+      "mleo_mistakes": null,
+      "mleo_geometry_time_tracking": null,
+      "mleo_geometry_master_progress": null,
+      "mleo_geometry_mistakes": null,
+      "mleo_english_time_tracking": null,
+      "mleo_english_master_progress": null,
+      "mleo_english_mistakes": null,
+      "mleo_science_time_tracking": null,
+      "mleo_science_master_progress": null,
+      "mleo_science_mistakes": null,
+      "mleo_hebrew_time_tracking": null,
+      "mleo_hebrew_master_progress": null,
+      "mleo_hebrew_mistakes": null,
+      "mleo_moledet_geography_time_tracking": null,
+      "mleo_moledet_geography_master_progress": null,
+      "mleo_moledet_geography_mistakes": null,
+      "mleo_daily_challenge": null,
+      "mleo_weekly_challenge": null
+    }
+  }
+}
