@@ -1,4 +1,9 @@
-import { SUBJECTS, SUBJECT_BUCKETS } from "../../utils/dev-student-simulator/index.js";
+import {
+  SUBJECT_BUCKETS,
+  CUSTOM_BUILDER_UI_SUBJECT_ORDER,
+  hebrewSubjectLabel,
+  hebrewTopicPrimary,
+} from "../../utils/dev-student-simulator/index.js";
 
 const LABEL = {
   student: "\u05E9\u05DD \u05EA\u05DC\u05DE\u05D9\u05D3",
@@ -21,17 +26,19 @@ const LABEL = {
   mistakes: "\u05E9\u05D2\u05D9\u05D0\u05D5\u05EA \u05D5\u05E7\u05E6\u05D1",
   mistakeRate: "\u05E9\u05D9\u05E2\u05D5\u05E8 \u05E9\u05D2\u05D9\u05D0\u05D5\u05EA (% \u05DE\u05D4\u05E9\u05D0\u05DC\u05D5\u05EA)",
   repeatStr: "\u05D7\u05D6\u05E7\u05EA \u05D7\u05D6\u05E8\u05D5\u05EA \u05D7\u05D5\u05D6\u05E8\u05EA (% \u05DE\u05E1\u05E4\u05E8 \u05E9\u05D2\u05D9\u05D0\u05D5\u05EA)",
-  pace: "\u05D3\u05E4\u05D5\u05E1 \u05D6\u05DE\u05DF \u05EA\u05D2\u05D5\u05D1\u05D4 (responseMs)",
+  pace: "\u05D3\u05E4\u05D5\u05E1 \u05D6\u05DE\u05DF \u05EA\u05D2\u05D5\u05D1\u05D4",
   debug: "\u05DE\u05E6\u05D1 \u05D1\u05D3\u05D9\u05E7\u05D4 \u05E7\u05E6\u05E8\u05D4 (\u05DE\u05E4\u05D7\u05D9\u05EA \u05E1\u05E4\u05D9 \u05DE\u05EA\u05D7\u05EA \u05D0\u05D9\u05DE\u05D5\u05EA)",
+  topicsDisabledHint: "\u05D1\u05D7\u05E8 \u05DE\u05E7\u05E6\u05D5\u05E2 \u05DB\u05D3\u05D9 \u05DC\u05D4\u05E6\u05D9\u05D2 \u05E0\u05D5\u05E9\u05D0\u05D9\u05DD.",
 };
 
-const SUBJECT_HE = {
-  math: "\u05D7\u05E9\u05D1\u05D5\u05DF",
-  geometry: "\u05D2\u05D9\u05D0\u05D5\u05DE\u05D8\u05E8\u05D9\u05D4",
-  hebrew: "\u05E2\u05D1\u05E8\u05D9\u05EA",
-  english: "\u05D0\u05E0\u05D2\u05DC\u05D9\u05EA",
-  science: "\u05DE\u05D3\u05E2\u05D9\u05DD",
-  "moledet-geography": "\u05DE\u05D5\u05DC\u05D3\u05EA / \u05D2\u05D0\u05D5\u05D2\u05E8\u05E4\u05D9\u05D4",
+const FALLBACK_SUBJECT_ROW = {
+  enabled: false,
+  weight: 1,
+  targetAccuracyPct: 76,
+  avgSessionDurationSec: 900,
+  level: "medium",
+  mode: "learning",
+  topics: [],
 };
 
 const TREND_OPTS = [
@@ -78,16 +85,20 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
     }));
 
   const toggleTopic = (sid, topic, on) => {
-    const cur = value.subjects[sid].topics || [];
+    const sub = value.subjects?.[sid];
+    if (!sub) return;
+    const cur = Array.isArray(sub.topics) ? sub.topics : [];
     const next = on ? [...new Set([...cur, topic])] : cur.filter((t) => t !== topic);
     setSubject(sid, { topics: next });
   };
 
   const toggleSubjectEnabled = (sid, on) => {
     const buckets = SUBJECT_BUCKETS[sid] || [];
+    const prev = value.subjects?.[sid] || { ...FALLBACK_SUBJECT_ROW };
+    const prevTopics = Array.isArray(prev.topics) ? prev.topics : [];
     setSubject(sid, {
       enabled: on,
-      topics: on && (!value.subjects[sid].topics || value.subjects[sid].topics.length === 0) ? [...buckets] : value.subjects[sid].topics,
+      topics: on && prevTopics.length === 0 ? [...buckets] : prevTopics,
     });
   };
 
@@ -196,8 +207,9 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
 
       <div style={{ border: "1px solid #cbd5e1", borderRadius: 12, padding: 14, background: "#f8fafc" }}>
         <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>{LABEL.subjects}</h3>
-        {SUBJECTS.map((sid) => {
-          const row = value.subjects[sid];
+        {CUSTOM_BUILDER_UI_SUBJECT_ORDER.map((sid) => {
+          const row = value.subjects?.[sid] ? { ...FALLBACK_SUBJECT_ROW, ...value.subjects[sid] } : { ...FALLBACK_SUBJECT_ROW };
+          const topicList = Array.isArray(row.topics) ? row.topics : [];
           const buckets = SUBJECT_BUCKETS[sid] || [];
           return (
             <div
@@ -210,13 +222,21 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
                 background: row.enabled ? "#fff" : "#f1f5f9",
               }}
             >
-              <label style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 700, marginBottom: 8 }}>
+              <label
+                dir="rtl"
+                style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, cursor: disabled ? "default" : "pointer" }}
+              >
                 <input type="checkbox" checked={row.enabled} onChange={(e) => toggleSubjectEnabled(sid, e.target.checked)} disabled={disabled} />
-                <span dir="rtl">{SUBJECT_HE[sid]}</span>
-                <code dir="ltr" style={{ fontSize: 12, color: "#64748b" }}>
-                  {sid}
-                </code>
+                <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, flex: 1, minWidth: 0 }}>
+                  <span style={{ fontWeight: 700, fontSize: 15 }}>{hebrewSubjectLabel(sid)}</span>
+                  <code dir="ltr" style={{ fontSize: 11, color: "#94a3b8", unicodeBidi: "embed" }}>
+                    {sid}
+                  </code>
+                </span>
               </label>
+              {!row.enabled ? (
+                <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b", textAlign: "right" }}>{LABEL.topicsDisabledHint}</p>
+              ) : null}
               {row.enabled ? (
                 <div style={{ display: "grid", gap: 8, gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
                   <label style={fieldStyle}>
@@ -289,17 +309,55 @@ export default function CustomBuilderPanel({ value, setValue, disabled }) {
               ) : null}
               {row.enabled ? (
                 <fieldset style={{ marginTop: 10, border: "none", padding: 0 }}>
-                  <legend style={{ fontWeight: 600, marginBottom: 6 }}>{LABEL.topics}</legend>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  <legend style={{ fontWeight: 600, marginBottom: 8, textAlign: "right", width: "100%" }}>{LABEL.topics}</legend>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                      gap: 10,
+                      alignItems: "stretch",
+                    }}
+                  >
                     {buckets.map((topic) => (
-                      <label key={topic} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13 }}>
+                      <label
+                        key={`${sid}:${topic}`}
+                        dir="rtl"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "flex-start",
+                          gap: 8,
+                          padding: "8px 10px",
+                          borderRadius: 8,
+                          border: "1px solid #e2e8f0",
+                          background: "#f8fafc",
+                          cursor: disabled ? "default" : "pointer",
+                          fontSize: 14,
+                        }}
+                      >
                         <input
                           type="checkbox"
-                          checked={row.topics.includes(topic)}
+                          checked={topicList.includes(topic)}
                           onChange={(e) => toggleTopic(sid, topic, e.target.checked)}
                           disabled={disabled}
+                          style={{ marginTop: 3, flexShrink: 0 }}
                         />
-                        <code dir="ltr">{topic}</code>
+                        <span style={{ flex: 1, minWidth: 0, textAlign: "right" }}>
+                          <span style={{ fontWeight: 600, color: "#0f172a" }}>{hebrewTopicPrimary(topic)}</span>
+                          <code
+                            dir="ltr"
+                            style={{
+                              display: "block",
+                              marginTop: 4,
+                              fontSize: 11,
+                              color: "#64748b",
+                              unicodeBidi: "embed",
+                              wordBreak: "break-all",
+                            }}
+                          >
+                            {topic}
+                          </code>
+                        </span>
                       </label>
                     ))}
                   </div>

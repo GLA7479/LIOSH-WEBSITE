@@ -12,6 +12,7 @@ const {
   buildSimulatorCoreFromPreset,
   exportSimulatorPackage,
   serializeSimulatorPackage,
+  listTopicKeysMissingHebrewLabel,
 } = simulatorApi;
 
 const ROOT = process.cwd();
@@ -38,6 +39,10 @@ function summarizeSnapshot(snapshot) {
 
 async function main() {
   await ensureDirs();
+  const missingTopicHe = listTopicKeysMissingHebrewLabel?.() || [];
+  if (missingTopicHe.length) {
+    throw new Error(`Custom Builder UI: Hebrew label map missing for topic keys: ${missingTopicHe.join(", ")}`);
+  }
   const presetResults = [];
   const touchedKeysByPreset = {};
   let sampleSnapshotPath = null;

@@ -21,6 +21,14 @@ export {
 } from "./custom-session-builder";
 export { validateCustomSpecBeforeBuild, validateCustomSessionsAfterBuild } from "./custom-validator";
 export {
+  CUSTOM_BUILDER_UI_SUBJECT_ORDER,
+  SUBJECT_DISPLAY_HE,
+  TOPIC_DISPLAY_HE,
+  hebrewSubjectLabel,
+  hebrewTopicPrimary,
+  listTopicKeysMissingHebrewLabel,
+} from "./ui-display-labels";
+export {
   validateSnapshotForApply,
   applyMetadataThenSnapshot,
   deriveEffectiveTouchedKeysFromSnapshot,
