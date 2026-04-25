@@ -1,11 +1,14 @@
 /**
- * תווית שם נושא מתמטיקה להורה — כיתה ורמה לפי שורה scoped (ללא שינוי UI).
- * מצב (למידה/תרגול) מתווסף רק כשיש כפילות תצוגתית אמיתית (אותו topic+grade+level, mode שונה).
+ * Math row titles for parent-facing reports (short + detailed).
+ * Operation/topic label is the Hebrew operation name only — grade and level live
+ * in dedicated table columns, so they are not repeated in displayName.
+ *
+ * When two rows share the same operation + grade + level but different mode,
+ * a mode suffix is appended so the rows stay distinguishable.
  */
 
 import {
   getMathReportBucketDisplayName,
-  formatParentReportGradeLabel,
   canonicalParentReportGradeKey,
 } from "./math-report-generator.js";
 import { splitTopicRowKey, MATH_SCOPE_UNKNOWN } from "./parent-report-row-diagnostics.js";
@@ -21,8 +24,6 @@ const MODE_SUFFIX_LABELS = {
   mistakes: "טעויות",
   practice_mistakes: "חזרה על שגיאות",
 };
-
-const MATH_TOPIC_PARENT_LEVEL_HE = { easy: "קלה", medium: "בינונית", hard: "קשה" };
 
 function effectiveMathGradeKeyFromRowOrKey(rowKey, row) {
   if (row?.gradeKey) return row.gradeKey;
@@ -45,26 +46,32 @@ function modeSuffixLabel(m) {
   return MODE_SUFFIX_LABELS[m] || String(m);
 }
 
-/**
- * ליבת התווית בלי מצב (מצב מתווסף רק כשיש כפילות).
- * @param {Record<string, unknown>} row
- * @param {string} [rowKey] מפתח שורת דוח (מתמטיקה scoped) — משלים grade/level כשחסרים על האובייקט
- */
-export function mathTopicParentDisplayCoreFromRow(row, rowKey = "") {
+/** Hebrew operation name only (same as chart/table fallback without grade/level). */
+function mathOperationTopicLabel(row) {
   if (!row || typeof row !== "object") return "";
   const bk = row.bucketKey != null && row.bucketKey !== "" ? String(row.bucketKey) : "";
-  const topic = String(getMathReportBucketDisplayName(bk)).trim() || bk || "נושא";
-  const parts = [topic];
-  const gk = effectiveMathGradeKeyFromRowOrKey(rowKey, row);
-  if (gk) {
-    const gHe = formatParentReportGradeLabel(gk);
-    if (gHe && gHe !== "לא זמין") parts.push(`כיתה ${gHe}`);
-  }
-  const lk = effectiveMathLevelKeyFromRowOrKey(rowKey, row);
-  if (lk === "easy" || lk === "medium" || lk === "hard") {
-    parts.push(`רמה ${MATH_TOPIC_PARENT_LEVEL_HE[lk]}`);
-  }
-  return parts.length > 1 ? parts.join(" — ") : topic;
+  return String(getMathReportBucketDisplayName(bk)).trim() || bk || "נושא";
+}
+
+/**
+ * Stable key for "same scoped math row" — used only to detect when mode suffix is needed.
+ * Not shown to parents.
+ */
+function mathTopicScopedIdentityKey(row, rowKey) {
+  const bk = row?.bucketKey != null && row.bucketKey !== "" ? String(row.bucketKey) : "";
+  const gk = effectiveMathGradeKeyFromRowOrKey(rowKey, row) || "";
+  const lk = effectiveMathLevelKeyFromRowOrKey(rowKey, row) || "";
+  return `${bk}\u0001${gk}\u0001${lk}`;
+}
+
+/**
+ * Core title = operation name only (grade/level in table columns).
+ * @param {Record<string, unknown>} row
+ * @param {string} [rowKey]
+ */
+export function mathTopicParentDisplayCoreFromRow(row, rowKey = "") {
+  void rowKey;
+  return mathOperationTopicLabel(row);
 }
 
 /**
@@ -75,16 +82,17 @@ export function applyMathScopedParentDisplayNames(mathOperations) {
   if (!mathOperations || typeof mathOperations !== "object") return;
   const list = Object.entries(mathOperations).filter(([, row]) => row && typeof row === "object");
   if (!list.length) return;
-  const countByCore = new Map();
+  const countByIdentity = new Map();
   for (const [itemKey, row] of list) {
-    const core = mathTopicParentDisplayCoreFromRow(row, itemKey);
-    countByCore.set(core, (countByCore.get(core) || 0) + 1);
+    const id = mathTopicScopedIdentityKey(row, itemKey);
+    countByIdentity.set(id, (countByIdentity.get(id) || 0) + 1);
   }
   for (const [itemKey, row] of list) {
-    const core = mathTopicParentDisplayCoreFromRow(row, itemKey);
-    const needModeSuffix = (countByCore.get(core) || 0) > 1;
+    const id = mathTopicScopedIdentityKey(row, itemKey);
+    const needModeSuffix = (countByIdentity.get(id) || 0) > 1;
+    const topic = mathOperationTopicLabel(row);
     const modeSuff = needModeSuffix ? ` — ${modeSuffixLabel(row.modeKey)}` : "";
-    const full = `${core}${modeSuff}`.trim();
+    const full = `${topic}${modeSuff}`.trim();
     row.displayNameScoped = full;
     row.displayName = full;
   }

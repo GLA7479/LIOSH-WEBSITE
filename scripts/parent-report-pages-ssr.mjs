@@ -150,8 +150,8 @@ function runDetailedPageChunks() {
   const tr = oneDom.subjectProfiles[0]?.topicRecommendations?.[0];
   assert.ok(tr, "topic rec for strip");
   assert.ok(
-    String(tr.displayName || "").includes("כיתה") && String(tr.displayName || "").includes("רמה"),
-    `math topic displayName should carry scoped grade+level (got ${tr.displayName})`
+    String(tr.displayName || "").length > 0 && !String(tr.displayName || "").includes("כיתה"),
+    `math topic displayName should be operation-only (grade/level in table columns; got ${tr.displayName})`
   );
   render("topic-strip:golden", h(TopicRecommendationExplainStrip, { tr }));
 
