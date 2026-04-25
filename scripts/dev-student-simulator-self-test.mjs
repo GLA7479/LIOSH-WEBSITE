@@ -1,6 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
+import * as canonicalTopicKeysMod from "../utils/dev-student-simulator/canonical-topic-keys.js";
 import * as simulatorCore from "../utils/dev-student-simulator/index.js";
+
+const canonicalTopicKeys = canonicalTopicKeysMod.default || canonicalTopicKeysMod;
 
 const simulatorApi =
   simulatorCore && simulatorCore.default && Object.keys(simulatorCore).length === 1
@@ -39,9 +42,16 @@ function summarizeSnapshot(snapshot) {
 
 async function main() {
   await ensureDirs();
+  canonicalTopicKeys.assertCanonicalSubjectBucketsAligned();
   const missingTopicHe = listTopicKeysMissingHebrewLabel?.() || [];
   if (missingTopicHe.length) {
     throw new Error(`Custom Builder UI: Hebrew label map missing for topic keys: ${missingTopicHe.join(", ")}`);
+  }
+  for (const sid of simulatorCore.SUBJECTS || []) {
+    const list = simulatorCore.SUBJECT_BUCKETS?.[sid];
+    if (!Array.isArray(list) || list.length === 0) {
+      throw new Error(`Dev simulator SUBJECT_BUCKETS[${sid}] must be a non-empty array`);
+    }
   }
   const presetResults = [];
   const touchedKeysByPreset = {};

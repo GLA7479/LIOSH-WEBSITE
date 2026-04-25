@@ -34,14 +34,8 @@ export const SUBJECTS = Object.freeze([
   "moledet-geography",
 ]);
 
-export const SUBJECT_BUCKETS = Object.freeze({
-  math: ["addition", "subtraction", "multiplication", "division", "fractions", "word_problems"],
-  geometry: ["area", "perimeter", "angles", "shapes_basic", "volume"],
-  english: ["vocabulary", "grammar", "translation", "sentences", "writing"],
-  science: ["animals", "plants", "materials", "earth_space", "body", "environment"],
-  hebrew: ["reading", "comprehension", "grammar", "vocabulary", "writing"],
-  "moledet-geography": ["homeland", "community", "citizenship", "geography", "maps", "values"],
-});
+/** Full topic/operation keys per subject — aligned with curriculum + report storage buckets. */
+export { CANONICAL_SUBJECT_BUCKETS as SUBJECT_BUCKETS } from "./canonical-topic-keys.js";
 
 /** Metadata presetId when sessions are built from the manual custom builder (not a DEV_STUDENT_PRESETS row). */
 export const CUSTOM_SIMULATOR_PRESET_ID = "custom_manual_v1";
