@@ -16,8 +16,8 @@ export function ParentTopContractSummaryBlock({ top }) {
   const items = [
     row("מצב", top.mainStatusHe),
     row("מיקוד עיקרי", top.mainPriorityHe),
-    row("למה", top.whyHe),
     row("מה עושים עכשיו", top.doNowHe),
+    row("למה", top.whyHe),
     row("מה לא לעשות כרגע", top.avoidNowHe),
     row("רמת ודאות", top.confidenceHe),
     row("בסיס הנתונים", top.evidenceSummaryHe),
@@ -31,12 +31,23 @@ export function ParentTopContractSummaryBlock({ top }) {
   );
 }
 
-export function ParentSubjectContractSummaryBlock({ contractRow, compact = false }) {
+export function ParentSubjectContractSummaryBlock({
+  contractRow,
+  compact = false,
+  topMainPriority = "",
+  topDoNow = "",
+}) {
   if (!contractRow || typeof contractRow !== "object") return null;
+  const topPriorityNorm = String(topMainPriority || "").trim();
+  const subjectPriorityNorm = String(contractRow.mainPriorityHe || "").trim();
+  const mainPriority = topPriorityNorm && subjectPriorityNorm === topPriorityNorm ? "" : subjectPriorityNorm;
+  const topDoNowNorm = String(topDoNow || "").trim();
+  const subjectDoNowNorm = String(contractRow.doNowHe || "").trim();
+  const doNow = topDoNowNorm && subjectDoNowNorm === topDoNowNorm ? "" : subjectDoNowNorm;
   const items = [
     row("סיכום להורה", contractRow.mainStatusHe),
-    row("מיקוד", contractRow.mainPriorityHe),
-    row("מה עושים עכשיו", contractRow.doNowHe),
+    row("מיקוד", mainPriority),
+    row("מה עושים עכשיו", doNow),
     row("מה לא לעשות כרגע", contractRow.avoidNowHe),
     row("רמת ודאות", contractRow.confidenceHe),
   ].filter(Boolean);

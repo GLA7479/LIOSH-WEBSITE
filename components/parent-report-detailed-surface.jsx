@@ -793,7 +793,7 @@ function topicStripNorm(s) {
 }
 
 /** פס על המלצת נושא — עד 3 שכבות הוריות: מה ראינו / מה זה אומר / כיוון עבודה */
-export function TopicRecommendationExplainStrip({ tr }) {
+export function TopicRecommendationExplainStrip({ tr, suppressedLines = [] }) {
   const sig = tr?.topicEngineRowSignals && typeof tr.topicEngineRowSignals === "object" ? tr.topicEngineRowSignals : null;
   const narrative =
     tr?.contractsV1?.narrative && typeof tr.contractsV1.narrative === "object" ? tr.contractsV1.narrative : null;
@@ -836,6 +836,11 @@ export function TopicRecommendationExplainStrip({ tr }) {
 
   if (!seen && !meaning && !direction) return null;
 
+  const suppressed = new Set(
+    (Array.isArray(suppressedLines) ? suppressedLines : [])
+      .map((x) => topicStripNorm(x))
+      .filter(Boolean)
+  );
   const row = (label, body) =>
     body ? (
       <p className="pr-detailed-body-text text-[11px] md:text-xs m-0 text-white/80 leading-snug">
@@ -844,11 +849,26 @@ export function TopicRecommendationExplainStrip({ tr }) {
       </p>
     ) : null;
 
+  const seenRowNorm = new Set();
+  const rows = [
+    { label: "מה ראינו: ", body: seen },
+    { label: "מה זה אומר: ", body: meaning },
+    { label: "כיוון עבודה: ", body: direction },
+  ].filter((r) => {
+    const n = topicStripNorm(r.body);
+    if (!n) return false;
+    if (suppressed.has(n)) return false;
+    if (seenRowNorm.has(n)) return false;
+    seenRowNorm.add(n);
+    return true;
+  });
+  if (!rows.length) return null;
+
   return (
     <div className="pr-detailed-topic-phase2 mt-2 space-y-1.5 border-t border-white/10 pt-2">
-      {row("מה ראינו: ", seen)}
-      {row("מה זה אומר: ", meaning)}
-      {row("כיוון עבודה: ", direction)}
+      {rows.map((r) => (
+        <React.Fragment key={`${r.label}-${topicStripNorm(r.body)}`}>{row(r.label, r.body)}</React.Fragment>
+      ))}
     </div>
   );
 }

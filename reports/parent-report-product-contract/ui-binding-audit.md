@@ -1,6 +1,6 @@
 # UI Binding Audit
 
-- Generated: 2026-04-25T11:11:37.161Z
+- Generated: 2026-04-25T11:34:33.027Z
 - top contract rendered: true
 - subject contracts rendered: 78
 - fallback tested: true

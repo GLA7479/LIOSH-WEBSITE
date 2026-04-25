@@ -1,0 +1,1160 @@
+{
+  "generatedAt": "2026-04-25T11:34:34.458Z",
+  "scenarios": [
+    {
+      "id": "multiple_subjects_one_clear_priority",
+      "topSummaryBeforeLegacy": true,
+      "first600HasStatusPriorityAction": true,
+      "forbiddenInternalTermsCount": 0,
+      "primaryActionCount": 1,
+      "unsupportedTrendWording": [],
+      "stableMasteryTopHasRemediation": false,
+      "weakThinEvidenceStrongDiagnosis": false,
+      "speedOnlyKnowledgeGapTone": false,
+      "repeatedIdenticalSentences": 0,
+      "repeatedSentences": [
+        {
+          "sentence": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+          "count": 4,
+          "firstSeenNear": "סיכום מקצועות להורה#15",
+          "scenarioId": "multiple_subjects_one_clear_priority",
+          "appearances": [
+            "סיכום מקצועות להורה#15",
+            "סיכום מקצועות להורה#21",
+            "סיכום מקצועות להורה#27",
+            "סיכום מקצועות להורה#33"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+          "count": 4,
+          "firstSeenNear": "סיכום מקצועות להורה#14",
+          "scenarioId": "multiple_subjects_one_clear_priority",
+          "appearances": [
+            "סיכום מקצועות להורה#14",
+            "סיכום מקצועות להורה#20",
+            "סיכום מקצועות להורה#26",
+            "סיכום מקצועות להורה#32"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה.",
+          "count": 4,
+          "firstSeenNear": "סיכום מקצועות להורה#16",
+          "scenarioId": "multiple_subjects_one_clear_priority",
+          "appearances": [
+            "סיכום מקצועות להורה#16",
+            "סיכום מקצועות להורה#22",
+            "סיכום מקצועות להורה#28",
+            "סיכום מקצועות להורה#34"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+          "count": 3,
+          "firstSeenNear": "סיכום להורה#6",
+          "scenarioId": "multiple_subjects_one_clear_priority",
+          "appearances": [
+            "סיכום להורה#6",
+            "סיכום מקצועות להורה#4",
+            "סיכום מקצועות להורה#10"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה לא לעשות כרגע: לא להניח מיד שזה פער ידע עמוק כשיש שליטה חלקית.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#5",
+          "scenarioId": "multiple_subjects_one_clear_priority",
+          "appearances": [
+            "סיכום להורה#5",
+            "סיכום מקצועות להורה#3"
+          ],
+          "duplicateType": "acceptable_label"
+        }
+      ],
+      "sectionDuplicateMap": [
+        {
+          "section": "סיכום להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום לתקופה",
+          "repeatedLines": []
+        },
+        {
+          "section": "מה שחוזר בכמה מקצועות",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום מקצועות להורה",
+          "repeatedLines": [
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+              "count": 2
+            },
+            {
+              "line": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+              "count": 4
+            },
+            {
+              "line": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+              "count": 4
+            },
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה.",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "section": "רעיונות קצרים לבית",
+          "repeatedLines": []
+        },
+        {
+          "section": "כיוון לימים הבאים",
+          "repeatedLines": []
+        }
+      ],
+      "maxConsecutiveRecommendationLikeLines": 0,
+      "topSummaryLength": 1200,
+      "subjectDuplicatesTopActionWordForWord": false,
+      "failureReasons": []
+    },
+    {
+      "id": "new_user_no_data",
+      "topSummaryBeforeLegacy": true,
+      "first600HasStatusPriorityAction": true,
+      "forbiddenInternalTermsCount": 0,
+      "primaryActionCount": 1,
+      "unsupportedTrendWording": [],
+      "stableMasteryTopHasRemediation": false,
+      "weakThinEvidenceStrongDiagnosis": false,
+      "speedOnlyKnowledgeGapTone": false,
+      "repeatedIdenticalSentences": 1,
+      "repeatedSentences": [
+        {
+          "sentence": "אין נתונים להצגה.",
+          "count": 2,
+          "firstSeenNear": "סיכום לתקופה#1",
+          "scenarioId": "new_user_no_data",
+          "appearances": [
+            "סיכום לתקופה#1",
+            "סיכום מקצועות להורה#1"
+          ],
+          "duplicateType": "exact_duplicate"
+        }
+      ],
+      "sectionDuplicateMap": [
+        {
+          "section": "סיכום להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום לתקופה",
+          "repeatedLines": []
+        },
+        {
+          "section": "מה שחוזר בכמה מקצועות",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום מקצועות להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "רעיונות קצרים לבית",
+          "repeatedLines": []
+        },
+        {
+          "section": "כיוון לימים הבאים",
+          "repeatedLines": []
+        }
+      ],
+      "maxConsecutiveRecommendationLikeLines": 1,
+      "topSummaryLength": 875,
+      "subjectDuplicatesTopActionWordForWord": false,
+      "failureReasons": []
+    },
+    {
+      "id": "speed_issue_only_no_knowledge_gap",
+      "topSummaryBeforeLegacy": true,
+      "first600HasStatusPriorityAction": true,
+      "forbiddenInternalTermsCount": 0,
+      "primaryActionCount": 1,
+      "unsupportedTrendWording": [],
+      "stableMasteryTopHasRemediation": false,
+      "weakThinEvidenceStrongDiagnosis": false,
+      "speedOnlyKnowledgeGapTone": false,
+      "repeatedIdenticalSentences": 0,
+      "repeatedSentences": [
+        {
+          "sentence": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#9",
+          "scenarioId": "speed_issue_only_no_knowledge_gap",
+          "appearances": [
+            "סיכום מקצועות להורה#9",
+            "סיכום מקצועות להורה#15",
+            "סיכום מקצועות להורה#21",
+            "סיכום מקצועות להורה#27",
+            "סיכום מקצועות להורה#33"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#8",
+          "scenarioId": "speed_issue_only_no_knowledge_gap",
+          "appearances": [
+            "סיכום מקצועות להורה#8",
+            "סיכום מקצועות להורה#14",
+            "סיכום מקצועות להורה#20",
+            "סיכום מקצועות להורה#26",
+            "סיכום מקצועות להורה#32"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#10",
+          "scenarioId": "speed_issue_only_no_knowledge_gap",
+          "appearances": [
+            "סיכום מקצועות להורה#10",
+            "סיכום מקצועות להורה#16",
+            "סיכום מקצועות להורה#22",
+            "סיכום מקצועות להורה#28",
+            "סיכום מקצועות להורה#34"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה לא לעשות כרגע: לא להפוך חולשה במהירות לירידת רמה בכל המקצוע ולא לדחוף שיאים.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#5",
+          "scenarioId": "speed_issue_only_no_knowledge_gap",
+          "appearances": [
+            "סיכום להורה#5",
+            "סיכום מקצועות להורה#3"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#6",
+          "scenarioId": "speed_issue_only_no_knowledge_gap",
+          "appearances": [
+            "סיכום להורה#6",
+            "סיכום מקצועות להורה#4"
+          ],
+          "duplicateType": "acceptable_label"
+        }
+      ],
+      "sectionDuplicateMap": [
+        {
+          "section": "סיכום להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום לתקופה",
+          "repeatedLines": []
+        },
+        {
+          "section": "מה שחוזר בכמה מקצועות",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום מקצועות להורה",
+          "repeatedLines": [
+            {
+              "line": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+              "count": 5
+            },
+            {
+              "line": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+              "count": 5
+            },
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה.",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "section": "רעיונות קצרים לבית",
+          "repeatedLines": []
+        },
+        {
+          "section": "כיוון לימים הבאים",
+          "repeatedLines": []
+        }
+      ],
+      "maxConsecutiveRecommendationLikeLines": 0,
+      "topSummaryLength": 1200,
+      "subjectDuplicatesTopActionWordForWord": false,
+      "failureReasons": []
+    },
+    {
+      "id": "strong_accuracy_fragile_success",
+      "topSummaryBeforeLegacy": true,
+      "first600HasStatusPriorityAction": true,
+      "forbiddenInternalTermsCount": 0,
+      "primaryActionCount": 1,
+      "unsupportedTrendWording": [],
+      "stableMasteryTopHasRemediation": false,
+      "weakThinEvidenceStrongDiagnosis": false,
+      "speedOnlyKnowledgeGapTone": false,
+      "repeatedIdenticalSentences": 0,
+      "repeatedSentences": [
+        {
+          "sentence": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#9",
+          "scenarioId": "strong_accuracy_fragile_success",
+          "appearances": [
+            "סיכום מקצועות להורה#9",
+            "סיכום מקצועות להורה#15",
+            "סיכום מקצועות להורה#21",
+            "סיכום מקצועות להורה#27",
+            "סיכום מקצועות להורה#33"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#8",
+          "scenarioId": "strong_accuracy_fragile_success",
+          "appearances": [
+            "סיכום מקצועות להורה#8",
+            "סיכום מקצועות להורה#14",
+            "סיכום מקצועות להורה#20",
+            "סיכום מקצועות להורה#26",
+            "סיכום מקצועות להורה#32"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#10",
+          "scenarioId": "strong_accuracy_fragile_success",
+          "appearances": [
+            "סיכום מקצועות להורה#10",
+            "סיכום מקצועות להורה#16",
+            "סיכום מקצועות להורה#22",
+            "סיכום מקצועות להורה#28",
+            "סיכום מקצועות להורה#34"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה לא לעשות כרגע: לא לקפוץ לרמה קשה יותר לפני שני מפגשים עקביים עם עצמאות סבירה.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#5",
+          "scenarioId": "strong_accuracy_fragile_success",
+          "appearances": [
+            "סיכום להורה#5",
+            "סיכום מקצועות להורה#3"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#6",
+          "scenarioId": "strong_accuracy_fragile_success",
+          "appearances": [
+            "סיכום להורה#6",
+            "סיכום מקצועות להורה#4"
+          ],
+          "duplicateType": "acceptable_label"
+        }
+      ],
+      "sectionDuplicateMap": [
+        {
+          "section": "סיכום להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום לתקופה",
+          "repeatedLines": []
+        },
+        {
+          "section": "מה שחוזר בכמה מקצועות",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום מקצועות להורה",
+          "repeatedLines": [
+            {
+              "line": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+              "count": 5
+            },
+            {
+              "line": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+              "count": 5
+            },
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה.",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "section": "רעיונות קצרים לבית",
+          "repeatedLines": []
+        },
+        {
+          "section": "כיוון לימים הבאים",
+          "repeatedLines": []
+        }
+      ],
+      "maxConsecutiveRecommendationLikeLines": 0,
+      "topSummaryLength": 1200,
+      "subjectDuplicatesTopActionWordForWord": false,
+      "failureReasons": []
+    },
+    {
+      "id": "strong_stable_mastery",
+      "topSummaryBeforeLegacy": true,
+      "first600HasStatusPriorityAction": true,
+      "forbiddenInternalTermsCount": 0,
+      "primaryActionCount": 1,
+      "unsupportedTrendWording": [],
+      "stableMasteryTopHasRemediation": false,
+      "weakThinEvidenceStrongDiagnosis": false,
+      "speedOnlyKnowledgeGapTone": false,
+      "repeatedIdenticalSentences": 0,
+      "repeatedSentences": [
+        {
+          "sentence": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#9",
+          "scenarioId": "strong_stable_mastery",
+          "appearances": [
+            "סיכום מקצועות להורה#9",
+            "סיכום מקצועות להורה#15",
+            "סיכום מקצועות להורה#21",
+            "סיכום מקצועות להורה#27",
+            "סיכום מקצועות להורה#33"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#8",
+          "scenarioId": "strong_stable_mastery",
+          "appearances": [
+            "סיכום מקצועות להורה#8",
+            "סיכום מקצועות להורה#14",
+            "סיכום מקצועות להורה#20",
+            "סיכום מקצועות להורה#26",
+            "סיכום מקצועות להורה#32"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#10",
+          "scenarioId": "strong_stable_mastery",
+          "appearances": [
+            "סיכום מקצועות להורה#10",
+            "סיכום מקצועות להורה#16",
+            "סיכום מקצועות להורה#22",
+            "סיכום מקצועות להורה#28",
+            "סיכום מקצועות להורה#34"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה לא לעשות כרגע: לא לנעול הסבר יחיד כשיש אותות מנוגדים.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#5",
+          "scenarioId": "strong_stable_mastery",
+          "appearances": [
+            "סיכום להורה#5",
+            "סיכום מקצועות להורה#3"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#6",
+          "scenarioId": "strong_stable_mastery",
+          "appearances": [
+            "סיכום להורה#6",
+            "סיכום מקצועות להורה#4"
+          ],
+          "duplicateType": "acceptable_label"
+        }
+      ],
+      "sectionDuplicateMap": [
+        {
+          "section": "סיכום להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום לתקופה",
+          "repeatedLines": []
+        },
+        {
+          "section": "מה שחוזר בכמה מקצועות",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום מקצועות להורה",
+          "repeatedLines": [
+            {
+              "line": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+              "count": 5
+            },
+            {
+              "line": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+              "count": 5
+            },
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה.",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "section": "רעיונות קצרים לבית",
+          "repeatedLines": []
+        },
+        {
+          "section": "כיוון לימים הבאים",
+          "repeatedLines": []
+        }
+      ],
+      "maxConsecutiveRecommendationLikeLines": 0,
+      "topSummaryLength": 1200,
+      "subjectDuplicatesTopActionWordForWord": false,
+      "failureReasons": []
+    },
+    {
+      "id": "trend_insufficient",
+      "topSummaryBeforeLegacy": true,
+      "first600HasStatusPriorityAction": true,
+      "forbiddenInternalTermsCount": 0,
+      "primaryActionCount": 1,
+      "unsupportedTrendWording": [],
+      "stableMasteryTopHasRemediation": false,
+      "weakThinEvidenceStrongDiagnosis": false,
+      "speedOnlyKnowledgeGapTone": false,
+      "repeatedIdenticalSentences": 0,
+      "repeatedSentences": [
+        {
+          "sentence": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+          "count": 4,
+          "firstSeenNear": "סיכום מקצועות להורה#15",
+          "scenarioId": "trend_insufficient",
+          "appearances": [
+            "סיכום מקצועות להורה#15",
+            "סיכום מקצועות להורה#21",
+            "סיכום מקצועות להורה#27",
+            "סיכום מקצועות להורה#33"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+          "count": 4,
+          "firstSeenNear": "סיכום מקצועות להורה#14",
+          "scenarioId": "trend_insufficient",
+          "appearances": [
+            "סיכום מקצועות להורה#14",
+            "סיכום מקצועות להורה#20",
+            "סיכום מקצועות להורה#26",
+            "סיכום מקצועות להורה#32"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה.",
+          "count": 4,
+          "firstSeenNear": "סיכום מקצועות להורה#16",
+          "scenarioId": "trend_insufficient",
+          "appearances": [
+            "סיכום מקצועות להורה#16",
+            "סיכום מקצועות להורה#22",
+            "סיכום מקצועות להורה#28",
+            "סיכום מקצועות להורה#34"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה בשלב זה — נדרש עוד נתון לפני מסקנה חזקה.",
+          "count": 3,
+          "firstSeenNear": "סיכום להורה#6",
+          "scenarioId": "trend_insufficient",
+          "appearances": [
+            "סיכום להורה#6",
+            "סיכום מקצועות להורה#4",
+            "סיכום מקצועות להורה#10"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה לא לעשות כרגע: לא לדלג על בסיס ולא לפתוח יותר מדי נושאים במקביל.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#5",
+          "scenarioId": "trend_insufficient",
+          "appearances": [
+            "סיכום להורה#5",
+            "סיכום מקצועות להורה#3"
+          ],
+          "duplicateType": "acceptable_label"
+        }
+      ],
+      "sectionDuplicateMap": [
+        {
+          "section": "סיכום להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום לתקופה",
+          "repeatedLines": []
+        },
+        {
+          "section": "מה שחוזר בכמה מקצועות",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום מקצועות להורה",
+          "repeatedLines": [
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה בשלב זה — נדרש עוד נתון לפני מסקנה חזקה.",
+              "count": 2
+            },
+            {
+              "line": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+              "count": 4
+            },
+            {
+              "line": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+              "count": 4
+            },
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה.",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "section": "רעיונות קצרים לבית",
+          "repeatedLines": []
+        },
+        {
+          "section": "כיוון לימים הבאים",
+          "repeatedLines": []
+        }
+      ],
+      "maxConsecutiveRecommendationLikeLines": 0,
+      "topSummaryLength": 1200,
+      "subjectDuplicatesTopActionWordForWord": false,
+      "failureReasons": []
+    },
+    {
+      "id": "trend_sufficient_down",
+      "topSummaryBeforeLegacy": true,
+      "first600HasStatusPriorityAction": true,
+      "forbiddenInternalTermsCount": 0,
+      "primaryActionCount": 1,
+      "unsupportedTrendWording": [],
+      "stableMasteryTopHasRemediation": false,
+      "weakThinEvidenceStrongDiagnosis": false,
+      "speedOnlyKnowledgeGapTone": false,
+      "repeatedIdenticalSentences": 0,
+      "repeatedSentences": [
+        {
+          "sentence": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#9",
+          "scenarioId": "trend_sufficient_down",
+          "appearances": [
+            "סיכום מקצועות להורה#9",
+            "סיכום מקצועות להורה#15",
+            "סיכום מקצועות להורה#21",
+            "סיכום מקצועות להורה#27",
+            "סיכום מקצועות להורה#33"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#8",
+          "scenarioId": "trend_sufficient_down",
+          "appearances": [
+            "סיכום מקצועות להורה#8",
+            "סיכום מקצועות להורה#14",
+            "סיכום מקצועות להורה#20",
+            "סיכום מקצועות להורה#26",
+            "סיכום מקצועות להורה#32"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#10",
+          "scenarioId": "trend_sufficient_down",
+          "appearances": [
+            "סיכום מקצועות להורה#10",
+            "סיכום מקצועות להורה#16",
+            "סיכום מקצועות להורה#22",
+            "סיכום מקצועות להורה#28",
+            "סיכום מקצועות להורה#34"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה לא לעשות כרגע: לא לנעול הסבר יחיד כשיש אותות מנוגדים. לא להרחיב רמה לפני חיזוק חוזר קצר.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#5",
+          "scenarioId": "trend_sufficient_down",
+          "appearances": [
+            "סיכום להורה#5",
+            "סיכום מקצועות להורה#3"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#6",
+          "scenarioId": "trend_sufficient_down",
+          "appearances": [
+            "סיכום להורה#6",
+            "סיכום מקצועות להורה#4"
+          ],
+          "duplicateType": "acceptable_label"
+        }
+      ],
+      "sectionDuplicateMap": [
+        {
+          "section": "סיכום להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום לתקופה",
+          "repeatedLines": []
+        },
+        {
+          "section": "מה שחוזר בכמה מקצועות",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום מקצועות להורה",
+          "repeatedLines": [
+            {
+              "line": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+              "count": 5
+            },
+            {
+              "line": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+              "count": 5
+            },
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה.",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "section": "רעיונות קצרים לבית",
+          "repeatedLines": []
+        },
+        {
+          "section": "כיוון לימים הבאים",
+          "repeatedLines": []
+        }
+      ],
+      "maxConsecutiveRecommendationLikeLines": 0,
+      "topSummaryLength": 1200,
+      "subjectDuplicatesTopActionWordForWord": false,
+      "failureReasons": []
+    },
+    {
+      "id": "trend_sufficient_up",
+      "topSummaryBeforeLegacy": true,
+      "first600HasStatusPriorityAction": true,
+      "forbiddenInternalTermsCount": 0,
+      "primaryActionCount": 1,
+      "unsupportedTrendWording": [],
+      "stableMasteryTopHasRemediation": false,
+      "weakThinEvidenceStrongDiagnosis": false,
+      "speedOnlyKnowledgeGapTone": false,
+      "repeatedIdenticalSentences": 0,
+      "repeatedSentences": [
+        {
+          "sentence": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#9",
+          "scenarioId": "trend_sufficient_up",
+          "appearances": [
+            "סיכום מקצועות להורה#9",
+            "סיכום מקצועות להורה#15",
+            "סיכום מקצועות להורה#21",
+            "סיכום מקצועות להורה#27",
+            "סיכום מקצועות להורה#33"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#8",
+          "scenarioId": "trend_sufficient_up",
+          "appearances": [
+            "סיכום מקצועות להורה#8",
+            "סיכום מקצועות להורה#14",
+            "סיכום מקצועות להורה#20",
+            "סיכום מקצועות להורה#26",
+            "סיכום מקצועות להורה#32"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#10",
+          "scenarioId": "trend_sufficient_up",
+          "appearances": [
+            "סיכום מקצועות להורה#10",
+            "סיכום מקצועות להורה#16",
+            "סיכום מקצועות להורה#22",
+            "סיכום מקצועות להורה#28",
+            "סיכום מקצועות להורה#34"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה לא לעשות כרגע: לא להניח מיד שזה פער ידע עמוק כשיש שליטה חלקית.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#5",
+          "scenarioId": "trend_sufficient_up",
+          "appearances": [
+            "סיכום להורה#5",
+            "סיכום מקצועות להורה#3"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#6",
+          "scenarioId": "trend_sufficient_up",
+          "appearances": [
+            "סיכום להורה#6",
+            "סיכום מקצועות להורה#4"
+          ],
+          "duplicateType": "acceptable_label"
+        }
+      ],
+      "sectionDuplicateMap": [
+        {
+          "section": "סיכום להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום לתקופה",
+          "repeatedLines": []
+        },
+        {
+          "section": "מה שחוזר בכמה מקצועות",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום מקצועות להורה",
+          "repeatedLines": [
+            {
+              "line": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+              "count": 5
+            },
+            {
+              "line": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+              "count": 5
+            },
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה.",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "section": "רעיונות קצרים לבית",
+          "repeatedLines": []
+        },
+        {
+          "section": "כיוון לימים הבאים",
+          "repeatedLines": []
+        }
+      ],
+      "maxConsecutiveRecommendationLikeLines": 0,
+      "topSummaryLength": 1200,
+      "subjectDuplicatesTopActionWordForWord": false,
+      "failureReasons": []
+    },
+    {
+      "id": "weak_enough_evidence",
+      "topSummaryBeforeLegacy": true,
+      "first600HasStatusPriorityAction": true,
+      "forbiddenInternalTermsCount": 0,
+      "primaryActionCount": 1,
+      "unsupportedTrendWording": [],
+      "stableMasteryTopHasRemediation": false,
+      "weakThinEvidenceStrongDiagnosis": false,
+      "speedOnlyKnowledgeGapTone": false,
+      "repeatedIdenticalSentences": 0,
+      "repeatedSentences": [
+        {
+          "sentence": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#9",
+          "scenarioId": "weak_enough_evidence",
+          "appearances": [
+            "סיכום מקצועות להורה#9",
+            "סיכום מקצועות להורה#15",
+            "סיכום מקצועות להורה#21",
+            "סיכום מקצועות להורה#27",
+            "סיכום מקצועות להורה#33"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#8",
+          "scenarioId": "weak_enough_evidence",
+          "appearances": [
+            "סיכום מקצועות להורה#8",
+            "סיכום מקצועות להורה#14",
+            "סיכום מקצועות להורה#20",
+            "סיכום מקצועות להורה#26",
+            "סיכום מקצועות להורה#32"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה.",
+          "count": 5,
+          "firstSeenNear": "סיכום מקצועות להורה#10",
+          "scenarioId": "weak_enough_evidence",
+          "appearances": [
+            "סיכום מקצועות להורה#10",
+            "סיכום מקצועות להורה#16",
+            "סיכום מקצועות להורה#22",
+            "סיכום מקצועות להורה#28",
+            "סיכום מקצועות להורה#34"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה לא לעשות כרגע: לא לדלג על בסיס ולא לפתוח יותר מדי נושאים במקביל.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#5",
+          "scenarioId": "weak_enough_evidence",
+          "appearances": [
+            "סיכום להורה#5",
+            "סיכום מקצועות להורה#3"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#6",
+          "scenarioId": "weak_enough_evidence",
+          "appearances": [
+            "סיכום להורה#6",
+            "סיכום מקצועות להורה#4"
+          ],
+          "duplicateType": "acceptable_label"
+        }
+      ],
+      "sectionDuplicateMap": [
+        {
+          "section": "סיכום להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום לתקופה",
+          "repeatedLines": []
+        },
+        {
+          "section": "מה שחוזר בכמה מקצועות",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום מקצועות להורה",
+          "repeatedLines": [
+            {
+              "line": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+              "count": 5
+            },
+            {
+              "line": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+              "count": 5
+            },
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה.",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "section": "רעיונות קצרים לבית",
+          "repeatedLines": []
+        },
+        {
+          "section": "כיוון לימים הבאים",
+          "repeatedLines": []
+        }
+      ],
+      "maxConsecutiveRecommendationLikeLines": 0,
+      "topSummaryLength": 1200,
+      "subjectDuplicatesTopActionWordForWord": false,
+      "failureReasons": []
+    },
+    {
+      "id": "weak_thin_evidence",
+      "topSummaryBeforeLegacy": true,
+      "first600HasStatusPriorityAction": true,
+      "forbiddenInternalTermsCount": 0,
+      "primaryActionCount": 1,
+      "unsupportedTrendWording": [],
+      "stableMasteryTopHasRemediation": false,
+      "weakThinEvidenceStrongDiagnosis": false,
+      "speedOnlyKnowledgeGapTone": false,
+      "repeatedIdenticalSentences": 0,
+      "repeatedSentences": [
+        {
+          "sentence": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+          "count": 4,
+          "firstSeenNear": "סיכום מקצועות להורה#15",
+          "scenarioId": "weak_thin_evidence",
+          "appearances": [
+            "סיכום מקצועות להורה#15",
+            "סיכום מקצועות להורה#21",
+            "סיכום מקצועות להורה#27",
+            "סיכום מקצועות להורה#33"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+          "count": 4,
+          "firstSeenNear": "סיכום מקצועות להורה#14",
+          "scenarioId": "weak_thin_evidence",
+          "appearances": [
+            "סיכום מקצועות להורה#14",
+            "סיכום מקצועות להורה#20",
+            "סיכום מקצועות להורה#26",
+            "סיכום מקצועות להורה#32"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה.",
+          "count": 4,
+          "firstSeenNear": "סיכום מקצועות להורה#16",
+          "scenarioId": "weak_thin_evidence",
+          "appearances": [
+            "סיכום מקצועות להורה#16",
+            "סיכום מקצועות להורה#22",
+            "סיכום מקצועות להורה#28",
+            "סיכום מקצועות להורה#34"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "רמת ודאות: רמת ודאות נמוכה בשלב זה — נדרש עוד נתון לפני מסקנה חזקה.",
+          "count": 3,
+          "firstSeenNear": "סיכום להורה#6",
+          "scenarioId": "weak_thin_evidence",
+          "appearances": [
+            "סיכום להורה#6",
+            "סיכום מקצועות להורה#4",
+            "סיכום מקצועות להורה#10"
+          ],
+          "duplicateType": "acceptable_label"
+        },
+        {
+          "sentence": "מה לא לעשות כרגע: לא לדלג על בסיס ולא לפתוח יותר מדי נושאים במקביל.",
+          "count": 2,
+          "firstSeenNear": "סיכום להורה#5",
+          "scenarioId": "weak_thin_evidence",
+          "appearances": [
+            "סיכום להורה#5",
+            "סיכום מקצועות להורה#3"
+          ],
+          "duplicateType": "acceptable_label"
+        }
+      ],
+      "sectionDuplicateMap": [
+        {
+          "section": "סיכום להורה",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום לתקופה",
+          "repeatedLines": []
+        },
+        {
+          "section": "מה שחוזר בכמה מקצועות",
+          "repeatedLines": []
+        },
+        {
+          "section": "סיכום מקצועות להורה",
+          "repeatedLines": [
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה בשלב זה — נדרש עוד נתון לפני מסקנה חזקה.",
+              "count": 2
+            },
+            {
+              "line": "מה עושים עכשיו: תרגול קצר וממוקד בנושא אחד.",
+              "count": 4
+            },
+            {
+              "line": "מה לא לעשות כרגע: לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
+              "count": 4
+            },
+            {
+              "line": "רמת ודאות: רמת ודאות נמוכה.",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "section": "רעיונות קצרים לבית",
+          "repeatedLines": []
+        },
+        {
+          "section": "כיוון לימים הבאים",
+          "repeatedLines": []
+        }
+      ],
+      "maxConsecutiveRecommendationLikeLines": 0,
+      "topSummaryLength": 1200,
+      "subjectDuplicatesTopActionWordForWord": false,
+      "failureReasons": []
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "pass": 10,
+    "fail": 0
+  }
+}

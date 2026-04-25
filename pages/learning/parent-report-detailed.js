@@ -133,6 +133,48 @@ function normalizeDisplayMode(raw) {
   return raw === "summary" ? "summary" : "full";
 }
 
+function removeStrongTrendWords(value, strongTrendWords) {
+  if (typeof value === "string") {
+    let out = value;
+    for (const w of strongTrendWords) out = out.split(w).join("");
+    return out.replace(/\s+/g, " ").trim();
+  }
+  if (Array.isArray(value)) {
+    return value.map((v) => removeStrongTrendWords(v, strongTrendWords));
+  }
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(value)) out[k] = removeStrongTrendWords(v, strongTrendWords);
+    return out;
+  }
+  return value;
+}
+
+function normalizeLineForDedupe(value) {
+  return String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function dedupeParentVisibleLines(lines, options = {}) {
+  const { keep = [], allowShortLabels = [] } = options;
+  const out = [];
+  const seen = new Set(keep.map((x) => normalizeLineForDedupe(x)).filter(Boolean));
+  const allowed = new Set(allowShortLabels.map((x) => normalizeLineForDedupe(x)).filter(Boolean));
+  for (const line of Array.isArray(lines) ? lines : []) {
+    const raw = String(line || "").trim();
+    if (!raw) continue;
+    const n = normalizeLineForDedupe(raw);
+    if (!n) continue;
+    if (allowed.has(n)) {
+      out.push(raw);
+      continue;
+    }
+    if (seen.has(n)) continue;
+    seen.add(n);
+    out.push(raw);
+  }
+  return out;
+}
+
 /** query נקי לשיתוף/הדפסה — רק פרמטרים שמוכרים לדף המקיף */
 function buildDetailedReportQueryFromQueryObject(query, mode) {
   const next = normalizeDisplayMode(mode);
@@ -278,14 +320,72 @@ export default function ParentReportDetailedPage() {
   const topContract = payload?.parentProductContractV1?.top || null;
   const subjectContracts = payload?.parentProductContractV1?.subjects || {};
   const hasTopContract = !!topContract && typeof topContract === "object";
+  const isTopTrendInsufficient =
+    String(topContract?.evidence?.trendEvidenceStatus || "") === "insufficient";
+  const strongTrendWords = [
+    "משתפר",
+    "בירידה",
+    "מגמה חיובית",
+    "מגמה שלילית",
+    "שיפור מבוסס",
+    "ירידה מבוססת",
+  ];
   const normalizedExecutive = normalizeExecutiveSummary(payload);
   const executiveForUi = hasTopContract
     ? {
         ...normalizedExecutive,
         topImmediateParentActionHe: "",
         secondPriorityActionHe: "",
+        majorTrendsHe:
+          String(topContract?.evidence?.trendEvidenceStatus || "") === "insufficient"
+            ? []
+            : normalizedExecutive?.majorTrendsHe,
       }
     : normalizedExecutive;
+  const executiveForUiSafe =
+    isTopTrendInsufficient && executiveForUi
+      ? removeStrongTrendWords(executiveForUi, strongTrendWords)
+      : executiveForUi;
+  const topKeepLines = [
+    topContract?.mainPriorityHe || "",
+    topContract?.doNowHe || "",
+    topContract?.mainStatusHe || "",
+  ].filter(Boolean);
+  const executiveForUiDedupe = executiveForUiSafe
+    ? {
+        ...executiveForUiSafe,
+        topStrengthsAcrossHe: dedupeParentVisibleLines(executiveForUiSafe.topStrengthsAcrossHe, {
+          keep: topKeepLines,
+        }),
+        topFocusAreasHe: dedupeParentVisibleLines(executiveForUiSafe.topFocusAreasHe, {
+          keep: topKeepLines,
+        }),
+        majorTrendsHe: dedupeParentVisibleLines(executiveForUiSafe.majorTrendsHe, {
+          keep: topKeepLines,
+        }),
+        monitoringOnlyAreasHe: dedupeParentVisibleLines(executiveForUiSafe.monitoringOnlyAreasHe, {
+          keep: topKeepLines,
+        }),
+        deferForNowAreasHe: dedupeParentVisibleLines(executiveForUiSafe.deferForNowAreasHe, {
+          keep: topKeepLines,
+        }),
+      }
+    : executiveForUiSafe;
+  const crossSubjectBulletsSeed = dedupeParentVisibleLines(payload?.crossSubjectInsights?.bulletsHe, {
+    keep: topKeepLines,
+  });
+  const crossSubjectBulletsForUi = isTopTrendInsufficient
+    ? crossSubjectBulletsSeed.filter((b) => {
+        const t = String(b || "");
+        return !strongTrendWords.some((w) => t.includes(w));
+      })
+    : crossSubjectBulletsSeed;
+  const homePlanItemsForUi = dedupeParentVisibleLines(payload?.homePlan?.itemsHe, {
+    keep: topKeepLines,
+  });
+  const nextGoalsItemsForUi = dedupeParentVisibleLines(payload?.nextPeriodGoals?.itemsHe, {
+    keep: [...topKeepLines, ...homePlanItemsForUi],
+  });
 
   return (
     <Layout>
@@ -1133,7 +1233,7 @@ export default function ParentReportDetailedPage() {
                 {/* B — סיכום לתקופה (זרימה קיימת; ללא התנגשות עדיפות ראשית כשחוזה פעיל) */}
                 <SectionCard title="סיכום לתקופה" compact={displayMode === "summary"}>
                   <ExecutiveSummarySection
-                    es={executiveForUi}
+                    es={executiveForUiDedupe}
                     compact={displayMode === "summary"}
                   />
                 </SectionCard>
@@ -1216,6 +1316,8 @@ export default function ParentReportDetailedPage() {
                           <ParentSubjectContractSummaryBlock
                             contractRow={subjectContracts?.[String(sp?.subject || "")] || null}
                             compact
+                            topMainPriority={topContract?.mainPriorityHe || ""}
+                            topDoNow={topContract?.doNowHe || ""}
                           />
                         </div>
                       ))}
@@ -1251,6 +1353,8 @@ export default function ParentReportDetailedPage() {
                             {subjectContracts?.[String(sp?.subject || "")] ? (
                               <ParentSubjectContractSummaryBlock
                                 contractRow={subjectContracts[String(sp?.subject || "")]}
+                                topMainPriority={topContract?.mainPriorityHe || ""}
+                                topDoNow={topContract?.doNowHe || ""}
                               />
                             ) : (
                               <SubjectParentLetter sp={sp} />
@@ -1291,6 +1395,9 @@ export default function ParentReportDetailedPage() {
                                   {sp.topicRecommendations.map((tr, idx) => {
                                     const tv = topicNextStepVisualVariant(tr.recommendedNextStep);
                                     const nar = buildTopicRecommendationNarrative(tr);
+                                    const snapshotNorm = normalizeLineForDedupe(nar.snapshot);
+                                    const homeNorm = normalizeLineForDedupe(nar.homeLine);
+                                    const showHomeLine = !!nar.homeLine && homeNorm !== snapshotNorm;
                                     return (
                                       <div key={tr.topicRowKey} className={idx === 0 ? "pr-detailed-topic-first-card-wrap" : ""}>
                                         <div
@@ -1309,12 +1416,15 @@ export default function ParentReportDetailedPage() {
                                           <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2 text-white/[0.9]">
                                             {nar.snapshot}
                                           </p>
-                                          {nar.homeLine ? (
+                                          {showHomeLine ? (
                                             <p className="pr-detailed-body-text text-sm leading-relaxed m-0 mt-2.5 text-amber-100/95">
                                               {nar.homeLine}
                                             </p>
                                           ) : null}
-                                          <TopicRecommendationExplainStrip tr={tr} />
+                                          <TopicRecommendationExplainStrip
+                                            tr={tr}
+                                            suppressedLines={[nar.snapshot, showHomeLine ? nar.homeLine : ""]}
+                                          />
                                         </div>
                                       </div>
                                     );
@@ -1334,7 +1444,7 @@ export default function ParentReportDetailedPage() {
 
                 {/* cross insights — part of structure; placed after subjects for flow */}
                 <SectionCard title="מה שחוזר בכמה מקצועות" compact={displayMode === "summary"}>
-                <Bullets items={payload.crossSubjectInsights.bulletsHe} />
+                <Bullets items={crossSubjectBulletsForUi} />
                 {payload.crossSubjectInsights.dataQualityNoteHe ? (
                   <p className="text-sm text-amber-200/90 mt-2">{payload.crossSubjectInsights.dataQualityNoteHe}</p>
                 ) : null}
@@ -1342,12 +1452,12 @@ export default function ParentReportDetailedPage() {
 
                 {/* E */}
                 <SectionCard title="רעיונות קצרים לבית" compact={displayMode === "summary"}>
-                  <PlanItemCards items={payload.homePlan.itemsHe} />
+                  <PlanItemCards items={homePlanItemsForUi} />
                 </SectionCard>
 
                 {/* F */}
                 <SectionCard title="כיוון לימים הבאים" compact={displayMode === "summary"}>
-                  <GoalItemCards items={payload.nextPeriodGoals.itemsHe} />
+                  <GoalItemCards items={nextGoalsItemsForUi} />
                 </SectionCard>
 
                 <ParentReportImportantDisclaimer />
