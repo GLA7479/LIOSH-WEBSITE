@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-04-25T00:03:03.615Z",
+  "generatedAt": "2026-04-25T00:19:42.100Z",
   "seedsPerCombo": 128,
   "skipGeometryConceptual": true,
   "mathForcedKinds": [
-    "dec_add",
     "dec_divide",
     "dec_repeating",
+    "dec_sub",
     "div_two_digit",
     "eq_add_simple",
     "eq_sub_simple",
@@ -15,13 +15,15 @@
     "frac_half_reverse",
     "frac_quarter",
     "frac_quarter_reverse",
+    "frac_to_mixed",
     "mul_hundreds",
     "mul_tens",
-    "perc_part_of",
-    "ratio_second",
+    "perc_discount",
+    "ratio_find",
     "scale_find",
     "wp_comparison_more",
-    "wp_distance_time"
+    "wp_unit_cm_to_m",
+    "wp_unit_g_to_kg"
   ],
   "combos": {
     "g1|easy|addition": {
@@ -2309,13 +2311,6 @@
       "errors": 0,
       "seeds": 128
     },
-    "__forced__|dec_add": {
-      "kinds": [
-        "dec_add"
-      ],
-      "kindCount": 1,
-      "forced": true
-    },
     "__forced__|dec_divide": {
       "kinds": [
         "dec_divide"
@@ -2326,6 +2321,13 @@
     "__forced__|dec_repeating": {
       "kinds": [
         "dec_repeating"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|dec_sub": {
+      "kinds": [
+        "dec_sub"
       ],
       "kindCount": 1,
       "forced": true
@@ -2393,6 +2395,13 @@
       "kindCount": 1,
       "forced": true
     },
+    "__forced__|frac_to_mixed": {
+      "kinds": [
+        "frac_to_mixed"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
     "__forced__|mul_hundreds": {
       "kinds": [
         "mul_hundreds"
@@ -2407,16 +2416,16 @@
       "kindCount": 1,
       "forced": true
     },
-    "__forced__|perc_part_of": {
+    "__forced__|perc_discount": {
       "kinds": [
-        "perc_part_of"
+        "perc_discount"
       ],
       "kindCount": 1,
       "forced": true
     },
-    "__forced__|ratio_second": {
+    "__forced__|ratio_find": {
       "kinds": [
-        "ratio_second"
+        "ratio_find"
       ],
       "kindCount": 1,
       "forced": true
@@ -2435,9 +2444,16 @@
       "kindCount": 1,
       "forced": true
     },
-    "__forced__|wp_distance_time": {
+    "__forced__|wp_unit_cm_to_m": {
       "kinds": [
-        "wp_distance_time"
+        "wp_unit_cm_to_m"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|wp_unit_g_to_kg": {
+      "kinds": [
+        "wp_unit_g_to_kg"
       ],
       "kindCount": 1,
       "forced": true

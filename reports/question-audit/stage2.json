@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-25T00:03:04.763Z",
+  "generatedAt": "2026-04-25T00:19:43.099Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -404,11 +404,11 @@
         "withPatternFamily": 141
       },
       "grammar": {
-        "rows": 182,
-        "staticRows": 182,
+        "rows": 186,
+        "staticRows": 186,
         "sampleRows": 0,
-        "withSubtype": 182,
-        "withPatternFamily": 182
+        "withSubtype": 186,
+        "withPatternFamily": 186
       },
       "vocabulary": {
         "rows": 154,

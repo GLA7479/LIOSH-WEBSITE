@@ -66,6 +66,71 @@ const {
   gradeBandForKey,
 } = await import(modUrl("utils/grade-gating.js"));
 
+/** מיפוי דטרמיניסטי ל־spine `english:grammar:line:*` (ללא regex) — Phase 7.19 */
+const EGG_LINE_ID = {
+  G1_EXPOSURE:
+    "english:grammar:line:חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות",
+  G2_BE: "english:grammar:line:חיזוק_to_be_am_is_are_וכינויי_גוף",
+  G2_PLURAL_QUESTIONS:
+    "english:grammar:line:ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים",
+  G3_ADJECTIVES_ARTICLES_PREPS:
+    "english:grammar:line:תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under",
+  G3_PRESENT_SIMPLE: "english:grammar:line:present_simple_בחיובי_שלילי_שאלה",
+  G4_PRESENT_VS_CONT: "english:grammar:line:present_simple_לעומת_present_continuous",
+  G4_QUANTIFIERS:
+    "english:grammar:line:some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly",
+  G5_MODALS: "english:grammar:line:מודאליים_בסיסיים_future_will_going_to_והשוואתיים",
+  G5_PAST_SIMPLE: "english:grammar:line:past_simple_סדירים_חריגים_נפוצים",
+  G6_CONDITIONALS: "english:grammar:line:conditionals_type_0_1_ומודאליים_should_might_could",
+  G6_COMPLEX_TENSES:
+    "english:grammar:line:past_continuous_לצד_past_simple_היכרות_עם_present_perfect",
+};
+
+function representativeGrammarGrade(lo, hi, poolKey) {
+  const r = ENGLISH_GRAMMAR_POOL_RANGE[poolKey];
+  if (!r) {
+    const mid = Math.floor((Number(lo) + Number(hi)) / 2);
+    return Math.min(6, Math.max(1, mid));
+  }
+  const a = Math.max(Number(lo), r.minGrade);
+  const b = Math.min(Number(hi), r.maxGrade);
+  if (a > b) {
+    const mid = Math.floor((Number(lo) + Number(hi)) / 2);
+    return Math.min(6, Math.max(1, mid));
+  }
+  return Math.floor((a + b) / 2) || a;
+}
+
+function grammarLineIdForEnglishGrammarPool(poolKey, lo, hi) {
+  const g = representativeGrammarGrade(lo, hi, poolKey);
+  switch (poolKey) {
+    case "be_basic":
+      return g <= 1 ? EGG_LINE_ID.G1_EXPOSURE : EGG_LINE_ID.G2_BE;
+    case "question_frames":
+      return g <= 2 ? EGG_LINE_ID.G2_PLURAL_QUESTIONS : EGG_LINE_ID.G3_ADJECTIVES_ARTICLES_PREPS;
+    case "present_simple":
+      return g <= 3 ? EGG_LINE_ID.G3_PRESENT_SIMPLE : EGG_LINE_ID.G4_PRESENT_VS_CONT;
+    case "progressive":
+      return EGG_LINE_ID.G4_PRESENT_VS_CONT;
+    case "quantifiers":
+      return g <= 4 ? EGG_LINE_ID.G4_QUANTIFIERS : EGG_LINE_ID.G5_MODALS;
+    case "past_simple":
+      return EGG_LINE_ID.G5_PAST_SIMPLE;
+    case "modals":
+      return g <= 5 ? EGG_LINE_ID.G5_MODALS : EGG_LINE_ID.G6_CONDITIONALS;
+    case "comparatives":
+      return g <= 5 ? EGG_LINE_ID.G5_MODALS : EGG_LINE_ID.G6_CONDITIONALS;
+    case "future_forms":
+      return EGG_LINE_ID.G5_MODALS;
+    case "complex_tenses":
+      return EGG_LINE_ID.G6_COMPLEX_TENSES;
+    case "conditionals":
+      return EGG_LINE_ID.G6_CONDITIONALS;
+    default:
+      return "";
+  }
+}
+
 const { HEBREW_RICH_POOL } = await import(modUrl("utils/hebrew-rich-question-bank.js"));
 const { HEBREW_LEGACY_QUESTIONS_SNAPSHOT } = await import(
   modUrl("utils/hebrew-question-generator.js")
@@ -404,6 +469,8 @@ function collectEnglishPool(rows, category, pools) {
         for (const g of [5, 6]) {
           const scoped = `(כיתה ${gradeHeb[g]}) ${stem}`;
           const basePf = item.patternFamily || poolKey;
+          const grammar_line_id =
+            category === "grammar" ? grammarLineIdForEnglishGrammarPool(poolKey, g, g) : "";
           pushRow(rows, {
             subject: "english",
             topic: category,
@@ -424,11 +491,14 @@ function collectEnglishPool(rows, category, pools) {
             rowKind: "english_pool_item",
             poolKey,
             itemHasExplicitGate: "0",
+            grammar_line_id,
           });
         }
         return;
       }
 
+      const grammar_line_id =
+        category === "grammar" ? grammarLineIdForEnglishGrammarPool(poolKey, lo, hi) : "";
       pushRow(rows, {
         subject: "english",
         topic: category,
@@ -449,6 +519,7 @@ function collectEnglishPool(rows, category, pools) {
         rowKind: "english_pool_item",
         poolKey,
         itemHasExplicitGate: explicitGate ? "1" : "0",
+        grammar_line_id,
       });
     });
   }

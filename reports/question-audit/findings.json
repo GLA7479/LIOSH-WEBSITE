@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-25T00:03:04.760Z",
-  "totalRows": 11663,
+  "generatedAt": "2026-04-25T00:19:43.089Z",
+  "totalRows": 11667,
   "exactDuplicateCrossGrade": [],
   "exactDuplicateCrossGradeStaticBanksOnly": [],
   "nearDuplicateCrossGrade": [],
@@ -67,9 +67,9 @@
     {
       "key": "hebrew::grammar",
       "distinctGrades": 6,
-      "totalRows": 182,
+      "totalRows": 186,
       "dominantPatternFamily": "grammar_morphology",
-      "dominantShare": 0.06043956043956044
+      "dominantShare": 0.05913978494623656
     },
     {
       "key": "hebrew::comprehension",

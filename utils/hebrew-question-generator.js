@@ -4292,6 +4292,42 @@ const G6_MEDIUM_QUESTIONS = {
       patternFamily: "phase717_p0_subj_verb",
       subtype: "n4",
     },
+    {
+      question:
+        "כיתה ו׳ — יחסי שייכות ומילות יחס: איזה משפט נכון?",
+      answers: ["הספר של דני על השולחן", "הספר של דני בשולחן", "הספר דני על השולחן", "של דני הספר על שולחן"],
+      correct: 0,
+      subtopicId: "g6.possession_prep",
+      patternFamily: "phase719_p1_possession_prep",
+      subtype: "p1",
+    },
+    {
+      question:
+        "כיתה ו׳ — שייכות: איך כותבים נכון את צמד המילים (הארנק / יוסי)?",
+      answers: ["הארנק של יוסי", "הארנק יוסי", "של ארנק יוסי", "יוסי ארנק"],
+      correct: 0,
+      subtopicId: "g6.possession_prep",
+      patternFamily: "phase719_p1_possession_prep",
+      subtype: "p2",
+    },
+    {
+      question:
+        "כיתה ו׳ — מילת יחס: איפה הנעליים ביחס לדלת (בכניסה לכיתה)?",
+      answers: ["ליד הדלת", "הדלת ליד", "בדלת ליד", "ליד של דלת"],
+      correct: 0,
+      subtopicId: "g6.possession_prep",
+      patternFamily: "phase719_p1_possession_prep",
+      subtype: "p3",
+    },
+    {
+      question:
+        "כיתה ו׳ — שייכות + מקום: איזה משפט מתאר נכון את התיק והכיסא?",
+      answers: ["התיק שלי ליד הכיסא", "התיק לי ליד כיסא", "שלי תיק ליד הכיסא", "התיק שלי כיסא ליד"],
+      correct: 0,
+      subtopicId: "g6.possession_prep",
+      patternFamily: "phase719_p1_possession_prep",
+      subtype: "p4",
+    },
   ],
   vocabulary: [
     { question: "מה אוצר מילים ברמת חטיבת ביניים?", answers: ["אוצר מילים מקצועי ברמת חטיבת ביניים", "רק מילים פשוטות", "רק אותיות", "ללא מילים"], correct: 0 },

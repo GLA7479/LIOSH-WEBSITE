@@ -1,7 +1,7 @@
 # Weak coverage action plan (Phase 7.16)
 
 - **classification_version:** 7.16_v1
-- **total_weak:** 130
+- **total_weak:** 115
 - **deterministic:** true
 
 ## Integrity
@@ -14,9 +14,9 @@
 
 ```json
 {
-  "content_add": 3,
+  "content_add": 2,
   "harness_expand": 6,
-  "mapping_refine": 30,
+  "mapping_refine": 16,
   "threshold_adjust": 32,
   "accept_as_broad": 59
 }
@@ -26,7 +26,7 @@
 
 ```json
 {
-  "P1": 22,
+  "P1": 7,
   "P2": 108
 }
 ```
@@ -36,22 +36,7 @@
 
 ## P1 (exact)
 
-- english:g3:topic:sentences
-- english:g4:topic:sentences
-- english:g5:topic:sentences
-- english:g6:topic:sentences
-- english:grammar:line:conditionals_type_0_1_ומודאליים_should_might_could
-- english:grammar:line:past_continuous_לצד_past_simple_היכרות_עם_present_perfect
-- english:grammar:line:past_simple_סדירים_חריגים_נפוצים
-- english:grammar:line:present_simple_בחיובי_שלילי_שאלה
-- english:grammar:line:present_simple_לעומת_present_continuous
-- english:grammar:line:some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly
-- english:grammar:line:חיזוק_to_be_am_is_are_וכינויי_גוף
-- english:grammar:line:חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות
-- english:grammar:line:מודאליים_בסיסיים_future_will_going_to_והשוואתיים
-- english:grammar:line:ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים
 - english:grammar:line:תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under
-- hebrew:g6:grammar:g6.possession_prep
 - math:kind:dec_divide
 - math:kind:dec_repeating
 - math:kind:frac_half_reverse
@@ -76,22 +61,7 @@ Phase_7_17_order:
    - math:kind:frac_to_mixed
    - math:kind:wp_unit_cm_to_m
 3) Address_P1_mapping_and_borderline_hebrew:
-   - english:g3:topic:sentences
-   - english:g4:topic:sentences
-   - english:g5:topic:sentences
-   - english:g6:topic:sentences
-   - english:grammar:line:conditionals_type_0_1_ומודאליים_should_might_could
-   - english:grammar:line:past_continuous_לצד_past_simple_היכרות_עם_present_perfect
-   - english:grammar:line:past_simple_סדירים_חריגים_נפוצים
-   - english:grammar:line:present_simple_בחיובי_שלילי_שאלה
-   - english:grammar:line:present_simple_לעומת_present_continuous
-   - english:grammar:line:some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly
-   - english:grammar:line:חיזוק_to_be_am_is_are_וכינויי_גוף
-   - english:grammar:line:חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות
-   - english:grammar:line:מודאליים_בסיסיים_future_will_going_to_והשוואתיים
-   - english:grammar:line:ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים
    - english:grammar:line:תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under
-   - hebrew:g6:grammar:g6.possession_prep
 4) Defer_geography_bucket_weak_list_all_accept_as_broad_until_product_requires_line_level_proof
 5) Schedule_threshold_and_mapping_refine_P2_items_after_P0_P1_burn_down
 ```
@@ -101,9 +71,7 @@ Phase_7_17_order:
 ```json
 {
   "hebrew": {
-    "content_add_skill_ids_sorted": [
-      "hebrew:g6:grammar:g6.possession_prep"
-    ],
+    "content_add_skill_ids_sorted": [],
     "threshold_adjust_skill_ids_sorted": [
       "hebrew:g1:grammar:g1.grammar_odd_category",
       "hebrew:g3:comprehension:g3.explicit_only",
@@ -151,12 +119,7 @@ Phase_7_17_order:
     ]
   },
   "english": {
-    "curriculum_topic_access_thin_or_link_only_sorted": [
-      "english:g3:topic:sentences",
-      "english:g4:topic:sentences",
-      "english:g5:topic:sentences",
-      "english:g6:topic:sentences"
-    ],
+    "curriculum_topic_access_thin_or_link_only_sorted": [],
     "vocabulary_wordlist_shared_bank_proxy_sorted": [
       "english:vocabulary:wordlist:actions",
       "english:vocabulary:wordlist:body",
@@ -183,16 +146,6 @@ Phase_7_17_order:
       "english:pool:translation:technology"
     ],
     "grammar_line_weak_sorted": [
-      "english:grammar:line:conditionals_type_0_1_ומודאליים_should_might_could",
-      "english:grammar:line:past_continuous_לצד_past_simple_היכרות_עם_present_perfect",
-      "english:grammar:line:past_simple_סדירים_חריגים_נפוצים",
-      "english:grammar:line:present_simple_בחיובי_שלילי_שאלה",
-      "english:grammar:line:present_simple_לעומת_present_continuous",
-      "english:grammar:line:some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly",
-      "english:grammar:line:חיזוק_to_be_am_is_are_וכינויי_גוף",
-      "english:grammar:line:חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות",
-      "english:grammar:line:מודאליים_בסיסיים_future_will_going_to_והשוואתיים",
-      "english:grammar:line:ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים",
       "english:grammar:line:תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under"
     ]
   },

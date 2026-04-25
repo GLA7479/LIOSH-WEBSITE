@@ -1276,6 +1276,15 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
 
     // כיתה ה' - צמצום והרחבה, חיבור וחיסור, מספרים מעורבים
     if (gradeKey === "g5") {
+      if (mathForce === "frac_to_mixed") {
+        const whole = randInt(1, 3);
+        const den = dens[Math.floor(Math.random() * dens.length)] || 4;
+        const num = randInt(1, den - 1);
+        const improperNum = whole * den + num;
+        correctAnswer = `${whole} ${num}/${den}`;
+        question = `המר את השבר ${improperNum}/${den} למספר מעורב: ${BLANK}`;
+        params = { kind: "frac_to_mixed", improperNum, den, whole, num };
+      } else {
       const fractionType = Math.random();
       if (fractionType < 0.2) {
         // מספרים מעורבים (20% מהשאלות)
@@ -1367,6 +1376,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         } else {
           correctAnswer = `${resNum}/${commonDen}`;
         }
+      }
       }
     } else if (gradeKey === "g6") {
       // כיתה ו' - כפל וחילוק שברים, שבר כמנת חילוק
@@ -2278,6 +2288,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     if (mathForce === "wp_comparison_more" && templates.includes("comparison_more")) {
       t = "comparison_more";
     }
+    if (
+      mathForce === "wp_unit_cm_to_m" &&
+      (gradeKey === "g5" || gradeKey === "g6") &&
+      templates.includes("unit_convert")
+    ) {
+      t = "unit_convert";
+    }
 
     if (t === "simple_add" || t === "simple_add_g2") {
       const a = randInt(3, 9);
@@ -2520,7 +2537,12 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         finalPrice,
       };
     } else if (t === "unit_convert") {
-      const mode = Math.random() < 0.5 ? "cm_to_m" : "g_to_kg";
+      const mode =
+        mathForce === "wp_unit_cm_to_m"
+          ? "cm_to_m"
+          : Math.random() < 0.5
+            ? "cm_to_m"
+            : "g_to_kg";
       if (mode === "cm_to_m") {
         const meters = randInt(1, 9);
         const cm = meters * 100;

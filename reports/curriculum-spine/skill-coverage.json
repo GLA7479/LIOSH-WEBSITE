@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "summary": {
-    "generatedAt": "2026-04-25T00:03:05.623Z",
+    "generatedAt": "2026-04-25T00:19:43.952Z",
     "phase_7_14_baseline_counts": {
       "note": "Snapshot before Phase 7.15 audit join hardening (same 423 spine skills).",
       "zero": 88,
@@ -11,13 +11,13 @@
     },
     "spinePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\curriculum-spine\\v1\\skills.json",
     "itemsPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-audit\\items.json",
-    "itemsRowCount": 11663,
+    "itemsRowCount": 11667,
     "total_skills_checked": 423,
     "spine_skill_rows_by_source_kind": {
       "static_bank_curriculum_map": {
         "total": 88,
-        "adequate": 74,
-        "weak": 14,
+        "adequate": 75,
+        "weak": 13,
         "zero": 0,
         "uncertain": 0
       },
@@ -37,33 +37,33 @@
       },
       "curriculum_structure": {
         "total": 59,
-        "adequate": 26,
-        "weak": 33,
+        "adequate": 40,
+        "weak": 19,
         "zero": 0,
         "uncertain": 0
       }
     },
     "coverage_class_counts": {
       "zero": 0,
-      "weak": 130,
-      "adequate": 293,
+      "weak": 115,
+      "adequate": 308,
       "uncertain": 0
     },
     "uncertain_mapping_count": 0,
     "hebrew_content_map_spine_rows": 88,
     "zero_by_subject": {},
     "weak_by_subject": {
-      "hebrew": 14,
+      "hebrew": 13,
       "math": 12,
       "geometry": 6,
-      "english": 39,
+      "english": 25,
       "geography": 59
     },
     "adequate_by_subject": {
-      "hebrew": 121,
+      "hebrew": 122,
       "math": 79,
       "geometry": 32,
-      "english": 42,
+      "english": 56,
       "science": 7,
       "geography": 12
     },
@@ -1302,10 +1302,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
-      "primary_evidence_count": 2,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
     },
     {
       "skill_id": "hebrew:g6:grammar:g6.subject_verb_advanced",
@@ -4763,10 +4763,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 19,
       "evidence": [],
-      "mapping_note": "thin_or_link_only"
+      "mapping_note": "sentence_pool_proxy_coverage"
     },
     {
       "skill_id": "english:g3:topic:writing",
@@ -4841,10 +4841,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 27,
       "evidence": [],
-      "mapping_note": "thin_or_link_only"
+      "mapping_note": "sentence_pool_proxy_coverage"
     },
     {
       "skill_id": "english:g4:topic:writing",
@@ -4919,10 +4919,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 39,
       "evidence": [],
-      "mapping_note": "thin_or_link_only"
+      "mapping_note": "sentence_pool_proxy_coverage"
     },
     {
       "skill_id": "english:g5:topic:writing",
@@ -4997,10 +4997,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 26,
       "evidence": [],
-      "mapping_note": "thin_or_link_only"
+      "mapping_note": "sentence_pool_proxy_coverage"
     },
     {
       "skill_id": "english:g6:topic:writing",
@@ -5296,10 +5296,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 84,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 35,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:grammar:line:חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות",
@@ -5309,10 +5309,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 15,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:grammar:line:מודאליים_בסיסיים_future_will_going_to_והשוואתיים",
@@ -5322,10 +5322,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 243,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 146,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:grammar:line:ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים",
@@ -5335,10 +5335,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 84,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 49,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:grammar:line:תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under",
@@ -5361,10 +5361,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 195,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 146,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:grammar:line:past_continuous_לצד_past_simple_היכרות_עם_present_perfect",
@@ -5374,10 +5374,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 195,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 49,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:grammar:line:past_simple_סדירים_חריגים_נפוצים",
@@ -5387,10 +5387,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 243,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 49,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:grammar:line:present_simple_בחיובי_שלילי_שאלה",
@@ -5400,10 +5400,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 78,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 29,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:grammar:line:present_simple_לעומת_present_continuous",
@@ -5413,10 +5413,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 116,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 68,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:grammar:line:some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly",
@@ -5426,10 +5426,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 116,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 48,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:pool:grammar:be_basic",
@@ -6948,7 +6948,6 @@
       "hebrew:g5:grammar:g5.verb_patterns",
       "hebrew:g6:reading:g6.compare_genres",
       "hebrew:g6:comprehension:g6.evidence_from_text",
-      "hebrew:g6:grammar:g6.possession_prep",
       "hebrew:g6:grammar:g6.complex_syntax_spot",
       "math:kind:dec_divide",
       "math:kind:dec_divide_10_100",
@@ -6968,10 +6967,6 @@
       "geometry:kind:prism_volume_triangle",
       "geometry:kind:pyramid_volume_rectangular",
       "geometry:kind:pyramid_volume_square",
-      "english:g3:topic:sentences",
-      "english:g4:topic:sentences",
-      "english:g5:topic:sentences",
-      "english:g6:topic:sentences",
       "english:vocabulary:wordlist:actions",
       "english:vocabulary:wordlist:animals",
       "english:vocabulary:wordlist:body",
@@ -6990,17 +6985,7 @@
       "english:vocabulary:wordlist:technology",
       "english:vocabulary:wordlist:travel",
       "english:vocabulary:wordlist:weather",
-      "english:grammar:line:חיזוק_to_be_am_is_are_וכינויי_גוף",
-      "english:grammar:line:חשיפה_ל_i_am_you_are_ולכינויי_גוף_בסיסיים_בתוך_תבניות_קבועות",
-      "english:grammar:line:מודאליים_בסיסיים_future_will_going_to_והשוואתיים",
-      "english:grammar:line:ריבוי_שמות_עצם_והיכרות_עם_מבני_שאלות_פשוטים",
       "english:grammar:line:תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under",
-      "english:grammar:line:conditionals_type_0_1_ומודאליים_should_might_could",
-      "english:grammar:line:past_continuous_לצד_past_simple_היכרות_עם_present_perfect",
-      "english:grammar:line:past_simple_סדירים_חריגים_נפוצים",
-      "english:grammar:line:present_simple_בחיובי_שלילי_שאלה",
-      "english:grammar:line:present_simple_לעומת_present_continuous",
-      "english:grammar:line:some_any_much_many_כינויי_שייכות_ותוארי_פועל_slowly_quickly",
       "english:pool:translation:classroom",
       "english:pool:translation:routines",
       "english:pool:translation:hobbies",

@@ -273,6 +273,7 @@ function englishTopicAccessPoolHits(gk, topic, englishTopicHits) {
   const g = (cat) => englishTopicHits.get(`${gk}|${cat}`) || 0;
   if (topic === "vocabulary") return g("translation") + g("sentence") + g("grammar");
   if (topic === "writing" || topic === "mixed") return g("grammar") + g("translation") + g("sentence");
+  if (topic === "sentences") return g("sentence");
   return g(topic);
 }
 
@@ -281,6 +282,17 @@ function classifyEnglishStructural(skill, englishTopicHits) {
   if (!m) return { cls: "uncertain", count: 0, note: "not_topic_access_pattern" };
   const gk = m[1];
   const topic = m[2];
+  const sid = String(skill.skill_id || "");
+  if (sid.includes("topic:sentences")) {
+    const poolSentence = englishTopicHits.get(`${gk}|sentence`) || 0;
+    if (poolSentence >= 1) {
+      return {
+        cls: "adequate",
+        count: poolSentence,
+        note: "sentence_pool_proxy_coverage",
+      };
+    }
+  }
   const n = englishTopicAccessPoolHits(gk, topic, englishTopicHits);
   const linked = Array.isArray(skill.linked_skill_ids) ? skill.linked_skill_ids.length : 0;
   if (n >= 3) return { cls: "adequate", count: n, note: "english_pool_items_mapped_topic_or_pool_proxy", linked };
@@ -309,20 +321,26 @@ function classifyEnglishWordlist(skill, items) {
 }
 
 function classifyEnglishGrammarLine(skill, items) {
+  const skillId = String(skill.skill_id || "");
   const minG = Number(skill.minGrade) || 1;
   const maxG = Number(skill.maxGrade) || 6;
   const desc = String(skill.description || "").trim().slice(0, 48);
   let gHits = 0;
-  let lineHits = 0;
+  let idLineHits = 0;
+  let descLineHits = 0;
   for (const r of items) {
     if (r.subject !== "english" || r.rowKind !== "english_pool_item") continue;
     if (String(r.topic) !== "grammar") continue;
     if (!(Number(r.minGrade) <= maxG && Number(r.maxGrade) >= minG)) continue;
     gHits += 1;
-    if (desc.length >= 6 && String(r.stemText).includes(desc)) lineHits += 1;
+    if (String(r.grammar_line_id || "") === skillId) idLineHits += 1;
+    else if (desc.length >= 6 && String(r.stemText).includes(desc)) descLineHits += 1;
   }
-  if (lineHits >= 2) return { cls: "adequate", count: lineHits, note: "grammar_line_description_in_pool_stems" };
-  if (lineHits === 1) return { cls: "weak", count: 1, note: "single_curriculum_line_stem_hit" };
+  if (idLineHits >= 1)
+    return { cls: "adequate", count: idLineHits, note: "grammar_line_id_spine_match" };
+  if (descLineHits >= 2)
+    return { cls: "adequate", count: descLineHits, note: "grammar_line_description_in_pool_stems" };
+  if (descLineHits === 1) return { cls: "weak", count: 1, note: "single_curriculum_line_stem_hit" };
   if (gHits >= 1) return { cls: "weak", count: gHits, note: "grammar_pools_in_span_without_line_text_hit" };
   return { cls: "uncertain", count: 0, note: "no_grammar_pool_rows_in_grade_span" };
 }
