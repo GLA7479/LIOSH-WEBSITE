@@ -6,7 +6,7 @@ import Layout from "../../components/Layout";
 
 const DevStudentSimulatorClient = dynamic(
   () => import("../../components/dev-student-simulator/DevStudentSimulatorClient"),
-  { ssr: false, loading: () => <p style={{ padding: 24 }}>Loading simulator…</p> }
+  { ssr: false, loading: () => <p style={{ padding: 24 }}>טוען סימולטור…</p> }
 );
 
 export async function getServerSideProps(ctx) {
@@ -37,11 +37,11 @@ export default function DevStudentSimulatorPage({ authorized }) {
       });
       if (!res.ok) {
         if (res.status === 401) {
-          setLoginError("Invalid password.");
+          setLoginError("סיסמה שגויה.");
         } else if (res.status === 503) {
-          setLoginError("Server is not configured for simulator sessions.");
+          setLoginError("השרת לא מוגדר להפעלת הסימולטור.");
         } else {
-          setLoginError(`Login failed (${res.status}).`);
+          setLoginError(`ההתחברות נכשלה (${res.status}).`);
         }
         return;
       }
@@ -57,16 +57,20 @@ export default function DevStudentSimulatorPage({ authorized }) {
     return (
       <Layout>
         <Head>
-          <title>Dev Student Simulator</title>
+          <title>סימולטור תלמידים לפיתוח</title>
         </Head>
-        <main style={{ minHeight: "50vh", padding: 24, maxWidth: 480, margin: "0 auto" }}>
-          <h1 style={{ fontSize: 22 }}>Dev Student Simulator</h1>
+        <main
+          dir="rtl"
+          lang="he"
+          style={{ minHeight: "50vh", padding: 24, maxWidth: 480, margin: "0 auto" }}
+        >
+          <h1 style={{ fontSize: 22 }}>סימולטור תלמידים לפיתוח</h1>
           <p style={{ color: "#475569", fontSize: 14 }}>
-            Sign in with the server-configured password. This area is hidden when the feature flag is off.
+            התחברות עם סיסמת הפיתוח שהוגדרה בשרת. האזור הזה מוסתר כאשר הדגל כבוי.
           </p>
           <form onSubmit={handleLogin} style={{ marginTop: 20 }}>
             <label style={{ display: "block", fontWeight: 600, marginBottom: 8, fontSize: 14 }}>
-              Password
+              סיסמה
               <input
                 type="password"
                 autoComplete="current-password"
@@ -95,11 +99,11 @@ export default function DevStudentSimulatorPage({ authorized }) {
                 cursor: loginBusy || !password ? "not-allowed" : "pointer",
               }}
             >
-              {loginBusy ? "Signing in…" : "Sign in"}
+              {loginBusy ? "מתחבר…" : "כניסה"}
             </button>
           </form>
           <p style={{ marginTop: 28, fontSize: 14 }}>
-            <Link href="/learning">← Learning hub</Link>
+            <Link href="/learning">חזרה למרכז הלמידה</Link>
           </p>
         </main>
       </Layout>
@@ -109,9 +113,9 @@ export default function DevStudentSimulatorPage({ authorized }) {
   return (
     <Layout>
       <Head>
-        <title>Dev Student Simulator</title>
+        <title>סימולטור תלמידים לפיתוח</title>
       </Head>
-      <main style={{ padding: "16px 12px 48px" }}>
+      <main dir="rtl" lang="he" style={{ padding: "24px 12px 56px", background: "#020617", minHeight: "100vh" }}>
         <DevStudentSimulatorClient />
       </main>
     </Layout>

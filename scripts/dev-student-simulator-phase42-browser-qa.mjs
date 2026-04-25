@@ -41,6 +41,12 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+/** Dynamic client may mount after networkidle; wait before using select/buttons. */
+async function waitForSimulatorUi(page) {
+  await page.getByRole("button", { name: "יצירת תצוגה מקדימה" }).waitFor({ state: "visible", timeout: 120_000 });
+  await page.locator("select").first().waitFor({ state: "visible", timeout: 60_000 });
+}
+
 async function waitForHttp(url, { wantStatus, timeoutMs = 120_000 } = {}) {
   const t0 = Date.now();
   while (Date.now() - t0 < timeoutMs) {
@@ -111,22 +117,22 @@ async function runOffTests() {
 }
 
 async function singleApplyAndWaitForMetadata(page, storageKey) {
-  await page.getByRole("button", { name: "Apply to current browser" }).click();
+  await page.getByRole("button", { name: "החלה בדפדפן הנוכחי" }).click();
   await page.waitForFunction((k) => Boolean(window.localStorage.getItem(k)), storageKey, { timeout: 90_000 });
 }
 
 async function clickPreviewUntilSuccess(page, { maxAttempts = 28 } = {}) {
   for (let a = 0; a < maxAttempts; a += 1) {
-    await page.getByRole("button", { name: "Generate preview" }).click();
+    await page.getByRole("button", { name: "יצירת תצוגה מקדימה" }).click();
     await sleep(1600);
     const body = await page.innerText("body");
-    if (/Preview generated/i.test(body)) return;
-    if (/Session validation failed|Unknown preset/i.test(body)) {
+    if (/נוצרה תצוגה מקדימה/i.test(body)) return;
+    if (/Session validation failed|Unknown preset|אימות פגישות|פרופיל לא ידוע/i.test(body)) {
       await sleep(200);
       continue;
     }
     await sleep(600);
-    if (/Preview generated/i.test(await page.innerText("body"))) return;
+    if (/נוצרה תצוגה מקדימה/i.test(await page.innerText("body"))) return;
   }
   throw new Error("Preview never succeeded (exhausted retries; simDeep06 may be anchor-sensitive)");
 }
@@ -179,11 +185,13 @@ async function runOnTests() {
 
     await page.goto(`${BASE_ON}/learning/dev-student-simulator`, { waitUntil: "networkidle", timeout: 120_000 });
 
-    const loginForm = await page.getByLabel(/Password/i).count();
+    const loginForm = await page.locator('input[type="password"]').count();
     if (loginForm > 0) {
-      await page.getByLabel(/Password/i).fill(SIM_PASSWORD);
-      await page.getByRole("button", { name: /Sign in/i }).click();
-      await page.getByRole("button", { name: "Generate preview" }).waitFor({ state: "visible", timeout: 60_000 });
+      await page.screenshot({ path: join(evidence, "phase44-hebrew-login.png"), fullPage: true });
+      await page.locator('input[type="password"]').fill(SIM_PASSWORD);
+      await page.getByRole("button", { name: "כניסה" }).click();
+      await waitForSimulatorUi(page);
+      await page.screenshot({ path: join(evidence, "phase44-hebrew-dashboard.png"), fullPage: true });
     }
 
     const docCookie = await page.evaluate(() => document.cookie);
@@ -204,7 +212,8 @@ async function runOnTests() {
       };
       try {
         await page.goto(`${BASE_ON}/learning/dev-student-simulator`, { waitUntil: "networkidle", timeout: 120_000 });
-        await page.locator("select").selectOption(id);
+        await waitForSimulatorUi(page);
+        await page.locator("select").first().selectOption(id);
         await clickPreviewUntilSuccess(page);
         const bodyAfterPreview = await page.innerText("body");
         if (/leok_/i.test(bodyAfterPreview)) throw new Error("leok_ leaked in UI");
@@ -242,7 +251,8 @@ async function runOnTests() {
         );
 
         await page.goto(`${BASE_ON}/learning/dev-student-simulator`, { waitUntil: "networkidle", timeout: 120_000 });
-        await page.getByRole("button", { name: "Reset simulated student" }).click();
+        await waitForSimulatorUi(page);
+        await page.getByRole("button", { name: "איפוס תלמיד מדומה" }).click();
         await sleep(1000);
         const metaAfter = await page.evaluate((k) => window.localStorage.getItem(k), SIMULATOR_METADATA_KEY);
         if (metaAfter != null) throw new Error("metadata still present after Reset");
@@ -258,12 +268,13 @@ async function runOnTests() {
     results.reportsChangeBetweenPresets = distinctShort >= 4 ? "pass" : `warn (distinct short-report hashes: ${distinctShort})`;
 
     await page.goto(`${BASE_ON}/learning/dev-student-simulator`, { waitUntil: "networkidle", timeout: 120_000 });
-    await page.locator("select").selectOption("simDeep01_mixed_real_child");
+    await waitForSimulatorUi(page);
+    await page.locator("select").first().selectOption("simDeep01_mixed_real_child");
     await clickPreviewUntilSuccess(page);
     await singleApplyAndWaitForMetadata(page, SIMULATOR_METADATA_KEY);
 
     const downloadPromise = page.waitForEvent("download");
-    await page.getByRole("button", { name: "Export JSON" }).click();
+    await page.getByRole("button", { name: "ייצוא JSON" }).click();
     const download = await downloadPromise;
     const tmpDir = mkdtempSync(join(tmpdir(), "dsim42-"));
     const exportPath = join(tmpDir, "export.json");
@@ -271,7 +282,7 @@ async function runOnTests() {
     const exportText = readFileSync(exportPath, "utf8");
     JSON.parse(exportText);
 
-    await page.getByRole("button", { name: "Reset simulated student" }).click();
+    await page.getByRole("button", { name: "איפוס תלמיד מדומה" }).click();
     await sleep(800);
 
     await page.setInputFiles('input[type="file"]', exportPath);
@@ -283,8 +294,9 @@ async function runOnTests() {
     results.exportImport = afterImport.ok ? "pass" : String(afterImport.reason);
 
     await page.goto(`${BASE_ON}/learning/dev-student-simulator`, { waitUntil: "networkidle", timeout: 120_000 });
+    await waitForSimulatorUi(page);
     await page.evaluate(() => navigator.clipboard.writeText(""));
-    await page.getByRole("button", { name: "Copy storage snapshot" }).click();
+    await page.getByRole("button", { name: "העתקת snapshot אחסון" }).click();
     await sleep(500);
     let clip = "";
     try {
@@ -327,7 +339,7 @@ async function runOnTests() {
     const errLeok = await page.locator("body").innerText();
     results.safetyImports.push({
       name: "leok_* in snapshot",
-      pass: /blocked|Import blocked|leok|namespace|forbidden/i.test(errLeok),
+      pass: /blocked|ייבוא נחסם|Import blocked|leok|namespace|forbidden/i.test(errLeok),
     });
 
     const unknownPkg = JSON.parse(JSON.stringify(sim02Pkg));
@@ -339,6 +351,7 @@ async function runOnTests() {
       () => {
         const t = document.body.innerText || "";
         return (
+          t.includes("ייבוא נחסם") ||
           t.includes("Import blocked") ||
           t.includes("key_not_in_allowlist") ||
           t.includes("Invalid snapshot namespace")
@@ -350,7 +363,7 @@ async function runOnTests() {
     results.safetyImports.push({
       name: "unknown mleo_*",
       pass:
-        /Import blocked|key_not_in_allowlist|allowlist|blocked/i.test(errUk) ||
+        /ייבוא נחסם|Import blocked|key_not_in_allowlist|allowlist|blocked/i.test(errUk) ||
         errUk.includes("mleo_fake_unknown_key"),
     });
 
@@ -383,7 +396,8 @@ async function runOnTests() {
     });
 
     await page.goto(`${BASE_ON}/learning/dev-student-simulator`, { waitUntil: "networkidle", timeout: 120_000 });
-    await page.locator("select").selectOption("simDeep02_strong_stable_child");
+    await waitForSimulatorUi(page);
+    await page.locator("select").first().selectOption("simDeep02_strong_stable_child");
     await clickPreviewUntilSuccess(page);
     await singleApplyAndWaitForMetadata(page, SIMULATOR_METADATA_KEY);
     const badMetaPkg = JSON.parse(JSON.stringify(sim02Pkg));
@@ -394,7 +408,7 @@ async function runOnTests() {
     delete badMetaPkg.metadata.effectiveTouchedKeys;
     const badTouchedPath = join(badDir, "badmeta.json");
     writeFileSync(badTouchedPath, JSON.stringify(badMetaPkg));
-    await page.getByRole("button", { name: "Reset simulated student" }).click();
+    await page.getByRole("button", { name: "איפוס תלמיד מדומה" }).click();
     await sleep(600);
     await page.setInputFiles('input[type="file"]', badTouchedPath);
     await page.waitForFunction(
@@ -421,10 +435,11 @@ async function runOnTests() {
     });
 
     await page.goto(`${BASE_ON}/learning/dev-student-simulator`, { waitUntil: "networkidle", timeout: 120_000 });
-    await page.getByRole("button", { name: "Log out" }).click();
+    await waitForSimulatorUi(page);
+    await page.getByRole("button", { name: "התנתקות" }).click();
     await sleep(1500);
     await page.reload({ waitUntil: "networkidle" });
-    const loginAgain = await page.getByLabel(/Password/i).count();
+    const loginAgain = await page.locator('input[type="password"]').count();
     results.logout = loginAgain > 0 ? "pass" : "fail";
 
     await browser.close();

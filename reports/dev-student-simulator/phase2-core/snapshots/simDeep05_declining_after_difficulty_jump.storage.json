@@ -3,645 +3,587 @@
   "mleo_time_tracking": {
     "operations": {
       "multiplication": {
-        "total": 39705,
+        "total": 36456,
         "sessions": [
           {
-            "date": "2026-03-02",
-            "duration": 1348,
+            "date": "2026-02-26",
+            "duration": 1001,
             "grade": "g5",
             "level": "medium",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1772484335572,
+            "timestamp": 1772142455506,
             "mode": "learning",
-            "total": 14,
-            "correct": 12
+            "total": 9,
+            "correct": 8
           },
           {
-            "date": "2026-03-06",
-            "duration": 1150,
+            "date": "2026-02-27",
+            "duration": 1445,
             "grade": "g5",
             "level": "medium",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1772831305400,
+            "timestamp": 1772225547738,
             "mode": "learning",
-            "total": 10,
-            "correct": 9
+            "total": 15,
+            "correct": 13
           },
           {
-            "date": "2026-03-08",
-            "duration": 1647,
+            "date": "2026-02-28",
+            "duration": 859,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1772265748419,
+            "mode": "learning",
+            "total": 9,
+            "correct": 8
+          },
+          {
+            "date": "2026-03-01",
+            "duration": 1650,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1772402047551,
+            "mode": "learning",
+            "total": 13,
+            "correct": 11
+          },
+          {
+            "date": "2026-03-03",
+            "duration": 1500,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1772539014032,
+            "mode": "learning",
+            "total": 11,
+            "correct": 10
+          },
+          {
+            "date": "2026-03-07",
+            "duration": 1580,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1772874252290,
+            "mode": "learning",
+            "total": 12,
+            "correct": 10
+          },
+          {
+            "date": "2026-03-07",
+            "duration": 1001,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1772920157859,
+            "mode": "learning",
+            "total": 15,
+            "correct": 14
+          },
+          {
+            "date": "2026-03-10",
+            "duration": 1594,
             "grade": "g5",
             "level": "easy",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1772965508819,
+            "timestamp": 1773137902059,
             "mode": "learning",
             "total": 13,
             "correct": 11
           },
           {
             "date": "2026-03-10",
-            "duration": 972,
+            "duration": 1563,
             "grade": "g5",
             "level": "medium",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1773122313666,
+            "timestamp": 1773184312483,
             "mode": "learning",
-            "total": 10,
-            "correct": 9
-          },
-          {
-            "date": "2026-03-10",
-            "duration": 1395,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1773181812202,
-            "mode": "learning",
-            "total": 14,
-            "correct": 12
+            "total": 17,
+            "correct": 16
           },
           {
             "date": "2026-03-11",
-            "duration": 1105,
-            "grade": "g5",
-            "level": "easy",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1773190348610,
-            "mode": "learning",
-            "total": 16,
-            "correct": 14
-          },
-          {
-            "date": "2026-03-12",
-            "duration": 1418,
+            "duration": 1245,
             "grade": "g5",
             "level": "medium",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1773295490148,
+            "timestamp": 1773219057171,
             "mode": "learning",
-            "total": 13,
+            "total": 14,
             "correct": 12
           },
           {
             "date": "2026-03-12",
-            "duration": 1077,
+            "duration": 1117,
             "grade": "g5",
             "level": "medium",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1773346040354,
-            "mode": "learning",
-            "total": 11,
-            "correct": 10
-          },
-          {
-            "date": "2026-03-14",
-            "duration": 940,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1773446696350,
+            "timestamp": 1773359712007,
             "mode": "learning",
             "total": 10,
-            "correct": 9
+            "correct": 8
           },
           {
             "date": "2026-03-14",
-            "duration": 979,
+            "duration": 1576,
             "grade": "g5",
             "level": "medium",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1773447722960,
+            "timestamp": 1773460542736,
             "mode": "learning",
-            "total": 16,
-            "correct": 14
-          },
-          {
-            "date": "2026-03-15",
-            "duration": 1141,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1773605386423,
-            "mode": "learning",
-            "total": 16,
-            "correct": 14
-          },
-          {
-            "date": "2026-03-18",
-            "duration": 1421,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1773798927564,
-            "mode": "learning",
-            "total": 16,
-            "correct": 14
-          },
-          {
-            "date": "2026-03-21",
-            "duration": 1008,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1774069705056,
-            "mode": "learning",
-            "total": 9,
-            "correct": 8
-          },
-          {
-            "date": "2026-03-22",
-            "duration": 1400,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1774214729878,
-            "mode": "learning",
-            "total": 9,
-            "correct": 8
-          },
-          {
-            "date": "2026-03-23",
-            "duration": 1311,
-            "grade": "g5",
-            "level": "easy",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1774246465064,
-            "mode": "learning",
-            "total": 13,
-            "correct": 12
-          },
-          {
-            "date": "2026-03-25",
-            "duration": 1613,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1774402502508,
-            "mode": "learning",
-            "total": 11,
-            "correct": 10
-          },
-          {
-            "date": "2026-03-26",
-            "duration": 1499,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1774510541044,
-            "mode": "learning",
-            "total": 15,
+            "total": 14,
             "correct": 13
           },
           {
-            "date": "2026-03-27",
-            "duration": 1052,
+            "date": "2026-03-14",
+            "duration": 942,
             "grade": "g5",
-            "level": "hard",
+            "level": "easy",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1774652796907,
+            "timestamp": 1773464825092,
             "mode": "learning",
             "total": 10,
-            "correct": 5
-          },
-          {
-            "date": "2026-03-29",
-            "duration": 1538,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1774774638868,
-            "mode": "learning",
-            "total": 10,
-            "correct": 6
-          },
-          {
-            "date": "2026-03-31",
-            "duration": 864,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1774998589634,
-            "mode": "learning",
-            "total": 9,
-            "correct": 5
-          },
-          {
-            "date": "2026-04-02",
-            "duration": 1438,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1775107622491,
-            "mode": "learning",
-            "total": 17,
-            "correct": 10
-          },
-          {
-            "date": "2026-04-02",
-            "duration": 877,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1775110354504,
-            "mode": "learning",
-            "total": 14,
-            "correct": 8
-          },
-          {
-            "date": "2026-04-02",
-            "duration": 600,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1775171730089,
-            "mode": "challenge",
-            "total": 14,
-            "correct": 7
-          },
-          {
-            "date": "2026-04-04",
-            "duration": 600,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1775287600642,
-            "mode": "challenge",
-            "total": 17,
-            "correct": 8
-          },
-          {
-            "date": "2026-04-11",
-            "duration": 1624,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1775866772884,
-            "mode": "learning",
-            "total": 13,
-            "correct": 6
-          },
-          {
-            "date": "2026-04-12",
-            "duration": 1362,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1775974978321,
-            "mode": "learning",
-            "total": 9,
-            "correct": 5
-          },
-          {
-            "date": "2026-04-14",
-            "duration": 600,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1776155989189,
-            "mode": "challenge",
-            "total": 17,
-            "correct": 8
-          },
-          {
-            "date": "2026-04-14",
-            "duration": 1017,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1776203687664,
-            "mode": "learning",
-            "total": 17,
             "correct": 9
           },
           {
-            "date": "2026-04-17",
-            "duration": 1614,
+            "date": "2026-03-17",
+            "duration": 1451,
             "grade": "g5",
-            "level": "hard",
+            "level": "medium",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1776399479274,
+            "timestamp": 1773713762506,
             "mode": "learning",
-            "total": 18,
-            "correct": 10
+            "total": 13,
+            "correct": 11
           },
           {
-            "date": "2026-04-18",
+            "date": "2026-03-17",
+            "duration": 1481,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1773747373894,
+            "mode": "learning",
+            "total": 13,
+            "correct": 12
+          },
+          {
+            "date": "2026-03-21",
+            "duration": 1660,
+            "grade": "g5",
+            "level": "easy",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1774072413637,
+            "mode": "learning",
+            "total": 14,
+            "correct": 13
+          },
+          {
+            "date": "2026-03-26",
+            "duration": 956,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1774520039068,
+            "mode": "learning",
+            "total": 10,
+            "correct": 9
+          },
+          {
+            "date": "2026-03-28",
             "duration": 600,
             "grade": "g5",
             "level": "hard",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1776482977004,
+            "timestamp": 1774671790894,
             "mode": "challenge",
             "total": 13,
             "correct": 7
           },
           {
-            "date": "2026-04-18",
-            "duration": 1176,
+            "date": "2026-03-29",
+            "duration": 1199,
             "grade": "g5",
             "level": "hard",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1776543246095,
+            "timestamp": 1774770717688,
             "mode": "learning",
-            "total": 15,
+            "total": 9,
+            "correct": 5
+          },
+          {
+            "date": "2026-03-31",
+            "duration": 600,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1774920900538,
+            "mode": "challenge",
+            "total": 12,
+            "correct": 6
+          },
+          {
+            "date": "2026-04-01",
+            "duration": 600,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1775014054505,
+            "mode": "challenge",
+            "total": 14,
+            "correct": 8
+          },
+          {
+            "date": "2026-04-01",
+            "duration": 1470,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1775040856699,
+            "mode": "learning",
+            "total": 10,
+            "correct": 5
+          },
+          {
+            "date": "2026-04-03",
+            "duration": 912,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1775205222877,
+            "mode": "learning",
+            "total": 11,
+            "correct": 6
+          },
+          {
+            "date": "2026-04-05",
+            "duration": 903,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1775378770564,
+            "mode": "learning",
+            "total": 16,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-05",
+            "duration": 1326,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1775427964066,
+            "mode": "learning",
+            "total": 13,
             "correct": 7
           },
           {
-            "date": "2026-04-18",
-            "duration": 1167,
+            "date": "2026-04-08",
+            "duration": 600,
             "grade": "g5",
             "level": "hard",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1776555023367,
-            "mode": "learning",
+            "timestamp": 1775641274838,
+            "mode": "challenge",
             "total": 12,
             "correct": 7
           },
           {
-            "date": "2026-04-23",
-            "duration": 1100,
+            "date": "2026-04-13",
+            "duration": 918,
             "grade": "g5",
             "level": "hard",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1776918760199,
+            "timestamp": 1776059537933,
             "mode": "learning",
-            "total": 17,
+            "total": 16,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-14",
+            "duration": 600,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1776124937296,
+            "mode": "challenge",
+            "total": 9,
+            "correct": 5
+          },
+          {
+            "date": "2026-04-15",
+            "duration": 600,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1776218055661,
+            "mode": "challenge",
+            "total": 14,
+            "correct": 7
+          },
+          {
+            "date": "2026-04-15",
+            "duration": 600,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1776295854389,
+            "mode": "challenge",
+            "total": 11,
+            "correct": 6
+          },
+          {
+            "date": "2026-04-16",
+            "duration": 600,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1776311856598,
+            "mode": "challenge",
+            "total": 16,
             "correct": 8
           },
           {
-            "date": "2026-04-25",
-            "duration": 1052,
+            "date": "2026-04-17",
+            "duration": 600,
             "grade": "g5",
             "level": "hard",
             "operation": "multiplication",
             "mathReportBucket": "multiplication",
-            "timestamp": 1777132732230,
+            "timestamp": 1776396097351,
+            "mode": "challenge",
+            "total": 15,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 1107,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1776754995557,
             "mode": "learning",
-            "total": 11,
-            "correct": 5
+            "total": 13,
+            "correct": 7
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 600,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1777105679172,
+            "mode": "challenge",
+            "total": 17,
+            "correct": 9
           }
         ],
         "byGrade": {
-          "g5": 39705
+          "g5": 36456
         },
         "byLevel": {
-          "medium": 17361,
-          "easy": 4063,
-          "hard": 18281
+          "medium": 18425,
+          "easy": 4196,
+          "hard": 13835
         }
       }
     },
     "daily": {
-      "2026-03-02": {
-        "total": 1348,
+      "2026-02-26": {
+        "total": 1001,
         "operations": {
-          "multiplication": 1348
+          "multiplication": 1001
         },
         "byGrade": {
-          "g5": 1348
+          "g5": 1001
         },
         "byLevel": {
-          "medium": 1348
+          "medium": 1001
         }
       },
-      "2026-03-06": {
-        "total": 1150,
+      "2026-02-27": {
+        "total": 1445,
         "operations": {
-          "multiplication": 1150
+          "multiplication": 1445
         },
         "byGrade": {
-          "g5": 1150
+          "g5": 1445
         },
         "byLevel": {
-          "medium": 1150
+          "medium": 1445
         }
       },
-      "2026-03-08": {
-        "total": 1647,
+      "2026-02-28": {
+        "total": 859,
         "operations": {
-          "multiplication": 1647
+          "multiplication": 859
         },
         "byGrade": {
-          "g5": 1647
+          "g5": 859
         },
         "byLevel": {
-          "easy": 1647
+          "medium": 859
+        }
+      },
+      "2026-03-01": {
+        "total": 1650,
+        "operations": {
+          "multiplication": 1650
+        },
+        "byGrade": {
+          "g5": 1650
+        },
+        "byLevel": {
+          "medium": 1650
+        }
+      },
+      "2026-03-03": {
+        "total": 1500,
+        "operations": {
+          "multiplication": 1500
+        },
+        "byGrade": {
+          "g5": 1500
+        },
+        "byLevel": {
+          "medium": 1500
+        }
+      },
+      "2026-03-07": {
+        "total": 2581,
+        "operations": {
+          "multiplication": 2581
+        },
+        "byGrade": {
+          "g5": 2581
+        },
+        "byLevel": {
+          "medium": 2581
         }
       },
       "2026-03-10": {
-        "total": 2367,
+        "total": 3157,
         "operations": {
-          "multiplication": 2367
+          "multiplication": 3157
         },
         "byGrade": {
-          "g5": 2367
+          "g5": 3157
         },
         "byLevel": {
-          "medium": 2367
+          "easy": 1594,
+          "medium": 1563
         }
       },
       "2026-03-11": {
-        "total": 1105,
+        "total": 1245,
         "operations": {
-          "multiplication": 1105
+          "multiplication": 1245
         },
         "byGrade": {
-          "g5": 1105
+          "g5": 1245
         },
         "byLevel": {
-          "easy": 1105
+          "medium": 1245
         }
       },
       "2026-03-12": {
-        "total": 2495,
+        "total": 1117,
         "operations": {
-          "multiplication": 2495
+          "multiplication": 1117
         },
         "byGrade": {
-          "g5": 2495
+          "g5": 1117
         },
         "byLevel": {
-          "medium": 2495
+          "medium": 1117
         }
       },
       "2026-03-14": {
-        "total": 1919,
+        "total": 2518,
         "operations": {
-          "multiplication": 1919
+          "multiplication": 2518
         },
         "byGrade": {
-          "g5": 1919
+          "g5": 2518
         },
         "byLevel": {
-          "medium": 1919
+          "medium": 1576,
+          "easy": 942
         }
       },
-      "2026-03-15": {
-        "total": 1141,
+      "2026-03-17": {
+        "total": 2932,
         "operations": {
-          "multiplication": 1141
+          "multiplication": 2932
         },
         "byGrade": {
-          "g5": 1141
+          "g5": 2932
         },
         "byLevel": {
-          "medium": 1141
-        }
-      },
-      "2026-03-18": {
-        "total": 1421,
-        "operations": {
-          "multiplication": 1421
-        },
-        "byGrade": {
-          "g5": 1421
-        },
-        "byLevel": {
-          "medium": 1421
+          "medium": 2932
         }
       },
       "2026-03-21": {
-        "total": 1008,
+        "total": 1660,
         "operations": {
-          "multiplication": 1008
+          "multiplication": 1660
         },
         "byGrade": {
-          "g5": 1008
+          "g5": 1660
         },
         "byLevel": {
-          "medium": 1008
-        }
-      },
-      "2026-03-22": {
-        "total": 1400,
-        "operations": {
-          "multiplication": 1400
-        },
-        "byGrade": {
-          "g5": 1400
-        },
-        "byLevel": {
-          "medium": 1400
-        }
-      },
-      "2026-03-23": {
-        "total": 1311,
-        "operations": {
-          "multiplication": 1311
-        },
-        "byGrade": {
-          "g5": 1311
-        },
-        "byLevel": {
-          "easy": 1311
-        }
-      },
-      "2026-03-25": {
-        "total": 1613,
-        "operations": {
-          "multiplication": 1613
-        },
-        "byGrade": {
-          "g5": 1613
-        },
-        "byLevel": {
-          "medium": 1613
+          "easy": 1660
         }
       },
       "2026-03-26": {
-        "total": 1499,
+        "total": 956,
         "operations": {
-          "multiplication": 1499
+          "multiplication": 956
         },
         "byGrade": {
-          "g5": 1499
+          "g5": 956
         },
         "byLevel": {
-          "medium": 1499
+          "medium": 956
         }
       },
-      "2026-03-27": {
-        "total": 1052,
-        "operations": {
-          "multiplication": 1052
-        },
-        "byGrade": {
-          "g5": 1052
-        },
-        "byLevel": {
-          "hard": 1052
-        }
-      },
-      "2026-03-29": {
-        "total": 1538,
-        "operations": {
-          "multiplication": 1538
-        },
-        "byGrade": {
-          "g5": 1538
-        },
-        "byLevel": {
-          "hard": 1538
-        }
-      },
-      "2026-03-31": {
-        "total": 864,
-        "operations": {
-          "multiplication": 864
-        },
-        "byGrade": {
-          "g5": 864
-        },
-        "byLevel": {
-          "hard": 864
-        }
-      },
-      "2026-04-02": {
-        "total": 2915,
-        "operations": {
-          "multiplication": 2915
-        },
-        "byGrade": {
-          "g5": 2915
-        },
-        "byLevel": {
-          "hard": 2915
-        }
-      },
-      "2026-04-04": {
+      "2026-03-28": {
         "total": 600,
         "operations": {
           "multiplication": 600
@@ -653,88 +595,160 @@
           "hard": 600
         }
       },
-      "2026-04-11": {
-        "total": 1624,
+      "2026-03-29": {
+        "total": 1199,
         "operations": {
-          "multiplication": 1624
+          "multiplication": 1199
         },
         "byGrade": {
-          "g5": 1624
+          "g5": 1199
         },
         "byLevel": {
-          "hard": 1624
+          "hard": 1199
         }
       },
-      "2026-04-12": {
-        "total": 1362,
+      "2026-03-31": {
+        "total": 600,
         "operations": {
-          "multiplication": 1362
+          "multiplication": 600
         },
         "byGrade": {
-          "g5": 1362
+          "g5": 600
         },
         "byLevel": {
-          "hard": 1362
+          "hard": 600
+        }
+      },
+      "2026-04-01": {
+        "total": 2070,
+        "operations": {
+          "multiplication": 2070
+        },
+        "byGrade": {
+          "g5": 2070
+        },
+        "byLevel": {
+          "hard": 2070
+        }
+      },
+      "2026-04-03": {
+        "total": 912,
+        "operations": {
+          "multiplication": 912
+        },
+        "byGrade": {
+          "g5": 912
+        },
+        "byLevel": {
+          "hard": 912
+        }
+      },
+      "2026-04-05": {
+        "total": 2229,
+        "operations": {
+          "multiplication": 2229
+        },
+        "byGrade": {
+          "g5": 2229
+        },
+        "byLevel": {
+          "hard": 2229
+        }
+      },
+      "2026-04-08": {
+        "total": 600,
+        "operations": {
+          "multiplication": 600
+        },
+        "byGrade": {
+          "g5": 600
+        },
+        "byLevel": {
+          "hard": 600
+        }
+      },
+      "2026-04-13": {
+        "total": 918,
+        "operations": {
+          "multiplication": 918
+        },
+        "byGrade": {
+          "g5": 918
+        },
+        "byLevel": {
+          "hard": 918
         }
       },
       "2026-04-14": {
-        "total": 1617,
+        "total": 600,
         "operations": {
-          "multiplication": 1617
+          "multiplication": 600
         },
         "byGrade": {
-          "g5": 1617
+          "g5": 600
         },
         "byLevel": {
-          "hard": 1617
+          "hard": 600
+        }
+      },
+      "2026-04-15": {
+        "total": 1200,
+        "operations": {
+          "multiplication": 1200
+        },
+        "byGrade": {
+          "g5": 1200
+        },
+        "byLevel": {
+          "hard": 1200
+        }
+      },
+      "2026-04-16": {
+        "total": 600,
+        "operations": {
+          "multiplication": 600
+        },
+        "byGrade": {
+          "g5": 600
+        },
+        "byLevel": {
+          "hard": 600
         }
       },
       "2026-04-17": {
-        "total": 1614,
+        "total": 600,
         "operations": {
-          "multiplication": 1614
+          "multiplication": 600
         },
         "byGrade": {
-          "g5": 1614
+          "g5": 600
         },
         "byLevel": {
-          "hard": 1614
+          "hard": 600
         }
       },
-      "2026-04-18": {
-        "total": 2943,
+      "2026-04-21": {
+        "total": 1107,
         "operations": {
-          "multiplication": 2943
+          "multiplication": 1107
         },
         "byGrade": {
-          "g5": 2943
+          "g5": 1107
         },
         "byLevel": {
-          "hard": 2943
-        }
-      },
-      "2026-04-23": {
-        "total": 1100,
-        "operations": {
-          "multiplication": 1100
-        },
-        "byGrade": {
-          "g5": 1100
-        },
-        "byLevel": {
-          "hard": 1100
+          "hard": 1107
         }
       },
       "2026-04-25": {
-        "total": 1052,
+        "total": 600,
         "operations": {
-          "multiplication": 1052
+          "multiplication": 600
         },
         "byGrade": {
-          "g5": 1052
+          "g5": 600
         },
         "byLevel": {
-          "hard": 1052
+          "hard": 600
         }
       }
     }
@@ -742,13 +756,13 @@
   "mleo_math_master_progress": {
     "progress": {
       "multiplication": {
-        "total": 449,
-        "correct": 312
+        "total": 433,
+        "correct": 308
       }
     },
-    "stars": 3,
+    "stars": 4,
     "playerLevel": 4,
-    "xp": 2245,
+    "xp": 2165,
     "badges": []
   },
   "mleo_mistakes": [
@@ -760,7 +774,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1772484335572,
+      "timestamp": 1772142455506,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -777,7 +791,92 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1772831305400,
+      "timestamp": 1772225547738,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772265748419,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772402047551,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772539014032,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772874252290,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772920157859,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -794,7 +893,7 @@
       "grade": "g5",
       "level": "easy",
       "mode": "learning",
-      "timestamp": 1772965508819,
+      "timestamp": 1773137902059,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -811,7 +910,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1773122313666,
+      "timestamp": 1773184312483,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -828,7 +927,41 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1773181812202,
+      "timestamp": 1773219057171,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773359712007,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773460542736,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -845,7 +978,7 @@
       "grade": "g5",
       "level": "easy",
       "mode": "learning",
-      "timestamp": 1773190348610,
+      "timestamp": 1773464825092,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -862,7 +995,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1773295490148,
+      "timestamp": 1773713762506,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -879,109 +1012,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1773346040354,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1773446696350,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1773447722960,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1773605386423,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1773798927564,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1774069705056,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1774214729878,
+      "timestamp": 1773747373894,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -998,7 +1029,7 @@
       "grade": "g5",
       "level": "easy",
       "mode": "learning",
-      "timestamp": 1774246465064,
+      "timestamp": 1774072413637,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1015,24 +1046,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1774402502508,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1774510541044,
+      "timestamp": 1774520039068,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1048,8 +1062,8 @@
       "bucketKey": "multiplication",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1774652796907,
+      "mode": "challenge",
+      "timestamp": 1774671790894,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1065,8 +1079,8 @@
       "bucketKey": "multiplication",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1774652796908,
+      "mode": "challenge",
+      "timestamp": 1774671790895,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1082,8 +1096,8 @@
       "bucketKey": "multiplication",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1774652796909,
+      "mode": "challenge",
+      "timestamp": 1774671790896,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1099,161 +1113,8 @@
       "bucketKey": "multiplication",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1774774638868,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1774774638869,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v1",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1774774638870,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v2",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1774998589634,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1774998589635,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v1",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1774998589636,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v2",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775107622491,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775107622492,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v1",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775107622493,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v2",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775107622494,
+      "mode": "challenge",
+      "timestamp": 1774671790897,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1270,7 +1131,364 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1775107622495,
+      "timestamp": 1774770717688,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1774770717689,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v1",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1774770717690,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v2",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1774920900538,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1774920900539,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v1",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1774920900540,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v2",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1774920900541,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v3",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1775014054505,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1775014054506,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v1",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1775014054507,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v2",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1775014054508,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v3",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775040856699,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775040856700,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v1",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775040856701,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v2",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775205222877,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775205222878,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v1",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775205222879,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v2",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775378770564,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775378770565,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v1",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775378770566,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v2",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775378770567,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v3",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775378770568,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1287,7 +1505,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1775110354504,
+      "timestamp": 1775427964066,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1304,7 +1522,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1775110354505,
+      "timestamp": 1775427964067,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1321,7 +1539,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1775110354506,
+      "timestamp": 1775427964068,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1338,7 +1556,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1775110354507,
+      "timestamp": 1775427964069,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1355,7 +1573,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1775171730089,
+      "timestamp": 1775641274838,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1372,7 +1590,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1775171730090,
+      "timestamp": 1775641274839,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1389,7 +1607,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1775171730091,
+      "timestamp": 1775641274840,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1405,8 +1623,59 @@
       "bucketKey": "multiplication",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775171730092,
+      "mode": "learning",
+      "timestamp": 1776059537933,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776059537934,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v1",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776059537935,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v2",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776059537936,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1422,8 +1691,8 @@
       "bucketKey": "multiplication",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775171730093,
+      "mode": "learning",
+      "timestamp": 1776059537937,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1440,7 +1709,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1775287600642,
+      "timestamp": 1776124937296,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1457,7 +1726,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1775287600643,
+      "timestamp": 1776124937297,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1474,7 +1743,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1775287600644,
+      "timestamp": 1776124937298,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1491,7 +1760,58 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1775287600645,
+      "timestamp": 1776218055661,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776218055662,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v1",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776218055663,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v2",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776218055664,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1508,7 +1828,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1775287600646,
+      "timestamp": 1776218055665,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1525,160 +1845,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1775287600647,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v5",
-      "hintUsed": false,
-      "responseMs": 5900
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775866772884,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775866772885,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v1",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775866772886,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v2",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775866772887,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v3",
-      "hintUsed": true,
-      "responseMs": 5700
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775866772888,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v4",
-      "hintUsed": false,
-      "responseMs": 5800
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775974978321,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775974978322,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v1",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775974978323,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v2",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776155989189,
+      "timestamp": 1776295854389,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1695,7 +1862,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776155989190,
+      "timestamp": 1776295854390,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1712,7 +1879,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776155989191,
+      "timestamp": 1776295854391,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1729,7 +1896,58 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776155989192,
+      "timestamp": 1776311856598,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776311856599,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v1",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776311856600,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v2",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776311856601,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1746,7 +1964,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776155989193,
+      "timestamp": 1776311856602,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1763,194 +1981,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776155989194,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v5",
-      "hintUsed": false,
-      "responseMs": 5900
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776203687664,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776203687665,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v1",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776203687666,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v2",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776203687667,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v3",
-      "hintUsed": true,
-      "responseMs": 5700
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776203687668,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v4",
-      "hintUsed": false,
-      "responseMs": 5800
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776399479274,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776399479275,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v1",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776399479276,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v2",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776399479277,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v3",
-      "hintUsed": true,
-      "responseMs": 5700
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776399479278,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v4",
-      "hintUsed": false,
-      "responseMs": 5800
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776482977004,
+      "timestamp": 1776396097351,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1967,7 +1998,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776482977005,
+      "timestamp": 1776396097352,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -1984,7 +2015,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776482977006,
+      "timestamp": 1776396097353,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -2001,7 +2032,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776482977007,
+      "timestamp": 1776396097354,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -2018,7 +2049,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776543246095,
+      "timestamp": 1776754995557,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -2035,7 +2066,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776543246096,
+      "timestamp": 1776754995558,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -2052,7 +2083,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776543246097,
+      "timestamp": 1776754995559,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -2069,7 +2100,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776543246098,
+      "timestamp": 1776754995560,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -2085,8 +2116,76 @@
       "bucketKey": "multiplication",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776543246099,
+      "mode": "challenge",
+      "timestamp": 1777105679172,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v0",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1777105679173,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v1",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1777105679174,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v2",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1777105679175,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication:v3",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1777105679176,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
@@ -2094,477 +2193,209 @@
       "patternFamily": "pf:math:multiplication:v4",
       "hintUsed": false,
       "responseMs": 5800
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776555023367,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776555023368,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v1",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776555023369,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v2",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776918760199,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776918760200,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v1",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776918760201,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v2",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776918760202,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v3",
-      "hintUsed": true,
-      "responseMs": 5700
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776918760203,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v4",
-      "hintUsed": false,
-      "responseMs": 5800
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776918760204,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v5",
-      "hintUsed": false,
-      "responseMs": 5900
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777132732230,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v0",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777132732231,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v1",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777132732232,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v2",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "math",
-      "topic": "multiplication",
-      "operation": "multiplication",
-      "bucketKey": "multiplication",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777132732233,
-      "isCorrect": false,
-      "exerciseText": "math:multiplication",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:multiplication:v3",
-      "hintUsed": true,
-      "responseMs": 5700
     }
   ],
   "mleo_geometry_time_tracking": {
     "topics": {
-      "area": {
-        "total": 2003,
+      "angles": {
+        "total": 1136,
         "sessions": [
           {
-            "date": "2026-03-16",
-            "duration": 1017,
+            "date": "2026-04-02",
+            "duration": 1136,
             "grade": "g5",
             "level": "hard",
-            "topic": "area",
-            "timestamp": 1773631208786,
-            "mode": "learning",
-            "total": 11,
-            "correct": 7
-          },
-          {
-            "date": "2026-04-24",
-            "duration": 986,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "area",
-            "timestamp": 1777027263417,
-            "mode": "learning",
-            "total": 21,
+            "topic": "angles",
+            "timestamp": 1775112874526,
+            "mode": "challenge",
+            "total": 20,
             "correct": 12
           }
         ],
         "byGrade": {
-          "g5": 2003
+          "g5": 1136
         },
         "byLevel": {
-          "hard": 2003
+          "hard": 1136
         }
       },
-      "perimeter": {
-        "total": 2466,
+      "area": {
+        "total": 1201,
         "sessions": [
           {
-            "date": "2026-04-05",
-            "duration": 1017,
+            "date": "2026-04-04",
+            "duration": 1201,
             "grade": "g5",
             "level": "hard",
-            "topic": "perimeter",
-            "timestamp": 1775362874593,
+            "topic": "area",
+            "timestamp": 1775346857976,
             "mode": "learning",
-            "total": 17,
-            "correct": 11
-          },
-          {
-            "date": "2026-04-23",
-            "duration": 1449,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "perimeter",
-            "timestamp": 1776931337092,
-            "mode": "challenge",
-            "total": 35,
-            "correct": 19
-          }
-        ],
-        "byGrade": {
-          "g5": 2466
-        },
-        "byLevel": {
-          "hard": 2466
-        }
-      },
-      "angles": {
-        "total": 1121,
-        "sessions": [
-          {
-            "date": "2026-04-12",
-            "duration": 1121,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "angles",
-            "timestamp": 1775953651304,
-            "mode": "learning",
-            "total": 12,
+            "total": 10,
             "correct": 7
           }
         ],
         "byGrade": {
-          "g5": 1121
+          "g5": 1201
         },
         "byLevel": {
-          "hard": 1121
+          "hard": 1201
         }
       },
-      "volume": {
-        "total": 1173,
+      "perimeter": {
+        "total": 1239,
         "sessions": [
           {
-            "date": "2026-04-24",
-            "duration": 1173,
+            "date": "2026-04-22",
+            "duration": 1239,
             "grade": "g5",
             "level": "hard",
-            "topic": "volume",
-            "timestamp": 1777022962897,
-            "mode": "challenge",
-            "total": 16,
-            "correct": 9
-          }
-        ],
-        "byGrade": {
-          "g5": 1173
-        },
-        "byLevel": {
-          "hard": 1173
-        }
-      },
-      "shapes_basic": {
-        "total": 1227,
-        "sessions": [
-          {
-            "date": "2026-04-25",
-            "duration": 1227,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "shapes_basic",
-            "timestamp": 1777090615368,
+            "topic": "perimeter",
+            "timestamp": 1776839755978,
             "mode": "learning",
-            "total": 25,
-            "correct": 16
+            "total": 22,
+            "correct": 12
           }
         ],
         "byGrade": {
-          "g5": 1227
+          "g5": 1239
         },
         "byLevel": {
-          "hard": 1227
+          "hard": 1239
         }
       }
     },
     "daily": {
-      "2026-03-16": {
-        "total": 1017,
+      "2026-04-02": {
+        "total": 1136,
         "topics": {
-          "area": 1017
+          "angles": 1136
         },
         "byGrade": {
-          "g5": 1017
+          "g5": 1136
         },
         "byLevel": {
-          "hard": 1017
+          "hard": 1136
         }
       },
-      "2026-04-24": {
-        "total": 2159,
+      "2026-04-04": {
+        "total": 1201,
         "topics": {
-          "area": 986,
-          "volume": 1173
+          "area": 1201
         },
         "byGrade": {
-          "g5": 2159
+          "g5": 1201
         },
         "byLevel": {
-          "hard": 2159
+          "hard": 1201
         }
       },
-      "2026-04-05": {
-        "total": 1017,
+      "2026-04-22": {
+        "total": 1239,
         "topics": {
-          "perimeter": 1017
+          "perimeter": 1239
         },
         "byGrade": {
-          "g5": 1017
+          "g5": 1239
         },
         "byLevel": {
-          "hard": 1017
-        }
-      },
-      "2026-04-23": {
-        "total": 1449,
-        "topics": {
-          "perimeter": 1449
-        },
-        "byGrade": {
-          "g5": 1449
-        },
-        "byLevel": {
-          "hard": 1449
-        }
-      },
-      "2026-04-12": {
-        "total": 1121,
-        "topics": {
-          "angles": 1121
-        },
-        "byGrade": {
-          "g5": 1121
-        },
-        "byLevel": {
-          "hard": 1121
-        }
-      },
-      "2026-04-25": {
-        "total": 1227,
-        "topics": {
-          "shapes_basic": 1227
-        },
-        "byGrade": {
-          "g5": 1227
-        },
-        "byLevel": {
-          "hard": 1227
+          "hard": 1239
         }
       }
     }
   },
   "mleo_geometry_master_progress": {
     "progress": {
-      "area": {
-        "total": 32,
-        "correct": 19
-      },
-      "perimeter": {
-        "total": 52,
-        "correct": 30
-      },
       "angles": {
-        "total": 12,
+        "total": 20,
+        "correct": 12
+      },
+      "area": {
+        "total": 10,
         "correct": 7
       },
-      "volume": {
-        "total": 16,
-        "correct": 9
-      },
-      "shapes_basic": {
-        "total": 25,
-        "correct": 16
+      "perimeter": {
+        "total": 22,
+        "correct": 12
       }
     },
     "stars": 3,
     "playerLevel": 1,
-    "xp": 685,
+    "xp": 260,
     "badges": []
   },
   "mleo_geometry_mistakes": [
     {
       "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1775112874526,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1775112874527,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1775112874528,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1775112874529,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "geometry",
       "topic": "area",
       "bucketKey": "area",
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1773631208786,
+      "timestamp": 1775346857976,
       "isCorrect": false,
       "exerciseText": "geometry:area",
       "correctAnswer": 1,
@@ -2580,7 +2411,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1773631208787,
+      "timestamp": 1775346857977,
       "isCorrect": false,
       "exerciseText": "geometry:area",
       "correctAnswer": 1,
@@ -2596,7 +2427,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1775362874593,
+      "timestamp": 1776839755978,
       "isCorrect": false,
       "exerciseText": "geometry:perimeter",
       "correctAnswer": 1,
@@ -2612,7 +2443,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1775362874594,
+      "timestamp": 1776839755979,
       "isCorrect": false,
       "exerciseText": "geometry:perimeter",
       "correctAnswer": 1,
@@ -2628,103 +2459,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1775362874595,
-      "isCorrect": false,
-      "exerciseText": "geometry:perimeter",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:perimeter",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "geometry",
-      "topic": "angles",
-      "bucketKey": "angles",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775953651304,
-      "isCorrect": false,
-      "exerciseText": "geometry:angles",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:angles",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "geometry",
-      "topic": "angles",
-      "bucketKey": "angles",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775953651305,
-      "isCorrect": false,
-      "exerciseText": "geometry:angles",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:angles",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "geometry",
-      "topic": "angles",
-      "bucketKey": "angles",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775953651306,
-      "isCorrect": false,
-      "exerciseText": "geometry:angles",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:angles",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "geometry",
-      "topic": "perimeter",
-      "bucketKey": "perimeter",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776931337092,
-      "isCorrect": false,
-      "exerciseText": "geometry:perimeter",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:perimeter",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "geometry",
-      "topic": "perimeter",
-      "bucketKey": "perimeter",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776931337093,
-      "isCorrect": false,
-      "exerciseText": "geometry:perimeter",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:perimeter",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "geometry",
-      "topic": "perimeter",
-      "bucketKey": "perimeter",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776931337094,
+      "timestamp": 1776839755980,
       "isCorrect": false,
       "exerciseText": "geometry:perimeter",
       "correctAnswer": 1,
@@ -2739,8 +2474,8 @@
       "bucketKey": "perimeter",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776931337095,
+      "mode": "learning",
+      "timestamp": 1776839755981,
       "isCorrect": false,
       "exerciseText": "geometry:perimeter",
       "correctAnswer": 1,
@@ -2755,8 +2490,8 @@
       "bucketKey": "perimeter",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776931337096,
+      "mode": "learning",
+      "timestamp": 1776839755982,
       "isCorrect": false,
       "exerciseText": "geometry:perimeter",
       "correctAnswer": 1,
@@ -2771,8 +2506,8 @@
       "bucketKey": "perimeter",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776931337097,
+      "mode": "learning",
+      "timestamp": 1776839755983,
       "isCorrect": false,
       "exerciseText": "geometry:perimeter",
       "correctAnswer": 1,
@@ -2780,576 +2515,405 @@
       "patternFamily": "pf:geometry:perimeter",
       "hintUsed": false,
       "responseMs": 5900
-    },
-    {
-      "subject": "geometry",
-      "topic": "perimeter",
-      "bucketKey": "perimeter",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776931337098,
-      "isCorrect": false,
-      "exerciseText": "geometry:perimeter",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:perimeter",
-      "hintUsed": true,
-      "responseMs": 6000
-    },
-    {
-      "subject": "geometry",
-      "topic": "perimeter",
-      "bucketKey": "perimeter",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776931337099,
-      "isCorrect": false,
-      "exerciseText": "geometry:perimeter",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:perimeter",
-      "hintUsed": false,
-      "responseMs": 6100
-    },
-    {
-      "subject": "geometry",
-      "topic": "perimeter",
-      "bucketKey": "perimeter",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776931337100,
-      "isCorrect": false,
-      "exerciseText": "geometry:perimeter",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:perimeter",
-      "hintUsed": false,
-      "responseMs": 6200
-    },
-    {
-      "subject": "geometry",
-      "topic": "volume",
-      "bucketKey": "volume",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1777022962897,
-      "isCorrect": false,
-      "exerciseText": "geometry:volume",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:volume",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "geometry",
-      "topic": "volume",
-      "bucketKey": "volume",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1777022962898,
-      "isCorrect": false,
-      "exerciseText": "geometry:volume",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:volume",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "geometry",
-      "topic": "volume",
-      "bucketKey": "volume",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1777022962899,
-      "isCorrect": false,
-      "exerciseText": "geometry:volume",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:volume",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "geometry",
-      "topic": "volume",
-      "bucketKey": "volume",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1777022962900,
-      "isCorrect": false,
-      "exerciseText": "geometry:volume",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:volume",
-      "hintUsed": true,
-      "responseMs": 5700
-    },
-    {
-      "subject": "geometry",
-      "topic": "area",
-      "bucketKey": "area",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777027263417,
-      "isCorrect": false,
-      "exerciseText": "geometry:area",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:area",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "geometry",
-      "topic": "area",
-      "bucketKey": "area",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777027263418,
-      "isCorrect": false,
-      "exerciseText": "geometry:area",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:area",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "geometry",
-      "topic": "area",
-      "bucketKey": "area",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777027263419,
-      "isCorrect": false,
-      "exerciseText": "geometry:area",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:area",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "geometry",
-      "topic": "area",
-      "bucketKey": "area",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777027263420,
-      "isCorrect": false,
-      "exerciseText": "geometry:area",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:area",
-      "hintUsed": true,
-      "responseMs": 5700
-    },
-    {
-      "subject": "geometry",
-      "topic": "area",
-      "bucketKey": "area",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777027263421,
-      "isCorrect": false,
-      "exerciseText": "geometry:area",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:area",
-      "hintUsed": false,
-      "responseMs": 5800
-    },
-    {
-      "subject": "geometry",
-      "topic": "shapes_basic",
-      "bucketKey": "shapes_basic",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777090615368,
-      "isCorrect": false,
-      "exerciseText": "geometry:shapes_basic",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:shapes_basic",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "geometry",
-      "topic": "shapes_basic",
-      "bucketKey": "shapes_basic",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777090615369,
-      "isCorrect": false,
-      "exerciseText": "geometry:shapes_basic",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:shapes_basic",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "geometry",
-      "topic": "shapes_basic",
-      "bucketKey": "shapes_basic",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777090615370,
-      "isCorrect": false,
-      "exerciseText": "geometry:shapes_basic",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:shapes_basic",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "geometry",
-      "topic": "shapes_basic",
-      "bucketKey": "shapes_basic",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777090615371,
-      "isCorrect": false,
-      "exerciseText": "geometry:shapes_basic",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:shapes_basic",
-      "hintUsed": true,
-      "responseMs": 5700
-    },
-    {
-      "subject": "geometry",
-      "topic": "shapes_basic",
-      "bucketKey": "shapes_basic",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777090615372,
-      "isCorrect": false,
-      "exerciseText": "geometry:shapes_basic",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:geometry:shapes_basic",
-      "hintUsed": false,
-      "responseMs": 5800
     }
   ],
   "mleo_english_time_tracking": {
     "topics": {
-      "vocabulary": {
-        "total": 2039,
+      "grammar": {
+        "total": 2826,
         "sessions": [
           {
             "date": "2026-01-06",
-            "duration": 1061,
+            "duration": 1520,
             "grade": "g5",
-            "level": "medium",
-            "topic": "vocabulary",
-            "timestamp": 1767736767029,
+            "level": "easy",
+            "topic": "grammar",
+            "timestamp": 1767734602465,
             "mode": "learning",
-            "total": 18,
+            "total": 19,
             "correct": 16
           },
           {
-            "date": "2026-04-20",
-            "duration": 978,
+            "date": "2026-04-18",
+            "duration": 1306,
             "grade": "g5",
             "level": "hard",
-            "topic": "vocabulary",
-            "timestamp": 1776711691350,
+            "topic": "grammar",
+            "timestamp": 1776548653556,
             "mode": "challenge",
-            "total": 18,
-            "correct": 12
-          }
-        ],
-        "byGrade": {
-          "g5": 2039
-        },
-        "byLevel": {
-          "medium": 1061,
-          "hard": 978
-        }
-      },
-      "writing": {
-        "total": 1208,
-        "sessions": [
-          {
-            "date": "2026-02-26",
-            "duration": 1208,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "writing",
-            "timestamp": 1772082489909,
-            "mode": "learning",
-            "total": 11,
+            "total": 16,
             "correct": 10
           }
         ],
         "byGrade": {
-          "g5": 1208
+          "g5": 2826
         },
         "byLevel": {
-          "medium": 1208
-        }
-      },
-      "sentences": {
-        "total": 2668,
-        "sessions": [
-          {
-            "date": "2026-03-01",
-            "duration": 949,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "sentences",
-            "timestamp": 1772391620980,
-            "mode": "learning",
-            "total": 22,
-            "correct": 18
-          },
-          {
-            "date": "2026-03-11",
-            "duration": 1719,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "sentences",
-            "timestamp": 1773262219962,
-            "mode": "learning",
-            "total": 15,
-            "correct": 8
-          }
-        ],
-        "byGrade": {
-          "g5": 2668
-        },
-        "byLevel": {
-          "medium": 949,
-          "hard": 1719
+          "easy": 1520,
+          "hard": 1306
         }
       },
       "translation": {
-        "total": 2080,
+        "total": 2320,
         "sessions": [
           {
-            "date": "2026-03-24",
-            "duration": 1054,
+            "date": "2026-02-06",
+            "duration": 1066,
+            "grade": "g5",
+            "level": "easy",
+            "topic": "translation",
+            "timestamp": 1770347058761,
+            "mode": "learning",
+            "total": 22,
+            "correct": 19
+          },
+          {
+            "date": "2026-04-17",
+            "duration": 1254,
             "grade": "g5",
             "level": "hard",
             "topic": "translation",
-            "timestamp": 1774338218494,
-            "mode": "challenge",
-            "total": 18,
-            "correct": 11
+            "timestamp": 1776406459158,
+            "mode": "learning",
+            "total": 16,
+            "correct": 9
+          }
+        ],
+        "byGrade": {
+          "g5": 2320
+        },
+        "byLevel": {
+          "easy": 1066,
+          "hard": 1254
+        }
+      },
+      "vocabulary": {
+        "total": 2549,
+        "sessions": [
+          {
+            "date": "2026-02-10",
+            "duration": 1245,
+            "grade": "g5",
+            "level": "easy",
+            "topic": "vocabulary",
+            "timestamp": 1770722540366,
+            "mode": "learning",
+            "total": 16,
+            "correct": 14
           },
           {
             "date": "2026-04-20",
-            "duration": 1026,
+            "duration": 1304,
             "grade": "g5",
             "level": "hard",
-            "topic": "translation",
-            "timestamp": 1776654099701,
+            "topic": "vocabulary",
+            "timestamp": 1776670563185,
+            "mode": "learning",
+            "total": 11,
+            "correct": 6
+          }
+        ],
+        "byGrade": {
+          "g5": 2549
+        },
+        "byLevel": {
+          "easy": 1245,
+          "hard": 1304
+        }
+      },
+      "writing": {
+        "total": 2649,
+        "sessions": [
+          {
+            "date": "2026-02-18",
+            "duration": 1644,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "writing",
+            "timestamp": 1771458361436,
+            "mode": "learning",
+            "total": 21,
+            "correct": 18
+          },
+          {
+            "date": "2026-04-10",
+            "duration": 1005,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "writing",
+            "timestamp": 1775820110770,
+            "mode": "challenge",
+            "total": 14,
+            "correct": 9
+          }
+        ],
+        "byGrade": {
+          "g5": 2649
+        },
+        "byLevel": {
+          "medium": 1644,
+          "hard": 1005
+        }
+      },
+      "sentences": {
+        "total": 2398,
+        "sessions": [
+          {
+            "date": "2026-02-24",
+            "duration": 1423,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "sentences",
+            "timestamp": 1771916162619,
+            "mode": "learning",
+            "total": 20,
+            "correct": 17
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 975,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "sentences",
+            "timestamp": 1776810294212,
             "mode": "learning",
             "total": 17,
             "correct": 10
           }
         ],
         "byGrade": {
-          "g5": 2080
+          "g5": 2398
         },
         "byLevel": {
-          "hard": 2080
-        }
-      },
-      "grammar": {
-        "total": 1865,
-        "sessions": [
-          {
-            "date": "2026-04-19",
-            "duration": 942,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "grammar",
-            "timestamp": 1776564635243,
-            "mode": "challenge",
-            "total": 12,
-            "correct": 8
-          },
-          {
-            "date": "2026-04-22",
-            "duration": 923,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "grammar",
-            "timestamp": 1776885372029,
-            "mode": "challenge",
-            "total": 18,
-            "correct": 10
-          }
-        ],
-        "byGrade": {
-          "g5": 1865
-        },
-        "byLevel": {
-          "hard": 1865
+          "medium": 1423,
+          "hard": 975
         }
       }
     },
     "daily": {
       "2026-01-06": {
-        "total": 1061,
+        "total": 1520,
         "topics": {
-          "vocabulary": 1061
+          "grammar": 1520
         },
         "byGrade": {
-          "g5": 1061
+          "g5": 1520
         },
         "byLevel": {
-          "medium": 1061
+          "easy": 1520
+        }
+      },
+      "2026-04-18": {
+        "total": 1306,
+        "topics": {
+          "grammar": 1306
+        },
+        "byGrade": {
+          "g5": 1306
+        },
+        "byLevel": {
+          "hard": 1306
+        }
+      },
+      "2026-02-06": {
+        "total": 1066,
+        "topics": {
+          "translation": 1066
+        },
+        "byGrade": {
+          "g5": 1066
+        },
+        "byLevel": {
+          "easy": 1066
+        }
+      },
+      "2026-04-17": {
+        "total": 1254,
+        "topics": {
+          "translation": 1254
+        },
+        "byGrade": {
+          "g5": 1254
+        },
+        "byLevel": {
+          "hard": 1254
+        }
+      },
+      "2026-02-10": {
+        "total": 1245,
+        "topics": {
+          "vocabulary": 1245
+        },
+        "byGrade": {
+          "g5": 1245
+        },
+        "byLevel": {
+          "easy": 1245
         }
       },
       "2026-04-20": {
-        "total": 2004,
+        "total": 1304,
         "topics": {
-          "vocabulary": 978,
-          "translation": 1026
+          "vocabulary": 1304
         },
         "byGrade": {
-          "g5": 2004
+          "g5": 1304
         },
         "byLevel": {
-          "hard": 2004
+          "hard": 1304
         }
       },
-      "2026-02-26": {
-        "total": 1208,
+      "2026-02-18": {
+        "total": 1644,
         "topics": {
-          "writing": 1208
+          "writing": 1644
         },
         "byGrade": {
-          "g5": 1208
+          "g5": 1644
         },
         "byLevel": {
-          "medium": 1208
+          "medium": 1644
         }
       },
-      "2026-03-01": {
-        "total": 949,
+      "2026-04-10": {
+        "total": 1005,
         "topics": {
-          "sentences": 949
+          "writing": 1005
         },
         "byGrade": {
-          "g5": 949
+          "g5": 1005
         },
         "byLevel": {
-          "medium": 949
+          "hard": 1005
         }
       },
-      "2026-03-11": {
-        "total": 1719,
+      "2026-02-24": {
+        "total": 1423,
         "topics": {
-          "sentences": 1719
+          "sentences": 1423
         },
         "byGrade": {
-          "g5": 1719
+          "g5": 1423
         },
         "byLevel": {
-          "hard": 1719
+          "medium": 1423
         }
       },
-      "2026-03-24": {
-        "total": 1054,
+      "2026-04-21": {
+        "total": 975,
         "topics": {
-          "translation": 1054
+          "sentences": 975
         },
         "byGrade": {
-          "g5": 1054
+          "g5": 975
         },
         "byLevel": {
-          "hard": 1054
-        }
-      },
-      "2026-04-19": {
-        "total": 942,
-        "topics": {
-          "grammar": 942
-        },
-        "byGrade": {
-          "g5": 942
-        },
-        "byLevel": {
-          "hard": 942
-        }
-      },
-      "2026-04-22": {
-        "total": 923,
-        "topics": {
-          "grammar": 923
-        },
-        "byGrade": {
-          "g5": 923
-        },
-        "byLevel": {
-          "hard": 923
+          "hard": 975
         }
       }
     }
   },
   "mleo_english_master_progress": {
     "progress": {
-      "vocabulary": {
-        "total": 36,
-        "correct": 28
-      },
-      "writing": {
-        "total": 11,
-        "correct": 10
-      },
-      "sentences": {
-        "total": 37,
+      "grammar": {
+        "total": 35,
         "correct": 26
       },
       "translation": {
-        "total": 35,
-        "correct": 21
+        "total": 38,
+        "correct": 28
       },
-      "grammar": {
-        "total": 30,
-        "correct": 18
+      "vocabulary": {
+        "total": 27,
+        "correct": 20
+      },
+      "writing": {
+        "total": 35,
+        "correct": 27
+      },
+      "sentences": {
+        "total": 37,
+        "correct": 27
       }
     },
-    "stars": 3,
+    "stars": 4,
     "playerLevel": 1,
-    "xp": 745,
+    "xp": 860,
     "badges": []
   },
   "mleo_english_mistakes": [
     {
       "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g5",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1767734602465,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g5",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1767734602466,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
+      "grade": "g5",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1770347058761,
+      "isCorrect": false,
+      "exerciseText": "english:translation",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:translation",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
+      "grade": "g5",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1770347058762,
+      "isCorrect": false,
+      "exerciseText": "english:translation",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:translation",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "english",
       "topic": "vocabulary",
       "bucketKey": "vocabulary",
       "grade": "g5",
-      "level": "medium",
+      "level": "easy",
       "mode": "learning",
-      "timestamp": 1767736767029,
+      "timestamp": 1770722540366,
       "isCorrect": false,
       "exerciseText": "english:vocabulary",
       "correctAnswer": 1,
@@ -3365,7 +2929,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1772082489909,
+      "timestamp": 1771458361436,
       "isCorrect": false,
       "exerciseText": "english:writing",
       "correctAnswer": 1,
@@ -3376,12 +2940,28 @@
     },
     {
       "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1771458361437,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "english",
       "topic": "sentences",
       "bucketKey": "sentences",
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1772391620980,
+      "timestamp": 1771916162619,
       "isCorrect": false,
       "exerciseText": "english:sentences",
       "correctAnswer": 1,
@@ -3397,7 +2977,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1772391620981,
+      "timestamp": 1771916162620,
       "isCorrect": false,
       "exerciseText": "english:sentences",
       "correctAnswer": 1,
@@ -3408,67 +2988,51 @@
     },
     {
       "subject": "english",
-      "topic": "sentences",
-      "bucketKey": "sentences",
+      "topic": "writing",
+      "bucketKey": "writing",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1773262219962,
+      "mode": "challenge",
+      "timestamp": 1775820110770,
       "isCorrect": false,
-      "exerciseText": "english:sentences",
+      "exerciseText": "english:writing",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:sentences",
+      "patternFamily": "pf:english:writing",
       "hintUsed": true,
       "responseMs": 5400
     },
     {
       "subject": "english",
-      "topic": "sentences",
-      "bucketKey": "sentences",
+      "topic": "writing",
+      "bucketKey": "writing",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1773262219963,
+      "mode": "challenge",
+      "timestamp": 1775820110771,
       "isCorrect": false,
-      "exerciseText": "english:sentences",
+      "exerciseText": "english:writing",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:sentences",
+      "patternFamily": "pf:english:writing",
       "hintUsed": false,
       "responseMs": 5500
     },
     {
       "subject": "english",
-      "topic": "sentences",
-      "bucketKey": "sentences",
+      "topic": "writing",
+      "bucketKey": "writing",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1773262219964,
+      "mode": "challenge",
+      "timestamp": 1775820110772,
       "isCorrect": false,
-      "exerciseText": "english:sentences",
+      "exerciseText": "english:writing",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:sentences",
+      "patternFamily": "pf:english:writing",
       "hintUsed": false,
       "responseMs": 5600
-    },
-    {
-      "subject": "english",
-      "topic": "sentences",
-      "bucketKey": "sentences",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1773262219965,
-      "isCorrect": false,
-      "exerciseText": "english:sentences",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:sentences",
-      "hintUsed": true,
-      "responseMs": 5700
     },
     {
       "subject": "english",
@@ -3476,8 +3040,8 @@
       "bucketKey": "translation",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1774338218494,
+      "mode": "learning",
+      "timestamp": 1776406459158,
       "isCorrect": false,
       "exerciseText": "english:translation",
       "correctAnswer": 1,
@@ -3492,8 +3056,8 @@
       "bucketKey": "translation",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1774338218495,
+      "mode": "learning",
+      "timestamp": 1776406459159,
       "isCorrect": false,
       "exerciseText": "english:translation",
       "correctAnswer": 1,
@@ -3508,8 +3072,8 @@
       "bucketKey": "translation",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1774338218496,
+      "mode": "learning",
+      "timestamp": 1776406459160,
       "isCorrect": false,
       "exerciseText": "english:translation",
       "correctAnswer": 1,
@@ -3524,8 +3088,8 @@
       "bucketKey": "translation",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1774338218497,
+      "mode": "learning",
+      "timestamp": 1776406459161,
       "isCorrect": false,
       "exerciseText": "english:translation",
       "correctAnswer": 1,
@@ -3541,7 +3105,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776564635243,
+      "timestamp": 1776548653556,
       "isCorrect": false,
       "exerciseText": "english:grammar",
       "correctAnswer": 1,
@@ -3557,7 +3121,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776564635244,
+      "timestamp": 1776548653557,
       "isCorrect": false,
       "exerciseText": "english:grammar",
       "correctAnswer": 1,
@@ -3568,67 +3132,19 @@
     },
     {
       "subject": "english",
-      "topic": "translation",
-      "bucketKey": "translation",
+      "topic": "grammar",
+      "bucketKey": "grammar",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776654099701,
+      "mode": "challenge",
+      "timestamp": 1776548653558,
       "isCorrect": false,
-      "exerciseText": "english:translation",
+      "exerciseText": "english:grammar",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:translation",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "english",
-      "topic": "translation",
-      "bucketKey": "translation",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776654099702,
-      "isCorrect": false,
-      "exerciseText": "english:translation",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:translation",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "english",
-      "topic": "translation",
-      "bucketKey": "translation",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776654099703,
-      "isCorrect": false,
-      "exerciseText": "english:translation",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:translation",
+      "patternFamily": "pf:english:grammar",
       "hintUsed": false,
       "responseMs": 5600
-    },
-    {
-      "subject": "english",
-      "topic": "translation",
-      "bucketKey": "translation",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776654099704,
-      "isCorrect": false,
-      "exerciseText": "english:translation",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:translation",
-      "hintUsed": true,
-      "responseMs": 5700
     },
     {
       "subject": "english",
@@ -3636,8 +3152,8 @@
       "bucketKey": "vocabulary",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776711691350,
+      "mode": "learning",
+      "timestamp": 1776670563185,
       "isCorrect": false,
       "exerciseText": "english:vocabulary",
       "correctAnswer": 1,
@@ -3652,8 +3168,8 @@
       "bucketKey": "vocabulary",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776711691351,
+      "mode": "learning",
+      "timestamp": 1776670563186,
       "isCorrect": false,
       "exerciseText": "english:vocabulary",
       "correctAnswer": 1,
@@ -3668,8 +3184,8 @@
       "bucketKey": "vocabulary",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776711691352,
+      "mode": "learning",
+      "timestamp": 1776670563187,
       "isCorrect": false,
       "exerciseText": "english:vocabulary",
       "correctAnswer": 1,
@@ -3680,315 +3196,318 @@
     },
     {
       "subject": "english",
-      "topic": "grammar",
-      "bucketKey": "grammar",
+      "topic": "sentences",
+      "bucketKey": "sentences",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776885372029,
+      "mode": "learning",
+      "timestamp": 1776810294212,
       "isCorrect": false,
-      "exerciseText": "english:grammar",
+      "exerciseText": "english:sentences",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:grammar",
+      "patternFamily": "pf:english:sentences",
       "hintUsed": true,
       "responseMs": 5400
     },
     {
       "subject": "english",
-      "topic": "grammar",
-      "bucketKey": "grammar",
+      "topic": "sentences",
+      "bucketKey": "sentences",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776885372030,
+      "mode": "learning",
+      "timestamp": 1776810294213,
       "isCorrect": false,
-      "exerciseText": "english:grammar",
+      "exerciseText": "english:sentences",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:grammar",
+      "patternFamily": "pf:english:sentences",
       "hintUsed": false,
       "responseMs": 5500
     },
     {
       "subject": "english",
-      "topic": "grammar",
-      "bucketKey": "grammar",
+      "topic": "sentences",
+      "bucketKey": "sentences",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776885372031,
+      "mode": "learning",
+      "timestamp": 1776810294214,
       "isCorrect": false,
-      "exerciseText": "english:grammar",
+      "exerciseText": "english:sentences",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:grammar",
+      "patternFamily": "pf:english:sentences",
       "hintUsed": false,
       "responseMs": 5600
     },
     {
       "subject": "english",
-      "topic": "grammar",
-      "bucketKey": "grammar",
+      "topic": "sentences",
+      "bucketKey": "sentences",
       "grade": "g5",
       "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776885372032,
+      "mode": "learning",
+      "timestamp": 1776810294215,
       "isCorrect": false,
-      "exerciseText": "english:grammar",
+      "exerciseText": "english:sentences",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:grammar",
+      "patternFamily": "pf:english:sentences",
       "hintUsed": true,
       "responseMs": 5700
     }
   ],
   "mleo_science_time_tracking": {
     "topics": {
-      "animals": {
-        "total": 2383,
+      "materials": {
+        "total": 2446,
         "sessions": [
           {
-            "date": "2026-03-02",
-            "duration": 1443,
+            "date": "2026-01-26",
+            "duration": 1585,
             "grade": "g5",
-            "level": "easy",
-            "topic": "animals",
-            "timestamp": 1772436263878,
+            "level": "medium",
+            "topic": "materials",
+            "timestamp": 1769430372993,
             "mode": "learning",
-            "total": 11,
-            "correct": 9
+            "total": 15,
+            "correct": 13
           },
           {
-            "date": "2026-04-23",
-            "duration": 940,
+            "date": "2026-04-25",
+            "duration": 861,
             "grade": "g5",
             "level": "hard",
-            "topic": "animals",
-            "timestamp": 1776920432331,
+            "topic": "materials",
+            "timestamp": 1777145000965,
             "mode": "challenge",
-            "total": 11,
+            "total": 19,
+            "correct": 13
+          }
+        ],
+        "byGrade": {
+          "g5": 2446
+        },
+        "byLevel": {
+          "medium": 1585,
+          "hard": 861
+        }
+      },
+      "plants": {
+        "total": 2455,
+        "sessions": [
+          {
+            "date": "2026-02-13",
+            "duration": 980,
+            "grade": "g5",
+            "level": "easy",
+            "topic": "plants",
+            "timestamp": 1770952253493,
+            "mode": "learning",
+            "total": 22,
+            "correct": 18
+          },
+          {
+            "date": "2026-04-12",
+            "duration": 1475,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "plants",
+            "timestamp": 1775959856430,
+            "mode": "learning",
+            "total": 10,
             "correct": 6
           }
         ],
         "byGrade": {
-          "g5": 2383
+          "g5": 2455
         },
         "byLevel": {
-          "easy": 1443,
-          "hard": 940
+          "easy": 980,
+          "hard": 1475
         }
       },
-      "earth_space": {
-        "total": 2451,
+      "animals": {
+        "total": 2751,
         "sessions": [
           {
-            "date": "2026-04-04",
-            "duration": 1478,
+            "date": "2026-02-22",
+            "duration": 1595,
             "grade": "g5",
-            "level": "hard",
-            "topic": "earth_space",
-            "timestamp": 1775265836021,
-            "mode": "challenge",
-            "total": 17,
-            "correct": 11
+            "level": "medium",
+            "topic": "animals",
+            "timestamp": 1771753784933,
+            "mode": "learning",
+            "total": 10,
+            "correct": 9
           },
           {
-            "date": "2026-04-23",
-            "duration": 973,
+            "date": "2026-04-12",
+            "duration": 1156,
             "grade": "g5",
             "level": "hard",
-            "topic": "earth_space",
-            "timestamp": 1776940714907,
-            "mode": "learning",
-            "total": 13,
-            "correct": 7
-          }
-        ],
-        "byGrade": {
-          "g5": 2451
-        },
-        "byLevel": {
-          "hard": 2451
-        }
-      },
-      "body": {
-        "total": 2887,
-        "sessions": [
-          {
-            "date": "2026-04-10",
-            "duration": 1209,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "body",
-            "timestamp": 1775854089114,
+            "topic": "animals",
+            "timestamp": 1775981741779,
             "mode": "challenge",
-            "total": 25,
-            "correct": 15
-          },
-          {
-            "date": "2026-04-19",
-            "duration": 1678,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "body",
-            "timestamp": 1776601340021,
-            "mode": "learning",
-            "total": 13,
-            "correct": 7
-          }
-        ],
-        "byGrade": {
-          "g5": 2887
-        },
-        "byLevel": {
-          "hard": 2887
-        }
-      },
-      "plants": {
-        "total": 2471,
-        "sessions": [
-          {
-            "date": "2026-04-14",
-            "duration": 1371,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "plants",
-            "timestamp": 1776169862198,
-            "mode": "learning",
-            "total": 21,
-            "correct": 12
-          },
-          {
-            "date": "2026-04-22",
-            "duration": 1100,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "plants",
-            "timestamp": 1776890552406,
-            "mode": "challenge",
-            "total": 13,
+            "total": 15,
             "correct": 8
           }
         ],
         "byGrade": {
-          "g5": 2471
+          "g5": 2751
         },
         "byLevel": {
-          "hard": 2471
-        }
-      },
-      "materials": {
-        "total": 2696,
-        "sessions": [
-          {
-            "date": "2026-04-18",
-            "duration": 1413,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "materials",
-            "timestamp": 1776554659774,
-            "mode": "challenge",
-            "total": 20,
-            "correct": 11
-          },
-          {
-            "date": "2026-04-23",
-            "duration": 1283,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "materials",
-            "timestamp": 1776906565027,
-            "mode": "learning",
-            "total": 18,
-            "correct": 10
-          }
-        ],
-        "byGrade": {
-          "g5": 2696
-        },
-        "byLevel": {
-          "hard": 2696
+          "medium": 1595,
+          "hard": 1156
         }
       },
       "environment": {
-        "total": 1674,
+        "total": 1183,
         "sessions": [
           {
-            "date": "2026-04-25",
-            "duration": 1674,
+            "date": "2026-03-05",
+            "duration": 1183,
             "grade": "g5",
-            "level": "hard",
+            "level": "medium",
             "topic": "environment",
-            "timestamp": 1777132765529,
+            "timestamp": 1772689102355,
             "mode": "learning",
-            "total": 13,
-            "correct": 7
+            "total": 20,
+            "correct": 17
           }
         ],
         "byGrade": {
-          "g5": 1674
+          "g5": 1183
         },
         "byLevel": {
-          "hard": 1674
+          "medium": 1183
+        }
+      },
+      "earth_space": {
+        "total": 1678,
+        "sessions": [
+          {
+            "date": "2026-04-17",
+            "duration": 1678,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "earth_space",
+            "timestamp": 1776391000922,
+            "mode": "learning",
+            "total": 14,
+            "correct": 9
+          }
+        ],
+        "byGrade": {
+          "g5": 1678
+        },
+        "byLevel": {
+          "hard": 1678
+        }
+      },
+      "body": {
+        "total": 926,
+        "sessions": [
+          {
+            "date": "2026-04-24",
+            "duration": 926,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "body",
+            "timestamp": 1776998542779,
+            "mode": "challenge",
+            "total": 21,
+            "correct": 13
+          }
+        ],
+        "byGrade": {
+          "g5": 926
+        },
+        "byLevel": {
+          "hard": 926
         }
       }
     },
     "daily": {
-      "2026-03-02": {
-        "total": 1443,
+      "2026-01-26": {
+        "total": 1585,
         "topics": {
-          "animals": 1443
+          "materials": 1585
         },
         "byGrade": {
-          "g5": 1443
+          "g5": 1585
         },
         "byLevel": {
-          "easy": 1443
+          "medium": 1585
         }
       },
-      "2026-04-23": {
-        "total": 3196,
+      "2026-04-25": {
+        "total": 861,
         "topics": {
-          "animals": 940,
-          "earth_space": 973,
-          "materials": 1283
+          "materials": 861
         },
         "byGrade": {
-          "g5": 3196
+          "g5": 861
         },
         "byLevel": {
-          "hard": 3196
+          "hard": 861
         }
       },
-      "2026-04-04": {
-        "total": 1478,
+      "2026-02-13": {
+        "total": 980,
         "topics": {
-          "earth_space": 1478
+          "plants": 980
         },
         "byGrade": {
-          "g5": 1478
+          "g5": 980
         },
         "byLevel": {
-          "hard": 1478
+          "easy": 980
         }
       },
-      "2026-04-10": {
-        "total": 1209,
+      "2026-04-12": {
+        "total": 2631,
         "topics": {
-          "body": 1209
+          "plants": 1475,
+          "animals": 1156
         },
         "byGrade": {
-          "g5": 1209
+          "g5": 2631
         },
         "byLevel": {
-          "hard": 1209
+          "hard": 2631
         }
       },
-      "2026-04-19": {
+      "2026-02-22": {
+        "total": 1595,
+        "topics": {
+          "animals": 1595
+        },
+        "byGrade": {
+          "g5": 1595
+        },
+        "byLevel": {
+          "medium": 1595
+        }
+      },
+      "2026-03-05": {
+        "total": 1183,
+        "topics": {
+          "environment": 1183
+        },
+        "byGrade": {
+          "g5": 1183
+        },
+        "byLevel": {
+          "medium": 1183
+        }
+      },
+      "2026-04-17": {
         "total": 1678,
         "topics": {
-          "body": 1678
+          "earth_space": 1678
         },
         "byGrade": {
           "g5": 1678
@@ -3997,97 +3516,109 @@
           "hard": 1678
         }
       },
-      "2026-04-14": {
-        "total": 1371,
+      "2026-04-24": {
+        "total": 926,
         "topics": {
-          "plants": 1371
+          "body": 926
         },
         "byGrade": {
-          "g5": 1371
+          "g5": 926
         },
         "byLevel": {
-          "hard": 1371
-        }
-      },
-      "2026-04-22": {
-        "total": 1100,
-        "topics": {
-          "plants": 1100
-        },
-        "byGrade": {
-          "g5": 1100
-        },
-        "byLevel": {
-          "hard": 1100
-        }
-      },
-      "2026-04-18": {
-        "total": 1413,
-        "topics": {
-          "materials": 1413
-        },
-        "byGrade": {
-          "g5": 1413
-        },
-        "byLevel": {
-          "hard": 1413
-        }
-      },
-      "2026-04-25": {
-        "total": 1674,
-        "topics": {
-          "environment": 1674
-        },
-        "byGrade": {
-          "g5": 1674
-        },
-        "byLevel": {
-          "hard": 1674
+          "hard": 926
         }
       }
     }
   },
   "mleo_science_master_progress": {
     "progress": {
-      "animals": {
-        "total": 22,
-        "correct": 15
-      },
-      "earth_space": {
-        "total": 30,
-        "correct": 18
-      },
-      "body": {
-        "total": 38,
-        "correct": 22
+      "materials": {
+        "total": 34,
+        "correct": 26
       },
       "plants": {
-        "total": 34,
-        "correct": 20
+        "total": 32,
+        "correct": 24
       },
-      "materials": {
-        "total": 38,
-        "correct": 21
+      "animals": {
+        "total": 25,
+        "correct": 17
       },
       "environment": {
-        "total": 13,
-        "correct": 7
+        "total": 20,
+        "correct": 17
+      },
+      "earth_space": {
+        "total": 14,
+        "correct": 9
+      },
+      "body": {
+        "total": 21,
+        "correct": 13
       }
     },
-    "stars": 3,
+    "stars": 4,
     "playerLevel": 1,
-    "xp": 875,
+    "xp": 730,
     "badges": []
   },
   "mleo_science_mistakes": [
     {
       "subject": "science",
-      "topic": "animals",
-      "bucketKey": "animals",
+      "topic": "materials",
+      "bucketKey": "materials",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1769430372993,
+      "isCorrect": false,
+      "exerciseText": "science:materials",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:materials",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "science",
+      "topic": "plants",
+      "bucketKey": "plants",
       "grade": "g5",
       "level": "easy",
       "mode": "learning",
-      "timestamp": 1772436263878,
+      "timestamp": 1770952253493,
+      "isCorrect": false,
+      "exerciseText": "science:plants",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:plants",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "science",
+      "topic": "plants",
+      "bucketKey": "plants",
+      "grade": "g5",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1770952253494,
+      "isCorrect": false,
+      "exerciseText": "science:plants",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:plants",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "science",
+      "topic": "animals",
+      "bucketKey": "animals",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1771753784933,
       "isCorrect": false,
       "exerciseText": "science:animals",
       "correctAnswer": 1,
@@ -4098,147 +3629,35 @@
     },
     {
       "subject": "science",
-      "topic": "earth_space",
-      "bucketKey": "earth_space",
+      "topic": "environment",
+      "bucketKey": "environment",
       "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775265836021,
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772689102355,
       "isCorrect": false,
-      "exerciseText": "science:earth_space",
+      "exerciseText": "science:environment",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:science:earth_space",
+      "patternFamily": "pf:science:environment",
       "hintUsed": true,
-      "responseMs": 5400
+      "responseMs": 2100
     },
     {
       "subject": "science",
-      "topic": "earth_space",
-      "bucketKey": "earth_space",
+      "topic": "environment",
+      "bucketKey": "environment",
       "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775265836022,
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772689102356,
       "isCorrect": false,
-      "exerciseText": "science:earth_space",
+      "exerciseText": "science:environment",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:science:earth_space",
+      "patternFamily": "pf:science:environment",
       "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "science",
-      "topic": "earth_space",
-      "bucketKey": "earth_space",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775265836023,
-      "isCorrect": false,
-      "exerciseText": "science:earth_space",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:earth_space",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775854089114,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775854089115,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775854089116,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775854089117,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": true,
-      "responseMs": 5700
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775854089118,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": false,
-      "responseMs": 5800
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1775854089119,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": false,
-      "responseMs": 5900
+      "responseMs": 2145
     },
     {
       "subject": "science",
@@ -4247,7 +3666,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776169862198,
+      "timestamp": 1775959856430,
       "isCorrect": false,
       "exerciseText": "science:plants",
       "correctAnswer": 1,
@@ -4263,7 +3682,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776169862199,
+      "timestamp": 1775959856431,
       "isCorrect": false,
       "exerciseText": "science:plants",
       "correctAnswer": 1,
@@ -4271,294 +3690,6 @@
       "patternFamily": "pf:science:plants",
       "hintUsed": false,
       "responseMs": 5500
-    },
-    {
-      "subject": "science",
-      "topic": "plants",
-      "bucketKey": "plants",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776169862200,
-      "isCorrect": false,
-      "exerciseText": "science:plants",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:plants",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "science",
-      "topic": "plants",
-      "bucketKey": "plants",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776169862201,
-      "isCorrect": false,
-      "exerciseText": "science:plants",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:plants",
-      "hintUsed": true,
-      "responseMs": 5700
-    },
-    {
-      "subject": "science",
-      "topic": "plants",
-      "bucketKey": "plants",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776169862202,
-      "isCorrect": false,
-      "exerciseText": "science:plants",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:plants",
-      "hintUsed": false,
-      "responseMs": 5800
-    },
-    {
-      "subject": "science",
-      "topic": "materials",
-      "bucketKey": "materials",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776554659774,
-      "isCorrect": false,
-      "exerciseText": "science:materials",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:materials",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "science",
-      "topic": "materials",
-      "bucketKey": "materials",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776554659775,
-      "isCorrect": false,
-      "exerciseText": "science:materials",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:materials",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "science",
-      "topic": "materials",
-      "bucketKey": "materials",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776554659776,
-      "isCorrect": false,
-      "exerciseText": "science:materials",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:materials",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "science",
-      "topic": "materials",
-      "bucketKey": "materials",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776554659777,
-      "isCorrect": false,
-      "exerciseText": "science:materials",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:materials",
-      "hintUsed": true,
-      "responseMs": 5700
-    },
-    {
-      "subject": "science",
-      "topic": "materials",
-      "bucketKey": "materials",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776554659778,
-      "isCorrect": false,
-      "exerciseText": "science:materials",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:materials",
-      "hintUsed": false,
-      "responseMs": 5800
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776601340021,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776601340022,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776601340023,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "science",
-      "topic": "plants",
-      "bucketKey": "plants",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776890552406,
-      "isCorrect": false,
-      "exerciseText": "science:plants",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:plants",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "science",
-      "topic": "plants",
-      "bucketKey": "plants",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776890552407,
-      "isCorrect": false,
-      "exerciseText": "science:plants",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:plants",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "science",
-      "topic": "plants",
-      "bucketKey": "plants",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "challenge",
-      "timestamp": 1776890552408,
-      "isCorrect": false,
-      "exerciseText": "science:plants",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:plants",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "science",
-      "topic": "materials",
-      "bucketKey": "materials",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776906565027,
-      "isCorrect": false,
-      "exerciseText": "science:materials",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:materials",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "science",
-      "topic": "materials",
-      "bucketKey": "materials",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776906565028,
-      "isCorrect": false,
-      "exerciseText": "science:materials",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:materials",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "science",
-      "topic": "materials",
-      "bucketKey": "materials",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776906565029,
-      "isCorrect": false,
-      "exerciseText": "science:materials",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:materials",
-      "hintUsed": false,
-      "responseMs": 5600
-    },
-    {
-      "subject": "science",
-      "topic": "materials",
-      "bucketKey": "materials",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776906565030,
-      "isCorrect": false,
-      "exerciseText": "science:materials",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:materials",
-      "hintUsed": true,
-      "responseMs": 5700
     },
     {
       "subject": "science",
@@ -4567,7 +3698,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776920432331,
+      "timestamp": 1775981741779,
       "isCorrect": false,
       "exerciseText": "science:animals",
       "correctAnswer": 1,
@@ -4583,7 +3714,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776920432332,
+      "timestamp": 1775981741780,
       "isCorrect": false,
       "exerciseText": "science:animals",
       "correctAnswer": 1,
@@ -4599,7 +3730,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "challenge",
-      "timestamp": 1776920432333,
+      "timestamp": 1775981741781,
       "isCorrect": false,
       "exerciseText": "science:animals",
       "correctAnswer": 1,
@@ -4610,12 +3741,28 @@
     },
     {
       "subject": "science",
+      "topic": "animals",
+      "bucketKey": "animals",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1775981741782,
+      "isCorrect": false,
+      "exerciseText": "science:animals",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:animals",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "science",
       "topic": "earth_space",
       "bucketKey": "earth_space",
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776940714907,
+      "timestamp": 1776391000922,
       "isCorrect": false,
       "exerciseText": "science:earth_space",
       "correctAnswer": 1,
@@ -4631,7 +3778,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776940714908,
+      "timestamp": 1776391000923,
       "isCorrect": false,
       "exerciseText": "science:earth_space",
       "correctAnswer": 1,
@@ -4647,7 +3794,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776940714909,
+      "timestamp": 1776391000924,
       "isCorrect": false,
       "exerciseText": "science:earth_space",
       "correctAnswer": 1,
@@ -4658,49 +3805,113 @@
     },
     {
       "subject": "science",
-      "topic": "environment",
-      "bucketKey": "environment",
+      "topic": "body",
+      "bucketKey": "body",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777132765529,
+      "mode": "challenge",
+      "timestamp": 1776998542779,
       "isCorrect": false,
-      "exerciseText": "science:environment",
+      "exerciseText": "science:body",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:science:environment",
+      "patternFamily": "pf:science:body",
       "hintUsed": true,
       "responseMs": 5400
     },
     {
       "subject": "science",
-      "topic": "environment",
-      "bucketKey": "environment",
+      "topic": "body",
+      "bucketKey": "body",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777132765530,
+      "mode": "challenge",
+      "timestamp": 1776998542780,
       "isCorrect": false,
-      "exerciseText": "science:environment",
+      "exerciseText": "science:body",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:science:environment",
+      "patternFamily": "pf:science:body",
       "hintUsed": false,
       "responseMs": 5500
     },
     {
       "subject": "science",
-      "topic": "environment",
-      "bucketKey": "environment",
+      "topic": "body",
+      "bucketKey": "body",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1777132765531,
+      "mode": "challenge",
+      "timestamp": 1776998542781,
       "isCorrect": false,
-      "exerciseText": "science:environment",
+      "exerciseText": "science:body",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:science:environment",
+      "patternFamily": "pf:science:body",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "science",
+      "topic": "body",
+      "bucketKey": "body",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776998542782,
+      "isCorrect": false,
+      "exerciseText": "science:body",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:body",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "science",
+      "topic": "materials",
+      "bucketKey": "materials",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1777145000965,
+      "isCorrect": false,
+      "exerciseText": "science:materials",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:materials",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "science",
+      "topic": "materials",
+      "bucketKey": "materials",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1777145000966,
+      "isCorrect": false,
+      "exerciseText": "science:materials",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:materials",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "science",
+      "topic": "materials",
+      "bucketKey": "materials",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1777145000967,
+      "isCorrect": false,
+      "exerciseText": "science:materials",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:materials",
       "hintUsed": false,
       "responseMs": 5600
     }
@@ -4708,39 +3919,199 @@
   "mleo_hebrew_time_tracking": {
     "topics": {
       "reading": {
-        "total": 1631,
+        "total": 2661,
         "sessions": [
           {
-            "date": "2026-04-23",
-            "duration": 1631,
+            "date": "2026-01-23",
+            "duration": 904,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "reading",
+            "timestamp": 1769126473360,
+            "mode": "learning",
+            "total": 14,
+            "correct": 13
+          },
+          {
+            "date": "2026-03-25",
+            "duration": 1757,
             "grade": "g5",
             "level": "hard",
             "topic": "reading",
-            "timestamp": 1776904256270,
-            "mode": "learning",
-            "total": 10,
-            "correct": 7
+            "timestamp": 1774477600602,
+            "mode": "challenge",
+            "total": 25,
+            "correct": 14
           }
         ],
         "byGrade": {
-          "g5": 1631
+          "g5": 2661
         },
         "byLevel": {
-          "hard": 1631
+          "medium": 904,
+          "hard": 1757
+        }
+      },
+      "grammar": {
+        "total": 912,
+        "sessions": [
+          {
+            "date": "2026-04-19",
+            "duration": 912,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "grammar",
+            "timestamp": 1776574645854,
+            "mode": "learning",
+            "total": 22,
+            "correct": 13
+          }
+        ],
+        "byGrade": {
+          "g5": 912
+        },
+        "byLevel": {
+          "hard": 912
+        }
+      },
+      "comprehension": {
+        "total": 1708,
+        "sessions": [
+          {
+            "date": "2026-04-21",
+            "duration": 1708,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "comprehension",
+            "timestamp": 1776741124936,
+            "mode": "challenge",
+            "total": 15,
+            "correct": 8
+          }
+        ],
+        "byGrade": {
+          "g5": 1708
+        },
+        "byLevel": {
+          "hard": 1708
+        }
+      },
+      "writing": {
+        "total": 1480,
+        "sessions": [
+          {
+            "date": "2026-04-22",
+            "duration": 1480,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "writing",
+            "timestamp": 1776847029124,
+            "mode": "learning",
+            "total": 24,
+            "correct": 16
+          }
+        ],
+        "byGrade": {
+          "g5": 1480
+        },
+        "byLevel": {
+          "hard": 1480
+        }
+      },
+      "vocabulary": {
+        "total": 1502,
+        "sessions": [
+          {
+            "date": "2026-04-24",
+            "duration": 1502,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "vocabulary",
+            "timestamp": 1777067489155,
+            "mode": "challenge",
+            "total": 17,
+            "correct": 11
+          }
+        ],
+        "byGrade": {
+          "g5": 1502
+        },
+        "byLevel": {
+          "hard": 1502
         }
       }
     },
     "daily": {
-      "2026-04-23": {
-        "total": 1631,
+      "2026-01-23": {
+        "total": 904,
         "topics": {
-          "reading": 1631
+          "reading": 904
         },
         "byGrade": {
-          "g5": 1631
+          "g5": 904
         },
         "byLevel": {
-          "hard": 1631
+          "medium": 904
+        }
+      },
+      "2026-03-25": {
+        "total": 1757,
+        "topics": {
+          "reading": 1757
+        },
+        "byGrade": {
+          "g5": 1757
+        },
+        "byLevel": {
+          "hard": 1757
+        }
+      },
+      "2026-04-19": {
+        "total": 912,
+        "topics": {
+          "grammar": 912
+        },
+        "byGrade": {
+          "g5": 912
+        },
+        "byLevel": {
+          "hard": 912
+        }
+      },
+      "2026-04-21": {
+        "total": 1708,
+        "topics": {
+          "comprehension": 1708
+        },
+        "byGrade": {
+          "g5": 1708
+        },
+        "byLevel": {
+          "hard": 1708
+        }
+      },
+      "2026-04-22": {
+        "total": 1480,
+        "topics": {
+          "writing": 1480
+        },
+        "byGrade": {
+          "g5": 1480
+        },
+        "byLevel": {
+          "hard": 1480
+        }
+      },
+      "2026-04-24": {
+        "total": 1502,
+        "topics": {
+          "vocabulary": 1502
+        },
+        "byGrade": {
+          "g5": 1502
+        },
+        "byLevel": {
+          "hard": 1502
         }
       }
     }
@@ -4748,13 +4119,29 @@
   "mleo_hebrew_master_progress": {
     "progress": {
       "reading": {
-        "total": 10,
-        "correct": 7
+        "total": 39,
+        "correct": 27
+      },
+      "grammar": {
+        "total": 22,
+        "correct": 13
+      },
+      "comprehension": {
+        "total": 15,
+        "correct": 8
+      },
+      "writing": {
+        "total": 24,
+        "correct": 16
+      },
+      "vocabulary": {
+        "total": 17,
+        "correct": 11
       }
     },
-    "stars": 4,
+    "stars": 3,
     "playerLevel": 1,
-    "xp": 50,
+    "xp": 585,
     "badges": []
   },
   "mleo_hebrew_mistakes": [
@@ -4763,9 +4150,25 @@
       "topic": "reading",
       "bucketKey": "reading",
       "grade": "g5",
-      "level": "hard",
+      "level": "medium",
       "mode": "learning",
-      "timestamp": 1776904256270,
+      "timestamp": 1769126473360,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1774477600602,
       "isCorrect": false,
       "exerciseText": "hebrew:reading",
       "correctAnswer": 1,
@@ -4780,8 +4183,8 @@
       "bucketKey": "reading",
       "grade": "g5",
       "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776904256271,
+      "mode": "challenge",
+      "timestamp": 1774477600603,
       "isCorrect": false,
       "exerciseText": "hebrew:reading",
       "correctAnswer": 1,
@@ -4789,6 +4192,326 @@
       "patternFamily": "pf:hebrew:reading",
       "hintUsed": false,
       "responseMs": 5500
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1774477600604,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1774477600605,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1774477600606,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": false,
+      "responseMs": 5800
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1774477600607,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": false,
+      "responseMs": 5900
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776574645854,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776574645855,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776574645856,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776574645857,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776574645858,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": false,
+      "responseMs": 5800
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776741124936,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776741124937,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776741124938,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1776741124939,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776847029124,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776847029125,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776847029126,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776847029127,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": true,
+      "responseMs": 5700
+    },
+    {
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1777067489155,
+      "isCorrect": false,
+      "exerciseText": "hebrew:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:vocabulary",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1777067489156,
+      "isCorrect": false,
+      "exerciseText": "hebrew:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:vocabulary",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "challenge",
+      "timestamp": 1777067489157,
+      "isCorrect": false,
+      "exerciseText": "hebrew:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:vocabulary",
+      "hintUsed": false,
+      "responseMs": 5600
     }
   ],
   "mleo_moledet_geography_time_tracking": {
@@ -4805,11 +4528,11 @@
   "mleo_moledet_geography_mistakes": [],
   "mleo_daily_challenge": {
     "questions": 920,
-    "correct": 606,
-    "bestScore": 606
+    "correct": 648,
+    "bestScore": 648
   },
   "mleo_weekly_challenge": {
-    "current": 66,
+    "current": 70,
     "target": 100,
     "completed": true
   }
