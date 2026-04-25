@@ -5,6 +5,7 @@
 
 import { generateParentReportV2 } from "./parent-report-v2";
 import { isValidHybridRuntimePayload } from "./ai-hybrid-diagnostic/validate-hybrid-runtime.js";
+import { buildParentProductContractV1 } from "./contracts/parent-product-contract-v1.js";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
 import { buildTopicRecommendationsForSubject } from "./topic-next-step-engine";
 import { rewriteParentRecommendationForDetailedHe } from "./detailed-report-parent-letter-he";
@@ -2378,6 +2379,16 @@ export function buildDetailedParentReportFromBaseReport(baseReport, meta = {}) {
     };
   });
   executiveSummary = applyNarrativeConsistencyToExecutiveSummary(executiveSummary, subjectProfiles);
+  const parentProductContractV1 = buildParentProductContractV1({
+    executiveSummary,
+    subjectProfiles,
+    periodInfo: {
+      period: baseReport.period === "custom" ? "custom" : period,
+      startDate: baseReport.startDate,
+      endDate: baseReport.endDate,
+      playerName: baseReport.playerName || playerName,
+    },
+  });
 
   return {
     version: 2,
@@ -2404,6 +2415,7 @@ export function buildDetailedParentReportFromBaseReport(baseReport, meta = {}) {
     crossSubjectInsights,
     homePlan,
     nextPeriodGoals,
+    parentProductContractV1,
     dataIntegrityReport: baseReport.dataIntegrityReport ?? null,
     contractsV1: {
       ...(baseReport?.contractsV1 && typeof baseReport.contractsV1 === "object" ? baseReport.contractsV1 : {}),

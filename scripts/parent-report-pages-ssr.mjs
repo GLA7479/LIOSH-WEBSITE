@@ -20,6 +20,10 @@ async function importFromRoot(rel) {
 const { buildDetailedParentReportFromBaseReport } = await importFromRoot("utils/detailed-parent-report.js");
 const { normalizeExecutiveSummary } = await importFromRoot("utils/parent-report-payload-normalize.js");
 const { PARENT_REPORT_SCENARIOS } = await import(pathToFileURL(join(ROOT, "tests/fixtures/parent-report-pipeline.mjs")).href);
+const { PARENT_REPORT_PRODUCT_SCENARIOS } = await import(
+  pathToFileURL(join(ROOT, "tests", "fixtures", "parent-report-product-scenarios.mjs")).href
+);
+const { FORBIDDEN_INTERNAL_PARENT_TERMS } = await importFromRoot("utils/contracts/parent-product-contract-v1.js");
 
 const detailedMod = await import(pathToFileURL(join(ROOT, "components/parent-report-detailed-surface.jsx")).href);
 const {
@@ -28,6 +32,8 @@ const {
   SubjectSummaryBlock,
   TopicRecommendationExplainStrip,
 } = detailedMod;
+const contractUiMod = await import(pathToFileURL(join(ROOT, "components/parent-report-contract-ui-blocks.jsx")).href);
+const { ParentTopContractSummaryBlock, ParentSubjectContractSummaryBlock } = contractUiMod;
 
 const parentMod = await import(pathToFileURL(join(ROOT, "components/parent-report-topic-explain-row.jsx")).href);
 const { ParentReportTopicExplainRow, ParentReportTopicExplainBlock } = parentMod;
@@ -315,6 +321,40 @@ function runDetailedPageChunks() {
   render("topic-strip:phase15-unified-compact", h(TopicRecommendationExplainStrip, { tr: trPhase15 }));
 }
 
+function runContractBindingChunks() {
+  const stable = buildDetailedParentReportFromBaseReport(PARENT_REPORT_SCENARIOS.stable_excellence(), {
+    period: "week",
+  });
+  const top = stable?.parentProductContractV1?.top;
+  assert.ok(top && typeof top === "object", "contract top should exist for stable scenario");
+  const topHtml = render("contract-ui:top-stable", h(ParentTopContractSummaryBlock, { top }));
+  for (const token of FORBIDDEN_INTERNAL_PARENT_TERMS) {
+    assert.ok(!topHtml.toLowerCase().includes(String(token).toLowerCase()), `forbidden token leaked in top ui: ${token}`);
+  }
+  assert.ok(topHtml.includes("מיקוד עיקרי"), "top contract field label should render");
+  assert.ok(!topHtml.includes("פער ידע"), "stable mastery top area should avoid remediation wording");
+
+  const trendScenario = PARENT_REPORT_PRODUCT_SCENARIOS.find((s) => s.id === "trend_insufficient");
+  assert.ok(trendScenario && typeof trendScenario.buildBaseReport === "function", "trend_insufficient scenario missing");
+  const trendReport = buildDetailedParentReportFromBaseReport(trendScenario.buildBaseReport(), { period: "week" });
+  const trendTopHtml = render("contract-ui:top-trend-insufficient", h(ParentTopContractSummaryBlock, { top: trendReport?.parentProductContractV1?.top }));
+  const strongTrendWords = ["משתפר", "בירידה", "מגמה חיובית", "מגמה שלילית", "שיפור מבוסס", "ירידה מבוססת"];
+  for (const word of strongTrendWords) {
+    assert.ok(!trendTopHtml.includes(word), `trend-insufficient top area contains strong trend wording: ${word}`);
+  }
+
+  const subjectContracts = stable?.parentProductContractV1?.subjects || {};
+  const firstSubjectContract = Object.values(subjectContracts)[0];
+  const subjectHtml = render(
+    "contract-ui:subject-stable",
+    h(ParentSubjectContractSummaryBlock, { contractRow: firstSubjectContract, compact: false })
+  );
+  assert.ok(subjectHtml.includes("סיכום להורה"), "subject contract block should render");
+
+  const legacyFallbackHtml = renderToStaticMarkup(h(ParentTopContractSummaryBlock, { top: null }));
+  assert.equal(legacyFallbackHtml, "", "missing top contract should render empty safely");
+}
+
 function runParentReportPageChunks() {
   const longLabel = "שם־נושא־ארוך־" + "א".repeat(200);
   const longWhy = "ב".repeat(500);
@@ -448,6 +488,7 @@ function runParentReportPageChunks() {
 
 function main() {
   runDetailedPageChunks();
+  runContractBindingChunks();
   runParentReportPageChunks();
   console.log("parent-report pages SSR smoke: OK");
 }

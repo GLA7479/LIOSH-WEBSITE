@@ -17,6 +17,10 @@ import {
   SubjectSummaryBlock,
   TopicRecommendationExplainStrip,
 } from "../../components/parent-report-detailed-surface.jsx";
+import {
+  ParentTopContractSummaryBlock,
+  ParentSubjectContractSummaryBlock,
+} from "../../components/parent-report-contract-ui-blocks.jsx";
 import { normalizeExecutiveSummary } from "../../utils/parent-report-payload-normalize";
 import ParentCopilotShell from "../../components/parent-copilot/parent-copilot-shell.jsx";
 
@@ -271,6 +275,17 @@ export default function ParentReportDetailedPage() {
   const visibleSubjectProfiles = allSubjectProfiles.filter(
     (sp) => (Number(sp?.subjectQuestionCount) || 0) > 0
   );
+  const topContract = payload?.parentProductContractV1?.top || null;
+  const subjectContracts = payload?.parentProductContractV1?.subjects || {};
+  const hasTopContract = !!topContract && typeof topContract === "object";
+  const normalizedExecutive = normalizeExecutiveSummary(payload);
+  const executiveForUi = hasTopContract
+    ? {
+        ...normalizedExecutive,
+        topImmediateParentActionHe: "",
+        secondPriorityActionHe: "",
+      }
+    : normalizedExecutive;
 
   return (
     <Layout>
@@ -1108,10 +1123,17 @@ export default function ParentReportDetailedPage() {
                   </p>
                 </header>
 
-                {/* B — סיכום לתקופה (תוכן ExecutiveSummarySection ללא שינוי) */}
+                {/* B — סיכום להורה לפי חוזה מוצר (עם fallback לזרימה קיימת) */}
+                {hasTopContract ? (
+                  <SectionCard title="סיכום להורה" compact={displayMode === "summary"}>
+                    <ParentTopContractSummaryBlock top={topContract} />
+                  </SectionCard>
+                ) : null}
+
+                {/* B — סיכום לתקופה (זרימה קיימת; ללא התנגשות עדיפות ראשית כשחוזה פעיל) */}
                 <SectionCard title="סיכום לתקופה" compact={displayMode === "summary"}>
                   <ExecutiveSummarySection
-                    es={normalizeExecutiveSummary(payload)}
+                    es={executiveForUi}
                     compact={displayMode === "summary"}
                   />
                 </SectionCard>
@@ -1189,7 +1211,13 @@ export default function ParentReportDetailedPage() {
                     </h2>
                     <div className="space-y-4">
                       {visibleSubjectProfiles.map((sp) => (
-                        <SubjectSummaryBlock key={sp.subject} sp={sp} />
+                        <div key={sp.subject} className="space-y-2">
+                          <SubjectSummaryBlock sp={sp} />
+                          <ParentSubjectContractSummaryBlock
+                            contractRow={subjectContracts?.[String(sp?.subject || "")] || null}
+                            compact
+                          />
+                        </div>
                       ))}
                       {!visibleSubjectProfiles.length ? (
                         <p className="pr-detailed-muted text-sm">אין מקצועות עם נפח נתונים להצגה בטווח הזה.</p>
@@ -1220,7 +1248,13 @@ export default function ParentReportDetailedPage() {
                           </div>
                           <div className="pr-detailed-subject-inner space-y-4 pt-3">
                             <SubjectPhase3Insights sp={sp} compact={false} />
-                            <SubjectParentLetter sp={sp} />
+                            {subjectContracts?.[String(sp?.subject || "")] ? (
+                              <ParentSubjectContractSummaryBlock
+                                contractRow={subjectContracts[String(sp?.subject || "")]}
+                              />
+                            ) : (
+                              <SubjectParentLetter sp={sp} />
+                            )}
                             {sp.evidenceExamples?.length ? (
                               <div className="pr-detailed-tier-examples">
                                 <p className="pr-detailed-body-text text-sm m-0 mb-2 text-white/[0.82]">

@@ -39,6 +39,8 @@
     "ai-hybrid:generate-gold": "tsx scripts/ai-hybrid-generate-synthetic-gold.mjs",
     "ai-hybrid:offline-eval": "tsx scripts/ai-hybrid-offline-eval.mjs",
     "test:parent-report-phase6": "tsx scripts/parent-report-hebrew-language-selftest.mjs && tsx scripts/parent-report-phase6-suite.mjs && tsx scripts/parent-report-pages-ssr.mjs",
+    "test:parent-report-product-contract": "tsx scripts/parent-report-product-contract-audit.mjs",
+    "audit:parent-report-ui-binding": "tsx scripts/parent-report-product-ui-binding-audit.mjs",
     "test:parent-report-hebrew-language": "tsx scripts/parent-report-hebrew-language-selftest.mjs",
     "test:minimal-safe-scope": "tsx scripts/minimal-safe-scope-scenarios.mjs",
     "test:parent-copilot-phaseA": "tsx scripts/parent-copilot-phaseA-suite.mjs",
