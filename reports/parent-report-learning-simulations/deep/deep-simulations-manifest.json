@@ -1,0 +1,422 @@
+{
+  "generatedAt": "2026-04-25T16:55:47.091Z",
+  "anchorEndMs": 1777136147070,
+  "simulations": [
+    {
+      "id": "simDeep01_mixed_real_child",
+      "studentName": "Deep 01 — מעורב",
+      "simulatedDateRange": {
+        "start": "2025-12-28",
+        "end": "2026-04-26"
+      },
+      "anchorEndMs": 1777136147070,
+      "totalDays": 120,
+      "activeDays": 36,
+      "totalSessions": 82,
+      "totalQuestions": 1550,
+      "totalCorrect": 1066,
+      "totalTimeMinutes": 1880,
+      "subjects": [
+        "english",
+        "geometry",
+        "hebrew",
+        "math",
+        "science"
+      ],
+      "topicsPerSubject": {
+        "science": [
+          "animals",
+          "body",
+          "earth_space",
+          "environment",
+          "experiments",
+          "materials",
+          "plants"
+        ],
+        "math": [
+          "addition",
+          "division",
+          "fractions",
+          "multiplication",
+          "subtraction",
+          "word_problems"
+        ],
+        "english": [
+          "grammar",
+          "sentences",
+          "translation",
+          "vocabulary",
+          "writing"
+        ],
+        "geometry": [
+          "angles",
+          "area",
+          "perimeter",
+          "shapes_basic",
+          "volume"
+        ],
+        "hebrew": [
+          "comprehension",
+          "grammar",
+          "reading",
+          "vocabulary",
+          "writing"
+        ]
+      },
+      "accuracyBySubject": {
+        "science": 75,
+        "math": 53,
+        "english": 92,
+        "geometry": 61,
+        "hebrew": 77
+      },
+      "trendPattern": "mixed",
+      "expectedReportBehavior": "עדיפות ראשית אחת ברורה; לשמר חוזקות; בלי המלצות מפוזרות שקולות מדי.",
+      "mustNotHappen": [
+        "שלוש פעולות בית שקולות",
+        "remediation-heavy on English"
+      ],
+      "subjectCountNote": null,
+      "snapshotPath": "reports/parent-report-learning-simulations/deep/snapshots/simDeep01_mixed_real_child.storage.json"
+    },
+    {
+      "id": "simDeep02_strong_stable_child",
+      "studentName": "Deep 02 — יציב חזק",
+      "simulatedDateRange": {
+        "start": "2026-01-25",
+        "end": "2026-04-25"
+      },
+      "anchorEndMs": 1777136147070,
+      "totalDays": 105,
+      "activeDays": 35,
+      "totalSessions": 68,
+      "totalQuestions": 1150,
+      "totalCorrect": 1025,
+      "totalTimeMinutes": 1531,
+      "subjects": [
+        "english",
+        "hebrew",
+        "math",
+        "science"
+      ],
+      "topicsPerSubject": {
+        "math": [
+          "addition",
+          "division",
+          "fractions",
+          "multiplication",
+          "subtraction",
+          "word_problems"
+        ],
+        "hebrew": [
+          "comprehension",
+          "grammar",
+          "reading",
+          "vocabulary",
+          "writing"
+        ],
+        "english": [
+          "grammar",
+          "sentences",
+          "translation",
+          "vocabulary",
+          "writing"
+        ],
+        "science": [
+          "animals",
+          "body",
+          "earth_space",
+          "environment",
+          "experiments",
+          "materials",
+          "plants"
+        ]
+      },
+      "accuracyBySubject": {
+        "math": 83,
+        "hebrew": 90,
+        "english": 93,
+        "science": 89
+      },
+      "trendPattern": "stable_strong",
+      "expectedReportBehavior": "שימור / הרחבה מבוקרת; בלי שיקום; בלי טון של פער ידע.",
+      "mustNotHappen": [
+        "פער ידע",
+        "שיקום אגרסיבי"
+      ],
+      "subjectCountNote": "exactly four subjects per product brief (no moledet)",
+      "snapshotPath": "reports/parent-report-learning-simulations/deep/snapshots/simDeep02_strong_stable_child.storage.json"
+    },
+    {
+      "id": "simDeep03_weak_math_long_term",
+      "studentName": "Deep 03 — חולשת חשבון ארוכה",
+      "simulatedDateRange": {
+        "start": "2025-12-12",
+        "end": "2026-04-26"
+      },
+      "anchorEndMs": 1777136147070,
+      "totalDays": 135,
+      "activeDays": 38,
+      "totalSessions": 72,
+      "totalQuestions": 1050,
+      "totalCorrect": 686,
+      "totalTimeMinutes": 1568,
+      "subjects": [
+        "english",
+        "geometry",
+        "hebrew",
+        "math"
+      ],
+      "topicsPerSubject": {
+        "geometry": [
+          "angles",
+          "area",
+          "perimeter",
+          "shapes_basic",
+          "volume"
+        ],
+        "hebrew": [
+          "comprehension",
+          "grammar",
+          "reading",
+          "vocabulary",
+          "writing"
+        ],
+        "english": [
+          "grammar",
+          "sentences",
+          "translation",
+          "vocabulary",
+          "writing"
+        ],
+        "math": [
+          "addition",
+          "division",
+          "fractions",
+          "multiplication",
+          "subtraction",
+          "word_problems"
+        ]
+      },
+      "accuracyBySubject": {
+        "geometry": 78,
+        "hebrew": 74,
+        "english": 74,
+        "math": 50
+      },
+      "trendPattern": "weak_math_persistent",
+      "expectedReportBehavior": "חשבון כמיקוד ראשי; תוכנית בית אפשרית; לא אין מספיק ראיות בראש הדוח.",
+      "mustNotHappen": [
+        "insufficient as top status for math"
+      ],
+      "subjectCountNote": null,
+      "snapshotPath": "reports/parent-report-learning-simulations/deep/snapshots/simDeep03_weak_math_long_term.storage.json"
+    },
+    {
+      "id": "simDeep04_improving_child",
+      "studentName": "Deep 04 — משתפר לאורך זמן",
+      "simulatedDateRange": {
+        "start": "2025-12-31",
+        "end": "2026-04-26"
+      },
+      "anchorEndMs": 1777136147070,
+      "totalDays": 120,
+      "activeDays": 30,
+      "totalSessions": 70,
+      "totalQuestions": 1180,
+      "totalCorrect": 898,
+      "totalTimeMinutes": 1533,
+      "subjects": [
+        "english",
+        "geometry",
+        "hebrew",
+        "math"
+      ],
+      "topicsPerSubject": {
+        "hebrew": [
+          "comprehension",
+          "grammar",
+          "reading",
+          "vocabulary",
+          "writing"
+        ],
+        "english": [
+          "grammar",
+          "sentences",
+          "translation",
+          "vocabulary",
+          "writing"
+        ],
+        "math": [
+          "addition",
+          "division",
+          "fractions",
+          "multiplication",
+          "subtraction",
+          "word_problems"
+        ],
+        "geometry": [
+          "angles",
+          "area",
+          "perimeter",
+          "shapes_basic",
+          "volume"
+        ]
+      },
+      "accuracyBySubject": {
+        "hebrew": 76,
+        "english": 76,
+        "math": 77,
+        "geometry": 75
+      },
+      "trendPattern": "improving",
+      "expectedReportBehavior": "הכרה זהירה בשיפור; עדיין ייצוב; לא הפרזה במסר חיובי.",
+      "mustNotHappen": [
+        "overconfident mastery claim"
+      ],
+      "subjectCountNote": null,
+      "snapshotPath": "reports/parent-report-learning-simulations/deep/snapshots/simDeep04_improving_child.storage.json"
+    },
+    {
+      "id": "simDeep05_declining_after_difficulty_jump",
+      "studentName": "Deep 05 — ירידה אחרי קפיצת קושי",
+      "simulatedDateRange": {
+        "start": "2026-01-10",
+        "end": "2026-04-26"
+      },
+      "anchorEndMs": 1777136147070,
+      "totalDays": 110,
+      "activeDays": 32,
+      "totalSessions": 62,
+      "totalQuestions": 920,
+      "totalCorrect": 600,
+      "totalTimeMinutes": 1409,
+      "subjects": [
+        "english",
+        "geometry",
+        "hebrew",
+        "math",
+        "science"
+      ],
+      "topicsPerSubject": {
+        "science": [
+          "animals",
+          "body",
+          "earth_space",
+          "environment",
+          "experiments",
+          "materials",
+          "plants"
+        ],
+        "math": [
+          "addition",
+          "division",
+          "fractions",
+          "multiplication",
+          "subtraction",
+          "word_problems"
+        ],
+        "hebrew": [
+          "comprehension",
+          "grammar",
+          "reading",
+          "vocabulary",
+          "writing"
+        ],
+        "geometry": [
+          "angles",
+          "area",
+          "perimeter",
+          "shapes_basic",
+          "volume"
+        ],
+        "english": [
+          "grammar",
+          "sentences",
+          "translation",
+          "vocabulary",
+          "writing"
+        ]
+      },
+      "accuracyBySubject": {
+        "science": 66,
+        "math": 68,
+        "hebrew": 65,
+        "geometry": 60,
+        "english": 65
+      },
+      "trendPattern": "decline_post_jump",
+      "expectedReportBehavior": "ייצוב רמה; לא להעלות קושי; מגמה מספקת לזיהוי ירידה.",
+      "mustNotHappen": [
+        "push harder difficulty"
+      ],
+      "subjectCountNote": null,
+      "snapshotPath": "reports/parent-report-learning-simulations/deep/snapshots/simDeep05_declining_after_difficulty_jump.storage.json"
+    },
+    {
+      "id": "simDeep06_fast_careless_vs_slow_accurate_mix",
+      "studentName": "Deep 06 — קצב מעורב",
+      "simulatedDateRange": {
+        "start": "2026-01-18",
+        "end": "2026-04-26"
+      },
+      "anchorEndMs": 1777136147070,
+      "totalDays": 100,
+      "activeDays": 27,
+      "totalSessions": 58,
+      "totalQuestions": 880,
+      "totalCorrect": 777,
+      "totalTimeMinutes": 1203,
+      "subjects": [
+        "english",
+        "geometry",
+        "hebrew",
+        "math"
+      ],
+      "topicsPerSubject": {
+        "hebrew": [
+          "comprehension",
+          "grammar",
+          "reading",
+          "vocabulary",
+          "writing"
+        ],
+        "geometry": [
+          "angles",
+          "area",
+          "perimeter",
+          "shapes_basic",
+          "volume"
+        ],
+        "math": [
+          "addition",
+          "division",
+          "fractions",
+          "multiplication",
+          "subtraction",
+          "word_problems"
+        ],
+        "english": [
+          "grammar",
+          "sentences",
+          "translation",
+          "vocabulary",
+          "writing"
+        ]
+      },
+      "accuracyBySubject": {
+        "hebrew": 93,
+        "geometry": 90,
+        "math": 81,
+        "english": 91
+      },
+      "trendPattern": "pace_mixed",
+      "expectedReportBehavior": "דגש על בדיקה/קצב; לא לתייג הכל כפער ידע.",
+      "mustNotHappen": [
+        "pure knowledge gap framing for all topics"
+      ],
+      "subjectCountNote": null,
+      "snapshotPath": "reports/parent-report-learning-simulations/deep/snapshots/simDeep06_fast_careless_vs_slow_accurate_mix.storage.json"
+    }
+  ]
+}

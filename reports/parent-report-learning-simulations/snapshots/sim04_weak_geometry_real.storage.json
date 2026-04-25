@@ -1,0 +1,904 @@
+{
+  "mleo_player_name": "Sim 04",
+  "mleo_time_tracking": {
+    "operations": {},
+    "daily": {}
+  },
+  "mleo_math_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_geometry_time_tracking": {
+    "topics": {
+      "perimeter": {
+        "total": 10980,
+        "sessions": [
+          {
+            "date": "2026-04-08",
+            "duration": 900,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1775649600000,
+            "mode": "learning",
+            "total": 11,
+            "correct": 7
+          },
+          {
+            "date": "2026-04-10",
+            "duration": 1140,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1775826000000,
+            "mode": "learning",
+            "total": 14,
+            "correct": 8
+          },
+          {
+            "date": "2026-04-12",
+            "duration": 1380,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776002400000,
+            "mode": "learning",
+            "total": 16,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-14",
+            "duration": 1620,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776178800000,
+            "mode": "learning",
+            "total": 11,
+            "correct": 6
+          },
+          {
+            "date": "2026-04-16",
+            "duration": 900,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776340800000,
+            "mode": "learning",
+            "total": 14,
+            "correct": 8
+          },
+          {
+            "date": "2026-04-19",
+            "duration": 1140,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776603600000,
+            "mode": "learning",
+            "total": 16,
+            "correct": 8
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 1380,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776780000000,
+            "mode": "learning",
+            "total": 11,
+            "correct": 6
+          },
+          {
+            "date": "2026-04-23",
+            "duration": 1620,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776956400000,
+            "mode": "learning",
+            "total": 14,
+            "correct": 7
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 900,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1777118400000,
+            "mode": "learning",
+            "total": 16,
+            "correct": 8
+          }
+        ],
+        "byGrade": {
+          "g4": 10980
+        },
+        "byLevel": {
+          "medium": 10980
+        }
+      }
+    },
+    "daily": {
+      "2026-04-08": {
+        "total": 900,
+        "topics": {
+          "addition": 900
+        },
+        "byGrade": {
+          "g4": 900
+        },
+        "byLevel": {
+          "medium": 900
+        }
+      },
+      "2026-04-10": {
+        "total": 1140,
+        "topics": {
+          "addition": 1140
+        },
+        "byGrade": {
+          "g4": 1140
+        },
+        "byLevel": {
+          "medium": 1140
+        }
+      },
+      "2026-04-12": {
+        "total": 1380,
+        "topics": {
+          "addition": 1380
+        },
+        "byGrade": {
+          "g4": 1380
+        },
+        "byLevel": {
+          "medium": 1380
+        }
+      },
+      "2026-04-14": {
+        "total": 1620,
+        "topics": {
+          "addition": 1620
+        },
+        "byGrade": {
+          "g4": 1620
+        },
+        "byLevel": {
+          "medium": 1620
+        }
+      },
+      "2026-04-16": {
+        "total": 900,
+        "topics": {
+          "addition": 900
+        },
+        "byGrade": {
+          "g4": 900
+        },
+        "byLevel": {
+          "medium": 900
+        }
+      },
+      "2026-04-19": {
+        "total": 1140,
+        "topics": {
+          "addition": 1140
+        },
+        "byGrade": {
+          "g4": 1140
+        },
+        "byLevel": {
+          "medium": 1140
+        }
+      },
+      "2026-04-21": {
+        "total": 1380,
+        "topics": {
+          "addition": 1380
+        },
+        "byGrade": {
+          "g4": 1380
+        },
+        "byLevel": {
+          "medium": 1380
+        }
+      },
+      "2026-04-23": {
+        "total": 1620,
+        "topics": {
+          "addition": 1620
+        },
+        "byGrade": {
+          "g4": 1620
+        },
+        "byLevel": {
+          "medium": 1620
+        }
+      },
+      "2026-04-25": {
+        "total": 900,
+        "topics": {
+          "addition": 900
+        },
+        "byGrade": {
+          "g4": 900
+        },
+        "byLevel": {
+          "medium": 900
+        }
+      }
+    }
+  },
+  "mleo_geometry_master_progress": {
+    "progress": {
+      "perimeter": {
+        "total": 123,
+        "correct": 67
+      }
+    },
+    "stars": 3,
+    "playerLevel": 4,
+    "xp": 615,
+    "badges": []
+  },
+  "mleo_english_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_english_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_science_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_science_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_hebrew_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_hebrew_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_moledet_geography_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_moledet_geography_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_mistakes": [],
+  "mleo_geometry_mistakes": [
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1775649600000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1775649601000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1775649602000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1775826000000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1775826001000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1775826002000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1775826003000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776002400000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776002401000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776002402000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776002403000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776002404000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 1060
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776178800000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776178801000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776178802000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776178803000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776340800000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776340801000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776340802000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776340803000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776603600000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776603601000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776603602000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776603603000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776603604000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 1060
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776603605000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 1100
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776780000000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776780001000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776780002000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776780003000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776956400000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776956401000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776956402000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776956403000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1776956404000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 1060
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1777118400000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1777118401000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1777118402000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1777118403000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1777118404000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 1060
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "operation": "perimeter",
+      "bucketKey": "perimeter",
+      "timestamp": 1777118405000,
+      "isCorrect": false,
+      "exerciseText": "perimeter simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 1100
+    }
+  ],
+  "mleo_english_mistakes": [],
+  "mleo_science_mistakes": [],
+  "mleo_hebrew_mistakes": [],
+  "mleo_moledet_geography_mistakes": [],
+  "mleo_daily_challenge": {
+    "questions": 123,
+    "correct": 67,
+    "bestScore": 67
+  },
+  "mleo_weekly_challenge": {
+    "current": 54,
+    "target": 100,
+    "completed": true
+  },
+  "mleo_science_daily_challenge": {
+    "questions": 0,
+    "correct": 0,
+    "bestScore": 0
+  },
+  "mleo_science_weekly_challenge": {
+    "current": 0,
+    "target": 100,
+    "completed": false
+  }
+}

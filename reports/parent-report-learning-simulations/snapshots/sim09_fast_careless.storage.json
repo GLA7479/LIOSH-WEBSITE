@@ -1,0 +1,830 @@
+{
+  "mleo_player_name": "Sim 09",
+  "mleo_time_tracking": {
+    "operations": {
+      "addition": {
+        "total": 5820,
+        "sessions": [
+          {
+            "date": "2026-04-08",
+            "duration": 480,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1775649600000,
+            "mode": "learning",
+            "total": 13,
+            "correct": 10
+          },
+          {
+            "date": "2026-04-10",
+            "duration": 540,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1775826000000,
+            "mode": "learning",
+            "total": 16,
+            "correct": 12
+          },
+          {
+            "date": "2026-04-12",
+            "duration": 660,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776002400000,
+            "mode": "learning",
+            "total": 18,
+            "correct": 13
+          },
+          {
+            "date": "2026-04-14",
+            "duration": 720,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776178800000,
+            "mode": "learning",
+            "total": 13,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-16",
+            "duration": 480,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776340800000,
+            "mode": "learning",
+            "total": 16,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-17",
+            "duration": 540,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776430800000,
+            "mode": "learning",
+            "total": 18,
+            "correct": 13
+          },
+          {
+            "date": "2026-04-19",
+            "duration": 660,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776607200000,
+            "mode": "learning",
+            "total": 13,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 720,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776783600000,
+            "mode": "learning",
+            "total": 16,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-23",
+            "duration": 480,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776945600000,
+            "mode": "learning",
+            "total": 18,
+            "correct": 12
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 540,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1777122000000,
+            "mode": "learning",
+            "total": 13,
+            "correct": 9
+          }
+        ],
+        "byGrade": {
+          "g4": 5820
+        },
+        "byLevel": {
+          "medium": 5820
+        }
+      }
+    },
+    "daily": {
+      "2026-04-08": {
+        "total": 480,
+        "operations": {
+          "addition": 480
+        },
+        "byGrade": {
+          "g4": 480
+        },
+        "byLevel": {
+          "medium": 480
+        }
+      },
+      "2026-04-10": {
+        "total": 540,
+        "operations": {
+          "addition": 540
+        },
+        "byGrade": {
+          "g4": 540
+        },
+        "byLevel": {
+          "medium": 540
+        }
+      },
+      "2026-04-12": {
+        "total": 660,
+        "operations": {
+          "addition": 660
+        },
+        "byGrade": {
+          "g4": 660
+        },
+        "byLevel": {
+          "medium": 660
+        }
+      },
+      "2026-04-14": {
+        "total": 720,
+        "operations": {
+          "addition": 720
+        },
+        "byGrade": {
+          "g4": 720
+        },
+        "byLevel": {
+          "medium": 720
+        }
+      },
+      "2026-04-16": {
+        "total": 480,
+        "operations": {
+          "addition": 480
+        },
+        "byGrade": {
+          "g4": 480
+        },
+        "byLevel": {
+          "medium": 480
+        }
+      },
+      "2026-04-17": {
+        "total": 540,
+        "operations": {
+          "addition": 540
+        },
+        "byGrade": {
+          "g4": 540
+        },
+        "byLevel": {
+          "medium": 540
+        }
+      },
+      "2026-04-19": {
+        "total": 660,
+        "operations": {
+          "addition": 660
+        },
+        "byGrade": {
+          "g4": 660
+        },
+        "byLevel": {
+          "medium": 660
+        }
+      },
+      "2026-04-21": {
+        "total": 720,
+        "operations": {
+          "addition": 720
+        },
+        "byGrade": {
+          "g4": 720
+        },
+        "byLevel": {
+          "medium": 720
+        }
+      },
+      "2026-04-23": {
+        "total": 480,
+        "operations": {
+          "addition": 480
+        },
+        "byGrade": {
+          "g4": 480
+        },
+        "byLevel": {
+          "medium": 480
+        }
+      },
+      "2026-04-25": {
+        "total": 540,
+        "operations": {
+          "addition": 540
+        },
+        "byGrade": {
+          "g4": 540
+        },
+        "byLevel": {
+          "medium": 540
+        }
+      }
+    }
+  },
+  "mleo_math_master_progress": {
+    "progress": {
+      "addition": {
+        "total": 154,
+        "correct": 109
+      }
+    },
+    "stars": 4,
+    "playerLevel": 5,
+    "xp": 770,
+    "badges": []
+  },
+  "mleo_geometry_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_geometry_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_english_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_english_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_science_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_science_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_hebrew_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_hebrew_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_moledet_geography_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_moledet_geography_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_mistakes": [
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1775649600000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1775649601000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1775826000000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1775826001000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1775826002000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776002400000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776002401000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776002402000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776002403000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776178800000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776178801000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776178802000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776340800000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776340801000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776340802000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776340803000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776430800000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776430801000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776430802000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776430803000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776607200000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776607201000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776607202000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776783600000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776783601000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776783602000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776783603000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776945600000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776945601000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776945602000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 980
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776945603000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 1020
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1777122000000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1777122001000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 940
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1777122002000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 980
+    }
+  ],
+  "mleo_geometry_mistakes": [],
+  "mleo_english_mistakes": [],
+  "mleo_science_mistakes": [],
+  "mleo_hebrew_mistakes": [],
+  "mleo_moledet_geography_mistakes": [],
+  "mleo_daily_challenge": {
+    "questions": 154,
+    "correct": 109,
+    "bestScore": 109
+  },
+  "mleo_weekly_challenge": {
+    "current": 71,
+    "target": 100,
+    "completed": true
+  },
+  "mleo_science_daily_challenge": {
+    "questions": 0,
+    "correct": 0,
+    "bestScore": 0
+  },
+  "mleo_science_weekly_challenge": {
+    "current": 0,
+    "target": 100,
+    "completed": false
+  }
+}

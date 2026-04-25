@@ -1,0 +1,456 @@
+{
+  "mleo_player_name": "Sim 08",
+  "mleo_time_tracking": {
+    "operations": {
+      "addition": {
+        "total": 19800,
+        "sessions": [
+          {
+            "date": "2026-04-07",
+            "duration": 1800,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1775563200000,
+            "mode": "learning",
+            "total": 12,
+            "correct": 10
+          },
+          {
+            "date": "2026-04-09",
+            "duration": 2100,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1775739600000,
+            "mode": "learning",
+            "total": 14,
+            "correct": 12
+          },
+          {
+            "date": "2026-04-11",
+            "duration": 2400,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1775916000000,
+            "mode": "learning",
+            "total": 16,
+            "correct": 14
+          },
+          {
+            "date": "2026-04-14",
+            "duration": 2700,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776178800000,
+            "mode": "learning",
+            "total": 12,
+            "correct": 10
+          },
+          {
+            "date": "2026-04-16",
+            "duration": 1800,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776340800000,
+            "mode": "learning",
+            "total": 14,
+            "correct": 12
+          },
+          {
+            "date": "2026-04-18",
+            "duration": 2100,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776517200000,
+            "mode": "learning",
+            "total": 16,
+            "correct": 14
+          },
+          {
+            "date": "2026-04-20",
+            "duration": 2400,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776693600000,
+            "mode": "learning",
+            "total": 12,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-23",
+            "duration": 2700,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1776956400000,
+            "mode": "learning",
+            "total": 14,
+            "correct": 12
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 1800,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "addition",
+            "operation": "addition",
+            "timestamp": 1777118400000,
+            "mode": "learning",
+            "total": 16,
+            "correct": 14
+          }
+        ],
+        "byGrade": {
+          "g4": 19800
+        },
+        "byLevel": {
+          "medium": 19800
+        }
+      }
+    },
+    "daily": {
+      "2026-04-07": {
+        "total": 1800,
+        "operations": {
+          "addition": 1800
+        },
+        "byGrade": {
+          "g4": 1800
+        },
+        "byLevel": {
+          "medium": 1800
+        }
+      },
+      "2026-04-09": {
+        "total": 2100,
+        "operations": {
+          "addition": 2100
+        },
+        "byGrade": {
+          "g4": 2100
+        },
+        "byLevel": {
+          "medium": 2100
+        }
+      },
+      "2026-04-11": {
+        "total": 2400,
+        "operations": {
+          "addition": 2400
+        },
+        "byGrade": {
+          "g4": 2400
+        },
+        "byLevel": {
+          "medium": 2400
+        }
+      },
+      "2026-04-14": {
+        "total": 2700,
+        "operations": {
+          "addition": 2700
+        },
+        "byGrade": {
+          "g4": 2700
+        },
+        "byLevel": {
+          "medium": 2700
+        }
+      },
+      "2026-04-16": {
+        "total": 1800,
+        "operations": {
+          "addition": 1800
+        },
+        "byGrade": {
+          "g4": 1800
+        },
+        "byLevel": {
+          "medium": 1800
+        }
+      },
+      "2026-04-18": {
+        "total": 2100,
+        "operations": {
+          "addition": 2100
+        },
+        "byGrade": {
+          "g4": 2100
+        },
+        "byLevel": {
+          "medium": 2100
+        }
+      },
+      "2026-04-20": {
+        "total": 2400,
+        "operations": {
+          "addition": 2400
+        },
+        "byGrade": {
+          "g4": 2400
+        },
+        "byLevel": {
+          "medium": 2400
+        }
+      },
+      "2026-04-23": {
+        "total": 2700,
+        "operations": {
+          "addition": 2700
+        },
+        "byGrade": {
+          "g4": 2700
+        },
+        "byLevel": {
+          "medium": 2700
+        }
+      },
+      "2026-04-25": {
+        "total": 1800,
+        "operations": {
+          "addition": 1800
+        },
+        "byGrade": {
+          "g4": 1800
+        },
+        "byLevel": {
+          "medium": 1800
+        }
+      }
+    }
+  },
+  "mleo_math_master_progress": {
+    "progress": {
+      "addition": {
+        "total": 126,
+        "correct": 109
+      }
+    },
+    "stars": 4,
+    "playerLevel": 4,
+    "xp": 630,
+    "badges": []
+  },
+  "mleo_geometry_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_geometry_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_english_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_english_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_science_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_science_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_hebrew_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_hebrew_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_moledet_geography_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_moledet_geography_master_progress": {
+    "progress": {},
+    "stars": 0,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_mistakes": [
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1775563200000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1775739600000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1775916000000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776178800000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776340800000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776517200000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776693600000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1776956400000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "timestamp": 1777118400000,
+      "isCorrect": false,
+      "exerciseText": "addition simulated",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 900
+    }
+  ],
+  "mleo_geometry_mistakes": [],
+  "mleo_english_mistakes": [],
+  "mleo_science_mistakes": [],
+  "mleo_hebrew_mistakes": [],
+  "mleo_moledet_geography_mistakes": [],
+  "mleo_daily_challenge": {
+    "questions": 126,
+    "correct": 109,
+    "bestScore": 109
+  },
+  "mleo_weekly_challenge": {
+    "current": 87,
+    "target": 100,
+    "completed": true
+  },
+  "mleo_science_daily_challenge": {
+    "questions": 0,
+    "correct": 0,
+    "bestScore": 0
+  },
+  "mleo_science_weekly_challenge": {
+    "current": 0,
+    "target": 100,
+    "completed": false
+  }
+}

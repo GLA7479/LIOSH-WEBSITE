@@ -1,0 +1,351 @@
+{
+  "generatedAt": "2026-04-25T16:33:50.369Z",
+  "summary": {
+    "total": 12,
+    "pass": 12,
+    "fail": 0,
+    "enoughEvidenceStillInsufficient": []
+  },
+  "students": [
+    {
+      "id": "sim01_new_user_no_activity",
+      "studentName": "Sim 01",
+      "subjects": [],
+      "totalQuestions": 0,
+      "totalSessions": 0,
+      "dateSpanDays": 0,
+      "expectedBehavior": "no_data",
+      "expectedTopSignal": "insufficient",
+      "actualTopConclusion": "לאסוף מעט תרגול קצר לפני החלטות.",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim01_new_user_no_activity.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim01_new_user_no_activity.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim01_new_user_no_activity.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim01_new_user_no_activity.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim01_new_user_no_activity.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim01_new_user_no_activity.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim01_new_user_no_activity.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim01_new_user_no_activity.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim01_new_user_no_activity.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim02_early_low_activity",
+      "studentName": "Sim 02",
+      "subjects": [
+        "math"
+      ],
+      "totalQuestions": 20,
+      "totalSessions": 3,
+      "dateSpanDays": 10,
+      "expectedBehavior": "cautious_low_activity",
+      "expectedTopSignal": "insufficient",
+      "actualTopConclusion": "חיבור עם העברה בחיבור ובלי העברה",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim02_early_low_activity.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim02_early_low_activity.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim02_early_low_activity.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim02_early_low_activity.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim02_early_low_activity.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim02_early_low_activity.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim02_early_low_activity.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim02_early_low_activity.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim02_early_low_activity.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim03_weak_math_real",
+      "studentName": "Sim 03",
+      "subjects": [
+        "math"
+      ],
+      "totalQuestions": 147,
+      "totalSessions": 10,
+      "dateSpanDays": 18,
+      "expectedBehavior": "weak_math_actionable",
+      "expectedTopSignal": "weakness",
+      "actualTopConclusion": "חיבור עם/בלי נשיאה",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim03_weak_math_real.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim03_weak_math_real.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim03_weak_math_real.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim03_weak_math_real.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim03_weak_math_real.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim03_weak_math_real.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim03_weak_math_real.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim03_weak_math_real.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim03_weak_math_real.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim04_weak_geometry_real",
+      "studentName": "Sim 04",
+      "subjects": [
+        "geometry"
+      ],
+      "totalQuestions": 123,
+      "totalSessions": 9,
+      "dateSpanDays": 17,
+      "expectedBehavior": "weak_geometry_actionable",
+      "expectedTopSignal": "weakness",
+      "actualTopConclusion": "שתי יחידות לאותו אורך",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim04_weak_geometry_real.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim04_weak_geometry_real.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim04_weak_geometry_real.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim04_weak_geometry_real.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim04_weak_geometry_real.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim04_weak_geometry_real.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim04_weak_geometry_real.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim04_weak_geometry_real.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim04_weak_geometry_real.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim05_multi_subject_weak_real",
+      "studentName": "Sim 05",
+      "subjects": [
+        "math",
+        "geometry",
+        "hebrew"
+      ],
+      "totalQuestions": 279,
+      "totalSessions": 20,
+      "dateSpanDays": 20,
+      "expectedBehavior": "multi_subject_one_priority",
+      "expectedTopSignal": "weakness",
+      "actualTopConclusion": "עם/בלי קו גובה",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim05_multi_subject_weak_real.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim05_multi_subject_weak_real.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim05_multi_subject_weak_real.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim05_multi_subject_weak_real.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim05_multi_subject_weak_real.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim05_multi_subject_weak_real.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim05_multi_subject_weak_real.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim05_multi_subject_weak_real.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim05_multi_subject_weak_real.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim06_strong_math_stable",
+      "studentName": "Sim 06",
+      "subjects": [
+        "math"
+      ],
+      "totalQuestions": 167,
+      "totalSessions": 10,
+      "dateSpanDays": 20,
+      "expectedBehavior": "strong_maintain",
+      "expectedTopSignal": "strength",
+      "actualTopConclusion": "לקבוע תרגול קצר וממוקד ולוודא הבנה לפני מעבר למשימה הבאה.",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim06_strong_math_stable.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim06_strong_math_stable.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim06_strong_math_stable.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim06_strong_math_stable.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim06_strong_math_stable.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim06_strong_math_stable.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim06_strong_math_stable.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim06_strong_math_stable.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim06_strong_math_stable.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim07_strong_multi_subject",
+      "studentName": "Sim 07",
+      "subjects": [
+        "math",
+        "english",
+        "science"
+      ],
+      "totalQuestions": 296,
+      "totalSessions": 22,
+      "dateSpanDays": 19,
+      "expectedBehavior": "strong_multi_no_remediation",
+      "expectedTopSignal": "strength",
+      "actualTopConclusion": "לקבוע תרגול קצר וממוקד ולוודא הבנה לפני מעבר למשימה הבאה.",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim07_strong_multi_subject.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim07_strong_multi_subject.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim07_strong_multi_subject.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim07_strong_multi_subject.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim07_strong_multi_subject.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim07_strong_multi_subject.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim07_strong_multi_subject.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim07_strong_multi_subject.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim07_strong_multi_subject.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim08_slow_but_accurate",
+      "studentName": "Sim 08",
+      "subjects": [
+        "math"
+      ],
+      "totalQuestions": 126,
+      "totalSessions": 9,
+      "dateSpanDays": 18,
+      "expectedBehavior": "slow_fluency_focus",
+      "expectedTopSignal": "speed_or_fluency",
+      "actualTopConclusion": "לקבוע תרגול קצר וממוקד ולוודא הבנה לפני מעבר למשימה הבאה.",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim08_slow_but_accurate.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim08_slow_but_accurate.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim08_slow_but_accurate.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim08_slow_but_accurate.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim08_slow_but_accurate.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim08_slow_but_accurate.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim08_slow_but_accurate.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim08_slow_but_accurate.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim08_slow_but_accurate.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim09_fast_careless",
+      "studentName": "Sim 09",
+      "subjects": [
+        "math"
+      ],
+      "totalQuestions": 154,
+      "totalSessions": 10,
+      "dateSpanDays": 17,
+      "expectedBehavior": "fast_careless_focus",
+      "expectedTopSignal": "speed_behavior",
+      "actualTopConclusion": "חיבור עם העברה בחיבור ובלי העברה",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim09_fast_careless.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim09_fast_careless.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim09_fast_careless.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim09_fast_careless.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim09_fast_careless.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim09_fast_careless.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim09_fast_careless.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim09_fast_careless.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim09_fast_careless.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim10_improving_student",
+      "studentName": "Sim 10",
+      "subjects": [
+        "math"
+      ],
+      "totalQuestions": 141,
+      "totalSessions": 9,
+      "dateSpanDays": 20,
+      "expectedBehavior": "trend_up",
+      "expectedTopSignal": "improving",
+      "actualTopConclusion": "חיבור עם העברה בחיבור ובלי העברה",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim10_improving_student.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim10_improving_student.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim10_improving_student.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim10_improving_student.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim10_improving_student.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim10_improving_student.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim10_improving_student.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim10_improving_student.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim10_improving_student.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim11_declining_student",
+      "studentName": "Sim 11",
+      "subjects": [
+        "math"
+      ],
+      "totalQuestions": 141,
+      "totalSessions": 9,
+      "dateSpanDays": 20,
+      "expectedBehavior": "trend_down_stabilize",
+      "expectedTopSignal": "declining",
+      "actualTopConclusion": "חיבור עם/בלי נשיאה",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim11_declining_student.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim11_declining_student.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim11_declining_student.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim11_declining_student.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim11_declining_student.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim11_declining_student.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim11_declining_student.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim11_declining_student.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim11_declining_student.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "sim12_mixed_realistic_student",
+      "studentName": "Sim 12",
+      "subjects": [
+        "math",
+        "geometry",
+        "english"
+      ],
+      "totalQuestions": 279,
+      "totalSessions": 20,
+      "dateSpanDays": 20,
+      "expectedBehavior": "mixed_one_focus_preserve_strength",
+      "expectedTopSignal": "mixed",
+      "actualTopConclusion": "עם/בלי קו גובה",
+      "pdf": {
+        "short": "reports/parent-report-learning-simulations/pdf/sim12_mixed_realistic_student.short.site.pdf",
+        "detailed": "reports/parent-report-learning-simulations/pdf/sim12_mixed_realistic_student.detailed.site.pdf",
+        "summary": "reports/parent-report-learning-simulations/pdf/sim12_mixed_realistic_student.summary.site.pdf"
+      },
+      "screenshots": {
+        "shortMobile": "reports/parent-report-learning-simulations/screenshots/sim12_mixed_realistic_student.short.mobile.top.png",
+        "shortDesktop": "reports/parent-report-learning-simulations/screenshots/sim12_mixed_realistic_student.short.desktop.top.png",
+        "detailedMobile": "reports/parent-report-learning-simulations/screenshots/sim12_mixed_realistic_student.detailed.mobile.top.png",
+        "detailedDesktop": "reports/parent-report-learning-simulations/screenshots/sim12_mixed_realistic_student.detailed.desktop.top.png",
+        "summaryMobile": "reports/parent-report-learning-simulations/screenshots/sim12_mixed_realistic_student.summary.mobile.top.png",
+        "summaryDesktop": "reports/parent-report-learning-simulations/screenshots/sim12_mixed_realistic_student.summary.desktop.top.png"
+      },
+      "pass": true,
+      "failures": []
+    }
+  ]
+}

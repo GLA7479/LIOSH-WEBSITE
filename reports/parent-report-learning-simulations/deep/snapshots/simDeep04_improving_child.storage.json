@@ -1,0 +1,4580 @@
+{
+  "mleo_player_name": "Deep 04 — משתפר לאורך זמן",
+  "mleo_time_tracking": {
+    "operations": {
+      "fractions": {
+        "total": 4063,
+        "sessions": [
+          {
+            "date": "2025-12-31",
+            "duration": 1678,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "fractions",
+            "mathReportBucket": "fractions",
+            "timestamp": 1767144646518,
+            "mode": "learning",
+            "total": 17,
+            "correct": 8
+          },
+          {
+            "date": "2026-04-20",
+            "duration": 864,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "fractions",
+            "mathReportBucket": "fractions",
+            "timestamp": 1776727350108,
+            "mode": "learning",
+            "total": 23,
+            "correct": 19
+          },
+          {
+            "date": "2026-04-22",
+            "duration": 1521,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "fractions",
+            "mathReportBucket": "fractions",
+            "timestamp": 1776824637599,
+            "mode": "learning",
+            "total": 19,
+            "correct": 16
+          }
+        ],
+        "byGrade": {
+          "g4": 4063
+        },
+        "byLevel": {
+          "medium": 4063
+        }
+      },
+      "division": {
+        "total": 4393,
+        "sessions": [
+          {
+            "date": "2026-02-13",
+            "duration": 1077,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "division",
+            "mathReportBucket": "division",
+            "timestamp": 1770943873131,
+            "mode": "learning",
+            "total": 22,
+            "correct": 13
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 1527,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "division",
+            "mathReportBucket": "division",
+            "timestamp": 1776792174751,
+            "mode": "learning",
+            "total": 17,
+            "correct": 14
+          },
+          {
+            "date": "2026-04-22",
+            "duration": 1789,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "division",
+            "mathReportBucket": "division",
+            "timestamp": 1776849448197,
+            "mode": "learning",
+            "total": 15,
+            "correct": 12
+          }
+        ],
+        "byGrade": {
+          "g4": 4393
+        },
+        "byLevel": {
+          "medium": 4393
+        }
+      },
+      "multiplication": {
+        "total": 6063,
+        "sessions": [
+          {
+            "date": "2026-03-03",
+            "duration": 1740,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1772497466779,
+            "mode": "learning",
+            "total": 26,
+            "correct": 18
+          },
+          {
+            "date": "2026-04-19",
+            "duration": 1721,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1776626703846,
+            "mode": "learning",
+            "total": 16,
+            "correct": 13
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 1357,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1776758460162,
+            "mode": "learning",
+            "total": 16,
+            "correct": 13
+          },
+          {
+            "date": "2026-04-23",
+            "duration": 1245,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1776980264292,
+            "mode": "learning",
+            "total": 12,
+            "correct": 10
+          }
+        ],
+        "byGrade": {
+          "g4": 6063
+        },
+        "byLevel": {
+          "medium": 6063
+        }
+      },
+      "addition": {
+        "total": 6716,
+        "sessions": [
+          {
+            "date": "2026-03-23",
+            "duration": 1754,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "addition",
+            "mathReportBucket": "addition",
+            "timestamp": 1774248519715,
+            "mode": "learning",
+            "total": 17,
+            "correct": 13
+          },
+          {
+            "date": "2026-03-30",
+            "duration": 1509,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "addition",
+            "mathReportBucket": "addition",
+            "timestamp": 1774837465581,
+            "mode": "learning",
+            "total": 12,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 1790,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "addition",
+            "mathReportBucket": "addition",
+            "timestamp": 1777112862445,
+            "mode": "learning",
+            "total": 11,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-26",
+            "duration": 1663,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "addition",
+            "mathReportBucket": "addition",
+            "timestamp": 1777197363144,
+            "mode": "learning",
+            "total": 19,
+            "correct": 16
+          }
+        ],
+        "byGrade": {
+          "g4": 6716
+        },
+        "byLevel": {
+          "medium": 6716
+        }
+      },
+      "word_problems": {
+        "total": 4033,
+        "sessions": [
+          {
+            "date": "2026-03-23",
+            "duration": 1538,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "word_problems",
+            "mathReportBucket": "word_problems",
+            "timestamp": 1774248897070,
+            "mode": "learning",
+            "total": 13,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-19",
+            "duration": 1059,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "word_problems",
+            "mathReportBucket": "word_problems",
+            "timestamp": 1776638482519,
+            "mode": "learning",
+            "total": 19,
+            "correct": 15
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 1436,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "word_problems",
+            "mathReportBucket": "word_problems",
+            "timestamp": 1776739155080,
+            "mode": "learning",
+            "total": 14,
+            "correct": 12
+          }
+        ],
+        "byGrade": {
+          "g4": 4033
+        },
+        "byLevel": {
+          "medium": 4033
+        }
+      },
+      "subtraction": {
+        "total": 4874,
+        "sessions": [
+          {
+            "date": "2026-03-25",
+            "duration": 996,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "subtraction",
+            "mathReportBucket": "subtraction",
+            "timestamp": 1774429065198,
+            "mode": "learning",
+            "total": 13,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-09",
+            "duration": 1005,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "subtraction",
+            "mathReportBucket": "subtraction",
+            "timestamp": 1775726386685,
+            "mode": "learning",
+            "total": 18,
+            "correct": 14
+          },
+          {
+            "date": "2026-04-24",
+            "duration": 1690,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "subtraction",
+            "mathReportBucket": "subtraction",
+            "timestamp": 1777007864312,
+            "mode": "learning",
+            "total": 13,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 1183,
+            "grade": "g4",
+            "level": "medium",
+            "operation": "subtraction",
+            "mathReportBucket": "subtraction",
+            "timestamp": 1777113604521,
+            "mode": "learning",
+            "total": 13,
+            "correct": 11
+          }
+        ],
+        "byGrade": {
+          "g4": 4874
+        },
+        "byLevel": {
+          "medium": 4874
+        }
+      }
+    },
+    "daily": {
+      "2025-12-31": {
+        "total": 1678,
+        "operations": {
+          "fractions": 1678
+        },
+        "byGrade": {
+          "g4": 1678
+        },
+        "byLevel": {
+          "medium": 1678
+        }
+      },
+      "2026-04-20": {
+        "total": 864,
+        "operations": {
+          "fractions": 864
+        },
+        "byGrade": {
+          "g4": 864
+        },
+        "byLevel": {
+          "medium": 864
+        }
+      },
+      "2026-04-22": {
+        "total": 3310,
+        "operations": {
+          "fractions": 1521,
+          "division": 1789
+        },
+        "byGrade": {
+          "g4": 3310
+        },
+        "byLevel": {
+          "medium": 3310
+        }
+      },
+      "2026-02-13": {
+        "total": 1077,
+        "operations": {
+          "division": 1077
+        },
+        "byGrade": {
+          "g4": 1077
+        },
+        "byLevel": {
+          "medium": 1077
+        }
+      },
+      "2026-04-21": {
+        "total": 4320,
+        "operations": {
+          "division": 1527,
+          "multiplication": 1357,
+          "word_problems": 1436
+        },
+        "byGrade": {
+          "g4": 4320
+        },
+        "byLevel": {
+          "medium": 4320
+        }
+      },
+      "2026-03-03": {
+        "total": 1740,
+        "operations": {
+          "multiplication": 1740
+        },
+        "byGrade": {
+          "g4": 1740
+        },
+        "byLevel": {
+          "medium": 1740
+        }
+      },
+      "2026-04-19": {
+        "total": 2780,
+        "operations": {
+          "multiplication": 1721,
+          "word_problems": 1059
+        },
+        "byGrade": {
+          "g4": 2780
+        },
+        "byLevel": {
+          "medium": 2780
+        }
+      },
+      "2026-04-23": {
+        "total": 1245,
+        "operations": {
+          "multiplication": 1245
+        },
+        "byGrade": {
+          "g4": 1245
+        },
+        "byLevel": {
+          "medium": 1245
+        }
+      },
+      "2026-03-23": {
+        "total": 3292,
+        "operations": {
+          "addition": 1754,
+          "word_problems": 1538
+        },
+        "byGrade": {
+          "g4": 3292
+        },
+        "byLevel": {
+          "medium": 3292
+        }
+      },
+      "2026-03-30": {
+        "total": 1509,
+        "operations": {
+          "addition": 1509
+        },
+        "byGrade": {
+          "g4": 1509
+        },
+        "byLevel": {
+          "medium": 1509
+        }
+      },
+      "2026-04-25": {
+        "total": 2973,
+        "operations": {
+          "addition": 1790,
+          "subtraction": 1183
+        },
+        "byGrade": {
+          "g4": 2973
+        },
+        "byLevel": {
+          "medium": 2973
+        }
+      },
+      "2026-04-26": {
+        "total": 1663,
+        "operations": {
+          "addition": 1663
+        },
+        "byGrade": {
+          "g4": 1663
+        },
+        "byLevel": {
+          "medium": 1663
+        }
+      },
+      "2026-03-25": {
+        "total": 996,
+        "operations": {
+          "subtraction": 996
+        },
+        "byGrade": {
+          "g4": 996
+        },
+        "byLevel": {
+          "medium": 996
+        }
+      },
+      "2026-04-09": {
+        "total": 1005,
+        "operations": {
+          "subtraction": 1005
+        },
+        "byGrade": {
+          "g4": 1005
+        },
+        "byLevel": {
+          "medium": 1005
+        }
+      },
+      "2026-04-24": {
+        "total": 1690,
+        "operations": {
+          "subtraction": 1690
+        },
+        "byGrade": {
+          "g4": 1690
+        },
+        "byLevel": {
+          "medium": 1690
+        }
+      }
+    }
+  },
+  "mleo_math_master_progress": {
+    "progress": {
+      "fractions": {
+        "total": 59,
+        "correct": 43
+      },
+      "division": {
+        "total": 54,
+        "correct": 39
+      },
+      "multiplication": {
+        "total": 70,
+        "correct": 54
+      },
+      "addition": {
+        "total": 59,
+        "correct": 47
+      },
+      "word_problems": {
+        "total": 46,
+        "correct": 36
+      },
+      "subtraction": {
+        "total": 57,
+        "correct": 45
+      }
+    },
+    "stars": 4,
+    "playerLevel": 3,
+    "xp": 2070,
+    "badges": []
+  },
+  "mleo_mistakes": [
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767144646518,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": true,
+      "responseMs": 2318
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767144646519,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": false,
+      "responseMs": 2338
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767144646520,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": false,
+      "responseMs": 2358
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767144646521,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": true,
+      "responseMs": 2378
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767144646522,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": false,
+      "responseMs": 2398
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767144646523,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": false,
+      "responseMs": 2418
+    },
+    {
+      "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1770943873131,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": true,
+      "responseMs": 2531
+    },
+    {
+      "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1770943873132,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": false,
+      "responseMs": 2551
+    },
+    {
+      "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1770943873133,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": false,
+      "responseMs": 2571
+    },
+    {
+      "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1770943873134,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": true,
+      "responseMs": 2591
+    },
+    {
+      "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1770943873135,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": false,
+      "responseMs": 2611
+    },
+    {
+      "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1770943873136,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": false,
+      "responseMs": 2631
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772497466779,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": true,
+      "responseMs": 2579
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772497466780,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": false,
+      "responseMs": 2599
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772497466781,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": false,
+      "responseMs": 2619
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772497466782,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": true,
+      "responseMs": 2639
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772497466783,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": false,
+      "responseMs": 2659
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774248519715,
+      "isCorrect": false,
+      "exerciseText": "math:addition",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 2715
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774248519716,
+      "isCorrect": false,
+      "exerciseText": "math:addition",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 2735
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774248519717,
+      "isCorrect": false,
+      "exerciseText": "math:addition",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 2755
+    },
+    {
+      "subject": "math",
+      "topic": "word_problems",
+      "operation": "word_problems",
+      "bucketKey": "word_problems",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774248897070,
+      "isCorrect": false,
+      "exerciseText": "math:word_problems",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:word_problems",
+      "hintUsed": true,
+      "responseMs": 2470
+    },
+    {
+      "subject": "math",
+      "topic": "word_problems",
+      "operation": "word_problems",
+      "bucketKey": "word_problems",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774248897071,
+      "isCorrect": false,
+      "exerciseText": "math:word_problems",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:word_problems",
+      "hintUsed": false,
+      "responseMs": 2490
+    },
+    {
+      "subject": "math",
+      "topic": "word_problems",
+      "operation": "word_problems",
+      "bucketKey": "word_problems",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774248897072,
+      "isCorrect": false,
+      "exerciseText": "math:word_problems",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:word_problems",
+      "hintUsed": false,
+      "responseMs": 2510
+    },
+    {
+      "subject": "math",
+      "topic": "subtraction",
+      "operation": "subtraction",
+      "bucketKey": "subtraction",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774429065198,
+      "isCorrect": false,
+      "exerciseText": "math:subtraction",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:subtraction",
+      "hintUsed": true,
+      "responseMs": 2598
+    },
+    {
+      "subject": "math",
+      "topic": "subtraction",
+      "operation": "subtraction",
+      "bucketKey": "subtraction",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774429065199,
+      "isCorrect": false,
+      "exerciseText": "math:subtraction",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:subtraction",
+      "hintUsed": false,
+      "responseMs": 2618
+    },
+    {
+      "subject": "math",
+      "topic": "subtraction",
+      "operation": "subtraction",
+      "bucketKey": "subtraction",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774429065200,
+      "isCorrect": false,
+      "exerciseText": "math:subtraction",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:subtraction",
+      "hintUsed": false,
+      "responseMs": 2638
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774837465581,
+      "isCorrect": false,
+      "exerciseText": "math:addition",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 2981
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774837465582,
+      "isCorrect": false,
+      "exerciseText": "math:addition",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 3001
+    },
+    {
+      "subject": "math",
+      "topic": "subtraction",
+      "operation": "subtraction",
+      "bucketKey": "subtraction",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1775726386685,
+      "isCorrect": false,
+      "exerciseText": "math:subtraction",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:subtraction",
+      "hintUsed": true,
+      "responseMs": 2485
+    },
+    {
+      "subject": "math",
+      "topic": "subtraction",
+      "operation": "subtraction",
+      "bucketKey": "subtraction",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1775726386686,
+      "isCorrect": false,
+      "exerciseText": "math:subtraction",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:subtraction",
+      "hintUsed": false,
+      "responseMs": 2505
+    },
+    {
+      "subject": "math",
+      "topic": "subtraction",
+      "operation": "subtraction",
+      "bucketKey": "subtraction",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1775726386687,
+      "isCorrect": false,
+      "exerciseText": "math:subtraction",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:subtraction",
+      "hintUsed": false,
+      "responseMs": 2525
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776626703846,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": true,
+      "responseMs": 2846
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776626703847,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": false,
+      "responseMs": 2866
+    },
+    {
+      "subject": "math",
+      "topic": "word_problems",
+      "operation": "word_problems",
+      "bucketKey": "word_problems",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776638482519,
+      "isCorrect": false,
+      "exerciseText": "math:word_problems",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:word_problems",
+      "hintUsed": true,
+      "responseMs": 2319
+    },
+    {
+      "subject": "math",
+      "topic": "word_problems",
+      "operation": "word_problems",
+      "bucketKey": "word_problems",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776638482520,
+      "isCorrect": false,
+      "exerciseText": "math:word_problems",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:word_problems",
+      "hintUsed": false,
+      "responseMs": 2339
+    },
+    {
+      "subject": "math",
+      "topic": "word_problems",
+      "operation": "word_problems",
+      "bucketKey": "word_problems",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776638482521,
+      "isCorrect": false,
+      "exerciseText": "math:word_problems",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:word_problems",
+      "hintUsed": false,
+      "responseMs": 2359
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776727350108,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": true,
+      "responseMs": 2708
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776727350109,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": false,
+      "responseMs": 2728
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776727350110,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": false,
+      "responseMs": 2748
+    },
+    {
+      "subject": "math",
+      "topic": "word_problems",
+      "operation": "word_problems",
+      "bucketKey": "word_problems",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776739155080,
+      "isCorrect": false,
+      "exerciseText": "math:word_problems",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:word_problems",
+      "hintUsed": true,
+      "responseMs": 2880
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776758460162,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": true,
+      "responseMs": 2362
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776758460163,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": false,
+      "responseMs": 2382
+    },
+    {
+      "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776792174751,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": true,
+      "responseMs": 2551
+    },
+    {
+      "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776792174752,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": false,
+      "responseMs": 2571
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776824637599,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": true,
+      "responseMs": 2999
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776824637600,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": false,
+      "responseMs": 3019
+    },
+    {
+      "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776849448197,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": true,
+      "responseMs": 2397
+    },
+    {
+      "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776849448198,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": false,
+      "responseMs": 2417
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776980264292,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": true,
+      "responseMs": 2492
+    },
+    {
+      "subject": "math",
+      "topic": "subtraction",
+      "operation": "subtraction",
+      "bucketKey": "subtraction",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777007864312,
+      "isCorrect": false,
+      "exerciseText": "math:subtraction",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:subtraction",
+      "hintUsed": true,
+      "responseMs": 2512
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777112862445,
+      "isCorrect": false,
+      "exerciseText": "math:addition",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 2245
+    },
+    {
+      "subject": "math",
+      "topic": "subtraction",
+      "operation": "subtraction",
+      "bucketKey": "subtraction",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777113604521,
+      "isCorrect": false,
+      "exerciseText": "math:subtraction",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:subtraction",
+      "hintUsed": true,
+      "responseMs": 2721
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777197363144,
+      "isCorrect": false,
+      "exerciseText": "math:addition",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 2944
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777197363145,
+      "isCorrect": false,
+      "exerciseText": "math:addition",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": false,
+      "responseMs": 2964
+    }
+  ],
+  "mleo_geometry_time_tracking": {
+    "topics": {
+      "angles": {
+        "total": 4449,
+        "sessions": [
+          {
+            "date": "2026-01-18",
+            "duration": 1749,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "angles",
+            "timestamp": 1768708229978,
+            "mode": "learning",
+            "total": 24,
+            "correct": 13
+          },
+          {
+            "date": "2026-03-20",
+            "duration": 1171,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "angles",
+            "timestamp": 1773972917630,
+            "mode": "learning",
+            "total": 12,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-22",
+            "duration": 1529,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "angles",
+            "timestamp": 1776896233038,
+            "mode": "learning",
+            "total": 14,
+            "correct": 11
+          }
+        ],
+        "byGrade": {
+          "g4": 4449
+        },
+        "byLevel": {
+          "medium": 4449
+        }
+      },
+      "area": {
+        "total": 4811,
+        "sessions": [
+          {
+            "date": "2026-01-29",
+            "duration": 1694,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "area",
+            "timestamp": 1769723613864,
+            "mode": "learning",
+            "total": 19,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-18",
+            "duration": 997,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "area",
+            "timestamp": 1776552195156,
+            "mode": "learning",
+            "total": 10,
+            "correct": 8
+          },
+          {
+            "date": "2026-04-19",
+            "duration": 979,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "area",
+            "timestamp": 1776586071053,
+            "mode": "learning",
+            "total": 13,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 1141,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "area",
+            "timestamp": 1776801695061,
+            "mode": "learning",
+            "total": 12,
+            "correct": 10
+          }
+        ],
+        "byGrade": {
+          "g4": 4811
+        },
+        "byLevel": {
+          "medium": 4811
+        }
+      },
+      "volume": {
+        "total": 3780,
+        "sessions": [
+          {
+            "date": "2026-03-08",
+            "duration": 1598,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "volume",
+            "timestamp": 1772965301186,
+            "mode": "learning",
+            "total": 19,
+            "correct": 13
+          },
+          {
+            "date": "2026-03-17",
+            "duration": 1078,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "volume",
+            "timestamp": 1773725306549,
+            "mode": "learning",
+            "total": 16,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 1104,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "volume",
+            "timestamp": 1777109350770,
+            "mode": "learning",
+            "total": 13,
+            "correct": 10
+          }
+        ],
+        "byGrade": {
+          "g4": 3780
+        },
+        "byLevel": {
+          "medium": 3780
+        }
+      },
+      "shapes_basic": {
+        "total": 3924,
+        "sessions": [
+          {
+            "date": "2026-04-05",
+            "duration": 1770,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "shapes_basic",
+            "timestamp": 1775362400330,
+            "mode": "learning",
+            "total": 14,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 1008,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "shapes_basic",
+            "timestamp": 1776737331236,
+            "mode": "learning",
+            "total": 17,
+            "correct": 14
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 1146,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "shapes_basic",
+            "timestamp": 1776765649590,
+            "mode": "learning",
+            "total": 13,
+            "correct": 11
+          }
+        ],
+        "byGrade": {
+          "g4": 3924
+        },
+        "byLevel": {
+          "medium": 3924
+        }
+      },
+      "perimeter": {
+        "total": 3113,
+        "sessions": [
+          {
+            "date": "2026-04-19",
+            "duration": 1271,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "perimeter",
+            "timestamp": 1776586130465,
+            "mode": "learning",
+            "total": 27,
+            "correct": 22
+          },
+          {
+            "date": "2026-04-23",
+            "duration": 843,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "perimeter",
+            "timestamp": 1776978577082,
+            "mode": "learning",
+            "total": 16,
+            "correct": 14
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 999,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "perimeter",
+            "timestamp": 1777143933772,
+            "mode": "learning",
+            "total": 10,
+            "correct": 8
+          }
+        ],
+        "byGrade": {
+          "g4": 3113
+        },
+        "byLevel": {
+          "medium": 3113
+        }
+      }
+    },
+    "daily": {
+      "2026-01-18": {
+        "total": 1749,
+        "topics": {
+          "angles": 1749
+        },
+        "byGrade": {
+          "g4": 1749
+        },
+        "byLevel": {
+          "medium": 1749
+        }
+      },
+      "2026-03-20": {
+        "total": 1171,
+        "topics": {
+          "angles": 1171
+        },
+        "byGrade": {
+          "g4": 1171
+        },
+        "byLevel": {
+          "medium": 1171
+        }
+      },
+      "2026-04-22": {
+        "total": 1529,
+        "topics": {
+          "angles": 1529
+        },
+        "byGrade": {
+          "g4": 1529
+        },
+        "byLevel": {
+          "medium": 1529
+        }
+      },
+      "2026-01-29": {
+        "total": 1694,
+        "topics": {
+          "area": 1694
+        },
+        "byGrade": {
+          "g4": 1694
+        },
+        "byLevel": {
+          "medium": 1694
+        }
+      },
+      "2026-04-18": {
+        "total": 997,
+        "topics": {
+          "area": 997
+        },
+        "byGrade": {
+          "g4": 997
+        },
+        "byLevel": {
+          "medium": 997
+        }
+      },
+      "2026-04-19": {
+        "total": 2250,
+        "topics": {
+          "area": 979,
+          "perimeter": 1271
+        },
+        "byGrade": {
+          "g4": 2250
+        },
+        "byLevel": {
+          "medium": 2250
+        }
+      },
+      "2026-04-21": {
+        "total": 3295,
+        "topics": {
+          "area": 1141,
+          "shapes_basic": 2154
+        },
+        "byGrade": {
+          "g4": 3295
+        },
+        "byLevel": {
+          "medium": 3295
+        }
+      },
+      "2026-03-08": {
+        "total": 1598,
+        "topics": {
+          "volume": 1598
+        },
+        "byGrade": {
+          "g4": 1598
+        },
+        "byLevel": {
+          "medium": 1598
+        }
+      },
+      "2026-03-17": {
+        "total": 1078,
+        "topics": {
+          "volume": 1078
+        },
+        "byGrade": {
+          "g4": 1078
+        },
+        "byLevel": {
+          "medium": 1078
+        }
+      },
+      "2026-04-25": {
+        "total": 2103,
+        "topics": {
+          "volume": 1104,
+          "perimeter": 999
+        },
+        "byGrade": {
+          "g4": 2103
+        },
+        "byLevel": {
+          "medium": 2103
+        }
+      },
+      "2026-04-05": {
+        "total": 1770,
+        "topics": {
+          "shapes_basic": 1770
+        },
+        "byGrade": {
+          "g4": 1770
+        },
+        "byLevel": {
+          "medium": 1770
+        }
+      },
+      "2026-04-23": {
+        "total": 843,
+        "topics": {
+          "perimeter": 843
+        },
+        "byGrade": {
+          "g4": 843
+        },
+        "byLevel": {
+          "medium": 843
+        }
+      }
+    }
+  },
+  "mleo_geometry_master_progress": {
+    "progress": {
+      "angles": {
+        "total": 50,
+        "correct": 33
+      },
+      "area": {
+        "total": 54,
+        "correct": 40
+      },
+      "volume": {
+        "total": 48,
+        "correct": 34
+      },
+      "shapes_basic": {
+        "total": 44,
+        "correct": 36
+      },
+      "perimeter": {
+        "total": 53,
+        "correct": 44
+      }
+    },
+    "stars": 4,
+    "playerLevel": 2,
+    "xp": 1245,
+    "badges": []
+  },
+  "mleo_geometry_mistakes": [
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768708229978,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768708229979,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768708229980,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768708229981,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": true,
+      "responseMs": 2460
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768708229982,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": false,
+      "responseMs": 2480
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768708229983,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": false,
+      "responseMs": 2500
+    },
+    {
+      "subject": "geometry",
+      "topic": "area",
+      "bucketKey": "area",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1769723613864,
+      "isCorrect": false,
+      "exerciseText": "geometry:area",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:area",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "area",
+      "bucketKey": "area",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1769723613865,
+      "isCorrect": false,
+      "exerciseText": "geometry:area",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:area",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "area",
+      "bucketKey": "area",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1769723613866,
+      "isCorrect": false,
+      "exerciseText": "geometry:area",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:area",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "geometry",
+      "topic": "area",
+      "bucketKey": "area",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1769723613867,
+      "isCorrect": false,
+      "exerciseText": "geometry:area",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:area",
+      "hintUsed": true,
+      "responseMs": 2460
+    },
+    {
+      "subject": "geometry",
+      "topic": "volume",
+      "bucketKey": "volume",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772965301186,
+      "isCorrect": false,
+      "exerciseText": "geometry:volume",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:volume",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "volume",
+      "bucketKey": "volume",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772965301187,
+      "isCorrect": false,
+      "exerciseText": "geometry:volume",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:volume",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "volume",
+      "bucketKey": "volume",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772965301188,
+      "isCorrect": false,
+      "exerciseText": "geometry:volume",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:volume",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "geometry",
+      "topic": "volume",
+      "bucketKey": "volume",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773725306549,
+      "isCorrect": false,
+      "exerciseText": "geometry:volume",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:volume",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "volume",
+      "bucketKey": "volume",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773725306550,
+      "isCorrect": false,
+      "exerciseText": "geometry:volume",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:volume",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "volume",
+      "bucketKey": "volume",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773725306551,
+      "isCorrect": false,
+      "exerciseText": "geometry:volume",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:volume",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773972917630,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773972917631,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "shapes_basic",
+      "bucketKey": "shapes_basic",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1775362400330,
+      "isCorrect": false,
+      "exerciseText": "geometry:shapes_basic",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:shapes_basic",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "shapes_basic",
+      "bucketKey": "shapes_basic",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1775362400331,
+      "isCorrect": false,
+      "exerciseText": "geometry:shapes_basic",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:shapes_basic",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "area",
+      "bucketKey": "area",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776552195156,
+      "isCorrect": false,
+      "exerciseText": "geometry:area",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:area",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "area",
+      "bucketKey": "area",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776586071053,
+      "isCorrect": false,
+      "exerciseText": "geometry:area",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:area",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "bucketKey": "perimeter",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776586130465,
+      "isCorrect": false,
+      "exerciseText": "geometry:perimeter",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "bucketKey": "perimeter",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776586130466,
+      "isCorrect": false,
+      "exerciseText": "geometry:perimeter",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "bucketKey": "perimeter",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776586130467,
+      "isCorrect": false,
+      "exerciseText": "geometry:perimeter",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "geometry",
+      "topic": "shapes_basic",
+      "bucketKey": "shapes_basic",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776737331236,
+      "isCorrect": false,
+      "exerciseText": "geometry:shapes_basic",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:shapes_basic",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "shapes_basic",
+      "bucketKey": "shapes_basic",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776737331237,
+      "isCorrect": false,
+      "exerciseText": "geometry:shapes_basic",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:shapes_basic",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "shapes_basic",
+      "bucketKey": "shapes_basic",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776765649590,
+      "isCorrect": false,
+      "exerciseText": "geometry:shapes_basic",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:shapes_basic",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "area",
+      "bucketKey": "area",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776801695061,
+      "isCorrect": false,
+      "exerciseText": "geometry:area",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:area",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776896233038,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "angles",
+      "bucketKey": "angles",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776896233039,
+      "isCorrect": false,
+      "exerciseText": "geometry:angles",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:angles",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "bucketKey": "perimeter",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776978577082,
+      "isCorrect": false,
+      "exerciseText": "geometry:perimeter",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "volume",
+      "bucketKey": "volume",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777109350770,
+      "isCorrect": false,
+      "exerciseText": "geometry:volume",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:volume",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "geometry",
+      "topic": "volume",
+      "bucketKey": "volume",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777109350771,
+      "isCorrect": false,
+      "exerciseText": "geometry:volume",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:volume",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "perimeter",
+      "bucketKey": "perimeter",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777143933772,
+      "isCorrect": false,
+      "exerciseText": "geometry:perimeter",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:perimeter",
+      "hintUsed": true,
+      "responseMs": 2400
+    }
+  ],
+  "mleo_english_time_tracking": {
+    "topics": {
+      "grammar": {
+        "total": 5037,
+        "sessions": [
+          {
+            "date": "2026-01-01",
+            "duration": 1086,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "grammar",
+            "timestamp": 1767301180684,
+            "mode": "learning",
+            "total": 20,
+            "correct": 10
+          },
+          {
+            "date": "2026-03-31",
+            "duration": 1171,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "grammar",
+            "timestamp": 1774916934156,
+            "mode": "learning",
+            "total": 20,
+            "correct": 15
+          },
+          {
+            "date": "2026-04-16",
+            "duration": 1406,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "grammar",
+            "timestamp": 1776366201746,
+            "mode": "learning",
+            "total": 13,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 1374,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "grammar",
+            "timestamp": 1777110182066,
+            "mode": "learning",
+            "total": 17,
+            "correct": 14
+          }
+        ],
+        "byGrade": {
+          "g4": 5037
+        },
+        "byLevel": {
+          "medium": 5037
+        }
+      },
+      "writing": {
+        "total": 3470,
+        "sessions": [
+          {
+            "date": "2026-01-08",
+            "duration": 1023,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "writing",
+            "timestamp": 1767908530976,
+            "mode": "learning",
+            "total": 19,
+            "correct": 10
+          },
+          {
+            "date": "2026-04-19",
+            "duration": 1022,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "writing",
+            "timestamp": 1776589557268,
+            "mode": "learning",
+            "total": 19,
+            "correct": 15
+          },
+          {
+            "date": "2026-04-24",
+            "duration": 1425,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "writing",
+            "timestamp": 1777066780509,
+            "mode": "learning",
+            "total": 18,
+            "correct": 15
+          }
+        ],
+        "byGrade": {
+          "g4": 3470
+        },
+        "byLevel": {
+          "medium": 3470
+        }
+      },
+      "vocabulary": {
+        "total": 6057,
+        "sessions": [
+          {
+            "date": "2026-02-01",
+            "duration": 1636,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "vocabulary",
+            "timestamp": 1769982940720,
+            "mode": "learning",
+            "total": 10,
+            "correct": 6
+          },
+          {
+            "date": "2026-03-20",
+            "duration": 1580,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "vocabulary",
+            "timestamp": 1773987935959,
+            "mode": "learning",
+            "total": 18,
+            "correct": 13
+          },
+          {
+            "date": "2026-04-20",
+            "duration": 1183,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "vocabulary",
+            "timestamp": 1776718182910,
+            "mode": "learning",
+            "total": 18,
+            "correct": 15
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 1658,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "vocabulary",
+            "timestamp": 1777160298203,
+            "mode": "learning",
+            "total": 19,
+            "correct": 15
+          }
+        ],
+        "byGrade": {
+          "g4": 6057
+        },
+        "byLevel": {
+          "medium": 6057
+        }
+      },
+      "translation": {
+        "total": 5505,
+        "sessions": [
+          {
+            "date": "2026-03-03",
+            "duration": 1587,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "translation",
+            "timestamp": 1772497203119,
+            "mode": "learning",
+            "total": 12,
+            "correct": 8
+          },
+          {
+            "date": "2026-04-19",
+            "duration": 849,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "translation",
+            "timestamp": 1776561227100,
+            "mode": "learning",
+            "total": 15,
+            "correct": 12
+          },
+          {
+            "date": "2026-04-22",
+            "duration": 1293,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "translation",
+            "timestamp": 1776817898617,
+            "mode": "learning",
+            "total": 13,
+            "correct": 10
+          },
+          {
+            "date": "2026-04-24",
+            "duration": 1776,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "translation",
+            "timestamp": 1777027387279,
+            "mode": "learning",
+            "total": 17,
+            "correct": 14
+          }
+        ],
+        "byGrade": {
+          "g4": 5505
+        },
+        "byLevel": {
+          "medium": 5505
+        }
+      },
+      "sentences": {
+        "total": 4637,
+        "sessions": [
+          {
+            "date": "2026-04-22",
+            "duration": 1263,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "sentences",
+            "timestamp": 1776831887363,
+            "mode": "learning",
+            "total": 18,
+            "correct": 15
+          },
+          {
+            "date": "2026-04-24",
+            "duration": 872,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "sentences",
+            "timestamp": 1777006870250,
+            "mode": "learning",
+            "total": 18,
+            "correct": 15
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 880,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "sentences",
+            "timestamp": 1777106646309,
+            "mode": "learning",
+            "total": 12,
+            "correct": 10
+          },
+          {
+            "date": "2026-04-26",
+            "duration": 1622,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "sentences",
+            "timestamp": 1777197391734,
+            "mode": "learning",
+            "total": 34,
+            "correct": 29
+          }
+        ],
+        "byGrade": {
+          "g4": 4637
+        },
+        "byLevel": {
+          "medium": 4637
+        }
+      }
+    },
+    "daily": {
+      "2026-01-01": {
+        "total": 1086,
+        "topics": {
+          "grammar": 1086
+        },
+        "byGrade": {
+          "g4": 1086
+        },
+        "byLevel": {
+          "medium": 1086
+        }
+      },
+      "2026-03-31": {
+        "total": 1171,
+        "topics": {
+          "grammar": 1171
+        },
+        "byGrade": {
+          "g4": 1171
+        },
+        "byLevel": {
+          "medium": 1171
+        }
+      },
+      "2026-04-16": {
+        "total": 1406,
+        "topics": {
+          "grammar": 1406
+        },
+        "byGrade": {
+          "g4": 1406
+        },
+        "byLevel": {
+          "medium": 1406
+        }
+      },
+      "2026-04-25": {
+        "total": 3912,
+        "topics": {
+          "grammar": 1374,
+          "vocabulary": 1658,
+          "sentences": 880
+        },
+        "byGrade": {
+          "g4": 3912
+        },
+        "byLevel": {
+          "medium": 3912
+        }
+      },
+      "2026-01-08": {
+        "total": 1023,
+        "topics": {
+          "writing": 1023
+        },
+        "byGrade": {
+          "g4": 1023
+        },
+        "byLevel": {
+          "medium": 1023
+        }
+      },
+      "2026-04-19": {
+        "total": 1871,
+        "topics": {
+          "writing": 1022,
+          "translation": 849
+        },
+        "byGrade": {
+          "g4": 1871
+        },
+        "byLevel": {
+          "medium": 1871
+        }
+      },
+      "2026-04-24": {
+        "total": 4073,
+        "topics": {
+          "writing": 1425,
+          "translation": 1776,
+          "sentences": 872
+        },
+        "byGrade": {
+          "g4": 4073
+        },
+        "byLevel": {
+          "medium": 4073
+        }
+      },
+      "2026-02-01": {
+        "total": 1636,
+        "topics": {
+          "vocabulary": 1636
+        },
+        "byGrade": {
+          "g4": 1636
+        },
+        "byLevel": {
+          "medium": 1636
+        }
+      },
+      "2026-03-20": {
+        "total": 1580,
+        "topics": {
+          "vocabulary": 1580
+        },
+        "byGrade": {
+          "g4": 1580
+        },
+        "byLevel": {
+          "medium": 1580
+        }
+      },
+      "2026-04-20": {
+        "total": 1183,
+        "topics": {
+          "vocabulary": 1183
+        },
+        "byGrade": {
+          "g4": 1183
+        },
+        "byLevel": {
+          "medium": 1183
+        }
+      },
+      "2026-03-03": {
+        "total": 1587,
+        "topics": {
+          "translation": 1587
+        },
+        "byGrade": {
+          "g4": 1587
+        },
+        "byLevel": {
+          "medium": 1587
+        }
+      },
+      "2026-04-22": {
+        "total": 2556,
+        "topics": {
+          "translation": 1293,
+          "sentences": 1263
+        },
+        "byGrade": {
+          "g4": 2556
+        },
+        "byLevel": {
+          "medium": 2556
+        }
+      },
+      "2026-04-26": {
+        "total": 1622,
+        "topics": {
+          "sentences": 1622
+        },
+        "byGrade": {
+          "g4": 1622
+        },
+        "byLevel": {
+          "medium": 1622
+        }
+      }
+    }
+  },
+  "mleo_english_master_progress": {
+    "progress": {
+      "grammar": {
+        "total": 70,
+        "correct": 50
+      },
+      "writing": {
+        "total": 56,
+        "correct": 40
+      },
+      "vocabulary": {
+        "total": 65,
+        "correct": 49
+      },
+      "translation": {
+        "total": 57,
+        "correct": 44
+      },
+      "sentences": {
+        "total": 82,
+        "correct": 69
+      }
+    },
+    "stars": 4,
+    "playerLevel": 2,
+    "xp": 1650,
+    "badges": []
+  },
+  "mleo_english_mistakes": [
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767301180684,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767301180685,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767301180686,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767301180687,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": true,
+      "responseMs": 2460
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767301180688,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": false,
+      "responseMs": 2480
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767301180689,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": false,
+      "responseMs": 2500
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767908530976,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767908530977,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767908530978,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767908530979,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": true,
+      "responseMs": 2460
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767908530980,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": false,
+      "responseMs": 2480
+    },
+    {
+      "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1769982940720,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1769982940721,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772497203119,
+      "isCorrect": false,
+      "exerciseText": "english:translation",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:translation",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772497203120,
+      "isCorrect": false,
+      "exerciseText": "english:translation",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:translation",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773987935959,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773987935960,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773987935961,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774916934156,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774916934157,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774916934158,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776366201746,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776561227100,
+      "isCorrect": false,
+      "exerciseText": "english:translation",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:translation",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776561227101,
+      "isCorrect": false,
+      "exerciseText": "english:translation",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:translation",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776589557268,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776589557269,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776718182910,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776718182911,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776817898617,
+      "isCorrect": false,
+      "exerciseText": "english:translation",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:translation",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776817898618,
+      "isCorrect": false,
+      "exerciseText": "english:translation",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:translation",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "sentences",
+      "bucketKey": "sentences",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776831887363,
+      "isCorrect": false,
+      "exerciseText": "english:sentences",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:sentences",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "sentences",
+      "bucketKey": "sentences",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776831887364,
+      "isCorrect": false,
+      "exerciseText": "english:sentences",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:sentences",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "sentences",
+      "bucketKey": "sentences",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777006870250,
+      "isCorrect": false,
+      "exerciseText": "english:sentences",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:sentences",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "sentences",
+      "bucketKey": "sentences",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777006870251,
+      "isCorrect": false,
+      "exerciseText": "english:sentences",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:sentences",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777027387279,
+      "isCorrect": false,
+      "exerciseText": "english:translation",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:translation",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777027387280,
+      "isCorrect": false,
+      "exerciseText": "english:translation",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:translation",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777066780509,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777066780510,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "sentences",
+      "bucketKey": "sentences",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777106646309,
+      "isCorrect": false,
+      "exerciseText": "english:sentences",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:sentences",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777110182066,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777110182067,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777160298203,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777160298204,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "sentences",
+      "bucketKey": "sentences",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777197391734,
+      "isCorrect": false,
+      "exerciseText": "english:sentences",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:sentences",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "sentences",
+      "bucketKey": "sentences",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777197391735,
+      "isCorrect": false,
+      "exerciseText": "english:sentences",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:sentences",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "english",
+      "topic": "sentences",
+      "bucketKey": "sentences",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777197391736,
+      "isCorrect": false,
+      "exerciseText": "english:sentences",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:sentences",
+      "hintUsed": false,
+      "responseMs": 2440
+    }
+  ],
+  "mleo_science_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_science_master_progress": {
+    "progress": {},
+    "stars": 1,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_science_mistakes": [],
+  "mleo_hebrew_time_tracking": {
+    "topics": {
+      "writing": {
+        "total": 2871,
+        "sessions": [
+          {
+            "date": "2026-01-09",
+            "duration": 1444,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "writing",
+            "timestamp": 1767987530555,
+            "mode": "learning",
+            "total": 20,
+            "correct": 11
+          },
+          {
+            "date": "2026-01-12",
+            "duration": 1427,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "writing",
+            "timestamp": 1768209048188,
+            "mode": "learning",
+            "total": 18,
+            "correct": 10
+          }
+        ],
+        "byGrade": {
+          "g4": 2871
+        },
+        "byLevel": {
+          "medium": 2871
+        }
+      },
+      "grammar": {
+        "total": 3444,
+        "sessions": [
+          {
+            "date": "2026-03-23",
+            "duration": 1419,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "grammar",
+            "timestamp": 1774242553101,
+            "mode": "learning",
+            "total": 25,
+            "correct": 18
+          },
+          {
+            "date": "2026-04-05",
+            "duration": 1032,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "grammar",
+            "timestamp": 1775352022096,
+            "mode": "learning",
+            "total": 17,
+            "correct": 13
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 993,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "grammar",
+            "timestamp": 1777154593853,
+            "mode": "learning",
+            "total": 17,
+            "correct": 14
+          }
+        ],
+        "byGrade": {
+          "g4": 3444
+        },
+        "byLevel": {
+          "medium": 3444
+        }
+      },
+      "comprehension": {
+        "total": 3541,
+        "sessions": [
+          {
+            "date": "2026-04-14",
+            "duration": 912,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "comprehension",
+            "timestamp": 1776142734350,
+            "mode": "learning",
+            "total": 11,
+            "correct": 8
+          },
+          {
+            "date": "2026-04-14",
+            "duration": 1231,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "comprehension",
+            "timestamp": 1776204847319,
+            "mode": "learning",
+            "total": 24,
+            "correct": 20
+          },
+          {
+            "date": "2026-04-24",
+            "duration": 1398,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "comprehension",
+            "timestamp": 1777023203976,
+            "mode": "learning",
+            "total": 15,
+            "correct": 12
+          }
+        ],
+        "byGrade": {
+          "g4": 3541
+        },
+        "byLevel": {
+          "medium": 3541
+        }
+      },
+      "reading": {
+        "total": 3508,
+        "sessions": [
+          {
+            "date": "2026-04-19",
+            "duration": 980,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "reading",
+            "timestamp": 1776559753882,
+            "mode": "learning",
+            "total": 14,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-19",
+            "duration": 1539,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "reading",
+            "timestamp": 1776631688838,
+            "mode": "learning",
+            "total": 16,
+            "correct": 13
+          },
+          {
+            "date": "2026-04-22",
+            "duration": 989,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "reading",
+            "timestamp": 1776892450861,
+            "mode": "learning",
+            "total": 15,
+            "correct": 13
+          }
+        ],
+        "byGrade": {
+          "g4": 3508
+        },
+        "byLevel": {
+          "medium": 3508
+        }
+      },
+      "vocabulary": {
+        "total": 3662,
+        "sessions": [
+          {
+            "date": "2026-04-24",
+            "duration": 1105,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "vocabulary",
+            "timestamp": 1776997429706,
+            "mode": "learning",
+            "total": 13,
+            "correct": 11
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 935,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "vocabulary",
+            "timestamp": 1777111811315,
+            "mode": "learning",
+            "total": 40,
+            "correct": 32
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 1622,
+            "grade": "g4",
+            "level": "medium",
+            "topic": "vocabulary",
+            "timestamp": 1777160901939,
+            "mode": "learning",
+            "total": 11,
+            "correct": 9
+          }
+        ],
+        "byGrade": {
+          "g4": 3662
+        },
+        "byLevel": {
+          "medium": 3662
+        }
+      }
+    },
+    "daily": {
+      "2026-01-09": {
+        "total": 1444,
+        "topics": {
+          "writing": 1444
+        },
+        "byGrade": {
+          "g4": 1444
+        },
+        "byLevel": {
+          "medium": 1444
+        }
+      },
+      "2026-01-12": {
+        "total": 1427,
+        "topics": {
+          "writing": 1427
+        },
+        "byGrade": {
+          "g4": 1427
+        },
+        "byLevel": {
+          "medium": 1427
+        }
+      },
+      "2026-03-23": {
+        "total": 1419,
+        "topics": {
+          "grammar": 1419
+        },
+        "byGrade": {
+          "g4": 1419
+        },
+        "byLevel": {
+          "medium": 1419
+        }
+      },
+      "2026-04-05": {
+        "total": 1032,
+        "topics": {
+          "grammar": 1032
+        },
+        "byGrade": {
+          "g4": 1032
+        },
+        "byLevel": {
+          "medium": 1032
+        }
+      },
+      "2026-04-25": {
+        "total": 3550,
+        "topics": {
+          "grammar": 993,
+          "vocabulary": 2557
+        },
+        "byGrade": {
+          "g4": 3550
+        },
+        "byLevel": {
+          "medium": 3550
+        }
+      },
+      "2026-04-14": {
+        "total": 2143,
+        "topics": {
+          "comprehension": 2143
+        },
+        "byGrade": {
+          "g4": 2143
+        },
+        "byLevel": {
+          "medium": 2143
+        }
+      },
+      "2026-04-24": {
+        "total": 2503,
+        "topics": {
+          "comprehension": 1398,
+          "vocabulary": 1105
+        },
+        "byGrade": {
+          "g4": 2503
+        },
+        "byLevel": {
+          "medium": 2503
+        }
+      },
+      "2026-04-19": {
+        "total": 2519,
+        "topics": {
+          "reading": 2519
+        },
+        "byGrade": {
+          "g4": 2519
+        },
+        "byLevel": {
+          "medium": 2519
+        }
+      },
+      "2026-04-22": {
+        "total": 989,
+        "topics": {
+          "reading": 989
+        },
+        "byGrade": {
+          "g4": 989
+        },
+        "byLevel": {
+          "medium": 989
+        }
+      }
+    }
+  },
+  "mleo_hebrew_master_progress": {
+    "progress": {
+      "writing": {
+        "total": 38,
+        "correct": 21
+      },
+      "grammar": {
+        "total": 59,
+        "correct": 45
+      },
+      "comprehension": {
+        "total": 50,
+        "correct": 40
+      },
+      "reading": {
+        "total": 45,
+        "correct": 37
+      },
+      "vocabulary": {
+        "total": 64,
+        "correct": 52
+      }
+    },
+    "stars": 4,
+    "playerLevel": 2,
+    "xp": 1280,
+    "badges": []
+  },
+  "mleo_hebrew_mistakes": [
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767987530555,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767987530556,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767987530557,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767987530558,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": true,
+      "responseMs": 2460
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1767987530559,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": false,
+      "responseMs": 2480
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768209048188,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768209048189,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768209048190,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768209048191,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": true,
+      "responseMs": 2460
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774242553101,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774242553102,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774242553103,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774242553104,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": true,
+      "responseMs": 2460
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1775352022096,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1775352022097,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776142734350,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776142734351,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776204847319,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776204847320,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776559753882,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776559753883,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776631688838,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776631688839,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776892450861,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776997429706,
+      "isCorrect": false,
+      "exerciseText": "hebrew:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:vocabulary",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777023203976,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777023203977,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777111811315,
+      "isCorrect": false,
+      "exerciseText": "hebrew:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:vocabulary",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777111811316,
+      "isCorrect": false,
+      "exerciseText": "hebrew:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:vocabulary",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777111811317,
+      "isCorrect": false,
+      "exerciseText": "hebrew:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:vocabulary",
+      "hintUsed": false,
+      "responseMs": 2440
+    },
+    {
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777111811318,
+      "isCorrect": false,
+      "exerciseText": "hebrew:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:vocabulary",
+      "hintUsed": true,
+      "responseMs": 2460
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777154593853,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": true,
+      "responseMs": 2400
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777154593854,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": false,
+      "responseMs": 2420
+    },
+    {
+      "subject": "hebrew",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777160901939,
+      "isCorrect": false,
+      "exerciseText": "hebrew:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:vocabulary",
+      "hintUsed": true,
+      "responseMs": 2400
+    }
+  ],
+  "mleo_moledet_geography_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_moledet_geography_master_progress": {
+    "progress": {},
+    "stars": 1,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_moledet_geography_mistakes": [],
+  "mleo_daily_challenge": {
+    "questions": 1180,
+    "correct": 898,
+    "bestScore": 898
+  },
+  "mleo_weekly_challenge": {
+    "current": 76,
+    "target": 100,
+    "completed": true
+  },
+  "mleo_science_daily_challenge": {
+    "questions": 295,
+    "correct": 224,
+    "bestScore": 0
+  },
+  "mleo_science_weekly_challenge": {
+    "current": 40,
+    "target": 100,
+    "completed": false
+  }
+}

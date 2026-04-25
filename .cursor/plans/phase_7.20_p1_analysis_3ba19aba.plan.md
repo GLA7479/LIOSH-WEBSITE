@@ -4,13 +4,13 @@ overview: "Read-only analysis of the seven remaining P1 weak skills: root causes
 todos:
   - id: en-grammar-line-map
     content: Refine grammar_line_id rules (and/or pool tags) so english:grammar:line:תארים_* receives matching rows for g3
-    status: pending
+    status: cancelled
   - id: math-audit-samples
     content: Add audit-only forced math_generator_sample emission for six kinds (dec_divide, dec_repeating, frac_half_reverse, frac_quarter_reverse, frac_to_mixed, wp_unit_cm_to_m)
-    status: pending
+    status: cancelled
   - id: verify-pipeline
     content: Re-run audit:questions, audit:skill-coverage, audit:weak-coverage-plan and required tests; confirm P1 count drops
-    status: pending
+    status: cancelled
 isProject: false
 ---
 
