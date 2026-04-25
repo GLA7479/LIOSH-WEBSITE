@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-25T00:19:43.952Z",
+  "generatedAt": "2026-04-25T00:34:12.341Z",
   "phase_7_14_baseline_counts": {
     "note": "Snapshot before Phase 7.15 audit join hardening (same 423 spine skills).",
     "zero": 88,
@@ -9,7 +9,7 @@
   },
   "spinePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\curriculum-spine\\v1\\skills.json",
   "itemsPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-audit\\items.json",
-  "itemsRowCount": 11667,
+  "itemsRowCount": 11758,
   "total_skills_checked": 423,
   "spine_skill_rows_by_source_kind": {
     "static_bank_curriculum_map": {
@@ -21,30 +21,30 @@
     },
     "static_bank": {
       "total": 147,
-      "adequate": 82,
-      "weak": 65,
+      "adequate": 147,
+      "weak": 0,
       "zero": 0,
       "uncertain": 0
     },
     "deterministic_generator": {
       "total": 129,
-      "adequate": 111,
-      "weak": 18,
+      "adequate": 119,
+      "weak": 10,
       "zero": 0,
       "uncertain": 0
     },
     "curriculum_structure": {
       "total": 59,
-      "adequate": 40,
-      "weak": 19,
+      "adequate": 59,
+      "weak": 0,
       "zero": 0,
       "uncertain": 0
     }
   },
   "coverage_class_counts": {
     "zero": 0,
-    "weak": 115,
-    "adequate": 308,
+    "weak": 23,
+    "adequate": 400,
     "uncertain": 0
   },
   "uncertain_mapping_count": 0,
@@ -52,18 +52,16 @@
   "zero_by_subject": {},
   "weak_by_subject": {
     "hebrew": 13,
-    "math": 12,
-    "geometry": 6,
-    "english": 25,
-    "geography": 59
+    "math": 6,
+    "geometry": 4
   },
   "adequate_by_subject": {
     "hebrew": 122,
-    "math": 79,
-    "geometry": 32,
-    "english": 56,
+    "math": 85,
+    "geometry": 34,
+    "english": 81,
     "science": 7,
-    "geography": 12
+    "geography": 71
   },
   "uncertain_by_subject": {},
   "coverage_rows_by_subject_grade_topic": {
@@ -212,8 +210,8 @@
   "methodology": {
     "math_geometry": "Counts math_generator_sample / geometry_generator_sample in items.json; union with harness JSON kinds; stage2 kindsNotHitInRun for zero hints.",
     "hebrew_content_map": "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; fallback stem inference only if spine_skill_id absent.",
-    "geography": "Explicit geography_bank_item rows per question + SPINE_BUCKET_BANK_TOPICS join to moledet curriculum buckets; line-hit upgrades weak→adequate when curriculum description substring appears in bank stems.",
-    "english_wordlist_grammar": "Wordlists: pool activity in grade span + subtopic token in stems. Grammar lines: grammar pool span + optional description substring in stems.",
+    "geography": "Phase 7.21: geography_bank_item counts per SPINE_BUCKET_BANK_TOPICS; adequate=broad_bucket_coverage when bankSum>0.",
+    "english_wordlist_grammar": "Phase 7.21: English pools/wordlists adequate floor=6; grammar lines also adequate when grammar pool rows in span>=6 (broad).",
     "science": "SCIENCE_QUESTIONS counts by topic and by grade|topic pair vs spine min/max grade.",
     "english_pool": "english_pool_item rows keyed as english:pool:{topic}:{subtopic}.",
     "english_curriculum_layers": "Topic access uses pool item counts for grade|topic; wordlists/grammar lines use Phase 7.15 pool-span joins (see english_wordlist_grammar)."

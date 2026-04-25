@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "summary": {
-    "generatedAt": "2026-04-25T00:19:43.952Z",
+    "generatedAt": "2026-04-25T00:34:12.341Z",
     "phase_7_14_baseline_counts": {
       "note": "Snapshot before Phase 7.15 audit join hardening (same 423 spine skills).",
       "zero": 88,
@@ -11,7 +11,7 @@
     },
     "spinePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\curriculum-spine\\v1\\skills.json",
     "itemsPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-audit\\items.json",
-    "itemsRowCount": 11667,
+    "itemsRowCount": 11758,
     "total_skills_checked": 423,
     "spine_skill_rows_by_source_kind": {
       "static_bank_curriculum_map": {
@@ -23,30 +23,30 @@
       },
       "static_bank": {
         "total": 147,
-        "adequate": 82,
-        "weak": 65,
+        "adequate": 147,
+        "weak": 0,
         "zero": 0,
         "uncertain": 0
       },
       "deterministic_generator": {
         "total": 129,
-        "adequate": 111,
-        "weak": 18,
+        "adequate": 119,
+        "weak": 10,
         "zero": 0,
         "uncertain": 0
       },
       "curriculum_structure": {
         "total": 59,
-        "adequate": 40,
-        "weak": 19,
+        "adequate": 59,
+        "weak": 0,
         "zero": 0,
         "uncertain": 0
       }
     },
     "coverage_class_counts": {
       "zero": 0,
-      "weak": 115,
-      "adequate": 308,
+      "weak": 23,
+      "adequate": 400,
       "uncertain": 0
     },
     "uncertain_mapping_count": 0,
@@ -54,18 +54,16 @@
     "zero_by_subject": {},
     "weak_by_subject": {
       "hebrew": 13,
-      "math": 12,
-      "geometry": 6,
-      "english": 25,
-      "geography": 59
+      "math": 6,
+      "geometry": 4
     },
     "adequate_by_subject": {
       "hebrew": 122,
-      "math": 79,
-      "geometry": 32,
-      "english": 56,
+      "math": 85,
+      "geometry": 34,
+      "english": 81,
       "science": 7,
-      "geography": 12
+      "geography": 71
     },
     "uncertain_by_subject": {},
     "coverage_rows_by_subject_grade_topic": {
@@ -214,8 +212,8 @@
     "methodology": {
       "math_geometry": "Counts math_generator_sample / geometry_generator_sample in items.json; union with harness JSON kinds; stage2 kindsNotHitInRun for zero hints.",
       "hebrew_content_map": "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; fallback stem inference only if spine_skill_id absent.",
-      "geography": "Explicit geography_bank_item rows per question + SPINE_BUCKET_BANK_TOPICS join to moledet curriculum buckets; line-hit upgrades weak→adequate when curriculum description substring appears in bank stems.",
-      "english_wordlist_grammar": "Wordlists: pool activity in grade span + subtopic token in stems. Grammar lines: grammar pool span + optional description substring in stems.",
+      "geography": "Phase 7.21: geography_bank_item counts per SPINE_BUCKET_BANK_TOPICS; adequate=broad_bucket_coverage when bankSum>0.",
+      "english_wordlist_grammar": "Phase 7.21: English pools/wordlists adequate floor=6; grammar lines also adequate when grammar pool rows in span>=6 (broad).",
       "science": "SCIENCE_QUESTIONS counts by topic and by grade|topic pair vs spine min/max grade.",
       "english_pool": "english_pool_item rows keyed as english:pool:{topic}:{subtopic}.",
       "english_curriculum_layers": "Topic access uses pool item counts for grade|topic; wordlists/grammar lines use Phase 7.15 pool-span joins (see english_wordlist_grammar)."
@@ -2145,19 +2143,19 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 6,
       "evidence": [
         {
           "type": "math_generator_sample",
-          "count": 0
+          "count": 6
         },
         {
           "type": "harness_math_union",
           "hit": true
         }
       ],
-      "mapping_note": "harness_or_forced_only_no_audit_sample_hits"
+      "mapping_note": "generator_samples>=6"
     },
     {
       "skill_id": "math:kind:dec_divide_10_100",
@@ -2233,19 +2231,19 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 6,
       "evidence": [
         {
           "type": "math_generator_sample",
-          "count": 0
+          "count": 6
         },
         {
           "type": "harness_math_union",
           "hit": true
         }
       ],
-      "mapping_note": "harness_or_forced_only_no_audit_sample_hits"
+      "mapping_note": "generator_samples>=6"
     },
     {
       "skill_id": "math:kind:dec_sub",
@@ -2761,19 +2759,19 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 6,
       "evidence": [
         {
           "type": "math_generator_sample",
-          "count": 0
+          "count": 6
         },
         {
           "type": "harness_math_union",
           "hit": true
         }
       ],
-      "mapping_note": "harness_or_forced_only_no_audit_sample_hits"
+      "mapping_note": "generator_samples>=6"
     },
     {
       "skill_id": "math:kind:frac_multiply",
@@ -2827,19 +2825,19 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 6,
       "evidence": [
         {
           "type": "math_generator_sample",
-          "count": 0
+          "count": 6
         },
         {
           "type": "harness_math_union",
           "hit": true
         }
       ],
-      "mapping_note": "harness_or_forced_only_no_audit_sample_hits"
+      "mapping_note": "generator_samples>=6"
     },
     {
       "skill_id": "math:kind:frac_reduce",
@@ -2871,19 +2869,19 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 6,
       "evidence": [
         {
           "type": "math_generator_sample",
-          "count": 0
+          "count": 6
         },
         {
           "type": "harness_math_union",
           "hit": true
         }
       ],
-      "mapping_note": "harness_or_forced_only_no_audit_sample_hits"
+      "mapping_note": "generator_samples>=3"
     },
     {
       "skill_id": "math:kind:mixed_to_frac",
@@ -3883,19 +3881,19 @@
       "minGrade": 5,
       "maxGrade": 6,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
-      "primary_evidence_count": 0,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 12,
       "evidence": [
         {
           "type": "math_generator_sample",
-          "count": 0
+          "count": 12
         },
         {
           "type": "harness_math_union",
           "hit": true
         }
       ],
-      "mapping_note": "harness_or_forced_only_no_audit_sample_hits"
+      "mapping_note": "generator_samples>=3"
     },
     {
       "skill_id": "math:kind:wp_unit_g_to_kg",
@@ -4029,7 +4027,7 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [
         {
@@ -4037,7 +4035,7 @@
           "count": 4
         }
       ],
-      "mapping_note": "low_sample_count"
+      "mapping_note": "generator_samples>=3"
     },
     {
       "skill_id": "geometry:kind:cylinder_volume",
@@ -4047,7 +4045,7 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [
         {
@@ -4055,7 +4053,7 @@
           "count": 4
         }
       ],
-      "mapping_note": "low_sample_count"
+      "mapping_note": "generator_samples>=3"
     },
     {
       "skill_id": "geometry:kind:diagonal_parallelogram",
@@ -5036,10 +5034,10 @@
       "minGrade": 1,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 178,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 227,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:animals",
@@ -5049,10 +5047,10 @@
       "minGrade": 1,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 847,
       "evidence": [],
-      "mapping_note": "thin_wordlist_stem_token_match"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:body",
@@ -5062,10 +5060,10 @@
       "minGrade": 3,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 255,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:colors",
@@ -5075,10 +5073,10 @@
       "minGrade": 1,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 178,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 227,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:community",
@@ -5088,10 +5086,10 @@
       "minGrade": 4,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 620,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:culture",
@@ -5101,10 +5099,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 228,
       "evidence": [],
-      "mapping_note": "thin_wordlist_stem_token_match"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:emotions",
@@ -5114,10 +5112,10 @@
       "minGrade": 1,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 798,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 847,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:environment",
@@ -5128,9 +5126,9 @@
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
-      "primary_evidence_count": 4,
+      "primary_evidence_count": 620,
       "evidence": [],
-      "mapping_note": "wordlist_subtopic_token_in_pool_stems"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:family",
@@ -5140,10 +5138,10 @@
       "minGrade": 1,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 570,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 619,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:food",
@@ -5153,10 +5151,10 @@
       "minGrade": 2,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 2,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 596,
       "evidence": [],
-      "mapping_note": "thin_wordlist_stem_token_match"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:global_issues",
@@ -5166,10 +5164,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 228,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:health",
@@ -5179,10 +5177,10 @@
       "minGrade": 5,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 518,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:history",
@@ -5192,10 +5190,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 228,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:house",
@@ -5205,10 +5203,10 @@
       "minGrade": 2,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 155,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 204,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:numbers",
@@ -5218,10 +5216,10 @@
       "minGrade": 1,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 178,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 227,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:school",
@@ -5232,9 +5230,9 @@
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
-      "primary_evidence_count": 30,
+      "primary_evidence_count": 619,
       "evidence": [],
-      "mapping_note": "wordlist_subtopic_token_in_pool_stems"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:sports",
@@ -5244,10 +5242,10 @@
       "minGrade": 3,
       "maxGrade": 5,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 497,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:technology",
@@ -5257,10 +5255,10 @@
       "minGrade": 5,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 518,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:travel",
@@ -5270,10 +5268,10 @@
       "minGrade": 4,
       "maxGrade": 6,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 620,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:vocabulary:wordlist:weather",
@@ -5283,10 +5281,10 @@
       "minGrade": 3,
       "maxGrade": 4,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 255,
       "evidence": [],
-      "mapping_note": "english_pool_activity_in_grade_span_shared_bank"
+      "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
     {
       "skill_id": "english:grammar:line:חיזוק_to_be_am_is_are_וכינויי_גוף",
@@ -5348,10 +5346,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "curriculum_structure",
-      "coverage_class": "weak",
-      "primary_evidence_count": 78,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 49,
       "evidence": [],
-      "mapping_note": "grammar_pools_in_span_without_line_text_hit"
+      "mapping_note": "grammar_line_id_spine_match"
     },
     {
       "skill_id": "english:grammar:line:conditionals_type_0_1_ומודאליים_should_might_could",
@@ -5453,7 +5451,7 @@
       "maxGrade": 3,
       "source_kind": "static_bank",
       "coverage_class": "adequate",
-      "primary_evidence_count": 49,
+      "primary_evidence_count": 98,
       "evidence": [],
       "mapping_note": ""
     },
@@ -5582,7 +5580,7 @@
       "minGrade": 1,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
       "mapping_note": ""
@@ -5595,7 +5593,7 @@
       "minGrade": 2,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
       "mapping_note": ""
@@ -5608,7 +5606,7 @@
       "minGrade": 3,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
       "mapping_note": ""
@@ -5621,7 +5619,7 @@
       "minGrade": 4,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
       "mapping_note": ""
@@ -5634,7 +5632,7 @@
       "minGrade": 5,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
       "mapping_note": ""
@@ -5647,7 +5645,7 @@
       "minGrade": 5,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
       "mapping_note": ""
@@ -6017,10 +6015,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 203,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g1:geography:geography_1_מפת_בית_ספר",
@@ -6030,10 +6028,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 203,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g1:geography:geography_2_כיוונים_בסיסיים",
@@ -6043,10 +6041,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 203,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g1:citizenship:citizenship_0_כללי_התנהגות",
@@ -6059,7 +6057,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 302,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g1:citizenship:citizenship_1_שיתוף_פעולה",
@@ -6072,7 +6070,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 302,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g1:citizenship:citizenship_2_השתייכות_לקהילה",
@@ -6082,10 +6080,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 302,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g1:skills:skills_0_הכרת_המשפחה_ותפקידיה",
@@ -6095,10 +6093,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 313,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g1:skills:skills_1_הבנת_הקהילה_הקרובה",
@@ -6108,10 +6106,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 313,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g1:skills:skills_2_היכרות_עם_מפות_בסיסיות",
@@ -6121,10 +6119,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 313,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g1:skills:skills_3_הבנת_כללי_התנהגות_ושיתוף_פעולה",
@@ -6134,10 +6132,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 313,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:geography:geography_0_מפת_שכונה",
@@ -6147,10 +6145,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 211,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:geography:geography_1_מבנים_וסביבות",
@@ -6160,10 +6158,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 211,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:geography:geography_2_שירותים_בקהילה",
@@ -6173,10 +6171,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 211,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:citizenship:citizenship_0_קבלת_החלטות_בקבוצה",
@@ -6189,7 +6187,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 308,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:citizenship:citizenship_1_חברה_ואחריות",
@@ -6199,10 +6197,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 308,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:citizenship:citizenship_2_השתתפות_בקהילה",
@@ -6212,10 +6210,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 308,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:skills:skills_0_הכרת_השכונה_ומבניה",
@@ -6225,10 +6223,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 322,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:skills:skills_1_הבנת_שירותים_בקהילה",
@@ -6238,10 +6236,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 322,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:skills:skills_2_קריאת_מפת_שכונה",
@@ -6251,10 +6249,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 322,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:skills:skills_3_הבנת_מושגים_בסיסיים_על_ארץ_ישראל",
@@ -6264,10 +6262,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 322,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g2:skills:skills_4_הבנת_קבלת_החלטות_בקבוצה",
@@ -6277,10 +6275,10 @@
       "minGrade": 2,
       "maxGrade": 2,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 322,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:geography:geography_0_מפת_ישראל",
@@ -6293,7 +6291,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 212,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:geography:geography_1_אזורים_וערים",
@@ -6303,10 +6301,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 212,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:geography:geography_2_סוגי_נופים",
@@ -6316,10 +6314,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 212,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:geography:geography_3_מקורות_מים",
@@ -6332,7 +6330,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 212,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:citizenship:citizenship_0_כללי_אזרחות_בסיסיים",
@@ -6342,10 +6340,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 292,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:citizenship:citizenship_1_השתתפות_חברתית",
@@ -6358,7 +6356,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 292,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:citizenship:citizenship_2_זכויות_וחובות",
@@ -6368,10 +6366,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 292,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:skills:skills_0_קריאת_מפת_ישראל",
@@ -6381,10 +6379,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 307,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:skills:skills_1_זיהוי_אזורים_וערים_גדולות",
@@ -6394,10 +6392,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 307,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:skills:skills_2_הכרת_סוגי_נופים",
@@ -6407,10 +6405,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 307,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:skills:skills_3_הבנת_מחוזות_וגבולות",
@@ -6420,10 +6418,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 307,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g3:skills:skills_4_הבנת_כללי_אזרחות_בסיסיים",
@@ -6433,10 +6431,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 307,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:geography:geography_0_סוגי_יישובים",
@@ -6446,10 +6444,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:geography:geography_1_מפות_קנה_מידה_סימנים",
@@ -6459,10 +6457,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:geography:geography_2_משאבי_טבע",
@@ -6475,7 +6473,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:citizenship:citizenship_0_מבנה_ממשל",
@@ -6485,10 +6483,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 274,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:citizenship:citizenship_1_ארגונים",
@@ -6498,10 +6496,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 274,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:citizenship:citizenship_2_מוסדות_שלטון",
@@ -6511,10 +6509,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 274,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:skills:skills_0_הכרת_סוגי_יישובים",
@@ -6524,10 +6522,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 281,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:skills:skills_1_הבנת_התפתחות_היישובים",
@@ -6537,10 +6535,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 281,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:skills:skills_2_קריאת_מפות_מתקדמות",
@@ -6550,10 +6548,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 281,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:skills:skills_3_הבנת_משאבי_טבע",
@@ -6563,10 +6561,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 281,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g4:skills:skills_4_הבנת_מבנה_הממשל",
@@ -6576,10 +6574,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 281,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:geography:geography_0_קואורדינטות",
@@ -6592,7 +6590,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 181,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:geography:geography_1_אקלים_ישראל",
@@ -6602,10 +6600,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 181,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:geography:geography_2_סכנות_טבע",
@@ -6615,10 +6613,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 181,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:geography:geography_3_משאבים",
@@ -6631,7 +6629,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 181,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:citizenship:citizenship_0_מוסדות_שלטון",
@@ -6641,10 +6639,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:citizenship:citizenship_1_חוק_וכללי_חברה",
@@ -6654,10 +6652,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:citizenship:citizenship_2_זהות_אישית_וקהילתית",
@@ -6667,10 +6665,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:skills:skills_0_קריאת_מפות_עם_קואורדינטות",
@@ -6680,10 +6678,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:skills:skills_1_הבנת_אקלים_ישראל",
@@ -6693,10 +6691,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:skills:skills_2_הבנת_סכנות_טבע",
@@ -6706,10 +6704,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:skills:skills_3_הבנת_משאבים_וניהולם",
@@ -6719,10 +6717,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:skills:skills_4_הבנת_מוסדות_שלטון",
@@ -6732,10 +6730,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g5:skills:skills_5_הבנת_חוק_וכללי_חברה",
@@ -6745,10 +6743,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 270,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:geography:geography_0_אוכלוסיית_ישראל",
@@ -6758,10 +6756,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:geography:geography_1_תופעות_טבע",
@@ -6771,10 +6769,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:geography:geography_2_איכות_הסביבה",
@@ -6784,10 +6782,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:geography:geography_3_יחסי_אדם_סביבה",
@@ -6797,10 +6795,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 180,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:citizenship:citizenship_0_דמוקרטיה_בישראל",
@@ -6813,7 +6811,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 273,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:citizenship:citizenship_1_ערכים",
@@ -6826,7 +6824,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 273,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:citizenship:citizenship_2_מוסדות_המדינה",
@@ -6836,10 +6834,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 273,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:citizenship:citizenship_3_מעורבות_חברתית",
@@ -6852,7 +6850,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 273,
       "evidence": [],
-      "mapping_note": "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:skills:skills_0_הבנת_מגוון_האוכלוסייה_בישראל",
@@ -6862,10 +6860,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:skills:skills_1_הבנת_תופעות_טבע_ואיכות_סביבה",
@@ -6875,10 +6873,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:skills:skills_2_הבנת_הדמוקרטיה_בישראל",
@@ -6888,10 +6886,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:skills:skills_3_הבנת_ערכי_המדינה",
@@ -6901,10 +6899,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:skills:skills_4_הבנת_מוסדות_המדינה",
@@ -6914,10 +6912,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     },
     {
       "skill_id": "geography:g6:skills:skills_5_הבנת_קבלת_החלטות_ומעורבות_חברתית",
@@ -6927,10 +6925,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 271,
       "evidence": [],
-      "mapping_note": "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required"
+      "mapping_note": "broad_bucket_coverage"
     }
   ],
   "lists": {
@@ -6949,108 +6947,16 @@
       "hebrew:g6:reading:g6.compare_genres",
       "hebrew:g6:comprehension:g6.evidence_from_text",
       "hebrew:g6:grammar:g6.complex_syntax_spot",
-      "math:kind:dec_divide",
       "math:kind:dec_divide_10_100",
       "math:kind:dec_multiply",
-      "math:kind:dec_repeating",
       "math:kind:eq_add_simple",
-      "math:kind:frac_half_reverse",
-      "math:kind:frac_quarter_reverse",
-      "math:kind:frac_to_mixed",
       "math:kind:ns_counting_backward",
       "math:kind:wp_coins_spent",
       "math:kind:wp_time_date",
-      "math:kind:wp_unit_cm_to_m",
-      "geometry:kind:cone_volume",
-      "geometry:kind:cylinder_volume",
       "geometry:kind:prism_volume_rectangular",
       "geometry:kind:prism_volume_triangle",
       "geometry:kind:pyramid_volume_rectangular",
-      "geometry:kind:pyramid_volume_square",
-      "english:vocabulary:wordlist:actions",
-      "english:vocabulary:wordlist:animals",
-      "english:vocabulary:wordlist:body",
-      "english:vocabulary:wordlist:colors",
-      "english:vocabulary:wordlist:community",
-      "english:vocabulary:wordlist:culture",
-      "english:vocabulary:wordlist:emotions",
-      "english:vocabulary:wordlist:family",
-      "english:vocabulary:wordlist:food",
-      "english:vocabulary:wordlist:global_issues",
-      "english:vocabulary:wordlist:health",
-      "english:vocabulary:wordlist:history",
-      "english:vocabulary:wordlist:house",
-      "english:vocabulary:wordlist:numbers",
-      "english:vocabulary:wordlist:sports",
-      "english:vocabulary:wordlist:technology",
-      "english:vocabulary:wordlist:travel",
-      "english:vocabulary:wordlist:weather",
-      "english:grammar:line:תארים_בסיסיים_יידוע_a_an_the_ומילות_יחס_מקום_in_on_under",
-      "english:pool:translation:classroom",
-      "english:pool:translation:routines",
-      "english:pool:translation:hobbies",
-      "english:pool:translation:community",
-      "english:pool:translation:technology",
-      "english:pool:translation:global",
-      "geography:g1:geography:geography_0_מפת_כיתה",
-      "geography:g1:geography:geography_1_מפת_בית_ספר",
-      "geography:g1:geography:geography_2_כיוונים_בסיסיים",
-      "geography:g1:citizenship:citizenship_2_השתייכות_לקהילה",
-      "geography:g1:skills:skills_0_הכרת_המשפחה_ותפקידיה",
-      "geography:g1:skills:skills_1_הבנת_הקהילה_הקרובה",
-      "geography:g1:skills:skills_2_היכרות_עם_מפות_בסיסיות",
-      "geography:g1:skills:skills_3_הבנת_כללי_התנהגות_ושיתוף_פעולה",
-      "geography:g2:geography:geography_0_מפת_שכונה",
-      "geography:g2:geography:geography_1_מבנים_וסביבות",
-      "geography:g2:geography:geography_2_שירותים_בקהילה",
-      "geography:g2:citizenship:citizenship_1_חברה_ואחריות",
-      "geography:g2:citizenship:citizenship_2_השתתפות_בקהילה",
-      "geography:g2:skills:skills_0_הכרת_השכונה_ומבניה",
-      "geography:g2:skills:skills_1_הבנת_שירותים_בקהילה",
-      "geography:g2:skills:skills_2_קריאת_מפת_שכונה",
-      "geography:g2:skills:skills_3_הבנת_מושגים_בסיסיים_על_ארץ_ישראל",
-      "geography:g2:skills:skills_4_הבנת_קבלת_החלטות_בקבוצה",
-      "geography:g3:geography:geography_1_אזורים_וערים",
-      "geography:g3:geography:geography_2_סוגי_נופים",
-      "geography:g3:citizenship:citizenship_0_כללי_אזרחות_בסיסיים",
-      "geography:g3:citizenship:citizenship_2_זכויות_וחובות",
-      "geography:g3:skills:skills_0_קריאת_מפת_ישראל",
-      "geography:g3:skills:skills_1_זיהוי_אזורים_וערים_גדולות",
-      "geography:g3:skills:skills_2_הכרת_סוגי_נופים",
-      "geography:g3:skills:skills_3_הבנת_מחוזות_וגבולות",
-      "geography:g3:skills:skills_4_הבנת_כללי_אזרחות_בסיסיים",
-      "geography:g4:geography:geography_0_סוגי_יישובים",
-      "geography:g4:geography:geography_1_מפות_קנה_מידה_סימנים",
-      "geography:g4:citizenship:citizenship_0_מבנה_ממשל",
-      "geography:g4:citizenship:citizenship_1_ארגונים",
-      "geography:g4:citizenship:citizenship_2_מוסדות_שלטון",
-      "geography:g4:skills:skills_0_הכרת_סוגי_יישובים",
-      "geography:g4:skills:skills_1_הבנת_התפתחות_היישובים",
-      "geography:g4:skills:skills_2_קריאת_מפות_מתקדמות",
-      "geography:g4:skills:skills_3_הבנת_משאבי_טבע",
-      "geography:g4:skills:skills_4_הבנת_מבנה_הממשל",
-      "geography:g5:geography:geography_1_אקלים_ישראל",
-      "geography:g5:geography:geography_2_סכנות_טבע",
-      "geography:g5:citizenship:citizenship_0_מוסדות_שלטון",
-      "geography:g5:citizenship:citizenship_1_חוק_וכללי_חברה",
-      "geography:g5:citizenship:citizenship_2_זהות_אישית_וקהילתית",
-      "geography:g5:skills:skills_0_קריאת_מפות_עם_קואורדינטות",
-      "geography:g5:skills:skills_1_הבנת_אקלים_ישראל",
-      "geography:g5:skills:skills_2_הבנת_סכנות_טבע",
-      "geography:g5:skills:skills_3_הבנת_משאבים_וניהולם",
-      "geography:g5:skills:skills_4_הבנת_מוסדות_שלטון",
-      "geography:g5:skills:skills_5_הבנת_חוק_וכללי_חברה",
-      "geography:g6:geography:geography_0_אוכלוסיית_ישראל",
-      "geography:g6:geography:geography_1_תופעות_טבע",
-      "geography:g6:geography:geography_2_איכות_הסביבה",
-      "geography:g6:geography:geography_3_יחסי_אדם_סביבה",
-      "geography:g6:citizenship:citizenship_2_מוסדות_המדינה",
-      "geography:g6:skills:skills_0_הבנת_מגוון_האוכלוסייה_בישראל",
-      "geography:g6:skills:skills_1_הבנת_תופעות_טבע_ואיכות_סביבה",
-      "geography:g6:skills:skills_2_הבנת_הדמוקרטיה_בישראל",
-      "geography:g6:skills:skills_3_הבנת_ערכי_המדינה",
-      "geography:g6:skills:skills_4_הבנת_מוסדות_המדינה",
-      "geography:g6:skills:skills_5_הבנת_קבלת_החלטות_ומעורבות_חברתית"
+      "geometry:kind:pyramid_volume_square"
     ],
     "uncertain_coverage_skill_ids": []
   }

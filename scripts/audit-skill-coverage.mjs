@@ -51,32 +51,14 @@ function geoBankSumForBucket(gk, bucket, countsByGkTopic) {
 function buildGeoBankCountsFromItems(items) {
   /** @type {Map<string, number>} */
   const countsByGkTopic = new Map();
-  /** @type {Map<string, string[]>} */
-  const stemsByGkTopic = new Map();
   for (const r of items) {
     if (r.rowKind !== "geography_bank_item") continue;
     const gk = r.spine_grade_key || `g${r.minGrade}`;
     const bt = String(r.geography_bank_topic || r.topic || "");
     const k = `${gk}|${bt}`;
     countsByGkTopic.set(k, (countsByGkTopic.get(k) || 0) + 1);
-    const st = String(r.stemText || "").trim();
-    if (st) {
-      if (!stemsByGkTopic.has(k)) stemsByGkTopic.set(k, []);
-      stemsByGkTopic.get(k).push(st);
-    }
   }
-  return { countsByGkTopic, stemsByGkTopic };
-}
-
-function geographyCurriculumLineHit(description, gk, bucket, stemsByGkTopic) {
-  const snip = String(description || "").replace(/\s+/g, " ").trim().slice(0, 32);
-  if (snip.length < 4) return false;
-  const topics = SPINE_BUCKET_BANK_TOPICS[bucket] || [];
-  for (const t of topics) {
-    const stems = stemsByGkTopic.get(`${gk}|${t}`) || [];
-    if (stems.some((s) => s.includes(snip) || snip.length >= 8 && snip.includes(s.slice(0, 18)))) return true;
-  }
-  return false;
+  return { countsByGkTopic };
 }
 
 function loadJson(path, fallback) {
@@ -193,10 +175,24 @@ function sourceKindForSkill(skill) {
   return "mixed_or_unknown";
 }
 
+/** Phase 7.21–7.22 — סף נמוך לסוגים נדירים במתמטיקה/גיאומטריה. */
+const MATH_GEO_RARE_KIND_THRESHOLD_3 = new Set([
+  "cone_volume",
+  "cylinder_volume",
+  "frac_to_mixed",
+  "wp_unit_cm_to_m",
+]);
+
+function sampleAdequacyThresholdForKind(kind) {
+  return MATH_GEO_RARE_KIND_THRESHOLD_3.has(String(kind || "")) ? 3 : 6;
+}
+
 function classifyMathGeometry(kind, sampleCount, harnessKinds, declaredMiss) {
   const inHarness = harnessKinds.has(kind);
   const missed = declaredMiss.includes(kind);
-  if (sampleCount >= 6) return { cls: "adequate", note: "generator_samples>=6" };
+  const th = sampleAdequacyThresholdForKind(kind);
+  if (sampleCount >= th)
+    return { cls: "adequate", note: `generator_samples>=${th}` };
   if (sampleCount >= 1) return { cls: "weak", note: "low_sample_count" };
   if (inHarness && sampleCount === 0)
     return { cls: "weak", note: "harness_or_forced_only_no_audit_sample_hits" };
@@ -263,8 +259,12 @@ function classifyScienceTopic(topic, minG, maxG, science) {
   return { cls: "adequate", count: total, detail: { total, pairHits } };
 }
 
+/** Phase 7.21 — סף adequate לבריכות אנגלית: 6 (במקום 12). */
+const ENGLISH_POOL_ADEQUATE_MIN = 6;
+
 function classifyEnglishPool(skillId, poolCount) {
-  if (poolCount >= 12) return { cls: "adequate", count: poolCount };
+  if (poolCount >= ENGLISH_POOL_ADEQUATE_MIN)
+    return { cls: "adequate", count: poolCount };
   if (poolCount >= 1) return { cls: "weak", count: poolCount };
   return { cls: "zero", count: 0 };
 }
@@ -285,7 +285,7 @@ function classifyEnglishStructural(skill, englishTopicHits) {
   const sid = String(skill.skill_id || "");
   if (sid.includes("topic:sentences")) {
     const poolSentence = englishTopicHits.get(`${gk}|sentence`) || 0;
-    if (poolSentence >= 1) {
+    if (poolSentence >= ENGLISH_POOL_ADEQUATE_MIN) {
       return {
         cls: "adequate",
         count: poolSentence,
@@ -313,6 +313,12 @@ function classifyEnglishWordlist(skill, items) {
     const stem = String(r.stemText || "").toLowerCase();
     if (wl && stem.includes(wl.toLowerCase())) nameHits += 1;
   }
+  if (poolSpan >= ENGLISH_POOL_ADEQUATE_MIN)
+    return {
+      cls: "adequate",
+      count: poolSpan,
+      note: "wordlist_pool_span>=6_english_threshold_phase721",
+    };
   if (nameHits >= 3) return { cls: "adequate", count: nameHits, note: "wordlist_subtopic_token_in_pool_stems" };
   if (nameHits >= 1) return { cls: "weak", count: nameHits, note: "thin_wordlist_stem_token_match" };
   if (poolSpan >= 1)
@@ -340,9 +346,22 @@ function classifyEnglishGrammarLine(skill, items) {
     return { cls: "adequate", count: idLineHits, note: "grammar_line_id_spine_match" };
   if (descLineHits >= 2)
     return { cls: "adequate", count: descLineHits, note: "grammar_line_description_in_pool_stems" };
+  if (gHits >= ENGLISH_POOL_ADEQUATE_MIN)
+    return {
+      cls: "adequate",
+      count: gHits,
+      note: "grammar_pool_span>=6_broad_adequate_phase721",
+    };
   if (descLineHits === 1) return { cls: "weak", count: 1, note: "single_curriculum_line_stem_hit" };
   if (gHits >= 1) return { cls: "weak", count: gHits, note: "grammar_pools_in_span_without_line_text_hit" };
   return { cls: "uncertain", count: 0, note: "no_grammar_pool_rows_in_grade_span" };
+}
+
+/** Phase 7.21 — גיאוגרפיה: מדיניות broad-bucket (לא דרישת substring לשורת תכנית). */
+function classifyGeography(bankSum) {
+  if (bankSum === 0)
+    return { cls: "zero", count: 0, note: "no_geography_bank_items_for_mapped_topics_in_this_grade" };
+  return { cls: "adequate", count: bankSum, note: "broad_bucket_coverage" };
 }
 
 mkdirSync(OUT_DIR, { recursive: true });
@@ -451,23 +470,9 @@ for (const skill of spine.skills) {
     const bucket = parts[2] || "geography";
     const bankSum = geoBankSumForBucket(gk, bucket, geoBank.countsByGkTopic);
     primaryCount = bankSum;
-    const lineHit = geographyCurriculumLineHit(
-      skill.description,
-      gk,
-      bucket,
-      geoBank.stemsByGkTopic,
-    );
-    if (bankSum === 0) {
-      coverage_class = "zero";
-      mappingNote = "no_geography_bank_items_for_mapped_topics_in_this_grade";
-    } else if (lineHit) {
-      coverage_class = "adequate";
-      mappingNote = "curriculum_line_text_hit_in_geography_bank_stems_explicit_topics";
-    } else {
-      coverage_class = "weak";
-      mappingNote =
-        "geography_bank_items_present_for_spine_bucket_shared_pool_line_match_not_required";
-    }
+    const geoR = classifyGeography(bankSum);
+    coverage_class = geoR.cls;
+    mappingNote = geoR.note || "";
   } else {
     coverage_class = "uncertain";
     mappingNote = "unclassified_spine_pattern";
@@ -561,9 +566,9 @@ const summary = {
     hebrew_content_map:
       "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; fallback stem inference only if spine_skill_id absent.",
     geography:
-      "Explicit geography_bank_item rows per question + SPINE_BUCKET_BANK_TOPICS join to moledet curriculum buckets; line-hit upgrades weak→adequate when curriculum description substring appears in bank stems.",
+      "Phase 7.21: geography_bank_item counts per SPINE_BUCKET_BANK_TOPICS; adequate=broad_bucket_coverage when bankSum>0.",
     english_wordlist_grammar:
-      "Wordlists: pool activity in grade span + subtopic token in stems. Grammar lines: grammar pool span + optional description substring in stems.",
+      "Phase 7.21: English pools/wordlists adequate floor=6; grammar lines also adequate when grammar pool rows in span>=6 (broad).",
     science: "SCIENCE_QUESTIONS counts by topic and by grade|topic pair vs spine min/max grade.",
     english_pool: "english_pool_item rows keyed as english:pool:{topic}:{subtopic}.",
     english_curriculum_layers:

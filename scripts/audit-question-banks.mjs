@@ -101,7 +101,11 @@ function representativeGrammarGrade(lo, hi, poolKey) {
   return Math.floor((a + b) / 2) || a;
 }
 
-function grammarLineIdForEnglishGrammarPool(poolKey, lo, hi) {
+/**
+ * מיפוי שורת spine לדקדוק אנגלית (דטרמיניסטי). patternFamily — פרמטר אופציונלי לעתיד; ללא regex.
+ * question_frames בטווח 2–3 מתפצל ב-collectEnglishPool ל־g2|g3 — Where/מיקום בכיתה ג׳ → קו התארים.
+ */
+function grammarLineIdForEnglishGrammarPool(poolKey, lo, hi, _patternFamily = "") {
   const g = representativeGrammarGrade(lo, hi, poolKey);
   switch (poolKey) {
     case "be_basic":
@@ -445,6 +449,9 @@ function collectEnglishPool(rows, category, pools) {
     (category === "translation" &&
       (poolKey === "technology" || poolKey === "global"));
 
+  const splitQuestionFramesG2G3 = (poolKey) =>
+    category === "grammar" && poolKey === "question_frames";
+
   for (const [poolKey, list] of Object.entries(pools || {})) {
     if (!Array.isArray(list)) continue;
     list.forEach((item, idx) => {
@@ -465,12 +472,63 @@ function collectEnglishPool(rows, category, pools) {
         item.maxGrade != null ||
         (Array.isArray(item.grades) && item.grades.length > 0);
 
+      if (
+        !explicitGate &&
+        splitQuestionFramesG2G3(poolKey) &&
+        lo <= 2 &&
+        hi >= 3
+      ) {
+        for (const g of [2, 3]) {
+          const scoped = `(כיתה ${gradeHeb[g]}) ${stem}`;
+          const basePf = item.patternFamily || poolKey;
+          const grammar_line_id =
+            category === "grammar"
+              ? grammarLineIdForEnglishGrammarPool(
+                  poolKey,
+                  g,
+                  g,
+                  item.patternFamily || "",
+                )
+              : "";
+          pushRow(rows, {
+            subject: "english",
+            topic: category,
+            subtopic: poolKey,
+            patternFamily: `${basePf}_g${g}`,
+            subtype: item.subtype || "",
+            difficulty: (item.difficulty || "").toString(),
+            gradeBand: item.gradeBand || "",
+            minGrade: g,
+            maxGrade: g,
+            allowedGrades: JSON.stringify(item.grades || []),
+            allowedLevels: JSON.stringify(item.allowedLevels || []),
+            answerMode: item.answerMode || "mcq",
+            optionCount: opts.length || "",
+            sourceFile,
+            stemText: scoped,
+            stemHash: stemHash(scoped),
+            rowKind: "english_pool_item",
+            poolKey,
+            itemHasExplicitGate: "0",
+            grammar_line_id,
+          });
+        }
+        return;
+      }
+
       if (!explicitGate && splitG5G6Pool(poolKey) && lo <= 5 && hi >= 6) {
         for (const g of [5, 6]) {
           const scoped = `(כיתה ${gradeHeb[g]}) ${stem}`;
           const basePf = item.patternFamily || poolKey;
           const grammar_line_id =
-            category === "grammar" ? grammarLineIdForEnglishGrammarPool(poolKey, g, g) : "";
+            category === "grammar"
+              ? grammarLineIdForEnglishGrammarPool(
+                  poolKey,
+                  g,
+                  g,
+                  item.patternFamily || "",
+                )
+              : "";
           pushRow(rows, {
             subject: "english",
             topic: category,
@@ -498,7 +556,14 @@ function collectEnglishPool(rows, category, pools) {
       }
 
       const grammar_line_id =
-        category === "grammar" ? grammarLineIdForEnglishGrammarPool(poolKey, lo, hi) : "";
+        category === "grammar"
+          ? grammarLineIdForEnglishGrammarPool(
+              poolKey,
+              lo,
+              hi,
+              item.patternFamily || "",
+            )
+          : "";
       pushRow(rows, {
         subject: "english",
         topic: category,
@@ -650,6 +715,58 @@ function sampleMathGenerator(rows, samplesPerOp = 10) {
           });
         }
       }
+    }
+  }
+
+  /** Phase 7.20 — דגימות כפויות לאודיט בלבד (מזהה מין spine); לא משנה משחק רגיל. */
+  const MATH_AUDIT_FORCE_PROBES = [
+    { force: "dec_divide", gk: "g6", lev: "hard", op: "decimals" },
+    { force: "dec_repeating", gk: "g6", lev: "hard", op: "decimals" },
+    { force: "frac_half_reverse", gk: "g2", lev: "easy", op: "fractions" },
+    { force: "frac_quarter_reverse", gk: "g2", lev: "easy", op: "fractions" },
+    { force: "frac_to_mixed", gk: "g5", lev: "medium", op: "fractions" },
+    { force: "wp_unit_cm_to_m", gk: "g5", lev: "medium", op: "word_problems" },
+    { force: "wp_unit_cm_to_m", gk: "g6", lev: "medium", op: "word_problems" },
+  ];
+  const SAMPLES_PER_FORCE_KIND = 6;
+  for (let pi = 0; pi < MATH_AUDIT_FORCE_PROBES.length; pi++) {
+    const p = MATH_AUDIT_FORCE_PROBES[pi];
+    const gNum = parseInt(String(p.gk).replace(/\D/g, ""), 10) || 1;
+    const lc = getLevelConfig(gNum, p.lev);
+    for (let rep = 0; rep < SAMPLES_PER_FORCE_KIND; rep++) {
+      const seed =
+        0x70206175 + pi * 524287 + rep * 65521 + p.force.length * 1009 + p.op.length * 131;
+      const q = runWithAuditRandom(seed, () => {
+        globalThis.__LIOSH_MATH_FORCE = p.force;
+        try {
+          return genMath(lc, p.op, p.gk, null);
+        } finally {
+          delete globalThis.__LIOSH_MATH_FORCE;
+        }
+      });
+      const stem = q?.question ?? q?.exerciseText ?? "";
+      const kind = q?.params?.kind ?? p.op;
+      if (!stem) continue;
+      pushRow(rows, {
+        subject: "math",
+        topic: p.op,
+        subtopic: kind,
+        patternFamily: q.params?.patternFamily || kind,
+        subtype: q.params?.subtype || "",
+        difficulty: p.lev,
+        gradeBand: gradeBandForKey(p.gk) || "",
+        minGrade: gNum,
+        maxGrade: gNum,
+        allowedGrades: JSON.stringify([p.gk]),
+        allowedLevels: JSON.stringify([p.lev]),
+        answerMode: q.params?.answerMode || "numeric",
+        optionCount: (q.answers || q.options || []).length,
+        sourceFile: "utils/math-question-generator.js#audit_force_sample",
+        stemText: String(stem).slice(0, 2000),
+        stemHash: stemHash(stem),
+        rowKind: "math_generator_sample",
+        poolKey: `math-audit-force-${sampleIndex++}`,
+      });
     }
   }
 }

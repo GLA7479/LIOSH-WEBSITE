@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-25T00:19:43.099Z",
+  "generatedAt": "2026-04-25T00:34:11.446Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -427,11 +427,11 @@
     },
     "english": {
       "grammar": {
-        "rows": 634,
-        "staticRows": 634,
+        "rows": 683,
+        "staticRows": 683,
         "sampleRows": 0,
         "withSubtype": 0,
-        "withPatternFamily": 634
+        "withPatternFamily": 683
       },
       "translation": {
         "rows": 36,
@@ -641,11 +641,11 @@
         "withPatternFamily": 288
       },
       "word_problems": {
-        "rows": 240,
+        "rows": 252,
         "staticRows": 0,
-        "sampleRows": 240,
+        "sampleRows": 252,
         "withSubtype": 0,
-        "withPatternFamily": 240
+        "withPatternFamily": 252
       },
       "equations": {
         "rows": 240,
@@ -662,11 +662,11 @@
         "withPatternFamily": 240
       },
       "fractions": {
-        "rows": 240,
+        "rows": 258,
         "staticRows": 0,
-        "sampleRows": 240,
+        "sampleRows": 258,
         "withSubtype": 0,
-        "withPatternFamily": 240
+        "withPatternFamily": 258
       },
       "divisibility": {
         "rows": 144,
@@ -690,11 +690,11 @@
         "withPatternFamily": 192
       },
       "decimals": {
-        "rows": 192,
+        "rows": 204,
         "staticRows": 0,
-        "sampleRows": 192,
+        "sampleRows": 204,
         "withSubtype": 0,
-        "withPatternFamily": 192
+        "withPatternFamily": 204
       },
       "order_of_operations": {
         "rows": 48,
