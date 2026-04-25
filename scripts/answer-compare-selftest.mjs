@@ -175,6 +175,41 @@ assert.equal(
 );
 assert.equal(
   compareMathLearnerAnswer({
+    user: "1/2",
+    correctAnswer: "2/4",
+    numericTolerance: TOL,
+  }).isCorrect,
+  true,
+  "equivalent fractions should be accepted"
+);
+assert.equal(
+  compareMathLearnerAnswer({
+    user: "2/4",
+    correctAnswer: "1/2",
+    numericTolerance: TOL,
+  }).isCorrect,
+  true
+);
+assert.equal(
+  compareMathLearnerAnswer({
+    user: "1 1/2",
+    correctAnswer: "3/2",
+    numericTolerance: TOL,
+  }).isCorrect,
+  true,
+  "mixed number and improper fraction equivalence"
+);
+assert.equal(
+  compareMathLearnerAnswer({
+    user: "1/3",
+    correctAnswer: "1/2",
+    numericTolerance: TOL,
+  }).isCorrect,
+  false,
+  "different fractions must remain incorrect"
+);
+assert.equal(
+  compareMathLearnerAnswer({
     user: "<",
     correctAnswer: "<",
     numericTolerance: TOL,

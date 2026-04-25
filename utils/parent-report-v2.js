@@ -400,26 +400,27 @@ function countDistribution(sessions, field) {
 }
 
 /**
- * Impute correct/total for sessions missing correct, using legacy progress ratio.
+ * Aggregate only valid session question/correct data.
+ * - Sessions with missing/invalid/non-positive `total` are excluded.
+ * - Sessions with missing/invalid `correct` contribute to questions only (no imputation).
  */
 function sumQuestionsCorrect(sessions, legacyProgress) {
   let q = 0;
   let correctKnown = 0;
-  let unknownQ = 0;
   sessions.forEach((s) => {
-    const t = s.total !== undefined && s.total !== null ? Number(s.total) : 1;
+    const t =
+      s && s.total !== undefined && s.total !== null ? Number(s.total) : NaN;
+    if (!Number.isFinite(t) || t <= 0) return;
     q += t;
-    if (typeof s.correct === "number" && !Number.isNaN(s.correct)) {
+    if (
+      typeof s.correct === "number" &&
+      Number.isFinite(s.correct) &&
+      s.correct >= 0
+    ) {
       correctKnown += s.correct;
-    } else {
-      unknownQ += t;
     }
   });
-  const lt = legacyProgress?.total || 0;
-  const lc = legacyProgress?.correct || 0;
-  const ratio = lt > 0 ? lc / lt : 0;
-  const imputed = unknownQ > 0 ? Math.round(unknownQ * ratio) : 0;
-  return { questions: q, correct: correctKnown + imputed };
+  return { questions: q, correct: correctKnown };
 }
 
 function buildRowSummary({
@@ -673,8 +674,11 @@ function buildDailyActivityFromSessions(startMs, endMs) {
         const row = ensure(dateStr);
         const durMin = Math.round(sessionDurationSeconds(s) / 60);
         row.timeMinutes += durMin;
-        const tq = s.total !== undefined ? Number(s.total) : 1;
-        row.questions += tq;
+        const tq =
+          s && s.total !== undefined && s.total !== null ? Number(s.total) : NaN;
+        if (Number.isFinite(tq) && tq > 0) {
+          row.questions += tq;
+        }
         if (def.id === "math")
           row.mathKeys.add(mathReportBaseOperationKey(String(itemKey)));
         if (def.id === "geometry") row.geometryKeys.add(itemKey);

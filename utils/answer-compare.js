@@ -40,6 +40,67 @@ export function parsePureNumericDecimalString(trimmed) {
 }
 
 /**
+ * @param {number} n
+ * @returns {number}
+ */
+function gcdInt(n, d) {
+  let a = Math.abs(Math.trunc(n));
+  let b = Math.abs(Math.trunc(d));
+  while (b !== 0) {
+    const t = a % b;
+    a = b;
+    b = t;
+  }
+  return a || 1;
+}
+
+/**
+ * Parse fraction-like math answers:
+ * - a/b
+ * - whole + space + a/b (mixed), e.g. "1 1/2"
+ * Returns normalized rational (num/den reduced, den>0) or null.
+ * @param {unknown} value
+ * @returns {{num:number, den:number}|null}
+ */
+function parseNormalizedRational(value) {
+  if (typeof value !== "string") return null;
+  const t = value.trim().replace(/\s+/g, " ");
+  if (!t.includes("/")) return null;
+  const mixed = t.match(/^(-?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+  if (mixed) {
+    const whole = Number(mixed[1]);
+    const n = Number(mixed[2]);
+    const d = Number(mixed[3]);
+    if (
+      !Number.isInteger(whole) ||
+      !Number.isInteger(n) ||
+      !Number.isInteger(d) ||
+      d === 0 ||
+      n < 0
+    ) {
+      return null;
+    }
+    const absWhole = Math.abs(whole);
+    let num = absWhole * d + n;
+    if (whole < 0) num = -num;
+    const den = d;
+    const g = gcdInt(num, den);
+    const numR = num / g;
+    const denR = den / g;
+    return denR < 0 ? { num: -numR, den: -denR } : { num: numR, den: denR };
+  }
+  const simple = t.match(/^(-?\d+)\s*\/\s*(-?\d+)$/);
+  if (!simple) return null;
+  const n = Number(simple[1]);
+  const d = Number(simple[2]);
+  if (!Number.isInteger(n) || !Number.isInteger(d) || d === 0) return null;
+  const g = gcdInt(n, d);
+  const numR = n / g;
+  const denR = d / g;
+  return denR < 0 ? { num: -numR, den: -denR } : { num: numR, den: denR };
+}
+
+/**
  * English-style normalization: quotes, edge punctuation, collapse whitespace, ASCII lower.
  * @param {unknown} value
  * @returns {string}
@@ -267,8 +328,14 @@ export function compareMathLearnerAnswer(p) {
         correctAnswerStr.includes(" ") ||
         correctPure === null))
   ) {
-    isCorrect =
-      String(numericAnswer).trim() === String(correctAnswer).trim();
+    const aRat = parseNormalizedRational(numericAnswer);
+    const bRat = parseNormalizedRational(correctAnswer);
+    if (aRat && bRat) {
+      isCorrect = aRat.num === bRat.num && aRat.den === bRat.den;
+    } else {
+      isCorrect =
+        String(numericAnswer).trim() === String(correctAnswer).trim();
+    }
   } else {
     const correctNumericAnswer =
       typeof correctAnswer === "string" ? correctPure : correctAnswer;

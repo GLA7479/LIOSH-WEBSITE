@@ -38,27 +38,28 @@ function sessionInRange(session, startMs, endMs) {
 }
 
 /**
- * אותו כלל אימputation כמו ב־parent-report-v2 (לעקביות השוואת תקופות).
+ * עקביות עם parent-report-v2:
+ * - סופרים רק מפגשים עם total תקין וחיובי.
+ * - בלי השלמת correct אוטומטית מנתוני legacy.
  */
 export function sumQuestionsCorrectForSessions(sessions, legacyProgress) {
   let q = 0;
   let correctKnown = 0;
-  let unknownQ = 0;
   if (!Array.isArray(sessions)) return { questions: 0, correct: 0 };
   sessions.forEach((s) => {
-    const t = s.total !== undefined && s.total !== null ? Number(s.total) : 1;
+    const t =
+      s && s.total !== undefined && s.total !== null ? Number(s.total) : NaN;
+    if (!Number.isFinite(t) || t <= 0) return;
     q += t;
-    if (typeof s.correct === "number" && !Number.isNaN(s.correct)) {
+    if (
+      typeof s.correct === "number" &&
+      Number.isFinite(s.correct) &&
+      s.correct >= 0
+    ) {
       correctKnown += s.correct;
-    } else {
-      unknownQ += t;
     }
   });
-  const lt = legacyProgress?.total || 0;
-  const lc = legacyProgress?.correct || 0;
-  const ratio = lt > 0 ? lc / lt : 0;
-  const imputed = unknownQ > 0 ? Math.round(unknownQ * ratio) : 0;
-  return { questions: q, correct: correctKnown + imputed };
+  return { questions: q, correct: correctKnown };
 }
 
 function sessionDurationSeconds(session) {

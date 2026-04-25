@@ -11,7 +11,10 @@ async function importUtils(path) {
 }
 
 const { computeRowDiagnosticSignals } = await importUtils("../utils/parent-report-row-diagnostics.js");
-const { computeRowTrend } = await importUtils("../utils/parent-report-row-trend.js");
+const {
+  computeRowTrend,
+  sumQuestionsCorrectForSessions,
+} = await importUtils("../utils/parent-report-row-trend.js");
 const { computeRowBehaviorProfile } = await importUtils("../utils/parent-report-row-behavior.js");
 const { validateParentReportDataIntegrity } = await importUtils("../utils/parent-report-data-integrity.js");
 const { buildTopicRecommendationRecord } = await importUtils("../utils/topic-next-step-engine.js");
@@ -62,6 +65,33 @@ assert.ok(trend.version === 1);
 assert.ok(["up", "down", "flat", "unknown"].includes(trend.accuracyDirection));
 assert.ok(typeof trend.summaryHe === "string" && trend.summaryHe.length > 0);
 assert.ok(Number.isFinite(trend.confidence));
+
+// Phase 8 hardening: missing/invalid totals are excluded; missing correct is not imputed.
+{
+  const agg = sumQuestionsCorrectForSessions(
+    [
+      { total: undefined, correct: 1 },
+      { total: 0, correct: 0 },
+      { total: -2, correct: 0 },
+      { total: 5 }, // missing correct should not invent correct answers
+      { total: 4, correct: 3 }, // valid
+    ],
+    { total: 100, correct: 100 } // must not be used for imputation
+  );
+  assert.deepEqual(agg, { questions: 9, correct: 3 });
+}
+
+// Valid rows keep previous behavior.
+{
+  const agg = sumQuestionsCorrectForSessions(
+    [
+      { total: 6, correct: 5 },
+      { total: 6, correct: 5 },
+    ],
+    { total: 0, correct: 0 }
+  );
+  assert.deepEqual(agg, { questions: 12, correct: 10 });
+}
 
 const rawMistakes = [
   {
@@ -161,6 +191,71 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
     assert.equal(report.challenges.weekly.current, 0);
     assert.equal(report.challenges.weekly.completed, false);
     assert.ok(Array.isArray(report.analysis.recommendations));
+  } finally {
+    globalThis.window = prevWindow;
+    globalThis.localStorage = prevLS;
+  }
+}
+
+/** Phase 8 hardening: parent-report aggregation must not create fake question/correct from malformed sessions. */
+{
+  const store = new Map();
+  const now = Date.now();
+  const mathTracking = {
+    operations: {
+      addition: {
+        sessions: [
+          { timestamp: now - 5000, total: 4, correct: 3, mode: "learning", grade: "g1", level: "easy" },
+          { timestamp: now - 4000, total: 5, mode: "learning", grade: "g1", level: "easy" }, // missing correct
+          { timestamp: now - 3000, mode: "learning", grade: "g1", level: "easy" }, // missing total
+          { timestamp: now - 2000, total: 0, correct: 0, mode: "learning", grade: "g1", level: "easy" }, // invalid total
+        ],
+      },
+    },
+  };
+  const mathProgress = {
+    progress: {
+      addition: { total: 500, correct: 500 },
+    },
+  };
+  const emptyTopics = JSON.stringify({ topics: {} });
+  const emptyProgress = JSON.stringify({ progress: {} });
+  store.set("mleo_time_tracking", JSON.stringify(mathTracking));
+  store.set("mleo_math_master_progress", JSON.stringify(mathProgress));
+  for (const [k, v] of [
+    ["mleo_geometry_time_tracking", emptyTopics],
+    ["mleo_geometry_master_progress", emptyProgress],
+    ["mleo_english_time_tracking", emptyTopics],
+    ["mleo_english_master_progress", emptyProgress],
+    ["mleo_science_time_tracking", emptyTopics],
+    ["mleo_science_master_progress", emptyProgress],
+    ["mleo_hebrew_time_tracking", emptyTopics],
+    ["mleo_hebrew_master_progress", emptyProgress],
+    ["mleo_moledet_geography_time_tracking", emptyTopics],
+    ["mleo_moledet_geography_master_progress", emptyProgress],
+    ["mleo_mistakes", "[]"],
+    ["mleo_geometry_mistakes", "[]"],
+    ["mleo_english_mistakes", "[]"],
+    ["mleo_science_mistakes", "[]"],
+    ["mleo_hebrew_mistakes", "[]"],
+    ["mleo_moledet_geography_mistakes", "[]"],
+  ]) {
+    store.set(k, v);
+  }
+  const prevWindow = globalThis.window;
+  const prevLS = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => store.set(k, String(v)),
+    removeItem: (k) => store.delete(k),
+  };
+  globalThis.window = globalThis;
+  try {
+    const { generateParentReportV2 } = await importUtils("../utils/parent-report-v2.js");
+    const report = generateParentReportV2("AccuracyGuardQA", "week");
+    assert.equal(report.summary.mathQuestions, 9);
+    assert.equal(report.summary.mathCorrect, 3);
+    assert.equal(report.summary.mathAccuracy, 33);
   } finally {
     globalThis.window = prevWindow;
     globalThis.localStorage = prevLS;

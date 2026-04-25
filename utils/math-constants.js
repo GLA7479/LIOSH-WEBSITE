@@ -51,13 +51,13 @@ export const GRADE_LEVELS = {
         word_problems: { max: 20 }, // שאלות חיבור וחיסור
       },
       hard: {
-        addition: { max: 20 },
-        subtraction: { min: 0, max: 20 },
+        addition: { max: 30 },
+        subtraction: { min: 0, max: 30 },
         multiplication: { max: 5 }, // כפל עד 20
         // חילוק נלמד רק כהפוך לכפל בשאלות מילוליות, לא תרגילים ישירים
-        compare: { max: 20 },
-        number_sense: { max: 20 },
-        word_problems: { max: 20 }, // שאלות חיבור וחיסור
+        compare: { max: 30 },
+        number_sense: { max: 30 },
+        word_problems: { max: 30 }, // שאלות חיבור וחיסור (עדיין מותאם כיתה א׳)
       },
     },
   },
