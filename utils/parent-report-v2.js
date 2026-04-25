@@ -402,7 +402,7 @@ function countDistribution(sessions, field) {
 /**
  * Aggregate only valid session question/correct data.
  * - Sessions with missing/invalid/non-positive `total` are excluded.
- * - Sessions with missing/invalid `correct` contribute to questions only (no imputation).
+ * - Sessions with missing/invalid `correct` are excluded (no implicit 0-correct).
  */
 function sumQuestionsCorrect(sessions, legacyProgress) {
   let q = 0;
@@ -411,14 +411,16 @@ function sumQuestionsCorrect(sessions, legacyProgress) {
     const t =
       s && s.total !== undefined && s.total !== null ? Number(s.total) : NaN;
     if (!Number.isFinite(t) || t <= 0) return;
-    q += t;
-    if (
+    const c =
       typeof s.correct === "number" &&
       Number.isFinite(s.correct) &&
-      s.correct >= 0
-    ) {
-      correctKnown += s.correct;
-    }
+      s.correct >= 0 &&
+      s.correct <= t
+        ? s.correct
+        : NaN;
+    if (!Number.isFinite(c)) return;
+    q += t;
+    correctKnown += c;
   });
   return { questions: q, correct: correctKnown };
 }

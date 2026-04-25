@@ -406,6 +406,7 @@ for (const skill of spine.skills) {
   let primaryCount = 0;
   const evidence = [];
   let mappingNote = "";
+  let thresholdPolicyUsed = "rule_based_subject_specific";
 
   if (skill_id.startsWith("math:kind:")) {
     const kind = skill_id.replace(/^math:kind:/, "");
@@ -416,12 +417,14 @@ for (const skill of spine.skills) {
     evidence.push({ type: "math_generator_sample", count: sc });
     if (harnessMath.has(kind)) evidence.push({ type: "harness_math_union", hit: true });
     mappingNote = r.note || "";
+    thresholdPolicyUsed = `generator_samples>=${sampleAdequacyThresholdForKind(kind)}`;
   } else if (skill_id.startsWith("geometry:kind:")) {
     const kind = skill_id.replace(/^geometry:kind:/, "");
     if (kind === "no_question") {
       coverage_class = "adequate";
       primaryCount = 0;
       mappingNote = "meta_sentinel_kind_by_design_not_positive_generator_output";
+      thresholdPolicyUsed = "meta_sentinel_kind";
     } else {
     const sc = idx.geoKindSamples.get(kind) || 0;
     const r = classifyMathGeometry(kind, sc, harnessGeo, geoMissed);
@@ -429,6 +432,7 @@ for (const skill of spine.skills) {
     primaryCount = sc;
     evidence.push({ type: "geometry_generator_sample", count: sc });
     mappingNote = r.note || "";
+    thresholdPolicyUsed = `generator_samples>=${sampleAdequacyThresholdForKind(kind)}`;
     }
   } else if (skill_id.startsWith("science:topic:")) {
     const topic = skill_id.replace(/^science:topic:/, "");
@@ -439,38 +443,45 @@ for (const skill of spine.skills) {
     primaryCount = r.count;
     evidence.push({ type: "science_question_bank", ...r.detail });
     mappingNote = r.note || "";
+    thresholdPolicyUsed = "science_topic_pair_and_global_thresholds";
   } else if (skill_id.startsWith("hebrew:rich:") || skill.spine_layer === "rich_bank") {
     const r = classifyHebrewRich(skill, items);
     coverage_class = r.cls;
     primaryCount = r.count;
     mappingNote = r.note || "";
+    thresholdPolicyUsed = "hebrew_rich_exact_or_pattern_hit>=1";
   } else if (skill_id.startsWith("hebrew:") && skill.spine_layer === "content_map") {
     const c = idx.hebrewBySkillId.get(skill_id) || 0;
     const r = classifyHebrewContentMap(skill_id, c);
     coverage_class = r.cls;
     primaryCount = c;
     mappingNote = r.note;
+    thresholdPolicyUsed = "hebrew_content_map_hits>=4_phase723";
   } else if (skill_id.startsWith("english:pool:")) {
     const c = idx.englishPoolCounts.get(skill_id) || 0;
     const r = classifyEnglishPool(skill_id, c);
     coverage_class = r.cls;
     primaryCount = c;
     mappingNote = r.note || "";
+    thresholdPolicyUsed = "english_pool_count>=6";
   } else if (skill.spine_layer === "curriculum_topic_access") {
     const r = classifyEnglishStructural(skill, idx.englishTopicHits);
     coverage_class = r.cls;
     primaryCount = r.count;
     mappingNote = r.note || "";
+    thresholdPolicyUsed = "english_curriculum_topic_access_subject_rule";
   } else if (skill.spine_layer === "vocabulary_wordlist") {
     const r = classifyEnglishWordlist(skill, items);
     coverage_class = r.cls;
     primaryCount = r.count;
     mappingNote = r.note || "";
+    thresholdPolicyUsed = "english_wordlist_pool_span>=6_or_token_match";
   } else if (skill.spine_layer === "curriculum_grammar_line") {
     const r = classifyEnglishGrammarLine(skill, items);
     coverage_class = r.cls;
     primaryCount = r.count;
     mappingNote = r.note || "";
+    thresholdPolicyUsed = "english_grammar_line_id_or_pool_span>=6";
   } else if (skill_id.startsWith("geography:")) {
     const parts = skill_id.split(":");
     const gk = parts[1] || "g1";
@@ -480,9 +491,11 @@ for (const skill of spine.skills) {
     const geoR = classifyGeography(bankSum);
     coverage_class = geoR.cls;
     mappingNote = geoR.note || "";
+    thresholdPolicyUsed = "geography_broad_bucket_coverage";
   } else {
     coverage_class = "uncertain";
     mappingNote = "unclassified_spine_pattern";
+    thresholdPolicyUsed = "unclassified_spine_pattern";
   }
 
   rows.push({
@@ -495,6 +508,9 @@ for (const skill of spine.skills) {
     source_kind: sk,
     coverage_class,
     primary_evidence_count: primaryCount,
+    real_coverage_count: primaryCount,
+    audit_adequacy_status: coverage_class,
+    threshold_policy_used: thresholdPolicyUsed,
     evidence,
     mapping_note: mappingNote,
   });

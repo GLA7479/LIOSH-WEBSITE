@@ -13,6 +13,7 @@ async function importUtils(path) {
 const { computeRowDiagnosticSignals } = await importUtils("../utils/parent-report-row-diagnostics.js");
 const {
   computeRowTrend,
+  MIN_TREND_POINTS,
   sumQuestionsCorrectForSessions,
 } = await importUtils("../utils/parent-report-row-trend.js");
 const { computeRowBehaviorProfile } = await importUtils("../utils/parent-report-row-behavior.js");
@@ -73,12 +74,12 @@ assert.ok(Number.isFinite(trend.confidence));
       { total: undefined, correct: 1 },
       { total: 0, correct: 0 },
       { total: -2, correct: 0 },
-      { total: 5 }, // missing correct should not invent correct answers
+      { total: 5 }, // missing correct: whole session excluded
       { total: 4, correct: 3 }, // valid
     ],
     { total: 100, correct: 100 } // must not be used for imputation
   );
-  assert.deepEqual(agg, { questions: 9, correct: 3 });
+  assert.deepEqual(agg, { questions: 4, correct: 3 });
 }
 
 // Valid rows keep previous behavior.
@@ -92,6 +93,24 @@ assert.ok(Number.isFinite(trend.confidence));
   );
   assert.deepEqual(agg, { questions: 12, correct: 10 });
 }
+
+// Trend minimum evidence gate: insufficient valid sessions => unknown trend + insufficient marker.
+{
+  const trendInsufficient = computeRowTrend({
+    subjectId: "math",
+    topicRowKey: "addition\u0001learning",
+    row,
+    sessionsCurrentPeriod: [{ timestamp: startMs + 1000, total: 4, correct: 3 }],
+    prevPeriodSessions: [{ timestamp: startMs - 1000, total: 4, correct: 3 }],
+    legacyProgress: { total: 0, correct: 0 },
+    periodStartMs: startMs,
+    periodEndMs: endMs,
+    rawMistakesSubject: [],
+  });
+  assert.equal(trendInsufficient.trendEvidenceStatus, "insufficient");
+  assert.equal(trendInsufficient.accuracyDirection, "unknown");
+}
+assert.ok(Number(MIN_TREND_POINTS) >= 3);
 
 const rawMistakes = [
   {
@@ -253,9 +272,9 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
   try {
     const { generateParentReportV2 } = await importUtils("../utils/parent-report-v2.js");
     const report = generateParentReportV2("AccuracyGuardQA", "week");
-    assert.equal(report.summary.mathQuestions, 9);
+    assert.equal(report.summary.mathQuestions, 4);
     assert.equal(report.summary.mathCorrect, 3);
-    assert.equal(report.summary.mathAccuracy, 33);
+    assert.equal(report.summary.mathAccuracy, 75);
   } finally {
     globalThis.window = prevWindow;
     globalThis.localStorage = prevLS;

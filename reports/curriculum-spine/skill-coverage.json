@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "summary": {
-    "generatedAt": "2026-04-25T10:25:07.551Z",
+    "generatedAt": "2026-04-25T10:40:15.204Z",
     "phase_7_14_baseline_counts": {
       "note": "Snapshot before Phase 7.15 audit join hardening (same 423 spine skills).",
       "zero": 88,
@@ -235,6 +235,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
+      "real_coverage_count": 8,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -248,6 +251,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -261,6 +267,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 10,
+      "real_coverage_count": 10,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -274,6 +283,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 10,
+      "real_coverage_count": 10,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -287,6 +299,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
+      "real_coverage_count": 11,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -300,6 +315,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
+      "real_coverage_count": 15,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -313,6 +331,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
+      "real_coverage_count": 11,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -326,6 +347,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
+      "real_coverage_count": 8,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -339,6 +363,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 36,
+      "real_coverage_count": 36,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -352,6 +379,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
+      "real_coverage_count": 11,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -365,6 +395,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 30,
+      "real_coverage_count": 30,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -378,6 +411,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
+      "real_coverage_count": 11,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -391,6 +427,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 26,
+      "real_coverage_count": 26,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -404,6 +443,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -417,6 +459,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -430,6 +475,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 13,
+      "real_coverage_count": 13,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -443,6 +491,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
+      "real_coverage_count": 15,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -456,6 +507,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -469,6 +523,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -482,6 +539,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -495,6 +555,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -508,6 +571,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -521,6 +587,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 22,
+      "real_coverage_count": 22,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -534,6 +603,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 24,
+      "real_coverage_count": 24,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -547,6 +619,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 19,
+      "real_coverage_count": 19,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -560,6 +635,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -573,6 +651,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 20,
+      "real_coverage_count": 20,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -586,6 +667,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -599,6 +683,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -612,6 +699,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -625,6 +715,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 10,
+      "real_coverage_count": 10,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -638,6 +731,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -651,6 +747,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -664,6 +763,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 25,
+      "real_coverage_count": 25,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -677,6 +779,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -690,6 +795,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
+      "real_coverage_count": 15,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -703,6 +811,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -716,6 +827,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -729,6 +843,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
+      "real_coverage_count": 11,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -742,6 +859,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -755,6 +875,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 19,
+      "real_coverage_count": 19,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -768,6 +891,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -781,6 +907,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -794,6 +923,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -807,6 +939,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -820,6 +955,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -833,6 +971,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -846,6 +987,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -859,6 +1003,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -872,6 +1019,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -885,6 +1035,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -898,6 +1051,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -911,6 +1067,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -924,6 +1083,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -937,6 +1099,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -950,6 +1115,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -963,6 +1131,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -976,6 +1147,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -989,6 +1163,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1002,6 +1179,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1015,6 +1195,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1028,6 +1211,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 13,
+      "real_coverage_count": 13,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1041,6 +1227,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1054,6 +1243,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "weak",
       "primary_evidence_count": 3,
+      "real_coverage_count": 3,
+      "audit_adequacy_status": "weak",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
@@ -1067,6 +1259,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1080,6 +1275,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "weak",
       "primary_evidence_count": 3,
+      "real_coverage_count": 3,
+      "audit_adequacy_status": "weak",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
@@ -1093,6 +1291,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1106,6 +1307,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1119,6 +1323,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1132,6 +1339,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1145,6 +1355,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1158,6 +1371,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1171,6 +1387,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1184,6 +1403,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
+      "real_coverage_count": 11,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1197,6 +1419,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
+      "real_coverage_count": 8,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1210,6 +1435,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1223,6 +1451,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1236,6 +1467,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "weak",
       "primary_evidence_count": 3,
+      "real_coverage_count": 3,
+      "audit_adequacy_status": "weak",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
@@ -1249,6 +1483,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 13,
+      "real_coverage_count": 13,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1262,6 +1499,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "weak",
       "primary_evidence_count": 3,
+      "real_coverage_count": 3,
+      "audit_adequacy_status": "weak",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
     },
@@ -1275,6 +1515,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
+      "real_coverage_count": 11,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1288,6 +1531,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1301,6 +1547,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1314,6 +1563,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1327,6 +1579,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1340,6 +1595,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1353,6 +1611,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1366,6 +1627,9 @@
       "source_kind": "static_bank_curriculum_map",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_content_map_hits>=4_phase723",
       "evidence": [],
       "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
@@ -1379,6 +1643,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1392,6 +1659,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
+      "real_coverage_count": 1,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1405,6 +1675,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
+      "real_coverage_count": 1,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1418,6 +1691,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1431,6 +1707,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1444,6 +1723,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1457,6 +1739,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1470,6 +1755,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1483,6 +1771,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1496,6 +1787,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1509,6 +1803,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1522,6 +1819,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1535,6 +1835,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1548,6 +1851,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1561,6 +1867,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1574,6 +1883,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1587,6 +1899,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
+      "real_coverage_count": 1,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1600,6 +1915,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
+      "real_coverage_count": 1,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1613,6 +1931,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1626,6 +1947,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1639,6 +1963,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1652,6 +1979,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1665,6 +1995,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1678,6 +2011,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1691,6 +2027,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1704,6 +2043,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1717,6 +2059,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1730,6 +2075,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1743,6 +2091,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
+      "real_coverage_count": 1,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1756,6 +2107,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
+      "real_coverage_count": 1,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1769,6 +2123,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
+      "real_coverage_count": 1,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1782,6 +2139,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
+      "real_coverage_count": 1,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1795,6 +2155,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1808,6 +2171,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1821,6 +2187,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1834,6 +2203,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1847,6 +2219,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1860,6 +2235,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1873,6 +2251,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1886,6 +2267,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1899,6 +2283,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
+      "real_coverage_count": 1,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1912,6 +2299,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 1,
+      "real_coverage_count": 1,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1925,6 +2315,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1938,6 +2331,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1951,6 +2347,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1964,6 +2363,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1977,6 +2379,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "hebrew_rich_exact_or_pattern_hit>=1",
       "evidence": [],
       "mapping_note": "hebrew_rich_spine_skill_id_join"
     },
@@ -1990,6 +2395,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 18,
+      "real_coverage_count": 18,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2012,6 +2420,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 10,
+      "real_coverage_count": 10,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2034,6 +2445,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 19,
+      "real_coverage_count": 19,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2056,6 +2470,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 234,
+      "real_coverage_count": 234,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2078,6 +2495,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2100,6 +2520,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 288,
+      "real_coverage_count": 288,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2122,6 +2545,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 87,
+      "real_coverage_count": 87,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2144,6 +2570,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2166,6 +2595,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=4",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2188,6 +2620,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2210,6 +2645,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2232,6 +2670,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2254,6 +2695,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 89,
+      "real_coverage_count": 89,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2276,6 +2720,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 305,
+      "real_coverage_count": 305,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2298,6 +2745,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2320,6 +2770,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2342,6 +2795,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 112,
+      "real_coverage_count": 112,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2364,6 +2820,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 144,
+      "real_coverage_count": 144,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2386,6 +2845,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 84,
+      "real_coverage_count": 84,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2408,6 +2870,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=5",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2430,6 +2895,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 23,
+      "real_coverage_count": 23,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2452,6 +2920,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 25,
+      "real_coverage_count": 25,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2474,6 +2945,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 94,
+      "real_coverage_count": 94,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2496,6 +2970,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2518,6 +2995,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 31,
+      "real_coverage_count": 31,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2540,6 +3020,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 31,
+      "real_coverage_count": 31,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2562,6 +3045,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 34,
+      "real_coverage_count": 34,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2584,6 +3070,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 47,
+      "real_coverage_count": 47,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2606,6 +3095,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 48,
+      "real_coverage_count": 48,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2628,6 +3120,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2650,6 +3145,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 25,
+      "real_coverage_count": 25,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2672,6 +3170,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
+      "real_coverage_count": 8,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2694,6 +3195,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
+      "real_coverage_count": 15,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2716,6 +3220,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2738,6 +3245,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 24,
+      "real_coverage_count": 24,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2760,6 +3270,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2782,6 +3295,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 25,
+      "real_coverage_count": 25,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2804,6 +3320,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 24,
+      "real_coverage_count": 24,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2826,6 +3345,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2848,6 +3370,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
+      "real_coverage_count": 8,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2870,6 +3395,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=3",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2892,6 +3420,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
+      "real_coverage_count": 9,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2914,6 +3445,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 263,
+      "real_coverage_count": 263,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2936,6 +3470,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2958,6 +3495,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -2980,6 +3520,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3002,6 +3545,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 47,
+      "real_coverage_count": 47,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3024,6 +3570,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 57,
+      "real_coverage_count": 57,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3046,6 +3595,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3068,6 +3620,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3090,6 +3645,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 18,
+      "real_coverage_count": 18,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3112,6 +3670,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 76,
+      "real_coverage_count": 76,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3134,6 +3695,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
+      "real_coverage_count": 8,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3156,6 +3720,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 54,
+      "real_coverage_count": 54,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3178,6 +3745,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 20,
+      "real_coverage_count": 20,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3200,6 +3770,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
+      "real_coverage_count": 11,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3222,6 +3795,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 14,
+      "real_coverage_count": 14,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3244,6 +3820,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 17,
+      "real_coverage_count": 17,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3266,6 +3845,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 17,
+      "real_coverage_count": 17,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3288,6 +3870,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 50,
+      "real_coverage_count": 50,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3310,6 +3895,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 46,
+      "real_coverage_count": 46,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3332,6 +3920,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 25,
+      "real_coverage_count": 25,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3354,6 +3945,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 23,
+      "real_coverage_count": 23,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3376,6 +3970,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 48,
+      "real_coverage_count": 48,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3398,6 +3995,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 14,
+      "real_coverage_count": 14,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3420,6 +4020,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 17,
+      "real_coverage_count": 17,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3442,6 +4045,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 17,
+      "real_coverage_count": 17,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3464,6 +4070,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 144,
+      "real_coverage_count": 144,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3486,6 +4095,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 18,
+      "real_coverage_count": 18,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3508,6 +4120,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 16,
+      "real_coverage_count": 16,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3530,6 +4145,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 14,
+      "real_coverage_count": 14,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3552,6 +4170,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 192,
+      "real_coverage_count": 192,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3574,6 +4195,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 281,
+      "real_coverage_count": 281,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3596,6 +4220,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3618,6 +4245,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 14,
+      "real_coverage_count": 14,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3640,6 +4270,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=4",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3662,6 +4295,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3684,6 +4320,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3706,6 +4345,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3728,6 +4370,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3750,6 +4395,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 20,
+      "real_coverage_count": 20,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3772,6 +4420,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3794,6 +4445,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3816,6 +4470,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 3,
+      "real_coverage_count": 3,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=3",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3838,6 +4495,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 14,
+      "real_coverage_count": 14,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3860,6 +4520,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 20,
+      "real_coverage_count": 20,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3882,6 +4545,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=3",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3904,6 +4570,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
+      "real_coverage_count": 12,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3926,6 +4595,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 10,
+      "real_coverage_count": 10,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3948,6 +4620,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 14,
+      "real_coverage_count": 14,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3970,6 +4645,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 13,
+      "real_coverage_count": 13,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "math_generator_sample",
@@ -3992,6 +4670,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 24,
+      "real_coverage_count": 24,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4010,6 +4691,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 24,
+      "real_coverage_count": 24,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4028,6 +4712,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=3",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4046,6 +4733,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=3",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4064,6 +4754,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
+      "real_coverage_count": 15,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4082,6 +4775,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 42,
+      "real_coverage_count": 42,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4100,6 +4796,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 45,
+      "real_coverage_count": 45,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4118,6 +4817,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
+      "real_coverage_count": 15,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4136,6 +4838,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 17,
+      "real_coverage_count": 17,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4154,6 +4859,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 18,
+      "real_coverage_count": 18,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4172,6 +4880,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 0,
+      "real_coverage_count": 0,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "meta_sentinel_kind",
       "evidence": [],
       "mapping_note": "meta_sentinel_kind_by_design_not_positive_generator_output"
     },
@@ -4185,6 +4896,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 102,
+      "real_coverage_count": 102,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4203,6 +4917,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
+      "real_coverage_count": 11,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4221,6 +4938,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
+      "real_coverage_count": 5,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=4",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4239,6 +4959,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "weak",
       "primary_evidence_count": 3,
+      "real_coverage_count": 3,
+      "audit_adequacy_status": "weak",
+      "threshold_policy_used": "generator_samples>=4",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4257,6 +4980,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "weak",
       "primary_evidence_count": 3,
+      "real_coverage_count": 3,
+      "audit_adequacy_status": "weak",
+      "threshold_policy_used": "generator_samples>=4",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4275,6 +5001,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "weak",
       "primary_evidence_count": 2,
+      "real_coverage_count": 2,
+      "audit_adequacy_status": "weak",
+      "threshold_policy_used": "generator_samples>=4",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4293,6 +5022,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 26,
+      "real_coverage_count": 26,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4311,6 +5043,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 17,
+      "real_coverage_count": 17,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4329,6 +5064,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 81,
+      "real_coverage_count": 81,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4347,6 +5085,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 34,
+      "real_coverage_count": 34,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4365,6 +5106,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 55,
+      "real_coverage_count": 55,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4383,6 +5127,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 19,
+      "real_coverage_count": 19,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4401,6 +5148,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
+      "real_coverage_count": 15,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4419,6 +5169,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
+      "real_coverage_count": 15,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4437,6 +5190,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 28,
+      "real_coverage_count": 28,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4455,6 +5211,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 28,
+      "real_coverage_count": 28,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4473,6 +5232,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 106,
+      "real_coverage_count": 106,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4491,6 +5253,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
+      "real_coverage_count": 8,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4509,6 +5274,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 47,
+      "real_coverage_count": 47,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4527,6 +5295,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 29,
+      "real_coverage_count": 29,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4545,6 +5316,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 40,
+      "real_coverage_count": 40,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4563,6 +5337,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 36,
+      "real_coverage_count": 36,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4581,6 +5358,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 111,
+      "real_coverage_count": 111,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4599,6 +5379,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
+      "real_coverage_count": 8,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4617,6 +5400,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 116,
+      "real_coverage_count": 116,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4635,6 +5421,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 42,
+      "real_coverage_count": 42,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4653,6 +5442,9 @@
       "source_kind": "deterministic_generator",
       "coverage_class": "adequate",
       "primary_evidence_count": 40,
+      "real_coverage_count": 40,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "generator_samples>=6",
       "evidence": [
         {
           "type": "geometry_generator_sample",
@@ -4671,6 +5463,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 23,
+      "real_coverage_count": 23,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4684,6 +5479,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 99,
+      "real_coverage_count": 99,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4697,6 +5495,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 4,
+      "real_coverage_count": 4,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4710,6 +5511,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 99,
+      "real_coverage_count": 99,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4723,6 +5527,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 105,
+      "real_coverage_count": 105,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4736,6 +5543,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 78,
+      "real_coverage_count": 78,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4749,6 +5559,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
+      "real_coverage_count": 8,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4762,6 +5575,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 19,
+      "real_coverage_count": 19,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "sentence_pool_proxy_coverage"
     },
@@ -4775,6 +5591,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 105,
+      "real_coverage_count": 105,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4788,6 +5607,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 105,
+      "real_coverage_count": 105,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4801,6 +5623,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 150,
+      "real_coverage_count": 150,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4814,6 +5639,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 116,
+      "real_coverage_count": 116,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4827,6 +5655,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4840,6 +5671,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 27,
+      "real_coverage_count": 27,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "sentence_pool_proxy_coverage"
     },
@@ -4853,6 +5687,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 150,
+      "real_coverage_count": 150,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4866,6 +5703,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 150,
+      "real_coverage_count": 150,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4879,6 +5719,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 290,
+      "real_coverage_count": 290,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4892,6 +5735,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 243,
+      "real_coverage_count": 243,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4905,6 +5751,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
+      "real_coverage_count": 8,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4918,6 +5767,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 39,
+      "real_coverage_count": 39,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "sentence_pool_proxy_coverage"
     },
@@ -4931,6 +5783,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 290,
+      "real_coverage_count": 290,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4944,6 +5799,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 290,
+      "real_coverage_count": 290,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4957,6 +5815,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 228,
+      "real_coverage_count": 228,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4970,6 +5831,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 195,
+      "real_coverage_count": 195,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4983,6 +5847,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
+      "real_coverage_count": 7,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -4996,6 +5863,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 26,
+      "real_coverage_count": 26,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "sentence_pool_proxy_coverage"
     },
@@ -5009,6 +5879,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 228,
+      "real_coverage_count": 228,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -5022,6 +5895,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 228,
+      "real_coverage_count": 228,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_curriculum_topic_access_subject_rule",
       "evidence": [],
       "mapping_note": "english_pool_items_mapped_topic_or_pool_proxy"
     },
@@ -5035,6 +5911,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 227,
+      "real_coverage_count": 227,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5048,6 +5927,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 847,
+      "real_coverage_count": 847,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5061,6 +5943,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 255,
+      "real_coverage_count": 255,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5074,6 +5959,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 227,
+      "real_coverage_count": 227,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5087,6 +5975,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 620,
+      "real_coverage_count": 620,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5100,6 +5991,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 228,
+      "real_coverage_count": 228,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5113,6 +6007,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 847,
+      "real_coverage_count": 847,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5126,6 +6023,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 620,
+      "real_coverage_count": 620,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5139,6 +6039,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 619,
+      "real_coverage_count": 619,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5152,6 +6055,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 596,
+      "real_coverage_count": 596,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5165,6 +6071,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 228,
+      "real_coverage_count": 228,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5178,6 +6087,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 518,
+      "real_coverage_count": 518,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5191,6 +6103,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 228,
+      "real_coverage_count": 228,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5204,6 +6119,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 204,
+      "real_coverage_count": 204,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5217,6 +6135,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 227,
+      "real_coverage_count": 227,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5230,6 +6151,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 619,
+      "real_coverage_count": 619,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5243,6 +6167,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 497,
+      "real_coverage_count": 497,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5256,6 +6183,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 518,
+      "real_coverage_count": 518,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5269,6 +6199,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 620,
+      "real_coverage_count": 620,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5282,6 +6215,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 255,
+      "real_coverage_count": 255,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_wordlist_pool_span>=6_or_token_match",
       "evidence": [],
       "mapping_note": "wordlist_pool_span>=6_english_threshold_phase721"
     },
@@ -5295,6 +6231,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 35,
+      "real_coverage_count": 35,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5308,6 +6247,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
+      "real_coverage_count": 15,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5321,6 +6263,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 146,
+      "real_coverage_count": 146,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5334,6 +6279,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5347,6 +6295,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5360,6 +6311,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 146,
+      "real_coverage_count": 146,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5373,6 +6327,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5386,6 +6343,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5399,6 +6359,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 29,
+      "real_coverage_count": 29,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5412,6 +6375,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 68,
+      "real_coverage_count": 68,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5425,6 +6391,9 @@
       "source_kind": "curriculum_structure",
       "coverage_class": "adequate",
       "primary_evidence_count": 48,
+      "real_coverage_count": 48,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_grammar_line_id_or_pool_span>=6",
       "evidence": [],
       "mapping_note": "grammar_line_id_spine_match"
     },
@@ -5438,6 +6407,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 50,
+      "real_coverage_count": 50,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5451,6 +6423,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 98,
+      "real_coverage_count": 98,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5464,6 +6439,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 48,
+      "real_coverage_count": 48,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5477,6 +6455,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5490,6 +6471,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 48,
+      "real_coverage_count": 48,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5503,6 +6487,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5516,6 +6503,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 98,
+      "real_coverage_count": 98,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5529,6 +6519,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 96,
+      "real_coverage_count": 96,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5542,6 +6535,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5555,6 +6551,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5568,6 +6567,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5581,6 +6583,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5594,6 +6599,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5607,6 +6615,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5620,6 +6631,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5633,6 +6647,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5646,6 +6663,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
+      "real_coverage_count": 6,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5659,6 +6679,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 32,
+      "real_coverage_count": 32,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5672,6 +6695,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 32,
+      "real_coverage_count": 32,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5685,6 +6711,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 32,
+      "real_coverage_count": 32,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5698,6 +6727,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 16,
+      "real_coverage_count": 16,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5711,6 +6743,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 16,
+      "real_coverage_count": 16,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "english_pool_count>=6",
       "evidence": [],
       "mapping_note": ""
     },
@@ -5724,6 +6759,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 49,
+      "real_coverage_count": 49,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "science_topic_pair_and_global_thresholds",
       "evidence": [
         {
           "type": "science_question_bank",
@@ -5768,6 +6806,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 47,
+      "real_coverage_count": 47,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "science_topic_pair_and_global_thresholds",
       "evidence": [
         {
           "type": "science_question_bank",
@@ -5812,6 +6853,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 63,
+      "real_coverage_count": 63,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "science_topic_pair_and_global_thresholds",
       "evidence": [
         {
           "type": "science_question_bank",
@@ -5856,6 +6900,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 62,
+      "real_coverage_count": 62,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "science_topic_pair_and_global_thresholds",
       "evidence": [
         {
           "type": "science_question_bank",
@@ -5900,6 +6947,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 57,
+      "real_coverage_count": 57,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "science_topic_pair_and_global_thresholds",
       "evidence": [
         {
           "type": "science_question_bank",
@@ -5940,6 +6990,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 43,
+      "real_coverage_count": 43,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "science_topic_pair_and_global_thresholds",
       "evidence": [
         {
           "type": "science_question_bank",
@@ -5984,6 +7037,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 45,
+      "real_coverage_count": 45,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "science_topic_pair_and_global_thresholds",
       "evidence": [
         {
           "type": "science_question_bank",
@@ -6016,6 +7072,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 203,
+      "real_coverage_count": 203,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6029,6 +7088,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 203,
+      "real_coverage_count": 203,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6042,6 +7104,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 203,
+      "real_coverage_count": 203,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6055,6 +7120,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 302,
+      "real_coverage_count": 302,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6068,6 +7136,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 302,
+      "real_coverage_count": 302,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6081,6 +7152,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 302,
+      "real_coverage_count": 302,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6094,6 +7168,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 313,
+      "real_coverage_count": 313,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6107,6 +7184,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 313,
+      "real_coverage_count": 313,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6120,6 +7200,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 313,
+      "real_coverage_count": 313,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6133,6 +7216,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 313,
+      "real_coverage_count": 313,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6146,6 +7232,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 211,
+      "real_coverage_count": 211,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6159,6 +7248,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 211,
+      "real_coverage_count": 211,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6172,6 +7264,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 211,
+      "real_coverage_count": 211,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6185,6 +7280,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 308,
+      "real_coverage_count": 308,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6198,6 +7296,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 308,
+      "real_coverage_count": 308,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6211,6 +7312,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 308,
+      "real_coverage_count": 308,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6224,6 +7328,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 322,
+      "real_coverage_count": 322,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6237,6 +7344,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 322,
+      "real_coverage_count": 322,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6250,6 +7360,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 322,
+      "real_coverage_count": 322,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6263,6 +7376,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 322,
+      "real_coverage_count": 322,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6276,6 +7392,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 322,
+      "real_coverage_count": 322,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6289,6 +7408,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 212,
+      "real_coverage_count": 212,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6302,6 +7424,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 212,
+      "real_coverage_count": 212,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6315,6 +7440,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 212,
+      "real_coverage_count": 212,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6328,6 +7456,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 212,
+      "real_coverage_count": 212,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6341,6 +7472,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 292,
+      "real_coverage_count": 292,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6354,6 +7488,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 292,
+      "real_coverage_count": 292,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6367,6 +7504,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 292,
+      "real_coverage_count": 292,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6380,6 +7520,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 307,
+      "real_coverage_count": 307,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6393,6 +7536,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 307,
+      "real_coverage_count": 307,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6406,6 +7552,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 307,
+      "real_coverage_count": 307,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6419,6 +7568,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 307,
+      "real_coverage_count": 307,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6432,6 +7584,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 307,
+      "real_coverage_count": 307,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6445,6 +7600,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 180,
+      "real_coverage_count": 180,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6458,6 +7616,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 180,
+      "real_coverage_count": 180,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6471,6 +7632,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 180,
+      "real_coverage_count": 180,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6484,6 +7648,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 274,
+      "real_coverage_count": 274,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6497,6 +7664,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 274,
+      "real_coverage_count": 274,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6510,6 +7680,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 274,
+      "real_coverage_count": 274,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6523,6 +7696,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 281,
+      "real_coverage_count": 281,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6536,6 +7712,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 281,
+      "real_coverage_count": 281,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6549,6 +7728,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 281,
+      "real_coverage_count": 281,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6562,6 +7744,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 281,
+      "real_coverage_count": 281,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6575,6 +7760,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 281,
+      "real_coverage_count": 281,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6588,6 +7776,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 181,
+      "real_coverage_count": 181,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6601,6 +7792,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 181,
+      "real_coverage_count": 181,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6614,6 +7808,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 181,
+      "real_coverage_count": 181,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6627,6 +7824,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 181,
+      "real_coverage_count": 181,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6640,6 +7840,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 270,
+      "real_coverage_count": 270,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6653,6 +7856,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 270,
+      "real_coverage_count": 270,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6666,6 +7872,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 270,
+      "real_coverage_count": 270,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6679,6 +7888,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 270,
+      "real_coverage_count": 270,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6692,6 +7904,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 270,
+      "real_coverage_count": 270,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6705,6 +7920,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 270,
+      "real_coverage_count": 270,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6718,6 +7936,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 270,
+      "real_coverage_count": 270,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6731,6 +7952,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 270,
+      "real_coverage_count": 270,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6744,6 +7968,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 270,
+      "real_coverage_count": 270,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6757,6 +7984,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 180,
+      "real_coverage_count": 180,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6770,6 +8000,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 180,
+      "real_coverage_count": 180,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6783,6 +8016,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 180,
+      "real_coverage_count": 180,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6796,6 +8032,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 180,
+      "real_coverage_count": 180,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6809,6 +8048,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 273,
+      "real_coverage_count": 273,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6822,6 +8064,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 273,
+      "real_coverage_count": 273,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6835,6 +8080,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 273,
+      "real_coverage_count": 273,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6848,6 +8096,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 273,
+      "real_coverage_count": 273,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6861,6 +8112,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 271,
+      "real_coverage_count": 271,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6874,6 +8128,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 271,
+      "real_coverage_count": 271,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6887,6 +8144,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 271,
+      "real_coverage_count": 271,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6900,6 +8160,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 271,
+      "real_coverage_count": 271,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6913,6 +8176,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 271,
+      "real_coverage_count": 271,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     },
@@ -6926,6 +8192,9 @@
       "source_kind": "static_bank",
       "coverage_class": "adequate",
       "primary_evidence_count": 271,
+      "real_coverage_count": 271,
+      "audit_adequacy_status": "adequate",
+      "threshold_policy_used": "geography_broad_bucket_coverage",
       "evidence": [],
       "mapping_note": "broad_bucket_coverage"
     }

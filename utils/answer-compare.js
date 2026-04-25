@@ -100,6 +100,29 @@ function parseNormalizedRational(value) {
   return denR < 0 ? { num: -numR, den: -denR } : { num: numR, den: denR };
 }
 
+function parsePercentToUnitNumber(value) {
+  if (typeof value !== "string") return null;
+  const t = value.trim().replace(/\s+/g, "");
+  const m = t.match(/^(-?\d+(?:[.,]\d+)?)%$/);
+  if (!m) return null;
+  const n = parsePureNumericDecimalString(m[1]);
+  if (n == null) return null;
+  return n / 100;
+}
+
+const UNIT_CONVERSION_KIND_ALLOWLIST = new Set(["wp_unit_cm_to_m"]);
+
+function parseLengthToMeters(value) {
+  if (typeof value !== "string") return null;
+  const t = value.trim().toLowerCase().replace(/\s+/g, " ");
+  const m = t.match(/^(-?\d+(?:[.,]\d+)?)\s*(cm|m)$/);
+  if (!m) return null;
+  const n = parsePureNumericDecimalString(m[1]);
+  if (n == null) return null;
+  if (m[2] === "cm") return n / 100;
+  return n;
+}
+
 /**
  * English-style normalization: quotes, edge punctuation, collapse whitespace, ASCII lower.
  * @param {unknown} value
@@ -284,6 +307,9 @@ export function compareMathLearnerAnswer(p) {
   const effectiveTol = clampAbsoluteTolerance(tol);
   const user = p.user;
   const correctAnswer = p.correctAnswer;
+  const percentageCompatible = p?.percentageCompatible === true;
+  const unitConversionEnabled = p?.unitConversionEnabled === true;
+  const unitConversionKind = String(p?.unitConversionKind || "");
 
   let numericAnswer;
   let isStringAnswer = false;
@@ -316,6 +342,40 @@ export function compareMathLearnerAnswer(p) {
     correctAnswerStr === "=";
 
   let isCorrect;
+  const userPercent = parsePercentToUnitNumber(user);
+  const correctPercent = parsePercentToUnitNumber(correctAnswer);
+  if (
+    percentageCompatible &&
+    ((userPercent != null && parsePureNumericDecimalString(correctAnswerStr) != null) ||
+      (correctPercent != null && typeof numericAnswer === "number") ||
+      (userPercent != null && correctPercent != null))
+  ) {
+    const a = userPercent != null ? userPercent : typeof numericAnswer === "number" ? numericAnswer : NaN;
+    const b =
+      correctPercent != null
+        ? correctPercent
+        : parsePureNumericDecimalString(correctAnswerStr) ?? (typeof correctAnswer === "number" ? correctAnswer : NaN);
+    if (Number.isFinite(a) && Number.isFinite(b)) {
+      return {
+        isCorrect: Math.abs(a - b) < effectiveTol,
+        rejectInvalidNumber: false,
+        selectedValue: numericAnswer,
+      };
+    }
+  }
+
+  if (unitConversionEnabled && UNIT_CONVERSION_KIND_ALLOWLIST.has(unitConversionKind)) {
+    const aM = parseLengthToMeters(user);
+    const bM = parseLengthToMeters(correctAnswer);
+    if (aM != null && bM != null) {
+      return {
+        isCorrect: Math.abs(aM - bM) < effectiveTol,
+        rejectInvalidNumber: false,
+        selectedValue: numericAnswer,
+      };
+    }
+  }
+
   const correctPure =
     typeof correctAnswer === "string"
       ? parsePureNumericDecimalString(correctAnswerStr)

@@ -50,16 +50,34 @@ export function sumQuestionsCorrectForSessions(sessions, legacyProgress) {
     const t =
       s && s.total !== undefined && s.total !== null ? Number(s.total) : NaN;
     if (!Number.isFinite(t) || t <= 0) return;
-    q += t;
-    if (
+    const c =
       typeof s.correct === "number" &&
       Number.isFinite(s.correct) &&
-      s.correct >= 0
-    ) {
-      correctKnown += s.correct;
-    }
+      s.correct >= 0 &&
+      s.correct <= t
+        ? s.correct
+        : NaN;
+    if (!Number.isFinite(c)) return;
+    q += t;
+    correctKnown += c;
   });
   return { questions: q, correct: correctKnown };
+}
+
+export const MIN_TREND_POINTS = 3;
+
+function isValidSessionForAccuracyAggregation(s) {
+  if (!s || typeof s !== "object") return false;
+  const t = s.total !== undefined && s.total !== null ? Number(s.total) : NaN;
+  const c =
+    typeof s.correct === "number" &&
+    Number.isFinite(s.correct) &&
+    s.correct >= 0 &&
+    Number.isFinite(t) &&
+    s.correct <= t
+      ? s.correct
+      : NaN;
+  return Number.isFinite(t) && t > 0 && Number.isFinite(c);
 }
 
 function sessionDurationSeconds(session) {
@@ -205,6 +223,10 @@ export function computeRowTrend({
 }) {
   const curSess = Array.isArray(sessionsCurrentPeriod) ? sessionsCurrentPeriod : [];
   const prevSess = Array.isArray(prevPeriodSessions) ? prevPeriodSessions : [];
+  const validCurSessionCount = curSess.filter(isValidSessionForAccuracyAggregation).length;
+  const validPrevSessionCount = prevSess.filter(isValidSessionForAccuracyAggregation).length;
+  const trendEvidencePoints = validCurSessionCount + validPrevSessionCount;
+  const hasMinTrendEvidence = trendEvidencePoints >= MIN_TREND_POINTS;
   const aggCurrent = sumQuestionsCorrectForSessions(curSess, legacyProgress || {});
   const aggPrev = sumQuestionsCorrectForSessions(prevSess, legacyProgress || {});
   const accCurrent = fixAccuracy(aggCurrent);
@@ -226,14 +248,22 @@ export function computeRowTrend({
   const accLastFew = fixAccuracy(aggLastFew);
 
   const accuracyDirection =
-    accCurrent == null || accPrev == null ? "unknown" : directionFromDelta((accCurrent || 0) - (accPrev || 0), 5);
+    !hasMinTrendEvidence || accCurrent == null || accPrev == null
+      ? "unknown"
+      : directionFromDelta((accCurrent || 0) - (accPrev || 0), 5);
 
   const durFull = curSess.map(sessionDurationSeconds).filter((x) => x > 0);
   const durRecent = recentSessions.map(sessionDurationSeconds).filter((x) => x > 0);
   const medFull = median(durFull);
   const medRecent = median(durRecent);
   let fluencyDirection = "unknown";
-  if (medFull != null && medRecent != null && durFull.length >= 2 && durRecent.length >= 1) {
+  if (
+    hasMinTrendEvidence &&
+    medFull != null &&
+    medRecent != null &&
+    durFull.length >= 2 &&
+    durRecent.length >= 1
+  ) {
     const deltaSec = medRecent - medFull;
     if (deltaSec <= -8) fluencyDirection = "up";
     else if (deltaSec >= 8) fluencyDirection = "down";
@@ -249,7 +279,7 @@ export function computeRowTrend({
   const sCur = mCur.filter((e) => !e.isCorrect).length >= 3 ? scoreIndependence(indCur) : null;
   const sPrev = mPrev.filter((e) => !e.isCorrect).length >= 3 ? scoreIndependence(indPrev) : null;
   let independenceDirection = "unknown";
-  if (sCur != null && sPrev != null) {
+  if (hasMinTrendEvidence && sCur != null && sPrev != null) {
     independenceDirection = directionFromDelta((sCur - sPrev) * 100, 8);
   } else if (sCur != null && sPrev == null && mPrev.length === 0) {
     independenceDirection = "unknown";
@@ -276,6 +306,9 @@ export function computeRowTrend({
   if (accPrev != null && nPrev > 0) parts.push(`בתקופה המקבילה הקודמת כ-${accPrev}% (${nPrev} שאלות)`);
   if (accRecent != null && recentSessions.length) parts.push(`בחלון האחרון בטווח כ-${accRecent}% דיוק`);
   if (!parts.length) parts.push("אין מספיק מפגשים בטווח כדי להשוות מגמה");
+  if (!hasMinTrendEvidence) {
+    parts.push(`אין מספיק מפגשים תקינים להשוואת מגמה אמינה (נדרשים לפחות ${MIN_TREND_POINTS})`);
+  }
   let summaryHe = parts.join(" · ") + ".";
   if (trendConfidence < 0.35) {
     summaryHe +=
@@ -319,8 +352,13 @@ export function computeRowTrend({
     fluencyDirection,
     independenceDirection,
     confidence: trendConfidence,
+    trendEvidenceStatus: hasMinTrendEvidence ? "sufficient" : "insufficient",
     summaryHe,
     evidence: {
+      validCurrentSessionCount: validCurSessionCount,
+      validPreviousSessionCount: validPrevSessionCount,
+      trendEvidencePoints,
+      minTrendPointsRequired: MIN_TREND_POINTS,
       medianSessionDurationSecFullPeriod: medFull,
       medianSessionDurationSecRecentWindow: medRecent,
       mistakeWrongCountCurrent: mCur.filter((e) => !e.isCorrect).length,

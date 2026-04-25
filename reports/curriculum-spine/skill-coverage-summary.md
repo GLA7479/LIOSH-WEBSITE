@@ -1,6 +1,6 @@
 # Skill coverage audit (Phase 7.15)
 
-- **Generated:** 2026-04-25T10:25:07.551Z
+- **Generated:** 2026-04-25T10:40:15.204Z
 - **Phase 7.14 baseline (pre-join hardening):** zero 88, weak 60, adequate 244, uncertain 31
 - **Skills checked:** 423
 - **Zero / weak / adequate / uncertain:** 0 / 7 / 416 / 0

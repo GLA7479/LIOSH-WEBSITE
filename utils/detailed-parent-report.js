@@ -89,6 +89,9 @@ const SUBJECT_LABEL_HE = {
   "moledet-geography": "מולדת וגאוגרפיה",
 };
 
+const TOPIC_REC_MIN_ACTIONABLE_QUESTIONS = 8;
+const PRIORITY_SCORE_BY_LEVEL = { P4: 400, P3: 300, P2: 200, P1: 100 };
+
 const REPORT_MAP_KEY = {
   math: "mathOperations",
   geometry: "geometryTopics",
@@ -1832,6 +1835,19 @@ function recommendationFromV2Unit(u, mapRow) {
 
   const gateReadiness =
     canonicalReadiness === "ready" ? "ready" : canonicalReadiness === "forming" ? "moderate" : "insufficient";
+  const priorityLevel = String(u?.priority?.level || "");
+  const priorityScore =
+    Number(u?.priority?.score)
+    || PRIORITY_SCORE_BY_LEVEL[priorityLevel]
+    || 0;
+  const lowEvidenceByCount = outQuestions < TOPIC_REC_MIN_ACTIONABLE_QUESTIONS;
+  const lowEvidenceBySignal =
+    String(u?.confidence?.rowSignals?.dataSufficiencyLevel || "").toLowerCase() === "low"
+    || gateReadiness === "insufficient";
+  const thinEvidenceDowngraded = lowEvidenceByCount || lowEvidenceBySignal;
+  const finalStep = thinEvidenceDowngraded ? "maintain_and_strengthen" : step;
+  const finalLabel =
+    finalStep === "remediate_same_level" ? label : "איסוף אות נוסף לפני החלטה";
   const conclusionStrength = gated
     ? "withheld"
     : canonicalDecisionTier >= 3
@@ -1846,8 +1862,8 @@ function recommendationFromV2Unit(u, mapRow) {
     displayName: String(u?.displayName || ""),
     topicStateId: cs?.topicStateId || null,
     stateHash: cs?.stateHash || null,
-    recommendedNextStep: step,
-    recommendedStepLabelHe: label,
+    recommendedNextStep: finalStep,
+    recommendedStepLabelHe: finalLabel,
     questions: outQuestions,
     accuracy: outAccuracy,
     mistakeEventCount,
@@ -1860,9 +1876,12 @@ function recommendationFromV2Unit(u, mapRow) {
     conclusionStrength,
     suppressAggressiveStep: gated,
     whyThisRecommendationHe:
-      String(u?.diagnosis?.lineHe || "")
-      || String(u?.taxonomy?.patternHe || "")
-      || "נדרש מיקוד עדין לפי ראיות השורה.",
+      (String(u?.diagnosis?.lineHe || "")
+        || String(u?.taxonomy?.patternHe || "")
+        || "נדרש מיקוד עדין לפי ראיות השורה.")
+      + (thinEvidenceDowngraded
+        ? " אין עדיין מספיק ראיות להמלצה חזקה — נשארים בצעד שמרני עד לצבירת נתון נוסף."
+        : ""),
     interventionPlanHe: String(u?.intervention?.shortPracticeHe || ""),
     doNowHe: String(u?.intervention?.immediateActionHe || ""),
     avoidNowHe: String(u?.intervention?.avoidHe || ""),
@@ -1875,6 +1894,10 @@ function recommendationFromV2Unit(u, mapRow) {
       priorityLevel: u?.priority?.level || null,
       gating: u?.outputGating || null,
     },
+    _priorityScore: priorityScore,
+    _priorityLevel: priorityLevel || null,
+    thinEvidenceDowngraded,
+    threshold_policy_used: `topic_recommendation_questions>=${TOPIC_REC_MIN_ACTIONABLE_QUESTIONS}`,
     contractsV1,
   };
 }
@@ -2011,7 +2034,7 @@ function buildSubjectProfilesFromV2(baseReport) {
         ? topicMapForSid[anchorTrk]
         : null;
 
-    const topicRecommendations = attachNarrativeContractsToTopicRecommendations(
+    const topicRecommendationsBase = attachNarrativeContractsToTopicRecommendations(
       sid,
       applyGateToTextClampToTopicRecommendations(
         units
@@ -2023,6 +2046,20 @@ function buildSubjectProfilesFromV2(baseReport) {
           .slice(0, 8)
       )
     );
+    const topicRecommendations = [...topicRecommendationsBase]
+      .sort((a, b) => {
+        const pa = Number(a?._priorityScore) || 0;
+        const pb = Number(b?._priorityScore) || 0;
+        if (pb !== pa) return pb - pa;
+        const qa = Number(a?.questions) || 0;
+        const qb = Number(b?.questions) || 0;
+        return qb - qa;
+      })
+      .map((tr, idx) => ({
+        ...tr,
+        actionableRole: idx === 0 ? "primary" : "secondary",
+        isMainActionable: idx === 0,
+      }));
 
     const excellentList = strengthUnits.filter(
       (u) => csOf(u)?.evidence?.positiveAuthorityLevel === "excellent"

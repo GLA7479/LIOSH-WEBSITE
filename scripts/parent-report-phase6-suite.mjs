@@ -2867,6 +2867,15 @@ function runPhase8InterventionPriorityAndCalibration() {
     period: "week",
   });
   const mathStrong = strong.subjectProfiles.find((s) => s.subject === "math");
+  const mathStrongTopicRecs = Array.isArray(mathStrong?.topicRecommendations) ? mathStrong.topicRecommendations : [];
+  const mainActionables = mathStrongTopicRecs.filter((t) => t?.isMainActionable === true);
+  assert.ok(mainActionables.length <= 1, "phase8: at most one main actionable topic per subject");
+  if (mathStrongTopicRecs.length >= 2) {
+    assert.equal(mathStrongTopicRecs[0].actionableRole, "primary");
+    assert.equal(mathStrongTopicRecs[1].actionableRole, "secondary");
+    const maxScore = Math.max(...mathStrongTopicRecs.map((t) => Number(t?._priorityScore) || 0));
+    assert.equal(Number(mathStrongTopicRecs[0]?._priorityScore) || 0, maxScore);
+  }
   const trHi =
     mathStrong?.topicRecommendations?.find((t) => (Number(t.accuracy) || 0) >= 88 && (Number(t.questions) || 0) >= 18) ||
     mathStrong?.topicRecommendations?.[0];
@@ -2876,6 +2885,30 @@ function runPhase8InterventionPriorityAndCalibration() {
       "phase8: strong row should stay light at home"
     );
   }
+
+  // Thin evidence binding: sparse evidence must not produce strong action.
+  const sparseUnit = {
+    subjectId: "math",
+    topicRowKey: "addition\u0001learning",
+    displayName: "חיבור",
+    intervention: { immediateActionHe: "תרגול" },
+    confidence: { level: "low", rowSignals: { dataSufficiencyLevel: "low", isEarlySignalOnly: true } },
+    outputGating: { cannotConcludeYet: false, additiveCautionAllowed: false, contractsV1: {} },
+    priority: { level: "P4", score: 999 },
+    recurrence: { totalQuestions: 3, wrongCountForRules: 2 },
+    evidenceTrace: [{ type: "volume", value: { questions: 3, correct: 2, accuracy: 67, wrong: 1 } }],
+    canonicalState: { assessment: { readiness: "insufficient", confidenceLevel: "low", decisionTier: 1 } },
+  };
+  const sparseBase = {
+    mathOperations: {
+      "addition\u0001learning": {
+        contractsV1: { evidence: { questionCount: 3, accuracyPct: 67 }, evidenceValidation: { ok: true, errors: [] } },
+      },
+    },
+  };
+  const sparseTr = buildTopicRecommendationFromV2UnitForPhaseTests(sparseUnit, sparseBase, "math");
+  assert.equal(sparseTr.recommendedNextStep, "maintain_and_strengthen");
+  assert.equal(sparseTr.thinEvidenceDowngraded, true);
 
   const calSparse = buildPracticeCalibration({
     rootCause: "insufficient_evidence",

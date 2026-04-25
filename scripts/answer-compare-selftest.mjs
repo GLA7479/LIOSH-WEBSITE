@@ -192,6 +192,15 @@ assert.equal(
 );
 assert.equal(
   compareMathLearnerAnswer({
+    user: "1 / 2",
+    correctAnswer: "1/2",
+    numericTolerance: TOL,
+  }).isCorrect,
+  true,
+  "fraction spaces around slash should normalize"
+);
+assert.equal(
+  compareMathLearnerAnswer({
     user: "1 1/2",
     correctAnswer: "3/2",
     numericTolerance: TOL,
@@ -207,6 +216,47 @@ assert.equal(
   }).isCorrect,
   false,
   "different fractions must remain incorrect"
+);
+assert.equal(
+  compareMathLearnerAnswer({
+    user: "50%",
+    correctAnswer: 0.5,
+    numericTolerance: TOL,
+    percentageCompatible: true,
+  }).isCorrect,
+  true,
+  "percent should map to decimal only in percentage-compatible mode"
+);
+assert.equal(
+  compareMathLearnerAnswer({
+    user: "50%",
+    correctAnswer: 0.5,
+    numericTolerance: TOL,
+  }).isCorrect,
+  false,
+  "without percentage-compatible context, keep strict behavior"
+);
+assert.equal(
+  compareMathLearnerAnswer({
+    user: "100 cm",
+    correctAnswer: "1 m",
+    numericTolerance: TOL,
+    unitConversionEnabled: true,
+    unitConversionKind: "wp_unit_cm_to_m",
+  }).isCorrect,
+  true,
+  "cm/m conversion only for allowed unit-conversion kind"
+);
+assert.equal(
+  compareMathLearnerAnswer({
+    user: "100 cm",
+    correctAnswer: "1 m",
+    numericTolerance: TOL,
+    unitConversionEnabled: true,
+    unitConversionKind: "dec_multiply",
+  }).isCorrect,
+  false,
+  "unit conversion must not leak to non-unit kinds"
 );
 assert.equal(
   compareMathLearnerAnswer({
