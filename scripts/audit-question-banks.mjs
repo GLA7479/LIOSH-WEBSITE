@@ -727,13 +727,20 @@ function sampleMathGenerator(rows, samplesPerOp = 10) {
     { force: "frac_to_mixed", gk: "g5", lev: "medium", op: "fractions" },
     { force: "wp_unit_cm_to_m", gk: "g5", lev: "medium", op: "word_problems" },
     { force: "wp_unit_cm_to_m", gk: "g6", lev: "medium", op: "word_problems" },
+    /** Phase 7.23 — כפייה לאודיט: ns_counting_backward (auditReps=4), dec_multiply. */
+    { force: "ns_counting_backward", gk: "g1", lev: "easy", op: "number_sense", auditReps: 6 },
+    { force: "dec_multiply", gk: "g6", lev: "hard", op: "decimals" },
   ];
   const SAMPLES_PER_FORCE_KIND = 6;
   for (let pi = 0; pi < MATH_AUDIT_FORCE_PROBES.length; pi++) {
     const p = MATH_AUDIT_FORCE_PROBES[pi];
     const gNum = parseInt(String(p.gk).replace(/\D/g, ""), 10) || 1;
     const lc = getLevelConfig(gNum, p.lev);
-    for (let rep = 0; rep < SAMPLES_PER_FORCE_KIND; rep++) {
+    const reps =
+      typeof p.auditReps === "number" && p.auditReps >= 1 && p.auditReps <= 32
+        ? p.auditReps
+        : SAMPLES_PER_FORCE_KIND;
+    for (let rep = 0; rep < reps; rep++) {
       const seed =
         0x70206175 + pi * 524287 + rep * 65521 + p.force.length * 1009 + p.op.length * 131;
       const q = runWithAuditRandom(seed, () => {

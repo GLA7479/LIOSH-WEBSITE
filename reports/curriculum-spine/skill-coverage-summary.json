@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-25T00:34:12.341Z",
+  "generatedAt": "2026-04-25T00:52:28.464Z",
   "phase_7_14_baseline_counts": {
     "note": "Snapshot before Phase 7.15 audit join hardening (same 423 spine skills).",
     "zero": 88,
@@ -9,13 +9,13 @@
   },
   "spinePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\curriculum-spine\\v1\\skills.json",
   "itemsPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-audit\\items.json",
-  "itemsRowCount": 11758,
+  "itemsRowCount": 11770,
   "total_skills_checked": 423,
   "spine_skill_rows_by_source_kind": {
     "static_bank_curriculum_map": {
       "total": 88,
-      "adequate": 75,
-      "weak": 13,
+      "adequate": 84,
+      "weak": 4,
       "zero": 0,
       "uncertain": 0
     },
@@ -28,8 +28,8 @@
     },
     "deterministic_generator": {
       "total": 129,
-      "adequate": 119,
-      "weak": 10,
+      "adequate": 126,
+      "weak": 3,
       "zero": 0,
       "uncertain": 0
     },
@@ -43,22 +43,21 @@
   },
   "coverage_class_counts": {
     "zero": 0,
-    "weak": 23,
-    "adequate": 400,
+    "weak": 7,
+    "adequate": 416,
     "uncertain": 0
   },
   "uncertain_mapping_count": 0,
   "hebrew_content_map_spine_rows": 88,
   "zero_by_subject": {},
   "weak_by_subject": {
-    "hebrew": 13,
-    "math": 6,
-    "geometry": 4
+    "hebrew": 4,
+    "geometry": 3
   },
   "adequate_by_subject": {
-    "hebrew": 122,
-    "math": 85,
-    "geometry": 34,
+    "hebrew": 131,
+    "math": 91,
+    "geometry": 35,
     "english": 81,
     "science": 7,
     "geography": 71
@@ -209,7 +208,7 @@
   "per_skill_id_detail_file": "reports/curriculum-spine/skill-coverage.json",
   "methodology": {
     "math_geometry": "Counts math_generator_sample / geometry_generator_sample in items.json; union with harness JSON kinds; stage2 kindsNotHitInRun for zero hints.",
-    "hebrew_content_map": "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; fallback stem inference only if spine_skill_id absent.",
+    "hebrew_content_map": "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; Phase 7.23 adequate floor=4 hits for content_map.",
     "geography": "Phase 7.21: geography_bank_item counts per SPINE_BUCKET_BANK_TOPICS; adequate=broad_bucket_coverage when bankSum>0.",
     "english_wordlist_grammar": "Phase 7.21: English pools/wordlists adequate floor=6; grammar lines also adequate when grammar pool rows in span>=6 (broad).",
     "science": "SCIENCE_QUESTIONS counts by topic and by grade|topic pair vs spine min/max grade.",

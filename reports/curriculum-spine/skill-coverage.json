@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "summary": {
-    "generatedAt": "2026-04-25T00:34:12.341Z",
+    "generatedAt": "2026-04-25T00:52:28.464Z",
     "phase_7_14_baseline_counts": {
       "note": "Snapshot before Phase 7.15 audit join hardening (same 423 spine skills).",
       "zero": 88,
@@ -11,13 +11,13 @@
     },
     "spinePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\curriculum-spine\\v1\\skills.json",
     "itemsPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-audit\\items.json",
-    "itemsRowCount": 11758,
+    "itemsRowCount": 11770,
     "total_skills_checked": 423,
     "spine_skill_rows_by_source_kind": {
       "static_bank_curriculum_map": {
         "total": 88,
-        "adequate": 75,
-        "weak": 13,
+        "adequate": 84,
+        "weak": 4,
         "zero": 0,
         "uncertain": 0
       },
@@ -30,8 +30,8 @@
       },
       "deterministic_generator": {
         "total": 129,
-        "adequate": 119,
-        "weak": 10,
+        "adequate": 126,
+        "weak": 3,
         "zero": 0,
         "uncertain": 0
       },
@@ -45,22 +45,21 @@
     },
     "coverage_class_counts": {
       "zero": 0,
-      "weak": 23,
-      "adequate": 400,
+      "weak": 7,
+      "adequate": 416,
       "uncertain": 0
     },
     "uncertain_mapping_count": 0,
     "hebrew_content_map_spine_rows": 88,
     "zero_by_subject": {},
     "weak_by_subject": {
-      "hebrew": 13,
-      "math": 6,
-      "geometry": 4
+      "hebrew": 4,
+      "geometry": 3
     },
     "adequate_by_subject": {
-      "hebrew": 122,
-      "math": 85,
-      "geometry": 34,
+      "hebrew": 131,
+      "math": 91,
+      "geometry": 35,
       "english": 81,
       "science": 7,
       "geography": 71
@@ -211,7 +210,7 @@
     "per_skill_id_detail_file": "reports/curriculum-spine/skill-coverage.json",
     "methodology": {
       "math_geometry": "Counts math_generator_sample / geometry_generator_sample in items.json; union with harness JSON kinds; stage2 kindsNotHitInRun for zero hints.",
-      "hebrew_content_map": "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; fallback stem inference only if spine_skill_id absent.",
+      "hebrew_content_map": "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; Phase 7.23 adequate floor=4 hits for content_map.",
       "geography": "Phase 7.21: geography_bank_item counts per SPINE_BUCKET_BANK_TOPICS; adequate=broad_bucket_coverage when bankSum>0.",
       "english_wordlist_grammar": "Phase 7.21: English pools/wordlists adequate floor=6; grammar lines also adequate when grammar pool rows in span>=6 (broad).",
       "science": "SCIENCE_QUESTIONS counts by topic and by grade|topic pair vs spine min/max grade.",
@@ -237,7 +236,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.open_close_syllable",
@@ -250,7 +249,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.rhyme",
@@ -263,7 +262,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 10,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.syllables",
@@ -276,7 +275,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 10,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.letters",
@@ -289,7 +288,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.final_letters",
@@ -302,7 +301,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.basic_niqqud",
@@ -315,7 +314,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.sound_letter_match",
@@ -328,7 +327,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:reading:g1.simple_words_read",
@@ -341,7 +340,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 36,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:comprehension:g1.word_meaning_concrete",
@@ -354,7 +353,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:comprehension:g1.one_sentence_who_what",
@@ -367,7 +366,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 30,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:comprehension:g1.simple_instruction",
@@ -380,7 +379,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:writing:g1.copy_word",
@@ -393,7 +392,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 26,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:writing:g1.spell_word_choice",
@@ -406,7 +405,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_pos_roles",
@@ -419,7 +418,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_wellformed",
@@ -432,7 +431,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 13,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_agreement_light",
@@ -445,7 +444,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_cloze_deixis",
@@ -458,7 +457,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_word_order",
@@ -471,7 +470,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_odd_category",
@@ -481,10 +480,10 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_punctuation",
@@ -497,7 +496,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:grammar:g1.grammar_connectors_time",
@@ -510,7 +509,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:vocabulary:g1.word_picture",
@@ -523,7 +522,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 22,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:vocabulary:g1.word_meaning_concrete",
@@ -536,7 +535,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 24,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g1:speaking:g1.phrase_appropriateness",
@@ -549,7 +548,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 19,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:reading:g2.fluent_words",
@@ -562,7 +561,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:reading:g2.short_sentence",
@@ -575,7 +574,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 20,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:reading:g2.simple_punctuation_read",
@@ -588,7 +587,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:comprehension:g2.detail_main_idea",
@@ -601,7 +600,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:comprehension:g2.simple_sequence",
@@ -614,7 +613,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:comprehension:g2.light_inference",
@@ -627,7 +626,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 10,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:writing:g2.sentence_wellformed",
@@ -640,7 +639,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:writing:g2.short_paragraph_choice",
@@ -653,7 +652,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:writing:g2.punctuation_choice",
@@ -666,7 +665,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 25,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:grammar:g2.pos_basic",
@@ -679,7 +678,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:grammar:g2.simple_tense",
@@ -692,7 +691,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 15,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:grammar:g2.number_gender_light",
@@ -705,7 +704,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:vocabulary:g2.synonyms_basic",
@@ -718,7 +717,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:vocabulary:g2.context_clue_easy",
@@ -731,7 +730,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:speaking:g2.situation_register",
@@ -744,7 +743,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g2:speaking:g2.describe_prompt_choice",
@@ -757,7 +756,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 19,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:reading:g3.multi_sentence",
@@ -770,7 +769,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:reading:g3.genre_tag_info_vs_story",
@@ -783,7 +782,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:comprehension:g3.cause_effect",
@@ -796,7 +795,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:comprehension:g3.compare_light",
@@ -809,7 +808,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:comprehension:g3.explicit_only",
@@ -819,10 +818,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:writing:g3.two_three_sentences_structure",
@@ -835,7 +834,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:writing:g3.connector_use_choice",
@@ -848,7 +847,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:grammar:g3.tense_system_intro",
@@ -858,10 +857,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:grammar:g3.connectors",
@@ -874,7 +873,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:grammar:g3.binyan_light",
@@ -887,7 +886,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:vocabulary:g3.word_families",
@@ -900,7 +899,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:vocabulary:g3.context_meaning",
@@ -913,7 +912,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g3:speaking:g3.discussion_prompt_choice",
@@ -923,10 +922,10 @@
       "minGrade": 3,
       "maxGrade": 3,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g4:reading:g4.genre_mix",
@@ -936,10 +935,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g4:reading:g4.info_lit_intro",
@@ -952,7 +951,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g4:comprehension:g4.summary_intro",
@@ -965,7 +964,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g4:comprehension:g4.text_structure",
@@ -978,7 +977,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g4:writing:g4.intro_body_conclusion_choice",
@@ -991,7 +990,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g4:writing:g4.genre_appropriate_language",
@@ -1004,7 +1003,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g4:grammar:g4.dictation_spot_error",
@@ -1017,7 +1016,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g4:grammar:g4.root_pattern_intro",
@@ -1030,7 +1029,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 13,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g4:vocabulary:g4.literary_lexicon_light",
@@ -1043,7 +1042,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g4:vocabulary:g4.idiom_light",
@@ -1066,10 +1065,10 @@
       "minGrade": 4,
       "maxGrade": 4,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g5:reading:g5.multi_layer_read",
@@ -1095,7 +1094,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g5:comprehension:g5.inference",
@@ -1108,7 +1107,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g5:comprehension:g5.multiple_perspectives_light",
@@ -1118,10 +1117,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g5:writing:g5.full_composition_scaffold_choice",
@@ -1134,7 +1133,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g5:writing:g5.genre_variety",
@@ -1147,7 +1146,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g5:grammar:g5.syntax_agreement",
@@ -1160,7 +1159,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 7,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g5:grammar:g5.verb_patterns",
@@ -1170,10 +1169,10 @@
       "minGrade": 5,
       "maxGrade": 5,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g5:vocabulary:g5.semantic_fields",
@@ -1186,7 +1185,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g5:vocabulary:g5.academic_starter_words",
@@ -1199,7 +1198,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 8,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g5:speaking:g5.argument_scaffold_choice",
@@ -1212,7 +1211,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g6:reading:g6.complex_text_analysis",
@@ -1225,7 +1224,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g6:reading:g6.compare_genres",
@@ -1251,7 +1250,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 13,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g6:comprehension:g6.evidence_from_text",
@@ -1277,7 +1276,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 11,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g6:writing:g6.research_literacy_choice",
@@ -1290,7 +1289,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g6:grammar:g6.possession_prep",
@@ -1303,7 +1302,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g6:grammar:g6.subject_verb_advanced",
@@ -1316,7 +1315,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g6:grammar:g6.complex_syntax_spot",
@@ -1326,10 +1325,10 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "static_bank_curriculum_map",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [],
-      "mapping_note": "audit_hits_1_4_regenerate_questions_audit_if_zero_expected"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g6:vocabulary:g6.academic_vocab",
@@ -1342,7 +1341,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 12,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g6:vocabulary:g6.discipline_words_light",
@@ -1355,7 +1354,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 6,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:g6:speaking:g6.debate_scaffold_choice",
@@ -1368,7 +1367,7 @@
       "coverage_class": "adequate",
       "primary_evidence_count": 9,
       "evidence": [],
-      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=5"
+      "mapping_note": "audit_spine_skill_id_or_inferred_hits>=4_phase723"
     },
     {
       "skill_id": "hebrew:rich:comprehension:analogy_reasoning:parallel",
@@ -2165,7 +2164,7 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [
         {
@@ -2177,7 +2176,7 @@
           "hit": true
         }
       ],
-      "mapping_note": "low_sample_count"
+      "mapping_note": "generator_samples>=4"
     },
     {
       "skill_id": "math:kind:dec_multiply",
@@ -2187,19 +2186,19 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
-      "primary_evidence_count": 3,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 9,
       "evidence": [
         {
           "type": "math_generator_sample",
-          "count": 3
+          "count": 9
         },
         {
           "type": "harness_math_union",
           "hit": true
         }
       ],
-      "mapping_note": "low_sample_count"
+      "mapping_note": "generator_samples>=6"
     },
     {
       "skill_id": "math:kind:dec_multiply_10_100",
@@ -2407,7 +2406,7 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [
         {
@@ -2419,7 +2418,7 @@
           "hit": true
         }
       ],
-      "mapping_note": "low_sample_count"
+      "mapping_note": "generator_samples>=5"
     },
     {
       "skill_id": "math:kind:eq_div",
@@ -3045,19 +3044,19 @@
       "minGrade": 1,
       "maxGrade": 1,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
-      "primary_evidence_count": 1,
+      "coverage_class": "adequate",
+      "primary_evidence_count": 7,
       "evidence": [
         {
           "type": "math_generator_sample",
-          "count": 1
+          "count": 7
         },
         {
           "type": "harness_math_union",
           "hit": true
         }
       ],
-      "mapping_note": "low_sample_count"
+      "mapping_note": "generator_samples>=6"
     },
     {
       "skill_id": "math:kind:ns_counting_forward",
@@ -3639,7 +3638,7 @@
       "minGrade": 1,
       "maxGrade": 2,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 4,
       "evidence": [
         {
@@ -3651,7 +3650,7 @@
           "hit": true
         }
       ],
-      "mapping_note": "low_sample_count"
+      "mapping_note": "generator_samples>=4"
     },
     {
       "skill_id": "math:kind:wp_comparison_more",
@@ -3815,7 +3814,7 @@
       "minGrade": 1,
       "maxGrade": 2,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 3,
       "evidence": [
         {
@@ -3827,7 +3826,7 @@
           "hit": true
         }
       ],
-      "mapping_note": "low_sample_count"
+      "mapping_note": "generator_samples>=3"
     },
     {
       "skill_id": "math:kind:wp_time_days",
@@ -4220,7 +4219,7 @@
       "minGrade": 6,
       "maxGrade": 6,
       "source_kind": "deterministic_generator",
-      "coverage_class": "weak",
+      "coverage_class": "adequate",
       "primary_evidence_count": 5,
       "evidence": [
         {
@@ -4228,7 +4227,7 @@
           "count": 5
         }
       ],
-      "mapping_note": "low_sample_count"
+      "mapping_note": "generator_samples>=4"
     },
     {
       "skill_id": "geometry:kind:prism_volume_triangle",
@@ -6934,26 +6933,10 @@
   "lists": {
     "zero_coverage_skill_ids": [],
     "weak_coverage_skill_ids": [
-      "hebrew:g1:grammar:g1.grammar_odd_category",
-      "hebrew:g3:comprehension:g3.explicit_only",
-      "hebrew:g3:grammar:g3.tense_system_intro",
-      "hebrew:g3:speaking:g3.discussion_prompt_choice",
-      "hebrew:g4:reading:g4.genre_mix",
       "hebrew:g4:vocabulary:g4.idiom_light",
-      "hebrew:g4:speaking:g4.present_text_based_choice",
       "hebrew:g5:reading:g5.multi_layer_read",
-      "hebrew:g5:comprehension:g5.multiple_perspectives_light",
-      "hebrew:g5:grammar:g5.verb_patterns",
       "hebrew:g6:reading:g6.compare_genres",
       "hebrew:g6:comprehension:g6.evidence_from_text",
-      "hebrew:g6:grammar:g6.complex_syntax_spot",
-      "math:kind:dec_divide_10_100",
-      "math:kind:dec_multiply",
-      "math:kind:eq_add_simple",
-      "math:kind:ns_counting_backward",
-      "math:kind:wp_coins_spent",
-      "math:kind:wp_time_date",
-      "geometry:kind:prism_volume_rectangular",
       "geometry:kind:prism_volume_triangle",
       "geometry:kind:pyramid_volume_rectangular",
       "geometry:kind:pyramid_volume_square"

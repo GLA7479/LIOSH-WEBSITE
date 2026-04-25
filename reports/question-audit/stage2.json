@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-25T00:34:11.446Z",
+  "generatedAt": "2026-04-25T00:52:27.598Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -634,11 +634,11 @@
         "withPatternFamily": 288
       },
       "number_sense": {
-        "rows": 288,
+        "rows": 294,
         "staticRows": 0,
-        "sampleRows": 288,
+        "sampleRows": 294,
         "withSubtype": 0,
-        "withPatternFamily": 288
+        "withPatternFamily": 294
       },
       "word_problems": {
         "rows": 252,
@@ -690,11 +690,11 @@
         "withPatternFamily": 192
       },
       "decimals": {
-        "rows": 204,
+        "rows": 210,
         "staticRows": 0,
-        "sampleRows": 204,
+        "sampleRows": 210,
         "withSubtype": 0,
-        "withPatternFamily": 204
+        "withPatternFamily": 210
       },
       "order_of_operations": {
         "rows": 48,

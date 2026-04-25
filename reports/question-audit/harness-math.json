@@ -1,9 +1,10 @@
 {
-  "generatedAt": "2026-04-25T00:34:10.486Z",
+  "generatedAt": "2026-04-25T00:52:26.611Z",
   "seedsPerCombo": 128,
   "skipGeometryConceptual": true,
   "mathForcedKinds": [
     "dec_divide",
+    "dec_multiply",
     "dec_repeating",
     "dec_sub",
     "div_two_digit",
@@ -2314,6 +2315,13 @@
     "__forced__|dec_divide": {
       "kinds": [
         "dec_divide"
+      ],
+      "kindCount": 1,
+      "forced": true
+    },
+    "__forced__|dec_multiply": {
+      "kinds": [
+        "dec_multiply"
       ],
       "kindCount": 1,
       "forced": true

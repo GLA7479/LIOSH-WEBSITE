@@ -1627,6 +1627,14 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       params = { kind: "dec_repeating", num, den, repeating };
       operandA = num;
       operandB = den;
+    } else if (mathForce === "dec_multiply" && gradeKey === "g6") {
+      const a = round(Math.random() * maxBase, places);
+      const b = round(Math.random() * maxBase, places);
+      correctAnswer = round(a * b, places * 2);
+      question = `${a.toFixed(places)} × ${b.toFixed(places)} = ${BLANK}`;
+      params = { kind: "dec_multiply", a, b, places };
+      operandA = a;
+      operandB = b;
     } else if (
       mathForce === "dec_divide" &&
       gradeKey === "g6" &&
@@ -1950,6 +1958,12 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
 
   // ===== Number Sense – שכנים, עשרות/יחידות, זוגי/אי-זוגי, השלמה, ישר המספרים, מנייה =====
   } else if (selectedOp === "number_sense") {
+    if (mathForce === "ns_counting_backward") {
+      const start = randInt(2, 20);
+      correctAnswer = start - 1;
+      question = `ספור אחורה: ${start}, ${BLANK}`;
+      params = { kind: "ns_counting_backward", start, prev: start - 1 };
+    } else {
     const types =
       gradeKey === "g1"
         ? ["neighbors", "place_tens_units", "even_odd", "complement10", "number_line", "counting"]
@@ -2102,6 +2116,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         b: null,
         isStory: false,
       };
+    }
     }
 
   // ===== גורמים / כפולות / מ.כ.ק/מ.א.ח – Factors & Multiples =====

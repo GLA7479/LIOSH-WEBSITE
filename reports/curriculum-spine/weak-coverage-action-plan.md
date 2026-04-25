@@ -1,7 +1,7 @@
 # Weak coverage action plan (Phase 7.16)
 
 - **classification_version:** 7.16_v1
-- **total_weak:** 23
+- **total_weak:** 7
 - **deterministic:** true
 
 ## Integrity
@@ -17,7 +17,7 @@
   "content_add": 0,
   "harness_expand": 0,
   "mapping_refine": 0,
-  "threshold_adjust": 23,
+  "threshold_adjust": 7,
   "accept_as_broad": 0
 }
 ```
@@ -26,7 +26,7 @@
 
 ```json
 {
-  "P2": 23
+  "P2": 7
 }
 ```
 
@@ -38,7 +38,7 @@
 
 ## P2 count
 
-- 23 skill_ids (see JSON p2_skill_ids)
+- 7 skill_ids (see JSON p2_skill_ids)
 
 ## Phase 7.17 recommendation
 
@@ -58,37 +58,20 @@ Phase_7_17_order:
   "hebrew": {
     "content_add_skill_ids_sorted": [],
     "threshold_adjust_skill_ids_sorted": [
-      "hebrew:g1:grammar:g1.grammar_odd_category",
-      "hebrew:g3:comprehension:g3.explicit_only",
-      "hebrew:g3:grammar:g3.tense_system_intro",
-      "hebrew:g3:speaking:g3.discussion_prompt_choice",
-      "hebrew:g4:reading:g4.genre_mix",
-      "hebrew:g4:speaking:g4.present_text_based_choice",
       "hebrew:g4:vocabulary:g4.idiom_light",
-      "hebrew:g5:comprehension:g5.multiple_perspectives_light",
-      "hebrew:g5:grammar:g5.verb_patterns",
       "hebrew:g5:reading:g5.multi_layer_read",
       "hebrew:g6:comprehension:g6.evidence_from_text",
-      "hebrew:g6:grammar:g6.complex_syntax_spot",
       "hebrew:g6:reading:g6.compare_genres"
     ],
     "summary_md_hint": "Hebrew_weak_splits_real_content_add_1_2_hits_vs_threshold_adjust_3_4_borderline_under_current_gate"
   },
   "math": {
     "harness_expand_skill_ids_sorted": [],
-    "threshold_adjust_low_sample_skill_ids_sorted": [
-      "math:kind:dec_divide_10_100",
-      "math:kind:dec_multiply",
-      "math:kind:eq_add_simple",
-      "math:kind:ns_counting_backward",
-      "math:kind:wp_coins_spent",
-      "math:kind:wp_time_date"
-    ]
+    "threshold_adjust_low_sample_skill_ids_sorted": []
   },
   "geometry": {
     "harness_expand_skill_ids_sorted": [],
     "threshold_adjust_low_sample_skill_ids_sorted": [
-      "geometry:kind:prism_volume_rectangular",
       "geometry:kind:prism_volume_triangle",
       "geometry:kind:pyramid_volume_rectangular",
       "geometry:kind:pyramid_volume_square"

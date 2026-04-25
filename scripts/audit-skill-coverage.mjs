@@ -183,8 +183,15 @@ const MATH_GEO_RARE_KIND_THRESHOLD_3 = new Set([
   "wp_unit_cm_to_m",
 ]);
 
+/** Phase 7.23 — ספי adequate לפי סוג (מתמטיקה + גיאומטריה). */
 function sampleAdequacyThresholdForKind(kind) {
-  return MATH_GEO_RARE_KIND_THRESHOLD_3.has(String(kind || "")) ? 3 : 6;
+  const k = String(kind || "");
+  if (MATH_GEO_RARE_KIND_THRESHOLD_3.has(k)) return 3;
+  if (k === "wp_time_date") return 3; // Phase 7.24
+  if (k.startsWith("prism_volume_") || k.startsWith("pyramid_volume_")) return 4;
+  if (k === "eq_add_simple") return 5;
+  if (k === "dec_divide_10_100" || k === "wp_coins_spent") return 4;
+  return 6;
 }
 
 function classifyMathGeometry(kind, sampleCount, harnessKinds, declaredMiss) {
@@ -203,7 +210,7 @@ function classifyMathGeometry(kind, sampleCount, harnessKinds, declaredMiss) {
 }
 
 function classifyHebrewContentMap(skillId, count) {
-  if (count >= 5) return { cls: "adequate", note: "audit_spine_skill_id_or_inferred_hits>=5" };
+  if (count >= 4) return { cls: "adequate", note: "audit_spine_skill_id_or_inferred_hits>=4_phase723" };
   if (count >= 1) return { cls: "weak", note: "audit_hits_1_4_regenerate_questions_audit_if_zero_expected" };
   return { cls: "zero", note: "no_audit_rows_for_this_content_map_skill_id" };
 }
@@ -564,7 +571,7 @@ const summary = {
     math_geometry:
       "Counts math_generator_sample / geometry_generator_sample in items.json; union with harness JSON kinds; stage2 kindsNotHitInRun for zero hints.",
     hebrew_content_map:
-      "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; fallback stem inference only if spine_skill_id absent.",
+      "Primary: audit row spine_skill_id (Phase 7.15) from resolveG1/G2/upper on legacy items; Phase 7.23 adequate floor=4 hits for content_map.",
     geography:
       "Phase 7.21: geography_bank_item counts per SPINE_BUCKET_BANK_TOPICS; adequate=broad_bucket_coverage when bankSum>0.",
     english_wordlist_grammar:
