@@ -1,11 +1,16 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import CustomBuilderPanel from "./CustomBuilderPanel.jsx";
 import {
   DEV_STUDENT_PRESETS,
   STORAGE_KEYS,
   PRODUCT_DISPLAY_NAME,
   INTERNAL_STORAGE_NAMESPACE,
   buildSimulatorCoreFromPreset,
+  buildSimulatorCoreFromCustomSpec,
+  defaultCustomSpec,
+  serializeCustomSpecForStage,
+  anchorEndMsFromSpec,
   exportSimulatorPackage,
   serializeSimulatorPackage,
   parseSimulatorPackage,
@@ -156,11 +161,19 @@ function presetOptionLabel(p) {
 }
 
 export default function DevStudentSimulatorClient() {
+  const [simMode, setSimMode] = useState("quick");
   const [presetId, setPresetId] = useState(DEV_STUDENT_PRESETS[0]?.id || "");
+  const [customSpec, setCustomSpec] = useState(() => defaultCustomSpec());
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [preview, setPreview] = useState(null);
+
+  useEffect(() => {
+    setPreview(null);
+    setMessage("");
+    setError("");
+  }, [simMode]);
 
   const preset = useMemo(() => DEV_STUDENT_PRESETS.find((p) => p.id === presetId) || null, [presetId]);
 
@@ -192,11 +205,24 @@ export default function DevStudentSimulatorClient() {
     setMessage("");
     try {
       const existingWide = readRawStorageMapForKeys([...STORAGE_KEYS]);
-      const built = buildSimulatorCoreFromPreset({
-        presetId,
-        anchorEndMs: Date.now(),
-        existingStorageMap: existingWide,
-      });
+      const anchorEndMs =
+        simMode === "custom" ? (customSpec.useNowAsAnchor ? Date.now() : anchorEndMsFromSpec(customSpec)) : Date.now();
+
+      let built;
+      if (simMode === "quick") {
+        built = buildSimulatorCoreFromPreset({
+          presetId,
+          anchorEndMs,
+          existingStorageMap: existingWide,
+        });
+      } else {
+        built = buildSimulatorCoreFromCustomSpec({
+          spec: customSpec,
+          anchorEndMs,
+          existingStorageMap: existingWide,
+        });
+      }
+
       const effectiveTouchedKeys = deriveEffectiveTouchedKeysFromSnapshot(built.snapshot);
       const touchedCurrent = readRawStorageMapForKeys(effectiveTouchedKeys);
       const backupByKey = buildBackupEnvelope(effectiveTouchedKeys, touchedCurrent);
@@ -206,16 +232,32 @@ export default function DevStudentSimulatorClient() {
         touchedKeys: effectiveTouchedKeys,
         backupByKey,
       };
-      setPreview({
-        ...built,
-        touchedKeys: effectiveTouchedKeys,
-        metadata,
-        applySource: "preset",
-        stagedPresetId: presetId,
-      });
-      showMsg(
-        "\u05E0\u05D5\u05E6\u05E8\u05D4 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 (\u05DC\u05D0 \u05D4\u05D5\u05D7\u05DC\u05D4). \u05D4\u05D4\u05D7\u05DC\u05D4 \u05EA\u05E9\u05EA\u05DE\u05E9 \u05D1\u05BEsnapshot \u05D5\u05D1\u05D2\u05D9\u05D1\u05D5\u05D9 \u05D4\u05DE\u05D3\u05D5\u05D9\u05E7\u05D9\u05DD \u05DE\u05D4\u05EA\u05E6\u05D5\u05D2\u05D4 \u05D4\u05DE\u05D0\u05D5\u05D7\u05E1\u05E0\u05EA."
-      );
+
+      if (simMode === "quick") {
+        setPreview({
+          ...built,
+          touchedKeys: effectiveTouchedKeys,
+          metadata,
+          applySource: "preset",
+          stagedPresetId: presetId,
+          stagedCustomSpecJson: null,
+        });
+        showMsg(
+          "\u05E0\u05D5\u05E6\u05E8\u05D4 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 (\u05DC\u05D0 \u05D4\u05D5\u05D7\u05DC\u05D4). \u05D4\u05D4\u05D7\u05DC\u05D4 \u05EA\u05E9\u05EA\u05DE\u05E9 \u05D1\u05BEsnapshot \u05D5\u05D1\u05D2\u05D9\u05D1\u05D5\u05D9 \u05D4\u05DE\u05D3\u05D5\u05D9\u05E7\u05D9\u05DD \u05DE\u05D4\u05EA\u05E6\u05D5\u05D2\u05D4 \u05D4\u05DE\u05D0\u05D5\u05D7\u05E1\u05E0\u05EA."
+        );
+      } else {
+        setPreview({
+          ...built,
+          touchedKeys: effectiveTouchedKeys,
+          metadata,
+          applySource: "custom",
+          stagedPresetId: null,
+          stagedCustomSpecJson: serializeCustomSpecForStage(customSpec),
+        });
+        showMsg(
+          "\u05E0\u05D5\u05E6\u05E8\u05D4 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E0\u05EA\u05D5\u05E0\u05D9\u05DD \u05D9\u05D3\u05E0\u05D9\u05D9\u05DD (\u05DC\u05D0 \u05D4\u05D5\u05D7\u05DC\u05D4). \u05D4\u05D4\u05D7\u05DC\u05D4 \u05EA\u05E9\u05EA\u05DE\u05E9 \u05D1\u05BEsnapshot \u05D4\u05DE\u05D3\u05D5\u05D9\u05D9\u05E7 \u05E9\u05DC \u05EA\u05E6\u05D5\u05D2\u05D4 \u05D6\u05D5 \u05D1\u05DC\u05D9 \u05D1\u05E0\u05D9\u05D9\u05D4 \u05DE\u05D7\u05D3\u05E9."
+        );
+      }
     } catch (e) {
       setPreview(null);
       showErr(String(e?.message || e));
@@ -224,7 +266,14 @@ export default function DevStudentSimulatorClient() {
     }
   };
 
-  const canApplyStagedPreset = Boolean(presetId) && preview?.applySource === "preset" && preview.stagedPresetId === presetId;
+  const stagedCustomJson = preview?.stagedCustomSpecJson;
+  const currentCustomJson = serializeCustomSpecForStage(customSpec);
+  const canApplyStaged =
+    (simMode === "quick" &&
+      Boolean(presetId) &&
+      preview?.applySource === "preset" &&
+      preview.stagedPresetId === presetId) ||
+    (simMode === "custom" && preview?.applySource === "custom" && stagedCustomJson === currentCustomJson);
 
   const handleApply = () => {
     setBusy(true);
@@ -241,11 +290,20 @@ export default function DevStudentSimulatorClient() {
         );
         return;
       }
-      if (preview.stagedPresetId !== presetId) {
-        showErr(
-          "\u05D4\u05E4\u05E8\u05D5\u05E4\u05D9\u05DC \u05D4\u05E0\u05D1\u05D7\u05E8 \u05D0\u05D9\u05E0\u05D5 \u05EA\u05D5\u05D0\u05DD \u05DC\u05EA\u05E6\u05D5\u05D2\u05D4 \u05D4\u05DE\u05D0\u05D5\u05D7\u05E1\u05E0\u05EA. \u05D9\u05E9 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 \u05E9\u05D5\u05D1 \u05DC\u05E4\u05E0\u05D9 \u05D4\u05D4\u05D7\u05DC\u05D4."
-        );
-        return;
+      if (preview.applySource === "preset") {
+        if (simMode !== "quick" || preview.stagedPresetId !== presetId) {
+          showErr(
+            "\u05D4\u05E4\u05E8\u05D5\u05E4\u05D9\u05DC \u05D4\u05E0\u05D1\u05D7\u05E8 \u05D0\u05D9\u05E0\u05D5 \u05EA\u05D5\u05D0\u05DD \u05DC\u05EA\u05E6\u05D5\u05D2\u05D4 \u05D4\u05DE\u05D0\u05D5\u05D7\u05E1\u05E0\u05EA. \u05D9\u05E9 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 \u05E9\u05D5\u05D1 \u05DC\u05E4\u05E0\u05D9 \u05D4\u05D4\u05D7\u05DC\u05D4."
+          );
+          return;
+        }
+      } else if (preview.applySource === "custom") {
+        if (simMode !== "custom" || serializeCustomSpecForStage(customSpec) !== preview.stagedCustomSpecJson) {
+          showErr(
+            "\u05D4\u05D2\u05D3\u05E8\u05D9\u05DD \u05D4\u05D9\u05D3\u05E0\u05D9\u05D9\u05DD \u05E9\u05D5\u05E0\u05D5 \u05DE\u05D4\u05EA\u05E6\u05D5\u05D2\u05D4 \u05D4\u05DE\u05D0\u05D5\u05D7\u05E1\u05E0\u05EA. \u05D9\u05E9 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05D7\u05D3\u05E9 \u05DC\u05E4\u05E0\u05D9 \u05D4\u05D4\u05D7\u05DC\u05D4."
+          );
+          return;
+        }
       }
       const ar = applyMetadataThenSnapshot({
         metadata: preview.metadata,
@@ -426,14 +484,20 @@ export default function DevStudentSimulatorClient() {
     pattern: "\u05D3\u05E4\u05D5\u05E1:",
     secActions: "\u05E4\u05E2\u05D5\u05DC\u05D5\u05EA",
     btnPreview: "\u05D9\u05E6\u05D9\u05E8\u05EA \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4",
+    btnPreviewCustom: "\u05D9\u05E6\u05D9\u05E8\u05EA \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 \u05DE\u05E0\u05EA\u05D5\u05E0\u05D9\u05DD \u05D9\u05D3\u05E0\u05D9\u05D9\u05DD",
+    modeQuick: "\u05E4\u05E8\u05D9\u05E1\u05D8\u05D9\u05DD \u05DE\u05D4\u05D9\u05E8\u05D9\u05DD",
+    modeCustom: "\u05D1\u05E0\u05D9\u05D9\u05D4 \u05D9\u05D3\u05E0\u05D9\u05EA",
     btnApply: "\u05D4\u05D7\u05DC\u05D4 \u05D1\u05D3\u05E4\u05D3\u05E4\u05DF \u05D4\u05E0\u05D5\u05DB\u05D7\u05D9",
     btnReset: "\u05D0\u05D9\u05E4\u05D5\u05E1 \u05EA\u05DC\u05DE\u05D9\u05D3 \u05DE\u05D3\u05D5\u05DE\u05D4",
     btnExport: "\u05D9\u05D9\u05E6\u05D5\u05D0 JSON",
     btnImport: "\u05D9\u05D9\u05D1\u05D5\u05D0 JSON",
     btnCopy: "\u05D4\u05E2\u05EA\u05E7\u05EA snapshot \u05D0\u05D7\u05E1\u05D5\u05DF",
     hintPreviewFirst: "\u05D9\u05E9 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 \u05E7\u05D5\u05D3\u05DD.",
+    hintPreviewFirstCustom: "\u05D9\u05E9 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05D4\u05D2\u05D3\u05E8\u05D9\u05DD \u05D4\u05D9\u05D3\u05E0\u05D9\u05D9\u05DD \u05E7\u05D5\u05D3\u05DD.",
     hintStaleApply:
       "\u05D4\u05D4\u05D7\u05DC\u05D4 \u05DE\u05D5\u05E9\u05D1\u05EA\u05EA \u05DB\u05D9 \u05D4\u05E4\u05E8\u05D5\u05E4\u05D9\u05DC \u05D4\u05E0\u05D1\u05D7\u05E8 \u05D0\u05D9\u05E0\u05D5 \u05EA\u05D5\u05D0\u05DD \u05E2\u05D5\u05D3 \u05DC\u05EA\u05E6\u05D5\u05D2\u05D4 \u05D4\u05DE\u05D0\u05D5\u05D7\u05E1\u05E0\u05EA. \u05D9\u05E9 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 \u05DE\u05D7\u05D3\u05E9.",
+    hintStaleApplyCustom:
+      "\u05D4\u05D4\u05D7\u05DC\u05D4 \u05DE\u05D5\u05E9\u05D1\u05EA\u05EA: \u05D4\u05D2\u05D3\u05E8\u05D9\u05DD \u05D4\u05D9\u05D3\u05E0\u05D9\u05D9\u05DD \u05E9\u05D5\u05E0\u05D5 \u05DE\u05D4\u05EA\u05E6\u05D5\u05D2\u05D4. \u05D9\u05E9 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05D7\u05D3\u05E9.",
     secReports: "\u05E4\u05EA\u05D9\u05D7\u05EA \u05D4\u05D3\u05D5\u05D7\u05D5\u05EA \u05D4\u05D0\u05DE\u05D9\u05EA\u05D9\u05D9\u05DD",
     linkShort: "\u05D3\u05D5\u05D7 \u05D4\u05D5\u05E8\u05D9\u05DD \u05E7\u05E6\u05E8",
     linkDetailed: "\u05D3\u05D5\u05D7 \u05D4\u05D5\u05E8\u05D9\u05DD \u05DE\u05E4\u05D5\u05E8\u05D8",
@@ -455,6 +519,11 @@ export default function DevStudentSimulatorClient() {
     sumValNs: "\u05D0\u05D9\u05DE\u05D5\u05EA (\u05DE\u05E8\u05D7\u05D1 \u05E9\u05DE\u05D5\u05EA)",
     sumMetaPrefix: "metadata \u05D2\u05D9\u05D1\u05D5\u05D9",
     sumSnapKeys: "\u05DE\u05E4\u05EA\u05D7\u05D5\u05EA snapshot + \u05E1\u05D5\u05D2/\u05D2\u05D5\u05D3\u05DC \u05E2\u05E8\u05DA",
+    modeSwitchTitle: "\u05DE\u05E6\u05D1 \u05E2\u05D1\u05D5\u05D3\u05D4",
+    secCustomBuilder: "\u05D1\u05E0\u05D9\u05D9\u05EA \u05EA\u05DC\u05DE\u05D9\u05D3 \u05D9\u05D3\u05E0\u05D9\u05EA",
+    valCurWin: "\u05E4\u05D2\u05D9\u05E9\u05D5\u05EA \u05D1\u05D7\u05DC\u05D5\u05DF \u05E0\u05D5\u05DB\u05D7\u05D9 (30 \u05D9\u05D5\u05DD):",
+    valPrevWin: "\u05E4\u05D2\u05D9\u05E9\u05D5\u05EA \u05D1\u05D7\u05DC\u05D5\u05DF \u05E7\u05D5\u05D3\u05DD (30\u201360 \u05D9\u05D5\u05DD):",
+    valTopicKeys: "\u05E1\u05D4\u05DB \u05DE\u05E4\u05EA\u05D7\u05D9 \u05E0\u05D5\u05E9\u05D0\u05D9\u05DD \u05D9\u05D7\u05D5\u05D3\u05D9\u05D9\u05DD:",
   };
 
   return (
@@ -484,55 +553,89 @@ export default function DevStudentSimulatorClient() {
       ) : null}
 
       <div style={{ ...sectionCard, marginBottom: 16 }}>
-        <h2 style={{ margin: "0 0 8px", fontSize: 16 }}>{t.secPreset}</h2>
-        <select
-          value={presetId}
-          onChange={(e) => setPresetId(e.target.value)}
-          disabled={busy}
-          style={{
-            width: "100%",
-            maxWidth: 620,
-            borderRadius: 10,
-            border: `1px solid ${COLORS.border}`,
-            padding: 10,
-            fontSize: 14,
-            color: COLORS.pageText,
-          }}
-        >
-          {DEV_STUDENT_PRESETS.map((p) => (
-            <option key={p.id} value={p.id}>
-              {presetOptionLabel(p)}
-            </option>
-          ))}
-        </select>
-        {preset ? (
-          <p style={{ margin: "10px 0 0", color: COLORS.muted, fontSize: 14 }}>
-            <span dir="ltr" style={{ unicodeBidi: "embed" }}>
-              {preset.spanDays}
-            </span>{" "}
-            {t.days} \u00B7{" "}
-            <span dir="ltr" style={{ unicodeBidi: "embed" }}>
-              {preset.targetSessions}
-            </span>{" "}
-            {t.sessions} \u00B7 ~{" "}
-            <span dir="ltr" style={{ unicodeBidi: "embed" }}>
-              {preset.targetQuestions}
-            </span>{" "}
-            {t.questions} \u00B7 {t.pattern} {trendHe}
-            <span dir="ltr" style={{ unicodeBidi: "plaintext", marginInlineStart: 6, fontSize: 12, color: COLORS.muted }}>
-              ({preset.trendPattern})
-            </span>
-          </p>
-        ) : null}
+        <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>{t.modeSwitchTitle}</h2>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+          <button
+            type="button"
+            style={makeButtonStyle(simMode === "quick" ? "primary" : "secondary", busy)}
+            onClick={() => setSimMode("quick")}
+            disabled={busy}
+          >
+            {t.modeQuick}
+          </button>
+          <button
+            type="button"
+            style={makeButtonStyle(simMode === "custom" ? "primary" : "secondary", busy)}
+            onClick={() => setSimMode("custom")}
+            disabled={busy}
+          >
+            {t.modeCustom}
+          </button>
+        </div>
       </div>
+
+      {simMode === "quick" ? (
+        <div style={{ ...sectionCard, marginBottom: 16 }}>
+          <h2 style={{ margin: "0 0 8px", fontSize: 16 }}>{t.secPreset}</h2>
+          <select
+            value={presetId}
+            onChange={(e) => setPresetId(e.target.value)}
+            disabled={busy}
+            style={{
+              width: "100%",
+              maxWidth: 620,
+              borderRadius: 10,
+              border: `1px solid ${COLORS.border}`,
+              padding: 10,
+              fontSize: 14,
+              color: COLORS.pageText,
+            }}
+          >
+            {DEV_STUDENT_PRESETS.map((p) => (
+              <option key={p.id} value={p.id}>
+                {presetOptionLabel(p)}
+              </option>
+            ))}
+          </select>
+          {preset ? (
+            <p style={{ margin: "10px 0 0", color: COLORS.muted, fontSize: 14 }}>
+              <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+                {preset.spanDays}
+              </span>{" "}
+              {t.days} \u00B7{" "}
+              <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+                {preset.targetSessions}
+              </span>{" "}
+              {t.sessions} \u00B7 ~{" "}
+              <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+                {preset.targetQuestions}
+              </span>{" "}
+              {t.questions} \u00B7 {t.pattern} {trendHe}
+              <span dir="ltr" style={{ unicodeBidi: "plaintext", marginInlineStart: 6, fontSize: 12, color: COLORS.muted }}>
+                ({preset.trendPattern})
+              </span>
+            </p>
+          ) : null}
+        </div>
+      ) : (
+        <div style={{ ...sectionCard, marginBottom: 16 }}>
+          <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>{t.secCustomBuilder}</h2>
+          <CustomBuilderPanel value={customSpec} setValue={setCustomSpec} disabled={busy} />
+        </div>
+      )}
 
       <div style={{ ...sectionCard, marginBottom: 16 }}>
         <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>{t.secActions}</h2>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-          <button type="button" style={makeButtonStyle("primary", busy || !presetId)} onClick={handlePreview} disabled={busy || !presetId}>
-            {t.btnPreview}
+          <button
+            type="button"
+            style={makeButtonStyle("primary", busy || (simMode === "quick" && !presetId))}
+            onClick={handlePreview}
+            disabled={busy || (simMode === "quick" && !presetId)}
+          >
+            {simMode === "custom" ? t.btnPreviewCustom : t.btnPreview}
           </button>
-          <button type="button" style={makeButtonStyle("primary", busy || !canApplyStagedPreset)} onClick={handleApply} disabled={busy || !canApplyStagedPreset}>
+          <button type="button" style={makeButtonStyle("primary", busy || !canApplyStaged)} onClick={handleApply} disabled={busy || !canApplyStaged}>
             {t.btnApply}
           </button>
           <button type="button" style={makeButtonStyle("danger", busy)} onClick={handleReset} disabled={busy}>
@@ -550,10 +653,14 @@ export default function DevStudentSimulatorClient() {
           </button>
         </div>
         {!preview ? (
-          <p style={{ margin: "12px 0 0", color: COLORS.muted, fontSize: 13 }}>{t.hintPreviewFirst}</p>
+          <p style={{ margin: "12px 0 0", color: COLORS.muted, fontSize: 13 }}>
+            {simMode === "custom" ? t.hintPreviewFirstCustom : t.hintPreviewFirst}
+          </p>
         ) : null}
-        {preview && !canApplyStagedPreset ? (
-          <p style={{ margin: "12px 0 0", color: COLORS.muted, fontSize: 13 }}>{t.hintStaleApply}</p>
+        {preview && !canApplyStaged ? (
+          <p style={{ margin: "12px 0 0", color: COLORS.muted, fontSize: 13 }}>
+            {preview.applySource === "custom" ? t.hintStaleApplyCustom : t.hintStaleApply}
+          </p>
         ) : null}
       </div>
 
@@ -588,24 +695,53 @@ export default function DevStudentSimulatorClient() {
           {statusBadge(`metadata: ${preview?.metadata ? "\u05E7\u05D9\u05D9\u05DD" : "\u05D0\u05D9\u05DF"}`, preview?.metadata ? "ok" : "warn")}
         </div>
         {sessionsStat ? (
-          <p style={{ margin: 0, color: COLORS.muted, fontSize: 13 }}>
-            {t.statSessions}{" "}
-            <span dir="ltr" style={{ unicodeBidi: "embed" }}>
-              {sessionsStat.sessions}
-            </span>{" "}
-            \u00B7 {t.statQuestions}{" "}
-            <span dir="ltr" style={{ unicodeBidi: "embed" }}>
-              {sessionsStat.totalQuestions}
-            </span>{" "}
-            \u00B7 {t.statDays}{" "}
-            <span dir="ltr" style={{ unicodeBidi: "embed" }}>
-              {sessionsStat.activeDays}
-            </span>{" "}
-            \u00B7 {t.statSubjects}{" "}
-            <span dir="ltr" style={{ unicodeBidi: "embed" }}>
-              {sessionsStat.subjectCount}
-            </span>
-          </p>
+          <>
+            <p style={{ margin: 0, color: COLORS.muted, fontSize: 13 }}>
+              {t.statSessions}{" "}
+              <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+                {sessionsStat.sessions}
+              </span>{" "}
+              \u00B7 {t.statQuestions}{" "}
+              <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+                {sessionsStat.totalQuestions}
+              </span>{" "}
+              \u00B7 {t.statDays}{" "}
+              <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+                {sessionsStat.activeDays}
+              </span>{" "}
+              \u00B7 {t.statSubjects}{" "}
+              <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+                {sessionsStat.subjectCount}
+              </span>
+              {typeof sessionsStat.topicKeyCount === "number" ? (
+                <>
+                  {" "}
+                  \u00B7 {t.valTopicKeys}{" "}
+                  <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+                    {sessionsStat.topicKeyCount}
+                  </span>
+                </>
+              ) : null}
+            </p>
+            {typeof sessionsStat.currentWindowSessions === "number" ? (
+              <p style={{ margin: "8px 0 0", color: COLORS.muted, fontSize: 13 }}>
+                {t.valCurWin}{" "}
+                <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+                  {sessionsStat.currentWindowSessions}
+                </span>
+                {" \u00B7 "}
+                {t.valPrevWin}{" "}
+                <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+                  {sessionsStat.previousWindowSessions}
+                </span>
+              </p>
+            ) : null}
+            {Array.isArray(preview?.validation?.sessions?.warnings) && preview.validation.sessions.warnings.length > 0 ? (
+              <p style={{ margin: "10px 0 0", color: "#854d0e", fontSize: 13 }}>
+                \u05D0\u05D6\u05D4\u05E8\u05D5\u05EA: {preview.validation.sessions.warnings.join(" \u00B7 ")}
+              </p>
+            ) : null}
+          </>
         ) : (
           <p style={{ margin: 0, color: COLORS.muted, fontSize: 13 }}>{t.hintValidation}</p>
         )}

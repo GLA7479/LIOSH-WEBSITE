@@ -42,3 +42,6 @@ export const SUBJECT_BUCKETS = Object.freeze({
   hebrew: ["reading", "comprehension", "grammar", "vocabulary", "writing"],
   "moledet-geography": ["homeland", "community", "citizenship", "geography", "maps", "values"],
 });
+
+/** Metadata presetId when sessions are built from the manual custom builder (not a DEV_STUDENT_PRESETS row). */
+export const CUSTOM_SIMULATOR_PRESET_ID = "custom_manual_v1";

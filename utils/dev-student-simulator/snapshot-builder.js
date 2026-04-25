@@ -8,18 +8,26 @@ function emptyTopicTracking() {
   return { topics: {}, daily: {} };
 }
 
+function responseMsForMistake(session, i) {
+  const prof = session.responseMsProfile;
+  if (prof === "fast_wrong") return 340 + i * 24;
+  if (prof === "slow_accurate") return 5200 + i * 90;
+  if (prof === "slow_wrong") return 7800 + i * 110;
+  if (prof === "balanced") return 2100 + i * 48;
+  if (session.mode === "speed") {
+    return 360 + i * 22;
+  }
+  if (session.level === "hard") {
+    return 5400 + i * 100;
+  }
+  return 2100 + i * 45;
+}
+
 function pushMistakes(target, session, subject, bucket, wrongCount) {
   const rotate = !!session.mistakePatternRotate;
   for (let i = 0; i < wrongCount; i += 1) {
     const patternFamily = rotate ? `pf:${subject}:${bucket}:v${i % 7}` : `pf:${subject}:${bucket}`;
-    let responseMs;
-    if (session.mode === "speed") {
-      responseMs = 360 + i * 22;
-    } else if (session.level === "hard") {
-      responseMs = 5400 + i * 100;
-    } else {
-      responseMs = 2100 + i * 45;
-    }
+    const responseMs = responseMsForMistake(session, i);
     target.push({
       subject,
       topic: bucket,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-25T18:59:45.624Z",
+  "generatedAt": "2026-04-25T20:49:21.001Z",
   "summary": {
     "total": 6,
     "pass": 6,
@@ -13,47 +13,49 @@
       "noDataWeek": false,
       "noDataMonth": false,
       "isInsufficientEvidence": false,
-      "mainStatusHe": "בנושא שברים — כיתה ד׳ — רמה בינונית: השוואה לפי מונה בלבד",
+      "mainStatusHe": "בנושא חילוק — כיתה ד׳ — רמה בינונית: בחירת כפל לא מתאים לחילוק",
       "mainPriorityHe": "עם/בלי משפט כפל",
       "doNowHe": "עם/בלי משפט כפל",
       "avoidNowHe": "קפיצה לרמה גבוהה; ערבוב נושאים; משוב כללי בלי דוגמה נגדית",
-      "evidenceSummaryHe": "נאספו 65 שאלות, דיוק 51%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+      "evidenceSummaryHe": "נאספו 34 שאלות, דיוק 50%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
       "nextCheckHe": "להמשיך מעקב מחזור נוסף ולבדוק יציבות לפני שינוי משמעותי.",
-      "mathDominantRiskLabelHe": "השוואה לפי מונה בלבד",
+      "mathDominantRiskLabelHe": "בחירת כפל לא מתאים לחילוק",
       "mathDominantLearningRisk": "root_primary",
       "mathDominantBehaviorProfileAcrossRows": "knowledge_gap",
-      "mathRecommendedHomeMethodHe": "חלק־כלל קונקרטי",
+      "mathRecommendedHomeMethodHe": "קישור כפל־חילוק",
       "mathBehaviorDominants": [
         "knowledge_gap"
       ],
-      "cautionNoteHe": "בחלק מהנושאים עדיין אין מסקנה חדה — עוד קצת תרגול יבהיר את התמונה.",
-      "primarySubject": "math",
-      "primaryTopic": "השוואה לפי מונה בלבד",
+      "cautionNoteHe": "יש נושאים שכדאי לשים עליהם לב השבוע — אפשר לתאם עם המורה או עם מטפל אם זה רלוונטי.",
+      "primarySubject": "geometry",
+      "primaryTopic": "שוכח עומק",
       "actionState": "monitor_before_escalation",
       "recommendationState": null,
-      "executiveTopLine": "עם/בלי שרטוט",
-      "executiveHomeFocusHe": "להתמקד קודם ב: השוואה לפי מונה בלבד (חשבון) · מספר נכון + יחידה שגויה (חשבון)",
+      "executiveTopLine": "עם/בלי משפט כפל",
+      "executiveHomeFocusHe": "להתמקד קודם ב: מספר נכון + יחידה שגויה (חשבון) · בחירת כפל לא מתאים לחילוק (חשבון)",
       "summaryModeSourceFields": {
         "topStrengthsAcrossHe": [],
         "topFocusAreasHe": [
-          "השוואה לפי מונה בלבד (חשבון)",
           "מספר נכון + יחידה שגויה (חשבון)",
-          "בחירת כפל לא מתאים לחילוק (חשבון)"
+          "בחירת כפל לא מתאים לחילוק (חשבון)",
+          "כיוון הפוך / הוספה במקום חיסור (חשבון)"
         ],
         "majorTrendsHe": [
-          "בטווח התקופה נבדקו 25 נושאים.",
-          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־16 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־3 נושאים עדיין מדובר בתמונה חלקית."
+          "בטווח התקופה נבדקו 27 נושאים.",
+          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־18 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־4 נושאים עדיין מדובר בתמונה חלקית."
         ]
       },
       "structure": {
         "ok": true,
         "errors": [],
-        "warnings": [],
+        "warnings": [
+          "weak previous-period trend evidence (9)"
+        ],
         "stats": {
           "sessions": 84,
-          "weekEvidenceCount": 48,
-          "monthEvidenceCount": 62,
-          "previousPeriodEvidenceCount": 11,
+          "weekEvidenceCount": 45,
+          "monthEvidenceCount": 65,
+          "previousPeriodEvidenceCount": 9,
           "activeDays": 37
         }
       },
@@ -69,38 +71,37 @@
       "noDataWeek": false,
       "noDataMonth": false,
       "isInsufficientEvidence": false,
-      "mainStatusHe": "בנושא חיבור — כיתה ה׳ — רמה בינונית: שגיאה בעמודת עשרות",
-      "mainPriorityHe": "חיבור עם העברה בחיבור ובלי העברה",
-      "doNowHe": "חיבור עם העברה בחיבור ובלי העברה",
+      "mainStatusHe": "בנושא שברים — כיתה ה׳ — רמה קשה: השוואה לפי מונה בלבד",
+      "mainPriorityHe": "עם/בלי שרטוט",
+      "doNowHe": "עם/בלי שרטוט",
       "avoidNowHe": "לא להעלות קושי לפני שמתקבלת יציבות עקבית.",
-      "evidenceSummaryHe": "נאספו 42 שאלות, דיוק 83%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+      "evidenceSummaryHe": "נאספו 50 שאלות, דיוק 80%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
       "nextCheckHe": "להמשיך מעקב מחזור נוסף ולבדוק יציבות לפני שינוי משמעותי.",
-      "mathDominantRiskLabelHe": "שגיאה בעמודת עשרות",
+      "mathDominantRiskLabelHe": "השוואה לפי מונה בלבד",
       "mathDominantLearningRisk": "root_primary",
       "mathDominantBehaviorProfileAcrossRows": "instruction_friction",
       "mathRecommendedHomeMethodHe": null,
       "mathBehaviorDominants": [
         "instruction_friction",
-        "knowledge_gap",
         "careless_pattern"
       ],
       "cautionNoteHe": "בחלק מהנושאים עדיין אין מסקנה חדה — עוד קצת תרגול יבהיר את התמונה.",
-      "primarySubject": "english",
-      "primaryTopic": null,
+      "primarySubject": "math",
+      "primaryTopic": "השוואה לפי מונה בלבד",
       "actionState": "monitor_before_escalation",
       "recommendationState": null,
-      "executiveTopLine": "חיבור עם העברה בחיבור ובלי העברה",
-      "executiveHomeFocusHe": "להתמקד קודם ב: שגיאה בעמודת עשרות (חשבון) · בחירת כפל לא מתאים לחילוק (חשבון)",
+      "executiveTopLine": "עם/בלי שרטוט",
+      "executiveHomeFocusHe": "להתמקד קודם ב: השוואה לפי מונה בלבד (חשבון) · כיוון הפוך / הוספה במקום חיסור (חשבון)",
       "summaryModeSourceFields": {
         "topStrengthsAcrossHe": [],
         "topFocusAreasHe": [
-          "שגיאה בעמודת עשרות (חשבון)",
-          "בחירת כפל לא מתאים לחילוק (חשבון)",
-          "השוואה לפי מונה בלבד (חשבון)"
+          "השוואה לפי מונה בלבד (חשבון)",
+          "כיוון הפוך / הוספה במקום חיסור (חשבון)",
+          "שגיאה בעמודת עשרות (חשבון)"
         ],
         "majorTrendsHe": [
-          "בטווח התקופה נבדקו 22 נושאים.",
-          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־7 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־6 נושאים עדיין מדובר בתמונה חלקית."
+          "בטווח התקופה נבדקו 21 נושאים.",
+          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־5 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־5 נושאים עדיין מדובר בתמונה חלקית."
         ]
       },
       "structure": {
@@ -109,8 +110,8 @@
         "warnings": [],
         "stats": {
           "sessions": 68,
-          "weekEvidenceCount": 32,
-          "monthEvidenceCount": 46,
+          "weekEvidenceCount": 33,
+          "monthEvidenceCount": 47,
           "previousPeriodEvidenceCount": 11,
           "activeDays": 37
         }
@@ -128,10 +129,10 @@
       "noDataMonth": false,
       "isInsufficientEvidence": false,
       "mainStatusHe": "בנושא חיבור — כיתה ד׳ — רמה בינונית: שגיאה בעמודת עשרות",
-      "mainPriorityHe": "עם/בלי שדה יחידה",
-      "doNowHe": "עם/בלי שדה יחידה",
+      "mainPriorityHe": "עם/בלי שרטוט",
+      "doNowHe": "עם/בלי שרטוט",
       "avoidNowHe": "קפיצה לרמה גבוהה; ערבוב נושאים; משוב כללי בלי דוגמה נגדית",
-      "evidenceSummaryHe": "נאספו 57 שאלות, דיוק 40%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+      "evidenceSummaryHe": "נאספו 41 שאלות, דיוק 39%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
       "nextCheckHe": "להמשיך מעקב מחזור נוסף ולבדוק יציבות לפני שינוי משמעותי.",
       "mathDominantRiskLabelHe": "שגיאה בעמודת עשרות",
       "mathDominantLearningRisk": "root_primary",
@@ -141,36 +142,36 @@
         "knowledge_gap"
       ],
       "cautionNoteHe": null,
-      "primarySubject": "math",
-      "primaryTopic": "שגיאה בעמודת עשרות",
+      "primarySubject": "english",
+      "primaryTopic": "תרגום מילולי שגוי",
       "actionState": "monitor_before_escalation",
       "recommendationState": null,
       "executiveTopLine": "חיבור עם העברה בחיבור ובלי העברה",
-      "executiveHomeFocusHe": "להתמקד קודם ב: שגיאה בעמודת עשרות (חשבון) · בחירת כפל לא מתאים לחילוק (חשבון)",
+      "executiveHomeFocusHe": "להתמקד קודם ב: שגיאה בעמודת עשרות (חשבון) · כיוון הפוך / הוספה במקום חיסור (חשבון)",
       "summaryModeSourceFields": {
         "topStrengthsAcrossHe": [],
         "topFocusAreasHe": [
           "שגיאה בעמודת עשרות (חשבון)",
-          "בחירת כפל לא מתאים לחילוק (חשבון)",
-          "בחירת כפל לא מתאים לחילוק (חשבון)"
+          "כיוון הפוך / הוספה במקום חיסור (חשבון)",
+          "מספר נכון + יחידה שגויה (חשבון)"
         ],
         "majorTrendsHe": [
           "בטווח התקופה נבדקו 21 נושאים.",
-          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־20 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־0 נושאים עדיין מדובר בתמונה חלקית."
+          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־17 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־0 נושאים עדיין מדובר בתמונה חלקית."
         ]
       },
       "structure": {
         "ok": true,
         "errors": [],
         "warnings": [
-          "weak previous-period trend evidence (6)"
+          "weak previous-period trend evidence (7)"
         ],
         "stats": {
           "sessions": 72,
-          "weekEvidenceCount": 37,
-          "monthEvidenceCount": 59,
-          "previousPeriodEvidenceCount": 6,
-          "activeDays": 34
+          "weekEvidenceCount": 32,
+          "monthEvidenceCount": 44,
+          "previousPeriodEvidenceCount": 7,
+          "activeDays": 41
         }
       },
       "story": {
@@ -189,7 +190,7 @@
       "mainPriorityHe": "חיבור עם העברה בחיבור ובלי העברה",
       "doNowHe": "חיבור עם העברה בחיבור ובלי העברה",
       "avoidNowHe": "לא להעלות קושי לפני שמתקבלת יציבות עקבית.",
-      "evidenceSummaryHe": "נאספו 338 שאלות, דיוק 82%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+      "evidenceSummaryHe": "נאספו 389 שאלות, דיוק 81%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
       "nextCheckHe": "להמשיך מעקב מחזור נוסף ולבדוק יציבות לפני שינוי משמעותי.",
       "mathDominantRiskLabelHe": "שגיאה בעמודת עשרות",
       "mathDominantLearningRisk": "root_primary",
@@ -204,17 +205,17 @@
       "actionState": "monitor_before_escalation",
       "recommendationState": null,
       "executiveTopLine": "חיבור עם העברה בחיבור ובלי העברה",
-      "executiveHomeFocusHe": "להתמקד קודם ב: שגיאה בעמודת עשרות (חשבון) · שוכח עומק (גאומטריה)",
+      "executiveHomeFocusHe": "להתמקד קודם ב: שגיאה בעמודת עשרות (חשבון) · טעות בטווח זווית (גאומטריה)",
       "summaryModeSourceFields": {
         "topStrengthsAcrossHe": [],
         "topFocusAreasHe": [
           "שגיאה בעמודת עשרות (חשבון)",
-          "שוכח עומק (גאומטריה)",
-          "טעות יחידה חוזרת (גאומטריה)"
+          "טעות בטווח זווית (גאומטריה)",
+          "צלעות כגובה (גאומטריה)"
         ],
         "majorTrendsHe": [
-          "בטווח התקופה נבדקו 19 נושאים.",
-          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־12 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־0 נושאים עדיין מדובר בתמונה חלקית."
+          "בטווח התקופה נבדקו 13 נושאים.",
+          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־8 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־0 נושאים עדיין מדובר בתמונה חלקית."
         ]
       },
       "structure": {
@@ -223,10 +224,10 @@
         "warnings": [],
         "stats": {
           "sessions": 70,
-          "weekEvidenceCount": 14,
-          "monthEvidenceCount": 48,
+          "weekEvidenceCount": 19,
+          "monthEvidenceCount": 46,
           "previousPeriodEvidenceCount": 18,
-          "activeDays": 42
+          "activeDays": 43
         }
       },
       "story": {
@@ -245,7 +246,7 @@
       "mainPriorityHe": "זמן כפול לאותו סט",
       "doNowHe": "זמן כפול לאותו סט",
       "avoidNowHe": "קפיצה לרמה גבוהה; ערבוב נושאים; משוב כללי בלי דוגמה נגדית",
-      "evidenceSummaryHe": "נאספו 248 שאלות, דיוק 54%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+      "evidenceSummaryHe": "נאספו 259 שאלות, דיוק 56%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
       "nextCheckHe": "להמשיך מעקב מחזור נוסף ולבדוק יציבות לפני שינוי משמעותי.",
       "mathDominantRiskLabelHe": "אותם זוגות שגויים",
       "mathDominantLearningRisk": "root_primary",
@@ -260,17 +261,17 @@
       "actionState": "monitor_before_escalation",
       "recommendationState": null,
       "executiveTopLine": "זמן כפול לאותו סט",
-      "executiveHomeFocusHe": "להתמקד קודם ב: אותם זוגות שגויים (חשבון) · צלעות כגובה (גאומטריה)",
+      "executiveHomeFocusHe": "להתמקד קודם ב: אותם זוגות שגויים (חשבון) · שוכח עומק (גאומטריה)",
       "summaryModeSourceFields": {
         "topStrengthsAcrossHe": [],
         "topFocusAreasHe": [
           "אותם זוגות שגויים (חשבון)",
-          "צלעות כגובה (גאומטריה)",
+          "שוכח עומק (גאומטריה)",
           "טעות יחידה חוזרת (גאומטריה)"
         ],
         "majorTrendsHe": [
-          "בטווח התקופה נבדקו 16 נושאים.",
-          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־15 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־0 נושאים עדיין מדובר בתמונה חלקית."
+          "בטווח התקופה נבדקו 19 נושאים.",
+          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־17 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־0 נושאים עדיין מדובר בתמונה חלקית."
         ]
       },
       "structure": {
@@ -279,10 +280,10 @@
         "warnings": [],
         "stats": {
           "sessions": 62,
-          "weekEvidenceCount": 20,
-          "monthEvidenceCount": 38,
-          "previousPeriodEvidenceCount": 23,
-          "activeDays": 37
+          "weekEvidenceCount": 24,
+          "monthEvidenceCount": 42,
+          "previousPeriodEvidenceCount": 18,
+          "activeDays": 35
         }
       },
       "story": {
@@ -298,48 +299,47 @@
       "noDataMonth": false,
       "isInsufficientEvidence": false,
       "mainStatusHe": "בנושא חיבור — כיתה ד׳ — רמה בינונית: שגיאה בעמודת עשרות",
-      "mainPriorityHe": "חיבור עם/בלי נשיאה",
-      "doNowHe": "חיבור עם/בלי נשיאה",
-      "avoidNowHe": "קפיצה לרמה גבוהה; ערבוב נושאים; משוב כללי בלי דוגמה נגדית",
-      "evidenceSummaryHe": "נאספו 254 שאלות, דיוק 81%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
+      "mainPriorityHe": "חיבור עם העברה בחיבור ובלי העברה",
+      "doNowHe": "חיבור עם העברה בחיבור ובלי העברה",
+      "avoidNowHe": "לא להעלות קושי לפני שמתקבלת יציבות עקבית.",
+      "evidenceSummaryHe": "נאספו 271 שאלות, דיוק 80%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.",
       "nextCheckHe": "להמשיך מעקב מחזור נוסף ולבדוק יציבות לפני שינוי משמעותי.",
       "mathDominantRiskLabelHe": "שגיאה בעמודת עשרות",
       "mathDominantLearningRisk": "root_primary",
       "mathDominantBehaviorProfileAcrossRows": "speed_pressure",
-      "mathRecommendedHomeMethodHe": "העברה עם שלבי ביניים",
+      "mathRecommendedHomeMethodHe": null,
       "mathBehaviorDominants": [
         "speed_pressure"
       ],
-      "cautionNoteHe": "יש נושאים שכדאי לשים עליהם לב השבוע — אפשר לתאם עם המורה או עם מטפל אם זה רלוונטי.",
+      "cautionNoteHe": "בחלק מהנושאים עדיין אין מסקנה חדה — עוד קצת תרגול יבהיר את התמונה.",
       "primarySubject": "math",
       "primaryTopic": "שגיאה בעמודת עשרות",
       "actionState": "monitor_before_escalation",
       "recommendationState": null,
       "executiveTopLine": "חיבור עם העברה בחיבור ובלי העברה",
-      "executiveHomeFocusHe": "להתמקד קודם ב: שגיאה בעמודת עשרות (חשבון) · אותם זוגות שגויים (חשבון)",
+      "executiveHomeFocusHe": "להתמקד קודם ב: שגיאה בעמודת עשרות (חשבון)",
       "summaryModeSourceFields": {
         "topStrengthsAcrossHe": [],
         "topFocusAreasHe": [
-          "שגיאה בעמודת עשרות (חשבון)",
-          "אותם זוגות שגויים (חשבון)"
+          "שגיאה בעמודת עשרות (חשבון)"
         ],
         "majorTrendsHe": [
           "בטווח התקופה נבדקו 13 נושאים.",
-          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־2 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־0 נושאים עדיין מדובר בתמונה חלקית."
+          "חוזקה עקבית מופיעה ב־0 מתוך הנושאים שנבדקו; ב־1 נושאים יש בסיס לשיחה ביתית ממוקדת; ב־1 נושאים עדיין מדובר בתמונה חלקית."
         ]
       },
       "structure": {
         "ok": true,
         "errors": [],
         "warnings": [
-          "weak previous-period trend evidence (4)"
+          "weak previous-period trend evidence (7)"
         ],
         "stats": {
           "sessions": 58,
-          "weekEvidenceCount": 35,
-          "monthEvidenceCount": 47,
-          "previousPeriodEvidenceCount": 4,
-          "activeDays": 29
+          "weekEvidenceCount": 30,
+          "monthEvidenceCount": 45,
+          "previousPeriodEvidenceCount": 7,
+          "activeDays": 32
         }
       },
       "story": {
@@ -379,6 +379,7 @@
       {
         "presetId": "simDeep04_improving_child",
         "inactiveSubjects": [
+          "science",
           "moledet-geography"
         ],
         "sameTopStoryAfterPrune": true
