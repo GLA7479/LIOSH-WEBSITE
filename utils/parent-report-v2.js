@@ -44,6 +44,7 @@ import { applyFeedbackDecisionGuards } from "./system-intelligence/feedback-deci
 import { computeTopicPriority } from "./system-intelligence/priority-engine.js";
 import { computeGlobalScore } from "./system-intelligence/global-score.js";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
+import { deriveRawMetricStrengthLinesHe } from "./parent-data-presence.js";
 import { runDiagnosticEngineV2 } from "./diagnostic-engine-v2/index.js";
 import { safeBuildHybridRuntimeForReport } from "./ai-hybrid-diagnostic/safe-build-hybrid-runtime.js";
 import {
@@ -907,7 +908,13 @@ function summarizeV2UnitsForSubject(units) {
     const anchorU = p4Unit || topWeak || leadPositive || list[0] || null;
     const rawAct = anchorU ? cs(anchorU)?.actionState : null;
     const act = rawAct || "withhold";
+    const sumUnitQuestions = list.reduce((acc, u) => acc + safeNumber(u?.evidenceTrace?.[0]?.value?.questions), 0);
     if (act === "withhold") {
+      if (sumUnitQuestions >= 10) {
+        return normalizeParentFacingHe(
+          `בנושא ${name}: יש נתוני תרגול, אך המסקנה המקצועית עדיין זהירה — כדאי להמשיך לעקוב אחרי עוד תרגול.`
+        );
+      }
       return normalizeParentFacingHe(`בנושא ${name}: עדיין אין מספיק ראיות כדי לקבוע מסקנה.`);
     }
     if (act === "probe_only") {
@@ -1608,6 +1615,22 @@ export function generateParentReportV2(
     insufficientDataSubjectsHe,
   };
 
+  const rawMetricStrengthsHe = deriveRawMetricStrengthLinesHe({
+    totalQuestions,
+    englishQuestions: englishTotalQuestions,
+    englishAccuracy,
+    hebrewQuestions: hebrewTotalQuestions,
+    hebrewAccuracy,
+    scienceQuestions: scienceTotalQuestions,
+    scienceAccuracy,
+    mathQuestions: mathTotalQuestions,
+    mathAccuracy,
+    geometryQuestions: geometryTotalQuestions,
+    geometryAccuracy,
+    moledetGeographyQuestions: moledetGeographyTotalQuestions,
+    moledetGeographyAccuracy,
+  });
+
   return {
     playerName,
     reportVersion: 2,
@@ -1644,7 +1667,11 @@ export function generateParentReportV2(
       xp,
       achievements: achievements.length,
       diagnosticOverviewHe,
+      /** Phase 1: strengths from raw per-subject volume/accuracy (for short + contract strip). */
+      rawMetricStrengthsHe,
     },
+    /** Phase 1: same lines at top-level for short-page UI without digging into summary. */
+    rawMetricStrengthsHe,
     mathOperations,
     geometryTopics,
     englishTopics,

@@ -6,6 +6,7 @@
 import { normalizeParentFacingHe } from "./parent-report-language/parent-facing-normalize-he.js";
 import { SUBJECT_V2_RECALIBRATION_NEED_NO_HE } from "./parent-report-language/v2-parent-copy.js";
 import { narrativeSectionTextHe } from "./contracts/narrative-contract-v1.js";
+import { stripKnownParentReportLeakageHe } from "./parent-data-presence.js";
 
 const BEHAVIOR_OR_DIAGNOSTIC_HE = {
   knowledge_gap: "פער ידע",
@@ -74,7 +75,7 @@ export function sanitizeEngineSnippetHe(text) {
   }
   s = s.replace(/\b(falsePromotionRisk|falseRemediationRisk|speedOnlyRisk|hintDependenceRisk|insufficientEvidenceRisk|recentTransitionRisk)\b/g, "");
   s = s.replace(/\s{2,}/g, " ").trim();
-  return s;
+  return stripKnownParentReportLeakageHe(s);
 }
 
 /** הסרת סוגריים טכניים מטקסט גלוי באזור אבחון/המלצות (דוח מקוצר). */
@@ -105,7 +106,7 @@ export function shortReportDiagnosticsParentVisibleHe(s) {
   t = t.replace(/\b(no_memory|light_memory|not_enough_evidence)\b/gi, "");
   t = t.replace(/\b[a-z][a-z0-9_]{10,}\b/g, "");
   t = t.replace(/\s{2,}/g, " ").trim();
-  return normalizeParentFacingHe(t);
+  return normalizeParentFacingHe(stripKnownParentReportLeakageHe(t));
 }
 
 export function diagnosticTypeLabelHe(id) {

@@ -71,6 +71,11 @@ import {
   resolveUnitNextGoalHe,
   resolveUnitParentActionHe,
 } from "./parent-report-recommendation-consistency.js";
+import {
+  deriveRawMetricStrengthLinesHe,
+  mergeExecutiveStrengthLinesHe,
+  subjectQuestionCountFromReportSummary,
+} from "./parent-data-presence.js";
 
 const SUBJECT_IDS = [
   "math",
@@ -1380,6 +1385,8 @@ function buildExecutiveSummary(subjects, summary, subjectCoverage, dataIntegrity
   if (globalRiskHeavy && topStrengthsAcrossHe.length > 1) {
     topStrengthsAcrossHe = topStrengthsAcrossHe.slice(0, 2);
   }
+  const rawMetricHe = deriveRawMetricStrengthLinesHe(summary);
+  topStrengthsAcrossHe = mergeExecutiveStrengthLinesHe(rawMetricHe, topStrengthsAcrossHe, 5);
   const topFocusAreasHe = uniqueTopLabels(weaknesses, "labelHe", 3);
 
   const homeFocusHe = buildHomeFocusHe(subjects, topStrengthsAcrossHe, topFocusAreasHe, summary);
@@ -1421,6 +1428,7 @@ function buildExecutiveSummary(subjects, summary, subjectCoverage, dataIntegrity
 
   return {
     version: 2,
+    windowTotalQuestions: Number(summary.totalQuestions) || 0,
     topStrengthsAcrossHe,
     topFocusAreasHe,
     homeFocusHe,
@@ -1989,10 +1997,15 @@ function buildSubjectProfilesFromV2(baseReport) {
   for (const sid of SUBJECT_IDS) {
     const units = grouped[sid] || [];
     if (units.length === 0) {
+      const subjQ = subjectQuestionCountFromReportSummary(baseReport, sid);
+      const summaryHeEmpty =
+        subjQ > 0
+          ? "יש פעילות בנושא בטווח, אך אין עדיין דפוס אבחוני מובנה מהמנוע — כדאי להמשיך בתרגול."
+          : "אין מספיק נתונים בתקופה הנבחנת.";
       out.push({
         subject: sid,
         subjectLabelHe: SUBJECT_LABEL_HE[sid],
-        summaryHe: "אין מספיק נתונים בתקופה הנבחנת.",
+        summaryHe: summaryHeEmpty,
         hasAnySignal: false,
         topStrengths: [],
         topWeaknesses: [],
@@ -2126,6 +2139,10 @@ function buildSubjectProfilesFromV2(baseReport) {
       if (diagnosticLeadSource) {
         return `בנושא ${diagnosticLeadSource.displayName}: ${diagnosticLeadSource.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
       }
+      const sumQ = units.reduce((acc, u) => acc + (Number(u?.evidenceTrace?.[0]?.value?.questions) || 0), 0);
+      if (sumQ >= 10) {
+        return "יש נתוני תרגול במקצוע, אך המסקנה המקצועית עדיין זהירה — כדאי להמשיך לעקוב אחרי עוד תרגול.";
+      }
       return "אין מספיק ראיות בשלב זה.";
     })();
 
@@ -2153,11 +2170,13 @@ function buildSubjectProfilesFromV2(baseReport) {
       dominantLearningRisk: subjectAnchorUnit?.competingHypotheses?.hypotheses?.[0]?.hypothesisId || null,
       dominantSuccessPattern: stable > 0 ? "stable_mastery" : null,
       trendNarrativeHe: subjectTrendNarrativeHeFromMapRow(anchorMapRow, highPriority),
-      confidenceSummaryHe: subjectAnchorUnit
+        confidenceSummaryHe: subjectAnchorUnit
         ? subjectV2ConfidenceSummaryHe(
             csOf(subjectAnchorUnit)?.assessment?.confidenceLevel || subjectAnchorUnit?.confidence?.level
           )
-        : "עדיין לא הצטבר מספיק מידע למסקנה מקצועית רחבה.",
+        : subjectQuestionCountFromReportSummary(baseReport, sid) > 0
+          ? "יש נתוני תרגול במקצוע, אך המסקנה המקצועית עדיין זהירה — כדאי להמשיך לעקוב."
+          : "עדיין לא הצטבר מספיק מידע למסקנה מקצועית רחבה.",
       recommendedHomeMethodHe: resolveUnitHomeMethodHe(subjectAnchorUnit),
       whatNotToDoHe: subjectAnchorUnit?.intervention?.avoidHe || null,
       majorRiskFlagsAcrossRows: {
@@ -2233,7 +2252,9 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
   const stableRanked = [...stable].sort(rankPosX);
   const leadPosX = stableRanked[0] || null;
 
-  const topStrengthsAcrossHe = stable.slice(0, 3).map((u) => `${u.displayName} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`);
+  let topStrengthsAcrossHe = stable.slice(0, 3).map((u) => `${u.displayName} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`);
+  const rawMetricHeV2 = deriveRawMetricStrengthLinesHe(baseReport.summary);
+  topStrengthsAcrossHe = mergeExecutiveStrengthLinesHe(rawMetricHeV2, topStrengthsAcrossHe, 5);
   const topFocusAreasHe = diagnosed
     .filter((u) => u?.taxonomy?.patternHe)
     .slice(0, 3)
@@ -2241,6 +2262,7 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
 
   return {
     version: 2,
+    windowTotalQuestions: Number(baseReport.summary?.totalQuestions) || 0,
     topStrengthsAcrossHe,
     topFocusAreasHe,
     homeFocusHe: executiveV2HomeFocusHe(topFocusAreasHe),

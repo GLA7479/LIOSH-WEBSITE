@@ -22,6 +22,7 @@ import {
   ParentSubjectContractSummaryBlock,
 } from "../../components/parent-report-contract-ui-blocks.jsx";
 import { normalizeExecutiveSummary } from "../../utils/parent-report-payload-normalize";
+import { PARENT_BULLETS_EMPTY_WITH_VOLUME_HE } from "../../utils/parent-data-presence.js";
 import ParentCopilotShell from "../../components/parent-copilot/parent-copilot-shell.jsx";
 
 /**
@@ -64,9 +65,13 @@ function SectionCard({ title, children, className = "", compact = false }) {
 }
 
 /** כרטיס לכל שורה — פעולות לבית (מסך + הדפסה) */
-function PlanItemCards({ items }) {
+function PlanItemCards({ items, windowTotalQuestions = 0 }) {
   if (!items?.length)
-    return <p className="pr-detailed-muted text-sm">אין נתונים להצגה.</p>;
+    return (
+      <p className="pr-detailed-muted text-sm">
+        {Number(windowTotalQuestions) > 0 ? PARENT_BULLETS_EMPTY_WITH_VOLUME_HE : "אין נתונים להצגה."}
+      </p>
+    );
   return (
     <div className="pr-detailed-text-item-stack flex flex-col gap-2.5">
       {items.map((text, i) => (
@@ -82,9 +87,13 @@ function PlanItemCards({ items }) {
 }
 
 /** כרטיס לכל שורה — יעדי תקופה (מסך + הדפסה) */
-function GoalItemCards({ items }) {
+function GoalItemCards({ items, windowTotalQuestions = 0 }) {
   if (!items?.length)
-    return <p className="pr-detailed-muted text-sm">אין נתונים להצגה.</p>;
+    return (
+      <p className="pr-detailed-muted text-sm">
+        {Number(windowTotalQuestions) > 0 ? PARENT_BULLETS_EMPTY_WITH_VOLUME_HE : "אין נתונים להצגה."}
+      </p>
+    );
   return (
     <div className="pr-detailed-text-item-stack flex flex-col gap-2.5">
       {items.map((text, i) => (
@@ -1288,11 +1297,17 @@ export default function ParentReportDetailedPage() {
                     <p className="pr-detailed-mini-heading font-semibold text-white/82 mb-1">
                       מקצועות שלא נדגמו — אין מספיק נתונים
                     </p>
-                    <Bullets items={payload.overallSnapshot.lowExposureSubjectsHe} />
+                    <Bullets
+                      items={payload.overallSnapshot.lowExposureSubjectsHe}
+                      volumeQuestionsTotal={Number(payload.overallSnapshot?.totalQuestions) || 0}
+                    />
                   </div>
                   <div>
                     <p className="pr-detailed-mini-heading font-semibold text-white/82 mb-1">מקצועות בולטים</p>
-                    <Bullets items={payload.overallSnapshot.notableSubjectsHe} />
+                    <Bullets
+                      items={payload.overallSnapshot.notableSubjectsHe}
+                      volumeQuestionsTotal={Number(payload.overallSnapshot?.totalQuestions) || 0}
+                    />
                   </div>
                 </div>
                 </SectionCard>
@@ -1444,7 +1459,10 @@ export default function ParentReportDetailedPage() {
 
                 {/* cross insights — part of structure; placed after subjects for flow */}
                 <SectionCard title="מה שחוזר בכמה מקצועות" compact={displayMode === "summary"}>
-                <Bullets items={crossSubjectBulletsForUi} />
+                <Bullets
+                  items={crossSubjectBulletsForUi}
+                  volumeQuestionsTotal={Number(payload.overallSnapshot?.totalQuestions) || 0}
+                />
                 {payload.crossSubjectInsights.dataQualityNoteHe ? (
                   <p className="text-sm text-amber-200/90 mt-2">{payload.crossSubjectInsights.dataQualityNoteHe}</p>
                 ) : null}
@@ -1452,12 +1470,18 @@ export default function ParentReportDetailedPage() {
 
                 {/* E */}
                 <SectionCard title="רעיונות קצרים לבית" compact={displayMode === "summary"}>
-                  <PlanItemCards items={homePlanItemsForUi} />
+                  <PlanItemCards
+                    items={homePlanItemsForUi}
+                    windowTotalQuestions={Number(payload.overallSnapshot?.totalQuestions) || 0}
+                  />
                 </SectionCard>
 
                 {/* F */}
                 <SectionCard title="כיוון לימים הבאים" compact={displayMode === "summary"}>
-                  <GoalItemCards items={nextGoalsItemsForUi} />
+                  <GoalItemCards
+                    items={nextGoalsItemsForUi}
+                    windowTotalQuestions={Number(payload.overallSnapshot?.totalQuestions) || 0}
+                  />
                 </SectionCard>
 
                 <ParentReportImportantDisclaimer />

@@ -14,7 +14,12 @@ export function normalizeExecutiveSummary(payload) {
     : [];
   const activeSubjects = coverage.filter((row) => (Number(row?.questionCount) || 0) > 0).length;
   const suppressDeepCrossSubject = activeSubjects <= 1;
+  const windowTotalQuestions =
+    Number(payload?.overallSnapshot?.totalQuestions) ||
+    Number(d.windowTotalQuestions) ||
+    0;
   const normalized = {
+    windowTotalQuestions,
     topStrengthsAcrossHe: Array.isArray(d.topStrengthsAcrossHe) ? d.topStrengthsAcrossHe : [],
     topFocusAreasHe: Array.isArray(d.topFocusAreasHe) ? d.topFocusAreasHe : [],
     homeFocusHe: typeof d.homeFocusHe === "string" ? d.homeFocusHe : "",

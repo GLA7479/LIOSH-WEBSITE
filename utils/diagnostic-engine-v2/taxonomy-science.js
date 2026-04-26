@@ -17,7 +17,7 @@ export const SCIENCE_TAXONOMY_ROWS = [
     rootsHe: ["בלבול מושגי"],
     competitorsHe: ["קריאה"],
     doNotConcludeHe: ["אין מדעים"],
-    probeHe: "דוגמה לכל סוג",
+    probeHe: "הפרדה בין תכונה לבין תהליך (תרגול ממוקד)",
     interventionHe: "טבלת תכונה/תהליך",
     escalationHe: "אין שיפור",
   },

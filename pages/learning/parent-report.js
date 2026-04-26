@@ -11,6 +11,7 @@ import {
   shortReportDiagnosticsParentVisibleHe as diagnosticParentVisibleTextHe,
 } from "../../utils/parent-report-ui-explain-he";
 import { diagnosticPrimarySourceParentLabelHe } from "../../utils/parent-report-language/index.js";
+import { deriveParentDataPresenceForDiagnosticsView } from "../../utils/parent-data-presence.js";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
@@ -306,7 +307,7 @@ function migrateDiagnosticSubjectV1ToRow(sub, subjectId) {
 
 /**
  * מקור תצוגה לאזור ההמלצות: V2 (ראשי) או fallback legacy מפורש בלבד.
- * @returns {{ mode: "new"|"insufficient"|"legacy", rows: object[], legacyRecommendations: object[] }}
+ * @returns {{ mode: "new"|"insufficient"|"legacy", rows: object[], legacyRecommendations: object[], presence: object }}
  */
 function buildParentReportDiagnosticsView(report) {
   const legacy = Array.isArray(report?.analysis?.recommendations)
@@ -320,10 +321,17 @@ function buildParentReportDiagnosticsView(report) {
     subjects && typeof subjects === "object" && !Array.isArray(subjects);
 
   if (!hasSubjects) {
+    const mode = allowLegacyFallback && legacy.length ? "legacy" : "insufficient";
+    const legacyRecommendations = allowLegacyFallback ? legacy : [];
     return {
-      mode: allowLegacyFallback && legacy.length ? "legacy" : "insufficient",
+      mode,
       rows: [],
-      legacyRecommendations: allowLegacyFallback ? legacy : [],
+      legacyRecommendations,
+      presence: deriveParentDataPresenceForDiagnosticsView(report, {
+        mode,
+        rows: [],
+        legacyRecommendations,
+      }),
     };
   }
 
@@ -342,10 +350,16 @@ function buildParentReportDiagnosticsView(report) {
   }
 
   if (!hasGlobalSignal) {
+    const legacyRecommendations = allowLegacyFallback ? legacy : [];
     return {
       mode: "insufficient",
       rows: [],
-      legacyRecommendations: allowLegacyFallback ? legacy : [],
+      legacyRecommendations,
+      presence: deriveParentDataPresenceForDiagnosticsView(report, {
+        mode: "insufficient",
+        rows: [],
+        legacyRecommendations,
+      }),
     };
   }
 
@@ -360,10 +374,16 @@ function buildParentReportDiagnosticsView(report) {
     });
   }
 
+  const legacyRecommendations = allowLegacyFallback ? legacy : [];
   return {
     mode: "new",
     rows,
-    legacyRecommendations: allowLegacyFallback ? legacy : [],
+    legacyRecommendations,
+    presence: deriveParentDataPresenceForDiagnosticsView(report, {
+      mode: "new",
+      rows,
+      legacyRecommendations,
+    }),
   };
 }
 
@@ -1472,6 +1492,19 @@ export default function ParentReport() {
 
           <ParentReportShortContractPreview top={shortContractTop} />
 
+          {(report.rawMetricStrengthsHe?.length || report.summary?.rawMetricStrengthsHe?.length) ? (
+            <div className="mb-3 md:mb-5 avoid-break rounded-lg border border-emerald-400/25 bg-emerald-950/15 p-3 md:p-4 text-sm text-white/90 space-y-1">
+              <p className="font-bold text-emerald-100/95 m-0 text-sm md:text-base">חוזקות לפי נתוני התרגול בטווח</p>
+              <ul className="m-0 pr-4 list-disc text-xs md:text-sm text-white/85 space-y-1">
+                {(report.rawMetricStrengthsHe || report.summary?.rawMetricStrengthsHe || []).map((line, i) => (
+                  <li key={`rms-${i}`} className="leading-relaxed">
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
           {report.summary?.diagnosticOverviewHe ? (
             <div className="mb-3 md:mb-5 avoid-break rounded-lg border border-amber-400/25 bg-amber-950/15 p-3 md:p-4 text-sm text-white/90 space-y-2">
               <p className="font-bold text-amber-100/95 m-0 text-sm md:text-base">מיקוד אבחוני (לפי הנתונים בטווח)</p>
@@ -1481,7 +1514,12 @@ export default function ParentReport() {
                   {report.summary.diagnosticOverviewHe.mainFocusAreaLineHe}
                 </p>
               ) : !shortContractTop ? (
-                <p className="m-0 text-white/55 text-xs">אין עדיין תחום שזוהה כדורש תשומת לב מיידית בטווח זה.</p>
+                <p className="m-0 text-white/55 text-xs">
+                  {Number(report.summary?.totalQuestions) > 0 &&
+                  diagnosticsView?.presence?.state === "hasVolumeNoPattern"
+                    ? "יש נתוני תרגול בטווח, אך עדיין אין דפוס אבחוני יציב שמצביע על מוקד חירום אחד — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן."
+                    : "אין עדיין תחום שזוהה כדורש תשומת לב מיידית בטווח זה."}
+                </p>
               ) : null}
               {report.summary.diagnosticOverviewHe.strongestAreaLineHe ? (
                 <p className="m-0 leading-relaxed">
@@ -2500,7 +2538,10 @@ export default function ParentReport() {
                   (diagnosticsView.mode === "new" &&
                     diagnosticsView.rows.length === 0)) && (
                   <p className="parent-report-print-muted-text text-center text-sm md:text-base text-white/75 px-2 py-3">
-                    עדיין אין מספיק נתונים לאבחון מקצועי ברור
+                    {diagnosticsView.presence?.recommendationsExplainerHe ||
+                      (Number(report.summary?.totalQuestions) > 0
+                        ? "יש נתוני תרגול בטווח, אבל עדיין אין דפוס אבחוני יציב ברמת ההמלצות — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן."
+                        : "עדיין אין מספיק נתונים לאבחון מקצועי ברור")}
                   </p>
                 )}
 

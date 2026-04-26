@@ -24,6 +24,10 @@ import {
   normalizeParentFacingHe,
 } from "../utils/parent-report-language/index.js";
 import { narrativeSectionTextHe } from "../utils/contracts/narrative-contract-v1.js";
+import {
+  PARENT_BULLETS_EMPTY_WITH_VOLUME_HE,
+  stripKnownParentReportLeakageHe,
+} from "../utils/parent-data-presence.js";
 
 const PR1_RETENTION_LABEL_HE = {
   low: "נמוך",
@@ -78,6 +82,7 @@ function pr1ParentVisibleTextHe(s) {
   t = t.replace(/\b[a-z][a-z0-9_]{10,}\b/g, "");
   t = t.replace(/\s{2,}/g, " ").trim();
   t = normalizeParentFacingHe(t);
+  t = stripKnownParentReportLeakageHe(t);
   if (!t) return "";
   const numericOnly = /^[\d\s.,/%\-–—]+$/u.test(t);
   if (numericOnly) return "";
@@ -85,12 +90,16 @@ function pr1ParentVisibleTextHe(s) {
   return t;
 }
 
-export function Bullets({ items, className = "" }) {
+export function Bullets({ items, className = "", volumeQuestionsTotal = 0 }) {
   const safeItems = (Array.isArray(items) ? items : [])
     .map((x) => pr1ParentVisibleTextHe(x))
     .filter(Boolean);
   if (!safeItems.length)
-    return <p className={`pr-detailed-muted text-sm ${className}`.trim()}>אין נתונים להצגה.</p>;
+    return (
+      <p className={`pr-detailed-muted text-sm ${className}`.trim()}>
+        {Number(volumeQuestionsTotal) > 0 ? PARENT_BULLETS_EMPTY_WITH_VOLUME_HE : "אין נתונים להצגה."}
+      </p>
+    );
   return (
     <ul
       className={`pr-detailed-body-text list-disc pr-5 space-y-1.5 text-sm md:text-base text-white/[0.88] leading-relaxed ${className}`.trim()}
@@ -106,6 +115,7 @@ export function Bullets({ items, className = "" }) {
 
 /** סיכום מנהלים — שדות Phase 4 */
 export function ExecutiveSummarySection({ es, compact }) {
+  const volQ = Number(es?.windowTotalQuestions) || 0;
   return (
     <div className="pr-detailed-exec-summary space-y-3 md:space-y-4">
       <div
@@ -115,19 +125,19 @@ export function ExecutiveSummarySection({ es, compact }) {
       >
         <div>
           <h4 className="pr-detailed-subheading text-emerald-200/95">חוזקות בכל המקצועות</h4>
-          <Bullets items={(es.topStrengthsAcrossHe || []).map(pr1ParentVisibleTextHe)} />
+          <Bullets items={es.topStrengthsAcrossHe || []} volumeQuestionsTotal={volQ} />
         </div>
         {(es.topFocusAreasHe || []).length > 0 ? (
           <div>
             <h4 className="pr-detailed-subheading text-amber-200/95">מה לשים בפוקוס (בכמה מקצועות)</h4>
-            <Bullets items={(es.topFocusAreasHe || []).map(pr1ParentVisibleTextHe)} />
+            <Bullets items={es.topFocusAreasHe || []} volumeQuestionsTotal={volQ} />
           </div>
         ) : null}
       </div>
       {es.majorTrendsHe?.length ? (
         <div>
           <h4 className="pr-detailed-subheading text-cyan-200/95">מגמות מרכזיות</h4>
-          <Bullets items={(es.majorTrendsHe || []).map(pr1ParentVisibleTextHe)} />
+          <Bullets items={es.majorTrendsHe || []} volumeQuestionsTotal={volQ} />
         </div>
       ) : null}
       {(es.dominantCrossSubjectRiskLabelHe || es.dominantCrossSubjectSuccessPatternLabelHe) && !compact ? (
@@ -154,7 +164,7 @@ export function ExecutiveSummarySection({ es, compact }) {
           </p>
         </div>
       ) : null}
-      {(es.topImmediateParentActionHe ||
+      {Boolean(es.topImmediateParentActionHe ||
         es.secondPriorityActionHe ||
         (es.monitoringOnlyAreasHe && es.monitoringOnlyAreasHe.length) ||
         (es.deferForNowAreasHe && es.deferForNowAreasHe.length)) && (
@@ -192,7 +202,7 @@ export function ExecutiveSummarySection({ es, compact }) {
           </div>
         </div>
       )}
-      {(es.dominantCrossSubjectMistakePatternLabelHe ||
+      {Boolean(es.dominantCrossSubjectMistakePatternLabelHe ||
         es.crossSubjectLearningStageLabelHe ||
         (es.reviewBeforeAdvanceAreasHe && es.reviewBeforeAdvanceAreasHe.length) ||
         (es.transferReadyAreasHe && es.transferReadyAreasHe.length)) && (
@@ -232,7 +242,7 @@ export function ExecutiveSummarySection({ es, compact }) {
           </div>
         </div>
       )}
-      {(es.crossSubjectResponseToInterventionLabelHe ||
+      {Boolean(es.crossSubjectResponseToInterventionLabelHe ||
         es.crossSubjectSupportAdjustmentNeedHe ||
         es.crossSubjectRecalibrationNeedHe ||
         (es.majorRecheckAreasHe && es.majorRecheckAreasHe.length) ||
@@ -281,7 +291,7 @@ export function ExecutiveSummarySection({ es, compact }) {
           </div>
         </div>
       )}
-      {(String(es.crossSubjectSupportSequenceStateLabelHe || "").trim() ||
+      {Boolean(String(es.crossSubjectSupportSequenceStateLabelHe || "").trim() ||
         String(es.crossSubjectNextBestSequenceStepHe || "").trim() ||
         (es.subjectsReadyForReleaseHe && es.subjectsReadyForReleaseHe.length) ||
         (es.subjectsAtRiskOfSupportRepetitionHe && es.subjectsAtRiskOfSupportRepetitionHe.length) ||
@@ -322,7 +332,7 @@ export function ExecutiveSummarySection({ es, compact }) {
           </div>
         </div>
       )}
-      {(String(es.crossSubjectRecommendationMemoryStateLabelHe || "").trim() ||
+      {Boolean(String(es.crossSubjectRecommendationMemoryStateLabelHe || "").trim() ||
         (es.subjectsWithClearCarryoverHe && es.subjectsWithClearCarryoverHe.length) ||
         (es.subjectsNeedingFreshEvidenceHe && es.subjectsNeedingFreshEvidenceHe.length) ||
         (es.subjectsWherePriorPathSeemsMisalignedHe && es.subjectsWherePriorPathSeemsMisalignedHe.length)) && (
@@ -371,7 +381,7 @@ export function ExecutiveSummarySection({ es, compact }) {
           </div>
         </div>
       )}
-      {(String(es.crossSubjectGateStateLabelHe || "").trim() ||
+      {Boolean(String(es.crossSubjectGateStateLabelHe || "").trim() ||
         String(es.crossSubjectNextCycleDecisionFocusHe || "").trim() ||
         String(es.crossSubjectEvidenceTargetTypeLabelHe || "").trim() ||
         String(es.crossSubjectTargetObservationWindowLabelHe || "").trim() ||
@@ -427,7 +437,7 @@ export function ExecutiveSummarySection({ es, compact }) {
           </div>
         </div>
       )}
-      {(String(es.crossSubjectDependencyStateLabelHe || "").trim() ||
+      {Boolean(String(es.crossSubjectDependencyStateLabelHe || "").trim() ||
         String(es.crossSubjectFoundationFirstPriorityHe || "").trim() ||
         (es.subjectsLikelyShowingDownstreamSymptomsHe && es.subjectsLikelyShowingDownstreamSymptomsHe.length) ||
         (es.subjectsNeedingFoundationFirstHe && es.subjectsNeedingFoundationFirstHe.length) ||
