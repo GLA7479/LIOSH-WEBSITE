@@ -630,29 +630,63 @@ export default function ParentReport() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const name = localStorage.getItem("mleo_player_name") || "";
-      setPlayerName(name);
-      
-      // הגדרת תאריכים ברירת מחדל
-      const today = new Date();
-      const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-      const defaultEndDate = today.toISOString().split('T')[0];
-      const defaultStartDate = weekAgo.toISOString().split('T')[0];
-      setEndDate(defaultEndDate);
-      setStartDate(defaultStartDate);
-      setAppliedEndDate(defaultEndDate);
-      setAppliedStartDate(defaultStartDate);
-      
-      if (name) {
-        const data = generateParentReportV2(name, period);
-        setReport(data);
-        const detailed = generateDetailedParentReport(name, period);
-        setShortContractTop(detailed?.parentProductContractV1?.top || null);
-      }
-      setLoading(false);
+    if (typeof window === "undefined") return undefined;
+    if (!router.isReady) return undefined;
+
+    const name = localStorage.getItem("mleo_player_name") || "";
+    setPlayerName(name);
+
+    const today = new Date();
+    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const defaultEndDate = today.toISOString().split("T")[0];
+    const defaultStartDate = weekAgo.toISOString().split("T")[0];
+
+    const qp = typeof router.query.period === "string" ? router.query.period.trim() : "";
+    const qs = typeof router.query.start === "string" ? router.query.start.trim() : "";
+    const qe = typeof router.query.end === "string" ? router.query.end.trim() : "";
+    const ymdOk = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s);
+
+    let nextPeriod = "week";
+    let nextCustomDates = false;
+    let appliedS = defaultStartDate;
+    let appliedE = defaultEndDate;
+
+    if (qp === "custom" && ymdOk(qs) && ymdOk(qe) && qs <= qe) {
+      nextPeriod = "custom";
+      nextCustomDates = true;
+      appliedS = qs;
+      appliedE = qe;
+    } else if (qp === "month") {
+      nextPeriod = "month";
+      nextCustomDates = false;
+    } else if (qp === "week") {
+      nextPeriod = "week";
+      nextCustomDates = false;
     }
-  }, []);
+
+    setPeriod(nextPeriod);
+    setCustomDates(nextCustomDates);
+    setStartDate(appliedS);
+    setEndDate(appliedE);
+    setAppliedStartDate(appliedS);
+    setAppliedEndDate(appliedE);
+
+    if (name) {
+      let data;
+      let detailed;
+      if (nextCustomDates) {
+        data = generateParentReportV2(name, "custom", appliedS, appliedE);
+        detailed = generateDetailedParentReport(name, "custom", appliedS, appliedE);
+      } else {
+        data = generateParentReportV2(name, nextPeriod);
+        detailed = generateDetailedParentReport(name, nextPeriod);
+      }
+      setReport(data);
+      setShortContractTop(detailed?.parentProductContractV1?.top || null);
+    }
+    setLoading(false);
+    return undefined;
+  }, [router.isReady, router.query.period, router.query.start, router.query.end]);
 
   const handleShowReport = () => {
     if (startDate && endDate && startDate <= endDate) {

@@ -13,11 +13,34 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
-/** Inline paths (tsx ESM cannot import named exports from this repo's utils/*.js reliably). */
+/** Inline paths — keep aligned with `utils/learning-parent-report-routes.js`. */
 const LEARNING_PARENT_REPORT_SHORT_PATH = "/learning/parent-report";
 const LEARNING_PARENT_REPORT_DETAILED_PATH = "/learning/parent-report-detailed";
-function learningParentReportDetailedSummaryHref() {
-  return `${LEARNING_PARENT_REPORT_DETAILED_PATH}?mode=summary`;
+function learningParentReportShortHref(range = {}) {
+  const period = range.period || "week";
+  if (period === "custom" && range.startYmd && range.endYmd) {
+    const u = new URLSearchParams({ period: "custom", start: range.startYmd, end: range.endYmd });
+    return `${LEARNING_PARENT_REPORT_SHORT_PATH}?${u.toString()}`;
+  }
+  const u = new URLSearchParams({ period });
+  return `${LEARNING_PARENT_REPORT_SHORT_PATH}?${u.toString()}`;
+}
+function learningParentReportDetailedHref(range = {}, mode) {
+  const period = range.period || "week";
+  const q = {};
+  if (period === "custom" && range.startYmd && range.endYmd) {
+    q.period = "custom";
+    q.start = range.startYmd;
+    q.end = range.endYmd;
+  } else {
+    q.period = period;
+  }
+  if (mode === "summary") q.mode = "summary";
+  const u = new URLSearchParams(q);
+  return `${LEARNING_PARENT_REPORT_DETAILED_PATH}?${u.toString()}`;
+}
+function learningParentReportDetailedSummaryHref(range = {}) {
+  return learningParentReportDetailedHref(range, "summary");
 }
 /** Same order as `utils/math-constants.js` OPERATIONS (inline for tsx ESM import compatibility). */
 const MATH_OPERATION_KEYS = [
@@ -349,8 +372,65 @@ async function main() {
         `affectedUnits mismatch. Expected set ${EXPECT_UNITS.map(unitKey).sort().join(",")}, got ${JSON.stringify(meta?.affectedUnits)}`
       );
     }
+    const dr = meta?.simulationDateRange;
+    if (!dr?.startYmd || !dr?.endYmd) {
+      result.errors.push(`metadata missing simulationDateRange (got ${JSON.stringify(dr)})`);
+    }
 
-    log("17. Reset — metadata cleared");
+    log("16b. Screenshot — מה הוחל בפועל panel");
+    await page.getByTestId("dev-sim-applied-summary").waitFor({ state: "visible", timeout: 30_000 });
+    await page.screenshot({ path: join(evidence, "03-applied-summary.png"), fullPage: true });
+
+    log("16c. localStorage — math + Hebrew mleo_* payloads contain selected topic buckets");
+    const lsProbe = await page.evaluate(() => {
+      const keys = Object.keys(window.localStorage);
+      const wantMath = ["division_with_remainder", "multiplication", "fractions"];
+      const wantHe = ["reading", "comprehension"];
+      const mathKeys = ["mleo_time_tracking", "mleo_math_master_progress", "mleo_mistakes"];
+      const heKeys = ["mleo_hebrew_time_tracking", "mleo_hebrew_master_progress", "mleo_hebrew_mistakes"];
+      const blob = [...mathKeys, ...heKeys]
+        .map((k) => (keys.includes(k) ? String(window.localStorage.getItem(k) || "") : ""))
+        .join("\n");
+      const miss = [];
+      for (const t of wantMath) {
+        if (!blob.includes(t)) miss.push(`math:${t}`);
+      }
+      for (const t of wantHe) {
+        if (!blob.includes(t)) miss.push(`hebrew:${t}`);
+      }
+      return { miss, keySample: keys.filter((k) => k.startsWith("mleo_")).slice(0, 16) };
+    });
+    if (lsProbe.miss.length) {
+      result.errors.push(`localStorage bucket probe miss: ${lsProbe.miss.join("; ")}`);
+    }
+
+    log("17. Open simulator simulation-range short report link + assert Hebrew topic snippets");
+    const shortCustomHref =
+      dr && dr.startYmd && dr.endYmd
+        ? learningParentReportShortHref({ period: "custom", startYmd: dr.startYmd, endYmd: dr.endYmd })
+        : null;
+    if (!shortCustomHref) {
+      result.errors.push("No custom short href from simulationDateRange");
+    } else {
+      await page.goto(`${BASE}${shortCustomHref}`, { waitUntil: "networkidle", timeout: 120_000 });
+      const body = await page.innerText("body");
+      const shortSnips = ["חילוק עם שארית", "כפל", "שברים", "קריאה", "הבנת הנקרא"];
+      let hits = 0;
+      for (const snip of shortSnips) {
+        if (body.includes(snip)) hits += 1;
+      }
+      if (hits < 3) {
+        result.errors.push(`Short report (sim range) expected ≥3 topic labels, hits=${hits} (body len ${body.length})`);
+      }
+      if (/אין עדיין מספיק פעילות בתקופה שנבחרה/i.test(body) && hits < 2) {
+        result.errors.push("Short report empty state while expecting simulated topics in custom range");
+      }
+      await page.screenshot({ path: join(evidence, "04-parent-report-sim-range.png"), fullPage: true });
+    }
+
+    log("18. Reset — metadata cleared");
+    await page.goto(`${BASE}/learning/dev-student-simulator`, { waitUntil: "networkidle", timeout: 120_000 });
+    await loginIfNeeded(page);
     await page.getByTestId("dev-sim-reset").click();
     await sleep(1200);
     const metaAfter = await page.evaluate((k) => window.localStorage.getItem(k), SIMULATOR_METADATA_KEY);
@@ -358,11 +438,11 @@ async function main() {
       result.errors.push("metadata still present after Reset");
     }
 
-    log("18. HTTP probe — simulator-linked parent report routes must not be 404");
+    log("19. HTTP probe — simulator-linked parent report routes must not be 404");
     const reportPaths = [
-      ["short", LEARNING_PARENT_REPORT_SHORT_PATH],
-      ["detailed", LEARNING_PARENT_REPORT_DETAILED_PATH],
-      ["summary", learningParentReportDetailedSummaryHref()],
+      ["short", learningParentReportShortHref({ period: "week" })],
+      ["detailed", learningParentReportDetailedHref({ period: "week" })],
+      ["summary", learningParentReportDetailedSummaryHref({ period: "week" })],
     ];
     for (const [label, path] of reportPaths) {
       const res = await page.request.get(`${BASE}${path}`);
@@ -374,11 +454,13 @@ async function main() {
       }
     }
 
-    log("19. Click simulator report links — full navigation, no 404 document");
+    log("20. Click simulator default week report links — full navigation, no 404 document");
     await page.goto(`${BASE}/learning/dev-student-simulator`, { waitUntil: "networkidle", timeout: 120_000 });
     await loginIfNeeded(page);
     await page.getByTestId("dev-sim-link-parent-report-short").click();
-    await page.waitForURL((u) => u.pathname === "/learning/parent-report", { timeout: 60_000 });
+    await page.waitForURL((u) => u.pathname === "/learning/parent-report" && String(u.search || "").includes("period="), {
+      timeout: 60_000,
+    });
     const short404ish = await page.evaluate(() => /This page could not be found|404\s*-\s*Page Not Found/i.test(document.body?.innerText || ""));
     if (short404ish) {
       result.errors.push("Short report page body looks like Next.js missing-page shell after link click");

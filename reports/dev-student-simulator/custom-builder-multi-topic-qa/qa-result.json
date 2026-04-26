@@ -1,6 +1,6 @@
 {
   "steps": [
-    "1. Open http://localhost:3027/learning/dev-student-simulator",
+    "1. Open http://localhost:3022/learning/dev-student-simulator",
     "2. Reset baseline (only if metadata exists)",
     "3. Switch to בנייה ידנית (custom mode)",
     "4. Open חשבון (math) — enable subject",
@@ -18,9 +18,12 @@
     "14. Uncheck שברים — preview should drop only that topic",
     "15. Re-check שברים for Apply flow",
     "16. Apply",
-    "17. Reset — metadata cleared",
-    "18. HTTP probe — simulator-linked parent report routes must not be 404",
-    "19. Click simulator report links — full navigation, no 404 document"
+    "16b. Screenshot — מה הוחל בפועל panel",
+    "16c. localStorage — math + Hebrew mleo_* payloads contain selected topic buckets",
+    "17. Open simulator simulation-range short report link + assert Hebrew topic snippets",
+    "18. Reset — metadata cleared",
+    "19. HTTP probe — simulator-linked parent report routes must not be 404",
+    "20. Click simulator default week report links — full navigation, no 404 document"
   ],
   "allTopicsRemainedSelected": true,
   "previewListText": "עברית / הבנת הנקרא: 1 פגישות, 20 שאלות\nעברית / קריאה: 1 פגישות, 20 שאלות\nחשבון / חילוק עם שארית: 1 פגישות, 20 שאלות\nחשבון / שברים: 1 פגישות, 20 שאלות\nחשבון / כפל: 1 פגישות, 20 שאלות",

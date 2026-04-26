@@ -15,6 +15,7 @@ export function buildBackupEnvelope(touchedKeys, existingStorageMap) {
  * @param {{ subject: string, topic: string }[]} [args.affectedUnits] — custom builder units touched by Apply
  * @param {string} [args.customApplyMode] — how snapshot was merged (default replace selected topics)
  * @param {string} [args.simulatorRunId] — id stamped on all generated session/mistake rows
+ * @param {{ startYmd: string, endYmd: string, startMs?: number, endMs?: number }} [args.simulationDateRange] — min/max session calendar days (for report links)
  */
 export function buildSimulatorMetadata({
   presetId,
@@ -25,6 +26,7 @@ export function buildSimulatorMetadata({
   affectedUnits,
   customApplyMode,
   simulatorRunId,
+  simulationDateRange,
 }) {
   return {
     version: 1,
@@ -38,5 +40,8 @@ export function buildSimulatorMetadata({
     ...(affectedUnits != null ? { affectedUnits: [...affectedUnits] } : {}),
     ...(customApplyMode != null ? { customApplyMode } : {}),
     ...(simulatorRunId != null ? { simulatorRunId } : {}),
+    ...(simulationDateRange != null && typeof simulationDateRange === "object"
+      ? { simulationDateRange: { ...simulationDateRange } }
+      : {}),
   };
 }

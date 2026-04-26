@@ -14,6 +14,31 @@ import { buildBackupEnvelope, buildSimulatorMetadata } from "./metadata";
 import { validatePresetSessions, validateSnapshotNamespace } from "./validator";
 import { validateCustomSpecBeforeBuild, validateCustomSessionsAfterBuild } from "./custom-validator";
 
+function localYmdFromMs(ms) {
+  const d = new Date(ms);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/**
+ * Calendar range aligned with the short report's `period=custom` (local midnight bounds),
+ * derived from session timestamps — not from UTC `date` strings on rows.
+ * @param {Array<{ timestamp?: number, date?: string }>} sessions
+ * @returns {{ startYmd: string, endYmd: string, startMs: number, endMs: number } | null}
+ */
+export function simulationDateRangeFromSessions(sessions) {
+  if (!Array.isArray(sessions) || !sessions.length) return null;
+  const tsList = sessions.map((s) => Number(s?.timestamp)).filter((n) => Number.isFinite(n));
+  if (!tsList.length) return null;
+  const startMs = Math.min(...tsList);
+  const endMs = Math.max(...tsList);
+  const startYmd = localYmdFromMs(startMs);
+  const endYmd = localYmdFromMs(endMs);
+  return { startYmd, endYmd, startMs, endMs };
+}
+
 export function buildSimulatorCoreFromPreset({
   presetId,
   playerNameOverride,
@@ -37,11 +62,13 @@ export function buildSimulatorCoreFromPreset({
   }
 
   const backupByKey = buildBackupEnvelope(touchedKeys, existingStorageMap);
+  const simulationDateRange = simulationDateRangeFromSessions(sessions);
   const metadata = buildSimulatorMetadata({
     presetId: preset.id,
     touchedKeys,
     backupByKey,
     playerName,
+    ...(simulationDateRange ? { simulationDateRange } : {}),
   });
 
   return {
@@ -115,6 +142,7 @@ export function buildSimulatorCoreFromCustomSpec({
   }
 
   const backupByKey = buildBackupEnvelope(touchedKeys, existingStorageMap);
+  const simulationDateRange = simulationDateRangeFromSessions(sessions);
   const metadata = buildSimulatorMetadata({
     presetId: CUSTOM_SIMULATOR_PRESET_ID,
     touchedKeys,
@@ -123,6 +151,7 @@ export function buildSimulatorCoreFromCustomSpec({
     affectedUnits,
     customApplyMode: applyMode,
     simulatorRunId: runId,
+    ...(simulationDateRange ? { simulationDateRange } : {}),
   });
 
   return {

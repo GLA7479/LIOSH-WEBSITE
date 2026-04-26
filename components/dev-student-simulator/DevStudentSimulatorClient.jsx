@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { safeGetItem } from "../../utils/safe-local-storage.js";
 import CustomBuilderPanel from "./CustomBuilderPanel.jsx";
 import {
   DEV_STUDENT_PRESETS,
@@ -28,8 +29,8 @@ import {
 } from "../../utils/dev-student-simulator/browser-storage.js";
 import { SIMULATOR_METADATA_KEY } from "../../utils/dev-student-simulator/metadata.js";
 import {
-  LEARNING_PARENT_REPORT_SHORT_PATH,
-  LEARNING_PARENT_REPORT_DETAILED_PATH,
+  learningParentReportShortHref,
+  learningParentReportDetailedHref,
   learningParentReportDetailedSummaryHref,
 } from "../../utils/learning-parent-report-routes.js";
 
@@ -178,6 +179,33 @@ function aggregateTopicPreviewBySession(sessions) {
   return [...m.values()].sort((a, b) => `${a.subject}:${a.topic}`.localeCompare(`${b.subject}:${b.topic}`));
 }
 
+function simulationRangeLinkBundleFromMetadata(meta) {
+  const r = meta && typeof meta === "object" ? meta.simulationDateRange : null;
+  const startYmd = r && typeof r.startYmd === "string" ? r.startYmd.trim() : "";
+  const endYmd = r && typeof r.endYmd === "string" ? r.endYmd.trim() : "";
+  if (!startYmd || !endYmd) return null;
+  const range = { period: "custom", startYmd, endYmd };
+  return {
+    startYmd,
+    endYmd,
+    shortHref: learningParentReportShortHref(range),
+    detailedHref: learningParentReportDetailedHref(range),
+    summaryHref: learningParentReportDetailedSummaryHref(range),
+  };
+}
+
+function readSimulationRangeLinkBundleFromLocalStorage() {
+  try {
+    const raw = safeGetItem(SIMULATOR_METADATA_KEY);
+    if (!raw) return null;
+    const meta = JSON.parse(raw);
+    if (!meta || meta.simulator !== "dev-student-simulator-core") return null;
+    return simulationRangeLinkBundleFromMetadata(meta);
+  } catch {
+    return null;
+  }
+}
+
 export default function DevStudentSimulatorClient() {
   const [simMode, setSimMode] = useState("quick");
   const [presetId, setPresetId] = useState(DEV_STUDENT_PRESETS[0]?.id || "");
@@ -186,12 +214,50 @@ export default function DevStudentSimulatorClient() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [preview, setPreview] = useState(null);
+  const [lastApplyVerification, setLastApplyVerification] = useState(null);
+  const [simRangeLinks, setSimRangeLinks] = useState(null);
+
+  const refreshSimRangeLinks = useCallback(() => {
+    setSimRangeLinks(readSimulationRangeLinkBundleFromLocalStorage());
+  }, []);
+
+  useEffect(() => {
+    refreshSimRangeLinks();
+  }, [refreshSimRangeLinks]);
 
   useEffect(() => {
     setPreview(null);
     setMessage("");
     setError("");
+    setLastApplyVerification(null);
   }, [simMode]);
+
+  /** Invalidate staged preview when custom form diverges from the staged JSON (must Preview again before Apply). */
+  useEffect(() => {
+    if (simMode !== "custom") return undefined;
+    const staged = preview?.applySource === "custom" ? preview.stagedCustomSpecJson : null;
+    if (staged == null) return undefined;
+    const cur = serializeCustomSpecForStage(customSpec);
+    if (staged === cur) return undefined;
+    setPreview(null);
+    setMessage(
+      "\u05D4\u05D1\u05D7\u05D9\u05E8\u05D4 \u05D4\u05E9\u05EA\u05E0\u05EA\u05D4. \u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 \u05DE\u05D7\u05D3\u05E9 \u05DC\u05E4\u05E0\u05D9 \u05D4\u05D7\u05DC\u05D4."
+    );
+    return undefined;
+  }, [customSpec, simMode, preview?.applySource, preview?.stagedCustomSpecJson]);
+
+  /** Invalidate staged preview when preset selection diverges from staged preset id. */
+  useEffect(() => {
+    if (simMode !== "quick") return undefined;
+    const stagedId = preview?.applySource === "preset" ? preview.stagedPresetId : null;
+    if (stagedId == null) return undefined;
+    if (stagedId === presetId) return undefined;
+    setPreview(null);
+    setMessage(
+      "\u05D4\u05E4\u05E8\u05D5\u05E4\u05D9\u05DC \u05D4\u05E0\u05D1\u05D7\u05E8 \u05E9\u05D5\u05E0\u05D4. \u05D9\u05E9 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 \u05DE\u05D7\u05D3\u05E9 \u05DC\u05E4\u05E0\u05D9 \u05D4\u05D4\u05D7\u05DC\u05D4."
+    );
+    return undefined;
+  }, [presetId, simMode, preview?.applySource, preview?.stagedPresetId]);
 
   const preset = useMemo(() => DEV_STUDENT_PRESETS.find((p) => p.id === presetId) || null, [presetId]);
 
@@ -342,6 +408,38 @@ export default function DevStudentSimulatorClient() {
         }
         return;
       }
+      const metaApplied = preview.metadata && typeof preview.metadata === "object" ? preview.metadata : {};
+      const dr = metaApplied.simulationDateRange;
+      const readback = readCurrentSimulatorExportFromLocalStorage();
+      const topicAgg = aggregateTopicPreviewBySession(preview.sessions || []);
+      const affected = Array.isArray(metaApplied.affectedUnits) ? metaApplied.affectedUnits : [];
+      const touchedKeysApplied = Array.isArray(metaApplied.effectiveTouchedKeys)
+        ? metaApplied.effectiveTouchedKeys
+        : preview.touchedKeys || [];
+      const recShort =
+        dr && typeof dr.startYmd === "string" && typeof dr.endYmd === "string"
+          ? learningParentReportShortHref({ period: "custom", startYmd: dr.startYmd, endYmd: dr.endYmd })
+          : learningParentReportShortHref({ period: "month" });
+      setLastApplyVerification({
+        at: Date.now(),
+        affectedCount: affected.length,
+        affectedRows: affected.map((u) => ({
+          subjectKey: u.subject,
+          topicKey: u.topic,
+          he: `${hebrewSubjectLabel(u.subject)} / ${hebrewTopicPrimary(u.topic)}`,
+        })),
+        topicStats: topicAgg.map((row) => ({
+          label: `${hebrewSubjectLabel(row.subject)} / ${hebrewTopicPrimary(row.topic)}`,
+          sessionRows: row.sessionRows,
+          questions: row.questions,
+        })),
+        touchedStorageKeys: touchedKeysApplied,
+        dateRange: dr && typeof dr === "object" ? { ...dr } : null,
+        readbackOk: Boolean(readback),
+        readbackSnapshotKeyCount: readback && readback.snapshot ? Object.keys(readback.snapshot).length : 0,
+        recommendedShortHref: recShort,
+      });
+      refreshSimRangeLinks();
       showMsg(
         "\u05D4\u05D5\u05D7\u05DC \u05D1\u05D3\u05E4\u05D3\u05E4\u05DF \u05D6\u05D4 \u05D1\u05D0\u05DE\u05E6\u05E2\u05D5\u05EA \u05D4\u05D7\u05D1\u05D9\u05DC\u05D4 \u05DE\u05D4\u05EA\u05E6\u05D5\u05D2\u05D4 \u05D4\u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 (metadata \u05E0\u05DB\u05EA\u05D1 \u05DC\u05E4\u05E0\u05D9 snapshot)."
       );
@@ -363,6 +461,8 @@ export default function DevStudentSimulatorClient() {
         return;
       }
       setPreview(null);
+      setLastApplyVerification(null);
+      refreshSimRangeLinks();
       showMsg(
         "\u05D4\u05D0\u05D9\u05E4\u05D5\u05E1 \u05D4\u05D5\u05E9\u05DC\u05DD. \u05D4\u05E2\u05E8\u05DB\u05D9\u05DD \u05D4\u05E7\u05D5\u05D3\u05DE\u05D9\u05DD \u05E9\u05D5\u05D7\u05D6\u05E8\u05D5 (\u05D0\u05D5 \u05D4\u05D5\u05E1\u05E8\u05D5) \u05DC\u05E4\u05D9 metadata \u05D4\u05D2\u05D9\u05D1\u05D5\u05D9."
       );
@@ -515,11 +615,23 @@ export default function DevStudentSimulatorClient() {
     hintStaleApply:
       "\u05D4\u05D4\u05D7\u05DC\u05D4 \u05DE\u05D5\u05E9\u05D1\u05EA\u05EA \u05DB\u05D9 \u05D4\u05E4\u05E8\u05D5\u05E4\u05D9\u05DC \u05D4\u05E0\u05D1\u05D7\u05E8 \u05D0\u05D9\u05E0\u05D5 \u05EA\u05D5\u05D0\u05DD \u05E2\u05D5\u05D3 \u05DC\u05EA\u05E6\u05D5\u05D2\u05D4 \u05D4\u05DE\u05D0\u05D5\u05D7\u05E1\u05E0\u05EA. \u05D9\u05E9 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 \u05DE\u05D7\u05D3\u05E9.",
     hintStaleApplyCustom:
-      "\u05D4\u05D4\u05D7\u05DC\u05D4 \u05DE\u05D5\u05E9\u05D1\u05EA\u05EA: \u05D4\u05D2\u05D3\u05E8\u05D9\u05DD \u05D4\u05D9\u05D3\u05E0\u05D9\u05D9\u05DD \u05E9\u05D5\u05E0\u05D5 \u05DE\u05D4\u05EA\u05E6\u05D5\u05D2\u05D4. \u05D9\u05E9 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05D7\u05D3\u05E9.",
+      "\u05D4\u05D1\u05D7\u05D9\u05E8\u05D4 \u05D4\u05E9\u05EA\u05E0\u05EA\u05D4. \u05E6\u05D5\u05E8 \u05EA\u05E6\u05D5\u05D2\u05D4 \u05DE\u05E7\u05D3\u05D9\u05DE\u05D4 \u05DE\u05D7\u05D3\u05E9 \u05DC\u05E4\u05E0\u05D9 \u05D4\u05D7\u05DC\u05D4.",
     secReports: "\u05E4\u05EA\u05D9\u05D7\u05EA \u05D4\u05D3\u05D5\u05D7\u05D5\u05EA \u05D4\u05D0\u05DE\u05D9\u05EA\u05D9\u05D9\u05DD",
-    linkShort: "\u05D3\u05D5\u05D7 \u05D4\u05D5\u05E8\u05D9\u05DD \u05E7\u05E6\u05E8",
-    linkDetailed: "\u05D3\u05D5\u05D7 \u05D4\u05D5\u05E8\u05D9\u05DD \u05DE\u05E4\u05D5\u05E8\u05D8",
-    linkSummary: "\u05EA\u05E7\u05E6\u05D9\u05E8 \u05D4\u05D3\u05D5\u05D7 \u05D4\u05DE\u05E4\u05D5\u05E8\u05D8",
+    secAppliedSummary: "\u05DE\u05D4 \u05D4\u05D5\u05D7\u05DC \u05D1\u05E4\u05D5\u05E2\u05DC",
+    appliedUnits: "\u05D9\u05D7\u05D9\u05D3\u05D5\u05EA \u05DE\u05D5\u05E9\u05E4\u05E2\u05D5\u05EA",
+    appliedTopicBreakdown: "\u05E4\u05D9\u05E8\u05D5\u05D8 \u05DC\u05E4\u05D9 \u05E0\u05D5\u05E9\u05D0 (\u05DE\u05D4\u05EA\u05E6\u05D5\u05D2\u05D4 \u05E9\u05D4\u05D5\u05D7\u05DC\u05D4)",
+    appliedBuckets: "\u05DE\u05E4\u05EA\u05D7\u05D5\u05EA \u05D0\u05D7\u05E1\u05D5\u05DF \u05E9\u05E0\u05DB\u05EA\u05D1\u05D5",
+    appliedReadback: "\u05D0\u05D9\u05DE\u05D5\u05EA \u05E7\u05E8\u05D9\u05D0\u05D4 \u05DE\u05D4\u05D0\u05D7\u05E1\u05D5\u05DF",
+    appliedDateRange: "\u05D8\u05D5\u05D5\u05D7 \u05EA\u05D0\u05E8\u05D9\u05DB\u05D9\u05DD \u05E9\u05D4\u05D5\u05E6\u05E8",
+    appliedReportRec: "\u05E7\u05D9\u05E9\u05D5\u05E8 \u05D3\u05D5\u05D7 \u05DE\u05D5\u05DE\u05DC\u05E5",
+    hintDefaultReportLinks:
+      "\u05DC\u05DC\u05D0 metadata \u05E2\u05DD \u05D8\u05D5\u05D5\u05D7 \u05E1\u05D9\u05DE\u05D5\u05DC\u05E6\u05D9\u05D4: \u05D4\u05E7\u05D9\u05E9\u05D5\u05E8\u05D9\u05DD \u05DC\u05E9\u05D1\u05D5\u05E2 \u05D0\u05D7\u05E8\u05D5\u05DF \u05E2\u05DC\u05D5\u05DC\u05D9\u05DD \u05DC\u05D4\u05E1\u05EA\u05D9\u05E8 \u05DE\u05D3\u05D2\u05DD \u05E7\u05E6\u05E8. \u05D0\u05D7\u05E8\u05D9 \u05D4\u05D7\u05DC\u05D4 \u05DE\u05D4\u05E1\u05D9\u05DE\u05D5\u05DC\u05D8\u05D5\u05E8 \u05D9\u05D5\u05E4\u05D9\u05E2\u05D5 \u05DB\u05D0\u05DF \u05E7\u05D9\u05E9\u05D5\u05E8\u05D9\u05DD \u05DE\u05D5\u05EA\u05D0\u05DE\u05D9\u05DD \u05DC\u05D8\u05D5\u05D5\u05D7 \u05D4\u05E0\u05EA\u05D5\u05E0\u05D9\u05DD \u05E9\u05E0\u05D5\u05E6\u05E8\u05D5.",
+    linkShort: "\u05D3\u05D5\u05D7 \u05D4\u05D5\u05E8\u05D9\u05DD \u05E7\u05E6\u05E8 (\u05E9\u05D1\u05D5\u05E2 \u05D1\u05E8\u05D9\u05E8\u05EA \u05DE\u05D7\u05D3\u05DC)",
+    linkDetailed: "\u05D3\u05D5\u05D7 \u05D4\u05D5\u05E8\u05D9\u05DD \u05DE\u05E4\u05D5\u05E8\u05D8 (\u05E9\u05D1\u05D5\u05E2 \u05D1\u05E8\u05D9\u05E8\u05EA \u05DE\u05D7\u05D3\u05DC)",
+    linkSummary: "\u05EA\u05E7\u05E6\u05D9\u05E8 \u05D4\u05D3\u05D5\u05D7 \u05D4\u05DE\u05E4\u05D5\u05E8\u05D8 (\u05E9\u05D1\u05D5\u05E2 \u05D1\u05E8\u05D9\u05E8\u05EA \u05DE\u05D7\u05D3\u05DC)",
+    linkShortSimRange: "\u05D3\u05D5\u05D7 \u05E7\u05E6\u05E8 \u2014 \u05D8\u05D5\u05D5\u05D7 \u05D4\u05E1\u05D9\u05DE\u05D5\u05DC\u05E6\u05D9\u05D4",
+    linkDetailedSimRange: "\u05D3\u05D5\u05D7 \u05DE\u05E4\u05D5\u05E8\u05D8 \u2014 \u05D8\u05D5\u05D5\u05D7 \u05D4\u05E1\u05D9\u05DE\u05D5\u05DC\u05E6\u05D9\u05D4",
+    linkSummarySimRange: "\u05EA\u05E7\u05E6\u05D9\u05E8 \u2014 \u05D8\u05D5\u05D5\u05D7 \u05D4\u05E1\u05D9\u05DE\u05D5\u05DC\u05E6\u05D9\u05D4",
     secValidation: "\u05E1\u05D9\u05DB\u05D5\u05DD \u05D1\u05D3\u05D9\u05E7\u05D5\u05EA",
     statSessions: "\u05E4\u05D2\u05D9\u05E9\u05D5\u05EA:",
     statQuestions: "\u05E9\u05D0\u05DC\u05D5\u05EA:",
@@ -576,6 +688,66 @@ export default function DevStudentSimulatorClient() {
           style={{ ...sectionCard, marginBottom: 16, borderColor: "#fecaca", background: "#fef2f2", color: "#991b1b" }}
         >
           {error}
+        </div>
+      ) : null}
+
+      {lastApplyVerification ? (
+        <div
+          data-testid="dev-sim-applied-summary"
+          style={{
+            ...sectionCard,
+            marginBottom: 16,
+            borderColor: "#93c5fd",
+            background: "#eff6ff",
+            color: COLORS.pageText,
+          }}
+        >
+          <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>{t.secAppliedSummary}</h2>
+          <p style={{ margin: "0 0 8px", fontSize: 13, color: COLORS.muted }}>
+            {t.appliedUnits}:{" "}
+            <span dir="ltr" style={{ unicodeBidi: "embed", fontWeight: 700 }}>
+              {lastApplyVerification.affectedCount}
+            </span>
+          </p>
+          <ul style={{ margin: "0 0 10px", paddingRight: 18, fontSize: 13, listStyle: "disc" }}>
+            {lastApplyVerification.affectedRows.map((row) => (
+              <li key={`${row.subjectKey}:${row.topicKey}`} style={{ marginBottom: 4 }}>
+                {row.he}{" "}
+                <span dir="ltr" style={{ unicodeBidi: "embed", color: COLORS.muted, fontSize: 12 }}>
+                  ({row.subjectKey}/{row.topicKey})
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p style={{ margin: "0 0 4px", fontSize: 13, fontWeight: 600 }}>{t.appliedTopicBreakdown}</p>
+          <ul style={{ margin: "0 0 10px", paddingRight: 18, fontSize: 13, listStyle: "disc", color: COLORS.muted }}>
+            {lastApplyVerification.topicStats.map((row) => (
+              <li key={row.label}>
+                {row.label}: {row.sessionRows} {t.previewTopicRowSessions}, {row.questions} {t.previewTopicRowQuestions}
+              </li>
+            ))}
+          </ul>
+          <p style={{ margin: "0 0 4px", fontSize: 13, fontWeight: 600 }}>{t.appliedBuckets}</p>
+          <p dir="ltr" style={{ margin: "0 0 8px", fontSize: 11, wordBreak: "break-all", color: COLORS.muted }}>
+            {lastApplyVerification.touchedStorageKeys.join(", ")}
+          </p>
+          <p style={{ margin: "0 0 4px", fontSize: 13, fontWeight: 600 }}>{t.appliedDateRange}</p>
+          <p dir="ltr" style={{ margin: "0 0 8px", fontSize: 12, color: COLORS.muted }}>
+            {lastApplyVerification.dateRange?.startYmd || "—"} \u2192 {lastApplyVerification.dateRange?.endYmd || "—"}
+          </p>
+          <p style={{ margin: "0 0 4px", fontSize: 13, fontWeight: 600 }}>{t.appliedReadback}</p>
+          <p style={{ margin: "0 0 8px", fontSize: 12, color: COLORS.muted }}>
+            {lastApplyVerification.readbackOk ? "\u2713 metadata + snapshot" : "\u2717 \u05DC\u05D0 \u05E0\u05E7\u05E8\u05D0 \u05DE\u05D4\u05D0\u05D7\u05E1\u05D5\u05DF"}{" "}
+            <span dir="ltr" style={{ unicodeBidi: "embed" }}>
+              ({lastApplyVerification.readbackSnapshotKeyCount} keys)
+            </span>
+          </p>
+          <p style={{ margin: "0 0 4px", fontSize: 13, fontWeight: 600 }}>{t.appliedReportRec}</p>
+          <p dir="ltr" style={{ margin: 0, fontSize: 12 }}>
+            <a href={lastApplyVerification.recommendedShortHref} style={{ color: COLORS.primary }}>
+              {lastApplyVerification.recommendedShortHref}
+            </a>
+          </p>
         </div>
       ) : null}
 
@@ -702,24 +874,52 @@ export default function DevStudentSimulatorClient() {
 
       <div style={{ ...sectionCard, marginBottom: 16 }}>
         <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>{t.secReports}</h2>
+        {simRangeLinks ? (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 10 }}>
+            <a
+              data-testid="dev-sim-link-sim-range-short"
+              href={simRangeLinks.shortHref}
+              style={makeButtonStyle("link", false)}
+            >
+              {t.linkShortSimRange}
+            </a>
+            <a
+              data-testid="dev-sim-link-sim-range-detailed"
+              href={simRangeLinks.detailedHref}
+              style={makeButtonStyle("link", false)}
+            >
+              {t.linkDetailedSimRange}
+            </a>
+            <a
+              data-testid="dev-sim-link-sim-range-summary"
+              href={simRangeLinks.summaryHref}
+              style={makeButtonStyle("link", false)}
+            >
+              {t.linkSummarySimRange}
+            </a>
+          </div>
+        ) : (
+          <p style={{ margin: "0 0 10px", fontSize: 12, color: COLORS.muted }}>{t.hintDefaultReportLinks}</p>
+        )}
+        <p style={{ margin: "0 0 6px", fontSize: 12, color: COLORS.muted }}>\u05E7\u05D9\u05E9\u05D5\u05E8\u05D9\u05DD \u05DB\u05DC\u05DC\u05D9\u05D9\u05DD (\u05EA\u05E7\u05D5\u05E4\u05EA \u05E9\u05D1\u05D5\u05E2 \u05D1\u05E8\u05D9\u05E8\u05EA \u05DE\u05D7\u05D3\u05DC \u05D1\u05D3\u05E3 \u05D4\u05D3\u05D5\u05D7):</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
           <a
             data-testid="dev-sim-link-parent-report-short"
-            href={LEARNING_PARENT_REPORT_SHORT_PATH}
+            href={learningParentReportShortHref({ period: "week" })}
             style={makeButtonStyle("link", false)}
           >
             {t.linkShort}
           </a>
           <a
             data-testid="dev-sim-link-parent-report-detailed"
-            href={LEARNING_PARENT_REPORT_DETAILED_PATH}
+            href={learningParentReportDetailedHref({ period: "week" })}
             style={makeButtonStyle("link", false)}
           >
             {t.linkDetailed}
           </a>
           <a
             data-testid="dev-sim-link-parent-report-summary"
-            href={learningParentReportDetailedSummaryHref()}
+            href={learningParentReportDetailedSummaryHref({ period: "week" })}
             style={makeButtonStyle("link", false)}
           >
             {t.linkSummary}

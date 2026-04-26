@@ -3,660 +3,697 @@
   "mleo_time_tracking": {
     "operations": {
       "fractions": {
-        "total": 1039,
+        "total": 1501,
         "sessions": [
           {
-            "date": "2026-01-12",
-            "duration": 1039,
+            "date": "2026-01-22",
+            "duration": 1501,
             "grade": "g5",
-            "level": "hard",
+            "level": "medium",
             "operation": "fractions",
             "mathReportBucket": "fractions",
-            "timestamp": 1768178745450,
+            "timestamp": 1769111953621,
             "mode": "learning",
-            "total": 18,
-            "correct": 15
+            "total": 16,
+            "correct": 14
           }
         ],
         "byGrade": {
-          "g5": 1039
+          "g5": 1501
         },
         "byLevel": {
-          "hard": 1039
+          "medium": 1501
         }
       },
-      "percentages": {
-        "total": 1491,
+      "equations": {
+        "total": 1108,
         "sessions": [
           {
-            "date": "2026-01-16",
-            "duration": 1491,
+            "date": "2026-01-25",
+            "duration": 1108,
             "grade": "g5",
-            "level": "hard",
-            "operation": "percentages",
-            "mathReportBucket": "percentages",
-            "timestamp": 1768600022431,
+            "level": "medium",
+            "operation": "equations",
+            "mathReportBucket": "equations",
+            "timestamp": 1769376210909,
             "mode": "learning",
-            "total": 10,
-            "correct": 8
+            "total": 16,
+            "correct": 14
           }
         ],
         "byGrade": {
-          "g5": 1491
+          "g5": 1108
         },
         "byLevel": {
-          "hard": 1491
+          "medium": 1108
+        }
+      },
+      "prime_composite": {
+        "total": 1724,
+        "sessions": [
+          {
+            "date": "2026-02-24",
+            "duration": 1724,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "prime_composite",
+            "mathReportBucket": "prime_composite",
+            "timestamp": 1771899251168,
+            "mode": "learning",
+            "total": 13,
+            "correct": 10
+          }
+        ],
+        "byGrade": {
+          "g5": 1724
+        },
+        "byLevel": {
+          "medium": 1724
+        }
+      },
+      "rounding": {
+        "total": 1319,
+        "sessions": [
+          {
+            "date": "2026-03-17",
+            "duration": 1319,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "rounding",
+            "mathReportBucket": "rounding",
+            "timestamp": 1773771037250,
+            "mode": "learning",
+            "total": 12,
+            "correct": 10
+          }
+        ],
+        "byGrade": {
+          "g5": 1319
+        },
+        "byLevel": {
+          "medium": 1319
         }
       },
       "divisibility": {
-        "total": 959,
+        "total": 1231,
         "sessions": [
           {
-            "date": "2026-01-21",
-            "duration": 959,
+            "date": "2026-03-20",
+            "duration": 1231,
             "grade": "g5",
             "level": "medium",
             "operation": "divisibility",
             "mathReportBucket": "divisibility",
-            "timestamp": 1769006026857,
-            "mode": "learning",
-            "total": 12,
-            "correct": 10
-          }
-        ],
-        "byGrade": {
-          "g5": 959
-        },
-        "byLevel": {
-          "medium": 959
-        }
-      },
-      "estimation": {
-        "total": 968,
-        "sessions": [
-          {
-            "date": "2026-01-25",
-            "duration": 968,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "estimation",
-            "mathReportBucket": "estimation",
-            "timestamp": 1769304585619,
-            "mode": "learning",
-            "total": 27,
-            "correct": 23
-          }
-        ],
-        "byGrade": {
-          "g5": 968
-        },
-        "byLevel": {
-          "medium": 968
-        }
-      },
-      "scale": {
-        "total": 1781,
-        "sessions": [
-          {
-            "date": "2026-01-26",
-            "duration": 1781,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "scale",
-            "mathReportBucket": "scale",
-            "timestamp": 1769408359025,
-            "mode": "learning",
-            "total": 34,
-            "correct": 27
-          }
-        ],
-        "byGrade": {
-          "g5": 1781
-        },
-        "byLevel": {
-          "medium": 1781
-        }
-      },
-      "order_of_operations": {
-        "total": 1221,
-        "sessions": [
-          {
-            "date": "2026-02-01",
-            "duration": 1221,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "order_of_operations",
-            "mathReportBucket": "order_of_operations",
-            "timestamp": 1769943145105,
-            "mode": "learning",
-            "total": 19,
-            "correct": 15
-          }
-        ],
-        "byGrade": {
-          "g5": 1221
-        },
-        "byLevel": {
-          "medium": 1221
-        }
-      },
-      "addition": {
-        "total": 1034,
-        "sessions": [
-          {
-            "date": "2026-02-10",
-            "duration": 1034,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "addition",
-            "mathReportBucket": "addition",
-            "timestamp": 1770688370026,
-            "mode": "learning",
-            "total": 12,
-            "correct": 10
-          }
-        ],
-        "byGrade": {
-          "g5": 1034
-        },
-        "byLevel": {
-          "medium": 1034
-        }
-      },
-      "subtraction": {
-        "total": 1449,
-        "sessions": [
-          {
-            "date": "2026-02-11",
-            "duration": 1449,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "subtraction",
-            "mathReportBucket": "subtraction",
-            "timestamp": 1770776677043,
-            "mode": "learning",
-            "total": 16,
-            "correct": 13
-          }
-        ],
-        "byGrade": {
-          "g5": 1449
-        },
-        "byLevel": {
-          "hard": 1449
-        }
-      },
-      "powers": {
-        "total": 1733,
-        "sessions": [
-          {
-            "date": "2026-02-14",
-            "duration": 1733,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "powers",
-            "mathReportBucket": "powers",
-            "timestamp": 1771036873667,
-            "mode": "learning",
-            "total": 12,
-            "correct": 10
-          }
-        ],
-        "byGrade": {
-          "g5": 1733
-        },
-        "byLevel": {
-          "medium": 1733
-        }
-      },
-      "division": {
-        "total": 885,
-        "sessions": [
-          {
-            "date": "2026-02-23",
-            "duration": 885,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "division",
-            "mathReportBucket": "division",
-            "timestamp": 1771860476888,
-            "mode": "learning",
-            "total": 18,
-            "correct": 15
-          }
-        ],
-        "byGrade": {
-          "g5": 885
-        },
-        "byLevel": {
-          "hard": 885
-        }
-      },
-      "multiplication": {
-        "total": 1139,
-        "sessions": [
-          {
-            "date": "2026-04-07",
-            "duration": 1139,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "multiplication",
-            "mathReportBucket": "multiplication",
-            "timestamp": 1775553976869,
-            "mode": "learning",
-            "total": 14,
-            "correct": 12
-          }
-        ],
-        "byGrade": {
-          "g5": 1139
-        },
-        "byLevel": {
-          "medium": 1139
-        }
-      },
-      "zero_one_properties": {
-        "total": 1239,
-        "sessions": [
-          {
-            "date": "2026-04-14",
-            "duration": 1239,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "zero_one_properties",
-            "mathReportBucket": "zero_one_properties",
-            "timestamp": 1776142553556,
-            "mode": "learning",
-            "total": 18,
-            "correct": 15
-          }
-        ],
-        "byGrade": {
-          "g5": 1239
-        },
-        "byLevel": {
-          "medium": 1239
-        }
-      },
-      "decimals": {
-        "total": 1417,
-        "sessions": [
-          {
-            "date": "2026-04-15",
-            "duration": 1417,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "decimals",
-            "mathReportBucket": "decimals",
-            "timestamp": 1776250803010,
+            "timestamp": 1774009123217,
             "mode": "learning",
             "total": 11,
             "correct": 9
           }
         ],
         "byGrade": {
-          "g5": 1417
+          "g5": 1231
         },
         "byLevel": {
-          "medium": 1417
+          "medium": 1231
         }
       },
-      "prime_composite": {
-        "total": 886,
+      "estimation": {
+        "total": 1688,
         "sessions": [
           {
-            "date": "2026-04-17",
-            "duration": 886,
+            "date": "2026-03-22",
+            "duration": 1688,
             "grade": "g5",
             "level": "hard",
-            "operation": "prime_composite",
-            "mathReportBucket": "prime_composite",
-            "timestamp": 1776466588596,
+            "operation": "estimation",
+            "mathReportBucket": "estimation",
+            "timestamp": 1774181351363,
             "mode": "learning",
-            "total": 16,
-            "correct": 13
+            "total": 21,
+            "correct": 17
           }
         ],
         "byGrade": {
-          "g5": 886
+          "g5": 1688
         },
         "byLevel": {
-          "hard": 886
+          "hard": 1688
         }
       },
-      "rounding": {
-        "total": 1403,
+      "percentages": {
+        "total": 1413,
         "sessions": [
           {
-            "date": "2026-04-19",
-            "duration": 1403,
+            "date": "2026-03-24",
+            "duration": 1413,
             "grade": "g5",
             "level": "medium",
-            "operation": "rounding",
-            "mathReportBucket": "rounding",
-            "timestamp": 1776577050166,
-            "mode": "learning",
-            "total": 13,
-            "correct": 11
-          }
-        ],
-        "byGrade": {
-          "g5": 1403
-        },
-        "byLevel": {
-          "medium": 1403
-        }
-      },
-      "division_with_remainder": {
-        "total": 1728,
-        "sessions": [
-          {
-            "date": "2026-04-23",
-            "duration": 1728,
-            "grade": "g5",
-            "level": "hard",
-            "operation": "division_with_remainder",
-            "mathReportBucket": "division_with_remainder",
-            "timestamp": 1776906976265,
-            "mode": "learning",
-            "total": 17,
-            "correct": 15
-          }
-        ],
-        "byGrade": {
-          "g5": 1728
-        },
-        "byLevel": {
-          "hard": 1728
-        }
-      },
-      "sequences": {
-        "total": 1058,
-        "sessions": [
-          {
-            "date": "2026-04-23",
-            "duration": 1058,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "sequences",
-            "mathReportBucket": "sequences",
-            "timestamp": 1776926088071,
-            "mode": "learning",
-            "total": 17,
-            "correct": 14
-          }
-        ],
-        "byGrade": {
-          "g5": 1058
-        },
-        "byLevel": {
-          "medium": 1058
-        }
-      },
-      "equations": {
-        "total": 889,
-        "sessions": [
-          {
-            "date": "2026-04-24",
-            "duration": 889,
-            "grade": "g5",
-            "level": "medium",
-            "operation": "equations",
-            "mathReportBucket": "equations",
-            "timestamp": 1777041225038,
+            "operation": "percentages",
+            "mathReportBucket": "percentages",
+            "timestamp": 1774363049816,
             "mode": "learning",
             "total": 15,
             "correct": 12
           }
         ],
         "byGrade": {
-          "g5": 889
+          "g5": 1413
         },
         "byLevel": {
-          "medium": 889
+          "medium": 1413
+        }
+      },
+      "powers": {
+        "total": 1104,
+        "sessions": [
+          {
+            "date": "2026-03-27",
+            "duration": 1104,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "powers",
+            "mathReportBucket": "powers",
+            "timestamp": 1774648934083,
+            "mode": "learning",
+            "total": 18,
+            "correct": 16
+          }
+        ],
+        "byGrade": {
+          "g5": 1104
+        },
+        "byLevel": {
+          "hard": 1104
         }
       },
       "ratio": {
-        "total": 959,
+        "total": 1701,
         "sessions": [
           {
-            "date": "2026-04-26",
-            "duration": 959,
+            "date": "2026-04-01",
+            "duration": 1701,
             "grade": "g5",
-            "level": "medium",
+            "level": "hard",
             "operation": "ratio",
             "mathReportBucket": "ratio",
-            "timestamp": 1777201174100,
+            "timestamp": 1775062980743,
+            "mode": "learning",
+            "total": 19,
+            "correct": 15
+          }
+        ],
+        "byGrade": {
+          "g5": 1701
+        },
+        "byLevel": {
+          "hard": 1701
+        }
+      },
+      "division_with_remainder": {
+        "total": 1426,
+        "sessions": [
+          {
+            "date": "2026-04-02",
+            "duration": 1426,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "division_with_remainder",
+            "mathReportBucket": "division_with_remainder",
+            "timestamp": 1775156275644,
+            "mode": "learning",
+            "total": 12,
+            "correct": 10
+          }
+        ],
+        "byGrade": {
+          "g5": 1426
+        },
+        "byLevel": {
+          "medium": 1426
+        }
+      },
+      "division": {
+        "total": 1715,
+        "sessions": [
+          {
+            "date": "2026-04-07",
+            "duration": 1715,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "division",
+            "mathReportBucket": "division",
+            "timestamp": 1775524563421,
+            "mode": "learning",
+            "total": 13,
+            "correct": 10
+          }
+        ],
+        "byGrade": {
+          "g5": 1715
+        },
+        "byLevel": {
+          "hard": 1715
+        }
+      },
+      "decimals": {
+        "total": 1030,
+        "sessions": [
+          {
+            "date": "2026-04-13",
+            "duration": 1030,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "decimals",
+            "mathReportBucket": "decimals",
+            "timestamp": 1776090890586,
             "mode": "learning",
             "total": 16,
             "correct": 13
           }
         ],
         "byGrade": {
-          "g5": 959
+          "g5": 1030
         },
         "byLevel": {
-          "medium": 959
+          "hard": 1030
+        }
+      },
+      "sequences": {
+        "total": 1024,
+        "sessions": [
+          {
+            "date": "2026-04-16",
+            "duration": 1024,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "sequences",
+            "mathReportBucket": "sequences",
+            "timestamp": 1776375006217,
+            "mode": "learning",
+            "total": 13,
+            "correct": 11
+          }
+        ],
+        "byGrade": {
+          "g5": 1024
+        },
+        "byLevel": {
+          "hard": 1024
+        }
+      },
+      "addition": {
+        "total": 1258,
+        "sessions": [
+          {
+            "date": "2026-04-20",
+            "duration": 1258,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "addition",
+            "mathReportBucket": "addition",
+            "timestamp": 1776652161658,
+            "mode": "learning",
+            "total": 10,
+            "correct": 8
+          }
+        ],
+        "byGrade": {
+          "g5": 1258
+        },
+        "byLevel": {
+          "medium": 1258
+        }
+      },
+      "number_sense": {
+        "total": 899,
+        "sessions": [
+          {
+            "date": "2026-04-20",
+            "duration": 899,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "number_sense",
+            "mathReportBucket": "number_sense",
+            "timestamp": 1776718127690,
+            "mode": "learning",
+            "total": 40,
+            "correct": 35
+          }
+        ],
+        "byGrade": {
+          "g5": 899
+        },
+        "byLevel": {
+          "medium": 899
+        }
+      },
+      "zero_one_properties": {
+        "total": 1575,
+        "sessions": [
+          {
+            "date": "2026-04-22",
+            "duration": 1575,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "zero_one_properties",
+            "mathReportBucket": "zero_one_properties",
+            "timestamp": 1776816733723,
+            "mode": "learning",
+            "total": 17,
+            "correct": 14
+          }
+        ],
+        "byGrade": {
+          "g5": 1575
+        },
+        "byLevel": {
+          "medium": 1575
+        }
+      },
+      "scale": {
+        "total": 1797,
+        "sessions": [
+          {
+            "date": "2026-04-22",
+            "duration": 1797,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "scale",
+            "mathReportBucket": "scale",
+            "timestamp": 1776828516960,
+            "mode": "learning",
+            "total": 21,
+            "correct": 17
+          }
+        ],
+        "byGrade": {
+          "g5": 1797
+        },
+        "byLevel": {
+          "hard": 1797
+        }
+      },
+      "order_of_operations": {
+        "total": 1639,
+        "sessions": [
+          {
+            "date": "2026-04-22",
+            "duration": 1639,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "order_of_operations",
+            "mathReportBucket": "order_of_operations",
+            "timestamp": 1776830767391,
+            "mode": "learning",
+            "total": 19,
+            "correct": 15
+          }
+        ],
+        "byGrade": {
+          "g5": 1639
+        },
+        "byLevel": {
+          "medium": 1639
+        }
+      },
+      "compare": {
+        "total": 1227,
+        "sessions": [
+          {
+            "date": "2026-04-22",
+            "duration": 1227,
+            "grade": "g5",
+            "level": "medium",
+            "operation": "compare",
+            "mathReportBucket": "compare",
+            "timestamp": 1776868919479,
+            "mode": "learning",
+            "total": 21,
+            "correct": 17
+          }
+        ],
+        "byGrade": {
+          "g5": 1227
+        },
+        "byLevel": {
+          "medium": 1227
+        }
+      },
+      "multiplication": {
+        "total": 1198,
+        "sessions": [
+          {
+            "date": "2026-04-24",
+            "duration": 1198,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "multiplication",
+            "mathReportBucket": "multiplication",
+            "timestamp": 1777064873682,
+            "mode": "learning",
+            "total": 15,
+            "correct": 13
+          }
+        ],
+        "byGrade": {
+          "g5": 1198
+        },
+        "byLevel": {
+          "hard": 1198
+        }
+      },
+      "subtraction": {
+        "total": 1278,
+        "sessions": [
+          {
+            "date": "2026-04-26",
+            "duration": 1278,
+            "grade": "g5",
+            "level": "hard",
+            "operation": "subtraction",
+            "mathReportBucket": "subtraction",
+            "timestamp": 1777195996289,
+            "mode": "learning",
+            "total": 10,
+            "correct": 8
+          }
+        ],
+        "byGrade": {
+          "g5": 1278
+        },
+        "byLevel": {
+          "hard": 1278
         }
       }
     },
     "daily": {
-      "2026-01-12": {
-        "total": 1039,
+      "2026-01-22": {
+        "total": 1501,
         "operations": {
-          "fractions": 1039
+          "fractions": 1501
         },
         "byGrade": {
-          "g5": 1039
+          "g5": 1501
         },
         "byLevel": {
-          "hard": 1039
-        }
-      },
-      "2026-01-16": {
-        "total": 1491,
-        "operations": {
-          "percentages": 1491
-        },
-        "byGrade": {
-          "g5": 1491
-        },
-        "byLevel": {
-          "hard": 1491
-        }
-      },
-      "2026-01-21": {
-        "total": 959,
-        "operations": {
-          "divisibility": 959
-        },
-        "byGrade": {
-          "g5": 959
-        },
-        "byLevel": {
-          "medium": 959
+          "medium": 1501
         }
       },
       "2026-01-25": {
-        "total": 968,
+        "total": 1108,
         "operations": {
-          "estimation": 968
+          "equations": 1108
         },
         "byGrade": {
-          "g5": 968
+          "g5": 1108
         },
         "byLevel": {
-          "medium": 968
+          "medium": 1108
         }
       },
-      "2026-01-26": {
-        "total": 1781,
+      "2026-02-24": {
+        "total": 1724,
         "operations": {
-          "scale": 1781
+          "prime_composite": 1724
         },
         "byGrade": {
-          "g5": 1781
+          "g5": 1724
         },
         "byLevel": {
-          "medium": 1781
+          "medium": 1724
         }
       },
-      "2026-02-01": {
-        "total": 1221,
+      "2026-03-17": {
+        "total": 1319,
         "operations": {
-          "order_of_operations": 1221
+          "rounding": 1319
         },
         "byGrade": {
-          "g5": 1221
+          "g5": 1319
         },
         "byLevel": {
-          "medium": 1221
+          "medium": 1319
         }
       },
-      "2026-02-10": {
-        "total": 1034,
+      "2026-03-20": {
+        "total": 1231,
         "operations": {
-          "addition": 1034
+          "divisibility": 1231
         },
         "byGrade": {
-          "g5": 1034
+          "g5": 1231
         },
         "byLevel": {
-          "medium": 1034
+          "medium": 1231
         }
       },
-      "2026-02-11": {
-        "total": 1449,
+      "2026-03-22": {
+        "total": 1688,
         "operations": {
-          "subtraction": 1449
+          "estimation": 1688
         },
         "byGrade": {
-          "g5": 1449
+          "g5": 1688
         },
         "byLevel": {
-          "hard": 1449
+          "hard": 1688
         }
       },
-      "2026-02-14": {
-        "total": 1733,
+      "2026-03-24": {
+        "total": 1413,
         "operations": {
-          "powers": 1733
+          "percentages": 1413
         },
         "byGrade": {
-          "g5": 1733
+          "g5": 1413
         },
         "byLevel": {
-          "medium": 1733
+          "medium": 1413
         }
       },
-      "2026-02-23": {
-        "total": 885,
+      "2026-03-27": {
+        "total": 1104,
         "operations": {
-          "division": 885
+          "powers": 1104
         },
         "byGrade": {
-          "g5": 885
+          "g5": 1104
         },
         "byLevel": {
-          "hard": 885
+          "hard": 1104
+        }
+      },
+      "2026-04-01": {
+        "total": 1701,
+        "operations": {
+          "ratio": 1701
+        },
+        "byGrade": {
+          "g5": 1701
+        },
+        "byLevel": {
+          "hard": 1701
+        }
+      },
+      "2026-04-02": {
+        "total": 1426,
+        "operations": {
+          "division_with_remainder": 1426
+        },
+        "byGrade": {
+          "g5": 1426
+        },
+        "byLevel": {
+          "medium": 1426
         }
       },
       "2026-04-07": {
-        "total": 1139,
+        "total": 1715,
         "operations": {
-          "multiplication": 1139
+          "division": 1715
         },
         "byGrade": {
-          "g5": 1139
+          "g5": 1715
         },
         "byLevel": {
-          "medium": 1139
+          "hard": 1715
         }
       },
-      "2026-04-14": {
-        "total": 1239,
+      "2026-04-13": {
+        "total": 1030,
         "operations": {
-          "zero_one_properties": 1239
+          "decimals": 1030
         },
         "byGrade": {
-          "g5": 1239
+          "g5": 1030
         },
         "byLevel": {
-          "medium": 1239
+          "hard": 1030
         }
       },
-      "2026-04-15": {
-        "total": 1417,
+      "2026-04-16": {
+        "total": 1024,
         "operations": {
-          "decimals": 1417
+          "sequences": 1024
         },
         "byGrade": {
-          "g5": 1417
+          "g5": 1024
         },
         "byLevel": {
-          "medium": 1417
+          "hard": 1024
         }
       },
-      "2026-04-17": {
-        "total": 886,
+      "2026-04-20": {
+        "total": 2157,
         "operations": {
-          "prime_composite": 886
+          "addition": 1258,
+          "number_sense": 899
         },
         "byGrade": {
-          "g5": 886
+          "g5": 2157
         },
         "byLevel": {
-          "hard": 886
+          "medium": 2157
         }
       },
-      "2026-04-19": {
-        "total": 1403,
+      "2026-04-22": {
+        "total": 6238,
         "operations": {
-          "rounding": 1403
+          "zero_one_properties": 1575,
+          "scale": 1797,
+          "order_of_operations": 1639,
+          "compare": 1227
         },
         "byGrade": {
-          "g5": 1403
+          "g5": 6238
         },
         "byLevel": {
-          "medium": 1403
-        }
-      },
-      "2026-04-23": {
-        "total": 2786,
-        "operations": {
-          "division_with_remainder": 1728,
-          "sequences": 1058
-        },
-        "byGrade": {
-          "g5": 2786
-        },
-        "byLevel": {
-          "hard": 1728,
-          "medium": 1058
+          "medium": 4441,
+          "hard": 1797
         }
       },
       "2026-04-24": {
-        "total": 889,
+        "total": 1198,
         "operations": {
-          "equations": 889
+          "multiplication": 1198
         },
         "byGrade": {
-          "g5": 889
+          "g5": 1198
         },
         "byLevel": {
-          "medium": 889
+          "hard": 1198
         }
       },
       "2026-04-26": {
-        "total": 959,
+        "total": 1278,
         "operations": {
-          "ratio": 959
+          "subtraction": 1278
         },
         "byGrade": {
-          "g5": 959
+          "g5": 1278
         },
         "byLevel": {
-          "medium": 959
+          "hard": 1278
         }
       }
     }
@@ -664,85 +701,93 @@
   "mleo_math_master_progress": {
     "progress": {
       "fractions": {
-        "total": 18,
-        "correct": 15
+        "total": 16,
+        "correct": 14
       },
-      "percentages": {
-        "total": 10,
-        "correct": 8
+      "equations": {
+        "total": 16,
+        "correct": 14
       },
-      "divisibility": {
+      "prime_composite": {
+        "total": 13,
+        "correct": 10
+      },
+      "rounding": {
         "total": 12,
         "correct": 10
       },
+      "divisibility": {
+        "total": 11,
+        "correct": 9
+      },
       "estimation": {
-        "total": 27,
-        "correct": 23
+        "total": 21,
+        "correct": 17
+      },
+      "percentages": {
+        "total": 15,
+        "correct": 12
+      },
+      "powers": {
+        "total": 18,
+        "correct": 16
+      },
+      "ratio": {
+        "total": 19,
+        "correct": 15
+      },
+      "division_with_remainder": {
+        "total": 12,
+        "correct": 10
+      },
+      "division": {
+        "total": 13,
+        "correct": 10
+      },
+      "decimals": {
+        "total": 16,
+        "correct": 13
+      },
+      "sequences": {
+        "total": 13,
+        "correct": 11
+      },
+      "addition": {
+        "total": 10,
+        "correct": 8
+      },
+      "number_sense": {
+        "total": 40,
+        "correct": 35
+      },
+      "zero_one_properties": {
+        "total": 17,
+        "correct": 14
       },
       "scale": {
-        "total": 34,
-        "correct": 27
+        "total": 21,
+        "correct": 17
       },
       "order_of_operations": {
         "total": 19,
         "correct": 15
       },
-      "addition": {
-        "total": 12,
-        "correct": 10
-      },
-      "subtraction": {
-        "total": 16,
-        "correct": 13
-      },
-      "powers": {
-        "total": 12,
-        "correct": 10
-      },
-      "division": {
-        "total": 18,
-        "correct": 15
+      "compare": {
+        "total": 21,
+        "correct": 17
       },
       "multiplication": {
-        "total": 14,
-        "correct": 12
-      },
-      "zero_one_properties": {
-        "total": 18,
-        "correct": 15
-      },
-      "decimals": {
-        "total": 11,
-        "correct": 9
-      },
-      "prime_composite": {
-        "total": 16,
-        "correct": 13
-      },
-      "rounding": {
-        "total": 13,
-        "correct": 11
-      },
-      "division_with_remainder": {
-        "total": 17,
-        "correct": 15
-      },
-      "sequences": {
-        "total": 17,
-        "correct": 14
-      },
-      "equations": {
         "total": 15,
-        "correct": 12
-      },
-      "ratio": {
-        "total": 16,
         "correct": 13
+      },
+      "subtraction": {
+        "total": 10,
+        "correct": 8
       }
     },
     "stars": 4,
     "playerLevel": 3,
-    "xp": 1575,
+    "xp": 1740,
     "badges": []
   },
   "mleo_mistakes": [
@@ -752,50 +797,84 @@
       "operation": "fractions",
       "bucketKey": "fractions",
       "grade": "g5",
-      "level": "hard",
+      "level": "medium",
       "mode": "learning",
-      "timestamp": 1768178745450,
+      "timestamp": 1769111953621,
       "isCorrect": false,
       "exerciseText": "math:fractions",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:math:fractions",
       "hintUsed": true,
-      "responseMs": 5400
+      "responseMs": 2100
     },
     {
       "subject": "math",
-      "topic": "fractions",
-      "operation": "fractions",
-      "bucketKey": "fractions",
+      "topic": "equations",
+      "operation": "equations",
+      "bucketKey": "equations",
       "grade": "g5",
-      "level": "hard",
+      "level": "medium",
       "mode": "learning",
-      "timestamp": 1768178745451,
+      "timestamp": 1769376210909,
       "isCorrect": false,
-      "exerciseText": "math:fractions",
+      "exerciseText": "math:equations",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:fractions",
+      "patternFamily": "pf:math:equations",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "prime_composite",
+      "operation": "prime_composite",
+      "bucketKey": "prime_composite",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1771899251168,
+      "isCorrect": false,
+      "exerciseText": "math:prime_composite",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:prime_composite",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "prime_composite",
+      "operation": "prime_composite",
+      "bucketKey": "prime_composite",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1771899251169,
+      "isCorrect": false,
+      "exerciseText": "math:prime_composite",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:prime_composite",
       "hintUsed": false,
-      "responseMs": 5500
+      "responseMs": 2145
     },
     {
       "subject": "math",
-      "topic": "percentages",
-      "operation": "percentages",
-      "bucketKey": "percentages",
+      "topic": "rounding",
+      "operation": "rounding",
+      "bucketKey": "rounding",
       "grade": "g5",
-      "level": "hard",
+      "level": "medium",
       "mode": "learning",
-      "timestamp": 1768600022431,
+      "timestamp": 1773771037250,
       "isCorrect": false,
-      "exerciseText": "math:percentages",
+      "exerciseText": "math:rounding",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:percentages",
+      "patternFamily": "pf:math:rounding",
       "hintUsed": true,
-      "responseMs": 5400
+      "responseMs": 2100
     },
     {
       "subject": "math",
@@ -805,7 +884,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1769006026857,
+      "timestamp": 1774009123217,
       "isCorrect": false,
       "exerciseText": "math:divisibility",
       "correctAnswer": 1,
@@ -820,16 +899,16 @@
       "operation": "estimation",
       "bucketKey": "estimation",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1769304585619,
+      "timestamp": 1774181351363,
       "isCorrect": false,
       "exerciseText": "math:estimation",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:math:estimation",
       "hintUsed": true,
-      "responseMs": 2100
+      "responseMs": 5400
     },
     {
       "subject": "math",
@@ -837,16 +916,16 @@
       "operation": "estimation",
       "bucketKey": "estimation",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1769304585620,
+      "timestamp": 1774181351364,
       "isCorrect": false,
       "exerciseText": "math:estimation",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:math:estimation",
       "hintUsed": false,
-      "responseMs": 2145
+      "responseMs": 5500
     },
     {
       "subject": "math",
@@ -854,152 +933,220 @@
       "operation": "estimation",
       "bucketKey": "estimation",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1769304585621,
+      "timestamp": 1774181351365,
       "isCorrect": false,
       "exerciseText": "math:estimation",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:math:estimation",
       "hintUsed": false,
-      "responseMs": 2190
+      "responseMs": 5600
     },
     {
       "subject": "math",
-      "topic": "scale",
-      "operation": "scale",
-      "bucketKey": "scale",
+      "topic": "percentages",
+      "operation": "percentages",
+      "bucketKey": "percentages",
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1769408359025,
+      "timestamp": 1774363049816,
       "isCorrect": false,
-      "exerciseText": "math:scale",
+      "exerciseText": "math:percentages",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:scale",
+      "patternFamily": "pf:math:percentages",
       "hintUsed": true,
       "responseMs": 2100
     },
     {
       "subject": "math",
-      "topic": "scale",
-      "operation": "scale",
-      "bucketKey": "scale",
+      "topic": "percentages",
+      "operation": "percentages",
+      "bucketKey": "percentages",
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1769408359026,
+      "timestamp": 1774363049817,
       "isCorrect": false,
-      "exerciseText": "math:scale",
+      "exerciseText": "math:percentages",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:scale",
+      "patternFamily": "pf:math:percentages",
       "hintUsed": false,
       "responseMs": 2145
     },
     {
       "subject": "math",
-      "topic": "scale",
-      "operation": "scale",
-      "bucketKey": "scale",
+      "topic": "powers",
+      "operation": "powers",
+      "bucketKey": "powers",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1769408359027,
+      "timestamp": 1774648934083,
       "isCorrect": false,
-      "exerciseText": "math:scale",
+      "exerciseText": "math:powers",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:scale",
-      "hintUsed": false,
-      "responseMs": 2190
-    },
-    {
-      "subject": "math",
-      "topic": "scale",
-      "operation": "scale",
-      "bucketKey": "scale",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1769408359028,
-      "isCorrect": false,
-      "exerciseText": "math:scale",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:scale",
+      "patternFamily": "pf:math:powers",
       "hintUsed": true,
-      "responseMs": 2235
+      "responseMs": 5400
     },
     {
       "subject": "math",
-      "topic": "scale",
-      "operation": "scale",
-      "bucketKey": "scale",
+      "topic": "ratio",
+      "operation": "ratio",
+      "bucketKey": "ratio",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1769408359029,
+      "timestamp": 1775062980743,
       "isCorrect": false,
-      "exerciseText": "math:scale",
+      "exerciseText": "math:ratio",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:scale",
+      "patternFamily": "pf:math:ratio",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "ratio",
+      "operation": "ratio",
+      "bucketKey": "ratio",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775062980744,
+      "isCorrect": false,
+      "exerciseText": "math:ratio",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:ratio",
       "hintUsed": false,
-      "responseMs": 2280
+      "responseMs": 5500
     },
     {
       "subject": "math",
-      "topic": "order_of_operations",
-      "operation": "order_of_operations",
-      "bucketKey": "order_of_operations",
+      "topic": "ratio",
+      "operation": "ratio",
+      "bucketKey": "ratio",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1775062980745,
+      "isCorrect": false,
+      "exerciseText": "math:ratio",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:ratio",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "division_with_remainder",
+      "operation": "division_with_remainder",
+      "bucketKey": "division_with_remainder",
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1769943145105,
+      "timestamp": 1775156275644,
       "isCorrect": false,
-      "exerciseText": "math:order_of_operations",
+      "exerciseText": "math:division_with_remainder",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:order_of_operations",
+      "patternFamily": "pf:math:division_with_remainder",
       "hintUsed": true,
       "responseMs": 2100
     },
     {
       "subject": "math",
-      "topic": "order_of_operations",
-      "operation": "order_of_operations",
-      "bucketKey": "order_of_operations",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1769943145106,
+      "timestamp": 1775524563421,
       "isCorrect": false,
-      "exerciseText": "math:order_of_operations",
+      "exerciseText": "math:division",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:order_of_operations",
-      "hintUsed": false,
-      "responseMs": 2145
+      "patternFamily": "pf:math:division",
+      "hintUsed": true,
+      "responseMs": 5400
     },
     {
       "subject": "math",
-      "topic": "order_of_operations",
-      "operation": "order_of_operations",
-      "bucketKey": "order_of_operations",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1769943145107,
+      "timestamp": 1775524563422,
       "isCorrect": false,
-      "exerciseText": "math:order_of_operations",
+      "exerciseText": "math:division",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:order_of_operations",
+      "patternFamily": "pf:math:division",
       "hintUsed": false,
-      "responseMs": 2190
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "decimals",
+      "operation": "decimals",
+      "bucketKey": "decimals",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776090890586,
+      "isCorrect": false,
+      "exerciseText": "math:decimals",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:decimals",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "math",
+      "topic": "decimals",
+      "operation": "decimals",
+      "bucketKey": "decimals",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776090890587,
+      "isCorrect": false,
+      "exerciseText": "math:decimals",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:decimals",
+      "hintUsed": false,
+      "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "sequences",
+      "operation": "sequences",
+      "bucketKey": "sequences",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776375006217,
+      "isCorrect": false,
+      "exerciseText": "math:sequences",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:sequences",
+      "hintUsed": true,
+      "responseMs": 5400
     },
     {
       "subject": "math",
@@ -1009,7 +1156,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1770688370026,
+      "timestamp": 1776652161658,
       "isCorrect": false,
       "exerciseText": "math:addition",
       "correctAnswer": 1,
@@ -1020,88 +1167,241 @@
     },
     {
       "subject": "math",
-      "topic": "subtraction",
-      "operation": "subtraction",
-      "bucketKey": "subtraction",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1770776677043,
-      "isCorrect": false,
-      "exerciseText": "math:subtraction",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:subtraction",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "subtraction",
-      "operation": "subtraction",
-      "bucketKey": "subtraction",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1770776677044,
-      "isCorrect": false,
-      "exerciseText": "math:subtraction",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:subtraction",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "powers",
-      "operation": "powers",
-      "bucketKey": "powers",
+      "topic": "number_sense",
+      "operation": "number_sense",
+      "bucketKey": "number_sense",
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1771036873667,
+      "timestamp": 1776718127690,
       "isCorrect": false,
-      "exerciseText": "math:powers",
+      "exerciseText": "math:number_sense",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:powers",
+      "patternFamily": "pf:math:number_sense",
       "hintUsed": true,
       "responseMs": 2100
     },
     {
       "subject": "math",
-      "topic": "division",
-      "operation": "division",
-      "bucketKey": "division",
+      "topic": "number_sense",
+      "operation": "number_sense",
+      "bucketKey": "number_sense",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776718127691,
+      "isCorrect": false,
+      "exerciseText": "math:number_sense",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:number_sense",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "math",
+      "topic": "number_sense",
+      "operation": "number_sense",
+      "bucketKey": "number_sense",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776718127692,
+      "isCorrect": false,
+      "exerciseText": "math:number_sense",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:number_sense",
+      "hintUsed": false,
+      "responseMs": 2190
+    },
+    {
+      "subject": "math",
+      "topic": "zero_one_properties",
+      "operation": "zero_one_properties",
+      "bucketKey": "zero_one_properties",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776816733723,
+      "isCorrect": false,
+      "exerciseText": "math:zero_one_properties",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:zero_one_properties",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "zero_one_properties",
+      "operation": "zero_one_properties",
+      "bucketKey": "zero_one_properties",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776816733724,
+      "isCorrect": false,
+      "exerciseText": "math:zero_one_properties",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:zero_one_properties",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "math",
+      "topic": "scale",
+      "operation": "scale",
+      "bucketKey": "scale",
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1771860476888,
+      "timestamp": 1776828516960,
       "isCorrect": false,
-      "exerciseText": "math:division",
+      "exerciseText": "math:scale",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:division",
+      "patternFamily": "pf:math:scale",
       "hintUsed": true,
       "responseMs": 5400
     },
     {
       "subject": "math",
-      "topic": "division",
-      "operation": "division",
-      "bucketKey": "division",
+      "topic": "scale",
+      "operation": "scale",
+      "bucketKey": "scale",
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1771860476889,
+      "timestamp": 1776828516961,
       "isCorrect": false,
-      "exerciseText": "math:division",
+      "exerciseText": "math:scale",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:division",
+      "patternFamily": "pf:math:scale",
       "hintUsed": false,
       "responseMs": 5500
+    },
+    {
+      "subject": "math",
+      "topic": "scale",
+      "operation": "scale",
+      "bucketKey": "scale",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776828516962,
+      "isCorrect": false,
+      "exerciseText": "math:scale",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:scale",
+      "hintUsed": false,
+      "responseMs": 5600
+    },
+    {
+      "subject": "math",
+      "topic": "order_of_operations",
+      "operation": "order_of_operations",
+      "bucketKey": "order_of_operations",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776830767391,
+      "isCorrect": false,
+      "exerciseText": "math:order_of_operations",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:order_of_operations",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "order_of_operations",
+      "operation": "order_of_operations",
+      "bucketKey": "order_of_operations",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776830767392,
+      "isCorrect": false,
+      "exerciseText": "math:order_of_operations",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:order_of_operations",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "math",
+      "topic": "order_of_operations",
+      "operation": "order_of_operations",
+      "bucketKey": "order_of_operations",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776830767393,
+      "isCorrect": false,
+      "exerciseText": "math:order_of_operations",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:order_of_operations",
+      "hintUsed": false,
+      "responseMs": 2190
+    },
+    {
+      "subject": "math",
+      "topic": "compare",
+      "operation": "compare",
+      "bucketKey": "compare",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776868919479,
+      "isCorrect": false,
+      "exerciseText": "math:compare",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:compare",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "math",
+      "topic": "compare",
+      "operation": "compare",
+      "bucketKey": "compare",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776868919480,
+      "isCorrect": false,
+      "exerciseText": "math:compare",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:compare",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "math",
+      "topic": "compare",
+      "operation": "compare",
+      "bucketKey": "compare",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776868919481,
+      "isCorrect": false,
+      "exerciseText": "math:compare",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:compare",
+      "hintUsed": false,
+      "responseMs": 2190
     },
     {
       "subject": "math",
@@ -1109,237 +1409,33 @@
       "operation": "multiplication",
       "bucketKey": "multiplication",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1775553976869,
+      "timestamp": 1777064873682,
       "isCorrect": false,
       "exerciseText": "math:multiplication",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:math:multiplication",
       "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "zero_one_properties",
-      "operation": "zero_one_properties",
-      "bucketKey": "zero_one_properties",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776142553556,
-      "isCorrect": false,
-      "exerciseText": "math:zero_one_properties",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:zero_one_properties",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "zero_one_properties",
-      "operation": "zero_one_properties",
-      "bucketKey": "zero_one_properties",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776142553557,
-      "isCorrect": false,
-      "exerciseText": "math:zero_one_properties",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:zero_one_properties",
-      "hintUsed": false,
-      "responseMs": 2145
-    },
-    {
-      "subject": "math",
-      "topic": "decimals",
-      "operation": "decimals",
-      "bucketKey": "decimals",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776250803010,
-      "isCorrect": false,
-      "exerciseText": "math:decimals",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:decimals",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "prime_composite",
-      "operation": "prime_composite",
-      "bucketKey": "prime_composite",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776466588596,
-      "isCorrect": false,
-      "exerciseText": "math:prime_composite",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:prime_composite",
-      "hintUsed": true,
       "responseMs": 5400
     },
     {
       "subject": "math",
-      "topic": "prime_composite",
-      "operation": "prime_composite",
-      "bucketKey": "prime_composite",
+      "topic": "subtraction",
+      "operation": "subtraction",
+      "bucketKey": "subtraction",
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776466588597,
+      "timestamp": 1777195996289,
       "isCorrect": false,
-      "exerciseText": "math:prime_composite",
+      "exerciseText": "math:subtraction",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:math:prime_composite",
-      "hintUsed": false,
-      "responseMs": 5500
-    },
-    {
-      "subject": "math",
-      "topic": "rounding",
-      "operation": "rounding",
-      "bucketKey": "rounding",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776577050166,
-      "isCorrect": false,
-      "exerciseText": "math:rounding",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:rounding",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "division_with_remainder",
-      "operation": "division_with_remainder",
-      "bucketKey": "division_with_remainder",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776906976265,
-      "isCorrect": false,
-      "exerciseText": "math:division_with_remainder",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:division_with_remainder",
+      "patternFamily": "pf:math:subtraction",
       "hintUsed": true,
       "responseMs": 5400
-    },
-    {
-      "subject": "math",
-      "topic": "sequences",
-      "operation": "sequences",
-      "bucketKey": "sequences",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776926088071,
-      "isCorrect": false,
-      "exerciseText": "math:sequences",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:sequences",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "sequences",
-      "operation": "sequences",
-      "bucketKey": "sequences",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776926088072,
-      "isCorrect": false,
-      "exerciseText": "math:sequences",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:sequences",
-      "hintUsed": false,
-      "responseMs": 2145
-    },
-    {
-      "subject": "math",
-      "topic": "equations",
-      "operation": "equations",
-      "bucketKey": "equations",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1777041225038,
-      "isCorrect": false,
-      "exerciseText": "math:equations",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:equations",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "equations",
-      "operation": "equations",
-      "bucketKey": "equations",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1777041225039,
-      "isCorrect": false,
-      "exerciseText": "math:equations",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:equations",
-      "hintUsed": false,
-      "responseMs": 2145
-    },
-    {
-      "subject": "math",
-      "topic": "ratio",
-      "operation": "ratio",
-      "bucketKey": "ratio",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1777201174100,
-      "isCorrect": false,
-      "exerciseText": "math:ratio",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:ratio",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "math",
-      "topic": "ratio",
-      "operation": "ratio",
-      "bucketKey": "ratio",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1777201174101,
-      "isCorrect": false,
-      "exerciseText": "math:ratio",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:math:ratio",
-      "hintUsed": false,
-      "responseMs": 2145
     }
   ],
   "mleo_geometry_time_tracking": {
@@ -1356,644 +1452,590 @@
   "mleo_geometry_mistakes": [],
   "mleo_english_time_tracking": {
     "topics": {
-      "writing": {
-        "total": 5676,
+      "mixed": {
+        "total": 3208,
         "sessions": [
           {
-            "date": "2026-01-31",
-            "duration": 1697,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "writing",
-            "timestamp": 1769853625562,
-            "mode": "learning",
-            "total": 10,
-            "correct": 9
-          },
-          {
-            "date": "2026-03-08",
-            "duration": 1509,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "writing",
-            "timestamp": 1772962584956,
-            "mode": "learning",
-            "total": 30,
-            "correct": 27
-          },
-          {
-            "date": "2026-04-21",
-            "duration": 1184,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "writing",
-            "timestamp": 1776776069968,
-            "mode": "learning",
-            "total": 13,
-            "correct": 12
-          },
-          {
-            "date": "2026-04-26",
-            "duration": 1286,
+            "date": "2026-01-12",
+            "duration": 870,
             "grade": "g5",
             "level": "hard",
-            "topic": "writing",
-            "timestamp": 1777198997169,
+            "topic": "mixed",
+            "timestamp": 1768228397789,
+            "mode": "learning",
+            "total": 20,
+            "correct": 18
+          },
+          {
+            "date": "2026-02-24",
+            "duration": 1073,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "mixed",
+            "timestamp": 1771962287148,
             "mode": "learning",
             "total": 14,
             "correct": 13
-          }
-        ],
-        "byGrade": {
-          "g5": 5676
-        },
-        "byLevel": {
-          "medium": 4390,
-          "hard": 1286
-        }
-      },
-      "vocabulary": {
-        "total": 6424,
-        "sessions": [
-          {
-            "date": "2026-02-04",
-            "duration": 1639,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "vocabulary",
-            "timestamp": 1770182915818,
-            "mode": "learning",
-            "total": 17,
-            "correct": 16
           },
           {
-            "date": "2026-03-20",
-            "duration": 1739,
+            "date": "2026-04-01",
+            "duration": 1265,
             "grade": "g5",
-            "level": "medium",
-            "topic": "vocabulary",
-            "timestamp": 1774018797901,
-            "mode": "learning",
-            "total": 13,
-            "correct": 12
-          },
-          {
-            "date": "2026-03-26",
-            "duration": 1250,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "vocabulary",
-            "timestamp": 1774536708991,
-            "mode": "learning",
-            "total": 13,
-            "correct": 12
-          },
-          {
-            "date": "2026-04-20",
-            "duration": 1796,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "vocabulary",
-            "timestamp": 1776696193101,
-            "mode": "learning",
-            "total": 15,
-            "correct": 14
-          }
-        ],
-        "byGrade": {
-          "g5": 6424
-        },
-        "byLevel": {
-          "medium": 6424
-        }
-      },
-      "mixed": {
-        "total": 4852,
-        "sessions": [
-          {
-            "date": "2026-02-07",
-            "duration": 1329,
-            "grade": "g5",
-            "level": "medium",
+            "level": "hard",
             "topic": "mixed",
-            "timestamp": 1770465161978,
+            "timestamp": 1775019904269,
             "mode": "learning",
-            "total": 19,
+            "total": 18,
             "correct": 17
-          },
-          {
-            "date": "2026-03-14",
-            "duration": 919,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "mixed",
-            "timestamp": 1773503110662,
-            "mode": "learning",
-            "total": 13,
-            "correct": 12
-          },
-          {
-            "date": "2026-04-19",
-            "duration": 1661,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "mixed",
-            "timestamp": 1776582629340,
-            "mode": "learning",
-            "total": 10,
-            "correct": 9
-          },
-          {
-            "date": "2026-04-19",
-            "duration": 943,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "mixed",
-            "timestamp": 1776608126995,
-            "mode": "learning",
-            "total": 12,
-            "correct": 11
           }
         ],
         "byGrade": {
-          "g5": 4852
+          "g5": 3208
         },
         "byLevel": {
-          "medium": 4852
+          "hard": 3208
         }
       },
-      "grammar": {
-        "total": 5037,
+      "writing": {
+        "total": 3459,
         "sessions": [
           {
-            "date": "2026-02-10",
-            "duration": 1365,
+            "date": "2026-01-31",
+            "duration": 1364,
             "grade": "g5",
-            "level": "medium",
-            "topic": "grammar",
-            "timestamp": 1770726278657,
-            "mode": "learning",
-            "total": 15,
-            "correct": 14
-          },
-          {
-            "date": "2026-04-05",
-            "duration": 1402,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "grammar",
-            "timestamp": 1775387986486,
+            "level": "hard",
+            "topic": "writing",
+            "timestamp": 1769901108550,
             "mode": "learning",
             "total": 11,
             "correct": 10
           },
           {
-            "date": "2026-04-20",
-            "duration": 1299,
+            "date": "2026-04-23",
+            "duration": 878,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "writing",
+            "timestamp": 1776918083898,
+            "mode": "learning",
+            "total": 19,
+            "correct": 17
+          },
+          {
+            "date": "2026-04-23",
+            "duration": 1217,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "writing",
+            "timestamp": 1776986409928,
+            "mode": "learning",
+            "total": 14,
+            "correct": 13
+          }
+        ],
+        "byGrade": {
+          "g5": 3459
+        },
+        "byLevel": {
+          "hard": 1364,
+          "medium": 2095
+        }
+      },
+      "grammar": {
+        "total": 4730,
+        "sessions": [
+          {
+            "date": "2026-03-13",
+            "duration": 1131,
             "grade": "g5",
             "level": "medium",
             "topic": "grammar",
-            "timestamp": 1776695925933,
+            "timestamp": 1773420919293,
             "mode": "learning",
             "total": 13,
             "correct": 12
           },
           {
-            "date": "2026-04-23",
-            "duration": 971,
+            "date": "2026-04-06",
+            "duration": 1545,
             "grade": "g5",
-            "level": "medium",
+            "level": "hard",
             "topic": "grammar",
-            "timestamp": 1776942559730,
+            "timestamp": 1775491432560,
+            "mode": "learning",
+            "total": 16,
+            "correct": 15
+          },
+          {
+            "date": "2026-04-19",
+            "duration": 917,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "grammar",
+            "timestamp": 1776609471416,
             "mode": "learning",
             "total": 18,
             "correct": 17
+          },
+          {
+            "date": "2026-04-20",
+            "duration": 1137,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "grammar",
+            "timestamp": 1776689566840,
+            "mode": "learning",
+            "total": 21,
+            "correct": 19
           }
         ],
         "byGrade": {
-          "g5": 5037
+          "g5": 4730
         },
         "byLevel": {
-          "medium": 5037
+          "medium": 2268,
+          "hard": 2462
         }
       },
       "translation": {
-        "total": 5570,
+        "total": 5281,
         "sessions": [
           {
-            "date": "2026-03-09",
-            "duration": 1340,
+            "date": "2026-03-29",
+            "duration": 1481,
             "grade": "g5",
             "level": "hard",
             "topic": "translation",
-            "timestamp": 1773044579645,
-            "mode": "learning",
-            "total": 16,
-            "correct": 15
-          },
-          {
-            "date": "2026-03-18",
-            "duration": 1212,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "translation",
-            "timestamp": 1773829013763,
-            "mode": "learning",
-            "total": 16,
-            "correct": 15
-          },
-          {
-            "date": "2026-04-09",
-            "duration": 1561,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "translation",
-            "timestamp": 1775697121761,
-            "mode": "learning",
-            "total": 14,
-            "correct": 13
-          },
-          {
-            "date": "2026-04-23",
-            "duration": 1457,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "translation",
-            "timestamp": 1776922182914,
-            "mode": "learning",
-            "total": 18,
-            "correct": 16
-          }
-        ],
-        "byGrade": {
-          "g5": 5570
-        },
-        "byLevel": {
-          "hard": 1340,
-          "medium": 4230
-        }
-      },
-      "sentences": {
-        "total": 6147,
-        "sessions": [
-          {
-            "date": "2026-04-21",
-            "duration": 1540,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "sentences",
-            "timestamp": 1776771304263,
+            "timestamp": 1774747550667,
             "mode": "learning",
             "total": 12,
             "correct": 11
           },
           {
-            "date": "2026-04-21",
-            "duration": 1443,
+            "date": "2026-04-18",
+            "duration": 1595,
             "grade": "g5",
-            "level": "hard",
-            "topic": "sentences",
-            "timestamp": 1776815881318,
+            "level": "medium",
+            "topic": "translation",
+            "timestamp": 1776544622393,
             "mode": "learning",
             "total": 18,
             "correct": 16
           },
           {
-            "date": "2026-04-25",
-            "duration": 1731,
+            "date": "2026-04-19",
+            "duration": 962,
             "grade": "g5",
             "level": "medium",
-            "topic": "sentences",
-            "timestamp": 1777087504040,
+            "topic": "translation",
+            "timestamp": 1776615328283,
             "mode": "learning",
-            "total": 20,
+            "total": 21,
             "correct": 19
           },
           {
             "date": "2026-04-25",
-            "duration": 1433,
+            "duration": 1243,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "translation",
+            "timestamp": 1777155369421,
+            "mode": "learning",
+            "total": 24,
+            "correct": 22
+          }
+        ],
+        "byGrade": {
+          "g5": 5281
+        },
+        "byLevel": {
+          "hard": 1481,
+          "medium": 3800
+        }
+      },
+      "vocabulary": {
+        "total": 5589,
+        "sessions": [
+          {
+            "date": "2026-04-19",
+            "duration": 1573,
             "grade": "g5",
             "level": "hard",
-            "topic": "sentences",
-            "timestamp": 1777149943950,
+            "topic": "vocabulary",
+            "timestamp": 1776621145337,
+            "mode": "learning",
+            "total": 20,
+            "correct": 18
+          },
+          {
+            "date": "2026-04-21",
+            "duration": 1327,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "vocabulary",
+            "timestamp": 1776744243177,
+            "mode": "learning",
+            "total": 17,
+            "correct": 16
+          },
+          {
+            "date": "2026-04-22",
+            "duration": 1798,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "vocabulary",
+            "timestamp": 1776865507212,
+            "mode": "learning",
+            "total": 13,
+            "correct": 12
+          },
+          {
+            "date": "2026-04-27",
+            "duration": 891,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "vocabulary",
+            "timestamp": 1777250530458,
             "mode": "learning",
             "total": 16,
             "correct": 15
           }
         ],
         "byGrade": {
-          "g5": 6147
+          "g5": 5589
         },
         "byLevel": {
-          "medium": 3271,
-          "hard": 2876
+          "hard": 3371,
+          "medium": 2218
+        }
+      },
+      "sentences": {
+        "total": 3865,
+        "sessions": [
+          {
+            "date": "2026-04-22",
+            "duration": 963,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "sentences",
+            "timestamp": 1776820082254,
+            "mode": "learning",
+            "total": 14,
+            "correct": 13
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 1299,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "sentences",
+            "timestamp": 1777079700255,
+            "mode": "learning",
+            "total": 10,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-26",
+            "duration": 1603,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "sentences",
+            "timestamp": 1777172768278,
+            "mode": "learning",
+            "total": 17,
+            "correct": 16
+          }
+        ],
+        "byGrade": {
+          "g5": 3865
+        },
+        "byLevel": {
+          "medium": 2262,
+          "hard": 1603
         }
       }
     },
     "daily": {
+      "2026-01-12": {
+        "total": 870,
+        "topics": {
+          "mixed": 870
+        },
+        "byGrade": {
+          "g5": 870
+        },
+        "byLevel": {
+          "hard": 870
+        }
+      },
+      "2026-02-24": {
+        "total": 1073,
+        "topics": {
+          "mixed": 1073
+        },
+        "byGrade": {
+          "g5": 1073
+        },
+        "byLevel": {
+          "hard": 1073
+        }
+      },
+      "2026-04-01": {
+        "total": 1265,
+        "topics": {
+          "mixed": 1265
+        },
+        "byGrade": {
+          "g5": 1265
+        },
+        "byLevel": {
+          "hard": 1265
+        }
+      },
       "2026-01-31": {
-        "total": 1697,
+        "total": 1364,
         "topics": {
-          "writing": 1697
+          "writing": 1364
         },
         "byGrade": {
-          "g5": 1697
+          "g5": 1364
         },
         "byLevel": {
-          "medium": 1697
-        }
-      },
-      "2026-03-08": {
-        "total": 1509,
-        "topics": {
-          "writing": 1509
-        },
-        "byGrade": {
-          "g5": 1509
-        },
-        "byLevel": {
-          "medium": 1509
-        }
-      },
-      "2026-04-21": {
-        "total": 4167,
-        "topics": {
-          "writing": 1184,
-          "sentences": 2983
-        },
-        "byGrade": {
-          "g5": 4167
-        },
-        "byLevel": {
-          "medium": 2724,
-          "hard": 1443
-        }
-      },
-      "2026-04-26": {
-        "total": 1286,
-        "topics": {
-          "writing": 1286
-        },
-        "byGrade": {
-          "g5": 1286
-        },
-        "byLevel": {
-          "hard": 1286
-        }
-      },
-      "2026-02-04": {
-        "total": 1639,
-        "topics": {
-          "vocabulary": 1639
-        },
-        "byGrade": {
-          "g5": 1639
-        },
-        "byLevel": {
-          "medium": 1639
-        }
-      },
-      "2026-03-20": {
-        "total": 1739,
-        "topics": {
-          "vocabulary": 1739
-        },
-        "byGrade": {
-          "g5": 1739
-        },
-        "byLevel": {
-          "medium": 1739
-        }
-      },
-      "2026-03-26": {
-        "total": 1250,
-        "topics": {
-          "vocabulary": 1250
-        },
-        "byGrade": {
-          "g5": 1250
-        },
-        "byLevel": {
-          "medium": 1250
-        }
-      },
-      "2026-04-20": {
-        "total": 3095,
-        "topics": {
-          "vocabulary": 1796,
-          "grammar": 1299
-        },
-        "byGrade": {
-          "g5": 3095
-        },
-        "byLevel": {
-          "medium": 3095
-        }
-      },
-      "2026-02-07": {
-        "total": 1329,
-        "topics": {
-          "mixed": 1329
-        },
-        "byGrade": {
-          "g5": 1329
-        },
-        "byLevel": {
-          "medium": 1329
-        }
-      },
-      "2026-03-14": {
-        "total": 919,
-        "topics": {
-          "mixed": 919
-        },
-        "byGrade": {
-          "g5": 919
-        },
-        "byLevel": {
-          "medium": 919
-        }
-      },
-      "2026-04-19": {
-        "total": 2604,
-        "topics": {
-          "mixed": 2604
-        },
-        "byGrade": {
-          "g5": 2604
-        },
-        "byLevel": {
-          "medium": 2604
-        }
-      },
-      "2026-02-10": {
-        "total": 1365,
-        "topics": {
-          "grammar": 1365
-        },
-        "byGrade": {
-          "g5": 1365
-        },
-        "byLevel": {
-          "medium": 1365
-        }
-      },
-      "2026-04-05": {
-        "total": 1402,
-        "topics": {
-          "grammar": 1402
-        },
-        "byGrade": {
-          "g5": 1402
-        },
-        "byLevel": {
-          "medium": 1402
+          "hard": 1364
         }
       },
       "2026-04-23": {
-        "total": 2428,
+        "total": 2095,
         "topics": {
-          "grammar": 971,
-          "translation": 1457
+          "writing": 2095
         },
         "byGrade": {
-          "g5": 2428
+          "g5": 2095
         },
         "byLevel": {
-          "medium": 2428
+          "medium": 2095
         }
       },
-      "2026-03-09": {
-        "total": 1340,
+      "2026-03-13": {
+        "total": 1131,
         "topics": {
-          "translation": 1340
+          "grammar": 1131
         },
         "byGrade": {
-          "g5": 1340
+          "g5": 1131
         },
         "byLevel": {
-          "hard": 1340
+          "medium": 1131
         }
       },
-      "2026-03-18": {
-        "total": 1212,
+      "2026-04-06": {
+        "total": 1545,
         "topics": {
-          "translation": 1212
+          "grammar": 1545
         },
         "byGrade": {
-          "g5": 1212
+          "g5": 1545
         },
         "byLevel": {
-          "medium": 1212
+          "hard": 1545
         }
       },
-      "2026-04-09": {
-        "total": 1561,
+      "2026-04-19": {
+        "total": 3452,
         "topics": {
-          "translation": 1561
+          "grammar": 917,
+          "translation": 962,
+          "vocabulary": 1573
         },
         "byGrade": {
-          "g5": 1561
+          "g5": 3452
         },
         "byLevel": {
-          "medium": 1561
+          "hard": 2490,
+          "medium": 962
+        }
+      },
+      "2026-04-20": {
+        "total": 1137,
+        "topics": {
+          "grammar": 1137
+        },
+        "byGrade": {
+          "g5": 1137
+        },
+        "byLevel": {
+          "medium": 1137
+        }
+      },
+      "2026-03-29": {
+        "total": 1481,
+        "topics": {
+          "translation": 1481
+        },
+        "byGrade": {
+          "g5": 1481
+        },
+        "byLevel": {
+          "hard": 1481
+        }
+      },
+      "2026-04-18": {
+        "total": 1595,
+        "topics": {
+          "translation": 1595
+        },
+        "byGrade": {
+          "g5": 1595
+        },
+        "byLevel": {
+          "medium": 1595
         }
       },
       "2026-04-25": {
-        "total": 3164,
+        "total": 2542,
         "topics": {
-          "sentences": 3164
+          "translation": 1243,
+          "sentences": 1299
         },
         "byGrade": {
-          "g5": 3164
+          "g5": 2542
         },
         "byLevel": {
-          "medium": 1731,
-          "hard": 1433
+          "medium": 2542
+        }
+      },
+      "2026-04-21": {
+        "total": 1327,
+        "topics": {
+          "vocabulary": 1327
+        },
+        "byGrade": {
+          "g5": 1327
+        },
+        "byLevel": {
+          "medium": 1327
+        }
+      },
+      "2026-04-22": {
+        "total": 2761,
+        "topics": {
+          "vocabulary": 1798,
+          "sentences": 963
+        },
+        "byGrade": {
+          "g5": 2761
+        },
+        "byLevel": {
+          "hard": 1798,
+          "medium": 963
+        }
+      },
+      "2026-04-27": {
+        "total": 891,
+        "topics": {
+          "vocabulary": 891
+        },
+        "byGrade": {
+          "g5": 891
+        },
+        "byLevel": {
+          "medium": 891
+        }
+      },
+      "2026-04-26": {
+        "total": 1603,
+        "topics": {
+          "sentences": 1603
+        },
+        "byGrade": {
+          "g5": 1603
+        },
+        "byLevel": {
+          "hard": 1603
         }
       }
     }
   },
   "mleo_english_master_progress": {
     "progress": {
-      "writing": {
-        "total": 67,
-        "correct": 61
-      },
-      "vocabulary": {
-        "total": 58,
-        "correct": 54
-      },
       "mixed": {
-        "total": 54,
-        "correct": 49
+        "total": 52,
+        "correct": 48
+      },
+      "writing": {
+        "total": 44,
+        "correct": 40
       },
       "grammar": {
-        "total": 57,
-        "correct": 53
+        "total": 68,
+        "correct": 63
       },
       "translation": {
-        "total": 64,
-        "correct": 59
+        "total": 75,
+        "correct": 68
       },
-      "sentences": {
+      "vocabulary": {
         "total": 66,
         "correct": 61
+      },
+      "sentences": {
+        "total": 41,
+        "correct": 38
       }
     },
     "stars": 5,
     "playerLevel": 3,
-    "xp": 1830,
+    "xp": 1730,
     "badges": []
   },
   "mleo_english_mistakes": [
     {
       "subject": "english",
-      "topic": "writing",
-      "bucketKey": "writing",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1769853625562,
-      "isCorrect": false,
-      "exerciseText": "english:writing",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:writing",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "english",
-      "topic": "vocabulary",
-      "bucketKey": "vocabulary",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1770182915818,
-      "isCorrect": false,
-      "exerciseText": "english:vocabulary",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:vocabulary",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "english",
       "topic": "mixed",
       "bucketKey": "mixed",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1770465161978,
+      "timestamp": 1768228397789,
       "isCorrect": false,
       "exerciseText": "english:mixed",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:english:mixed",
       "hintUsed": true,
-      "responseMs": 2100
+      "responseMs": 5400
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1769901108550,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "english",
+      "topic": "mixed",
+      "bucketKey": "mixed",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1771962287148,
+      "isCorrect": false,
+      "exerciseText": "english:mixed",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:mixed",
+      "hintUsed": true,
+      "responseMs": 5400
     },
     {
       "subject": "english",
@@ -2002,7 +2044,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1770726278657,
+      "timestamp": 1773420919293,
       "isCorrect": false,
       "exerciseText": "english:grammar",
       "correctAnswer": 1,
@@ -2013,44 +2055,12 @@
     },
     {
       "subject": "english",
-      "topic": "writing",
-      "bucketKey": "writing",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1772962584956,
-      "isCorrect": false,
-      "exerciseText": "english:writing",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:writing",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "english",
-      "topic": "writing",
-      "bucketKey": "writing",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1772962584957,
-      "isCorrect": false,
-      "exerciseText": "english:writing",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:writing",
-      "hintUsed": false,
-      "responseMs": 2145
-    },
-    {
-      "subject": "english",
       "topic": "translation",
       "bucketKey": "translation",
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1773044579645,
+      "timestamp": 1774747550667,
       "isCorrect": false,
       "exerciseText": "english:translation",
       "correctAnswer": 1,
@@ -2064,80 +2074,32 @@
       "topic": "mixed",
       "bucketKey": "mixed",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1773503110662,
+      "timestamp": 1775019904269,
       "isCorrect": false,
       "exerciseText": "english:mixed",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:english:mixed",
       "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "english",
-      "topic": "translation",
-      "bucketKey": "translation",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1773829013763,
-      "isCorrect": false,
-      "exerciseText": "english:translation",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:translation",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "english",
-      "topic": "vocabulary",
-      "bucketKey": "vocabulary",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1774018797901,
-      "isCorrect": false,
-      "exerciseText": "english:vocabulary",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:vocabulary",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "english",
-      "topic": "vocabulary",
-      "bucketKey": "vocabulary",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1774536708991,
-      "isCorrect": false,
-      "exerciseText": "english:vocabulary",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:vocabulary",
-      "hintUsed": true,
-      "responseMs": 2100
+      "responseMs": 5400
     },
     {
       "subject": "english",
       "topic": "grammar",
       "bucketKey": "grammar",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1775387986486,
+      "timestamp": 1775491432560,
       "isCorrect": false,
       "exerciseText": "english:grammar",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:english:grammar",
       "hintUsed": true,
-      "responseMs": 2100
+      "responseMs": 5400
     },
     {
       "subject": "english",
@@ -2146,7 +2108,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1775697121761,
+      "timestamp": 1776544622393,
       "isCorrect": false,
       "exerciseText": "english:translation",
       "correctAnswer": 1,
@@ -2157,35 +2119,51 @@
     },
     {
       "subject": "english",
-      "topic": "mixed",
-      "bucketKey": "mixed",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776609471416,
+      "isCorrect": false,
+      "exerciseText": "english:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:grammar",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "english",
+      "topic": "translation",
+      "bucketKey": "translation",
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1776582629340,
+      "timestamp": 1776615328283,
       "isCorrect": false,
-      "exerciseText": "english:mixed",
+      "exerciseText": "english:translation",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:mixed",
+      "patternFamily": "pf:english:translation",
       "hintUsed": true,
       "responseMs": 2100
     },
     {
       "subject": "english",
-      "topic": "mixed",
-      "bucketKey": "mixed",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1776608126995,
+      "timestamp": 1776621145337,
       "isCorrect": false,
-      "exerciseText": "english:mixed",
+      "exerciseText": "english:vocabulary",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:mixed",
+      "patternFamily": "pf:english:vocabulary",
       "hintUsed": true,
-      "responseMs": 2100
+      "responseMs": 5400
     },
     {
       "subject": "english",
@@ -2194,7 +2172,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1776695925933,
+      "timestamp": 1776689566840,
       "isCorrect": false,
       "exerciseText": "english:grammar",
       "correctAnswer": 1,
@@ -2210,7 +2188,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1776696193101,
+      "timestamp": 1776744243177,
       "isCorrect": false,
       "exerciseText": "english:vocabulary",
       "correctAnswer": 1,
@@ -2226,7 +2204,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1776771304263,
+      "timestamp": 1776820082254,
       "isCorrect": false,
       "exerciseText": "english:sentences",
       "correctAnswer": 1,
@@ -2237,12 +2215,44 @@
     },
     {
       "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776865507212,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "english",
       "topic": "writing",
       "bucketKey": "writing",
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1776776069968,
+      "timestamp": 1776918083898,
+      "isCorrect": false,
+      "exerciseText": "english:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:writing",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "english",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776986409928,
       "isCorrect": false,
       "exerciseText": "english:writing",
       "correctAnswer": 1,
@@ -2256,16 +2266,16 @@
       "topic": "sentences",
       "bucketKey": "sentences",
       "grade": "g5",
-      "level": "hard",
+      "level": "medium",
       "mode": "learning",
-      "timestamp": 1776815881318,
+      "timestamp": 1777079700255,
       "isCorrect": false,
       "exerciseText": "english:sentences",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:english:sentences",
       "hintUsed": true,
-      "responseMs": 5400
+      "responseMs": 2100
     },
     {
       "subject": "english",
@@ -2274,7 +2284,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1776922182914,
+      "timestamp": 1777155369421,
       "isCorrect": false,
       "exerciseText": "english:translation",
       "correctAnswer": 1,
@@ -2285,44 +2295,12 @@
     },
     {
       "subject": "english",
-      "topic": "grammar",
-      "bucketKey": "grammar",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776942559730,
-      "isCorrect": false,
-      "exerciseText": "english:grammar",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:grammar",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "english",
-      "topic": "sentences",
-      "bucketKey": "sentences",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1777087504040,
-      "isCorrect": false,
-      "exerciseText": "english:sentences",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:english:sentences",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "english",
       "topic": "sentences",
       "bucketKey": "sentences",
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1777149943950,
+      "timestamp": 1777172768278,
       "isCorrect": false,
       "exerciseText": "english:sentences",
       "correctAnswer": 1,
@@ -2333,465 +2311,397 @@
     },
     {
       "subject": "english",
-      "topic": "writing",
-      "bucketKey": "writing",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
       "grade": "g5",
-      "level": "hard",
+      "level": "medium",
       "mode": "learning",
-      "timestamp": 1777198997169,
+      "timestamp": 1777250530458,
       "isCorrect": false,
-      "exerciseText": "english:writing",
+      "exerciseText": "english:vocabulary",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:english:writing",
+      "patternFamily": "pf:english:vocabulary",
       "hintUsed": true,
-      "responseMs": 5400
+      "responseMs": 2100
     }
   ],
   "mleo_science_time_tracking": {
     "topics": {
-      "body": {
-        "total": 2047,
+      "earth_space": {
+        "total": 1346,
         "sessions": [
           {
-            "date": "2026-01-30",
-            "duration": 1149,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "body",
-            "timestamp": 1769812717311,
-            "mode": "learning",
-            "total": 17,
-            "correct": 15
-          },
-          {
-            "date": "2026-04-08",
-            "duration": 898,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "body",
-            "timestamp": 1775624236962,
-            "mode": "learning",
-            "total": 23,
-            "correct": 20
-          }
-        ],
-        "byGrade": {
-          "g5": 2047
-        },
-        "byLevel": {
-          "medium": 2047
-        }
-      },
-      "environment": {
-        "total": 1544,
-        "sessions": [
-          {
-            "date": "2026-03-27",
-            "duration": 1544,
+            "date": "2026-01-26",
+            "duration": 1346,
             "grade": "g5",
             "level": "hard",
-            "topic": "environment",
-            "timestamp": 1774618529593,
-            "mode": "learning",
-            "total": 25,
-            "correct": 23
-          }
-        ],
-        "byGrade": {
-          "g5": 1544
-        },
-        "byLevel": {
-          "hard": 1544
-        }
-      },
-      "plants": {
-        "total": 928,
-        "sessions": [
-          {
-            "date": "2026-04-07",
-            "duration": 928,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "plants",
-            "timestamp": 1775553884592,
+            "topic": "earth_space",
+            "timestamp": 1769428720828,
             "mode": "learning",
             "total": 13,
             "correct": 11
           }
         ],
         "byGrade": {
-          "g5": 928
+          "g5": 1346
         },
         "byLevel": {
-          "hard": 928
+          "hard": 1346
         }
       },
-      "animals": {
-        "total": 1123,
+      "materials": {
+        "total": 1137,
         "sessions": [
           {
-            "date": "2026-04-15",
-            "duration": 1123,
+            "date": "2026-03-24",
+            "duration": 1137,
             "grade": "g5",
-            "level": "medium",
-            "topic": "animals",
-            "timestamp": 1776243317699,
+            "level": "hard",
+            "topic": "materials",
+            "timestamp": 1774384884828,
             "mode": "learning",
-            "total": 17,
+            "total": 16,
             "correct": 15
           }
         ],
         "byGrade": {
-          "g5": 1123
+          "g5": 1137
         },
         "byLevel": {
-          "medium": 1123
+          "hard": 1137
         }
       },
-      "materials": {
-        "total": 1771,
+      "environment": {
+        "total": 1575,
         "sessions": [
           {
-            "date": "2026-04-16",
-            "duration": 1771,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "materials",
-            "timestamp": 1776381097468,
-            "mode": "learning",
-            "total": 19,
-            "correct": 18
-          }
-        ],
-        "byGrade": {
-          "g5": 1771
-        },
-        "byLevel": {
-          "medium": 1771
-        }
-      },
-      "earth_space": {
-        "total": 1537,
-        "sessions": [
-          {
-            "date": "2026-04-21",
-            "duration": 1537,
+            "date": "2026-03-25",
+            "duration": 1575,
             "grade": "g5",
             "level": "hard",
-            "topic": "earth_space",
-            "timestamp": 1776740010949,
+            "topic": "environment",
+            "timestamp": 1774464045966,
             "mode": "learning",
-            "total": 20,
-            "correct": 18
+            "total": 11,
+            "correct": 10
           }
         ],
         "byGrade": {
-          "g5": 1537
+          "g5": 1575
         },
         "byLevel": {
-          "hard": 1537
+          "hard": 1575
         }
       },
       "mixed": {
-        "total": 1154,
+        "total": 1139,
         "sessions": [
           {
-            "date": "2026-04-21",
-            "duration": 1154,
+            "date": "2026-03-26",
+            "duration": 1139,
             "grade": "g5",
             "level": "medium",
             "topic": "mixed",
-            "timestamp": 1776780561317,
+            "timestamp": 1774532622554,
             "mode": "learning",
-            "total": 20,
-            "correct": 18
+            "total": 24,
+            "correct": 21
           }
         ],
         "byGrade": {
-          "g5": 1154
+          "g5": 1139
         },
         "byLevel": {
-          "medium": 1154
+          "medium": 1139
+        }
+      },
+      "animals": {
+        "total": 2507,
+        "sessions": [
+          {
+            "date": "2026-03-29",
+            "duration": 928,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "animals",
+            "timestamp": 1774744722789,
+            "mode": "learning",
+            "total": 10,
+            "correct": 9
+          },
+          {
+            "date": "2026-04-22",
+            "duration": 1579,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "animals",
+            "timestamp": 1776880452357,
+            "mode": "learning",
+            "total": 23,
+            "correct": 20
+          }
+        ],
+        "byGrade": {
+          "g5": 2507
+        },
+        "byLevel": {
+          "medium": 2507
         }
       },
       "experiments": {
-        "total": 1326,
+        "total": 1006,
         "sessions": [
           {
-            "date": "2026-04-25",
-            "duration": 1326,
+            "date": "2026-04-06",
+            "duration": 1006,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "experiments",
+            "timestamp": 1775500284894,
+            "mode": "learning",
+            "total": 16,
+            "correct": 14
+          }
+        ],
+        "byGrade": {
+          "g5": 1006
+        },
+        "byLevel": {
+          "medium": 1006
+        }
+      },
+      "plants": {
+        "total": 3114,
+        "sessions": [
+          {
+            "date": "2026-04-19",
+            "duration": 1643,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "plants",
+            "timestamp": 1776613010945,
+            "mode": "learning",
+            "total": 19,
+            "correct": 17
+          },
+          {
+            "date": "2026-04-19",
+            "duration": 1471,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "plants",
+            "timestamp": 1776627904640,
+            "mode": "learning",
+            "total": 17,
+            "correct": 16
+          }
+        ],
+        "byGrade": {
+          "g5": 3114
+        },
+        "byLevel": {
+          "medium": 3114
+        }
+      },
+      "body": {
+        "total": 2904,
+        "sessions": [
+          {
+            "date": "2026-04-23",
+            "duration": 1502,
             "grade": "g5",
             "level": "hard",
-            "topic": "experiments",
-            "timestamp": 1777128572329,
+            "topic": "body",
+            "timestamp": 1776952462085,
+            "mode": "learning",
+            "total": 17,
+            "correct": 15
+          },
+          {
+            "date": "2026-04-26",
+            "duration": 1402,
+            "grade": "g5",
+            "level": "hard",
+            "topic": "body",
+            "timestamp": 1777178935224,
             "mode": "learning",
             "total": 15,
             "correct": 13
           }
         ],
         "byGrade": {
-          "g5": 1326
+          "g5": 2904
         },
         "byLevel": {
-          "hard": 1326
+          "hard": 2904
         }
       }
     },
     "daily": {
-      "2026-01-30": {
-        "total": 1149,
+      "2026-01-26": {
+        "total": 1346,
         "topics": {
-          "body": 1149
+          "earth_space": 1346
         },
         "byGrade": {
-          "g5": 1149
+          "g5": 1346
         },
         "byLevel": {
-          "medium": 1149
+          "hard": 1346
         }
       },
-      "2026-04-08": {
-        "total": 898,
+      "2026-03-24": {
+        "total": 1137,
         "topics": {
-          "body": 898
+          "materials": 1137
         },
         "byGrade": {
-          "g5": 898
+          "g5": 1137
         },
         "byLevel": {
-          "medium": 898
+          "hard": 1137
         }
       },
-      "2026-03-27": {
-        "total": 1544,
+      "2026-03-25": {
+        "total": 1575,
         "topics": {
-          "environment": 1544
+          "environment": 1575
         },
         "byGrade": {
-          "g5": 1544
+          "g5": 1575
         },
         "byLevel": {
-          "hard": 1544
+          "hard": 1575
         }
       },
-      "2026-04-07": {
+      "2026-03-26": {
+        "total": 1139,
+        "topics": {
+          "mixed": 1139
+        },
+        "byGrade": {
+          "g5": 1139
+        },
+        "byLevel": {
+          "medium": 1139
+        }
+      },
+      "2026-03-29": {
         "total": 928,
         "topics": {
-          "plants": 928
+          "animals": 928
         },
         "byGrade": {
           "g5": 928
         },
         "byLevel": {
-          "hard": 928
+          "medium": 928
         }
       },
-      "2026-04-15": {
-        "total": 1123,
+      "2026-04-22": {
+        "total": 1579,
         "topics": {
-          "animals": 1123
+          "animals": 1579
         },
         "byGrade": {
-          "g5": 1123
+          "g5": 1579
         },
         "byLevel": {
-          "medium": 1123
+          "medium": 1579
         }
       },
-      "2026-04-16": {
-        "total": 1771,
+      "2026-04-06": {
+        "total": 1006,
         "topics": {
-          "materials": 1771
+          "experiments": 1006
         },
         "byGrade": {
-          "g5": 1771
+          "g5": 1006
         },
         "byLevel": {
-          "medium": 1771
+          "medium": 1006
         }
       },
-      "2026-04-21": {
-        "total": 2691,
+      "2026-04-19": {
+        "total": 3114,
         "topics": {
-          "earth_space": 1537,
-          "mixed": 1154
+          "plants": 3114
         },
         "byGrade": {
-          "g5": 2691
+          "g5": 3114
         },
         "byLevel": {
-          "hard": 1537,
-          "medium": 1154
+          "medium": 3114
         }
       },
-      "2026-04-25": {
-        "total": 1326,
+      "2026-04-23": {
+        "total": 1502,
         "topics": {
-          "experiments": 1326
+          "body": 1502
         },
         "byGrade": {
-          "g5": 1326
+          "g5": 1502
         },
         "byLevel": {
-          "hard": 1326
+          "hard": 1502
+        }
+      },
+      "2026-04-26": {
+        "total": 1402,
+        "topics": {
+          "body": 1402
+        },
+        "byGrade": {
+          "g5": 1402
+        },
+        "byLevel": {
+          "hard": 1402
         }
       }
     }
   },
   "mleo_science_master_progress": {
     "progress": {
-      "body": {
-        "total": 40,
-        "correct": 35
-      },
-      "environment": {
-        "total": 25,
-        "correct": 23
-      },
-      "plants": {
+      "earth_space": {
         "total": 13,
         "correct": 11
       },
-      "animals": {
-        "total": 17,
+      "materials": {
+        "total": 16,
         "correct": 15
       },
-      "materials": {
-        "total": 19,
-        "correct": 18
-      },
-      "earth_space": {
-        "total": 20,
-        "correct": 18
+      "environment": {
+        "total": 11,
+        "correct": 10
       },
       "mixed": {
-        "total": 20,
-        "correct": 18
+        "total": 24,
+        "correct": 21
+      },
+      "animals": {
+        "total": 33,
+        "correct": 29
       },
       "experiments": {
-        "total": 15,
-        "correct": 13
+        "total": 16,
+        "correct": 14
+      },
+      "plants": {
+        "total": 36,
+        "correct": 33
+      },
+      "body": {
+        "total": 32,
+        "correct": 28
       }
     },
     "stars": 4,
-    "playerLevel": 1,
-    "xp": 845,
+    "playerLevel": 2,
+    "xp": 905,
     "badges": []
   },
   "mleo_science_mistakes": [
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1769812717311,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "science",
-      "topic": "environment",
-      "bucketKey": "environment",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1774618529593,
-      "isCorrect": false,
-      "exerciseText": "science:environment",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:environment",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "science",
-      "topic": "plants",
-      "bucketKey": "plants",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1775553884592,
-      "isCorrect": false,
-      "exerciseText": "science:plants",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:plants",
-      "hintUsed": true,
-      "responseMs": 5400
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1775624236962,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "science",
-      "topic": "body",
-      "bucketKey": "body",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1775624236963,
-      "isCorrect": false,
-      "exerciseText": "science:body",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:body",
-      "hintUsed": false,
-      "responseMs": 2145
-    },
-    {
-      "subject": "science",
-      "topic": "animals",
-      "bucketKey": "animals",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776243317699,
-      "isCorrect": false,
-      "exerciseText": "science:animals",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:animals",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "science",
-      "topic": "materials",
-      "bucketKey": "materials",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776381097468,
-      "isCorrect": false,
-      "exerciseText": "science:materials",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:science:materials",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
     {
       "subject": "science",
       "topic": "earth_space",
@@ -2799,7 +2709,7 @@
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1776740010949,
+      "timestamp": 1769428720828,
       "isCorrect": false,
       "exerciseText": "science:earth_space",
       "correctAnswer": 1,
@@ -2810,12 +2720,44 @@
     },
     {
       "subject": "science",
+      "topic": "materials",
+      "bucketKey": "materials",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1774384884828,
+      "isCorrect": false,
+      "exerciseText": "science:materials",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:materials",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "science",
+      "topic": "environment",
+      "bucketKey": "environment",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1774464045966,
+      "isCorrect": false,
+      "exerciseText": "science:environment",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:environment",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "science",
       "topic": "mixed",
       "bucketKey": "mixed",
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1776780561317,
+      "timestamp": 1774532622554,
       "isCorrect": false,
       "exerciseText": "science:mixed",
       "correctAnswer": 1,
@@ -2826,488 +2768,649 @@
     },
     {
       "subject": "science",
+      "topic": "mixed",
+      "bucketKey": "mixed",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774532622555,
+      "isCorrect": false,
+      "exerciseText": "science:mixed",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:mixed",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "science",
+      "topic": "animals",
+      "bucketKey": "animals",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774744722789,
+      "isCorrect": false,
+      "exerciseText": "science:animals",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:animals",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "science",
       "topic": "experiments",
       "bucketKey": "experiments",
       "grade": "g5",
-      "level": "hard",
+      "level": "medium",
       "mode": "learning",
-      "timestamp": 1777128572329,
+      "timestamp": 1775500284894,
       "isCorrect": false,
       "exerciseText": "science:experiments",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:science:experiments",
       "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "science",
+      "topic": "plants",
+      "bucketKey": "plants",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776613010945,
+      "isCorrect": false,
+      "exerciseText": "science:plants",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:plants",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "science",
+      "topic": "plants",
+      "bucketKey": "plants",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776627904640,
+      "isCorrect": false,
+      "exerciseText": "science:plants",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:plants",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "science",
+      "topic": "animals",
+      "bucketKey": "animals",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776880452357,
+      "isCorrect": false,
+      "exerciseText": "science:animals",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:animals",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "science",
+      "topic": "animals",
+      "bucketKey": "animals",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776880452358,
+      "isCorrect": false,
+      "exerciseText": "science:animals",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:animals",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "science",
+      "topic": "body",
+      "bucketKey": "body",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1776952462085,
+      "isCorrect": false,
+      "exerciseText": "science:body",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:body",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "science",
+      "topic": "body",
+      "bucketKey": "body",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1777178935224,
+      "isCorrect": false,
+      "exerciseText": "science:body",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:science:body",
+      "hintUsed": true,
       "responseMs": 5400
     }
   ],
   "mleo_hebrew_time_tracking": {
     "topics": {
-      "comprehension": {
-        "total": 3616,
+      "vocabulary": {
+        "total": 2922,
         "sessions": [
           {
-            "date": "2026-02-05",
-            "duration": 917,
+            "date": "2026-01-17",
+            "duration": 1482,
             "grade": "g5",
             "level": "medium",
-            "topic": "comprehension",
-            "timestamp": 1770274858551,
+            "topic": "vocabulary",
+            "timestamp": 1768622730117,
             "mode": "learning",
-            "total": 13,
-            "correct": 12
+            "total": 12,
+            "correct": 10
           },
           {
-            "date": "2026-04-20",
-            "duration": 1425,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "comprehension",
-            "timestamp": 1776661446740,
-            "mode": "learning",
-            "total": 18,
-            "correct": 16
-          },
-          {
-            "date": "2026-04-24",
-            "duration": 1274,
+            "date": "2026-04-25",
+            "duration": 1440,
             "grade": "g5",
             "level": "medium",
-            "topic": "comprehension",
-            "timestamp": 1777043888803,
+            "topic": "vocabulary",
+            "timestamp": 1777152346951,
             "mode": "learning",
-            "total": 30,
-            "correct": 28
+            "total": 11,
+            "correct": 9
           }
         ],
         "byGrade": {
-          "g5": 3616
+          "g5": 2922
         },
         "byLevel": {
-          "medium": 2191,
-          "hard": 1425
+          "medium": 2922
         }
       },
       "grammar": {
-        "total": 2684,
+        "total": 2466,
         "sessions": [
           {
-            "date": "2026-02-23",
-            "duration": 1515,
+            "date": "2026-01-26",
+            "duration": 1320,
             "grade": "g5",
-            "level": "medium",
+            "level": "hard",
             "topic": "grammar",
-            "timestamp": 1771854283402,
+            "timestamp": 1769455627116,
             "mode": "learning",
-            "total": 21,
-            "correct": 19
+            "total": 16,
+            "correct": 14
           },
           {
-            "date": "2026-04-22",
-            "duration": 1169,
+            "date": "2026-04-21",
+            "duration": 1146,
             "grade": "g5",
             "level": "medium",
             "topic": "grammar",
-            "timestamp": 1776867067882,
+            "timestamp": 1776800295851,
+            "mode": "learning",
+            "total": 18,
+            "correct": 17
+          }
+        ],
+        "byGrade": {
+          "g5": 2466
+        },
+        "byLevel": {
+          "hard": 1320,
+          "medium": 1146
+        }
+      },
+      "comprehension": {
+        "total": 2463,
+        "sessions": [
+          {
+            "date": "2026-02-15",
+            "duration": 1292,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "comprehension",
+            "timestamp": 1771168102946,
+            "mode": "learning",
+            "total": 9,
+            "correct": 8
+          },
+          {
+            "date": "2026-04-20",
+            "duration": 1171,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "comprehension",
+            "timestamp": 1776695295473,
             "mode": "learning",
             "total": 11,
             "correct": 10
           }
         ],
         "byGrade": {
-          "g5": 2684
+          "g5": 2463
         },
         "byLevel": {
-          "medium": 2684
-        }
-      },
-      "writing": {
-        "total": 2155,
-        "sessions": [
-          {
-            "date": "2026-03-03",
-            "duration": 1024,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "writing",
-            "timestamp": 1772506163094,
-            "mode": "learning",
-            "total": 17,
-            "correct": 16
-          },
-          {
-            "date": "2026-03-28",
-            "duration": 1131,
-            "grade": "g5",
-            "level": "medium",
-            "topic": "writing",
-            "timestamp": 1774707363630,
-            "mode": "learning",
-            "total": 15,
-            "correct": 14
-          }
-        ],
-        "byGrade": {
-          "g5": 2155
-        },
-        "byLevel": {
-          "hard": 1024,
-          "medium": 1131
+          "medium": 2463
         }
       },
       "reading": {
-        "total": 4040,
+        "total": 5067,
         "sessions": [
           {
-            "date": "2026-03-27",
-            "duration": 1426,
-            "grade": "g5",
-            "level": "hard",
-            "topic": "reading",
-            "timestamp": 1774624916257,
-            "mode": "learning",
-            "total": 18,
-            "correct": 16
-          },
-          {
-            "date": "2026-04-19",
-            "duration": 1040,
+            "date": "2026-02-27",
+            "duration": 1798,
             "grade": "g5",
             "level": "medium",
             "topic": "reading",
-            "timestamp": 1776636172765,
+            "timestamp": 1772153545157,
             "mode": "learning",
-            "total": 19,
-            "correct": 18
+            "total": 10,
+            "correct": 9
           },
           {
-            "date": "2026-04-20",
-            "duration": 1574,
+            "date": "2026-04-25",
+            "duration": 1470,
             "grade": "g5",
             "level": "medium",
             "topic": "reading",
-            "timestamp": 1776680691432,
+            "timestamp": 1777091445095,
+            "mode": "learning",
+            "total": 42,
+            "correct": 39
+          },
+          {
+            "date": "2026-04-25",
+            "duration": 1799,
+            "grade": "g5",
+            "level": "medium",
+            "topic": "reading",
+            "timestamp": 1777123592549,
             "mode": "learning",
             "total": 18,
-            "correct": 16
+            "correct": 17
           }
         ],
         "byGrade": {
-          "g5": 4040
+          "g5": 5067
         },
         "byLevel": {
-          "hard": 1426,
-          "medium": 2614
+          "medium": 5067
         }
       },
-      "mixed": {
-        "total": 2390,
+      "writing": {
+        "total": 3205,
         "sessions": [
           {
-            "date": "2026-04-05",
-            "duration": 979,
+            "date": "2026-04-20",
+            "duration": 1583,
             "grade": "g5",
             "level": "medium",
-            "topic": "mixed",
-            "timestamp": 1775379440345,
+            "topic": "writing",
+            "timestamp": 1776653353215,
             "mode": "learning",
-            "total": 13,
-            "correct": 12
+            "total": 19,
+            "correct": 17
           },
           {
-            "date": "2026-04-18",
-            "duration": 1411,
+            "date": "2026-04-23",
+            "duration": 1622,
             "grade": "g5",
             "level": "medium",
-            "topic": "mixed",
-            "timestamp": 1776551272340,
+            "topic": "writing",
+            "timestamp": 1776954150122,
             "mode": "learning",
-            "total": 18,
-            "correct": 16
+            "total": 12,
+            "correct": 11
           }
         ],
         "byGrade": {
-          "g5": 2390
+          "g5": 3205
         },
         "byLevel": {
-          "medium": 2390
+          "medium": 3205
         }
       },
       "speaking": {
-        "total": 2882,
+        "total": 2931,
         "sessions": [
           {
-            "date": "2026-04-20",
-            "duration": 1684,
+            "date": "2026-04-22",
+            "duration": 1658,
             "grade": "g5",
             "level": "medium",
             "topic": "speaking",
-            "timestamp": 1776645238297,
+            "timestamp": 1776892573949,
             "mode": "learning",
-            "total": 11,
-            "correct": 10
+            "total": 20,
+            "correct": 18
           },
           {
-            "date": "2026-04-25",
-            "duration": 1198,
+            "date": "2026-04-24",
+            "duration": 1273,
             "grade": "g5",
-            "level": "medium",
+            "level": "hard",
             "topic": "speaking",
-            "timestamp": 1777157445877,
+            "timestamp": 1776993614598,
             "mode": "learning",
-            "total": 15,
-            "correct": 13
+            "total": 13,
+            "correct": 12
           }
         ],
         "byGrade": {
-          "g5": 2882
+          "g5": 2931
         },
         "byLevel": {
-          "medium": 2882
+          "medium": 1658,
+          "hard": 1273
         }
       },
-      "vocabulary": {
-        "total": 2979,
+      "mixed": {
+        "total": 2653,
         "sessions": [
           {
             "date": "2026-04-23",
-            "duration": 1522,
+            "duration": 1510,
             "grade": "g5",
-            "level": "medium",
-            "topic": "vocabulary",
-            "timestamp": 1776916594090,
+            "level": "hard",
+            "topic": "mixed",
+            "timestamp": 1776921474900,
             "mode": "learning",
             "total": 18,
             "correct": 16
           },
           {
-            "date": "2026-04-25",
-            "duration": 1457,
+            "date": "2026-04-23",
+            "duration": 1143,
             "grade": "g5",
             "level": "medium",
-            "topic": "vocabulary",
-            "timestamp": 1777078584685,
+            "topic": "mixed",
+            "timestamp": 1776981404674,
             "mode": "learning",
-            "total": 15,
-            "correct": 13
+            "total": 16,
+            "correct": 15
           }
         ],
         "byGrade": {
-          "g5": 2979
+          "g5": 2653
         },
         "byLevel": {
-          "medium": 2979
+          "hard": 1510,
+          "medium": 1143
         }
       }
     },
     "daily": {
-      "2026-02-05": {
-        "total": 917,
+      "2026-01-17": {
+        "total": 1482,
         "topics": {
-          "comprehension": 917
+          "vocabulary": 1482
         },
         "byGrade": {
-          "g5": 917
+          "g5": 1482
         },
         "byLevel": {
-          "medium": 917
-        }
-      },
-      "2026-04-20": {
-        "total": 4683,
-        "topics": {
-          "comprehension": 1425,
-          "reading": 1574,
-          "speaking": 1684
-        },
-        "byGrade": {
-          "g5": 4683
-        },
-        "byLevel": {
-          "hard": 1425,
-          "medium": 3258
-        }
-      },
-      "2026-04-24": {
-        "total": 1274,
-        "topics": {
-          "comprehension": 1274
-        },
-        "byGrade": {
-          "g5": 1274
-        },
-        "byLevel": {
-          "medium": 1274
-        }
-      },
-      "2026-02-23": {
-        "total": 1515,
-        "topics": {
-          "grammar": 1515
-        },
-        "byGrade": {
-          "g5": 1515
-        },
-        "byLevel": {
-          "medium": 1515
-        }
-      },
-      "2026-04-22": {
-        "total": 1169,
-        "topics": {
-          "grammar": 1169
-        },
-        "byGrade": {
-          "g5": 1169
-        },
-        "byLevel": {
-          "medium": 1169
-        }
-      },
-      "2026-03-03": {
-        "total": 1024,
-        "topics": {
-          "writing": 1024
-        },
-        "byGrade": {
-          "g5": 1024
-        },
-        "byLevel": {
-          "hard": 1024
-        }
-      },
-      "2026-03-28": {
-        "total": 1131,
-        "topics": {
-          "writing": 1131
-        },
-        "byGrade": {
-          "g5": 1131
-        },
-        "byLevel": {
-          "medium": 1131
-        }
-      },
-      "2026-03-27": {
-        "total": 1426,
-        "topics": {
-          "reading": 1426
-        },
-        "byGrade": {
-          "g5": 1426
-        },
-        "byLevel": {
-          "hard": 1426
-        }
-      },
-      "2026-04-19": {
-        "total": 1040,
-        "topics": {
-          "reading": 1040
-        },
-        "byGrade": {
-          "g5": 1040
-        },
-        "byLevel": {
-          "medium": 1040
-        }
-      },
-      "2026-04-05": {
-        "total": 979,
-        "topics": {
-          "mixed": 979
-        },
-        "byGrade": {
-          "g5": 979
-        },
-        "byLevel": {
-          "medium": 979
-        }
-      },
-      "2026-04-18": {
-        "total": 1411,
-        "topics": {
-          "mixed": 1411
-        },
-        "byGrade": {
-          "g5": 1411
-        },
-        "byLevel": {
-          "medium": 1411
+          "medium": 1482
         }
       },
       "2026-04-25": {
-        "total": 2655,
+        "total": 4709,
         "topics": {
-          "speaking": 1198,
-          "vocabulary": 1457
+          "vocabulary": 1440,
+          "reading": 3269
         },
         "byGrade": {
-          "g5": 2655
+          "g5": 4709
         },
         "byLevel": {
-          "medium": 2655
+          "medium": 4709
+        }
+      },
+      "2026-01-26": {
+        "total": 1320,
+        "topics": {
+          "grammar": 1320
+        },
+        "byGrade": {
+          "g5": 1320
+        },
+        "byLevel": {
+          "hard": 1320
+        }
+      },
+      "2026-04-21": {
+        "total": 1146,
+        "topics": {
+          "grammar": 1146
+        },
+        "byGrade": {
+          "g5": 1146
+        },
+        "byLevel": {
+          "medium": 1146
+        }
+      },
+      "2026-02-15": {
+        "total": 1292,
+        "topics": {
+          "comprehension": 1292
+        },
+        "byGrade": {
+          "g5": 1292
+        },
+        "byLevel": {
+          "medium": 1292
+        }
+      },
+      "2026-04-20": {
+        "total": 2754,
+        "topics": {
+          "comprehension": 1171,
+          "writing": 1583
+        },
+        "byGrade": {
+          "g5": 2754
+        },
+        "byLevel": {
+          "medium": 2754
+        }
+      },
+      "2026-02-27": {
+        "total": 1798,
+        "topics": {
+          "reading": 1798
+        },
+        "byGrade": {
+          "g5": 1798
+        },
+        "byLevel": {
+          "medium": 1798
         }
       },
       "2026-04-23": {
-        "total": 1522,
+        "total": 4275,
         "topics": {
-          "vocabulary": 1522
+          "writing": 1622,
+          "mixed": 2653
         },
         "byGrade": {
-          "g5": 1522
+          "g5": 4275
         },
         "byLevel": {
-          "medium": 1522
+          "medium": 2765,
+          "hard": 1510
+        }
+      },
+      "2026-04-22": {
+        "total": 1658,
+        "topics": {
+          "speaking": 1658
+        },
+        "byGrade": {
+          "g5": 1658
+        },
+        "byLevel": {
+          "medium": 1658
+        }
+      },
+      "2026-04-24": {
+        "total": 1273,
+        "topics": {
+          "speaking": 1273
+        },
+        "byGrade": {
+          "g5": 1273
+        },
+        "byLevel": {
+          "hard": 1273
         }
       }
     }
   },
   "mleo_hebrew_master_progress": {
     "progress": {
-      "comprehension": {
-        "total": 61,
-        "correct": 56
+      "vocabulary": {
+        "total": 23,
+        "correct": 19
       },
       "grammar": {
-        "total": 32,
-        "correct": 29
+        "total": 34,
+        "correct": 31
       },
-      "writing": {
-        "total": 32,
-        "correct": 30
+      "comprehension": {
+        "total": 20,
+        "correct": 18
       },
       "reading": {
-        "total": 55,
-        "correct": 50
+        "total": 70,
+        "correct": 65
       },
-      "mixed": {
+      "writing": {
         "total": 31,
         "correct": 28
       },
       "speaking": {
-        "total": 26,
-        "correct": 23
-      },
-      "vocabulary": {
         "total": 33,
-        "correct": 29
+        "correct": 30
+      },
+      "mixed": {
+        "total": 34,
+        "correct": 31
       }
     },
     "stars": 5,
     "playerLevel": 2,
-    "xp": 1350,
+    "xp": 1225,
     "badges": []
   },
   "mleo_hebrew_mistakes": [
     {
       "subject": "hebrew",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1768622730117,
+      "isCorrect": false,
+      "exerciseText": "hebrew:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:vocabulary",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "hebrew",
+      "topic": "grammar",
+      "bucketKey": "grammar",
+      "grade": "g5",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1769455627116,
+      "isCorrect": false,
+      "exerciseText": "hebrew:grammar",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:grammar",
+      "hintUsed": true,
+      "responseMs": 5400
+    },
+    {
+      "subject": "hebrew",
       "topic": "comprehension",
       "bucketKey": "comprehension",
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1770274858551,
+      "timestamp": 1771168102946,
+      "isCorrect": false,
+      "exerciseText": "hebrew:comprehension",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:comprehension",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1772153545157,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "hebrew",
+      "topic": "writing",
+      "bucketKey": "writing",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776653353215,
+      "isCorrect": false,
+      "exerciseText": "hebrew:writing",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:writing",
+      "hintUsed": true,
+      "responseMs": 2100
+    },
+    {
+      "subject": "hebrew",
+      "topic": "comprehension",
+      "bucketKey": "comprehension",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1776695295473,
       "isCorrect": false,
       "exerciseText": "hebrew:comprehension",
       "correctAnswer": 1,
@@ -3323,7 +3426,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1771854283402,
+      "timestamp": 1776800295851,
       "isCorrect": false,
       "exerciseText": "hebrew:grammar",
       "correctAnswer": 1,
@@ -3334,33 +3437,33 @@
     },
     {
       "subject": "hebrew",
-      "topic": "writing",
-      "bucketKey": "writing",
+      "topic": "speaking",
+      "bucketKey": "speaking",
       "grade": "g5",
-      "level": "hard",
+      "level": "medium",
       "mode": "learning",
-      "timestamp": 1772506163094,
+      "timestamp": 1776892573949,
       "isCorrect": false,
-      "exerciseText": "hebrew:writing",
+      "exerciseText": "hebrew:speaking",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:hebrew:writing",
+      "patternFamily": "pf:hebrew:speaking",
       "hintUsed": true,
-      "responseMs": 5400
+      "responseMs": 2100
     },
     {
       "subject": "hebrew",
-      "topic": "reading",
-      "bucketKey": "reading",
+      "topic": "mixed",
+      "bucketKey": "mixed",
       "grade": "g5",
       "level": "hard",
       "mode": "learning",
-      "timestamp": 1774624916257,
+      "timestamp": 1776921474900,
       "isCorrect": false,
-      "exerciseText": "hebrew:reading",
+      "exerciseText": "hebrew:mixed",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:hebrew:reading",
+      "patternFamily": "pf:hebrew:mixed",
       "hintUsed": true,
       "responseMs": 5400
     },
@@ -3371,7 +3474,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1774707363630,
+      "timestamp": 1776954150122,
       "isCorrect": false,
       "exerciseText": "hebrew:writing",
       "correctAnswer": 1,
@@ -3387,44 +3490,12 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1775379440345,
+      "timestamp": 1776981404674,
       "isCorrect": false,
       "exerciseText": "hebrew:mixed",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:hebrew:mixed",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "hebrew",
-      "topic": "mixed",
-      "bucketKey": "mixed",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776551272340,
-      "isCorrect": false,
-      "exerciseText": "hebrew:mixed",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:hebrew:mixed",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "hebrew",
-      "topic": "reading",
-      "bucketKey": "reading",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1776636172765,
-      "isCorrect": false,
-      "exerciseText": "hebrew:reading",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:hebrew:reading",
       "hintUsed": true,
       "responseMs": 2100
     },
@@ -3433,30 +3504,14 @@
       "topic": "speaking",
       "bucketKey": "speaking",
       "grade": "g5",
-      "level": "medium",
+      "level": "hard",
       "mode": "learning",
-      "timestamp": 1776645238297,
+      "timestamp": 1776993614598,
       "isCorrect": false,
       "exerciseText": "hebrew:speaking",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:hebrew:speaking",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "hebrew",
-      "topic": "comprehension",
-      "bucketKey": "comprehension",
-      "grade": "g5",
-      "level": "hard",
-      "mode": "learning",
-      "timestamp": 1776661446740,
-      "isCorrect": false,
-      "exerciseText": "hebrew:comprehension",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:hebrew:comprehension",
       "hintUsed": true,
       "responseMs": 5400
     },
@@ -3467,7 +3522,7 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1776680691432,
+      "timestamp": 1777091445095,
       "isCorrect": false,
       "exerciseText": "hebrew:reading",
       "correctAnswer": 1,
@@ -3478,17 +3533,33 @@
     },
     {
       "subject": "hebrew",
-      "topic": "grammar",
-      "bucketKey": "grammar",
+      "topic": "reading",
+      "bucketKey": "reading",
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1776867067882,
+      "timestamp": 1777091445096,
       "isCorrect": false,
-      "exerciseText": "hebrew:grammar",
+      "exerciseText": "hebrew:reading",
       "correctAnswer": 1,
       "userAnswer": 0,
-      "patternFamily": "pf:hebrew:grammar",
+      "patternFamily": "pf:hebrew:reading",
+      "hintUsed": false,
+      "responseMs": 2145
+    },
+    {
+      "subject": "hebrew",
+      "topic": "reading",
+      "bucketKey": "reading",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1777123592549,
+      "isCorrect": false,
+      "exerciseText": "hebrew:reading",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:hebrew:reading",
       "hintUsed": true,
       "responseMs": 2100
     },
@@ -3499,60 +3570,12 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
-      "timestamp": 1776916594090,
+      "timestamp": 1777152346951,
       "isCorrect": false,
       "exerciseText": "hebrew:vocabulary",
       "correctAnswer": 1,
       "userAnswer": 0,
       "patternFamily": "pf:hebrew:vocabulary",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "hebrew",
-      "topic": "comprehension",
-      "bucketKey": "comprehension",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1777043888803,
-      "isCorrect": false,
-      "exerciseText": "hebrew:comprehension",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:hebrew:comprehension",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "hebrew",
-      "topic": "vocabulary",
-      "bucketKey": "vocabulary",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1777078584685,
-      "isCorrect": false,
-      "exerciseText": "hebrew:vocabulary",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:hebrew:vocabulary",
-      "hintUsed": true,
-      "responseMs": 2100
-    },
-    {
-      "subject": "hebrew",
-      "topic": "speaking",
-      "bucketKey": "speaking",
-      "grade": "g5",
-      "level": "medium",
-      "mode": "learning",
-      "timestamp": 1777157445877,
-      "isCorrect": false,
-      "exerciseText": "hebrew:speaking",
-      "correctAnswer": 1,
-      "userAnswer": 0,
-      "patternFamily": "pf:hebrew:speaking",
       "hintUsed": true,
       "responseMs": 2100
     }
@@ -3571,11 +3594,11 @@
   "mleo_moledet_geography_mistakes": [],
   "mleo_daily_challenge": {
     "questions": 1120,
-    "correct": 993,
-    "bestScore": 993
+    "correct": 989,
+    "bestScore": 989
   },
   "mleo_weekly_challenge": {
-    "current": 89,
+    "current": 88,
     "target": 100,
     "completed": true
   }
