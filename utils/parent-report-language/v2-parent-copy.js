@@ -40,7 +40,7 @@ export function executiveV2MajorTrendsLinesHe(p) {
   }
   return [
     `בטווח התקופה נבדקו ${units} נושאים.`,
-    `חוזקה עקבית מופיעה ב־${stable} מתוך הנושאים שנבדקו; ב־${actionable} נושאים יש בסיס לשיחה ביתית ממוקדת; ב־${uncertain} נושאים עדיין מדובר בתמונה חלקית.`,
+    `נושאים שנשמרים טוב: ${stable} מתוך מה שנבדק. ב־${actionable} נושאים יש בסיס לשיחה ממוקדת בבית. ב־${uncertain} נושאים עדיין אין תמונה ברורה.`,
   ];
 }
 
@@ -133,7 +133,7 @@ export function crossSubjectV2DataQualityNoteHe(unitsLength) {
 }
 
 export function subjectV2TrendNarrativeHighPriorityHe() {
-  return "יש נושאים ששווה לעקוב אחריהם השבוע.";
+  return "יש נושאים שכדאי לשים אליהם לב השבוע.";
 }
 
 export function subjectV2TrendNarrativeStableHe() {

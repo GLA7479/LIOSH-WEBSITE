@@ -177,7 +177,7 @@ export function ExecutiveSummarySection({ es, compact }) {
                 {pr1ParentVisibleTextHe(es.topImmediateParentActionHe)}
               </p>
             ) : (
-              <p className="m-0 text-white/55">אין עדיפות מיידית מובחנת — מומלץ להישאר על שגרה קצרה.</p>
+              <p className="m-0 text-white/55">אין נושא דחוף השבוע — שגרת תרגול קצרה מספיקה.</p>
             )}
             {es.secondPriorityActionHe ? (
               <p className="m-0">
@@ -187,7 +187,7 @@ export function ExecutiveSummarySection({ es, compact }) {
             ) : null}
             {es.monitoringOnlyAreasHe?.length ? (
               <div className="m-0">
-                <span className="text-white/45 font-bold">מעקב בלבד: </span>
+                <span className="text-white/45 font-bold">לשמור על שגרה קצרה: </span>
                 <span className="text-white/[0.82]">
                   {es.monitoringOnlyAreasHe.map(pr1ParentVisibleTextHe).join(" · ")}
                 </span>
@@ -195,7 +195,7 @@ export function ExecutiveSummarySection({ es, compact }) {
             ) : null}
             {es.deferForNowAreasHe?.length ? (
               <div className="m-0">
-                <span className="text-white/45 font-bold">לדחות כרגע: </span>
+                <span className="text-white/45 font-bold">לא דחוף עכשיו — אפשר להמתין: </span>
                 <span className="text-white/[0.82]">{es.deferForNowAreasHe.map(pr1ParentVisibleTextHe).join(" · ")}</span>
               </div>
             ) : null}
@@ -266,19 +266,19 @@ export function ExecutiveSummarySection({ es, compact }) {
             {es.crossSubjectRecalibrationNeedHe &&
             es.crossSubjectRecalibrationNeedHe !== SUBJECT_V2_RECALIBRATION_NEED_NO_HE ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">ריענון מסקנה: </span>
+                <span className="text-white/45 font-bold">האם כדאי לשנות כיוון? </span>
                 {pr1ParentVisibleTextHe(es.crossSubjectRecalibrationNeedHe)}
               </p>
             ) : null}
             {es.majorRecheckAreasHe?.length ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">אזורים לבדיקה מחדש: </span>
+                <span className="text-white/45 font-bold">מה שווה לבדוק שוב: </span>
                 {es.majorRecheckAreasHe.map(pr1ParentVisibleTextHe).join(" · ")}
               </p>
             ) : null}
             {es.areasWhereSupportCanBeReducedHe?.length ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">אפשר להפחית תמיכה בהדרגה: </span>
+                <span className="text-white/45 font-bold">אפשר לנסות קצת יותר עצמאות: </span>
                 {es.areasWhereSupportCanBeReducedHe.map(pr1ParentVisibleTextHe).join(" · ")}
               </p>
             ) : null}
@@ -297,7 +297,7 @@ export function ExecutiveSummarySection({ es, compact }) {
         (es.subjectsAtRiskOfSupportRepetitionHe && es.subjectsAtRiskOfSupportRepetitionHe.length) ||
         (es.subjectsNeedingSupportResetHe && es.subjectsNeedingSupportResetHe.length)) && (
         <div className="rounded-lg border border-indigo-400/22 bg-indigo-950/10 px-3 py-2.5 pr-detailed-avoid-split">
-          <h4 className="pr-detailed-subheading text-indigo-100/95 mb-1.5 border-0 pb-0">רצף התמיכה לאורך התקופה</h4>
+          <h4 className="pr-detailed-subheading text-indigo-100/95 mb-1.5 border-0 pb-0">איך ההתקדמות נראית לאורך זמן</h4>
           <div className="space-y-1 text-[11px] md:text-sm text-white/[0.86] leading-snug">
             {String(es.crossSubjectSupportSequenceStateLabelHe || "").trim() ? (
               <p className="m-0">
@@ -337,7 +337,7 @@ export function ExecutiveSummarySection({ es, compact }) {
         (es.subjectsNeedingFreshEvidenceHe && es.subjectsNeedingFreshEvidenceHe.length) ||
         (es.subjectsWherePriorPathSeemsMisalignedHe && es.subjectsWherePriorPathSeemsMisalignedHe.length)) && (
         <div className="rounded-lg border border-slate-400/22 bg-slate-950/12 px-3 py-2.5 pr-detailed-avoid-split">
-          <h4 className="pr-detailed-subheading text-slate-100/95 mb-1.5 border-0 pb-0">זיכרון המלצה ותוצאה</h4>
+          <h4 className="pr-detailed-subheading text-slate-100/95 mb-1.5 border-0 pb-0">מה ניסינו לאחרונה — האם עזר?</h4>
           <div className="space-y-1 text-[11px] md:text-sm text-white/[0.86] leading-snug">
             {String(es.crossSubjectRecommendationMemoryStateLabelHe || "").trim() ? (
               <p className="m-0">
@@ -368,7 +368,7 @@ export function ExecutiveSummarySection({ es, compact }) {
             ) : null}
             {es.subjectsNeedingFreshEvidenceHe?.length ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">צריך אות טרי: </span>
+                <span className="text-white/45 font-bold">צריך מידע עדכני: </span>
                 {truncateHe(es.subjectsNeedingFreshEvidenceHe.map(pr1ParentVisibleTextHe).join(" · "), 260)}
               </p>
             ) : null}
@@ -389,17 +389,17 @@ export function ExecutiveSummarySection({ es, compact }) {
         (es.subjectsNeedingRecheckBeforeDecisionHe && es.subjectsNeedingRecheckBeforeDecisionHe.length) ||
         (es.subjectsWithVisiblePivotTriggerHe && es.subjectsWithVisiblePivotTriggerHe.length)) && (
         <div className="rounded-lg border border-fuchsia-400/22 bg-fuchsia-950/10 px-3 py-2.5 pr-detailed-avoid-split">
-          <h4 className="pr-detailed-subheading text-fuchsia-100/95 mb-1.5 border-0 pb-0">לפני ההחלטה הבאה</h4>
+          <h4 className="pr-detailed-subheading text-fuchsia-100/95 mb-1.5 border-0 pb-0">לפני שמשנים משהו</h4>
           <div className="space-y-1 text-[11px] md:text-sm text-white/[0.86] leading-snug">
             {String(es.crossSubjectGateStateLabelHe || "").trim() ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">מצב שערים: </span>
+                <span className="text-white/45 font-bold">מה נכון לעשות עכשיו: </span>
                 {truncateHe(pr1ParentVisibleTextHe(String(es.crossSubjectGateStateLabelHe)), 220)}
               </p>
             ) : null}
             {String(es.crossSubjectNextCycleDecisionFocusHe || "").trim() ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">מיקוד סבב: </span>
+                <span className="text-white/45 font-bold">מה כדאי לבדוק: </span>
                 {truncateHe(pr1ParentVisibleTextHe(String(es.crossSubjectNextCycleDecisionFocusHe)), 240)}
               </p>
             ) : null}
@@ -443,7 +443,7 @@ export function ExecutiveSummarySection({ es, compact }) {
         (es.subjectsNeedingFoundationFirstHe && es.subjectsNeedingFoundationFirstHe.length) ||
         (es.subjectsSafeForLocalInterventionHe && es.subjectsSafeForLocalInterventionHe.length)) && (
         <div className="rounded-lg border border-emerald-400/22 bg-emerald-950/10 px-3 py-2.5 pr-detailed-avoid-split">
-          <h4 className="pr-detailed-subheading text-emerald-100/95 mb-1.5 border-0 pb-0">יסוד מול קושי מקומי</h4>
+          <h4 className="pr-detailed-subheading text-emerald-100/95 mb-1.5 border-0 pb-0">האם הקושי רחב או מצומצם?</h4>
           <div className="space-y-1 text-[11px] md:text-sm text-white/[0.86] leading-snug">
             {String(es.crossSubjectDependencyStateLabelHe || "").trim() ? (
               <p className="m-0">
@@ -491,7 +491,7 @@ export function ExecutiveSummarySection({ es, compact }) {
       ) : null}
       {es.overallConfidenceHe ? (
         <div>
-          <h4 className="pr-detailed-subheading text-sky-200/95">ביטחון בנתונים (על כל המקצועות)</h4>
+          <h4 className="pr-detailed-subheading text-sky-200/95">עד כמה אפשר לסמוך על המסקנות?</h4>
           <p className="pr-detailed-body-text text-sm m-0 leading-relaxed">
             {pr1ParentVisibleTextHe(es.overallConfidenceHe)}
           </p>

@@ -31,7 +31,7 @@ export function isAdvanceOnlyStep(step) {
 }
 
 const STEP_LABEL_FALLBACK_HE = "המשך תמיכה מדודה באותו נושא";
-const INTERVENTION_LABEL_FALLBACK_HE = "תמיכה מדודה ומעקב קצר לפני שינוי נוסף";
+const INTERVENTION_LABEL_FALLBACK_HE = "תמיכה מדודה ובדיקה חוזרת לפני שינוי נוסף";
 
 export function interventionTypeLabelHe(intervention) {
   const key = String(intervention || "").trim();

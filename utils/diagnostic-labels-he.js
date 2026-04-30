@@ -16,8 +16,8 @@ import {
  * (באנגלית: `englishWeaknessFallbackHe` — בלי "באנגלית" בטקסט, כי בדוחות חוצה־מקצועיים מוסיפים `(אנגלית)`.)
  */
 export const GENERIC_WEAKNESS_HE = "דפוס שגיאות חוזר";
-export const GENERIC_POINT_HE = "קושי נקודתי שדורש מעקב";
-export const GENERIC_REINFORCE_HE = "נדרש חיזוק נוסף בנושא זה";
+export const GENERIC_POINT_HE = "קושי שכדאי לשים אליו לב";
+export const GENERIC_REINFORCE_HE = "כדאי לחזק את הנושא הזה עוד קצת";
 
 /** מפתח נושא באנגלית (כמו ב־localStorage) → תווית עברית להורה */
 const ENGLISH_TOPIC_KEY_HE = {

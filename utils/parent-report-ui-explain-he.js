@@ -11,28 +11,28 @@ import { stripKnownParentReportLeakageHe } from "./parent-data-presence.js";
 const BEHAVIOR_OR_DIAGNOSTIC_HE = {
   knowledge_gap: "פער ידע",
   speed_pressure: "לחץ מהירות",
-  instruction_friction: "חיכוך הוראה / רמזים",
+  instruction_friction: "עוזר לו יותר כשיש ליווי או הסבר ליד",
   careless_pattern: "רגעים של חוסר ריכוז שחוזרים",
   fragile_success: "הצלחה שבירה",
   stable_mastery: "שליטה טובה בנושא לאורך זמן",
   undetermined: "לא נקבע",
   mixed: "מעורב",
-  mixed_low_signal: "אות חלש",
-  none_sparse: "דל נתון",
+  mixed_low_signal: "עדיין מעט מידע — אי אפשר להסיק בוודאות",
+  none_sparse: "עדיין מעט תרגול בנושא זה",
   none_observed: "ללא דפוס קושי בולט",
   fragile_success_cluster: "רצף הצלחות שבירות",
 };
 
 const CONF_BADGE_HE = {
-  high: "איכות הנתון: טובה",
-  medium: "איכות הנתון: בינונית",
-  low: "איכות הנתון: דלה — מתייחסים בזהירות",
+  high: "אפשר לסמוך על זה: גבוהה",
+  medium: "אפשר לסמוך על זה: בינונית",
+  low: "אפשר לסמוך על זה רק חלקית — קוראים בזהירות",
 };
 
 const SUFF_BADGE_HE = {
-  high: "נפח תרגול: טוב",
-  medium: "נפח תרגול: בינוני",
-  low: "נפח תרגול: נמוך",
+  high: "כמות התרגול: טובה",
+  medium: "כמות התרגול: בינונית",
+  low: "כמות התרגול: נמוכה",
 };
 
 const RISK_FLAG_HE = {
@@ -41,7 +41,7 @@ const RISK_FLAG_HE = {
   speedOnlyRisk: "נטייה למהירות",
   hintDependenceRisk: "תלות ברמזים",
   insufficientEvidenceRisk: "מידע חלקי בלבד",
-  recentTransitionRisk: "מגמה אחרונה עדינה",
+  recentTransitionRisk: "שינוי קטן לאחרונה",
 };
 
 const TREND_DIR_HE = {
@@ -202,7 +202,7 @@ export const ROOT_CAUSE_LABEL_HE = {
   weak_independence: "עדיין נשענים קצת על ליווי בפתרון",
   early_stage_instability: "שלב מוקדם — עדיין לא ברור איך זה יתיישב",
   mixed_signal: "התמונה מעורבת — יש גם כאן וגם שם",
-  insufficient_evidence: "עדיין לא ברור מה בדיוק מסבך מעבר לזיהוי ראשוני",
+  insufficient_evidence: "עדיין לא ברור מה בדיוק מקשה כאן — צריך עוד כמה דוגמאות",
   retention_fragility: "החומר נשמר בקושי (שלב מוקדם)",
   language_load: "עומס בשפה או בניסוח המשימה (מוקדם)",
   transition_gap: "קשה קצת במעבר בין רמות (מוקדם)",
@@ -233,11 +233,11 @@ export const MISTAKE_PATTERN_LABEL_HE = {
 
 /** Phase 9 — שלב למידה לאורך זמן */
 export const LEARNING_STAGE_LABEL_HE = {
-  early_acquisition: "שלב ראשון של רכישה",
+  early_acquisition: "עדיין לומד ומתנסה — הנושא חדש יחסית",
   partial_stabilization: "מתחיל להתייצב, עדיין לא במלואו",
   stable_control: "פתרון טוב שנשמר לאורך זמן",
   fragile_retention: "החומר נשמר בקושי",
-  regression_signal: "יש אות שמציץ לרגרסיה — שווה לשים לב",
+  regression_signal: "נראית ירידה לאחרונה — שווה לשים לב בשבוע הקרוב",
   transfer_emerging: "מתחילה התאמה גם מחוץ לתרגול המדויק",
   insufficient_longitudinal_evidence: "עדיין חסר מידע לאורך זמן",
 };
@@ -439,7 +439,7 @@ export const NEXT_SUPPORT_ADJUSTMENT_LABEL_HE = {
 
 /** Phase 11 — מצב רצף תמיכה */
 export const SUPPORT_SEQUENCE_STATE_LABEL_HE = {
-  new_support_cycle: "מתחילים תמיכה חדשה — בימים הראשונים נשארים עם מעקב קל ולא ממהרים לסיכום",
+  new_support_cycle: "מתחילים עזרה חדשה — בימים הראשונים שמים לב לתוצאות ולא ממהרים לסכם",
   early_sequence: "תחילת רצף תמיכה — לעקוב בלי להעמיס",
   continuing_sequence: "ממשיכים ברצף שנראה טוב",
   sequence_ready_for_release: "אפשר לנסות להפחית מעט את התמיכה",
@@ -658,14 +658,14 @@ export const NEXT_CYCLE_DECISION_FOCUS_LABEL_HE = {
 export const DEPENDENCY_STATE_LABEL_HE = {
   likely_local_issue: "נראה שהקושי מקומי — אפשר לטפל במיקוד",
   /* QA wording: פחות «ייתכן» מוערם — ניסוח ישיר יותר */
-  likely_foundational_block: "הנתונים מצביעים על בסיס שעדיין לא התייצב — לא רק נקודה צרה",
+  likely_foundational_block: "הנתונים מצביעים על בסיס שעדיין לא התחזק — לא רק קושי קטן ומקומי",
   mixed_dependency_signal: "תמונה מעורבת בין בסיס לנקודתי",
   insufficient_dependency_evidence: "אין מספיק בסיס לקבוע אם זה בסיס רחב או קושי נקודתי",
 };
 
 export const FOUNDATIONAL_BLOCKER_LABEL_HE = {
   accuracy_foundation_gap: "פער יסוד בדיוק או בחזרה על טעויות דומות",
-  procedure_automaticity_gap: "פער באוטומטיות ובביצוע שנשמר לאורך זמן",
+  procedure_automaticity_gap: "קשה לו לשחזר את הדרך לפתרון לבד, גם כשהחומר מוכר",
   instruction_language_load: "עומס בהוראה ובניסוח משימה",
   independence_readiness_gap: "מוכנות לעבודה עצמאית עדיין לא בשלה",
   retention_instability: "השימור עדיין לא נשמר לאורך זמן — הבסיס נחלש מהר",

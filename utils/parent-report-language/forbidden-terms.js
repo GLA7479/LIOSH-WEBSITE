@@ -5,7 +5,33 @@
 
 /** Lowercase ASCII fragments that must not appear in parent-facing lines */
 /** מחרוזות שאסור שיופיעו בטקסט הורה גלוי (עברית/מעורב) — בדיקת readability */
-export const PARENT_READABILITY_LEAK_SUBSTRINGS = ["מאסטרי", "טקסונומיה", "responsems"];
+export const PARENT_READABILITY_LEAK_SUBSTRINGS = [
+  "מאסטרי",
+  "טקסונומיה",
+  "responsems",
+  "מעקב שוטף",
+  "מעקב זהיר",
+  "מעקב צמוד",
+  "מעקב בלבד",
+  "אות חלש",
+  "דל נתון",
+  "חיכוך הוראה",
+  "מצב שערים",
+  "מיקוד סבב",
+  "רגרסיה",
+  "אוטומטיות",
+  "שלב ראשון של רכישה",
+  "חוזקה עקבית",
+  "איכות הנתון",
+  "נפח תרגול",
+  "מגמה אחרונה עדינה",
+  "זיהוי ראשוני",
+  "מעקב קל",
+  "מעקב רגיל",
+  "מעקב קצר",
+  "נקודה צרה",
+  "צריך אות טרי",
+];
 
 export const FORBIDDEN_PARENT_REPORT_SUBSTRINGS = [
   "insufficient_data",
