@@ -55,7 +55,7 @@ export function buildLearningMemoryPhase9(ctx) {
     stabilizationState = "unstable";
     transferReadiness = "not_ready";
     independenceProgress = indepDown ? "limited" : "unknown";
-    memEvidence.push("מגמת דיוק שלילית עם אינדיקציה לרגרסיה — לא מקפצים קדימה.");
+    memEvidence.push("מגמת דיוק שלילית עם סימן לירידה — לא קופצים קדימה.");
   } else if (fragileProg || (behaviorType === "fragile_success" && indepDown && posAcc)) {
     learningStage = "fragile_retention";
     retentionRisk = "moderate";

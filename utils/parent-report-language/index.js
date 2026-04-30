@@ -31,7 +31,11 @@ export {
 export { SUBJECT_PHASE3_ROW_LABEL_HE } from "./surface-row-labels-he.js";
 export { diagnosticPrimarySourceParentLabelHe } from "./short-report-source-label-he.js";
 export { normalizePedagogyForParentReportHe } from "./pedagogy-glossary-he.js";
-export { normalizeParentFacingHe, glossTopicRecommendationHeFields } from "./parent-facing-normalize-he.js";
+export {
+  normalizeParentFacingHe,
+  normalizeSubjectParentLetterHe,
+  glossTopicRecommendationHeFields,
+} from "./parent-facing-normalize-he.js";
 export {
   insufficientSubjectQuestionsLineHe,
   tierStableStrengthHe,

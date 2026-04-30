@@ -228,7 +228,7 @@ const CROSS_RISK_LABEL_HE = {
   careless_pattern: "רשלנות קטנה או אי־יציבות בתשובות",
   fragile_success: "הצלחה שבירה (דיוק גבוה עם סיכון)",
   mixed: "כמה סוגי קשיים במקביל",
-  mixed_low_signal: "מעט נתונים — אות מקצועי חלוש",
+  mixed_low_signal: "מעט נתונים — התמונה עדיין לא ברורה",
   none_sparse: "עדיין מעט נתונים",
   none_observed: "לא נראה כרגע קושי דומיננטי",
 };
@@ -397,7 +397,7 @@ function pickMainHomeRecommendationHe(subjects, subjectCoverage, summary, topFoc
 function buildCautionNoteHe(crossRisks, subjects, dominantRiskId) {
   const parts = [];
   if (crossRisks.hintDependenceRisk) parts.push("תלות ברמזים חוצה מקצועות — לא לדחוף קידום מהיר.");
-  if (crossRisks.falsePromotionRisk) parts.push("סיכון לקידום שווא — לא לפרש הצלחה חלקית כמוכנות לקפיצה.");
+  if (crossRisks.falsePromotionRisk) parts.push("סיכון לקידום שווא — לא לפרש הצלחה חלקית כמוכנות לעלייה מהירה מדי ברמה.");
   if (crossRisks.recentTransitionRisk) parts.push("מגמות אחרונות מצביעות על זהירות — לא לרדת מדרגה בכל המקצוע בבת אחת.");
   if (crossRisks.speedOnlyRisk) parts.push("מופיעה חולשה הקשורה למהירות — לא להכליל לפער ידע בכל התרגול.");
   if (parts.length) return shortenHe(parts.join(" "), 220);
@@ -418,7 +418,7 @@ function buildOverallConfidenceHe(subjectCoverage, crossRisks) {
     cov.reduce((m, c) => Math.max(m, c.questionCount || 0), 0) >
       2 * (cov.reduce((s, c) => s + (c.questionCount || 0), 0) / Math.max(active, 1));
   let t = `בטווח: ${active} מקצועות עם פעילות; ${low} עם נפח נמוך יחסית — הביטחון בין המקצועות לא אחיד.`;
-  if (crossRisks.insufficientEvidenceRisk) t += " חלק מהשורות עם ראיות חלקיות.";
+  if (crossRisks.insufficientEvidenceRisk) t += " חלק מהשורות עם מה שרואים בהן רק חלקית.";
   if (uneven) t += " רוב הנתונים מגיעים ממקצוע אחד בולט — לא מניחים התפלגות שווה.";
   return shortenHe(t, 280);
 }
@@ -536,7 +536,7 @@ function buildCrossSubjectPhase7Fields(subjects, subjectCoverage) {
   const majorDiagnosticCautionsHe = [];
   if (crossSubjectConclusionReadiness !== "ready") {
     majorDiagnosticCautionsHe.push(
-      "חלק מהמקצועות עם אותות מוקדמים או מעורבים — לא מגיעים למסקנה חדה על כל הבית בשלב זה."
+      "חלק מהמקצועות עם סימנים ראשוניים או מעורבים — לא מגיעים למסקנה חדה על כל הבית בשלב זה."
     );
   }
   for (const c of cautionSet) {
@@ -935,7 +935,7 @@ function buildCrossSubjectPhase12Fields(subjects) {
       (mat === "not_enough_evidence" || s.subjectFollowThroughSignal === "not_inferable") &&
       subjectsNeedingFreshEvidenceHe.length < 5
     ) {
-      subjectsNeedingFreshEvidenceHe.push(`${lab}: כדאי לאסוף עוד אות לפני שממשיכים אותו מסלול.`);
+      subjectsNeedingFreshEvidenceHe.push(`${lab}: כדאי לאסוף עוד מידע לפני שממשיכים באותו מסלול.`);
     }
     if (mat === "misaligned" && subjectsWherePriorPathSeemsMisalignedHe.length < 5) {
       subjectsWherePriorPathSeemsMisalignedHe.push(
@@ -1065,7 +1065,7 @@ function buildCrossSubjectPhase13Fields(subjects) {
       subjectsNearReleaseButNotThereHe.length < 5
     ) {
       subjectsNearReleaseButNotThereHe.push(
-        `${lab}: קרובים לשחרור זהיר — עדיין חסר אות עצמאות קצר לפני שמורידים תמיכה.`
+        `${lab}: קרובים ליותר עצמאות — עדיין צריך עוד סימן קצר שהוא מסתדר לבד לפני שמפחיתים עזרה.`
       );
     }
     if (
@@ -1302,7 +1302,7 @@ function buildParentPriorityLadderPhase8(subjects, subjectCoverage) {
   for (const r of ranked) {
     if (r.s.subjectMonitoringOnly && monitoringOnlyAreasHe.length < 5) {
       monitoringOnlyAreasHe.push(
-        `${r.subjectLabelHe}: ${shortenHe(String(r.s.subjectPriorityReasonHe || "מעקב בלבד בשלב זה."), 120)}`
+        `${r.subjectLabelHe}: ${shortenHe(String(r.s.subjectPriorityReasonHe || "שגרת תרגול קצרה בשלב זה."), 120)}`
       );
     } else if (
       r.s.subjectPriorityLevel === "soon" &&
@@ -1764,7 +1764,7 @@ function recommendationFromV2Unit(u, mapRow) {
   const label =
     step === "remediate_same_level"
       ? "חיזוק ממוקד לפני קידום"
-      : "איסוף אות נוסף לפני החלטה";
+      : "לאסוף עוד מידע לפני החלטה";
   const confLev = String(u?.confidence?.level || "");
   let evidenceStrength = "low";
   if (confLev === "moderate") evidenceStrength = "medium";
@@ -1856,7 +1856,7 @@ function recommendationFromV2Unit(u, mapRow) {
   const thinEvidenceDowngraded = lowEvidenceByCount || lowEvidenceBySignal;
   const finalStep = thinEvidenceDowngraded ? "maintain_and_strengthen" : step;
   const finalLabel =
-    finalStep === "remediate_same_level" ? label : "איסוף אות נוסף לפני החלטה";
+    finalStep === "remediate_same_level" ? label : "לאסוף עוד מידע לפני החלטה";
   const conclusionStrength = gated
     ? "withheld"
     : canonicalDecisionTier >= 3
@@ -1887,9 +1887,9 @@ function recommendationFromV2Unit(u, mapRow) {
     whyThisRecommendationHe:
       (String(u?.diagnosis?.lineHe || "")
         || String(u?.taxonomy?.patternHe || "")
-        || "נדרש מיקוד עדין לפי ראיות השורה.")
+        || "כדאי להתמקד בזה בעדינות לפי מה שרואים בשורה.")
       + (thinEvidenceDowngraded
-        ? " אין עדיין מספיק ראיות להמלצה חזקה — נשארים בצעד שמרני עד לצבירת נתון נוסף."
+        ? " עדיין אין מספיק מה שרואים בשורה כדי להמלצה חזקה — נשארים בצעד שמרני עד לצבירת נתון נוסף."
         : ""),
     interventionPlanHe: String(u?.intervention?.shortPracticeHe || ""),
     doNowHe: String(u?.intervention?.immediateActionHe || ""),
@@ -1965,7 +1965,7 @@ function applyNarrativeConsistencyToExecutiveSummary(executiveSummary, subjectPr
     return envelope === "WE0" || envelope === "WE1";
   });
   if (restrainedRows.length === 0) return es;
-  const restrainedLine = "בחלק מהנושאים המסקנה עדיין זהירה, ולכן נשארים בצעדים קטנים עד להתבססות נתון נוסף.";
+  const restrainedLine = "בחלק מהנושאים מה שנראה מהתרגולים עדיין זהיר, ולכן נשארים בצעדים קטנים עד להתבססות נתון נוסף.";
   const existingMain = String(es.mainHomeRecommendationHe || "").trim();
   if (existingMain) return es;
   return {
@@ -2000,7 +2000,7 @@ function buildSubjectProfilesFromV2(baseReport) {
       const subjQ = subjectQuestionCountFromReportSummary(baseReport, sid);
       const summaryHeEmpty =
         subjQ > 0
-          ? "יש פעילות בנושא בטווח, אך אין עדיין דפוס אבחוני מובנה מהמנוע — כדאי להמשיך בתרגול."
+          ? "יש פעילות בנושא בטווח, אך עדיין אין תמונה מסודרת מהתרגולים על הנושא — כדאי להמשיך בתרגול."
           : "אין מספיק נתונים בתקופה הנבחנת.";
       out.push({
         subject: sid,
@@ -2120,7 +2120,7 @@ function buildSubjectProfilesFromV2(baseReport) {
 
     const summaryHe = (() => {
       if (p4UnitD) {
-        return `בנושא ${p4UnitD.displayName}: ${p4UnitD.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
+        return `בנושא ${p4UnitD.displayName}: ${p4UnitD.taxonomy?.patternHe || "צריך בירור נוסף"}`;
       }
       if (strongPosD && leadPosD) {
         const base = `בנושא ${leadPosD.displayName}: ${tierStableStrengthHe()}`;
@@ -2137,13 +2137,13 @@ function buildSubjectProfilesFromV2(baseReport) {
         return `בנושא ${leadPosD.displayName}: ${tierStableStrengthHe()}`;
       }
       if (diagnosticLeadSource) {
-        return `בנושא ${diagnosticLeadSource.displayName}: ${diagnosticLeadSource.taxonomy?.patternHe || "נדרש בירור נוסף"}`;
+        return `בנושא ${diagnosticLeadSource.displayName}: ${diagnosticLeadSource.taxonomy?.patternHe || "צריך בירור נוסף"}`;
       }
       const sumQ = units.reduce((acc, u) => acc + (Number(u?.evidenceTrace?.[0]?.value?.questions) || 0), 0);
       if (sumQ >= 10) {
-        return "יש נתוני תרגול במקצוע, אך המסקנה המקצועית עדיין זהירה — כדאי להמשיך לעקוב אחרי עוד תרגול.";
+        return "יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.";
       }
-      return "אין מספיק ראיות בשלב זה.";
+      return "אין מספיק מה שרואים בשורות בשלב זה.";
     })();
 
     out.push({
@@ -2175,8 +2175,8 @@ function buildSubjectProfilesFromV2(baseReport) {
             csOf(subjectAnchorUnit)?.assessment?.confidenceLevel || subjectAnchorUnit?.confidence?.level
           )
         : subjectQuestionCountFromReportSummary(baseReport, sid) > 0
-          ? "יש נתוני תרגול במקצוע, אך המסקנה המקצועית עדיין זהירה — כדאי להמשיך לעקוב."
-          : "עדיין לא הצטבר מספיק מידע למסקנה מקצועית רחבה.",
+          ? "יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב."
+          : "עדיין לא הצטבר מספיק מידע לתמונה רחבה מהתרגולים.",
       recommendedHomeMethodHe: resolveUnitHomeMethodHe(subjectAnchorUnit),
       whatNotToDoHe: subjectAnchorUnit?.intervention?.avoidHe || null,
       majorRiskFlagsAcrossRows: {
@@ -2198,7 +2198,7 @@ function buildSubjectProfilesFromV2(baseReport) {
       secondaryRootCause: subjectAnchorUnit?.taxonomy?.competitorsHe?.[0] || null,
       rootCauseDistribution: {},
       subjectDiagnosticRestraintHe: units.some((u) => csOf(u)?.assessment?.cannotConcludeYet ?? u?.outputGating?.cannotConcludeYet)
-        ? "בחלק מהשורות הראיות עדיין לא מספיקות למסקנה חזקה."
+        ? "בחלק מהשורות מה שרואים עדיין לא מספיק כדי לסגור תמונה ברורה."
         : null,
       subjectConclusionReadiness: mergeSubjectConclusionReadinessContract({
         internalReadiness: units.some((u) => csOf(u)?.assessment?.cannotConcludeYet ?? u?.outputGating?.cannotConcludeYet) ? "partial" : "ready",
@@ -2221,7 +2221,7 @@ function buildSubjectProfilesFromV2(baseReport) {
       subjectAvoidNowHe: subjectAnchorUnit?.intervention?.avoidHe || null,
       subjectReviewBeforeAdvanceHe: subjectAnchorUnit?.probe?.objectiveHe || null,
       subjectTransferReadiness: units.some((u) => u?.diagnosis?.allowed) ? "emerging" : "not_ready",
-      subjectSupportAdjustmentNeedHe: highPriority > 0 ? "להדק תמיכה ולבחון מחדש." : "שימור ומעקב.",
+      subjectSupportAdjustmentNeedHe: highPriority > 0 ? "להדק תמיכה ולבחון מחדש." : "לשמור על מה שעובד ולבדוק שוב.",
       subjectRecalibrationNeedHe: units.some((u) => u?.outputGating?.cannotConcludeYet)
         ? subjectV2RecalibrationNeedYesHe()
         : subjectV2RecalibrationNeedNoHe(),

@@ -390,7 +390,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const interpHead =
         x.anyCannotConclude || x.uncertainRows > 0
           ? `זה לא בהכרח אומר «בעיה חמורה», אלא בעיקר חוסר ודאות לגיטימי בניסוח — סביב: ${namedBits}.`
-          : `לפי התמונה הכוללת מהדוח, אין כאן אות לדאגה גורפת — עדיין נכון להמשיך מעקב שגרתי.`;
+          : `לפי התמונה הכוללת מהדוח, אין כאן אות לדאגה גורפת — עדיין נכון להמשיך בתרגול שגרתי ולבדוק שוב בהמשך.`;
       const interp = appendDistinctSentence(
         interpHead,
         `לצד זה, בדוח יש ${metas.length} ניסוחים מעוגנים; ${fragile > 0 ? `${fragile} מהם במצב עדין.` : "כולם בניסוח עקבי יחסית."}`,
@@ -805,8 +805,8 @@ export function buildTruthPacketV1(payload, scope) {
         ];
     const uncertaintyLine =
       cannotConcludeYet || uncertainRows > 0
-        ? "נכון לעכשיו עדיין יש תחומים בדוח שבהם מוקדם לקבוע מסקנה יציבה."
-        : "נכון לעכשיו התמונה התקופתית עקבית יחסית, תוך המשך מעקב רגיל.";
+        ? "נכון לעכשיו עדיין יש תחומים בדוח שבהם מוקדם לקבוע תמונה ברורה מהתרגולים."
+        : "נכון לעכשיו התמונה התקופתית עקבית יחסית, תוך המשך תרגול רגיל ובדיקה חוזרת בהמשך.";
 
     const narBase = anchorContracts.contracts?.narrative && typeof anchorContracts.contracts.narrative === "object"
       ? anchorContracts.contracts.narrative

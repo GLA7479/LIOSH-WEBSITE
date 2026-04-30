@@ -270,7 +270,7 @@ function migrateDiagnosticSubjectV1ToRow(sub, subjectId) {
   }));
   const topStrengths = excellent.map((e) => ({
     ...e,
-    tierHe: e.questions >= 20 ? "חוזקה עקבית" : "חוזקה בולטת",
+    tierHe: e.questions >= 20 ? "נושא שהילד מצליח בו יותר כרגע" : "נושא חזק כרגע",
   }));
   const evidenceExamples = [];
   if (evidenceMistake) evidenceExamples.push({ type: "mistake", ...evidenceMistake });
@@ -1507,7 +1507,7 @@ export default function ParentReport() {
 
           {report.summary?.diagnosticOverviewHe ? (
             <div className="mb-3 md:mb-5 avoid-break rounded-lg border border-amber-400/25 bg-amber-950/15 p-3 md:p-4 text-sm text-white/90 space-y-2">
-              <p className="font-bold text-amber-100/95 m-0 text-sm md:text-base">מיקוד אבחוני (לפי הנתונים בטווח)</p>
+              <p className="font-bold text-amber-100/95 m-0 text-sm md:text-base">מה הכי בולט עכשיו (לפי מה שנאסף בתקופה)</p>
               {!shortContractTop && report.summary.diagnosticOverviewHe.mainFocusAreaLineHe ? (
                 <p className="m-0 leading-relaxed">
                   <span className="text-white/55">דורש תשומת לב כעת: </span>
@@ -1517,7 +1517,7 @@ export default function ParentReport() {
                 <p className="m-0 text-white/55 text-xs">
                   {Number(report.summary?.totalQuestions) > 0 &&
                   diagnosticsView?.presence?.state === "hasVolumeNoPattern"
-                    ? "יש נתוני תרגול בטווח, אך עדיין אין דפוס אבחוני יציב שמצביע על מוקד חירום אחד — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן."
+                    ? "יש נתוני תרגול בטווח, אך עדיין אין תמונה יציבה מהתרגולים שמצביעה על נושא דחוף אחד — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן."
                     : "אין עדיין תחום שזוהה כדורש תשומת לב מיידית בטווח זה."}
                 </p>
               ) : null}
@@ -2540,8 +2540,8 @@ export default function ParentReport() {
                   <p className="parent-report-print-muted-text text-center text-sm md:text-base text-white/75 px-2 py-3">
                     {diagnosticsView.presence?.recommendationsExplainerHe ||
                       (Number(report.summary?.totalQuestions) > 0
-                        ? "יש נתוני תרגול בטווח, אבל עדיין אין דפוס אבחוני יציב ברמת ההמלצות — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן."
-                        : "עדיין אין מספיק נתונים לאבחון מקצועי ברור")}
+                        ? "יש נתוני תרגול בטווח, אבל עדיין אין תמונה יציבה מהתרגולים ברמת ההמלצות — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן."
+                        : "עדיין אין מספיק נתונים לתמונה ברורה מהתרגולים")}
                   </p>
                 )}
 
@@ -2558,8 +2558,8 @@ export default function ParentReport() {
                         tierHe:
                           x.tierHe ||
                           (x.excellent && (x.questions || 0) >= 20
-                            ? "חוזקה עקבית"
-                            : "חוזקה בולטת"),
+                            ? "נושא שהילד מצליח בו יותר כרגע"
+                            : "נושא חזק כרגע"),
                       }));
                       const topStr = s.topStrengths?.length ? s.topStrengths : legacyStrength;
                       const wkLegacy = (s.weaknesses || []).map((w) => ({
@@ -2638,7 +2638,7 @@ export default function ParentReport() {
                               <div className="text-[10px] md:text-[11px] text-emerald-100/85 border border-emerald-400/20 bg-emerald-950/10 rounded px-2 py-1.5 space-y-1 leading-snug">
                                 {s.dominantMistakePatternLabelHe ? (
                                   <p className="m-0">
-                                    <span className="text-white/45 font-bold">דפוס טעות: </span>
+                                    <span className="text-white/45 font-bold">מה חוזר בטעות: </span>
                                     {diagnosticParentVisibleTextHe(s.dominantMistakePatternLabelHe)}
                                   </p>
                                 ) : null}
@@ -2652,7 +2652,7 @@ export default function ParentReport() {
                             )}
                             {sx.length > 0 && (
                               <div className="parent-report-print-section-label text-[11px] font-semibold text-violet-200/85 pt-1">
-                                הצטיינות עקבית
+                                מה שהילד עושה טוב לאורך זמן
                               </div>
                             )}
                             {sx.map((x, sxIdx) => (
@@ -2664,7 +2664,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">🏆</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      {x.tierHe || "הצטיינות עקבית"}
+                                      {x.tierHe || "מה שהילד עושה טוב לאורך זמן"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {diagnosticParentVisibleTextHe(x.labelHe)} — דיוק {x.accuracy}% ({x.questions} שאלות)
@@ -2687,7 +2687,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">🌟</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      {x.tierHe || "חוזקה בולטת"}
+                                      {x.tierHe || "נושא חזק כרגע"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {diagnosticParentVisibleTextHe(x.labelHe)} — דיוק {x.accuracy}% ({x.questions} שאלות)
@@ -2721,7 +2721,7 @@ export default function ParentReport() {
                             ))}
                             {im.length > 0 && (
                               <div className="parent-report-print-section-label text-[11px] font-semibold text-amber-200/80 pt-1">
-                                נקודות לשיפור
+                                איפה כדאי לחזק
                               </div>
                             )}
                             {im.map((x, imIdx) => (
@@ -2733,7 +2733,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">📈</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      {x.tierHe || "תחום במגמת שיפור"}
+                                      {x.tierHe || "נושא שעדיין מתחזק"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {diagnosticParentVisibleTextHe(
@@ -2747,7 +2747,7 @@ export default function ParentReport() {
                             ))}
                             {topWk.length > 0 && (
                               <div className="parent-report-print-section-label text-[11px] font-semibold text-white/55 tracking-wide">
-                                תחומים הדורשים תשומת לב
+                                מה כדאי לשים לב אליו השבוע
                               </div>
                             )}
                             {topWk.map((w, wkIdx) => (
@@ -2828,7 +2828,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">✨</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      המלצה לתלמיד — שימור חוזקה
+                                      המלצה לתלמיד — שימור מה שעובד טוב
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {diagnosticParentVisibleTextHe(r.textHe)}

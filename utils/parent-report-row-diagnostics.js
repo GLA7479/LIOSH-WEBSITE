@@ -280,7 +280,7 @@ export function evaluateDataSufficiency(q, evidenceStrength, confidence01) {
   if (evidenceStrength === "strong" && q >= 12) {
     return {
       level: "strong",
-      labelHe: "נפח ואותות מספקים — ההסקות לשורה זו מהימנות יחסית.",
+      labelHe: "נפח ואותות מספקים — אפשר לסמוך יותר על מה שרואים בשורה הזו.",
       suppressAggressiveStep: false,
     };
   }
@@ -392,11 +392,11 @@ export function computeRowDiagnosticSignals(subjectId, topicRowKey, row, mistake
     evidenceStrength === "strong" && q >= 14 && stability01 >= 0.45 && confidence01 >= 0.35;
   const isEarlySignalOnly = sufficiency.level !== "strong" || evidenceStrength === "low";
 
-  let patternStabilityHe = "דפוס מוקדם — עדיין לא ניתן לקבוע יציבות ארוכת טווח לפי הנתונים בלבד.";
+  let patternStabilityHe = "עדיין מוקדם — לא ברור אם זה נשמר לאורך זמן רק מהנתונים כאן.";
   if (isStablePattern) {
-    patternStabilityHe = "דפוס יחסית יציב בטווח — התמונה משקפת מגמה ולא רק מפגש בודד.";
+    patternStabilityHe = "זה חוזר בכמה תרגולים — התמונה משקפת מגמה ולא רק מפגש בודד.";
   } else if (sufficiency.level === "medium") {
-    patternStabilityHe = "אות בינוני — כדאי לאסוף עוד תרגול לפני מסקנות חזקות.";
+    patternStabilityHe = "אות בינוני — כדאי לאסוף עוד תרגול לפני לומר משהו חד משמעי.";
   }
 
   const decisionTrace = buildDiagnosticsDecisionTrace({
@@ -437,7 +437,7 @@ export function computeRowDiagnosticSignals(subjectId, topicRowKey, row, mistake
     patternStabilityHe,
     isEarlySignalOnly,
     recommendationContextHe: isEarlySignalOnly
-      ? "ההמלצה מבוססת על נתונים חלקיים; עדיף לא ליישם שינוי דרמטי בלי מעקב נוסף."
+      ? "ההמלצה מבוססת על נתונים חלקיים; עדיף לא לעשות שינוי דרמטי בלי לבדוק שוב אחרי עוד תרגול."
       : "ההמלצה מבוססת על שילוב דיוק, נפח, טעויות ועדכניות בטווח.",
     decisionTrace,
   };

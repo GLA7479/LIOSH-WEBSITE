@@ -13,7 +13,7 @@ import { compactParentAnswerBlocks } from "./answer-compaction.js";
 export const CLINICAL_BOUNDARY_LINE_1_HE =
   "על סמך הדוח הזה אי אפשר לקבוע אבחנה או להצמיד תווית קלינית.";
 export const CLINICAL_BOUNDARY_LINE_2_HE =
-  "הדוח יכול להצביע על תחומים שדורשים חיזוק או המשך מעקב, אבל הוא לא מחליף אבחון מקצועי.";
+  "הדוח יכול להצביע על תחומים שמצביעים על נושאים שכדאי לחזק או לבדוק שוב, אבל הוא לא מחליף אבחון מקצועי.";
 export const CLINICAL_BOUNDARY_LINE_3_HE =
   "אם יש חשש אמיתי, נכון לשתף מורה או איש מקצוע במה שנראה בפועל, בלי להסיק אבחנה מתוך הדוח בלבד.";
 

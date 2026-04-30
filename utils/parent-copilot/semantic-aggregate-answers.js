@@ -567,7 +567,7 @@ export function buildSemanticAggregateDraft(input) {
     } else {
       const weakestData = [...listed].sort((a, b) => a.totalQ - b.totalQ || a.dataTopics - b.dataTopics)[0];
       obs = `הכי מעט נתונים בדוח כרגע: ${weakestData.label} (${weakestData.totalQ} שאלות מתועדות).`;
-      meaning = "זו אינדיקציה לדלות נתונים בדוח התקופה; במקרה כזה נכון להיות זהירים במסקנות.";
+      meaning = "זה סימן שיש מעט מדי נתונים בדוח התקופה; במקרה כזה נכון להיות זהירים במסקנות.";
       aggregateContinuity = { questionClass: qc, subjectId: weakestData.sid, role: "least_data" };
     }
   } else if (qc === "improved") {
@@ -597,19 +597,19 @@ export function buildSemanticAggregateDraft(input) {
       obs = `המוקד שדורש כרגע הכי הרבה חיזוק הוא ${atRisk.label}.`;
       meaning =
         atRisk.avg == null
-          ? "הסיבה המרכזית היא דלות נתונים במקצוע הזה בתקופה הנוכחית."
-          : `הדירוג מבוסס על שילוב של דיוק ממוצע (כ־${atRisk.avg}%) יחד עם אותות חוסר יציבות בדוח.`;
+          ? "הסיבה המרכזית היא שיש מעט מדי נתונים במקצוע הזה בתקופה הנוכחית."
+          : `הדירוג מבוסס על שילוב של דיוק ממוצע (כ־${atRisk.avg}%) יחד עם סימני חוסר יציבות בדוח.`;
       aggregateContinuity = { questionClass: qc, subjectId: atRisk.sid, role: "needs_attention" };
     }
   } else if (qc === "still_unclear") {
     const unclear = roll.filter((r) => r.cannotConcludeTopics > 0 || r.lowConfidenceTopics > 0 || r.insufficientTopics > 0);
     if (!unclear.length) {
-      obs = `${lead}אין כרגע בדוח אינדיקציה חזקה ל״עדיין לא ברור״ ברמת מקצוע.`;
-      meaning = "עדיין נכון לשמור מעקב שוטף, אבל אין כאן כרגע סימן מובהק מהדוח לחוסר בהירות.";
+      obs = `${lead}אין כרגע בדוח סימן חזק לכך שמקצוע שלם עדיין לא ברור.`;
+      meaning = "עדיין נכון להמשיך לתרגל ולבדוק, אבל אין כאן כרגע סימן מובהק מהדוח לחוסר בהירות.";
     } else {
       const names = unclear.map((r) => r.label).join(" · ");
       obs = `${lead}עדיין לא ברור מספיק בעיקר ב: ${names}.`;
-      meaning = "הזיהוי מבוסס על סימנים של חוסר ודאות, ביטחון נמוך או דלות נתונים שמופיעים בדוח עצמו.";
+      meaning = "הזיהוי מבוסס על סימנים של ספק לגבי הניסוח, עדיין לא ברור מספיק או מעט מדי נתונים שמופיעים בדוח עצמו.";
     }
   } else if (qc === "most_stable") {
     if (roll.length < 2) {
@@ -618,11 +618,11 @@ export function buildSemanticAggregateDraft(input) {
     } else {
       const stable = mostStableSubject(roll);
       if (!stable || stable.totalQ <= 0) {
-        obs = `${lead}אין כרגע מספיק תרגול עקבי בין מקצועות כדי לקבוע מי הכי יציב.`;
-        meaning = "נדרש בסיס נתונים רחב יותר (כמות שאלות ורצף ביצועים) כדי לדרג יציבות בצורה אמינה.";
+        obs = `${lead}אין כרגע מספיק תרגול בכמה מקצועות כדי לקבוע מי הכי יציב.`;
+        meaning = "צריך עוד שאלות ורצף תרגול רחב יותר כדי לבדוק יציבות בצורה אמינה.";
       } else {
         obs = `המקצוע היציב ביותר כרגע לפי נתוני התקופה בדוח הוא ${stable.label}.`;
-        meaning = `ההערכה מבוססת על שילוב של נפח תרגול, יציבות ביצועים וביטחון ובשלות לפי הדוח, לא על שורת נושא בודדת.`;
+        meaning = `ההערכה מבוססת על שילוב של כמות התרגול, יציבות הביצועים, הביטחון והבשלות לפי הדוח, לא על שורת נושא בודדת.`;
         aggregateContinuity = { questionClass: qc, subjectId: stable.sid, role: "most_stable" };
       }
     }

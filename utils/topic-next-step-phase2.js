@@ -262,7 +262,7 @@ export function applyPhase2GuardsToStep(proposed, ctx) {
     if (!trendDer.progressSupportsAdvance || hintDependenceRiskActive(riskFlags) || !sufficiencyStrong) {
       apply(
         "fragile_success_block_advance",
-        "דפוס הצלחה שביר — לא מקדמים מהר בלי עצמאות, מגמה תומכת וראיות חזקות.",
+        "הצלחה שלא תמיד נשמרת לבד — לא מקדמים מהר בלי עצמאות, מגמה תומכת וראיות חזקות.",
         "maintain_and_strengthen"
       );
     }
@@ -692,7 +692,7 @@ export function buildPhase9RecommendationOverlay(p) {
   } else if (ls === "transfer_emerging") {
     memoryFocusedActionHe = "אפשר ניסוי קטן בתוך הנושא עם בדיקה מהירה בסוף.";
   } else if (ls === "insufficient_longitudinal_evidence") {
-    memoryFocusedActionHe = "לא לסכם מגמה ארוכה עדיין — מעקב מדוד.";
+    memoryFocusedActionHe = "לא לסכם מגמה ארוכה עדיין — לבדוק שוב אחרי עוד קצת תרגול.";
   }
 
   return {
@@ -756,7 +756,7 @@ export function buildPhase10RecommendationOverlay(p) {
   }
   if (rti === "early_positive_response" || rti === "independence_growing") {
     continueWhatWorksHe =
-      "להמשיך באותו סוג תרגול קצר וקבוע — זה מה שנראה שעובד כרגע, עם מעקב קצר אחרי כל מפגש.";
+      "להמשיך באותו סוג תרגול קצר וקבוע — זה מה שנראה שעובד כרגע, ולבדוק את הדיוק אחרי כל מפגש.";
   }
   if (rti === "stalled_response" || rti === "regression_under_support") {
     changeBecauseHe =
@@ -1197,7 +1197,7 @@ export function buildWhyThisRecommendationHe(p) {
   if (riskFlags.hintDependenceRisk) rf.push("תלות ברמזים");
   if (riskFlags.insufficientEvidenceRisk) rf.push("מידע חלקי בלבד");
   if (riskFlags.recentTransitionRisk) rf.push("מגמה אחרונה עדינה");
-  if (rf.length) parts.push(`נקודות לשימת לב: ${rf.join(", ")}.`);
+  if (rf.length) parts.push(`נקודות לתשומת לב: ${rf.join(", ")}.`);
   if (trendDer.unclearTrend) parts.push("מגמת הדיוק לא חדה — נשמרת זהירות.");
   if (trendDer.fragileProgressPattern) parts.push("דיוק עולה אך עצמאות יורדת — נחשב שביר, לא קידום מהיר.");
   if (trendDer.progressSupportsAdvance) parts.push("מגמה ועצמאות תומכות בקידום זהיר כשיש מספיק בסיס.");

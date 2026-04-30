@@ -912,10 +912,10 @@ function summarizeV2UnitsForSubject(units) {
     if (act === "withhold") {
       if (sumUnitQuestions >= 10) {
         return normalizeParentFacingHe(
-          `בנושא ${name}: יש נתוני תרגול, אך המסקנה המקצועית עדיין זהירה — כדאי להמשיך לעקוב אחרי עוד תרגול.`
+          `בנושא ${name}: יש נתוני תרגול, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.`
         );
       }
-      return normalizeParentFacingHe(`בנושא ${name}: עדיין אין מספיק ראיות כדי לקבוע מסקנה.`);
+      return normalizeParentFacingHe(`בנושא ${name}: עדיין אין מספיק מה שרואים בשורות כדי לסגור תמונה ברורה.`);
     }
     if (act === "probe_only") {
       return normalizeParentFacingHe(`בנושא ${name}: עדיף עוד קצת תרגול לפני שמקבעים מסקנה.`);

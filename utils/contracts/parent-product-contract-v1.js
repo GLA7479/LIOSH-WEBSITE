@@ -94,11 +94,11 @@ function firstNonEmpty(...values) {
 function confidenceLabelHe(row) {
   const c = String(row?.confidenceLevel || "").toLowerCase();
   if (row?.thinEvidenceDowngraded || row?.gateReadiness === "insufficient") {
-    return "רמת ודאות נמוכה בשלב זה — נדרש עוד נתון לפני מסקנה חזקה.";
+    return "כמה אפשר לסמוך על זה: עדיין לא גבוה — צריך עוד תרגול לפני שסוגרים תמונה ברורה.";
   }
-  if (c === "high") return "רמת ודאות גבוהה יחסית למידע שנאסף.";
-  if (c === "moderate") return "רמת ודאות בינונית — יש כיוון ברור אך עדיין נדרש מעקב.";
-  return "רמת ודאות נמוכה בשלב זה — מומלץ המשך מעקב.";
+  if (c === "high") return "כמה אפשר לסמוך על זה: די גבוה יחסית למידע שנאסף.";
+  if (c === "moderate") return "כמה אפשר לסמוך על זה: בינוני — יש כיוון ברור, אבל כדאי לבדוק שוב אחרי עוד תרגול.";
+  return "כמה אפשר לסמוך על זה: עדיין לא גבוה — כדאי להמשיך לתרגל ולבדוק שוב.";
 }
 
 function trendSummaryHe(row) {
@@ -110,7 +110,7 @@ function trendSummaryHe(row) {
   }
   const dir = String(trend.accuracyDirection || "unknown");
   if (dir === "up") return "נראית מגמת שיפור מבוססת.";
-  if (dir === "down") return "נראית מגמת ירידה שמצריכה מעקב צמוד.";
+  if (dir === "down") return "נראית ירידה לאחרונה — שווה לשים לב בשבוע הקרוב.";
   if (dir === "flat") return "נראית יציבות יחסית ללא שינוי מהותי.";
   return "אין כרגע נתון מגמה מספק.";
 }
@@ -127,7 +127,7 @@ function nextCheckHe(row) {
   ) {
     return `נדרשים לפחות ${counters.minTrendPointsRequired} מפגשים תקינים להשוואת מגמה אמינה.`;
   }
-  return "להמשיך מעקב מחזור נוסף ולבדוק יציבות לפני שינוי משמעותי.";
+  return "להמשיך לתרגל עוד קצת ולבדוק יציבות לפני שינוי משמעותי.";
 }
 
 function buildEvidenceSummaryHe(row) {
@@ -148,7 +148,7 @@ function buildContractRow(row, subjectProfile) {
   );
   const mainStatus = firstNonEmpty(
     subjectProfile?.summaryHe,
-    `ב${subjectProfile?.subjectLabelHe || "המקצוע"} נדרש מיקוד תרגול זהיר בשלב זה.`
+    `ב${subjectProfile?.subjectLabelHe || "המקצוע"} כדאי תרגול ממוקד וזהיר בשלב הזה.`
   );
   const mainPriority = firstNonEmpty(doNow, "להמשיך תרגול קצר ומדויק עם משימה אחת ברורה.");
   return {
@@ -262,7 +262,7 @@ export function buildParentProductContractV1(detailedReport) {
         whyHe: "נפח הנתונים הנוכחי נמוך ולכן אין בסיס למסקנה חזקה.",
         doNowHe: "לבחור נושא אחד ולתרגל 10–15 דקות בכל מפגש.",
         avoidNowHe: "לא לשנות רמת קושי על בסיס מעט נתונים.",
-        confidenceHe: "רמת ודאות נמוכה בשלב זה.",
+        confidenceHe: "כמה אפשר לסמוך על זה: עדיין לא גבוה בשלב זה.",
         evidenceSummaryHe: "הנתונים הקיימים עדיין חלקיים.",
         nextCheckHe: `לאסוף לפחות ${PRODUCT_CONTRACT_MIN_EVIDENCE_QUESTIONS} שאלות לפני החלטה.`,
         evidence: {
@@ -286,7 +286,7 @@ export function buildParentProductContractV1(detailedReport) {
           whyHe: "אין עדיין מספיק נתון כדי להגדיר כיוון ברור.",
           doNowHe: "תרגול קצר וממוקד בנושא אחד.",
           avoidNowHe: "לא להסיק מסקנות חזקות ממספר קטן של שאלות.",
-          confidenceHe: "רמת ודאות נמוכה.",
+          confidenceHe: "כמה אפשר לסמוך על זה: עדיין לא גבוה.",
           evidenceSummaryHe: "נתון חסר או חלקי.",
           nextCheckHe: `לצבור לפחות ${PRODUCT_CONTRACT_MIN_EVIDENCE_QUESTIONS} שאלות לפני שינוי.`,
           evidence: {

@@ -173,7 +173,7 @@ export function ExecutiveSummarySection({ es, compact }) {
           <div className="space-y-1.5 text-[11px] md:text-sm text-white/[0.86] leading-snug">
             {es.topImmediateParentActionHe ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">עדיפות ראשונה: </span>
+                <span className="text-white/45 font-bold">מה לעשות קודם: </span>
                 {pr1ParentVisibleTextHe(es.topImmediateParentActionHe)}
               </p>
             ) : (
@@ -181,7 +181,7 @@ export function ExecutiveSummarySection({ es, compact }) {
             )}
             {es.secondPriorityActionHe ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">עדיפות שנייה: </span>
+                <span className="text-white/45 font-bold">מה לעשות אחר כך: </span>
                 {pr1ParentVisibleTextHe(es.secondPriorityActionHe)}
               </p>
             ) : null}
@@ -229,7 +229,7 @@ export function ExecutiveSummarySection({ es, compact }) {
             ) : null}
             {es.reviewBeforeAdvanceAreasHe?.length ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">חזרה לפני קידום: </span>
+                <span className="text-white/45 font-bold">לפני שמעלים רמה: </span>
                 {es.reviewBeforeAdvanceAreasHe.map(pr1ParentVisibleTextHe).join(" · ")}
               </p>
             ) : null}
@@ -249,7 +249,7 @@ export function ExecutiveSummarySection({ es, compact }) {
         (es.areasWhereSupportCanBeReducedHe && es.areasWhereSupportCanBeReducedHe.length) ||
         (es.areasNeedingStrategyChangeHe && es.areasNeedingStrategyChangeHe.length)) && (
         <div className="rounded-lg border border-teal-400/22 bg-teal-950/10 px-3 py-2.5 pr-detailed-avoid-split">
-          <h4 className="pr-detailed-subheading text-teal-100/95 mb-1.5 border-0 pb-0">תמיכה, תגובה והתאמה</h4>
+          <h4 className="pr-detailed-subheading text-teal-100/95 mb-1.5 border-0 pb-0">מה עוזר עכשיו ומה כדאי לשנות</h4>
           <div className="space-y-1 text-[11px] md:text-sm text-white/[0.86] leading-snug">
             {es.crossSubjectResponseToInterventionLabelHe ? (
               <p className="m-0">
@@ -456,7 +456,7 @@ export function ExecutiveSummarySection({ es, compact }) {
             ) : null}
             {String(es.crossSubjectFoundationFirstPriorityHe || "").trim() ? (
               <p className="m-0">
-                <span className="text-white/45 font-bold">עדיפות סבב: </span>
+                <span className="text-white/45 font-bold">מה כדאי לעשות בסבב הזה: </span>
                 {truncateHe(pr1ParentVisibleTextHe(String(es.crossSubjectFoundationFirstPriorityHe)), 240)}
               </p>
             ) : null}
@@ -514,7 +514,7 @@ export function ExecutiveSummarySection({ es, compact }) {
           ) : null}
           {es.evidenceBalanceHe ? (
             <p className="m-0 leading-relaxed">
-              <span className="text-white/45 font-bold block text-[11px] mb-0.5">איזון ראיות</span>
+              <span className="text-white/45 font-bold block text-[11px] mb-0.5">מה מחזק את התמונה ומה עדיין לא ברור</span>
               {pr1ParentVisibleTextHe(es.evidenceBalanceHe)}
             </p>
           ) : null}
@@ -554,9 +554,9 @@ export function SubjectPhase3Insights({ sp, compact }) {
 
   const rows = [];
   const dr = String(sp?.dominantLearningRiskLabelHe || "").trim();
-  if (dr) rows.push({ k: "דפוס קושי דומיננטי", v: pr1ParentVisibleTextHe(dr) });
+  if (dr) rows.push({ k: "אילו טעויות חוזרות כאן", v: pr1ParentVisibleTextHe(dr) });
   const ds = String(sp?.dominantSuccessPatternLabelHe || "").trim();
-  if (ds) rows.push({ k: "דפוס הצלחה", v: pr1ParentVisibleTextHe(ds) });
+  if (ds) rows.push({ k: "מה נראה חזק כאן", v: pr1ParentVisibleTextHe(ds) });
   if (sp?.trendNarrativeHe && String(sp.trendNarrativeHe).trim()) {
     rows.push({
       k: "מגמה",
@@ -568,12 +568,12 @@ export function SubjectPhase3Insights({ sp, compact }) {
   const conf = String(sp?.confidenceSummaryHe || "").trim();
   if (conf)
     rows.push({
-      k: "ביטחון בנתונים",
+      k: "עד כמה המסקנה הזו מבוססת",
       v: truncateHe(pr1ParentVisibleTextHe(conf), compact ? 100 : 200),
     });
   const beh = sp?.dominantBehaviorProfileAcrossRows;
   if (beh && String(beh).trim() && String(beh) !== "undetermined") {
-    rows.push({ k: "דפוס התנהגות נפוץ בשורות", v: behaviorDominantLabelHe(beh) });
+    rows.push({ k: "מה קורה בדרך כלל בזמן התרגול", v: behaviorDominantLabelHe(beh) });
   }
   const fr = Number(sp?.fragileSuccessRowCount) || 0;
   const stb = Number(sp?.stableMasteryRowCount) || 0;
@@ -584,7 +584,7 @@ export function SubjectPhase3Insights({ sp, compact }) {
     });
   }
   const modeNote = String(sp?.modeConcentrationNoteHe || "").trim();
-  if (modeNote) rows.push({ k: "מיקוד לפי מצב תרגול", v: pr1ParentVisibleTextHe(modeNote) });
+  if (modeNote) rows.push({ k: "ממה מתחשבים כשמתאמים תרגול", v: pr1ParentVisibleTextHe(modeNote) });
   const risks = subjectMajorRiskLabelsHe(sp?.majorRiskFlagsAcrossRows, 5);
   if (risks.length) {
     rows.push({
@@ -594,7 +594,7 @@ export function SubjectPhase3Insights({ sp, compact }) {
   }
   if (sp?.recommendedHomeMethodHe && String(sp.recommendedHomeMethodHe).trim() && !hideStructuredHome) {
     rows.push({
-      k: "דגש ביתי (מבנה)",
+      k: "מה לעשות בבית (מבנה)",
       v: truncateHe(
         pr1ParentVisibleTextHe(rewriteParentRecommendationForDetailedHe(String(sp.recommendedHomeMethodHe))),
         compact ? 140 : 260
@@ -623,14 +623,14 @@ export function SubjectPhase3Insights({ sp, compact }) {
   const spr = String(sp?.subjectPriorityReasonHe || "").trim();
   if (spr && (!letter?.opening || !String(letter.opening).includes(spr.slice(0, 20)))) {
     rows.push({
-      k: "סולם עדיפות",
+      k: "מה כדאי לתרגל קודם",
       v: truncateHe(pr1ParentVisibleTextHe(spr), compact ? 120 : 220),
     });
   }
   const dmp = String(sp?.dominantMistakePatternLabelHe || "").trim();
   if (dmp)
     rows.push({
-      k: "דפוס טעות (מקצוע)",
+      k: "סוג טעות נפוצה בנושא",
       v: truncateHe(pr1ParentVisibleTextHe(dmp), compact ? 100 : 180),
     });
   const sls = String(sp?.subjectLearningStageLabelHe || "").trim();
@@ -642,7 +642,7 @@ export function SubjectPhase3Insights({ sp, compact }) {
   const srb = String(sp?.subjectReviewBeforeAdvanceHe || "").trim();
   if (srb)
     rows.push({
-      k: "לפני קידום",
+      k: "לפני שמעלים רמה",
       v: truncateHe(pr1ParentVisibleTextHe(srb), compact ? 110 : 200),
     });
   const strRaw = String(sp?.subjectTransferReadiness || "").trim();
@@ -651,14 +651,14 @@ export function SubjectPhase3Insights({ sp, compact }) {
   const trCombined = pr1ParentVisibleTextHe(trLine || (trMapped !== "לא ברור" ? trMapped : ""));
   if (trCombined) {
     rows.push({
-      k: "מוכנות להעברה",
+      k: "האם זה מצליח גם בשאלה חדשה",
       v: truncateHe(trCombined, compact ? 90 : 160),
     });
   }
   const effN = String(sp?.subjectEffectivenessNarrativeHe || "").trim();
   if (effN)
     rows.push({
-      k: "תמיכה והתקדמות",
+      k: "מה קורה עם העזרה וההתקדמות",
       v: truncateHe(pr1ParentVisibleTextHe(effN), compact ? 130 : 240),
     });
   const sAdj = String(sp?.subjectSupportAdjustmentNeedHe || "").trim();
@@ -671,21 +671,21 @@ export function SubjectPhase3Insights({ sp, compact }) {
   const sRec = String(sp?.subjectRecalibrationNeedHe || "").trim();
   if (sRec && sRec !== SUBJECT_V2_RECALIBRATION_NEED_NO_HE && (!effN || !effN.includes(sRec.slice(0, 10)))) {
     rows.push({
-      k: "ריענון מסקנה",
+      k: "האם כדאי לשנות כיוון",
       v: truncateHe(pr1ParentVisibleTextHe(sRec), compact ? 100 : 200),
     });
   }
   const seqN = String(sp?.subjectSequenceNarrativeHe || "").trim();
   if (seqN && (!effN || !effN.includes(seqN.slice(0, 14)))) {
     rows.push({
-      k: "רצף תמיכה",
+      k: "איך העזרה מתקדמת לאורך זמן",
       v: truncateHe(pr1ParentVisibleTextHe(seqN), compact ? 130 : 240),
     });
   }
   const outN = String(sp?.subjectOutcomeNarrativeHe || "").trim();
   if (outN && (!seqN || !seqN.includes(outN.slice(0, 12)))) {
     rows.push({
-      k: "זיכרון המלצה ותוצאה",
+      k: "מה ניסינו לאחרונה והאם זה עזר",
       v: truncateHe(pr1ParentVisibleTextHe(outN), compact ? 130 : 240),
     });
   }
@@ -706,7 +706,7 @@ export function SubjectPhase3Insights({ sp, compact }) {
   const ffp = String(sp?.subjectFoundationFirstPriorityHe || "").trim();
   if (ffp && sp?.subjectFoundationFirstPriority && (!depSub || !depSub.includes(ffp.slice(0, 12)))) {
     rows.push({
-      k: "עדיפות יסוד",
+      k: "מה צריך לחזק לפני הכל",
       v: truncateHe(pr1ParentVisibleTextHe(ffp), compact ? 120 : 200),
     });
   }

@@ -428,7 +428,7 @@ function runDeterministicCore(input) {
 
   if (scopeRes.resolutionStatus === "clarification_required") {
     const r = buildClarificationParentCopilotResponse({
-      clarificationQuestionHe: scopeRes.clarificationQuestionHe || "נדרש הקשר נוסף.",
+      clarificationQuestionHe: scopeRes.clarificationQuestionHe || "צריך עוד הקשר.",
       intent,
       priorRepeated,
       metadata: scopeMeta,

@@ -125,8 +125,8 @@ export function buildInterventionPlanPhase8(ctx) {
     interventionGoal = "observe_and_stabilize";
     stepsHe.push(`ב«${displayName}» לשמור על אותה הגדרה ולתעד הצלחות קטנות — לא לשנות משתנים רבים.`);
     interventionSuccessSignalHe = "כששני מפגשים רצופים נראים דומים — אפשר לבחור כיוון אחד.";
-    interventionStopSignalHe = "אם התמונה משתנה דרסטית בין מפגשים — להישאר במעקב בלבד.";
-    doNowHe = "להמשיך באותה רמה עם מעקב קצר אחרי דיוק.";
+    interventionStopSignalHe = "אם התמונה משתנה מאוד בין מפגשים — להישאר עם תרגול קצר ולשים לב, בלי שינוי גדול.";
+    doNowHe = "להמשיך באותה רמה ולבדוק את הדיוק אחרי כל מפגש.";
     avoidNowHe = "לא לנעול הסבר יחיד כשיש אותות מנוגדים.";
   } else {
     interventionDurationBand = "short";

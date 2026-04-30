@@ -99,7 +99,7 @@ export function clampHebrewParentTextToMaxPS(text, maxPS, contentClass = "diagno
     out = out.replace(PS3_REGEX, "נראה שכדאי");
     out = out.replace(PS3_PROMO_REGEX, "לא לדחוף שינוי חד בשלב זה");
     if (contentClass === "diagnosis" && !/מוקדם|חלקי|אולי/.test(out)) {
-      out = `אינדיקציה ראשונית בלבד — ${out}`;
+      out = `סימן ראשוני בלבד — ${out}`;
     }
   } else if (maxPS === 2) {
     out = out.replace(/מומלץ בבירור|בהחלט כדאי/giu, "כדאי בזהירות");

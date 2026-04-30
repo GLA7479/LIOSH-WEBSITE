@@ -4,7 +4,11 @@
  */
 
 import { pickVariant } from "./parent-report-language/variants.js";
-import { normalizeParentFacingHe } from "./parent-report-language/parent-facing-normalize-he.js";
+import {
+  normalizeParentFacingHe,
+  normalizeSubjectParentLetterHe,
+} from "./parent-report-language/parent-facing-normalize-he.js";
+import { parentFacingWeaknessPracticePhraseHe } from "./diagnostic-labels-he.js";
 import {
   buildNarrativeContractV1,
   narrativeSectionTextHe,
@@ -136,7 +140,7 @@ function buildSubjectOpeningLineHe(sp, lab) {
   if (pri === "monitor" && priReason) {
     const t = [
       stripGuillemetsHe(`${priReason} בשלב הזה עדיף להימנע מהחלטות גדולות בבית.`),
-      stripGuillemetsHe(`${priReason} נשארים עם תרגול קצר וברור לפני מסקנה חדה.`),
+      stripGuillemetsHe(`${priReason} כדאי להמשיך בתרגול קצר לפני מסקנה חדה.`),
     ];
     return t[Math.abs((priReason + lab).length) % t.length];
   }
@@ -163,7 +167,7 @@ function buildSubjectOpeningLineHe(sp, lab) {
 
   if (domSucc && sp?.dominantSuccessPattern === "stable_mastery" && ex0 && !mr) {
     return stripGuillemetsHe(
-      `ב${lab} נראית עקביות טובה (${domSucc}) סביב ${displayTopicPhraseHe(ex0.labelHe)} — כדאי לשמור על קצב רגוע.`
+      `ב${lab} נראית עקביות טובה (${domSucc}) ב־${displayTopicPhraseHe(ex0.labelHe)} — כדאי לשמור על קצב רגוע.`
     );
   }
   if (mr && ex0) {
@@ -192,7 +196,7 @@ function buildSubjectOpeningLineHe(sp, lab) {
   }
   if (ex0) {
     const acc = Math.round(Number(ex0.accuracy) || 0);
-    return stripGuillemetsHe(`ב${lab} יש אחיזה טובה סביב ${displayTopicPhraseHe(ex0.labelHe)} (דיוק כ־${acc}%).`);
+    return stripGuillemetsHe(`ב${lab} יש אחיזה טובה ב־${displayTopicPhraseHe(ex0.labelHe)} (דיוק כ־${acc}%).`);
   }
   if (imp0) {
     const acc = Math.round(Number(imp0.accuracy) || 0);
@@ -237,7 +241,11 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
       );
     }
     if (w0) {
-      return stripGuillemetsHe(`${base} כדאי לחזק סביב ${displayTopicPhraseHe(w0.labelHe)}.`);
+      const hint = parentFacingWeaknessPracticePhraseHe(w0.labelHe);
+      const tail = hint
+        ? ` כדאי לתרגל שוב ${hint} בכמה שאלות קצרות.`
+        : " כדאי לתרגל את זה שוב בכמה שאלות קצרות.";
+      return stripGuillemetsHe(`${base}${tail}`);
     }
     return base.length > 280 ? `${base.slice(0, 277)}…` : base;
   }
@@ -259,10 +267,10 @@ function buildSubjectDiagnosisLineHe(sp, lab) {
     return stripGuillemetsHe(`המיקוד המעשי כרגע: ${displayTopicPhraseHe(w0.labelHe)} — ${ws}.`);
   }
   if (s0) {
-    return stripGuillemetsHe(`הכיוון החזק: ${displayTopicPhraseHe(s0.labelHe)} — שווה לשמר עליו עם תרגול קצר וברור.`);
+    return stripGuillemetsHe(`הכיוון החזק: ${displayTopicPhraseHe(s0.labelHe)} — שווה לשמר עליו עם תרגול קצר עד שהכיוון מתבהר.`);
   }
   if (imp0 && !w0) {
-    return stripGuillemetsHe(`יש תנועה ${displayTopicPhraseHe(imp0.labelHe)} — נשארים עם תרגול קצר ולא מקפיצים רמה.`);
+    return stripGuillemetsHe(`יש תנועה ${displayTopicPhraseHe(imp0.labelHe)} — כדאי להמשיך בתרגול קצר ולא לקפוץ רמה מהר.`);
   }
   return stripGuillemetsHe("התמונה עדיין חלקית — עוד קצת תרגול יבהיר את הכיוון.");
 }
@@ -331,7 +339,7 @@ function applySubjectNarrativeGuardrails(sp, letter) {
   const lab = sp?.subjectLabelHe || "המקצוע";
   return {
     ...letter,
-    opening: `ב${lab} התמונה כרגע חלקית וזהירה — נשארים עם ניסוח קצר וברור עד שיצטבר עוד תרגול עקבי.`,
+    opening: `ב${lab} עדיין אין תמונה מספיק ברורה. כדאי להמשיך עם תרגול קצר ולבדוק שוב אחרי עוד כמה תרגולים.`,
     diagnosisHe: letter.diagnosisHe,
     homeAction: letter.homeAction || `ב${lab} מומלץ להתמקד בצעד קצר אחד ולא להרחיב עומס.`,
     closing: `עדיין מוקדם לקבוע מסקנה יציבה ב${lab}; נמשיך לעקוב בשבועות הקרובים ונעדכן בהתאם.`,
@@ -371,7 +379,7 @@ export function buildSubjectParentLetter(sp, opts = {}) {
     fragile: "",
     reliabilityNoteHe: null,
   };
-  return applySubjectNarrativeGuardrails(sp, base);
+  return normalizeSubjectParentLetterHe(applySubjectNarrativeGuardrails(sp, base));
 }
 
 export function buildTopicRecommendationNarrative(tr) {

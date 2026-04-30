@@ -15,7 +15,7 @@ import {
  * כשאין מספיק מידע לתווית ספציפית — אותו ניסוח לכל המקצועות.
  * (באנגלית: `englishWeaknessFallbackHe` — בלי "באנגלית" בטקסט, כי בדוחות חוצה־מקצועיים מוסיפים `(אנגלית)`.)
  */
-export const GENERIC_WEAKNESS_HE = "דפוס שגיאות חוזר";
+export const GENERIC_WEAKNESS_HE = "יש טעויות שחוזרות כאן";
 export const GENERIC_POINT_HE = "קושי שכדאי לשים אליו לב";
 export const GENERIC_REINFORCE_HE = "כדאי לחזק את הנושא הזה עוד קצת";
 
@@ -213,11 +213,20 @@ export function weaknessLabelHe(subjectId, sampleEv) {
   }
 
   const fromPf = hebrewFromEnglishSlug(pf);
-  if (fromPf && hasHebrewLetters(fromPf)) return `דפוס שגיאות: ${fromPf}`;
+  if (fromPf && hasHebrewLetters(fromPf)) {
+    const rw = rewriteEngineTaxonomySnippetForParentHe(fromPf);
+    return rw || fromPf;
+  }
   const fromK = hebrewFromEnglishSlug(k);
-  if (fromK && hasHebrewLetters(fromK)) return `דפוס שגיאות: ${fromK}`;
+  if (fromK && hasHebrewLetters(fromK)) {
+    const rw = rewriteEngineTaxonomySnippetForParentHe(fromK);
+    return rw || fromK;
+  }
   const fromSt = hebrewFromEnglishSlug(st);
-  if (fromSt && hasHebrewLetters(fromSt)) return `דפוס שגיאות: ${fromSt}`;
+  if (fromSt && hasHebrewLetters(fromSt)) {
+    const rw = rewriteEngineTaxonomySnippetForParentHe(fromSt);
+    return rw || fromSt;
+  }
 
   if (topic && !isMostlyAsciiIdentifier(topic)) {
     const t = String(topic).trim();
@@ -228,7 +237,11 @@ export function weaknessLabelHe(subjectId, sampleEv) {
     if (nice && !isMostlyAsciiIdentifier(nice)) return `בנושא ${nice}`;
   }
 
-  if (pf && !isMostlyAsciiIdentifier(pf) && hasHebrewLetters(pf)) return `דפוס שגיאות: ${pf.trim()}`;
+  if (pf && !isMostlyAsciiIdentifier(pf) && hasHebrewLetters(pf)) {
+    const rawPf = pf.trim();
+    const rw = rewriteEngineTaxonomySnippetForParentHe(rawPf);
+    return rw === PARENT_TOPIC_FALLBACK_HE ? GENERIC_WEAKNESS_HE : rw || rawPf;
+  }
 
   if (subjectId === "english") {
     return englishWeaknessFallbackHe(topic);
@@ -252,4 +265,62 @@ export function sessionRowLabelHe(subjectId, row) {
     if (mapped && hasHebrewLetters(mapped)) return mapped;
   }
   return "בנושא תרגול";
+}
+
+/** כשלא מצליחים לנקות תווית מנוע — מחרוזת בטוחה להורה */
+export const PARENT_TOPIC_FALLBACK_HE = "נושא שכדאי לבדוק שוב";
+
+const TAXONOMY_PARENT_SNIPPET_PAIRS = [
+  [/טעות\s+כשעובדה\s+לא\s+בסדר\s+קריאה/giu, "קריאת השאלה לא הייתה מסודרת"],
+  [/עובדה\s+לא\s+בסדר\s+קריאה/giu, "קריאת השאלה לא הייתה מסודרת"],
+  [/טעות\s+כיוון\s+עיגול/giu, "בלבול בכיוון העיגול"],
+  [/שגיאה\s+בעמודות\s+עשרות/giu, "שגיאה בחיבור בעמודות עשרות"],
+  [/לא\s+בסדר\s+קריאה/giu, "קריאה לא מסודרת של השאלה"],
+];
+
+/**
+ * החלפת מקטעי טקסונומיה בתוך משפט — בלי החלפת משפט שלם לטקסט גנרי.
+ * @param {string|null|undefined} raw
+ * @returns {string}
+ */
+export function rewriteTaxonomySubstringsOnlyHe(raw) {
+  let t = String(raw ?? "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!t) return "";
+  for (const [re, rep] of TAXONOMY_PARENT_SNIPPET_PAIRS) {
+    t = t.replace(re, rep);
+  }
+  return t.trim();
+}
+
+/**
+ * תרגום תוויות/מקטעי pattern גולמיים מהמנוע לניסוח הורה קריא.
+ * לא משנה מזהים טכניים — רק תצוגה.
+ * @param {string|null|undefined} raw
+ * @returns {string}
+ */
+export function rewriteEngineTaxonomySnippetForParentHe(raw) {
+  let t = rewriteTaxonomySubstringsOnlyHe(raw);
+  if (!t) return "";
+  if (/טעות\s+כש/u.test(t) && t.length <= 48) return PARENT_TOPIC_FALLBACK_HE;
+  return t.trim();
+}
+
+/**
+ * משפט תרגול ממוקד לפי תווית חולשה (ללא «כדאי לחזק סביב בנושא של…»).
+ * @param {string|null|undefined} labelHe
+ * @returns {string} ריק כשמספיק המשפט הכללי בלי נושא
+ */
+export function parentFacingWeaknessPracticePhraseHe(labelHe) {
+  const core = String(labelHe || "")
+    .trim()
+    .replace(/^דפוס\s+שגיאות:\s*/iu, "")
+    .replace(/^בנושא\s+/u, "")
+    .replace(/^הנושא\s+/u, "");
+  if (!core) return "";
+  const rw = rewriteEngineTaxonomySnippetForParentHe(core);
+  if (!rw || rw === PARENT_TOPIC_FALLBACK_HE) return "";
+  if (/^בנושא\b/u.test(rw)) return rw;
+  return `בנושא ${rw}`;
 }

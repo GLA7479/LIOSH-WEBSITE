@@ -21,9 +21,9 @@ const PATTERN_SUBJECT_ORDER = [
 
 /** Minimum questions in window for a subject to qualify for a “strength” line from raw metrics. */
 const RAW_STRENGTH_MIN_Q = 10;
-/** High accuracy threshold (percent) for “חוזקה יחסית”. */
+/** High accuracy threshold (percent) for executive strength bullet (“נושא שהילד מצליח בו יותר”). */
 const RAW_STRENGTH_HIGH_ACC = 82;
-/** Mid band for “יציבות יחסית”. */
+/** Mid band for consistency bullet (“תוצאות די עקביות בתקופה”). */
 const RAW_STRENGTH_MID_LO = 72;
 
 /**
@@ -88,9 +88,9 @@ export function deriveParentDataPresenceForDiagnosticsView(report, diagnosticsVi
       return {
         state: ParentDataPresence.hasEvidenceLowConfidence,
         recommendationsExplainerHe:
-          "יש נתוני תרגול בטווח, אך המסקנה המקצועית עדיין זהירה — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן.",
+          "יש נתוני תרגול בטווח, אך עדיין לא ניתן לסגור תמונה ברורה מהתרגולים — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן.",
         lowConfidenceExplainerHe:
-          "קיימים נתונים, אך דרוש עוד תרגול כדי לחזק את הכיוון המקצועי.",
+          "קיימים נתונים, אך דרוש עוד תרגול כדי לחזק את הכיוון שנראה מהתרגולים.",
       };
     }
   }
@@ -99,7 +99,7 @@ export function deriveParentDataPresenceForDiagnosticsView(report, diagnosticsVi
     return {
       state: ParentDataPresence.hasVolumeNoPattern,
       recommendationsExplainerHe:
-        "יש נתוני תרגול בטווח, אבל עדיין אין דפוס אבחוני יציב ברמת המקצועות — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן.",
+        "יש נתוני תרגול בטווח, אבל עדיין אין תמונה יציבה מהתרגולים על פני המקצועות — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן.",
       lowConfidenceExplainerHe: null,
     };
   }
@@ -108,7 +108,7 @@ export function deriveParentDataPresenceForDiagnosticsView(report, diagnosticsVi
     return {
       state: ParentDataPresence.hasEvidenceLowConfidence,
       recommendationsExplainerHe:
-        "יש פעילות בנושאים, אך המסקנה המקצועית עדיין זהירה — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן.",
+        "יש פעילות בנושאים, אך עדיין לא ניתן לסגור תמונה ברורה מהתרגולים — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן.",
       lowConfidenceExplainerHe: "יש נתונים, אך דרוש עוד תרגול כדי לחזק את הכיוון.",
     };
   }
@@ -116,7 +116,7 @@ export function deriveParentDataPresenceForDiagnosticsView(report, diagnosticsVi
   return {
     state: ParentDataPresence.hasVolumeNoPattern,
     recommendationsExplainerHe:
-      "יש נתוני תרגול בטווח, אבל עדיין אין דפוס אבחוני יציב ברמת המקצועות — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן.",
+      "יש נתוני תרגול בטווח, אבל עדיין אין תמונה יציבה מהתרגולים על פני המקצועות — כדאי להמשיך בתרגול ולעקוב שוב לאחר מכן.",
     lowConfidenceExplainerHe: null,
   };
 }
@@ -146,10 +146,10 @@ export function deriveRawMetricStrengthLinesHe(summary) {
     const ac = Math.round(Number(acc) || 0);
     if (nq < RAW_STRENGTH_MIN_Q) continue;
     if (ac >= RAW_STRENGTH_HIGH_ACC) {
-      out.push(`${label} נראית כחוזקה יחסית: דיוק גבוה (${ac}%) לאורך ${nq} שאלות בתקופה.`);
+      out.push(`${label} נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (${ac}%) לאורך ${nq} שאלות בתקופה.`);
     } else if (ac >= RAW_STRENGTH_MID_LO && ac < RAW_STRENGTH_HIGH_ACC) {
       out.push(
-        `ב${label} נראית יציבות טובה יחסית לתקופה (${ac}% דיוק, ${nq} שאלות) — עם מקום לשיפור ממוקד.`
+        `ב${label} התוצאות נראות די עקביות בתקופה הזו (${ac}% דיוק, ${nq} שאלות) — יש עדיין נושאים שכדאי לחזק.`
       );
     }
   }

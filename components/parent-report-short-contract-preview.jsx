@@ -18,7 +18,7 @@ function line(label, value) {
 export function ParentReportShortContractPreview({ top }) {
   if (!top || typeof top !== "object") return null;
   const status = line("מצב", top.mainStatusHe);
-  const priority = line("מיקוד עיקרי", top.mainPriorityHe);
+  const priority = line("מה חשוב קודם", top.mainPriorityHe);
   const doNow = line("מה עושים עכשיו", top.doNowHe);
   if (!status && !priority && !doNow) return null;
   return (

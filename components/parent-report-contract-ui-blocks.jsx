@@ -15,12 +15,12 @@ export function ParentTopContractSummaryBlock({ top }) {
   if (!top || typeof top !== "object") return null;
   const items = [
     row("מצב", top.mainStatusHe),
-    row("מיקוד עיקרי", top.mainPriorityHe),
+    row("מה חשוב קודם", top.mainPriorityHe),
     row("מה עושים עכשיו", top.doNowHe),
     row("למה", top.whyHe),
     row("מה לא לעשות כרגע", top.avoidNowHe),
-    row("רמת ודאות", top.confidenceHe),
-    row("בסיס הנתונים", top.evidenceSummaryHe),
+    row("כמה אפשר לסמוך על זה", top.confidenceHe),
+    row("על מה זה נשען", top.evidenceSummaryHe),
     row("בדיקה הבאה", top.nextCheckHe),
   ].filter(Boolean);
   if (!items.length) return null;
@@ -46,10 +46,10 @@ export function ParentSubjectContractSummaryBlock({
   const doNow = topDoNowNorm && subjectDoNowNorm === topDoNowNorm ? "" : subjectDoNowNorm;
   const items = [
     row("סיכום להורה", contractRow.mainStatusHe),
-    row("מיקוד", mainPriority),
+    row("מה הכי חשוב כאן", mainPriority),
     row("מה עושים עכשיו", doNow),
     row("מה לא לעשות כרגע", contractRow.avoidNowHe),
-    row("רמת ודאות", contractRow.confidenceHe),
+    row("כמה אפשר לסמוך על זה", contractRow.confidenceHe),
   ].filter(Boolean);
   if (!items.length) return null;
   return (
