@@ -28,5 +28,6 @@ export default async function handler(req, res) {
     players: snapshot.players,
     gameSession: snapshot.gameSession,
     membership: snapshot.membership,
+    fourline: snapshot.fourline,
   });
 }

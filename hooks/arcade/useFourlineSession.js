@@ -27,6 +27,9 @@ export function useFourlineSession(ctx) {
   const [snap, setSnap] = useState(null);
   const [roomRow, setRoomRow] = useState(null);
   const [players, setPlayers] = useState([]);
+  const [gameSessionRow, setGameSessionRow] = useState(null);
+  /** True after at least one successful snapshot bundle (ok JSON with room payload). */
+  const [bundleLoaded, setBundleLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
@@ -34,6 +37,8 @@ export function useFourlineSession(ctx) {
     setSnap(null);
     setRoomRow(null);
     setPlayers([]);
+    setGameSessionRow(null);
+    setBundleLoaded(false);
     setErr("");
   }, [roomId]);
 
@@ -44,8 +49,10 @@ export function useFourlineSession(ctx) {
     const tick = async () => {
       const b = await fetchArcadeRoomFourlineBundle(roomId);
       if (cancelled || !b) return;
+      setBundleLoaded(true);
       setRoomRow(b.room);
       setPlayers(b.players || []);
+      setGameSessionRow(b.gameSession ?? null);
       setSnap((prev) => preferNewer(prev, b.fourline));
     };
 
@@ -75,6 +82,7 @@ export function useFourlineSession(ctx) {
           if (b?.fourline) setSnap((prev) => preferNewer(prev, b.fourline));
           if (b?.room) setRoomRow(b.room);
           if (b?.players) setPlayers(b.players);
+          if (b) setGameSessionRow(b.gameSession ?? null);
         }
         return { ok: true };
       } catch (e) {
@@ -123,5 +131,7 @@ export function useFourlineSession(ctx) {
     roomId,
     room: roomRow,
     players,
+    gameSession: gameSessionRow,
+    bundleLoaded,
   };
 }

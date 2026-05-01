@@ -209,7 +209,8 @@ function FourLinePlayerHeader({ seat0Label, seat1Label, mySeat, indicatorSeat, p
 /** @param {{ roomId: string }} props */
 export default function FourlineScreen({ roomId }) {
   const session = useFourlineSession({ roomId });
-  const { snapshot, vm, busy, err, setErr, playColumn, room, players } = session;
+  const { snapshot, vm, busy, err, setErr, playColumn, room, players, gameSession, bundleLoaded } =
+    session;
 
   const cells = useMemo(() => parseFourLineCells(vm.cells), [vm.cells]);
 
@@ -382,7 +383,11 @@ export default function FourlineScreen({ roomId }) {
       : "";
 
   const showLobbyWait = room?.status === "waiting";
-  const showBoardLoading = !showLobbyWait && room?.status === "active" && !snapshot;
+  /** חדר active בלי session — מצב שבור; לא להציג "טוען לוח…" לנצח */
+  const showSessionInitError =
+    bundleLoaded && room?.status === "active" && !snapshot && !gameSession;
+  const showBoardLoading =
+    !showLobbyWait && room?.status === "active" && !snapshot && !showSessionInitError;
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col gap-1 overflow-hidden bg-zinc-950 px-2 pb-2 sm:min-h-0">
@@ -403,6 +408,14 @@ export default function FourlineScreen({ roomId }) {
         <div className="flex flex-1 flex-col items-center justify-center px-2 text-center text-sm text-zinc-400">
           <p>ממתין לשחקן שני…</p>
           <p className="mt-2 text-xs text-zinc-500">כשהיריב מצטרף, המשחק ייפתח אוטומטית.</p>
+        </div>
+      ) : showSessionInitError ? (
+        <div className="flex flex-1 flex-col items-center justify-center px-4 text-center text-sm text-red-300">
+          <p className="font-medium">שגיאה: המשחק לא אותחל לחדר הזה</p>
+          <p className="mt-2 text-xs text-zinc-500">נסה לחזור לארקייד ולהיכנס שוב.</p>
+          <Link href="/student/arcade" className="mt-4 text-sky-400 underline">
+            חזרה לארקייד
+          </Link>
         </div>
       ) : showBoardLoading ? (
         <div className="flex flex-1 items-center justify-center text-sm text-zinc-400">טוען לוח…</div>
