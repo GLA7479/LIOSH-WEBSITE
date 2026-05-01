@@ -36,6 +36,10 @@ export function useFourlineSession(ctx) {
   const [err, setErr] = useState("");
   const joinRecoveryAttemptedRef = useRef(false);
   const bundleLoadedOnceRef = useRef(false);
+  /** מניעת setState בכל poll כשה-snapshot בפועל לא השתנה — מפחית רענוני HMR/רינדור */
+  const lastPollSigRef = useRef("");
+  const snapRef = useRef(null);
+  snapRef.current = snap;
 
   useEffect(() => {
     setSnap(null);
@@ -47,6 +51,7 @@ export function useFourlineSession(ctx) {
     setErr("");
     joinRecoveryAttemptedRef.current = false;
     bundleLoadedOnceRef.current = false;
+    lastPollSigRef.current = "";
   }, [roomId]);
 
   useEffect(() => {
@@ -85,6 +90,31 @@ export function useFourlineSession(ctx) {
         return;
       }
 
+      const fl = b.fourline;
+      const roomSt = b.room?.status != null ? String(b.room.status) : "";
+      const gsSt = b.gameSession?.status != null ? String(b.gameSession.status) : "";
+      const rev = fl?.revision != null ? Number(fl.revision) : -1;
+      const phase = fl?.phase != null ? String(fl.phase) : "";
+      const wa = fl?.walkaway === true ? "1" : "0";
+      const settle =
+        fl?.mySettlementAmount != null && fl.mySettlementAmount !== ""
+          ? Number(fl.mySettlementAmount)
+          : "";
+      const playerSig = Array.isArray(b.players)
+        ? b.players.map((p) => `${p.student_id}:${String(p.display_name ?? "").slice(0, 24)}`).join("|")
+        : "";
+      const pollSig = `${roomSt}|${gsSt}|${rev}|${phase}|${wa}|${settle}|${playerSig}`;
+
+      const unchanged =
+        bundleLoadedOnceRef.current &&
+        pollSig === lastPollSigRef.current &&
+        lastPollSigRef.current !== "";
+
+      if (unchanged) {
+        return;
+      }
+      lastPollSigRef.current = pollSig;
+
       setBundleError("");
       bundleLoadedOnceRef.current = true;
       setBundleLoaded(true);
@@ -98,7 +128,9 @@ export function useFourlineSession(ctx) {
           merged &&
           Number(prev.revision) === Number(merged.revision) &&
           String(prev.phase || "") === String(merged.phase || "") &&
-          String(prev.sessionId || "") === String(merged.sessionId || "")
+          String(prev.sessionId || "") === String(merged.sessionId || "") &&
+          Boolean(prev.walkaway) === Boolean(merged.walkaway) &&
+          String(prev.mySettlementAmount ?? "") === String(merged?.mySettlementAmount ?? "")
         ) {
           return prev;
         }
@@ -116,12 +148,13 @@ export function useFourlineSession(ctx) {
 
   const playColumn = useCallback(
     async (col) => {
-      if (!roomId || !snap) return { ok: false };
+      const s = snapRef.current;
+      if (!roomId || !s) return { ok: false };
       if (busy) return { ok: false };
       setBusy(true);
       setErr("");
       try {
-        const r = await requestFourlinePlayColumn(roomId, col, { revision: snap.revision });
+        const r = await requestFourlinePlayColumn(roomId, col, { revision: s.revision });
         if (!r.ok) {
           setErr(r.error || "מהלך נכשל");
           return { ok: false };
@@ -144,7 +177,7 @@ export function useFourlineSession(ctx) {
         setBusy(false);
       }
     },
-    [roomId, snap, busy],
+    [roomId, busy],
   );
 
   const vm = useMemo(() => {

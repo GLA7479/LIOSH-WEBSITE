@@ -396,6 +396,20 @@ export default function FourlineScreen({ roomId }) {
   const [leaveBusy, setLeaveBusy] = useState(false);
   const leaveBusyRef = useRef(false);
 
+  const [hoverCol, setHoverCol] = useState(/** @type {number|null} */ (null));
+  const [movePulseCol, setMovePulseCol] = useState(/** @type {number|null} */ (null));
+  const [dropAnim, setDropAnim] = useState(
+    /** @type {null | { key: string; row: number; col: number; seat: 0|1 }} */ (null),
+  );
+  const [dropTranslatePx, setDropTranslatePx] = useState(0);
+  const [winFreeze, setWinFreeze] = useState(false);
+  const [cellStridePx, setCellStridePx] = useState(0);
+  const prevRevisionRef = useRef(/** @type {number|null} */ (null));
+  const prevLmKeyRef = useRef("");
+  const lmPulseInitRef = useRef(false);
+  const prevPhaseRef = useRef("");
+  const firstCellRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+
   useEffect(() => {
     let cancelled = false;
     const tick = async () => {
@@ -508,20 +522,6 @@ export default function FourlineScreen({ roomId }) {
   }, [finished, snapshot?.mySettlementAmount, vm.sessionId]);
 
   const canPickColumn = vm.phase === "playing" && vm.mySeat === vm.turnSeat && !busy;
-
-  const [hoverCol, setHoverCol] = useState(/** @type {number|null} */ (null));
-  const [movePulseCol, setMovePulseCol] = useState(/** @type {number|null} */ (null));
-  const [dropAnim, setDropAnim] = useState(
-    /** @type {null | { key: string; row: number; col: number; seat: 0|1 }} */ (null),
-  );
-  const [dropTranslatePx, setDropTranslatePx] = useState(0);
-  const [winFreeze, setWinFreeze] = useState(false);
-  const [cellStridePx, setCellStridePx] = useState(0);
-  const prevRevisionRef = useRef(/** @type {number|null} */ (null));
-  const prevLmKeyRef = useRef("");
-  const lmPulseInitRef = useRef(false);
-  const prevPhaseRef = useRef("");
-  const firstCellRef = useRef(/** @type {HTMLDivElement|null} */ (null));
 
   const indicatorSeat = useMemo(() => {
     if (vm.phase !== "playing") return null;
@@ -824,7 +824,13 @@ export default function FourlineScreen({ roomId }) {
                       {isDraw ? "תיקו" : didIWin ? "ניצחת!" : "הפסדת"}
                     </p>
                     <p className="mt-1 text-sm text-zinc-400">
-                      {isDraw ? "הלוח התמלא." : didIWin ? "ארבע בשורה." : "היריב חיבר ארבע."}
+                      {isDraw
+                        ? "הלוח התמלא."
+                        : didIWin
+                          ? snapshot?.walkaway
+                            ? "היריב יצא מהמשחק — ניצחון טכני."
+                            : "ארבע בשורה."
+                          : "היריב חיבר ארבע."}
                     </p>
                     {didIWin && Number(snapshot?.mySettlementAmount) > 0 ? (
                       <div className="mt-3 space-y-1">
