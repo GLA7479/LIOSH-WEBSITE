@@ -16,12 +16,12 @@ const MOVE_PULSE_MS = 220;
 
 const GAME_TITLE = "ארבע בשורה";
 
-/** מסגרת אחידה לכל פקדי ה-HUD (גובה וצורה זהים) */
-const HUD_CONTROL_H = "h-11";
+/** מסגרת אחידה — גובה נמוך יותר (ציר Y), רוחב קומפקטי (ציר X) */
+const HUD_CONTROL_H = "h-9";
 const HUD_CHIP =
-  "rounded-xl border border-white/20 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:bg-white/[0.11] active:scale-[0.97]";
+  "rounded-lg border border-white/20 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:bg-white/[0.11] active:scale-[0.97]";
 const HUD_BTN_BASE = `flex ${HUD_CONTROL_H} shrink-0 items-center justify-center ${HUD_CHIP}`;
-const HUD_BTN_SQUARE = `${HUD_BTN_BASE} w-11`;
+const HUD_BTN_SQUARE = `${HUD_BTN_BASE} w-9`;
 
 /**
  * סרגל עליון בסגנון OV2: חזרה, שם משחק בעברית, מטבעות, עזרה
@@ -31,37 +31,37 @@ function FourlineOv2Hud({ onBack, balance, onOpenHelp }) {
   return (
     <header
       dir="rtl"
-      className="relative z-20 flex w-full shrink-0 items-center gap-2 rounded-2xl border border-white/[0.14] bg-gradient-to-b from-zinc-700/90 via-zinc-900/95 to-black/90 px-2 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_40px_rgba(0,0,0,0.55)] sm:gap-3 sm:px-3 sm:py-2.5"
+      className="relative z-20 flex w-full shrink-0 items-center gap-1.5 rounded-xl border border-white/[0.14] bg-gradient-to-b from-zinc-700/90 via-zinc-900/95 to-black/90 px-2 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_6px_28px_rgba(0,0,0,0.45)] sm:gap-2 sm:px-2.5 sm:py-2"
     >
       <button
         type="button"
         onClick={onBack}
-        className={`${HUD_BTN_BASE} min-w-[4.75rem] px-2.5 sm:min-w-[5rem]`}
+        className={`${HUD_BTN_BASE} min-w-[3.75rem] px-2 sm:min-w-[4rem]`}
         aria-label="חזרה"
         title="חזרה"
       >
-        <span className="text-sm font-extrabold leading-none tracking-wide text-white sm:text-base">
+        <span className="text-xs font-extrabold leading-none tracking-wide text-white sm:text-sm">
           חזרה
         </span>
       </button>
 
-      <div className="min-w-0 flex-1 px-1 text-center">
-        <h1 className="truncate text-lg font-extrabold leading-tight text-white drop-shadow-sm sm:text-xl lg:text-2xl">
+      <div className="min-w-0 flex-1 px-0.5 text-center">
+        <h1 className="truncate text-base font-extrabold leading-tight text-white drop-shadow-sm sm:text-lg lg:text-xl">
           {GAME_TITLE}
         </h1>
       </div>
 
-      <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+      <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
         <div
-          className={`flex ${HUD_CONTROL_H} min-w-[5.75rem] max-w-[10rem] shrink-0 items-center gap-1.5 rounded-xl border border-amber-500/35 bg-black/55 px-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:gap-2 sm:px-3`}
+          className={`flex ${HUD_CONTROL_H} min-w-[4.75rem] max-w-[9rem] shrink-0 items-center gap-1 rounded-lg border border-amber-500/35 bg-black/55 px-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:min-w-[5rem] sm:px-2.5`}
           title="יתרת מטבעות"
         >
           <img
             src="/images/coin.png"
             alt=""
-            className="h-8 w-8 shrink-0 object-contain sm:h-9 sm:w-9"
+            className="h-6 w-6 shrink-0 object-contain sm:h-7 sm:w-7"
           />
-          <span className="min-w-0 truncate font-mono text-base font-bold tabular-nums leading-none text-amber-100 sm:text-lg">
+          <span className="min-w-0 truncate font-mono text-sm font-bold tabular-nums leading-none text-amber-100 sm:text-base">
             {balance === null ? "…" : balance}
           </span>
         </div>
@@ -73,7 +73,7 @@ function FourlineOv2Hud({ onBack, balance, onOpenHelp }) {
           title="איך משחקים"
         >
           <span
-            className="font-serif text-[22px] font-semibold italic leading-none text-zinc-50 sm:text-[26px]"
+            className="font-serif text-[17px] font-semibold italic leading-none text-zinc-50 sm:text-[19px]"
             aria-hidden
           >
             i
