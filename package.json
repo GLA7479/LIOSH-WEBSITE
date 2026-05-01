@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "verify:learning-supabase-env": "node scripts/verify-learning-supabase-env.mjs",
+    "verify:learning-rls": "node scripts/verify-learning-rls.mjs",
     "audit:hebrew-subtopics": "tsx scripts/hebrew-subtopic-coverage-audit.mjs",
     "audit:questions": "tsx scripts/generator-deterministic-harness.mjs && tsx scripts/audit-question-banks.mjs",
     "test:answer-compare": "tsx scripts/answer-compare-selftest.mjs",
