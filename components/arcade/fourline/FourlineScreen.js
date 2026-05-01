@@ -16,6 +16,53 @@ const MOVE_PULSE_MS = 220;
 
 const GAME_TITLE = "ארבע בשורה";
 
+/**
+ * רצועת פרסומת קבועה בתחתית — שומרת גובה יציב (מובייל + דסקטופ), תואמת דפוס OV2 / Learning masters.
+ */
+function FourlineOv2AdSlot() {
+  return (
+    <aside
+      role="complementary"
+      aria-label="אזור פרסומת"
+      data-arcade-ad-slot="1"
+      className="relative z-10 w-full shrink-0 border-t border-white/[0.08] bg-black/50 px-2 pt-2"
+      style={{
+        paddingBottom: "max(10px, env(safe-area-inset-bottom, 0px))",
+      }}
+    >
+      <div
+        className="mx-auto flex w-full max-w-[728px] items-center justify-center rounded-xl border border-dashed border-white/15 bg-zinc-900/70 text-zinc-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:rounded-2xl"
+        style={{
+          minHeight: "clamp(52px, 11vw, 90px)",
+          maxHeight: "min(90px, 22vh)",
+        }}
+      >
+        <span className="select-none px-3 text-center text-[10px] font-semibold uppercase tracking-wide text-zinc-500 sm:text-xs">
+          מקום לפרסומת
+        </span>
+      </div>
+    </aside>
+  );
+}
+
+/**
+ * @param {{ onLeave: () => void, disabled?: boolean, busy?: boolean }} props
+ */
+function FourlineLeaveRow({ onLeave, disabled = false, busy = false }) {
+  return (
+    <div className="mt-3 flex w-full shrink-0 justify-center px-1 pb-1 sm:mt-4">
+      <button
+        type="button"
+        onClick={onLeave}
+        disabled={disabled || busy}
+        className="min-h-[2.5rem] w-full max-w-xs rounded-xl border border-rose-500/35 bg-rose-950/35 px-4 py-2 text-sm font-extrabold text-rose-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:bg-rose-950/55 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 sm:max-w-sm sm:text-base"
+      >
+        {busy ? "יוצא…" : "עזוב (LEAVE)"}
+      </button>
+    </div>
+  );
+}
+
 /** מסגרת אחידה — גובה נמוך יותר (ציר Y), רוחב קומפקטי (ציר X) */
 const HUD_CONTROL_H = "h-9";
 const HUD_CHIP =
@@ -127,7 +174,6 @@ function FourlineHowToModal({ open, onClose }) {
           <li>כחול מתחיל; אחרי כל מהלך התור עובר לזהב והחזרה.</li>
           <li>אם הלוח מתמלא ואין ארבע בשורה — תיקו.</li>
         </ul>
-        <p className="mt-4 text-xs text-zinc-500">המשחק נשלט מהשרת; רק התור שלך מאפשר להוריד דיסקית.</p>
       </div>
     </div>
   );
@@ -336,6 +382,8 @@ export default function FourlineScreen({ roomId }) {
 
   const [balance, setBalance] = useState(/** @type {number|null} */ (null));
   const [helpOpen, setHelpOpen] = useState(false);
+  const [leaveBusy, setLeaveBusy] = useState(false);
+  const leaveBusyRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -365,6 +413,27 @@ export default function FourlineScreen({ roomId }) {
       void r.replace("/student/arcade");
     }
   }, []);
+
+  const onLeaveRoom = useCallback(async () => {
+    const id = String(roomId || "").trim();
+    if (!id || leaveBusyRef.current) return;
+    leaveBusyRef.current = true;
+    setLeaveBusy(true);
+    try {
+      await fetch("/api/arcade/rooms/leave", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ roomId: id }),
+      });
+    } catch {
+      /* ניווט גם אם הרשת נכשלה */
+    } finally {
+      leaveBusyRef.current = false;
+      setLeaveBusy(false);
+      goBack();
+    }
+  }, [roomId, goBack]);
 
   const cells = useMemo(() => parseFourLineCells(vm.cells), [vm.cells]);
 
@@ -543,163 +612,186 @@ export default function FourlineScreen({ roomId }) {
   const showBoardLoading =
     !showLobbyWait && room?.status === "active" && !snapshot && !showSessionInitError;
 
+  /** לוח + עזוב מתחתיו — במצבים אחרים נראה עזוב בתחתית גלילת התוכן */
+  const showGameBoardUi =
+    Boolean(room) && !showLobbyWait && !showSessionInitError && !showBoardLoading;
+
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col gap-2 overflow-hidden bg-zinc-950 px-2 pb-2 sm:min-h-0">
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-2 pt-2">
       <FourlineOv2Hud onBack={goBack} balance={balance} onOpenHelp={() => setHelpOpen(true)} />
       <FourlineHowToModal open={helpOpen} onClose={() => setHelpOpen(false)} />
 
-      {!room ? (
-        <div className="flex flex-1 items-center justify-center text-sm text-zinc-400">טוען חדר…</div>
-      ) : showLobbyWait ? (
-        <div className="flex flex-1 flex-col items-center justify-center px-2 text-center text-sm text-zinc-400">
-          <p>ממתין לשחקן שני…</p>
-          <p className="mt-2 text-xs text-zinc-500">כשהיריב מצטרף, המשחק ייפתח אוטומטית.</p>
-        </div>
-      ) : showSessionInitError ? (
-        <div className="flex flex-1 flex-col items-center justify-center px-4 text-center text-sm text-red-300">
-          <p className="font-medium">שגיאה: המשחק לא אותחל לחדר הזה</p>
-          <p className="mt-2 text-xs text-zinc-500">נסה שוב מאוחר יותר או חזור אחורה.</p>
-          <button
-            type="button"
-            onClick={goBack}
-            className="mt-4 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15"
-          >
-            חזרה
-          </button>
-        </div>
-      ) : showBoardLoading ? (
-        <div className="flex flex-1 items-center justify-center text-sm text-zinc-400">טוען לוח…</div>
-      ) : (
-        <>
-          {err ? (
-            <div className="rounded-md border border-red-500/20 bg-red-950/20 px-2 py-1.5 text-[11px] text-red-200/95">
-              <span>{err}</span>{" "}
-              <button type="button" className="text-red-300 underline" onClick={() => setErr("")}>
-                סגור
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div
+          className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden [-webkit-overflow-scrolling:touch]"
+          style={{
+            paddingBottom: "max(6px, env(safe-area-inset-bottom, 0px))",
+          }}
+        >
+          {!room ? (
+            <div className="flex min-h-[40vh] flex-col items-center justify-center text-sm text-zinc-400">
+              טוען חדר…
+            </div>
+          ) : showLobbyWait ? (
+            <div className="flex min-h-[40vh] flex-col items-center justify-center px-2 text-center text-sm text-zinc-400">
+              <p>ממתין לשחקן שני…</p>
+              <p className="mt-2 text-xs text-zinc-500">כשהיריב מצטרף, המשחק ייפתח אוטומטית.</p>
+            </div>
+          ) : showSessionInitError ? (
+            <div className="flex min-h-[40vh] flex-col items-center justify-center px-4 text-center text-sm text-red-300">
+              <p className="font-medium">שגיאה: המשחק לא אותחל לחדר הזה</p>
+              <p className="mt-2 text-xs text-zinc-500">נסה שוב מאוחר יותר או חזור אחורה.</p>
+              <button
+                type="button"
+                onClick={goBack}
+                className="mt-4 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15"
+              >
+                חזרה
               </button>
             </div>
-          ) : null}
-
-          <div className="mt-2 flex min-h-0 flex-1 flex-col gap-0 overflow-x-hidden">
-            {snapshot ? (
-              <FourLinePlayerHeader
-                seat0Label={seat0Label}
-                seat1Label={seat1Label}
-                mySeat={vm.mySeat}
-                indicatorSeat={indicatorSeat}
-                phase={vm.phase}
-              />
-            ) : null}
-
-            <div className="flex min-h-0 min-w-0 flex-col sm:min-h-0 sm:flex-1 sm:justify-center">
-              <div
-                className={`relative mx-auto w-full max-w-lg rounded-2xl border border-zinc-600/25 bg-gradient-to-b from-zinc-800/55 to-zinc-900/90 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] transition-[transform,opacity,box-shadow] duration-200 sm:max-w-[min(100%,min(42rem,65dvh))] ${turnBoardGlow} ${
-                  winFreeze ? "scale-[0.998] opacity-[0.97]" : "scale-100 opacity-100"
-                }`}
-              >
-                <p className="mb-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-500 sm:mb-1">
-                  לוח 7×6
-                </p>
-                <div className="grid grid-cols-7 gap-0.5 sm:gap-1 md:gap-1.5">
-                  {Array.from({ length: OV2_FOURLINE_COLS }, (_, c) => {
-                    const playable = canPickColumn && fourLineColumnPlayable(c, cells);
-                    const showGhost =
-                      hoverCol === c &&
-                      ghostSeat != null &&
-                      vm.phase === "playing" &&
-                      fourLineColumnPlayable(c, cells);
-                    const hoverTintSeat =
-                      hoverCol === c && ghostSeat != null && vm.phase === "playing" && fourLineColumnPlayable(c, cells)
-                        ? ghostSeat
-                        : null;
-                    const pulseTintSeat = movePulseCol === c && hoverCol !== c ? lastMoveSeatForPulse : null;
-                    const tintSeat = hoverTintSeat ?? pulseTintSeat;
-                    const colTint =
-                      tintSeat === 0 ? "bg-sky-500/10" : tintSeat === 1 ? "bg-amber-400/08" : "bg-transparent";
-                    return (
-                      <div
-                        key={c}
-                        data-fl-col
-                        className={`relative flex min-w-0 flex-col gap-0.5 overflow-visible rounded-md transition-[background-color] duration-150 sm:gap-0.5 md:gap-1 ${colTint}`}
-                        onPointerEnter={() => {
-                          if (vm.phase !== "playing") return;
-                          setHoverCol(c);
-                        }}
-                        onPointerLeave={() => setHoverCol(null)}
-                      >
-                        <button
-                          type="button"
-                          disabled={!playable}
-                          aria-label={`עמודה ${c + 1}`}
-                          onClick={() => void onColumn(c)}
-                          className={`relative z-10 flex h-8 min-h-[2rem] items-center justify-center rounded-md border text-[11px] font-bold transition sm:h-9 ${
-                            playable
-                              ? "border-sky-500/40 bg-sky-950/50 text-sky-100 shadow-sm active:scale-[0.97]"
-                              : "cursor-not-allowed border-white/[0.08] bg-zinc-950/50 text-zinc-500 opacity-55"
-                          }`}
-                        >
-                          ▼
-                        </button>
-                        <div className="relative flex min-h-0 flex-col gap-0.5 overflow-visible sm:gap-0.5 md:gap-1" data-fl-cells>
-                          {showGhost ? (
-                            <div className="pointer-events-none absolute left-0 right-0 top-0 z-[15] flex justify-center overflow-visible">
-                              <GhostOrMiniDisc seat={ghostSeat} />
-                            </div>
-                          ) : null}
-                          {dropAnim && dropAnim.col === c && cellStridePx > 0 ? (
-                            <div
-                              className="pointer-events-none absolute left-0 right-0 top-0 z-20 flex justify-center overflow-visible will-change-transform"
-                              style={{
-                                transform: `translateZ(0) translateY(${dropTranslatePx}px)`,
-                                transition:
-                                  dropTranslatePx === 0
-                                    ? "none"
-                                    : `transform ${DROP_MS}ms cubic-bezier(0.33, 1, 0.68, 1)`,
-                              }}
-                            >
-                              <div
-                                className={`aspect-square w-[55%] max-w-[2.75rem] rounded-full sm:w-[58%] sm:max-w-none ${
-                                  dropAnim.seat === 0
-                                    ? "border border-sky-300/25 bg-gradient-to-b from-sky-100 to-blue-800 shadow-[0_3px_8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.3)]"
-                                    : "border border-amber-300/22 bg-gradient-to-b from-amber-50 to-amber-700 shadow-[0_3px_8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.28)]"
-                                }`}
-                              />
-                            </div>
-                          ) : null}
-                          {Array.from({ length: OV2_FOURLINE_ROWS }, (_, ri) => {
-                            const r = ri;
-                            const idx = r * OV2_FOURLINE_COLS + c;
-                            const v = cells[idx];
-                            const hideDrop =
-                              Boolean(dropAnim && dropAnim.row === r && dropAnim.col === c) && cellStridePx > 0;
-                            const isWin = winHighlightSet != null && winHighlightSet.has(idx);
-                            return (
-                              <div key={r} ref={c === 0 && r === 0 ? firstCellRef : undefined} className="min-w-0 px-px sm:px-0.5">
-                                <CellDisc seat={v} hideDisc={hideDrop} isWinning={isWin} />
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })}
+          ) : showBoardLoading ? (
+            <div className="flex min-h-[40vh] items-center justify-center text-sm text-zinc-400">טוען לוח…</div>
+          ) : (
+            <>
+              {err ? (
+                <div className="rounded-md border border-red-500/20 bg-red-950/20 px-2 py-1.5 text-[11px] text-red-200/95">
+                  <span>{err}</span>{" "}
+                  <button type="button" className="text-red-300 underline" onClick={() => setErr("")}>
+                    סגור
+                  </button>
                 </div>
-              </div>
-            </div>
+              ) : null}
 
-            {finished ? (
-              <div className="mt-4 rounded-lg border border-white/10 bg-zinc-900/80 px-3 py-3 text-center">
-                <p className="text-lg font-bold text-zinc-100">
-                  {isDraw ? "תיקו" : didIWin ? "ניצחת!" : "הפסדת"}
-                </p>
-                <p className="mt-1 text-sm text-zinc-400">
-                  {isDraw ? "הלוח התמלא." : didIWin ? "ארבע בשורה." : "היריב חיבר ארבע."}
-                </p>
+              <div className="mt-2 flex min-h-0 flex-col gap-0 overflow-x-hidden">
+                {snapshot ? (
+                  <FourLinePlayerHeader
+                    seat0Label={seat0Label}
+                    seat1Label={seat1Label}
+                    mySeat={vm.mySeat}
+                    indicatorSeat={indicatorSeat}
+                    phase={vm.phase}
+                  />
+                ) : null}
+
+                <div className="flex min-h-0 min-w-0 flex-col sm:min-h-0 sm:flex-1 sm:justify-center">
+                  <div
+                    className={`relative mx-auto w-full max-w-lg rounded-2xl border border-zinc-600/25 bg-gradient-to-b from-zinc-800/55 to-zinc-900/90 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] transition-[transform,opacity,box-shadow] duration-200 sm:max-w-[min(100%,min(42rem,65dvh))] ${turnBoardGlow} ${
+                      winFreeze ? "scale-[0.998] opacity-[0.97]" : "scale-100 opacity-100"
+                    }`}
+                  >
+                    <p className="mb-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-500 sm:mb-1">
+                      לוח 7×6
+                    </p>
+                    <div className="grid grid-cols-7 gap-0.5 sm:gap-1 md:gap-1.5">
+                      {Array.from({ length: OV2_FOURLINE_COLS }, (_, c) => {
+                        const playable = canPickColumn && fourLineColumnPlayable(c, cells);
+                        const showGhost =
+                          hoverCol === c &&
+                          ghostSeat != null &&
+                          vm.phase === "playing" &&
+                          fourLineColumnPlayable(c, cells);
+                        const hoverTintSeat =
+                          hoverCol === c && ghostSeat != null && vm.phase === "playing" && fourLineColumnPlayable(c, cells)
+                            ? ghostSeat
+                            : null;
+                        const pulseTintSeat = movePulseCol === c && hoverCol !== c ? lastMoveSeatForPulse : null;
+                        const tintSeat = hoverTintSeat ?? pulseTintSeat;
+                        const colTint =
+                          tintSeat === 0 ? "bg-sky-500/10" : tintSeat === 1 ? "bg-amber-400/08" : "bg-transparent";
+                        return (
+                          <div
+                            key={c}
+                            data-fl-col
+                            className={`relative flex min-w-0 flex-col gap-0.5 overflow-visible rounded-md transition-[background-color] duration-150 sm:gap-0.5 md:gap-1 ${colTint}`}
+                            onPointerEnter={() => {
+                              if (vm.phase !== "playing") return;
+                              setHoverCol(c);
+                            }}
+                            onPointerLeave={() => setHoverCol(null)}
+                          >
+                            <button
+                              type="button"
+                              disabled={!playable}
+                              aria-label={`עמודה ${c + 1}`}
+                              onClick={() => void onColumn(c)}
+                              className={`relative z-10 flex h-8 min-h-[2rem] items-center justify-center rounded-md border text-[11px] font-bold transition sm:h-9 ${
+                                playable
+                                  ? "border-sky-500/40 bg-sky-950/50 text-sky-100 shadow-sm active:scale-[0.97]"
+                                  : "cursor-not-allowed border-white/[0.08] bg-zinc-950/50 text-zinc-500 opacity-55"
+                              }`}
+                            >
+                              ▼
+                            </button>
+                            <div className="relative flex min-h-0 flex-col gap-0.5 overflow-visible sm:gap-0.5 md:gap-1" data-fl-cells>
+                              {showGhost ? (
+                                <div className="pointer-events-none absolute left-0 right-0 top-0 z-[15] flex justify-center overflow-visible">
+                                  <GhostOrMiniDisc seat={ghostSeat} />
+                                </div>
+                              ) : null}
+                              {dropAnim && dropAnim.col === c && cellStridePx > 0 ? (
+                                <div
+                                  className="pointer-events-none absolute left-0 right-0 top-0 z-20 flex justify-center overflow-visible will-change-transform"
+                                  style={{
+                                    transform: `translateZ(0) translateY(${dropTranslatePx}px)`,
+                                    transition:
+                                      dropTranslatePx === 0
+                                        ? "none"
+                                        : `transform ${DROP_MS}ms cubic-bezier(0.33, 1, 0.68, 1)`,
+                                  }}
+                                >
+                                  <div
+                                    className={`aspect-square w-[55%] max-w-[2.75rem] rounded-full sm:w-[58%] sm:max-w-none ${
+                                      dropAnim.seat === 0
+                                        ? "border border-sky-300/25 bg-gradient-to-b from-sky-100 to-blue-800 shadow-[0_3px_8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.3)]"
+                                        : "border border-amber-300/22 bg-gradient-to-b from-amber-50 to-amber-700 shadow-[0_3px_8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.28)]"
+                                    }`}
+                                  />
+                                </div>
+                              ) : null}
+                              {Array.from({ length: OV2_FOURLINE_ROWS }, (_, ri) => {
+                                const r = ri;
+                                const idx = r * OV2_FOURLINE_COLS + c;
+                                const v = cells[idx];
+                                const hideDrop =
+                                  Boolean(dropAnim && dropAnim.row === r && dropAnim.col === c) && cellStridePx > 0;
+                                const isWin = winHighlightSet != null && winHighlightSet.has(idx);
+                                return (
+                                  <div key={r} ref={c === 0 && r === 0 ? firstCellRef : undefined} className="min-w-0 px-px sm:px-0.5">
+                                    <CellDisc seat={v} hideDisc={hideDrop} isWinning={isWin} />
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <FourlineLeaveRow onLeave={onLeaveRoom} busy={leaveBusy} disabled={!String(roomId || "").trim()} />
+
+                {finished ? (
+                  <div className="mt-3 rounded-lg border border-white/10 bg-zinc-900/80 px-3 py-3 text-center sm:mt-4">
+                    <p className="text-lg font-bold text-zinc-100">
+                      {isDraw ? "תיקו" : didIWin ? "ניצחת!" : "הפסדת"}
+                    </p>
+                    <p className="mt-1 text-sm text-zinc-400">
+                      {isDraw ? "הלוח התמלא." : didIWin ? "ארבע בשורה." : "היריב חיבר ארבע."}
+                    </p>
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-          </div>
-        </>
-      )}
+            </>
+          )}
+
+          {!showGameBoardUi ? (
+            <FourlineLeaveRow onLeave={onLeaveRoom} busy={leaveBusy} disabled={!String(roomId || "").trim()} />
+          ) : null}
+        </div>
+
+        <FourlineOv2AdSlot />
+      </div>
     </div>
   );
 }
