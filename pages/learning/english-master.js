@@ -56,6 +56,10 @@ import {
   saveLearningAnswer,
   startLearningSession,
 } from "../../lib/learning-client/learningActivityClient";
+import {
+  fetchStudentDefaults,
+  gradeKeyToNumber,
+} from "../../lib/learning-student-defaults";
 
 const LEVELS = {
   easy: { name: "קל", maxWords: 5, complexity: "basic" },
@@ -1243,6 +1247,30 @@ const refreshMonthlyProgress = useCallback(() => {
     }
     return "";
   });
+  useEffect(() => {
+    let mounted = true;
+    fetchStudentDefaults()
+      .then((defaults) => {
+        if (!mounted || !defaults) return;
+        if (defaults.fullName) {
+          setPlayerName(defaults.fullName);
+          try {
+            localStorage.setItem("mleo_player_name", defaults.fullName);
+          } catch {}
+        }
+        if (defaults.gradeKey) {
+          setGrade(defaults.gradeKey);
+          const gradeNumberFromDb = gradeKeyToNumber(defaults.gradeKey);
+          if (gradeNumberFromDb) {
+            setGradeNumber(gradeNumberFromDb);
+          }
+        }
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, []);
   const [playerAvatar, setPlayerAvatar] = useState(() => {
     if (typeof window !== "undefined") {
       try {

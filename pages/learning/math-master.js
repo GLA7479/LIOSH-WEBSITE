@@ -95,6 +95,10 @@ import {
   saveLearningAnswer,
   finishLearningSession,
 } from "../../lib/learning-client/learningActivityClient";
+import {
+  fetchStudentDefaults,
+  gradeKeyToNumber,
+} from "../../lib/learning-student-defaults";
 
 /** Passed into compareMathLearnerAnswer — tolerance is not defaulted inside answer-compare. */
 const MATH_NUMERIC_TOLERANCE = 0.01;
@@ -642,6 +646,30 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     }
     return "";
   });
+  useEffect(() => {
+    let mounted = true;
+    fetchStudentDefaults()
+      .then((defaults) => {
+        if (!mounted || !defaults) return;
+        if (defaults.fullName) {
+          setPlayerName(defaults.fullName);
+          try {
+            localStorage.setItem("mleo_player_name", defaults.fullName);
+          } catch {}
+        }
+        if (defaults.gradeKey) {
+          setGrade(defaults.gradeKey);
+          const gradeNumberFromDb = gradeKeyToNumber(defaults.gradeKey);
+          if (gradeNumberFromDb) {
+            setGradeNumber(gradeNumberFromDb);
+          }
+        }
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, []);
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectedCol, setSelectedCol] = useState(null);
   const [highlightedAnswer, setHighlightedAnswer] = useState(null);

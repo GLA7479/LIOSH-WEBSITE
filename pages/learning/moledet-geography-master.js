@@ -56,6 +56,10 @@ import {
   saveLearningAnswer,
   startLearningSession,
 } from "../../lib/learning-client/learningActivityClient";
+import {
+  fetchStudentDefaults,
+  gradeKeyToNumber,
+} from "../../lib/learning-student-defaults";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -490,6 +494,30 @@ useEffect(() => {
     }
     return "";
   });
+  useEffect(() => {
+    let mounted = true;
+    fetchStudentDefaults()
+      .then((defaults) => {
+        if (!mounted || !defaults) return;
+        if (defaults.fullName) {
+          setPlayerName(defaults.fullName);
+          try {
+            localStorage.setItem("mleo_player_name", defaults.fullName);
+          } catch {}
+        }
+        if (defaults.gradeKey) {
+          setGrade(defaults.gradeKey);
+          const gradeNumberFromDb = gradeKeyToNumber(defaults.gradeKey);
+          if (gradeNumberFromDb) {
+            setGradeNumber(gradeNumberFromDb);
+          }
+        }
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, []);
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectedCol, setSelectedCol] = useState(null);
   const [highlightedAnswer, setHighlightedAnswer] = useState(null);

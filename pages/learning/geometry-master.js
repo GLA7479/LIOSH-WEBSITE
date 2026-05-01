@@ -93,6 +93,10 @@ import {
   saveLearningAnswer,
   startLearningSession,
 } from "../../lib/learning-client/learningActivityClient";
+import {
+  fetchStudentDefaults,
+  gradeKeyToNumber,
+} from "../../lib/learning-student-defaults";
 
 /** Passed into compareGeometryLearnerAnswer — not defaulted inside answer-compare. */
 const GEOMETRY_NUMERIC_SCALE_FLOOR = 1e-6;
@@ -281,6 +285,30 @@ const [playerName, setPlayerName] = useState(() => {
     }
     return "";
   });
+useEffect(() => {
+  let mounted = true;
+  fetchStudentDefaults()
+    .then((defaults) => {
+      if (!mounted || !defaults) return;
+      if (defaults.fullName) {
+        setPlayerName(defaults.fullName);
+        try {
+          safeSetItem("mleo_player_name", defaults.fullName);
+        } catch {}
+      }
+      if (defaults.gradeKey) {
+        setGrade(defaults.gradeKey);
+        const gradeNumberFromDb = gradeKeyToNumber(defaults.gradeKey);
+        if (gradeNumberFromDb) {
+          setGradeNumber(gradeNumberFromDb);
+        }
+      }
+    })
+    .catch(() => {});
+  return () => {
+    mounted = false;
+  };
+}, []);
 const [monthlyProgress, setMonthlyProgress] = useState({
   totalMinutes: 0,
   totalExercises: 0,

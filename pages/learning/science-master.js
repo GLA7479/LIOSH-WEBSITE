@@ -54,6 +54,7 @@ import {
   saveLearningAnswer,
   startLearningSession,
 } from "../../lib/learning-client/learningActivityClient";
+import { fetchStudentDefaults } from "../../lib/learning-student-defaults";
 
 // ================== CONFIG ==================
 
@@ -666,6 +667,26 @@ export default function ScienceMaster() {
       return "";
     }
   });
+  useEffect(() => {
+    let mounted = true;
+    fetchStudentDefaults()
+      .then((defaults) => {
+        if (!mounted || !defaults) return;
+        if (defaults.fullName) {
+          setPlayerName(defaults.fullName);
+          try {
+            localStorage.setItem("mleo_player_name", defaults.fullName);
+          } catch {}
+        }
+        if (defaults.gradeKey) {
+          setGrade(defaults.gradeKey);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, []);
   const [playerAvatar, setPlayerAvatar] = useState(() => {
     if (typeof window === "undefined") return "👤";
     try {
