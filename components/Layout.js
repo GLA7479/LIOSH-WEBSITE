@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import DevCoinTopupNav from "./layout/DevCoinTopupNav";
 
 const menuLinks = [
   { href: "/", label: "Home" },
@@ -48,7 +49,7 @@ export default function Layout({ children }) {
             <span>LEO KIDS</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-2 text-sm font-semibold">
+          <div className="hidden md:flex flex-wrap items-center justify-end gap-2 text-sm font-semibold">
             {menuLinks.map((link) => (
               <Link
                 key={link.href}
@@ -58,6 +59,7 @@ export default function Layout({ children }) {
                 {link.label}
               </Link>
             ))}
+            <DevCoinTopupNav variant="desktop" />
           </div>
 
           <button
@@ -98,6 +100,7 @@ export default function Layout({ children }) {
                 </Link>
               ))}
             </div>
+            <DevCoinTopupNav variant="mobile" />
           </div>
         </div>
       )}

@@ -1,5 +1,4 @@
 import Layout from "../../components/Layout";
-import DevCoinTopupCard from "../../components/learning/DevCoinTopupCard";
 import Link from "next/link";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 
@@ -82,8 +81,6 @@ export default function LearningHub({ showDevStudentSimulator }) {
               Learning Zone
             </p>
           </div>
-
-          <DevCoinTopupCard />
 
           <header className="text-center space-y-3">
             <p className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-sm tracking-wider uppercase text-amber-300 font-semibold">
