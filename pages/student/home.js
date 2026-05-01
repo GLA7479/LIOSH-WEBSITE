@@ -9,6 +9,7 @@ export default function StudentHomePage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+    if (!router.isReady) return undefined;
     let mounted = true;
     fetch("/api/student/me")
       .then(async (res) => {
@@ -26,7 +27,7 @@ export default function StudentHomePage() {
     return () => {
       mounted = false;
     };
-  }, [router]);
+  }, [router.isReady]);
 
   const onLogout = async () => {
     setMessage("");

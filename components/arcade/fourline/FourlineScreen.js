@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   fourLineColumnPlayable,
@@ -13,6 +13,120 @@ import { useFourlineSession } from "../../../hooks/arcade/useFourlineSession";
 const DROP_MS = 155;
 const WIN_FREEZE_MS = 280;
 const MOVE_PULSE_MS = 220;
+
+const GAME_TITLE = "ארבע בשורה";
+
+/** מסגרת אחידה לכל פקדי ה-HUD (גובה וצורה זהים) */
+const HUD_CONTROL_H = "h-11";
+const HUD_CHIP =
+  "rounded-xl border border-white/20 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:bg-white/[0.11] active:scale-[0.97]";
+const HUD_BTN_BASE = `flex ${HUD_CONTROL_H} shrink-0 items-center justify-center ${HUD_CHIP}`;
+const HUD_BTN_SQUARE = `${HUD_BTN_BASE} w-11`;
+
+/**
+ * סרגל עליון בסגנון OV2: חזרה, שם משחק בעברית, מטבעות, עזרה
+ * @param {{ onBack: () => void, balance: number | null, onOpenHelp: () => void }} props
+ */
+function FourlineOv2Hud({ onBack, balance, onOpenHelp }) {
+  return (
+    <header
+      dir="rtl"
+      className="relative z-20 flex w-full shrink-0 items-center gap-2 rounded-2xl border border-white/[0.14] bg-gradient-to-b from-zinc-700/90 via-zinc-900/95 to-black/90 px-2 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_40px_rgba(0,0,0,0.55)] sm:gap-3 sm:px-3 sm:py-2.5"
+    >
+      <button
+        type="button"
+        onClick={onBack}
+        className={`${HUD_BTN_BASE} min-w-[4.25rem] px-2.5`}
+        aria-label="חזרה"
+        title="חזרה"
+      >
+        <span className="text-xs font-extrabold tracking-wide text-white">חזרה</span>
+      </button>
+
+      <div className="min-w-0 flex-1 px-1 text-center">
+        <h1 className="truncate text-base font-extrabold leading-tight text-white drop-shadow-sm sm:text-lg">
+          {GAME_TITLE}
+        </h1>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+        <div
+          className={`flex ${HUD_CONTROL_H} min-w-[5.75rem] max-w-[10rem] shrink-0 items-center gap-1.5 rounded-xl border border-amber-500/35 bg-black/55 px-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:gap-2 sm:px-3`}
+          title="יתרת מטבעות"
+        >
+          <img
+            src="/images/coin.png"
+            alt=""
+            className="h-8 w-8 shrink-0 object-contain sm:h-9 sm:w-9"
+          />
+          <span className="min-w-0 truncate font-mono text-base font-bold tabular-nums leading-none text-amber-100 sm:text-lg">
+            {balance === null ? "…" : balance}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={onOpenHelp}
+          className={HUD_BTN_SQUARE}
+          aria-label="איך משחקים"
+          title="איך משחקים"
+        >
+          <span className="font-serif text-[17px] font-semibold italic leading-none text-zinc-50" aria-hidden>
+            i
+          </span>
+        </button>
+      </div>
+    </header>
+  );
+}
+
+/**
+ * @param {{ open: boolean, onClose: () => void }} props
+ */
+function FourlineHowToModal({ open, onClose }) {
+  if (!open) return null;
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/75 p-3 pb-8 backdrop-blur-sm sm:items-center sm:p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="fourline-howto-title"
+    >
+      <button
+        type="button"
+        className="absolute inset-0 cursor-default"
+        aria-label="סגור"
+        onClick={onClose}
+      />
+      <div
+        dir="rtl"
+        className="relative z-[1] max-h-[min(85vh,540px)] w-full max-w-md overflow-y-auto rounded-2xl border border-white/15 bg-gradient-to-b from-zinc-800 to-zinc-950 p-4 text-right shadow-2xl sm:p-5"
+      >
+        <div className="mb-3 flex items-start justify-between gap-3 border-b border-white/10 pb-3">
+          <div>
+            <h2 id="fourline-howto-title" className="text-lg font-bold text-white">
+              איך משחקים
+            </h2>
+            <p className="mt-0.5 text-xs text-amber-300/90">{GAME_TITLE}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="shrink-0 rounded-lg border border-white/20 px-2.5 py-1 text-sm text-zinc-200 hover:bg-white/10"
+          >
+            סגור
+          </button>
+        </div>
+        <ul className="list-disc space-y-2 pr-5 text-sm leading-relaxed text-zinc-200">
+          <li>כל שחקן בוחר עמודה; הדיסקית נופלת לתחתית העמודה.</li>
+          <li>מטרת המשחק: לחבר ארבע דיסקיות בשורה — אופקית, אנכית או אלכסון.</li>
+          <li>כחול מתחיל; אחרי כל מהלך התור עובר לזהב והחזרה.</li>
+          <li>אם הלוח מתמלא ואין ארבע בשורה — תיקו.</li>
+        </ul>
+        <p className="mt-4 text-xs text-zinc-500">המשחק נשלט מהשרת; רק התור שלך מאפשר להוריד דיסקית.</p>
+      </div>
+    </div>
+  );
+}
 
 /** @param {(null|0|1)[]} cells @param {number} row @param {number} col @param {0|1} seat */
 function fourLineWinningIndicesFromLastMove(cells, row, col, seat) {
@@ -208,9 +322,44 @@ function FourLinePlayerHeader({ seat0Label, seat1Label, mySeat, indicatorSeat, p
 
 /** @param {{ roomId: string }} props */
 export default function FourlineScreen({ roomId }) {
+  const router = useRouter();
+  const routerRef = useRef(router);
+  routerRef.current = router;
   const session = useFourlineSession({ roomId });
   const { snapshot, vm, busy, err, setErr, playColumn, room, players, gameSession, bundleLoaded } =
     session;
+
+  const [balance, setBalance] = useState(/** @type {number|null} */ (null));
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const tick = async () => {
+      try {
+        const res = await fetch("/api/arcade/balance", { credentials: "same-origin" });
+        const j = await res.json().catch(() => ({}));
+        if (cancelled || !j?.ok || j.balance == null) return;
+        setBalance(Number(j.balance));
+      } catch {
+        if (!cancelled) setBalance(null);
+      }
+    };
+    void tick();
+    const id = setInterval(() => void tick(), 25000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, []);
+
+  const goBack = useCallback(() => {
+    const r = routerRef.current;
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      r.back();
+    } else {
+      void r.replace("/student/arcade");
+    }
+  }, []);
 
   const cells = useMemo(() => parseFourLineCells(vm.cells), [vm.cells]);
 
@@ -390,17 +539,9 @@ export default function FourlineScreen({ roomId }) {
     !showLobbyWait && room?.status === "active" && !snapshot && !showSessionInitError;
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col gap-1 overflow-hidden bg-zinc-950 px-2 pb-2 sm:min-h-0">
-      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-white/10 py-2">
-        <Link href="/student/arcade" className="text-sm font-medium text-sky-300 underline">
-          חזרה לארקייד
-        </Link>
-        {room?.status ? (
-          <span className="text-[11px] text-zinc-400">
-            חדר: {String(room.status)} · Fourline
-          </span>
-        ) : null}
-      </div>
+    <div className="relative flex min-h-0 flex-1 flex-col gap-2 overflow-hidden bg-zinc-950 px-2 pb-2 sm:min-h-0">
+      <FourlineOv2Hud onBack={goBack} balance={balance} onOpenHelp={() => setHelpOpen(true)} />
+      <FourlineHowToModal open={helpOpen} onClose={() => setHelpOpen(false)} />
 
       {!room ? (
         <div className="flex flex-1 items-center justify-center text-sm text-zinc-400">טוען חדר…</div>
@@ -412,10 +553,14 @@ export default function FourlineScreen({ roomId }) {
       ) : showSessionInitError ? (
         <div className="flex flex-1 flex-col items-center justify-center px-4 text-center text-sm text-red-300">
           <p className="font-medium">שגיאה: המשחק לא אותחל לחדר הזה</p>
-          <p className="mt-2 text-xs text-zinc-500">נסה לחזור לארקייד ולהיכנס שוב.</p>
-          <Link href="/student/arcade" className="mt-4 text-sky-400 underline">
-            חזרה לארקייד
-          </Link>
+          <p className="mt-2 text-xs text-zinc-500">נסה שוב מאוחר יותר או חזור אחורה.</p>
+          <button
+            type="button"
+            onClick={goBack}
+            className="mt-4 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15"
+          >
+            חזרה
+          </button>
         </div>
       ) : showBoardLoading ? (
         <div className="flex flex-1 items-center justify-center text-sm text-zinc-400">טוען לוח…</div>
@@ -447,8 +592,8 @@ export default function FourlineScreen({ roomId }) {
                   winFreeze ? "scale-[0.998] opacity-[0.97]" : "scale-100 opacity-100"
                 }`}
               >
-                <p className="mb-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-400 sm:mb-1">
-                  לוח ארבע בשורה
+                <p className="mb-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-500 sm:mb-1">
+                  לוח 7×6
                 </p>
                 <div className="grid grid-cols-7 gap-0.5 sm:gap-1 md:gap-1.5">
                   {Array.from({ length: OV2_FOURLINE_COLS }, (_, c) => {

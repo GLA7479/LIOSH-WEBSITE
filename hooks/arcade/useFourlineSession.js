@@ -53,7 +53,19 @@ export function useFourlineSession(ctx) {
       setRoomRow(b.room);
       setPlayers(b.players || []);
       setGameSessionRow(b.gameSession ?? null);
-      setSnap((prev) => preferNewer(prev, b.fourline));
+      setSnap((prev) => {
+        const merged = preferNewer(prev, b.fourline);
+        if (
+          prev &&
+          merged &&
+          Number(prev.revision) === Number(merged.revision) &&
+          String(prev.phase || "") === String(merged.phase || "") &&
+          String(prev.sessionId || "") === String(merged.sessionId || "")
+        ) {
+          return prev;
+        }
+        return merged;
+      });
     };
 
     void tick();
