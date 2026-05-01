@@ -1,9 +1,25 @@
 import "../styles/globals.css";
 import Head from "next/head";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 import OfflineIndicator from "../components/OfflineIndicator";
+import StudentAccessGate from "../components/student/StudentAccessGate";
+
+const STUDENT_PROTECTED_ROUTES = new Set([
+  "/learning",
+  "/learning/math-master",
+  "/learning/geometry-master",
+  "/learning/english-master",
+  "/learning/hebrew-master",
+  "/learning/science-master",
+  "/learning/moledet-geography-master",
+  "/learning/curriculum",
+  "/learning/geometry-curriculum",
+  "/learning/dev-student-simulator",
+]);
 
 export default function MyApp({ Component, pageProps }) {
+  const router = useRouter();
   useEffect(() => {
     if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
       return undefined;
@@ -84,6 +100,7 @@ export default function MyApp({ Component, pageProps }) {
     return () => window.removeEventListener("load", registerSW);
   }, []);
 
+  const shouldGate = STUDENT_PROTECTED_ROUTES.has(router.pathname || "");
 
   return (
     <>
@@ -115,7 +132,13 @@ export default function MyApp({ Component, pageProps }) {
         <title>LEO K - Kids Games & Learning</title>
       </Head>
       <OfflineIndicator />
-      <Component {...pageProps} />
+      {shouldGate ? (
+        <StudentAccessGate>
+          <Component {...pageProps} />
+        </StudentAccessGate>
+      ) : (
+        <Component {...pageProps} />
+      )}
     </>
   );
 }

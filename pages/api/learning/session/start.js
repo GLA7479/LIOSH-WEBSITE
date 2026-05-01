@@ -1,0 +1,92 @@
+import { getLearningSupabaseServiceRoleClient } from "../../../../lib/learning-supabase/server";
+import {
+  getAuthenticatedStudentSession,
+  clearStudentSessionCookie,
+} from "../../../../lib/learning-supabase/student-auth";
+import {
+  readJsonBody,
+  normalizeSubject,
+  normalizeOptionalString,
+  normalizeClientMeta,
+  isMissingColumnError,
+  mergeJsonObjects,
+} from "../../../../lib/learning-supabase/learning-activity";
+
+async function insertLearningSession(supabase, row) {
+  const fullInsert = await supabase
+    .from("learning_sessions")
+    .insert(row)
+    .select("id")
+    .limit(1)
+    .maybeSingle();
+  if (!fullInsert.error) return fullInsert;
+  if (!isMissingColumnError(fullInsert.error)) return fullInsert;
+
+  const fallbackRow = {
+    student_id: row.student_id,
+    subject: row.subject,
+    topic: row.topic ?? null,
+    started_at: row.started_at,
+  };
+
+  return supabase
+    .from("learning_sessions")
+    .insert(fallbackRow)
+    .select("id")
+    .limit(1)
+    .maybeSingle();
+}
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ ok: false, error: "Method not allowed" });
+  }
+
+  try {
+    const auth = await getAuthenticatedStudentSession(req);
+    if (!auth) {
+      clearStudentSessionCookie(res);
+      return res.status(401).json({ ok: false, error: "Not authenticated" });
+    }
+
+    const body = readJsonBody(req);
+    const subject = normalizeSubject(body.subject);
+    if (!subject) {
+      return res.status(400).json({ ok: false, error: "Invalid subject" });
+    }
+
+    const topic = normalizeOptionalString(body.topic, 120);
+    const mode = normalizeOptionalString(body.mode, 50);
+    const gradeLevel = normalizeOptionalString(body.gradeLevel, 40);
+    const level = normalizeOptionalString(body.level, 40);
+    const clientMeta = normalizeClientMeta(body.clientMeta);
+    const startedAt = new Date().toISOString();
+
+    const metadata = mergeJsonObjects(clientMeta, {
+      mode,
+      gradeLevel,
+      level,
+    });
+
+    const supabase = getLearningSupabaseServiceRoleClient();
+    const { data, error } = await insertLearningSession(supabase, {
+      student_id: auth.studentId,
+      subject,
+      topic,
+      started_at: startedAt,
+      status: "active",
+      metadata,
+    });
+
+    if (error || !data?.id) {
+      return res.status(500).json({ ok: false, error: "Failed to create learning session" });
+    }
+
+    return res.status(200).json({
+      ok: true,
+      learningSessionId: data.id,
+    });
+  } catch {
+    return res.status(500).json({ ok: false, error: "Server error" });
+  }
+}

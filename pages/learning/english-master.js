@@ -51,6 +51,11 @@ import {
   englishWritingModeAllowed,
   englishWritingSentenceAllowedForGrade,
 } from "../../utils/grade-gating";
+import {
+  finishLearningSession,
+  saveLearningAnswer,
+  startLearningSession,
+} from "../../lib/learning-client/learningActivityClient";
 
 const LEVELS = {
   easy: { name: "קל", maxWords: 5, complexity: "basic" },
@@ -1109,6 +1114,8 @@ export default function EnglishMaster() {
   const sessionStartRef = useRef(null);
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
+  const learningSessionIdRef = useRef(null);
+  const learningSessionStartPromiseRef = useRef(null);
   const pendingEnglishTrackMetaRef = useRef(null);
   /** localStorage bucket key for the question currently being timed (same idea as geometry topic ref). */
   const englishTrackingTopicKeyRef = useRef(null);
@@ -1461,6 +1468,11 @@ const refreshMonthlyProgress = useCallback(() => {
   }
 
   function recordSessionProgress() {
+    const sessionIdForFinish = learningSessionIdRef.current;
+    const totalQuestionsForFinish = totalQuestions;
+    const correctForFinish = correct;
+    const wrongForFinish = wrong;
+    const scoreForFinish = score;
     if (!sessionStartRef.current) return;
     trackCurrentQuestionTime();
     accumulateQuestionTime();
@@ -1480,6 +1492,9 @@ const refreshMonthlyProgress = useCallback(() => {
     }
     const answered = Math.max(solvedCountRef.current, totalQuestions);
     const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
+    const durationSeconds = Math.max(1, Math.round(totalSeconds / 1000));
+    const accuracyForFinish =
+      answered > 0 ? Math.round((Math.max(0, correctForFinish) / answered) * 100) : 0;
     addSessionProgress(durationMinutes, answered, {
       subject: "english",
       topic: englishTrackingTopicKeyRef.current ?? currentQuestion?.topic ?? "",
@@ -1489,10 +1504,107 @@ const refreshMonthlyProgress = useCallback(() => {
       date: new Date(),
     });
     refreshMonthlyProgress();
+    if (sessionIdForFinish) {
+      finishLearningSession({
+        learningSessionId: sessionIdForFinish,
+        totalQuestions: totalQuestionsForFinish,
+        correctAnswers: correctForFinish,
+        wrongAnswers: wrongForFinish,
+        score: scoreForFinish,
+        accuracy: accuracyForFinish,
+        durationSeconds,
+        clientMeta: {
+          source: "english-master",
+          version: "phase-2d-b4",
+        },
+      }).catch((error) => {
+        console.warn("[english-master] finish session save failed", error);
+      });
+    }
+    learningSessionIdRef.current = null;
+    learningSessionStartPromiseRef.current = null;
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
     setQuestionStartTime(null);
+  }
+
+  function buildEnglishSessionStartPayload() {
+    return {
+      subject: "english",
+      topic: String(englishTrackingTopicKeyRef.current || currentQuestion?.topic || topic || "english"),
+      mode: String(mode || "learning"),
+      gradeLevel: String(grade || ""),
+      level: String(level || ""),
+      clientMeta: {
+        source: "english-master",
+        version: "phase-2d-b4",
+      },
+    };
+  }
+
+  async function ensureLearningSessionId() {
+    if (learningSessionIdRef.current) return learningSessionIdRef.current;
+    if (learningSessionStartPromiseRef.current) return learningSessionStartPromiseRef.current;
+    const startPromise = startLearningSession(buildEnglishSessionStartPayload())
+      .then((res) => {
+        const id = res?.learningSessionId ? String(res.learningSessionId) : "";
+        if (!id) return null;
+        learningSessionIdRef.current = id;
+        return id;
+      })
+      .catch((error) => {
+        console.warn("[english-master] session start save failed", error);
+        return null;
+      })
+      .finally(() => {
+        learningSessionStartPromiseRef.current = null;
+      });
+    learningSessionStartPromiseRef.current = startPromise;
+    return startPromise;
+  }
+
+  function saveEnglishAnswerInParallel({
+    question,
+    userAnswer,
+    isCorrect,
+    timeSpentMs,
+    usedHint,
+  }) {
+    const questionFingerprint = englishQuestionFingerprint(question) || null;
+    const questionId = question?.id
+      ? String(question.id)
+      : questionFingerprint || `english-${Date.now()}`;
+    const expectedValue =
+      Array.isArray(question?.acceptedAnswers) && question.acceptedAnswers.length > 0
+        ? question.acceptedAnswers.join(" | ")
+        : question?.correctAnswer != null
+          ? String(question.correctAnswer)
+          : null;
+    ensureLearningSessionId()
+      .then((learningSessionId) => {
+        if (!learningSessionId) return;
+        return saveLearningAnswer({
+          learningSessionId,
+          subject: "english",
+          topic: String(question?.topic || topic || "english"),
+          questionId,
+          questionFingerprint,
+          prompt: String(question?.question || ""),
+          expectedAnswer: expectedValue,
+          userAnswer: userAnswer != null ? String(userAnswer) : "",
+          isCorrect: Boolean(isCorrect),
+          hintsUsed: usedHint ? 1 : 0,
+          timeSpentMs,
+          clientMeta: {
+            source: "english-master",
+            version: "phase-2d-b4",
+          },
+        });
+      })
+      .catch((error) => {
+        console.warn("[english-master] answer save failed", error);
+      });
   }
 
   useEffect(() => {
@@ -1837,11 +1949,14 @@ const refreshMonthlyProgress = useCallback(() => {
     setShowSolution(false);
     setShowPreviousSolution(false);
     setPreviousExplanationQuestion(null);
+    learningSessionIdRef.current = null;
+    learningSessionStartPromiseRef.current = null;
     
     // Start background music and play game start sound
     sound.playBackgroundMusic();
     sound.playSound("game-start");
     setErrorExplanation("");
+    void ensureLearningSessionId();
     if (mode === "challenge") {
       setTimeLeft(20);
     } else if (mode === "speed") {
@@ -1912,6 +2027,9 @@ const refreshMonthlyProgress = useCallback(() => {
 
   function handleAnswer(answer) {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
+    const questionForSave = currentQuestion;
+    const hintUsedForSave = hintUsed;
+    const timeSpentMs = questionStartTime ? Math.max(0, Date.now() - questionStartTime) : null;
     setTotalQuestions((prevCount) => {
       const newCount = prevCount + 1;
       if (questionStartTime) {
@@ -1940,6 +2058,13 @@ const refreshMonthlyProgress = useCallback(() => {
       total: 1,
       mode: reportModeFromGameState(mode, focusedPracticeMode),
     };
+    saveEnglishAnswerInParallel({
+      question: questionForSave,
+      userAnswer: answer,
+      isCorrect,
+      timeSpentMs,
+      usedHint: hintUsedForSave,
+    });
     let awardedPoints = 0;
     if (isCorrect) {
       awardedPoints = 10 + streak;

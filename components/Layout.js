@@ -5,6 +5,7 @@ import { useState } from "react";
 const menuLinks = [
   { href: "/", label: "Home" },
   { href: "/parent/login", label: "כניסת הורים" },
+  { href: "/student/login", label: "כניסת תלמיד" },
   { href: "/game", label: "Games" },
   { href: "/offline", label: "Offline" },
   { href: "/learning", label: "Learning" },

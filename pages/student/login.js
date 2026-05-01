@@ -10,6 +10,20 @@ export default function StudentLoginPage() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
 
+  const resolveNextTarget = () => {
+    const raw = router.query?.next;
+    if (typeof raw !== "string") return "/student/home";
+    const decoded = decodeURIComponent(raw);
+    if (
+      decoded.startsWith("/learning") &&
+      !decoded.startsWith("//") &&
+      !decoded.includes("://")
+    ) {
+      return decoded;
+    }
+    return "/student/home";
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setBusy(true);
@@ -26,7 +40,7 @@ export default function StudentLoginPage() {
         setMessage(payload.error || "כניסה נכשלה");
         return;
       }
-      router.push("/student/home");
+      router.push(resolveNextTarget());
     } catch (_e) {
       setMessage("שגיאת רשת");
     } finally {

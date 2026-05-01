@@ -51,6 +51,11 @@ import {
 import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
 import { compareAnswers } from "../../utils/answer-compare";
+import {
+  finishLearningSession,
+  saveLearningAnswer,
+  startLearningSession,
+} from "../../lib/learning-client/learningActivityClient";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -95,6 +100,8 @@ export default function MoledetGeographyMaster() {
   const sessionStartRef = useRef(null);
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
+  const learningSessionIdRef = useRef(null);
+  const learningSessionStartPromiseRef = useRef(null);
   const pendingMoledetGeographyTrackMetaRef = useRef(null);
   /** Real topic/operation bucket for the question on screen (avoids stale currentQuestion) */
   const moledetTrackingTopicKeyRef = useRef(null);
@@ -939,6 +946,11 @@ useEffect(() => {
   }
 
   function recordSessionProgress() {
+    const sessionIdForFinish = learningSessionIdRef.current;
+    const totalQuestionsForFinish = totalQuestions;
+    const correctForFinish = correct;
+    const wrongForFinish = wrong;
+    const scoreForFinish = score;
     if (!sessionStartRef.current) return;
     trackCurrentQuestionTime();
     accumulateQuestionTime();
@@ -958,6 +970,9 @@ useEffect(() => {
     }
     const answered = Math.max(solvedCountRef.current, totalQuestions);
     const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
+    const durationSeconds = Math.max(1, Math.round(totalSeconds / 1000));
+    const accuracyForFinish =
+      answered > 0 ? Math.round((Math.max(0, correctForFinish) / answered) * 100) : 0;
     addSessionProgress(durationMinutes, answered, {
       subject: "moledet",
       topic:
@@ -971,10 +986,109 @@ useEffect(() => {
       date: new Date(),
     });
     refreshMonthlyProgress();
+    if (sessionIdForFinish) {
+      finishLearningSession({
+        learningSessionId: sessionIdForFinish,
+        totalQuestions: totalQuestionsForFinish,
+        correctAnswers: correctForFinish,
+        wrongAnswers: wrongForFinish,
+        score: scoreForFinish,
+        accuracy: accuracyForFinish,
+        durationSeconds,
+        clientMeta: {
+          source: "moledet-geography-master",
+          version: "phase-2d-b7",
+        },
+      }).catch((error) => {
+        console.warn("[moledet-geography-master] finish session save failed", error);
+      });
+    }
+    learningSessionIdRef.current = null;
+    learningSessionStartPromiseRef.current = null;
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
     setQuestionStartTime(null);
+  }
+
+  function buildMoledetSessionStartPayload() {
+    return {
+      subject: "moledet_geography",
+      topic: String(
+        moledetTrackingTopicKeyRef.current ||
+          currentQuestion?.topic ||
+          currentQuestion?.operation ||
+          operation ||
+          "homeland"
+      ),
+      mode: String(mode || "learning"),
+      gradeLevel: String(grade || ""),
+      level: String(level || ""),
+      clientMeta: {
+        source: "moledet-geography-master",
+        version: "phase-2d-b7",
+      },
+    };
+  }
+
+  async function ensureLearningSessionId() {
+    if (learningSessionIdRef.current) return learningSessionIdRef.current;
+    if (learningSessionStartPromiseRef.current) return learningSessionStartPromiseRef.current;
+    const startPromise = startLearningSession(buildMoledetSessionStartPayload())
+      .then((res) => {
+        const id = res?.learningSessionId ? String(res.learningSessionId) : "";
+        if (!id) return null;
+        learningSessionIdRef.current = id;
+        return id;
+      })
+      .catch((error) => {
+        console.warn("[moledet-geography-master] session start save failed", error);
+        return null;
+      })
+      .finally(() => {
+        learningSessionStartPromiseRef.current = null;
+      });
+    learningSessionStartPromiseRef.current = startPromise;
+    return startPromise;
+  }
+
+  function saveMoledetAnswerInParallel({
+    question,
+    userAnswer,
+    isCorrect,
+    timeSpentMs,
+    usedHint,
+  }) {
+    const questionFingerprint = question?.id ? String(question.id) : null;
+    const questionId = question?.id
+      ? String(question.id)
+      : questionFingerprint || `moledet-geography-${Date.now()}`;
+    const expectedValue =
+      question?.correctAnswer != null ? String(question.correctAnswer) : null;
+    ensureLearningSessionId()
+      .then((learningSessionId) => {
+        if (!learningSessionId) return;
+        return saveLearningAnswer({
+          learningSessionId,
+          subject: "moledet_geography",
+          topic: String(question?.topic || question?.operation || operation || "homeland"),
+          questionId,
+          questionFingerprint,
+          prompt: String(question?.exerciseText || question?.question || ""),
+          expectedAnswer: expectedValue,
+          userAnswer: userAnswer != null ? String(userAnswer) : "",
+          isCorrect: Boolean(isCorrect),
+          hintsUsed: usedHint ? 1 : 0,
+          timeSpentMs,
+          clientMeta: {
+            source: "moledet-geography-master",
+            version: "phase-2d-b7",
+          },
+        });
+      })
+      .catch((error) => {
+        console.warn("[moledet-geography-master] answer save failed", error);
+      });
   }
 
   function startGame() {
@@ -1002,6 +1116,8 @@ useEffect(() => {
     setShowPreviousSolution(false);
     setPreviousExplanationQuestion(null);
     setErrorExplanation("");
+    learningSessionIdRef.current = null;
+    learningSessionStartPromiseRef.current = null;
 
     // הגדרת טיימר לפי מצב
     if (mode === "challenge") {
@@ -1015,6 +1131,7 @@ useEffect(() => {
     // Start background music and play game start sound
     sound.playBackgroundMusic();
     sound.playSound("game-start");
+    void ensureLearningSessionId();
     
     generateNewQuestion();
   }
@@ -1150,6 +1267,9 @@ useEffect(() => {
 
   function handleAnswer(answer) {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
+    const questionForSave = currentQuestion;
+    const hintUsedForSave = hintUsed;
+    const timeSpentMs = questionStartTime ? Math.max(0, Date.now() - questionStartTime) : null;
     if (
       currentQuestion.emptyPool ||
       !Array.isArray(currentQuestion.answers) ||
@@ -1176,6 +1296,13 @@ useEffect(() => {
       user: answer,
       expected: currentQuestion.correctAnswer,
       acceptedList: [currentQuestion.correctAnswer],
+    });
+    saveMoledetAnswerInParallel({
+      question: questionForSave,
+      userAnswer: answer,
+      isCorrect,
+      timeSpentMs,
+      usedHint: hintUsedForSave,
     });
     pendingMoledetGeographyTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,

@@ -90,6 +90,11 @@ import {
   compareAnswers,
   compareMathLearnerAnswer,
 } from "../../utils/answer-compare";
+import {
+  startLearningSession,
+  saveLearningAnswer,
+  finishLearningSession,
+} from "../../lib/learning-client/learningActivityClient";
 
 /** Passed into compareMathLearnerAnswer — tolerance is not defaulted inside answer-compare. */
 const MATH_NUMERIC_TOLERANCE = 0.01;
@@ -148,6 +153,8 @@ export default function MathMaster() {
   const sessionStartRef = useRef(null);
   const solvedCountRef = useRef(0);
   const sessionSecondsRef = useRef(0);
+  const learningSessionIdRef = useRef(null);
+  const learningSessionStartPromiseRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   const [mounted, setMounted] = useState(false);
@@ -1321,6 +1328,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   }
 
   function recordSessionProgress() {
+    const sessionIdForFinish = learningSessionIdRef.current;
+    const totalQuestionsForFinish = totalQuestions;
+    const correctForFinish = correct;
+    const wrongForFinish = wrong;
+    const scoreForFinish = score;
     if (!sessionStartRef.current) return;
     trackCurrentQuestionTime();
     accumulateQuestionTime();
@@ -1340,6 +1352,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     }
     const answered = Math.max(solvedCountRef.current, totalQuestions);
     const totalMinutes = Number((totalSeconds / 60000).toFixed(2));
+    const durationSeconds = Math.max(1, Math.round(totalSeconds / 1000));
+    const accuracyForFinish =
+      answered > 0 ? Math.round((Math.max(0, correct) / answered) * 100) : 0;
     addSessionProgress(totalMinutes, answered, {
       subject: "math",
       topic: mathTrackingOperationKeyRef.current ?? currentQuestion?.operation ?? "",
@@ -1349,10 +1364,104 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       date: new Date(),
     });
     refreshMonthlyProgress();
+    if (sessionIdForFinish) {
+      finishLearningSession({
+        learningSessionId: sessionIdForFinish,
+        totalQuestions: totalQuestionsForFinish,
+        correctAnswers: correctForFinish,
+        wrongAnswers: wrongForFinish,
+        score: scoreForFinish,
+        accuracy: accuracyForFinish,
+        durationSeconds,
+        clientMeta: {
+          source: "math-master",
+          version: "phase-2d-b2",
+        },
+      }).catch((error) => {
+        console.warn("[math-master] finish session save failed", error);
+      });
+    }
+    learningSessionIdRef.current = null;
+    learningSessionStartPromiseRef.current = null;
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
     setQuestionStartTime(null);
+  }
+
+  function buildMathSessionStartPayload() {
+    return {
+      subject: "math",
+      topic: String(mathTrackingOperationKeyRef.current || operation || "math"),
+      mode: String(mode || "learning"),
+      gradeLevel: String(grade || ""),
+      level: String(level || ""),
+      clientMeta: {
+        source: "math-master",
+        version: "phase-2d-b2",
+      },
+    };
+  }
+
+  async function ensureLearningSessionId() {
+    if (learningSessionIdRef.current) return learningSessionIdRef.current;
+    if (learningSessionStartPromiseRef.current) {
+      return learningSessionStartPromiseRef.current;
+    }
+    const startPromise = startLearningSession(buildMathSessionStartPayload())
+      .then((res) => {
+        const id = res?.learningSessionId ? String(res.learningSessionId) : "";
+        if (id) {
+          learningSessionIdRef.current = id;
+          return id;
+        }
+        return null;
+      })
+      .catch((error) => {
+        console.warn("[math-master] session start save failed", error);
+        return null;
+      })
+      .finally(() => {
+        learningSessionStartPromiseRef.current = null;
+      });
+    learningSessionStartPromiseRef.current = startPromise;
+    return startPromise;
+  }
+
+  function saveAnswerInParallel({
+    userAnswer,
+    isCorrect,
+    expectedAnswer,
+    prompt,
+    questionFingerprint,
+    questionId,
+    topic,
+    timeSpentMs,
+  }) {
+    ensureLearningSessionId()
+      .then((learningSessionId) => {
+        if (!learningSessionId) return;
+        return saveLearningAnswer({
+          learningSessionId,
+          subject: "math",
+          topic,
+          questionId,
+          questionFingerprint,
+          prompt,
+          expectedAnswer,
+          userAnswer,
+          isCorrect,
+          hintsUsed: hintUsed ? 1 : 0,
+          timeSpentMs,
+          clientMeta: {
+            source: "math-master",
+            version: "phase-2d-b2",
+          },
+        });
+      })
+      .catch((error) => {
+        console.warn("[math-master] answer save failed", error);
+      });
   }
 
   function startGame(opts = {}) {
@@ -1387,6 +1496,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     sound.playSound("game-start");
     closeExplanationModal();
     setErrorExplanation("");
+    learningSessionIdRef.current = null;
+    learningSessionStartPromiseRef.current = null;
+    void ensureLearningSessionId();
 
     if (focusedPracticeModeRef.current === "mistakes") {
       const q = normalizeMistakeQueue(mistakesRef.current);
@@ -1535,6 +1647,24 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     }
 
     setSelectedAnswer(numericAnswer);
+    const timeSpentMs = questionStartTime ? Math.max(0, Date.now() - questionStartTime) : null;
+    const resolvedTopic = String(
+      mathTrackingOperationKeyRef.current ?? currentQuestion.operation ?? operation ?? "math"
+    );
+    const questionFingerprint = mathQuestionFingerprint(currentQuestion) || null;
+    const questionId = currentQuestion.id
+      ? String(currentQuestion.id)
+      : questionFingerprint || `math-${Date.now()}`;
+    saveAnswerInParallel({
+      userAnswer: numericAnswer,
+      isCorrect,
+      expectedAnswer: currentQuestion.correctAnswer,
+      prompt: currentQuestion.exerciseText || currentQuestion.question || "",
+      questionFingerprint,
+      questionId,
+      topic: resolvedTopic,
+      timeSpentMs,
+    });
 
     pendingTimeTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,

@@ -88,6 +88,11 @@ import {
   safeGetJsonArray,
   safeSetJson,
 } from "../../utils/safe-local-storage";
+import {
+  finishLearningSession,
+  saveLearningAnswer,
+  startLearningSession,
+} from "../../lib/learning-client/learningActivityClient";
 
 /** Passed into compareGeometryLearnerAnswer — not defaulted inside answer-compare. */
 const GEOMETRY_NUMERIC_SCALE_FLOOR = 1e-6;
@@ -126,6 +131,8 @@ export default function GeometryMaster() {
   const sessionStartRef = useRef(null);
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
+  const learningSessionIdRef = useRef(null);
+  const learningSessionStartPromiseRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
 
   // פונקציה עזר לקבלת מפתח תאריך
@@ -774,6 +781,11 @@ useEffect(() => {
   };
 
   const recordSessionProgress = () => {
+    const sessionIdForFinish = learningSessionIdRef.current;
+    const totalQuestionsForFinish = totalQuestions;
+    const correctForFinish = correct;
+    const wrongForFinish = wrong;
+    const scoreForFinish = score;
     if (!sessionStartRef.current) return;
     accumulateQuestionTime();
     const elapsedMs = Date.now() - sessionStartRef.current;
@@ -792,6 +804,9 @@ useEffect(() => {
     }
     const answered = Math.max(solvedCountRef.current, totalQuestions);
     const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
+    const durationSeconds = Math.max(1, Math.round(totalSeconds / 1000));
+    const accuracyForFinish =
+      answered > 0 ? Math.round((Math.max(0, correctForFinish) / answered) * 100) : 0;
     addSessionProgress(durationMinutes, answered, {
       subject: "geometry",
       topic,
@@ -801,14 +816,109 @@ useEffect(() => {
       date: new Date(),
     });
     refreshMonthlyProgress();
+    if (sessionIdForFinish) {
+      finishLearningSession({
+        learningSessionId: sessionIdForFinish,
+        totalQuestions: totalQuestionsForFinish,
+        correctAnswers: correctForFinish,
+        wrongAnswers: wrongForFinish,
+        score: scoreForFinish,
+        accuracy: accuracyForFinish,
+        durationSeconds,
+        clientMeta: {
+          source: "geometry-master",
+          version: "phase-2d-b3",
+        },
+      }).catch((error) => {
+        console.warn("[geometry-master] finish session save failed", error);
+      });
+    }
+    learningSessionIdRef.current = null;
+    learningSessionStartPromiseRef.current = null;
     sessionStartRef.current = null;
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
     setQuestionStartTime(null);
   };
 
+  function buildGeometrySessionStartPayload() {
+    return {
+      subject: "geometry",
+      topic: String(currentQuestion?.topic || topic || "geometry"),
+      mode: String(mode || "learning"),
+      gradeLevel: String(grade || ""),
+      level: String(level || ""),
+      clientMeta: {
+        source: "geometry-master",
+        version: "phase-2d-b3",
+      },
+    };
+  }
+
+  async function ensureLearningSessionId() {
+    if (learningSessionIdRef.current) return learningSessionIdRef.current;
+    if (learningSessionStartPromiseRef.current) return learningSessionStartPromiseRef.current;
+    const startPromise = startLearningSession(buildGeometrySessionStartPayload())
+      .then((res) => {
+        const id = res?.learningSessionId ? String(res.learningSessionId) : "";
+        if (!id) return null;
+        learningSessionIdRef.current = id;
+        return id;
+      })
+      .catch((error) => {
+        console.warn("[geometry-master] session start save failed", error);
+        return null;
+      })
+      .finally(() => {
+        learningSessionStartPromiseRef.current = null;
+      });
+    learningSessionStartPromiseRef.current = startPromise;
+    return startPromise;
+  }
+
+  function saveGeometryAnswerInParallel({
+    question,
+    userAnswer,
+    isCorrect,
+    timeSpentMs,
+    usedHint,
+  }) {
+    const questionFingerprint = geometryQuestionFingerprint(question) || null;
+    const questionId = question?.id
+      ? String(question.id)
+      : questionFingerprint || `geometry-${Date.now()}`;
+    ensureLearningSessionId()
+      .then((learningSessionId) => {
+        if (!learningSessionId) return;
+        return saveLearningAnswer({
+          learningSessionId,
+          subject: "geometry",
+          topic: String(question?.topic || topic || "geometry"),
+          questionId,
+          questionFingerprint,
+          prompt: String(question?.question || ""),
+          expectedAnswer:
+            question?.correctAnswer != null ? String(question.correctAnswer) : null,
+          userAnswer: userAnswer != null ? String(userAnswer) : "",
+          isCorrect: Boolean(isCorrect),
+          hintsUsed: usedHint ? 1 : 0,
+          timeSpentMs,
+          clientMeta: {
+            source: "geometry-master",
+            version: "phase-2d-b3",
+          },
+        });
+      })
+      .catch((error) => {
+        console.warn("[geometry-master] answer save failed", error);
+      });
+  }
+
   const handleAnswer = (answer) => {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
+    const questionForSave = currentQuestion;
+    const hintUsedForSave = hintUsed;
+    const timeSpentMs = questionStartTime ? Math.max(0, Date.now() - questionStartTime) : null;
     setTotalQuestions((prevCount) => {
       const newCount = prevCount + 1;
       if (questionStartTime) {
@@ -835,6 +945,13 @@ useEffect(() => {
       total: 1,
       mode: reportModeFromGameState(mode, focusedPracticeMode),
     };
+    saveGeometryAnswerInParallel({
+      question: questionForSave,
+      userAnswer: answer,
+      isCorrect,
+      timeSpentMs,
+      usedHint: hintUsedForSave,
+    });
 
     if (isCorrect) {
       if (currentQuestion._fromMistakeReplay && currentQuestion._mistakeId) {
@@ -1314,6 +1431,9 @@ useEffect(() => {
     setShowPreviousSolution(false);
     setShowTheoryHelp(false);
     setErrorExplanation("");
+    learningSessionIdRef.current = null;
+    learningSessionStartPromiseRef.current = null;
+    void ensureLearningSessionId();
     
     // Start background music and play game start sound
     sound.playBackgroundMusic();

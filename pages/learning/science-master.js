@@ -49,6 +49,11 @@ import {
 } from "../../utils/learning-ui-classes";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
 import { warnDuplicateMcqOptionsDevOnly } from "../../utils/answer-compare";
+import {
+  finishLearningSession,
+  saveLearningAnswer,
+  startLearningSession,
+} from "../../lib/learning-client/learningActivityClient";
 
 // ================== CONFIG ==================
 
@@ -646,6 +651,8 @@ export default function ScienceMaster() {
   const sessionStartRef = useRef(null);
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
+  const learningSessionIdRef = useRef(null);
+  const learningSessionStartPromiseRef = useRef(null);
   const pendingScienceTrackMetaRef = useRef(null);
   /** Question pool topic id for the question currently being timed (matches localStorage bucket). */
   const scienceTrackingTopicKeyRef = useRef(null);
@@ -1306,6 +1313,11 @@ useEffect(() => {
   }
 
 function recordSessionProgress() {
+  const sessionIdForFinish = learningSessionIdRef.current;
+  const totalQuestionsForFinish = totalQuestions;
+  const correctForFinish = correct;
+  const wrongForFinish = wrong;
+  const scoreForFinish = score;
   if (!sessionStartRef.current) return;
   trackCurrentQuestionTime();
   const elapsedMs = Date.now() - sessionStartRef.current;
@@ -1324,6 +1336,9 @@ function recordSessionProgress() {
   }
   const answered = Math.max(solvedCountRef.current, totalQuestions);
   const durationMinutes = Number((totalSeconds / 60000).toFixed(2));
+  const durationSeconds = Math.max(1, Math.round(totalSeconds / 1000));
+  const accuracyForFinish =
+    answered > 0 ? Math.round((Math.max(0, correctForFinish) / answered) * 100) : 0;
   addSessionProgress(durationMinutes, answered, {
     subject: "science",
     topic: scienceTrackingTopicKeyRef.current ?? currentQuestion?.topic ?? "",
@@ -1333,9 +1348,110 @@ function recordSessionProgress() {
     date: new Date(),
   });
   refreshMonthlyProgress();
+  if (sessionIdForFinish) {
+    finishLearningSession({
+      learningSessionId: sessionIdForFinish,
+      totalQuestions: totalQuestionsForFinish,
+      correctAnswers: correctForFinish,
+      wrongAnswers: wrongForFinish,
+      score: scoreForFinish,
+      accuracy: accuracyForFinish,
+      durationSeconds,
+      clientMeta: {
+        source: "science-master",
+        version: "phase-2d-b6",
+      },
+    }).catch((error) => {
+      console.warn("[science-master] finish session save failed", error);
+    });
+  }
+  learningSessionIdRef.current = null;
+  learningSessionStartPromiseRef.current = null;
   sessionStartRef.current = null;
   solvedCountRef.current = 0;
   sessionSecondsRef.current = 0;
+}
+
+function buildScienceSessionStartPayload() {
+  return {
+    subject: "science",
+    topic: String(scienceTrackingTopicKeyRef.current || currentQuestion?.topic || topic || "science"),
+    mode: String(mode || "learning"),
+    gradeLevel: String(grade || ""),
+    level: String(level || ""),
+    clientMeta: {
+      source: "science-master",
+      version: "phase-2d-b6",
+    },
+  };
+}
+
+async function ensureLearningSessionId() {
+  if (learningSessionIdRef.current) return learningSessionIdRef.current;
+  if (learningSessionStartPromiseRef.current) return learningSessionStartPromiseRef.current;
+  const startPromise = startLearningSession(buildScienceSessionStartPayload())
+    .then((res) => {
+      const id = res?.learningSessionId ? String(res.learningSessionId) : "";
+      if (!id) return null;
+      learningSessionIdRef.current = id;
+      return id;
+    })
+    .catch((error) => {
+      console.warn("[science-master] session start save failed", error);
+      return null;
+    })
+    .finally(() => {
+      learningSessionStartPromiseRef.current = null;
+    });
+  learningSessionStartPromiseRef.current = startPromise;
+  return startPromise;
+}
+
+function saveScienceAnswerInParallel({
+  question,
+  answerIndex,
+  answerText,
+  isCorrect,
+  timeSpentMs,
+  usedHint,
+}) {
+  const questionFingerprint = question?.id ? String(question.id) : null;
+  const questionId = question?.id
+    ? String(question.id)
+    : questionFingerprint || `science-${Date.now()}`;
+  const expectedValue =
+    typeof question?.correctIndex === "number" && Array.isArray(question?.options)
+      ? String(question.options[question.correctIndex] ?? "")
+      : null;
+  ensureLearningSessionId()
+    .then((learningSessionId) => {
+      if (!learningSessionId) return;
+      return saveLearningAnswer({
+        learningSessionId,
+        subject: "science",
+        topic: String(question?.topic || topic || "science"),
+        questionId,
+        questionFingerprint,
+        prompt: String(question?.stem || ""),
+        expectedAnswer: expectedValue,
+        userAnswer:
+          answerText != null
+            ? String(answerText)
+            : answerIndex != null
+              ? String(answerIndex)
+              : "",
+        isCorrect: Boolean(isCorrect),
+        hintsUsed: usedHint ? 1 : 0,
+        timeSpentMs,
+        clientMeta: {
+          source: "science-master",
+          version: "phase-2d-b6",
+        },
+      });
+    })
+    .catch((error) => {
+      console.warn("[science-master] answer save failed", error);
+    });
 }
 
   function logScienceMistakeEntry(question, wrongAnswer) {
@@ -1586,10 +1702,13 @@ function recordSessionProgress() {
     setPreviousExplanationQuestion(null);
     setShowTheoryHelp(false);
     setErrorExplanation("");
+    learningSessionIdRef.current = null;
+    learningSessionStartPromiseRef.current = null;
     setLives(mode === "challenge" ? 3 : 0);
     if (mode === "challenge") setTimeLeft(25);
     else if (mode === "speed") setTimeLeft(12);
     else setTimeLeft(null);
+    void ensureLearningSessionId();
 
     // מאתחל מאגר שאלות חדש לסשן הזה
     generateNewQuestion(true);
@@ -1637,6 +1756,9 @@ function recordSessionProgress() {
 
   function handleAnswer(idx) {
     if (!gameActive || !currentQuestion || selectedAnswer != null) return;
+    const questionForSave = currentQuestion;
+    const hintUsedForSave = hintUsed;
+    const timeSpentMs = questionStartTime ? Math.max(0, Date.now() - questionStartTime) : null;
     const answerText = currentQuestion.options?.[idx];
     // update time stats
     setTotalQuestions((prev) => {
@@ -1653,6 +1775,14 @@ function recordSessionProgress() {
     solvedCountRef.current += 1;
     // MCQ uses index-based comparison by design
     const isCorrect = idx === currentQuestion.correctIndex;
+    saveScienceAnswerInParallel({
+      question: questionForSave,
+      answerIndex: idx,
+      answerText,
+      isCorrect,
+      timeSpentMs,
+      usedHint: hintUsedForSave,
+    });
     pendingScienceTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
       total: 1,
