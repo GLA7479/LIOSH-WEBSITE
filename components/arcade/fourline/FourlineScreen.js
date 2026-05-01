@@ -377,8 +377,19 @@ export default function FourlineScreen({ roomId }) {
   const routerRef = useRef(router);
   routerRef.current = router;
   const session = useFourlineSession({ roomId });
-  const { snapshot, vm, busy, err, setErr, playColumn, room, players, gameSession, bundleLoaded } =
-    session;
+  const {
+    snapshot,
+    vm,
+    busy,
+    err,
+    setErr,
+    playColumn,
+    room,
+    players,
+    gameSession,
+    bundleLoaded,
+    bundleError,
+  } = session;
 
   const [balance, setBalance] = useState(/** @type {number|null} */ (null));
   const [helpOpen, setHelpOpen] = useState(false);
@@ -470,6 +481,31 @@ export default function FourlineScreen({ roomId }) {
   const finished = vm.phase === "finished";
   const didIWin = vm.mySeat != null && vm.winnerSeat != null && vm.winnerSeat === vm.mySeat;
   const isDraw = finished && vm.winnerSeat == null;
+
+  /** אחרי סיום עם זיכוי — רענון יתרה בתצוגת ה-HUD */
+  useEffect(() => {
+    if (!finished) return;
+    const credited =
+      snapshot?.mySettlementAmount != null && Number(snapshot.mySettlementAmount) > 0;
+    if (!credited) return;
+    let cancelled = false;
+    const t = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const res = await fetch("/api/arcade/balance", { credentials: "same-origin" });
+          const j = await res.json().catch(() => ({}));
+          if (cancelled || !j?.ok || j.balance == null) return;
+          setBalance(Number(j.balance));
+        } catch {
+          /* */
+        }
+      })();
+    }, 500);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [finished, snapshot?.mySettlementAmount, vm.sessionId]);
 
   const canPickColumn = vm.phase === "playing" && vm.mySeat === vm.turnSeat && !busy;
 
@@ -628,7 +664,18 @@ export default function FourlineScreen({ roomId }) {
             paddingBottom: "max(6px, env(safe-area-inset-bottom, 0px))",
           }}
         >
-          {!room ? (
+          {bundleError ? (
+            <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 px-4 text-center">
+              <p className="max-w-md text-sm leading-relaxed text-red-200/95">{bundleError}</p>
+              <button
+                type="button"
+                onClick={() => void router.replace("/student/arcade")}
+                className="rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15"
+              >
+                חזרה למשחקים
+              </button>
+            </div>
+          ) : !room ? (
             <div className="flex min-h-[40vh] flex-col items-center justify-center text-sm text-zinc-400">
               טוען חדר…
             </div>
@@ -779,6 +826,25 @@ export default function FourlineScreen({ roomId }) {
                     <p className="mt-1 text-sm text-zinc-400">
                       {isDraw ? "הלוח התמלא." : didIWin ? "ארבע בשורה." : "היריב חיבר ארבע."}
                     </p>
+                    {didIWin && Number(snapshot?.mySettlementAmount) > 0 ? (
+                      <div className="mt-3 space-y-1">
+                        <p className="text-base font-extrabold text-amber-200">
+                          +{snapshot.mySettlementAmount} מטבעות זכייה
+                        </p>
+                        {Number(snapshot?.entryCost) > 0 ? (
+                          <p className="text-[11px] font-medium text-amber-100/75">
+                            קופה מלאה: {snapshot.mySettlementAmount} מטבעות (כניסה {snapshot.entryCost} לכל שחקן)
+                          </p>
+                        ) : null}
+                      </div>
+                    ) : null}
+                    {isDraw &&
+                    snapshot?.mySettlementAmount != null &&
+                    Number(snapshot.mySettlementAmount) > 0 ? (
+                      <p className="mt-3 text-sm font-semibold text-amber-100/95">
+                        הוחזרו {snapshot.mySettlementAmount} מטבעות (תיקו)
+                      </p>
+                    ) : null}
                   </div>
                 ) : null}
               </div>

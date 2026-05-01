@@ -30,8 +30,12 @@ export function useFourlineSession(ctx) {
   const [gameSessionRow, setGameSessionRow] = useState(null);
   /** True after at least one successful snapshot bundle (ok JSON with room payload). */
   const [bundleLoaded, setBundleLoaded] = useState(false);
+  /** טעינת snapshot נכשלה (403 / רשת); אחרי ניסיון הצטרפות אוטומטי לחדר */
+  const [bundleError, setBundleError] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const joinRecoveryAttemptedRef = useRef(false);
+  const bundleLoadedOnceRef = useRef(false);
 
   useEffect(() => {
     setSnap(null);
@@ -39,7 +43,10 @@ export function useFourlineSession(ctx) {
     setPlayers([]);
     setGameSessionRow(null);
     setBundleLoaded(false);
+    setBundleError("");
     setErr("");
+    joinRecoveryAttemptedRef.current = false;
+    bundleLoadedOnceRef.current = false;
   }, [roomId]);
 
   useEffect(() => {
@@ -47,8 +54,39 @@ export function useFourlineSession(ctx) {
     let cancelled = false;
 
     const tick = async () => {
-      const b = await fetchArcadeRoomFourlineBundle(roomId);
-      if (cancelled || !b) return;
+      let b = await fetchArcadeRoomFourlineBundle(roomId);
+      if (cancelled) return;
+
+      if (!b.ok && b.code === "forbidden" && b.httpStatus === 403 && !joinRecoveryAttemptedRef.current) {
+        joinRecoveryAttemptedRef.current = true;
+        try {
+          await fetch("/api/arcade/rooms/join", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ roomId }),
+          });
+        } catch {
+          /* נמשיך לניסיון snapshot — join עלול להיכשל בלי רשת */
+        }
+        b = await fetchArcadeRoomFourlineBundle(roomId);
+      }
+
+      if (cancelled) return;
+
+      if (!b.ok) {
+        if (!bundleLoadedOnceRef.current) {
+          const msg =
+            b.code === "forbidden"
+              ? "אין גישה לחדר (לא רשום כשחקן). נסה מהלובי «משחק מהיר» או «הצטרף לחדר»."
+              : b.error || b.code || "טעינת החדר נכשלה";
+          setBundleError(msg);
+        }
+        return;
+      }
+
+      setBundleError("");
+      bundleLoadedOnceRef.current = true;
       setBundleLoaded(true);
       setRoomRow(b.room);
       setPlayers(b.players || []);
@@ -91,10 +129,12 @@ export function useFourlineSession(ctx) {
         if (r.snapshot) setSnap((prev) => preferNewer(prev, r.snapshot));
         else {
           const b = await fetchArcadeRoomFourlineBundle(roomId);
-          if (b?.fourline) setSnap((prev) => preferNewer(prev, b.fourline));
-          if (b?.room) setRoomRow(b.room);
-          if (b?.players) setPlayers(b.players);
-          if (b) setGameSessionRow(b.gameSession ?? null);
+          if (b.ok) {
+            if (b.fourline) setSnap((prev) => preferNewer(prev, b.fourline));
+            if (b.room) setRoomRow(b.room);
+            if (b.players) setPlayers(b.players);
+            setGameSessionRow(b.gameSession ?? null);
+          }
         }
         return { ok: true };
       } catch (e) {
@@ -145,5 +185,6 @@ export function useFourlineSession(ctx) {
     players,
     gameSession: gameSessionRow,
     bundleLoaded,
+    bundleError,
   };
 }
