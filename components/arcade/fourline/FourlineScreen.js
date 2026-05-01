@@ -36,15 +36,17 @@ function FourlineOv2Hud({ onBack, balance, onOpenHelp }) {
       <button
         type="button"
         onClick={onBack}
-        className={`${HUD_BTN_BASE} min-w-[4.25rem] px-2.5`}
+        className={`${HUD_BTN_BASE} min-w-[4.75rem] px-2.5 sm:min-w-[5rem]`}
         aria-label="חזרה"
         title="חזרה"
       >
-        <span className="text-xs font-extrabold tracking-wide text-white">חזרה</span>
+        <span className="text-sm font-extrabold leading-none tracking-wide text-white sm:text-base">
+          חזרה
+        </span>
       </button>
 
       <div className="min-w-0 flex-1 px-1 text-center">
-        <h1 className="truncate text-base font-extrabold leading-tight text-white drop-shadow-sm sm:text-lg">
+        <h1 className="truncate text-lg font-extrabold leading-tight text-white drop-shadow-sm sm:text-xl lg:text-2xl">
           {GAME_TITLE}
         </h1>
       </div>
@@ -70,7 +72,10 @@ function FourlineOv2Hud({ onBack, balance, onOpenHelp }) {
           aria-label="איך משחקים"
           title="איך משחקים"
         >
-          <span className="font-serif text-[17px] font-semibold italic leading-none text-zinc-50" aria-hidden>
+          <span
+            className="font-serif text-[22px] font-semibold italic leading-none text-zinc-50 sm:text-[26px]"
+            aria-hidden
+          >
             i
           </span>
         </button>
