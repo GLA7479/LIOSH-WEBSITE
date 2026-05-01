@@ -50,6 +50,14 @@ export default function StudentHomePage() {
     <Layout>
       <div className="max-w-3xl mx-auto px-4 py-10 space-y-4">
         <h1 className="text-2xl font-bold">שלום, {student.full_name}</h1>
+        <p>
+          <Link
+            href="/student/arcade"
+            className="inline-flex items-center rounded-lg border border-amber-400/40 bg-amber-500/15 px-4 py-2 text-sm font-semibold text-amber-100 hover:bg-amber-500/25 transition"
+          >
+            משחקים
+          </Link>
+        </p>
         <p className="text-white/80">כיתה: {student.grade_level || "-"}</p>
         <p className="text-white/80">יתרת מטבעות: {student.coin_balance ?? 0}</p>
         <button

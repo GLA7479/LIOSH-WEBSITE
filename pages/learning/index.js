@@ -1,4 +1,5 @@
 import Layout from "../../components/Layout";
+import DevCoinTopupCard from "../../components/learning/DevCoinTopupCard";
 import Link from "next/link";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 
@@ -62,17 +63,27 @@ export default function LearningHub({ showDevStudentSimulator }) {
     <Layout>
       <main className="min-h-screen bg-gradient-to-b from-[#120b1f] to-[#1b1430] text-white px-4 py-10">
         <div className="max-w-5xl mx-auto space-y-6">
-          <div className="flex justify-between items-center">
-            <Link
-              href="/"
-              className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-semibold tracking-widest"
-            >
-              ← Home
-            </Link>
+          <div className="flex flex-wrap justify-between items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <Link
+                href="/"
+                className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-semibold tracking-widest"
+              >
+                ← Home
+              </Link>
+              <Link
+                href="/student/arcade"
+                className="inline-flex items-center px-4 py-2 rounded-full bg-amber-500/15 border border-amber-400/35 text-sm font-semibold text-amber-100 hover:bg-amber-500/25 transition"
+              >
+                משחקים
+              </Link>
+            </div>
             <p className="text-xs uppercase tracking-[0.3em] text-white/60">
               Learning Zone
             </p>
           </div>
+
+          <DevCoinTopupCard />
 
           <header className="text-center space-y-3">
             <p className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-sm tracking-wider uppercase text-amber-300 font-semibold">

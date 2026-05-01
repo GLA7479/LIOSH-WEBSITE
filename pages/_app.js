@@ -6,6 +6,8 @@ import OfflineIndicator from "../components/OfflineIndicator";
 import StudentAccessGate from "../components/student/StudentAccessGate";
 
 const STUDENT_PROTECTED_ROUTES = new Set([
+  "/student/arcade",
+  "/student/games/fourline",
   "/learning",
   "/learning/math-master",
   "/learning/geometry-master",
