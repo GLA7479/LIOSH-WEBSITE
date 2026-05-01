@@ -14,6 +14,7 @@ const requiredEnvNames = [
   "NEXT_PUBLIC_LEARNING_SUPABASE_URL",
   "NEXT_PUBLIC_LEARNING_SUPABASE_ANON_KEY",
   "LEARNING_SUPABASE_SERVICE_ROLE_KEY",
+  "LEARNING_STUDENT_ACCESS_SECRET",
 ];
 
 const bannedEnvNames = [
@@ -115,6 +116,7 @@ const browserSearchTargets = [
 ];
 
 let foundServiceRoleInBrowserCode = false;
+let foundStudentSecretInBrowserCode = false;
 for (const targetPath of browserSearchTargets) {
   for (const filePath of walkFiles(targetPath)) {
     if (!isTextFile(filePath)) continue;
@@ -125,10 +127,19 @@ for (const targetPath of browserSearchTargets) {
         `Service role env name found in browser/client surface: ${path.relative(projectRoot, filePath)}`
       );
     }
+    if (text.includes("LEARNING_STUDENT_ACCESS_SECRET")) {
+      foundStudentSecretInBrowserCode = true;
+      fail(
+        `Student access secret env name found in browser/client surface: ${path.relative(projectRoot, filePath)}`
+      );
+    }
   }
 }
 if (!foundServiceRoleInBrowserCode) {
   pass("Service role env name is not referenced in browser/client surface");
+}
+if (!foundStudentSecretInBrowserCode) {
+  pass("Student access secret env name is not referenced in browser/client surface");
 }
 
 let foundBannedEnvName = false;

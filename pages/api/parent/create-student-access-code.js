@@ -1,0 +1,110 @@
+import {
+  normalizeStudentUsername,
+  hashStudentSecret,
+  normalizeStudentPin,
+} from "../../../lib/learning-supabase/student-auth";
+import {
+  getLearningSupabaseServerUserClient,
+  getLearningSupabaseServiceRoleClient,
+} from "../../../lib/learning-supabase/server";
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ ok: false, error: "Method not allowed" });
+  }
+
+  const authHeader = req.headers.authorization || "";
+  if (!authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ ok: false, error: "Missing bearer token" });
+  }
+
+  const studentId = String(req.body?.studentId || "").trim();
+  const usernameRaw = String(req.body?.username || "");
+  const pinRaw = String(req.body?.pin || "");
+  if (!studentId) {
+    return res.status(400).json({ ok: false, error: "studentId is required" });
+  }
+
+  try {
+    const username = normalizeStudentUsername(usernameRaw);
+    if (!/^[a-z0-9_-]{3,24}$/.test(username)) {
+      return res.status(400).json({ ok: false, error: "שם משתמש לא תקין" });
+    }
+    const pin = normalizeStudentPin(pinRaw);
+    if (!/^\d{4}$/.test(pin)) {
+      return res.status(400).json({ ok: false, error: "PIN לא תקין" });
+    }
+
+    const supabase = getLearningSupabaseServerUserClient(authHeader);
+    const serviceRole = getLearningSupabaseServiceRoleClient();
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    if (userErr || !userData?.user?.id) {
+      return res.status(401).json({ ok: false, error: "Invalid session" });
+    }
+
+    // Ownership verification first (RLS + explicit parent_id check).
+    const { data: student, error: studentErr } = await supabase
+      .from("students")
+      .select("id,parent_id,is_active")
+      .eq("id", studentId)
+      .eq("parent_id", userData.user.id)
+      .maybeSingle();
+    if (studentErr || !student?.id) {
+      return res.status(403).json({ ok: false, error: "Student not found for this parent" });
+    }
+    if (student.is_active !== true) {
+      return res.status(403).json({ ok: false, error: "התלמיד אינו פעיל" });
+    }
+
+    const codeHash = hashStudentSecret(username);
+    const pinHash = hashStudentSecret(pin);
+
+    const { data: conflict, error: conflictErr } = await serviceRole
+      .from("student_access_codes")
+      .select("id,student_id")
+      .eq("code_hash", codeHash)
+      .eq("is_active", true)
+      .is("revoked_at", null)
+      .neq("student_id", studentId)
+      .limit(1)
+      .maybeSingle();
+    if (conflictErr) {
+      return res.status(500).json({ ok: false, error: "בדיקת שם משתמש נכשלה" });
+    }
+    if (conflict?.id) {
+      return res.status(409).json({ ok: false, error: "שם המשתמש כבר תפוס" });
+    }
+
+    const { error: revokeErr } = await supabase
+      .from("student_access_codes")
+      .update({
+        is_active: false,
+        revoked_at: new Date().toISOString(),
+      })
+      .eq("student_id", studentId)
+      .eq("is_active", true);
+    if (revokeErr) {
+      return res.status(403).json({ ok: false, error: "Could not revoke previous code" });
+    }
+
+    const { error: insErr } = await supabase.from("student_access_codes").insert({
+      student_id: studentId,
+      code_hash: codeHash,
+      pin_hash: pinHash,
+      is_active: true,
+      expires_at: null,
+      revoked_at: null,
+    });
+    if (insErr) {
+      return res.status(403).json({ ok: false, error: "Could not create access code" });
+    }
+
+    return res.status(200).json({
+      ok: true,
+      username,
+    });
+  } catch (_e) {
+    return res.status(500).json({ ok: false, error: "Unexpected server error" });
+  }
+}
+

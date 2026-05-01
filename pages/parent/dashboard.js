@@ -31,6 +31,8 @@ export default function ParentDashboardPage() {
 
   const [newName, setNewName] = useState("");
   const [newGrade, setNewGrade] = useState("");
+  const [credentialsByStudentId, setCredentialsByStudentId] = useState({});
+  const [credentialsSavedByStudentId, setCredentialsSavedByStudentId] = useState({});
 
   const [editById, setEditById] = useState({});
 
@@ -158,6 +160,41 @@ export default function ParentDashboardPage() {
     setBusy(false);
   };
 
+  const saveStudentCredentials = async (studentId) => {
+    if (!session?.access_token) return;
+    const form = credentialsByStudentId[studentId] || {};
+    const username = String(form.username || "").trim();
+    const pin = String(form.pin || "").trim();
+
+    if (!username || !pin) {
+      setMessage("יש להזין שם משתמש ו-PIN");
+      return;
+    }
+
+    setBusy(true);
+    setMessage("");
+
+    const res = await fetch("/api/parent/create-student-access-code", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ studentId, username, pin }),
+    });
+    const payload = await res.json();
+    if (!res.ok) {
+      setMessage(payload.error || "שמירת פרטי כניסה נכשלה");
+    } else {
+      setCredentialsSavedByStudentId((prev) => ({
+        ...prev,
+        [studentId]: true,
+      }));
+      setMessage("");
+    }
+    setBusy(false);
+  };
+
   const logout = async () => {
     if (!supabaseRef.current) {
       router.push("/parent/login");
@@ -280,6 +317,60 @@ export default function ParentDashboardPage() {
                 >
                   שמור
                 </button>
+
+                <div className="mt-2 rounded border border-white/15 p-3 bg-black/30 space-y-2">
+                  <div className="font-semibold">פרטי כניסת תלמיד</div>
+                  <div>
+                    <label className="text-sm text-white/80">שם משתמש לתלמיד</label>
+                    <input
+                      className="mt-1 w-full rounded bg-black/40 border border-white/20 px-3 py-2"
+                      value={credentialsByStudentId[student.id]?.username || ""}
+                      onChange={(e) =>
+                        setCredentialsByStudentId((prev) => ({
+                          ...prev,
+                          [student.id]: {
+                            ...(prev[student.id] || {}),
+                            username: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="לדוגמה: noam123"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-white/80">PIN לתלמיד</label>
+                    <input
+                      className="mt-1 w-full rounded bg-black/40 border border-white/20 px-3 py-2"
+                      value={credentialsByStudentId[student.id]?.pin || ""}
+                      onChange={(e) =>
+                        setCredentialsByStudentId((prev) => ({
+                          ...prev,
+                          [student.id]: {
+                            ...(prev[student.id] || {}),
+                            pin: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="4 ספרות"
+                      inputMode="numeric"
+                      type="password"
+                      maxLength={4}
+                    />
+                  </div>
+                  <button
+                    className="rounded bg-sky-400 text-black px-3 py-2 font-semibold disabled:opacity-60"
+                    disabled={busy}
+                    onClick={() => saveStudentCredentials(student.id)}
+                    type="button"
+                  >
+                    שמירת פרטי כניסה
+                  </button>
+                  {credentialsSavedByStudentId[student.id] ? (
+                    <div className="text-emerald-300 text-sm">
+                      פרטי הכניסה נשמרו. מסור לילד את שם המשתמש וה-PIN.
+                  </div>
+                  ) : null}
+                </div>
               </div>
             );
           })}
@@ -288,7 +379,11 @@ export default function ParentDashboardPage() {
         {message ? <p className="text-sm text-white/85">{message}</p> : null}
 
         <p className="text-sm text-white/70">
-          כניסת תלמיד עדיין לא פעילה.{" "}
+          כניסת תלמיד זמינה עכשיו.{" "}
+          <Link href="/student/login" className="underline text-amber-300 ml-1">
+            מעבר לכניסת תלמיד
+          </Link>{" "}
+          ·{" "}
           <Link href="/learning" className="underline text-amber-300">
             חזרה ללמידה
           </Link>
