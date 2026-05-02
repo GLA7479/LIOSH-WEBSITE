@@ -1,6 +1,6 @@
 # Scenario coverage (fixtures → matrix cells)
 
-- Generated at: 2026-05-02T22:42:20.953Z
+- Generated at: 2026-05-02T22:54:25.622Z
 - Scenarios: 278
 
 | scenarioId | mode | suite | grade | matrixCellsTouched | assertionTypes |
@@ -33,31 +33,31 @@
 | matrix_smoke_g1_math | aggregate | matrix_smoke | g1 | 21 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g1_moledet_geography | aggregate | matrix_smoke | g1 | 18 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g1_science | aggregate | matrix_smoke | g1 | 18 | matrix_smoke, storage_pipeline, no_crash |
-| matrix_smoke_g2_english | aggregate | matrix_smoke | g2 | 6 | matrix_smoke, storage_pipeline, no_crash |
+| matrix_smoke_g2_english | aggregate | matrix_smoke | g2 | 9 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g2_geometry | aggregate | matrix_smoke | g2 | 9 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g2_hebrew | aggregate | matrix_smoke | g2 | 18 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g2_math | aggregate | matrix_smoke | g2 | 27 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g2_moledet_geography | aggregate | matrix_smoke | g2 | 18 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g2_science | aggregate | matrix_smoke | g2 | 21 | matrix_smoke, storage_pipeline, no_crash |
-| matrix_smoke_g3_english | aggregate | matrix_smoke | g3 | 10 | matrix_smoke, storage_pipeline, no_crash |
+| matrix_smoke_g3_english | aggregate | matrix_smoke | g3 | 13 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g3_geometry | aggregate | matrix_smoke | g3 | 20 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g3_hebrew | aggregate | matrix_smoke | g3 | 14 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g3_math | aggregate | matrix_smoke | g3 | 39 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g3_moledet_geography | aggregate | matrix_smoke | g3 | 17 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g3_science | aggregate | matrix_smoke | g3 | 20 | matrix_smoke, storage_pipeline, no_crash |
-| matrix_smoke_g4_english | aggregate | matrix_smoke | g4 | 8 | matrix_smoke, storage_pipeline, no_crash |
+| matrix_smoke_g4_english | aggregate | matrix_smoke | g4 | 11 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g4_geometry | aggregate | matrix_smoke | g4 | 17 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g4_hebrew | aggregate | matrix_smoke | g4 | 17 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g4_math | aggregate | matrix_smoke | g4 | 52 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g4_moledet_geography | aggregate | matrix_smoke | g4 | 15 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g4_science | aggregate | matrix_smoke | g4 | 17 | matrix_smoke, storage_pipeline, no_crash |
-| matrix_smoke_g5_english | aggregate | matrix_smoke | g5 | 11 | matrix_smoke, storage_pipeline, no_crash |
+| matrix_smoke_g5_english | aggregate | matrix_smoke | g5 | 14 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g5_geometry | aggregate | matrix_smoke | g5 | 24 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g5_hebrew | aggregate | matrix_smoke | g5 | 18 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g5_math | aggregate | matrix_smoke | g5 | 45 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g5_moledet_geography | aggregate | matrix_smoke | g5 | 18 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g5_science | aggregate | matrix_smoke | g5 | 14 | matrix_smoke, storage_pipeline, no_crash |
-| matrix_smoke_g6_english | aggregate | matrix_smoke | g6 | 12 | matrix_smoke, storage_pipeline, no_crash |
+| matrix_smoke_g6_english | aggregate | matrix_smoke | g6 | 15 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g6_geometry | aggregate | matrix_smoke | g6 | 21 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g6_hebrew | aggregate | matrix_smoke | g6 | 18 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g6_math | aggregate | matrix_smoke | g6 | 51 | matrix_smoke, storage_pipeline, no_crash |

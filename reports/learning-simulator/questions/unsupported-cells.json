@@ -244,87 +244,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g2|english|translation|easy",
-      "grade": "g2",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g2|english|translation|easy",
-      "grade": "g2",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g2|english|translation|easy",
-      "grade": "g2",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
-      "cellKey": "g2|english|translation|hard",
-      "grade": "g2",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g2|english|translation|hard",
-      "grade": "g2",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g2|english|translation|hard",
-      "grade": "g2",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
-      "cellKey": "g2|english|translation|medium",
-      "grade": "g2",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g2|english|translation|medium",
-      "grade": "g2",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g2|english|translation|medium",
-      "grade": "g2",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g2|hebrew|mixed|easy",
       "grade": "g2",
       "subjectCanonical": "hebrew",
@@ -595,33 +514,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g3|english|translation|easy",
-      "grade": "g3",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g3|english|translation|easy",
-      "grade": "g3",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g3|english|translation|easy",
-      "grade": "g3",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g3|english|mixed|hard",
       "grade": "g3",
       "subjectCanonical": "english",
@@ -649,33 +541,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g3|english|translation|hard",
-      "grade": "g3",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g3|english|translation|hard",
-      "grade": "g3",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g3|english|translation|hard",
-      "grade": "g3",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g3|english|mixed|medium",
       "grade": "g3",
       "subjectCanonical": "english",
@@ -700,33 +565,6 @@
       "level": "medium",
       "topic": "mixed",
       "reason": "topic `mixed` is intentionally multi-topic — not a single integrity cell",
-      "sampleIndex": 2
-    },
-    {
-      "cellKey": "g3|english|translation|medium",
-      "grade": "g3",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g3|english|translation|medium",
-      "grade": "g3",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g3|english|translation|medium",
-      "grade": "g3",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)",
       "sampleIndex": 2
     },
     {
@@ -1000,33 +838,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g4|english|translation|easy",
-      "grade": "g4",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g4|english|translation|easy",
-      "grade": "g4",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g4|english|translation|easy",
-      "grade": "g4",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g4|english|mixed|hard",
       "grade": "g4",
       "subjectCanonical": "english",
@@ -1054,33 +865,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g4|english|translation|hard",
-      "grade": "g4",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g4|english|translation|hard",
-      "grade": "g4",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g4|english|translation|hard",
-      "grade": "g4",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g4|english|mixed|medium",
       "grade": "g4",
       "subjectCanonical": "english",
@@ -1105,33 +889,6 @@
       "level": "medium",
       "topic": "mixed",
       "reason": "topic `mixed` is intentionally multi-topic — not a single integrity cell",
-      "sampleIndex": 2
-    },
-    {
-      "cellKey": "g4|english|translation|medium",
-      "grade": "g4",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g4|english|translation|medium",
-      "grade": "g4",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g4|english|translation|medium",
-      "grade": "g4",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)",
       "sampleIndex": 2
     },
     {
@@ -1405,33 +1162,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g5|english|translation|easy",
-      "grade": "g5",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g5|english|translation|easy",
-      "grade": "g5",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g5|english|translation|easy",
-      "grade": "g5",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g5|english|mixed|hard",
       "grade": "g5",
       "subjectCanonical": "english",
@@ -1459,33 +1189,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g5|english|translation|hard",
-      "grade": "g5",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g5|english|translation|hard",
-      "grade": "g5",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g5|english|translation|hard",
-      "grade": "g5",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g5|english|mixed|medium",
       "grade": "g5",
       "subjectCanonical": "english",
@@ -1510,33 +1213,6 @@
       "level": "medium",
       "topic": "mixed",
       "reason": "topic `mixed` is intentionally multi-topic — not a single integrity cell",
-      "sampleIndex": 2
-    },
-    {
-      "cellKey": "g5|english|translation|medium",
-      "grade": "g5",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g5|english|translation|medium",
-      "grade": "g5",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g5|english|translation|medium",
-      "grade": "g5",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)",
       "sampleIndex": 2
     },
     {
@@ -1891,33 +1567,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g6|english|translation|easy",
-      "grade": "g6",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g6|english|translation|easy",
-      "grade": "g6",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g6|english|translation|easy",
-      "grade": "g6",
-      "subjectCanonical": "english",
-      "level": "easy",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g6|english|mixed|hard",
       "grade": "g6",
       "subjectCanonical": "english",
@@ -1945,33 +1594,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g6|english|translation|hard",
-      "grade": "g6",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g6|english|translation|hard",
-      "grade": "g6",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g6|english|translation|hard",
-      "grade": "g6",
-      "subjectCanonical": "english",
-      "level": "hard",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g6|english|mixed|medium",
       "grade": "g6",
       "subjectCanonical": "english",
@@ -1996,33 +1618,6 @@
       "level": "medium",
       "topic": "mixed",
       "reason": "topic `mixed` is intentionally multi-topic — not a single integrity cell",
-      "sampleIndex": 2
-    },
-    {
-      "cellKey": "g6|english|translation|medium",
-      "grade": "g6",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g6|english|translation|medium",
-      "grade": "g6",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g6|english|translation|medium",
-      "grade": "g6",
-      "subjectCanonical": "english",
-      "level": "medium",
-      "topic": "translation",
-      "reason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)",
       "sampleIndex": 2
     },
     {
@@ -2350,5 +1945,5 @@
       "sampleIndex": 2
     }
   ],
-  "generatedAt": "2026-05-02T22:42:11.312Z"
+  "generatedAt": "2026-05-02T22:54:16.102Z"
 }

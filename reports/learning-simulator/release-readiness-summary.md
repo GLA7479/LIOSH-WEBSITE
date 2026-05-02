@@ -1,14 +1,14 @@
 # Learning Simulator — Release readiness summary
 
-- **runId:** release-summary-mooxmy8a
-- **generatedAt:** 2026-05-02T22:47:52.522Z
+- **runId:** release-summary-mooy2l7d
+- **generatedAt:** 2026-05-02T23:00:02.137Z
 
 ## Overall
 
 | Field | Value |
 | --- | --- |
-| **overallStatus** | pass_with_known_backlog |
-| **releaseDecision** | ready_except_content_backlog |
+| **overallStatus** | pass |
+| **releaseDecision** | ready_for_next_dev_phase |
 | **buildStatus** (from orchestrator) | pass |
 | **orchestrator pass** | yes |
 
@@ -17,16 +17,16 @@
 | Metric | Count |
 | --- | ---: |
 | total cells | 819 |
-| covered | 732 |
+| covered | 747 |
 | unsupported_expected | 72 |
-| unsupported_needs_content | 15 |
+| unsupported_needs_content | — |
 | sampled | 0 |
 | uncovered | 0 |
 | unknown_needs_review (catalog rows) | 0 |
 
 ### Content backlog
 
-**Total backlog items:** 15
+**Total backlog items:** 0
 
 *פירוט לפי נושא / כיתה / נושא מטריצה / סיכון שחרור — ראה JSON (`countsBySubject`, …).*
 
@@ -60,14 +60,14 @@
 | status | pass |
 | checkedRoute | /learning/parent-report?qa_pdf=file |
 | downloadSucceeded | true |
-| fileSizeBytes | 3976560 |
+| fileSizeBytes | 3976262 |
 | pdfHeaderOk | true |
 | deferredReason | — |
 
 
 ### Known remaining work (groups)
 
-- **content_backlog:** 15 tracked items in content-gap-backlog.json
+- **content_backlog:** none
 - **optional_render_expansion:** Additional routes/surfaces can be added to render gate without product changes
 - **optional_ci_runtime_optimization:** Use RENDER_GATE_AUTO_SERVER=0 with dev server up to shorten CI wall time
 

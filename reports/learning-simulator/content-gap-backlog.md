@@ -2,39 +2,28 @@
 
 This file lists the **41** real content gaps (`unsupported_needs_content`). No questions were added or edited.
 
-- Generated: 2026-05-02T22:42:14.895Z
-- Run id: content-backlog-mooxfppr
-- Source audit: content-gap-mooxfp36
+- Generated: 2026-05-02T22:54:19.562Z
+- Run id: content-backlog-mooxv8ve
+- Source audit: content-gap-mooxv8ch
 
 ## Summary
 
-- **Total backlog items:** 15
+- **Total backlog items:** 0
 
 ### By subject
 
-- english: **15**
 
 ### By grade
 
-- g2: **3**
-- g3: **3**
-- g4: **3**
-- g5: **3**
-- g6: **3**
 
 ### By topic (subject:topic)
 
-- english:translation: **15**
 
 ### By level
 
-- easy: **5**
-- hard: **5**
-- medium: **5**
 
 ### By releaseRisk
 
-- medium: **15**
 
 ### Recommended order for later implementation
 
@@ -45,14 +34,6 @@ This file lists the **41** real content gaps (`unsupported_needs_content`). No q
 
 | backlogId | subject | grade | topic | level | target file | risk |
 | --- | --- | --- | --- | --- | --- | --- |
-| BG_g2__english__translation__easy | english | g2 | translation | easy | data/english-questions/translation-pools.js | medium |
-| BG_g2__english__translation__hard | english | g2 | translation | hard | data/english-questions/translation-pools.js | medium |
-| BG_g2__english__translation__medium | english | g2 | translation | medium | data/english-questions/translation-pools.js | medium |
-| BG_g3__english__translation__easy | english | g3 | translation | easy | data/english-questions/translation-pools.js | medium |
-| BG_g3__english__translation__hard | english | g3 | translation | hard | data/english-questions/translation-pools.js | medium |
-| BG_g3__english__translation__medium | english | g3 | translation | medium | data/english-questions/translation-pools.js | medium |
-| BG_g4__english__translation__easy | english | g4 | translation | easy | data/english-questions/translation-pools.js | medium |
-| BG_g4__english__translation__hard | english | g4 | translation | hard | data/english-questions/translation-pools.js | medium |
 
 ## Full list
 

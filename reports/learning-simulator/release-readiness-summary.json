@@ -1,7 +1,7 @@
 {
-  "runId": "release-summary-mooxmy8a",
-  "generatedAt": "2026-05-02T22:47:52.522Z",
-  "overallStatus": "pass_with_known_backlog",
+  "runId": "release-summary-mooy2l7d",
+  "generatedAt": "2026-05-02T23:00:02.137Z",
+  "overallStatus": "pass",
   "gateStatus": {
     "orchestrator": "pass",
     "matrixSmoke": "pass",
@@ -16,14 +16,12 @@
   "coverageSummary": {
     "totalCells": 819,
     "statusCounts": {
-      "covered": 732,
-      "unsupported_expected": 72,
-      "unsupported_needs_content": 15
+      "covered": 747,
+      "unsupported_expected": 72
     },
     "statusCountsFromRows": {
-      "covered": 732,
-      "unsupported_expected": 72,
-      "unsupported_needs_content": 15
+      "covered": 747,
+      "unsupported_expected": 72
     },
     "sampled": 0,
     "uncovered": 0,
@@ -31,13 +29,13 @@
     "note": "Counts align with coverage-catalog rows and counts.statusCounts where present."
   },
   "unsupportedSummary": {
-    "needsAttentionTotal": 87,
+    "needsAttentionTotal": 72,
     "uncoveredCoverageStatus": 0,
     "unknownClassification": 0,
     "byClassification": {
       "expected_runtime_gap": 0,
       "curriculum_only_not_runtime": 0,
-      "missing_question_bank": 15,
+      "missing_question_bank": 0,
       "missing_generator_adapter": 0,
       "missing_topic_adapter": 0,
       "mixed_or_ui_only_topic": 72,
@@ -45,29 +43,17 @@
     }
   },
   "contentBacklogSummary": {
-    "totalItems": 15,
-    "bySubject": {
-      "english": 15
-    },
-    "byGrade": {
-      "g2": 3,
-      "g3": 3,
-      "g4": 3,
-      "g5": 3,
-      "g6": 3
-    },
-    "byTopic": {
-      "english:translation": 15
-    },
-    "byReleaseRisk": {
-      "medium": 15
-    },
+    "totalItems": 0,
+    "bySubject": {},
+    "byGrade": {},
+    "byTopic": {},
+    "byReleaseRisk": {},
     "note": "Documented content gaps — known backlog, not classification failures."
   },
   "matrixSmokeSummary": {
     "status": "pass",
     "totalSmokeScenarios": 36,
-    "totalCellsTouched": 697,
+    "totalCellsTouched": 712,
     "failuresCount": 0
   },
   "criticalDeepSummary": {
@@ -86,7 +72,7 @@
     "status": "pass",
     "pace_accuracy_separation_ok": true,
     "cohortMedianSpqGap": 198.04,
-    "sourceRunId": "profile-stress-mooxfsbq"
+    "sourceRunId": "profile-stress-mooxvbjm"
   },
   "renderGateSummary": {
     "status": "pass",
@@ -104,7 +90,7 @@
     "browserMode": true,
     "downloadSucceeded": true,
     "downloadPath": "C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/pdf-export/דוח-Sim_strong_all_subjects_g3_7d-2026-05-02.pdf",
-    "fileSizeBytes": 3976560,
+    "fileSizeBytes": 3976262,
     "pdfHeaderOk": true,
     "consoleErrorsTotal": 0,
     "fatalErrorsTotal": 0,
@@ -115,11 +101,11 @@
     "pdfLibraryDetected": "^0.10.1",
     "exportIsClientSide": true,
     "hasDedicatedPdfRoute": false,
-    "generatedAt": "2026-05-02T22:42:50.459Z"
+    "generatedAt": "2026-05-02T22:54:54.569Z"
   },
   "scenarioCoverageSummary": {
     "scenarios": 278,
-    "generatedAt": "2026-05-02T22:42:20.953Z"
+    "generatedAt": "2026-05-02T22:54:25.622Z"
   },
   "deferredItems": {
     "pdfBinaryExportInPage": "Validated by pdf-export-gate (canvas download under ?qa_pdf=file).",
@@ -128,7 +114,7 @@
   "knownRemainingWork": [
     {
       "group": "content_backlog",
-      "detail": "15 tracked items in content-gap-backlog.json"
+      "detail": "none"
     },
     {
       "group": "optional_render_expansion",
@@ -139,7 +125,7 @@
       "detail": "Use RENDER_GATE_AUTO_SERVER=0 with dev server up to shorten CI wall time"
     }
   ],
-  "releaseDecision": "ready_except_content_backlog",
+  "releaseDecision": "ready_for_next_dev_phase",
   "failures": [],
   "warnings": []
 }

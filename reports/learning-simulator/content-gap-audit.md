@@ -1,15 +1,15 @@
 # Content gap audit (`unsupported_needs_content`)
 
-- Run id: content-gap-mooxfp36
-- Generated at: 2026-05-02T22:42:14.082Z
-- Total cells with **unsupported_needs_content**: **15**
+- Run id: content-gap-mooxv8ch
+- Generated at: 2026-05-02T22:54:18.881Z
+- Total cells with **unsupported_needs_content**: **0**
 - Unknown classifications: **0**
 
 ## Fixability summary
 
 ```json
 {
-  "cellsNeedingNewQuestionContent": 15,
+  "cellsNeedingNewQuestionContent": 0,
   "cellsFixableByQAClassificationOnly": 0,
   "cellsRecommendUnsupportedExpected": 0,
   "requiresRuntimeChange": 0,
@@ -19,36 +19,20 @@
 
 ## Counts by final gap category
 
-- **needs_content_addition**: 15
 
 ## Counts by priority
 
-- **P1**: 15
 
 ## Counts by subject
 
-- english: 15
 
 ## Top topic keys (subject:topic)
 
-- english:translation: 15
 
 ## Examples (first 12 cells)
 
 | cellKey | category | priority | action |
 | --- | --- | --- | --- |
-| g2\|english\|translation\|easy | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g2\|english\|translation\|hard | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g2\|english\|translation\|medium | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g3\|english\|translation\|easy | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g3\|english\|translation\|hard | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g3\|english\|translation\|medium | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g4\|english\|translation\|easy | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g4\|english\|translation\|hard | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g4\|english\|translation\|medium | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g5\|english\|translation\|easy | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g5\|english\|translation\|hard | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g5\|english\|translation\|medium | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
 
 ## What not to fix yet
 

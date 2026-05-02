@@ -1,7 +1,7 @@
 # Unsupported / gap cells (classification)
 
-- Generated at: 2026-05-02T22:42:13.406Z
-- Cells in this report: 87
+- Generated at: 2026-05-02T22:54:18.196Z
+- Cells in this report: 72
 - coverageStatus **uncovered**: 0
 - Classification **unknown_needs_review**: 0
 
@@ -11,28 +11,13 @@
 | --- | ---: |
 | expected_runtime_gap | 0 |
 | curriculum_only_not_runtime | 0 |
-| missing_question_bank | 15 |
+| missing_question_bank | 0 |
 | missing_generator_adapter | 0 |
 | missing_topic_adapter | 0 |
 | mixed_or_ui_only_topic | 72 |
 | unknown_needs_review | 0 |
 
 ## Examples per classification (up to 8 each)
-
-### missing_question_bank
-
-| grade | subject | topic | level | coverageStatus |
-| --- | --- | --- | --- | --- |
-| g2 | english | translation | easy | unsupported_needs_content |
-| g2 | english | translation | hard | unsupported_needs_content |
-| g2 | english | translation | medium | unsupported_needs_content |
-| g3 | english | translation | easy | unsupported_needs_content |
-| g3 | english | translation | hard | unsupported_needs_content |
-| g3 | english | translation | medium | unsupported_needs_content |
-| g4 | english | translation | easy | unsupported_needs_content |
-| g4 | english | translation | hard | unsupported_needs_content |
-
-*Recommendation:* Add or extend MCQ bank JSON / English pools for this grade · topic · level band.
 
 ### mixed_or_ui_only_topic
 

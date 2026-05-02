@@ -1,14 +1,14 @@
 {
-  "runId": "matrix-smoke-mooxfnh2",
-  "generatedAt": "2026-05-02T22:42:11.990Z",
+  "runId": "matrix-smoke-mooxv6pv",
+  "generatedAt": "2026-05-02T22:54:16.771Z",
   "generator": "matrix-smoke-v1",
   "versions": {
     "matrixSmoke": "1.0.0"
   },
-  "totalCandidateCells": 697,
+  "totalCandidateCells": 712,
   "totalSmokeScenarios": 36,
-  "totalCellsTouched": 697,
-  "totalCellsSkippedUnsupported": 87,
+  "totalCellsTouched": 712,
+  "totalCellsSkippedUnsupported": 72,
   "skippedAlreadyFixtureCovered": 35,
   "skippedOther": 0,
   "failures": [],
@@ -1488,6 +1488,7 @@
         "hard"
       ],
       "topics": [
+        "translation",
         "vocabulary",
         "writing"
       ],
@@ -1496,6 +1497,21 @@
       "tier": "quick",
       "timeHorizonDays": 7,
       "matrixCoverageRefs": [
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "hard"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "medium"
+        },
         {
           "subjectCanonical": "english",
           "topic": "vocabulary",
@@ -1528,6 +1544,33 @@
         }
       ],
       "cellsTouched": [
+        {
+          "grade": "g2",
+          "subject": "english",
+          "level": "easy",
+          "topic": "translation",
+          "cellKey": "g2|english|translation|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g2",
+          "subject": "english",
+          "level": "hard",
+          "topic": "translation",
+          "cellKey": "g2|english|translation|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g2",
+          "subject": "english",
+          "level": "medium",
+          "topic": "translation",
+          "cellKey": "g2|english|translation|medium",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
         {
           "grade": "g2",
           "subject": "english",
@@ -1584,6 +1627,9 @@
         }
       ],
       "matrixCellsTouched": [
+        "g2|english|translation|easy",
+        "g2|english|translation|hard",
+        "g2|english|translation|medium",
         "g2|english|vocabulary|easy",
         "g2|english|vocabulary|hard",
         "g2|english|vocabulary|medium",
@@ -1591,8 +1637,8 @@
         "g2|english|writing|hard",
         "g2|english|writing|medium"
       ],
-      "sessionsCreated": 6,
-      "questionsOrRowsCreated": 86,
+      "sessionsCreated": 9,
+      "questionsOrRowsCreated": 143,
       "status": "ok",
       "errors": []
     },
@@ -3182,6 +3228,7 @@
       "topics": [
         "grammar",
         "sentences",
+        "translation",
         "vocabulary",
         "writing"
       ],
@@ -3208,6 +3255,21 @@
         {
           "subjectCanonical": "english",
           "topic": "sentences",
+          "level": "medium"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "hard"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
           "level": "medium"
         },
         {
@@ -3282,6 +3344,33 @@
           "grade": "g3",
           "subject": "english",
           "level": "easy",
+          "topic": "translation",
+          "cellKey": "g3|english|translation|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g3",
+          "subject": "english",
+          "level": "hard",
+          "topic": "translation",
+          "cellKey": "g3|english|translation|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g3",
+          "subject": "english",
+          "level": "medium",
+          "topic": "translation",
+          "cellKey": "g3|english|translation|medium",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g3",
+          "subject": "english",
+          "level": "easy",
           "topic": "vocabulary",
           "cellKey": "g3|english|vocabulary|easy",
           "sourceStatusBefore": "sampled",
@@ -3338,6 +3427,9 @@
         "g3|english|sentences|easy",
         "g3|english|sentences|hard",
         "g3|english|sentences|medium",
+        "g3|english|translation|easy",
+        "g3|english|translation|hard",
+        "g3|english|translation|medium",
         "g3|english|vocabulary|easy",
         "g3|english|vocabulary|hard",
         "g3|english|vocabulary|medium",
@@ -3345,8 +3437,8 @@
         "g3|english|writing|hard",
         "g3|english|writing|medium"
       ],
-      "sessionsCreated": 10,
-      "questionsOrRowsCreated": 145,
+      "sessionsCreated": 13,
+      "questionsOrRowsCreated": 201,
       "status": "ok",
       "errors": []
     },
@@ -5197,6 +5289,7 @@
       ],
       "topics": [
         "sentences",
+        "translation",
         "vocabulary",
         "writing"
       ],
@@ -5218,6 +5311,21 @@
         {
           "subjectCanonical": "english",
           "topic": "sentences",
+          "level": "medium"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "hard"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
           "level": "medium"
         },
         {
@@ -5277,6 +5385,33 @@
         {
           "grade": "g4",
           "subject": "english",
+          "level": "easy",
+          "topic": "translation",
+          "cellKey": "g4|english|translation|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g4",
+          "subject": "english",
+          "level": "hard",
+          "topic": "translation",
+          "cellKey": "g4|english|translation|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g4",
+          "subject": "english",
+          "level": "medium",
+          "topic": "translation",
+          "cellKey": "g4|english|translation|medium",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g4",
+          "subject": "english",
           "level": "hard",
           "topic": "vocabulary",
           "cellKey": "g4|english|vocabulary|hard",
@@ -5324,14 +5459,17 @@
         "g4|english|sentences|easy",
         "g4|english|sentences|hard",
         "g4|english|sentences|medium",
+        "g4|english|translation|easy",
+        "g4|english|translation|hard",
+        "g4|english|translation|medium",
         "g4|english|vocabulary|hard",
         "g4|english|vocabulary|medium",
         "g4|english|writing|easy",
         "g4|english|writing|hard",
         "g4|english|writing|medium"
       ],
-      "sessionsCreated": 8,
-      "questionsOrRowsCreated": 132,
+      "sessionsCreated": 11,
+      "questionsOrRowsCreated": 171,
       "status": "ok",
       "errors": []
     },
@@ -7306,6 +7444,7 @@
       "topics": [
         "grammar",
         "sentences",
+        "translation",
         "vocabulary",
         "writing"
       ],
@@ -7337,6 +7476,21 @@
         {
           "subjectCanonical": "english",
           "topic": "sentences",
+          "level": "medium"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "hard"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
           "level": "medium"
         },
         {
@@ -7420,6 +7574,33 @@
           "grade": "g5",
           "subject": "english",
           "level": "easy",
+          "topic": "translation",
+          "cellKey": "g5|english|translation|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g5",
+          "subject": "english",
+          "level": "hard",
+          "topic": "translation",
+          "cellKey": "g5|english|translation|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g5",
+          "subject": "english",
+          "level": "medium",
+          "topic": "translation",
+          "cellKey": "g5|english|translation|medium",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g5",
+          "subject": "english",
+          "level": "easy",
           "topic": "vocabulary",
           "cellKey": "g5|english|vocabulary|easy",
           "sourceStatusBefore": "sampled",
@@ -7477,6 +7658,9 @@
         "g5|english|grammar|medium",
         "g5|english|sentences|hard",
         "g5|english|sentences|medium",
+        "g5|english|translation|easy",
+        "g5|english|translation|hard",
+        "g5|english|translation|medium",
         "g5|english|vocabulary|easy",
         "g5|english|vocabulary|hard",
         "g5|english|vocabulary|medium",
@@ -7484,8 +7668,8 @@
         "g5|english|writing|hard",
         "g5|english|writing|medium"
       ],
-      "sessionsCreated": 11,
-      "questionsOrRowsCreated": 170,
+      "sessionsCreated": 14,
+      "questionsOrRowsCreated": 213,
       "status": "ok",
       "errors": []
     },
@@ -9474,6 +9658,7 @@
       "topics": [
         "grammar",
         "sentences",
+        "translation",
         "vocabulary",
         "writing"
       ],
@@ -9510,6 +9695,21 @@
         {
           "subjectCanonical": "english",
           "topic": "sentences",
+          "level": "medium"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
+          "level": "hard"
+        },
+        {
+          "subjectCanonical": "english",
+          "topic": "translation",
           "level": "medium"
         },
         {
@@ -9602,6 +9802,33 @@
           "grade": "g6",
           "subject": "english",
           "level": "easy",
+          "topic": "translation",
+          "cellKey": "g6|english|translation|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g6",
+          "subject": "english",
+          "level": "hard",
+          "topic": "translation",
+          "cellKey": "g6|english|translation|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g6",
+          "subject": "english",
+          "level": "medium",
+          "topic": "translation",
+          "cellKey": "g6|english|translation|medium",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g6",
+          "subject": "english",
+          "level": "easy",
           "topic": "vocabulary",
           "cellKey": "g6|english|vocabulary|easy",
           "sourceStatusBefore": "sampled",
@@ -9660,6 +9887,9 @@
         "g6|english|sentences|easy",
         "g6|english|sentences|hard",
         "g6|english|sentences|medium",
+        "g6|english|translation|easy",
+        "g6|english|translation|hard",
+        "g6|english|translation|medium",
         "g6|english|vocabulary|easy",
         "g6|english|vocabulary|hard",
         "g6|english|vocabulary|medium",
@@ -9667,8 +9897,8 @@
         "g6|english|writing|hard",
         "g6|english|writing|medium"
       ],
-      "sessionsCreated": 12,
-      "questionsOrRowsCreated": 195,
+      "sessionsCreated": 15,
+      "questionsOrRowsCreated": 244,
       "status": "ok",
       "errors": []
     },

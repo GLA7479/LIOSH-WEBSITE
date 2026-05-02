@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-05-02T22:42:13.406Z",
+  "generatedAt": "2026-05-02T22:54:18.196Z",
   "versions": {
     "unsupported": "1.0.0"
   },
   "counts": {
-    "needsAttentionTotal": 87,
+    "needsAttentionTotal": 72,
     "uncoveredCoverageStatus": 0,
     "unknownClassification": 0,
     "byClassification": {
       "expected_runtime_gap": 0,
       "curriculum_only_not_runtime": 0,
-      "missing_question_bank": 15,
+      "missing_question_bank": 0,
       "missing_generator_adapter": 0,
       "missing_topic_adapter": 0,
       "mixed_or_ui_only_topic": 72,
@@ -107,36 +107,6 @@
       "coverageStatus": "unsupported_expected",
       "unsupportedClassification": "mixed_or_ui_only_topic",
       "phase4UnsupportedReason": "topic `mixed` is intentionally multi-topic — not a single integrity cell"
-    },
-    {
-      "cellKey": "g2|english|translation|easy",
-      "grade": "g2",
-      "subject": "english",
-      "level": "easy",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)"
-    },
-    {
-      "cellKey": "g2|english|translation|hard",
-      "grade": "g2",
-      "subject": "english",
-      "level": "hard",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)"
-    },
-    {
-      "cellKey": "g2|english|translation|medium",
-      "grade": "g2",
-      "subject": "english",
-      "level": "medium",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)"
     },
     {
       "cellKey": "g2|hebrew|mixed|easy",
@@ -259,36 +229,6 @@
       "phase4UnsupportedReason": "topic `mixed` is intentionally multi-topic — not a single integrity cell"
     },
     {
-      "cellKey": "g3|english|translation|easy",
-      "grade": "g3",
-      "subject": "english",
-      "level": "easy",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)"
-    },
-    {
-      "cellKey": "g3|english|translation|hard",
-      "grade": "g3",
-      "subject": "english",
-      "level": "hard",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)"
-    },
-    {
-      "cellKey": "g3|english|translation|medium",
-      "grade": "g3",
-      "subject": "english",
-      "level": "medium",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)"
-    },
-    {
       "cellKey": "g3|hebrew|mixed|easy",
       "grade": "g3",
       "subject": "hebrew",
@@ -409,36 +349,6 @@
       "phase4UnsupportedReason": "topic `mixed` is intentionally multi-topic — not a single integrity cell"
     },
     {
-      "cellKey": "g4|english|translation|easy",
-      "grade": "g4",
-      "subject": "english",
-      "level": "easy",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)"
-    },
-    {
-      "cellKey": "g4|english|translation|hard",
-      "grade": "g4",
-      "subject": "english",
-      "level": "hard",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)"
-    },
-    {
-      "cellKey": "g4|english|translation|medium",
-      "grade": "g4",
-      "subject": "english",
-      "level": "medium",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)"
-    },
-    {
       "cellKey": "g4|hebrew|mixed|easy",
       "grade": "g4",
       "subject": "hebrew",
@@ -557,36 +467,6 @@
       "coverageStatus": "unsupported_expected",
       "unsupportedClassification": "mixed_or_ui_only_topic",
       "phase4UnsupportedReason": "topic `mixed` is intentionally multi-topic — not a single integrity cell"
-    },
-    {
-      "cellKey": "g5|english|translation|easy",
-      "grade": "g5",
-      "subject": "english",
-      "level": "easy",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)"
-    },
-    {
-      "cellKey": "g5|english|translation|hard",
-      "grade": "g5",
-      "subject": "english",
-      "level": "hard",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)"
-    },
-    {
-      "cellKey": "g5|english|translation|medium",
-      "grade": "g5",
-      "subject": "english",
-      "level": "medium",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)"
     },
     {
       "cellKey": "g5|geometry|mixed|easy",
@@ -739,36 +619,6 @@
       "phase4UnsupportedReason": "topic `mixed` is intentionally multi-topic — not a single integrity cell"
     },
     {
-      "cellKey": "g6|english|translation|easy",
-      "grade": "g6",
-      "subject": "english",
-      "level": "easy",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)"
-    },
-    {
-      "cellKey": "g6|english|translation|hard",
-      "grade": "g6",
-      "subject": "english",
-      "level": "hard",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)"
-    },
-    {
-      "cellKey": "g6|english|translation|medium",
-      "grade": "g6",
-      "subject": "english",
-      "level": "medium",
-      "topic": "translation",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)"
-    },
-    {
       "cellKey": "g6|geometry|mixed|easy",
       "grade": "g6",
       "subject": "geometry",
@@ -899,89 +749,8 @@
       "examples": []
     },
     "missing_question_bank": {
-      "count": 15,
-      "examples": [
-        {
-          "cellKey": "g2|english|translation|easy",
-          "grade": "g2",
-          "subject": "english",
-          "level": "easy",
-          "topic": "translation",
-          "coverageStatus": "unsupported_needs_content",
-          "unsupportedClassification": "missing_question_bank",
-          "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)"
-        },
-        {
-          "cellKey": "g2|english|translation|hard",
-          "grade": "g2",
-          "subject": "english",
-          "level": "hard",
-          "topic": "translation",
-          "coverageStatus": "unsupported_needs_content",
-          "unsupportedClassification": "missing_question_bank",
-          "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)"
-        },
-        {
-          "cellKey": "g2|english|translation|medium",
-          "grade": "g2",
-          "subject": "english",
-          "level": "medium",
-          "topic": "translation",
-          "coverageStatus": "unsupported_needs_content",
-          "unsupportedClassification": "missing_question_bank",
-          "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)"
-        },
-        {
-          "cellKey": "g3|english|translation|easy",
-          "grade": "g3",
-          "subject": "english",
-          "level": "easy",
-          "topic": "translation",
-          "coverageStatus": "unsupported_needs_content",
-          "unsupportedClassification": "missing_question_bank",
-          "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)"
-        },
-        {
-          "cellKey": "g3|english|translation|hard",
-          "grade": "g3",
-          "subject": "english",
-          "level": "hard",
-          "topic": "translation",
-          "coverageStatus": "unsupported_needs_content",
-          "unsupportedClassification": "missing_question_bank",
-          "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)"
-        },
-        {
-          "cellKey": "g3|english|translation|medium",
-          "grade": "g3",
-          "subject": "english",
-          "level": "medium",
-          "topic": "translation",
-          "coverageStatus": "unsupported_needs_content",
-          "unsupportedClassification": "missing_question_bank",
-          "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)"
-        },
-        {
-          "cellKey": "g4|english|translation|easy",
-          "grade": "g4",
-          "subject": "english",
-          "level": "easy",
-          "topic": "translation",
-          "coverageStatus": "unsupported_needs_content",
-          "unsupportedClassification": "missing_question_bank",
-          "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)"
-        },
-        {
-          "cellKey": "g4|english|translation|hard",
-          "grade": "g4",
-          "subject": "english",
-          "level": "hard",
-          "topic": "translation",
-          "coverageStatus": "unsupported_needs_content",
-          "unsupportedClassification": "missing_question_bank",
-          "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)"
-        }
-      ]
+      "count": 0,
+      "examples": []
     },
     "missing_generator_adapter": {
       "count": 0,

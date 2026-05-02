@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-02T22:42:11.312Z",
+  "generatedAt": "2026-05-02T22:54:16.102Z",
   "generator": "question-integrity-phase4-v1",
   "config": {
     "samplesPerCell": 3,
@@ -11,13 +11,13 @@
     "rowsAfterFilter": 819,
     "cellsScanned": 819,
     "cellsSkippedSubject": 0,
-    "cellsFullyPassed": 732,
-    "cellsWithUnsupported": 87,
+    "cellsFullyPassed": 747,
+    "cellsWithUnsupported": 72,
     "cellsWithIntegrityFailure": 0,
-    "questionsGenerated": 2196,
-    "checksPassed": 2196,
+    "questionsGenerated": 2241,
+    "checksPassed": 2241,
     "checksFailed": 0,
-    "warningCount": 171
+    "warningCount": 216
   },
   "subjectsSupported": [
     "math",

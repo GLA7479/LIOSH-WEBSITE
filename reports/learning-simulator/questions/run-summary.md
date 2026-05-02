@@ -1,15 +1,15 @@
 # Question integrity (generator / bank)
 
-- Generated at: 2026-05-02T22:42:11.312Z
+- Generated at: 2026-05-02T22:54:16.102Z
 - Rows scanned (runtime-supported): 819
 - Cells scanned (adapter subjects): 819
-- Cells fully passed (all 3 samples): 732
-- Cells with unsupported adapter/topic: 87
+- Cells fully passed (all 3 samples): 747
+- Cells with unsupported adapter/topic: 72
 - Cells with failures: 0
-- Questions generated: 2196
-- Checks passed: 2196
+- Questions generated: 2241
+- Checks passed: 2241
 - Checks failed: 0
-- Warnings: 171
+- Warnings: 216
 
 ## Failures by subject
 

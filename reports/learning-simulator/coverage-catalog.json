@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-02T22:42:12.724Z",
-  "matrixGeneratedAt": "2026-05-02T22:42:06.743Z",
+  "generatedAt": "2026-05-02T22:54:17.514Z",
+  "matrixGeneratedAt": "2026-05-02T22:54:11.528Z",
   "versions": {
     "catalog": "1.2.0"
   },
@@ -10,11 +10,10 @@
     "deepScenarioCount": 12,
     "uniqueCellsTouchedQuick": 32,
     "uniqueCellsTouchedDeep": 34,
-    "uniqueCellsTouchedMatrixSmoke": 697,
+    "uniqueCellsTouchedMatrixSmoke": 712,
     "statusCounts": {
-      "covered": 732,
-      "unsupported_expected": 72,
-      "unsupported_needs_content": 15
+      "covered": 747,
+      "unsupported_expected": 72
     }
   },
   "rows": [
@@ -1890,13 +1889,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g2|english|vocabulary|easy",
@@ -1950,13 +1949,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g2|english|vocabulary|hard",
@@ -2010,13 +2009,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g2|english|vocabulary|medium",
@@ -4170,13 +4169,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g3|english|vocabulary|easy",
@@ -4290,13 +4289,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g3|english|vocabulary|hard",
@@ -4410,13 +4409,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g3 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g3|english|vocabulary|medium",
@@ -7110,13 +7109,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g4|english|vocabulary|easy",
@@ -7230,13 +7229,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g4|english|vocabulary|hard",
@@ -7350,13 +7349,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g4 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g4|english|vocabulary|medium",
@@ -10170,13 +10169,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g5|english|vocabulary|easy",
@@ -10290,13 +10289,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g5|english|vocabulary|hard",
@@ -10410,13 +10409,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g5 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g5|english|vocabulary|medium",
@@ -13350,13 +13349,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g6|english|vocabulary|easy",
@@ -13470,13 +13469,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g6|english|vocabulary|hard",
@@ -13590,13 +13589,13 @@
       "generatorBackedRaw": "inline_page",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g6 (translation flashcards excluded)"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g6|english|vocabulary|medium",
