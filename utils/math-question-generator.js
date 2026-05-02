@@ -2407,40 +2407,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       correctAnswer = isEven ? "זוגי" : "אי-זוגי";
       question = `האם המספר ${n} הוא זוגי או אי-זוגי?`;
       params = { kind: "ns_even_odd", n, isEven };
-      // ליצירת 4 תשובות, נוסיף גם תשובות על בסיס מספרים שכנים
-      const baseAnswers = ["זוגי", "אי-זוגי"];
-      const neighbor1 = n + 1;
-      const neighbor2 = n - 1;
-      baseAnswers.push(neighbor1 % 2 === 0 ? "זוגי" : "אי-זוגי");
-      baseAnswers.push(neighbor2 % 2 === 0 ? "זוגי" : "אי-זוגי");
-      // נסיר כפילויות ונשמור רק 4 תשובות ייחודיות
-      const uniqueAnswers = [...new Set(baseAnswers)];
-      while (uniqueAnswers.length < 4) {
-        // אם עדיין אין 4, נוסיף תשובות חלופיות
-        const altNum = n + uniqueAnswers.length;
-        uniqueAnswers.push(altNum % 2 === 0 ? "זוגי" : "אי-זוגי");
-      }
-      let answers = uniqueAnswers.slice(0, 4);
-      // נשמור את התשובה הנכונה ברשימה
-      const correctIdx = answers.indexOf(correctAnswer);
-      if (correctIdx === -1) {
-        // אם התשובה הנכונה לא ברשימה, נחליף את הראשונה
-        answers[0] = correctAnswer;
-      }
-      
-      // ערבוב התשובות - Fisher-Yates shuffle
+      // רק שני ניסוחים שונים לזוגיות — לא ניתן למלא 4 אפשרויות ייחודיות באותה מילה בלי כפילויות;
+      // השכנים n−1 ו-n+1 תמיד באותה זוגיות (מנוגדים ל-n), ולכן היו יוצרים כפילויות ב-MCQ.
+      let answers = ["זוגי", "אי-זוגי"];
       for (let i = answers.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [answers[i], answers[j]] = [answers[j], answers[i]];
       }
-      
-      // ערבוב נוסף
-      const shuffled = [...answers];
-      for (let i = 0; i < shuffled.length; i++) {
-        const randomIndex = Math.floor(Math.random() * shuffled.length);
-        [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
-      }
-      answers = shuffled;
 
       return {
         question,

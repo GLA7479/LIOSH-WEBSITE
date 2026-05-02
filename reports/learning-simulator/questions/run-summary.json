@@ -1,0 +1,32 @@
+{
+  "generatedAt": "2026-05-02T20:20:41.218Z",
+  "generator": "question-integrity-phase4-v1",
+  "config": {
+    "samplesPerCell": 3,
+    "maxCells": null,
+    "matrixPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\coverage-matrix.json"
+  },
+  "counts": {
+    "matrixRowsInFile": 819,
+    "rowsAfterFilter": 819,
+    "cellsScanned": 819,
+    "cellsSkippedSubject": 0,
+    "cellsFullyPassed": 706,
+    "cellsWithUnsupported": 113,
+    "cellsWithIntegrityFailure": 0,
+    "questionsGenerated": 2118,
+    "checksPassed": 2118,
+    "checksFailed": 0,
+    "warningCount": 171
+  },
+  "subjectsSupported": [
+    "math",
+    "geometry",
+    "science",
+    "english",
+    "hebrew",
+    "moledet_geography"
+  ],
+  "failuresBySubject": {},
+  "failuresByTopic": {}
+}

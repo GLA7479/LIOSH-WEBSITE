@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: phase4-generator-mode
     content: Add optional generator-backed simulation and question integrity checks
-    status: pending
+    status: completed
   - id: phase5-deep-mode
     content: Integrate long-horizon deep simulations and trend/evidence assertions
     status: pending
