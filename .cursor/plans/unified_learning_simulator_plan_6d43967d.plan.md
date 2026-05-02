@@ -13,7 +13,7 @@ todos:
     status: completed
   - id: phase3-report-assertions
     content: Implement contract/report assertion engine over detailed parent report outputs
-    status: pending
+    status: completed
   - id: phase4-generator-mode
     content: Add optional generator-backed simulation and question integrity checks
     status: pending
