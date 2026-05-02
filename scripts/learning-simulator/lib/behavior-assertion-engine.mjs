@@ -176,8 +176,101 @@ export function evaluateScenarioBehavior(scenario, oracle, report) {
     );
   }
 
-  // --- improving_student_g4_30d ---
-  if (sid === "improving_student_g4_30d") {
+  // --- strong_all_subjects_g3_30d (deep longitudinal) ---
+  if (sid === "strong_all_subjects_g3_30d") {
+    add(
+      "evidence_volume_deep",
+      qTot >= 800,
+      { minQuestions: 800 },
+      { questionTotal: qTot },
+      qTot < 400 ? "simulator_data" : "behavior_oracle_threshold",
+      {}
+    );
+    add(
+      "overall_accuracy_high_deep",
+      overallPct != null && overallPct >= 70,
+      { minPct: 70 },
+      { overallAccuracyPct: overallPct },
+      overallPct != null && overallPct < 52 ? "simulator_data" : "behavior_oracle_threshold",
+      {}
+    );
+    const subjects = Array.isArray(scenario.subjects) ? scenario.subjects : [];
+    let subjOk = true;
+    const subjActual = {};
+    for (const sub of subjects) {
+      const m = oracle.subjectMetrics[sub];
+      const pct = m?.accuracyPct;
+      subjActual[sub] = pct ?? null;
+      if (pct != null && pct < 56) subjOk = false;
+    }
+    add(
+      "per_subject_accuracy_strong_deep",
+      subjOk,
+      { minPctPerSubjectWithData: 56 },
+      subjActual,
+      !subjOk ? "simulator_data" : "behavior_oracle_threshold",
+      {}
+    );
+    const alignQs = rs ? Math.abs((rs.totalQuestions || 0) - qTot) <= 8 : true;
+    add(
+      "report_total_questions_aligns_meta_deep",
+      alignQs,
+      { maxAbsDelta: 8 },
+      { metaQuestionTotal: qTot, reportTotalQuestions: rs?.totalQuestions ?? null },
+      !alignQs ? "engine_report" : "behavior_oracle_threshold",
+      {}
+    );
+    const accAlign =
+      overallPct != null && rs ? Math.abs((rs.overallAccuracy || 0) - overallPct) <= 14 : true;
+    add(
+      "report_overall_accuracy_bracket_deep",
+      accAlign,
+      { maxAbsDeltaPct: 14 },
+      { metaOverall: overallPct, reportOverall: rs?.overallAccuracy ?? null },
+      !accAlign ? "engine_report" : "behavior_oracle_threshold",
+      {}
+    );
+  }
+
+  // --- weak_all_subjects_g3_30d ---
+  if (sid === "weak_all_subjects_g3_30d") {
+    add(
+      "evidence_volume_weak_all_deep",
+      qTot >= 680,
+      { minQuestions: 680 },
+      { questionTotal: qTot },
+      qTot < 400 ? "simulator_data" : "behavior_oracle_threshold",
+      {}
+    );
+    add(
+      "overall_accuracy_low_weak_all",
+      overallPct != null && overallPct <= 62,
+      { maxPct: 62 },
+      { overallAccuracyPct: overallPct },
+      overallPct != null && overallPct > 72 ? "simulator_data" : "behavior_oracle_threshold",
+      {}
+    );
+    const subjects = Array.isArray(scenario.subjects) ? scenario.subjects : [];
+    let weakOk = true;
+    const subjActual = {};
+    for (const sub of subjects) {
+      const m = oracle.subjectMetrics[sub];
+      const pct = m?.accuracyPct;
+      subjActual[sub] = pct ?? null;
+      if (pct != null && pct > 68) weakOk = false;
+    }
+    add(
+      "per_subject_stays_weak_vs_strong_baseline",
+      weakOk,
+      { maxPctPerSubjectWithData: 68 },
+      subjActual,
+      !weakOk ? "simulator_data" : "behavior_oracle_threshold",
+      {}
+    );
+  }
+
+  // --- improving_student_g4_30d / g4_90d ---
+  if (sid === "improving_student_g4_30d" || sid === "improving_student_g4_90d") {
     const tr = oracle.trendOracle;
     add(
       "storage_trend_oracle_up",
@@ -189,8 +282,8 @@ export function evaluateScenarioBehavior(scenario, oracle, report) {
     );
   }
 
-  // --- declining_student_g4_30d ---
-  if (sid === "declining_student_g4_30d") {
+  // --- declining_student_g4_30d / g4_90d ---
+  if (sid === "declining_student_g4_30d" || sid === "declining_student_g4_90d") {
     const tr = oracle.trendOracle;
     add(
       "storage_trend_oracle_down",
@@ -254,6 +347,52 @@ export function evaluateScenarioBehavior(scenario, oracle, report) {
   if (sid === "weak_geometry_area_g5_7d") weakTopicAssertions("geometry", "area", "area");
 
   if (sid === "weak_moledet_geography_maps_g4_7d") weakTopicAssertions("moledet_geography", "maps", "maps");
+
+  // --- random_guessing_student_g3_30d ---
+  if (sid === "random_guessing_student_g3_30d") {
+    add(
+      "guess_profile_low_overall_accuracy",
+      overallPct != null && overallPct < 56,
+      { maxPct: 56 },
+      { overallAccuracyPct: overallPct },
+      overallPct != null && overallPct >= 65 ? "simulator_data" : "behavior_oracle_threshold",
+      {}
+    );
+    add(
+      "guess_profile_not_overconfident_contract",
+      !!(rs && (rs.contractTopThinDowngraded === true || (rs.overallAccuracy ?? 100) < 62)),
+      { thinOrLowAccuracySummary: true },
+      rs
+        ? {
+            contractTopThinDowngraded: rs.contractTopThinDowngraded,
+            overallAccuracy: rs.overallAccuracy,
+          }
+        : null,
+      rs && rs.contractTopThinDowngraded === false && (rs.overallAccuracy ?? 0) >= 78 ? "engine_report" : "behavior_oracle_threshold",
+      {}
+    );
+  }
+
+  // --- inconsistent_student_g5_30d ---
+  if (sid === "inconsistent_student_g5_30d") {
+    const st = oracle.volatility?.stdev ?? 0;
+    add(
+      "session_accuracy_volatility_visible",
+      st >= 0.048,
+      { minSessionAccStdev: 0.048 },
+      { stdev: st, n: oracle.volatility?.n },
+      st < 0.035 ? "simulator_data" : "behavior_oracle_threshold",
+      {}
+    );
+  }
+
+  // Deep weak-topic scenarios (same checks as 7d weak_*)
+  if (/^weak_.*_g[1-6]_30d$/.test(sid)) {
+    const tt = scenario.topicTargets?.find((t) => !t.optional) || scenario.topicTargets?.[0];
+    if (tt?.subjectCanonical && tt?.topic) {
+      weakTopicAssertions(tt.subjectCanonical, tt.topic, "deep_weak_target");
+    }
+  }
 
   // Cross-cutting: contradictory diagnostic confidence flag should stay rare on large windows
   if (rs && oracle.evidence.questionTotal > 400) {

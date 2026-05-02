@@ -39,7 +39,7 @@
             "timestamp": 1777306625671,
             "mode": "learning",
             "total": 21,
-            "correct": 8
+            "correct": 7
           },
           {
             "date": "2026-04-28",
@@ -207,7 +207,7 @@
             "timestamp": 1777796166907,
             "mode": "learning",
             "total": 15,
-            "correct": 6
+            "correct": 5
           },
           {
             "date": "2026-05-03",
@@ -329,7 +329,7 @@
     "progress": {
       "fractions": {
         "total": 290,
-        "correct": 101
+        "correct": 99
       }
     },
     "stars": 2,
@@ -677,6 +677,23 @@
       "patternFamily": "pf:math:fractions",
       "hintUsed": false,
       "responseMs": 2411
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g5",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1777306625679,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": false,
+      "responseMs": 2431
     },
     {
       "subject": "math",
@@ -2318,6 +2335,23 @@
       "grade": "g5",
       "level": "medium",
       "mode": "learning",
+      "timestamp": 1777796166913,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": true,
+      "responseMs": 2827
+    },
+    {
+      "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g5",
+      "level": "medium",
+      "mode": "learning",
       "timestamp": 1777833910988,
       "isCorrect": false,
       "exerciseText": "math:fractions",
@@ -2492,17 +2526,17 @@
   "mleo_moledet_geography_mistakes": [],
   "mleo_daily_challenge": {
     "questions": 290,
-    "correct": 101,
-    "bestScore": 101
+    "correct": 99,
+    "bestScore": 99
   },
   "mleo_weekly_challenge": {
-    "current": 35,
+    "current": 34,
     "target": 100,
     "completed": false
   },
   "mleo_science_daily_challenge": {
     "questions": 72,
-    "correct": 25,
+    "correct": 24,
     "bestScore": 0
   },
   "mleo_science_weekly_challenge": {

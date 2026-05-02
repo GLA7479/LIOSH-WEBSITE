@@ -22,14 +22,18 @@ const OUT_MD = join(OUT_DIR, "schema-validation.md");
 async function loadFixtures() {
   const profilesUrl = pathToFileURL(join(ROOT, "tests", "fixtures", "learning-simulator", "profiles", "base-profiles.mjs")).href;
   const scenariosUrl = pathToFileURL(join(ROOT, "tests", "fixtures", "learning-simulator", "scenarios", "quick-scenarios.mjs")).href;
+  const deepUrl = pathToFileURL(join(ROOT, "tests", "fixtures", "learning-simulator", "scenarios", "deep-scenarios.mjs")).href;
 
   const profilesMod = await import(profilesUrl);
   const scenariosMod = await import(scenariosUrl);
+  const deepMod = await import(deepUrl);
 
   const BASE_PROFILES = profilesMod.BASE_PROFILES || profilesMod.default;
   const QUICK_SCENARIOS = scenariosMod.QUICK_SCENARIOS || scenariosMod.default;
+  const DEEP_SCENARIOS = deepMod.DEEP_SCENARIOS || deepMod.default || [];
+  const ALL_SCENARIOS = [...QUICK_SCENARIOS, ...DEEP_SCENARIOS];
 
-  return { BASE_PROFILES, QUICK_SCENARIOS };
+  return { BASE_PROFILES, QUICK_SCENARIOS, DEEP_SCENARIOS, ALL_SCENARIOS };
 }
 
 function collectMatrixTouches(scenarios) {
@@ -113,7 +117,7 @@ async function main() {
   const rows = matrixRaw.rows || [];
   const matrixIndexes = buildMatrixIndexes(rows);
 
-  const { BASE_PROFILES, QUICK_SCENARIOS } = await loadFixtures();
+  const { BASE_PROFILES, ALL_SCENARIOS } = await loadFixtures();
 
   const profileIds = Object.keys(BASE_PROFILES);
   const profileValidation = validateProfileSet(BASE_PROFILES);
@@ -124,12 +128,12 @@ async function main() {
     matrixRowCount: rows.length,
   };
 
-  const scenarioValidation = validateAllScenarios(QUICK_SCENARIOS, scenarioCtx);
+  const scenarioValidation = validateAllScenarios(ALL_SCENARIOS, scenarioCtx);
 
   const errors = [...profileValidation.errors, ...scenarioValidation.errors];
   const warnings = [...scenarioValidation.warnings];
 
-  const matrixTouches = collectMatrixTouches(QUICK_SCENARIOS);
+  const matrixTouches = collectMatrixTouches(ALL_SCENARIOS);
 
   const payload = {
     generatedAt: new Date().toISOString(),
@@ -141,17 +145,17 @@ async function main() {
     },
     counts: {
       profiles: profileIds.length,
-      scenarios: QUICK_SCENARIOS.length,
+      scenarios: ALL_SCENARIOS.length,
       matrixRows: rows.length,
     },
-    scenarioIds: QUICK_SCENARIOS.map((s) => s.scenarioId).sort(),
+    scenarioIds: ALL_SCENARIOS.map((s) => s.scenarioId).sort(),
     profileIds: profileIds.sort(),
     errors,
     warnings,
     matrixTouches,
     matrixCoverageSummary: {
       distinctTouchKeys: matrixTouches.length,
-      scenarioCount: QUICK_SCENARIOS.length,
+      scenarioCount: ALL_SCENARIOS.length,
     },
   };
 

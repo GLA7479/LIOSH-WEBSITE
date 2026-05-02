@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-02T20:24:43.531Z",
+  "generatedAt": "2026-05-02T20:31:19.637Z",
   "generator": "run-aggregate-v1",
   "matrixRowCount": 819,
   "counts": {
@@ -9,7 +9,7 @@
   "totals": {
     "sessions": 225,
     "questions": 3523,
-    "mistakes": 840,
+    "mistakes": 850,
     "storageArtifacts": 20
   },
   "perScenario": [
@@ -18,7 +18,7 @@
       "ok": true,
       "sessionCount": 42,
       "questionTotal": 642,
-      "correctTotal": 587,
+      "correctTotal": 574,
       "mistakeEventCount": 42,
       "subjectsTouched": [
         "hebrew",
@@ -49,8 +49,8 @@
       "ok": true,
       "sessionCount": 48,
       "questionTotal": 771,
-      "correctTotal": 521,
-      "mistakeEventCount": 157,
+      "correctTotal": 508,
+      "mistakeEventCount": 161,
       "subjectsTouched": [
         "math",
         "science",
@@ -64,8 +64,8 @@
       "ok": true,
       "sessionCount": 44,
       "questionTotal": 669,
-      "correctTotal": 459,
-      "mistakeEventCount": 131,
+      "correctTotal": 450,
+      "mistakeEventCount": 135,
       "subjectsTouched": [
         "math",
         "geometry",
@@ -79,8 +79,8 @@
       "ok": true,
       "sessionCount": 18,
       "questionTotal": 290,
-      "correctTotal": 101,
-      "mistakeEventCount": 123,
+      "correctTotal": 99,
+      "mistakeEventCount": 125,
       "subjectsTouched": [
         "math"
       ],
@@ -92,7 +92,7 @@
       "ok": true,
       "sessionCount": 15,
       "questionTotal": 237,
-      "correctTotal": 89,
+      "correctTotal": 88,
       "mistakeEventCount": 80,
       "subjectsTouched": [
         "hebrew"
@@ -105,7 +105,7 @@
       "ok": true,
       "sessionCount": 16,
       "questionTotal": 274,
-      "correctTotal": 113,
+      "correctTotal": 111,
       "mistakeEventCount": 90,
       "subjectsTouched": [
         "english"
@@ -118,7 +118,7 @@
       "ok": true,
       "sessionCount": 14,
       "questionTotal": 235,
-      "correctTotal": 86,
+      "correctTotal": 85,
       "mistakeEventCount": 82,
       "subjectsTouched": [
         "science"

@@ -11,7 +11,7 @@
     "scenarioId": "weak_hebrew_comprehension_g3_7d",
     "sessionCount": 15,
     "questionTotal": 237,
-    "correctTotal": 89,
+    "correctTotal": 88,
     "mistakeEventCount": 80,
     "subjectsTouched": [
       "hebrew"

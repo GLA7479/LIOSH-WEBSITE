@@ -1,0 +1,72 @@
+{
+  "scenarioId": "improving_student_g4_90d",
+  "profileRef": "p_improving_student",
+  "mode": "deep",
+  "tier": "deep",
+  "seed": 93003,
+  "anchorDate": "2026-05-12T08:00:00.000Z",
+  "timeHorizonDays": 90,
+  "generator": "deep-runner-v1",
+  "stats": {
+    "scenarioId": "improving_student_g4_90d",
+    "sessionCount": 216,
+    "questionTotal": 3510,
+    "correctTotal": 2294,
+    "mistakeEventCount": 741,
+    "subjectsTouched": [
+      "math",
+      "science",
+      "english"
+    ],
+    "topicsBySubject": {
+      "math": [
+        "addition",
+        "compare",
+        "decimals",
+        "divisibility",
+        "division",
+        "division_with_remainder",
+        "equations",
+        "estimation",
+        "factors_multiples",
+        "fractions",
+        "mixed",
+        "multiplication",
+        "number_sense",
+        "powers",
+        "prime_composite",
+        "rounding",
+        "sequences",
+        "subtraction",
+        "zero_one_properties"
+      ],
+      "science": [
+        "animals",
+        "body",
+        "earth_space",
+        "environment",
+        "experiments",
+        "materials"
+      ],
+      "english": [
+        "grammar",
+        "mixed",
+        "sentences",
+        "translation",
+        "vocabulary",
+        "writing"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": [],
+  "deepHorizonValidation": {
+    "ok": true,
+    "errors": []
+  }
+}

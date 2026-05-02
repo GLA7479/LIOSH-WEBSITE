@@ -1,0 +1,141 @@
+{
+  "scenarioId": "weak_moledet_geography_maps_g4_30d",
+  "profileRef": "p_weak_moledet_maps",
+  "generator": "learning-simulator-deep-behavior-v1",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 70,
+      "questionTotal": 1158,
+      "correctTotal": 418,
+      "mistakeEventCount": 412,
+      "subjectsTouched": [
+        "moledet_geography"
+      ],
+      "overallAccuracyPct": 36.1
+    },
+    "subjectMetrics": {
+      "moledet_geography": {
+        "totalQ": 1158,
+        "correctQ": 418,
+        "accuracyPct": 36.1
+      }
+    },
+    "topicMetrics": {
+      "moledet_geography:maps": {
+        "totalQ": 1158,
+        "correctQ": 418,
+        "subject": "moledet_geography",
+        "topic": "maps",
+        "accuracyPct": 36.1
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.35873201947118355,
+      "lateMean": 0.3594155679488496,
+      "delta": 0.0006835484776660516,
+      "sessionSamples": 70
+    },
+    "volatility": {
+      "stdev": 0.022751530290821425,
+      "n": 70,
+      "meanAccuracy": 0.36109324136966753
+    },
+    "reportSignals": {
+      "totalQuestions": 1158,
+      "overallAccuracy": 36,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 1158,
+      "contractPrimarySubjectId": "moledet-geography",
+      "topicBucketKeys": [
+        "maps"
+      ],
+      "diagnosedCount": 1,
+      "unitCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 1158,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 1
+    },
+    "sessionRowCount": 70
+  },
+  "assertions": [
+    {
+      "assertionId": "deep_weak_target_topic_has_volume",
+      "pass": true,
+      "expected": {
+        "minTopicQuestions": 10
+      },
+      "actual": {
+        "totalQ": 1158,
+        "accuracyPct": 36.1
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "deep_weak_target_topic_weak_among_subject",
+      "pass": true,
+      "expected": {
+        "maxWeakRank": 1
+      },
+      "actual": {
+        "rank": 1,
+        "orderedTopicsByAccuracy": [
+          {
+            "t": "maps",
+            "acc": 36.1,
+            "q": 1158
+          }
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "deep_weak_target_report_topic_bucket_alignment",
+      "pass": true,
+      "expected": {
+        "topicBucketKeysIncludesTarget": "maps"
+      },
+      "actual": {
+        "topicBucketKeys": [
+          "maps"
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "secondary": true
+      }
+    },
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

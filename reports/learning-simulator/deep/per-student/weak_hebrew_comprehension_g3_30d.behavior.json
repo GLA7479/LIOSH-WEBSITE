@@ -1,0 +1,141 @@
+{
+  "scenarioId": "weak_hebrew_comprehension_g3_30d",
+  "profileRef": "p_weak_hebrew_comprehension",
+  "generator": "learning-simulator-deep-behavior-v1",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 72,
+      "questionTotal": 1089,
+      "correctTotal": 405,
+      "mistakeEventCount": 377,
+      "subjectsTouched": [
+        "hebrew"
+      ],
+      "overallAccuracyPct": 37.2
+    },
+    "subjectMetrics": {
+      "hebrew": {
+        "totalQ": 1089,
+        "correctQ": 405,
+        "accuracyPct": 37.2
+      }
+    },
+    "topicMetrics": {
+      "hebrew:comprehension": {
+        "totalQ": 1089,
+        "correctQ": 405,
+        "subject": "hebrew",
+        "topic": "comprehension",
+        "accuracyPct": 37.2
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.3739740390185436,
+      "lateMean": 0.3726208704149881,
+      "delta": -0.001353168603555499,
+      "sessionSamples": 72
+    },
+    "volatility": {
+      "stdev": 0.023184225340399173,
+      "n": 72,
+      "meanAccuracy": 0.37157591254920946
+    },
+    "reportSignals": {
+      "totalQuestions": 1072,
+      "overallAccuracy": 37,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 1072,
+      "contractPrimarySubjectId": "hebrew",
+      "topicBucketKeys": [
+        "comprehension"
+      ],
+      "diagnosedCount": 1,
+      "unitCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 1072,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 1
+    },
+    "sessionRowCount": 72
+  },
+  "assertions": [
+    {
+      "assertionId": "deep_weak_target_topic_has_volume",
+      "pass": true,
+      "expected": {
+        "minTopicQuestions": 10
+      },
+      "actual": {
+        "totalQ": 1089,
+        "accuracyPct": 37.2
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "deep_weak_target_topic_weak_among_subject",
+      "pass": true,
+      "expected": {
+        "maxWeakRank": 1
+      },
+      "actual": {
+        "rank": 1,
+        "orderedTopicsByAccuracy": [
+          {
+            "t": "comprehension",
+            "acc": 37.2,
+            "q": 1089
+          }
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "deep_weak_target_report_topic_bucket_alignment",
+      "pass": true,
+      "expected": {
+        "topicBucketKeysIncludesTarget": "comprehension"
+      },
+      "actual": {
+        "topicBucketKeys": [
+          "comprehension"
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "secondary": true
+      }
+    },
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

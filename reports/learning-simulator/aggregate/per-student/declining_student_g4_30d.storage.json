@@ -27,7 +27,7 @@
             "timestamp": 1772762978925,
             "mode": "learning",
             "total": 10,
-            "correct": 9
+            "correct": 8
           },
           {
             "date": "2026-03-07",
@@ -51,7 +51,7 @@
             "timestamp": 1773256406406,
             "mode": "learning",
             "total": 15,
-            "correct": 12
+            "correct": 11
           },
           {
             "date": "2026-03-15",
@@ -266,7 +266,7 @@
             "timestamp": 1774346237482,
             "mode": "learning",
             "total": 11,
-            "correct": 7
+            "correct": 6
           }
         ],
         "byGrade": {
@@ -395,7 +395,7 @@
             "timestamp": 1774376904506,
             "mode": "learning",
             "total": 20,
-            "correct": 12
+            "correct": 11
           }
         ],
         "byGrade": {
@@ -700,7 +700,7 @@
     "progress": {
       "multiplication": {
         "total": 130,
-        "correct": 94
+        "correct": 92
       },
       "mixed": {
         "total": 45,
@@ -712,7 +712,7 @@
       },
       "estimation": {
         "total": 37,
-        "correct": 26
+        "correct": 25
       },
       "rounding": {
         "total": 11,
@@ -732,7 +732,7 @@
       },
       "division": {
         "total": 20,
-        "correct": 12
+        "correct": 11
       },
       "decimals": {
         "total": 16,
@@ -918,6 +918,23 @@
       "patternFamily": "pf:math:multiplication",
       "hintUsed": false,
       "responseMs": 2226
+    },
+    {
+      "subject": "math",
+      "topic": "multiplication",
+      "operation": "multiplication",
+      "bucketKey": "multiplication",
+      "grade": "g4",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1773256406408,
+      "isCorrect": false,
+      "exerciseText": "math:multiplication",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:multiplication",
+      "hintUsed": false,
+      "responseMs": 2246
     },
     {
       "subject": "math",
@@ -1652,6 +1669,23 @@
     },
     {
       "subject": "math",
+      "topic": "division",
+      "operation": "division",
+      "bucketKey": "division",
+      "grade": "g4",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1774376904511,
+      "isCorrect": false,
+      "exerciseText": "math:division",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division",
+      "hintUsed": false,
+      "responseMs": 2806
+    },
+    {
+      "subject": "math",
       "topic": "decimals",
       "operation": "decimals",
       "bucketKey": "decimals",
@@ -2265,7 +2299,7 @@
             "timestamp": 1773153229435,
             "mode": "learning",
             "total": 20,
-            "correct": 16
+            "correct": 15
           },
           {
             "date": "2026-03-11",
@@ -2276,7 +2310,7 @@
             "timestamp": 1773237297794,
             "mode": "learning",
             "total": 14,
-            "correct": 11
+            "correct": 10
           },
           {
             "date": "2026-03-13",
@@ -2287,7 +2321,7 @@
             "timestamp": 1773446103878,
             "mode": "learning",
             "total": 16,
-            "correct": 12
+            "correct": 11
           }
         ],
         "byGrade": {
@@ -2310,7 +2344,7 @@
             "timestamp": 1773414845898,
             "mode": "learning",
             "total": 21,
-            "correct": 16
+            "correct": 15
           },
           {
             "date": "2026-03-27",
@@ -2448,11 +2482,11 @@
     "progress": {
       "area": {
         "total": 84,
-        "correct": 67
+        "correct": 64
       },
       "symmetry": {
         "total": 38,
-        "correct": 25
+        "correct": 24
       },
       "shapes_basic": {
         "total": 12,
@@ -2544,6 +2578,22 @@
       "patternFamily": "pf:geometry:area",
       "hintUsed": false,
       "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "area",
+      "bucketKey": "area",
+      "grade": "g4",
+      "level": "hard",
+      "mode": "learning",
+      "timestamp": 1773153229437,
+      "isCorrect": false,
+      "exerciseText": "geometry:area",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:area",
+      "hintUsed": false,
+      "responseMs": 2440
     },
     {
       "subject": "geometry",
@@ -2656,6 +2706,22 @@
       "patternFamily": "pf:geometry:area",
       "hintUsed": false,
       "responseMs": 2420
+    },
+    {
+      "subject": "geometry",
+      "topic": "area",
+      "bucketKey": "area",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1773446103880,
+      "isCorrect": false,
+      "exerciseText": "geometry:area",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:geometry:area",
+      "hintUsed": false,
+      "responseMs": 2440
     },
     {
       "subject": "geometry",
@@ -2852,7 +2918,7 @@
             "timestamp": 1773080665857,
             "mode": "learning",
             "total": 17,
-            "correct": 14
+            "correct": 13
           },
           {
             "date": "2026-03-31",
@@ -3038,7 +3104,7 @@
       },
       "vocabulary": {
         "total": 29,
-        "correct": 20
+        "correct": 19
       },
       "speaking": {
         "total": 14,
@@ -3474,17 +3540,17 @@
   "mleo_moledet_geography_mistakes": [],
   "mleo_daily_challenge": {
     "questions": 669,
-    "correct": 459,
-    "bestScore": 459
+    "correct": 450,
+    "bestScore": 450
   },
   "mleo_weekly_challenge": {
-    "current": 69,
+    "current": 67,
     "target": 100,
     "completed": true
   },
   "mleo_science_daily_challenge": {
     "questions": 167,
-    "correct": 114,
+    "correct": 112,
     "bestScore": 0
   },
   "mleo_science_weekly_challenge": {

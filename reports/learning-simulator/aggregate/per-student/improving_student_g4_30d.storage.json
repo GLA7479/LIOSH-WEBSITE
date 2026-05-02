@@ -51,7 +51,7 @@
             "timestamp": 1773320299088,
             "mode": "learning",
             "total": 19,
-            "correct": 12
+            "correct": 11
           },
           {
             "date": "2026-03-14",
@@ -75,7 +75,7 @@
             "timestamp": 1773683308609,
             "mode": "learning",
             "total": 16,
-            "correct": 11
+            "correct": 10
           },
           {
             "date": "2026-03-21",
@@ -99,7 +99,7 @@
             "timestamp": 1774258984668,
             "mode": "learning",
             "total": 16,
-            "correct": 12
+            "correct": 11
           },
           {
             "date": "2026-03-25",
@@ -123,7 +123,7 @@
             "timestamp": 1774653012301,
             "mode": "speed",
             "total": 19,
-            "correct": 15
+            "correct": 14
           },
           {
             "date": "2026-03-29",
@@ -147,7 +147,7 @@
             "timestamp": 1774953876391,
             "mode": "learning",
             "total": 18,
-            "correct": 15
+            "correct": 14
           }
         ],
         "byGrade": {
@@ -386,7 +386,7 @@
             "timestamp": 1775043073547,
             "mode": "learning",
             "total": 13,
-            "correct": 11
+            "correct": 10
           }
         ],
         "byGrade": {
@@ -479,7 +479,7 @@
             "timestamp": 1774693943884,
             "mode": "learning",
             "total": 19,
-            "correct": 15
+            "correct": 14
           }
         ],
         "byGrade": {
@@ -502,7 +502,7 @@
             "timestamp": 1774698710889,
             "mode": "learning",
             "total": 20,
-            "correct": 16
+            "correct": 15
           }
         ],
         "byGrade": {
@@ -808,7 +808,7 @@
     "progress": {
       "fractions": {
         "total": 185,
-        "correct": 128
+        "correct": 123
       },
       "decimals": {
         "total": 45,
@@ -832,7 +832,7 @@
       },
       "division_with_remainder": {
         "total": 24,
-        "correct": 18
+        "correct": 17
       },
       "divisibility": {
         "total": 22,
@@ -848,11 +848,11 @@
       },
       "sequences": {
         "total": 19,
-        "correct": 15
+        "correct": 14
       },
       "factors_multiples": {
         "total": 20,
-        "correct": 16
+        "correct": 15
       }
     },
     "stars": 3,
@@ -1747,6 +1747,23 @@
     },
     {
       "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1773683308612,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": true,
+      "responseMs": 2869
+    },
+    {
+      "subject": "math",
       "topic": "decimals",
       "operation": "decimals",
       "bucketKey": "decimals",
@@ -2614,6 +2631,23 @@
     },
     {
       "subject": "math",
+      "topic": "fractions",
+      "operation": "fractions",
+      "bucketKey": "fractions",
+      "grade": "g4",
+      "level": "medium",
+      "mode": "learning",
+      "timestamp": 1774953876393,
+      "isCorrect": false,
+      "exerciseText": "math:fractions",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:fractions",
+      "hintUsed": false,
+      "responseMs": 2631
+    },
+    {
+      "subject": "math",
       "topic": "division_with_remainder",
       "operation": "division_with_remainder",
       "bucketKey": "division_with_remainder",
@@ -2628,6 +2662,23 @@
       "patternFamily": "pf:math:division_with_remainder",
       "hintUsed": true,
       "responseMs": 2947
+    },
+    {
+      "subject": "math",
+      "topic": "division_with_remainder",
+      "operation": "division_with_remainder",
+      "bucketKey": "division_with_remainder",
+      "grade": "g4",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1775043073548,
+      "isCorrect": false,
+      "exerciseText": "math:division_with_remainder",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:division_with_remainder",
+      "hintUsed": false,
+      "responseMs": 2967
     }
   ],
   "mleo_geometry_time_tracking": {
@@ -2667,7 +2718,7 @@
             "timestamp": 1774170895550,
             "mode": "learning",
             "total": 12,
-            "correct": 9
+            "correct": 8
           },
           {
             "date": "2026-03-31",
@@ -2678,7 +2729,7 @@
             "timestamp": 1774949076299,
             "mode": "learning",
             "total": 13,
-            "correct": 11
+            "correct": 10
           }
         ],
         "byGrade": {
@@ -2712,7 +2763,7 @@
             "timestamp": 1773437016528,
             "mode": "learning",
             "total": 20,
-            "correct": 13
+            "correct": 12
           }
         ],
         "byGrade": {
@@ -2859,11 +2910,11 @@
     "progress": {
       "vocabulary": {
         "total": 37,
-        "correct": 27
+        "correct": 25
       },
       "sentences": {
         "total": 33,
-        "correct": 21
+        "correct": 20
       },
       "grammar": {
         "total": 22,
@@ -3199,6 +3250,22 @@
       "patternFamily": "pf:english:vocabulary",
       "hintUsed": true,
       "responseMs": 2400
+    },
+    {
+      "subject": "english",
+      "topic": "vocabulary",
+      "bucketKey": "vocabulary",
+      "grade": "g4",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1774949076300,
+      "isCorrect": false,
+      "exerciseText": "english:vocabulary",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:english:vocabulary",
+      "hintUsed": false,
+      "responseMs": 2420
     }
   ],
   "mleo_science_time_tracking": {
@@ -3315,7 +3382,7 @@
             "timestamp": 1774547417303,
             "mode": "learning",
             "total": 14,
-            "correct": 11
+            "correct": 10
           },
           {
             "date": "2026-03-30",
@@ -3326,7 +3393,7 @@
             "timestamp": 1774861358303,
             "mode": "learning",
             "total": 17,
-            "correct": 14
+            "correct": 13
           }
         ],
         "byGrade": {
@@ -3520,7 +3587,7 @@
       },
       "materials": {
         "total": 50,
-        "correct": 36
+        "correct": 34
       },
       "earth_space": {
         "total": 17,
@@ -4092,17 +4159,17 @@
   "mleo_moledet_geography_mistakes": [],
   "mleo_daily_challenge": {
     "questions": 771,
-    "correct": 521,
-    "bestScore": 521
+    "correct": 508,
+    "bestScore": 508
   },
   "mleo_weekly_challenge": {
-    "current": 68,
+    "current": 66,
     "target": 100,
     "completed": true
   },
   "mleo_science_daily_challenge": {
     "questions": 192,
-    "correct": 130,
+    "correct": 127,
     "bestScore": 0
   },
   "mleo_science_weekly_challenge": {

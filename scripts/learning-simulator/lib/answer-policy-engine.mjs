@@ -49,6 +49,12 @@ export function computeSessionMetrics(profile, scenario, ctx) {
     } else {
       baseAcc = ap.default + jitter();
     }
+  } else if (ap.kind === "volatile" && typeof ap.mean === "number") {
+    const amp = typeof ap.amplitude === "number" ? ap.amplitude : 0.18;
+    const wave =
+      Math.sin(((sessionIndex + 1) / Math.max(4, n)) * Math.PI * 7) +
+      Math.cos(((sessionIndex + 2) / Math.max(3, Math.floor(n / 2))) * Math.PI * 5) * 0.38;
+    baseAcc = clamp01(ap.mean + amp * wave * 0.42 + jitter());
   } else if (typeof ap.default === "number") {
     baseAcc = ap.default + jitter();
   }
@@ -73,8 +79,16 @@ export function computeSessionMetrics(profile, scenario, ctx) {
   const durationSec = computeDurationSec(profile, ctx);
   const mode = rng() < 0.12 && subject === "math" ? "speed" : "learning";
 
+  let accuracy = clamp01(baseAcc);
+  const gr = Number(profile.randomGuessRate);
+  if (Number.isFinite(gr) && gr > 0) {
+    const towardChance = 0.29;
+    const g = Math.min(0.92, gr);
+    accuracy = clamp01(accuracy * (1 - g) + towardChance * g);
+  }
+
   return {
-    accuracy: clamp01(baseAcc),
+    accuracy,
     durationSec,
     mode,
   };

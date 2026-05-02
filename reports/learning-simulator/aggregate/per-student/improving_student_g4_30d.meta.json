@@ -11,8 +11,8 @@
     "scenarioId": "improving_student_g4_30d",
     "sessionCount": 48,
     "questionTotal": 771,
-    "correctTotal": 521,
-    "mistakeEventCount": 157,
+    "correctTotal": 508,
+    "mistakeEventCount": 161,
     "subjectsTouched": [
       "math",
       "science",

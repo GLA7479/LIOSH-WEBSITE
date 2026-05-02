@@ -11,8 +11,8 @@
     "scenarioId": "declining_student_g4_30d",
     "sessionCount": 44,
     "questionTotal": 669,
-    "correctTotal": 459,
-    "mistakeEventCount": 131,
+    "correctTotal": 450,
+    "mistakeEventCount": 135,
     "subjectsTouched": [
       "math",
       "geometry",

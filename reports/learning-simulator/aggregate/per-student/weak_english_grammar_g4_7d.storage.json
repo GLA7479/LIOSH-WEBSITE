@@ -38,7 +38,7 @@
             "timestamp": 1777455920902,
             "mode": "learning",
             "total": 18,
-            "correct": 8
+            "correct": 7
           },
           {
             "date": "2026-04-29",
@@ -159,7 +159,7 @@
             "timestamp": 1777834619498,
             "mode": "learning",
             "total": 13,
-            "correct": 6
+            "correct": 5
           },
           {
             "date": "2026-05-04",
@@ -309,7 +309,7 @@
     "progress": {
       "grammar": {
         "total": 274,
-        "correct": 113
+        "correct": 111
       }
     },
     "stars": 2,
@@ -1797,8 +1797,8 @@
   "mleo_moledet_geography_mistakes": [],
   "mleo_daily_challenge": {
     "questions": 274,
-    "correct": 113,
-    "bestScore": 113
+    "correct": 111,
+    "bestScore": 111
   },
   "mleo_weekly_challenge": {
     "current": 41,
@@ -1807,7 +1807,7 @@
   },
   "mleo_science_daily_challenge": {
     "questions": 68,
-    "correct": 28,
+    "correct": 27,
     "bestScore": 0
   },
   "mleo_science_weekly_challenge": {

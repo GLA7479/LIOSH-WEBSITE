@@ -1,0 +1,486 @@
+{
+  "scenarioId": "strong_all_subjects_g3_30d",
+  "profileRef": "p_strong_all_subjects",
+  "generator": "learning-simulator-deep-behavior-v1",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 110,
+      "questionTotal": 1838,
+      "correctTotal": 1652,
+      "mistakeEventCount": 110,
+      "subjectsTouched": [
+        "math",
+        "science",
+        "geometry",
+        "hebrew",
+        "english",
+        "moledet_geography"
+      ],
+      "overallAccuracyPct": 89.9
+    },
+    "subjectMetrics": {
+      "math": {
+        "totalQ": 441,
+        "correctQ": 397,
+        "accuracyPct": 90
+      },
+      "geometry": {
+        "totalQ": 263,
+        "correctQ": 238,
+        "accuracyPct": 90.5
+      },
+      "english": {
+        "totalQ": 340,
+        "correctQ": 304,
+        "accuracyPct": 89.4
+      },
+      "science": {
+        "totalQ": 327,
+        "correctQ": 293,
+        "accuracyPct": 89.6
+      },
+      "hebrew": {
+        "totalQ": 202,
+        "correctQ": 182,
+        "accuracyPct": 90.1
+      },
+      "moledet_geography": {
+        "totalQ": 265,
+        "correctQ": 238,
+        "accuracyPct": 89.8
+      }
+    },
+    "topicMetrics": {
+      "math:addition": {
+        "totalQ": 107,
+        "correctQ": 96,
+        "subject": "math",
+        "topic": "addition",
+        "accuracyPct": 89.7
+      },
+      "math:sequences": {
+        "totalQ": 73,
+        "correctQ": 66,
+        "subject": "math",
+        "topic": "sequences",
+        "accuracyPct": 90.4
+      },
+      "math:fractions": {
+        "totalQ": 21,
+        "correctQ": 19,
+        "subject": "math",
+        "topic": "fractions",
+        "accuracyPct": 90.5
+      },
+      "math:divisibility": {
+        "totalQ": 33,
+        "correctQ": 30,
+        "subject": "math",
+        "topic": "divisibility",
+        "accuracyPct": 90.9
+      },
+      "math:word_problems": {
+        "totalQ": 22,
+        "correctQ": 20,
+        "subject": "math",
+        "topic": "word_problems",
+        "accuracyPct": 90.9
+      },
+      "math:subtraction": {
+        "totalQ": 57,
+        "correctQ": 51,
+        "subject": "math",
+        "topic": "subtraction",
+        "accuracyPct": 89.5
+      },
+      "math:equations": {
+        "totalQ": 19,
+        "correctQ": 17,
+        "subject": "math",
+        "topic": "equations",
+        "accuracyPct": 89.5
+      },
+      "math:division_with_remainder": {
+        "totalQ": 18,
+        "correctQ": 16,
+        "subject": "math",
+        "topic": "division_with_remainder",
+        "accuracyPct": 88.9
+      },
+      "math:multiplication": {
+        "totalQ": 41,
+        "correctQ": 37,
+        "subject": "math",
+        "topic": "multiplication",
+        "accuracyPct": 90.2
+      },
+      "math:compare": {
+        "totalQ": 19,
+        "correctQ": 17,
+        "subject": "math",
+        "topic": "compare",
+        "accuracyPct": 89.5
+      },
+      "math:division": {
+        "totalQ": 19,
+        "correctQ": 17,
+        "subject": "math",
+        "topic": "division",
+        "accuracyPct": 89.5
+      },
+      "math:number_sense": {
+        "totalQ": 12,
+        "correctQ": 11,
+        "subject": "math",
+        "topic": "number_sense",
+        "accuracyPct": 91.7
+      },
+      "geometry:area": {
+        "totalQ": 77,
+        "correctQ": 70,
+        "subject": "geometry",
+        "topic": "area",
+        "accuracyPct": 90.9
+      },
+      "geometry:angles": {
+        "totalQ": 108,
+        "correctQ": 98,
+        "subject": "geometry",
+        "topic": "angles",
+        "accuracyPct": 90.7
+      },
+      "geometry:quadrilaterals": {
+        "totalQ": 12,
+        "correctQ": 11,
+        "subject": "geometry",
+        "topic": "quadrilaterals",
+        "accuracyPct": 91.7
+      },
+      "geometry:perimeter": {
+        "totalQ": 14,
+        "correctQ": 13,
+        "subject": "geometry",
+        "topic": "perimeter",
+        "accuracyPct": 92.9
+      },
+      "geometry:rotation": {
+        "totalQ": 34,
+        "correctQ": 30,
+        "subject": "geometry",
+        "topic": "rotation",
+        "accuracyPct": 88.2
+      },
+      "geometry:parallel_perpendicular": {
+        "totalQ": 18,
+        "correctQ": 16,
+        "subject": "geometry",
+        "topic": "parallel_perpendicular",
+        "accuracyPct": 88.9
+      },
+      "english:writing": {
+        "totalQ": 70,
+        "correctQ": 63,
+        "subject": "english",
+        "topic": "writing",
+        "accuracyPct": 90
+      },
+      "english:mixed": {
+        "totalQ": 60,
+        "correctQ": 53,
+        "subject": "english",
+        "topic": "mixed",
+        "accuracyPct": 88.3
+      },
+      "english:grammar": {
+        "totalQ": 102,
+        "correctQ": 91,
+        "subject": "english",
+        "topic": "grammar",
+        "accuracyPct": 89.2
+      },
+      "english:vocabulary": {
+        "totalQ": 70,
+        "correctQ": 63,
+        "subject": "english",
+        "topic": "vocabulary",
+        "accuracyPct": 90
+      },
+      "english:translation": {
+        "totalQ": 18,
+        "correctQ": 16,
+        "subject": "english",
+        "topic": "translation",
+        "accuracyPct": 88.9
+      },
+      "english:sentences": {
+        "totalQ": 20,
+        "correctQ": 18,
+        "subject": "english",
+        "topic": "sentences",
+        "accuracyPct": 90
+      },
+      "science:animals": {
+        "totalQ": 112,
+        "correctQ": 100,
+        "subject": "science",
+        "topic": "animals",
+        "accuracyPct": 89.3
+      },
+      "science:body": {
+        "totalQ": 83,
+        "correctQ": 74,
+        "subject": "science",
+        "topic": "body",
+        "accuracyPct": 89.2
+      },
+      "science:earth_space": {
+        "totalQ": 67,
+        "correctQ": 60,
+        "subject": "science",
+        "topic": "earth_space",
+        "accuracyPct": 89.6
+      },
+      "science:materials": {
+        "totalQ": 51,
+        "correctQ": 46,
+        "subject": "science",
+        "topic": "materials",
+        "accuracyPct": 90.2
+      },
+      "science:experiments": {
+        "totalQ": 14,
+        "correctQ": 13,
+        "subject": "science",
+        "topic": "experiments",
+        "accuracyPct": 92.9
+      },
+      "hebrew:grammar": {
+        "totalQ": 93,
+        "correctQ": 83,
+        "subject": "hebrew",
+        "topic": "grammar",
+        "accuracyPct": 89.2
+      },
+      "hebrew:reading": {
+        "totalQ": 95,
+        "correctQ": 86,
+        "subject": "hebrew",
+        "topic": "reading",
+        "accuracyPct": 90.5
+      },
+      "hebrew:mixed": {
+        "totalQ": 14,
+        "correctQ": 13,
+        "subject": "hebrew",
+        "topic": "mixed",
+        "accuracyPct": 92.9
+      },
+      "moledet_geography:maps": {
+        "totalQ": 34,
+        "correctQ": 30,
+        "subject": "moledet_geography",
+        "topic": "maps",
+        "accuracyPct": 88.2
+      },
+      "moledet_geography:mixed": {
+        "totalQ": 64,
+        "correctQ": 57,
+        "subject": "moledet_geography",
+        "topic": "mixed",
+        "accuracyPct": 89.1
+      },
+      "moledet_geography:homeland": {
+        "totalQ": 108,
+        "correctQ": 97,
+        "subject": "moledet_geography",
+        "topic": "homeland",
+        "accuracyPct": 89.8
+      },
+      "moledet_geography:values": {
+        "totalQ": 18,
+        "correctQ": 16,
+        "subject": "moledet_geography",
+        "topic": "values",
+        "accuracyPct": 88.9
+      },
+      "moledet_geography:citizenship": {
+        "totalQ": 28,
+        "correctQ": 26,
+        "subject": "moledet_geography",
+        "topic": "citizenship",
+        "accuracyPct": 92.9
+      },
+      "moledet_geography:geography": {
+        "totalQ": 13,
+        "correctQ": 12,
+        "subject": "moledet_geography",
+        "topic": "geography",
+        "accuracyPct": 92.3
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.8987162515800285,
+      "lateMean": 0.9032000692991404,
+      "delta": 0.004483817719111882,
+      "sessionSamples": 110
+    },
+    "volatility": {
+      "stdev": 0.017566167306918828,
+      "n": 110,
+      "meanAccuracy": 0.8995853028979958
+    },
+    "reportSignals": {
+      "totalQuestions": 1838,
+      "overallAccuracy": 90,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 441,
+      "contractPrimarySubjectId": "math",
+      "topicBucketKeys": [
+        "addition",
+        "sequences",
+        "fractions",
+        "divisibility",
+        "word_problems",
+        "subtraction",
+        "equations",
+        "division_with_remainder",
+        "multiplication",
+        "compare",
+        "division",
+        "number_sense",
+        "area",
+        "angles",
+        "quadrilaterals",
+        "perimeter",
+        "rotation",
+        "parallel_perpendicular",
+        "writing",
+        "mixed",
+        "grammar",
+        "vocabulary",
+        "translation",
+        "sentences",
+        "animals",
+        "body",
+        "earth_space",
+        "materials",
+        "experiments",
+        "grammar",
+        "reading",
+        "mixed",
+        "maps",
+        "mixed",
+        "homeland",
+        "values",
+        "citizenship",
+        "geography"
+      ],
+      "diagnosedCount": 0,
+      "unitCount": 38,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 1838,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": true,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 0
+    },
+    "sessionRowCount": 110
+  },
+  "assertions": [
+    {
+      "assertionId": "evidence_volume_deep",
+      "pass": true,
+      "expected": {
+        "minQuestions": 800
+      },
+      "actual": {
+        "questionTotal": 1838
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "overall_accuracy_high_deep",
+      "pass": true,
+      "expected": {
+        "minPct": 70
+      },
+      "actual": {
+        "overallAccuracyPct": 89.9
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "per_subject_accuracy_strong_deep",
+      "pass": true,
+      "expected": {
+        "minPctPerSubjectWithData": 56
+      },
+      "actual": {
+        "math": 90,
+        "geometry": 90.5,
+        "science": 89.6,
+        "english": 89.4,
+        "hebrew": 90.1,
+        "moledet_geography": 89.8
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "report_total_questions_aligns_meta_deep",
+      "pass": true,
+      "expected": {
+        "maxAbsDelta": 8
+      },
+      "actual": {
+        "metaQuestionTotal": 1838,
+        "reportTotalQuestions": 1838
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "report_overall_accuracy_bracket_deep",
+      "pass": true,
+      "expected": {
+        "maxAbsDeltaPct": 14
+      },
+      "actual": {
+        "metaOverall": 89.9,
+        "reportOverall": 90
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

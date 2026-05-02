@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-02T20:24:44.186Z",
+  "generatedAt": "2026-05-02T20:31:20.211Z",
   "ok": true,
   "versions": {
     "profile": "1.0.0",
@@ -7,27 +7,42 @@
     "assertion": "1.0.0"
   },
   "counts": {
-    "profiles": 10,
-    "scenarios": 10,
+    "profiles": 13,
+    "scenarios": 22,
     "matrixRows": 819
   },
   "scenarioIds": [
     "declining_student_g4_30d",
+    "declining_student_g4_90d",
     "improving_student_g4_30d",
+    "improving_student_g4_90d",
+    "inconsistent_student_g5_30d",
+    "random_guessing_student_g3_30d",
+    "strong_all_subjects_g3_30d",
     "strong_all_subjects_g3_7d",
     "thin_data_g3_1d",
+    "weak_all_subjects_g3_30d",
+    "weak_english_grammar_g4_30d",
     "weak_english_grammar_g4_7d",
+    "weak_geometry_area_g5_30d",
     "weak_geometry_area_g5_7d",
+    "weak_hebrew_comprehension_g3_30d",
     "weak_hebrew_comprehension_g3_7d",
+    "weak_math_fractions_g5_30d",
     "weak_math_fractions_g5_7d",
+    "weak_moledet_geography_maps_g4_30d",
     "weak_moledet_geography_maps_g4_7d",
-    "weak_science_cause_effect_g5_7d"
+    "weak_science_cause_effect_g5_7d",
+    "weak_science_experiments_g5_30d"
   ],
   "profileIds": [
     "p_declining_student",
     "p_improving_student",
+    "p_inconsistent_student",
+    "p_random_guessing_student",
     "p_strong_all_subjects",
     "p_thin_data",
+    "p_weak_all_subjects",
     "p_weak_english_grammar",
     "p_weak_geometry_area",
     "p_weak_hebrew_comprehension",
@@ -39,9 +54,23 @@
   "warnings": [],
   "matrixTouches": [
     {
+      "matrixKey": "g3|english|grammar|easy",
+      "scenarioIds": [
+        "random_guessing_student_g3_30d"
+      ],
+      "sampleRef": {
+        "kind": "matrixCoverageRefs",
+        "subjectCanonical": "english",
+        "topic": "grammar",
+        "level": "easy"
+      }
+    },
+    {
       "matrixKey": "g3|english|grammar|medium",
       "scenarioIds": [
-        "strong_all_subjects_g3_7d"
+        "strong_all_subjects_g3_30d",
+        "strong_all_subjects_g3_7d",
+        "weak_all_subjects_g3_30d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -53,7 +82,9 @@
     {
       "matrixKey": "g3|geometry|angles|easy",
       "scenarioIds": [
-        "strong_all_subjects_g3_7d"
+        "strong_all_subjects_g3_30d",
+        "strong_all_subjects_g3_7d",
+        "weak_all_subjects_g3_30d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -65,6 +96,7 @@
     {
       "matrixKey": "g3|hebrew|comprehension|*",
       "scenarioIds": [
+        "weak_hebrew_comprehension_g3_30d",
         "weak_hebrew_comprehension_g3_7d"
       ],
       "sampleRef": {
@@ -76,6 +108,7 @@
     {
       "matrixKey": "g3|hebrew|comprehension|medium",
       "scenarioIds": [
+        "weak_hebrew_comprehension_g3_30d",
         "weak_hebrew_comprehension_g3_7d"
       ],
       "sampleRef": {
@@ -88,7 +121,10 @@
     {
       "matrixKey": "g3|hebrew|reading|easy",
       "scenarioIds": [
-        "strong_all_subjects_g3_7d"
+        "random_guessing_student_g3_30d",
+        "strong_all_subjects_g3_30d",
+        "strong_all_subjects_g3_7d",
+        "weak_all_subjects_g3_30d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -111,6 +147,7 @@
     {
       "matrixKey": "g3|math|addition|easy",
       "scenarioIds": [
+        "random_guessing_student_g3_30d",
         "thin_data_g3_1d"
       ],
       "sampleRef": {
@@ -123,7 +160,9 @@
     {
       "matrixKey": "g3|math|addition|medium",
       "scenarioIds": [
-        "strong_all_subjects_g3_7d"
+        "strong_all_subjects_g3_30d",
+        "strong_all_subjects_g3_7d",
+        "weak_all_subjects_g3_30d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -135,7 +174,9 @@
     {
       "matrixKey": "g3|moledet_geography|homeland|easy",
       "scenarioIds": [
-        "strong_all_subjects_g3_7d"
+        "strong_all_subjects_g3_30d",
+        "strong_all_subjects_g3_7d",
+        "weak_all_subjects_g3_30d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -147,7 +188,10 @@
     {
       "matrixKey": "g3|science|animals|easy",
       "scenarioIds": [
-        "strong_all_subjects_g3_7d"
+        "random_guessing_student_g3_30d",
+        "strong_all_subjects_g3_30d",
+        "strong_all_subjects_g3_7d",
+        "weak_all_subjects_g3_30d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -159,6 +203,7 @@
     {
       "matrixKey": "g4|english|grammar|*",
       "scenarioIds": [
+        "weak_english_grammar_g4_30d",
         "weak_english_grammar_g4_7d"
       ],
       "sampleRef": {
@@ -170,6 +215,7 @@
     {
       "matrixKey": "g4|english|grammar|hard",
       "scenarioIds": [
+        "weak_english_grammar_g4_30d",
         "weak_english_grammar_g4_7d"
       ],
       "sampleRef": {
@@ -182,7 +228,8 @@
     {
       "matrixKey": "g4|english|vocabulary|easy",
       "scenarioIds": [
-        "improving_student_g4_30d"
+        "improving_student_g4_30d",
+        "improving_student_g4_90d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -194,7 +241,8 @@
     {
       "matrixKey": "g4|geometry|area|medium",
       "scenarioIds": [
-        "declining_student_g4_30d"
+        "declining_student_g4_30d",
+        "declining_student_g4_90d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -206,7 +254,8 @@
     {
       "matrixKey": "g4|hebrew|grammar|medium",
       "scenarioIds": [
-        "declining_student_g4_30d"
+        "declining_student_g4_30d",
+        "declining_student_g4_90d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -218,7 +267,8 @@
     {
       "matrixKey": "g4|math|fractions|medium",
       "scenarioIds": [
-        "improving_student_g4_30d"
+        "improving_student_g4_30d",
+        "improving_student_g4_90d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -230,7 +280,8 @@
     {
       "matrixKey": "g4|math|multiplication|hard",
       "scenarioIds": [
-        "declining_student_g4_30d"
+        "declining_student_g4_30d",
+        "declining_student_g4_90d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -242,6 +293,7 @@
     {
       "matrixKey": "g4|moledet_geography|maps|*",
       "scenarioIds": [
+        "weak_moledet_geography_maps_g4_30d",
         "weak_moledet_geography_maps_g4_7d"
       ],
       "sampleRef": {
@@ -253,6 +305,7 @@
     {
       "matrixKey": "g4|moledet_geography|maps|easy",
       "scenarioIds": [
+        "weak_moledet_geography_maps_g4_30d",
         "weak_moledet_geography_maps_g4_7d"
       ],
       "sampleRef": {
@@ -265,7 +318,8 @@
     {
       "matrixKey": "g4|science|materials|medium",
       "scenarioIds": [
-        "improving_student_g4_30d"
+        "improving_student_g4_30d",
+        "improving_student_g4_90d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -275,8 +329,21 @@
       }
     },
     {
+      "matrixKey": "g5|english|sentences|easy",
+      "scenarioIds": [
+        "inconsistent_student_g5_30d"
+      ],
+      "sampleRef": {
+        "kind": "matrixCoverageRefs",
+        "subjectCanonical": "english",
+        "topic": "sentences",
+        "level": "easy"
+      }
+    },
+    {
       "matrixKey": "g5|geometry|area|*",
       "scenarioIds": [
+        "weak_geometry_area_g5_30d",
         "weak_geometry_area_g5_7d"
       ],
       "sampleRef": {
@@ -288,6 +355,7 @@
     {
       "matrixKey": "g5|geometry|area|medium",
       "scenarioIds": [
+        "weak_geometry_area_g5_30d",
         "weak_geometry_area_g5_7d"
       ],
       "sampleRef": {
@@ -300,6 +368,7 @@
     {
       "matrixKey": "g5|math|fractions|*",
       "scenarioIds": [
+        "weak_math_fractions_g5_30d",
         "weak_math_fractions_g5_7d"
       ],
       "sampleRef": {
@@ -309,8 +378,21 @@
       }
     },
     {
+      "matrixKey": "g5|math|fractions|easy",
+      "scenarioIds": [
+        "inconsistent_student_g5_30d"
+      ],
+      "sampleRef": {
+        "kind": "matrixCoverageRefs",
+        "subjectCanonical": "math",
+        "topic": "fractions",
+        "level": "easy"
+      }
+    },
+    {
       "matrixKey": "g5|math|fractions|medium",
       "scenarioIds": [
+        "weak_math_fractions_g5_30d",
         "weak_math_fractions_g5_7d"
       ],
       "sampleRef": {
@@ -321,9 +403,22 @@
       }
     },
     {
+      "matrixKey": "g5|science|earth_space|easy",
+      "scenarioIds": [
+        "inconsistent_student_g5_30d"
+      ],
+      "sampleRef": {
+        "kind": "matrixCoverageRefs",
+        "subjectCanonical": "science",
+        "topic": "earth_space",
+        "level": "easy"
+      }
+    },
+    {
       "matrixKey": "g5|science|experiments|*",
       "scenarioIds": [
-        "weak_science_cause_effect_g5_7d"
+        "weak_science_cause_effect_g5_7d",
+        "weak_science_experiments_g5_30d"
       ],
       "sampleRef": {
         "kind": "topicTargets",
@@ -336,7 +431,8 @@
     {
       "matrixKey": "g5|science|experiments|easy",
       "scenarioIds": [
-        "weak_science_cause_effect_g5_7d"
+        "weak_science_cause_effect_g5_7d",
+        "weak_science_experiments_g5_30d"
       ],
       "sampleRef": {
         "kind": "matrixCoverageRefs",
@@ -347,7 +443,7 @@
     }
   ],
   "matrixCoverageSummary": {
-    "distinctTouchKeys": 26,
-    "scenarioCount": 10
+    "distinctTouchKeys": 30,
+    "scenarioCount": 22
   }
 }

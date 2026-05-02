@@ -50,7 +50,7 @@
             "timestamp": 1777547810072,
             "mode": "learning",
             "total": 16,
-            "correct": 6
+            "correct": 5
           },
           {
             "date": "2026-04-30",
@@ -301,7 +301,7 @@
     "progress": {
       "experiments": {
         "total": 235,
-        "correct": 86
+        "correct": 85
       }
     },
     "stars": 2,
@@ -1649,11 +1649,11 @@
   "mleo_moledet_geography_mistakes": [],
   "mleo_daily_challenge": {
     "questions": 235,
-    "correct": 86,
-    "bestScore": 86
+    "correct": 85,
+    "bestScore": 85
   },
   "mleo_weekly_challenge": {
-    "current": 37,
+    "current": 36,
     "target": 100,
     "completed": false
   },
