@@ -65,6 +65,7 @@ import {
   resolveUnitParentActionHe,
 } from "./parent-report-recommendation-consistency.js";
 import { EVIDENCE_CONTRACT_VERSION } from "./contracts/parent-report-contracts-v1.js";
+import { shortReportDiagnosticsParentVisibleHe } from "./parent-report-ui-explain-he.js";
 import {
   safeGetItem,
   safeGetJsonArray,
@@ -730,11 +731,182 @@ function safeNumber(n) {
   return Number.isFinite(v) ? v : 0;
 }
 
+const EVIDENCE_STRENGTH_HE = { low: "מוגבלת", medium: "בינונית", strong: "טובה" };
+
+const INSUFFICIENT_EVIDENCE_LINE_HE =
+  "מידע מועט בנושא — כדאי להמשיך בתרגול לפני מסקנה חד-משמעית.";
+
+const MAX_DIAGNOSTIC_CARDS_PER_SUBJECT = 5;
+
 const POSITIVE_LEVEL_RANK = { excellent: 3, very_good: 2, good: 1, none: 0 };
 
 /** Positive-first evidence line: approved tier text (no diagnosis/taxonomy dependency). */
 function v2PositiveStrengthBodyHe() {
   return "ביצועים גבוהים ועקביים — נראה שליטה טובה בנושא.";
+}
+
+/**
+ * Deterministic strength line from row volume in evidenceTrace; falls back to generic tier text.
+ * @param {Record<string, unknown>|null|undefined} u
+ */
+function v2PositiveStrengthBodyFromUnitHe(u) {
+  const ev = Array.isArray(u?.evidenceTrace) ? u.evidenceTrace : [];
+  const v0 = ev.find((e) => e?.type === "volume")?.value ?? ev[0]?.value;
+  const q = safeNumber(v0?.questions);
+  const acc = safeNumber(v0?.accuracy);
+  if (q > 0) {
+    return normalizeParentFacingHe(
+      `על סמך ${Math.round(q)} שאלות בנושא, נראית שליטה יציבה עם דיוק של ${Math.round(acc)}%.`
+    );
+  }
+  return normalizeParentFacingHe(v2PositiveStrengthBodyHe());
+}
+
+/**
+ * @param {Record<string, unknown>|null|undefined} unit
+ * @param {Record<string, unknown>|null|undefined} row
+ * @returns {string[]}
+ */
+function collectDiagnosticEvidenceLinesHe(unit, row) {
+  const r = row && typeof row === "object" ? row : {};
+  const lines = [];
+  const seen = new Set();
+  const push = (s) => {
+    const t = shortReportDiagnosticsParentVisibleHe(String(s || "").trim());
+    if (!t) return;
+    const k = t.replace(/\s+/g, " ");
+    if (seen.has(k)) return;
+    seen.add(k);
+    lines.push(normalizeParentFacingHe(t));
+  };
+
+  const ev = Array.isArray(unit?.evidenceTrace) ? unit.evidenceTrace : [];
+  const vol = ev.find((e) => e?.type === "volume")?.value;
+  if (vol && safeNumber(vol.questions) > 0) {
+    push(
+      `בטווח הנבחר: ${Math.round(safeNumber(vol.questions))} שאלות, דיוק כ-${Math.round(safeNumber(vol.accuracy))}%.`
+    );
+  }
+
+  const mist = ev.find((e) => e?.type === "mistake_events")?.value;
+  if (mist && safeNumber(mist.wrong) > 0) {
+    push(
+      `אירועי טעות רלוונטיים: ${Math.round(safeNumber(mist.wrong))} (מתוך ${Math.round(safeNumber(mist.total))} אירועים).`
+    );
+  }
+
+  if (r.trend && typeof r.trend === "object" && String(r.trend.summaryHe || "").trim()) {
+    push(String(r.trend.summaryHe));
+  }
+
+  if (Array.isArray(r.decisionTrace)) {
+    for (const e of r.decisionTrace.slice(-3)) {
+      const d = String(e?.detailHe || "").trim();
+      if (d) push(d);
+    }
+  }
+
+  const ec = r.contractsV1?.evidence;
+  if (ec && typeof ec === "object" && EVIDENCE_STRENGTH_HE[ec.evidenceStrength]) {
+    push(`איכות הראיות מהאגרגציה: ${EVIDENCE_STRENGTH_HE[ec.evidenceStrength]}.`);
+  }
+
+  if (r._feedback === "improved") push("מגמת דיוק: שיפור לעומת חלון קודם.");
+  else if (r._feedback === "worsened") push("מגמת דיוק: ירידה לעומת חלון קודם.");
+  else if (r._feedback === "no_change") push("מגמת דיוק: דומה לחלון קודם.");
+
+  if (r._timeAdjusted === "declining_block") {
+    push("בגלל מגמת ירידה בדיוק, ההמלצה כרגע זהירה יותר.");
+  } else if (r._timeAdjusted === "improving_soften") {
+    push("בגלל שיפור במגמה, ההמלצה רוככה לתרגול מתאים יותר.");
+  }
+
+  if (Number.isFinite(Number(r._priorityScore)) && Number(r._priorityScore) >= 3) {
+    push("הנושא קיבל עדיפות גבוהה יחסית ברשימת הפעולות.");
+  }
+
+  if (lines.length === 0) {
+    push(INSUFFICIENT_EVIDENCE_LINE_HE);
+  }
+
+  return lines.slice(0, 8);
+}
+
+function diagnosticCardRankScore(unit) {
+  const pl = String(unit?.priority?.level || "");
+  const pr = { P4: 5, P3: 4, P2: 3, P1: 2 };
+  const base = pr[pl] || 0;
+  const diag = unit?.diagnosis?.allowed ? 1 : 0;
+  const vol = safeNumber(
+    unit?.evidenceTrace?.find((e) => e?.type === "volume")?.value?.questions ??
+      unit?.evidenceTrace?.[0]?.value?.questions
+  );
+  return base * 100000 + diag * 10000 + Math.min(vol, 9999);
+}
+
+function diagnosticCardLabel(unit) {
+  const tid = String(unit?.taxonomy?.id || "").trim();
+  if (tid) return tid;
+  const bk = String(unit?.bucketKey || "").trim();
+  return bk ? `topic:${bk}` : "topic";
+}
+
+function diagnosticCardLabelHe(unit) {
+  const tax = String(unit?.taxonomy?.patternHe || "").trim();
+  if (tax) return normalizeParentFacingHe(tax);
+  const line = String(unit?.diagnosis?.lineHe || "").trim();
+  if (line) {
+    return normalizeParentFacingHe(shortReportDiagnosticsParentVisibleHe(line));
+  }
+  const name = String(unit?.displayName || unit?.bucketKey || "הנושא").trim();
+  return normalizeParentFacingHe(`נושא: ${name}`);
+}
+
+function diagnosticCardConfidence(unit) {
+  const cs = unit?.canonicalState;
+  const fromCs = cs?.assessment?.confidenceLevel;
+  const fromU = unit?.confidence?.level;
+  return String(fromCs || fromU || "low").trim().toLowerCase();
+}
+
+/**
+ * @param {string} subjectId
+ * @param {unknown[]} subjectUnits
+ * @param {Record<string, unknown>|null|undefined} topicMap
+ */
+function buildDiagnosticCardsForSubject(subjectId, subjectUnits, topicMap) {
+  const map = topicMap && typeof topicMap === "object" ? topicMap : {};
+  const list = Array.isArray(subjectUnits) ? [...subjectUnits] : [];
+  if (list.length === 0) return [];
+  list.sort((a, b) => diagnosticCardRankScore(b) - diagnosticCardRankScore(a));
+  const out = [];
+  for (const u of list) {
+    if (out.length >= MAX_DIAGNOSTIC_CARDS_PER_SUBJECT) break;
+    if (!u || typeof u !== "object") continue;
+    const trk = String(u.topicRowKey || "");
+    const row = trk ? map[trk] : null;
+    const rowSafe = row && typeof row === "object" ? row : {};
+    const evidence = collectDiagnosticEvidenceLinesHe(u, rowSafe);
+    const recommendationHe =
+      resolveUnitParentActionHe(u) || resolveUnitNextGoalHe(u) || resolveUnitHomeMethodHe(u) || null;
+    const id = `dc:${subjectId}:${trk.replace(/\u0001/g, "|")}`;
+    out.push({
+      id,
+      subjectId,
+      topicId: String(u.bucketKey || ""),
+      topicName: normalizeParentFacingHe(String(u.displayName || u.bucketKey || "").trim() || "הנושא"),
+      label: diagnosticCardLabel(u),
+      labelHe: diagnosticCardLabelHe(u),
+      confidence: diagnosticCardConfidence(u),
+      evidence,
+      recommendationHe,
+      source: {
+        unitId: String(u.unitKey || ""),
+        rowKey: trk,
+      },
+    });
+  }
+  return out;
 }
 
 function intelligenceSummaryFromV2Units(list) {
@@ -831,7 +1003,7 @@ function summarizeV2UnitsForSubject(units) {
     evidenceExamples.push({
       type: "success",
       titleHe: normalizeParentFacingHe(String(u?.displayName || evidenceExampleTitleFallbackHe())),
-      bodyHe: normalizeParentFacingHe(v2PositiveStrengthBodyHe()),
+      bodyHe: v2PositiveStrengthBodyFromUnitHe(u),
       confidence,
     });
   }
@@ -855,7 +1027,7 @@ function summarizeV2UnitsForSubject(units) {
           titleHe: normalizeParentFacingHe(
             String(rankedForEvidence[0]?.displayName || evidenceExampleTitleFallbackHe())
           ),
-          bodyHe: normalizeParentFacingHe(v2PositiveStrengthBodyHe()),
+          bodyHe: v2PositiveStrengthBodyFromUnitHe(rankedForEvidence[0]),
           confidence:
             (cs(rankedForEvidence[0])?.evidence?.positiveAuthorityLevel === "excellent" ||
              cs(rankedForEvidence[0])?.evidence?.positiveAuthorityLevel === "very_good")
@@ -971,14 +1143,35 @@ export function summarizeV2UnitsForSubjectForTests(units) {
   return summarizeV2UnitsForSubject(units);
 }
 
-function buildPatternDiagnosticsFromV2(diagnosticEngineV2) {
+/** Test hook: diagnostic evidence lines per unit + row. */
+export function collectDiagnosticEvidenceLinesForTests(unit, row) {
+  return collectDiagnosticEvidenceLinesHe(unit, row);
+}
+
+/** Test hook: deterministic positive strength body from unit evidenceTrace. */
+export function v2PositiveStrengthBodyFromUnitForTests(u) {
+  return v2PositiveStrengthBodyFromUnitHe(u);
+}
+
+/** Test hook: patternDiagnostics.diagnosticCards builder. */
+export function buildDiagnosticCardsForSubjectForTests(subjectId, subjectUnits, topicMap) {
+  return buildDiagnosticCardsForSubject(subjectId, subjectUnits, topicMap);
+}
+
+/**
+ * @param {unknown} diagnosticEngineV2
+ * @param {Record<string, Record<string, unknown>>|null|undefined} maps
+ */
+function buildPatternDiagnosticsFromV2(diagnosticEngineV2, maps) {
   const units = Array.isArray(diagnosticEngineV2?.units) ? diagnosticEngineV2.units : [];
   const subjects = {};
   for (const sid of V2_SUBJECT_ORDER) {
     const subjectUnits = units.filter((u) => String(u?.subjectId || "") === sid);
+    const topicMap = maps?.[sid] && typeof maps[sid] === "object" ? maps[sid] : {};
     subjects[sid] = {
       subjectLabelHe: V2_SUBJECT_LABEL_HE[sid] || sid,
       ...summarizeV2UnitsForSubject(subjectUnits),
+      diagnosticCards: buildDiagnosticCardsForSubject(sid, subjectUnits, topicMap),
     };
   }
   return { version: 2, subjects };
@@ -1579,7 +1772,7 @@ export function generateParentReportV2(
   );
   const hasV2Units = Array.isArray(diagnosticEngineV2?.units) && diagnosticEngineV2.units.length > 0;
   const patternDiagnostics = hasV2Units
-    ? buildPatternDiagnosticsFromV2(diagnosticEngineV2)
+    ? buildPatternDiagnosticsFromV2(diagnosticEngineV2, maps)
     : legacyPatternDiagnostics;
 
   const INSUFFICIENT_SUBJECT_Q = 8;

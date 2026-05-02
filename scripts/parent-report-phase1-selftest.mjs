@@ -281,4 +281,131 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
   }
 }
 
+/** Phase 1 diagnostic evidence cards + deterministic strength body (no engine rebuild). */
+{
+  const {
+    buildDiagnosticCardsForSubjectForTests,
+    v2PositiveStrengthBodyFromUnitForTests,
+    collectDiagnosticEvidenceLinesForTests,
+    generateParentReportV2,
+  } = await importUtils("../utils/parent-report-v2.js");
+
+  const minimalStrengthUnit = {
+    unitKey: "math::addition|learning",
+    topicRowKey: "addition\u0001learning",
+    subjectId: "math",
+    bucketKey: "addition",
+    displayName: "חיבור",
+    evidenceTrace: [
+      { type: "volume", value: { questions: 14, accuracy: 86, correct: 12, wrong: 2 } },
+    ],
+    taxonomy: { id: "tax_demo", patternHe: "דפוס הדגמה" },
+    diagnosis: { allowed: true, lineHe: "שורת אבחון" },
+    confidence: { level: "medium" },
+    priority: { level: "P3" },
+    canonicalState: { assessment: { confidenceLevel: "medium" } },
+  };
+  const rowForUnit = {
+    trend: { summaryHe: "מגמה יציבה בטווח" },
+    decisionTrace: [{ detailHe: "חישוב יציבות: ערכים בטווח תקין" }],
+    contractsV1: {
+      evidence: { evidenceStrength: "medium", evidenceBand: "E2", questionCount: 14, accuracyPct: 86 },
+    },
+    _feedback: "improved",
+    _priorityScore: 4,
+  };
+  const cards = buildDiagnosticCardsForSubjectForTests("math", [minimalStrengthUnit], {
+    "addition\u0001learning": rowForUnit,
+  });
+  assert.equal(cards.length, 1);
+  assert.ok(cards[0].evidence.length >= 1, "each card must include ≥1 evidence line");
+  for (const line of cards[0].evidence) {
+    const s = String(line);
+    assert.ok(!/\b[a-z][a-z0-9_]{14,}\b/.test(s), "no long raw engine tokens in parent lines");
+  }
+
+  const body = v2PositiveStrengthBodyFromUnitForTests(minimalStrengthUnit);
+  const genericOnly = "ביצועים גבוהים ועקביים — נראה שליטה טובה בנושא.";
+  assert.ok(body.includes("14") && body.includes("86"), "strength body uses trace numbers when present");
+  assert.notEqual(body.trim(), genericOnly.trim());
+
+  const linesBare = collectDiagnosticEvidenceLinesForTests(
+    { evidenceTrace: [], displayName: "ריק", bucketKey: "x", taxonomy: null },
+    {}
+  );
+  assert.ok(linesBare.length >= 1);
+  assert.ok(String(linesBare[0]).includes("מידע מועט"), "weak data uses cautious insufficient-data line");
+
+  const store = new Map();
+  const now = Date.now();
+  store.set(
+    "mleo_time_tracking",
+    JSON.stringify({
+      operations: {
+        addition: {
+          sessions: [
+            {
+              timestamp: now - 2 * 24 * 3600 * 1000,
+              total: 14,
+              correct: 12,
+              mode: "learning",
+              grade: "g3",
+              level: "easy",
+            },
+          ],
+        },
+      },
+    })
+  );
+  store.set("mleo_math_master_progress", JSON.stringify({ progress: {} }));
+  const emptyTopics = JSON.stringify({ topics: {} });
+  const emptyProgress = JSON.stringify({ progress: {} });
+  for (const [k, v] of [
+    ["mleo_geometry_time_tracking", emptyTopics],
+    ["mleo_geometry_master_progress", emptyProgress],
+    ["mleo_english_time_tracking", emptyTopics],
+    ["mleo_english_master_progress", emptyProgress],
+    ["mleo_science_time_tracking", emptyTopics],
+    ["mleo_science_master_progress", emptyProgress],
+    ["mleo_hebrew_time_tracking", emptyTopics],
+    ["mleo_hebrew_master_progress", emptyProgress],
+    ["mleo_moledet_geography_time_tracking", emptyTopics],
+    ["mleo_moledet_geography_master_progress", emptyProgress],
+  ]) {
+    store.set(k, v);
+  }
+  for (const k of [
+    "mleo_mistakes",
+    "mleo_geometry_mistakes",
+    "mleo_english_mistakes",
+    "mleo_science_mistakes",
+    "mleo_hebrew_mistakes",
+    "mleo_moledet_geography_mistakes",
+  ]) {
+    store.set(k, "[]");
+  }
+  store.set("mleo_daily_challenge", "{}");
+  store.set("mleo_weekly_challenge", "{}");
+  const prevWindow = globalThis.window;
+  const prevLS = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => store.set(k, String(v)),
+    removeItem: (k) => store.delete(k),
+  };
+  globalThis.window = globalThis;
+  try {
+    const report = generateParentReportV2("DiagCardsQA", "week");
+    assert.ok(report.patternDiagnostics?.version === 2);
+    const mathCards = report.patternDiagnostics?.subjects?.math?.diagnosticCards;
+    assert.ok(Array.isArray(mathCards) && mathCards.length >= 1, "V2 report exposes diagnosticCards when units exist");
+    for (const c of mathCards) {
+      assert.ok(Array.isArray(c.evidence) && c.evidence.length >= 1);
+    }
+  } finally {
+    globalThis.window = prevWindow;
+    globalThis.localStorage = prevLS;
+  }
+}
+
 console.log("parent-report phase1 selftest: OK");

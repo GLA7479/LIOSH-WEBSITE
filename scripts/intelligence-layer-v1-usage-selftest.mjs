@@ -25,7 +25,7 @@ const { syntheticPayload } = await import(pathToFileURL(join(ROOT, "scripts", "p
 const { buildTopicRecommendationRecord, decideTopicNextStep } = await import(
   pathToFileURL(join(ROOT, "utils", "topic-next-step-engine.js")).href
 );
-const { summarizeV2UnitsForSubjectForTests } = await import(
+const { summarizeV2UnitsForSubjectForTests, v2PositiveStrengthBodyFromUnitForTests } = await import(
   pathToFileURL(join(ROOT, "utils", "parent-report-v2.js")).href
 );
 const { getIntelligencePriority } = await import(
@@ -363,6 +363,14 @@ function rowAugTopicEngine(p) {
     noWeaknessCount: 0,
     recurrenceCount: 0,
   });
+}
+
+{
+  const body = v2PositiveStrengthBodyFromUnitForTests({
+    evidenceTrace: [{ type: "volume", value: { questions: 12, accuracy: 90 } }],
+  });
+  assert.ok(String(body).includes("12") && String(body).includes("90"));
+  assert.ok(!String(body).includes("ביצועים גבוהים ועקביים — נראה שליטה טובה בנושא"));
 }
 
 {

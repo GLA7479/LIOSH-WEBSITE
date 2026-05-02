@@ -9,6 +9,8 @@ import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-pattern
 import {
   stripTechnicalParensForParentDiagnosticsHe as stripTechnicalParensHe,
   shortReportDiagnosticsParentVisibleHe as diagnosticParentVisibleTextHe,
+  trendCompactLineHe,
+  confidenceBadgeLabelHe,
 } from "../../utils/parent-report-ui-explain-he";
 import { diagnosticPrimarySourceParentLabelHe } from "../../utils/parent-report-language/index.js";
 import { deriveParentDataPresenceForDiagnosticsView } from "../../utils/parent-data-presence.js";
@@ -85,9 +87,49 @@ function sumTopicMapMinutes(map) {
   return Object.values(map || {}).reduce((a, r) => a + (Number(r?.timeMinutes) || 0), 0);
 }
 
-/** שורת משנה בעמודת סטטוס — ללא טקסט נוסף (הדגשה באייקון בלבד). */
-function ParentReportRowDiagnosticsFootnote() {
+/** שורת משנה בעמודת סטטוס — שורה קצרה מנתוני שורה קיימים בלבד. */
+function ParentReportRowDiagnosticsFootnote({ data }) {
+  const row = data && typeof data === "object" ? data : null;
+  if (!row) return null;
+  const fromTrendSummary = String(row.trend?.summaryHe || "").trim();
+  if (fromTrendSummary) {
+    const t = diagnosticParentVisibleTextHe(fromTrendSummary);
+    if (t) {
+      return (
+        <div className="text-[9px] md:text-[10px] text-white/55 leading-tight max-w-[14rem] min-w-0 w-full mx-auto text-center line-clamp-2 break-words">
+          {t}
+        </div>
+      );
+    }
+  }
+  const compact = trendCompactLineHe(row.trend);
+  if (compact) {
+    return (
+      <div className="text-[9px] md:text-[10px] text-white/55 leading-tight max-w-[14rem] min-w-0 w-full mx-auto text-center line-clamp-2 break-words">
+        {diagnosticParentVisibleTextHe(compact)}
+      </div>
+    );
+  }
+  const dt = Array.isArray(row.decisionTrace) ? row.decisionTrace : [];
+  for (let i = dt.length - 1; i >= 0; i--) {
+    const d = String(dt[i]?.detailHe || "").trim();
+    if (d) {
+      return (
+        <div className="text-[9px] md:text-[10px] text-white/55 leading-tight max-w-[14rem] min-w-0 w-full mx-auto text-center line-clamp-2 break-words">
+          {diagnosticParentVisibleTextHe(d)}
+        </div>
+      );
+    }
+  }
   return null;
+}
+
+function diagnosticCardConfidenceLabelHe(raw) {
+  const x = String(raw || "").trim().toLowerCase();
+  if (x === "moderate") return confidenceBadgeLabelHe("medium");
+  if (x === "medium" || x === "high" || x === "low") return confidenceBadgeLabelHe(x);
+  if (x === "contradictory") return "לקרוא בזהירות — אותות מנוגדים";
+  return diagnosticParentVisibleTextHe(raw || "");
 }
 
 function buildSubjectOverviewRows(report) {
@@ -2613,6 +2655,51 @@ export default function ParentReport() {
                             {summaryHe ? (
                               <div className="parent-report-print-narrative-box text-xs md:text-sm text-white/85 leading-relaxed border border-white/10 rounded-md bg-white/5 px-2 py-1.5">
                                 {diagnosticParentVisibleTextHe(summaryHe)}
+                              </div>
+                            ) : null}
+                            {Array.isArray(s.diagnosticCards) && s.diagnosticCards.length > 0 ? (
+                              <div className="text-[10px] md:text-[11px] text-white/80 space-y-1.5 border border-white/10 rounded-md bg-white/5 px-2 py-1.5">
+                                <div className="font-semibold text-white/90 text-[11px] md:text-xs">
+                                  אבחון מבוסס נתונים
+                                </div>
+                                {s.diagnosticCards.map((card, cardIdx) => {
+                                  const confLabel = diagnosticCardConfidenceLabelHe(
+                                    card.confidence
+                                  ).trim();
+                                  const recHe = String(card.recommendationHe || "").trim();
+                                  return (
+                                    <div
+                                      key={`${row.subjectId}-dcard-${cardIdx}`}
+                                      className="space-y-0.5 border-b border-white/10 last:border-0 pb-1.5 last:pb-0"
+                                    >
+                                      <div className="font-semibold text-white/88 break-words">
+                                        {diagnosticParentVisibleTextHe(card.labelHe)}
+                                      </div>
+                                      {Array.isArray(card.evidence)
+                                        ? card.evidence.map((line, li) => (
+                                            <div
+                                              key={li}
+                                              className="text-white/75 pr-1 leading-snug break-words"
+                                            >
+                                              <span className="text-white/50">• </span>
+                                              {diagnosticParentVisibleTextHe(line)}
+                                            </div>
+                                          ))
+                                        : null}
+                                      {confLabel ? (
+                                        <div className="text-white/60 text-[9px] md:text-[10px] break-words">
+                                          אמון: {confLabel}
+                                        </div>
+                                      ) : null}
+                                      {recHe ? (
+                                        <div className="text-white/78 text-[9px] md:text-[10px] leading-snug break-words">
+                                          <span className="text-white/45">המלצה: </span>
+                                          {diagnosticParentVisibleTextHe(recHe)}
+                                        </div>
+                                      ) : null}
+                                    </div>
+                                  );
+                                })}
                               </div>
                             ) : null}
                             {(s.subjectPriorityReasonHe || s.subjectDoNowHe || s.subjectAvoidNowHe) && (
