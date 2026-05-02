@@ -17,6 +17,8 @@ import {
 
 const LIVE_ROLL_MIN_MS = 1400;
 const DICE_FACE_HOLD_MS = 900;
+/** השהיה אחרי שהקובייה מציגה פנים סופיים, לפני תחילת הליכת הפיון (כמו הפרדה ויזואלית) */
+const PAUSE_AFTER_DICE_BEFORE_WALK_MS = 700;
 
 function preferNewer(prev, next) {
   if (!next) return prev;
@@ -307,7 +309,10 @@ export function useSnakesLaddersSession(ctx) {
       if (playingChain) {
         const moved = findSingleMovedSeat(prev, next);
         if (moved != null) {
-          schedulePawnWalkFromPrevNext(prev, next, moved);
+          const tid = window.setTimeout(() => {
+            schedulePawnWalkFromPrevNext(prev, next, moved);
+          }, PAUSE_AFTER_DICE_BEFORE_WALK_MS);
+          pawnWalkTimersRef.current.push(tid);
         }
       }
     }
@@ -346,6 +351,14 @@ export function useSnakesLaddersSession(ctx) {
       await sleepMs(wait);
 
       if (r.ok && nextSnap) {
+        setDiceRolling(false);
+        diceRollingRef.current = false;
+        setLiveRollServerFace(null);
+        if (face != null) {
+          setLiveDiceRevealHold({ face, until: Date.now() + DICE_FACE_HOLD_MS });
+        }
+        await sleepMs(PAUSE_AFTER_DICE_BEFORE_WALK_MS);
+
         if (s && nextSnap.lastRoll != null && s.turnSeat != null && !Number.isNaN(Number(s.turnSeat))) {
           const roller = Math.floor(Number(s.turnSeat));
           if (roller >= 0 && roller <= 3) {
@@ -353,9 +366,6 @@ export function useSnakesLaddersSession(ctx) {
           }
         }
         setSnap((prev) => preferNewer(prev, nextSnap));
-        if (face != null) {
-          setLiveDiceRevealHold({ face, until: Date.now() + DICE_FACE_HOLD_MS });
-        }
       } else if (r.ok && !nextSnap) {
         const b = await fetchArcadeRoomSnakesLaddersBundle(roomId);
         if (b.ok) {
@@ -371,8 +381,10 @@ export function useSnakesLaddersSession(ctx) {
       return { ok: false };
     } finally {
       setLiveRollServerFace(null);
-      setDiceRolling(false);
-      diceRollingRef.current = false;
+      if (diceRollingRef.current) {
+        setDiceRolling(false);
+        diceRollingRef.current = false;
+      }
     }
   }, [roomId, clearPawnWalkTimers, schedulePawnWalkFromPrevNext]);
 
