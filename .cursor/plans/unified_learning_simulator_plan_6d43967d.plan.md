@@ -10,7 +10,7 @@ todos:
     status: pending
   - id: phase2-aggregate-runner
     content: Build aggregate simulator runner reusing dev-student and fixture storage builders
-    status: pending
+    status: completed
   - id: phase3-report-assertions
     content: Implement contract/report assertion engine over detailed parent report outputs
     status: pending

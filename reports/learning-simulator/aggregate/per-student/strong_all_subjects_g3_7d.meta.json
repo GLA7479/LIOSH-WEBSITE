@@ -1,0 +1,70 @@
+{
+  "scenarioId": "strong_all_subjects_g3_7d",
+  "profileRef": "p_strong_all_subjects",
+  "mode": "aggregate",
+  "tier": "quick",
+  "seed": 91001,
+  "anchorDate": "2026-05-01T08:00:00.000Z",
+  "timeHorizonDays": 7,
+  "generator": "aggregate-runner-v1",
+  "stats": {
+    "scenarioId": "strong_all_subjects_g3_7d",
+    "sessionCount": 42,
+    "questionTotal": 642,
+    "correctTotal": 587,
+    "mistakeEventCount": 42,
+    "subjectsTouched": [
+      "hebrew",
+      "english",
+      "math",
+      "geometry",
+      "moledet_geography",
+      "science"
+    ],
+    "topicsBySubject": {
+      "hebrew": [
+        "mixed",
+        "reading",
+        "speaking",
+        "vocabulary"
+      ],
+      "english": [
+        "grammar",
+        "sentences",
+        "vocabulary",
+        "writing"
+      ],
+      "math": [
+        "addition",
+        "compare",
+        "decimals",
+        "multiplication",
+        "word_problems"
+      ],
+      "geometry": [
+        "angles",
+        "area",
+        "parallel_perpendicular",
+        "perimeter"
+      ],
+      "moledet_geography": [
+        "citizenship",
+        "community",
+        "geography",
+        "homeland",
+        "mixed",
+        "values"
+      ],
+      "science": [
+        "experiments"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": []
+}

@@ -1,0 +1,32 @@
+{
+  "scenarioId": "weak_hebrew_comprehension_g3_7d",
+  "profileRef": "p_weak_hebrew_comprehension",
+  "mode": "aggregate",
+  "tier": "quick",
+  "seed": 91004,
+  "anchorDate": "2026-05-04T08:00:00.000Z",
+  "timeHorizonDays": 7,
+  "generator": "aggregate-runner-v1",
+  "stats": {
+    "scenarioId": "weak_hebrew_comprehension_g3_7d",
+    "sessionCount": 15,
+    "questionTotal": 237,
+    "correctTotal": 89,
+    "mistakeEventCount": 80,
+    "subjectsTouched": [
+      "hebrew"
+    ],
+    "topicsBySubject": {
+      "hebrew": [
+        "comprehension"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": []
+}
