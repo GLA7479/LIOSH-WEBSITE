@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-05-02T22:06:34.109Z",
+  "generatedAt": "2026-05-02T22:28:51.511Z",
   "versions": {
     "unsupported": "1.0.0"
   },
   "counts": {
-    "needsAttentionTotal": 113,
+    "needsAttentionTotal": 108,
     "uncoveredCoverageStatus": 0,
     "unknownClassification": 0,
     "byClassification": {
       "expected_runtime_gap": 0,
       "curriculum_only_not_runtime": 0,
-      "missing_question_bank": 41,
+      "missing_question_bank": 36,
       "missing_generator_adapter": 0,
       "missing_topic_adapter": 0,
       "mixed_or_ui_only_topic": 72,
@@ -107,16 +107,6 @@
       "coverageStatus": "unsupported_expected",
       "unsupportedClassification": "mixed_or_ui_only_topic",
       "phase4UnsupportedReason": "topic `mixed` is intentionally multi-topic — not a single integrity cell"
-    },
-    {
-      "cellKey": "g1|science|animals|hard",
-      "grade": "g1",
-      "subject": "science",
-      "level": "hard",
-      "topic": "animals",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
     },
     {
       "cellKey": "g1|science|body|hard",
@@ -287,16 +277,6 @@
       "coverageStatus": "unsupported_expected",
       "unsupportedClassification": "mixed_or_ui_only_topic",
       "phase4UnsupportedReason": "topic `mixed` is intentionally multi-topic — not a single integrity cell"
-    },
-    {
-      "cellKey": "g2|science|animals|hard",
-      "grade": "g2",
-      "subject": "science",
-      "level": "hard",
-      "topic": "animals",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
     },
     {
       "cellKey": "g2|science|body|hard",
@@ -659,16 +639,6 @@
       "phase4UnsupportedReason": "topic `mixed` is intentionally multi-topic — not a single integrity cell"
     },
     {
-      "cellKey": "g4|science|animals|easy",
-      "grade": "g4",
-      "subject": "science",
-      "level": "easy",
-      "topic": "animals",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
-    },
-    {
       "cellKey": "g5|english|mixed|easy",
       "grade": "g5",
       "subject": "english",
@@ -847,16 +817,6 @@
       "coverageStatus": "unsupported_expected",
       "unsupportedClassification": "mixed_or_ui_only_topic",
       "phase4UnsupportedReason": "topic `mixed` is intentionally multi-topic — not a single integrity cell"
-    },
-    {
-      "cellKey": "g5|science|animals|easy",
-      "grade": "g5",
-      "subject": "science",
-      "level": "easy",
-      "topic": "animals",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
     },
     {
       "cellKey": "g5|science|body|easy",
@@ -1089,16 +1049,6 @@
       "phase4UnsupportedReason": "topic `mixed` is intentionally multi-topic — not a single integrity cell"
     },
     {
-      "cellKey": "g6|science|animals|easy",
-      "grade": "g6",
-      "subject": "science",
-      "level": "easy",
-      "topic": "animals",
-      "coverageStatus": "unsupported_needs_content",
-      "unsupportedClassification": "missing_question_bank",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
-    },
-    {
       "cellKey": "g6|science|body|easy",
       "grade": "g6",
       "subject": "science",
@@ -1159,18 +1109,8 @@
       "examples": []
     },
     "missing_question_bank": {
-      "count": 41,
+      "count": 36,
       "examples": [
-        {
-          "cellKey": "g1|science|animals|hard",
-          "grade": "g1",
-          "subject": "science",
-          "level": "hard",
-          "topic": "animals",
-          "coverageStatus": "unsupported_needs_content",
-          "unsupportedClassification": "missing_question_bank",
-          "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
-        },
         {
           "cellKey": "g1|science|body|hard",
           "grade": "g1",
@@ -1236,6 +1176,16 @@
           "grade": "g2",
           "subject": "english",
           "level": "hard",
+          "topic": "translation",
+          "coverageStatus": "unsupported_needs_content",
+          "unsupportedClassification": "missing_question_bank",
+          "phase4UnsupportedReason": "no MCQ-shaped english pool rows for topic \"translation\" and g2 (translation flashcards excluded)"
+        },
+        {
+          "cellKey": "g2|english|translation|medium",
+          "grade": "g2",
+          "subject": "english",
+          "level": "medium",
           "topic": "translation",
           "coverageStatus": "unsupported_needs_content",
           "unsupportedClassification": "missing_question_bank",

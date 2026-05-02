@@ -1,15 +1,15 @@
 # Content gap audit (`unsupported_needs_content`)
 
-- Run id: content-gap-moow5ug0
-- Generated at: 2026-05-02T22:06:34.848Z
-- Total cells with **unsupported_needs_content**: **41**
+- Run id: content-gap-moox9two
+- Generated at: 2026-05-02T22:37:40.392Z
+- Total cells with **unsupported_needs_content**: **36**
 - Unknown classifications: **0**
 
 ## Fixability summary
 
 ```json
 {
-  "cellsNeedingNewQuestionContent": 41,
+  "cellsNeedingNewQuestionContent": 36,
   "cellsFixableByQAClassificationOnly": 0,
   "cellsRecommendUnsupportedExpected": 0,
   "requiresRuntimeChange": 0,
@@ -19,22 +19,21 @@
 
 ## Counts by final gap category
 
-- **missing_topic_bank_entries**: 26
+- **missing_topic_bank_entries**: 21
 - **needs_content_addition**: 15
 
 ## Counts by priority
 
-- **P1**: 41
+- **P1**: 36
 
 ## Counts by subject
 
-- science: 26
+- science: 21
 - english: 15
 
 ## Top topic keys (subject:topic)
 
 - english:translation: 15
-- science:animals: 5
 - science:earth_space: 5
 - science:body: 4
 - science:environment: 4
@@ -46,7 +45,6 @@
 
 | cellKey | category | priority | action |
 | --- | --- | --- | --- |
-| g1\|science\|animals\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
 | g1\|science\|body\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
 | g1\|science\|earth_space\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
 | g1\|science\|environment\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
@@ -55,9 +53,10 @@
 | g2\|english\|translation\|easy | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
 | g2\|english\|translation\|hard | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
 | g2\|english\|translation\|medium | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g2\|science\|animals\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
 | g2\|science\|body\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
 | g2\|science\|earth_space\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
+| g2\|science\|earth_space\|medium | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
+| g2\|science\|environment\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
 
 ## What not to fix yet
 

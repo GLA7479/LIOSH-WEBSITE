@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-02T22:06:42.795Z",
+  "generatedAt": "2026-05-02T22:28:59.778Z",
   "versions": {
     "scenarioCoverage": "1.3.1"
   },
@@ -972,7 +972,8 @@
       ],
       "levels": [
         "easy",
-        "medium"
+        "medium",
+        "hard"
       ],
       "topics": [
         "animals",
@@ -985,6 +986,7 @@
       "timeHorizonDays": 7,
       "matrixCellsTouched": [
         "g1|science|animals|easy",
+        "g1|science|animals|hard",
         "g1|science|animals|medium",
         "g1|science|body|easy",
         "g1|science|body|medium",
@@ -997,7 +999,7 @@
         "g1|science|plants|easy",
         "g1|science|plants|medium"
       ],
-      "matrixCellsTouchedCount": 12,
+      "matrixCellsTouchedCount": 13,
       "assertionTypes": [
         "matrix_smoke",
         "storage_pipeline",
@@ -1276,6 +1278,7 @@
       "timeHorizonDays": 7,
       "matrixCellsTouched": [
         "g2|science|animals|easy",
+        "g2|science|animals|hard",
         "g2|science|animals|medium",
         "g2|science|body|easy",
         "g2|science|body|medium",
@@ -1290,7 +1293,7 @@
         "g2|science|plants|hard",
         "g2|science|plants|medium"
       ],
-      "matrixCellsTouchedCount": 14,
+      "matrixCellsTouchedCount": 15,
       "assertionTypes": [
         "matrix_smoke",
         "storage_pipeline",
@@ -1940,6 +1943,7 @@
       ],
       "timeHorizonDays": 7,
       "matrixCellsTouched": [
+        "g4|science|animals|easy",
         "g4|science|animals|hard",
         "g4|science|animals|medium",
         "g4|science|body|easy",
@@ -1957,7 +1961,7 @@
         "g4|science|materials|easy",
         "g4|science|materials|hard"
       ],
-      "matrixCellsTouchedCount": 16,
+      "matrixCellsTouchedCount": 17,
       "assertionTypes": [
         "matrix_smoke",
         "storage_pipeline",
@@ -2271,6 +2275,7 @@
         "science"
       ],
       "levels": [
+        "easy",
         "medium",
         "hard"
       ],
@@ -2283,6 +2288,7 @@
       ],
       "timeHorizonDays": 7,
       "matrixCellsTouched": [
+        "g5|science|animals|easy",
         "g5|science|animals|hard",
         "g5|science|animals|medium",
         "g5|science|body|hard",
@@ -2294,7 +2300,7 @@
         "g5|science|materials|hard",
         "g5|science|materials|medium"
       ],
-      "matrixCellsTouchedCount": 10,
+      "matrixCellsTouchedCount": 11,
       "assertionTypes": [
         "matrix_smoke",
         "storage_pipeline",
@@ -2613,6 +2619,7 @@
         "science"
       ],
       "levels": [
+        "easy",
         "medium",
         "hard"
       ],
@@ -2626,6 +2633,7 @@
       ],
       "timeHorizonDays": 7,
       "matrixCellsTouched": [
+        "g6|science|animals|easy",
         "g6|science|animals|hard",
         "g6|science|animals|medium",
         "g6|science|body|hard",
@@ -2639,7 +2647,7 @@
         "g6|science|materials|hard",
         "g6|science|materials|medium"
       ],
-      "matrixCellsTouchedCount": 12,
+      "matrixCellsTouchedCount": 13,
       "assertionTypes": [
         "matrix_smoke",
         "storage_pipeline",
@@ -3127,7 +3135,7 @@
       ],
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
@@ -3135,7 +3143,7 @@
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
         "g1|science|animals|easy",
-        "g1|science|animals|medium"
+        "g1|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -3159,7 +3167,7 @@
       ],
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
@@ -3167,7 +3175,7 @@
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
         "g1|science|animals|easy",
-        "g1|science|animals|medium"
+        "g1|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -3191,7 +3199,7 @@
       ],
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
@@ -3199,7 +3207,7 @@
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
         "g1|science|animals|easy",
-        "g1|science|animals|medium"
+        "g1|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -3691,7 +3699,7 @@
       ],
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
@@ -3699,7 +3707,7 @@
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
         "g2|science|animals|easy",
-        "g2|science|animals|medium"
+        "g2|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -3723,7 +3731,7 @@
       ],
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
@@ -3731,7 +3739,7 @@
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
         "g2|science|animals|easy",
-        "g2|science|animals|medium"
+        "g2|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -3755,7 +3763,7 @@
       ],
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
@@ -3763,7 +3771,7 @@
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
         "g2|science|animals|easy",
-        "g2|science|animals|medium"
+        "g2|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -4806,16 +4814,16 @@
         "science"
       ],
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g4|science|animals|hard",
-        "g4|science|animals|medium"
+        "g4|science|animals|easy",
+        "g4|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -4838,16 +4846,16 @@
         "science"
       ],
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g4|science|animals|hard",
-        "g4|science|animals|medium"
+        "g4|science|animals|easy",
+        "g4|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -4870,16 +4878,16 @@
         "science"
       ],
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g4|science|animals|hard",
-        "g4|science|animals|medium"
+        "g4|science|animals|easy",
+        "g4|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -5364,16 +5372,16 @@
         "science"
       ],
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g5|science|animals|hard",
-        "g5|science|animals|medium"
+        "g5|science|animals|easy",
+        "g5|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -5396,16 +5404,16 @@
         "science"
       ],
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g5|science|animals|hard",
-        "g5|science|animals|medium"
+        "g5|science|animals|easy",
+        "g5|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -5428,16 +5436,16 @@
         "science"
       ],
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g5|science|animals|hard",
-        "g5|science|animals|medium"
+        "g5|science|animals|easy",
+        "g5|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -5922,16 +5930,16 @@
         "science"
       ],
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g6|science|animals|hard",
-        "g6|science|animals|medium"
+        "g6|science|animals|easy",
+        "g6|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -5954,16 +5962,16 @@
         "science"
       ],
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g6|science|animals|hard",
-        "g6|science|animals|medium"
+        "g6|science|animals|easy",
+        "g6|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -5986,16 +5994,16 @@
         "science"
       ],
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g6|science|animals|hard",
-        "g6|science|animals|medium"
+        "g6|science|animals|easy",
+        "g6|science|animals|hard"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -6019,6 +6027,7 @@
       ],
       "levels": [
         "easy",
+        "hard",
         "medium"
       ],
       "topics": [
@@ -6027,9 +6036,10 @@
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
         "g1|science|animals|easy",
+        "g1|science|animals|hard",
         "g1|science|animals|medium"
       ],
-      "matrixCellsTouchedCount": 2,
+      "matrixCellsTouchedCount": 3,
       "assertionTypes": [
         "profile_stress",
         "pace_profile_oracle",
@@ -6669,13 +6679,13 @@
         "medium"
       ],
       "topics": [
-        "plants"
+        "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g2|science|plants|easy",
-        "g2|science|plants|hard",
-        "g2|science|plants|medium"
+        "g2|science|animals|easy",
+        "g2|science|animals|hard",
+        "g2|science|animals|medium"
       ],
       "matrixCellsTouchedCount": 3,
       "assertionTypes": [
@@ -6705,13 +6715,13 @@
         "medium"
       ],
       "topics": [
-        "plants"
+        "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g2|science|plants|easy",
-        "g2|science|plants|hard",
-        "g2|science|plants|medium"
+        "g2|science|animals|easy",
+        "g2|science|animals|hard",
+        "g2|science|animals|medium"
       ],
       "matrixCellsTouchedCount": 3,
       "assertionTypes": [
@@ -6812,12 +6822,12 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "materials"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g5|science|animals|hard",
-        "g5|science|animals|medium"
+        "g5|science|materials|hard",
+        "g5|science|materials|medium"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -6879,6 +6889,7 @@
       ],
       "levels": [
         "easy",
+        "hard",
         "medium"
       ],
       "topics": [
@@ -6887,9 +6898,10 @@
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
         "g1|science|animals|easy",
+        "g1|science|animals|hard",
         "g1|science|animals|medium"
       ],
-      "matrixCellsTouchedCount": 2,
+      "matrixCellsTouchedCount": 3,
       "assertionTypes": [
         "profile_stress",
         "pace_profile_oracle",
@@ -7953,12 +7965,12 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "materials"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g6|science|animals|hard",
-        "g6|science|animals|medium"
+        "g6|science|materials|hard",
+        "g6|science|materials|medium"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -7987,12 +7999,12 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "materials"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g6|science|animals|hard",
-        "g6|science|animals|medium"
+        "g6|science|materials|hard",
+        "g6|science|materials|medium"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [
@@ -8382,13 +8394,13 @@
         "medium"
       ],
       "topics": [
-        "plants"
+        "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g2|science|plants|easy",
-        "g2|science|plants|hard",
-        "g2|science|plants|medium"
+        "g2|science|animals|easy",
+        "g2|science|animals|hard",
+        "g2|science|animals|medium"
       ],
       "matrixCellsTouchedCount": 3,
       "assertionTypes": [
@@ -8418,13 +8430,13 @@
         "medium"
       ],
       "topics": [
-        "plants"
+        "animals"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g2|science|plants|easy",
-        "g2|science|plants|hard",
-        "g2|science|plants|medium"
+        "g2|science|animals|easy",
+        "g2|science|animals|hard",
+        "g2|science|animals|medium"
       ],
       "matrixCellsTouchedCount": 3,
       "assertionTypes": [
@@ -8525,12 +8537,12 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "materials"
       ],
       "timeHorizonDays": 14,
       "matrixCellsTouched": [
-        "g5|science|animals|hard",
-        "g5|science|animals|medium"
+        "g5|science|materials|hard",
+        "g5|science|materials|medium"
       ],
       "matrixCellsTouchedCount": 2,
       "assertionTypes": [

@@ -244,33 +244,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g1|science|animals|hard",
-      "grade": "g1",
-      "subjectCanonical": "science",
-      "level": "hard",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g1|science|animals|hard",
-      "grade": "g1",
-      "subjectCanonical": "science",
-      "level": "hard",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g1|science|animals|hard",
-      "grade": "g1",
-      "subjectCanonical": "science",
-      "level": "hard",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g1|science|body|hard",
       "grade": "g1",
       "subjectCanonical": "science",
@@ -727,33 +700,6 @@
       "level": "medium",
       "topic": "mixed",
       "reason": "topic `mixed` is intentionally multi-topic — not a single integrity cell",
-      "sampleIndex": 2
-    },
-    {
-      "cellKey": "g2|science|animals|hard",
-      "grade": "g2",
-      "subjectCanonical": "science",
-      "level": "hard",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g2|science|animals|hard",
-      "grade": "g2",
-      "subjectCanonical": "science",
-      "level": "hard",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g2|science|animals|hard",
-      "grade": "g2",
-      "subjectCanonical": "science",
-      "level": "hard",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
       "sampleIndex": 2
     },
     {
@@ -1729,33 +1675,6 @@
       "sampleIndex": 2
     },
     {
-      "cellKey": "g4|science|animals|easy",
-      "grade": "g4",
-      "subjectCanonical": "science",
-      "level": "easy",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g4|science|animals|easy",
-      "grade": "g4",
-      "subjectCanonical": "science",
-      "level": "easy",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g4|science|animals|easy",
-      "grade": "g4",
-      "subjectCanonical": "science",
-      "level": "easy",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 2
-    },
-    {
       "cellKey": "g5|english|mixed|easy",
       "grade": "g5",
       "subjectCanonical": "english",
@@ -2239,33 +2158,6 @@
       "level": "medium",
       "topic": "mixed",
       "reason": "topic `mixed` is intentionally multi-topic — not a single integrity cell",
-      "sampleIndex": 2
-    },
-    {
-      "cellKey": "g5|science|animals|easy",
-      "grade": "g5",
-      "subjectCanonical": "science",
-      "level": "easy",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g5|science|animals|easy",
-      "grade": "g5",
-      "subjectCanonical": "science",
-      "level": "easy",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g5|science|animals|easy",
-      "grade": "g5",
-      "subjectCanonical": "science",
-      "level": "easy",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
       "sampleIndex": 2
     },
     {
@@ -2887,33 +2779,6 @@
       "level": "medium",
       "topic": "mixed",
       "reason": "topic `mixed` is intentionally multi-topic — not a single integrity cell",
-      "sampleIndex": 2
-    },
-    {
-      "cellKey": "g6|science|animals|easy",
-      "grade": "g6",
-      "subjectCanonical": "science",
-      "level": "easy",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 0
-    },
-    {
-      "cellKey": "g6|science|animals|easy",
-      "grade": "g6",
-      "subjectCanonical": "science",
-      "level": "easy",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
-      "sampleIndex": 1
-    },
-    {
-      "cellKey": "g6|science|animals|easy",
-      "grade": "g6",
-      "subjectCanonical": "science",
-      "level": "easy",
-      "topic": "animals",
-      "reason": "no science MCQ bank items matched grade/topic/level band",
       "sampleIndex": 2
     },
     {
@@ -3052,5 +2917,5 @@
       "sampleIndex": 2
     }
   ],
-  "generatedAt": "2026-05-02T22:06:31.649Z"
+  "generatedAt": "2026-05-02T22:38:13.960Z"
 }

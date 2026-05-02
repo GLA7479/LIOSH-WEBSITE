@@ -1,6 +1,6 @@
 {
-  "runId": "critical-deep-moow5w5b",
-  "generatedAt": "2026-05-02T22:06:37.055Z",
+  "runId": "critical-deep-moowyk6g",
+  "generatedAt": "2026-05-02T22:28:54.568Z",
   "generator": "critical-matrix-deep-v1",
   "versions": {
     "criticalDeep": "1.1.0"
@@ -29,9 +29,9 @@
     "g6": 9
   },
   "cellsByLevel": {
-    "easy": 30,
-    "hard": 19,
-    "medium": 7
+    "easy": 33,
+    "hard": 21,
+    "medium": 2
   },
   "assertionCounts": {
     "storage_pipeline_ok": 108,
@@ -46,7 +46,7 @@
   },
   "selectionEvidence": {
     "targetCells": 56,
-    "poolSize": 706,
+    "poolSize": 711,
     "strategy": "Balanced quotas per grade (6–12 when total≤72), then level/subject gaps with per-grade cap, round-robin subject fill to target, bypass cap only to reach minimum 40.",
     "gradeQuotasDesired": {
       "g1": 10,
@@ -79,9 +79,9 @@
       "moledet_geography": 6
     },
     "byLevel": {
-      "easy": 30,
-      "hard": 19,
-      "medium": 7
+      "easy": 33,
+      "hard": 21,
+      "medium": 2
     }
   },
   "failures": [],
@@ -561,14 +561,14 @@
       "subject": "science",
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
         "g1|science|animals|easy",
-        "g1|science|animals|medium"
+        "g1|science|animals|hard"
       ],
       "sessionsCreated": 52,
       "questionsOrRowsCreated": 864,
@@ -593,14 +593,14 @@
       "subject": "science",
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
         "g1|science|animals|easy",
-        "g1|science|animals|medium"
+        "g1|science|animals|hard"
       ],
       "sessionsCreated": 16,
       "questionsOrRowsCreated": 271,
@@ -625,14 +625,14 @@
       "subject": "science",
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
         "g1|science|animals|easy",
-        "g1|science|animals|medium"
+        "g1|science|animals|hard"
       ],
       "sessionsCreated": 52,
       "questionsOrRowsCreated": 823,
@@ -1125,14 +1125,14 @@
       "subject": "science",
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
         "g2|science|animals|easy",
-        "g2|science|animals|medium"
+        "g2|science|animals|hard"
       ],
       "sessionsCreated": 52,
       "questionsOrRowsCreated": 829,
@@ -1157,14 +1157,14 @@
       "subject": "science",
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
         "g2|science|animals|easy",
-        "g2|science|animals|medium"
+        "g2|science|animals|hard"
       ],
       "sessionsCreated": 16,
       "questionsOrRowsCreated": 248,
@@ -1189,14 +1189,14 @@
       "subject": "science",
       "levels": [
         "easy",
-        "medium"
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
         "g2|science|animals|easy",
-        "g2|science|animals|medium"
+        "g2|science|animals|hard"
       ],
       "sessionsCreated": 52,
       "questionsOrRowsCreated": 826,
@@ -2240,15 +2240,15 @@
       "grade": "g4",
       "subject": "science",
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
-        "g4|science|animals|hard",
-        "g4|science|animals|medium"
+        "g4|science|animals|easy",
+        "g4|science|animals|hard"
       ],
       "sessionsCreated": 52,
       "questionsOrRowsCreated": 810,
@@ -2272,15 +2272,15 @@
       "grade": "g4",
       "subject": "science",
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
-        "g4|science|animals|hard",
-        "g4|science|animals|medium"
+        "g4|science|animals|easy",
+        "g4|science|animals|hard"
       ],
       "sessionsCreated": 16,
       "questionsOrRowsCreated": 270,
@@ -2304,15 +2304,15 @@
       "grade": "g4",
       "subject": "science",
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
-        "g4|science|animals|hard",
-        "g4|science|animals|medium"
+        "g4|science|animals|easy",
+        "g4|science|animals|hard"
       ],
       "sessionsCreated": 52,
       "questionsOrRowsCreated": 833,
@@ -2798,15 +2798,15 @@
       "grade": "g5",
       "subject": "science",
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
-        "g5|science|animals|hard",
-        "g5|science|animals|medium"
+        "g5|science|animals|easy",
+        "g5|science|animals|hard"
       ],
       "sessionsCreated": 52,
       "questionsOrRowsCreated": 864,
@@ -2830,15 +2830,15 @@
       "grade": "g5",
       "subject": "science",
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
-        "g5|science|animals|hard",
-        "g5|science|animals|medium"
+        "g5|science|animals|easy",
+        "g5|science|animals|hard"
       ],
       "sessionsCreated": 16,
       "questionsOrRowsCreated": 238,
@@ -2862,15 +2862,15 @@
       "grade": "g5",
       "subject": "science",
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
-        "g5|science|animals|hard",
-        "g5|science|animals|medium"
+        "g5|science|animals|easy",
+        "g5|science|animals|hard"
       ],
       "sessionsCreated": 52,
       "questionsOrRowsCreated": 878,
@@ -3356,15 +3356,15 @@
       "grade": "g6",
       "subject": "science",
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
-        "g6|science|animals|hard",
-        "g6|science|animals|medium"
+        "g6|science|animals|easy",
+        "g6|science|animals|hard"
       ],
       "sessionsCreated": 52,
       "questionsOrRowsCreated": 833,
@@ -3388,15 +3388,15 @@
       "grade": "g6",
       "subject": "science",
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
-        "g6|science|animals|hard",
-        "g6|science|animals|medium"
+        "g6|science|animals|easy",
+        "g6|science|animals|hard"
       ],
       "sessionsCreated": 16,
       "questionsOrRowsCreated": 281,
@@ -3420,15 +3420,15 @@
       "grade": "g6",
       "subject": "science",
       "levels": [
-        "hard",
-        "medium"
+        "easy",
+        "hard"
       ],
       "topics": [
         "animals"
       ],
       "cellsTouched": [
-        "g6|science|animals|hard",
-        "g6|science|animals|medium"
+        "g6|science|animals|easy",
+        "g6|science|animals|hard"
       ],
       "sessionsCreated": 52,
       "questionsOrRowsCreated": 828,

@@ -1,6 +1,6 @@
 # Scenario coverage (fixtures → matrix cells)
 
-- Generated at: 2026-05-02T22:06:42.795Z
+- Generated at: 2026-05-02T22:28:59.778Z
 - Scenarios: 278
 
 | scenarioId | mode | suite | grade | matrixCellsTouched | assertionTypes |
@@ -32,13 +32,13 @@
 | matrix_smoke_g1_hebrew | aggregate | matrix_smoke | g1 | 18 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g1_math | aggregate | matrix_smoke | g1 | 21 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g1_moledet_geography | aggregate | matrix_smoke | g1 | 18 | matrix_smoke, storage_pipeline, no_crash |
-| matrix_smoke_g1_science | aggregate | matrix_smoke | g1 | 12 | matrix_smoke, storage_pipeline, no_crash |
+| matrix_smoke_g1_science | aggregate | matrix_smoke | g1 | 13 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g2_english | aggregate | matrix_smoke | g2 | 6 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g2_geometry | aggregate | matrix_smoke | g2 | 9 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g2_hebrew | aggregate | matrix_smoke | g2 | 18 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g2_math | aggregate | matrix_smoke | g2 | 27 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g2_moledet_geography | aggregate | matrix_smoke | g2 | 18 | matrix_smoke, storage_pipeline, no_crash |
-| matrix_smoke_g2_science | aggregate | matrix_smoke | g2 | 14 | matrix_smoke, storage_pipeline, no_crash |
+| matrix_smoke_g2_science | aggregate | matrix_smoke | g2 | 15 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g3_english | aggregate | matrix_smoke | g3 | 10 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g3_geometry | aggregate | matrix_smoke | g3 | 20 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g3_hebrew | aggregate | matrix_smoke | g3 | 14 | matrix_smoke, storage_pipeline, no_crash |
@@ -50,19 +50,19 @@
 | matrix_smoke_g4_hebrew | aggregate | matrix_smoke | g4 | 17 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g4_math | aggregate | matrix_smoke | g4 | 52 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g4_moledet_geography | aggregate | matrix_smoke | g4 | 15 | matrix_smoke, storage_pipeline, no_crash |
-| matrix_smoke_g4_science | aggregate | matrix_smoke | g4 | 16 | matrix_smoke, storage_pipeline, no_crash |
+| matrix_smoke_g4_science | aggregate | matrix_smoke | g4 | 17 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g5_english | aggregate | matrix_smoke | g5 | 11 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g5_geometry | aggregate | matrix_smoke | g5 | 24 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g5_hebrew | aggregate | matrix_smoke | g5 | 18 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g5_math | aggregate | matrix_smoke | g5 | 45 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g5_moledet_geography | aggregate | matrix_smoke | g5 | 18 | matrix_smoke, storage_pipeline, no_crash |
-| matrix_smoke_g5_science | aggregate | matrix_smoke | g5 | 10 | matrix_smoke, storage_pipeline, no_crash |
+| matrix_smoke_g5_science | aggregate | matrix_smoke | g5 | 11 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g6_english | aggregate | matrix_smoke | g6 | 12 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g6_geometry | aggregate | matrix_smoke | g6 | 21 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g6_hebrew | aggregate | matrix_smoke | g6 | 18 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g6_math | aggregate | matrix_smoke | g6 | 51 | matrix_smoke, storage_pipeline, no_crash |
 | matrix_smoke_g6_moledet_geography | aggregate | matrix_smoke | g6 | 18 | matrix_smoke, storage_pipeline, no_crash |
-| matrix_smoke_g6_science | aggregate | matrix_smoke | g6 | 12 | matrix_smoke, storage_pipeline, no_crash |
+| matrix_smoke_g6_science | aggregate | matrix_smoke | g6 | 13 | matrix_smoke, storage_pipeline, no_crash |
 | critical_deep_g1_english_strong | aggregate | critical_matrix_deep | g1 | 2 | critical_matrix_deep, report_build, behavior_summary, storage_pipeline, no_crash |
 | critical_deep_g1_english_thin | aggregate | critical_matrix_deep | g1 | 2 | critical_matrix_deep, report_build, behavior_summary, storage_pipeline, no_crash |
 | critical_deep_g1_english_weak | aggregate | critical_matrix_deep | g1 | 2 | critical_matrix_deep, report_build, behavior_summary, storage_pipeline, no_crash |
@@ -171,7 +171,7 @@
 | critical_deep_g6_science_strong | aggregate | critical_matrix_deep | g6 | 2 | critical_matrix_deep, report_build, behavior_summary, storage_pipeline, no_crash |
 | critical_deep_g6_science_thin | aggregate | critical_matrix_deep | g6 | 2 | critical_matrix_deep, report_build, behavior_summary, storage_pipeline, no_crash |
 | critical_deep_g6_science_weak | aggregate | critical_matrix_deep | g6 | 2 | critical_matrix_deep, report_build, behavior_summary, storage_pipeline, no_crash |
-| profile_stress_average_student_g1_science_s4 | aggregate | profile_stress | g1 | 2 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
+| profile_stress_average_student_g1_science_s4 | aggregate | profile_stress | g1 | 3 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
 | profile_stress_average_student_g2_hebrew_s5 | aggregate | profile_stress | g2 | 3 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
 | profile_stress_average_student_g3_math_s0 | aggregate | profile_stress | g3 | 3 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
 | profile_stress_average_student_g3_math_s6 | aggregate | profile_stress | g3 | 3 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
@@ -195,7 +195,7 @@
 | profile_stress_fast_wrong_g4_math_s3 | aggregate | profile_stress | g4 | 3 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
 | profile_stress_fast_wrong_g5_science_s4 | aggregate | profile_stress | g5 | 2 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
 | profile_stress_fast_wrong_g6_hebrew_s5 | aggregate | profile_stress | g6 | 3 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
-| profile_stress_improving_g1_science_s4 | aggregate | profile_stress | g1 | 2 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
+| profile_stress_improving_g1_science_s4 | aggregate | profile_stress | g1 | 3 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
 | profile_stress_improving_g2_hebrew_s5 | aggregate | profile_stress | g2 | 3 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
 | profile_stress_improving_g3_math_s0 | aggregate | profile_stress | g3 | 3 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |
 | profile_stress_improving_g3_math_s6 | aggregate | profile_stress | g3 | 3 | profile_stress, pace_profile_oracle, report_build, behavior_summary, storage_pipeline, no_crash, profile_behavior_contract |

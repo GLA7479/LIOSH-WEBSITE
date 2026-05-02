@@ -2,36 +2,36 @@
 
 - **Mode:** full
 - **Overall:** **PASS**
-- **Started:** 2026-05-02T22:06:25.720Z
-- **Finished:** 2026-05-02T22:14:59.796Z
-- **Total duration:** 514076 ms
+- **Started:** 2026-05-02T22:28:43.195Z
+- **Finished:** 2026-05-02T22:37:19.327Z
+- **Total duration:** 516131 ms
 
 ## Steps
 
 | # | Stage | Script | Duration (ms) | Result |
 | --- | --- | --- | ---: | --- |
-| 1 | Coverage matrix | `qa:learning-simulator:matrix` | 752 | PASS |
-| 2 | Schema validation (profiles + scenarios) | `qa:learning-simulator:schema` | 777 | PASS |
-| 3 | Aggregate simulator (quick scenarios) | `qa:learning-simulator:aggregate` | 834 | PASS |
-| 4 | Parent report assertions (Phase 3) | `qa:learning-simulator:reports` | 1735 | PASS |
-| 5 | Behavior checks (Phase 5) | `qa:learning-simulator:behavior` | 747 | PASS |
-| 6 | Question integrity (Phase 4) | `qa:learning-simulator:questions` | 1130 | PASS |
-| 7 | Matrix smoke (sampled cells → aggregate) | `qa:learning-simulator:matrix-smoke` | 967 | PASS |
-| 8 | Coverage catalog (819 cells) | `qa:learning-simulator:coverage` | 758 | PASS |
-| 9 | Unsupported cells classification | `qa:learning-simulator:unsupported` | 739 | PASS |
-| 10 | Content gap audit (informational) | `qa:learning-simulator:content-gaps` | 744 | PASS |
-| 11 | Content gap backlog (documentation) | `qa:learning-simulator:content-backlog` | 748 | PASS |
-| 12 | Scenario coverage (fixtures + smoke) | `qa:learning-simulator:scenario-coverage` | 736 | PASS |
-| 13 | Critical matrix deep assertions | `qa:learning-simulator:critical-deep` | 3003 | PASS |
-| 14 | Profile stress (synthetic profiles) | `qa:learning-simulator:profile-stress` | 2708 | PASS |
-| 15 | Scenario coverage (+ critical deep + profile stress) | `qa:learning-simulator:scenario-coverage` | 736 | PASS |
-| 16 | Render release gate (browser/SSR smoke for learning + parent-report) | `qa:learning-simulator:render` | 223427 | PASS |
-| 17 | PDF export gate (parent-report file download) | `qa:learning-simulator:pdf-export` | 244918 | PASS |
-| 18 | Deep longitudinal simulator | `qa:learning-simulator:deep` | 2847 | PASS |
-| 19 | Next.js production build | `build` | 22864 | PASS |
-| 20 | Parent report phase1 selftest | `test:parent-report-phase1` | 1096 | PASS |
-| 21 | Intelligence layer v1 usage selftest | `test:intelligence-layer-v1-usage` | 1051 | PASS |
-| 22 | Release readiness summary (master QA artifact) | `qa:learning-simulator:release-summary` | 748 | PASS |
+| 1 | Coverage matrix | `qa:learning-simulator:matrix` | 763 | PASS |
+| 2 | Schema validation (profiles + scenarios) | `qa:learning-simulator:schema` | 734 | PASS |
+| 3 | Aggregate simulator (quick scenarios) | `qa:learning-simulator:aggregate` | 825 | PASS |
+| 4 | Parent report assertions (Phase 3) | `qa:learning-simulator:reports` | 1581 | PASS |
+| 5 | Behavior checks (Phase 5) | `qa:learning-simulator:behavior` | 908 | PASS |
+| 6 | Question integrity (Phase 4) | `qa:learning-simulator:questions` | 1211 | PASS |
+| 7 | Matrix smoke (sampled cells → aggregate) | `qa:learning-simulator:matrix-smoke` | 814 | PASS |
+| 8 | Coverage catalog (819 cells) | `qa:learning-simulator:coverage` | 748 | PASS |
+| 9 | Unsupported cells classification | `qa:learning-simulator:unsupported` | 785 | PASS |
+| 10 | Content gap audit (informational) | `qa:learning-simulator:content-gaps` | 809 | PASS |
+| 11 | Content gap backlog (documentation) | `qa:learning-simulator:content-backlog` | 745 | PASS |
+| 12 | Scenario coverage (fixtures + smoke) | `qa:learning-simulator:scenario-coverage` | 756 | PASS |
+| 13 | Critical matrix deep assertions | `qa:learning-simulator:critical-deep` | 2252 | PASS |
+| 14 | Profile stress (synthetic profiles) | `qa:learning-simulator:profile-stress` | 2919 | PASS |
+| 15 | Scenario coverage (+ critical deep + profile stress) | `qa:learning-simulator:scenario-coverage` | 771 | PASS |
+| 16 | Render release gate (browser/SSR smoke for learning + parent-report) | `qa:learning-simulator:render` | 202434 | PASS |
+| 17 | PDF export gate (parent-report file download) | `qa:learning-simulator:pdf-export` | 267202 | PASS |
+| 18 | Deep longitudinal simulator | `qa:learning-simulator:deep` | 2937 | PASS |
+| 19 | Next.js production build | `build` | 23950 | PASS |
+| 20 | Parent report phase1 selftest | `test:parent-report-phase1` | 1322 | PASS |
+| 21 | Intelligence layer v1 usage selftest | `test:intelligence-layer-v1-usage` | 955 | PASS |
+| 22 | Release readiness summary (master QA artifact) | `qa:learning-simulator:release-summary` | 698 | PASS |
 
 ## Key artifact paths (repo-relative)
 

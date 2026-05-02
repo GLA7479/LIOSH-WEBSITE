@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-02T22:06:33.385Z",
-  "matrixGeneratedAt": "2026-05-02T22:06:26.425Z",
+  "generatedAt": "2026-05-02T22:28:50.735Z",
+  "matrixGeneratedAt": "2026-05-02T22:28:43.910Z",
   "versions": {
     "catalog": "1.2.0"
   },
@@ -10,11 +10,11 @@
     "deepScenarioCount": 12,
     "uniqueCellsTouchedQuick": 32,
     "uniqueCellsTouchedDeep": 34,
-    "uniqueCellsTouchedMatrixSmoke": 673,
+    "uniqueCellsTouchedMatrixSmoke": 678,
     "statusCounts": {
-      "covered": 706,
+      "covered": 711,
       "unsupported_expected": 72,
-      "unsupported_needs_content": 41
+      "unsupported_needs_content": 36
     }
   },
   "rows": [
@@ -1650,13 +1650,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g1|science|body|hard",
@@ -3830,13 +3830,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g2|science|body|hard",
@@ -9750,13 +9750,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g4|science|body|easy",
@@ -12930,13 +12930,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g5|science|body|easy",
@@ -16050,13 +16050,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g6|science|body|easy",

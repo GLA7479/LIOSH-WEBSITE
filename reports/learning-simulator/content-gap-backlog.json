@@ -1,25 +1,24 @@
 {
-  "runId": "content-backlog-moow5v18",
-  "generatedAt": "2026-05-02T22:06:35.612Z",
+  "runId": "content-backlog-moox9ui0",
+  "generatedAt": "2026-05-02T22:37:41.160Z",
   "versions": {
     "contentGapBacklog": "1.0.0"
   },
-  "sourceAuditRunId": "content-gap-moow5ug0",
-  "totalBacklogItems": 41,
+  "sourceAuditRunId": "content-gap-moox9two",
+  "totalBacklogItems": 36,
   "countsBySubject": {
-    "science": 26,
+    "science": 21,
     "english": 15
   },
   "countsByGrade": {
-    "g1": 6,
-    "g2": 10,
+    "g1": 5,
+    "g2": 9,
     "g3": 3,
-    "g4": 4,
-    "g5": 9,
-    "g6": 9
+    "g4": 3,
+    "g5": 8,
+    "g6": 8
   },
   "countsByTopic": {
-    "science:animals": 5,
     "science:body": 4,
     "science:earth_space": 5,
     "science:environment": 4,
@@ -29,38 +28,15 @@
     "science:experiments": 3
   },
   "countsByLevel": {
-    "hard": 17,
-    "easy": 18,
+    "hard": 15,
+    "easy": 15,
     "medium": 6
   },
   "countsByReleaseRisk": {
-    "high": 26,
+    "high": 21,
     "medium": 15
   },
   "items": [
-    {
-      "backlogId": "BG_g1__science__animals__hard",
-      "subject": "science",
-      "grade": "g1",
-      "level": "hard",
-      "topic": "animals",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "priority": "P1",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "exactMissingReason": "no science MCQ bank items matched grade/topic/level band",
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "targetFileToEditLater": "data/science-questions.js",
-      "suggestedContentType": "science_bank_question",
-      "canBeDeferred": true,
-      "releaseRisk": "high",
-      "notes": "Add SCIENCE_QUESTIONS rows with matching topic, grades[], minLevel/maxLevel band for matrix level; verify filter in question-generator-adapters science branch.",
-      "cellKey": "g1|science|animals|hard",
-      "needs_review": false
-    },
     {
       "backlogId": "BG_g1__science__body__hard",
       "subject": "science",
@@ -243,29 +219,6 @@
       "releaseRisk": "medium",
       "notes": "Phase 4 requires MCQ-shaped rows (isEnglishMcqLike); translation flashcards alone do not satisfy. Confirm product wants MCQ here vs curriculum/matrix adjustment.",
       "cellKey": "g2|english|translation|medium",
-      "needs_review": false
-    },
-    {
-      "backlogId": "BG_g2__science__animals__hard",
-      "subject": "science",
-      "grade": "g2",
-      "level": "hard",
-      "topic": "animals",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "priority": "P1",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "exactMissingReason": "no science MCQ bank items matched grade/topic/level band",
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "targetFileToEditLater": "data/science-questions.js",
-      "suggestedContentType": "science_bank_question",
-      "canBeDeferred": true,
-      "releaseRisk": "high",
-      "notes": "Add SCIENCE_QUESTIONS rows with matching topic, grades[], minLevel/maxLevel band for matrix level; verify filter in question-generator-adapters science branch.",
-      "cellKey": "g2|science|animals|hard",
       "needs_review": false
     },
     {
@@ -545,29 +498,6 @@
       "needs_review": false
     },
     {
-      "backlogId": "BG_g4__science__animals__easy",
-      "subject": "science",
-      "grade": "g4",
-      "level": "easy",
-      "topic": "animals",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "priority": "P1",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "exactMissingReason": "no science MCQ bank items matched grade/topic/level band",
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "targetFileToEditLater": "data/science-questions.js",
-      "suggestedContentType": "science_bank_question",
-      "canBeDeferred": true,
-      "releaseRisk": "high",
-      "notes": "Add SCIENCE_QUESTIONS rows with matching topic, grades[], minLevel/maxLevel band for matrix level; verify filter in question-generator-adapters science branch.",
-      "cellKey": "g4|science|animals|easy",
-      "needs_review": false
-    },
-    {
       "backlogId": "BG_g5__english__translation__easy",
       "subject": "english",
       "grade": "g5",
@@ -634,29 +564,6 @@
       "releaseRisk": "medium",
       "notes": "Phase 4 requires MCQ-shaped rows (isEnglishMcqLike); translation flashcards alone do not satisfy. Confirm product wants MCQ here vs curriculum/matrix adjustment.",
       "cellKey": "g5|english|translation|medium",
-      "needs_review": false
-    },
-    {
-      "backlogId": "BG_g5__science__animals__easy",
-      "subject": "science",
-      "grade": "g5",
-      "level": "easy",
-      "topic": "animals",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "priority": "P1",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "exactMissingReason": "no science MCQ bank items matched grade/topic/level band",
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "targetFileToEditLater": "data/science-questions.js",
-      "suggestedContentType": "science_bank_question",
-      "canBeDeferred": true,
-      "releaseRisk": "high",
-      "notes": "Add SCIENCE_QUESTIONS rows with matching topic, grades[], minLevel/maxLevel band for matrix level; verify filter in question-generator-adapters science branch.",
-      "cellKey": "g5|science|animals|easy",
       "needs_review": false
     },
     {
@@ -841,29 +748,6 @@
       "releaseRisk": "medium",
       "notes": "Phase 4 requires MCQ-shaped rows (isEnglishMcqLike); translation flashcards alone do not satisfy. Confirm product wants MCQ here vs curriculum/matrix adjustment.",
       "cellKey": "g6|english|translation|medium",
-      "needs_review": false
-    },
-    {
-      "backlogId": "BG_g6__science__animals__easy",
-      "subject": "science",
-      "grade": "g6",
-      "level": "easy",
-      "topic": "animals",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "priority": "P1",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "exactMissingReason": "no science MCQ bank items matched grade/topic/level band",
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "targetFileToEditLater": "data/science-questions.js",
-      "suggestedContentType": "science_bank_question",
-      "canBeDeferred": true,
-      "releaseRisk": "high",
-      "notes": "Add SCIENCE_QUESTIONS rows with matching topic, grades[], minLevel/maxLevel band for matrix level; verify filter in question-generator-adapters science branch.",
-      "cellKey": "g6|science|animals|easy",
       "needs_review": false
     },
     {

@@ -1,6 +1,6 @@
 # PDF export — implementation audit
 
-- Generated at: 2026-05-02T22:10:27.039Z
+- Generated at: 2026-05-02T22:32:23.047Z
 
 | Field | Value |
 | --- | --- |

@@ -1,10 +1,10 @@
 # Profile stress (simulator)
 
-- Run id: profile-stress-moow5yh7
-- Generated at: 2026-05-02T22:06:40.075Z
-- Eligible pool (covered, non-mixed, not backlog): **706**
+- Run id: profile-stress-moowyly1
+- Generated at: 2026-05-02T22:28:56.857Z
+- Eligible pool (covered, non-mixed, not backlog): **711**
 - Scenarios: **112** (14 profile types × 8 slots)
-- Distinct matrix cells touched: **133**
+- Distinct matrix cells touched: **134**
 - Failures: **0**
 
 ## Profile types

@@ -1,14 +1,14 @@
 {
-  "runId": "matrix-smoke-moow5snu",
-  "generatedAt": "2026-05-02T22:06:32.538Z",
+  "runId": "matrix-smoke-moowygkz",
+  "generatedAt": "2026-05-02T22:28:49.907Z",
   "generator": "matrix-smoke-v1",
   "versions": {
     "matrixSmoke": "1.0.0"
   },
-  "totalCandidateCells": 673,
+  "totalCandidateCells": 678,
   "totalSmokeScenarios": 36,
-  "totalCellsTouched": 673,
-  "totalCellsSkippedUnsupported": 113,
+  "totalCellsTouched": 678,
+  "totalCellsSkippedUnsupported": 108,
   "skippedAlreadyFixtureCovered": 33,
   "skippedOther": 0,
   "failures": [],
@@ -1179,7 +1179,8 @@
       ],
       "levels": [
         "easy",
-        "medium"
+        "medium",
+        "hard"
       ],
       "topics": [
         "animals",
@@ -1198,6 +1199,11 @@
           "subjectCanonical": "science",
           "topic": "animals",
           "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "animals",
+          "level": "hard"
         },
         {
           "subjectCanonical": "science",
@@ -1262,6 +1268,15 @@
           "level": "easy",
           "topic": "animals",
           "cellKey": "g1|science|animals|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g1",
+          "subject": "science",
+          "level": "hard",
+          "topic": "animals",
+          "cellKey": "g1|science|animals|hard",
           "sourceStatusBefore": "sampled",
           "coveredByMatrixSmoke": true
         },
@@ -1367,6 +1382,7 @@
       ],
       "matrixCellsTouched": [
         "g1|science|animals|easy",
+        "g1|science|animals|hard",
         "g1|science|animals|medium",
         "g1|science|body|easy",
         "g1|science|body|medium",
@@ -1379,8 +1395,8 @@
         "g1|science|plants|easy",
         "g1|science|plants|medium"
       ],
-      "sessionsCreated": 12,
-      "questionsOrRowsCreated": 181,
+      "sessionsCreated": 13,
+      "questionsOrRowsCreated": 200,
       "status": "ok",
       "errors": []
     },
@@ -2759,6 +2775,11 @@
         {
           "subjectCanonical": "science",
           "topic": "animals",
+          "level": "hard"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "animals",
           "level": "medium"
         },
         {
@@ -2829,6 +2850,15 @@
           "level": "easy",
           "topic": "animals",
           "cellKey": "g2|science|animals|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g2",
+          "subject": "science",
+          "level": "hard",
+          "topic": "animals",
+          "cellKey": "g2|science|animals|hard",
           "sourceStatusBefore": "sampled",
           "coveredByMatrixSmoke": true
         },
@@ -2952,6 +2982,7 @@
       ],
       "matrixCellsTouched": [
         "g2|science|animals|easy",
+        "g2|science|animals|hard",
         "g2|science|animals|medium",
         "g2|science|body|easy",
         "g2|science|body|medium",
@@ -2966,8 +2997,8 @@
         "g2|science|plants|hard",
         "g2|science|plants|medium"
       ],
-      "sessionsCreated": 14,
-      "questionsOrRowsCreated": 221,
+      "sessionsCreated": 15,
+      "questionsOrRowsCreated": 241,
       "status": "ok",
       "errors": []
     },
@@ -6833,6 +6864,11 @@
         {
           "subjectCanonical": "science",
           "topic": "animals",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "animals",
           "level": "hard"
         },
         {
@@ -6912,6 +6948,15 @@
         }
       ],
       "cellsTouched": [
+        {
+          "grade": "g4",
+          "subject": "science",
+          "level": "easy",
+          "topic": "animals",
+          "cellKey": "g4|science|animals|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
         {
           "grade": "g4",
           "subject": "science",
@@ -7058,6 +7103,7 @@
         }
       ],
       "matrixCellsTouched": [
+        "g4|science|animals|easy",
         "g4|science|animals|hard",
         "g4|science|animals|medium",
         "g4|science|body|easy",
@@ -7075,8 +7121,8 @@
         "g4|science|materials|easy",
         "g4|science|materials|hard"
       ],
-      "sessionsCreated": 16,
-      "questionsOrRowsCreated": 241,
+      "sessionsCreated": 17,
+      "questionsOrRowsCreated": 253,
       "status": "ok",
       "errors": []
     },
@@ -9012,6 +9058,7 @@
         "science"
       ],
       "levels": [
+        "easy",
         "medium",
         "hard"
       ],
@@ -9027,6 +9074,11 @@
       "tier": "quick",
       "timeHorizonDays": 7,
       "matrixCoverageRefs": [
+        {
+          "subjectCanonical": "science",
+          "topic": "animals",
+          "level": "easy"
+        },
         {
           "subjectCanonical": "science",
           "topic": "animals",
@@ -9079,6 +9131,15 @@
         }
       ],
       "cellsTouched": [
+        {
+          "grade": "g5",
+          "subject": "science",
+          "level": "easy",
+          "topic": "animals",
+          "cellKey": "g5|science|animals|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
         {
           "grade": "g5",
           "subject": "science",
@@ -9171,6 +9232,7 @@
         }
       ],
       "matrixCellsTouched": [
+        "g5|science|animals|easy",
         "g5|science|animals|hard",
         "g5|science|animals|medium",
         "g5|science|body|hard",
@@ -9182,8 +9244,8 @@
         "g5|science|materials|hard",
         "g5|science|materials|medium"
       ],
-      "sessionsCreated": 10,
-      "questionsOrRowsCreated": 154,
+      "sessionsCreated": 11,
+      "questionsOrRowsCreated": 174,
       "status": "ok",
       "errors": []
     },
@@ -11180,6 +11242,7 @@
         "science"
       ],
       "levels": [
+        "easy",
         "medium",
         "hard"
       ],
@@ -11196,6 +11259,11 @@
       "tier": "quick",
       "timeHorizonDays": 7,
       "matrixCoverageRefs": [
+        {
+          "subjectCanonical": "science",
+          "topic": "animals",
+          "level": "easy"
+        },
         {
           "subjectCanonical": "science",
           "topic": "animals",
@@ -11258,6 +11326,15 @@
         }
       ],
       "cellsTouched": [
+        {
+          "grade": "g6",
+          "subject": "science",
+          "level": "easy",
+          "topic": "animals",
+          "cellKey": "g6|science|animals|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
         {
           "grade": "g6",
           "subject": "science",
@@ -11368,6 +11445,7 @@
         }
       ],
       "matrixCellsTouched": [
+        "g6|science|animals|easy",
         "g6|science|animals|hard",
         "g6|science|animals|medium",
         "g6|science|body|hard",
@@ -11381,8 +11459,8 @@
         "g6|science|materials|hard",
         "g6|science|materials|medium"
       ],
-      "sessionsCreated": 12,
-      "questionsOrRowsCreated": 194,
+      "sessionsCreated": 13,
+      "questionsOrRowsCreated": 208,
       "status": "ok",
       "errors": []
     }

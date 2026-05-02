@@ -1,6 +1,6 @@
 {
-  "runId": "profile-stress-moow5yh7",
-  "generatedAt": "2026-05-02T22:06:40.075Z",
+  "runId": "profile-stress-moowyly1",
+  "generatedAt": "2026-05-02T22:28:56.857Z",
   "generator": "profile-stress-v1",
   "versions": {
     "profileStress": "1.1.0"
@@ -22,7 +22,7 @@
     "mixed_strengths"
   ],
   "scenarioCount": 112,
-  "cellsTouchedTotal": 133,
+  "cellsTouchedTotal": 134,
   "gradesCovered": [
     "g1",
     "g2",
@@ -99,6 +99,7 @@
       "subject": "science",
       "levels": [
         "easy",
+        "hard",
         "medium"
       ],
       "topics": [
@@ -106,7 +107,8 @@
       ],
       "cellsTouched": [
         "g1|science|animals|easy",
-        "g1|science|animals|medium"
+        "g1|science|animals|medium",
+        "g1|science|animals|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 535,
@@ -745,12 +747,12 @@
         "medium"
       ],
       "topics": [
-        "plants"
+        "animals"
       ],
       "cellsTouched": [
-        "g2|science|plants|easy",
-        "g2|science|plants|medium",
-        "g2|science|plants|hard"
+        "g2|science|animals|easy",
+        "g2|science|animals|medium",
+        "g2|science|animals|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 571,
@@ -787,12 +789,12 @@
         "medium"
       ],
       "topics": [
-        "plants"
+        "animals"
       ],
       "cellsTouched": [
-        "g2|science|plants|easy",
-        "g2|science|plants|medium",
-        "g2|science|plants|hard"
+        "g2|science|animals|easy",
+        "g2|science|animals|medium",
+        "g2|science|animals|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 572,
@@ -912,11 +914,11 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "materials"
       ],
       "cellsTouched": [
-        "g5|science|animals|medium",
-        "g5|science|animals|hard"
+        "g5|science|materials|medium",
+        "g5|science|materials|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 548,
@@ -991,6 +993,7 @@
       "subject": "science",
       "levels": [
         "easy",
+        "hard",
         "medium"
       ],
       "topics": [
@@ -998,7 +1001,8 @@
       ],
       "cellsTouched": [
         "g1|science|animals|easy",
-        "g1|science|animals|medium"
+        "g1|science|animals|medium",
+        "g1|science|animals|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 596,
@@ -2027,11 +2031,11 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "materials"
       ],
       "cellsTouched": [
-        "g6|science|animals|medium",
-        "g6|science|animals|hard"
+        "g6|science|materials|medium",
+        "g6|science|materials|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 603,
@@ -2060,11 +2064,11 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "materials"
       ],
       "cellsTouched": [
-        "g6|science|animals|medium",
-        "g6|science|animals|hard"
+        "g6|science|materials|medium",
+        "g6|science|materials|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 561,
@@ -2500,12 +2504,12 @@
         "medium"
       ],
       "topics": [
-        "plants"
+        "animals"
       ],
       "cellsTouched": [
-        "g2|science|plants|easy",
-        "g2|science|plants|medium",
-        "g2|science|plants|hard"
+        "g2|science|animals|easy",
+        "g2|science|animals|medium",
+        "g2|science|animals|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 566,
@@ -2535,12 +2539,12 @@
         "medium"
       ],
       "topics": [
-        "plants"
+        "animals"
       ],
       "cellsTouched": [
-        "g2|science|plants|easy",
-        "g2|science|plants|medium",
-        "g2|science|plants|hard"
+        "g2|science|animals|easy",
+        "g2|science|animals|medium",
+        "g2|science|animals|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 541,
@@ -2639,11 +2643,11 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "materials"
       ],
       "cellsTouched": [
-        "g5|science|animals|medium",
-        "g5|science|animals|hard"
+        "g5|science|materials|medium",
+        "g5|science|materials|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 554,
@@ -4088,5 +4092,5 @@
       }
     }
   ],
-  "eligiblePoolSize": 706
+  "eligiblePoolSize": 711
 }

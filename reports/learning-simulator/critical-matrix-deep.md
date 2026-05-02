@@ -1,7 +1,7 @@
 # Critical Matrix Deep Assertions
 
-- Run id: critical-deep-moow5w5b
-- Generated at: 2026-05-02T22:06:37.055Z
+- Run id: critical-deep-moowyk6g
+- Generated at: 2026-05-02T22:28:54.568Z
 - Selected critical cells: 56 (target band **40–80**, not full 618-cell deep suite)
 - Per-grade balancing target (6–12 when total≤72): **met**
 - Scenarios executed: 108 (3 profile variants × each grade×subject group with selected cells)
@@ -17,7 +17,7 @@
 ```json
 {
   "targetCells": 56,
-  "poolSize": 706,
+  "poolSize": 711,
   "strategy": "Balanced quotas per grade (6–12 when total≤72), then level/subject gaps with per-grade cap, round-robin subject fill to target, bypass cap only to reach minimum 40.",
   "gradeQuotasDesired": {
     "g1": 10,
@@ -50,9 +50,9 @@
     "moledet_geography": 6
   },
   "byLevel": {
-    "easy": 30,
-    "hard": 19,
-    "medium": 7
+    "easy": 33,
+    "hard": 21,
+    "medium": 2
   }
 }
 ```
@@ -77,9 +77,9 @@
 
 ## Cells by level
 
-- easy: 30
-- hard: 19
-- medium: 7
+- easy: 33
+- hard: 21
+- medium: 2
 
 ## Assertion rollup
 
