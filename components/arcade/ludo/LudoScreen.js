@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLudoSession } from "../../../hooks/arcade/useLudoSession";
 import LudoBoardView from "../../../lib/arcade/ludo/LudoBoardView";
+import LudoSeatStrip from "./LudoSeatStrip";
 
 const GAME_TITLE = "לודו";
 
@@ -42,7 +43,7 @@ function LudoOv2AdSlot() {
 /** @param {{ onLeave: () => void, disabled?: boolean, busy?: boolean }} props */
 function LudoLeaveRow({ onLeave, disabled = false, busy = false }) {
   return (
-    <div className="mt-3 flex w-full shrink-0 justify-center px-1 pb-1 sm:mt-4">
+    <div className="mt-0 flex w-full shrink-0 justify-center border-t border-white/10 px-1 pb-1 pt-2 sm:pt-2.5">
       <button
         type="button"
         onClick={onLeave}
@@ -133,9 +134,12 @@ function LudoHowToModal({ open, onClose }) {
           </button>
         </div>
         <ul className="list-disc space-y-2 pr-5 text-sm leading-relaxed text-zinc-200">
-          <li>בתורך — לחץ על הקוביה כדי לזרוק (1–6).</li>
+          <li>בתחילת התור הקוביה נזרקת אוטומטית; אפשר גם ללחוץ על הקוביה (1–6).</li>
           <li>רק 6 מוציא כלי מהחצר לשביל.</li>
-          <li>בחר כלי חוקי כדי לזוז; אכלת יריב — תור נוסף לפי חוקי המנוע.</li>
+          <li>
+            מספר 6 אחרי מהלך — תור נוסף; אכילת יריב או כניסה לבית מהשביל — תור נוסף (כמו מנוע OV2).
+          </li>
+          <li>כשיש רק מהלך חוקי אחד — הבחירה מתבצעת אוטומטית.</li>
           <li>כלי שמגיע ליעד הבית מסיים; ארבעה כלים בבית — ניצחון.</li>
         </ul>
       </div>
@@ -226,9 +230,6 @@ export default function LudoScreen({ roomId }) {
   const showBoardLoading =
     !showLobbyWait && room?.status === "active" && !snapshot && !showSessionInitError;
 
-  const showGameBoardUi =
-    Boolean(room) && !showLobbyWait && !showSessionInitError && !showBoardLoading;
-
   const seatLabels = useMemo(() => {
     const out = ["", "", "", ""];
     const members = Array.isArray(players) ? players : [];
@@ -259,6 +260,9 @@ export default function LudoScreen({ roomId }) {
   const finished = vm.phase === "finished";
   const didIWin = vm.mySeat != null && vm.winnerSeat != null && vm.winnerSeat === vm.mySeat;
 
+  const seatStripActiveIndex =
+    vm.phase === "playing" && vm.turnSeat != null && !finished ? vm.turnSeat : null;
+
   const boardForView = useMemo(() => {
     const b = vm.board && typeof vm.board === "object" ? vm.board : {};
     return {
@@ -280,14 +284,9 @@ export default function LudoScreen({ roomId }) {
       <LudoHowToModal open={helpOpen} onClose={() => setHelpOpen(false)} />
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div
-          className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden [-webkit-overflow-scrolling:touch]"
-          style={{
-            paddingBottom: "max(6px, env(safe-area-inset-bottom, 0px))",
-          }}
-        >
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           {bundleError ? (
-            <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 px-4 text-center">
+            <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 overflow-y-auto px-4 py-6 text-center">
               <p className="max-w-md text-sm leading-relaxed text-red-200/95">{bundleError}</p>
               <button
                 type="button"
@@ -300,9 +299,12 @@ export default function LudoScreen({ roomId }) {
           ) : !room ? (
             <div className="flex min-h-[40vh] flex-col items-center justify-center text-sm text-zinc-400">טוען חדר…</div>
           ) : showLobbyWait ? (
-            <div className="flex min-h-[40vh] flex-col items-center justify-center px-2 text-center text-sm text-zinc-400">
-              <p>ממתין לשחקנים…</p>
-              <p className="mt-2 text-xs text-zinc-500">כשהחדר מתמלא, המשחק ייפתח אוטומטית.</p>
+            <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-hidden px-0.5 sm:gap-1">
+              <LudoSeatStrip count={4} labels={seatLabels} activeIndex={null} selfIndex={vm.mySeat} />
+              <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-2 text-center text-sm text-zinc-400">
+                <p>ממתין לשחקנים…</p>
+                <p className="mt-2 text-xs text-zinc-500">כשהחדר מתמלא, המשחק ייפתח אוטומטית.</p>
+              </div>
             </div>
           ) : showSessionInitError ? (
             <div className="flex min-h-[40vh] flex-col items-center justify-center px-4 text-center text-sm text-red-300">
@@ -318,9 +320,9 @@ export default function LudoScreen({ roomId }) {
           ) : showBoardLoading ? (
             <div className="flex min-h-[40vh] items-center justify-center text-sm text-zinc-400">טוען לוח…</div>
           ) : (
-            <>
+            <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-hidden px-0.5 sm:gap-1">
               {err ? (
-                <div className="rounded-md border border-red-500/20 bg-red-950/20 px-2 py-1.5 text-[11px] text-red-200/95">
+                <div className="shrink-0 rounded-md border border-red-500/20 bg-red-950/20 px-2 py-1.5 text-[11px] text-red-200/95">
                   <span>{err}</span>{" "}
                   <button type="button" className="text-red-300 underline" onClick={() => setErr("")}>
                     סגור
@@ -328,20 +330,14 @@ export default function LudoScreen({ roomId }) {
                 </div>
               ) : null}
 
-              <div className="mt-2 grid grid-cols-2 gap-1 text-[10px] text-zinc-400 sm:text-xs">
-                {seatLabels.map((label, i) => (
-                  <div
-                    key={i}
-                    className={`truncate rounded border px-1 py-0.5 ${
-                      vm.turnSeat === i && vm.phase === "playing" ? "border-amber-400/50 text-amber-100" : "border-white/10"
-                    }`}
-                  >
-                    {label}
-                  </div>
-                ))}
-              </div>
+              <LudoSeatStrip
+                count={4}
+                labels={seatLabels}
+                activeIndex={seatStripActiveIndex}
+                selfIndex={vm.mySeat}
+              />
 
-              <div className="mt-2 flex min-h-[min(52vh,420px)] min-w-0 flex-1 flex-col">
+              <div className="relative min-h-0 w-full flex-1 overflow-hidden">
                 <LudoBoardView
                   board={boardForView}
                   mySeat={vm.mySeat}
@@ -354,24 +350,21 @@ export default function LudoScreen({ roomId }) {
                   disableHighlights={busy || !vm.canClientMovePiece}
                   readOnlyPresentation={vm.phase !== "playing"}
                   legalMovablePieceIndices={vm.legalMovablePieceIndices}
+                  preferRectangularLayout
                 />
               </div>
 
-              <LudoLeaveRow onLeave={onLeaveRoom} busy={leaveBusy} disabled={!String(roomId || "").trim()} />
-
               {finished ? (
-                <div className="mt-3 rounded-lg border border-white/10 bg-zinc-900/80 px-3 py-3 text-center sm:mt-4">
+                <div className="shrink-0 rounded-lg border border-white/10 bg-zinc-900/80 px-3 py-3 text-center">
                   <p className="text-lg font-bold text-zinc-100">{didIWin ? "ניצחת!" : "הפסדת"}</p>
                   <p className="mt-1 text-sm text-zinc-400">סיום משחק · ללא פרס מטבעות בארקייד זה</p>
                 </div>
               ) : null}
-            </>
+            </div>
           )}
-
-          {!showGameBoardUi ? (
-            <LudoLeaveRow onLeave={onLeaveRoom} busy={leaveBusy} disabled={!String(roomId || "").trim()} />
-          ) : null}
         </div>
+
+        {room ? <LudoLeaveRow onLeave={onLeaveRoom} busy={leaveBusy} disabled={!String(roomId || "").trim()} /> : null}
 
         <LudoOv2AdSlot />
       </div>

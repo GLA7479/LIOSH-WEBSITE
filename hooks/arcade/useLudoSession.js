@@ -34,6 +34,8 @@ export function useLudoSession(ctx) {
   const lastPollSigRef = useRef("");
   const snapRef = useRef(null);
   snapRef.current = snap;
+  const autoDiceScheduledRef = useRef(false);
+  const autoMoveScheduledRef = useRef(false);
 
   useEffect(() => {
     setSnap(null);
@@ -191,6 +193,62 @@ export function useLudoSession(ctx) {
     },
     [roomId, busy],
   );
+
+  /** תור שלי בלי קוביה — זריקה אוטומטית (כללי מנוע זהים ל־OV2; השרת מטפל ב־6 /_pass) */
+  useEffect(() => {
+    if (!roomId || !snap?.canClientRoll || busy) {
+      autoDiceScheduledRef.current = false;
+      return undefined;
+    }
+    if (autoDiceScheduledRef.current) return undefined;
+    autoDiceScheduledRef.current = true;
+    const id = window.setTimeout(() => {
+      const s = snapRef.current;
+      if (!s?.canClientRoll) {
+        autoDiceScheduledRef.current = false;
+        return;
+      }
+      void rollDice().finally(() => {
+        autoDiceScheduledRef.current = false;
+      });
+    }, 0);
+    return () => {
+      window.clearTimeout(id);
+      autoDiceScheduledRef.current = false;
+    };
+  }, [roomId, snap?.revision, snap?.canClientRoll, busy, rollDice]);
+
+  /** רק מהלך חוקי אחד — בחירה אוטומטית */
+  useEffect(() => {
+    if (!roomId || !snap?.canClientMovePiece || busy) {
+      autoMoveScheduledRef.current = false;
+      return undefined;
+    }
+    const legal = snap.legalMovablePieceIndices;
+    if (!Array.isArray(legal) || legal.length !== 1) {
+      autoMoveScheduledRef.current = false;
+      return undefined;
+    }
+    const only = legal[0];
+    if (!Number.isInteger(only)) return undefined;
+    if (autoMoveScheduledRef.current) return undefined;
+    autoMoveScheduledRef.current = true;
+    const id = window.setTimeout(() => {
+      const s = snapRef.current;
+      const leg = s?.legalMovablePieceIndices;
+      if (!s?.canClientMovePiece || !Array.isArray(leg) || leg.length !== 1 || leg[0] !== only) {
+        autoMoveScheduledRef.current = false;
+        return;
+      }
+      void movePiece(only).finally(() => {
+        autoMoveScheduledRef.current = false;
+      });
+    }, 0);
+    return () => {
+      window.clearTimeout(id);
+      autoMoveScheduledRef.current = false;
+    };
+  }, [roomId, snap?.revision, snap?.canClientMovePiece, snap?.dice, snap?.legalMovablePieceIndices, busy, movePiece]);
 
   const vm = useMemo(() => {
     const phase = snap ? String(snap.phase || "").toLowerCase() : "";
