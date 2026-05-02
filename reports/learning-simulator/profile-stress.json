@@ -1,6 +1,6 @@
 {
-  "runId": "profile-stress-moowyly1",
-  "generatedAt": "2026-05-02T22:28:56.857Z",
+  "runId": "profile-stress-mooxfsbq",
+  "generatedAt": "2026-05-02T22:42:18.278Z",
   "generator": "profile-stress-v1",
   "versions": {
     "profileStress": "1.1.0"
@@ -22,7 +22,7 @@
     "mixed_strengths"
   ],
   "scenarioCount": 112,
-  "cellsTouchedTotal": 134,
+  "cellsTouchedTotal": 139,
   "gradesCovered": [
     "g1",
     "g2",
@@ -103,12 +103,12 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "environment"
       ],
       "cellsTouched": [
-        "g1|science|animals|easy",
-        "g1|science|animals|medium",
-        "g1|science|animals|hard"
+        "g1|science|environment|easy",
+        "g1|science|environment|medium",
+        "g1|science|environment|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 535,
@@ -747,12 +747,12 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "environment"
       ],
       "cellsTouched": [
-        "g2|science|animals|easy",
-        "g2|science|animals|medium",
-        "g2|science|animals|hard"
+        "g2|science|environment|easy",
+        "g2|science|environment|medium",
+        "g2|science|environment|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 571,
@@ -789,12 +789,12 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "environment"
       ],
       "cellsTouched": [
-        "g2|science|animals|easy",
-        "g2|science|animals|medium",
-        "g2|science|animals|hard"
+        "g2|science|environment|easy",
+        "g2|science|environment|medium",
+        "g2|science|environment|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 572,
@@ -910,15 +910,17 @@
       "grade": "g5",
       "subject": "science",
       "levels": [
+        "easy",
         "hard",
         "medium"
       ],
       "topics": [
-        "materials"
+        "environment"
       ],
       "cellsTouched": [
-        "g5|science|materials|medium",
-        "g5|science|materials|hard"
+        "g5|science|environment|easy",
+        "g5|science|environment|medium",
+        "g5|science|environment|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 548,
@@ -997,12 +999,12 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "environment"
       ],
       "cellsTouched": [
-        "g1|science|animals|easy",
-        "g1|science|animals|medium",
-        "g1|science|animals|hard"
+        "g1|science|environment|easy",
+        "g1|science|environment|medium",
+        "g1|science|environment|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 596,
@@ -2027,15 +2029,17 @@
       "grade": "g6",
       "subject": "science",
       "levels": [
+        "easy",
         "hard",
         "medium"
       ],
       "topics": [
-        "materials"
+        "environment"
       ],
       "cellsTouched": [
-        "g6|science|materials|medium",
-        "g6|science|materials|hard"
+        "g6|science|environment|easy",
+        "g6|science|environment|medium",
+        "g6|science|environment|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 603,
@@ -2060,15 +2064,17 @@
       "grade": "g6",
       "subject": "science",
       "levels": [
+        "easy",
         "hard",
         "medium"
       ],
       "topics": [
-        "materials"
+        "environment"
       ],
       "cellsTouched": [
-        "g6|science|materials|medium",
-        "g6|science|materials|hard"
+        "g6|science|environment|easy",
+        "g6|science|environment|medium",
+        "g6|science|environment|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 561,
@@ -2504,12 +2510,12 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "environment"
       ],
       "cellsTouched": [
-        "g2|science|animals|easy",
-        "g2|science|animals|medium",
-        "g2|science|animals|hard"
+        "g2|science|environment|easy",
+        "g2|science|environment|medium",
+        "g2|science|environment|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 566,
@@ -2539,12 +2545,12 @@
         "medium"
       ],
       "topics": [
-        "animals"
+        "environment"
       ],
       "cellsTouched": [
-        "g2|science|animals|easy",
-        "g2|science|animals|medium",
-        "g2|science|animals|hard"
+        "g2|science|environment|easy",
+        "g2|science|environment|medium",
+        "g2|science|environment|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 541,
@@ -2639,15 +2645,17 @@
       "grade": "g5",
       "subject": "science",
       "levels": [
+        "easy",
         "hard",
         "medium"
       ],
       "topics": [
-        "materials"
+        "environment"
       ],
       "cellsTouched": [
-        "g5|science|materials|medium",
-        "g5|science|materials|hard"
+        "g5|science|environment|easy",
+        "g5|science|environment|medium",
+        "g5|science|environment|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 554,
@@ -3197,6 +3205,7 @@
       "grade": "g6",
       "subject": "science",
       "levels": [
+        "easy",
         "hard",
         "medium"
       ],
@@ -3204,6 +3213,7 @@
         "experiments"
       ],
       "cellsTouched": [
+        "g6|science|experiments|easy",
         "g6|science|experiments|medium",
         "g6|science|experiments|hard"
       ],
@@ -3230,6 +3240,7 @@
       "grade": "g6",
       "subject": "science",
       "levels": [
+        "easy",
         "hard",
         "medium"
       ],
@@ -3237,6 +3248,7 @@
         "experiments"
       ],
       "cellsTouched": [
+        "g6|science|experiments|easy",
         "g6|science|experiments|medium",
         "g6|science|experiments|hard"
       ],
@@ -3614,6 +3626,7 @@
       "subject": "science",
       "levels": [
         "easy",
+        "hard",
         "medium"
       ],
       "topics": [
@@ -3621,7 +3634,8 @@
       ],
       "cellsTouched": [
         "g2|science|experiments|easy",
-        "g2|science|experiments|medium"
+        "g2|science|experiments|medium",
+        "g2|science|experiments|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 580,
@@ -3647,6 +3661,7 @@
       "subject": "science",
       "levels": [
         "easy",
+        "hard",
         "medium"
       ],
       "topics": [
@@ -3654,7 +3669,8 @@
       ],
       "cellsTouched": [
         "g2|science|experiments|easy",
-        "g2|science|experiments|medium"
+        "g2|science|experiments|medium",
+        "g2|science|experiments|hard"
       ],
       "sessionsCreated": 36,
       "questionsOrRowsCreated": 626,
@@ -3749,6 +3765,7 @@
       "grade": "g5",
       "subject": "science",
       "levels": [
+        "easy",
         "hard",
         "medium"
       ],
@@ -3756,6 +3773,7 @@
         "experiments"
       ],
       "cellsTouched": [
+        "g5|science|experiments|easy",
         "g5|science|experiments|medium",
         "g5|science|experiments|hard"
       ],
@@ -4092,5 +4110,5 @@
       }
     }
   ],
-  "eligiblePoolSize": 711
+  "eligiblePoolSize": 732
 }

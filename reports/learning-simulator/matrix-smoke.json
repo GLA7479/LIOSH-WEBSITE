@@ -1,15 +1,15 @@
 {
-  "runId": "matrix-smoke-moowygkz",
-  "generatedAt": "2026-05-02T22:28:49.907Z",
+  "runId": "matrix-smoke-mooxfnh2",
+  "generatedAt": "2026-05-02T22:42:11.990Z",
   "generator": "matrix-smoke-v1",
   "versions": {
     "matrixSmoke": "1.0.0"
   },
-  "totalCandidateCells": 678,
+  "totalCandidateCells": 697,
   "totalSmokeScenarios": 36,
-  "totalCellsTouched": 678,
-  "totalCellsSkippedUnsupported": 108,
-  "skippedAlreadyFixtureCovered": 33,
+  "totalCellsTouched": 697,
+  "totalCellsSkippedUnsupported": 87,
+  "skippedAlreadyFixtureCovered": 35,
   "skippedOther": 0,
   "failures": [],
   "scenarios": [
@@ -1218,12 +1218,22 @@
         {
           "subjectCanonical": "science",
           "topic": "body",
+          "level": "hard"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "body",
           "level": "medium"
         },
         {
           "subjectCanonical": "science",
           "topic": "earth_space",
           "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "earth_space",
+          "level": "hard"
         },
         {
           "subjectCanonical": "science",
@@ -1234,6 +1244,11 @@
           "subjectCanonical": "science",
           "topic": "environment",
           "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "environment",
+          "level": "hard"
         },
         {
           "subjectCanonical": "science",
@@ -1244,6 +1259,11 @@
           "subjectCanonical": "science",
           "topic": "materials",
           "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "materials",
+          "level": "hard"
         },
         {
           "subjectCanonical": "science",
@@ -1254,6 +1274,11 @@
           "subjectCanonical": "science",
           "topic": "plants",
           "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "plants",
+          "level": "hard"
         },
         {
           "subjectCanonical": "science",
@@ -1301,6 +1326,15 @@
         {
           "grade": "g1",
           "subject": "science",
+          "level": "hard",
+          "topic": "body",
+          "cellKey": "g1|science|body|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g1",
+          "subject": "science",
           "level": "medium",
           "topic": "body",
           "cellKey": "g1|science|body|medium",
@@ -1313,6 +1347,15 @@
           "level": "easy",
           "topic": "earth_space",
           "cellKey": "g1|science|earth_space|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g1",
+          "subject": "science",
+          "level": "hard",
+          "topic": "earth_space",
+          "cellKey": "g1|science|earth_space|hard",
           "sourceStatusBefore": "sampled",
           "coveredByMatrixSmoke": true
         },
@@ -1337,6 +1380,15 @@
         {
           "grade": "g1",
           "subject": "science",
+          "level": "hard",
+          "topic": "environment",
+          "cellKey": "g1|science|environment|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g1",
+          "subject": "science",
           "level": "medium",
           "topic": "environment",
           "cellKey": "g1|science|environment|medium",
@@ -1349,6 +1401,15 @@
           "level": "easy",
           "topic": "materials",
           "cellKey": "g1|science|materials|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g1",
+          "subject": "science",
+          "level": "hard",
+          "topic": "materials",
+          "cellKey": "g1|science|materials|hard",
           "sourceStatusBefore": "sampled",
           "coveredByMatrixSmoke": true
         },
@@ -1373,6 +1434,15 @@
         {
           "grade": "g1",
           "subject": "science",
+          "level": "hard",
+          "topic": "plants",
+          "cellKey": "g1|science|plants|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g1",
+          "subject": "science",
           "level": "medium",
           "topic": "plants",
           "cellKey": "g1|science|plants|medium",
@@ -1385,18 +1455,23 @@
         "g1|science|animals|hard",
         "g1|science|animals|medium",
         "g1|science|body|easy",
+        "g1|science|body|hard",
         "g1|science|body|medium",
         "g1|science|earth_space|easy",
+        "g1|science|earth_space|hard",
         "g1|science|earth_space|medium",
         "g1|science|environment|easy",
+        "g1|science|environment|hard",
         "g1|science|environment|medium",
         "g1|science|materials|easy",
+        "g1|science|materials|hard",
         "g1|science|materials|medium",
         "g1|science|plants|easy",
+        "g1|science|plants|hard",
         "g1|science|plants|medium"
       ],
-      "sessionsCreated": 13,
-      "questionsOrRowsCreated": 200,
+      "sessionsCreated": 18,
+      "questionsOrRowsCreated": 278,
       "status": "ok",
       "errors": []
     },
@@ -2790,6 +2865,11 @@
         {
           "subjectCanonical": "science",
           "topic": "body",
+          "level": "hard"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "body",
           "level": "medium"
         },
         {
@@ -2799,8 +2879,23 @@
         },
         {
           "subjectCanonical": "science",
+          "topic": "earth_space",
+          "level": "hard"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "earth_space",
+          "level": "medium"
+        },
+        {
+          "subjectCanonical": "science",
           "topic": "environment",
           "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "environment",
+          "level": "hard"
         },
         {
           "subjectCanonical": "science",
@@ -2811,6 +2906,11 @@
           "subjectCanonical": "science",
           "topic": "experiments",
           "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "experiments",
+          "level": "hard"
         },
         {
           "subjectCanonical": "science",
@@ -2821,6 +2921,11 @@
           "subjectCanonical": "science",
           "topic": "materials",
           "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "materials",
+          "level": "hard"
         },
         {
           "subjectCanonical": "science",
@@ -2883,6 +2988,15 @@
         {
           "grade": "g2",
           "subject": "science",
+          "level": "hard",
+          "topic": "body",
+          "cellKey": "g2|science|body|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g2",
+          "subject": "science",
           "level": "medium",
           "topic": "body",
           "cellKey": "g2|science|body|medium",
@@ -2901,9 +3015,36 @@
         {
           "grade": "g2",
           "subject": "science",
+          "level": "hard",
+          "topic": "earth_space",
+          "cellKey": "g2|science|earth_space|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g2",
+          "subject": "science",
+          "level": "medium",
+          "topic": "earth_space",
+          "cellKey": "g2|science|earth_space|medium",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g2",
+          "subject": "science",
           "level": "easy",
           "topic": "environment",
           "cellKey": "g2|science|environment|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g2",
+          "subject": "science",
+          "level": "hard",
+          "topic": "environment",
+          "cellKey": "g2|science|environment|hard",
           "sourceStatusBefore": "sampled",
           "coveredByMatrixSmoke": true
         },
@@ -2928,6 +3069,15 @@
         {
           "grade": "g2",
           "subject": "science",
+          "level": "hard",
+          "topic": "experiments",
+          "cellKey": "g2|science|experiments|hard",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g2",
+          "subject": "science",
           "level": "medium",
           "topic": "experiments",
           "cellKey": "g2|science|experiments|medium",
@@ -2940,6 +3090,15 @@
           "level": "easy",
           "topic": "materials",
           "cellKey": "g2|science|materials|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g2",
+          "subject": "science",
+          "level": "hard",
+          "topic": "materials",
+          "cellKey": "g2|science|materials|hard",
           "sourceStatusBefore": "sampled",
           "coveredByMatrixSmoke": true
         },
@@ -2985,20 +3144,26 @@
         "g2|science|animals|hard",
         "g2|science|animals|medium",
         "g2|science|body|easy",
+        "g2|science|body|hard",
         "g2|science|body|medium",
         "g2|science|earth_space|easy",
+        "g2|science|earth_space|hard",
+        "g2|science|earth_space|medium",
         "g2|science|environment|easy",
+        "g2|science|environment|hard",
         "g2|science|environment|medium",
         "g2|science|experiments|easy",
+        "g2|science|experiments|hard",
         "g2|science|experiments|medium",
         "g2|science|materials|easy",
+        "g2|science|materials|hard",
         "g2|science|materials|medium",
         "g2|science|plants|easy",
         "g2|science|plants|hard",
         "g2|science|plants|medium"
       ],
-      "sessionsCreated": 15,
-      "questionsOrRowsCreated": 241,
+      "sessionsCreated": 21,
+      "questionsOrRowsCreated": 344,
       "status": "ok",
       "errors": []
     },
@@ -9092,6 +9257,11 @@
         {
           "subjectCanonical": "science",
           "topic": "body",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "body",
           "level": "hard"
         },
         {
@@ -9112,12 +9282,22 @@
         {
           "subjectCanonical": "science",
           "topic": "environment",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "environment",
           "level": "hard"
         },
         {
           "subjectCanonical": "science",
           "topic": "environment",
           "level": "medium"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "materials",
+          "level": "easy"
         },
         {
           "subjectCanonical": "science",
@@ -9161,6 +9341,15 @@
         {
           "grade": "g5",
           "subject": "science",
+          "level": "easy",
+          "topic": "body",
+          "cellKey": "g5|science|body|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g5",
+          "subject": "science",
           "level": "hard",
           "topic": "body",
           "cellKey": "g5|science|body|hard",
@@ -9197,6 +9386,15 @@
         {
           "grade": "g5",
           "subject": "science",
+          "level": "easy",
+          "topic": "environment",
+          "cellKey": "g5|science|environment|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g5",
+          "subject": "science",
           "level": "hard",
           "topic": "environment",
           "cellKey": "g5|science|environment|hard",
@@ -9209,6 +9407,15 @@
           "level": "medium",
           "topic": "environment",
           "cellKey": "g5|science|environment|medium",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g5",
+          "subject": "science",
+          "level": "easy",
+          "topic": "materials",
+          "cellKey": "g5|science|materials|easy",
           "sourceStatusBefore": "sampled",
           "coveredByMatrixSmoke": true
         },
@@ -9235,17 +9442,20 @@
         "g5|science|animals|easy",
         "g5|science|animals|hard",
         "g5|science|animals|medium",
+        "g5|science|body|easy",
         "g5|science|body|hard",
         "g5|science|body|medium",
         "g5|science|earth_space|hard",
         "g5|science|earth_space|medium",
+        "g5|science|environment|easy",
         "g5|science|environment|hard",
         "g5|science|environment|medium",
+        "g5|science|materials|easy",
         "g5|science|materials|hard",
         "g5|science|materials|medium"
       ],
-      "sessionsCreated": 11,
-      "questionsOrRowsCreated": 174,
+      "sessionsCreated": 14,
+      "questionsOrRowsCreated": 227,
       "status": "ok",
       "errors": []
     },
@@ -11277,6 +11487,11 @@
         {
           "subjectCanonical": "science",
           "topic": "body",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "body",
           "level": "hard"
         },
         {
@@ -11287,6 +11502,11 @@
         {
           "subjectCanonical": "science",
           "topic": "earth_space",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "earth_space",
           "level": "hard"
         },
         {
@@ -11297,6 +11517,11 @@
         {
           "subjectCanonical": "science",
           "topic": "environment",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "environment",
           "level": "hard"
         },
         {
@@ -11307,12 +11532,22 @@
         {
           "subjectCanonical": "science",
           "topic": "experiments",
+          "level": "easy"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "experiments",
           "level": "hard"
         },
         {
           "subjectCanonical": "science",
           "topic": "experiments",
           "level": "medium"
+        },
+        {
+          "subjectCanonical": "science",
+          "topic": "materials",
+          "level": "easy"
         },
         {
           "subjectCanonical": "science",
@@ -11356,6 +11591,15 @@
         {
           "grade": "g6",
           "subject": "science",
+          "level": "easy",
+          "topic": "body",
+          "cellKey": "g6|science|body|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g6",
+          "subject": "science",
           "level": "hard",
           "topic": "body",
           "cellKey": "g6|science|body|hard",
@@ -11368,6 +11612,15 @@
           "level": "medium",
           "topic": "body",
           "cellKey": "g6|science|body|medium",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g6",
+          "subject": "science",
+          "level": "easy",
+          "topic": "earth_space",
+          "cellKey": "g6|science|earth_space|easy",
           "sourceStatusBefore": "sampled",
           "coveredByMatrixSmoke": true
         },
@@ -11392,6 +11645,15 @@
         {
           "grade": "g6",
           "subject": "science",
+          "level": "easy",
+          "topic": "environment",
+          "cellKey": "g6|science|environment|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g6",
+          "subject": "science",
           "level": "hard",
           "topic": "environment",
           "cellKey": "g6|science|environment|hard",
@@ -11410,6 +11672,15 @@
         {
           "grade": "g6",
           "subject": "science",
+          "level": "easy",
+          "topic": "experiments",
+          "cellKey": "g6|science|experiments|easy",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g6",
+          "subject": "science",
           "level": "hard",
           "topic": "experiments",
           "cellKey": "g6|science|experiments|hard",
@@ -11422,6 +11693,15 @@
           "level": "medium",
           "topic": "experiments",
           "cellKey": "g6|science|experiments|medium",
+          "sourceStatusBefore": "sampled",
+          "coveredByMatrixSmoke": true
+        },
+        {
+          "grade": "g6",
+          "subject": "science",
+          "level": "easy",
+          "topic": "materials",
+          "cellKey": "g6|science|materials|easy",
           "sourceStatusBefore": "sampled",
           "coveredByMatrixSmoke": true
         },
@@ -11448,19 +11728,24 @@
         "g6|science|animals|easy",
         "g6|science|animals|hard",
         "g6|science|animals|medium",
+        "g6|science|body|easy",
         "g6|science|body|hard",
         "g6|science|body|medium",
+        "g6|science|earth_space|easy",
         "g6|science|earth_space|hard",
         "g6|science|earth_space|medium",
+        "g6|science|environment|easy",
         "g6|science|environment|hard",
         "g6|science|environment|medium",
+        "g6|science|experiments|easy",
         "g6|science|experiments|hard",
         "g6|science|experiments|medium",
+        "g6|science|materials|easy",
         "g6|science|materials|hard",
         "g6|science|materials|medium"
       ],
-      "sessionsCreated": 13,
-      "questionsOrRowsCreated": 208,
+      "sessionsCreated": 18,
+      "questionsOrRowsCreated": 300,
       "status": "ok",
       "errors": []
     }

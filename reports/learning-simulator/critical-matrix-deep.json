@@ -1,6 +1,6 @@
 {
-  "runId": "critical-deep-moowyk6g",
-  "generatedAt": "2026-05-02T22:28:54.568Z",
+  "runId": "critical-deep-mooxfqry",
+  "generatedAt": "2026-05-02T22:42:16.270Z",
   "generator": "critical-matrix-deep-v1",
   "versions": {
     "criticalDeep": "1.1.0"
@@ -46,7 +46,7 @@
   },
   "selectionEvidence": {
     "targetCells": 56,
-    "poolSize": 711,
+    "poolSize": 732,
     "strategy": "Balanced quotas per grade (6–12 when total≤72), then level/subject gaps with per-grade cap, round-robin subject fill to target, bypass cap only to reach minimum 40.",
     "gradeQuotasDesired": {
       "g1": 10,

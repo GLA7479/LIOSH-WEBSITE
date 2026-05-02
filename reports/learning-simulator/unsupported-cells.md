@@ -1,7 +1,7 @@
 # Unsupported / gap cells (classification)
 
-- Generated at: 2026-05-02T22:28:51.511Z
-- Cells in this report: 108
+- Generated at: 2026-05-02T22:42:13.406Z
+- Cells in this report: 87
 - coverageStatus **uncovered**: 0
 - Classification **unknown_needs_review**: 0
 
@@ -11,7 +11,7 @@
 | --- | ---: |
 | expected_runtime_gap | 0 |
 | curriculum_only_not_runtime | 0 |
-| missing_question_bank | 36 |
+| missing_question_bank | 15 |
 | missing_generator_adapter | 0 |
 | missing_topic_adapter | 0 |
 | mixed_or_ui_only_topic | 72 |
@@ -23,14 +23,14 @@
 
 | grade | subject | topic | level | coverageStatus |
 | --- | --- | --- | --- | --- |
-| g1 | science | body | hard | unsupported_needs_content |
-| g1 | science | earth_space | hard | unsupported_needs_content |
-| g1 | science | environment | hard | unsupported_needs_content |
-| g1 | science | materials | hard | unsupported_needs_content |
-| g1 | science | plants | hard | unsupported_needs_content |
 | g2 | english | translation | easy | unsupported_needs_content |
 | g2 | english | translation | hard | unsupported_needs_content |
 | g2 | english | translation | medium | unsupported_needs_content |
+| g3 | english | translation | easy | unsupported_needs_content |
+| g3 | english | translation | hard | unsupported_needs_content |
+| g3 | english | translation | medium | unsupported_needs_content |
+| g4 | english | translation | easy | unsupported_needs_content |
+| g4 | english | translation | hard | unsupported_needs_content |
 
 *Recommendation:* Add or extend MCQ bank JSON / English pools for this grade · topic · level band.
 

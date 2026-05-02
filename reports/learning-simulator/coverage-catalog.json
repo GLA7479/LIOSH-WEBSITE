@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-02T22:28:50.735Z",
-  "matrixGeneratedAt": "2026-05-02T22:28:43.910Z",
+  "generatedAt": "2026-05-02T22:42:12.724Z",
+  "matrixGeneratedAt": "2026-05-02T22:42:06.743Z",
   "versions": {
     "catalog": "1.2.0"
   },
@@ -10,11 +10,11 @@
     "deepScenarioCount": 12,
     "uniqueCellsTouchedQuick": 32,
     "uniqueCellsTouchedDeep": 34,
-    "uniqueCellsTouchedMatrixSmoke": 678,
+    "uniqueCellsTouchedMatrixSmoke": 697,
     "statusCounts": {
-      "covered": 711,
+      "covered": 732,
       "unsupported_expected": 72,
-      "unsupported_needs_content": 36
+      "unsupported_needs_content": 15
     }
   },
   "rows": [
@@ -1670,13 +1670,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g1|science|earth_space|hard",
@@ -1690,13 +1690,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g1|science|environment|hard",
@@ -1710,13 +1710,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g1|science|materials|hard",
@@ -1730,13 +1730,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g1|science|plants|hard",
@@ -1750,13 +1750,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g1|science|animals|medium",
@@ -3850,13 +3850,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g2|science|earth_space|hard",
@@ -3870,13 +3870,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g2|science|environment|hard",
@@ -3890,13 +3890,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g2|science|experiments|hard",
@@ -3910,13 +3910,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g2|science|materials|hard",
@@ -3930,13 +3930,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g2|science|plants|hard",
@@ -4010,13 +4010,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g2|science|environment|medium",
@@ -12950,13 +12950,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g5|science|earth_space|easy",
@@ -12975,8 +12975,8 @@
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g5|science|environment|easy",
@@ -12990,13 +12990,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g5|science|experiments|easy",
@@ -13015,8 +13015,8 @@
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": true,
       "coveredByBehaviorScenario": true,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g5|science|materials|easy",
@@ -13030,13 +13030,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g5|science|animals|hard",
@@ -16070,13 +16070,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g6|science|earth_space|easy",
@@ -16090,13 +16090,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g6|science|environment|easy",
@@ -16110,13 +16110,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g6|science|experiments|easy",
@@ -16130,13 +16130,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g6|science|materials|easy",
@@ -16150,13 +16150,13 @@
       "generatorBackedRaw": "bank",
       "coveredByQuick": false,
       "coveredByDeep": false,
-      "coveredByMatrixSmoke": false,
-      "coveredByFull": false,
+      "coveredByMatrixSmoke": true,
+      "coveredByFull": true,
       "coveredByQuestionAudit": true,
       "coveredByReportScenario": false,
       "coveredByBehaviorScenario": false,
-      "coverageStatus": "unsupported_needs_content",
-      "phase4UnsupportedReason": "no science MCQ bank items matched grade/topic/level band"
+      "coverageStatus": "covered",
+      "phase4UnsupportedReason": null
     },
     {
       "cellKey": "g6|science|animals|hard",

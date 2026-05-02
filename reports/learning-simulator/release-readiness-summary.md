@@ -1,7 +1,7 @@
 # Learning Simulator — Release readiness summary
 
-- **runId:** release-summary-moox9v3b
-- **generatedAt:** 2026-05-02T22:37:41.927Z
+- **runId:** release-summary-mooxmy8a
+- **generatedAt:** 2026-05-02T22:47:52.522Z
 
 ## Overall
 
@@ -17,16 +17,16 @@
 | Metric | Count |
 | --- | ---: |
 | total cells | 819 |
-| covered | 711 |
+| covered | 732 |
 | unsupported_expected | 72 |
-| unsupported_needs_content | 36 |
+| unsupported_needs_content | 15 |
 | sampled | 0 |
 | uncovered | 0 |
 | unknown_needs_review (catalog rows) | 0 |
 
 ### Content backlog
 
-**Total backlog items:** 36
+**Total backlog items:** 15
 
 *פירוט לפי נושא / כיתה / נושא מטריצה / סיכון שחרור — ראה JSON (`countsBySubject`, …).*
 
@@ -60,14 +60,14 @@
 | status | pass |
 | checkedRoute | /learning/parent-report?qa_pdf=file |
 | downloadSucceeded | true |
-| fileSizeBytes | 3976628 |
+| fileSizeBytes | 3976560 |
 | pdfHeaderOk | true |
 | deferredReason | — |
 
 
 ### Known remaining work (groups)
 
-- **content_backlog:** 36 tracked items in content-gap-backlog.json
+- **content_backlog:** 15 tracked items in content-gap-backlog.json
 - **optional_render_expansion:** Additional routes/surfaces can be added to render gate without product changes
 - **optional_ci_runtime_optimization:** Use RENDER_GATE_AUTO_SERVER=0 with dev server up to shorten CI wall time
 

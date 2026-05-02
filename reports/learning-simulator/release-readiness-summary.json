@@ -1,6 +1,6 @@
 {
-  "runId": "release-summary-moox9v3b",
-  "generatedAt": "2026-05-02T22:37:41.927Z",
+  "runId": "release-summary-mooxmy8a",
+  "generatedAt": "2026-05-02T22:47:52.522Z",
   "overallStatus": "pass_with_known_backlog",
   "gateStatus": {
     "orchestrator": "pass",
@@ -16,14 +16,14 @@
   "coverageSummary": {
     "totalCells": 819,
     "statusCounts": {
-      "covered": 711,
+      "covered": 732,
       "unsupported_expected": 72,
-      "unsupported_needs_content": 36
+      "unsupported_needs_content": 15
     },
     "statusCountsFromRows": {
-      "covered": 711,
+      "covered": 732,
       "unsupported_expected": 72,
-      "unsupported_needs_content": 36
+      "unsupported_needs_content": 15
     },
     "sampled": 0,
     "uncovered": 0,
@@ -31,13 +31,13 @@
     "note": "Counts align with coverage-catalog rows and counts.statusCounts where present."
   },
   "unsupportedSummary": {
-    "needsAttentionTotal": 108,
+    "needsAttentionTotal": 87,
     "uncoveredCoverageStatus": 0,
     "unknownClassification": 0,
     "byClassification": {
       "expected_runtime_gap": 0,
       "curriculum_only_not_runtime": 0,
-      "missing_question_bank": 36,
+      "missing_question_bank": 15,
       "missing_generator_adapter": 0,
       "missing_topic_adapter": 0,
       "mixed_or_ui_only_topic": 72,
@@ -45,30 +45,21 @@
     }
   },
   "contentBacklogSummary": {
-    "totalItems": 36,
+    "totalItems": 15,
     "bySubject": {
-      "science": 21,
       "english": 15
     },
     "byGrade": {
-      "g1": 5,
-      "g2": 9,
+      "g2": 3,
       "g3": 3,
       "g4": 3,
-      "g5": 8,
-      "g6": 8
+      "g5": 3,
+      "g6": 3
     },
     "byTopic": {
-      "science:body": 4,
-      "science:earth_space": 5,
-      "science:environment": 4,
-      "science:materials": 4,
-      "science:plants": 1,
-      "english:translation": 15,
-      "science:experiments": 3
+      "english:translation": 15
     },
     "byReleaseRisk": {
-      "high": 21,
       "medium": 15
     },
     "note": "Documented content gaps — known backlog, not classification failures."
@@ -76,7 +67,7 @@
   "matrixSmokeSummary": {
     "status": "pass",
     "totalSmokeScenarios": 36,
-    "totalCellsTouched": 678,
+    "totalCellsTouched": 697,
     "failuresCount": 0
   },
   "criticalDeepSummary": {
@@ -95,7 +86,7 @@
     "status": "pass",
     "pace_accuracy_separation_ok": true,
     "cohortMedianSpqGap": 198.04,
-    "sourceRunId": "profile-stress-moowyly1"
+    "sourceRunId": "profile-stress-mooxfsbq"
   },
   "renderGateSummary": {
     "status": "pass",
@@ -113,7 +104,7 @@
     "browserMode": true,
     "downloadSucceeded": true,
     "downloadPath": "C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/pdf-export/דוח-Sim_strong_all_subjects_g3_7d-2026-05-02.pdf",
-    "fileSizeBytes": 3976628,
+    "fileSizeBytes": 3976560,
     "pdfHeaderOk": true,
     "consoleErrorsTotal": 0,
     "fatalErrorsTotal": 0,
@@ -124,11 +115,11 @@
     "pdfLibraryDetected": "^0.10.1",
     "exportIsClientSide": true,
     "hasDedicatedPdfRoute": false,
-    "generatedAt": "2026-05-02T22:32:23.047Z"
+    "generatedAt": "2026-05-02T22:42:50.459Z"
   },
   "scenarioCoverageSummary": {
     "scenarios": 278,
-    "generatedAt": "2026-05-02T22:28:59.778Z"
+    "generatedAt": "2026-05-02T22:42:20.953Z"
   },
   "deferredItems": {
     "pdfBinaryExportInPage": "Validated by pdf-export-gate (canvas download under ?qa_pdf=file).",
@@ -137,7 +128,7 @@
   "knownRemainingWork": [
     {
       "group": "content_backlog",
-      "detail": "36 tracked items in content-gap-backlog.json"
+      "detail": "15 tracked items in content-gap-backlog.json"
     },
     {
       "group": "optional_render_expansion",

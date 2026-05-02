@@ -1,15 +1,15 @@
 # Content gap audit (`unsupported_needs_content`)
 
-- Run id: content-gap-moox9two
-- Generated at: 2026-05-02T22:37:40.392Z
-- Total cells with **unsupported_needs_content**: **36**
+- Run id: content-gap-mooxfp36
+- Generated at: 2026-05-02T22:42:14.082Z
+- Total cells with **unsupported_needs_content**: **15**
 - Unknown classifications: **0**
 
 ## Fixability summary
 
 ```json
 {
-  "cellsNeedingNewQuestionContent": 36,
+  "cellsNeedingNewQuestionContent": 15,
   "cellsFixableByQAClassificationOnly": 0,
   "cellsRecommendUnsupportedExpected": 0,
   "requiresRuntimeChange": 0,
@@ -19,44 +19,36 @@
 
 ## Counts by final gap category
 
-- **missing_topic_bank_entries**: 21
 - **needs_content_addition**: 15
 
 ## Counts by priority
 
-- **P1**: 36
+- **P1**: 15
 
 ## Counts by subject
 
-- science: 21
 - english: 15
 
 ## Top topic keys (subject:topic)
 
 - english:translation: 15
-- science:earth_space: 5
-- science:body: 4
-- science:environment: 4
-- science:materials: 4
-- science:experiments: 3
-- science:plants: 1
 
 ## Examples (first 12 cells)
 
 | cellKey | category | priority | action |
 | --- | --- | --- | --- |
-| g1\|science\|body\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
-| g1\|science\|earth_space\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
-| g1\|science\|environment\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
-| g1\|science\|materials\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
-| g1\|science\|plants\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
 | g2\|english\|translation\|easy | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
 | g2\|english\|translation\|hard | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
 | g2\|english\|translation\|medium | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
-| g2\|science\|body\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
-| g2\|science\|earth_space\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
-| g2\|science\|earth_space\|medium | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
-| g2\|science\|environment\|hard | missing_topic_bank_entries | P1 | Add MCQ rows to data/science-questions.js for this grade · topic · level… |
+| g3\|english\|translation\|easy | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
+| g3\|english\|translation\|hard | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
+| g3\|english\|translation\|medium | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
+| g4\|english\|translation\|easy | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
+| g4\|english\|translation\|hard | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
+| g4\|english\|translation\|medium | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
+| g5\|english\|translation\|easy | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
+| g5\|english\|translation\|hard | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
+| g5\|english\|translation\|medium | needs_content_addition | P1 | Add MCQ-shaped English pool items for translation at this grade (or narr… |
 
 ## What not to fix yet
 

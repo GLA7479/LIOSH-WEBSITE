@@ -1,21 +1,21 @@
 # Coverage catalog (full matrix)
 
-- Generated at: 2026-05-02T22:28:50.735Z
-- Matrix snapshot: 2026-05-02T22:28:43.910Z
+- Generated at: 2026-05-02T22:42:12.724Z
+- Matrix snapshot: 2026-05-02T22:42:06.743Z
 - Matrix rows: 819
 - Quick scenarios: 10 · Deep scenarios: 12
 - Unique cells touched (quick refs): 32
 - Unique cells touched (deep refs): 34
-- Unique cells touched (matrix smoke): 678
+- Unique cells touched (matrix smoke): 697
 
 ## coverageStatus counts
 
 | Status | Count |
 | --- | ---: |
-| covered | 711 |
+| covered | 732 |
 | sampled | 0 |
 | unsupported_expected | 72 |
-| unsupported_needs_content | 36 |
+| unsupported_needs_content | 15 |
 | unsupported_needs_adapter | 0 |
 | unsupported_needs_generator | 0 |
 | uncovered | 0 |

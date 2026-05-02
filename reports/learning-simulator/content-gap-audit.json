@@ -1,166 +1,42 @@
 {
-  "runId": "content-gap-moox9two",
-  "generatedAt": "2026-05-02T22:37:40.392Z",
+  "runId": "content-gap-mooxfp36",
+  "generatedAt": "2026-05-02T22:42:14.082Z",
   "versions": {
     "contentGapAudit": "1.0.0"
   },
-  "totalUnsupportedNeedsContent": 36,
+  "totalUnsupportedNeedsContent": 15,
   "countsBySubject": {
-    "science": 21,
     "english": 15
   },
   "countsByGrade": {
-    "g1": 5,
-    "g2": 9,
+    "g2": 3,
     "g3": 3,
     "g4": 3,
-    "g5": 8,
-    "g6": 8
+    "g5": 3,
+    "g6": 3
   },
   "countsByTopic": {
-    "science:body": 4,
-    "science:earth_space": 5,
-    "science:environment": 4,
-    "science:materials": 4,
-    "science:plants": 1,
-    "english:translation": 15,
-    "science:experiments": 3
+    "english:translation": 15
   },
   "countsByLevel": {
-    "hard": 15,
-    "easy": 15,
-    "medium": 6
+    "easy": 5,
+    "hard": 5,
+    "medium": 5
   },
   "countsByFinalGapCategory": {
-    "missing_topic_bank_entries": 21,
     "needs_content_addition": 15
   },
   "countsByPriority": {
-    "P1": 36
+    "P1": 15
   },
   "fixabilitySummary": {
-    "cellsNeedingNewQuestionContent": 36,
+    "cellsNeedingNewQuestionContent": 15,
     "cellsFixableByQAClassificationOnly": 0,
     "cellsRecommendUnsupportedExpected": 0,
     "requiresRuntimeChange": 0,
     "unknownCells": 0
   },
   "cells": [
-    {
-      "grade": "g1",
-      "subject": "science",
-      "level": "hard",
-      "topic": "body",
-      "cellKey": "g1|science|body|hard",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g1",
-      "subject": "science",
-      "level": "hard",
-      "topic": "earth_space",
-      "cellKey": "g1|science|earth_space|hard",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g1",
-      "subject": "science",
-      "level": "hard",
-      "topic": "environment",
-      "cellKey": "g1|science|environment|hard",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g1",
-      "subject": "science",
-      "level": "hard",
-      "topic": "materials",
-      "cellKey": "g1|science|materials|hard",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g1",
-      "subject": "science",
-      "level": "hard",
-      "topic": "plants",
-      "cellKey": "g1|science|plants|hard",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
     {
       "grade": "g2",
       "subject": "english",
@@ -229,144 +105,6 @@
       "priority": "P1",
       "matrixNotes": [],
       "isGeneratorBackedRaw": "inline_page"
-    },
-    {
-      "grade": "g2",
-      "subject": "science",
-      "level": "hard",
-      "topic": "body",
-      "cellKey": "g2|science|body|hard",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g2",
-      "subject": "science",
-      "level": "hard",
-      "topic": "earth_space",
-      "cellKey": "g2|science|earth_space|hard",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g2",
-      "subject": "science",
-      "level": "medium",
-      "topic": "earth_space",
-      "cellKey": "g2|science|earth_space|medium",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g2",
-      "subject": "science",
-      "level": "hard",
-      "topic": "environment",
-      "cellKey": "g2|science|environment|hard",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g2",
-      "subject": "science",
-      "level": "hard",
-      "topic": "experiments",
-      "cellKey": "g2|science|experiments|hard",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g2",
-      "subject": "science",
-      "level": "hard",
-      "topic": "materials",
-      "cellKey": "g2|science|materials|hard",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
     },
     {
       "grade": "g3",
@@ -576,121 +314,6 @@
       "isGeneratorBackedRaw": "inline_page"
     },
     {
-      "grade": "g5",
-      "subject": "science",
-      "level": "easy",
-      "topic": "body",
-      "cellKey": "g5|science|body|easy",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g5",
-      "subject": "science",
-      "level": "easy",
-      "topic": "earth_space",
-      "cellKey": "g5|science|earth_space|easy",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g5",
-      "subject": "science",
-      "level": "easy",
-      "topic": "environment",
-      "cellKey": "g5|science|environment|easy",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g5",
-      "subject": "science",
-      "level": "easy",
-      "topic": "experiments",
-      "cellKey": "g5|science|experiments|easy",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g5",
-      "subject": "science",
-      "level": "easy",
-      "topic": "materials",
-      "cellKey": "g5|science|materials|easy",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
       "grade": "g6",
       "subject": "english",
       "level": "easy",
@@ -758,121 +381,6 @@
       "priority": "P1",
       "matrixNotes": [],
       "isGeneratorBackedRaw": "inline_page"
-    },
-    {
-      "grade": "g6",
-      "subject": "science",
-      "level": "easy",
-      "topic": "body",
-      "cellKey": "g6|science|body|easy",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g6",
-      "subject": "science",
-      "level": "easy",
-      "topic": "earth_space",
-      "cellKey": "g6|science|earth_space|easy",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g6",
-      "subject": "science",
-      "level": "easy",
-      "topic": "environment",
-      "cellKey": "g6|science|environment|easy",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g6",
-      "subject": "science",
-      "level": "easy",
-      "topic": "experiments",
-      "cellKey": "g6|science|experiments|easy",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
-    },
-    {
-      "grade": "g6",
-      "subject": "science",
-      "level": "easy",
-      "topic": "materials",
-      "cellKey": "g6|science|materials|easy",
-      "currentCoverageStatus": "unsupported_needs_content",
-      "currentUnsupportedReason": "no science MCQ bank items matched grade/topic/level band",
-      "finalGapCategory": "missing_topic_bank_entries",
-      "evidenceFiles": [
-        "data/science-curriculum.js",
-        "data/science-questions.js",
-        "scripts/learning-simulator/lib/question-generator-adapters.mjs"
-      ],
-      "recommendedAction": "Add MCQ rows to data/science-questions.js for this grade · topic · level band (minLevel/maxLevel + grades[]) so bank filter in question-generator-adapters returns candidates.",
-      "canBeFixedByQAOnly": false,
-      "requiresNewQuestionContent": true,
-      "requiresRuntimeChange": false,
-      "shouldRemainUnsupportedExpected": false,
-      "priority": "P1",
-      "matrixNotes": [],
-      "isGeneratorBackedRaw": "bank"
     }
   ]
 }

@@ -1,6 +1,6 @@
 # PDF export gate
 
-- runId: pdf-gate-moox311m
+- runId: pdf-gate-mooxgh5r
 - status: pass
 - browserMode: true
 - checkedRoute: /learning/parent-report?qa_pdf=file
@@ -11,7 +11,7 @@
 | --- | --- |
 | downloadAttempted | true |
 | downloadSucceeded | true |
-| fileSizeBytes | 3976628 |
+| fileSizeBytes | 3976560 |
 | pdfHeaderOk | true |
 | consoleErrorsTotal | 0 |
 | fatalErrorsTotal | 0 |

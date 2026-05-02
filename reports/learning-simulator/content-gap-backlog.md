@@ -2,47 +2,38 @@
 
 This file lists the **41** real content gaps (`unsupported_needs_content`). No questions were added or edited.
 
-- Generated: 2026-05-02T22:37:41.160Z
-- Run id: content-backlog-moox9ui0
-- Source audit: content-gap-moox9two
+- Generated: 2026-05-02T22:42:14.895Z
+- Run id: content-backlog-mooxfppr
+- Source audit: content-gap-mooxfp36
 
 ## Summary
 
-- **Total backlog items:** 36
+- **Total backlog items:** 15
 
 ### By subject
 
-- science: **21**
 - english: **15**
 
 ### By grade
 
-- g1: **5**
-- g2: **9**
+- g2: **3**
 - g3: **3**
 - g4: **3**
-- g5: **8**
-- g6: **8**
+- g5: **3**
+- g6: **3**
 
 ### By topic (subject:topic)
 
 - english:translation: **15**
-- science:earth_space: **5**
-- science:body: **4**
-- science:environment: **4**
-- science:materials: **4**
-- science:experiments: **3**
-- science:plants: **1**
 
 ### By level
 
-- easy: **15**
-- hard: **15**
-- medium: **6**
+- easy: **5**
+- hard: **5**
+- medium: **5**
 
 ### By releaseRisk
 
-- high: **21**
 - medium: **15**
 
 ### Recommended order for later implementation
@@ -54,14 +45,14 @@ This file lists the **41** real content gaps (`unsupported_needs_content`). No q
 
 | backlogId | subject | grade | topic | level | target file | risk |
 | --- | --- | --- | --- | --- | --- | --- |
-| BG_g1__science__body__hard | science | g1 | body | hard | data/science-questions.js | high |
-| BG_g1__science__earth_space__hard | science | g1 | earth_space | hard | data/science-questions.js | high |
-| BG_g1__science__environment__hard | science | g1 | environment | hard | data/science-questions.js | high |
-| BG_g1__science__materials__hard | science | g1 | materials | hard | data/science-questions.js | high |
-| BG_g1__science__plants__hard | science | g1 | plants | hard | data/science-questions.js | high |
 | BG_g2__english__translation__easy | english | g2 | translation | easy | data/english-questions/translation-pools.js | medium |
 | BG_g2__english__translation__hard | english | g2 | translation | hard | data/english-questions/translation-pools.js | medium |
 | BG_g2__english__translation__medium | english | g2 | translation | medium | data/english-questions/translation-pools.js | medium |
+| BG_g3__english__translation__easy | english | g3 | translation | easy | data/english-questions/translation-pools.js | medium |
+| BG_g3__english__translation__hard | english | g3 | translation | hard | data/english-questions/translation-pools.js | medium |
+| BG_g3__english__translation__medium | english | g3 | translation | medium | data/english-questions/translation-pools.js | medium |
+| BG_g4__english__translation__easy | english | g4 | translation | easy | data/english-questions/translation-pools.js | medium |
+| BG_g4__english__translation__hard | english | g4 | translation | hard | data/english-questions/translation-pools.js | medium |
 
 ## Full list
 
