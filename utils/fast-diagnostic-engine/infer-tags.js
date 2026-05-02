@@ -32,8 +32,13 @@ export function inferNormalizedTags(ev, subjectId) {
     }
   }
 
-  // --- Cross-cutting (existing stored families) ---
-  if (pf.includes("perimeter") || pf.includes("area")) add("concept_confusion");
+  // --- Cross-cutting: area/perimeter confusion is geometry-bank–driven (not general math). ---
+  if (
+    sid === "geometry" &&
+    (pf.includes("perimeter") || pf.includes("area"))
+  ) {
+    add("concept_confusion");
+  }
   if (pf.includes("fraction") || pf.includes("denominator") || ct.includes("denom")) {
     add("repeated_misconception");
     if (pf.includes("add") || kind.includes("add")) add("adds_denominators_directly");
@@ -61,12 +66,20 @@ export function inferNormalizedTags(ev, subjectId) {
     if (pf.includes("sequence") || ct.includes("order")) add("sequence_error");
   }
 
-  if (sid === "science" || sid === "moledet-geography") {
+  if (
+    sid === "science" ||
+    sid === "moledet-geography" ||
+    sid === "geometry"
+  ) {
     if (pf.includes("concept") || ct.includes("concept")) add("concept_confusion");
     if (pf.includes("fact") || ct.includes("recall")) add("fact_recall_gap");
     if (pf.includes("cause") || pf.includes("effect")) add("cause_effect_gap");
     if (pf.includes("classif")) add("classification_error");
     if (pf.includes("map") || ct.includes("map")) add("map_reading_gap");
+  }
+
+  if (sid === "geometry") {
+    if (pf.includes("prereq") || ct.includes("prereq")) add("prerequisite_gap");
   }
 
   if (kind.includes("misread") || subtype.includes("misread")) add("instruction_misread");
@@ -93,7 +106,10 @@ export function inferNormalizedTags(ev, subjectId) {
       ev.diagnosticSkillId ||
       (Array.isArray(ev.expectedErrorTags) && ev.expectedErrorTags.length > 0)
     );
-    if (hadRaw) add("calculation_slip");
+    if (hadRaw) {
+      if (sid === "geometry") add("geometry_calculation_slip");
+      else add("calculation_slip");
+    }
   }
 
   return [...tags];

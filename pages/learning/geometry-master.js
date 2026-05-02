@@ -86,6 +86,24 @@ import {
   extractDiagnosticMetadataFromQuestion,
   mergeDiagnosticIntoMistakeEntry,
 } from "../../utils/diagnostic-mistake-metadata";
+import { normalizeMistakeEvent } from "../../utils/mistake-event.js";
+import { inferNormalizedTags } from "../../utils/fast-diagnostic-engine/infer-tags.js";
+import {
+  buildPendingProbeFromMistake,
+  attachProbeMetaToQuestion,
+  applyProbeOutcome,
+  clearActiveDiagnosticState,
+  probeMatchesSession,
+} from "../../utils/active-diagnostic-runtime/index.js";
+import { geometryWrongActivatesProbe } from "../../utils/geometry-active-probe.js";
+import {
+  pickGeometryProbeConceptual,
+  buildGeometryConceptQuestionFromRow,
+} from "../../utils/geometry-probe-bank.js";
+import {
+  patchLearningDiagnosticDebug,
+  installLearningDiagnosticDebugOnce,
+} from "../../utils/learning-diagnostic-debug.js";
 import {
   safeGetItem,
   safeSetItem,
@@ -144,6 +162,8 @@ export default function GeometryMaster() {
   const learningSessionIdRef = useRef(null);
   const learningSessionStartPromiseRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
+  const geometryPendingDiagnosticProbeRef = useRef(null);
+  const geometryHypothesisLedgerRef = useRef(null);
 
   // פונקציה עזר לקבלת מפתח תאריך
   const getTodayKey = () => {
@@ -482,6 +502,17 @@ const refreshMonthlyProgress = useCallback(() => {
   }, []);
 
   useEffect(() => {
+    installLearningDiagnosticDebugOnce();
+  }, []);
+
+  useEffect(() => {
+    clearActiveDiagnosticState(
+      geometryPendingDiagnosticProbeRef,
+      geometryHypothesisLedgerRef
+    );
+  }, [grade, level, topic, practiceFocus]);
+
+  useEffect(() => {
     refreshMonthlyProgress();
   }, [refreshMonthlyProgress]);
 
@@ -660,7 +691,8 @@ useEffect(() => {
     
     // עותק מקומי של recentQuestions כדי לא לעדכן state בתוך הלולאה
     const localRecentQuestions = new Set(recentQuestions);
-    
+    const probeAtSessionStart = geometryPendingDiagnosticProbeRef.current;
+
     do {
       const selectedTopics = validTopic === "mixed" 
         ? Object.keys(mixedTopics).filter(t => mixedTopics[t] && allowedTopics.includes(t))
@@ -677,12 +709,57 @@ useEffect(() => {
       }
       
       const currentTopic = selectedTopics[Math.floor(Math.random() * selectedTopics.length)];
-      question = generateQuestion(
-        levelConfig,
-        currentTopic,
-        grade,
-        validTopic === "mixed" ? mixedTopics : null
-      );
+      question = null;
+      if (
+        probeAtSessionStart &&
+        probeMatchesSession(
+          probeAtSessionStart,
+          grade,
+          effectiveLevelKey,
+          validTopic === "mixed" ? "mixed" : currentTopic
+        )
+      ) {
+        const pick = pickGeometryProbeConceptual({
+          pendingProbe: probeAtSessionStart,
+          gradeKey: grade,
+          levelKey: effectiveLevelKey,
+          topic: currentTopic,
+          recentIds: localRecentQuestions,
+        });
+        if (pick.row) {
+          let built = buildGeometryConceptQuestionFromRow(pick.row, {
+            gradeKey: grade,
+            levelKey: effectiveLevelKey,
+            topic: currentTopic,
+          });
+          const exp = Array.isArray(built.params?.expectedErrorTags)
+            ? [...built.params.expectedErrorTags]
+            : undefined;
+          built = attachProbeMetaToQuestion(built, {
+            probeSnapshot: probeAtSessionStart,
+            probeReason: pick.reason,
+            expectedErrorTags: exp,
+          });
+          question = built;
+          geometryPendingDiagnosticProbeRef.current = null;
+          patchLearningDiagnosticDebug({
+            lastProbeSelectionResult: {
+              subjectId: "geometry",
+              consumed: true,
+              reason: pick.reason,
+              at: Date.now(),
+            },
+          });
+        }
+      }
+      if (!question) {
+        question = generateQuestion(
+          levelConfig,
+          currentTopic,
+          grade,
+          validTopic === "mixed" ? mixedTopics : null
+        );
+      }
       
       // אם אין שאלה זמינה, ננסה נושא אחר
       if (!question || question.params?.kind === "no_question") {
@@ -973,6 +1050,75 @@ useEffect(() => {
       relativeFactor: GEOMETRY_NUMERIC_RELATIVE_FACTOR,
       minTolerance: GEOMETRY_NUMERIC_MIN_TOLERANCE,
     });
+
+    if (
+      questionForSave._diagnosticProbeAttempt === true &&
+      questionForSave._probeMeta
+    ) {
+      let inferredTags = [];
+      if (!isCorrect) {
+        const prm = questionForSave.params || {};
+        let wrongEntry = {
+          topic: questionForSave.topic,
+          topicOrOperation: questionForSave.topic,
+          bucketKey: questionForSave.topic,
+          grade,
+          level,
+          mode: reportModeFromGameState(mode, focusedPracticeMode),
+          question: questionForSave.question || "",
+          exerciseText: questionForSave.question || "",
+          correctAnswer: questionForSave.correctAnswer,
+          wrongAnswer: answer,
+          userAnswer: answer,
+          isCorrect: false,
+          patternFamily:
+            prm.patternFamily != null ? String(prm.patternFamily) : null,
+          conceptTag: prm.conceptTag != null ? String(prm.conceptTag) : null,
+          kind: prm.kind != null ? String(prm.kind) : null,
+          answerMode:
+            Array.isArray(questionForSave.answers) &&
+            questionForSave.answers.length > 1
+              ? "choice"
+              : "typed",
+        };
+        wrongEntry = mergeDiagnosticIntoMistakeEntry(
+          wrongEntry,
+          extractDiagnosticMetadataFromQuestion(questionForSave, {
+            responseMs: timeSpentMs,
+            hintUsed: hintUsedForSave,
+          })
+        );
+        wrongEntry = mergeDiagnosticIntoMistakeEntry(
+          wrongEntry,
+          computeMcqIndicesForQuestion(questionForSave, answer)
+        );
+        const normalizedWrong = normalizeMistakeEvent(wrongEntry, "geometry");
+        inferredTags = inferNormalizedTags(normalizedWrong, "geometry");
+      }
+      geometryHypothesisLedgerRef.current = applyProbeOutcome(
+        geometryHypothesisLedgerRef.current,
+        {
+          isCorrect,
+          inferredTags,
+          probeMeta: questionForSave._probeMeta,
+          now: Date.now(),
+        }
+      );
+      patchLearningDiagnosticDebug({
+        hypothesisLedger: { geometry: geometryHypothesisLedgerRef.current },
+        lastProbeOutcome: {
+          subjectId: "geometry",
+          at: Date.now(),
+        },
+      });
+      setCurrentQuestion((prev) => {
+        if (!prev || prev !== questionForSave) return prev;
+        const { _diagnosticProbeAttempt: _a, _probeMeta: _b, ...rest } = prev;
+        void _a;
+        void _b;
+        return rest;
+      });
+    }
 
     pendingGeometryTimeTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
@@ -1279,6 +1425,39 @@ useEffect(() => {
                 });
               }
             }
+            try {
+              let normalized = normalizeMistakeEvent(entry, "geometry");
+              const inferredTags = inferNormalizedTags(normalized, "geometry");
+              patchLearningDiagnosticDebug({
+                lastInferredTags: {
+                  subjectId: "geometry",
+                  tags: inferredTags,
+                  at: Date.now(),
+                },
+              });
+              if (geometryWrongActivatesProbe(normalized, inferredTags)) {
+                geometryPendingDiagnosticProbeRef.current =
+                  buildPendingProbeFromMistake(
+                    normalized,
+                    {
+                      wrongAvoidKey: fp,
+                      fallbackTopicId: currentQuestion.topic,
+                      fallbackGrade: grade,
+                      fallbackLevel: level,
+                    },
+                    "geometry"
+                  );
+                patchLearningDiagnosticDebug({
+                  pendingProbe: {
+                    geometry: geometryPendingDiagnosticProbeRef.current,
+                  },
+                });
+              } else {
+                geometryPendingDiagnosticProbeRef.current = null;
+              }
+            } catch {
+              geometryPendingDiagnosticProbeRef.current = null;
+            }
             const next = [...filtered, entry].slice(-80);
             if (typeof window !== "undefined") {
               try {
@@ -1425,6 +1604,10 @@ useEffect(() => {
 
   function hardResetGame() {
     accumulateQuestionTime();
+    clearActiveDiagnosticState(
+      geometryPendingDiagnosticProbeRef,
+      geometryHypothesisLedgerRef
+    );
     // Stop background music when game resets
     sound.stopBackgroundMusic();
     gameActiveRef.current = false;
@@ -1445,6 +1628,10 @@ useEffect(() => {
 
 
   function startGame(opts = {}) {
+    clearActiveDiagnosticState(
+      geometryPendingDiagnosticProbeRef,
+      geometryHypothesisLedgerRef
+    );
     if (opts.focusedPracticeMode != null) {
       setFocusedPracticeMode(opts.focusedPracticeMode);
       focusedPracticeModeRef.current = opts.focusedPracticeMode;
@@ -1508,6 +1695,10 @@ useEffect(() => {
   }
 
   function stopGame() {
+    clearActiveDiagnosticState(
+      geometryPendingDiagnosticProbeRef,
+      geometryHypothesisLedgerRef
+    );
     // Stop background music when game stops
     sound.stopBackgroundMusic();
     recordSessionProgress();

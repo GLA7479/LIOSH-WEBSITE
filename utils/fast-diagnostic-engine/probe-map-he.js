@@ -89,6 +89,32 @@ export const PROBE_BY_ERROR_TAG = {
     suggestedQuestionType: "science_single_criterion_sort",
     reasonHe: "לאכלס קבוצה קטנה ולבקש סיווג לפי תכונה אחת ברורה.",
   },
+  place_value_error: {
+    skill: "ערך מקומי של ספרה",
+    suggestedQuestionType: "place_value_digit_value",
+    reasonHe: "לבודד את ערך המקום של ספרה אחת במספר בתרגיל קצר.",
+  },
+  multiplication_fact_gap: {
+    skill: "עובדות טבלת כפל",
+    suggestedQuestionType: "multiplication_fact_check",
+    reasonHe: "שאלת כפל ישיר קצרה מתוך טבלת הכפל.",
+  },
+  /** Geometry-only slip tag (infer-tags emits this instead of generic calculation_slip for geometry). */
+  geometry_calculation_slip: {
+    skill: "בחירת נוסחה או שלב ראשון בגיאומטריה",
+    suggestedQuestionType: "geometry_formula_choice",
+    reasonHe: "לבחור נוסחה או צעד ראשון מתאים לפני חישוב מספרי.",
+  },
+  prerequisite_gap: {
+    skill: "מושג מקדים",
+    suggestedQuestionType: "geometry_concept_minimal_contrast",
+    reasonHe: "לחזק מושג בסיס לפני המשך.",
+  },
+  spelling_pattern_error: {
+    skill: "איות בהקשר קצר",
+    suggestedQuestionType: "english_vocab_in_context_cloze",
+    reasonHe: "להשלים מילה במשפט עם הקשר ברור.",
+  },
 };
 
 /** @type {Record<string, ProbeHint>} */

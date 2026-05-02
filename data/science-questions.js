@@ -53,6 +53,13 @@ export const SCIENCE_QUESTIONS = [
     ],
     "correctIndex": 1,
     "explanation": "העיניים הן איבר הראייה. דרכן נכנס האור למוח שמפרש את התמונה.",
+    "params": {
+      "patternFamily": "science_body_sense_organs",
+      "conceptTag": "sense_vision",
+      "diagnosticSkillId": "sci_body_fact_recall",
+      "probePower": "medium",
+      "expectedErrorTags": ["fact_recall_gap", "classification_error"]
+    },
     "theoryLines": [
       "חמשת החושים: ראייה, שמיעה, ריח, טעם ומישוש.",
       "העיניים קשורות למוח בעזרת עצב הראייה."

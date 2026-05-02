@@ -113,7 +113,11 @@ import {
   applyProbeOutcome,
   clearActiveDiagnosticState,
 } from "../../utils/active-diagnostic-runtime/index.js";
-import { mathFractionWrongActivatesProbe } from "../../utils/math-fraction-probe.js";
+import { mathWrongActivatesProbe } from "../../utils/math-active-probe.js";
+import {
+  patchLearningDiagnosticDebug,
+  installLearningDiagnosticDebugOnce,
+} from "../../utils/learning-diagnostic-debug.js";
 
 /** Passed into compareMathLearnerAnswer — tolerance is not defaulted inside answer-compare. */
 const MATH_NUMERIC_TOLERANCE = 0.01;
@@ -686,6 +690,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     return () => {
       mounted = false;
     };
+  }, []);
+
+  useEffect(() => {
+    installLearningDiagnosticDebugOnce();
   }, []);
 
   useEffect(() => {
@@ -1340,11 +1348,22 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       question = attachProbeMetaToQuestion(question, probeMetaHolder.current);
     }
     if (probeAtStart) {
+      const pk = String(question.params?.kind || "");
       const consumed =
-        probeMetaHolder.current != null || question.operation === "fractions";
+        probeMetaHolder.current != null ||
+        pk.startsWith("math_probe_") ||
+        pk.startsWith("frac_probe_");
       if (consumed) {
         mathPendingDiagnosticProbeRef.current = null;
       }
+      patchLearningDiagnosticDebug({
+        lastProbeSelectionResult: {
+          subjectId: "math",
+          consumed,
+          kind: pk || null,
+          at: Date.now(),
+        },
+      });
     }
 
     mathTrackingOperationKeyRef.current = question.operation;
@@ -1792,6 +1811,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           now: Date.now(),
         }
       );
+      patchLearningDiagnosticDebug({
+        hypothesisLedger: { math: mathHypothesisLedgerRef.current },
+        lastProbeOutcome: { subjectId: "math", at: Date.now() },
+      });
       setCurrentQuestion((prev) => {
         if (!prev || prev !== questionForSave) return prev;
         const { _diagnosticProbeAttempt: _a, _probeMeta: _b, ...rest } = prev;
@@ -2196,17 +2219,28 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               };
             }
             const inferredTags = inferNormalizedTags(normalized, "math");
-            if (mathFractionWrongActivatesProbe(normalized, inferredTags)) {
+            patchLearningDiagnosticDebug({
+              lastInferredTags: { subjectId: "math", tags: inferredTags, at: Date.now() },
+            });
+            if (mathWrongActivatesProbe(normalized, inferredTags)) {
+              const fallbackTopic =
+                normalized.bucketKey ||
+                normalized.topicOrOperation ||
+                baseOp ||
+                "addition";
               mathPendingDiagnosticProbeRef.current = buildPendingProbeFromMistake(
                 normalized,
                 {
                   wrongAvoidKey: fp,
-                  fallbackTopicId: "fractions",
+                  fallbackTopicId: fallbackTopic,
                   fallbackGrade: grade,
                   fallbackLevel: level,
                 },
                 "math"
               );
+              patchLearningDiagnosticDebug({
+                pendingProbe: { math: mathPendingDiagnosticProbeRef.current },
+              });
             } else {
               mathPendingDiagnosticProbeRef.current = null;
             }

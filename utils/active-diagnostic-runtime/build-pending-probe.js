@@ -3,6 +3,7 @@ import {
   PROBE_BY_ERROR_TAG,
   resolveProbeHintFromMap,
 } from "../fast-diagnostic-engine/probe-map-he.js";
+import { finalizePendingProbeHint } from "../probe-pending-finalize.js";
 import { str } from "./str-utils.js";
 
 /**
@@ -66,7 +67,7 @@ export function buildPendingProbeFromMistake(normalized, ctx = {}, subjectId) {
   const ct = str(normalized.conceptTag) || null;
   const dominantTag = mappedTag || null;
 
-  return {
+  const base = {
     subjectId: sidSubject,
     topicId,
     diagnosticSkillId: sid || null,
@@ -87,4 +88,10 @@ export function buildPendingProbeFromMistake(normalized, ctx = {}, subjectId) {
     wrongAvoidKey:
       ctx.wrongAvoidKey != null ? String(ctx.wrongAvoidKey) : undefined,
   };
+
+  return finalizePendingProbeHint(
+    base,
+    /** @type {import("../mistake-event.js").MistakeEventV1} */ (normalized),
+    sidSubject
+  );
 }

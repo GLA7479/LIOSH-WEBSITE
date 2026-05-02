@@ -79,6 +79,9 @@ export const HEBREW_RICH_POOL = [
     patternFamily: "passage_inference",
     subtype: "implied",
     distractorFamily: "plausible_inference",
+    diagnosticSkillId: "he_comp_inference_intro",
+    probePower: "medium",
+    expectedErrorTags: ["inference_error", "comprehension_gap"],
     question:
       "כיתה ד׳ — קראו: 'מיכל חיפשה את המפתחות בכל הבית, ובסוף מצאה אותם בכיס המעיל.' מה ההסקה הסבירה ביותר?",
     answers: [

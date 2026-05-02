@@ -48,6 +48,7 @@ import { deriveRawMetricStrengthLinesHe } from "./parent-data-presence.js";
 import { runDiagnosticEngineV2 } from "./diagnostic-engine-v2/index.js";
 import { attachFastDiagnosisToDiagnosticEngineV2 } from "./fast-diagnostic-engine/index.js";
 import { safeBuildHybridRuntimeForReport } from "./ai-hybrid-diagnostic/safe-build-hybrid-runtime.js";
+import { getActiveDiagnosisSessionSummaryForReport } from "./active-diagnosis-session-summary.js";
 import {
   evidenceExampleBodyFallbackHe,
   evidenceExampleTitleFallbackHe,
@@ -2163,5 +2164,7 @@ export function generateParentReportV2(
     systemIntelligence: {
       globalScore: systemIntelligenceLayer?.globalScore ?? { score: 0, level: "unknown" },
     },
+    /** Session-local active diagnosis snapshot when available (additive; no UI). */
+    activeDiagnosisSessionSummary: getActiveDiagnosisSessionSummaryForReport(),
   };
 }

@@ -967,6 +967,99 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
     }),
     null
   );
+
+  const { mathWrongActivatesProbe } = await importUtils("../utils/math-active-probe.js");
+  const pvWrong = normalizeMistakeEvent(
+    {
+      bucketKey: "number_sense",
+      topicOrOperation: "number_sense",
+      grade: "g4",
+      level: "easy",
+      isCorrect: false,
+      patternFamily: "place_value_digit",
+      expectedErrorTags: ["place_value_error"],
+    },
+    "math"
+  );
+  assert.ok(mathWrongActivatesProbe(pvWrong, ["place_value_error"]));
+
+  const mulWrong = normalizeMistakeEvent(
+    {
+      bucketKey: "multiplication",
+      topicOrOperation: "multiplication",
+      grade: "g4",
+      level: "easy",
+      isCorrect: false,
+      patternFamily: "multiplication_facts",
+      expectedErrorTags: ["multiplication_fact_gap"],
+    },
+    "math"
+  );
+  assert.ok(mathWrongActivatesProbe(mulWrong, ["multiplication_fact_gap"]));
+
+  const wpOpWrong = normalizeMistakeEvent(
+    {
+      bucketKey: "word_problems",
+      topicOrOperation: "word_problems",
+      grade: "g5",
+      level: "easy",
+      isCorrect: false,
+      patternFamily: "wp_groups_same_size",
+      expectedErrorTags: ["operation_confusion"],
+    },
+    "math"
+  );
+  const wpPb = buildPendingProbeFromMistake(
+    wpOpWrong,
+    {
+      wrongAvoidKey: "wp1",
+      fallbackTopicId: "word_problems",
+      fallbackGrade: "g5",
+      fallbackLevel: "easy",
+    },
+    "math"
+  );
+  assert.equal(wpPb.suggestedQuestionType, "operation_choice_word_problem");
+
+  const lcNs = getLevelConfig(4, "easy");
+  const probePv = buildPendingProbeFromMistake(pvWrong, {
+    wrongAvoidKey: "pv1",
+    fallbackTopicId: "number_sense",
+    fallbackGrade: "g4",
+    fallbackLevel: "easy",
+  }, "math");
+  const qPv = generateQuestion(lcNs, "number_sense", "g4", null, {
+    pendingProbe: probePv,
+    probeMetaHolder: { current: null },
+  });
+  assert.equal(qPv.params?.kind, "math_probe_place_value");
+
+  const { pickGeometryProbeConceptual } = await importUtils("../utils/geometry-probe-bank.js");
+  const geoPb = buildPendingProbeFromMistake(
+    normalizeMistakeEvent(
+      {
+        bucketKey: "area",
+        topicOrOperation: "area",
+        grade: "g5",
+        level: "easy",
+        isCorrect: false,
+        patternFamily: "perimeter_vs_area",
+        expectedErrorTags: ["concept_confusion"],
+      },
+      "geometry"
+    ),
+    { fallbackTopicId: "area", fallbackGrade: "g5", fallbackLevel: "easy" },
+    "geometry"
+  );
+  assert.equal(geoPb.suggestedQuestionType, "geometry_concept_minimal_contrast");
+  const geoPick = pickGeometryProbeConceptual({
+    pendingProbe: geoPb,
+    gradeKey: "g5",
+    levelKey: "easy",
+    topic: "area",
+    recentIds: new Set(),
+  });
+  assert.ok(geoPick.row);
 }
 
 // Phase 3D-A: science session probe selection helper (no live UI / no parent report changes).

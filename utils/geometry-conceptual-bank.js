@@ -1,4 +1,5 @@
 import { itemAllowedForGrade } from "./grade-gating";
+import { mergeDiagnosticContractIntoParams } from "./diagnostic-question-contract.js";
 
 /**
  * שאלות גיאומטריה קונספטואליות — הסקה, השוואה, סיווג, בלבול שטח/היקף, רב-שלבי מושגי.
@@ -16,24 +17,16 @@ function shuffleOptions(correct, options) {
 }
 
 /**
+ * Render one conceptual bank row into a lesson question (deterministic wiring).
+ * @param {Record<string, unknown>} row
  * @param {{ gradeKey: string, levelKey: string, topic: string }} ctx
- * @returns {null | { question: string, correctAnswer: string, answers: string[], params: object }}
  */
-export function pickGeometryConceptualQuestion(ctx) {
+export function renderGeometryConceptualRowToQuestion(row, ctx) {
   const { gradeKey, levelKey, topic } = ctx;
-  const g = gradeKey || "g3";
   const lv = levelKey || "easy";
-  const candidates = GEOMETRY_CONCEPTUAL_ITEMS.filter((row) => {
-    if (!row.topics.includes(topic)) return false;
-    if (!itemAllowedForGrade(row, g)) return false;
-    if (row.levels && !row.levels.includes(lv)) return false;
-    return true;
-  });
-  if (candidates.length === 0) return null;
-  const row = candidates[Math.floor(Math.random() * candidates.length)];
   const correct = String(row.correct).trim();
   let answers;
-  let params = {
+  const baseParams = {
     kind: row.kind || "conceptual_mcq",
     patternFamily: row.patternFamily,
     subtype: row.subtype,
@@ -41,9 +34,18 @@ export function pickGeometryConceptualQuestion(ctx) {
     distractorFamily: row.distractorFamily || "conceptual",
     answerMode: row.binary ? "binary" : "mcq_text",
   };
+  let params = mergeDiagnosticContractIntoParams(baseParams, {
+    diagnosticSkillId: row.diagnosticSkillId,
+    expectedErrorTags: row.expectedErrorTags,
+    probePower: row.probePower,
+    suggestedQuestionType: row.suggestedQuestionType,
+  });
 
   if (row.binary) {
-    const opts = row.options.length === 2 ? row.options : [correct, row.options.find((x) => x !== correct)];
+    const opts =
+      row.options.length === 2
+        ? row.options
+        : [correct, row.options.find((x) => x !== correct)];
     const sh = shuffleOptions(correct, opts);
     answers = sh.answers;
     params.optionCount = 2;
@@ -69,7 +71,38 @@ export function pickGeometryConceptualQuestion(ctx) {
     question: qText,
     correctAnswer: correct,
     answers,
+    topic,
+    shape: null,
     params: { ...params, conceptualLevelFraming: levelFr },
+  };
+}
+
+/**
+ * @param {{ gradeKey: string, levelKey: string, topic: string }} ctx
+ * @returns {null | { question: string, correctAnswer: string, answers: string[], params: object }}
+ */
+export function pickGeometryConceptualQuestion(ctx) {
+  const { gradeKey, levelKey, topic } = ctx;
+  const g = gradeKey || "g3";
+  const lv = levelKey || "easy";
+  const candidates = GEOMETRY_CONCEPTUAL_ITEMS.filter((row) => {
+    if (!row.topics.includes(topic)) return false;
+    if (!itemAllowedForGrade(row, g)) return false;
+    if (row.levels && !row.levels.includes(lv)) return false;
+    return true;
+  });
+  if (candidates.length === 0) return null;
+  const row = candidates[Math.floor(Math.random() * candidates.length)];
+  const rendered = renderGeometryConceptualRowToQuestion(row, {
+    gradeKey,
+    levelKey,
+    topic,
+  });
+  return {
+    question: rendered.question,
+    correctAnswer: rendered.correctAnswer,
+    answers: rendered.answers,
+    params: rendered.params,
   };
 }
 
@@ -134,6 +167,9 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     subtype: "choose_measure",
     conceptTag: "pv_area",
     distractorFamily: "measure_confusion",
+    diagnosticSkillId: "geo_pv_area_vs_perimeter",
+    expectedErrorTags: ["concept_confusion"],
+    suggestedQuestionType: "geometry_concept_minimal_contrast",
     question:
       "יש ריבוע עם צלע 5 ס״מ. אם שואלים 'כמה נייר צריך לכסות את כל הפנים', איזה מושג מחפשים?",
     correct: "שטח",
@@ -148,6 +184,9 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     subtype: "choose_measure_floor",
     conceptTag: "pv_area_late",
     distractorFamily: "measure_confusion",
+    diagnosticSkillId: "geo_pv_area_vs_perimeter",
+    expectedErrorTags: ["concept_confusion"],
+    suggestedQuestionType: "geometry_concept_minimal_contrast",
     question:
       "ריצוף ריבועי לחדר: צלע הריצוף 5 מ׳. כדי לדעת כמה מ״ר צריך לרכוש — איזה מושג מחשבים?",
     correct: "שטח",
@@ -162,6 +201,9 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     subtype: "fence",
     conceptTag: "pv_perimeter",
     distractorFamily: "measure_confusion",
+    diagnosticSkillId: "geo_pv_area_vs_perimeter",
+    expectedErrorTags: ["concept_confusion"],
+    suggestedQuestionType: "geometry_concept_minimal_contrast",
     question:
       "רוצים גדר סביב מגרש מלבני (רק סביב הגבול החיצוני). מה בדרך כלל מחשבים כדי לדעת כמה חומר גדר לקנות?",
     correct: "היקף",
@@ -176,6 +218,9 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     subtype: "fence_perimeter_project",
     conceptTag: "pv_perimeter_late",
     distractorFamily: "measure_confusion",
+    diagnosticSkillId: "geo_pv_area_vs_perimeter",
+    expectedErrorTags: ["concept_confusion"],
+    suggestedQuestionType: "geometry_concept_minimal_contrast",
     question:
       "פרויקט תכנון: גדר סביב מגרש מלבני (רק החיצון). כדי להזמין אורך גדר — מה מודדים?",
     correct: "היקף",
@@ -190,6 +235,9 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     subtype: "area_rectangle",
     conceptTag: "plan_area_rect",
     distractorFamily: "wrong_formula_family",
+    diagnosticSkillId: "geo_rect_area_plan",
+    expectedErrorTags: ["geometry_calculation_slip", "concept_confusion"],
+    suggestedQuestionType: "geometry_formula_choice",
     question:
       "מלבן באורך 8 מ׳ וברוחב 3 מ׳. מה השלב הנכון הראשון כדי למצוא את שטח הרצפה?",
     correct: "להכפיל אורך ברוחב",
@@ -209,6 +257,9 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     subtype: "area_rectangle_site",
     conceptTag: "plan_area_rect_late",
     distractorFamily: "wrong_formula_family",
+    diagnosticSkillId: "geo_rect_area_plan",
+    expectedErrorTags: ["geometry_calculation_slip", "concept_confusion"],
+    suggestedQuestionType: "geometry_formula_choice",
     question:
       "שטיח מלבני לחדר גדול: אורך 8 מ׳ ורוחב 3 מ׳. לפני חישוב שטח החלל — מה צעד ראשון מתאים?",
     correct: "להכפיל אורך ברוחב",
@@ -286,6 +337,9 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     subtype: "classification",
     conceptTag: "right_90",
     distractorFamily: "angle_type",
+    diagnosticSkillId: "geo_angle_right_identify",
+    expectedErrorTags: ["concept_confusion"],
+    suggestedQuestionType: "geometry_identify_shape_property",
     question: "זווית ישרה היא בערך:",
     correct: "90°",
     options: ["90°", "180°", "45°", "360°"],
@@ -299,6 +353,9 @@ export const GEOMETRY_CONCEPTUAL_ITEMS = [
     subtype: "classification_late",
     conceptTag: "right_90_late",
     distractorFamily: "angle_type",
+    diagnosticSkillId: "geo_angle_right_identify",
+    expectedErrorTags: ["concept_confusion"],
+    suggestedQuestionType: "geometry_identify_shape_property",
     question: "במדידה מדויקת, זווית ישרת־מעשית קרובה ל:",
     correct: "90°",
     options: ["90°", "180°", "45°", "360°"],
