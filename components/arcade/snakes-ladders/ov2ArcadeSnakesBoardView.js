@@ -540,11 +540,13 @@ function PawnWithTurnRing({ seat, turnSeat, dense, edgeHang }) {
  *   onRoll: () => void,
  *   rollDisabled: boolean,
  *   err?: string,
+ *   pawnMotion?: null | { seat: number, displayCell: number, phase: string, preCell: number, finalCell: number, kind: 'ladder'|'snake'|null },
  * }} props
  */
 export function Ov2ArcadeSnakesPlayfield({
   edges,
   positions,
+  pawnMotion = null,
   turnSeat,
   mySeat,
   memberBySeat,
@@ -596,32 +598,45 @@ export function Ov2ArcadeSnakesPlayfield({
               }
             : isStart
               ? {
-                  color: "rgb(45 212 191)",
-                  textShadow: "0 1px 3px rgb(4 24 28 / 0.92), 0 0 1px rgb(0 0 0 / 0.5)",
-                }
+                color: "rgb(45 212 191)",
+                textShadow: "0 1px 3px rgb(4 24 28 / 0.92), 0 0 1px rgb(0 0 0 / 0.5)",
+              }
               : {
-                  color: "rgb(196 181 253)",
-                  textShadow: "0 1px 3px rgb(8 6 22 / 0.92), 0 0 1px rgb(0 0 0 / 0.5)",
-                };
+                color: "rgb(196 181 253)",
+                textShadow: "0 1px 3px rgb(8 6 22 / 0.92), 0 0 1px rgb(0 0 0 / 0.5)",
+              };
+        const edgePreBeat =
+          pawnMotion &&
+          pawnMotion.phase === "edge_hold" &&
+          n === pawnMotion.preCell &&
+          occupants.includes(pawnMotion.seat);
+        const edgeLandFlash =
+          pawnMotion &&
+          pawnMotion.phase === "edge_land" &&
+          n === pawnMotion.finalCell &&
+          occupants.includes(pawnMotion.seat);
         out.push({
           key: `c-${row}-${col}`,
           n,
           occupants,
           edgeBg,
           cellNumberStyle,
-          edgePreBeat: false,
-          edgeLandFlash: false,
-          edgeKind: null,
+          edgePreBeat,
+          edgeLandFlash,
+          edgeKind: pawnMotion?.kind ?? null,
         });
       }
     }
     return out;
-  }, [positions, ladderFoot, ladderTop, snakeHead, snakeTail]);
+  }, [positions, ladderFoot, ladderTop, snakeHead, snakeTail, pawnMotion]);
 
   return (
     <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col gap-0.5 overflow-visible px-0.5 pb-0.5 pt-0.5 sm:gap-1 sm:px-1">
       {err ? <p className="shrink-0 truncate px-0.5 text-center text-xs text-red-300">{err}</p> : null}
-      <div className="flex w-full min-w-0 shrink-0 items-center rounded-full border border-white/[0.14] bg-zinc-950/75 py-1 pl-1.5 pr-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:py-1.5 sm:pl-2 sm:pr-1.5">
+      <div
+        dir="ltr"
+        className="flex w-full min-w-0 shrink-0 items-center rounded-full border border-white/[0.14] bg-zinc-950/75 py-1 pl-1.5 pr-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:py-1.5 sm:pl-2 sm:pr-1.5"
+      >
         <div className="flex min-h-12 min-w-0 flex-1 items-center justify-start gap-1 overflow-hidden pl-0 sm:gap-1.5">
           <Ov2SnakesHudSeatChip si={0} memberBySeat={memberBySeat} positions={positions} turnSeat={turnSeat} mySeat={mySeat} />
           <Ov2SnakesHudSeatChip si={2} memberBySeat={memberBySeat} positions={positions} turnSeat={turnSeat} mySeat={mySeat} />
@@ -635,8 +650,16 @@ export function Ov2ArcadeSnakesPlayfield({
         </div>
       </div>
 
-      <div className="flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-visible p-0.5 max-sm:items-stretch max-sm:justify-center">
-        <div className="relative isolate min-w-0 overflow-visible rounded-lg border border-amber-800/50 bg-gradient-to-br from-amber-950/62 via-zinc-900 to-zinc-950 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07),0_12px_36px_rgba(0,0,0,0.52)] ring-2 ring-amber-700/28 max-sm:h-full max-sm:w-full max-sm:min-h-0 max-sm:max-h-[min(100%,calc(100dvh-15rem))] sm:aspect-square sm:h-auto sm:max-h-full sm:w-full sm:max-w-full sm:min-h-[148px] sm:shrink-0 sm:rounded-xl sm:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07),0_16px_48px_rgba(0,0,0,0.52)]">
+      {/*
+        דף הארקייד עוטף ב-dir=rtl; grid ו-SVG ב-Ov2SnakesScreen מניחים LTR (עמודה 0 = שמאל).
+        בלי dir=ltr הלוח מתהפך ונחשים/סולמות לא נופלים על המשבצות הנכונות.
+      */}
+      <div
+        dir="ltr"
+        className="flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-visible p-0.5 max-sm:items-stretch max-sm:justify-center"
+      >
+        <div className="relative isolate min-w-0 overflow-visible rounded-lg border border-amber-800/50 bg-gradient-to-br from-amber-950/62 via-zinc-900 to-zinc-950 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07),0_12px_36px_rgba(0,0,0,0.52)] ring-2 ring-amber-700/28 max-sm:h-full max-sm:w-full max-sm:min-h-0 max-sm:max-h-[min(100%,calc(100dvh-15rem))] sm:aspect-square sm:h-auto sm:max-h-full sm:w-full sm:max-w-full sm:min-h-[148px] sm:shrink-0 sm:rounded-xl sm:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07),0_16px_48px_rgba(0,0,0,0.52)]"
+        >
           <div className="pointer-events-none absolute inset-0 z-[1] grid h-full w-full grid-cols-10 grid-rows-10 gap-px bg-zinc-950/85 p-px">
             {boardCells.map((c) => (
               <div key={`bg-${c.key}`} className={`min-h-0 min-w-0 rounded-sm ${c.edgeBg}`} />
@@ -649,7 +672,18 @@ export function Ov2ArcadeSnakesPlayfield({
             {boardCells.map((c) => (
               <div
                 key={c.key}
-                className="relative flex min-h-0 min-w-0 overflow-visible rounded-sm bg-transparent text-[6px] font-bold leading-none ring-0 ring-transparent shadow-none sm:text-[7px]"
+                className={[
+                  "relative flex min-h-0 min-w-0 overflow-visible rounded-sm bg-transparent text-[6px] font-bold leading-none sm:text-[7px]",
+                  c.edgeLandFlash
+                    ? c.edgeKind === "snake"
+                      ? "ring-2 ring-rose-300/45 shadow-[0_0_12px_rgba(251,113,133,0.18)]"
+                      : "ring-2 ring-lime-300/50 shadow-[0_0_12px_rgba(190,242,100,0.2)]"
+                    : c.edgePreBeat
+                      ? c.edgeKind === "snake"
+                        ? "ring-2 ring-rose-400/55 shadow-[0_0_14px_rgba(251,113,133,0.22)]"
+                        : "ring-2 ring-amber-300/60 shadow-[0_0_14px_rgba(251,191,129,0.25)]"
+                      : "ring-0 ring-transparent shadow-none",
+                ].join(" ")}
               >
                 <span
                   className="pointer-events-none absolute right-0 top-0 z-[6] px-0.5 py-px pr-0.5 text-[8px] font-bold tabular-nums leading-none sm:text-[9px]"
@@ -661,13 +695,22 @@ export function Ov2ArcadeSnakesPlayfield({
                   <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
                     {c.occupants.length === 1 ? (
                       <div className="flex h-full w-full min-h-0 min-w-0 items-center justify-center p-0">
-                        <PawnWithTurnRing seat={c.occupants[0]} turnSeat={turnSeat} edgeHang={false} />
+                        <PawnWithTurnRing
+                          seat={c.occupants[0]}
+                          turnSeat={turnSeat}
+                          edgeHang={Boolean(c.edgePreBeat && c.occupants[0] === pawnMotion?.seat)}
+                        />
                       </div>
                     ) : (
                       <div className="grid h-full w-full min-h-0 min-w-0 grid-cols-2 grid-rows-2 place-items-center gap-0 p-0">
                         {c.occupants.map((s) => (
                           <div key={`o-${c.n}-${s}`} className="flex h-full w-full min-h-0 min-w-0 items-center justify-center">
-                            <PawnWithTurnRing seat={s} turnSeat={turnSeat} dense edgeHang={false} />
+                            <PawnWithTurnRing
+                              seat={s}
+                              turnSeat={turnSeat}
+                              dense
+                              edgeHang={Boolean(c.edgePreBeat && s === pawnMotion?.seat)}
+                            />
                           </div>
                         ))}
                       </div>

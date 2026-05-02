@@ -3,6 +3,17 @@ import {
   fetchArcadeRoomSnakesLaddersBundle,
   requestSnakesAndLaddersGameAction,
 } from "../../lib/arcade/snakes-ladders/snakesSessionAdapter";
+import {
+  ARCADE_SNAKES_BOARD_EDGES,
+  ARCADE_SNAKES_EDGE_HOLD_MS,
+  ARCADE_SNAKES_EDGE_LAND_MS,
+  ARCADE_SNAKES_WALK_SETTLE_MS,
+  ARCADE_SNAKES_WALK_STEP_MS,
+  arcadeCellAfterDice,
+  arcadeSnakesClassifyEdge,
+  findSingleMovedSeat,
+  readArcadeSeatPos,
+} from "../../lib/arcade/snakes-ladders/arcadeSnakesMotion";
 
 const LIVE_ROLL_MIN_MS = 1400;
 const DICE_FACE_HOLD_MS = 900;
@@ -51,6 +62,99 @@ export function useSnakesLaddersSession(ctx) {
   const snapRef = useRef(null);
   snapRef.current = snap;
 
+  const boardEdgesRef = useRef(ARCADE_SNAKES_BOARD_EDGES);
+  boardEdgesRef.current = ARCADE_SNAKES_BOARD_EDGES;
+
+  const pawnWalkTimersRef = useRef(/** @type {number[]} */ ([]));
+  const lastWalkRevisionRef = useRef(/** @type {number|null} */ (null));
+  const prevSnapPollRef = useRef(null);
+
+  const [pawnMotion, setPawnMotion] = useState(
+    /** @type {null | { key: number, seat: number, displayCell: number, phase: 'walk' | 'edge_hold' | 'edge_land', preCell: number, finalCell: number, kind: 'ladder' | 'snake' | null }} */ (
+      null
+    )
+  );
+
+  const clearPawnWalkTimers = useCallback(() => {
+    pawnWalkTimersRef.current.forEach((id) => window.clearTimeout(id));
+    pawnWalkTimersRef.current = [];
+  }, []);
+
+  const schedulePawnWalkFromPrevNext = useCallback(
+    (prev, next, seat) => {
+      if (!prev || !next || seat < 0 || seat > 3) return;
+      const nextRev = next.revision != null ? Number(next.revision) : NaN;
+      if (!Number.isFinite(nextRev)) return;
+      if (lastWalkRevisionRef.current === nextRev) return;
+
+      const dice = next.lastRoll != null ? Math.floor(Number(next.lastRoll)) : null;
+      if (dice == null || dice < 1 || dice > 6) return;
+      const oldP = readArcadeSeatPos(prev, seat);
+      const newP = readArcadeSeatPos(next, seat);
+      if (oldP == null || newP == null || oldP === newP) return;
+      const preCell = arcadeCellAfterDice(oldP, dice);
+      if (preCell == null) return;
+
+      lastWalkRevisionRef.current = nextRev;
+      clearPawnWalkTimers();
+
+      /** @type {number[]} */
+      const path = [];
+      const start = oldP === 0 ? 1 : oldP + 1;
+      for (let c = start; c <= preCell; c += 1) path.push(c);
+      const kind =
+        preCell !== newP ? arcadeSnakesClassifyEdge(preCell, newP, boardEdgesRef.current) : null;
+      const key = Date.now();
+      const pushTid = (tid) => {
+        pawnWalkTimersRef.current.push(tid);
+      };
+      setPawnMotion({
+        key,
+        seat,
+        displayCell: oldP,
+        phase: "walk",
+        preCell,
+        finalCell: newP,
+        kind,
+      });
+      path.forEach((cell, i) => {
+        const tid = window.setTimeout(() => {
+          setPawnMotion((cur) => (cur && cur.key === key ? { ...cur, displayCell: cell, phase: "walk" } : cur));
+        }, (i + 1) * ARCADE_SNAKES_WALK_STEP_MS);
+        pushTid(tid);
+      });
+      const afterWalk = path.length * ARCADE_SNAKES_WALK_STEP_MS;
+      if (kind && preCell !== newP) {
+        pushTid(
+          window.setTimeout(() => {
+            setPawnMotion((cur) =>
+              cur && cur.key === key ? { ...cur, displayCell: preCell, phase: "edge_hold" } : cur
+            );
+          }, afterWalk)
+        );
+        pushTid(
+          window.setTimeout(() => {
+            setPawnMotion((cur) =>
+              cur && cur.key === key ? { ...cur, displayCell: newP, phase: "edge_land" } : cur
+            );
+          }, afterWalk + ARCADE_SNAKES_EDGE_HOLD_MS)
+        );
+        pushTid(
+          window.setTimeout(() => {
+            setPawnMotion((cur) => (cur && cur.key === key ? null : cur));
+          }, afterWalk + ARCADE_SNAKES_EDGE_HOLD_MS + ARCADE_SNAKES_EDGE_LAND_MS)
+        );
+      } else {
+        pushTid(
+          window.setTimeout(() => {
+            setPawnMotion((cur) => (cur && cur.key === key ? null : cur));
+          }, afterWalk + ARCADE_SNAKES_WALK_SETTLE_MS)
+        );
+      }
+    },
+    [clearPawnWalkTimers]
+  );
+
   const [diceRolling, setDiceRolling] = useState(false);
   const [liveSpinTick, setLiveSpinTick] = useState(1);
   const [liveRollServerFace, setLiveRollServerFace] = useState(/** @type {number|null} */ (null));
@@ -75,7 +179,11 @@ export function useSnakesLaddersSession(ctx) {
     diceRollingRef.current = false;
     setLiveRollServerFace(null);
     setLiveDiceRevealHold(null);
-  }, [roomId]);
+    clearPawnWalkTimers();
+    setPawnMotion(null);
+    lastWalkRevisionRef.current = null;
+    prevSnapPollRef.current = null;
+  }, [roomId, clearPawnWalkTimers]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -180,6 +288,32 @@ export function useSnakesLaddersSession(ctx) {
     };
   }, [roomId]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const prev = prevSnapPollRef.current;
+    const next = snap;
+    if (
+      prev &&
+      next &&
+      prev.revision != null &&
+      next.revision != null &&
+      Number(next.revision) > Number(prev.revision)
+    ) {
+      const prevPhase = String(prev.phase || "").toLowerCase();
+      const nextPhase = String(next.phase || "").toLowerCase();
+      const playingChain =
+        (prevPhase === "playing" && nextPhase === "playing") ||
+        (prevPhase === "playing" && nextPhase === "finished");
+      if (playingChain) {
+        const moved = findSingleMovedSeat(prev, next);
+        if (moved != null) {
+          schedulePawnWalkFromPrevNext(prev, next, moved);
+        }
+      }
+    }
+    prevSnapPollRef.current = next;
+  }, [snap, schedulePawnWalkFromPrevNext]);
+
   const rollDice = useCallback(async () => {
     const s = snapRef.current;
     if (!roomId || !s) return { ok: false };
@@ -187,6 +321,7 @@ export function useSnakesLaddersSession(ctx) {
     if (!s.canClientRoll) return { ok: false };
 
     const t0 = typeof Date.now === "function" ? Date.now() : 0;
+    clearPawnWalkTimers();
     setLiveRollServerFace(null);
     setDiceRolling(true);
     diceRollingRef.current = true;
@@ -211,6 +346,12 @@ export function useSnakesLaddersSession(ctx) {
       await sleepMs(wait);
 
       if (r.ok && nextSnap) {
+        if (s && nextSnap.lastRoll != null && s.turnSeat != null && !Number.isNaN(Number(s.turnSeat))) {
+          const roller = Math.floor(Number(s.turnSeat));
+          if (roller >= 0 && roller <= 3) {
+            schedulePawnWalkFromPrevNext(s, nextSnap, roller);
+          }
+        }
         setSnap((prev) => preferNewer(prev, nextSnap));
         if (face != null) {
           setLiveDiceRevealHold({ face, until: Date.now() + DICE_FACE_HOLD_MS });
@@ -233,7 +374,7 @@ export function useSnakesLaddersSession(ctx) {
       setDiceRolling(false);
       diceRollingRef.current = false;
     }
-  }, [roomId]);
+  }, [roomId, clearPawnWalkTimers, schedulePawnWalkFromPrevNext]);
 
   const vm = useMemo(() => {
     const phase = snap ? String(snap.phase || "").toLowerCase() : "";
@@ -253,6 +394,19 @@ export function useSnakesLaddersSession(ctx) {
       dicePresentation = Number(snap.lastRoll);
     }
 
+    /** @type {Record<string, number>} */
+    const positionRecord = {};
+    const acts = Array.isArray(snap?.activeSeats) ? snap.activeSeats : [];
+    const pos = Array.isArray(snap?.positions) ? snap.positions : [];
+    for (let i = 0; i < acts.length && i < pos.length; i += 1) {
+      const seat = acts[i];
+      if (pos[i] == null) continue;
+      positionRecord[String(seat)] = Number(pos[i]);
+    }
+    if (pawnMotion) {
+      positionRecord[String(pawnMotion.seat)] = pawnMotion.displayCell;
+    }
+
     return {
       phase,
       turnSeat: snap?.turnSeat ?? null,
@@ -262,12 +416,21 @@ export function useSnakesLaddersSession(ctx) {
       sessionId: snap?.sessionId != null ? String(snap.sessionId) : "",
       positions: Array.isArray(snap?.positions) ? snap.positions : [],
       activeSeats: Array.isArray(snap?.activeSeats) ? snap.activeSeats : [],
+      positionsForBoard: positionRecord,
+      pawnMotion,
       dicePresentation,
       diceRolling,
       canClientRoll: snap?.canClientRoll === true && !diceRolling,
       boardViewReadOnly: snap?.boardViewReadOnly === true,
     };
-  }, [snap, diceRolling, liveSpinTick, liveDiceRevealHold, nowMs]);
+  }, [snap, diceRolling, liveSpinTick, liveDiceRevealHold, nowMs, pawnMotion]);
+
+  useEffect(
+    () => () => {
+      clearPawnWalkTimers();
+    },
+    [clearPawnWalkTimers]
+  );
 
   return {
     snapshot: snap,

@@ -263,20 +263,7 @@ export default function SnakesLaddersScreen({ roomId }) {
     [],
   );
 
-  const positionsRecord = useMemo(() => {
-    /** @type {Record<string, number>} */
-    const out = {};
-    const acts = vm.activeSeats;
-    const pos = vm.positions;
-    if (!Array.isArray(acts) || !Array.isArray(pos)) return out;
-    for (let i = 0; i < acts.length && i < pos.length; i += 1) {
-      const seat = acts[i];
-      const cell = pos[i];
-      if (cell == null) continue;
-      out[String(seat)] = Number(cell);
-    }
-    return out;
-  }, [vm.activeSeats, vm.positions]);
+  const positionsRecord = vm.positionsForBoard != null ? vm.positionsForBoard : {};
 
   const memberBySeat = useMemo(() => {
     /** @type {Map<number, { display_name?: string }>} */
@@ -344,6 +331,7 @@ export default function SnakesLaddersScreen({ roomId }) {
             <Ov2ArcadeSnakesPlayfield
               edges={edges}
               positions={positionsRecord}
+              pawnMotion={vm.pawnMotion}
               turnSeat={vm.turnSeat ?? null}
               mySeat={vm.mySeat ?? null}
               memberBySeat={memberBySeat}
