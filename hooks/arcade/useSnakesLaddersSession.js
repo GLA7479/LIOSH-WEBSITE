@@ -150,7 +150,8 @@ export function useSnakesLaddersSession(ctx) {
       const playerSig = Array.isArray(b.players)
         ? b.players.map((p) => `${p.student_id}:${String(p.display_name ?? "").slice(0, 24)}`).join("|")
         : "";
-      const pollSig = `${roomSt}|${gsSt}|${rev}|${phase}|${ts}|${lr}|${playerSig}`;
+      const flexWaitSig = `${b.room?.flex_auto_start_at ?? ""}|${b.room?.start_window_started_at ?? ""}`;
+      const pollSig = `${roomSt}|${gsSt}|${rev}|${phase}|${ts}|${lr}|${playerSig}|${flexWaitSig}`;
 
       const unchanged =
         bundleLoadedOnceRef.current &&
