@@ -16,7 +16,8 @@
         "science",
         "english"
       ],
-      "overallAccuracyPct": 65.9
+      "overallAccuracyPct": 65.9,
+      "mistakeRateApprox": 0.209
     },
     "subjectMetrics": {
       "math": {
@@ -202,6 +203,12 @@
       "stdev": 0.07677912607063803,
       "n": 48,
       "meanAccuracy": 0.6560466876425662
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 2157.8,
+      "meanSecondsPerQuestion": 134.34,
+      "mistakeEventCount": 161,
+      "mistakeRateApprox": 0.209
     },
     "reportSignals": {
       "totalQuestions": 771,

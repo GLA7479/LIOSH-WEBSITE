@@ -14,7 +14,8 @@
       "subjectsTouched": [
         "science"
       ],
-      "overallAccuracyPct": 36.2
+      "overallAccuracyPct": 36.2,
+      "mistakeRateApprox": 0.349
     },
     "subjectMetrics": {
       "science": {
@@ -43,6 +44,12 @@
       "stdev": 0.027655086598195742,
       "n": 14,
       "meanAccuracy": 0.36032984872270596
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1692.3,
+      "meanSecondsPerQuestion": 100.82,
+      "mistakeEventCount": 82,
+      "mistakeRateApprox": 0.349
     },
     "reportSignals": {
       "totalQuestions": 217,

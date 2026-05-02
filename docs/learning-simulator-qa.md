@@ -12,7 +12,7 @@ The learning simulator generates **aggregate storage-shaped snapshots** (similar
 | -------- | ------- |
 | `npm run qa:learning-simulator` | Same as **full** — recommended default before merge when you want the whole gate. |
 | `npm run qa:learning-simulator:quick` | Fast CI gate: matrix → schema → aggregate → reports → behavior → questions. |
-| `npm run qa:learning-simulator:full` | **quick** → deep longitudinal → `next build` → parent-report phase1 selftest → intelligence-layer v1 usage selftest. |
+| `npm run qa:learning-simulator:full` | Same execution path as **`qa:learning-simulator`** (see below). |
 
 Orchestrator summaries:
 
@@ -36,10 +36,18 @@ In order:
 
 After the quick chain:
 
-7. **`qa:learning-simulator:deep`** — Longitudinal **30d / 90d** scenarios: storage, reports, report assertions, behavior assertions; outputs under `reports/learning-simulator/deep/`.
-8. **`npm run build`** — Next.js production build (types + lint during build).
-9. **`npm run test:parent-report-phase1`** — Parent report Phase 1 selftest.
-10. **`npm run test:intelligence-layer-v1-usage`** — Intelligence layer usage contract selftest.
+7. **`qa:learning-simulator:matrix-smoke`** — Runs **aggregate** simulations for every matrix cell that would otherwise stay **sampled** (grouped by grade × subject). Writes `matrix-smoke.json` / `.md`. **Fails** if any smoke scenario errors or a cell lacks a matching session.
+8. **`qa:learning-simulator:coverage`** — Full **819-cell** coverage catalog (`coverage-catalog.json` / `.md`), including `coveredByMatrixSmoke` when step 7 ran successfully.
+9. **`qa:learning-simulator:unsupported`** — Unsupported / gap cell classification (`unsupported-cells.json` / `.md`). Fails the gate if there are **uncovered** cells or **unknown_needs_review** classifications (expected unsupported buckets alone do not fail).
+10. **`qa:learning-simulator:scenario-coverage`** — First pass: scenario → matrix mapping for fixtures + matrix-smoke.
+11. **`qa:learning-simulator:critical-deep`** — Compact **critical subset** (~40–80 cells from `coverage-catalog.json`): aggregate → parent-report build → Phase 3 + Phase 5 assertions with synthetic strong/weak/thin profiles per grade×subject group. Writes `critical-matrix-deep.json` / `.md`. **Fails** if any selected scenario fails report or behavior checks.
+12. **`qa:learning-simulator:scenario-coverage`** (again) — Regenerates `scenario-coverage` including **critical-matrix-deep** scenarios (same npm script; second pass after artifacts exist).
+13. **`qa:learning-simulator:deep`** — Longitudinal **30d / 90d** scenarios: storage, reports, report assertions, behavior assertions; outputs under `reports/learning-simulator/deep/`.
+14. **`npm run build`** — Next.js production build (types + lint during build).
+15. **`npm run test:parent-report-phase1`** — Parent report Phase 1 selftest.
+16. **`npm run test:intelligence-layer-v1-usage`** — Intelligence layer usage contract selftest.
+
+Standalone (e.g. CI snippets): `npm run qa:learning-simulator:matrix-smoke`, `npm run qa:learning-simulator:coverage`, `npm run qa:learning-simulator:unsupported`, `npm run qa:learning-simulator:scenario-coverage`, `npm run qa:learning-simulator:critical-deep`.
 
 **Not included by default:** Playwright E2E (`npm run test:e2e`). Add explicitly when you need browser automation.
 
@@ -77,6 +85,11 @@ After the quick chain:
 | Reports | `reports/learning-simulator/reports/run-summary.json`, `per-student/*.report.json`, `*.assertions.json` |
 | Behavior | `reports/learning-simulator/behavior/run-summary.json`, `failures.json`, `per-student/*.behavior.json` |
 | Questions | `reports/learning-simulator/questions/run-summary.json`, `failures.json` |
+| Matrix smoke | `reports/learning-simulator/matrix-smoke.json`, `matrix-smoke.md` |
+| Coverage catalog | `reports/learning-simulator/coverage-catalog.json`, `coverage-catalog.md` |
+| Unsupported cells | `reports/learning-simulator/unsupported-cells.json`, `unsupported-cells.md` |
+| Scenario coverage | `reports/learning-simulator/scenario-coverage.json`, `scenario-coverage.md` |
+| Critical matrix deep | `reports/learning-simulator/critical-matrix-deep.json`, `critical-matrix-deep.md` |
 | Deep | `reports/learning-simulator/deep/run-summary.json`, `failures.json`, `per-student/*` |
 | Orchestrator | `reports/learning-simulator/orchestrator/run-summary.json`, `.md` |
 

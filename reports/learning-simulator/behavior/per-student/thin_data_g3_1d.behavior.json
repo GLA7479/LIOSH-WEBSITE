@@ -14,7 +14,8 @@
       "subjectsTouched": [
         "math"
       ],
-      "overallAccuracyPct": 69.2
+      "overallAccuracyPct": 69.2,
+      "mistakeRateApprox": 0.154
     },
     "subjectMetrics": {
       "math": {
@@ -42,6 +43,12 @@
       "stdev": 0.023809523809523836,
       "n": 2,
       "meanAccuracy": 0.6904761904761905
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1956.5,
+      "meanSecondsPerQuestion": 301,
+      "mistakeEventCount": 2,
+      "mistakeRateApprox": 0.154
     },
     "reportSignals": {
       "totalQuestions": 13,

@@ -3,6 +3,8 @@
  * Does not modify product code; failures include a likely-cause hint for triage.
  */
 
+import { PACE_PROFILE_ORACLE_THRESHOLDS as PACE } from "./pace-profile-oracle.mjs";
+
 /** @typedef {'simulator_data' | 'behavior_oracle_threshold' | 'engine_report' | 'unknown'} LikelyCause */
 
 /**
@@ -295,31 +297,39 @@ export function evaluateScenarioBehavior(scenario, oracle, report) {
     );
   }
 
-  function weakTopicAssertions(subject, topic, label) {
+  /**
+   * @param {{ minTopicQuestions?: number, minRankQuestions?: number, skipBucket?: boolean, skipRank?: boolean }} [opts]
+   */
+  function weakTopicAssertions(subject, topic, label, opts = {}) {
+    const minVol = opts.minTopicQuestions ?? 10;
+    const minRankQ = opts.minRankQuestions ?? minVol;
     const key = `${subject}:${topic}`;
     const tm = oracle.topicMetrics[key];
     add(
       `${label}_topic_has_volume`,
-      !!(tm && tm.totalQ >= 10),
-      { minTopicQuestions: 10 },
+      !!(tm && tm.totalQ >= minVol),
+      { minTopicQuestions: minVol },
       tm ? { totalQ: tm.totalQ, accuracyPct: tm.accuracyPct } : { missing: key },
       !tm ? "simulator_data" : "behavior_oracle_threshold",
       {}
     );
-    const { rank, ordered } = worstRankAmongSubject(oracle.topicMetrics, subject, topic, 10);
-    const nTopics = ordered.length;
-    const rkOk =
-      nTopics <= 1 ||
-      rank === 1 ||
-      (rank != null && rank <= Math.max(2, Math.ceil(nTopics / 2)));
-    add(
-      `${label}_topic_weak_among_subject`,
-      rkOk,
-      { maxWeakRank: Math.max(1, Math.ceil((ordered.length || 1) / 2)) },
-      { rank, orderedTopicsByAccuracy: ordered.map((x) => ({ t: x.topic, acc: x.accuracyPct, q: x.totalQ })) },
-      !rkOk ? "simulator_data" : "behavior_oracle_threshold",
-      {}
-    );
+    if (opts.skipRank !== true) {
+      const { rank, ordered } = worstRankAmongSubject(oracle.topicMetrics, subject, topic, minRankQ);
+      const nTopics = ordered.length;
+      const rkOk =
+        nTopics <= 1 ||
+        rank === 1 ||
+        (rank != null && rank <= Math.max(2, Math.ceil(nTopics / 2)));
+      add(
+        `${label}_topic_weak_among_subject`,
+        rkOk,
+        { maxWeakRank: Math.max(1, Math.ceil((ordered.length || 1) / 2)) },
+        { rank, orderedTopicsByAccuracy: ordered.map((x) => ({ t: x.topic, acc: x.accuracyPct, q: x.totalQ })) },
+        !rkOk ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+    }
+    if (opts.skipBucket === true) return;
     const bk = rs?.topicBucketKeys || [];
     const reportHintsWeak =
       bk.length === 0 ||
@@ -394,6 +404,57 @@ export function evaluateScenarioBehavior(scenario, oracle, report) {
     }
   }
 
+  // Critical matrix deep harness — scenarioIds critical_deep_*
+  if (/^critical_deep_/.test(sid)) {
+    const pt = scenario.criticalDeepProfileType || "";
+    add(
+      "critical_deep_evidence_positive",
+      qTot >= 6,
+      { minQ: 6 },
+      { questionTotal: qTot },
+      qTot < 3 ? "simulator_data" : "behavior_oracle_threshold",
+      {}
+    );
+    add(
+      "critical_deep_subject_metrics_present",
+      Object.keys(oracle.subjectMetrics || {}).length >= 1,
+      { minSubjects: 1 },
+      { subjects: Object.keys(oracle.subjectMetrics || {}) },
+      "simulator_data",
+      {}
+    );
+    if (pt === "weak_on_target_cell") {
+      add(
+        "critical_weak_volume_or_accuracy_sane",
+        qTot < 260 || (overallPct != null && overallPct <= 90),
+        {},
+        { qTot, overallAccuracyPct: overallPct },
+        "engine_report",
+        {}
+      );
+    }
+    if (pt === "strong_on_target_cell") {
+      add(
+        "critical_strong_accuracy_not_collapsed",
+        overallPct == null || overallPct >= 35,
+        { minPct: 35 },
+        { overallAccuracyPct: overallPct },
+        "simulator_data",
+        {}
+      );
+    }
+    if (pt === "thin_data_on_target_cell") {
+      add(
+        "critical_thin_evidence_cap",
+        qTot <= 650,
+        { maxQ: 650 },
+        { questionTotal: qTot },
+        "simulator_data",
+        {}
+      );
+    }
+  }
+
   // Cross-cutting: contradictory diagnostic confidence flag should stay rare on large windows
   if (rs && oracle.evidence.questionTotal > 400) {
     add(
@@ -404,6 +465,257 @@ export function evaluateScenarioBehavior(scenario, oracle, report) {
       (rs.contradictoryConfidenceCount || 0) > 8 ? "engine_report" : "behavior_oracle_threshold",
       { scope: "global_sanity" }
     );
+  }
+
+  // Profile stress harness — scenarioIds profile_stress_*
+  if (/^profile_stress_/.test(sid)) {
+    const pst = scenario.profileStressType || "";
+
+    add(
+      "profile_stress_evidence_floor",
+      qTot >= 5,
+      { minQ: 5 },
+      { questionTotal: qTot },
+      qTot < 2 ? "simulator_data" : "behavior_oracle_threshold",
+      {}
+    );
+    add(
+      "profile_stress_subject_metrics_present",
+      Object.keys(oracle.subjectMetrics || {}).length >= 1,
+      { minSubjects: 1 },
+      { subjects: Object.keys(oracle.subjectMetrics || {}) },
+      "simulator_data",
+      {}
+    );
+
+    if (pst === "thin_data") {
+      const cautious =
+        rs &&
+        (rs.contractTopThinDowngraded === true ||
+          rs.contractTopEvidenceQuestionCount < 38 ||
+          (exp.confidenceShouldBeCautious !== false && rs.contractTopEvidenceQuestionCount < 42));
+      add(
+        "profile_stress_thin_cautious",
+        !!cautious,
+        { thinOrLowEvidence: true },
+        rs,
+        !cautious ? "engine_report" : "behavior_oracle_threshold",
+        {}
+      );
+    }
+
+    if (pst === "random_guessing") {
+      add(
+        "profile_stress_low_accuracy_guesslike",
+        overallPct != null && overallPct < 62,
+        { maxPct: 62 },
+        { overallAccuracyPct: overallPct },
+        overallPct != null && overallPct >= 72 ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+      add(
+        "profile_stress_not_overconfident_summary",
+        !!(rs && (rs.contractTopThinDowngraded === true || (rs.overallAccuracy ?? 100) < 68)),
+        {},
+        rs ? { contractTopThinDowngraded: rs.contractTopThinDowngraded, overallAccuracy: rs.overallAccuracy } : null,
+        rs && rs.contractTopThinDowngraded === false && (rs.overallAccuracy ?? 0) >= 82 ? "engine_report" : "behavior_oracle_threshold",
+        {}
+      );
+    }
+
+    if (pst === "fast_wrong") {
+      const spqFw = oracle.paceOracle?.meanSecondsPerQuestion ?? null;
+      const mrate = oracle.evidence?.mistakeRateApprox ?? oracle.paceOracle?.mistakeRateApprox ?? null;
+      const repAcc = rs != null ? Number(rs.overallAccuracy) || overallPct : overallPct;
+
+      const lowAcc =
+        overallPct != null &&
+        overallPct <= PACE.FAST_WRONG_MAX_OVERALL_ACCURACY_PCT &&
+        (mrate == null || mrate >= PACE.FAST_WRONG_MIN_MISTAKE_RATE);
+      add(
+        "fast_wrong_has_low_accuracy",
+        lowAcc,
+        {
+          maxOverallAccuracyPct: PACE.FAST_WRONG_MAX_OVERALL_ACCURACY_PCT,
+          minMistakeRateApprox: PACE.FAST_WRONG_MIN_MISTAKE_RATE,
+        },
+        { overallAccuracyPct: overallPct, mistakeRateApprox: mrate },
+        overallPct != null && overallPct > 65 ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+      add(
+        "fast_wrong_has_fast_pace",
+        spqFw != null && spqFw <= PACE.FAST_WRONG_MAX_SPQ,
+        { maxMeanSecondsPerQuestion: PACE.FAST_WRONG_MAX_SPQ },
+        { meanSecondsPerQuestion: spqFw },
+        spqFw != null && spqFw > PACE.FAST_WRONG_MAX_SPQ + 40 ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+      add(
+        "fast_wrong_not_confused_with_slow_correct",
+        !(repAcc != null && spqFw != null && repAcc >= 66 && spqFw >= PACE.SLOW_CORRECT_MIN_SPQ * 0.92),
+        { forbidSlowCarefulPattern: true },
+        { reportOverallAccuracy: repAcc, meanSecondsPerQuestion: spqFw, thresholdRef: PACE.SLOW_CORRECT_MIN_SPQ },
+        repAcc != null && repAcc >= 68 && spqFw != null && spqFw >= PACE.SLOW_CORRECT_MIN_SPQ ? "engine_report" : "behavior_oracle_threshold",
+        {}
+      );
+      add(
+        "profile_stress_not_overconfident_summary",
+        !!(rs && (rs.contractTopThinDowngraded === true || (rs.overallAccuracy ?? 100) < 62)),
+        {},
+        rs ? { contractTopThinDowngraded: rs.contractTopThinDowngraded, overallAccuracy: rs.overallAccuracy } : null,
+        rs && rs.contractTopThinDowngraded === false && (rs.overallAccuracy ?? 0) >= 78 ? "engine_report" : "behavior_oracle_threshold",
+        {}
+      );
+    }
+
+    if (pst === "slow_correct") {
+      const spqSc = oracle.paceOracle?.meanSecondsPerQuestion ?? null;
+      const mrateSc = oracle.evidence?.mistakeRateApprox ?? oracle.paceOracle?.mistakeRateApprox ?? null;
+      const repAccSc = rs != null ? Number(rs.overallAccuracy) || overallPct : overallPct;
+
+      const highAcc =
+        overallPct != null &&
+        overallPct >= PACE.SLOW_CORRECT_MIN_OVERALL_ACCURACY_PCT &&
+        (mrateSc == null || mrateSc <= PACE.SLOW_CORRECT_MAX_MISTAKE_RATE);
+      add(
+        "slow_correct_has_high_accuracy",
+        highAcc,
+        {
+          minOverallAccuracyPct: PACE.SLOW_CORRECT_MIN_OVERALL_ACCURACY_PCT,
+          maxMistakeRateApprox: PACE.SLOW_CORRECT_MAX_MISTAKE_RATE,
+        },
+        { overallAccuracyPct: overallPct, mistakeRateApprox: mrateSc },
+        overallPct != null && overallPct < 58 ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+      add(
+        "slow_correct_has_slow_pace",
+        spqSc != null && spqSc >= PACE.SLOW_CORRECT_MIN_SPQ,
+        { minMeanSecondsPerQuestion: PACE.SLOW_CORRECT_MIN_SPQ },
+        { meanSecondsPerQuestion: spqSc },
+        spqSc != null && spqSc < PACE.SLOW_CORRECT_MIN_SPQ - 35 ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+      add(
+        "slow_correct_not_confused_with_fast_wrong",
+        !(repAccSc != null && spqSc != null && repAccSc <= 54 && spqSc <= PACE.FAST_WRONG_MAX_SPQ * 1.05),
+        { forbidWeakFastPattern: true },
+        { reportOverallAccuracy: repAccSc, meanSecondsPerQuestion: spqSc },
+        repAccSc != null && repAccSc <= 48 && spqSc != null && spqSc <= PACE.FAST_WRONG_MAX_SPQ ? "engine_report" : "behavior_oracle_threshold",
+        {}
+      );
+    }
+
+    if (pst === "inconsistent") {
+      const st = oracle.volatility?.stdev ?? 0;
+      add(
+        "profile_stress_inconsistent_volatility",
+        st >= 0.038,
+        { minSessionAccStdev: 0.038 },
+        { stdev: st, n: oracle.volatility?.n },
+        st < 0.028 ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+    }
+
+    if (pst === "improving") {
+      const tr = oracle.trendOracle;
+      const bad = tr.n >= 12 && tr.direction === "down" && (tr.delta ?? 0) < -0.06;
+      add(
+        "profile_stress_improving_not_strongly_down",
+        !bad,
+        { forbidStrongDeclineWhenEnoughSessions: true },
+        { direction: tr.direction, delta: tr.delta, n: tr.n },
+        bad ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+    }
+    if (pst === "declining") {
+      const tr = oracle.trendOracle;
+      const bad = tr.n >= 12 && tr.direction === "up" && (tr.delta ?? 0) > 0.06;
+      add(
+        "profile_stress_declining_not_strongly_up",
+        !bad,
+        { forbidStrongGainWhenEnoughSessions: true },
+        { direction: tr.direction, delta: tr.delta, n: tr.n },
+        bad ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+    }
+
+    if (pst === "strong_all_subjects" || pst === "subject_specific_strong" || pst === "slow_correct") {
+      add(
+        "profile_stress_strongish_accuracy",
+        overallPct == null || overallPct >= 32,
+        { minPct: 32 },
+        { overallAccuracyPct: overallPct },
+        "simulator_data",
+        {}
+      );
+    }
+
+    if (pst === "weak_all_subjects" || pst === "subject_specific_weak" || pst === "topic_specific_weak") {
+      add(
+        "profile_stress_weakish_accuracy_cap",
+        overallPct == null || overallPct <= 92,
+        { relaxedMaxPct: 92 },
+        { overallAccuracyPct: overallPct },
+        overallPct != null && overallPct >= 97 ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+    }
+
+    if (pst === "average_student") {
+      add(
+        "profile_stress_average_mid_band",
+        overallPct == null || (overallPct >= 38 && overallPct <= 88),
+        { band: [38, 88] },
+        { overallAccuracyPct: overallPct },
+        "behavior_oracle_threshold",
+        {}
+      );
+    }
+
+    if (pst === "mixed_strengths") {
+      const mm = oracle.subjectMetrics.math?.accuracyPct;
+      const mh = oracle.subjectMetrics.hebrew?.accuracyPct;
+      add(
+        "profile_stress_mixed_subject_spread",
+        mm != null && mh != null && Math.abs(mm - mh) >= 4,
+        { minAbsSpread: 4 },
+        { math: mm, hebrew: mh },
+        mm == null || mh == null ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+    }
+
+    if (
+      (pst === "topic_specific_weak" || pst === "subject_specific_weak") &&
+      scenario.stressMatrixSubject &&
+      scenario.stressMatrixTopic
+    ) {
+      weakTopicAssertions(scenario.stressMatrixSubject, scenario.stressMatrixTopic, "stress_weak_target", {
+        minTopicQuestions: 6,
+        minRankQuestions: 6,
+        skipBucket: true,
+        skipRank: true,
+      });
+    }
+
+    if (pst === "subject_specific_strong" && scenario.stressMatrixSubject) {
+      const subj = scenario.stressMatrixSubject;
+      const keys = Object.keys(oracle.topicMetrics || {}).filter((k) => k.startsWith(`${subj}:`));
+      const maxQ = keys.length ? Math.max(...keys.map((k) => oracle.topicMetrics[k]?.totalQ || 0)) : 0;
+      add(
+        "profile_stress_strong_subject_has_topic_mass",
+        maxQ >= 4,
+        { minMaxTopicQuestionsAcrossSubject: 4 },
+        { subject: subj, keysSampled: keys.slice(0, 8), maxQ },
+        maxQ === 0 ? "simulator_data" : "behavior_oracle_threshold",
+        {}
+      );
+    }
   }
 
   const passed = assertions.every((a) => a.pass);

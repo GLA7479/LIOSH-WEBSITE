@@ -29,6 +29,22 @@ const ARTIFACTS = {
   behaviorFailures: "reports/learning-simulator/behavior/failures.json",
   questionIntegrity: "reports/learning-simulator/questions/run-summary.json",
   questionFailures: "reports/learning-simulator/questions/failures.json",
+  coverageCatalog: "reports/learning-simulator/coverage-catalog.json",
+  coverageCatalogMd: "reports/learning-simulator/coverage-catalog.md",
+  unsupportedCells: "reports/learning-simulator/unsupported-cells.json",
+  unsupportedCellsMd: "reports/learning-simulator/unsupported-cells.md",
+  scenarioCoverage: "reports/learning-simulator/scenario-coverage.json",
+  scenarioCoverageMd: "reports/learning-simulator/scenario-coverage.md",
+  matrixSmoke: "reports/learning-simulator/matrix-smoke.json",
+  matrixSmokeMd: "reports/learning-simulator/matrix-smoke.md",
+  criticalMatrixDeep: "reports/learning-simulator/critical-matrix-deep.json",
+  criticalMatrixDeepMd: "reports/learning-simulator/critical-matrix-deep.md",
+  profileStress: "reports/learning-simulator/profile-stress.json",
+  profileStressMd: "reports/learning-simulator/profile-stress.md",
+  contentGapAudit: "reports/learning-simulator/content-gap-audit.json",
+  contentGapAuditMd: "reports/learning-simulator/content-gap-audit.md",
+  contentGapBacklog: "reports/learning-simulator/content-gap-backlog.json",
+  contentGapBacklogMd: "reports/learning-simulator/content-gap-backlog.md",
   deepSummary: "reports/learning-simulator/deep/run-summary.json",
   deepFailures: "reports/learning-simulator/deep/failures.json",
 };
@@ -41,6 +57,35 @@ const QUICK_STEPS = [
   { id: "reports", script: "qa:learning-simulator:reports", label: "Parent report assertions (Phase 3)" },
   { id: "behavior", script: "qa:learning-simulator:behavior", label: "Behavior checks (Phase 5)" },
   { id: "questions", script: "qa:learning-simulator:questions", label: "Question integrity (Phase 4)" },
+];
+
+/** Full gate only: matrix smoke → catalog → classification → scenario map (after Phase 4 artifacts exist). */
+const FULL_MATRIX_QA = [
+  { id: "matrixSmoke", script: "qa:learning-simulator:matrix-smoke", label: "Matrix smoke (sampled cells → aggregate)" },
+  { id: "coverageCatalog", script: "qa:learning-simulator:coverage", label: "Coverage catalog (819 cells)" },
+  { id: "unsupportedCells", script: "qa:learning-simulator:unsupported", label: "Unsupported cells classification" },
+  {
+    id: "contentGapAudit",
+    script: "qa:learning-simulator:content-gaps",
+    label: "Content gap audit (informational)",
+  },
+  {
+    id: "contentBacklog",
+    script: "qa:learning-simulator:content-backlog",
+    label: "Content gap backlog (documentation)",
+  },
+  { id: "scenarioCoverage", script: "qa:learning-simulator:scenario-coverage", label: "Scenario coverage (fixtures + smoke)" },
+  { id: "criticalDeep", script: "qa:learning-simulator:critical-deep", label: "Critical matrix deep assertions" },
+  {
+    id: "profileStress",
+    script: "qa:learning-simulator:profile-stress",
+    label: "Profile stress (synthetic profiles)",
+  },
+  {
+    id: "scenarioCoverageFinal",
+    script: "qa:learning-simulator:scenario-coverage",
+    label: "Scenario coverage (+ critical deep + profile stress)",
+  },
 ];
 
 const FULL_SUFFIX = [
@@ -81,6 +126,17 @@ function nextActionHint(failedStep) {
     build: "Fix TypeScript/lint/build errors reported above.",
     parentReportPhase1: "Fix parent-report phase1 selftest failures (scripts/parent-report-phase1-selftest.mjs).",
     intelligenceUsage: "Fix intelligence-layer usage contract (scripts/intelligence-layer-v1-usage-selftest.mjs).",
+    coverageCatalog: "Re-run after matrix + questions; inspect coverage-catalog.json for unexpected uncovered statuses.",
+    unsupportedCells: "Inspect unsupported-cells.json — gate fails on uncovered cells or unknown_needs_review classification.",
+    scenarioCoverage: "Inspect scenario-coverage.json for scenario→matrix mapping issues.",
+    matrixSmoke: "Inspect matrix-smoke.json — gate fails if any smoke scenario fails or cells lack sessions.",
+    criticalDeep: "Inspect critical-matrix-deep.json — gate fails if report/behavior assertions fail on selected cells.",
+    scenarioCoverageFinal: "Regenerates scenario map including critical-matrix-deep + profile-stress scenarios.",
+    profileStress: "Inspect profile-stress.json — gate fails if synthetic profile contracts fail.",
+    contentGapAudit:
+      "Inspect content-gap-audit.json — fails only if classification unknown or artifact write failed.",
+    contentBacklog:
+      "Inspect content-gap-backlog.json — fails if backlog count ≠ audit gap count or unmapped cell.",
   };
   return hints[id] || `Review logs for stage "${id}" and related artifacts under reports/learning-simulator/.`;
 }
@@ -145,7 +201,7 @@ async function main() {
 
   let steps = [...QUICK_STEPS];
   if (mode === "full") {
-    steps = [...QUICK_STEPS, ...FULL_SUFFIX];
+    steps = [...QUICK_STEPS, ...FULL_MATRIX_QA, ...FULL_SUFFIX];
   }
 
   await mkdir(OUT_DIR, { recursive: true });

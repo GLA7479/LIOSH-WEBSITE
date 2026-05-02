@@ -11,7 +11,8 @@
       "subjectsTouched": [
         "hebrew"
       ],
-      "overallAccuracyPct": 37.2
+      "overallAccuracyPct": 37.2,
+      "mistakeRateApprox": 0.346
     },
     "subjectMetrics": {
       "hebrew": {
@@ -40,6 +41,12 @@
       "stdev": 0.023184225340399173,
       "n": 72,
       "meanAccuracy": 0.37157591254920946
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 2415.3,
+      "meanSecondsPerQuestion": 159.69,
+      "mistakeEventCount": 377,
+      "mistakeRateApprox": 0.346
     },
     "reportSignals": {
       "totalQuestions": 1072,

@@ -14,7 +14,8 @@
       "subjectsTouched": [
         "english"
       ],
-      "overallAccuracyPct": 40.5
+      "overallAccuracyPct": 40.5,
+      "mistakeRateApprox": 0.328
     },
     "subjectMetrics": {
       "english": {
@@ -43,6 +44,12 @@
       "stdev": 0.02393231060277031,
       "n": 16,
       "meanAccuracy": 0.4042282263015623
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1760.1,
+      "meanSecondsPerQuestion": 102.78,
+      "mistakeEventCount": 90,
+      "mistakeRateApprox": 0.328
     },
     "reportSignals": {
       "totalQuestions": 274,

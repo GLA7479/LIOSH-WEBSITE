@@ -14,7 +14,8 @@
       "subjectsTouched": [
         "moledet_geography"
       ],
-      "overallAccuracyPct": 36.8
+      "overallAccuracyPct": 36.8,
+      "mistakeRateApprox": 0.346
     },
     "subjectMetrics": {
       "moledet_geography": {
@@ -43,6 +44,12 @@
       "stdev": 0.029050989490970618,
       "n": 12,
       "meanAccuracy": 0.3676138404079581
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1578.2,
+      "meanSecondsPerQuestion": 104.05,
+      "mistakeEventCount": 63,
+      "mistakeRateApprox": 0.346
     },
     "reportSignals": {
       "totalQuestions": 182,

@@ -13,7 +13,8 @@
         "hebrew",
         "geometry"
       ],
-      "overallAccuracyPct": 66.5
+      "overallAccuracyPct": 66.5,
+      "mistakeRateApprox": 0.208
     },
     "subjectMetrics": {
       "math": {
@@ -269,6 +270,12 @@
       "stdev": 0.11053097631593228,
       "n": 210,
       "meanAccuracy": 0.667250166168786
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1715.5,
+      "meanSecondsPerQuestion": 108.61,
+      "mistakeEventCount": 690,
+      "mistakeRateApprox": 0.208
     },
     "reportSignals": {
       "totalQuestions": 3317,

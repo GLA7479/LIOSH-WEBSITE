@@ -16,7 +16,8 @@
         "hebrew",
         "english"
       ],
-      "overallAccuracyPct": 47.7
+      "overallAccuracyPct": 47.7,
+      "mistakeRateApprox": 0.296
     },
     "subjectMetrics": {
       "math": {
@@ -350,6 +351,12 @@
       "stdev": 0.026348975753743224,
       "n": 110,
       "meanAccuracy": 0.4759185152965054
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 2333.9,
+      "meanSecondsPerQuestion": 147.8,
+      "mistakeEventCount": 514,
+      "mistakeRateApprox": 0.296
     },
     "reportSignals": {
       "totalQuestions": 1737,

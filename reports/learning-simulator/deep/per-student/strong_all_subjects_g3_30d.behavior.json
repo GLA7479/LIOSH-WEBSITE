@@ -16,7 +16,8 @@
         "english",
         "moledet_geography"
       ],
-      "overallAccuracyPct": 89.9
+      "overallAccuracyPct": 89.9,
+      "mistakeRateApprox": 0.06
     },
     "subjectMetrics": {
       "math": {
@@ -329,6 +330,12 @@
       "stdev": 0.017566167306918828,
       "n": 110,
       "meanAccuracy": 0.8995853028979958
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1703.2,
+      "meanSecondsPerQuestion": 101.93,
+      "mistakeEventCount": 110,
+      "mistakeRateApprox": 0.06
     },
     "reportSignals": {
       "totalQuestions": 1838,

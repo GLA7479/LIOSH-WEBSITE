@@ -1,8 +1,8 @@
 {
   "mode": "full",
-  "startedAt": "2026-05-02T20:34:41.627Z",
-  "finishedAt": "2026-05-02T20:35:07.457Z",
-  "totalDurationMs": 25829,
+  "startedAt": "2026-05-02T21:29:29.183Z",
+  "finishedAt": "2026-05-02T21:30:05.758Z",
+  "totalDurationMs": 36574,
   "pass": true,
   "failedStep": null,
   "steps": [
@@ -11,7 +11,7 @@
       "label": "Coverage matrix",
       "script": "qa:learning-simulator:matrix",
       "exitCode": 0,
-      "durationMs": 642,
+      "durationMs": 675,
       "pass": true
     },
     {
@@ -19,7 +19,7 @@
       "label": "Schema validation (profiles + scenarios)",
       "script": "qa:learning-simulator:schema",
       "exitCode": 0,
-      "durationMs": 599,
+      "durationMs": 623,
       "pass": true
     },
     {
@@ -27,7 +27,7 @@
       "label": "Aggregate simulator (quick scenarios)",
       "script": "qa:learning-simulator:aggregate",
       "exitCode": 0,
-      "durationMs": 626,
+      "durationMs": 664,
       "pass": true
     },
     {
@@ -35,7 +35,7 @@
       "label": "Parent report assertions (Phase 3)",
       "script": "qa:learning-simulator:reports",
       "exitCode": 0,
-      "durationMs": 1256,
+      "durationMs": 1349,
       "pass": true
     },
     {
@@ -43,7 +43,7 @@
       "label": "Behavior checks (Phase 5)",
       "script": "qa:learning-simulator:behavior",
       "exitCode": 0,
-      "durationMs": 599,
+      "durationMs": 653,
       "pass": true
     },
     {
@@ -51,7 +51,79 @@
       "label": "Question integrity (Phase 4)",
       "script": "qa:learning-simulator:questions",
       "exitCode": 0,
-      "durationMs": 882,
+      "durationMs": 926,
+      "pass": true
+    },
+    {
+      "id": "matrixSmoke",
+      "label": "Matrix smoke (sampled cells → aggregate)",
+      "script": "qa:learning-simulator:matrix-smoke",
+      "exitCode": 0,
+      "durationMs": 672,
+      "pass": true
+    },
+    {
+      "id": "coverageCatalog",
+      "label": "Coverage catalog (819 cells)",
+      "script": "qa:learning-simulator:coverage",
+      "exitCode": 0,
+      "durationMs": 637,
+      "pass": true
+    },
+    {
+      "id": "unsupportedCells",
+      "label": "Unsupported cells classification",
+      "script": "qa:learning-simulator:unsupported",
+      "exitCode": 0,
+      "durationMs": 633,
+      "pass": true
+    },
+    {
+      "id": "contentGapAudit",
+      "label": "Content gap audit (informational)",
+      "script": "qa:learning-simulator:content-gaps",
+      "exitCode": 0,
+      "durationMs": 654,
+      "pass": true
+    },
+    {
+      "id": "contentBacklog",
+      "label": "Content gap backlog (documentation)",
+      "script": "qa:learning-simulator:content-backlog",
+      "exitCode": 0,
+      "durationMs": 661,
+      "pass": true
+    },
+    {
+      "id": "scenarioCoverage",
+      "label": "Scenario coverage (fixtures + smoke)",
+      "script": "qa:learning-simulator:scenario-coverage",
+      "exitCode": 0,
+      "durationMs": 623,
+      "pass": true
+    },
+    {
+      "id": "criticalDeep",
+      "label": "Critical matrix deep assertions",
+      "script": "qa:learning-simulator:critical-deep",
+      "exitCode": 0,
+      "durationMs": 1927,
+      "pass": true
+    },
+    {
+      "id": "profileStress",
+      "label": "Profile stress (synthetic profiles)",
+      "script": "qa:learning-simulator:profile-stress",
+      "exitCode": 0,
+      "durationMs": 2346,
+      "pass": true
+    },
+    {
+      "id": "scenarioCoverageFinal",
+      "label": "Scenario coverage (+ critical deep + profile stress)",
+      "script": "qa:learning-simulator:scenario-coverage",
+      "exitCode": 0,
+      "durationMs": 623,
       "pass": true
     },
     {
@@ -59,7 +131,7 @@
       "label": "Deep longitudinal simulator",
       "script": "qa:learning-simulator:deep",
       "exitCode": 0,
-      "durationMs": 2023,
+      "durationMs": 2070,
       "pass": true
     },
     {
@@ -67,7 +139,7 @@
       "label": "Next.js production build",
       "script": "build",
       "exitCode": 0,
-      "durationMs": 17424,
+      "durationMs": 18987,
       "pass": true
     },
     {
@@ -75,7 +147,7 @@
       "label": "Parent report phase1 selftest",
       "script": "test:parent-report-phase1",
       "exitCode": 0,
-      "durationMs": 958,
+      "durationMs": 987,
       "pass": true
     },
     {
@@ -83,7 +155,7 @@
       "label": "Intelligence layer v1 usage selftest",
       "script": "test:intelligence-layer-v1-usage",
       "exitCode": 0,
-      "durationMs": 816,
+      "durationMs": 860,
       "pass": true
     }
   ],
@@ -99,6 +171,22 @@
     "behaviorFailures": "reports/learning-simulator/behavior/failures.json",
     "questionIntegrity": "reports/learning-simulator/questions/run-summary.json",
     "questionFailures": "reports/learning-simulator/questions/failures.json",
+    "coverageCatalog": "reports/learning-simulator/coverage-catalog.json",
+    "coverageCatalogMd": "reports/learning-simulator/coverage-catalog.md",
+    "unsupportedCells": "reports/learning-simulator/unsupported-cells.json",
+    "unsupportedCellsMd": "reports/learning-simulator/unsupported-cells.md",
+    "scenarioCoverage": "reports/learning-simulator/scenario-coverage.json",
+    "scenarioCoverageMd": "reports/learning-simulator/scenario-coverage.md",
+    "matrixSmoke": "reports/learning-simulator/matrix-smoke.json",
+    "matrixSmokeMd": "reports/learning-simulator/matrix-smoke.md",
+    "criticalMatrixDeep": "reports/learning-simulator/critical-matrix-deep.json",
+    "criticalMatrixDeepMd": "reports/learning-simulator/critical-matrix-deep.md",
+    "profileStress": "reports/learning-simulator/profile-stress.json",
+    "profileStressMd": "reports/learning-simulator/profile-stress.md",
+    "contentGapAudit": "reports/learning-simulator/content-gap-audit.json",
+    "contentGapAuditMd": "reports/learning-simulator/content-gap-audit.md",
+    "contentGapBacklog": "reports/learning-simulator/content-gap-backlog.json",
+    "contentGapBacklogMd": "reports/learning-simulator/content-gap-backlog.md",
     "deepSummary": "reports/learning-simulator/deep/run-summary.json",
     "deepFailures": "reports/learning-simulator/deep/failures.json",
     "orchestratorSummary": "reports/learning-simulator/orchestrator/run-summary.json"

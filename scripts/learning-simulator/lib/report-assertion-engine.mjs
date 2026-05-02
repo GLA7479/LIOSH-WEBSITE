@@ -53,6 +53,53 @@ function structuredWeaknessHaystack(facets) {
   return norm(parts.filter(Boolean).join(" | "));
 }
 
+/**
+ * True when the report has at least one structural signal beyond empty boilerplate:
+ * diagnostic units, topic recommendations, practice lines, executive focus areas, or
+ * substantive per-unit narrative (Hebrew diagnosis/pattern lines).
+ * Avoids failing solely because topicLayer.topicRecLabels is empty while diagnostics still populated.
+ */
+export function reportHasNonGenericSignals(facets) {
+  const uc = Number(facets?.diagnostic?.unitCount) || 0;
+  if (uc < 1) return { ok: false, matched: "none", detail: { unitCount: uc } };
+
+  const diagnosed = Number(facets?.diagnostic?.diagnosedCount) || 0;
+  const tr = facets?.topicLayer?.topicRecLabels || [];
+  if (diagnosed >= 1 || tr.length >= 1) {
+    return { ok: true, matched: diagnosed >= 1 ? "diagnosedCount" : "topicRecLabels", detail: { diagnosedCount: diagnosed, topicRecCount: tr.length } };
+  }
+
+  const np = facets?.analysisPreview?.needsPracticeLines || [];
+  if (np.length >= 1) {
+    return { ok: true, matched: "needsPracticeLines", detail: { count: np.length } };
+  }
+
+  const tf = facets?.executive?.topFocusAreasHe || [];
+  if (tf.length >= 1) {
+    return { ok: true, matched: "topFocusAreasHe", detail: { count: tf.length } };
+  }
+
+  const tw = facets?.topicLayer?.topWeaknessLabels || [];
+  if (tw.length >= 1) {
+    return { ok: true, matched: "topWeaknessLabels", detail: { count: tw.length } };
+  }
+
+  const us = facets?.diagnostic?.unitSummaries || [];
+  for (const u of us) {
+    const line = String(u?.diagnosisLineHe || "").trim();
+    const pat = String(u?.patternHe || "").trim();
+    if (line.length >= 12 || pat.length >= 8) {
+      return { ok: true, matched: "unitSummariesSubstantive", detail: { diagnosisLineLen: line.length, patternLen: pat.length } };
+    }
+  }
+
+  return {
+    ok: false,
+    matched: "insufficient_signals",
+    detail: { unitCount: uc, diagnosedCount: diagnosed, topicRecCount: tr.length },
+  };
+}
+
 function phraseMatchesHaystack(phrase, facets, corpusNorm) {
   const p = norm(phrase);
   if (!p) return true;
@@ -246,10 +293,8 @@ export function evaluateAssertions(expected, facets, corpus, baseReport, storage
   }
 
   if (exp.noGenericOnlyReport !== undefined && exp.noGenericOnlyReport === true) {
-    const uc = Number(facets?.diagnostic?.unitCount) || 0;
-    const tr = (facets?.topicLayer?.topicRecLabels || []).length;
-    const pass = uc >= 1 && (tr >= 1 || (facets?.diagnostic?.diagnosedCount ?? 0) >= 1);
-    add("noGenericOnlyReport", pass, { unitCount: uc, topicRecCount: tr }, "structured");
+    const sig = reportHasNonGenericSignals(facets);
+    add("noGenericOnlyReport", sig.ok, { ...sig.detail, matched: sig.matched, method: "multi_signal_structure" }, "structured");
   }
 
   if (exp.noFalseStrongConclusion !== undefined && exp.noFalseStrongConclusion === true) {

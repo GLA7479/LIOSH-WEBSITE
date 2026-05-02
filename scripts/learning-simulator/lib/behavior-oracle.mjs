@@ -167,6 +167,59 @@ export function reportStructuredSignals(report) {
 }
 
 /**
+ * Mean simulated session duration (seconds) across storage buckets — for simulator pace checks only.
+ * @param {Record<string, unknown>} storage
+ */
+export function meanSessionDurationSecFromStorage(storage) {
+  const ds = [];
+  const walk = (sessions) => {
+    for (const s of sessions || []) {
+      const d = Number(s.duration);
+      if (Number.isFinite(d) && d > 0) ds.push(d);
+    }
+  };
+  for (const b of Object.values(storage?.mleo_time_tracking?.operations || {})) walk(b?.sessions);
+  for (const tk of [
+    "mleo_geometry_time_tracking",
+    "mleo_english_time_tracking",
+    "mleo_science_time_tracking",
+    "mleo_hebrew_time_tracking",
+    "mleo_moledet_geography_time_tracking",
+  ]) {
+    for (const b of Object.values(storage?.[tk]?.topics || {})) walk(b?.sessions);
+  }
+  if (!ds.length) return null;
+  return Math.round((ds.reduce((a, x) => a + x, 0) / ds.length) * 10) / 10;
+}
+
+/**
+ * Aggregate seconds-per-question across sessions (duration sums / question totals).
+ * @param {Record<string, unknown>} storage
+ */
+export function meanSecondsPerQuestionFromStorage(storage) {
+  let dur = 0;
+  let q = 0;
+  const walk = (sessions) => {
+    for (const s of sessions || []) {
+      dur += Number(s.duration) || 0;
+      q += Number(s.total) || 0;
+    }
+  };
+  for (const b of Object.values(storage?.mleo_time_tracking?.operations || {})) walk(b?.sessions);
+  for (const tk of [
+    "mleo_geometry_time_tracking",
+    "mleo_english_time_tracking",
+    "mleo_science_time_tracking",
+    "mleo_hebrew_time_tracking",
+    "mleo_moledet_geography_time_tracking",
+  ]) {
+    for (const b of Object.values(storage?.[tk]?.topics || {})) walk(b?.sessions);
+  }
+  if (q <= 0) return null;
+  return Math.round((dur / q) * 100) / 100;
+}
+
+/**
  * Full behavior snapshot for one scenario (oracle inputs + derived metrics).
  * @param {Record<string, unknown>} storage
  * @param {Record<string, unknown>|null} meta
@@ -181,6 +234,10 @@ export function computeBehaviorOracle(storage, meta, report) {
   const overallAccPct =
     metaTotals.questionTotal > 0
       ? Math.round((metaTotals.correctTotal / metaTotals.questionTotal) * 1000) / 10
+      : null;
+  const mistakeRateApprox =
+    metaTotals.questionTotal > 0
+      ? Math.round((metaTotals.mistakeEventCount / metaTotals.questionTotal) * 1000) / 1000
       : null;
 
   const rs = report ? reportStructuredSignals(report) : null;
@@ -199,6 +256,7 @@ export function computeBehaviorOracle(storage, meta, report) {
     evidence: {
       ...metaTotals,
       overallAccuracyPct: overallAccPct,
+      mistakeRateApprox,
     },
     subjectMetrics: computeSubjectMetrics(storage),
     topicMetrics: computeTopicMetrics(storage),
@@ -210,6 +268,12 @@ export function computeBehaviorOracle(storage, meta, report) {
       sessionSamples: trendOracle.n,
     },
     volatility: vol,
+    paceOracle: {
+      meanSessionDurationSec: meanSessionDurationSecFromStorage(storage),
+      meanSecondsPerQuestion: meanSecondsPerQuestionFromStorage(storage),
+      mistakeEventCount: metaTotals.mistakeEventCount,
+      mistakeRateApprox,
+    },
     reportSignals: rs,
     behaviorHints: hints,
     sessionRowCount: rows.length,

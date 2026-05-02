@@ -100,7 +100,8 @@ export function buildMatrixRows(discovery) {
           let isGeneratorBacked = false;
           if (gb.procedural === true) isGeneratorBacked = true;
           else if (gb.inlineGenerator) isGeneratorBacked = "inline_page";
-          else if (gb.bank) isGeneratorBacked = false;
+          /** MCQ bank-backed subjects (e.g. science) — Phase 4 adapter resolves via question-generator-adapters.mjs */
+          else if (gb.bank) isGeneratorBacked = "bank";
 
           const referenceFiles = [
             sub.sourceFile,

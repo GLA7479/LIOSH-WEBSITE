@@ -14,7 +14,8 @@
       "subjectsTouched": [
         "geometry"
       ],
-      "overallAccuracyPct": 40
+      "overallAccuracyPct": 40,
+      "mistakeRateApprox": 0.333
     },
     "subjectMetrics": {
       "geometry": {
@@ -43,6 +44,12 @@
       "stdev": 0.03204278004264333,
       "n": 14,
       "meanAccuracy": 0.399461730465711
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1596.4,
+      "meanSecondsPerQuestion": 106.43,
+      "mistakeEventCount": 70,
+      "mistakeRateApprox": 0.333
     },
     "reportSignals": {
       "totalQuestions": 194,
