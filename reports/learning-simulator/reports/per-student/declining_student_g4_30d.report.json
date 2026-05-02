@@ -15,14 +15,14 @@
   "diagnosticPrimarySource": "diagnosticEngineV2",
   "summary": {
     "totalQuestions": 669,
-    "overallAccuracy": 69,
+    "overallAccuracy": 67,
     "totalTimeMinutes": 1313
   },
   "facets": {
     "version": "report-facets-v1",
     "summary": {
       "totalQuestions": 669,
-      "overallAccuracy": 69,
+      "overallAccuracy": 67,
       "totalTimeMinutes": 1313
     },
     "diagnostic": {
@@ -322,6 +322,7 @@
       "needsPracticeLines": [
         "חשבון: ערבוב",
         "חשבון: סימני התחלקות",
+        "חשבון: אומדן",
         "חשבון: גורמים וכפולות",
         "חשבון: חזקות",
         "חשבון: חוש מספרים",
@@ -342,9 +343,7 @@
         "שגיאה בעמודת עשרות (חשבון)",
         "שגיאה בעמודת עשרות (חשבון)"
       ],
-      "topStrengthsAcrossHe": [
-        "בגאומטריה התוצאות נראות די עקביות בתקופה הזו (74% דיוק, 134 שאלות) — יש עדיין נושאים שכדאי לחזק."
-      ],
+      "topStrengthsAcrossHe": [],
       "dominantCrossSubjectRiskLabelHe": "בחירת כפל לא מתאים לחילוק",
       "dominantCrossSubjectSuccessPatternLabelHe": "",
       "cautionNoteHe": "",
@@ -426,6 +425,6 @@
     }
   },
   "corpusStats": {
-    "charLength": 3682
+    "charLength": 3598
   }
 }

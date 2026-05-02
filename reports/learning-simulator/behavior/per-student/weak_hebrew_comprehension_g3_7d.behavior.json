@@ -9,27 +9,27 @@
     "evidence": {
       "sessionCount": 15,
       "questionTotal": 237,
-      "correctTotal": 89,
+      "correctTotal": 88,
       "mistakeEventCount": 80,
       "subjectsTouched": [
         "hebrew"
       ],
-      "overallAccuracyPct": 37.6
+      "overallAccuracyPct": 37.1
     },
     "subjectMetrics": {
       "hebrew": {
         "totalQ": 237,
-        "correctQ": 89,
-        "accuracyPct": 37.6
+        "correctQ": 88,
+        "accuracyPct": 37.1
       }
     },
     "topicMetrics": {
       "hebrew:comprehension": {
         "totalQ": 237,
-        "correctQ": 89,
+        "correctQ": 88,
         "subject": "hebrew",
         "topic": "comprehension",
-        "accuracyPct": 37.6
+        "accuracyPct": 37.1
       }
     },
     "trendOracle": {
@@ -40,13 +40,13 @@
       "sessionSamples": 15
     },
     "volatility": {
-      "stdev": 0.025162423535083366,
+      "stdev": 0.024977806109123438,
       "n": 15,
-      "meanAccuracy": 0.37527815264657366
+      "meanAccuracy": 0.3719448193132403
     },
     "reportSignals": {
       "totalQuestions": 216,
-      "overallAccuracy": 38,
+      "overallAccuracy": 37,
       "contractTopThinDowngraded": true,
       "contractTopEvidenceQuestionCount": 216,
       "contractPrimarySubjectId": "hebrew",
@@ -81,7 +81,7 @@
       },
       "actual": {
         "totalQ": 237,
-        "accuracyPct": 37.6
+        "accuracyPct": 37.1
       },
       "likelyCause": "behavior_oracle_threshold",
       "evidence": {}
@@ -97,7 +97,7 @@
         "orderedTopicsByAccuracy": [
           {
             "t": "comprehension",
-            "acc": 37.6,
+            "acc": 37.1,
             "q": 237
           }
         ]

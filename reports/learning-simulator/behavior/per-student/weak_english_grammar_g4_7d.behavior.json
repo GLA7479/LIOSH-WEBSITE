@@ -9,40 +9,40 @@
     "evidence": {
       "sessionCount": 16,
       "questionTotal": 274,
-      "correctTotal": 113,
+      "correctTotal": 111,
       "mistakeEventCount": 90,
       "subjectsTouched": [
         "english"
       ],
-      "overallAccuracyPct": 41.2
+      "overallAccuracyPct": 40.5
     },
     "subjectMetrics": {
       "english": {
         "totalQ": 274,
-        "correctQ": 113,
-        "accuracyPct": 41.2
+        "correctQ": 111,
+        "accuracyPct": 40.5
       }
     },
     "topicMetrics": {
       "english:grammar": {
         "totalQ": 274,
-        "correctQ": 113,
+        "correctQ": 111,
         "subject": "english",
         "topic": "grammar",
-        "accuracyPct": 41.2
+        "accuracyPct": 40.5
       }
     },
     "trendOracle": {
       "direction": "flat",
-      "earlyMean": 0.41656286108685486,
-      "lateMean": 0.40948398007221537,
-      "delta": -0.007078881014639493,
+      "earlyMean": 0.4073036018275957,
+      "lateMean": 0.3966634672517026,
+      "delta": -0.010640134575893079,
       "sessionSamples": 16
     },
     "volatility": {
-      "stdev": 0.02778154123243777,
+      "stdev": 0.02393231060277031,
       "n": 16,
-      "meanAccuracy": 0.4125081408314768
+      "meanAccuracy": 0.4042282263015623
     },
     "reportSignals": {
       "totalQuestions": 274,
@@ -81,7 +81,7 @@
       },
       "actual": {
         "totalQ": 274,
-        "accuracyPct": 41.2
+        "accuracyPct": 40.5
       },
       "likelyCause": "behavior_oracle_threshold",
       "evidence": {}
@@ -97,7 +97,7 @@
         "orderedTopicsByAccuracy": [
           {
             "t": "grammar",
-            "acc": 41.2,
+            "acc": 40.5,
             "q": 274
           }
         ]

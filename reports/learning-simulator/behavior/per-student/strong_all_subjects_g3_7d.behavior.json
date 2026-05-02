@@ -9,7 +9,7 @@
     "evidence": {
       "sessionCount": 42,
       "questionTotal": 642,
-      "correctTotal": 587,
+      "correctTotal": 574,
       "mistakeEventCount": 42,
       "subjectsTouched": [
         "hebrew",
@@ -19,38 +19,38 @@
         "moledet_geography",
         "science"
       ],
-      "overallAccuracyPct": 91.4
+      "overallAccuracyPct": 89.4
     },
     "subjectMetrics": {
       "math": {
         "totalQ": 121,
-        "correctQ": 110,
-        "accuracyPct": 90.9
+        "correctQ": 108,
+        "accuracyPct": 89.3
       },
       "geometry": {
         "totalQ": 154,
-        "correctQ": 141,
-        "accuracyPct": 91.6
+        "correctQ": 139,
+        "accuracyPct": 90.3
       },
       "english": {
         "totalQ": 95,
-        "correctQ": 87,
-        "accuracyPct": 91.6
+        "correctQ": 84,
+        "accuracyPct": 88.4
       },
       "science": {
         "totalQ": 31,
-        "correctQ": 29,
-        "accuracyPct": 93.5
+        "correctQ": 27,
+        "accuracyPct": 87.1
       },
       "hebrew": {
         "totalQ": 116,
-        "correctQ": 106,
-        "accuracyPct": 91.4
+        "correctQ": 104,
+        "accuracyPct": 89.7
       },
       "moledet_geography": {
         "totalQ": 125,
-        "correctQ": 114,
-        "accuracyPct": 91.2
+        "correctQ": 112,
+        "accuracyPct": 89.6
       }
     },
     "topicMetrics": {
@@ -77,31 +77,31 @@
       },
       "math:decimals": {
         "totalQ": 16,
-        "correctQ": 15,
+        "correctQ": 14,
         "subject": "math",
         "topic": "decimals",
-        "accuracyPct": 93.8
+        "accuracyPct": 87.5
       },
       "math:addition": {
         "totalQ": 16,
-        "correctQ": 15,
+        "correctQ": 14,
         "subject": "math",
         "topic": "addition",
-        "accuracyPct": 93.8
+        "accuracyPct": 87.5
       },
       "geometry:angles": {
         "totalQ": 56,
-        "correctQ": 51,
+        "correctQ": 50,
         "subject": "geometry",
         "topic": "angles",
-        "accuracyPct": 91.1
+        "accuracyPct": 89.3
       },
       "geometry:perimeter": {
         "totalQ": 29,
-        "correctQ": 27,
+        "correctQ": 26,
         "subject": "geometry",
         "topic": "perimeter",
-        "accuracyPct": 93.1
+        "accuracyPct": 89.7
       },
       "geometry:parallel_perpendicular": {
         "totalQ": 14,
@@ -119,10 +119,10 @@
       },
       "english:vocabulary": {
         "totalQ": 30,
-        "correctQ": 28,
+        "correctQ": 26,
         "subject": "english",
         "topic": "vocabulary",
-        "accuracyPct": 93.3
+        "accuracyPct": 86.7
       },
       "english:writing": {
         "totalQ": 19,
@@ -133,10 +133,10 @@
       },
       "english:sentences": {
         "totalQ": 26,
-        "correctQ": 24,
+        "correctQ": 23,
         "subject": "english",
         "topic": "sentences",
-        "accuracyPct": 92.3
+        "accuracyPct": 88.5
       },
       "english:grammar": {
         "totalQ": 20,
@@ -147,10 +147,10 @@
       },
       "science:experiments": {
         "totalQ": 31,
-        "correctQ": 29,
+        "correctQ": 27,
         "subject": "science",
         "topic": "experiments",
-        "accuracyPct": 93.5
+        "accuracyPct": 87.1
       },
       "hebrew:speaking": {
         "totalQ": 12,
@@ -161,17 +161,17 @@
       },
       "hebrew:mixed": {
         "totalQ": 51,
-        "correctQ": 46,
+        "correctQ": 45,
         "subject": "hebrew",
         "topic": "mixed",
-        "accuracyPct": 90.2
+        "accuracyPct": 88.2
       },
       "hebrew:reading": {
         "totalQ": 39,
-        "correctQ": 36,
+        "correctQ": 35,
         "subject": "hebrew",
         "topic": "reading",
-        "accuracyPct": 92.3
+        "accuracyPct": 89.7
       },
       "hebrew:vocabulary": {
         "totalQ": 14,
@@ -182,10 +182,10 @@
       },
       "moledet_geography:values": {
         "totalQ": 15,
-        "correctQ": 14,
+        "correctQ": 13,
         "subject": "moledet_geography",
         "topic": "values",
-        "accuracyPct": 93.3
+        "accuracyPct": 86.7
       },
       "moledet_geography:community": {
         "totalQ": 32,
@@ -203,10 +203,10 @@
       },
       "moledet_geography:homeland": {
         "totalQ": 25,
-        "correctQ": 23,
+        "correctQ": 22,
         "subject": "moledet_geography",
         "topic": "homeland",
-        "accuracyPct": 92
+        "accuracyPct": 88
       },
       "moledet_geography:citizenship": {
         "totalQ": 29,
@@ -225,19 +225,19 @@
     },
     "trendOracle": {
       "direction": "flat",
-      "earlyMean": 0.916717456520088,
-      "lateMean": 0.9164519742997188,
-      "delta": -0.0002654822203691509,
+      "earlyMean": 0.8884436469962785,
+      "lateMean": 0.9024638790616235,
+      "delta": 0.014020232065344973,
       "sessionSamples": 42
     },
     "volatility": {
-      "stdev": 0.016800002311687195,
+      "stdev": 0.02060529123590106,
       "n": 42,
-      "meanAccuracy": 0.9154738675415366
+      "meanAccuracy": 0.8952357723034415
     },
     "reportSignals": {
       "totalQuestions": 642,
-      "overallAccuracy": 91,
+      "overallAccuracy": 89,
       "contractTopThinDowngraded": true,
       "contractTopEvidenceQuestionCount": 154,
       "contractPrimarySubjectId": "geometry",
@@ -311,7 +311,7 @@
         "minPct": 72
       },
       "actual": {
-        "overallAccuracyPct": 91.4
+        "overallAccuracyPct": 89.4
       },
       "likelyCause": "behavior_oracle_threshold",
       "evidence": {}
@@ -323,12 +323,12 @@
         "minPctPerSubjectWithData": 58
       },
       "actual": {
-        "math": 90.9,
-        "geometry": 91.6,
-        "science": 93.5,
-        "english": 91.6,
-        "hebrew": 91.4,
-        "moledet_geography": 91.2
+        "math": 89.3,
+        "geometry": 90.3,
+        "science": 87.1,
+        "english": 88.4,
+        "hebrew": 89.7,
+        "moledet_geography": 89.6
       },
       "likelyCause": "behavior_oracle_threshold",
       "evidence": {}
@@ -341,7 +341,7 @@
       },
       "actual": {
         "direction": "flat",
-        "delta": -0.0002654822203691509,
+        "delta": 0.014020232065344973,
         "n": 42
       },
       "likelyCause": "behavior_oracle_threshold",
@@ -367,8 +367,8 @@
         "maxAbsDeltaPct": 12
       },
       "actual": {
-        "metaOverall": 91.4,
-        "reportOverall": 91
+        "metaOverall": 89.4,
+        "reportOverall": 89
       },
       "likelyCause": "behavior_oracle_threshold",
       "evidence": {}

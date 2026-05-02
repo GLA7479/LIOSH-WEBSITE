@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-02T20:31:19.041Z",
+  "generatedAt": "2026-05-02T20:34:44.719Z",
   "generator": "run-report-assertions-v1",
   "counts": {
     "scenarios": 10,
@@ -64,7 +64,7 @@
         "scenarioId": "strong_all_subjects_g3_7d",
         "sessionCount": 42,
         "questionTotal": 642,
-        "correctTotal": 587,
+        "correctTotal": 574,
         "mistakeEventCount": 42,
         "subjectsTouched": [
           "hebrew",
@@ -198,10 +198,10 @@
             "majorTrendsSample": "בטווח התקופה נבדקו 22 נושאים. נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־17 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה.",
             "storageOracle": {
               "direction": "up",
-              "earlyMean": 0.5714102203266289,
-              "lateMean": 0.7786968707247347,
+              "earlyMean": 0.5681207466424184,
+              "lateMean": 0.7438583102161858,
               "n": 48,
-              "delta": 0.2072866503981058
+              "delta": 0.17573756357376735
             }
           },
           "method": "structured+storage-oracle"
@@ -220,8 +220,8 @@
         "scenarioId": "improving_student_g4_30d",
         "sessionCount": 48,
         "questionTotal": 771,
-        "correctTotal": 521,
-        "mistakeEventCount": 157,
+        "correctTotal": 508,
+        "mistakeEventCount": 161,
         "subjectsTouched": [
           "math",
           "science",
@@ -283,10 +283,10 @@
             "majorTrendsSample": "בטווח התקופה נבדקו 19 נושאים. נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־13 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה.",
             "storageOracle": {
               "direction": "down",
-              "earlyMean": 0.8234160395847704,
-              "lateMean": 0.5469385808549895,
+              "earlyMean": 0.80028812175097,
+              "lateMean": 0.5375446414610501,
               "n": 44,
-              "delta": -0.2764774587297809
+              "delta": -0.2627434802899199
             }
           },
           "method": "structured+storage-oracle"
@@ -314,8 +314,8 @@
         "scenarioId": "declining_student_g4_30d",
         "sessionCount": 44,
         "questionTotal": 669,
-        "correctTotal": 459,
-        "mistakeEventCount": 131,
+        "correctTotal": 450,
+        "mistakeEventCount": 135,
         "subjectsTouched": [
           "math",
           "geometry",
@@ -393,8 +393,8 @@
         "scenarioId": "weak_math_fractions_g5_7d",
         "sessionCount": 18,
         "questionTotal": 290,
-        "correctTotal": 101,
-        "mistakeEventCount": 123,
+        "correctTotal": 99,
+        "mistakeEventCount": 125,
         "subjectsTouched": [
           "math"
         ],
@@ -439,7 +439,7 @@
         "scenarioId": "weak_hebrew_comprehension_g3_7d",
         "sessionCount": 15,
         "questionTotal": 237,
-        "correctTotal": 89,
+        "correctTotal": 88,
         "mistakeEventCount": 80,
         "subjectsTouched": [
           "hebrew"
@@ -485,7 +485,7 @@
         "scenarioId": "weak_english_grammar_g4_7d",
         "sessionCount": 16,
         "questionTotal": 274,
-        "correctTotal": 113,
+        "correctTotal": 111,
         "mistakeEventCount": 90,
         "subjectsTouched": [
           "english"
@@ -531,7 +531,7 @@
         "scenarioId": "weak_science_cause_effect_g5_7d",
         "sessionCount": 14,
         "questionTotal": 235,
-        "correctTotal": 86,
+        "correctTotal": 85,
         "mistakeEventCount": 82,
         "subjectsTouched": [
           "science"

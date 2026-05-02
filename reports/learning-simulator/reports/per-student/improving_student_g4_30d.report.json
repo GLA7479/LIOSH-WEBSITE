@@ -15,14 +15,14 @@
   "diagnosticPrimarySource": "diagnosticEngineV2",
   "summary": {
     "totalQuestions": 771,
-    "overallAccuracy": 68,
+    "overallAccuracy": 66,
     "totalTimeMinutes": 1727
   },
   "facets": {
     "version": "report-facets-v1",
     "summary": {
       "totalQuestions": 771,
-      "overallAccuracy": 68,
+      "overallAccuracy": 66,
       "totalTimeMinutes": 1727
     },
     "diagnostic": {
@@ -371,11 +371,13 @@
         "חשבון: חיבור",
         "חשבון: תכונות ה-0 וה-1",
         "חשבון: סימני התחלקות",
+        "אנגלית: Vocabulary",
         "אנגלית: Sentence Building",
         "אנגלית: Grammar",
         "מדעים: ניסויים ותהליכים",
         "מדעים: סביבה ואקולוגיה",
         "מדעים: גוף האדם",
+        "מדעים: חומרים",
         "מדעים: כדור הארץ והחלל",
         "מדעים: בעלי חיים"
       ]
@@ -476,6 +478,6 @@
     }
   },
   "corpusStats": {
-    "charLength": 4047
+    "charLength": 4090
   }
 }

@@ -1,0 +1,110 @@
+{
+  "mode": "full",
+  "startedAt": "2026-05-02T20:34:41.627Z",
+  "finishedAt": "2026-05-02T20:35:07.457Z",
+  "totalDurationMs": 25829,
+  "pass": true,
+  "failedStep": null,
+  "steps": [
+    {
+      "id": "matrix",
+      "label": "Coverage matrix",
+      "script": "qa:learning-simulator:matrix",
+      "exitCode": 0,
+      "durationMs": 642,
+      "pass": true
+    },
+    {
+      "id": "schema",
+      "label": "Schema validation (profiles + scenarios)",
+      "script": "qa:learning-simulator:schema",
+      "exitCode": 0,
+      "durationMs": 599,
+      "pass": true
+    },
+    {
+      "id": "aggregate",
+      "label": "Aggregate simulator (quick scenarios)",
+      "script": "qa:learning-simulator:aggregate",
+      "exitCode": 0,
+      "durationMs": 626,
+      "pass": true
+    },
+    {
+      "id": "reports",
+      "label": "Parent report assertions (Phase 3)",
+      "script": "qa:learning-simulator:reports",
+      "exitCode": 0,
+      "durationMs": 1256,
+      "pass": true
+    },
+    {
+      "id": "behavior",
+      "label": "Behavior checks (Phase 5)",
+      "script": "qa:learning-simulator:behavior",
+      "exitCode": 0,
+      "durationMs": 599,
+      "pass": true
+    },
+    {
+      "id": "questions",
+      "label": "Question integrity (Phase 4)",
+      "script": "qa:learning-simulator:questions",
+      "exitCode": 0,
+      "durationMs": 882,
+      "pass": true
+    },
+    {
+      "id": "deep",
+      "label": "Deep longitudinal simulator",
+      "script": "qa:learning-simulator:deep",
+      "exitCode": 0,
+      "durationMs": 2023,
+      "pass": true
+    },
+    {
+      "id": "build",
+      "label": "Next.js production build",
+      "script": "build",
+      "exitCode": 0,
+      "durationMs": 17424,
+      "pass": true
+    },
+    {
+      "id": "parentReportPhase1",
+      "label": "Parent report phase1 selftest",
+      "script": "test:parent-report-phase1",
+      "exitCode": 0,
+      "durationMs": 958,
+      "pass": true
+    },
+    {
+      "id": "intelligenceUsage",
+      "label": "Intelligence layer v1 usage selftest",
+      "script": "test:intelligence-layer-v1-usage",
+      "exitCode": 0,
+      "durationMs": 816,
+      "pass": true
+    }
+  ],
+  "artifactLinks": {
+    "coverageMatrix": "reports/learning-simulator/coverage-matrix.json",
+    "coverageMatrixMd": "reports/learning-simulator/coverage-matrix.md",
+    "schemaValidation": "reports/learning-simulator/schema-validation.json",
+    "schemaValidationMd": "reports/learning-simulator/schema-validation.md",
+    "aggregateSummary": "reports/learning-simulator/aggregate/run-summary.json",
+    "aggregateSummaryMd": "reports/learning-simulator/aggregate/run-summary.md",
+    "reportAssertions": "reports/learning-simulator/reports/run-summary.json",
+    "behaviorSummary": "reports/learning-simulator/behavior/run-summary.json",
+    "behaviorFailures": "reports/learning-simulator/behavior/failures.json",
+    "questionIntegrity": "reports/learning-simulator/questions/run-summary.json",
+    "questionFailures": "reports/learning-simulator/questions/failures.json",
+    "deepSummary": "reports/learning-simulator/deep/run-summary.json",
+    "deepFailures": "reports/learning-simulator/deep/failures.json",
+    "orchestratorSummary": "reports/learning-simulator/orchestrator/run-summary.json"
+  },
+  "nextAction": null,
+  "options": {
+    "continueOnFail": false
+  }
+}

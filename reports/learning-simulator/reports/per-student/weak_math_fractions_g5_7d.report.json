@@ -15,14 +15,14 @@
   "diagnosticPrimarySource": "diagnosticEngineV2",
   "summary": {
     "totalQuestions": 290,
-    "overallAccuracy": 35,
+    "overallAccuracy": 34,
     "totalTimeMinutes": 920
   },
   "facets": {
     "version": "report-facets-v1",
     "summary": {
       "totalQuestions": 290,
-      "overallAccuracy": 35,
+      "overallAccuracy": 34,
       "totalTimeMinutes": 920
     },
     "diagnostic": {

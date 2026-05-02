@@ -9,40 +9,40 @@
     "evidence": {
       "sessionCount": 14,
       "questionTotal": 235,
-      "correctTotal": 86,
+      "correctTotal": 85,
       "mistakeEventCount": 82,
       "subjectsTouched": [
         "science"
       ],
-      "overallAccuracyPct": 36.6
+      "overallAccuracyPct": 36.2
     },
     "subjectMetrics": {
       "science": {
         "totalQ": 235,
-        "correctQ": 86,
-        "accuracyPct": 36.6
+        "correctQ": 85,
+        "accuracyPct": 36.2
       }
     },
     "topicMetrics": {
       "science:experiments": {
         "totalQ": 235,
-        "correctQ": 86,
+        "correctQ": 85,
         "subject": "science",
         "topic": "experiments",
-        "accuracyPct": 36.6
+        "accuracyPct": 36.2
       }
     },
     "trendOracle": {
       "direction": "flat",
-      "earlyMean": 0.37935120435120434,
+      "earlyMean": 0.36685120435120433,
       "lateMean": 0.3616161616161616,
-      "delta": -0.017735042735042728,
+      "delta": -0.0052350427350427164,
       "sessionSamples": 14
     },
     "volatility": {
-      "stdev": 0.024430300944100997,
+      "stdev": 0.027655086598195742,
       "n": 14,
-      "meanAccuracy": 0.36479413443699166
+      "meanAccuracy": 0.36032984872270596
     },
     "reportSignals": {
       "totalQuestions": 217,
@@ -82,7 +82,7 @@
       },
       "actual": {
         "totalQ": 235,
-        "accuracyPct": 36.6
+        "accuracyPct": 36.2
       },
       "likelyCause": "behavior_oracle_threshold",
       "evidence": {}
@@ -98,7 +98,7 @@
         "orderedTopicsByAccuracy": [
           {
             "t": "experiments",
-            "acc": 36.6,
+            "acc": 36.2,
             "q": 235
           }
         ]

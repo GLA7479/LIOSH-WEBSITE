@@ -9,44 +9,44 @@
     "evidence": {
       "sessionCount": 18,
       "questionTotal": 290,
-      "correctTotal": 101,
-      "mistakeEventCount": 123,
+      "correctTotal": 99,
+      "mistakeEventCount": 125,
       "subjectsTouched": [
         "math"
       ],
-      "overallAccuracyPct": 34.8
+      "overallAccuracyPct": 34.1
     },
     "subjectMetrics": {
       "math": {
         "totalQ": 290,
-        "correctQ": 101,
-        "accuracyPct": 34.8
+        "correctQ": 99,
+        "accuracyPct": 34.1
       }
     },
     "topicMetrics": {
       "math:fractions": {
         "totalQ": 290,
-        "correctQ": 101,
+        "correctQ": 99,
         "subject": "math",
         "topic": "fractions",
-        "accuracyPct": 34.8
+        "accuracyPct": 34.1
       }
     },
     "trendOracle": {
       "direction": "flat",
-      "earlyMean": 0.3555796055796056,
-      "lateMean": 0.34335721468074404,
-      "delta": -0.012222390898861568,
+      "earlyMean": 0.3476430976430976,
+      "lateMean": 0.33224610356963297,
+      "delta": -0.01539699407346462,
       "sessionSamples": 18
     },
     "volatility": {
-      "stdev": 0.027999214165206884,
+      "stdev": 0.023671112664569498,
       "n": 18,
-      "meanAccuracy": 0.34826180536964846
+      "meanAccuracy": 0.34191259902044213
     },
     "reportSignals": {
       "totalQuestions": 290,
-      "overallAccuracy": 35,
+      "overallAccuracy": 34,
       "contractTopThinDowngraded": true,
       "contractTopEvidenceQuestionCount": 290,
       "contractPrimarySubjectId": "math",
@@ -84,7 +84,7 @@
       },
       "actual": {
         "totalQ": 290,
-        "accuracyPct": 34.8
+        "accuracyPct": 34.1
       },
       "likelyCause": "behavior_oracle_threshold",
       "evidence": {}
@@ -100,7 +100,7 @@
         "orderedTopicsByAccuracy": [
           {
             "t": "fractions",
-            "acc": 34.8,
+            "acc": 34.1,
             "q": 290
           }
         ]

@@ -9,39 +9,39 @@
     "evidence": {
       "sessionCount": 48,
       "questionTotal": 771,
-      "correctTotal": 521,
-      "mistakeEventCount": 157,
+      "correctTotal": 508,
+      "mistakeEventCount": 161,
       "subjectsTouched": [
         "math",
         "science",
         "english"
       ],
-      "overallAccuracyPct": 67.6
+      "overallAccuracyPct": 65.9
     },
     "subjectMetrics": {
       "math": {
         "totalQ": 500,
-        "correctQ": 344,
-        "accuracyPct": 68.8
+        "correctQ": 336,
+        "accuracyPct": 67.2
       },
       "english": {
         "totalQ": 113,
-        "correctQ": 78,
-        "accuracyPct": 69
+        "correctQ": 75,
+        "accuracyPct": 66.4
       },
       "science": {
         "totalQ": 158,
-        "correctQ": 99,
-        "accuracyPct": 62.7
+        "correctQ": 97,
+        "accuracyPct": 61.4
       }
     },
     "topicMetrics": {
       "math:fractions": {
         "totalQ": 185,
-        "correctQ": 128,
+        "correctQ": 123,
         "subject": "math",
         "topic": "fractions",
-        "accuracyPct": 69.2
+        "accuracyPct": 66.5
       },
       "math:decimals": {
         "totalQ": 45,
@@ -80,10 +80,10 @@
       },
       "math:division_with_remainder": {
         "totalQ": 24,
-        "correctQ": 18,
+        "correctQ": 17,
         "subject": "math",
         "topic": "division_with_remainder",
-        "accuracyPct": 75
+        "accuracyPct": 70.8
       },
       "math:divisibility": {
         "totalQ": 22,
@@ -108,31 +108,31 @@
       },
       "math:sequences": {
         "totalQ": 19,
-        "correctQ": 15,
+        "correctQ": 14,
         "subject": "math",
         "topic": "sequences",
-        "accuracyPct": 78.9
+        "accuracyPct": 73.7
       },
       "math:factors_multiples": {
         "totalQ": 20,
-        "correctQ": 16,
+        "correctQ": 15,
         "subject": "math",
         "topic": "factors_multiples",
-        "accuracyPct": 80
+        "accuracyPct": 75
       },
       "english:vocabulary": {
         "totalQ": 37,
-        "correctQ": 27,
+        "correctQ": 25,
         "subject": "english",
         "topic": "vocabulary",
-        "accuracyPct": 73
+        "accuracyPct": 67.6
       },
       "english:sentences": {
         "totalQ": 33,
-        "correctQ": 21,
+        "correctQ": 20,
         "subject": "english",
         "topic": "sentences",
-        "accuracyPct": 63.6
+        "accuracyPct": 60.6
       },
       "english:grammar": {
         "totalQ": 22,
@@ -171,10 +171,10 @@
       },
       "science:materials": {
         "totalQ": 50,
-        "correctQ": 36,
+        "correctQ": 34,
         "subject": "science",
         "topic": "materials",
-        "accuracyPct": 72
+        "accuracyPct": 68
       },
       "science:earth_space": {
         "totalQ": 17,
@@ -193,19 +193,19 @@
     },
     "trendOracle": {
       "direction": "up",
-      "earlyMean": 0.5714102203266289,
-      "lateMean": 0.7786968707247347,
-      "delta": 0.2072866503981058,
+      "earlyMean": 0.5681207466424184,
+      "lateMean": 0.7438583102161858,
+      "delta": 0.17573756357376735,
       "sessionSamples": 48
     },
     "volatility": {
-      "stdev": 0.09184927425665558,
+      "stdev": 0.07677912607063803,
       "n": 48,
-      "meanAccuracy": 0.672835893484597
+      "meanAccuracy": 0.6560466876425662
     },
     "reportSignals": {
       "totalQuestions": 771,
-      "overallAccuracy": 68,
+      "overallAccuracy": 66,
       "contractTopThinDowngraded": true,
       "contractTopEvidenceQuestionCount": 185,
       "contractPrimarySubjectId": "math",
@@ -261,9 +261,9 @@
       },
       "actual": {
         "direction": "up",
-        "delta": 0.2072866503981058,
-        "earlyMean": 0.5714102203266289,
-        "lateMean": 0.7786968707247347,
+        "delta": 0.17573756357376735,
+        "earlyMean": 0.5681207466424184,
+        "lateMean": 0.7438583102161858,
         "n": 48
       },
       "likelyCause": "behavior_oracle_threshold",

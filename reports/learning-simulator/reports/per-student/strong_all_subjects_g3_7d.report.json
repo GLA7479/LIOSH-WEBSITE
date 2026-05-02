@@ -15,14 +15,14 @@
   "diagnosticPrimarySource": "diagnosticEngineV2",
   "summary": {
     "totalQuestions": 642,
-    "overallAccuracy": 91,
+    "overallAccuracy": 89,
     "totalTimeMinutes": 1089
   },
   "facets": {
     "version": "report-facets-v1",
     "summary": {
       "totalQuestions": 642,
-      "overallAccuracy": 91,
+      "overallAccuracy": 89,
       "totalTimeMinutes": 1089
     },
     "diagnostic": {
@@ -114,7 +114,7 @@
           "patternHe": "טעות בטווח זווית",
           "diagnosisLineHe": "מצביע על דפוס: טעות בטווח זווית (נקודת מיקוד: קריאת משקף) בזוויות.",
           "canonicalAction": "withhold",
-          "positiveAuthorityLevel": "very_good",
+          "positiveAuthorityLevel": "good",
           "evidenceQuestions": 56,
           "trendDirection": null,
           "trendEvidenceStatus": null,
@@ -174,7 +174,7 @@
           "patternHe": null,
           "diagnosisLineHe": null,
           "canonicalAction": "probe_only",
-          "positiveAuthorityLevel": "very_good",
+          "positiveAuthorityLevel": "none",
           "evidenceQuestions": 30,
           "trendDirection": null,
           "trendEvidenceStatus": null,
@@ -204,7 +204,7 @@
           "patternHe": null,
           "diagnosisLineHe": null,
           "canonicalAction": "probe_only",
-          "positiveAuthorityLevel": "very_good",
+          "positiveAuthorityLevel": "good",
           "evidenceQuestions": 26,
           "trendDirection": null,
           "trendEvidenceStatus": null,
@@ -234,7 +234,7 @@
           "patternHe": null,
           "diagnosisLineHe": null,
           "canonicalAction": "probe_only",
-          "positiveAuthorityLevel": "very_good",
+          "positiveAuthorityLevel": "none",
           "evidenceQuestions": 31,
           "trendDirection": null,
           "trendEvidenceStatus": null,
@@ -264,7 +264,7 @@
           "patternHe": "מילה קרובה לא נכונה",
           "diagnosisLineHe": "מצביע על דפוס: מילה קרובה לא נכונה (נקודת מיקוד: נרדפת) בערבוב.",
           "canonicalAction": "withhold",
-          "positiveAuthorityLevel": "very_good",
+          "positiveAuthorityLevel": "good",
           "evidenceQuestions": 51,
           "trendDirection": null,
           "trendEvidenceStatus": null,
@@ -309,7 +309,7 @@
           "patternHe": null,
           "diagnosisLineHe": null,
           "canonicalAction": "probe_only",
-          "positiveAuthorityLevel": "good",
+          "positiveAuthorityLevel": "none",
           "evidenceQuestions": 15,
           "trendDirection": null,
           "trendEvidenceStatus": null,
@@ -354,7 +354,7 @@
           "patternHe": null,
           "diagnosisLineHe": null,
           "canonicalAction": "probe_only",
-          "positiveAuthorityLevel": "very_good",
+          "positiveAuthorityLevel": "good",
           "evidenceQuestions": 25,
           "trendDirection": null,
           "trendEvidenceStatus": null,
@@ -400,10 +400,10 @@
       "windowTotalQuestions": 642,
       "topFocusAreasHe": [],
       "topStrengthsAcrossHe": [
-        "אנגלית נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (92%) לאורך 95 שאלות בתקופה.",
-        "עברית נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (91%) לאורך 116 שאלות בתקופה.",
-        "מדעים נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (94%) לאורך 31 שאלות בתקופה.",
-        "חשבון נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (91%) לאורך 121 שאלות בתקופה."
+        "אנגלית נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (88%) לאורך 95 שאלות בתקופה.",
+        "עברית נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (90%) לאורך 116 שאלות בתקופה.",
+        "מדעים נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (87%) לאורך 31 שאלות בתקופה.",
+        "חשבון נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (89%) לאורך 121 שאלות בתקופה."
       ],
       "dominantCrossSubjectRiskLabelHe": "",
       "dominantCrossSubjectSuccessPatternLabelHe": "",
@@ -467,6 +467,6 @@
     }
   },
   "corpusStats": {
-    "charLength": 2343
+    "charLength": 2352
   }
 }
