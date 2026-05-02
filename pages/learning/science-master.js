@@ -62,6 +62,7 @@ import {
   attachProbeMetaToQuestion,
   applyProbeOutcome,
   clearActiveDiagnosticState,
+  decrementPendingProbeExpiry,
 } from "../../utils/active-diagnostic-runtime/index.js";
 import { inferNormalizedTags } from "../../utils/fast-diagnostic-engine/infer-tags.js";
 import {
@@ -1651,6 +1652,7 @@ function saveScienceAnswerInParallel({
     const pool = filterQuestionsForCurrentSettings(levelForPool);
 
     if (pool.length === 0) {
+      decrementPendingProbeExpiry(pendingDiagnosticProbeRef);
       questionPoolRef.current = [];
       questionIndexRef.current = 0;
       scienceTrackingTopicKeyRef.current = null;
@@ -1713,10 +1715,6 @@ function saveScienceAnswerInParallel({
       }
     }
 
-    if (probeAtStart && !usedRetryDequeue) {
-      pendingDiagnosticProbeRef.current = null;
-    }
-
     if (!q) {
       q = randomItem(pool);
     }
@@ -1763,6 +1761,8 @@ function saveScienceAnswerInParallel({
     setShowTheoryHelp(false);
     setErrorExplanation("");
     setQuestionStartTime(Date.now());
+
+    decrementPendingProbeExpiry(pendingDiagnosticProbeRef);
   }
 
   function hardResetGame() {

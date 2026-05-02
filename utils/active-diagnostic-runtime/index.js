@@ -6,3 +6,4 @@ export { buildHypothesisKey } from "./hypothesis-key.js";
 export { applyProbeOutcome } from "./apply-probe-outcome.js";
 export { attachProbeMetaToQuestion } from "./attach-probe-meta.js";
 export { clearActiveDiagnosticState } from "./clear-state.js";
+export { decrementPendingProbeExpiry } from "./decrement-pending-probe-expiry.js";

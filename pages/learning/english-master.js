@@ -43,6 +43,7 @@ import {
   attachProbeMetaToQuestion,
   applyProbeOutcome,
   clearActiveDiagnosticState,
+  decrementPendingProbeExpiry,
 } from "../../utils/active-diagnostic-runtime/index.js";
 import { mergeDiagnosticContractIntoParams } from "../../utils/diagnostic-question-contract";
 import { mcqCellValue } from "../../utils/mcq-option-cell";
@@ -2042,6 +2043,15 @@ const refreshMonthlyProgress = useCallback(() => {
       if (probeConsumed) {
         englishPendingDiagnosticProbeRef.current = null;
       }
+    }
+    const grammarProbeRetainedInMixed =
+      probeAtStart &&
+      topicForState === "mixed" &&
+      englishPendingDiagnosticProbeRef.current &&
+      question.topic !== "grammar" &&
+      !probeMetaHolder.current;
+    if (!grammarProbeRetainedInMixed) {
+      decrementPendingProbeExpiry(englishPendingDiagnosticProbeRef);
     }
     if (question.topic === "grammar") {
       const k = englishGrammarRowKeyFromQuestion(question);

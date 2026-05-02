@@ -112,6 +112,7 @@ import {
   attachProbeMetaToQuestion,
   applyProbeOutcome,
   clearActiveDiagnosticState,
+  decrementPendingProbeExpiry,
 } from "../../utils/active-diagnostic-runtime/index.js";
 import { mathWrongActivatesProbe } from "../../utils/math-active-probe.js";
 import {
@@ -1347,6 +1348,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     if (probeMetaHolder.current) {
       question = attachProbeMetaToQuestion(question, probeMetaHolder.current);
     }
+    let mathProbeRetainedInMixed = false;
     if (probeAtStart) {
       const pk = String(question.params?.kind || "");
       const consumed =
@@ -1356,6 +1358,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       if (consumed) {
         mathPendingDiagnosticProbeRef.current = null;
       }
+      mathProbeRetainedInMixed =
+        operation === "mixed" &&
+        !!mathPendingDiagnosticProbeRef.current &&
+        !consumed;
       patchLearningDiagnosticDebug({
         lastProbeSelectionResult: {
           subjectId: "math",
@@ -1364,6 +1370,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           at: Date.now(),
         },
       });
+    }
+
+    if (!mathProbeRetainedInMixed) {
+      decrementPendingProbeExpiry(mathPendingDiagnosticProbeRef);
     }
 
     mathTrackingOperationKeyRef.current = question.operation;

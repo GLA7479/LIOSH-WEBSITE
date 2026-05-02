@@ -72,6 +72,7 @@ import {
   attachProbeMetaToQuestion,
   applyProbeOutcome,
   clearActiveDiagnosticState,
+  decrementPendingProbeExpiry,
 } from "../../utils/active-diagnostic-runtime/index.js";
 import {
   hebrewScriptLikely,
@@ -1050,12 +1051,9 @@ useEffect(() => {
     const localRecentQuestions = new Set(recentQuestions);
 
     const probeAtStart = hebrewPendingDiagnosticProbeRef.current;
-    let probeActive =
-      !!(
-        probeAtStart &&
-        probeMatchesSession(probeAtStart, grade, level, operationForState) &&
-        probeAtStart.subjectId === "hebrew"
-      );
+    const probeCandidate =
+      !!(probeAtStart && probeAtStart.subjectId === "hebrew");
+    let probeBiasDisabled = false;
     let probeBiasAttempts = 0;
     const maxProbeBiasAttempts = 22;
     let probeAttachOpts = null;
@@ -1078,6 +1076,14 @@ useEffect(() => {
         opForQuestion === "mixed" ? mixedOperations : null
       );
       attempts++;
+
+      const qTopic =
+        String(question.topic || question.operation || opForQuestion || "").trim() ||
+        operationForState;
+      let probeBiasMode =
+        !probeBiasDisabled &&
+        probeCandidate &&
+        probeMatchesSession(probeAtStart, grade, level, qTopic);
 
       const questionKey = hebrewQuestionFingerprint(question);
       const nearKey = hebrewNearDuplicateKey(question);
@@ -1109,7 +1115,7 @@ useEffect(() => {
         !taskShapeBlock;
 
       let probeAccept = true;
-      if (probeActive && baseOk) {
+      if (probeBiasMode && baseOk) {
         const matchResult = bankQuestionProbeMatch(question, probeAtStart);
         const richMatch = question._fromRich === true && matchResult.matches;
         if (!richMatch) {
@@ -1117,14 +1123,14 @@ useEffect(() => {
           if (probeBiasAttempts < maxProbeBiasAttempts) {
             probeAccept = false;
           } else {
-            probeActive = false;
+            probeBiasDisabled = true;
             probeAccept = true;
           }
         }
       }
 
       if (baseOk && probeAccept) {
-        if (probeActive && question._fromRich) {
+        if (probeBiasMode && question._fromRich) {
           const m = bankQuestionProbeMatch(question, probeAtStart);
           if (m.matches) {
             probeAttachOpts = {
@@ -1150,6 +1156,7 @@ useEffect(() => {
       }
     } while (attempts < maxAttempts);
 
+    decrementPendingProbeExpiry(hebrewPendingDiagnosticProbeRef);
     if (probeAtStart) {
       hebrewPendingDiagnosticProbeRef.current = null;
     }

@@ -1302,6 +1302,7 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
     buildHypothesisKey,
     attachProbeMetaToQuestion,
     clearActiveDiagnosticState,
+    decrementPendingProbeExpiry,
   } = await importUtils("../utils/active-diagnostic-runtime/index.js");
   const { normalizeMistakeEvent } = await importUtils("../utils/mistake-event.js");
 
@@ -1395,6 +1396,20 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
   clearActiveDiagnosticState(pr, lr);
   assert.equal(pr.current, null);
   assert.equal(lr.current, null);
+
+  const expRef = { current: { expiresAfterQuestions: 2, subjectId: "math" } };
+  decrementPendingProbeExpiry(expRef);
+  assert.equal(expRef.current?.expiresAfterQuestions, 1);
+  decrementPendingProbeExpiry(expRef);
+  assert.equal(expRef.current, null);
+  decrementPendingProbeExpiry(null);
+  decrementPendingProbeExpiry({ current: null });
+  const oneShot = { current: { expiresAfterQuestions: 1, subjectId: "science" } };
+  decrementPendingProbeExpiry(oneShot);
+  assert.equal(oneShot.current, null);
+  const missingExpiry = { current: { subjectId: "hebrew" } };
+  decrementPendingProbeExpiry(missingExpiry);
+  assert.ok(missingExpiry.current);
 }
 
 // QA bugfix regression (english-master): unrelated wrong clears grammar probe; mixed retains probe across non-grammar draws.

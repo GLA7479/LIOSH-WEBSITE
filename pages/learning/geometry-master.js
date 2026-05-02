@@ -93,6 +93,7 @@ import {
   attachProbeMetaToQuestion,
   applyProbeOutcome,
   clearActiveDiagnosticState,
+  decrementPendingProbeExpiry,
   probeMatchesSession,
 } from "../../utils/active-diagnostic-runtime/index.js";
 import { geometryWrongActivatesProbe } from "../../utils/geometry-active-probe.js";
@@ -710,13 +711,14 @@ useEffect(() => {
       
       const currentTopic = selectedTopics[Math.floor(Math.random() * selectedTopics.length)];
       question = null;
+      // Use concrete rolled topic (not "mixed") so probe.topicId must match this draw — avoids unrelated probes in mixed mode.
       if (
         probeAtSessionStart &&
         probeMatchesSession(
           probeAtSessionStart,
           grade,
           effectiveLevelKey,
-          validTopic === "mixed" ? "mixed" : currentTopic
+          currentTopic
         )
       ) {
         const pick = pickGeometryProbeConceptual({
@@ -840,6 +842,7 @@ useEffect(() => {
     // בדיקה שהשאלה תקינה לפני הצגתה
     if (!question || !question.answers || question.answers.length === 0) {
       console.error("Failed to generate valid question");
+      decrementPendingProbeExpiry(geometryPendingDiagnosticProbeRef);
       setCurrentQuestion({
         question: "שגיאה ביצירת שאלה. אנא נסה שוב או בחר נושא אחר.",
         correctAnswer: 0,
@@ -878,6 +881,9 @@ useEffect(() => {
     if (currentQuestion && currentQuestion.params?.kind !== "no_question") {
       setPreviousExplanationQuestion(currentQuestion);
     }
+
+    decrementPendingProbeExpiry(geometryPendingDiagnosticProbeRef);
+
     setCurrentQuestion(question);
     setSelectedAnswer(null);
     setTextAnswer("");
