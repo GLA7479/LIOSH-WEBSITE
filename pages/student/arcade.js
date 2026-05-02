@@ -50,6 +50,38 @@ function roomTypeLabel(rt) {
   return rt || "—";
 }
 
+function EntryCostSelector({ entryCost, setEntryCost, costDisabledReason, busy, className = "mt-4" }) {
+  return (
+    <div className={className}>
+      <span className="mb-2 block text-sm font-semibold text-zinc-900">עלות כניסה</span>
+      <div className="flex flex-wrap gap-2">
+        {ENTRY_OPTIONS.map((opt) => {
+          const needMsg = costDisabledReason(opt.value);
+          const selected = entryCost === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              disabled={busy || Boolean(needMsg)}
+              title={needMsg || undefined}
+              onClick={() => setEntryCost(opt.value)}
+              className={`min-w-[3.5rem] rounded-lg border-2 px-3 py-2 text-sm font-bold transition ${
+                selected
+                  ? "border-amber-600 bg-amber-400 text-zinc-900 shadow-inner"
+                  : needMsg
+                    ? "cursor-not-allowed border-zinc-200 bg-zinc-100 text-zinc-500 line-through"
+                    : "border-zinc-400 bg-white text-zinc-900 hover:border-amber-500"
+              }`}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function StudentArcadePage() {
   const [studentName, setStudentName] = useState("");
   const [balance, setBalance] = useState(null);
@@ -349,33 +381,12 @@ export default function StudentArcadePage() {
               </p>
             ) : null}
 
-            <div className="mt-4">
-              <span className="mb-2 block text-sm font-semibold text-zinc-900">עלות כניסה</span>
-              <div className="flex flex-wrap gap-2">
-                {ENTRY_OPTIONS.map((opt) => {
-                  const needMsg = costDisabledReason(opt.value);
-                  const selected = entryCost === opt.value;
-                  return (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      disabled={busy || Boolean(needMsg)}
-                      title={needMsg || undefined}
-                      onClick={() => setEntryCost(opt.value)}
-                      className={`min-w-[3.5rem] rounded-lg border-2 px-3 py-2 text-sm font-bold transition ${
-                        selected
-                          ? "border-amber-600 bg-amber-400 text-zinc-900 shadow-inner"
-                          : needMsg
-                            ? "cursor-not-allowed border-zinc-200 bg-zinc-100 text-zinc-500 line-through"
-                            : "border-zinc-400 bg-white text-zinc-900 hover:border-amber-500"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+            <EntryCostSelector
+              entryCost={entryCost}
+              setEntryCost={setEntryCost}
+              costDisabledReason={costDisabledReason}
+              busy={busy}
+            />
 
             <div className="mt-6 flex flex-col gap-3">
               <button
@@ -432,6 +443,13 @@ export default function StudentArcadePage() {
                 {idleReasonLudo}
               </p>
             ) : null}
+
+            <EntryCostSelector
+              entryCost={entryCost}
+              setEntryCost={setEntryCost}
+              costDisabledReason={costDisabledReason}
+              busy={busy}
+            />
 
             <div className="mt-6 flex flex-col gap-3">
               <button
