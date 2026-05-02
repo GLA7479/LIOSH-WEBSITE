@@ -23,6 +23,7 @@
     "qa:learning-simulator:scenario-coverage": "tsx scripts/learning-simulator/run-scenario-coverage.mjs",
     "qa:learning-simulator:render": "tsx scripts/learning-simulator/run-render-release-gate.mjs",
     "qa:learning-simulator:release-summary": "tsx scripts/learning-simulator/run-release-readiness-summary.mjs",
+    "qa:learning-simulator:pdf-export": "tsx scripts/learning-simulator/run-pdf-export-gate.mjs",
     "qa:learning-simulator:quick": "tsx scripts/learning-simulator/run-orchestrator.mjs quick",
     "qa:learning-simulator:full": "tsx scripts/learning-simulator/run-orchestrator.mjs full",
     "qa:learning-simulator": "tsx scripts/learning-simulator/run-orchestrator.mjs full",

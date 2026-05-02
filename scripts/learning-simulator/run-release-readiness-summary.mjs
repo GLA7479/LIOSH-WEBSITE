@@ -24,6 +24,8 @@ const PATHS = {
   profileStress: join(LS, "profile-stress.json"),
   paceOracle: join(LS, "pace-profile-oracle-audit.json"),
   renderGate: join(LS, "render-release-gate.json"),
+  pdfExportGate: join(LS, "pdf-export-gate.json"),
+  pdfExportAudit: join(LS, "pdf-export-audit.json"),
   scenarioCoverage: join(LS, "scenario-coverage.json"),
   orchestratorSummary: join(LS, "orchestrator", "run-summary.json"),
 };
@@ -41,6 +43,7 @@ const STRONGLY_EXPECTED = [
   "profileStress",
   "paceOracle",
   "renderGate",
+  "pdfExportGate",
 ];
 
 async function readJsonSafe(path) {
@@ -68,6 +71,7 @@ function summarizeOrchestratorSteps(orch) {
     overallPass: orch?.pass === true,
     buildPass: byId.build?.pass === true,
     renderReleaseGatePass: byId.renderReleaseGate?.pass === true,
+    pdfExportGatePass: byId.pdfExportGate?.pass === true,
     deepPass: byId.deep?.pass === true,
     stepIds: steps.map((s) => s.id),
   };
@@ -152,6 +156,13 @@ async function main() {
     if (cf > 0 || fe > 0) failures.push(`Render release gate: checksFailed=${cf}, fatalErrorsTotal=${fe}`);
   }
 
+  const pdfGate = loaded.pdfExportGate;
+  if (pdfGate && pdfGate.status === "fail") {
+    failures.push(
+      `PDF export gate failed: ${(pdfGate.failures || []).slice(0, 3).join("; ") || "see pdf-export-gate.json"}`
+    );
+  }
+
   const backlog = loaded.contentGapBacklog;
   const backlogTotal = backlog?.totalBacklogItems ?? 0;
 
@@ -166,6 +177,13 @@ async function main() {
     scenarioCoverage: loaded.scenarioCoverage ? "pass" : "missing",
     renderGate:
       render && (render.checksFailed ?? 0) === 0 && (render.fatalErrorsTotal ?? 0) === 0 ? "pass" : render ? "fail" : "missing",
+    pdfExportGate: pdfGate
+      ? pdfGate.status === "pass"
+        ? "pass"
+        : pdfGate.status === "deferred"
+          ? "deferred"
+          : "fail"
+      : "missing",
   };
 
   const coverageSummary = {
@@ -250,6 +268,31 @@ async function main() {
       }
     : null;
 
+  const pdfExportGateSummary = pdfGate
+    ? {
+        status: pdfGate.status,
+        checkedRoute: pdfGate.checkedRoute,
+        browserMode: pdfGate.browserMode,
+        downloadSucceeded: pdfGate.downloadSucceeded,
+        downloadPath: pdfGate.downloadPath,
+        fileSizeBytes: pdfGate.fileSizeBytes,
+        pdfHeaderOk: pdfGate.pdfHeaderOk,
+        consoleErrorsTotal: pdfGate.consoleErrorsTotal,
+        fatalErrorsTotal: pdfGate.fatalErrorsTotal,
+        deferredReason: pdfGate.deferredReason,
+        minPdfBytesThreshold: pdfGate.minPdfBytesThreshold,
+      }
+    : null;
+
+  const pdfExportAuditSummary = loaded.pdfExportAudit
+    ? {
+        pdfLibraryDetected: loaded.pdfExportAudit.pdfLibraryDetected,
+        exportIsClientSide: loaded.pdfExportAudit.exportIsClientSide,
+        hasDedicatedPdfRoute: loaded.pdfExportAudit.hasDedicatedPdfRoute,
+        generatedAt: loaded.pdfExportAudit.generatedAt,
+      }
+    : null;
+
   const scenarioCoverageSummary = loaded.scenarioCoverage
     ? {
         scenarios: loaded.scenarioCoverage.counts?.scenarios,
@@ -259,19 +302,34 @@ async function main() {
 
   const deferredItems = {
     pdfBinaryExportInPage:
-      "Deferred by render gate — client-side html2pdf/jspdf; no dedicated /api/pdf binary validation in QA.",
+      pdfGate?.status === "pass"
+        ? "Validated by pdf-export-gate (canvas download under ?qa_pdf=file)."
+        : pdfGate?.status === "deferred"
+          ? `PDF export gate deferred: ${pdfGate.deferredReason || "see pdf-export-gate.json"}.`
+          : "See pdf-export-gate.json — client html2pdf path or gate failure.",
     optionalArtifactsMissing: STRONGLY_EXPECTED.filter((k) => !loaded[k]).map((k) => PATHS[k]),
   };
+
+  const pdfGatePassed = pdfGate?.status === "pass";
 
   const knownRemainingWork = [
     {
       group: "content_backlog",
       detail: backlogTotal > 0 ? `${backlogTotal} tracked items in content-gap-backlog.json` : "none",
     },
-    {
-      group: "pdf_binary_export_deferred",
-      detail: "PDF/export validation deferred per render-release-gate policy",
-    },
+    ...(pdfGatePassed
+      ? []
+      : [
+          {
+            group: "pdf_export_gate",
+            detail:
+              pdfGate?.status === "deferred"
+                ? `Deferred: ${pdfGate?.deferredReason || "see pdf-export-gate.json"}`
+                : pdfGate?.status === "fail"
+                  ? "PDF export gate failed — see pdf-export-gate.json"
+                  : "PDF export gate missing or not run — run qa:learning-simulator:pdf-export",
+          },
+        ]),
     {
       group: "optional_render_expansion",
       detail: "Additional routes/surfaces can be added to render gate without product changes",
@@ -310,6 +368,8 @@ async function main() {
     profileStressSummary,
     paceOracleSummary,
     renderGateSummary,
+    pdfExportGateSummary,
+    pdfExportAuditSummary,
     scenarioCoverageSummary,
     deferredItems,
     knownRemainingWork,
@@ -367,6 +427,7 @@ async function main() {
     `| profile stress | ${mdEscape(profileStressSummary?.status || "—")} |`,
     `| pace oracle | ${mdEscape(paceOracleSummary?.status || "—")} |`,
     `| scenario coverage | ${loaded.scenarioCoverage ? "present" : "missing"} |`,
+    `| pdf export | ${mdEscape(gateStatus.pdfExportGate)} |`,
     "",
     "### Render gate",
     "",
@@ -378,10 +439,26 @@ async function main() {
           `| checks passed / total | ${render.checksPassed} / ${render.checksTotal} |`,
           `| consoleErrorsTotal | ${render.consoleErrorsTotal} |`,
           `| fatalErrorsTotal | ${render.fatalErrorsTotal} |`,
-          `| PDF/export | deferred (documented) |`,
+          `| PDF/export (render gate doc) | deferred surfaces / informational |`,
           "",
         ].join("\n")
       : "(missing render-release-gate.json)",
+    "",
+    "### PDF export gate",
+    "",
+    pdfGate
+      ? [
+          `| Field | Value |`,
+          `| --- | --- |`,
+          `| status | ${mdEscape(pdfGate.status)} |`,
+          `| checkedRoute | ${mdEscape(pdfGate.checkedRoute)} |`,
+          `| downloadSucceeded | ${pdfGate.downloadSucceeded} |`,
+          `| fileSizeBytes | ${pdfGate.fileSizeBytes ?? "—"} |`,
+          `| pdfHeaderOk | ${pdfGate.pdfHeaderOk ?? "—"} |`,
+          `| deferredReason | ${mdEscape(pdfGate.deferredReason || "—")} |`,
+          "",
+        ].join("\n")
+      : "(missing pdf-export-gate.json)",
     "",
     "### Known remaining work (groups)",
     "",

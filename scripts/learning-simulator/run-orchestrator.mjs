@@ -50,6 +50,9 @@ const ARTIFACTS = {
   renderReleaseGate: "reports/learning-simulator/render-release-gate.json",
   renderReleaseGateMd: "reports/learning-simulator/render-release-gate.md",
   renderReleaseGateAudit: "reports/learning-simulator/render-release-gate-audit.json",
+  pdfExportGate: "reports/learning-simulator/pdf-export-gate.json",
+  pdfExportGateMd: "reports/learning-simulator/pdf-export-gate.md",
+  pdfExportAudit: "reports/learning-simulator/pdf-export-audit.json",
   releaseReadinessSummary: "reports/learning-simulator/release-readiness-summary.json",
   releaseReadinessSummaryMd: "reports/learning-simulator/release-readiness-summary.md",
 };
@@ -98,6 +101,11 @@ const FULL_SUFFIX = [
     id: "renderReleaseGate",
     script: "qa:learning-simulator:render",
     label: "Render release gate (browser/SSR smoke for learning + parent-report)",
+  },
+  {
+    id: "pdfExportGate",
+    script: "qa:learning-simulator:pdf-export",
+    label: "PDF export gate (parent-report file download)",
   },
   { id: "deep", script: "qa:learning-simulator:deep", label: "Deep longitudinal simulator" },
   { id: "build", script: "build", label: "Next.js production build" },
@@ -154,6 +162,8 @@ function nextActionHint(failedStep) {
       "Inspect content-gap-backlog.json — fails if backlog count ≠ audit gap count or unmapped cell.",
     renderReleaseGate:
       "Inspect render-release-gate.json and failures under reports/learning-simulator/render-release-gate/failures/; fix crashes/console errors or SSR fallback.",
+    pdfExportGate:
+      "Inspect pdf-export-gate.json and reports/learning-simulator/pdf-export/; verify html2pdf download with ?qa_pdf=file or fix Playwright/console errors.",
     releaseReadinessSummary:
       "Inspect release-readiness-summary.json — missing artifacts, uncovered cells, or gate regressions; re-run full QA after fixes.",
   };

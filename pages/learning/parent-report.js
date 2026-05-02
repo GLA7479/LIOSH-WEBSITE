@@ -3572,7 +3572,18 @@ export default function ParentReport() {
           {/* כפתורים */}
           <div className="flex gap-2 md:gap-3 justify-center flex-wrap mb-3 md:mb-6 no-pdf">
             <button
-              onClick={() => exportReportToPDF(report)}
+              onClick={() => {
+                let pdfOpts = {};
+                if (typeof window !== "undefined") {
+                  try {
+                    const q = new URLSearchParams(window.location.search).get("qa_pdf");
+                    if (q === "file") pdfOpts = { method: "canvas" };
+                  } catch {
+                    /* ignore */
+                  }
+                }
+                exportReportToPDF(report, pdfOpts);
+              }}
               className="px-4 md:px-6 py-2 md:py-3 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm md:text-base"
             >
               🖨️ הדפס / 📄 ייצא ל-PDF

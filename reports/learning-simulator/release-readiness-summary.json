@@ -1,6 +1,6 @@
 {
-  "runId": "release-summary-moovn6kp",
-  "generatedAt": "2026-05-02T21:52:04.105Z",
+  "runId": "release-summary-moowgo0q",
+  "generatedAt": "2026-05-02T22:14:59.738Z",
   "overallStatus": "pass_with_known_backlog",
   "gateStatus": {
     "orchestrator": "pass",
@@ -9,7 +9,8 @@
     "profileStress": "pass",
     "paceOracle": "pass",
     "scenarioCoverage": "pass",
-    "renderGate": "pass"
+    "renderGate": "pass",
+    "pdfExportGate": "pass"
   },
   "buildStatus": "pass",
   "coverageSummary": {
@@ -95,7 +96,7 @@
     "status": "pass",
     "pace_accuracy_separation_ok": true,
     "cohortMedianSpqGap": 198.04,
-    "sourceRunId": "profile-stress-moovlzva"
+    "sourceRunId": "profile-stress-moow5yh7"
   },
   "renderGateSummary": {
     "status": "pass",
@@ -107,22 +108,37 @@
     "fatalErrorsTotal": 0,
     "deferredPdfExport": true
   },
+  "pdfExportGateSummary": {
+    "status": "pass",
+    "checkedRoute": "/learning/parent-report?qa_pdf=file",
+    "browserMode": true,
+    "downloadSucceeded": true,
+    "downloadPath": "C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/pdf-export/דוח-Sim_strong_all_subjects_g3_7d-2026-05-02.pdf",
+    "fileSizeBytes": 3975310,
+    "pdfHeaderOk": true,
+    "consoleErrorsTotal": 0,
+    "fatalErrorsTotal": 0,
+    "deferredReason": null,
+    "minPdfBytesThreshold": 10240
+  },
+  "pdfExportAuditSummary": {
+    "pdfLibraryDetected": "^0.10.1",
+    "exportIsClientSide": true,
+    "hasDedicatedPdfRoute": false,
+    "generatedAt": "2026-05-02T22:10:27.039Z"
+  },
   "scenarioCoverageSummary": {
     "scenarios": 278,
-    "generatedAt": "2026-05-02T21:51:11.184Z"
+    "generatedAt": "2026-05-02T22:06:42.795Z"
   },
   "deferredItems": {
-    "pdfBinaryExportInPage": "Deferred by render gate — client-side html2pdf/jspdf; no dedicated /api/pdf binary validation in QA.",
+    "pdfBinaryExportInPage": "Validated by pdf-export-gate (canvas download under ?qa_pdf=file).",
     "optionalArtifactsMissing": []
   },
   "knownRemainingWork": [
     {
       "group": "content_backlog",
       "detail": "41 tracked items in content-gap-backlog.json"
-    },
-    {
-      "group": "pdf_binary_export_deferred",
-      "detail": "PDF/export validation deferred per render-release-gate policy"
     },
     {
       "group": "optional_render_expansion",
