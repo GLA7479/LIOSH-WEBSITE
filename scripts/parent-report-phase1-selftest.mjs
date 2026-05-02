@@ -408,4 +408,124 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
   }
 }
 
+/** Phase 2: diagnosticOverviewHe post-V2 pass (priority order, no raw tokens in parent strings). */
+{
+  const { buildDiagnosticOverviewHeV2ForTests } = await importUtils("../utils/parent-report-v2.js");
+
+  const fallback = {
+    mainFocusAreaLineHe: "חשבון: נושא מהרשימה הישנה",
+    strongestAreaLineHe: "עברית: חוזק ישן",
+    readyForProgressPreviewHe: ["מדעים: ישן"],
+    requiresAttentionPreviewHe: ["גאומטריה: ישן"],
+  };
+
+  const v2out = buildDiagnosticOverviewHeV2ForTests({
+    diagnosticEngineV2: {
+      units: [
+        {
+          subjectId: "math",
+          displayName: "נושא ראשון במפה",
+          topicRowKey: "k1",
+          priority: { level: "P1" },
+          diagnosis: { allowed: true, lineHe: "אבחון א׳" },
+          evidenceTrace: [{ type: "volume", value: { questions: 5, accuracy: 50 } }],
+          taxonomy: { patternHe: "רקע P1" },
+          canonicalState: {
+            evidence: { positiveAuthorityLevel: "none" },
+            actionState: "withhold",
+            assessment: {},
+          },
+        },
+        {
+          subjectId: "geometry",
+          displayName: "נושא דחיפות",
+          topicRowKey: "k2",
+          priority: { level: "P4" },
+          diagnosis: { allowed: true, lineHe: "אבחון ב׳" },
+          evidenceTrace: [{ type: "volume", value: { questions: 12, accuracy: 62 } }],
+          taxonomy: { patternHe: "דפוס עומק מהמנוע" },
+          canonicalState: {
+            evidence: { positiveAuthorityLevel: "good" },
+            actionState: "maintain",
+            assessment: {},
+          },
+        },
+      ],
+    },
+    patternDiagnostics: { version: 2, subjects: {} },
+    maps: {},
+    fallbackOverview: fallback,
+    insufficientDataSubjectsHe: [],
+  });
+
+  assert.ok(
+    String(v2out.mainFocusAreaLineHe || "").includes("דפוס עומק") ||
+      String(v2out.mainFocusAreaLineHe || "").includes("נושא דחיפות"),
+    "main focus follows higher-priority V2 unit, not fallback map-order line"
+  );
+  assert.notEqual(String(v2out.mainFocusAreaLineHe || "").trim(), String(fallback.mainFocusAreaLineHe).trim());
+
+  const txt = [
+    v2out.mainFocusAreaLineHe,
+    v2out.strongestAreaLineHe,
+    ...(v2out.readyForProgressPreviewHe || []),
+    ...(v2out.requiresAttentionPreviewHe || []),
+  ]
+    .filter(Boolean)
+    .join(" ");
+  assert.ok(!/\bP[1-4]\b/.test(txt), "no raw priority codes in overview text");
+  assert.ok(!/::/.test(txt));
+  assert.ok(!/\bdc:/i.test(txt));
+
+  const noUnits = buildDiagnosticOverviewHeV2ForTests({
+    diagnosticEngineV2: { units: [] },
+    patternDiagnostics: null,
+    maps: {},
+    fallbackOverview: fallback,
+    insufficientDataSubjectsHe: ["חשבון: מעט נתונים"],
+  });
+  assert.equal(noUnits.mainFocusAreaLineHe, fallback.mainFocusAreaLineHe);
+  assert.deepEqual(noUnits.requiresAttentionPreviewHe, fallback.requiresAttentionPreviewHe);
+  assert.deepEqual(noUnits.insufficientDataSubjectsHe, ["חשבון: מעט נתונים"]);
+
+  const noAttentionSignal = buildDiagnosticOverviewHeV2ForTests({
+    diagnosticEngineV2: {
+      units: [
+        {
+          subjectId: "math",
+          displayName: "נושא חזק בלבד",
+          evidenceTrace: [{ type: "volume", value: { questions: 20, accuracy: 95 } }],
+          diagnosis: { allowed: false },
+          recurrence: { wrongCountForRules: 0 },
+          canonicalState: {
+            evidence: { positiveAuthorityLevel: "excellent" },
+            actionState: "maintain",
+            assessment: {},
+          },
+        },
+      ],
+    },
+    patternDiagnostics: { version: 2, subjects: {} },
+    maps: {},
+    fallbackOverview: {
+      mainFocusAreaLineHe: "מיקוד שמגיע מרשימת needsPractice",
+      strongestAreaLineHe: "חוזק שמור",
+      readyForProgressPreviewHe: [],
+      requiresAttentionPreviewHe: ["מעקב משני א׳", "מעקב משני ב׳"],
+    },
+    insufficientDataSubjectsHe: [],
+  });
+  assert.equal(
+    noAttentionSignal.mainFocusAreaLineHe,
+    "מיקוד שמגיע מרשימת needsPractice",
+    "no P/diagnosis/wrongs: main focus must not pick an arbitrary V2 unit"
+  );
+  assert.ok(
+    !String(noAttentionSignal.mainFocusAreaLineHe || "").includes("נושא חזק בלבד"),
+    "main focus must not be built from a non-attention V2 unit displayName"
+  );
+  assert.equal(noAttentionSignal.requiresAttentionPreviewHe[0], "מעקב משני א׳");
+  assert.equal(noAttentionSignal.requiresAttentionPreviewHe[1], "מעקב משני ב׳");
+}
+
 console.log("parent-report phase1 selftest: OK");

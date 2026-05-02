@@ -909,6 +909,222 @@ function buildDiagnosticCardsForSubject(subjectId, subjectUnits, topicMap) {
   return out;
 }
 
+/** Strip tokens that must not appear in parent overview (priority codes, ids). */
+function stripParentOverviewLeakageHe(text) {
+  let s = String(text || "");
+  s = s.replace(/\bP[1-4]\b/g, "");
+  s = s.replace(/::+/g, " ");
+  s = s.replace(/\bdc:/gi, "");
+  s = s.replace(/\u0001/g, " ");
+  s = shortReportDiagnosticsParentVisibleHe(s);
+  s = normalizeParentFacingHe(s.replace(/\s{2,}/g, " ").trim());
+  return s;
+}
+
+function unitAttentionOverviewSortKey(u) {
+  const pl = String(u?.priority?.level || "");
+  const pr = { P4: 5, P3: 4, P2: 3, P1: 2 };
+  const base = pr[pl] || 0;
+  const diag = u?.diagnosis?.allowed ? 1 : 0;
+  const wrongs = safeNumber(u?.recurrence?.wrongCountForRules);
+  return base * 10000 + diag * 1000 + Math.min(wrongs, 999);
+}
+
+function unitStrengthOverviewSortKey(u) {
+  const cs = u?.canonicalState;
+  const pal = String(cs?.evidence?.positiveAuthorityLevel || "none");
+  const R = { excellent: 4, very_good: 3, good: 2, none: 0 };
+  const action = String(cs?.actionState || "");
+  let s = (R[pal] ?? 0) * 100;
+  if (action === "maintain" || action === "expand_cautiously") s += 50;
+  if (action === "expand_cautiously") s += 10;
+  const vol = safeNumber(
+    u?.evidenceTrace?.find((e) => e?.type === "volume")?.value?.questions ?? u?.evidenceTrace?.[0]?.value?.questions
+  );
+  return s * 1000 + Math.min(vol, 999);
+}
+
+/**
+ * @param {string} subjectId
+ * @param {Record<string, unknown>} unit
+ * @param {"attention"|"strength"} kind
+ */
+function overviewShortLineWithSubject(subjectId, unit, kind) {
+  const subj = V2_SUBJECT_LABEL_HE[subjectId] || "";
+  const name = String(unit?.displayName || "").trim() || "נושא";
+  const vol = unit?.evidenceTrace?.find((e) => e?.type === "volume")?.value;
+  const pat = String(unit?.taxonomy?.patternHe || "").trim();
+  let core = "";
+  if (kind === "attention") {
+    if (pat) {
+      core = `${name}: ${pat}`;
+    } else if (unit?.diagnosis?.allowed && String(unit?.diagnosis?.lineHe || "").trim()) {
+      core = `${name}: ${shortReportDiagnosticsParentVisibleHe(String(unit.diagnosis.lineHe))}`;
+    } else if (vol && safeNumber(vol.questions) > 0) {
+      core = `${name}: כ-${Math.round(safeNumber(vol.questions))} שאלות, דיוק ${Math.round(safeNumber(vol.accuracy))}%`;
+    } else {
+      core = name;
+    }
+  } else {
+    if (vol && safeNumber(vol.questions) > 0) {
+      core = `${name}: ${Math.round(safeNumber(vol.questions))} שאלות, דיוק ${Math.round(safeNumber(vol.accuracy))}%`;
+    } else {
+      core = name;
+    }
+  }
+  const line = `${subj}: ${core}`.replace(/\s+/g, " ").trim();
+  return stripParentOverviewLeakageHe(line);
+}
+
+/**
+ * Phase 2: align top amber overview with V2 priority (post-engine). Does not mutate diagnosticCards.
+ * @param {{
+ *   diagnosticEngineV2: { units?: unknown[] } | null,
+ *   patternDiagnostics: unknown,
+ *   maps: Record<string, Record<string, unknown>>,
+ *   fallbackOverview: Record<string, unknown>,
+ *   insufficientDataSubjectsHe: string[],
+ * }} p
+ */
+function buildDiagnosticOverviewHeV2(p) {
+  void p?.patternDiagnostics;
+  void p?.maps;
+  const units = Array.isArray(p?.diagnosticEngineV2?.units) ? p.diagnosticEngineV2.units : [];
+  const fallback = p?.fallbackOverview && typeof p.fallbackOverview === "object" ? p.fallbackOverview : {};
+  const insufficientDataSubjectsHe = Array.isArray(p?.insufficientDataSubjectsHe)
+    ? p.insufficientDataSubjectsHe
+    : [];
+
+  if (units.length === 0) {
+    return {
+      strongestAreaLineHe: fallback.strongestAreaLineHe ?? null,
+      mainFocusAreaLineHe: fallback.mainFocusAreaLineHe ?? null,
+      readyForProgressPreviewHe: Array.isArray(fallback.readyForProgressPreviewHe)
+        ? fallback.readyForProgressPreviewHe
+        : [],
+      requiresAttentionPreviewHe: Array.isArray(fallback.requiresAttentionPreviewHe)
+        ? fallback.requiresAttentionPreviewHe
+        : [],
+      insufficientDataSubjectsHe,
+    };
+  }
+
+  const uList = units.filter((u) => u && typeof u === "object");
+
+  const attentionCandidates = uList.filter((u) => {
+    const pl = String(u?.priority?.level || "").trim();
+    if (pl === "P1" || pl === "P2" || pl === "P3" || pl === "P4") return true;
+    if (u?.diagnosis?.allowed === true) return true;
+    if (safeNumber(u?.recurrence?.wrongCountForRules) > 0) return true;
+    return false;
+  });
+
+  const attentionSorted = [...attentionCandidates].sort(
+    (a, b) => unitAttentionOverviewSortKey(b) - unitAttentionOverviewSortKey(a)
+  );
+  const strengthSorted = [...uList].sort(
+    (a, b) => unitStrengthOverviewSortKey(b) - unitStrengthOverviewSortKey(a)
+  );
+
+  let mainFocusAreaLineHe = null;
+  if (attentionCandidates.length === 0) {
+    mainFocusAreaLineHe = fallback.mainFocusAreaLineHe ?? null;
+  } else if (attentionSorted[0]) {
+    const u = attentionSorted[0];
+    const sid = String(u.subjectId || "");
+    mainFocusAreaLineHe = overviewShortLineWithSubject(sid, u, "attention");
+  }
+  if (!String(mainFocusAreaLineHe || "").trim()) {
+    mainFocusAreaLineHe = fallback.mainFocusAreaLineHe ?? null;
+  }
+
+  const strengthCandidates = strengthSorted.filter((u) => {
+    const cs = u?.canonicalState;
+    if (!cs || typeof cs !== "object") return false;
+    const pal = String(cs?.evidence?.positiveAuthorityLevel || "");
+    const a = String(cs?.actionState || "");
+    return (
+      pal === "excellent" ||
+      pal === "very_good" ||
+      pal === "good" ||
+      a === "maintain" ||
+      a === "expand_cautiously"
+    );
+  });
+
+  let strongestAreaLineHe = null;
+  if (strengthCandidates[0]) {
+    const u = strengthCandidates[0];
+    strongestAreaLineHe = overviewShortLineWithSubject(String(u.subjectId || ""), u, "strength");
+  }
+  if (!String(strongestAreaLineHe || "").trim()) {
+    strongestAreaLineHe = fallback.strongestAreaLineHe ?? null;
+  }
+
+  const readyForProgressPreviewHe = [];
+  const seenProg = new Set();
+  for (let i = 1; i < strengthCandidates.length && readyForProgressPreviewHe.length < 3; i++) {
+    const u = strengthCandidates[i];
+    const sid = String(u.subjectId || "");
+    const line = overviewShortLineWithSubject(sid, u, "strength");
+    const k = line.replace(/\s+/g, " ");
+    if (!k || seenProg.has(k)) continue;
+    if (strongestAreaLineHe && k === String(strongestAreaLineHe).replace(/\s+/g, " ")) continue;
+    seenProg.add(k);
+    readyForProgressPreviewHe.push(line);
+  }
+  if (readyForProgressPreviewHe.length === 0 && Array.isArray(fallback.readyForProgressPreviewHe)) {
+    for (const x of fallback.readyForProgressPreviewHe) {
+      if (readyForProgressPreviewHe.length >= 3) break;
+      const t = stripParentOverviewLeakageHe(String(x || ""));
+      if (t) readyForProgressPreviewHe.push(t);
+    }
+  }
+
+  const requiresAttentionPreviewHe = [];
+  if (attentionCandidates.length === 0) {
+    if (Array.isArray(fallback.requiresAttentionPreviewHe)) {
+      for (const x of fallback.requiresAttentionPreviewHe) {
+        if (requiresAttentionPreviewHe.length >= 5) break;
+        const t = stripParentOverviewLeakageHe(String(x || ""));
+        if (t) requiresAttentionPreviewHe.push(t);
+      }
+    }
+  } else {
+    const seenAtt = new Set();
+    for (let i = 1; i < attentionSorted.length && requiresAttentionPreviewHe.length < 5; i++) {
+      const u = attentionSorted[i];
+      const sid = String(u.subjectId || "");
+      const line = overviewShortLineWithSubject(sid, u, "attention");
+      const k = line.replace(/\s+/g, " ");
+      if (!k || seenAtt.has(k)) continue;
+      if (mainFocusAreaLineHe && k === String(mainFocusAreaLineHe).replace(/\s+/g, " ")) continue;
+      seenAtt.add(k);
+      requiresAttentionPreviewHe.push(line);
+    }
+    if (requiresAttentionPreviewHe.length === 0 && Array.isArray(fallback.requiresAttentionPreviewHe)) {
+      for (const x of fallback.requiresAttentionPreviewHe) {
+        if (requiresAttentionPreviewHe.length >= 5) break;
+        const t = stripParentOverviewLeakageHe(String(x || ""));
+        if (t) requiresAttentionPreviewHe.push(t);
+      }
+    }
+  }
+
+  return {
+    strongestAreaLineHe,
+    mainFocusAreaLineHe,
+    readyForProgressPreviewHe,
+    requiresAttentionPreviewHe,
+    insufficientDataSubjectsHe,
+  };
+}
+
+/** @param {Parameters<typeof buildDiagnosticOverviewHeV2>[0]} params */
+export function buildDiagnosticOverviewHeV2ForTests(params) {
+  return buildDiagnosticOverviewHeV2(params);
+}
+
 function intelligenceSummaryFromV2Units(list) {
   let lowConfidenceCount = 0;
   let noWeaknessCount = 0;
@@ -1800,13 +2016,23 @@ export function generateParentReportV2(
     );
   }
 
-  const diagnosticOverviewHe = {
+  const fallbackDiagnosticOverviewHe = {
     strongestAreaLineHe: excellent[0] || null,
     mainFocusAreaLineHe: needsPractice[0] || null,
     readyForProgressPreviewHe: excellent.filter(Boolean).slice(1, 4),
     requiresAttentionPreviewHe: needsPractice.slice(0, 5),
     insufficientDataSubjectsHe,
   };
+
+  const diagnosticOverviewHe = hasV2Units
+    ? buildDiagnosticOverviewHeV2({
+        diagnosticEngineV2,
+        patternDiagnostics,
+        maps,
+        fallbackOverview: fallbackDiagnosticOverviewHe,
+        insufficientDataSubjectsHe,
+      })
+    : fallbackDiagnosticOverviewHe;
 
   const rawMetricStrengthsHe = deriveRawMetricStrengthLinesHe({
     totalQuestions,

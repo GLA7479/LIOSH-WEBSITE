@@ -1575,6 +1575,12 @@ export default function ParentReport() {
                   {report.summary.diagnosticOverviewHe.readyForProgressPreviewHe.join(" · ")}
                 </p>
               ) : null}
+              {report.summary.diagnosticOverviewHe.requiresAttentionPreviewHe?.length ? (
+                <p className="m-0 leading-relaxed text-white/70 text-xs md:text-sm">
+                  <span className="text-white/55">עוד נושאים למעקב: </span>
+                  {report.summary.diagnosticOverviewHe.requiresAttentionPreviewHe.join(" · ")}
+                </p>
+              ) : null}
               {report.summary.diagnosticOverviewHe.insufficientDataSubjectsHe?.length ? (
                 <p className="m-0 leading-relaxed text-white/50 text-xs">
                   נתונים חלקיים במקצועות:{" "}
