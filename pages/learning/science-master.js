@@ -1895,6 +1895,8 @@ function saveScienceAnswerInParallel({
     setShowPreviousSolution(false);
     setPreviousExplanationQuestion(null);
     setShowTheoryHelp(false);
+    pendingDiagnosticProbeRef.current = null;
+    scienceHypothesisLedgerRef.current = null;
   }
 
   function handleTimeUp() {
