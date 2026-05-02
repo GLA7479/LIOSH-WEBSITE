@@ -6,13 +6,15 @@ This document describes the **unified learning-simulator quality gates**: what t
 
 The learning simulator generates **aggregate storage-shaped snapshots** (similar to product localStorage for learning activity), optionally builds **parent reports** from that storage in Node, and runs **integrity / behavior / report-contract checks**. It is designed to validate pipelines and fixtures **without** driving the full browser student UI for every scenario.
 
-## Orchestrator commands
+## QA command tiers (daily strategy)
 
-| Command | Meaning |
-| -------- | ------- |
-| `npm run qa:learning-simulator` | Same as **full** — recommended default before merge when you want the whole gate. |
-| `npm run qa:learning-simulator:quick` | Fast CI gate: matrix → schema → aggregate → reports → behavior → questions. |
-| `npm run qa:learning-simulator:full` | Same execution path as **`qa:learning-simulator`** (see below). |
+Three tiers share **one** orchestrator (`scripts/learning-simulator/run-orchestrator.mjs`); modes are `quick` and `full`. The **release** npm script is an explicit name for the same **full** run (see table).
+
+| Tier | Command | Use when |
+| ---- | -------- | -------- |
+| **Quick** | `npm run qa:learning-simulator:quick` | Frequent feedback while editing fixtures, report contracts, or simulator code. **No** browser render gate, **no** PDF download gate, **no** deep longitudinal suite. |
+| **Full** | `npm run qa:learning-simulator` (or `…:full`) | Before push, after substantial matrix/content changes, or when you need the **complete** gate (smoke, coverage, content gaps, critical deep, render, PDF, deep, build, release summary). |
+| **Release** | `npm run qa:learning-simulator:release` | **Same execution as full** — use the name you prefer before a production release or tag; documents intent without a second code path. |
 
 Orchestrator summaries:
 
@@ -20,6 +22,28 @@ Orchestrator summaries:
 - `reports/learning-simulator/orchestrator/run-summary.md`
 
 Stopping behavior: by default the orchestrator **stops on the first failing step**. Set `LS_CONTINUE_ON_FAIL=1` to run all steps anyway (still exits non-zero if any step failed).
+
+## Which command should I run?
+
+| Situation | Recommended command |
+| --------- | ------------------- |
+| **Normal development** (tweaks to helpers, small fixture edits, iterating on one gate) | `npm run qa:learning-simulator:quick`, then re-run **single** sub-scripts as needed (e.g. `qa:learning-simulator:behavior`). |
+| **After changing question banks / curriculum data** | `npm run qa:learning-simulator` (full) — includes Phase 4 integrity, matrix smoke, coverage catalog, and content gap/backlog artifacts. |
+| **After changing parent-report / report builders** | Full gate — especially **`qa:learning-simulator:reports`**, **`qa:learning-simulator:behavior`**, and **`qa:learning-simulator:render`** (included in full). |
+| **After changing simulator logic** (adapters, orchestration, matrix runners) | Full gate; add targeted scripts while iterating, then full before push. |
+| **Before push / PR** | `npm run qa:learning-simulator` **and** `npm run build` if your workflow does not rely on the build step inside full (full already runs `npm run build`). |
+| **Before production release** | `npm run qa:learning-simulator:release` (same as full): matrix → … → render → PDF export → deep → build → selftests → **`qa:learning-simulator:release-summary`**. Optionally run `npm run build` again locally if you ship outside CI. |
+
+**Note:** `qa:learning-simulator:release` does **not** add extra steps beyond **full** — it is the same `full` orchestrator for naming clarity in docs and CI.
+
+## Orchestrator commands (reference)
+
+| Command | Meaning |
+| -------- | ------- |
+| `npm run qa:learning-simulator` | **Full** gate — primary entry point. |
+| `npm run qa:learning-simulator:quick` | **Quick** gate only (see below). |
+| `npm run qa:learning-simulator:full` | Same as **`qa:learning-simulator`**. |
+| `npm run qa:learning-simulator:release` | Same as **`qa:learning-simulator`** (full). |
 
 ## What **quick** runs
 
@@ -34,24 +58,28 @@ In order:
 
 ## What **full** adds on top of quick
 
-After the quick chain:
+After the quick chain (same order as `run-orchestrator.mjs`):
 
-7. **`qa:learning-simulator:matrix-smoke`** — Runs **aggregate** simulations for every matrix cell that would otherwise stay **sampled** (grouped by grade × subject). Writes `matrix-smoke.json` / `.md`. **Fails** if any smoke scenario errors or a cell lacks a matching session.
-8. **`qa:learning-simulator:coverage`** — Full **819-cell** coverage catalog (`coverage-catalog.json` / `.md`), including `coveredByMatrixSmoke` when step 7 ran successfully.
-9. **`qa:learning-simulator:unsupported`** — Unsupported / gap cell classification (`unsupported-cells.json` / `.md`). Fails the gate if there are **uncovered** cells or **unknown_needs_review** classifications (expected unsupported buckets alone do not fail).
-10. **`qa:learning-simulator:scenario-coverage`** — First pass: scenario → matrix mapping for fixtures + matrix-smoke.
-11. **`qa:learning-simulator:critical-deep`** — Compact **critical subset** (~40–80 cells from `coverage-catalog.json`): aggregate → parent-report build → Phase 3 + Phase 5 assertions with synthetic strong/weak/thin profiles per grade×subject group. Writes `critical-matrix-deep.json` / `.md`. **Fails** if any selected scenario fails report or behavior checks.
-12. **`qa:learning-simulator:scenario-coverage`** (again) — Regenerates `scenario-coverage` including **critical-matrix-deep** scenarios (same npm script; second pass after artifacts exist).
-13. **`qa:learning-simulator:deep`** — Longitudinal **30d / 90d** scenarios: storage, reports, report assertions, behavior assertions; outputs under `reports/learning-simulator/deep/`.
-14. **`npm run build`** — Next.js production build (types + lint during build).
-15. **`npm run test:parent-report-phase1`** — Parent report Phase 1 selftest.
-16. **`npm run test:intelligence-layer-v1-usage`** — Intelligence layer usage contract selftest.
+7. **`qa:learning-simulator:matrix-smoke`** — Aggregate smoke for matrix cells; writes `matrix-smoke.json` / `.md`.
+8. **`qa:learning-simulator:coverage`** — Full **819-cell** coverage catalog.
+9. **`qa:learning-simulator:unsupported`** — Unsupported / gap classification (`unsupported-cells.json`). Fails on **uncovered** or **unknown_needs_review**.
+10. **`qa:learning-simulator:content-gaps`** — Content gap audit (informational).
+11. **`qa:learning-simulator:content-backlog`** — Content gap backlog (documentation).
+12. **`qa:learning-simulator:scenario-coverage`** — Scenario → matrix mapping (first pass).
+13. **`qa:learning-simulator:critical-deep`** — Critical subset deep assertions (`critical-matrix-deep.json`).
+14. **`qa:learning-simulator:profile-stress`** — Synthetic profile stress scenarios.
+15. **`qa:learning-simulator:scenario-coverage`** (again) — Regenerates scenario map including critical-deep + profile-stress.
+16. **`qa:learning-simulator:render`** — Browser/SSR render release gate (learning + parent-report surfaces).
+17. **`qa:learning-simulator:pdf-export`** — Parent-report PDF download gate (`?qa_pdf=file`).
+18. **`qa:learning-simulator:deep`** — Longitudinal deep scenarios; outputs under `reports/learning-simulator/deep/`.
+19. **`npm run build`** — Next.js production build.
+20. **`npm run test:parent-report-phase1`** — Parent report Phase 1 selftest.
+21. **`npm run test:intelligence-layer-v1-usage`** — Intelligence layer usage contract selftest.
+22. **`qa:learning-simulator:release-summary`** — Master release readiness JSON/MD.
 
-Standalone (e.g. CI snippets): `npm run qa:learning-simulator:matrix-smoke`, `npm run qa:learning-simulator:coverage`, `npm run qa:learning-simulator:unsupported`, `npm run qa:learning-simulator:scenario-coverage`, `npm run qa:learning-simulator:critical-deep`.
+Standalone (e.g. CI snippets): individual `npm run qa:learning-simulator:<stage>` scripts listed in `package.json`.
 
 **Not included by default:** Playwright E2E (`npm run test:e2e`). Add explicitly when you need browser automation.
-
-**Not included:** PDF generation for learning simulations (use dedicated generate scripts if needed).
 
 ## What **deep** runs (when invoked via full or standalone)
 
@@ -93,10 +121,11 @@ Standalone (e.g. CI snippets): `npm run qa:learning-simulator:matrix-smoke`, `np
 | Deep | `reports/learning-simulator/deep/run-summary.json`, `failures.json`, `per-student/*` |
 | Orchestrator | `reports/learning-simulator/orchestrator/run-summary.json`, `.md` |
 
-## When to run quick vs full
+## When to run quick vs full vs release
 
-- **`quick`:** Frequent feedback during fixture/report/simulator changes; minutes faster than full when deep + build are unnecessary.
-- **`full`:** Pre-merge / nightly / release candidate — includes deep horizons, production build, and parent-report / intelligence contract tests.
+- **`quick`:** Fast loop — no render/PDF/deep/build in the orchestrator path.
+- **`full`** (`qa:learning-simulator` or `qa:learning-simulator:full`): Complete gate including browser smoke, PDF export, deep suite, production build, and **`release-summary`**.
+- **`release`:** Same binary as **full** — optional alias for documentation and CI job naming (`qa:learning-simulator:release`).
 
 ## Targeted subcommands
 

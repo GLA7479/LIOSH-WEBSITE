@@ -2,6 +2,7 @@
 /**
  * Unified learning-simulator QA orchestrator.
  * Usage: tsx scripts/learning-simulator/run-orchestrator.mjs <quick|full>
+ * npm: qa:learning-simulator:quick | qa:learning-simulator / :full / :release (release === full)
  *
  * Env:
  *   LS_CONTINUE_ON_FAIL=1 — run all steps even after a failure (still exits non-zero if any failed).

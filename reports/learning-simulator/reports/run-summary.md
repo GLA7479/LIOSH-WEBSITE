@@ -1,6 +1,6 @@
 # Learning simulator — report assertions
 
-- Generated at: 2026-05-02T22:54:14.411Z
+- Generated at: 2026-05-02T23:13:29.807Z
 - Scenarios: 10
 - Reports generated: 10
 - Assertions evaluated (total rows): 19

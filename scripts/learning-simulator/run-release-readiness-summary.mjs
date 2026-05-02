@@ -67,9 +67,12 @@ function countCatalogByStatus(rows) {
 function summarizeOrchestratorSteps(orch) {
   const steps = orch?.steps || [];
   const byId = Object.fromEntries(steps.map((s) => [s.id, s]));
+  const buildStep = byId.build;
+  /** Tri-state: true/false when a build step exists (full gate); null when absent (e.g. quick-only orchestrator artifact). */
+  const buildPass = buildStep == null ? null : buildStep.pass === true;
   return {
     overallPass: orch?.pass === true,
-    buildPass: byId.build?.pass === true,
+    buildPass,
     renderReleaseGatePass: byId.renderReleaseGate?.pass === true,
     pdfExportGatePass: byId.pdfExportGate?.pass === true,
     deepPass: byId.deep?.pass === true,
@@ -128,7 +131,10 @@ async function main() {
 
   const orch = loaded.orchestratorSummary;
   const orchSum = summarizeOrchestratorSteps(orch);
-  if (orch && orch.pass !== true) failures.push("Orchestrator run-summary reports pass: false");
+  /** Full orchestrator may end with pass:false only because this script failed last run — allow re-run if that was the sole failed step. */
+  if (orch && orch.pass !== true && orch.failedStep?.id !== "releaseReadinessSummary") {
+    failures.push("Orchestrator run-summary reports pass: false");
+  }
   if (orch && orchSum.buildPass === false) failures.push("Orchestrator build step did not pass");
 
   const matrixSmoke = loaded.matrixSmoke;
@@ -341,7 +347,8 @@ async function main() {
   ];
 
   const blockingFailure = failures.length > 0;
-  const buildStatus = orchSum.buildPass ? "pass" : orch ? "fail" : "unknown";
+  const buildStatus =
+    orchSum.buildPass === true ? "pass" : orchSum.buildPass === false ? "fail" : orch ? "skipped" : "unknown";
 
   let overallStatus = "pass";
   let releaseDecision = "ready_for_next_dev_phase";

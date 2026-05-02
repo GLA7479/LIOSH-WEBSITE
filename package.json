@@ -26,6 +26,7 @@
     "qa:learning-simulator:pdf-export": "tsx scripts/learning-simulator/run-pdf-export-gate.mjs",
     "qa:learning-simulator:quick": "tsx scripts/learning-simulator/run-orchestrator.mjs quick",
     "qa:learning-simulator:full": "tsx scripts/learning-simulator/run-orchestrator.mjs full",
+    "qa:learning-simulator:release": "tsx scripts/learning-simulator/run-orchestrator.mjs full",
     "qa:learning-simulator": "tsx scripts/learning-simulator/run-orchestrator.mjs full",
     "start": "next start",
     "verify:learning-supabase-env": "node scripts/verify-learning-supabase-env.mjs",
