@@ -54,6 +54,14 @@ import {
   extractDiagnosticMetadataFromQuestion,
   mergeDiagnosticIntoMistakeEntry,
 } from "../../utils/diagnostic-mistake-metadata";
+import { normalizeMistakeEvent } from "../../utils/mistake-event.js";
+import {
+  buildSciencePendingDiagnosticProbe,
+  selectScienceQuestionWithProbe,
+  scienceProbeMatchesSession,
+} from "../../utils/science-diagnostic-probe.js";
+import { applyScienceProbeOutcome } from "../../utils/science-probe-outcome.js";
+import { inferNormalizedTags } from "../../utils/fast-diagnostic-engine/infer-tags.js";
 import {
   finishLearningSession,
   saveLearningAnswer,
@@ -660,6 +668,10 @@ export default function ScienceMaster() {
   const learningSessionIdRef = useRef(null);
   const learningSessionStartPromiseRef = useRef(null);
   const pendingScienceTrackMetaRef = useRef(null);
+  /** Session-local only — prefer next bank row matching diagnostic probe (Phase 3D-A). Never persisted. */
+  const pendingDiagnosticProbeRef = useRef(null);
+  /** Session-local hypothesis ledger after probe answers (Phase 3D-B). Never persisted. */
+  const scienceHypothesisLedgerRef = useRef(null);
   /** Question pool topic id for the question currently being timed (matches localStorage bucket). */
   const scienceTrackingTopicKeyRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
@@ -692,6 +704,7 @@ export default function ScienceMaster() {
       mounted = false;
     };
   }, []);
+
   const [playerAvatar, setPlayerAvatar] = useState(() => {
     if (typeof window === "undefined") return "👤";
     try {
@@ -703,6 +716,12 @@ export default function ScienceMaster() {
   const [playerAvatarImage, setPlayerAvatarImage] = useState(null); // תמונת אווטר מותאמת אישית
   const [showPlayerProfile, setShowPlayerProfile] = useState(false);
   const [practiceFocus, setPracticeFocus] = useState("balanced");
+
+  useEffect(() => {
+    pendingDiagnosticProbeRef.current = null;
+    scienceHypothesisLedgerRef.current = null;
+  }, [grade, level, topic, practiceFocus]);
+
   const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal");
   const [mistakes, setMistakes] = useState([]);
   const [insightRevision, setInsightRevision] = useState(0);
@@ -1488,68 +1507,98 @@ function saveScienceAnswerInParallel({
    * @param {number} [mcqExtra.correctOptionIndex]
    * @param {number|null} [mcqExtra.responseMs]
    * @param {boolean} [mcqExtra.hintUsed]
+   * @returns {Record<string, unknown>|null}
+   */
+  function buildScienceMistakeEntry(question, wrongAnswer, mcqExtra = {}) {
+    if (typeof window === "undefined" || !question) return null;
+    const ts = Date.now();
+    const assignedGrade = question.assignedGrade || question.grades?.[0] || grade;
+    const assignedLevel = question.assignedLevel || question.minLevel || level;
+    const qParams =
+      question.params && typeof question.params === "object" ? question.params : {};
+    const diag = extractDiagnosticMetadataFromQuestion(question, {
+      responseMs: mcqExtra.responseMs,
+      hintUsed: mcqExtra.hintUsed,
+    });
+
+    let entry = {
+      id: question.id,
+      topic: question.topic,
+      topicOrOperation: question.topic,
+      bucketKey: question.topic,
+      grade: assignedGrade,
+      level: assignedLevel,
+      stem: question.stem,
+      correct: question.options?.[question.correctIndex],
+      wrong: wrongAnswer,
+      exerciseText: question.stem || "",
+      questionLabel: question.id != null ? String(question.id) : null,
+      correctAnswer: question.options?.[question.correctIndex],
+      userAnswer: wrongAnswer,
+      isCorrect: false,
+      mode,
+      timestamp: ts,
+      storedAt: ts,
+      params: {
+        uiLevel: level,
+        contentPoolLevel: assignedLevel,
+        gradeKey: assignedGrade,
+        poolFallbackCode: "none",
+        ...qParams,
+      },
+    };
+    entry = mergeDiagnosticIntoMistakeEntry(entry, diag);
+    entry = mergeDiagnosticIntoMistakeEntry(entry, {
+      selectedOptionIndex: mcqExtra.selectedOptionIndex,
+      correctOptionIndex: mcqExtra.correctOptionIndex,
+    });
+    const selIdx = mcqExtra.selectedOptionIndex;
+    if (
+      !entry.distractorFamily &&
+      selIdx != null &&
+      Array.isArray(question.options)
+    ) {
+      const cell = question.options[selIdx];
+      const dfOpt = distractorFamilyFromOptionCell(cell);
+      if (dfOpt) {
+        entry = mergeDiagnosticIntoMistakeEntry(entry, { distractorFamily: dfOpt });
+      }
+    }
+    return entry;
+  }
+
+  /**
+   * @param {object} question
+   * @param {unknown} wrongAnswer
+   * @param {object} [mcqExtra]
    */
   function logScienceMistakeEntry(question, wrongAnswer, mcqExtra = {}) {
-    if (typeof window === "undefined" || !question) return;
+    const entry = buildScienceMistakeEntry(question, wrongAnswer, mcqExtra);
+    if (!entry) return;
     try {
-      const ts = Date.now();
-      const assignedGrade = question.assignedGrade || question.grades?.[0] || grade;
-      const assignedLevel = question.assignedLevel || question.minLevel || level;
-      const qParams =
-        question.params && typeof question.params === "object" ? question.params : {};
-      const diag = extractDiagnosticMetadataFromQuestion(question, {
-        responseMs: mcqExtra.responseMs,
-        hintUsed: mcqExtra.hintUsed,
-      });
-
-      let entry = {
-        id: question.id,
-        topic: question.topic,
-        topicOrOperation: question.topic,
-        bucketKey: question.topic,
-        grade: assignedGrade,
-        level: assignedLevel,
-        stem: question.stem,
-        correct: question.options?.[question.correctIndex],
-        wrong: wrongAnswer,
-        exerciseText: question.stem || "",
-        questionLabel: question.id != null ? String(question.id) : null,
-        correctAnswer: question.options?.[question.correctIndex],
-        userAnswer: wrongAnswer,
-        isCorrect: false,
-        mode,
-        timestamp: ts,
-        storedAt: ts,
-        params: {
-          uiLevel: level,
-          contentPoolLevel: assignedLevel,
-          gradeKey: assignedGrade,
-          poolFallbackCode: "none",
-          ...qParams,
-        },
-      };
-      entry = mergeDiagnosticIntoMistakeEntry(entry, diag);
-      entry = mergeDiagnosticIntoMistakeEntry(entry, {
-        selectedOptionIndex: mcqExtra.selectedOptionIndex,
-        correctOptionIndex: mcqExtra.correctOptionIndex,
-      });
-      const selIdx = mcqExtra.selectedOptionIndex;
-      if (
-        !entry.distractorFamily &&
-        selIdx != null &&
-        Array.isArray(question.options)
-      ) {
-        const cell = question.options[selIdx];
-        const dfOpt = distractorFamilyFromOptionCell(cell);
-        if (dfOpt) {
-          entry = mergeDiagnosticIntoMistakeEntry(entry, { distractorFamily: dfOpt });
-        }
-      }
       const stored = loadScienceMistakesFromStorage();
       stored.push(entry);
       const trimmed = stored.slice(-SCIENCE_MISTAKES_MAX);
       localStorage.setItem(SCIENCE_MISTAKES_KEY, JSON.stringify(trimmed));
       setMistakes(trimmed.slice().reverse());
+
+      try {
+        const normalized = normalizeMistakeEvent(entry, "science");
+        const probe = buildSciencePendingDiagnosticProbe(normalized, {
+          wrongQuestionId:
+            question.id != null ? String(question.id) : undefined,
+          fallbackTopicId: question.topic,
+          fallbackGrade: entry.grade,
+          fallbackLevel: entry.level,
+        });
+        if (probe) {
+          pendingDiagnosticProbeRef.current = probe;
+        } else {
+          pendingDiagnosticProbeRef.current = null;
+        }
+      } catch {
+        pendingDiagnosticProbeRef.current = null;
+      }
     } catch {
       // ignore
     }
@@ -1610,18 +1659,61 @@ function saveScienceAnswerInParallel({
     const recentSet = new Set(intel.recentIds);
     const smartPicking = focusedPracticeMode !== "mistakes";
 
+    const probeAtStart = pendingDiagnosticProbeRef.current;
+
+    /** Phase 3D-B — snapshot for hypothesis ledger when probe-driven row is shown. */
+    let probeMetaForQuestion = null;
+
     let q = dequeueEligibleRetry(retryQueueRef.current, pool, askCounter);
+    const usedRetryDequeue = !!q;
 
     if (!q) {
       const avoidRecent = pool.filter((item) => !recentSet.has(item.id));
       const usedRecentFallback = avoidRecent.length === 0;
       const eligible = usedRecentFallback ? pool : avoidRecent;
 
-      if (smartPicking && !usedRecentFallback) {
-        q = weightedPickQuestions(eligible, intel.topicStats);
+      const fallbackPick = () => {
+        if (smartPicking && !usedRecentFallback) {
+          return weightedPickQuestions(eligible, intel.topicStats);
+        }
+        return randomItem(eligible);
+      };
+
+      const probeOk =
+        probeAtStart &&
+        scienceProbeMatchesSession(probeAtStart, grade, level, topic);
+
+      if (probeOk) {
+        const pr = selectScienceQuestionWithProbe({
+          questions: eligible,
+          pendingProbe: probeAtStart,
+          recentIds: recentSet,
+          currentTopic: topic,
+          fallbackPick,
+          randomFn: Math.random,
+        });
+        q = pr.question;
+        if (pr.usedProbe && probeAtStart) {
+          probeMetaForQuestion = {
+            sourceHypothesisId: probeAtStart.sourceHypothesisId,
+            dominantTag: probeAtStart.dominantTag,
+            suggestedQuestionType: probeAtStart.suggestedQuestionType,
+            diagnosticSkillId: probeAtStart.diagnosticSkillId,
+            topicId: probeAtStart.topicId,
+            probeCreatedAt: probeAtStart.createdAt,
+            probeReason: pr.reason,
+            expectedErrorTags: Array.isArray(q.params?.expectedErrorTags)
+              ? [...q.params.expectedErrorTags]
+              : undefined,
+          };
+        }
       } else {
-        q = randomItem(eligible);
+        q = fallbackPick();
       }
+    }
+
+    if (probeAtStart && !usedRetryDequeue) {
+      pendingDiagnosticProbeRef.current = null;
     }
 
     if (!q) {
@@ -1647,13 +1739,19 @@ function saveScienceAnswerInParallel({
     warnDuplicateMcqOptionsDevOnly(shuffledOptions, q.id);
 
     scienceTrackingTopicKeyRef.current = q.topic;
-    setCurrentQuestion({
+    /** @type {Record<string, unknown>} */
+    const nextQuestionPayload = {
       ...q,
       options: shuffledOptions,
       correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : originalCorrectIndex,
       assignedGrade: grade,
       assignedLevel: getAssignedLevelForQuestion(),
-    });
+    };
+    if (probeMetaForQuestion && !usedRetryDequeue) {
+      nextQuestionPayload._scienceDiagnosticProbeAttempt = true;
+      nextQuestionPayload._scienceProbeMeta = probeMetaForQuestion;
+    }
+    setCurrentQuestion(nextQuestionPayload);
     if (currentQuestion) {
       setPreviousExplanationQuestion(currentQuestion);
     }
@@ -1687,6 +1785,8 @@ function saveScienceAnswerInParallel({
     setPreviousExplanationQuestion(null);
     setShowTheoryHelp(false);
     setLives(3);
+    pendingDiagnosticProbeRef.current = null;
+    scienceHypothesisLedgerRef.current = null;
 
     // איפוס מאגר השאלות
     questionPoolRef.current = [];
@@ -1764,6 +1864,8 @@ function saveScienceAnswerInParallel({
     setErrorExplanation("");
     learningSessionIdRef.current = null;
     learningSessionStartPromiseRef.current = null;
+    pendingDiagnosticProbeRef.current = null;
+    scienceHypothesisLedgerRef.current = null;
     setLives(mode === "challenge" ? 3 : 0);
     if (mode === "challenge") setTimeLeft(25);
     else if (mode === "speed") setTimeLeft(12);
@@ -1835,6 +1937,49 @@ function saveScienceAnswerInParallel({
     solvedCountRef.current += 1;
     // MCQ uses index-based comparison by design
     const isCorrect = idx === currentQuestion.correctIndex;
+
+    if (
+      questionForSave._scienceDiagnosticProbeAttempt === true &&
+      questionForSave._scienceProbeMeta
+    ) {
+      let inferredTags = [];
+      if (!isCorrect) {
+        const wrongEntry = buildScienceMistakeEntry(questionForSave, answerText, {
+          selectedOptionIndex: idx,
+          correctOptionIndex:
+            questionForSave.correctIndex != null
+              ? questionForSave.correctIndex
+              : undefined,
+          responseMs: timeSpentMs,
+          hintUsed: hintUsedForSave,
+        });
+        if (wrongEntry) {
+          const normalizedWrong = normalizeMistakeEvent(wrongEntry, "science");
+          inferredTags = inferNormalizedTags(normalizedWrong, "science");
+        }
+      }
+      scienceHypothesisLedgerRef.current = applyScienceProbeOutcome(
+        scienceHypothesisLedgerRef.current,
+        {
+          isCorrect,
+          inferredTags,
+          probeMeta: questionForSave._scienceProbeMeta,
+          now: Date.now(),
+        }
+      );
+      setCurrentQuestion((prev) => {
+        if (!prev || prev !== questionForSave) return prev;
+        const {
+          _scienceDiagnosticProbeAttempt: _a,
+          _scienceProbeMeta: _b,
+          ...rest
+        } = prev;
+        void _a;
+        void _b;
+        return rest;
+      });
+    }
+
     saveScienceAnswerInParallel({
       question: questionForSave,
       answerIndex: idx,

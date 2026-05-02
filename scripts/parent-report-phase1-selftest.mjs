@@ -822,4 +822,233 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
   );
 }
 
+// Phase 3D-A: science session probe selection helper (no live UI / no parent report changes).
+{
+  const { SCIENCE_QUESTIONS } = await importUtils("../data/science-questions.js");
+  const {
+    buildSciencePendingDiagnosticProbe,
+    selectScienceQuestionWithProbe,
+    scienceProbeMatchesSession,
+    scienceQuestionProbeMatch,
+  } = await importUtils("../utils/science-diagnostic-probe.js");
+  const { normalizeMistakeEvent } = await importUtils("../utils/mistake-event.js");
+
+  const body3 = SCIENCE_QUESTIONS.find((q) => q.id === "body_3");
+  assert.ok(body3?.params?.diagnosticSkillId === "sci_respiration_concept");
+
+  const normalized = normalizeMistakeEvent(
+    {
+      topic: "body",
+      bucketKey: "body",
+      grade: "g3",
+      level: "medium",
+      isCorrect: false,
+      params: body3.params,
+      diagnosticSkillId: body3.params.diagnosticSkillId,
+    },
+    "science"
+  );
+  const probe = buildSciencePendingDiagnosticProbe(normalized, {
+    wrongQuestionId: "body_3",
+    fallbackTopicId: "body",
+    fallbackGrade: "g3",
+    fallbackLevel: "medium",
+  });
+  assert.ok(probe && probe.suggestedQuestionType === "science_concept_minimal_contrast");
+
+  const bodyPool = SCIENCE_QUESTIONS.filter(
+    (q) => q.topic === "body" && q.grades.includes("g3")
+  );
+  assert.ok(bodyPool.some((q) => q.id === "body_3"));
+
+  const picked = selectScienceQuestionWithProbe({
+    questions: bodyPool,
+    pendingProbe: probe,
+    recentIds: new Set(),
+    currentTopic: "body",
+    fallbackPick: () => bodyPool[0],
+    randomFn: () => 0,
+  });
+  assert.ok(picked.usedProbe);
+  assert.equal(picked.question.params.diagnosticSkillId, "sci_respiration_concept");
+
+  const pickedFall = selectScienceQuestionWithProbe({
+    questions: bodyPool,
+    pendingProbe: {
+      subjectId: "science",
+      topicId: probe.topicId,
+      diagnosticSkillId: "__no_such_skill__",
+      suggestedQuestionType: "noop",
+      reasonHe: "",
+      sourceHypothesisId: "noop",
+      expiresAfterQuestions: 1,
+      createdAt: 1,
+      priority: 1,
+      dominantTag: null,
+      probeAttemptIds: [],
+      gradeKey: probe.gradeKey,
+      levelKey: probe.levelKey,
+      patternFamily: null,
+      conceptTag: null,
+    },
+    recentIds: new Set(),
+    currentTopic: "body",
+    fallbackPick: () => bodyPool[0],
+    randomFn: () => 0,
+  });
+  assert.equal(pickedFall.usedProbe, false);
+  assert.equal(pickedFall.reason, "fallback_no_match");
+
+  const twinPool = [
+    {
+      id: "twin_a",
+      topic: "body",
+      params: { diagnosticSkillId: "sci_respiration_concept" },
+    },
+    {
+      id: "twin_b",
+      topic: "body",
+      params: { diagnosticSkillId: "sci_respiration_concept" },
+    },
+  ];
+  const avoidRecent = selectScienceQuestionWithProbe({
+    questions: twinPool,
+    pendingProbe: probe,
+    recentIds: new Set(["twin_a"]),
+    currentTopic: "body",
+    fallbackPick: () => twinPool[0],
+    randomFn: () => 0,
+  });
+  assert.ok(avoidRecent.usedProbe);
+  assert.equal(avoidRecent.question.id, "twin_b");
+
+  assert.equal(
+    scienceProbeMatchesSession(probe, "g3", "medium", "body"),
+    true
+  );
+  assert.equal(scienceProbeMatchesSession(probe, "g1", "medium", "body"), false);
+
+  assert.ok(
+    scienceQuestionProbeMatch(body3, probe).matches &&
+      scienceQuestionProbeMatch(body3, probe).reason === "matched_diagnosticSkillId"
+  );
+
+  const staleProbe = { ...probe, expiresAfterQuestions: 0 };
+  const stalePick = selectScienceQuestionWithProbe({
+    questions: bodyPool,
+    pendingProbe: staleProbe,
+    recentIds: new Set(),
+    currentTopic: "body",
+    fallbackPick: () => bodyPool[0],
+  });
+  assert.equal(stalePick.usedProbe, false);
+  assert.equal(stalePick.reason, "no_active_probe");
+
+  // Mirrors science-master: new wrong with no probe map hint clears a stale pending probe.
+  const minimalNoProbeNorm = normalizeMistakeEvent(
+    {
+      topic: "body",
+      bucketKey: "body",
+      grade: "g3",
+      level: "medium",
+      isCorrect: false,
+    },
+    "science"
+  );
+  assert.equal(buildSciencePendingDiagnosticProbe(minimalNoProbeNorm, {}), null);
+  /** @type {{ current: unknown }} */
+  let pendingRefSim = { current: probe };
+  const incoming = buildSciencePendingDiagnosticProbe(minimalNoProbeNorm, {
+    fallbackTopicId: "body",
+    fallbackGrade: "g3",
+    fallbackLevel: "medium",
+  });
+  if (incoming) pendingRefSim.current = incoming;
+  else pendingRefSim.current = null;
+  assert.equal(pendingRefSim.current, null);
+  const postClearPick = selectScienceQuestionWithProbe({
+    questions: bodyPool,
+    pendingProbe: pendingRefSim.current,
+    recentIds: new Set(),
+    currentTopic: "body",
+    fallbackPick: () => bodyPool[0],
+    randomFn: () => 0,
+  });
+  assert.equal(postClearPick.usedProbe, false);
+  assert.equal(postClearPick.reason, "no_active_probe");
+  assert.equal(postClearPick.question, bodyPool[0]);
+}
+
+// Phase 3D-B: science probe outcome → hypothesis ledger (session-only; pure helpers).
+{
+  const {
+    buildScienceHypothesisKey,
+    applyScienceProbeOutcome,
+  } = await importUtils("../utils/science-probe-outcome.js");
+
+  const baseMeta = {
+    sourceHypothesisId: "fd_probe_x",
+    dominantTag: "concept_confusion",
+    suggestedQuestionType: "science_concept_minimal_contrast",
+    diagnosticSkillId: "sci_respiration_concept",
+    topicId: "body",
+    probeCreatedAt: 1,
+    probeReason: "matched_diagnosticSkillId",
+    expectedErrorTags: ["concept_confusion", "cause_effect_gap"],
+  };
+
+  assert.ok(buildScienceHypothesisKey(baseMeta).includes("body"));
+  assert.ok(buildScienceHypothesisKey(baseMeta).includes("sci_respiration_concept"));
+
+  const weakened = applyScienceProbeOutcome(null, {
+    isCorrect: true,
+    inferredTags: [],
+    probeMeta: baseMeta,
+    now: 100,
+  });
+  assert.equal(weakened?.status, "weakened");
+  assert.equal(weakened?.lastOutcome, "correct_probe");
+  assert.equal(weakened?.weakenCount, 1);
+
+  const supported = applyScienceProbeOutcome(null, {
+    isCorrect: false,
+    inferredTags: ["concept_confusion", "fact_recall_gap"],
+    probeMeta: baseMeta,
+    now: 200,
+  });
+  assert.equal(supported?.status, "supported");
+  assert.equal(supported?.lastOutcome, "wrong_matching_tag");
+  assert.equal(supported?.supportCount, 1);
+
+  const uncertain = applyScienceProbeOutcome(null, {
+    isCorrect: false,
+    inferredTags: ["map_reading_gap"],
+    probeMeta: { ...baseMeta, expectedErrorTags: undefined },
+    now: 300,
+  });
+  assert.equal(uncertain?.status, "uncertain");
+  assert.equal(uncertain?.lastOutcome, "wrong_unrelated");
+
+  const unchanged = applyScienceProbeOutcome(supported, {
+    isCorrect: false,
+    inferredTags: [],
+    probeMeta: null,
+    now: 400,
+  });
+  assert.deepEqual(unchanged, supported);
+
+  const otherKeyMeta = { ...baseMeta, diagnosticSkillId: "sci_other" };
+  const replaced = applyScienceProbeOutcome(supported, {
+    isCorrect: true,
+    inferredTags: [],
+    probeMeta: otherKeyMeta,
+    now: 500,
+  });
+  assert.equal(replaced?.hypothesisKey, buildScienceHypothesisKey(otherKeyMeta));
+  assert.equal(replaced?.weakenCount, 1);
+  assert.notEqual(replaced?.hypothesisKey, supported?.hypothesisKey);
+
+  // Retry dequeue does not attach meta in science-master (integration rule); helpers stay pure above.
+}
+
 console.log("parent-report phase1 selftest: OK");
