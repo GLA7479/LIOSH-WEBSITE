@@ -1,0 +1,139 @@
+{
+  "scenarioId": "weak_math_fractions_g5_7d",
+  "profileId": "p_weak_math_fractions",
+  "generator": "learning-simulator-behavior-phase5-v1",
+  "storagePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\weak_math_fractions_g5_7d.storage.json",
+  "metaPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\weak_math_fractions_g5_7d.meta.json",
+  "reportPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\reports\\per-student\\weak_math_fractions_g5_7d.report.json",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 18,
+      "questionTotal": 290,
+      "correctTotal": 101,
+      "mistakeEventCount": 123,
+      "subjectsTouched": [
+        "math"
+      ],
+      "overallAccuracyPct": 34.8
+    },
+    "subjectMetrics": {
+      "math": {
+        "totalQ": 290,
+        "correctQ": 101,
+        "accuracyPct": 34.8
+      }
+    },
+    "topicMetrics": {
+      "math:fractions": {
+        "totalQ": 290,
+        "correctQ": 101,
+        "subject": "math",
+        "topic": "fractions",
+        "accuracyPct": 34.8
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.3555796055796056,
+      "lateMean": 0.34335721468074404,
+      "delta": -0.012222390898861568,
+      "sessionSamples": 18
+    },
+    "volatility": {
+      "stdev": 0.027999214165206884,
+      "n": 18,
+      "meanAccuracy": 0.34826180536964846
+    },
+    "reportSignals": {
+      "totalQuestions": 290,
+      "overallAccuracy": 35,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 290,
+      "contractPrimarySubjectId": "math",
+      "topicBucketKeys": [
+        "fractions"
+      ],
+      "diagnosedCount": 1,
+      "unitCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 290,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": false,
+      "diagnosisCoverageRatio": 1
+    },
+    "sessionRowCount": 18
+  },
+  "expectedBehaviorNotes": {
+    "topWeaknessExpected": [
+      "fractions",
+      "שברים"
+    ],
+    "mustNotMention": [
+      "ביטחון מלא ללא ראיות"
+    ]
+  },
+  "assertions": [
+    {
+      "assertionId": "fractions_topic_has_volume",
+      "pass": true,
+      "expected": {
+        "minTopicQuestions": 10
+      },
+      "actual": {
+        "totalQ": 290,
+        "accuracyPct": 34.8
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "fractions_topic_weak_among_subject",
+      "pass": true,
+      "expected": {
+        "maxWeakRank": 1
+      },
+      "actual": {
+        "rank": 1,
+        "orderedTopicsByAccuracy": [
+          {
+            "t": "fractions",
+            "acc": 34.8,
+            "q": 290
+          }
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "fractions_report_topic_bucket_alignment",
+      "pass": true,
+      "expected": {
+        "topicBucketKeysIncludesTarget": "fractions"
+      },
+      "actual": {
+        "topicBucketKeys": [
+          "fractions"
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "secondary": true
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

@@ -1,0 +1,261 @@
+{
+  "generatedAt": "2026-05-02T20:25:17.061Z",
+  "generator": "learning-simulator-behavior-phase5-v1",
+  "counts": {
+    "scenarios": 10,
+    "scenariosPassed": 10,
+    "totalAssertions": 32,
+    "assertionsPassed": 32
+  },
+  "perScenario": [
+    {
+      "scenarioId": "strong_all_subjects_g3_7d",
+      "profileId": "p_strong_all_subjects",
+      "pass": true,
+      "assertionsTotal": 7,
+      "assertionsPassed": 7,
+      "failedAssertions": [],
+      "oracleSummary": {
+        "questionTotal": 642,
+        "overallAccuracyPct": 91.4,
+        "trendDirection": "flat",
+        "trendDelta": -0.0002654822203691509,
+        "sessionSamples": 42
+      },
+      "failureCauseSummary": {
+        "failedCount": 0,
+        "counts": {
+          "simulator_data": 0,
+          "behavior_oracle_threshold": 0,
+          "engine_report": 0,
+          "unknown": 0
+        },
+        "dominantLikelyCause": "none"
+      }
+    },
+    {
+      "scenarioId": "thin_data_g3_1d",
+      "profileId": "p_thin_data",
+      "pass": true,
+      "assertionsTotal": 3,
+      "assertionsPassed": 3,
+      "failedAssertions": [],
+      "oracleSummary": {
+        "questionTotal": 13,
+        "overallAccuracyPct": 69.2,
+        "trendDirection": "insufficient",
+        "sessionSamples": 2
+      },
+      "failureCauseSummary": {
+        "failedCount": 0,
+        "counts": {
+          "simulator_data": 0,
+          "behavior_oracle_threshold": 0,
+          "engine_report": 0,
+          "unknown": 0
+        },
+        "dominantLikelyCause": "none"
+      }
+    },
+    {
+      "scenarioId": "improving_student_g4_30d",
+      "profileId": "p_improving_student",
+      "pass": true,
+      "assertionsTotal": 2,
+      "assertionsPassed": 2,
+      "failedAssertions": [],
+      "oracleSummary": {
+        "questionTotal": 771,
+        "overallAccuracyPct": 67.6,
+        "trendDirection": "up",
+        "trendDelta": 0.2072866503981058,
+        "sessionSamples": 48
+      },
+      "failureCauseSummary": {
+        "failedCount": 0,
+        "counts": {
+          "simulator_data": 0,
+          "behavior_oracle_threshold": 0,
+          "engine_report": 0,
+          "unknown": 0
+        },
+        "dominantLikelyCause": "none"
+      }
+    },
+    {
+      "scenarioId": "declining_student_g4_30d",
+      "profileId": "p_declining_student",
+      "pass": true,
+      "assertionsTotal": 2,
+      "assertionsPassed": 2,
+      "failedAssertions": [],
+      "oracleSummary": {
+        "questionTotal": 669,
+        "overallAccuracyPct": 68.6,
+        "trendDirection": "down",
+        "trendDelta": -0.2764774587297809,
+        "sessionSamples": 44
+      },
+      "failureCauseSummary": {
+        "failedCount": 0,
+        "counts": {
+          "simulator_data": 0,
+          "behavior_oracle_threshold": 0,
+          "engine_report": 0,
+          "unknown": 0
+        },
+        "dominantLikelyCause": "none"
+      }
+    },
+    {
+      "scenarioId": "weak_math_fractions_g5_7d",
+      "profileId": "p_weak_math_fractions",
+      "pass": true,
+      "assertionsTotal": 3,
+      "assertionsPassed": 3,
+      "failedAssertions": [],
+      "oracleSummary": {
+        "questionTotal": 290,
+        "overallAccuracyPct": 34.8,
+        "trendDirection": "flat",
+        "trendDelta": -0.012222390898861568,
+        "sessionSamples": 18
+      },
+      "failureCauseSummary": {
+        "failedCount": 0,
+        "counts": {
+          "simulator_data": 0,
+          "behavior_oracle_threshold": 0,
+          "engine_report": 0,
+          "unknown": 0
+        },
+        "dominantLikelyCause": "none"
+      }
+    },
+    {
+      "scenarioId": "weak_hebrew_comprehension_g3_7d",
+      "profileId": "p_weak_hebrew_comprehension",
+      "pass": true,
+      "assertionsTotal": 3,
+      "assertionsPassed": 3,
+      "failedAssertions": [],
+      "oracleSummary": {
+        "questionTotal": 237,
+        "overallAccuracyPct": 37.6,
+        "trendDirection": "flat",
+        "trendDelta": -0.005639097744360944,
+        "sessionSamples": 15
+      },
+      "failureCauseSummary": {
+        "failedCount": 0,
+        "counts": {
+          "simulator_data": 0,
+          "behavior_oracle_threshold": 0,
+          "engine_report": 0,
+          "unknown": 0
+        },
+        "dominantLikelyCause": "none"
+      }
+    },
+    {
+      "scenarioId": "weak_english_grammar_g4_7d",
+      "profileId": "p_weak_english_grammar",
+      "pass": true,
+      "assertionsTotal": 3,
+      "assertionsPassed": 3,
+      "failedAssertions": [],
+      "oracleSummary": {
+        "questionTotal": 274,
+        "overallAccuracyPct": 41.2,
+        "trendDirection": "flat",
+        "trendDelta": -0.007078881014639493,
+        "sessionSamples": 16
+      },
+      "failureCauseSummary": {
+        "failedCount": 0,
+        "counts": {
+          "simulator_data": 0,
+          "behavior_oracle_threshold": 0,
+          "engine_report": 0,
+          "unknown": 0
+        },
+        "dominantLikelyCause": "none"
+      }
+    },
+    {
+      "scenarioId": "weak_science_cause_effect_g5_7d",
+      "profileId": "p_weak_science_experiments",
+      "pass": true,
+      "assertionsTotal": 3,
+      "assertionsPassed": 3,
+      "failedAssertions": [],
+      "oracleSummary": {
+        "questionTotal": 235,
+        "overallAccuracyPct": 36.6,
+        "trendDirection": "flat",
+        "trendDelta": -0.017735042735042728,
+        "sessionSamples": 14
+      },
+      "failureCauseSummary": {
+        "failedCount": 0,
+        "counts": {
+          "simulator_data": 0,
+          "behavior_oracle_threshold": 0,
+          "engine_report": 0,
+          "unknown": 0
+        },
+        "dominantLikelyCause": "none"
+      }
+    },
+    {
+      "scenarioId": "weak_geometry_area_g5_7d",
+      "profileId": "p_weak_geometry_area",
+      "pass": true,
+      "assertionsTotal": 3,
+      "assertionsPassed": 3,
+      "failedAssertions": [],
+      "oracleSummary": {
+        "questionTotal": 210,
+        "overallAccuracyPct": 40,
+        "trendDirection": "flat",
+        "trendDelta": 0.01265130294542055,
+        "sessionSamples": 14
+      },
+      "failureCauseSummary": {
+        "failedCount": 0,
+        "counts": {
+          "simulator_data": 0,
+          "behavior_oracle_threshold": 0,
+          "engine_report": 0,
+          "unknown": 0
+        },
+        "dominantLikelyCause": "none"
+      }
+    },
+    {
+      "scenarioId": "weak_moledet_geography_maps_g4_7d",
+      "profileId": "p_weak_moledet_maps",
+      "pass": true,
+      "assertionsTotal": 3,
+      "assertionsPassed": 3,
+      "failedAssertions": [],
+      "oracleSummary": {
+        "questionTotal": 182,
+        "overallAccuracyPct": 36.8,
+        "trendDirection": "down",
+        "trendDelta": -0.045418552036199156,
+        "sessionSamples": 12
+      },
+      "failureCauseSummary": {
+        "failedCount": 0,
+        "counts": {
+          "simulator_data": 0,
+          "behavior_oracle_threshold": 0,
+          "engine_report": 0,
+          "unknown": 0
+        },
+        "dominantLikelyCause": "none"
+      }
+    }
+  ]
+}

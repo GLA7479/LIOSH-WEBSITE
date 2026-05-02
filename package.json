@@ -10,6 +10,7 @@
     "qa:learning-simulator:aggregate": "tsx scripts/learning-simulator/run-aggregate.mjs",
     "qa:learning-simulator:reports": "tsx scripts/learning-simulator/run-report-assertions.mjs",
     "qa:learning-simulator:questions": "tsx scripts/learning-simulator/run-question-integrity.mjs",
+    "qa:learning-simulator:behavior": "tsx scripts/learning-simulator/run-behavior-checks.mjs",
     "start": "next start",
     "verify:learning-supabase-env": "node scripts/verify-learning-supabase-env.mjs",
     "verify:learning-rls": "node scripts/verify-learning-rls.mjs",

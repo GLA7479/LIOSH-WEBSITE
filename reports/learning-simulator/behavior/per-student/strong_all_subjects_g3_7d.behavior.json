@@ -1,0 +1,402 @@
+{
+  "scenarioId": "strong_all_subjects_g3_7d",
+  "profileId": "p_strong_all_subjects",
+  "generator": "learning-simulator-behavior-phase5-v1",
+  "storagePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\strong_all_subjects_g3_7d.storage.json",
+  "metaPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\strong_all_subjects_g3_7d.meta.json",
+  "reportPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 42,
+      "questionTotal": 642,
+      "correctTotal": 587,
+      "mistakeEventCount": 42,
+      "subjectsTouched": [
+        "hebrew",
+        "english",
+        "math",
+        "geometry",
+        "moledet_geography",
+        "science"
+      ],
+      "overallAccuracyPct": 91.4
+    },
+    "subjectMetrics": {
+      "math": {
+        "totalQ": 121,
+        "correctQ": 110,
+        "accuracyPct": 90.9
+      },
+      "geometry": {
+        "totalQ": 154,
+        "correctQ": 141,
+        "accuracyPct": 91.6
+      },
+      "english": {
+        "totalQ": 95,
+        "correctQ": 87,
+        "accuracyPct": 91.6
+      },
+      "science": {
+        "totalQ": 31,
+        "correctQ": 29,
+        "accuracyPct": 93.5
+      },
+      "hebrew": {
+        "totalQ": 116,
+        "correctQ": 106,
+        "accuracyPct": 91.4
+      },
+      "moledet_geography": {
+        "totalQ": 125,
+        "correctQ": 114,
+        "accuracyPct": 91.2
+      }
+    },
+    "topicMetrics": {
+      "math:compare": {
+        "totalQ": 39,
+        "correctQ": 35,
+        "subject": "math",
+        "topic": "compare",
+        "accuracyPct": 89.7
+      },
+      "math:multiplication": {
+        "totalQ": 38,
+        "correctQ": 34,
+        "subject": "math",
+        "topic": "multiplication",
+        "accuracyPct": 89.5
+      },
+      "math:word_problems": {
+        "totalQ": 12,
+        "correctQ": 11,
+        "subject": "math",
+        "topic": "word_problems",
+        "accuracyPct": 91.7
+      },
+      "math:decimals": {
+        "totalQ": 16,
+        "correctQ": 15,
+        "subject": "math",
+        "topic": "decimals",
+        "accuracyPct": 93.8
+      },
+      "math:addition": {
+        "totalQ": 16,
+        "correctQ": 15,
+        "subject": "math",
+        "topic": "addition",
+        "accuracyPct": 93.8
+      },
+      "geometry:angles": {
+        "totalQ": 56,
+        "correctQ": 51,
+        "subject": "geometry",
+        "topic": "angles",
+        "accuracyPct": 91.1
+      },
+      "geometry:perimeter": {
+        "totalQ": 29,
+        "correctQ": 27,
+        "subject": "geometry",
+        "topic": "perimeter",
+        "accuracyPct": 93.1
+      },
+      "geometry:parallel_perpendicular": {
+        "totalQ": 14,
+        "correctQ": 13,
+        "subject": "geometry",
+        "topic": "parallel_perpendicular",
+        "accuracyPct": 92.9
+      },
+      "geometry:area": {
+        "totalQ": 55,
+        "correctQ": 50,
+        "subject": "geometry",
+        "topic": "area",
+        "accuracyPct": 90.9
+      },
+      "english:vocabulary": {
+        "totalQ": 30,
+        "correctQ": 28,
+        "subject": "english",
+        "topic": "vocabulary",
+        "accuracyPct": 93.3
+      },
+      "english:writing": {
+        "totalQ": 19,
+        "correctQ": 17,
+        "subject": "english",
+        "topic": "writing",
+        "accuracyPct": 89.5
+      },
+      "english:sentences": {
+        "totalQ": 26,
+        "correctQ": 24,
+        "subject": "english",
+        "topic": "sentences",
+        "accuracyPct": 92.3
+      },
+      "english:grammar": {
+        "totalQ": 20,
+        "correctQ": 18,
+        "subject": "english",
+        "topic": "grammar",
+        "accuracyPct": 90
+      },
+      "science:experiments": {
+        "totalQ": 31,
+        "correctQ": 29,
+        "subject": "science",
+        "topic": "experiments",
+        "accuracyPct": 93.5
+      },
+      "hebrew:speaking": {
+        "totalQ": 12,
+        "correctQ": 11,
+        "subject": "hebrew",
+        "topic": "speaking",
+        "accuracyPct": 91.7
+      },
+      "hebrew:mixed": {
+        "totalQ": 51,
+        "correctQ": 46,
+        "subject": "hebrew",
+        "topic": "mixed",
+        "accuracyPct": 90.2
+      },
+      "hebrew:reading": {
+        "totalQ": 39,
+        "correctQ": 36,
+        "subject": "hebrew",
+        "topic": "reading",
+        "accuracyPct": 92.3
+      },
+      "hebrew:vocabulary": {
+        "totalQ": 14,
+        "correctQ": 13,
+        "subject": "hebrew",
+        "topic": "vocabulary",
+        "accuracyPct": 92.9
+      },
+      "moledet_geography:values": {
+        "totalQ": 15,
+        "correctQ": 14,
+        "subject": "moledet_geography",
+        "topic": "values",
+        "accuracyPct": 93.3
+      },
+      "moledet_geography:community": {
+        "totalQ": 32,
+        "correctQ": 29,
+        "subject": "moledet_geography",
+        "topic": "community",
+        "accuracyPct": 90.6
+      },
+      "moledet_geography:geography": {
+        "totalQ": 10,
+        "correctQ": 9,
+        "subject": "moledet_geography",
+        "topic": "geography",
+        "accuracyPct": 90
+      },
+      "moledet_geography:homeland": {
+        "totalQ": 25,
+        "correctQ": 23,
+        "subject": "moledet_geography",
+        "topic": "homeland",
+        "accuracyPct": 92
+      },
+      "moledet_geography:citizenship": {
+        "totalQ": 29,
+        "correctQ": 26,
+        "subject": "moledet_geography",
+        "topic": "citizenship",
+        "accuracyPct": 89.7
+      },
+      "moledet_geography:mixed": {
+        "totalQ": 14,
+        "correctQ": 13,
+        "subject": "moledet_geography",
+        "topic": "mixed",
+        "accuracyPct": 92.9
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.916717456520088,
+      "lateMean": 0.9164519742997188,
+      "delta": -0.0002654822203691509,
+      "sessionSamples": 42
+    },
+    "volatility": {
+      "stdev": 0.016800002311687195,
+      "n": 42,
+      "meanAccuracy": 0.9154738675415366
+    },
+    "reportSignals": {
+      "totalQuestions": 642,
+      "overallAccuracy": 91,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 154,
+      "contractPrimarySubjectId": "geometry",
+      "topicBucketKeys": [
+        "compare",
+        "multiplication",
+        "word_problems",
+        "decimals",
+        "addition",
+        "angles",
+        "perimeter",
+        "parallel_perpendicular",
+        "area",
+        "vocabulary",
+        "writing",
+        "sentences",
+        "grammar",
+        "experiments",
+        "speaking",
+        "mixed",
+        "reading",
+        "vocabulary",
+        "values",
+        "community",
+        "geography",
+        "homeland",
+        "citizenship",
+        "mixed"
+      ],
+      "diagnosedCount": 0,
+      "unitCount": 24,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 642,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": true,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 0
+    },
+    "sessionRowCount": 42
+  },
+  "expectedBehaviorNotes": {
+    "evidenceLevelExpected": [
+      "medium",
+      "high"
+    ],
+    "confidenceShouldBeCautious": false,
+    "noFalseStrongConclusion": true,
+    "noContradiction": true
+  },
+  "assertions": [
+    {
+      "assertionId": "evidence_volume_high",
+      "pass": true,
+      "expected": {
+        "minQuestions": 320
+      },
+      "actual": {
+        "questionTotal": 642
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "hint": "Aggregate should simulate rich multi-subject volume."
+      }
+    },
+    {
+      "assertionId": "overall_accuracy_high",
+      "pass": true,
+      "expected": {
+        "minPct": 72
+      },
+      "actual": {
+        "overallAccuracyPct": 91.4
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "per_subject_accuracy_not_collapsed",
+      "pass": true,
+      "expected": {
+        "minPctPerSubjectWithData": 58
+      },
+      "actual": {
+        "math": 90.9,
+        "geometry": 91.6,
+        "science": 93.5,
+        "english": 91.6,
+        "hebrew": 91.4,
+        "moledet_geography": 91.2
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "storage_trend_not_strongly_down",
+      "pass": true,
+      "expected": {
+        "forbidStrongDecline": true
+      },
+      "actual": {
+        "direction": "flat",
+        "delta": -0.0002654822203691509,
+        "n": 42
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "report_total_questions_aligns_meta",
+      "pass": true,
+      "expected": {
+        "maxAbsDelta": 5
+      },
+      "actual": {
+        "metaQuestionTotal": 642,
+        "reportTotalQuestions": 642
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "report_overall_accuracy_bracket_matches_meta",
+      "pass": true,
+      "expected": {
+        "maxAbsDeltaPct": 12
+      },
+      "actual": {
+        "metaOverall": 91.4,
+        "reportOverall": 91
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

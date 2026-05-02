@@ -1,0 +1,127 @@
+{
+  "scenarioId": "thin_data_g3_1d",
+  "profileId": "p_thin_data",
+  "generator": "learning-simulator-behavior-phase5-v1",
+  "storagePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\thin_data_g3_1d.storage.json",
+  "metaPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\thin_data_g3_1d.meta.json",
+  "reportPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\reports\\per-student\\thin_data_g3_1d.report.json",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 2,
+      "questionTotal": 13,
+      "correctTotal": 9,
+      "mistakeEventCount": 2,
+      "subjectsTouched": [
+        "math"
+      ],
+      "overallAccuracyPct": 69.2
+    },
+    "subjectMetrics": {
+      "math": {
+        "totalQ": 13,
+        "correctQ": 9,
+        "accuracyPct": 69.2
+      }
+    },
+    "topicMetrics": {
+      "math:addition": {
+        "totalQ": 13,
+        "correctQ": 9,
+        "subject": "math",
+        "topic": "addition",
+        "accuracyPct": 69.2
+      }
+    },
+    "trendOracle": {
+      "direction": "insufficient",
+      "earlyMean": null,
+      "lateMean": null,
+      "sessionSamples": 2
+    },
+    "volatility": {
+      "stdev": 0.023809523809523836,
+      "n": 2,
+      "meanAccuracy": 0.6904761904761905
+    },
+    "reportSignals": {
+      "totalQuestions": 13,
+      "overallAccuracy": 69,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 13,
+      "contractPrimarySubjectId": "math",
+      "topicBucketKeys": [
+        "addition"
+      ],
+      "diagnosedCount": 0,
+      "unitCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 13,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": false,
+      "diagnosisCoverageRatio": 0
+    },
+    "sessionRowCount": 2
+  },
+  "expectedBehaviorNotes": {
+    "confidenceShouldBeCautious": true,
+    "evidenceLevelExpected": [
+      "thin",
+      "insufficient"
+    ],
+    "noFalseStrongConclusion": true
+  },
+  "assertions": [
+    {
+      "assertionId": "evidence_volume_low",
+      "pass": true,
+      "expected": {
+        "maxQuestions": 45
+      },
+      "actual": {
+        "questionTotal": 13
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "thin_downgrade_or_low_evidence_contract",
+      "pass": true,
+      "expected": {
+        "thinDowngradeOrLowEvidence": true
+      },
+      "actual": {
+        "contractTopThinDowngraded": true,
+        "contractTopEvidenceQuestionCount": 13
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "report_questions_match_meta_thin",
+      "pass": true,
+      "expected": {
+        "maxAbsDelta": 3
+      },
+      "actual": {
+        "metaQuestionTotal": 13,
+        "reportTotalQuestions": 13
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

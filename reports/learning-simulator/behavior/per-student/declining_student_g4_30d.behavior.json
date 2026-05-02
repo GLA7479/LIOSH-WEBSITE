@@ -1,0 +1,275 @@
+{
+  "scenarioId": "declining_student_g4_30d",
+  "profileId": "p_declining_student",
+  "generator": "learning-simulator-behavior-phase5-v1",
+  "storagePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\declining_student_g4_30d.storage.json",
+  "metaPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\declining_student_g4_30d.meta.json",
+  "reportPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\reports\\per-student\\declining_student_g4_30d.report.json",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 44,
+      "questionTotal": 669,
+      "correctTotal": 459,
+      "mistakeEventCount": 131,
+      "subjectsTouched": [
+        "math",
+        "geometry",
+        "hebrew"
+      ],
+      "overallAccuracyPct": 68.6
+    },
+    "subjectMetrics": {
+      "math": {
+        "totalQ": 392,
+        "correctQ": 261,
+        "accuracyPct": 66.6
+      },
+      "geometry": {
+        "totalQ": 134,
+        "correctQ": 99,
+        "accuracyPct": 73.9
+      },
+      "hebrew": {
+        "totalQ": 143,
+        "correctQ": 99,
+        "accuracyPct": 69.2
+      }
+    },
+    "topicMetrics": {
+      "math:multiplication": {
+        "totalQ": 130,
+        "correctQ": 94,
+        "subject": "math",
+        "topic": "multiplication",
+        "accuracyPct": 72.3
+      },
+      "math:mixed": {
+        "totalQ": 45,
+        "correctQ": 29,
+        "subject": "math",
+        "topic": "mixed",
+        "accuracyPct": 64.4
+      },
+      "math:divisibility": {
+        "totalQ": 57,
+        "correctQ": 35,
+        "subject": "math",
+        "topic": "divisibility",
+        "accuracyPct": 61.4
+      },
+      "math:estimation": {
+        "totalQ": 37,
+        "correctQ": 26,
+        "subject": "math",
+        "topic": "estimation",
+        "accuracyPct": 70.3
+      },
+      "math:rounding": {
+        "totalQ": 11,
+        "correctQ": 8,
+        "subject": "math",
+        "topic": "rounding",
+        "accuracyPct": 72.7
+      },
+      "math:factors_multiples": {
+        "totalQ": 37,
+        "correctQ": 25,
+        "subject": "math",
+        "topic": "factors_multiples",
+        "accuracyPct": 67.6
+      },
+      "math:powers": {
+        "totalQ": 16,
+        "correctQ": 11,
+        "subject": "math",
+        "topic": "powers",
+        "accuracyPct": 68.8
+      },
+      "math:number_sense": {
+        "totalQ": 12,
+        "correctQ": 7,
+        "subject": "math",
+        "topic": "number_sense",
+        "accuracyPct": 58.3
+      },
+      "math:division": {
+        "totalQ": 20,
+        "correctQ": 12,
+        "subject": "math",
+        "topic": "division",
+        "accuracyPct": 60
+      },
+      "math:decimals": {
+        "totalQ": 16,
+        "correctQ": 9,
+        "subject": "math",
+        "topic": "decimals",
+        "accuracyPct": 56.3
+      },
+      "math:division_with_remainder": {
+        "totalQ": 11,
+        "correctQ": 5,
+        "subject": "math",
+        "topic": "division_with_remainder",
+        "accuracyPct": 45.5
+      },
+      "geometry:area": {
+        "totalQ": 84,
+        "correctQ": 67,
+        "subject": "geometry",
+        "topic": "area",
+        "accuracyPct": 79.8
+      },
+      "geometry:symmetry": {
+        "totalQ": 38,
+        "correctQ": 25,
+        "subject": "geometry",
+        "topic": "symmetry",
+        "accuracyPct": 65.8
+      },
+      "geometry:shapes_basic": {
+        "totalQ": 12,
+        "correctQ": 7,
+        "subject": "geometry",
+        "topic": "shapes_basic",
+        "accuracyPct": 58.3
+      },
+      "hebrew:mixed": {
+        "totalQ": 44,
+        "correctQ": 32,
+        "subject": "hebrew",
+        "topic": "mixed",
+        "accuracyPct": 72.7
+      },
+      "hebrew:vocabulary": {
+        "totalQ": 29,
+        "correctQ": 20,
+        "subject": "hebrew",
+        "topic": "vocabulary",
+        "accuracyPct": 69
+      },
+      "hebrew:speaking": {
+        "totalQ": 14,
+        "correctQ": 11,
+        "subject": "hebrew",
+        "topic": "speaking",
+        "accuracyPct": 78.6
+      },
+      "hebrew:grammar": {
+        "totalQ": 40,
+        "correctQ": 27,
+        "subject": "hebrew",
+        "topic": "grammar",
+        "accuracyPct": 67.5
+      },
+      "hebrew:comprehension": {
+        "totalQ": 16,
+        "correctQ": 9,
+        "subject": "hebrew",
+        "topic": "comprehension",
+        "accuracyPct": 56.3
+      }
+    },
+    "trendOracle": {
+      "direction": "down",
+      "earlyMean": 0.8234160395847704,
+      "lateMean": 0.5469385808549895,
+      "delta": -0.2764774587297809,
+      "sessionSamples": 44
+    },
+    "volatility": {
+      "stdev": 0.12356190070208742,
+      "n": 44,
+      "meanAccuracy": 0.6820233102107576
+    },
+    "reportSignals": {
+      "totalQuestions": 669,
+      "overallAccuracy": 69,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 130,
+      "contractPrimarySubjectId": "math",
+      "topicBucketKeys": [
+        "multiplication",
+        "mixed",
+        "divisibility",
+        "estimation",
+        "rounding",
+        "factors_multiples",
+        "powers",
+        "number_sense",
+        "division",
+        "decimals",
+        "division_with_remainder",
+        "area",
+        "symmetry",
+        "shapes_basic",
+        "mixed",
+        "vocabulary",
+        "speaking",
+        "grammar",
+        "comprehension"
+      ],
+      "diagnosedCount": 13,
+      "unitCount": 19,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 669,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 0.684
+    },
+    "sessionRowCount": 44
+  },
+  "expectedBehaviorNotes": {
+    "trendExpected": [
+      "down"
+    ],
+    "noFalseWeakConclusion": false,
+    "noContradiction": true
+  },
+  "assertions": [
+    {
+      "assertionId": "storage_trend_oracle_down",
+      "pass": true,
+      "expected": {
+        "direction": "down"
+      },
+      "actual": {
+        "direction": "down",
+        "delta": -0.2764774587297809,
+        "earlyMean": 0.8234160395847704,
+        "lateMean": 0.5469385808549895,
+        "n": 44
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

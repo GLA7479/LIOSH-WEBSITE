@@ -1,0 +1,300 @@
+{
+  "scenarioId": "improving_student_g4_30d",
+  "profileId": "p_improving_student",
+  "generator": "learning-simulator-behavior-phase5-v1",
+  "storagePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\improving_student_g4_30d.storage.json",
+  "metaPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\improving_student_g4_30d.meta.json",
+  "reportPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\reports\\per-student\\improving_student_g4_30d.report.json",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 48,
+      "questionTotal": 771,
+      "correctTotal": 521,
+      "mistakeEventCount": 157,
+      "subjectsTouched": [
+        "math",
+        "science",
+        "english"
+      ],
+      "overallAccuracyPct": 67.6
+    },
+    "subjectMetrics": {
+      "math": {
+        "totalQ": 500,
+        "correctQ": 344,
+        "accuracyPct": 68.8
+      },
+      "english": {
+        "totalQ": 113,
+        "correctQ": 78,
+        "accuracyPct": 69
+      },
+      "science": {
+        "totalQ": 158,
+        "correctQ": 99,
+        "accuracyPct": 62.7
+      }
+    },
+    "topicMetrics": {
+      "math:fractions": {
+        "totalQ": 185,
+        "correctQ": 128,
+        "subject": "math",
+        "topic": "fractions",
+        "accuracyPct": 69.2
+      },
+      "math:decimals": {
+        "totalQ": 45,
+        "correctQ": 28,
+        "subject": "math",
+        "topic": "decimals",
+        "accuracyPct": 62.2
+      },
+      "math:powers": {
+        "totalQ": 19,
+        "correctQ": 11,
+        "subject": "math",
+        "topic": "powers",
+        "accuracyPct": 57.9
+      },
+      "math:addition": {
+        "totalQ": 36,
+        "correctQ": 23,
+        "subject": "math",
+        "topic": "addition",
+        "accuracyPct": 63.9
+      },
+      "math:zero_one_properties": {
+        "totalQ": 52,
+        "correctQ": 33,
+        "subject": "math",
+        "topic": "zero_one_properties",
+        "accuracyPct": 63.5
+      },
+      "math:rounding": {
+        "totalQ": 44,
+        "correctQ": 32,
+        "subject": "math",
+        "topic": "rounding",
+        "accuracyPct": 72.7
+      },
+      "math:division_with_remainder": {
+        "totalQ": 24,
+        "correctQ": 18,
+        "subject": "math",
+        "topic": "division_with_remainder",
+        "accuracyPct": 75
+      },
+      "math:divisibility": {
+        "totalQ": 22,
+        "correctQ": 15,
+        "subject": "math",
+        "topic": "divisibility",
+        "accuracyPct": 68.2
+      },
+      "math:division": {
+        "totalQ": 14,
+        "correctQ": 10,
+        "subject": "math",
+        "topic": "division",
+        "accuracyPct": 71.4
+      },
+      "math:estimation": {
+        "totalQ": 20,
+        "correctQ": 15,
+        "subject": "math",
+        "topic": "estimation",
+        "accuracyPct": 75
+      },
+      "math:sequences": {
+        "totalQ": 19,
+        "correctQ": 15,
+        "subject": "math",
+        "topic": "sequences",
+        "accuracyPct": 78.9
+      },
+      "math:factors_multiples": {
+        "totalQ": 20,
+        "correctQ": 16,
+        "subject": "math",
+        "topic": "factors_multiples",
+        "accuracyPct": 80
+      },
+      "english:vocabulary": {
+        "totalQ": 37,
+        "correctQ": 27,
+        "subject": "english",
+        "topic": "vocabulary",
+        "accuracyPct": 73
+      },
+      "english:sentences": {
+        "totalQ": 33,
+        "correctQ": 21,
+        "subject": "english",
+        "topic": "sentences",
+        "accuracyPct": 63.6
+      },
+      "english:grammar": {
+        "totalQ": 22,
+        "correctQ": 15,
+        "subject": "english",
+        "topic": "grammar",
+        "accuracyPct": 68.2
+      },
+      "english:translation": {
+        "totalQ": 21,
+        "correctQ": 15,
+        "subject": "english",
+        "topic": "translation",
+        "accuracyPct": 71.4
+      },
+      "science:experiments": {
+        "totalQ": 17,
+        "correctQ": 9,
+        "subject": "science",
+        "topic": "experiments",
+        "accuracyPct": 52.9
+      },
+      "science:environment": {
+        "totalQ": 22,
+        "correctQ": 12,
+        "subject": "science",
+        "topic": "environment",
+        "accuracyPct": 54.5
+      },
+      "science:body": {
+        "totalQ": 31,
+        "correctQ": 17,
+        "subject": "science",
+        "topic": "body",
+        "accuracyPct": 54.8
+      },
+      "science:materials": {
+        "totalQ": 50,
+        "correctQ": 36,
+        "subject": "science",
+        "topic": "materials",
+        "accuracyPct": 72
+      },
+      "science:earth_space": {
+        "totalQ": 17,
+        "correctQ": 11,
+        "subject": "science",
+        "topic": "earth_space",
+        "accuracyPct": 64.7
+      },
+      "science:animals": {
+        "totalQ": 21,
+        "correctQ": 14,
+        "subject": "science",
+        "topic": "animals",
+        "accuracyPct": 66.7
+      }
+    },
+    "trendOracle": {
+      "direction": "up",
+      "earlyMean": 0.5714102203266289,
+      "lateMean": 0.7786968707247347,
+      "delta": 0.2072866503981058,
+      "sessionSamples": 48
+    },
+    "volatility": {
+      "stdev": 0.09184927425665558,
+      "n": 48,
+      "meanAccuracy": 0.672835893484597
+    },
+    "reportSignals": {
+      "totalQuestions": 771,
+      "overallAccuracy": 68,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 185,
+      "contractPrimarySubjectId": "math",
+      "topicBucketKeys": [
+        "fractions",
+        "decimals",
+        "powers",
+        "addition",
+        "zero_one_properties",
+        "rounding",
+        "division_with_remainder",
+        "divisibility",
+        "division",
+        "estimation",
+        "sequences",
+        "factors_multiples",
+        "vocabulary",
+        "sentences",
+        "grammar",
+        "translation",
+        "experiments",
+        "environment",
+        "body",
+        "materials",
+        "earth_space",
+        "animals"
+      ],
+      "diagnosedCount": 17,
+      "unitCount": 22,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 771,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 0.773
+    },
+    "sessionRowCount": 48
+  },
+  "expectedBehaviorNotes": {
+    "trendExpected": [
+      "up"
+    ],
+    "noContradiction": true
+  },
+  "assertions": [
+    {
+      "assertionId": "storage_trend_oracle_up",
+      "pass": true,
+      "expected": {
+        "direction": "up"
+      },
+      "actual": {
+        "direction": "up",
+        "delta": 0.2072866503981058,
+        "earlyMean": 0.5714102203266289,
+        "lateMean": 0.7786968707247347,
+        "n": 48
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "note": "Profile p_improving_student uses accuracy trend start→end; sessions should reflect rising accuracy."
+      }
+    },
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

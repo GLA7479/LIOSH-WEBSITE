@@ -1,0 +1,136 @@
+{
+  "scenarioId": "weak_english_grammar_g4_7d",
+  "profileId": "p_weak_english_grammar",
+  "generator": "learning-simulator-behavior-phase5-v1",
+  "storagePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\weak_english_grammar_g4_7d.storage.json",
+  "metaPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\weak_english_grammar_g4_7d.meta.json",
+  "reportPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\reports\\per-student\\weak_english_grammar_g4_7d.report.json",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 16,
+      "questionTotal": 274,
+      "correctTotal": 113,
+      "mistakeEventCount": 90,
+      "subjectsTouched": [
+        "english"
+      ],
+      "overallAccuracyPct": 41.2
+    },
+    "subjectMetrics": {
+      "english": {
+        "totalQ": 274,
+        "correctQ": 113,
+        "accuracyPct": 41.2
+      }
+    },
+    "topicMetrics": {
+      "english:grammar": {
+        "totalQ": 274,
+        "correctQ": 113,
+        "subject": "english",
+        "topic": "grammar",
+        "accuracyPct": 41.2
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.41656286108685486,
+      "lateMean": 0.40948398007221537,
+      "delta": -0.007078881014639493,
+      "sessionSamples": 16
+    },
+    "volatility": {
+      "stdev": 0.02778154123243777,
+      "n": 16,
+      "meanAccuracy": 0.4125081408314768
+    },
+    "reportSignals": {
+      "totalQuestions": 274,
+      "overallAccuracy": 41,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 274,
+      "contractPrimarySubjectId": "english",
+      "topicBucketKeys": [
+        "grammar"
+      ],
+      "diagnosedCount": 1,
+      "unitCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 274,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": false,
+      "diagnosisCoverageRatio": 1
+    },
+    "sessionRowCount": 16
+  },
+  "expectedBehaviorNotes": {
+    "topWeaknessExpected": [
+      "grammar",
+      "דקדוק"
+    ]
+  },
+  "assertions": [
+    {
+      "assertionId": "grammar_topic_has_volume",
+      "pass": true,
+      "expected": {
+        "minTopicQuestions": 10
+      },
+      "actual": {
+        "totalQ": 274,
+        "accuracyPct": 41.2
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "grammar_topic_weak_among_subject",
+      "pass": true,
+      "expected": {
+        "maxWeakRank": 1
+      },
+      "actual": {
+        "rank": 1,
+        "orderedTopicsByAccuracy": [
+          {
+            "t": "grammar",
+            "acc": 41.2,
+            "q": 274
+          }
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "grammar_report_topic_bucket_alignment",
+      "pass": true,
+      "expected": {
+        "topicBucketKeysIncludesTarget": "grammar"
+      },
+      "actual": {
+        "topicBucketKeys": [
+          "grammar"
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "secondary": true
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}
