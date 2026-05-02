@@ -1,0 +1,48 @@
+# Learning simulator schema validation
+- Generated at: 2026-05-02T20:02:14.017Z
+- Schema versions: profile 1.0.0, scenario 1.0.0, assertion 1.0.0
+- Profiles: 10
+- Scenarios: 10
+- OK: true
+## Scenario IDs
+- declining_student_g4_30d
+- improving_student_g4_30d
+- strong_all_subjects_g3_7d
+- thin_data_g3_1d
+- weak_english_grammar_g4_7d
+- weak_geometry_area_g5_7d
+- weak_hebrew_comprehension_g3_7d
+- weak_math_fractions_g5_7d
+- weak_moledet_geography_maps_g4_7d
+- weak_science_cause_effect_g5_7d
+## Validation errors
+- (none)
+## Validation warnings
+- (none)
+## Matrix coverage keys touched (scenario refs)
+- `g3|english|grammar|medium` ← strong_all_subjects_g3_7d
+- `g3|geometry|angles|easy` ← strong_all_subjects_g3_7d
+- `g3|hebrew|comprehension|*` ← weak_hebrew_comprehension_g3_7d
+- `g3|hebrew|comprehension|medium` ← weak_hebrew_comprehension_g3_7d
+- `g3|hebrew|reading|easy` ← strong_all_subjects_g3_7d
+- `g3|math|addition|*` ← thin_data_g3_1d
+- `g3|math|addition|easy` ← thin_data_g3_1d
+- `g3|math|addition|medium` ← strong_all_subjects_g3_7d
+- `g3|moledet_geography|homeland|easy` ← strong_all_subjects_g3_7d
+- `g3|science|animals|easy` ← strong_all_subjects_g3_7d
+- `g4|english|grammar|*` ← weak_english_grammar_g4_7d
+- `g4|english|grammar|hard` ← weak_english_grammar_g4_7d
+- `g4|english|vocabulary|easy` ← improving_student_g4_30d
+- `g4|geometry|area|medium` ← declining_student_g4_30d
+- `g4|hebrew|grammar|medium` ← declining_student_g4_30d
+- `g4|math|fractions|medium` ← improving_student_g4_30d
+- `g4|math|multiplication|hard` ← declining_student_g4_30d
+- `g4|moledet_geography|maps|*` ← weak_moledet_geography_maps_g4_7d
+- `g4|moledet_geography|maps|easy` ← weak_moledet_geography_maps_g4_7d
+- `g4|science|materials|medium` ← improving_student_g4_30d
+- `g5|geometry|area|*` ← weak_geometry_area_g5_7d
+- `g5|geometry|area|medium` ← weak_geometry_area_g5_7d
+- `g5|math|fractions|*` ← weak_math_fractions_g5_7d
+- `g5|math|fractions|medium` ← weak_math_fractions_g5_7d
+- `g5|science|experiments|*` ← weak_science_cause_effect_g5_7d
+- `g5|science|experiments|easy` ← weak_science_cause_effect_g5_7d
