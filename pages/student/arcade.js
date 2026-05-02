@@ -17,6 +17,64 @@ const CARD_CLASS =
 
 const POLL_MS = 5000;
 
+/** חדרים ציבוריים לריענון רשימה */
+const OPEN_ROOM_POLL_KEYS = [
+  "fourline",
+  "ludo",
+  "snakes-and-ladders",
+  "checkers",
+  "chess",
+  "dominoes",
+  "bingo",
+];
+
+const MORE_ARCADE_LOBBY_ROWS = [
+  {
+    gameKey: "snakes-and-ladders",
+    title: "נחשים וסולמות",
+    blurb: "לוח 1–100 · סולמות ונחשים",
+    playersLine: "שחקנים: 2–4",
+  },
+  {
+    gameKey: "checkers",
+    title: "דמקה",
+    blurb: "דמקה קלאסית · אכילות חובה כשקיימות",
+    playersLine: "שחקנים: 2",
+  },
+  {
+    gameKey: "chess",
+    title: "שחמט",
+    blurb: "מצב חדר פעיל — משחק מלא יגיע בהמשך",
+    playersLine: "שחקנים: 2",
+  },
+  {
+    gameKey: "dominoes",
+    title: "דומינו",
+    blurb: "דומינו חסימה · זוג 6 · סיום ביציאה או חסימה",
+    playersLine: "שחקנים: 2",
+  },
+  {
+    gameKey: "bingo",
+    title: "בינגו",
+    blurb: "מצב חדר פעיל — משחק מלא יגיע בהמשך",
+    playersLine: "שחקנים: עד 8",
+  },
+];
+
+function playHrefForArcadeRoom(gameKey, roomId) {
+  const q = encodeURIComponent(roomId);
+  const routes = {
+    fourline: `/student/games/fourline?roomId=${q}`,
+    ludo: `/student/games/ludo?roomId=${q}`,
+    "snakes-and-ladders": `/student/games/snakes-and-ladders?roomId=${q}`,
+    checkers: `/student/games/checkers?roomId=${q}`,
+    chess: `/student/games/chess?roomId=${q}`,
+    dominoes: `/student/games/dominoes?roomId=${q}`,
+    bingo: `/student/games/bingo?roomId=${q}`,
+  };
+  return routes[gameKey] || `/student/games/fourline?roomId=${q}`;
+}
+
 async function readJson(res) {
   const payload = await res.json().catch(() => ({}));
   return { ok: res.ok, payload, status: res.status };
@@ -115,16 +173,14 @@ export default function StudentArcadePage() {
   }, []);
 
   const refreshOpenRooms = useCallback(async () => {
-    const [r4, rl] = await Promise.all([
-      fetch("/api/arcade/rooms/open?gameKey=fourline"),
-      fetch("/api/arcade/rooms/open?gameKey=ludo"),
-    ]);
-    const j4 = await r4.json().catch(() => ({}));
-    const jl = await rl.json().catch(() => ({}));
-    const merged = [
-      ...(j4?.ok && Array.isArray(j4.rooms) ? j4.rooms : []),
-      ...(jl?.ok && Array.isArray(jl.rooms) ? jl.rooms : []),
-    ];
+    const results = await Promise.all(
+      OPEN_ROOM_POLL_KEYS.map((gk) => fetch(`/api/arcade/rooms/open?gameKey=${encodeURIComponent(gk)}`)),
+    );
+    const merged = [];
+    for (const r of results) {
+      const j = await r.json().catch(() => ({}));
+      if (j?.ok && Array.isArray(j.rooms)) merged.push(...j.rooms);
+    }
     setOpenRooms(merged);
   }, []);
 
@@ -156,7 +212,29 @@ export default function StudentArcadePage() {
         ? "עדיין לא פעיל (ממתין להפעלה)"
         : null;
 
-  const openRoomsPollActive = fourlineActive || ludoActive;
+  const anyLobbyGameActive = useMemo(() => {
+    return OPEN_ROOM_POLL_KEYS.some((k) => {
+      const m = games.find((g) => g.gameKey === k);
+      return Boolean(m?.enabled === true && m?.foundationOnly === false);
+    });
+  }, [games]);
+
+  const moreArcadeLobbyVm = useMemo(() => {
+    return MORE_ARCADE_LOBBY_ROWS.map((row) => {
+      const meta = games.find((g) => g.gameKey === row.gameKey) || null;
+      const active = Boolean(meta?.enabled === true && meta?.foundationOnly === false);
+      const idleReason = !meta
+        ? "טוען משחקים…"
+        : !meta.enabled
+          ? "המשחק כבוי בשרת"
+          : meta.foundationOnly
+            ? "עדיין לא פעיל (ממתין להפעלה)"
+            : null;
+      return { ...row, active, idleReason };
+    });
+  }, [games]);
+
+  const openRoomsPollActive = anyLobbyGameActive;
 
   useEffect(() => {
     if (!openRoomsPollActive) return undefined;
@@ -324,10 +402,7 @@ export default function StudentArcadePage() {
   const hlPrivate = hlRoomType === "private";
 
   const hlGameKey = hlRoom?.game_key != null ? String(hlRoom.game_key) : "fourline";
-  const hlPlayHref =
-    hlGameKey === "ludo"
-      ? `/student/games/ludo?roomId=${encodeURIComponent(hlRoomId)}`
-      : `/student/games/fourline?roomId=${encodeURIComponent(hlRoomId)}`;
+  const hlPlayHref = playHrefForArcadeRoom(hlGameKey, hlRoomId);
 
   const waitingCopy =
     hlStatus === "waiting" ? "ממתין לשחקן נוסף" : hlStatus === "active" ? "המשחק פעיל" : hlStatus;
@@ -483,6 +558,70 @@ export default function StudentArcadePage() {
               </div>
             </div>
           </div>
+
+          {moreArcadeLobbyVm.map((row) => (
+            <div key={row.gameKey} className={CARD_CLASS}>
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="text-lg font-bold text-zinc-900">{row.title}</h2>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+                    row.active ? "bg-emerald-100 text-emerald-900" : "bg-zinc-200 text-zinc-600"
+                  }`}
+                >
+                  {row.active ? "פעיל" : "לא זמין"}
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-zinc-700">{row.blurb}</p>
+              <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-zinc-800">
+                <li>{row.playersLine}</li>
+                <li>בחר עלות כניסה לפני משחק מהיר או יצירת חדר</li>
+              </ul>
+              {row.idleReason && !row.active ? (
+                <p className="mt-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+                  {row.idleReason}
+                </p>
+              ) : null}
+
+              <EntryCostSelector
+                entryCost={entryCost}
+                setEntryCost={setEntryCost}
+                costDisabledReason={costDisabledReason}
+                busy={busy}
+              />
+
+              <div className="mt-6 flex flex-col gap-3">
+                <button
+                  type="button"
+                  disabled={busy || !row.active || Boolean(costDisabledReason(entryCost))}
+                  title={
+                    costDisabledReason(entryCost) || (!row.active ? row.idleReason || undefined : undefined)
+                  }
+                  onClick={() => void onQuickGame(row.gameKey)}
+                  className="w-full rounded-xl bg-amber-500 px-4 py-4 text-center text-base font-bold text-zinc-900 shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  משחק מהיר ({row.title})
+                </button>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    disabled={busy || !row.active || Boolean(costDisabledReason(entryCost))}
+                    onClick={() => void onCreateRoom("public", row.gameKey)}
+                    className="flex-1 rounded-lg bg-zinc-800 px-4 py-3 text-center text-sm font-bold text-white shadow disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    צור חדר ציבורי
+                  </button>
+                  <button
+                    type="button"
+                    disabled={busy || !row.active || Boolean(costDisabledReason(entryCost))}
+                    onClick={() => void onCreateRoom("private", row.gameKey)}
+                    className="flex-1 rounded-lg border-2 border-zinc-600 bg-zinc-100 px-4 py-3 text-center text-sm font-bold text-zinc-900 shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    צור חדר פרטי
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
 
           <div className={CARD_CLASS}>
             <h3 className="text-base font-bold text-zinc-900">חדרים פתוחים</h3>

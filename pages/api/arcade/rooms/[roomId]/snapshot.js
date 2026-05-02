@@ -30,5 +30,10 @@ export default async function handler(req, res) {
     membership: snapshot.membership,
     fourline: snapshot.fourline,
     ludo: snapshot.ludo,
+    snakesAndLadders: snapshot.snakesAndLadders,
+    checkers: snapshot.checkers,
+    chess: snapshot.chess,
+    dominoes: snapshot.dominoes,
+    arcadePlaceholder: snapshot.arcadePlaceholder,
   });
 }
