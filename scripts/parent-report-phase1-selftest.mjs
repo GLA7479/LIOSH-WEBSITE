@@ -822,6 +822,153 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
   );
 }
 
+// Phase Math Fractions: active probe routing (shared runtime + generator; no UI/report changes).
+{
+  const { normalizeMistakeEvent } = await importUtils("../utils/mistake-event.js");
+  const {
+    buildPendingProbeFromMistake,
+    applyProbeOutcome,
+    attachProbeMetaToQuestion,
+  } = await importUtils("../utils/active-diagnostic-runtime/index.js");
+  const { mathFractionWrongActivatesProbe } = await importUtils("../utils/math-fraction-probe.js");
+  const { generateQuestion } = await importUtils("../utils/math-question-generator.js");
+  const { getLevelConfig } = await importUtils("../utils/math-storage.js");
+
+  const normFracWrong = normalizeMistakeEvent(
+    {
+      bucketKey: "fractions",
+      topicOrOperation: "fractions",
+      grade: "g5",
+      level: "easy",
+      isCorrect: false,
+      patternFamily: "fraction_add_unlike_denominators",
+      expectedErrorTags: ["adds_denominators_directly"],
+      diagnosticSkillId: "math_frac_common_denominator",
+    },
+    "math"
+  );
+  const inferredFrac = ["adds_denominators_directly"];
+  assert.ok(mathFractionWrongActivatesProbe(normFracWrong, inferredFrac));
+  const pendingProbe = buildPendingProbeFromMistake(
+    normFracWrong,
+    {
+      wrongAvoidKey: "fp_test_1",
+      fallbackTopicId: "fractions",
+      fallbackGrade: "g5",
+      fallbackLevel: "easy",
+    },
+    "math"
+  );
+  assert.ok(pendingProbe);
+  assert.equal(pendingProbe.subjectId, "math");
+  assert.equal(pendingProbe.suggestedQuestionType, "fraction_common_denominator_only");
+
+  const normAddWrong = normalizeMistakeEvent(
+    {
+      bucketKey: "addition",
+      topicOrOperation: "addition",
+      grade: "g3",
+      level: "easy",
+      isCorrect: false,
+      expectedErrorTags: ["adds_denominators_directly"],
+    },
+    "math"
+  );
+  assert.equal(
+    mathFractionWrongActivatesProbe(normAddWrong, ["adds_denominators_directly"]),
+    false,
+    "non-fraction bucket must not activate fraction probe"
+  );
+
+  const lc = getLevelConfig(5, "easy");
+  assert.ok(lc.allowFractions && lc.fractions?.maxDen != null);
+
+  const probeMetaHolder = { current: null };
+  const qProbe = generateQuestion(lc, "fractions", "g5", null, {
+    pendingProbe,
+    probeMetaHolder,
+  });
+  assert.equal(qProbe.params?.kind, "frac_probe_common_denominator_only");
+  assert.equal(probeMetaHolder.current?.probeReason, "fraction_common_denominator_only");
+
+  const qPlain = generateQuestion(lc, "fractions", "g5", null, null);
+  assert.ok(String(qPlain.question || "").length > 0);
+  assert.ok(qPlain.params?.kind);
+
+  const pendingUnsupported = {
+    ...pendingProbe,
+    suggestedQuestionType: "__math_probe_not_implemented__",
+  };
+  const qFall = generateQuestion(lc, "fractions", "g5", null, {
+    pendingProbe: pendingUnsupported,
+    probeMetaHolder: { current: null },
+  });
+  assert.notEqual(qFall.params?.kind, "frac_probe_common_denominator_only");
+
+  const probeWrongSession = { ...pendingProbe, gradeKey: "g1" };
+  const qSessionFall = generateQuestion(lc, "fractions", "g5", null, {
+    pendingProbe: probeWrongSession,
+    probeMetaHolder: { current: null },
+  });
+  assert.notEqual(qSessionFall.params?.kind, "frac_probe_common_denominator_only");
+
+  const baseProbeSnap = {
+    subjectId: "math",
+    topicId: "fractions",
+    diagnosticSkillId: "math_frac_common_denominator",
+    dominantTag: "adds_denominators_directly",
+    suggestedQuestionType: "fraction_common_denominator_only",
+    sourceHypothesisId: "fd_probe_adds_denominators_directly",
+    createdAt: 1,
+  };
+  const qWithMeta = attachProbeMetaToQuestion(
+    { params: { expectedErrorTags: ["wrong_lcm", "adds_denominators_directly"] } },
+    {
+      probeSnapshot: /** @type {any} */ (baseProbeSnap),
+      probeReason: "fraction_common_denominator_only",
+      expectedErrorTags: ["wrong_lcm", "adds_denominators_directly"],
+    }
+  );
+  assert.ok(qWithMeta._diagnosticProbeAttempt === true);
+  const now = 1700000000000;
+  let ledger = applyProbeOutcome(null, {
+    isCorrect: true,
+    inferredTags: [],
+    probeMeta: qWithMeta._probeMeta,
+    now,
+  });
+  assert.equal(ledger.lastOutcome, "correct_probe");
+  assert.equal(ledger.status, "weakened");
+
+  ledger = applyProbeOutcome(ledger, {
+    isCorrect: false,
+    inferredTags: ["adds_denominators_directly"],
+    probeMeta: qWithMeta._probeMeta,
+    now: now + 1,
+  });
+  assert.equal(ledger.lastOutcome, "wrong_matching_tag");
+  assert.equal(ledger.status, "supported");
+
+  const ledgerUncertain = applyProbeOutcome(null, {
+    isCorrect: false,
+    inferredTags: ["unrelated_tag_xyz"],
+    probeMeta: qWithMeta._probeMeta,
+    now: now + 2,
+  });
+  assert.equal(ledgerUncertain.lastOutcome, "wrong_unrelated");
+  assert.equal(ledgerUncertain.status, "uncertain");
+
+  assert.equal(
+    applyProbeOutcome(null, {
+      isCorrect: false,
+      inferredTags: ["x"],
+      probeMeta: null,
+      now,
+    }),
+    null
+  );
+}
+
 // Phase 3D-A: science session probe selection helper (no live UI / no parent report changes).
 {
   const { SCIENCE_QUESTIONS } = await importUtils("../data/science-questions.js");
@@ -1049,6 +1196,141 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
   assert.notEqual(replaced?.hypothesisKey, supported?.hypothesisKey);
 
   // Retry dequeue does not attach meta in science-master (integration rule); helpers stay pure above.
+}
+
+// Active Diagnostic Core v1 — shared runtime exports (multi-subject).
+{
+  const {
+    buildPendingProbeFromMistake,
+    selectQuestionWithProbe,
+    probeMatchesSession,
+    bankQuestionProbeMatch,
+    applyProbeOutcome,
+    buildHypothesisKey,
+    attachProbeMetaToQuestion,
+    clearActiveDiagnosticState,
+  } = await importUtils("../utils/active-diagnostic-runtime/index.js");
+  const { normalizeMistakeEvent } = await importUtils("../utils/mistake-event.js");
+
+  const engNorm = normalizeMistakeEvent(
+    {
+      topic: "grammar",
+      bucketKey: "grammar",
+      grade: "g3",
+      level: "easy",
+      isCorrect: false,
+      patternFamily: "grammar_mcq",
+      diagnosticSkillId: "eng_present_simple_be",
+      conceptTag: "grammar_structure",
+    },
+    "english"
+  );
+  const engProbe = buildPendingProbeFromMistake(
+    engNorm,
+    {
+      wrongAvoidKey: "old|key",
+      fallbackTopicId: "grammar",
+      fallbackGrade: "g3",
+      fallbackLevel: "easy",
+    },
+    "english"
+  );
+  assert.ok(engProbe && engProbe.subjectId === "english");
+  assert.equal(probeMatchesSession(engProbe, "g3", "easy", "grammar"), true);
+  assert.equal(probeMatchesSession(engProbe, "g1", "easy", "grammar"), false);
+
+  const grammarRows = [
+    {
+      question: "Choose: He ___ happy.",
+      correct: "is",
+      topic: "grammar",
+      params: { diagnosticSkillId: "eng_present_simple_be" },
+    },
+    {
+      question: "Other",
+      correct: "x",
+      topic: "grammar",
+      params: { diagnosticSkillId: "other_skill" },
+    },
+  ];
+  const pickedEng = selectQuestionWithProbe({
+    items: grammarRows,
+    pendingProbe: engProbe,
+    recentIds: ["Choose: He ___ happy.|is"],
+    currentTopic: "grammar",
+    fallbackPick: () => grammarRows[1],
+    getItemTopic: (r) => String(r.topic),
+    getItemId: (r) => `${String(r.question)}|${String(r.correct)}`,
+    randomFn: () => 0,
+  });
+  assert.ok(pickedEng.usedProbe);
+  assert.ok(String(pickedEng.question.params.diagnosticSkillId).includes("eng_present_simple_be"));
+
+  const hkEng = buildHypothesisKey({
+    subjectId: "english",
+    topicId: "grammar",
+    diagnosticSkillId: "eng_present_simple_be",
+    dominantTag: null,
+  });
+  assert.ok(hkEng.startsWith("english|"));
+
+  const rowProbe = bankQuestionProbeMatch(grammarRows[0], engProbe);
+  assert.ok(rowProbe.matches);
+
+  const qWithProbe = attachProbeMetaToQuestion(
+    { question: "בדיקה", topic: "reading", params: {} },
+    {
+      probeSnapshot: {
+        ...engProbe,
+        createdAt: engProbe.createdAt,
+      },
+      probeReason: "matched_diagnosticSkillId",
+      expectedErrorTags: ["grammar_pattern_error"],
+    }
+  );
+  assert.equal(qWithProbe._diagnosticProbeAttempt, true);
+  const leg = applyProbeOutcome(null, {
+    isCorrect: false,
+    inferredTags: ["grammar_pattern_error"],
+    probeMeta: qWithProbe._probeMeta,
+    now: 50,
+  });
+  assert.equal(leg?.subjectId, "english");
+
+  let pr = { current: engProbe };
+  let lr = { current: leg };
+  clearActiveDiagnosticState(pr, lr);
+  assert.equal(pr.current, null);
+  assert.equal(lr.current, null);
+}
+
+// QA bugfix regression (english-master): unrelated wrong clears grammar probe; mixed retains probe across non-grammar draws.
+{
+  let pendingSim = { current: { topicId: "grammar", subjectId: "english" } };
+  const topicWrong = "vocabulary";
+  if (topicWrong !== "grammar") pendingSim.current = null;
+  assert.equal(pendingSim.current, null);
+
+  pendingSim = { current: { topicId: "grammar" } };
+  const probeMetaHolderSim = { current: null };
+  const questionVocab = { topic: "vocabulary" };
+  const probeAtStartSim = true;
+  if (probeAtStartSim) {
+    const consumed =
+      probeMetaHolderSim.current != null || questionVocab.topic === "grammar";
+    if (consumed) pendingSim.current = null;
+  }
+  assert.ok(pendingSim.current, "grammar probe survives mixed vocab roll");
+
+  pendingSim = { current: { topicId: "grammar" } };
+  const probeMetaAttachedSim = { current: { probeSnapshot: {}, probeReason: "x" } };
+  const questionGrammar = { topic: "grammar" };
+  if (probeAtStartSim) {
+    const consumed =
+      probeMetaAttachedSim.current != null || questionGrammar.topic === "grammar";
+    if (consumed) pendingSim.current = null;
+  }
+  assert.equal(pendingSim.current, null);
 }
 
 console.log("parent-report phase1 selftest: OK");

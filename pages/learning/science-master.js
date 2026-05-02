@@ -56,11 +56,13 @@ import {
 } from "../../utils/diagnostic-mistake-metadata";
 import { normalizeMistakeEvent } from "../../utils/mistake-event.js";
 import {
-  buildSciencePendingDiagnosticProbe,
-  selectScienceQuestionWithProbe,
-  scienceProbeMatchesSession,
-} from "../../utils/science-diagnostic-probe.js";
-import { applyScienceProbeOutcome } from "../../utils/science-probe-outcome.js";
+  buildPendingProbeFromMistake,
+  selectQuestionWithProbe,
+  probeMatchesSession,
+  attachProbeMetaToQuestion,
+  applyProbeOutcome,
+  clearActiveDiagnosticState,
+} from "../../utils/active-diagnostic-runtime/index.js";
 import { inferNormalizedTags } from "../../utils/fast-diagnostic-engine/infer-tags.js";
 import {
   finishLearningSession,
@@ -1584,13 +1586,17 @@ function saveScienceAnswerInParallel({
 
       try {
         const normalized = normalizeMistakeEvent(entry, "science");
-        const probe = buildSciencePendingDiagnosticProbe(normalized, {
-          wrongQuestionId:
-            question.id != null ? String(question.id) : undefined,
-          fallbackTopicId: question.topic,
-          fallbackGrade: entry.grade,
-          fallbackLevel: entry.level,
-        });
+        const probe = buildPendingProbeFromMistake(
+          normalized,
+          {
+            wrongQuestionId:
+              question.id != null ? String(question.id) : undefined,
+            fallbackTopicId: question.topic,
+            fallbackGrade: entry.grade,
+            fallbackLevel: entry.level,
+          },
+          "science"
+        );
         if (probe) {
           pendingDiagnosticProbeRef.current = probe;
         } else {
@@ -1661,8 +1667,8 @@ function saveScienceAnswerInParallel({
 
     const probeAtStart = pendingDiagnosticProbeRef.current;
 
-    /** Phase 3D-B — snapshot for hypothesis ledger when probe-driven row is shown. */
-    let probeMetaForQuestion = null;
+    /** Phase 3D-B — attach probe meta via shared runtime when probe-driven row is shown. */
+    let probeAttachOpts = null;
 
     let q = dequeueEligibleRetry(retryQueueRef.current, pool, askCounter);
     const usedRetryDequeue = !!q;
@@ -1681,11 +1687,11 @@ function saveScienceAnswerInParallel({
 
       const probeOk =
         probeAtStart &&
-        scienceProbeMatchesSession(probeAtStart, grade, level, topic);
+        probeMatchesSession(probeAtStart, grade, level, topic);
 
       if (probeOk) {
-        const pr = selectScienceQuestionWithProbe({
-          questions: eligible,
+        const pr = selectQuestionWithProbe({
+          items: eligible,
           pendingProbe: probeAtStart,
           recentIds: recentSet,
           currentTopic: topic,
@@ -1694,13 +1700,8 @@ function saveScienceAnswerInParallel({
         });
         q = pr.question;
         if (pr.usedProbe && probeAtStart) {
-          probeMetaForQuestion = {
-            sourceHypothesisId: probeAtStart.sourceHypothesisId,
-            dominantTag: probeAtStart.dominantTag,
-            suggestedQuestionType: probeAtStart.suggestedQuestionType,
-            diagnosticSkillId: probeAtStart.diagnosticSkillId,
-            topicId: probeAtStart.topicId,
-            probeCreatedAt: probeAtStart.createdAt,
+          probeAttachOpts = {
+            probeSnapshot: probeAtStart,
             probeReason: pr.reason,
             expectedErrorTags: Array.isArray(q.params?.expectedErrorTags)
               ? [...q.params.expectedErrorTags]
@@ -1740,16 +1741,15 @@ function saveScienceAnswerInParallel({
 
     scienceTrackingTopicKeyRef.current = q.topic;
     /** @type {Record<string, unknown>} */
-    const nextQuestionPayload = {
+    let nextQuestionPayload = {
       ...q,
       options: shuffledOptions,
       correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : originalCorrectIndex,
       assignedGrade: grade,
       assignedLevel: getAssignedLevelForQuestion(),
     };
-    if (probeMetaForQuestion && !usedRetryDequeue) {
-      nextQuestionPayload._scienceDiagnosticProbeAttempt = true;
-      nextQuestionPayload._scienceProbeMeta = probeMetaForQuestion;
+    if (probeAttachOpts && !usedRetryDequeue) {
+      nextQuestionPayload = attachProbeMetaToQuestion(nextQuestionPayload, probeAttachOpts);
     }
     setCurrentQuestion(nextQuestionPayload);
     if (currentQuestion) {
@@ -1785,8 +1785,7 @@ function saveScienceAnswerInParallel({
     setPreviousExplanationQuestion(null);
     setShowTheoryHelp(false);
     setLives(3);
-    pendingDiagnosticProbeRef.current = null;
-    scienceHypothesisLedgerRef.current = null;
+    clearActiveDiagnosticState(pendingDiagnosticProbeRef, scienceHypothesisLedgerRef);
 
     // איפוס מאגר השאלות
     questionPoolRef.current = [];
@@ -1864,8 +1863,7 @@ function saveScienceAnswerInParallel({
     setErrorExplanation("");
     learningSessionIdRef.current = null;
     learningSessionStartPromiseRef.current = null;
-    pendingDiagnosticProbeRef.current = null;
-    scienceHypothesisLedgerRef.current = null;
+    clearActiveDiagnosticState(pendingDiagnosticProbeRef, scienceHypothesisLedgerRef);
     setLives(mode === "challenge" ? 3 : 0);
     if (mode === "challenge") setTimeLeft(25);
     else if (mode === "speed") setTimeLeft(12);
@@ -1895,8 +1893,7 @@ function saveScienceAnswerInParallel({
     setShowPreviousSolution(false);
     setPreviousExplanationQuestion(null);
     setShowTheoryHelp(false);
-    pendingDiagnosticProbeRef.current = null;
-    scienceHypothesisLedgerRef.current = null;
+    clearActiveDiagnosticState(pendingDiagnosticProbeRef, scienceHypothesisLedgerRef);
   }
 
   function handleTimeUp() {
@@ -1941,8 +1938,8 @@ function saveScienceAnswerInParallel({
     const isCorrect = idx === currentQuestion.correctIndex;
 
     if (
-      questionForSave._scienceDiagnosticProbeAttempt === true &&
-      questionForSave._scienceProbeMeta
+      questionForSave._diagnosticProbeAttempt === true &&
+      questionForSave._probeMeta
     ) {
       let inferredTags = [];
       if (!isCorrect) {
@@ -1960,20 +1957,20 @@ function saveScienceAnswerInParallel({
           inferredTags = inferNormalizedTags(normalizedWrong, "science");
         }
       }
-      scienceHypothesisLedgerRef.current = applyScienceProbeOutcome(
+      scienceHypothesisLedgerRef.current = applyProbeOutcome(
         scienceHypothesisLedgerRef.current,
         {
           isCorrect,
           inferredTags,
-          probeMeta: questionForSave._scienceProbeMeta,
+          probeMeta: questionForSave._probeMeta,
           now: Date.now(),
         }
       );
       setCurrentQuestion((prev) => {
         if (!prev || prev !== questionForSave) return prev;
         const {
-          _scienceDiagnosticProbeAttempt: _a,
-          _scienceProbeMeta: _b,
+          _diagnosticProbeAttempt: _a,
+          _probeMeta: _b,
           ...rest
         } = prev;
         void _a;

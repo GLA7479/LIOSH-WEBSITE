@@ -63,6 +63,16 @@ import {
   extractDiagnosticMetadataFromQuestion,
   mergeDiagnosticIntoMistakeEntry,
 } from "../../utils/diagnostic-mistake-metadata";
+import { normalizeMistakeEvent } from "../../utils/mistake-event.js";
+import { inferNormalizedTags } from "../../utils/fast-diagnostic-engine/infer-tags.js";
+import {
+  buildPendingProbeFromMistake,
+  probeMatchesSession,
+  bankQuestionProbeMatch,
+  attachProbeMetaToQuestion,
+  applyProbeOutcome,
+  clearActiveDiagnosticState,
+} from "../../utils/active-diagnostic-runtime/index.js";
 import {
   hebrewScriptLikely,
   isChildHebrewNiqqudGradeKey,
@@ -141,6 +151,8 @@ export default function HebrewMaster() {
   const hebrewCognitiveTemplateTailRef = useRef([]);
   /** כיתה א׳–ב׳: מגביל חזרה על אותה צורת משימה (לא רק patternFamily) */
   const hebrewTaskShapeTailRef = useRef([]);
+  const hebrewPendingDiagnosticProbeRef = useRef(null);
+  const hebrewHypothesisLedgerRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
   /** עדכני ל־handleAnswer (משוב שגוי) כדי להציג תשובה נכונה מנוקדת כשה־map כבר הגיע */
   const niqqudByIdRef = useRef({});
@@ -559,6 +571,14 @@ useEffect(() => {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    clearActiveDiagnosticState(
+      hebrewPendingDiagnosticProbeRef,
+      hebrewHypothesisLedgerRef
+    );
+  }, [grade, level, operation, practiceFocus]);
+
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectedCol, setSelectedCol] = useState(null);
   const [highlightedAnswer, setHighlightedAnswer] = useState(null);
@@ -924,6 +944,10 @@ useEffect(() => {
     accumulateQuestionTime();
     // Stop background music when game resets
     sound.stopBackgroundMusic();
+    clearActiveDiagnosticState(
+      hebrewPendingDiagnosticProbeRef,
+      hebrewHypothesisLedgerRef
+    );
     setGameActive(false);
     hebrewTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
@@ -1025,6 +1049,17 @@ useEffect(() => {
     // עותק מקומי של recentQuestions כדי לא לעדכן state בתוך הלולאה
     const localRecentQuestions = new Set(recentQuestions);
 
+    const probeAtStart = hebrewPendingDiagnosticProbeRef.current;
+    let probeActive =
+      !!(
+        probeAtStart &&
+        probeMatchesSession(probeAtStart, grade, level, operationForState) &&
+        probeAtStart.subjectId === "hebrew"
+      );
+    let probeBiasAttempts = 0;
+    const maxProbeBiasAttempts = 22;
+    let probeAttachOpts = null;
+
     do {
       let opForQuestion = operationForState;
       if (supportsWordProblems) {
@@ -1066,13 +1101,41 @@ useEffect(() => {
       const taskShapeRepeats = taskShapeTail.filter((x) => x === taskShapeKey).length;
       const taskShapeBlock = earlyHebrewChild && taskShapeRepeats >= 2;
 
-      if (
+      const baseOk =
         !localRecentQuestions.has(questionKey) &&
         !pfCooldownBlock &&
         !nearBlock &&
         !cogBlock &&
-        !taskShapeBlock
-      ) {
+        !taskShapeBlock;
+
+      let probeAccept = true;
+      if (probeActive && baseOk) {
+        const matchResult = bankQuestionProbeMatch(question, probeAtStart);
+        const richMatch = question._fromRich === true && matchResult.matches;
+        if (!richMatch) {
+          probeBiasAttempts++;
+          if (probeBiasAttempts < maxProbeBiasAttempts) {
+            probeAccept = false;
+          } else {
+            probeActive = false;
+            probeAccept = true;
+          }
+        }
+      }
+
+      if (baseOk && probeAccept) {
+        if (probeActive && question._fromRich) {
+          const m = bankQuestionProbeMatch(question, probeAtStart);
+          if (m.matches) {
+            probeAttachOpts = {
+              probeSnapshot: probeAtStart,
+              probeReason: m.reason,
+              expectedErrorTags: Array.isArray(question.params?.expectedErrorTags)
+                ? [...question.params.expectedErrorTags]
+                : undefined,
+            };
+          }
+        }
         localRecentQuestions.add(questionKey);
         hebrewPatternFamilyTailRef.current = [...tail, pf || "gen"].slice(-12);
         hebrewNearDuplicateTailRef.current = [...nearTail, nearKey].slice(-16);
@@ -1086,6 +1149,10 @@ useEffect(() => {
         break;
       }
     } while (attempts < maxAttempts);
+
+    if (probeAtStart) {
+      hebrewPendingDiagnosticProbeRef.current = null;
+    }
 
     // עדכון state רק פעם אחת אחרי הלולאה
     if (attempts >= maxAttempts) {
@@ -1106,15 +1173,20 @@ useEffect(() => {
     if (currentQuestion) {
       setPreviousExplanationQuestion(currentQuestion);
     }
+    let questionOut = question;
+    if (probeAttachOpts) {
+      questionOut = attachProbeMetaToQuestion(questionOut, probeAttachOpts);
+    }
+
     hebrewTrackingTopicKeyRef.current =
-      question.topic || question.operation || "mixed";
+      questionOut.topic || questionOut.operation || "mixed";
     audioBuild1CounterRef.current += 1;
-    attachHebrewAudioToQuestion(question, {
+    attachHebrewAudioToQuestion(questionOut, {
       gradeKey: grade,
-      topic: question.topic || question.operation || operationForState,
+      topic: questionOut.topic || questionOut.operation || operationForState,
       sequenceIndex: audioBuild1CounterRef.current,
     });
-    setCurrentQuestion(question);
+    setCurrentQuestion(questionOut);
     setSelectedAnswer(null);
     setTypedAnswer("");
     setFeedback(null);
@@ -1285,6 +1357,10 @@ useEffect(() => {
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
+    clearActiveDiagnosticState(
+      hebrewPendingDiagnosticProbeRef,
+      hebrewHypothesisLedgerRef
+    );
     setRecentQuestions(new Set()); // איפוס ההיסטוריה
     hebrewPatternFamilyTailRef.current = [];
     hebrewNearDuplicateTailRef.current = [];
@@ -1333,6 +1409,10 @@ useEffect(() => {
   function stopGame() {
     // Stop background music when game stops
     sound.stopBackgroundMusic();
+    clearActiveDiagnosticState(
+      hebrewPendingDiagnosticProbeRef,
+      hebrewHypothesisLedgerRef
+    );
     recordSessionProgress();
     setGameActive(false);
     hebrewTrackingTopicKeyRef.current = null;
@@ -1560,6 +1640,74 @@ useEffect(() => {
       user: answer,
       acceptedList: acceptedAnswers,
     });
+
+    if (
+      questionForSave._diagnosticProbeAttempt === true &&
+      questionForSave._probeMeta
+    ) {
+      let inferredTags = [];
+      if (!isCorrect) {
+        const topicKeyProbe =
+          currentQuestion.topic || currentQuestion.operation || "reading";
+        const hbPrm = currentQuestion.params || {};
+        let wrongEntry = {
+          topic: topicKeyProbe,
+          topicOrOperation: topicKeyProbe,
+          bucketKey: topicKeyProbe,
+          grade,
+          level,
+          mode: reportModeFromGameState(mode, focusedPracticeMode),
+          question: currentQuestion.exerciseText || currentQuestion.question || "",
+          exerciseText: currentQuestion.exerciseText || currentQuestion.question || "",
+          correctAnswer: currentQuestion.correctAnswer,
+          wrongAnswer: answer,
+          userAnswer: answer,
+          isCorrect: false,
+          kind: hbPrm.kind != null ? String(hbPrm.kind) : null,
+          patternFamily:
+            hbPrm.patternFamily != null ? String(hbPrm.patternFamily) : null,
+          subtype: hbPrm.subtype != null ? String(hbPrm.subtype) : null,
+          distractorFamily:
+            hbPrm.distractorFamily != null ? String(hbPrm.distractorFamily) : null,
+          conceptTag: hbPrm.conceptTag != null ? String(hbPrm.conceptTag) : null,
+          answerMode:
+            Array.isArray(currentQuestion.answers) &&
+            currentQuestion.answers.length > 1
+              ? "choice"
+              : "typed",
+        };
+        wrongEntry = mergeDiagnosticIntoMistakeEntry(
+          wrongEntry,
+          extractDiagnosticMetadataFromQuestion(currentQuestion, {
+            responseMs: timeSpentMs,
+            hintUsed: hintUsedForSave,
+          })
+        );
+        wrongEntry = mergeDiagnosticIntoMistakeEntry(
+          wrongEntry,
+          computeMcqIndicesForQuestion(currentQuestion, answer)
+        );
+        const normalizedWrong = normalizeMistakeEvent(wrongEntry, "hebrew");
+        inferredTags = inferNormalizedTags(normalizedWrong, "hebrew");
+      }
+      hebrewHypothesisLedgerRef.current = applyProbeOutcome(
+        hebrewHypothesisLedgerRef.current,
+        {
+          isCorrect,
+          inferredTags,
+          probeMeta: questionForSave._probeMeta,
+          now: Date.now(),
+        }
+      );
+      setCurrentQuestion((prev) => {
+        if (!prev || prev !== questionForSave) return prev;
+        const { _diagnosticProbeAttempt: _a, _probeMeta: _b, ...rest } = prev;
+        void _a;
+        void _b;
+        return rest;
+      });
+    }
+
     saveHebrewAnswerInParallel({
       question: questionForSave,
       userAnswer: answer,
@@ -1894,6 +2042,25 @@ useEffect(() => {
             distractorFamily: dfOpt,
           });
         }
+      }
+      try {
+        if (currentQuestion._fromRich === true) {
+          const normalized = normalizeMistakeEvent(mistake, "hebrew");
+          hebrewPendingDiagnosticProbeRef.current = buildPendingProbeFromMistake(
+            normalized,
+            {
+              wrongAvoidKey: hebrewQuestionFingerprint(currentQuestion),
+              fallbackTopicId: topicKey,
+              fallbackGrade: grade,
+              fallbackLevel: level,
+            },
+            "hebrew"
+          );
+        } else {
+          hebrewPendingDiagnosticProbeRef.current = null;
+        }
+      } catch {
+        hebrewPendingDiagnosticProbeRef.current = null;
       }
       setMistakes((prev) => {
         const updated = [...prev, mistake].slice(-50); // שמור רק 50 שגיאות אחרונות

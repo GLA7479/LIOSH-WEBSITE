@@ -105,6 +105,15 @@ import {
   fetchStudentDefaults,
   gradeKeyToNumber,
 } from "../../lib/learning-student-defaults";
+import { normalizeMistakeEvent } from "../../utils/mistake-event.js";
+import { inferNormalizedTags } from "../../utils/fast-diagnostic-engine/infer-tags.js";
+import {
+  buildPendingProbeFromMistake,
+  attachProbeMetaToQuestion,
+  applyProbeOutcome,
+  clearActiveDiagnosticState,
+} from "../../utils/active-diagnostic-runtime/index.js";
+import { mathFractionWrongActivatesProbe } from "../../utils/math-fraction-probe.js";
 
 /** Passed into compareMathLearnerAnswer — tolerance is not defaulted inside answer-compare. */
 const MATH_NUMERIC_TOLERANCE = 0.01;
@@ -166,6 +175,8 @@ export default function MathMaster() {
   const learningSessionIdRef = useRef(null);
   const learningSessionStartPromiseRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
+  const mathPendingDiagnosticProbeRef = useRef(null);
+  const mathHypothesisLedgerRef = useRef(null);
 
   const [mounted, setMounted] = useState(false);
 
@@ -676,6 +687,14 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    clearActiveDiagnosticState(
+      mathPendingDiagnosticProbeRef,
+      mathHypothesisLedgerRef
+    );
+  }, [grade, level, operation, practiceFocus]);
+
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectedCol, setSelectedCol] = useState(null);
   const [highlightedAnswer, setHighlightedAnswer] = useState(null);
@@ -1065,6 +1084,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setQuestionStartTime(null);
     setShowPreviousSolution(false);
     setPreviousExplanationQuestion(null);
+    clearActiveDiagnosticState(
+      mathPendingDiagnosticProbeRef,
+      mathHypothesisLedgerRef
+    );
   }
 
   function closeExplanationModal() {
@@ -1227,6 +1250,9 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     // עותק מקומי של recentQuestions כדי לא לעדכן state בתוך הלולאה
     const localRecentQuestions = new Set(recentQuestions);
 
+    const probeAtStart = mathPendingDiagnosticProbeRef.current;
+    const probeMetaHolder = { current: null };
+
     do {
       let opForQuestion = operationForState;
       if (supportsWordProblems) {
@@ -1242,7 +1268,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
         levelConfigCopy,
         opForQuestion,
         grade,
-        opForQuestion === "mixed" ? mixedOperations : null
+        opForQuestion === "mixed" ? mixedOperations : null,
+        {
+          pendingProbe: probeAtStart,
+          probeMetaHolder,
+        }
       );
       attempts++;
 
@@ -1303,6 +1333,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 }
           );
         }
+      }
+    }
+
+    if (probeMetaHolder.current) {
+      question = attachProbeMetaToQuestion(question, probeMetaHolder.current);
+    }
+    if (probeAtStart) {
+      const consumed =
+        probeMetaHolder.current != null || question.operation === "fractions";
+      if (consumed) {
+        mathPendingDiagnosticProbeRef.current = null;
       }
     }
 
@@ -1507,6 +1548,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
+    clearActiveDiagnosticState(
+      mathPendingDiagnosticProbeRef,
+      mathHypothesisLedgerRef
+    );
     setRecentQuestions(new Set()); // איפוס ההיסטוריה
     setGameActive(true);
     setScore(0);
@@ -1559,6 +1604,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
   function stopGame() {
     recordSessionProgress();
+    clearActiveDiagnosticState(
+      mathPendingDiagnosticProbeRef,
+      mathHypothesisLedgerRef
+    );
     setGameActive(false);
     mathTrackingOperationKeyRef.current = null;
     setCurrentQuestion(null);
@@ -1652,6 +1701,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
   function handleAnswer(answer) {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
+    const questionForSave = currentQuestion;
     const hintUsedForSave = hintUsed;
 
     // סטטיסטיקה – ספירת שאלה וזמן
@@ -1681,8 +1731,77 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       return;
     }
 
-    setSelectedAnswer(numericAnswer);
     const timeSpentMs = questionStartTime ? Math.max(0, Date.now() - questionStartTime) : null;
+
+    if (
+      questionForSave._diagnosticProbeAttempt === true &&
+      questionForSave._probeMeta
+    ) {
+      let inferredTags = [];
+      if (!isCorrect) {
+        const prm = questionForSave.params || {};
+        let wrongEntry = {
+          topic: questionForSave.operation,
+          topicOrOperation: questionForSave.operation,
+          bucketKey: questionForSave.operation,
+          grade,
+          level,
+          mode: reportModeFromGameState(mode, focusedPracticeMode),
+          question:
+            questionForSave.exerciseText ||
+            questionForSave.question ||
+            "",
+          exerciseText:
+            questionForSave.exerciseText ||
+            questionForSave.question ||
+            "",
+          correctAnswer: questionForSave.correctAnswer,
+          wrongAnswer: numericAnswer,
+          userAnswer: numericAnswer,
+          isCorrect: false,
+          patternFamily:
+            prm.patternFamily != null ? String(prm.patternFamily) : null,
+          conceptTag: prm.conceptTag != null ? String(prm.conceptTag) : null,
+          kind: prm.kind != null ? String(prm.kind) : null,
+          answerMode:
+            Array.isArray(questionForSave.answers) &&
+            questionForSave.answers.length > 1
+              ? "choice"
+              : "typed",
+        };
+        wrongEntry = mergeDiagnosticIntoMistakeEntry(
+          wrongEntry,
+          extractDiagnosticMetadataFromQuestion(questionForSave, {
+            responseMs: timeSpentMs,
+            hintUsed: hintUsedForSave,
+          })
+        );
+        wrongEntry = mergeDiagnosticIntoMistakeEntry(
+          wrongEntry,
+          computeMcqIndicesForQuestion(questionForSave, numericAnswer)
+        );
+        const normalizedWrong = normalizeMistakeEvent(wrongEntry, "math");
+        inferredTags = inferNormalizedTags(normalizedWrong, "math");
+      }
+      mathHypothesisLedgerRef.current = applyProbeOutcome(
+        mathHypothesisLedgerRef.current,
+        {
+          isCorrect,
+          inferredTags,
+          probeMeta: questionForSave._probeMeta,
+          now: Date.now(),
+        }
+      );
+      setCurrentQuestion((prev) => {
+        if (!prev || prev !== questionForSave) return prev;
+        const { _diagnosticProbeAttempt: _a, _probeMeta: _b, ...rest } = prev;
+        void _a;
+        void _b;
+        return rest;
+      });
+    }
+
+    setSelectedAnswer(numericAnswer);
     const resolvedTopic = String(
       mathTrackingOperationKeyRef.current ?? currentQuestion.operation ?? operation ?? "math"
     );
@@ -2066,6 +2185,33 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 distractorFamily: dfOpt,
               });
             }
+          }
+          try {
+            let normalized = normalizeMistakeEvent(entry, "math");
+            if (normalized && entry.operation === "fractions") {
+              normalized = {
+                ...normalized,
+                bucketKey: "fractions",
+                topicOrOperation: "fractions",
+              };
+            }
+            const inferredTags = inferNormalizedTags(normalized, "math");
+            if (mathFractionWrongActivatesProbe(normalized, inferredTags)) {
+              mathPendingDiagnosticProbeRef.current = buildPendingProbeFromMistake(
+                normalized,
+                {
+                  wrongAvoidKey: fp,
+                  fallbackTopicId: "fractions",
+                  fallbackGrade: grade,
+                  fallbackLevel: level,
+                },
+                "math"
+              );
+            } else {
+              mathPendingDiagnosticProbeRef.current = null;
+            }
+          } catch {
+            mathPendingDiagnosticProbeRef.current = null;
           }
           setMistakes((prev) => {
             const filtered = prev.filter(

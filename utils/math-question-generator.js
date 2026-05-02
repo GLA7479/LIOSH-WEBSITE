@@ -1,5 +1,6 @@
 import { GRADES, BLANK } from './math-constants';
 import { mergeDiagnosticContractIntoParams } from './diagnostic-question-contract.js';
+import { probeMatchesSession } from './active-diagnostic-runtime/session-match.js';
 
 function mathLevelKeyFromConfig(levelConfig) {
   const n = String(levelConfig?.name || "").trim();
@@ -739,7 +740,100 @@ export function buildMathMcqAnswerList(correctAnswer, selectedOp, params, randIn
   return shuffleMcqList([correctAnswer, ...Array.from(wrongN).slice(0, 3)]);
 }
 
-export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null) {
+/**
+ * Fraction probe exercise when pendingProbe suggests a targeted shape (session-local).
+ * @returns {null | {
+ *   question: string,
+ *   correctAnswer: number|string,
+ *   params: Record<string, unknown>,
+ *   a: number|null,
+ *   b: number|null,
+ *   probeMetaPayload: { probeSnapshot: object, probeReason: string, expectedErrorTags?: string[] }
+ * }}
+ */
+function tryMathFractionProbeExercise({
+  probeOpts,
+  gradeKey,
+  mathLevelKey,
+  levelConfig,
+  operation,
+  densSmall,
+  densBig,
+  randInt,
+}) {
+  const pb = probeOpts?.pendingProbe;
+  if (!pb || String(pb.subjectId || "") !== "math") return null;
+  const levelKey = mathLevelKeyFromConfig(levelConfig);
+  if (!probeMatchesSession(pb, gradeKey, levelKey, operation)) return null;
+  if (!levelConfig.fractions || levelConfig.fractions.maxDen == null) return null;
+
+  const dens =
+    gradeKey === "g3" || gradeKey === "g4"
+      ? densSmall.filter((d) => d <= levelConfig.fractions.maxDen)
+      : densBig.filter((d) => d <= levelConfig.fractions.maxDen);
+  if (!dens.length) return null;
+
+  const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
+  const lcmPair = (a, b) => Math.abs((a * b) / gcd(a, b));
+
+  const st = String(pb.suggestedQuestionType || "");
+
+  if (st === "fraction_common_denominator_only") {
+    let d1 = dens[randInt(0, dens.length - 1)];
+    let d2 = dens[randInt(0, dens.length - 1)];
+    let guard = 0;
+    while (d1 === d2 && dens.length > 1 && guard < 12) {
+      d2 = dens[randInt(0, dens.length - 1)];
+      guard++;
+    }
+    const lcd = lcmPair(d1, d2);
+    const exerciseText = `מה המכנה המשותף המינימלי (LCD) של המכנים ${d1} ו-${d2}? = ${BLANK}`;
+    const params = mergeDiagnosticContractIntoParams(
+      {
+        kind: "frac_probe_common_denominator_only",
+        den1: d1,
+        den2: d2,
+        lcd,
+        exerciseText,
+        patternFamily: "fraction_probe_common_denominator",
+        conceptTag: "frac_common_denominator",
+        diagnosticSkillId:
+          pb.diagnosticSkillId != null && String(pb.diagnosticSkillId).trim()
+            ? String(pb.diagnosticSkillId).trim()
+            : "math_frac_common_denominator",
+        expectedErrorTags: ["wrong_lcm", "adds_denominators_directly"],
+      },
+      {
+        patternFamily: "fraction_probe_common_denominator",
+        diagnosticSkillId:
+          pb.diagnosticSkillId || "math_frac_common_denominator",
+        expectedErrorTags: ["wrong_lcm", "adds_denominators_directly"],
+      }
+    );
+
+    const expectedTags =
+      Array.isArray(params.expectedErrorTags) && params.expectedErrorTags.length > 0
+        ? [...params.expectedErrorTags]
+        : undefined;
+
+    return {
+      question: exerciseText,
+      correctAnswer: lcd,
+      params,
+      a: d1,
+      b: d2,
+      probeMetaPayload: {
+        probeSnapshot: pb,
+        probeReason: "fraction_common_denominator_only",
+        expectedErrorTags: expectedTags,
+      },
+    };
+  }
+
+  return null;
+}
+
+export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = null, probeOpts = null) {
   const gradeCfg = GRADES[gradeKey] || GRADES.g3;
 
   let allowedOps = gradeCfg.operations.filter((op) => op !== "mixed");
@@ -1270,6 +1364,29 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
   } else if (selectedOp === "fractions" && levelConfig.allowFractions) {
     const densSmall = [2, 4, 5, 10];
     const densBig = [2, 3, 4, 5, 6, 8, 10, 12];
+
+    const probeFrac = tryMathFractionProbeExercise({
+      probeOpts,
+      gradeKey,
+      mathLevelKey,
+      levelConfig,
+      operation,
+      densSmall,
+      densBig,
+      randInt,
+    });
+
+    if (probeFrac) {
+      question = probeFrac.question;
+      correctAnswer = probeFrac.correctAnswer;
+      params = probeFrac.params;
+      operandA = probeFrac.a;
+      operandB = probeFrac.b;
+      isStory = false;
+      if (probeOpts?.probeMetaHolder && probeFrac.probeMetaPayload) {
+        probeOpts.probeMetaHolder.current = probeFrac.probeMetaPayload;
+      }
+    } else {
     const dens =
       gradeKey === "g3" || gradeKey === "g4"
         ? densSmall.filter((d) => d <= levelConfig.fractions.maxDen)
@@ -1546,6 +1663,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
           params = { kind: "frac_quarter_reverse", quarter: whole / 4, whole };
         }
       }
+    }
     }
   // ===== אחוזים (כיתות ה–ו) =====
   } else if (selectedOp === "percentages") {

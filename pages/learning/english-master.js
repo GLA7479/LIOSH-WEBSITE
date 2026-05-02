@@ -34,6 +34,16 @@ import {
   extractDiagnosticMetadataFromQuestion,
   mergeDiagnosticIntoMistakeEntry,
 } from "../../utils/diagnostic-mistake-metadata";
+import { normalizeMistakeEvent } from "../../utils/mistake-event.js";
+import { inferNormalizedTags } from "../../utils/fast-diagnostic-engine/infer-tags.js";
+import {
+  buildPendingProbeFromMistake,
+  selectQuestionWithProbe,
+  probeMatchesSession,
+  attachProbeMetaToQuestion,
+  applyProbeOutcome,
+  clearActiveDiagnosticState,
+} from "../../utils/active-diagnostic-runtime/index.js";
 import { mergeDiagnosticContractIntoParams } from "../../utils/diagnostic-question-contract";
 import { mcqCellValue } from "../../utils/mcq-option-cell";
 import {
@@ -401,12 +411,21 @@ function resolveEnglishQType({
   return "choice";
 }
 
+function englishGrammarRowKey(row) {
+  return `${String(row.question)}|${String(row.correct)}`;
+}
+
+function englishGrammarRowKeyFromQuestion(q) {
+  return `${String(q.question)}|${String(q.correctAnswer)}`;
+}
+
 function generateQuestion(
   level,
   topic,
   gradeKey,
   mixedOps = null,
-  levelKey = "easy"
+  levelKey = "easy",
+  probeOpts = null
 ) {
   const isMixed = topic === "mixed";
   let selectedTopic;
@@ -546,7 +565,40 @@ function generateQuestion(
           );
         }
       }
-      const grammarQ = pool[Math.floor(Math.random() * pool.length)];
+      let grammarProbePick = null;
+      const pendingGrammarProbe =
+        probeOpts?.grammarProbe &&
+        probeMatchesSession(
+          probeOpts.grammarProbe,
+          gradeKey,
+          levelKey,
+          selectedTopic
+        )
+          ? probeOpts.grammarProbe
+          : null;
+
+      let grammarQ;
+      if (pendingGrammarProbe && pool.length > 0) {
+        const pr = selectQuestionWithProbe({
+          items: pool,
+          pendingProbe: pendingGrammarProbe,
+          recentIds: probeOpts.grammarRecentRowKeys || [],
+          currentTopic: selectedTopic,
+          fallbackPick: () => pool[Math.floor(Math.random() * pool.length)],
+          randomFn: Math.random,
+          getItemTopic: () => selectedTopic,
+          getItemId: (row) => englishGrammarRowKey(row),
+        });
+        grammarQ = pr.question;
+        if (pr.usedProbe) {
+          grammarProbePick = {
+            snapshot: pendingGrammarProbe,
+            reason: pr.reason,
+          };
+        }
+      } else {
+        grammarQ = pool[Math.floor(Math.random() * pool.length)];
+      }
       if (!grammarQ) {
         if (typeof console !== "undefined" && console.warn) {
           console.warn("[english] no grammar item after gating", gradeKey);
@@ -573,6 +625,15 @@ function generateQuestion(
         },
         grammarQ
       );
+      if (grammarProbePick && probeOpts?.probeMetaHolder) {
+        probeOpts.probeMetaHolder.current = {
+          probeSnapshot: grammarProbePick.snapshot,
+          probeReason: grammarProbePick.reason,
+          expectedErrorTags: Array.isArray(params.expectedErrorTags)
+            ? [...params.expectedErrorTags]
+            : undefined,
+        };
+      }
       break;
     }
 
@@ -776,7 +837,7 @@ function generateQuestion(
       );
       const randomTopic =
         availableTopics[Math.floor(Math.random() * availableTopics.length)];
-      return generateQuestion(level, randomTopic, gradeKey, null, levelKey);
+      return generateQuestion(level, randomTopic, gradeKey, null, levelKey, probeOpts);
     }
   }
 
@@ -1221,6 +1282,9 @@ export default function EnglishMaster() {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [showHowTo, setShowHowTo] = useState(false);
   const [mistakes, setMistakes] = useState([]);
+  const englishPendingDiagnosticProbeRef = useRef(null);
+  const englishHypothesisLedgerRef = useRef(null);
+  const englishGrammarRecentRowKeysRef = useRef([]);
   const [showPracticeModal, setShowPracticeModal] = useState(false);
   const [showReferenceModal, setShowReferenceModal] = useState(false);
   const [referenceCategory, setReferenceCategory] = useState(REFERENCE_CATEGORY_KEYS[0]);
@@ -1284,6 +1348,14 @@ const refreshMonthlyProgress = useCallback(() => {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    clearActiveDiagnosticState(
+      englishPendingDiagnosticProbeRef,
+      englishHypothesisLedgerRef
+    );
+    englishGrammarRecentRowKeysRef.current = [];
+  }, [grade, level, topic, practiceFocus]);
   const [playerAvatar, setPlayerAvatar] = useState(() => {
     if (typeof window !== "undefined") {
       try {
@@ -1838,6 +1910,11 @@ const refreshMonthlyProgress = useCallback(() => {
     accumulateQuestionTime();
     // Stop background music when game resets
     sound.stopBackgroundMusic();
+    clearActiveDiagnosticState(
+      englishPendingDiagnosticProbeRef,
+      englishHypothesisLedgerRef
+    );
+    englishGrammarRecentRowKeysRef.current = [];
     setGameActive(false);
     englishTrackingTopicKeyRef.current = null;
     setCurrentQuestion(null);
@@ -1922,13 +1999,20 @@ const refreshMonthlyProgress = useCallback(() => {
     const maxAttempts = 50;
     trackCurrentQuestionTime();
     const localRecentQuestions = new Set(recentQuestions);
+    const probeAtStart = englishPendingDiagnosticProbeRef.current;
+    const probeMetaHolder = { current: null };
     do {
       question = generateQuestion(
         levelConfig,
         topicForState,
         gradeForQuestion,
         topicForState === "mixed" ? mixedConfig : null,
-        levelForQuestion
+        levelForQuestion,
+        {
+          grammarProbe: probeAtStart,
+          grammarRecentRowKeys: englishGrammarRecentRowKeysRef.current,
+          probeMetaHolder,
+        }
       );
       attempts++;
       const questionKey = englishQuestionFingerprint(question);
@@ -1949,6 +2033,23 @@ const refreshMonthlyProgress = useCallback(() => {
     question.gradeKey = gradeForQuestion;
     question.levelKey = levelForQuestion;
     question.practiceFocus = mode === "practice" ? practiceFocus : "default";
+    if (probeMetaHolder.current) {
+      question = attachProbeMetaToQuestion(question, probeMetaHolder.current);
+    }
+    if (probeAtStart) {
+      const probeConsumed =
+        probeMetaHolder.current != null || question.topic === "grammar";
+      if (probeConsumed) {
+        englishPendingDiagnosticProbeRef.current = null;
+      }
+    }
+    if (question.topic === "grammar") {
+      const k = englishGrammarRowKeyFromQuestion(question);
+      const prev = englishGrammarRecentRowKeysRef.current || [];
+      englishGrammarRecentRowKeysRef.current = [...prev.filter((x) => x !== k), k].slice(
+        -24
+      );
+    }
     englishTrackingTopicKeyRef.current = question.topic;
     if (currentQuestion) {
       setPreviousExplanationQuestion(currentQuestion);
@@ -1970,6 +2071,11 @@ const refreshMonthlyProgress = useCallback(() => {
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
+    clearActiveDiagnosticState(
+      englishPendingDiagnosticProbeRef,
+      englishHypothesisLedgerRef
+    );
+    englishGrammarRecentRowKeysRef.current = [];
     setRecentQuestions(new Set());
     setGameActive(true);
     setScore(0);
@@ -2011,6 +2117,11 @@ const refreshMonthlyProgress = useCallback(() => {
   function stopGame() {
     // Stop background music when game stops
     sound.stopBackgroundMusic();
+    clearActiveDiagnosticState(
+      englishPendingDiagnosticProbeRef,
+      englishHypothesisLedgerRef
+    );
+    englishGrammarRecentRowKeysRef.current = [];
     pendingEnglishTrackMetaRef.current = {
       correct: undefined,
       total: 1,
@@ -2094,6 +2205,77 @@ const refreshMonthlyProgress = useCallback(() => {
       expected: currentQuestion.correctAnswer,
       acceptedList: acceptedAnswers,
     });
+    const questionGradeKey = currentQuestion.gradeKey || grade;
+
+    if (
+      questionForSave._diagnosticProbeAttempt === true &&
+      questionForSave._probeMeta
+    ) {
+      let inferredTags = [];
+      if (!isCorrect) {
+        let wrongEntry = {
+          topic: currentQuestion.topic,
+          topicOrOperation: currentQuestion.topic,
+          bucketKey: currentQuestion.topic,
+          grade: questionGradeKey,
+          level: currentQuestion.levelKey || level,
+          mode: reportModeFromGameState(mode, focusedPracticeMode),
+          question: currentQuestion.question,
+          exerciseText: currentQuestion.question,
+          correctAnswer: currentQuestion.correctAnswer,
+          wrongAnswer: answer,
+          userAnswer: answer,
+          isCorrect: false,
+          patternFamily:
+            currentQuestion.params?.patternFamily != null
+              ? String(currentQuestion.params.patternFamily)
+              : null,
+          conceptTag:
+            currentQuestion.params?.conceptTag != null
+              ? String(currentQuestion.params.conceptTag)
+              : null,
+          distractorFamily:
+            currentQuestion.params?.distractorFamily != null
+              ? String(currentQuestion.params.distractorFamily)
+              : null,
+          answerMode:
+            Array.isArray(currentQuestion.answers) &&
+            currentQuestion.answers.length > 1
+              ? "choice"
+              : "typed",
+        };
+        wrongEntry = mergeDiagnosticIntoMistakeEntry(
+          wrongEntry,
+          extractDiagnosticMetadataFromQuestion(currentQuestion, {
+            responseMs: timeSpentMs,
+            hintUsed: hintUsedForSave,
+          })
+        );
+        wrongEntry = mergeDiagnosticIntoMistakeEntry(
+          wrongEntry,
+          computeMcqIndicesForQuestion(currentQuestion, answer)
+        );
+        const normalizedWrong = normalizeMistakeEvent(wrongEntry, "english");
+        inferredTags = inferNormalizedTags(normalizedWrong, "english");
+      }
+      englishHypothesisLedgerRef.current = applyProbeOutcome(
+        englishHypothesisLedgerRef.current,
+        {
+          isCorrect,
+          inferredTags,
+          probeMeta: questionForSave._probeMeta,
+          now: Date.now(),
+        }
+      );
+      setCurrentQuestion((prev) => {
+        if (!prev || prev !== questionForSave) return prev;
+        const { _diagnosticProbeAttempt: _a, _probeMeta: _b, ...rest } = prev;
+        void _a;
+        void _b;
+        return rest;
+      });
+    }
+
     pendingEnglishTrackMetaRef.current = {
       correct: isCorrect ? 1 : 0,
       total: 1,
@@ -2245,7 +2427,6 @@ const refreshMonthlyProgress = useCallback(() => {
       // Play sound for wrong answer
       sound.playSound("wrong");
       
-      const questionGradeKey = currentQuestion.gradeKey || grade;
       setErrorExplanation(
         getErrorExplanation(
           currentQuestion,
@@ -2307,6 +2488,25 @@ const refreshMonthlyProgress = useCallback(() => {
             distractorFamily: dfOpt,
           });
         }
+      }
+      try {
+        if (currentQuestion.topic === "grammar") {
+          const normalized = normalizeMistakeEvent(englishMistakePayload, "english");
+          englishPendingDiagnosticProbeRef.current = buildPendingProbeFromMistake(
+            normalized,
+            {
+              wrongAvoidKey: englishGrammarRowKeyFromQuestion(currentQuestion),
+              fallbackTopicId: currentQuestion.topic,
+              fallbackGrade: questionGradeKey,
+              fallbackLevel: currentQuestion.levelKey || level,
+            },
+            "english"
+          );
+        } else {
+          englishPendingDiagnosticProbeRef.current = null;
+        }
+      } catch {
+        englishPendingDiagnosticProbeRef.current = null;
       }
       logEnglishMistakeEntry(englishMistakePayload);
       if ("vibrate" in navigator) navigator.vibrate?.(200);
