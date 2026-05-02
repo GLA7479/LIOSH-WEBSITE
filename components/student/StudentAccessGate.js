@@ -20,7 +20,7 @@ export default function StudentAccessGate({ children }) {
     if (!router.isReady) return undefined;
     let mounted = true;
     const pathForNext = router.asPath || "/learning";
-    fetch("/api/student/me")
+    fetch("/api/student/me", { credentials: "same-origin" })
       .then(async (res) => {
         const payload = await res.json().catch(() => ({}));
         if (!mounted) return;

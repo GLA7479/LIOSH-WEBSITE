@@ -14,8 +14,7 @@ const nextConfig = {
         ],
       };
       /**
-       * React Fast Refresh נשען על שינויי רנטיים בזמן ריצה. הרחבות כמו ארנקים (SES / lockdown)
-       * שוברות את זה → "Fast Refresh had to perform a full reload" בלולאה.
+       * React Fast Refresh נשען על שינויי רנטיים בזמן ריצה.
        * השבתת הפלאגין: אין Fast Refresh, אבל שמירת קבצים עדיין מרעננת את הדף (רענון מלא).
        * ראה: https://nextjs.org/docs/messages/fast-refresh-reload
        */

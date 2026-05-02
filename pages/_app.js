@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import OfflineIndicator from "../components/OfflineIndicator";
 import StudentAccessGate from "../components/student/StudentAccessGate";
+import DevServiceWorkerCleanup from "../components/dev/DevServiceWorkerCleanup";
 
 const STUDENT_PROTECTED_ROUTES = new Set([
   "/student/arcade",
@@ -28,12 +29,8 @@ export default function MyApp({ Component, pageProps }) {
       return undefined;
     }
 
-    // בפיתוח: SW שומר תגובות ישנות של dev server ומתנגש ב-HMR → רענון מלא בלולאה.
-    // בפרודקשן נשאר הרישום הרגיל.
+    // בפיתוח: ראה DevServiceWorkerCleanup — לא רושמים SW; מנקים רישומים ו־Cache Storage.
     if (process.env.NODE_ENV === "development") {
-      navigator.serviceWorker.getRegistrations().then((regs) => {
-        regs.forEach((r) => r.unregister());
-      });
       return undefined;
     }
 
@@ -107,6 +104,7 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <>
+      {process.env.NODE_ENV !== "production" ? <DevServiceWorkerCleanup /> : null}
       <Head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />

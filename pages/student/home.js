@@ -11,9 +11,10 @@ export default function StudentHomePage() {
   useEffect(() => {
     if (!router.isReady) return undefined;
     let mounted = true;
-    fetch("/api/student/me")
+
+    fetch("/api/student/me", { credentials: "same-origin" })
       .then(async (res) => {
-        const payload = await res.json();
+        const payload = await res.json().catch(() => ({}));
         if (!mounted) return;
         if (!res.ok || !payload?.student?.id) {
           router.replace("/student/login");
@@ -22,8 +23,10 @@ export default function StudentHomePage() {
         setStudent(payload.student);
       })
       .catch(() => {
-        if (mounted) router.replace("/student/login");
+        if (!mounted) return;
+        router.replace("/student/login");
       });
+
     return () => {
       mounted = false;
     };
@@ -42,7 +45,9 @@ export default function StudentHomePage() {
   if (!student) {
     return (
       <Layout>
-        <div className="max-w-3xl mx-auto px-4 py-10">טוען פרטי תלמיד...</div>
+        <div className="max-w-3xl mx-auto px-4 py-10 space-y-3">
+          <p>טוען פרטי תלמיד...</p>
+        </div>
       </Layout>
     );
   }
