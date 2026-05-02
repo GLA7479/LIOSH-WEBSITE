@@ -5,6 +5,7 @@ import { normalizeParentFacingHe } from "../parent-report-language/index.js";
 import { shortReportDiagnosticsParentVisibleHe } from "../parent-report-ui-explain-he.js";
 import { inferNormalizedTags, isHighInformationMisconceptionTag } from "./infer-tags.js";
 import { TAG_LABEL_HE, tagsSummaryHe } from "./parent-copy-he.js";
+import { resolveProbeHintFromMap } from "./probe-map-he.js";
 
 function safeNumber(n) {
   const v = Number(n);
@@ -121,6 +122,7 @@ export function runFastDiagnosisForUnit({ unit, events, row }) {
     dominantTag,
     subjectId,
     w,
+    wrongs,
   });
 
   let parentSafeTextHe = buildParentSafeHe({
@@ -197,8 +199,40 @@ function buildEvidenceLinesHe({ topicName, w, q, dominantTag, dominantCount, sus
   return lines.slice(0, 6);
 }
 
-function buildNextProbe({ diagnosisStage, topicName, dominantTag, subjectId, w }) {
-  const skill = stripInternalTokensHe(topicName);
+/**
+ * @param {import("../mistake-event.js").MistakeEventV1[]} wrongs
+ */
+function dominantDiagnosticSkillIdFromWrongs(wrongs) {
+  /** @type {Record<string, number>} */
+  const counts = {};
+  for (const e of wrongs) {
+    const id = e?.diagnosticSkillId && String(e.diagnosticSkillId).trim();
+    if (!id) continue;
+    counts[id] = (counts[id] || 0) + 1;
+  }
+  let best = null;
+  let n = 0;
+  for (const [k, c] of Object.entries(counts)) {
+    if (c > n) {
+      best = k;
+      n = c;
+    }
+  }
+  return best;
+}
+
+/**
+ * @param {object} p
+ * @param {import("../mistake-event.js").MistakeEventV1[]} [p.wrongs]
+ */
+function buildNextProbe({ diagnosisStage, topicName, dominantTag, subjectId, w, wrongs }) {
+  const skillDefault = stripInternalTokensHe(topicName);
+  const domSkill = dominantDiagnosticSkillIdFromWrongs(Array.isArray(wrongs) ? wrongs : []);
+  const mapped = resolveProbeHintFromMap({
+    dominantTag: dominantTag || "",
+    dominantDiagnosticSkillId: domSkill,
+  });
+
   const tagLab = dominantTag ? TAG_LABEL_HE[dominantTag] || "" : "";
   let reasonHe = normalizeParentFacingHe(
     `לבדוק האם ${tagLab || "אותו סוג קושי"} חוזר כשמורידים רמזים ומאריכים קצת את זמן העבודה.`
@@ -213,6 +247,13 @@ function buildNextProbe({ diagnosisStage, topicName, dominantTag, subjectId, w }
     suggestedQuestionType = "fraction_visual_same_denominator";
   } else if (subjectId === "english") {
     suggestedQuestionType = "short_text_same_skill";
+  }
+
+  let skill = skillDefault;
+  if (mapped) {
+    skill = stripInternalTokensHe(mapped.skill);
+    reasonHe = normalizeParentFacingHe(mapped.reasonHe);
+    suggestedQuestionType = mapped.suggestedQuestionType;
   }
 
   const priority = diagnosisStage === "stable_diagnosis" ? 1 : diagnosisStage === "working_hypothesis" ? 2 : 3;

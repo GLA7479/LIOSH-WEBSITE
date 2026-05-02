@@ -81,6 +81,12 @@ import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
 import { compareGeometryLearnerAnswer } from "../../utils/answer-compare";
 import {
+  computeMcqIndicesForQuestion,
+  distractorFamilyFromOptionCell,
+  extractDiagnosticMetadataFromQuestion,
+  mergeDiagnosticIntoMistakeEntry,
+} from "../../utils/diagnostic-mistake-metadata";
+import {
   safeGetItem,
   safeSetItem,
   safeRemoveItem,
@@ -1221,7 +1227,7 @@ useEffect(() => {
             );
             const ts = Date.now();
             const prm = currentQuestion.params || {};
-            const entry = {
+            let entry = {
               id: newGeometryMistakeId(),
               storedAt: ts,
               timestamp: ts,
@@ -1249,6 +1255,30 @@ useEffect(() => {
               question: currentQuestion.question,
               snapshot: snap,
             };
+            entry = mergeDiagnosticIntoMistakeEntry(
+              entry,
+              extractDiagnosticMetadataFromQuestion(currentQuestion, {
+                responseMs: timeSpentMs,
+                hintUsed: hintUsedForSave,
+              })
+            );
+            entry = mergeDiagnosticIntoMistakeEntry(
+              entry,
+              computeMcqIndicesForQuestion(currentQuestion, answer)
+            );
+            if (
+              !entry.distractorFamily &&
+              entry.selectedOptionIndex != null &&
+              Array.isArray(currentQuestion.answers)
+            ) {
+              const cell = currentQuestion.answers[entry.selectedOptionIndex];
+              const dfOpt = distractorFamilyFromOptionCell(cell);
+              if (dfOpt) {
+                entry = mergeDiagnosticIntoMistakeEntry(entry, {
+                  distractorFamily: dfOpt,
+                });
+              }
+            }
             const next = [...filtered, entry].slice(-80);
             if (typeof window !== "undefined") {
               try {

@@ -16,6 +16,9 @@ export const HEBREW_RICH_POOL = [
     patternFamily: "passage_explicit",
     subtype: "detail",
     distractorFamily: "wrong_detail",
+    diagnosticSkillId: "he_comp_explicit_detail",
+    probePower: "medium",
+    expectedErrorTags: ["detail_recall_error", "comprehension_gap"],
     question:
       "כיתה ג׳ — קראו: 'דני שם את הספר בתיק לפני שיצא לבית הספר.' מה עשה דני לפני היציאה?",
     answers: [
@@ -34,6 +37,9 @@ export const HEBREW_RICH_POOL = [
     patternFamily: "passage_explicit",
     subtype: "detail",
     distractorFamily: "wrong_detail",
+    diagnosticSkillId: "he_comp_explicit_detail",
+    probePower: "medium",
+    expectedErrorTags: ["detail_recall_error", "comprehension_gap"],
     question:
       "כיתה ד׳ — לפי המשפט: 'דני שם את הספר בתיק לפני שיצא לבית הספר.' מה עשה דני לפני היציאה?",
     answers: [
@@ -52,6 +58,9 @@ export const HEBREW_RICH_POOL = [
     patternFamily: "passage_inference",
     subtype: "implied",
     distractorFamily: "plausible_inference",
+    diagnosticSkillId: "he_comp_inference_intro",
+    probePower: "medium",
+    expectedErrorTags: ["inference_error", "comprehension_gap"],
     question:
       "כיתה ג׳ — קראו: 'מיכל חיפשה את המפתחות בכל הבית, ובסוף מצאה אותם בכיס המעיל.' מה ניתן להסיק?",
     answers: [
@@ -87,6 +96,9 @@ export const HEBREW_RICH_POOL = [
     patternFamily: "sequence",
     subtype: "order",
     distractorFamily: "order_confusion",
+    diagnosticSkillId: "he_comp_sequence_events",
+    probePower: "medium",
+    expectedErrorTags: ["sequence_error", "comprehension_gap"],
     question:
       "סדר האירועים: (א) שתינו מים (ב) רצו במסלול (ג) התחממו. מה הסדר ההגיוני לפני ריצה?",
     answers: ["א → ג → ב", "ב → א → ג", "ג → ב → א", "ב → ג → א"],

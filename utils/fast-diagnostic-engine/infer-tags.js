@@ -25,6 +25,13 @@ export function inferNormalizedTags(ev, subjectId) {
     if (t) tags.add(t);
   };
 
+  if (!ev?.isCorrect && Array.isArray(ev.expectedErrorTags)) {
+    for (const t of ev.expectedErrorTags) {
+      const s = String(t || "").trim();
+      if (s) add(s);
+    }
+  }
+
   // --- Cross-cutting (existing stored families) ---
   if (pf.includes("perimeter") || pf.includes("area")) add("concept_confusion");
   if (pf.includes("fraction") || pf.includes("denominator") || ct.includes("denom")) {
@@ -82,7 +89,9 @@ export function inferNormalizedTags(ev, subjectId) {
       ev.conceptTag ||
       ev.kind ||
       ev.subtype ||
-      ev.distractorFamily
+      ev.distractorFamily ||
+      ev.diagnosticSkillId ||
+      (Array.isArray(ev.expectedErrorTags) && ev.expectedErrorTags.length > 0)
     );
     if (hadRaw) add("calculation_slip");
   }
@@ -101,6 +110,15 @@ export function isHighInformationMisconceptionTag(tag) {
     t === "operation_confusion" ||
     t === "place_value_error" ||
     t === "concept_confusion" ||
+    t === "concept_gap" ||
+    t === "grammar_pattern_error" ||
+    t === "tense_confusion" ||
+    t === "comprehension_gap" ||
+    t === "detail_recall_error" ||
+    t === "inference_error" ||
+    t === "fact_recall_gap" ||
+    t === "cause_effect_gap" ||
+    t === "classification_error" ||
     t === "prerequisite_gap"
   );
 }

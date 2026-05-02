@@ -19,6 +19,7 @@ import {
   withUpperGradeSubtopicPreference,
   attachUpperGradeSubtopicParams,
 } from './hebrew-g3456-subtopic';
+import { pickDiagnosticContractFields } from './diagnostic-question-contract.js';
 
 /** Layer 3: typing רק לפריטים עם preferredAnswerMode + תת־נושא מאושר (א׳–ב׳). */
 const G12_ALLOWED_TYPING_SUBTOPICS = new Set([
@@ -4601,6 +4602,11 @@ export function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
     q.subtype = inferred.subtype;
   }
   if (!q.distractorFamily) q.distractorFamily = "mixed";
+  if (raw.diagnosticSkillId != null) q.diagnosticSkillId = raw.diagnosticSkillId;
+  if (Array.isArray(raw.expectedErrorTags)) q.expectedErrorTags = [...raw.expectedErrorTags];
+  if (raw.probePower != null) q.probePower = raw.probePower;
+  if (raw.nextProbeSkillId != null) q.nextProbeSkillId = raw.nextProbeSkillId;
+  if (raw.explanationHe != null) q.explanationHe = raw.explanationHe;
   q.hebrewLegacyMeta = {
     answerMode: inferred.answerMode,
     allowedLevels: inferred.allowedLevels,
@@ -5126,6 +5132,7 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
           : {}),
         ...(fallbackLevelKey !== levelKey ? { levelRelaxedFrom: levelKey } : {}),
         ...subtopicParams,
+        ...pickDiagnosticContractFields(randomQ),
         ...(randomQ.authenticity_pattern != null &&
         String(randomQ.authenticity_pattern).trim() !== ""
           ? { authenticity_pattern: String(randomQ.authenticity_pattern).trim() }
@@ -5214,6 +5221,7 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
         : {}),
       ...(poolLevelKey !== levelKey ? { levelRelaxedFrom: levelKey } : {}),
       ...subtopicParams,
+      ...pickDiagnosticContractFields(randomQ),
       ...(randomQ.authenticity_pattern != null &&
       String(randomQ.authenticity_pattern).trim() !== ""
         ? { authenticity_pattern: String(randomQ.authenticity_pattern).trim() }

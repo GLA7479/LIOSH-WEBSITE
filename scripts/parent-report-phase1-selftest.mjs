@@ -617,4 +617,209 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
   assertParentHebrewSafe(fdThin.parentSafeTextHe);
 }
 
+// Phase 3B: diagnostic mistake metadata (additive instrumentation for FastDiagnosticEngine).
+{
+  const {
+    extractDiagnosticMetadataFromQuestion,
+    mergeDiagnosticIntoMistakeEntry,
+    computeMcqIndicesForQuestion,
+  } = await importUtils("../utils/diagnostic-mistake-metadata.js");
+  const { normalizeMistakeEvent } = await importUtils("../utils/mistake-event.js");
+
+  const meta = extractDiagnosticMetadataFromQuestion(
+    {
+      id: "q1",
+      correctAnswer: "B",
+      params: {
+        patternFamily: "photosynthesis_light",
+        conceptTag: "bio_leaf",
+        kind: "mcq",
+        subtype: "stem_mc",
+        distractorFamily: "dist_fact_shift",
+        diagnosticSkillId: "skill_leaf",
+      },
+    },
+    { responseMs: 4200, hintUsed: true }
+  );
+  assert.equal(meta.patternFamily, "photosynthesis_light");
+  assert.equal(meta.conceptTag, "bio_leaf");
+  assert.equal(meta.kind, "mcq");
+  assert.equal(meta.diagnosticSkillId, "skill_leaf");
+  assert.equal(meta.responseMs, 4200);
+  assert.equal(meta.hintUsed, true);
+
+  assert.ok(typeof extractDiagnosticMetadataFromQuestion(undefined, {}) === "object");
+
+  const merged = mergeDiagnosticIntoMistakeEntry(
+    { topic: "plants", isCorrect: false },
+    { patternFamily: "x", hintUsed: false }
+  );
+  assert.equal(merged.topic, "plants");
+  assert.equal(merged.patternFamily, "x");
+  assert.equal(merged.hintUsed, false);
+
+  const mcqIdx = computeMcqIndicesForQuestion(
+    { answers: ["a", "b", "c"], correctAnswer: "b" },
+    "b"
+  );
+  assert.equal(mcqIdx.selectedOptionIndex, 1);
+  assert.equal(mcqIdx.correctOptionIndex, 1);
+
+  const scienceLike = mergeDiagnosticIntoMistakeEntry(
+    {
+      topic: "matter",
+      userAnswer: "x",
+      isCorrect: false,
+      timestamp: Date.now(),
+      params: { gradeKey: "g4" },
+    },
+    extractDiagnosticMetadataFromQuestion(
+      {
+        id: "sci_42",
+        stem: "שאלה?",
+        correctIndex: 2,
+        options: ["a", "b", "c"],
+        params: {
+          patternFamily: "states_of_matter",
+          conceptTag: "solid_liquid_gas",
+        },
+      },
+      { responseMs: 3100, hintUsed: false }
+    )
+  );
+  const normScience = normalizeMistakeEvent(scienceLike, "science");
+  assert.equal(normScience.patternFamily, "states_of_matter");
+  assert.equal(normScience.conceptTag, "solid_liquid_gas");
+  assert.equal(normScience.responseMs, 3100);
+  assert.equal(normScience.hintUsed, false);
+}
+
+// Phase 3C: diagnostic contract helpers, object MCQ cells, probe map preference (no UI/report changes).
+{
+  const { normalizeMistakeEvent } = await importUtils("../utils/mistake-event.js");
+  const { mcqCellValue } = await importUtils("../utils/mcq-option-cell.js");
+  assert.equal(mcqCellValue("runs"), "runs");
+  assert.equal(
+    mcqCellValue({ label: "runs", value: "run", distractorFamily: "tense_shift" }),
+    "run"
+  );
+
+  const {
+    mergeDiagnosticContractIntoParams,
+    pickDiagnosticContractFields,
+  } = await importUtils("../utils/diagnostic-question-contract.js");
+  const mergedParams = mergeDiagnosticContractIntoParams(
+    { patternFamily: "grammar_mcq", grammarOptionSet: ["a", "b"] },
+    {
+      diagnosticSkillId: "en_grammar_be_present",
+      expectedErrorTags: ["grammar_pattern_error"],
+      probePower: "medium",
+    }
+  );
+  assert.equal(mergedParams.diagnosticSkillId, "en_grammar_be_present");
+  assert.deepEqual(mergedParams.expectedErrorTags, ["grammar_pattern_error"]);
+  assert.ok(Object.keys(pickDiagnosticContractFields({ junk: 1 })).length === 0);
+
+  const {
+    distractorFamilyFromOptionCell,
+    computeMcqIndicesForQuestion,
+    mergeDiagnosticIntoMistakeEntry,
+  } = await importUtils("../utils/diagnostic-mistake-metadata.js");
+  const optCell = {
+    label: "8/12",
+    value: "8/12",
+    distractorFamily: "adds_denominators_directly",
+    errorTag: "ignored_for_df",
+  };
+  assert.equal(distractorFamilyFromOptionCell(optCell), "adds_denominators_directly");
+
+  const mcqIdxObj = computeMcqIndicesForQuestion(
+    {
+      answers: [
+        { value: "5/6", distractorFamily: "correct_route" },
+        { value: "8/12", distractorFamily: "adds_denominators_directly" },
+      ],
+      correctAnswer: "5/6",
+    },
+    "8/12"
+  );
+  assert.equal(mcqIdxObj.selectedOptionIndex, 1);
+  assert.equal(mcqIdxObj.correctOptionIndex, 0);
+
+  let fracEntry = mergeDiagnosticIntoMistakeEntry(
+    { subject: "math", topic: "fractions", isCorrect: false },
+    { selectedOptionIndex: 1 }
+  );
+  const dfFromWrongCell = distractorFamilyFromOptionCell(
+    { value: "8/12", distractorFamily: "adds_denominators_directly" }
+  );
+  fracEntry = mergeDiagnosticIntoMistakeEntry(fracEntry, {
+    distractorFamily: dfFromWrongCell,
+  });
+  const normFrac = normalizeMistakeEvent(fracEntry, "math");
+  assert.equal(normFrac.distractorFamily, "adds_denominators_directly");
+
+  const { runFastDiagnosisForUnitForTests } = await importUtils("../utils/fast-diagnostic-engine/index.js");
+
+  const fdTaggedFrac = runFastDiagnosisForUnitForTests({
+    unit: {
+      subjectId: "math",
+      bucketKey: "fractions",
+      displayName: "שברים",
+    },
+    events: [
+      {
+        isCorrect: false,
+        patternFamily: "fraction_add_unlike_denominators",
+        expectedErrorTags: ["adds_denominators_directly"],
+        diagnosticSkillId: "math_frac_common_denominator",
+      },
+    ],
+    row: { questions: 8 },
+  });
+  assert.equal(fdTaggedFrac.diagnosisStage, "early_signal");
+  assert.ok(fdTaggedFrac.suspectedErrorTags.includes("adds_denominators_directly"));
+  assert.equal(
+    fdTaggedFrac.nextProbe.suggestedQuestionType,
+    "fraction_common_denominator_only",
+    "probe map must override generic denominator fallback"
+  );
+
+  const fdFracRepeat = runFastDiagnosisForUnitForTests({
+    unit: {
+      subjectId: "math",
+      bucketKey: "fractions",
+      displayName: "שברים",
+    },
+    events: Array.from({ length: 4 }, () => ({
+      isCorrect: false,
+      patternFamily: "fraction_add_unlike_denominators",
+      expectedErrorTags: ["adds_denominators_directly"],
+    })),
+    row: { questions: 14 },
+  });
+  assert.equal(fdFracRepeat.diagnosisStage, "working_hypothesis");
+
+  const fdSciConcept = runFastDiagnosisForUnitForTests({
+    unit: {
+      subjectId: "science",
+      bucketKey: "body",
+      displayName: "גוף האדם",
+    },
+    events: [
+      {
+        isCorrect: false,
+        expectedErrorTags: ["concept_confusion"],
+        diagnosticSkillId: "sci_respiration_concept",
+      },
+    ],
+    row: { questions: 4 },
+  });
+  assert.equal(fdSciConcept.diagnosisStage, "early_signal");
+  assert.equal(
+    fdSciConcept.nextProbe.suggestedQuestionType,
+    "science_concept_minimal_contrast"
+  );
+}
+
 console.log("parent-report phase1 selftest: OK");

@@ -50,6 +50,11 @@ import {
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
 import { warnDuplicateMcqOptionsDevOnly } from "../../utils/answer-compare";
 import {
+  distractorFamilyFromOptionCell,
+  extractDiagnosticMetadataFromQuestion,
+  mergeDiagnosticIntoMistakeEntry,
+} from "../../utils/diagnostic-mistake-metadata";
+import {
   finishLearningSession,
   saveLearningAnswer,
   startLearningSession,
@@ -1475,13 +1480,29 @@ function saveScienceAnswerInParallel({
     });
 }
 
-  function logScienceMistakeEntry(question, wrongAnswer) {
+  /**
+   * @param {object} question
+   * @param {unknown} wrongAnswer
+   * @param {object} [mcqExtra]
+   * @param {number} [mcqExtra.selectedOptionIndex]
+   * @param {number} [mcqExtra.correctOptionIndex]
+   * @param {number|null} [mcqExtra.responseMs]
+   * @param {boolean} [mcqExtra.hintUsed]
+   */
+  function logScienceMistakeEntry(question, wrongAnswer, mcqExtra = {}) {
     if (typeof window === "undefined" || !question) return;
     try {
       const ts = Date.now();
       const assignedGrade = question.assignedGrade || question.grades?.[0] || grade;
       const assignedLevel = question.assignedLevel || question.minLevel || level;
-      const entry = {
+      const qParams =
+        question.params && typeof question.params === "object" ? question.params : {};
+      const diag = extractDiagnosticMetadataFromQuestion(question, {
+        responseMs: mcqExtra.responseMs,
+        hintUsed: mcqExtra.hintUsed,
+      });
+
+      let entry = {
         id: question.id,
         topic: question.topic,
         topicOrOperation: question.topic,
@@ -1504,8 +1525,26 @@ function saveScienceAnswerInParallel({
           contentPoolLevel: assignedLevel,
           gradeKey: assignedGrade,
           poolFallbackCode: "none",
+          ...qParams,
         },
       };
+      entry = mergeDiagnosticIntoMistakeEntry(entry, diag);
+      entry = mergeDiagnosticIntoMistakeEntry(entry, {
+        selectedOptionIndex: mcqExtra.selectedOptionIndex,
+        correctOptionIndex: mcqExtra.correctOptionIndex,
+      });
+      const selIdx = mcqExtra.selectedOptionIndex;
+      if (
+        !entry.distractorFamily &&
+        selIdx != null &&
+        Array.isArray(question.options)
+      ) {
+        const cell = question.options[selIdx];
+        const dfOpt = distractorFamilyFromOptionCell(cell);
+        if (dfOpt) {
+          entry = mergeDiagnosticIntoMistakeEntry(entry, { distractorFamily: dfOpt });
+        }
+      }
       const stored = loadScienceMistakesFromStorage();
       stored.push(entry);
       const trimmed = stored.slice(-SCIENCE_MISTAKES_MAX);
@@ -2029,7 +2068,15 @@ function saveScienceAnswerInParallel({
       sound.playSound("wrong");
       
       setErrorExplanation(getErrorExplanationScience(currentQuestion, answerText));
-      logScienceMistakeEntry(currentQuestion, answerText);
+      logScienceMistakeEntry(currentQuestion, answerText, {
+        selectedOptionIndex: idx,
+        correctOptionIndex:
+          currentQuestion.correctIndex != null
+            ? currentQuestion.correctIndex
+            : undefined,
+        responseMs: timeSpentMs,
+        hintUsed: hintUsedForSave,
+      });
       setProgress((prev) => {
         const key = currentQuestion.topic;
         const cur = prev[key] || { total: 0, correct: 0 };

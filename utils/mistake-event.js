@@ -29,6 +29,10 @@
  *   hintUsed: boolean|null,
  *   changedAnswer: boolean|null,
  *   firstTryCorrect: boolean|null,
+ *   diagnosticSkillId: string|null,
+ *   expectedErrorTags: string[]|null,
+ *   nextProbeSkillId: string|null,
+ *   probePower: string|null,
  * }
  */
 
@@ -135,6 +139,23 @@ export function normalizeMistakeEvent(raw, subjectId) {
   const distractorFamily = strOrNull(p.distractorFamily ?? params.distractorFamily);
   const conceptTag = strOrNull(p.conceptTag ?? params.conceptTag);
 
+  const diagnosticSkillId = strOrNull(p.diagnosticSkillId ?? params.diagnosticSkillId);
+  const nextProbeSkillId = strOrNull(p.nextProbeSkillId ?? params.nextProbeSkillId);
+  const probePower = strOrNull(p.probePower ?? params.probePower);
+
+  const rawExpected =
+    p.expectedErrorTags !== undefined
+      ? p.expectedErrorTags
+      : params.expectedErrorTags !== undefined
+        ? params.expectedErrorTags
+        : null;
+  /** @type {string[]|null} */
+  let expectedErrorTags = null;
+  if (Array.isArray(rawExpected)) {
+    const arr = rawExpected.map((x) => String(x).trim()).filter(Boolean);
+    if (arr.length) expectedErrorTags = arr;
+  }
+
   const isCorrectRaw = p.isCorrect;
   const isCorrect =
     typeof isCorrectRaw === "boolean"
@@ -178,6 +199,10 @@ export function normalizeMistakeEvent(raw, subjectId) {
     hintUsed: optBoolOrNull(p.hintUsed ?? params.hintUsed),
     changedAnswer: optBoolOrNull(p.changedAnswer ?? params.changedAnswer),
     firstTryCorrect: optBoolOrNull(p.firstTryCorrect ?? params.firstTryCorrect),
+    diagnosticSkillId,
+    expectedErrorTags,
+    nextProbeSkillId,
+    probePower,
   };
 }
 

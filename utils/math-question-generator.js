@@ -1,4 +1,5 @@
 import { GRADES, BLANK } from './math-constants';
+import { mergeDiagnosticContractIntoParams } from './diagnostic-question-contract.js';
 
 function mathLevelKeyFromConfig(levelConfig) {
   const n = String(levelConfig?.name || "").trim();
@@ -1365,6 +1366,16 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
             : `${n1}/${den1} - ${n2}/${den2} = ${BLANK}`;
           params = { kind: "frac_add_sub", op: opKind, n1, den1, n2, den2, commonDen, resNum };
         }
+
+        params = mergeDiagnosticContractIntoParams(params, {
+          patternFamily: "fraction_unlike_denominators_add_sub",
+          conceptTag: "frac_common_denominator",
+          diagnosticSkillId: "math_frac_common_denominator",
+          probePower: "high",
+          expectedErrorTags: ["wrong_lcm", "adds_denominators_directly", "concept_gap"],
+          explanationHe:
+            "חיבור/חיסור שברים עם מכנים שונים — דורש מציאת מכנה משותף לפני חיבור המונים.",
+        });
         
         // צמצום התוצאה אם אפשר
         const gcd = (x, y) => (y === 0 ? x : gcd(y, x % y));
@@ -1481,6 +1492,16 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
           den,
         };
       }
+
+      params = mergeDiagnosticContractIntoParams(params, {
+        patternFamily: "fraction_same_denominator_add_sub",
+        conceptTag: "frac_same_den",
+        diagnosticSkillId: "math_frac_same_den",
+        probePower: "medium",
+        expectedErrorTags: ["calculation_slip", "operation_confusion"],
+        explanationHe:
+          "חיבור/חיסור שברים עם מכנה זהה — טעויות נפוצות בחישוב המונה או בבחירת הפעולה.",
+      });
 
       correctAnswer = `${resNum}/${resDen}`;
     } else if (gradeKey === "g2") {

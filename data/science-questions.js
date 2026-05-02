@@ -22,6 +22,13 @@ export const SCIENCE_QUESTIONS = [
     ],
     "correctIndex": 1,
     "explanation": "הלב נמצא בחזה, מעט שמאלה מקו האמצע, ומזרים דם לכל הגוף.",
+    "params": {
+      "patternFamily": "science_body_heart_location",
+      "conceptTag": "body_heart_place",
+      "diagnosticSkillId": "sci_body_fact_recall",
+      "probePower": "medium",
+      "expectedErrorTags": ["fact_recall_gap", "concept_confusion"]
+    },
     "theoryLines": [
       "הלב הוא איבר שרירי שפועל ללא הפסקה.",
       "תפקידו להזרים דם המכיל חמצן וחומרי מזון לכל חלקי הגוף."
@@ -70,6 +77,13 @@ export const SCIENCE_QUESTIONS = [
     ],
     "correctIndex": 1,
     "explanation": "מערכת הנשימה אחראית על חילוף הגזים: הכנסת חמצן הדרוש לתאים והוצאת פחמן דו־חמצני מהגוף.",
+    "params": {
+      "patternFamily": "science_respiratory_gas_exchange",
+      "conceptTag": "resp_o2_co2_exchange",
+      "diagnosticSkillId": "sci_respiration_concept",
+      "probePower": "high",
+      "expectedErrorTags": ["concept_confusion", "cause_effect_gap"]
+    },
     "theoryLines": [
       "איברי מערכת הנשימה כוללים אף, קנה הנשימה וריאות.",
       "בתוך הריאות מתבצע חילוף הגזים בין האוויר לדם."

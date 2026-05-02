@@ -91,6 +91,12 @@ import {
   compareMathLearnerAnswer,
 } from "../../utils/answer-compare";
 import {
+  computeMcqIndicesForQuestion,
+  distractorFamilyFromOptionCell,
+  extractDiagnosticMetadataFromQuestion,
+  mergeDiagnosticIntoMistakeEntry,
+} from "../../utils/diagnostic-mistake-metadata";
+import {
   startLearningSession,
   saveLearningAnswer,
   finishLearningSession,
@@ -1646,6 +1652,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
   function handleAnswer(answer) {
     if (selectedAnswer || !gameActive || !currentQuestion) return;
+    const hintUsedForSave = hintUsed;
 
     // סטטיסטיקה – ספירת שאלה וזמן
     setTotalQuestions((prevCount) => {
@@ -1998,7 +2005,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           const bucketKey =
             buildMathReportStorageKey(baseOp, currentQuestion) || baseOp;
           const prm = currentQuestion.params || {};
-          const entry = {
+          let entry = {
             id: newMathMistakeId(),
             storedAt: ts,
             timestamp: ts,
@@ -2036,6 +2043,30 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
             level,
             snapshot: snap,
           };
+          entry = mergeDiagnosticIntoMistakeEntry(
+            entry,
+            extractDiagnosticMetadataFromQuestion(currentQuestion, {
+              responseMs: timeSpentMs,
+              hintUsed: hintUsedForSave,
+            })
+          );
+          entry = mergeDiagnosticIntoMistakeEntry(
+            entry,
+            computeMcqIndicesForQuestion(currentQuestion, numericAnswer)
+          );
+          if (
+            !entry.distractorFamily &&
+            entry.selectedOptionIndex != null &&
+            Array.isArray(currentQuestion.answers)
+          ) {
+            const cell = currentQuestion.answers[entry.selectedOptionIndex];
+            const dfOpt = distractorFamilyFromOptionCell(cell);
+            if (dfOpt) {
+              entry = mergeDiagnosticIntoMistakeEntry(entry, {
+                distractorFamily: dfOpt,
+              });
+            }
+          }
           setMistakes((prev) => {
             const filtered = prev.filter(
               (m) => mathQuestionFingerprint(m.snapshot) !== fp

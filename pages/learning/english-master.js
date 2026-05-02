@@ -29,6 +29,14 @@ import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
 import { compareAnswers } from "../../utils/answer-compare";
 import {
+  computeMcqIndicesForQuestion,
+  distractorFamilyFromOptionCell,
+  extractDiagnosticMetadataFromQuestion,
+  mergeDiagnosticIntoMistakeEntry,
+} from "../../utils/diagnostic-mistake-metadata";
+import { mergeDiagnosticContractIntoParams } from "../../utils/diagnostic-question-contract";
+import { mcqCellValue } from "../../utils/mcq-option-cell";
+import {
   learningHintTriggerBtn,
   learningExplainOpenBtn,
 } from "../../utils/learning-ui-classes";
@@ -319,7 +327,9 @@ function shuffleAnswerList(arr) {
 function buildMcqFromOptionPool(correctAnswer, optionPool, targetChoices) {
   const uniq = [
     ...new Set(
-      (optionPool || []).map((x) => String(x ?? "").trim()).filter(Boolean)
+      (optionPool || [])
+        .map((x) => String(mcqCellValue(x) ?? "").trim())
+        .filter(Boolean)
     ),
   ];
   const ca = String(correctAnswer ?? "").trim();
@@ -552,14 +562,17 @@ function generateQuestion(
       }
       question = grammarQ.question;
       correctAnswer = grammarQ.correct;
-      params = {
-        explanation: grammarQ.explanation,
-        patternFamily: grammarQ.patternFamily || "grammar_mcq",
-        distractorFamily: grammarQ.distractorFamily || "grammar_forms",
-        grammarOptionSet: Array.isArray(grammarQ.options)
-          ? grammarQ.options
-          : null,
-      };
+      params = mergeDiagnosticContractIntoParams(
+        {
+          explanation: grammarQ.explanation,
+          patternFamily: grammarQ.patternFamily || "grammar_mcq",
+          distractorFamily: grammarQ.distractorFamily || "grammar_forms",
+          grammarOptionSet: Array.isArray(grammarQ.options)
+            ? grammarQ.options
+            : null,
+        },
+        grammarQ
+      );
       break;
     }
 
@@ -2245,7 +2258,7 @@ const refreshMonthlyProgress = useCallback(() => {
       const top = currentQuestion.topic;
       updateTopicProgress(top, false);
       const enPrm = currentQuestion.params || {};
-      logEnglishMistakeEntry({
+      let englishMistakePayload = {
         topic: currentQuestion.topic,
         topicOrOperation: currentQuestion.topic,
         bucketKey: currentQuestion.topic,
@@ -2270,7 +2283,32 @@ const refreshMonthlyProgress = useCallback(() => {
           currentQuestion.answers.length > 1
             ? "choice"
             : "typed",
-      });
+      };
+      englishMistakePayload = mergeDiagnosticIntoMistakeEntry(
+        englishMistakePayload,
+        extractDiagnosticMetadataFromQuestion(currentQuestion, {
+          responseMs: timeSpentMs,
+          hintUsed: hintUsedForSave,
+        })
+      );
+      englishMistakePayload = mergeDiagnosticIntoMistakeEntry(
+        englishMistakePayload,
+        computeMcqIndicesForQuestion(currentQuestion, answer)
+      );
+      if (
+        !englishMistakePayload.distractorFamily &&
+        englishMistakePayload.selectedOptionIndex != null &&
+        Array.isArray(currentQuestion.answers)
+      ) {
+        const cell = currentQuestion.answers[englishMistakePayload.selectedOptionIndex];
+        const dfOpt = distractorFamilyFromOptionCell(cell);
+        if (dfOpt) {
+          englishMistakePayload = mergeDiagnosticIntoMistakeEntry(englishMistakePayload, {
+            distractorFamily: dfOpt,
+          });
+        }
+      }
+      logEnglishMistakeEntry(englishMistakePayload);
       if ("vibrate" in navigator) navigator.vibrate?.(200);
       if (mode === "learning") {
         setFeedback(

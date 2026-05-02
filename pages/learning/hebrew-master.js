@@ -58,6 +58,12 @@ import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
 import { compareAnswers } from "../../utils/answer-compare";
 import {
+  computeMcqIndicesForQuestion,
+  distractorFamilyFromOptionCell,
+  extractDiagnosticMetadataFromQuestion,
+  mergeDiagnosticIntoMistakeEntry,
+} from "../../utils/diagnostic-mistake-metadata";
+import {
   hebrewScriptLikely,
   isChildHebrewNiqqudGradeKey,
   stripHebrewNiqqudMarks,
@@ -1836,7 +1842,7 @@ useEffect(() => {
       const topicKey = currentQuestion.topic || currentQuestion.operation || "reading";
       const hbPrm = currentQuestion.params || {};
       const ts = Date.now();
-      const mistake = {
+      let mistake = {
         operation: topicKey,
         topic: topicKey,
         topicOrOperation: topicKey,
@@ -1865,6 +1871,30 @@ useEffect(() => {
             ? "choice"
             : "typed",
       };
+      mistake = mergeDiagnosticIntoMistakeEntry(
+        mistake,
+        extractDiagnosticMetadataFromQuestion(currentQuestion, {
+          responseMs: timeSpentMs,
+          hintUsed: hintUsedForSave,
+        })
+      );
+      mistake = mergeDiagnosticIntoMistakeEntry(
+        mistake,
+        computeMcqIndicesForQuestion(currentQuestion, answer)
+      );
+      if (
+        !mistake.distractorFamily &&
+        mistake.selectedOptionIndex != null &&
+        Array.isArray(currentQuestion.answers)
+      ) {
+        const cell = currentQuestion.answers[mistake.selectedOptionIndex];
+        const dfOpt = distractorFamilyFromOptionCell(cell);
+        if (dfOpt) {
+          mistake = mergeDiagnosticIntoMistakeEntry(mistake, {
+            distractorFamily: dfOpt,
+          });
+        }
+      }
       setMistakes((prev) => {
         const updated = [...prev, mistake].slice(-50); // שמור רק 50 שגיאות אחרונות
         if (typeof window !== "undefined") {
