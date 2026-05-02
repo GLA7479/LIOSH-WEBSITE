@@ -729,16 +729,12 @@ export function Ov2ArcadeSnakesPlayfield({
             type="button"
             disabled={rollDisabled}
             onClick={() => onRoll()}
-            className="min-w-[4.5rem] rounded-md border border-emerald-500/50 bg-emerald-900/55 px-2.5 py-1 text-[10px] font-bold text-emerald-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] hover:bg-emerald-800/55 active:bg-emerald-950/55 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-emerald-900/55 sm:min-w-[5rem] sm:px-3 sm:py-1.5 sm:text-[11px]"
+            className="min-h-[2.75rem] min-w-[8.5rem] rounded-lg border-2 border-emerald-500/55 bg-emerald-900/55 px-4 py-2.5 text-sm font-extrabold text-emerald-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] hover:bg-emerald-800/55 active:scale-[0.99] active:bg-emerald-950/55 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-emerald-900/55 sm:min-h-[3rem] sm:min-w-[10rem] sm:px-5 sm:py-3 sm:text-base"
           >
             זרוק קוביה
           </button>
         </div>
       ) : null}
-
-      <div className="flex shrink-0 flex-wrap items-center justify-center gap-x-2 gap-y-0.5 border-t border-white/[0.05] pt-0.5 text-[8px] text-zinc-500 sm:text-[9px]">
-        <span className="text-zinc-600">משולש זהוב = בסיס סולם · משולש ירקרק = ראש סולם</span>
-      </div>
     </div>
   );
 }

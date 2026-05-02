@@ -17,8 +17,8 @@ import {
 
 const LIVE_ROLL_MIN_MS = 1400;
 const DICE_FACE_HOLD_MS = 900;
-/** השהיה אחרי שהקובייה מציגה פנים סופיים, לפני תחילת הליכת הפיון (כמו הפרדה ויזואלית) */
-const PAUSE_AFTER_DICE_BEFORE_WALK_MS = 700;
+/** השהיה אחרי שהקובייה ננעלת על התוצאה, לפני תחילת תנועת הפיון — חייב להירגש כברור למשתמש */
+const PAUSE_AFTER_DICE_BEFORE_WALK_MS = 1700;
 
 function preferNewer(prev, next) {
   if (!next) return prev;
@@ -35,6 +35,16 @@ function sleepMs(ms) {
       return;
     }
     window.setTimeout(resolve, ms);
+  });
+}
+
+/** זוג פריימים כדי לאפשר ל-React לצייר את פני הקובייה לפני השהיית המהלך */
+function yieldPaintFrames() {
+  if (typeof window === "undefined") return Promise.resolve();
+  return new Promise((resolve) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => resolve());
+    });
   });
 }
 
@@ -76,6 +86,8 @@ export function useSnakesLaddersSession(ctx) {
       null
     )
   );
+  /** עד תחילת אנימציה מה-poll (השהיה לפני walk) — השרת כבר מחזיר turnSeat הבא */
+  const [pendingTurnVisualSeat, setPendingTurnVisualSeat] = useState(/** @type {number|null} */ (null));
 
   const clearPawnWalkTimers = useCallback(() => {
     pawnWalkTimersRef.current.forEach((id) => window.clearTimeout(id));
@@ -185,6 +197,7 @@ export function useSnakesLaddersSession(ctx) {
     setPawnMotion(null);
     lastWalkRevisionRef.current = null;
     prevSnapPollRef.current = null;
+    setPendingTurnVisualSeat(null);
   }, [roomId, clearPawnWalkTimers]);
 
   useEffect(() => {
@@ -309,15 +322,25 @@ export function useSnakesLaddersSession(ctx) {
       if (playingChain) {
         const moved = findSingleMovedSeat(prev, next);
         if (moved != null) {
-          const tid = window.setTimeout(() => {
-            schedulePawnWalkFromPrevNext(prev, next, moved);
-          }, PAUSE_AFTER_DICE_BEFORE_WALK_MS);
-          pawnWalkTimersRef.current.push(tid);
+          const nextRev = next.revision != null ? Number(next.revision) : NaN;
+          const alreadyHandledLocally =
+            Number.isFinite(nextRev) && lastWalkRevisionRef.current === nextRev;
+          if (!alreadyHandledLocally) {
+            setPendingTurnVisualSeat(moved);
+            const tid = window.setTimeout(() => {
+              schedulePawnWalkFromPrevNext(prev, next, moved);
+            }, PAUSE_AFTER_DICE_BEFORE_WALK_MS);
+            pawnWalkTimersRef.current.push(tid);
+          }
         }
       }
     }
     prevSnapPollRef.current = next;
   }, [snap, schedulePawnWalkFromPrevNext]);
+
+  useEffect(() => {
+    if (pawnMotion != null) setPendingTurnVisualSeat(null);
+  }, [pawnMotion]);
 
   const rollDice = useCallback(async () => {
     const s = snapRef.current;
@@ -327,6 +350,7 @@ export function useSnakesLaddersSession(ctx) {
 
     const t0 = typeof Date.now === "function" ? Date.now() : 0;
     clearPawnWalkTimers();
+    setPendingTurnVisualSeat(null);
     setLiveRollServerFace(null);
     setDiceRolling(true);
     diceRollingRef.current = true;
@@ -355,8 +379,9 @@ export function useSnakesLaddersSession(ctx) {
         diceRollingRef.current = false;
         setLiveRollServerFace(null);
         if (face != null) {
-          setLiveDiceRevealHold({ face, until: Date.now() + DICE_FACE_HOLD_MS });
+          setLiveDiceRevealHold({ face, until: Date.now() + DICE_FACE_HOLD_MS + PAUSE_AFTER_DICE_BEFORE_WALK_MS });
         }
+        await yieldPaintFrames();
         await sleepMs(PAUSE_AFTER_DICE_BEFORE_WALK_MS);
 
         if (s && nextSnap.lastRoll != null && s.turnSeat != null && !Number.isNaN(Number(s.turnSeat))) {
@@ -419,9 +444,20 @@ export function useSnakesLaddersSession(ctx) {
       positionRecord[String(pawnMotion.seat)] = pawnMotion.displayCell;
     }
 
+    /** תור להצגה בלבד — לא עובר לשחקן הבא עד סיום תנועת הפיון (כמו OV2) */
+    const turnSeatForUi =
+      pawnMotion != null
+        ? pawnMotion.seat
+        : pendingTurnVisualSeat != null
+          ? pendingTurnVisualSeat
+          : snap?.turnSeat ?? null;
+
+    const motionBlocking = Boolean(pawnMotion) || pendingTurnVisualSeat != null;
+
     return {
       phase,
       turnSeat: snap?.turnSeat ?? null,
+      turnSeatForUi,
       mySeat: snap?.mySeat ?? null,
       winnerSeat: snap?.winnerSeat ?? null,
       revision: snap?.revision ?? 0,
@@ -432,10 +468,10 @@ export function useSnakesLaddersSession(ctx) {
       pawnMotion,
       dicePresentation,
       diceRolling,
-      canClientRoll: snap?.canClientRoll === true && !diceRolling,
+      canClientRoll: snap?.canClientRoll === true && !diceRolling && !motionBlocking,
       boardViewReadOnly: snap?.boardViewReadOnly === true,
     };
-  }, [snap, diceRolling, liveSpinTick, liveDiceRevealHold, nowMs, pawnMotion]);
+  }, [snap, diceRolling, liveSpinTick, liveDiceRevealHold, nowMs, pawnMotion, pendingTurnVisualSeat]);
 
   useEffect(
     () => () => {

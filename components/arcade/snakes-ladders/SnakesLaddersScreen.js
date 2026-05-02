@@ -138,6 +138,9 @@ function SnakesHowToModal({ open, onClose }) {
           <li>נחש מוריד, סולם מעלה — לפי המפה הקלאסית.</li>
           <li>מי שמגיע בדיוק ל-100 מנצח.</li>
           <li>זריקה שחורגת מ-100 לא מזיזה אותך (נשאר באותו משבצת).</li>
+          <li>
+            שש בקובייה נותן תור נוסף — עד 3 פעמים ברצף; בשש רביעי ברצף, אחרי התזוזה התור עובר לשחקן הבא.
+          </li>
         </ul>
       </div>
     </div>
@@ -332,7 +335,7 @@ export default function SnakesLaddersScreen({ roomId }) {
               edges={edges}
               positions={positionsRecord}
               pawnMotion={vm.pawnMotion}
-              turnSeat={vm.turnSeat ?? null}
+              turnSeat={vm.turnSeatForUi ?? vm.turnSeat ?? null}
               mySeat={vm.mySeat ?? null}
               memberBySeat={memberBySeat}
               diceValue={diceValue}
