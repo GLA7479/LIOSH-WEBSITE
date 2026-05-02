@@ -1,0 +1,139 @@
+{
+  "runId": "release-summary-moovn6kp",
+  "generatedAt": "2026-05-02T21:52:04.105Z",
+  "overallStatus": "pass_with_known_backlog",
+  "gateStatus": {
+    "orchestrator": "pass",
+    "matrixSmoke": "pass",
+    "criticalDeep": "pass",
+    "profileStress": "pass",
+    "paceOracle": "pass",
+    "scenarioCoverage": "pass",
+    "renderGate": "pass"
+  },
+  "buildStatus": "pass",
+  "coverageSummary": {
+    "totalCells": 819,
+    "statusCounts": {
+      "covered": 706,
+      "unsupported_expected": 72,
+      "unsupported_needs_content": 41
+    },
+    "statusCountsFromRows": {
+      "covered": 706,
+      "unsupported_expected": 72,
+      "unsupported_needs_content": 41
+    },
+    "sampled": 0,
+    "uncovered": 0,
+    "unknown_needs_review": 0,
+    "note": "Counts align with coverage-catalog rows and counts.statusCounts where present."
+  },
+  "unsupportedSummary": {
+    "needsAttentionTotal": 113,
+    "uncoveredCoverageStatus": 0,
+    "unknownClassification": 0,
+    "byClassification": {
+      "expected_runtime_gap": 0,
+      "curriculum_only_not_runtime": 0,
+      "missing_question_bank": 41,
+      "missing_generator_adapter": 0,
+      "missing_topic_adapter": 0,
+      "mixed_or_ui_only_topic": 72,
+      "unknown_needs_review": 0
+    }
+  },
+  "contentBacklogSummary": {
+    "totalItems": 41,
+    "bySubject": {
+      "science": 26,
+      "english": 15
+    },
+    "byGrade": {
+      "g1": 6,
+      "g2": 10,
+      "g3": 3,
+      "g4": 4,
+      "g5": 9,
+      "g6": 9
+    },
+    "byTopic": {
+      "science:animals": 5,
+      "science:body": 4,
+      "science:earth_space": 5,
+      "science:environment": 4,
+      "science:materials": 4,
+      "science:plants": 1,
+      "english:translation": 15,
+      "science:experiments": 3
+    },
+    "byReleaseRisk": {
+      "high": 26,
+      "medium": 15
+    },
+    "note": "Documented content gaps — known backlog, not classification failures."
+  },
+  "matrixSmokeSummary": {
+    "status": "pass",
+    "totalSmokeScenarios": 36,
+    "totalCellsTouched": 673,
+    "failuresCount": 0
+  },
+  "criticalDeepSummary": {
+    "status": "pass",
+    "selectedCellsTotal": 56,
+    "scenarioCount": 108,
+    "failuresCount": 0
+  },
+  "profileStressSummary": {
+    "status": "pass",
+    "scenarioCount": 112,
+    "profileTypesTested": 14,
+    "failuresCount": 0
+  },
+  "paceOracleSummary": {
+    "status": "pass",
+    "pace_accuracy_separation_ok": true,
+    "cohortMedianSpqGap": 198.04,
+    "sourceRunId": "profile-stress-moovlzva"
+  },
+  "renderGateSummary": {
+    "status": "pass",
+    "browserMode": true,
+    "checksTotal": 7,
+    "checksPassed": 7,
+    "checksFailed": 0,
+    "consoleErrorsTotal": 0,
+    "fatalErrorsTotal": 0,
+    "deferredPdfExport": true
+  },
+  "scenarioCoverageSummary": {
+    "scenarios": 278,
+    "generatedAt": "2026-05-02T21:51:11.184Z"
+  },
+  "deferredItems": {
+    "pdfBinaryExportInPage": "Deferred by render gate — client-side html2pdf/jspdf; no dedicated /api/pdf binary validation in QA.",
+    "optionalArtifactsMissing": []
+  },
+  "knownRemainingWork": [
+    {
+      "group": "content_backlog",
+      "detail": "41 tracked items in content-gap-backlog.json"
+    },
+    {
+      "group": "pdf_binary_export_deferred",
+      "detail": "PDF/export validation deferred per render-release-gate policy"
+    },
+    {
+      "group": "optional_render_expansion",
+      "detail": "Additional routes/surfaces can be added to render gate without product changes"
+    },
+    {
+      "group": "optional_ci_runtime_optimization",
+      "detail": "Use RENDER_GATE_AUTO_SERVER=0 with dev server up to shorten CI wall time"
+    }
+  ],
+  "releaseDecision": "ready_except_content_backlog",
+  "failures": [],
+  "warnings": []
+}

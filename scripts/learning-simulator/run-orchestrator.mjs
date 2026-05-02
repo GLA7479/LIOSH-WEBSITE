@@ -47,6 +47,11 @@ const ARTIFACTS = {
   contentGapBacklogMd: "reports/learning-simulator/content-gap-backlog.md",
   deepSummary: "reports/learning-simulator/deep/run-summary.json",
   deepFailures: "reports/learning-simulator/deep/failures.json",
+  renderReleaseGate: "reports/learning-simulator/render-release-gate.json",
+  renderReleaseGateMd: "reports/learning-simulator/render-release-gate.md",
+  renderReleaseGateAudit: "reports/learning-simulator/render-release-gate-audit.json",
+  releaseReadinessSummary: "reports/learning-simulator/release-readiness-summary.json",
+  releaseReadinessSummaryMd: "reports/learning-simulator/release-readiness-summary.md",
 };
 
 /** Stages in order for quick gate */
@@ -89,10 +94,20 @@ const FULL_MATRIX_QA = [
 ];
 
 const FULL_SUFFIX = [
+  {
+    id: "renderReleaseGate",
+    script: "qa:learning-simulator:render",
+    label: "Render release gate (browser/SSR smoke for learning + parent-report)",
+  },
   { id: "deep", script: "qa:learning-simulator:deep", label: "Deep longitudinal simulator" },
   { id: "build", script: "build", label: "Next.js production build" },
   { id: "parentReportPhase1", script: "test:parent-report-phase1", label: "Parent report phase1 selftest" },
   { id: "intelligenceUsage", script: "test:intelligence-layer-v1-usage", label: "Intelligence layer v1 usage selftest" },
+  {
+    id: "releaseReadinessSummary",
+    script: "qa:learning-simulator:release-summary",
+    label: "Release readiness summary (master QA artifact)",
+  },
 ];
 
 function runStep(cwd, npmScript) {
@@ -137,6 +152,10 @@ function nextActionHint(failedStep) {
       "Inspect content-gap-audit.json — fails only if classification unknown or artifact write failed.",
     contentBacklog:
       "Inspect content-gap-backlog.json — fails if backlog count ≠ audit gap count or unmapped cell.",
+    renderReleaseGate:
+      "Inspect render-release-gate.json and failures under reports/learning-simulator/render-release-gate/failures/; fix crashes/console errors or SSR fallback.",
+    releaseReadinessSummary:
+      "Inspect release-readiness-summary.json — missing artifacts, uncovered cells, or gate regressions; re-run full QA after fixes.",
   };
   return hints[id] || `Review logs for stage "${id}" and related artifacts under reports/learning-simulator/.`;
 }

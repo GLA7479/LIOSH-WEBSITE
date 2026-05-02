@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
+    "dev:run-button": "next dev -p 3002",
     "build": "next build",
     "qa:learning-simulator:matrix": "tsx scripts/learning-simulator/run-coverage-matrix.mjs",
     "qa:learning-simulator:schema": "tsx scripts/learning-simulator/run-schema-validation.mjs",
@@ -20,6 +21,8 @@
     "qa:learning-simulator:content-gaps": "tsx scripts/learning-simulator/run-content-gap-audit.mjs",
     "qa:learning-simulator:content-backlog": "tsx scripts/learning-simulator/run-content-gap-backlog.mjs",
     "qa:learning-simulator:scenario-coverage": "tsx scripts/learning-simulator/run-scenario-coverage.mjs",
+    "qa:learning-simulator:render": "tsx scripts/learning-simulator/run-render-release-gate.mjs",
+    "qa:learning-simulator:release-summary": "tsx scripts/learning-simulator/run-release-readiness-summary.mjs",
     "qa:learning-simulator:quick": "tsx scripts/learning-simulator/run-orchestrator.mjs quick",
     "qa:learning-simulator:full": "tsx scripts/learning-simulator/run-orchestrator.mjs full",
     "qa:learning-simulator": "tsx scripts/learning-simulator/run-orchestrator.mjs full",

@@ -1,7 +1,7 @@
 # Matrix smoke (aggregate simulation)
 
-- Run id: matrix-smoke-moouu9bz
-- Generated at: 2026-05-02T21:29:34.655Z
+- Run id: matrix-smoke-moovlvdd
+- Generated at: 2026-05-02T21:51:02.929Z
 - Candidate cells (smoke-eligible): 673
 - Smoke scenarios executed: 36
 - Cells touched (unique, ok scenarios): 673
