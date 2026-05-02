@@ -83,11 +83,17 @@ export default function StudentArcadePage() {
   }, []);
 
   const refreshOpenRooms = useCallback(async () => {
-    const res = await fetch("/api/arcade/rooms/open?gameKey=fourline");
-    const json = await res.json().catch(() => ({}));
-    if (json?.ok && Array.isArray(json.rooms)) {
-      setOpenRooms(json.rooms);
-    }
+    const [r4, rl] = await Promise.all([
+      fetch("/api/arcade/rooms/open?gameKey=fourline"),
+      fetch("/api/arcade/rooms/open?gameKey=ludo"),
+    ]);
+    const j4 = await r4.json().catch(() => ({}));
+    const jl = await rl.json().catch(() => ({}));
+    const merged = [
+      ...(j4?.ok && Array.isArray(j4.rooms) ? j4.rooms : []),
+      ...(jl?.ok && Array.isArray(jl.rooms) ? jl.rooms : []),
+    ];
+    setOpenRooms(merged);
   }, []);
 
   useEffect(() => {
@@ -106,14 +112,28 @@ export default function StudentArcadePage() {
         ? "עדיין לא פעיל (ממתין להפעלה)"
         : null;
 
+  const ludoMeta = useMemo(() => games.find((g) => g.gameKey === "ludo") || null, [games]);
+
+  const ludoActive = Boolean(ludoMeta?.enabled === true && ludoMeta?.foundationOnly === false);
+
+  const idleReasonLudo = !ludoMeta
+    ? "טוען משחקים…"
+    : !ludoMeta.enabled
+      ? "המשחק כבוי בשרת"
+      : ludoMeta.foundationOnly
+        ? "עדיין לא פעיל (ממתין להפעלה)"
+        : null;
+
+  const openRoomsPollActive = fourlineActive || ludoActive;
+
   useEffect(() => {
-    if (!fourlineActive) return undefined;
+    if (!openRoomsPollActive) return undefined;
     refreshOpenRooms();
     const id = setInterval(() => {
       void refreshOpenRooms();
     }, POLL_MS);
     return () => clearInterval(id);
-  }, [fourlineActive, refreshOpenRooms]);
+  }, [openRoomsPollActive, refreshOpenRooms]);
 
   const run = async (promise) => {
     setBusy(true);
@@ -158,14 +178,14 @@ export default function StudentArcadePage() {
     }
   };
 
-  const onQuickGame = () =>
+  const onQuickGame = (gameKey = "fourline") =>
     runQuick(
       (async () => {
         const res = await fetch("/api/arcade/quick-game", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            gameKey: "fourline",
+            gameKey,
             entryCost,
           }),
         });
@@ -173,14 +193,14 @@ export default function StudentArcadePage() {
       })(),
     );
 
-  const onCreateRoom = (roomType) =>
+  const onCreateRoom = (roomType, gameKey = "fourline") =>
     run(
       (async () => {
         const res = await fetch("/api/arcade/rooms/create", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            gameKey: "fourline",
+            gameKey,
             roomType,
             entryCost,
           }),
@@ -270,6 +290,12 @@ export default function StudentArcadePage() {
       ? String(hlRoom.join_code)
       : null;
   const hlPrivate = hlRoomType === "private";
+
+  const hlGameKey = hlRoom?.game_key != null ? String(hlRoom.game_key) : "fourline";
+  const hlPlayHref =
+    hlGameKey === "ludo"
+      ? `/student/games/ludo?roomId=${encodeURIComponent(hlRoomId)}`
+      : `/student/games/fourline?roomId=${encodeURIComponent(hlRoomId)}`;
 
   const waitingCopy =
     hlStatus === "waiting" ? "ממתין לשחקן נוסף" : hlStatus === "active" ? "המשחק פעיל" : hlStatus;
@@ -386,9 +412,64 @@ export default function StudentArcadePage() {
           </div>
 
           <div className={CARD_CLASS}>
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 className="text-lg font-bold text-zinc-900">Ludo</h2>
+              <span
+                className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+                  ludoActive ? "bg-emerald-100 text-emerald-900" : "bg-zinc-200 text-zinc-600"
+                }`}
+              >
+                {ludoActive ? "פעיל" : "לא זמין"}
+              </span>
+            </div>
+            <p className="mt-1 text-sm text-zinc-700">לודו · 2–4 שחקנים</p>
+            <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-zinc-800">
+              <li>שחקנים: עד 4</li>
+              <li>בחר עלות כניסה לפני משחק מהיר או יצירת חדר</li>
+            </ul>
+            {idleReasonLudo && !ludoActive ? (
+              <p className="mt-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+                {idleReasonLudo}
+              </p>
+            ) : null}
+
+            <div className="mt-6 flex flex-col gap-3">
+              <button
+                type="button"
+                disabled={busy || !ludoActive || Boolean(costDisabledReason(entryCost))}
+                title={
+                  costDisabledReason(entryCost) || (!ludoActive ? idleReasonLudo || undefined : undefined)
+                }
+                onClick={() => void onQuickGame("ludo")}
+                className="w-full rounded-xl bg-amber-500 px-4 py-4 text-center text-base font-bold text-zinc-900 shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                משחק מהיר (לודו)
+              </button>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <button
+                  type="button"
+                  disabled={busy || !ludoActive || Boolean(costDisabledReason(entryCost))}
+                  onClick={() => void onCreateRoom("public", "ludo")}
+                  className="flex-1 rounded-lg bg-zinc-800 px-4 py-3 text-center text-sm font-bold text-white shadow disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  צור חדר ציבורי
+                </button>
+                <button
+                  type="button"
+                  disabled={busy || !ludoActive || Boolean(costDisabledReason(entryCost))}
+                  onClick={() => void onCreateRoom("private", "ludo")}
+                  className="flex-1 rounded-lg border-2 border-zinc-600 bg-zinc-100 px-4 py-3 text-center text-sm font-bold text-zinc-900 shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  צור חדר פרטי
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className={CARD_CLASS}>
             <h3 className="text-base font-bold text-zinc-900">חדרים פתוחים</h3>
             <p className="mt-1 text-sm text-zinc-600">חדרים ציבוריים ומשחק מהיר שמחכים לשחקן</p>
-            {!fourlineActive ? (
+            {!openRoomsPollActive ? (
               <p className="mt-3 text-sm text-zinc-500">אין רשימה — המשחק לא פעיל</p>
             ) : openRooms.length === 0 ? (
               <p className="mt-3 text-sm text-zinc-600">אין חדרים פתוחים כרגע</p>
@@ -445,7 +526,7 @@ export default function StudentArcadePage() {
               />
               <button
                 type="button"
-                disabled={busy || !fourlineActive}
+                disabled={busy || !openRoomsPollActive}
                 onClick={() => void onJoinByCodeSubmit()}
                 className="rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700 disabled:opacity-50"
               >
@@ -478,7 +559,7 @@ export default function StudentArcadePage() {
                 ) : null}
               </dl>
               <Link
-                href={`/student/games/fourline?roomId=${encodeURIComponent(hlRoomId)}`}
+                href={hlPlayHref}
                 className="mt-5 flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-4 text-center text-lg font-bold text-white shadow-lg hover:bg-emerald-500"
               >
                 כניסה למשחק
@@ -503,7 +584,7 @@ export default function StudentArcadePage() {
                 />
                 <button
                   type="button"
-                  disabled={busy || !fourlineActive}
+                  disabled={busy || !openRoomsPollActive}
                   onClick={() => void onJoinByRoomIdDebug()}
                   className="rounded-lg bg-zinc-600 px-4 py-2 text-sm font-semibold text-white"
                 >

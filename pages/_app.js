@@ -8,6 +8,7 @@ import StudentAccessGate from "../components/student/StudentAccessGate";
 const STUDENT_PROTECTED_ROUTES = new Set([
   "/student/arcade",
   "/student/games/fourline",
+  "/student/games/ludo",
   "/learning",
   "/learning/math-master",
   "/learning/geometry-master",

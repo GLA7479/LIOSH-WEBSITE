@@ -28,7 +28,9 @@ export default async function handler(req, res) {
             ? 403
             : code === "room_full" || code === "already_joined" || code === "seat_taken"
               ? 409
-              : 400;
+              : code === "session_start_failed" || code === "room_activate_failed"
+                ? 500
+                : 400;
     return res.status(status).json({ ok: false, error: result.error.message, code });
   }
 
