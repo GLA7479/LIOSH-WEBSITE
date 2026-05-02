@@ -1,12 +1,38 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchArcadeRoomLudoBundle, requestLudoGameAction } from "../../lib/arcade/ludo/ludoSessionAdapter";
 
+/** כמו OV2 `useOv2LudoSession.js` — משך מינימלי לזריקה + הצגת תוצאה */
+const OV2_LUDO_LIVE_ROLL_MIN_MS = 2000;
+const OV2_LUDO_DICE_FACE_HOLD_MS = 1200;
+
 function preferNewer(prev, next) {
   if (!next) return prev;
   if (!prev) return next;
   const pr = prev.revision != null ? Number(prev.revision) : 0;
   const nr = next.revision != null ? Number(next.revision) : 0;
   return nr >= pr ? next : prev;
+}
+
+function sleepMs(ms) {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") {
+      resolve();
+      return;
+    }
+    window.setTimeout(resolve, ms);
+  });
+}
+
+/** @param {Record<string, unknown>|null} snap */
+function snapshotResolvedRollFace(snap) {
+  if (!snap || typeof snap !== "object") return null;
+  const raw =
+    snap.dice ??
+    (snap.board && typeof snap.board === "object" ? snap.board.dice : undefined) ??
+    snap.lastDice ??
+    (snap.board && typeof snap.board === "object" ? snap.board.lastDice : undefined);
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 1 && n <= 6 ? n : null;
 }
 
 /**
@@ -34,8 +60,17 @@ export function useLudoSession(ctx) {
   const lastPollSigRef = useRef("");
   const snapRef = useRef(null);
   snapRef.current = snap;
-  const autoDiceScheduledRef = useRef(false);
-  const autoMoveScheduledRef = useRef(false);
+
+  const [diceRolling, setDiceRolling] = useState(false);
+  const [liveSpinTick, setLiveSpinTick] = useState(1);
+  const [liveRollServerFace, setLiveRollServerFace] = useState(/** @type {number|null} */ (null));
+  const [liveDiceRevealHold, setLiveDiceRevealHold] = useState(
+    /** @type {{ face: number; until: number } | null} */ (null)
+  );
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  const diceRollingRef = useRef(false);
+  const liveAutoRollCompletedKeyRef = useRef(/** @type {string|null} */ (null));
+  const liveAutoRollPendingKeyRef = useRef(/** @type {string|null} */ (null));
 
   useEffect(() => {
     setSnap(null);
@@ -48,7 +83,40 @@ export function useLudoSession(ctx) {
     joinRecoveryAttemptedRef.current = false;
     bundleLoadedOnceRef.current = false;
     lastPollSigRef.current = "";
+    setDiceRolling(false);
+    diceRollingRef.current = false;
+    setLiveRollServerFace(null);
+    setLiveDiceRevealHold(null);
+    liveAutoRollCompletedKeyRef.current = null;
+    liveAutoRollPendingKeyRef.current = null;
   }, [roomId]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const t = window.setInterval(() => setNowMs(Date.now()), 250);
+    return () => window.clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    if (!liveDiceRevealHold) return;
+    if (nowMs < liveDiceRevealHold.until) return;
+    setLiveDiceRevealHold(null);
+  }, [nowMs, liveDiceRevealHold]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    if (!diceRolling || liveRollServerFace != null) return undefined;
+    const id = window.setInterval(() => {
+      setLiveSpinTick((prev) => {
+        let n = prev;
+        for (let i = 0; i < 8 && n === prev; i += 1) {
+          n = 1 + Math.floor(Math.random() * 6);
+        }
+        return n;
+      });
+    }, 85);
+    return () => window.clearInterval(id);
+  }, [diceRolling, liveRollServerFace]);
 
   useEffect(() => {
     if (!roomId) return undefined;
@@ -125,20 +193,40 @@ export function useLudoSession(ctx) {
     };
   }, [roomId]);
 
-  const rollDice = useCallback(async () => {
+  const runLiveRoll = useCallback(async () => {
     const s = snapRef.current;
     if (!roomId || !s) return { ok: false };
-    if (busy) return { ok: false };
-    setBusy(true);
+    if (diceRollingRef.current) return { ok: false };
+    if (!s.canClientRoll || s.dice != null) return { ok: false };
+
+    const t0 = typeof Date.now === "function" ? Date.now() : 0;
+    setLiveRollServerFace(null);
+    setDiceRolling(true);
+    diceRollingRef.current = true;
     setErr("");
+
     try {
       const r = await requestLudoGameAction(roomId, { action: "roll", revision: s.revision });
       if (!r.ok) {
         setErr(r.error || "פעולה נכשלה");
         return { ok: false };
       }
-      if (r.snapshot) setSnap((prev) => preferNewer(prev, r.snapshot));
-      else {
+      const nextSnap = r.snapshot;
+      const face = nextSnap ? snapshotResolvedRollFace(nextSnap) : null;
+      if (face != null) {
+        setLiveRollServerFace(face);
+        setLiveSpinTick(face);
+      }
+      const wait = Math.max(0, OV2_LUDO_LIVE_ROLL_MIN_MS - (Date.now() - t0));
+      await sleepMs(wait);
+
+      if (r.ok && nextSnap) {
+        setSnap((prev) => preferNewer(prev, nextSnap));
+        const hasDice = nextSnap.dice != null && !Number.isNaN(Number(nextSnap.dice));
+        if (!hasDice && face != null) {
+          setLiveDiceRevealHold({ face, until: Date.now() + OV2_LUDO_DICE_FACE_HOLD_MS });
+        }
+      } else if (r.ok && !nextSnap) {
         const b = await fetchArcadeRoomLudoBundle(roomId);
         if (b.ok) {
           if (b.ludo) setSnap((prev) => preferNewer(prev, b.ludo));
@@ -152,15 +240,101 @@ export function useLudoSession(ctx) {
       setErr(e instanceof Error ? e.message : String(e));
       return { ok: false };
     } finally {
-      setBusy(false);
+      setLiveRollServerFace(null);
+      setDiceRolling(false);
+      diceRollingRef.current = false;
     }
-  }, [roomId, busy]);
+  }, [roomId]);
+
+  const rollDice = useCallback(async () => {
+    if (diceRolling) return { ok: false };
+    return runLiveRoll();
+  }, [diceRolling, runLiveRoll]);
+
+  /** OV2: בתחילת תור — זריקה אוטומטית עם אותה אנימציה (לא מזיזים כלים בשביל המשתמש) */
+  useEffect(() => {
+    if (!roomId || !snap) return undefined;
+    if (String(snap.phase || "").toLowerCase() !== "playing") return undefined;
+    if (!snap.canClientRoll || snap.dice != null || diceRolling) return undefined;
+
+    const sessionId = String(snap.sessionId || "").trim();
+    const liveTurnSeat = snap.turnSeat != null ? Number(snap.turnSeat) : null;
+    const rev = Number(snap.revision);
+    if (!sessionId || liveTurnSeat == null || !Number.isFinite(rev)) return undefined;
+
+    const autoKey = `${sessionId}|${liveTurnSeat}|${rev}|autoroll`;
+    if (liveAutoRollCompletedKeyRef.current === autoKey) return undefined;
+    if (liveAutoRollPendingKeyRef.current === autoKey) return undefined;
+
+    liveAutoRollPendingKeyRef.current = autoKey;
+    let cancelled = false;
+    const t = window.setTimeout(() => {
+      void (async () => {
+        const clearPendingIfMatch = () => {
+          if (liveAutoRollPendingKeyRef.current === autoKey) {
+            liveAutoRollPendingKeyRef.current = null;
+          }
+        };
+        if (cancelled) {
+          clearPendingIfMatch();
+          return;
+        }
+        const cur = snapRef.current;
+        if (
+          !cur ||
+          String(cur.phase || "").toLowerCase() !== "playing" ||
+          !cur.canClientRoll ||
+          cur.dice != null
+        ) {
+          liveAutoRollCompletedKeyRef.current = autoKey;
+          clearPendingIfMatch();
+          return;
+        }
+        const sid = String(cur.sessionId || "").trim();
+        const seat = cur.turnSeat != null ? Number(cur.turnSeat) : null;
+        const snapRev = Number(cur.revision);
+        if (sid !== sessionId || seat !== liveTurnSeat || snapRev !== rev) {
+          clearPendingIfMatch();
+          return;
+        }
+        const ok = (await runLiveRoll()).ok;
+        if (ok) {
+          liveAutoRollCompletedKeyRef.current = autoKey;
+        }
+        clearPendingIfMatch();
+      })();
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(t);
+      if (liveAutoRollPendingKeyRef.current === autoKey) {
+        liveAutoRollPendingKeyRef.current = null;
+      }
+    };
+  }, [roomId, snap, diceRolling, runLiveRoll]);
+
+  useEffect(() => {
+    if (!snap) return;
+    if (String(snap.phase || "").toLowerCase() !== "playing") return;
+    const sessionId = String(snap.sessionId || "").trim();
+    const liveTurnSeat = snap.turnSeat != null ? Number(snap.turnSeat) : null;
+    const rev = Number(snap.revision);
+    if (!sessionId || liveTurnSeat == null || !Number.isFinite(rev)) return;
+    const autoKey = `${sessionId}|${liveTurnSeat}|${rev}|autoroll`;
+    const stillRollable = snap.canClientRoll === true && snap.dice == null;
+    if (stillRollable) return;
+    liveAutoRollCompletedKeyRef.current = autoKey;
+    if (liveAutoRollPendingKeyRef.current === autoKey) {
+      liveAutoRollPendingKeyRef.current = null;
+    }
+  }, [snap]);
 
   const movePiece = useCallback(
     async (pieceIndex) => {
       const s = snapRef.current;
       if (!roomId || !s) return { ok: false };
-      if (busy) return { ok: false };
+      if (busy || diceRolling) return { ok: false };
       setBusy(true);
       setErr("");
       try {
@@ -191,67 +365,27 @@ export function useLudoSession(ctx) {
         setBusy(false);
       }
     },
-    [roomId, busy],
+    [roomId, busy, diceRolling],
   );
-
-  /** תור שלי בלי קוביה — זריקה אוטומטית (כללי מנוע זהים ל־OV2; השרת מטפל ב־6 /_pass) */
-  useEffect(() => {
-    if (!roomId || !snap?.canClientRoll || busy) {
-      autoDiceScheduledRef.current = false;
-      return undefined;
-    }
-    if (autoDiceScheduledRef.current) return undefined;
-    autoDiceScheduledRef.current = true;
-    const id = window.setTimeout(() => {
-      const s = snapRef.current;
-      if (!s?.canClientRoll) {
-        autoDiceScheduledRef.current = false;
-        return;
-      }
-      void rollDice().finally(() => {
-        autoDiceScheduledRef.current = false;
-      });
-    }, 0);
-    return () => {
-      window.clearTimeout(id);
-      autoDiceScheduledRef.current = false;
-    };
-  }, [roomId, snap?.revision, snap?.canClientRoll, busy, rollDice]);
-
-  /** רק מהלך חוקי אחד — בחירה אוטומטית */
-  useEffect(() => {
-    if (!roomId || !snap?.canClientMovePiece || busy) {
-      autoMoveScheduledRef.current = false;
-      return undefined;
-    }
-    const legal = snap.legalMovablePieceIndices;
-    if (!Array.isArray(legal) || legal.length !== 1) {
-      autoMoveScheduledRef.current = false;
-      return undefined;
-    }
-    const only = legal[0];
-    if (!Number.isInteger(only)) return undefined;
-    if (autoMoveScheduledRef.current) return undefined;
-    autoMoveScheduledRef.current = true;
-    const id = window.setTimeout(() => {
-      const s = snapRef.current;
-      const leg = s?.legalMovablePieceIndices;
-      if (!s?.canClientMovePiece || !Array.isArray(leg) || leg.length !== 1 || leg[0] !== only) {
-        autoMoveScheduledRef.current = false;
-        return;
-      }
-      void movePiece(only).finally(() => {
-        autoMoveScheduledRef.current = false;
-      });
-    }, 0);
-    return () => {
-      window.clearTimeout(id);
-      autoMoveScheduledRef.current = false;
-    };
-  }, [roomId, snap?.revision, snap?.canClientMovePiece, snap?.dice, snap?.legalMovablePieceIndices, busy, movePiece]);
 
   const vm = useMemo(() => {
     const phase = snap ? String(snap.phase || "").toLowerCase() : "";
+    const liveDiceDisplayValue =
+      phase === "playing" && diceRolling
+        ? liveSpinTick
+        : phase === "playing" &&
+            liveDiceRevealHold != null &&
+            nowMs < liveDiceRevealHold.until
+          ? liveDiceRevealHold.face
+          : undefined;
+
+    let dicePresentation = null;
+    if (liveDiceDisplayValue != null && typeof liveDiceDisplayValue === "number") {
+      dicePresentation = liveDiceDisplayValue;
+    } else if (snap?.dice != null && !Number.isNaN(Number(snap.dice))) {
+      dicePresentation = Number(snap.dice);
+    }
+
     return {
       phase,
       board: snap?.board ?? {},
@@ -262,13 +396,15 @@ export function useLudoSession(ctx) {
       sessionId: snap?.sessionId != null ? String(snap.sessionId) : "",
       dice: snap?.dice ?? null,
       lastDice: snap?.lastDice ?? null,
-      canClientRoll: snap?.canClientRoll === true,
-      canClientMovePiece: snap?.canClientMovePiece === true,
+      dicePresentation,
+      diceRolling,
+      canClientRoll: snap?.canClientRoll === true && !diceRolling,
+      canClientMovePiece: snap?.canClientMovePiece === true && !busy && !diceRolling,
       legalMovablePieceIndices: Array.isArray(snap?.legalMovablePieceIndices)
         ? snap.legalMovablePieceIndices
         : null,
     };
-  }, [snap]);
+  }, [snap, diceRolling, liveSpinTick, liveDiceRevealHold, nowMs, busy]);
 
   return {
     snapshot: snap,

@@ -134,12 +134,9 @@ function LudoHowToModal({ open, onClose }) {
           </button>
         </div>
         <ul className="list-disc space-y-2 pr-5 text-sm leading-relaxed text-zinc-200">
-          <li>בתחילת התור הקוביה נזרקת אוטומטית; אפשר גם ללחוץ על הקוביה (1–6).</li>
+          <li>בתורך — קוביה נזרקת (בממשק OV2 גם נפתחת זריקה אוטומטית עם אנימציה), ואז בוחרים איזה חייל להזיז.</li>
           <li>רק 6 מוציא כלי מהחצר לשביל.</li>
-          <li>
-            מספר 6 אחרי מהלך — תור נוסף; אכילת יריב או כניסה לבית מהשביל — תור נוסף (כמו מנוע OV2).
-          </li>
-          <li>כשיש רק מהלך חוקי אחד — הבחירה מתבצעת אוטומטית.</li>
+          <li>6, אכילה או כניסה לבית מהשביל — לפי חוקי המשחק במנוע — תור נוסף.</li>
           <li>כלי שמגיע ליעד הבית מסיים; ארבעה כלים בבית — ניצחון.</li>
         </ul>
       </div>
@@ -275,9 +272,6 @@ export default function LudoScreen({ roomId }) {
     };
   }, [vm.board, vm.turnSeat, vm.dice, vm.lastDice]);
 
-  const diceDisplay =
-    vm.dice != null && !Number.isNaN(Number(vm.dice)) ? Number(vm.dice) : null;
-
   return (
     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-2 pt-2">
       <LudoOv2Hud onBack={goBack} balance={balance} onOpenHelp={() => setHelpOpen(true)} />
@@ -341,8 +335,8 @@ export default function LudoScreen({ roomId }) {
                 <LudoBoardView
                   board={boardForView}
                   mySeat={vm.mySeat}
-                  diceValue={diceDisplay}
-                  diceRolling={false}
+                  diceValue={vm.dicePresentation}
+                  diceRolling={vm.diceRolling}
                   diceSeat={vm.turnSeat}
                   diceClickable={vm.canClientRoll && !busy}
                   onDiceClick={() => void onDice()}
