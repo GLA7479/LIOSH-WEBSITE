@@ -528,4 +528,93 @@ assert.ok(rec.trend == null || typeof rec.trend === "object");
   assert.equal(noAttentionSignal.requiresAttentionPreviewHe[1], "מעקב משני ב׳");
 }
 
+// Fast Educational Diagnosis (deterministic): stages, probes, parent-safe copy.
+{
+  const { runFastDiagnosisForUnitForTests } = await importUtils("../utils/fast-diagnostic-engine/index.js");
+  const { inferNormalizedTags } = await importUtils("../utils/fast-diagnostic-engine/infer-tags.js");
+
+  const unitBase = {
+    subjectId: "math",
+    bucketKey: "fractions",
+    displayName: "שברים",
+  };
+
+  /** @param {unknown[]} events @param {object} fd */
+  function assertTagsDerivedFromEvents(events, subjectId, fd) {
+    const wrongs = events.filter((e) => e && !e.isCorrect);
+    /** @type {Set<string>} */
+    const union = new Set();
+    for (const e of wrongs) {
+      for (const t of inferNormalizedTags(/** @type {Record<string, unknown>} */ (e), subjectId)) {
+        union.add(t);
+      }
+    }
+    for (const t of fd.suspectedErrorTags) {
+      assert.ok(union.has(t), `suspectedErrorTags must be derivable from mistake fields: unexpected "${t}"`);
+    }
+  }
+
+  /** @param {string} s */
+  function assertParentHebrewSafe(s) {
+    assert.ok(typeof s === "string");
+    assert.ok(!/\bfd_/i.test(s), "parent-facing text must not expose hypothesis ids");
+    assert.ok(!/::/.test(s));
+    assert.ok(!/\bP[1-4]\b/.test(s));
+  }
+
+  const misconceptionWrong = {
+    isCorrect: false,
+    patternFamily: "fraction_add_same_denominator",
+  };
+
+  const fdEarly = runFastDiagnosisForUnitForTests({
+    unit: unitBase,
+    events: [misconceptionWrong],
+    row: { questions: 8 },
+  });
+  assert.equal(fdEarly.diagnosisStage, "early_signal");
+  assert.ok(fdEarly.suspectedErrorTags.includes("repeated_misconception") || fdEarly.suspectedErrorTags.includes("adds_denominators_directly"));
+  assert.ok(fdEarly.nextProbe && typeof fdEarly.nextProbe.reasonHe === "string" && fdEarly.nextProbe.reasonHe.length > 0);
+  assertTagsDerivedFromEvents([misconceptionWrong], "math", fdEarly);
+  assertParentHebrewSafe(fdEarly.parentSafeTextHe);
+  assertParentHebrewSafe(fdEarly.hypothesisHe);
+
+  const repeatWrong = Array.from({ length: 4 }, () => ({
+    isCorrect: false,
+    patternFamily: "fraction_add_same_denominator",
+  }));
+  const fdWork = runFastDiagnosisForUnitForTests({
+    unit: unitBase,
+    events: repeatWrong,
+    row: { questions: 12 },
+  });
+  assert.equal(fdWork.diagnosisStage, "working_hypothesis");
+  assert.ok(fdWork.suspectedErrorTags.length > 0);
+  assertTagsDerivedFromEvents(repeatWrong, "math", fdWork);
+
+  const manyWrong = Array.from({ length: 8 }, () => ({
+    isCorrect: false,
+    patternFamily: "fraction_add_same_denominator",
+  }));
+  const fdStable = runFastDiagnosisForUnitForTests({
+    unit: unitBase,
+    events: manyWrong,
+    row: { questions: 20 },
+  });
+  assert.equal(fdStable.diagnosisStage, "stable_diagnosis");
+  assertTagsDerivedFromEvents(manyWrong, "math", fdStable);
+
+  const fdThin = runFastDiagnosisForUnitForTests({
+    unit: unitBase,
+    events: [
+      { isCorrect: false },
+      { isCorrect: false },
+    ],
+    row: { questions: 4 },
+  });
+  assert.equal(fdThin.diagnosisStage, "insufficient_signal");
+  assert.ok(fdThin.nextProbe?.reasonHe && fdThin.nextProbe.reasonHe.length > 0, "insufficient_signal still gets nextProbe");
+  assertParentHebrewSafe(fdThin.parentSafeTextHe);
+}
+
 console.log("parent-report phase1 selftest: OK");

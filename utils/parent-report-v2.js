@@ -46,6 +46,7 @@ import { computeGlobalScore } from "./system-intelligence/global-score.js";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
 import { deriveRawMetricStrengthLinesHe } from "./parent-data-presence.js";
 import { runDiagnosticEngineV2 } from "./diagnostic-engine-v2/index.js";
+import { attachFastDiagnosisToDiagnosticEngineV2 } from "./fast-diagnostic-engine/index.js";
 import { safeBuildHybridRuntimeForReport } from "./ai-hybrid-diagnostic/safe-build-hybrid-runtime.js";
 import {
   evidenceExampleBodyFallbackHe,
@@ -900,6 +901,7 @@ function buildDiagnosticCardsForSubject(subjectId, subjectUnits, topicMap) {
       confidence: diagnosticCardConfidence(u),
       evidence,
       recommendationHe,
+      fastDiagnosis: u.fastDiagnosis && typeof u.fastDiagnosis === "object" ? u.fastDiagnosis : null,
       source: {
         unitId: String(u.unitKey || ""),
         rowKey: trk,
@@ -1956,6 +1958,14 @@ export function generateParentReportV2(
       }
     }
   }
+
+  attachFastDiagnosisToDiagnosticEngineV2({
+    diagnosticEngineV2,
+    rawMistakesBySubject,
+    maps,
+    startMs,
+    endMs,
+  });
 
   /** Best-effort only: failures must not break the parent report (V2 remains primary). */
   const hybridRuntime = safeBuildHybridRuntimeForReport({
