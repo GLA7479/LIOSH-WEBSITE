@@ -3207,6 +3207,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               >
                 <input
                   type="text"
+                  data-testid="math-player-name"
                   value={playerName}
                   onChange={(e) => {
                     const newName = e.target.value;
@@ -3258,6 +3259,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 <div className="flex flex-1 min-w-0 items-center gap-1.5 shrink">
                   <select
                     ref={operationSelectRef}
+                    data-testid="math-operation-select"
                     value={operation}
                     title={getOperationName(operation)}
                     onChange={(e) => {
@@ -3372,6 +3374,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               <div className="mt-auto mb-2 w-full pt-3 flex flex-col items-center gap-2">
               <div className="flex items-center justify-center gap-1.5 w-full max-w-lg flex-wrap px-1">
                 <button
+                  type="button"
+                  data-testid="math-start-game"
                   onClick={startGame}
                   disabled={!playerName.trim()}
                   className="h-9 px-4 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-xs"
@@ -3526,7 +3530,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   )}
 
                   {/* אזור שאלה יציב למניעת קפיצות בפריסת התשובות */}
-                  <div className="w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2">
+                  <div
+                    data-testid="math-question-surface"
+                    className="w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2"
+                  >
                     {/* ויזואליזציה של מספרים (כיתות א'-ג') */}
                     {(grade === "g1" || grade === "g2" || grade === "g3") &&
                       (currentQuestion.operation === "addition" ||
@@ -3978,6 +3985,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           <div className="text-center mb-3">
                             <input
                               type="number"
+                              data-testid="math-text-answer"
                               value={textAnswer}
                               onChange={(e) => setTextAnswer(e.target.value)}
                               onKeyPress={(e) => {
@@ -3993,6 +4001,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           </div>
                           <div className="flex gap-2 justify-center">
                             <button
+                              type="button"
+                              data-testid="math-check-answer"
                               onClick={() => {
                                 if (!selectedAnswer && textAnswer.trim() !== "") {
                                   handleAnswer(textAnswer);
@@ -4952,6 +4962,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               )}
 
               <button
+                type="button"
+                data-testid="learning-stop-game"
                 onClick={stopGame}
                 className="h-9 px-4 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm"
               >

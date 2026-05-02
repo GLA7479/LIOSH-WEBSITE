@@ -2993,6 +2993,7 @@ useEffect(() => {
               >
                 <input
                   type="text"
+                  data-testid="hebrew-player-name"
                   value={playerName}
                   onChange={(e) => {
                     const newName = e.target.value;
@@ -3044,6 +3045,7 @@ useEffect(() => {
                 <div className="flex flex-1 min-w-0 items-center gap-1.5 shrink">
                   <select
                     ref={operationSelectRef}
+                    data-testid="hebrew-topic-select"
                     value={operation}
                     title={getOperationName(operation)}
                     onChange={(e) => {
@@ -3158,6 +3160,8 @@ useEffect(() => {
               <div className="mt-auto mb-2 w-full pt-3 flex flex-col items-center gap-2">
               <div className="flex items-center justify-center gap-1.5 w-full max-w-lg flex-wrap px-1">
                 <button
+                  type="button"
+                  data-testid="hebrew-start-game"
                   onClick={startGame}
                   disabled={!playerName.trim()}
                   className="h-9 px-4 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-xs"
@@ -3277,7 +3281,7 @@ useEffect(() => {
                     </div>
                   )}
 
-                  <div className={questionSlotClassByPressure}>
+                  <div data-testid="hebrew-question-stem" className={questionSlotClassByPressure}>
                   {currentQuestion?.params?.audioStem &&
                     validateAudioStem(currentQuestion.params.audioStem) && (
                       <HebrewAudioBuild1Panel
@@ -3668,7 +3672,9 @@ useEffect(() => {
 
                         return (
                           <button
+                            type="button"
                             key={idx}
+                            data-testid={`hebrew-mcq-${idx}`}
                             onClick={() => handleAnswer(answer)}
                             disabled={!!selectedAnswer}
                             className={`rounded-xl border-2 font-bold transition-all active:scale-95 disabled:opacity-50 ${answerCardTextClass} ${
@@ -3816,6 +3822,8 @@ useEffect(() => {
               )}
 
               <button
+                type="button"
+                data-testid="learning-stop-game"
                 onClick={stopGame}
                 className="h-9 px-4 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm"
               >

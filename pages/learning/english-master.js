@@ -2915,6 +2915,7 @@ const refreshMonthlyProgress = useCallback(() => {
               >
                 <input
                   type="text"
+                  data-testid="english-player-name"
                   value={playerName}
                   onChange={(e) => {
                     const newName = e.target.value;
@@ -2961,6 +2962,7 @@ const refreshMonthlyProgress = useCallback(() => {
                 <div className="flex flex-1 min-w-0 items-center gap-1.5 shrink">
                   <select
                     ref={topicSelectRef}
+                    data-testid="english-topic-select"
                     value={topic}
                     title={getTopicName(topic)}
                     onChange={(e) => {
@@ -3075,6 +3077,8 @@ const refreshMonthlyProgress = useCallback(() => {
               <div className="mt-auto mb-2 w-full pt-3 flex flex-col items-center gap-2">
               <div className="flex items-center justify-center gap-1.5 w-full max-w-lg flex-wrap px-1">
                 <button
+                  type="button"
+                  data-testid="english-start-game"
                   onClick={startGame}
                   disabled={!playerName.trim()}
                   className="h-9 px-4 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-xs"
@@ -3169,6 +3173,7 @@ const refreshMonthlyProgress = useCallback(() => {
 
                   <div className="w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2">
                     <div
+                      data-testid="english-question-stem"
                       className="text-4xl font-black text-white text-center max-w-full px-2"
                       dir="auto"
                       style={getQuestionFontStyle({ text: currentQuestion.question })}
@@ -3233,7 +3238,9 @@ const refreshMonthlyProgress = useCallback(() => {
 
                           return (
                             <button
+                              type="button"
                               key={idx}
+                              data-testid={`english-mcq-${idx}`}
                               onClick={() => handleAnswer(answer)}
                               disabled={!!selectedAnswer}
                               className={`rounded-xl border-2 px-6 py-6 text-2xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
@@ -3293,6 +3300,8 @@ const refreshMonthlyProgress = useCallback(() => {
               )}
 
               <button
+                type="button"
+                data-testid="learning-stop-game"
                 onClick={stopGame}
                 className="h-9 px-4 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm"
               >

@@ -2633,6 +2633,7 @@ function saveScienceAnswerInParallel({
               >
                 <input
                   type="text"
+                  data-testid="science-player-name"
                   value={playerName}
                   onChange={(e) => {
                     const val = e.target.value;
@@ -2691,6 +2692,7 @@ function saveScienceAnswerInParallel({
                 </select>
                 <div className="flex flex-1 min-w-0 items-center gap-1.5 shrink">
                   <select
+                    data-testid="science-topic-select"
                     value={topic}
                     title={getTopicLabel(topic)}
                     onChange={(e) => {
@@ -2902,6 +2904,8 @@ function saveScienceAnswerInParallel({
               <div className="mt-auto mb-2 w-full pt-3 flex flex-col items-center gap-2">
               <div className="flex items-center justify-center gap-1.5 w-full max-w-lg flex-wrap px-1">
                 <button
+                  type="button"
+                  data-testid="science-start-game"
                   onClick={startGame}
                   disabled={!playerName.trim()}
                   className="h-9 px-4 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-xs"
@@ -3013,6 +3017,7 @@ function saveScienceAnswerInParallel({
                       </button>
                     )}
                   <div
+                    data-testid="science-question-stem"
                     className="text-base sm:text-lg md:text-xl font-bold text-white text-center leading-snug max-w-xl mx-auto"
                     style={{
                       direction: "rtl",
@@ -3039,7 +3044,9 @@ function saveScienceAnswerInParallel({
 
                         return (
                           <button
+                            type="button"
                             key={idx}
+                            data-testid={`science-mcq-${idx}`}
                             onClick={() => handleAnswer(idx)}
                             disabled={showResult}
                             className={`rounded-xl border-2 px-2.5 py-2.5 sm:px-3 sm:py-3 text-sm font-semibold leading-snug min-h-[5.25rem] sm:min-h-[5.5rem] h-full w-full flex items-center justify-center text-center transition-all duration-150 shadow-sm active:scale-[0.98] disabled:active:scale-100 disabled:cursor-default ${
@@ -3103,6 +3110,8 @@ function saveScienceAnswerInParallel({
               </div>
 
               <button
+                type="button"
+                data-testid="learning-stop-game"
                 onClick={stopGame}
                 className="h-9 px-4 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm"
               >

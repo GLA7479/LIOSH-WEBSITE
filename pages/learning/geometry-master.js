@@ -2127,6 +2127,7 @@ useEffect(() => {
               >
                 <input
                   type="text"
+                  data-testid="geometry-player-name"
                   value={playerName}
                   onChange={(e) => {
                     const newName = e.target.value;
@@ -2218,6 +2219,7 @@ useEffect(() => {
                   )}
                   <select
                     ref={topicSelectRef}
+                    data-testid="geometry-topic-select"
                     value={topic}
                     title={getTopicName(topic)}
                     onChange={(e) => {
@@ -2322,6 +2324,8 @@ useEffect(() => {
               <div className="mt-auto mb-2 w-full pt-3 flex flex-col items-center gap-2">
               <div className="flex items-center justify-center gap-1.5 w-full max-w-lg flex-wrap px-1">
                 <button
+                  type="button"
+                  data-testid="geometry-start-game"
                   onClick={startGame}
                   disabled={!playerName.trim()}
                   className="h-9 px-4 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-xs"
@@ -2444,7 +2448,10 @@ useEffect(() => {
                     </div>
                   )}
 
-                  <div className="relative w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2">
+                  <div
+                    data-testid="geometry-question-stem"
+                    className="relative w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2"
+                  >
                   {mode === "learning" && currentQuestion.params?.kind !== "no_question" && (
                     <button
                       type="button"
@@ -2518,6 +2525,7 @@ useEffect(() => {
                             <div className="text-center mb-3">
                               <input
                                 type="text"
+                                data-testid="geometry-text-answer"
                                 value={textAnswer}
                                 onChange={(e) => setTextAnswer(e.target.value)}
                                 onKeyPress={(e) => {
@@ -2573,7 +2581,9 @@ useEffect(() => {
 
                               return (
                                 <button
+                                  type="button"
                                   key={idx}
+                                  data-testid={`geometry-mcq-${idx}`}
                                   onClick={() => handleAnswer(answer)}
                                   disabled={!!selectedAnswer}
                                   className={`rounded-xl border-2 px-5 py-5 text-xl font-bold transition-all active:scale-95 disabled:opacity-50 ${
@@ -2829,6 +2839,8 @@ useEffect(() => {
               )}
 
               <button
+                type="button"
+                data-testid="learning-stop-game"
                 onClick={stopGame}
                 className="h-9 px-4 rounded-lg bg-red-500/80 hover:bg-red-500 font-bold text-sm"
               >
