@@ -1,6 +1,6 @@
 # Learning simulator coverage matrix
 
-- Generated at: 2026-05-03T07:40:35.250Z
+- Generated at: 2026-05-03T12:11:50.909Z
 - Total rows: 819
 - Subjects: english, geometry, hebrew, math, moledet_geography, science
 

@@ -2,13 +2,14 @@
 /**
  * Unified learning-simulator QA orchestrator.
  * Usage: tsx scripts/learning-simulator/run-orchestrator.mjs <quick|full>
- * npm: qa:learning-simulator:quick | qa:learning-simulator / :full / :release (release === full)
+ * npm: qa:learning-simulator:quick | qa:learning-simulator / :full / :release (release === full).
+ * Full adds parent narrative safety artifacts (`test:parent-report-narrative-safety-artifacts`) — not in quick.
  *
  * Env:
  *   LS_CONTINUE_ON_FAIL=1 — run all steps even after a failure (still exits non-zero if any failed).
  */
 import { spawnSync } from "node:child_process";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -60,6 +61,8 @@ const ARTIFACTS = {
   engineTruthSummaryMd: "reports/learning-simulator/engine-truth/engine-truth-summary.md",
   engineCompletionSummary: "reports/learning-simulator/engine-completion/engine-completion-summary.json",
   realScenarioFrameworkValidation: "reports/learning-simulator/engine-completion/real-scenario-framework-validation.json",
+  parentNarrativeSafetyArtifacts: "reports/parent-report-narrative-safety-artifacts/summary.json",
+  parentNarrativeSafetyArtifactsMd: "reports/parent-report-narrative-safety-artifacts/summary.md",
 };
 
 /** Stages in order for quick gate */
@@ -185,6 +188,11 @@ const FULL_SUFFIX = [
   { id: "deep", script: "qa:learning-simulator:deep", label: "Deep longitudinal simulator" },
   { id: "build", script: "build", label: "Next.js production build" },
   { id: "parentReportPhase1", script: "test:parent-report-phase1", label: "Parent report phase1 selftest" },
+  {
+    id: "parentReportNarrativeSafetyArtifacts",
+    script: "test:parent-report-narrative-safety-artifacts",
+    label: "Parent narrative safety (artifact JSON)",
+  },
   { id: "intelligenceUsage", script: "test:intelligence-layer-v1-usage", label: "Intelligence layer v1 usage selftest" },
   {
     id: "releaseReadinessSummary",
@@ -192,6 +200,34 @@ const FULL_SUFFIX = [
     label: "Release readiness summary (master QA artifact)",
   },
 ];
+
+/** @param {string} root */
+async function loadParentNarrativeSafetySummaryJson(root) {
+  const p = join(root, "reports", "parent-report-narrative-safety-artifacts", "summary.json");
+  try {
+    return JSON.parse(await readFile(p, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+/** @param {Record<string, unknown>|null} raw */
+function summarizeNarrativeSafetyForOrchestrator(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  return {
+    status: raw.status,
+    narrativesChecked: raw.narrativesChecked,
+    artifactFileCount: raw.artifactFileCount,
+    blockCount: raw.blockCount,
+    warningCount: raw.warningCount,
+    infoCautionCount: raw.infoCautionCount,
+    cleanPassCount: raw.cleanPassCount,
+    passTotalCount: raw.passTotalCount,
+    topIssueCodes: Array.isArray(raw.topIssueCodes) ? raw.topIssueCodes.slice(0, 12) : [],
+    summaryJsonPath: "reports/parent-report-narrative-safety-artifacts/summary.json",
+    summaryMdPath: "reports/parent-report-narrative-safety-artifacts/summary.md",
+  };
+}
 
 function runStep(cwd, npmScript) {
   const start = Date.now();
@@ -249,6 +285,8 @@ function nextActionHint(failedStep) {
       "Inspect pdf-export-gate.json and reports/learning-simulator/pdf-export/; verify html2pdf download with ?qa_pdf=file or fix Playwright/console errors.",
     releaseReadinessSummary:
       "Inspect release-readiness-summary.json — missing artifacts, uncovered cells, or gate regressions; re-run full QA after fixes.",
+    parentReportNarrativeSafetyArtifacts:
+      "Ensure generated JSON exists under reports/parent-report-persona-corpus/json, reports/learning-simulator/parent-report-review-pack/reports, and/or reports/learning-simulator/reports/per-student (run review-pack / aggregate as needed). Inspect reports/parent-report-narrative-safety-artifacts/summary.md — blocks fail the gate; no_artifacts_found means nothing was validated.",
   };
   return hints[id] || `Review logs for stage "${id}" and related artifacts under reports/learning-simulator/.`;
 }
@@ -279,6 +317,41 @@ function buildMarkdown(payload) {
   lines.push("", "## Key artifact paths (repo-relative)", "");
   for (const [k, v] of Object.entries(payload.artifactLinks || {})) {
     lines.push(`- **${k}:** \`${mdEscape(v)}\``);
+  }
+
+  const ns = payload.parentNarrativeSafety;
+  if (ns && typeof ns === "object") {
+    lines.push(
+      "",
+      "## Parent narrative safety (artifacts)",
+      "",
+      `Full gate validates parent-visible Hebrew copy in saved report JSON. Human-readable report: **\`${mdEscape(ns.summaryMdPath)}\`**.`,
+      "",
+      "| Field | Value |",
+      "| --- | --- |",
+      `| status | ${mdEscape(ns.status)} |`,
+      `| narrativesChecked | ${mdEscape(ns.narrativesChecked)} |`,
+      `| artifactFileCount | ${mdEscape(ns.artifactFileCount)} |`,
+      `| blockCount | ${mdEscape(ns.blockCount)} |`,
+      `| warningCount | ${mdEscape(ns.warningCount)} |`,
+      `| infoCautionCount | ${mdEscape(ns.infoCautionCount)} |`,
+      `| cleanPassCount | ${mdEscape(ns.cleanPassCount)} |`,
+      ""
+    );
+    const tic = ns.topIssueCodes;
+    if (Array.isArray(tic) && tic.length) {
+      lines.push("Top warning issue codes:", "", "| code | count |", "| --- | --- |");
+      for (const row of tic) {
+        const code = Array.isArray(row) ? row[0] : row?.[0];
+        const cnt = Array.isArray(row) ? row[1] : row?.[1];
+        lines.push(`| ${mdEscape(code)} | ${mdEscape(cnt)} |`);
+      }
+      lines.push("");
+    }
+    lines.push(
+      "*Blocks fail this orchestrator step. `warnings_only` passes at this stage (review MD). `no_artifacts_found` fails — no JSON matched configured artifact paths.*",
+      ""
+    );
   }
 
   if (!payload.pass && payload.failedStep) {
@@ -341,26 +414,51 @@ async function main() {
   /** @type {object[]} */
   const stepResults = [];
   let failedStep = null;
+  /** @type {null | Record<string, unknown>} */
+  let parentNarrativeSafety = null;
 
   for (const step of steps) {
     console.log(`▶ ${step.label}`);
     console.log(`  npm run ${step.script}`);
     const { exitCode, durationMs, pass } = runStep(ROOT, step.script);
+    let effectivePass = pass;
+
+    if (step.id === "parentReportNarrativeSafetyArtifacts") {
+      const raw = await loadParentNarrativeSafetySummaryJson(ROOT);
+      parentNarrativeSafety = summarizeNarrativeSafetyForOrchestrator(raw);
+      if (!raw) {
+        console.error(
+          "  Orchestrator: missing reports/parent-report-narrative-safety-artifacts/summary.json after narrative safety step."
+        );
+        effectivePass = false;
+      } else if (raw.status === "no_artifacts_found") {
+        console.error(
+          "  Orchestrator: parent narrative safety matched no artifact JSON — gate cannot validate parent-facing copy. Generate fixtures under reports/ (see docs/learning-simulator-qa.md)."
+        );
+        effectivePass = false;
+      } else if (Number(raw.blockCount) > 0) {
+        effectivePass = false;
+      }
+    }
+
     const row = {
       id: step.id,
       label: step.label,
       script: step.script,
       exitCode,
       durationMs,
-      pass,
+      pass: effectivePass,
+      ...(step.id === "parentReportNarrativeSafetyArtifacts" && parentNarrativeSafety
+        ? { narrativeSafety: parentNarrativeSafety }
+        : {}),
     };
     stepResults.push(row);
-    console.log(`  → exit ${exitCode}, ${durationMs} ms ${pass ? "✓" : "✗"}`);
+    console.log(`  → exit ${exitCode}, ${durationMs} ms ${effectivePass ? "✓" : "✗"}`);
     console.log("");
 
-    if (!pass && !failedStep) failedStep = row;
+    if (!effectivePass && !failedStep) failedStep = row;
 
-    if (!pass && !continueOnFail) {
+    if (!effectivePass && !continueOnFail) {
       console.error(`Orchestrator: stopping after failure (${step.id}).`);
       break;
     }
@@ -400,6 +498,7 @@ async function main() {
     artifactLinks,
     nextAction: failedStep ? nextActionHint(failedStep) : null,
     options: { continueOnFail },
+    ...(mode === "full" ? { parentNarrativeSafety } : {}),
   };
 
   await writeFile(OUT_JSON, JSON.stringify(payload, null, 2), "utf8");

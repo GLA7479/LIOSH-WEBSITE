@@ -1,0 +1,490 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T12:12:12.362Z",
+  "gate": {
+    "scanOutcome": "ok",
+    "partialLoadErrors": true,
+    "advisoryStatus": "WARN",
+    "exitPolicy": "Advisory: exit 0 unless scanOutcome is error (no records parsed successfully). Incomplete metadata does not fail.",
+    "recordsParsed": 5267,
+    "loadErrorsCount": 3,
+    "proceduralSourcesDocumented": 4
+  },
+  "discovery": {
+    "staticModulesScanned": 17,
+    "geometryConceptual": {
+      "path": "utils/geometry-conceptual-bank.js",
+      "subjectId": "geometry",
+      "exportName": "GEOMETRY_CONCEPTUAL_ITEMS",
+      "note": "Template rows for conceptual MCQ — scanned as static metadata carriers"
+    },
+    "proceduralSources": [
+      {
+        "path": "utils/math-question-generator.js",
+        "subjectId": "math",
+        "note": "Procedural math items — metadata assigned at generation time"
+      },
+      {
+        "path": "utils/geometry-question-generator.js",
+        "subjectId": "geometry",
+        "note": "Procedural geometry — use geometry-conceptual-bank + generator params"
+      },
+      {
+        "path": "utils/hebrew-question-generator.js",
+        "subjectId": "hebrew",
+        "note": "Live Hebrew MCQ merge (legacy + rich pool) — large module"
+      },
+      {
+        "path": "utils/moledet-geography-question-generator.js",
+        "subjectId": "moledet-geography",
+        "note": "Optional procedural geography wrapper"
+      }
+    ],
+    "bankPaths": [
+      "data/science-questions.js",
+      "utils/hebrew-rich-question-bank.js",
+      "data/english-questions/grammar-pools.js",
+      "data/english-questions/translation-pools.js",
+      "data/english-questions/sentence-pools.js",
+      "data/geography-questions/g1.js",
+      "data/geography-questions/g2.js",
+      "data/geography-questions/g3.js",
+      "data/geography-questions/g4.js",
+      "data/geography-questions/g5.js",
+      "data/geography-questions/g6.js",
+      "data/hebrew-questions/g1.js",
+      "data/hebrew-questions/g2.js",
+      "data/hebrew-questions/g3.js",
+      "data/hebrew-questions/g4.js",
+      "data/hebrew-questions/g5.js",
+      "data/hebrew-questions/g6.js"
+    ]
+  },
+  "totals": {
+    "questionsScanned": 5267,
+    "highRiskCount": 4547,
+    "mediumRiskCount": 717,
+    "duplicateDeclaredIds": 0,
+    "skillBucketsLowVolume": 299,
+    "minQuestionsPerSkillThreshold": 5
+  },
+  "topMissingMetadataFields": [
+    [
+      "missing_prerequisite_skill_ids",
+      5267
+    ],
+    [
+      "missing_cognitiveLevel",
+      5266
+    ],
+    [
+      "missing_expected_error_types",
+      5247
+    ],
+    [
+      "missing_subskillId",
+      4927
+    ],
+    [
+      "implicit_id_only",
+      4884
+    ],
+    [
+      "missing_difficulty",
+      4884
+    ],
+    [
+      "missing_skillId",
+      4547
+    ],
+    [
+      "missing_explanation",
+      4264
+    ]
+  ],
+  "subjectSummaries": {
+    "science": {
+      "subject": "science",
+      "totalQuestions": 383,
+      "filesScanned": 1,
+      "filePaths": [
+        "data/science-questions.js"
+      ],
+      "pctWithSkillId": 100,
+      "pctWithSubskillId": 0.8,
+      "pctWithDifficulty": 100,
+      "pctWithCognitiveLevel": 0.3,
+      "pctWithExpectedErrorTypes": 0.8,
+      "pctWithPrerequisiteSkillIds": 0,
+      "pctWithCorrectAnswer": 100,
+      "pctWithExplanation": 100,
+      "duplicateIdsInSubject": 0,
+      "highRiskQuestionCount": 0,
+      "mediumRiskQuestionCount": 380,
+      "weakestMetadataFields": [
+        "missing_prerequisite_skill_ids",
+        "missing_cognitiveLevel",
+        "missing_subskillId",
+        "missing_expected_error_types"
+      ],
+      "topIssueCodes": [
+        [
+          "missing_prerequisite_skill_ids",
+          383
+        ],
+        [
+          "missing_cognitiveLevel",
+          382
+        ],
+        [
+          "missing_subskillId",
+          380
+        ],
+        [
+          "missing_expected_error_types",
+          380
+        ]
+      ],
+      "readinessScore": "medium",
+      "avgCompleteness": 0.602
+    },
+    "hebrew": {
+      "subject": "hebrew",
+      "totalQuestions": 54,
+      "filesScanned": 1,
+      "filePaths": [
+        "utils/hebrew-rich-question-bank.js"
+      ],
+      "pctWithSkillId": 100,
+      "pctWithSubskillId": 100,
+      "pctWithDifficulty": 0,
+      "pctWithCognitiveLevel": 0,
+      "pctWithExpectedErrorTypes": 9.3,
+      "pctWithPrerequisiteSkillIds": 0,
+      "pctWithCorrectAnswer": 100,
+      "pctWithExplanation": 0,
+      "duplicateIdsInSubject": 0,
+      "highRiskQuestionCount": 0,
+      "mediumRiskQuestionCount": 54,
+      "weakestMetadataFields": [
+        "implicit_id_only",
+        "missing_difficulty",
+        "missing_cognitiveLevel",
+        "missing_prerequisite_skill_ids",
+        "missing_explanation"
+      ],
+      "topIssueCodes": [
+        [
+          "implicit_id_only",
+          54
+        ],
+        [
+          "missing_difficulty",
+          54
+        ],
+        [
+          "missing_cognitiveLevel",
+          54
+        ],
+        [
+          "missing_prerequisite_skill_ids",
+          54
+        ],
+        [
+          "missing_explanation",
+          54
+        ],
+        [
+          "missing_expected_error_types",
+          49
+        ]
+      ],
+      "readinessScore": "medium",
+      "avgCompleteness": 0.451
+    },
+    "english": {
+      "subject": "english",
+      "totalQuestions": 670,
+      "filesScanned": 3,
+      "filePaths": [
+        "data/english-questions/grammar-pools.js",
+        "data/english-questions/sentence-pools.js",
+        "data/english-questions/translation-pools.js"
+      ],
+      "pctWithSkillId": 34.5,
+      "pctWithSubskillId": 34.5,
+      "pctWithDifficulty": 0,
+      "pctWithCognitiveLevel": 0,
+      "pctWithExpectedErrorTypes": 0.6,
+      "pctWithPrerequisiteSkillIds": 0,
+      "pctWithCorrectAnswer": 100,
+      "pctWithExplanation": 92.5,
+      "duplicateIdsInSubject": 0,
+      "highRiskQuestionCount": 439,
+      "mediumRiskQuestionCount": 231,
+      "weakestMetadataFields": [
+        "implicit_id_only",
+        "missing_difficulty",
+        "missing_cognitiveLevel",
+        "missing_prerequisite_skill_ids",
+        "missing_expected_error_types"
+      ],
+      "topIssueCodes": [
+        [
+          "implicit_id_only",
+          670
+        ],
+        [
+          "missing_difficulty",
+          670
+        ],
+        [
+          "missing_cognitiveLevel",
+          670
+        ],
+        [
+          "missing_prerequisite_skill_ids",
+          670
+        ],
+        [
+          "missing_expected_error_types",
+          666
+        ],
+        [
+          "missing_skillId",
+          439
+        ],
+        [
+          "missing_subskillId",
+          439
+        ],
+        [
+          "missing_explanation",
+          50
+        ]
+      ],
+      "readinessScore": "weak",
+      "avgCompleteness": 0.357
+    },
+    "moledet-geography": {
+      "subject": "moledet-geography",
+      "totalQuestions": 3506,
+      "filesScanned": 6,
+      "filePaths": [
+        "data/geography-questions/g1.js",
+        "data/geography-questions/g2.js",
+        "data/geography-questions/g3.js",
+        "data/geography-questions/g4.js",
+        "data/geography-questions/g5.js",
+        "data/geography-questions/g6.js"
+      ],
+      "pctWithSkillId": 0,
+      "pctWithSubskillId": 0,
+      "pctWithDifficulty": 0,
+      "pctWithCognitiveLevel": 0,
+      "pctWithExpectedErrorTypes": 0,
+      "pctWithPrerequisiteSkillIds": 0,
+      "pctWithCorrectAnswer": 100,
+      "pctWithExplanation": 0,
+      "duplicateIdsInSubject": 0,
+      "highRiskQuestionCount": 3506,
+      "mediumRiskQuestionCount": 0,
+      "weakestMetadataFields": [
+        "implicit_id_only",
+        "missing_skillId",
+        "missing_subskillId",
+        "missing_difficulty",
+        "missing_cognitiveLevel"
+      ],
+      "topIssueCodes": [
+        [
+          "implicit_id_only",
+          3506
+        ],
+        [
+          "missing_skillId",
+          3506
+        ],
+        [
+          "missing_subskillId",
+          3506
+        ],
+        [
+          "missing_difficulty",
+          3506
+        ],
+        [
+          "missing_cognitiveLevel",
+          3506
+        ],
+        [
+          "missing_expected_error_types",
+          3506
+        ],
+        [
+          "missing_prerequisite_skill_ids",
+          3506
+        ],
+        [
+          "missing_explanation",
+          3506
+        ]
+      ],
+      "readinessScore": "missing",
+      "avgCompleteness": 0.2
+    },
+    "hebrew-archive": {
+      "subject": "hebrew-archive",
+      "totalQuestions": 602,
+      "filesScanned": 3,
+      "filePaths": [
+        "data/hebrew-questions/g1.js",
+        "data/hebrew-questions/g2.js",
+        "data/hebrew-questions/g6.js"
+      ],
+      "pctWithSkillId": 0,
+      "pctWithSubskillId": 0,
+      "pctWithDifficulty": 0,
+      "pctWithCognitiveLevel": 0,
+      "pctWithExpectedErrorTypes": 0,
+      "pctWithPrerequisiteSkillIds": 0,
+      "pctWithCorrectAnswer": 100,
+      "pctWithExplanation": 0,
+      "duplicateIdsInSubject": 0,
+      "highRiskQuestionCount": 602,
+      "mediumRiskQuestionCount": 0,
+      "weakestMetadataFields": [
+        "implicit_id_only",
+        "missing_skillId",
+        "missing_subskillId",
+        "missing_difficulty",
+        "missing_cognitiveLevel"
+      ],
+      "topIssueCodes": [
+        [
+          "implicit_id_only",
+          602
+        ],
+        [
+          "missing_skillId",
+          602
+        ],
+        [
+          "missing_subskillId",
+          602
+        ],
+        [
+          "missing_difficulty",
+          602
+        ],
+        [
+          "missing_cognitiveLevel",
+          602
+        ],
+        [
+          "missing_expected_error_types",
+          602
+        ],
+        [
+          "missing_prerequisite_skill_ids",
+          602
+        ],
+        [
+          "missing_explanation",
+          602
+        ]
+      ],
+      "readinessScore": "missing",
+      "avgCompleteness": 0.2
+    },
+    "geometry": {
+      "subject": "geometry",
+      "totalQuestions": 52,
+      "filesScanned": 1,
+      "filePaths": [
+        "utils/geometry-conceptual-bank.js"
+      ],
+      "pctWithSkillId": 100,
+      "pctWithSubskillId": 100,
+      "pctWithDifficulty": 0,
+      "pctWithCognitiveLevel": 0,
+      "pctWithExpectedErrorTypes": 15.4,
+      "pctWithPrerequisiteSkillIds": 0,
+      "pctWithCorrectAnswer": 100,
+      "pctWithExplanation": 0,
+      "duplicateIdsInSubject": 0,
+      "highRiskQuestionCount": 0,
+      "mediumRiskQuestionCount": 52,
+      "weakestMetadataFields": [
+        "implicit_id_only",
+        "missing_difficulty",
+        "missing_cognitiveLevel",
+        "missing_prerequisite_skill_ids",
+        "missing_explanation"
+      ],
+      "topIssueCodes": [
+        [
+          "implicit_id_only",
+          52
+        ],
+        [
+          "missing_difficulty",
+          52
+        ],
+        [
+          "missing_cognitiveLevel",
+          52
+        ],
+        [
+          "missing_prerequisite_skill_ids",
+          52
+        ],
+        [
+          "missing_explanation",
+          52
+        ],
+        [
+          "missing_expected_error_types",
+          44
+        ]
+      ],
+      "readinessScore": "medium",
+      "avgCompleteness": 0.458
+    }
+  },
+  "duplicateIds": [],
+  "loadErrors": [
+    {
+      "path": "data/hebrew-questions/g3.js",
+      "error": "Cannot require() ES Module C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\hebrew-questions\\g3.js in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded."
+    },
+    {
+      "path": "data/hebrew-questions/g4.js",
+      "error": "Cannot require() ES Module C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\hebrew-questions\\g4.js in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded."
+    },
+    {
+      "path": "data/hebrew-questions/g5.js",
+      "error": "Cannot require() ES Module C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\hebrew-questions\\g5.js in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded."
+    }
+  ],
+  "issueCodeReference": {
+    "implicit_id_only": "implicit_id_only",
+    "duplicate_id": "duplicate_id",
+    "missing_subject": "missing_subject",
+    "missing_skillId": "missing_skillId",
+    "missing_subskillId": "missing_subskillId",
+    "missing_difficulty": "missing_difficulty",
+    "missing_cognitiveLevel": "missing_cognitiveLevel",
+    "missing_expected_error_types": "missing_expected_error_types",
+    "expected_error_types_empty": "expected_error_types_empty",
+    "missing_prerequisite_skill_ids": "missing_prerequisite_skill_ids",
+    "prerequisite_skill_ids_empty": "prerequisite_skill_ids_empty",
+    "missing_correct_answer": "missing_correct_answer",
+    "missing_explanation": "missing_explanation",
+    "invalid_difficulty": "invalid_difficulty",
+    "invalid_cognitive_level": "invalid_cognitive_level",
+    "misconception_diagnosis_unsupported": "misconception_diagnosis_unsupported",
+    "prerequisite_diagnosis_unsupported": "prerequisite_diagnosis_unsupported",
+    "skill_low_volume": "skill_low_volume"
+  }
+}

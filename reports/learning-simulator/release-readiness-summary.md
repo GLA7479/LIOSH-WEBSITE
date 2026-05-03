@@ -1,7 +1,7 @@
 # Learning Simulator — Release readiness summary
 
-- **runId:** release-summary-mopgydkf
-- **generatedAt:** 2026-05-03T07:48:38.319Z
+- **runId:** release-summary-moppq8rf
+- **generatedAt:** 2026-05-03T11:54:15.387Z
 
 ## Overall
 
@@ -53,6 +53,21 @@
 | PDF/export (render gate doc) | deferred surfaces / informational |
 
 
+### Parent narrative safety (artifacts)
+
+| Field | Value |
+| --- | --- |
+| status | warnings_only |
+| narrativesChecked | 10398 |
+| artifactFileCount | 84 |
+| blockCount | 0 |
+| warningCount | 124 |
+| infoCautionCount | 16 |
+| human report | `reports/parent-report-narrative-safety-artifacts/summary.md` |
+
+Top warning codes: ambiguous_evidence:124
+
+
 ### PDF export gate
 
 | Field | Value |
@@ -60,7 +75,7 @@
 | status | pass |
 | checkedRoute | /learning/parent-report?qa_pdf=file |
 | downloadSucceeded | true |
-| fileSizeBytes | 3932799 |
+| fileSizeBytes | 3924585 |
 | pdfHeaderOk | true |
 | deferredReason | — |
 

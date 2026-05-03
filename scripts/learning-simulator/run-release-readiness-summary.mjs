@@ -15,6 +15,7 @@ const OUT_JSON = join(LS, "release-readiness-summary.json");
 const OUT_MD = join(LS, "release-readiness-summary.md");
 
 const PATHS = {
+  parentNarrativeSafetyArtifacts: join(ROOT, "reports", "parent-report-narrative-safety-artifacts", "summary.json"),
   coverageCatalog: join(LS, "coverage-catalog.json"),
   unsupportedCells: join(LS, "unsupported-cells.json"),
   contentGapAudit: join(LS, "content-gap-audit.json"),
@@ -316,6 +317,33 @@ async function main() {
       }
     : null;
 
+  const pns = loaded.parentNarrativeSafetyArtifacts;
+  const parentNarrativeSafetySummary = pns
+    ? {
+        status: pns.status,
+        narrativesChecked: pns.narrativesChecked,
+        artifactFileCount: pns.artifactFileCount,
+        blockCount: pns.blockCount,
+        warningCount: pns.warningCount,
+        infoCautionCount: pns.infoCautionCount,
+        cleanPassCount: pns.cleanPassCount,
+        passTotalCount: pns.passTotalCount,
+        topIssueCodes: Array.isArray(pns.topIssueCodes) ? pns.topIssueCodes.slice(0, 12) : [],
+        summaryMdPath: "reports/parent-report-narrative-safety-artifacts/summary.md",
+      }
+    : null;
+
+  if (pns && Number(pns.blockCount) > 0) {
+    failures.push(
+      `Parent narrative safety: blockCount=${pns.blockCount} — see reports/parent-report-narrative-safety-artifacts/summary.md`
+    );
+  }
+  if (pns && pns.status === "no_artifacts_found") {
+    failures.push(
+      "Parent narrative safety: no_artifacts_found — no JSON matched configured artifact paths (full QA not ready)"
+    );
+  }
+
   const deferredItems = {
     pdfBinaryExportInPage:
       pdfGate?.status === "pass"
@@ -388,6 +416,7 @@ async function main() {
     pdfExportGateSummary,
     pdfExportAuditSummary,
     scenarioCoverageSummary,
+    parentNarrativeSafetySummary,
     deferredItems,
     knownRemainingWork,
     releaseDecision,
@@ -460,6 +489,27 @@ async function main() {
           "",
         ].join("\n")
       : "(missing render-release-gate.json)",
+    "",
+    "### Parent narrative safety (artifacts)",
+    "",
+    parentNarrativeSafetySummary
+      ? [
+          `| Field | Value |`,
+          `| --- | --- |`,
+          `| status | ${mdEscape(parentNarrativeSafetySummary.status)} |`,
+          `| narrativesChecked | ${parentNarrativeSafetySummary.narrativesChecked ?? "—"} |`,
+          `| artifactFileCount | ${parentNarrativeSafetySummary.artifactFileCount ?? "—"} |`,
+          `| blockCount | ${parentNarrativeSafetySummary.blockCount ?? "—"} |`,
+          `| warningCount | ${parentNarrativeSafetySummary.warningCount ?? "—"} |`,
+          `| infoCautionCount | ${parentNarrativeSafetySummary.infoCautionCount ?? "—"} |`,
+          `| human report | \`${mdEscape(parentNarrativeSafetySummary.summaryMdPath)}\` |`,
+          "",
+          parentNarrativeSafetySummary.topIssueCodes?.length
+            ? `Top warning codes: ${parentNarrativeSafetySummary.topIssueCodes.map((r) => (Array.isArray(r) ? r.join(":") : r)).join(", ")}`
+            : "",
+          "",
+        ].join("\n")
+      : "*(parent-report-narrative-safety-artifacts/summary.json not found — run full QA or `npm run test:parent-report-narrative-safety-artifacts`)*",
     "",
     "### PDF export gate",
     "",

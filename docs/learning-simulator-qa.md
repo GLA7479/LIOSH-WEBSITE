@@ -29,7 +29,7 @@ Stopping behavior: by default the orchestrator **stops on the first failing step
 | --------- | ------------------- |
 | **Normal development** (tweaks to helpers, small fixture edits, iterating on one gate) | `npm run qa:learning-simulator:quick`, then re-run **single** sub-scripts as needed (e.g. `qa:learning-simulator:behavior`). |
 | **After changing question banks / curriculum data** | `npm run qa:learning-simulator` (full) — includes Phase 4 integrity, matrix smoke, coverage catalog, and content gap/backlog artifacts. |
-| **After changing parent-report / report builders** | Full gate — especially **`qa:learning-simulator:reports`**, **`qa:learning-simulator:behavior`**, and **`qa:learning-simulator:render`** (included in full). |
+| **After changing parent-report / report builders** | Full gate — especially **`qa:learning-simulator:reports`**, **`qa:learning-simulator:behavior`**, **`qa:learning-simulator:render`**, and **`test:parent-report-narrative-safety-artifacts`** (included in full via orchestrator). |
 | **After changing simulator logic** (adapters, orchestration, matrix runners) | Full gate; add targeted scripts while iterating, then full before push. |
 | **Before push / PR** | `npm run qa:learning-simulator` **and** `npm run build` if your workflow does not rely on the build step inside full (full already runs `npm run build`). |
 | **Before production release** | `npm run qa:learning-simulator:release` (same as full): matrix → … → render → PDF export → deep → build → selftests → **`qa:learning-simulator:release-summary`**. Optionally run `npm run build` again locally if you ship outside CI. |
@@ -74,12 +74,37 @@ After the quick chain (same order as `run-orchestrator.mjs`):
 18. **`qa:learning-simulator:deep`** — Longitudinal deep scenarios; outputs under `reports/learning-simulator/deep/`.
 19. **`npm run build`** — Next.js production build.
 20. **`npm run test:parent-report-phase1`** — Parent report Phase 1 selftest.
-21. **`npm run test:intelligence-layer-v1-usage`** — Intelligence layer usage contract selftest.
-22. **`qa:learning-simulator:release-summary`** — Master release readiness JSON/MD.
+21. **`npm run test:parent-report-narrative-safety-artifacts`** — **Parent narrative safety (artifact JSON)** — deterministic guard on parent-visible Hebrew strings in saved report / simulator JSON (see section below).
+22. **`npm run test:intelligence-layer-v1-usage`** — Intelligence layer usage contract selftest.
+23. **`qa:learning-simulator:release-summary`** — Master release readiness JSON/MD.
 
 Standalone (e.g. CI snippets): individual `npm run qa:learning-simulator:<stage>` scripts listed in `package.json`.
 
 **Not included by default:** Playwright E2E (`npm run test:e2e`). Add explicitly when you need browser automation.
+
+**Not in quick:** The **parent narrative safety artifact** step runs only in **full** / **release** (same orchestrator). Quick stays fast and does not require the large JSON corpora under `reports/`.
+
+## Parent Narrative Safety artifact gate
+
+Part of the **full** orchestrator (after `test:parent-report-phase1`, before intelligence usage selftest).
+
+- **What it checks:** Reads generated JSON under configured paths (persona corpus, parent-report review-pack, per-student simulator reports), extracts parent-visible Hebrew narrative fields, and runs the deterministic `validateParentNarrativeSafety` guard (no LLM, no live pages).
+- **What fails release / full QA:** **`blockCount > 0`** (unsafe parent-facing wording per guard rules), **missing `summary.json` after the step**, or **`no_artifacts_found`** (no JSON matched — nothing was validated; treat as not-ready until artifacts exist).
+- **What passes without failing:** **`warnings_only`** — thin-data / ambiguous phrasing warnings are visible in the human report but do **not** fail the orchestrator at this stage.
+- **Info / caution rows:** Safe explicit thin-data framing is tagged for visibility; not a product failure.
+- **Where to read output:** `reports/parent-report-narrative-safety-artifacts/summary.md` and `summary.json`. The orchestrator run summary (`reports/learning-simulator/orchestrator/run-summary.md`) duplicates key counts when the step runs.
+
+## Question Metadata QA (repo-wide banks)
+
+**Not** part of the learning-simulator orchestrator by default — run when enriching diagnostic metadata or auditing pools.
+
+- **Command:** `npm run qa:question-metadata`
+- **What it scans:** Static question JS under `data/*`, `utils/hebrew-rich-question-bank.js`, English pools, geography grades, science bank, geometry conceptual templates (see `docs/question-metadata-qa.md`). Procedural generators are listed but not expanded.
+- **What it reports:** Subject-level coverage %, skill-level buckets, duplicate declared IDs, risk tier per row, top missing fields — outputs under `reports/question-metadata-qa/`.
+- **Why it matters:** Professional diagnosis (`question-skill-metadata-v1`, misconception / prerequisite paths) needs consistent **skillId**, **error tags**, and **prerequisite** hooks on bank rows.
+- **Why advisory:** Exit **0** unless the scanner cannot parse **any** bank (fatal). Incomplete metadata yields **WARN** — expected until pools are systematically tagged.
+
+Full detail: **`docs/question-metadata-qa.md`**.
 
 ## What **deep** runs (when invoked via full or standalone)
 
@@ -120,6 +145,8 @@ Standalone (e.g. CI snippets): individual `npm run qa:learning-simulator:<stage>
 | Critical matrix deep | `reports/learning-simulator/critical-matrix-deep.json`, `critical-matrix-deep.md` |
 | Deep | `reports/learning-simulator/deep/run-summary.json`, `failures.json`, `per-student/*` |
 | Orchestrator | `reports/learning-simulator/orchestrator/run-summary.json`, `.md` |
+| Parent narrative safety (artifacts) | `reports/parent-report-narrative-safety-artifacts/summary.json`, `summary.md` |
+| Question metadata QA | `reports/question-metadata-qa/summary.json`, `summary.md`, `skill-coverage.json` |
 
 ## When to run quick vs full vs release
 
