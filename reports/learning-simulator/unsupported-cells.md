@@ -1,6 +1,6 @@
 # Unsupported / gap cells (classification)
 
-- Generated at: 2026-05-02T23:13:35.725Z
+- Generated at: 2026-05-03T00:50:40.091Z
 - Cells in this report: 72
 - coverageStatus **uncovered**: 0
 - Classification **unknown_needs_review**: 0

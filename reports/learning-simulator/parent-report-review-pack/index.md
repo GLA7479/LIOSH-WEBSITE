@@ -1,6 +1,6 @@
 # Parent Reports Review Pack
 
-- נוצר ב־: 2026-05-03T00:16:52.700Z
+- נוצר ב־: 2026-05-03T00:34:50.838Z
 - תיקייה: `reports/learning-simulator/parent-report-review-pack/`
 
 ## סקירה מהירה

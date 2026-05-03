@@ -1,6 +1,6 @@
 # Parent report review pack — summary
 
-- generatedAt: 2026-05-03T00:16:52.700Z
+- generatedAt: 2026-05-03T00:34:50.838Z
 - totalReports: 14
 - pdfGenerated (valid on disk): 12
 - pdfFailed (no valid file): 2

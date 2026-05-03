@@ -185,7 +185,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -1122,7 +1122,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -2052,7 +2052,7 @@
                   "בטווח הנבחר: 13 שאלות, דיוק כ-69%.",
                   "אירועי טעות רלוונטיים: 2 (מתוך 2 אירועים).",
                   "בטווח הנוכחי כ-69% דיוק על 13 שאלות · אין מספיק מפגשים תקינים להשוואת מגמה אמינה (נדרשים לפחות 3). בשלב הזה ההשוואה בין תקופות רגישה לרעש — כדאי לאמת שוב אחרי עוד תרגול.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: בינונית.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -3642,7 +3642,7 @@
     },
     "detailedReport": {
       "version": 2,
-      "generatedAt": "2026-05-03T00:16:53.482Z",
+      "generatedAt": "2026-05-03T00:34:52.600Z",
       "diagnosticEngineV2": {
         "blueprintRef": "docs/stage1-scientific-blueprint-source-of-truth.md v1.0",
         "engineVersion": "2.0.0",
@@ -4591,7 +4591,7 @@
       },
       "parentProductContractV1": {
         "version": "v1",
-        "generatedAt": "2026-05-03T00:16:53.482Z",
+        "generatedAt": "2026-05-03T00:34:52.600Z",
         "primarySubjectId": "math",
         "top": {
           "mainStatusHe": "יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.",

@@ -738,6 +738,16 @@ const EVIDENCE_STRENGTH_HE = { low: "מוגבלת", medium: "בינונית", st
 const INSUFFICIENT_EVIDENCE_LINE_HE =
   "מידע מועט בנושא — כדאי להמשיך בתרגול לפני מסקנה חד-משמעית.";
 
+/** Strip internal engine identifiers from diagnostic trace lines shown to parents. */
+function sanitizeDecisionTraceDetailHeForParents(raw) {
+  const s = String(raw || "").trim();
+  if (!s) return "";
+  if (/suppressAggressiveStep/i.test(s)) {
+    return "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.";
+  }
+  return s;
+}
+
 const MAX_DIAGNOSTIC_CARDS_PER_SUBJECT = 5;
 
 const POSITIVE_LEVEL_RANK = { excellent: 3, very_good: 2, good: 1, none: 0 };
@@ -803,7 +813,7 @@ function collectDiagnosticEvidenceLinesHe(unit, row) {
 
   if (Array.isArray(r.decisionTrace)) {
     for (const e of r.decisionTrace.slice(-3)) {
-      const d = String(e?.detailHe || "").trim();
+      const d = sanitizeDecisionTraceDetailHeForParents(String(e?.detailHe || "").trim());
       if (d) push(d);
     }
   }

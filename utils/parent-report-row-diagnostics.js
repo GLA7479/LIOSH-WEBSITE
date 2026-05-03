@@ -355,7 +355,7 @@ export function buildDiagnosticsDecisionTrace(ctx) {
     }),
     data({
       phase: "data_sufficiency",
-      detailHe: "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+      detailHe: "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
       data: {
         dataSufficiencyLevel,
         suppressAggressiveStep,

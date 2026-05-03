@@ -112,7 +112,7 @@ function ParentReportRowDiagnosticsFootnote({ data }) {
   }
   const dt = Array.isArray(row.decisionTrace) ? row.decisionTrace : [];
   for (let i = dt.length - 1; i >= 0; i--) {
-    const d = String(dt[i]?.detailHe || "").trim();
+    const d = sanitizeDiagnosticsFootnoteDetailHe(String(dt[i]?.detailHe || "").trim());
     if (d) {
       return (
         <div className="text-[9px] md:text-[10px] text-white/55 leading-tight max-w-[14rem] min-w-0 w-full mx-auto text-center line-clamp-2 break-words">
@@ -613,6 +613,33 @@ const chartTooltipStyle = {
   fontSize: "13px",
 };
 
+/** Below this inclusive total-question count, omit charts (thin global evidence). */
+const PARENT_REPORT_THIN_VOLUME_QUESTIONS_MAX = 14;
+
+function subjectPracticeSecondaryLineHe(questions, correct, accuracy) {
+  const q = Number(questions) || 0;
+  if (q <= 0) return "לא תורגל בטווח זה — אין שאלות";
+  return `${Number(correct) || 0} נכון • ${Number(accuracy) || 0}% דיוק`;
+}
+
+function hasMeaningfulExampleAnswer(v) {
+  if (v == null) return false;
+  const s = String(v).trim();
+  if (!s) return false;
+  if (s === "—" || s === "-" || s.toLowerCase() === "undefined") return false;
+  return true;
+}
+
+/** Avoid leaking internal API names into parent-facing footnotes. */
+function sanitizeDiagnosticsFootnoteDetailHe(raw) {
+  const s = String(raw || "").trim();
+  if (!s) return "";
+  if (/suppressAggressiveStep/i.test(s)) {
+    return "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.";
+  }
+  return s;
+}
+
 export default function ParentReport() {
   useIOSViewportFix();
   const router = useRouter();
@@ -790,6 +817,11 @@ export default function ParentReport() {
     () => (report ? buildParentReportDiagnosticsView(report) : null),
     [report]
   );
+  const suppressChartsForThinEvidenceWindow = useMemo(() => {
+    if (!report?.summary) return false;
+    const q = Number(report.summary.totalQuestions) || 0;
+    return q > 0 && q <= PARENT_REPORT_THIN_VOLUME_QUESTIONS_MAX;
+  }, [report]);
   const diagnosticSourceLabelHe = useMemo(
     () => diagnosticPrimarySourceParentLabelHe(String(report?.diagnosticPrimarySource || "")),
     [report]
@@ -1600,7 +1632,11 @@ export default function ParentReport() {
                 {report.summary.mathQuestions || 0} שאלות
               </div>
               <div className="parent-report-print-muted-text text-xs text-white/80">
-                {report.summary.mathCorrect || 0} נכון • {report.summary.mathAccuracy || 0}% דיוק
+                {subjectPracticeSecondaryLineHe(
+                  report.summary.mathQuestions,
+                  report.summary.mathCorrect,
+                  report.summary.mathAccuracy
+                )}
               </div>
             </div>
             
@@ -1612,7 +1648,11 @@ export default function ParentReport() {
                 {report.summary.geometryQuestions || 0} שאלות
               </div>
               <div className="parent-report-print-muted-text text-xs text-white/80">
-                {report.summary.geometryCorrect || 0} נכון • {report.summary.geometryAccuracy || 0}% דיוק
+                {subjectPracticeSecondaryLineHe(
+                  report.summary.geometryQuestions,
+                  report.summary.geometryCorrect,
+                  report.summary.geometryAccuracy
+                )}
               </div>
             </div>
             
@@ -1624,7 +1664,11 @@ export default function ParentReport() {
                 {report.summary.englishQuestions || 0} שאלות
               </div>
               <div className="parent-report-print-muted-text text-xs text-white/80">
-                {report.summary.englishCorrect || 0} נכון • {report.summary.englishAccuracy || 0}% דיוק
+                {subjectPracticeSecondaryLineHe(
+                  report.summary.englishQuestions,
+                  report.summary.englishCorrect,
+                  report.summary.englishAccuracy
+                )}
               </div>
             </div>
             
@@ -1636,7 +1680,11 @@ export default function ParentReport() {
                 {report.summary.scienceQuestions || 0} שאלות
               </div>
               <div className="parent-report-print-muted-text text-xs text-white/80">
-                {report.summary.scienceCorrect || 0} נכון • {report.summary.scienceAccuracy || 0}% דיוק
+                {subjectPracticeSecondaryLineHe(
+                  report.summary.scienceQuestions,
+                  report.summary.scienceCorrect,
+                  report.summary.scienceAccuracy
+                )}
               </div>
             </div>
             
@@ -1648,7 +1696,11 @@ export default function ParentReport() {
                 {report.summary.hebrewQuestions || 0} שאלות
               </div>
               <div className="parent-report-print-muted-text text-xs text-white/80">
-                {report.summary.hebrewCorrect || 0} נכון • {report.summary.hebrewAccuracy || 0}% דיוק
+                {subjectPracticeSecondaryLineHe(
+                  report.summary.hebrewQuestions,
+                  report.summary.hebrewCorrect,
+                  report.summary.hebrewAccuracy
+                )}
               </div>
             </div>
             
@@ -1660,8 +1712,11 @@ export default function ParentReport() {
                 {report.summary.moledetGeographyQuestions || 0} שאלות
               </div>
               <div className="parent-report-print-muted-text text-xs text-white/80">
-                {report.summary.moledetGeographyCorrect || 0} נכון •{" "}
-                {report.summary.moledetGeographyAccuracy || 0}% דיוק
+                {subjectPracticeSecondaryLineHe(
+                  report.summary.moledetGeographyQuestions,
+                  report.summary.moledetGeographyCorrect,
+                  report.summary.moledetGeographyAccuracy
+                )}
               </div>
             </div>
           </div>
@@ -2642,6 +2697,14 @@ export default function ParentReport() {
                       }
                       evidenceList = evidenceList
                         .filter((e) => e.confidence === "high" || e.confidence === "moderate")
+                        .filter((e) => {
+                          if (e.type !== "mistake") return true;
+                          const hasEx = String(e.exerciseText || "").trim().length > 0;
+                          const hasAns =
+                            hasMeaningfulExampleAnswer(e.correctAnswer) ||
+                            hasMeaningfulExampleAnswer(e.userAnswer);
+                          return hasEx || hasAns;
+                        })
                         .slice(0, 2);
 
                       const parentActionHe = s.parentActionHe || null;
@@ -2982,39 +3045,46 @@ export default function ParentReport() {
                                       {ev.exerciseText}
                                     </div>
                                   ) : null}
-                                  <div
-                                    className="parent-report-example-answers flex flex-col gap-1.5 text-[11px] md:text-xs break-words"
-                                    dir="rtl"
-                                  >
-                                    <div>
-                                      <span className="parent-report-example-answer-label font-semibold text-sky-300">
-                                        התשובה הנכונה
-                                      </span>
-                                      <span className="parent-report-example-answer-sep text-white/45 mx-1">
-                                        :
-                                      </span>
-                                      <span
-                                        className="parent-report-example-answer-value text-white/88"
-                                        dir="ltr"
-                                      >
-                                        {String(ev.correctAnswer ?? "—")}
-                                      </span>
+                                  {hasMeaningfulExampleAnswer(ev.correctAnswer) ||
+                                  hasMeaningfulExampleAnswer(ev.userAnswer) ? (
+                                    <div
+                                      className="parent-report-example-answers flex flex-col gap-1.5 text-[11px] md:text-xs break-words"
+                                      dir="rtl"
+                                    >
+                                      {hasMeaningfulExampleAnswer(ev.correctAnswer) ? (
+                                        <div>
+                                          <span className="parent-report-example-answer-label font-semibold text-sky-300">
+                                            התשובה הנכונה
+                                          </span>
+                                          <span className="parent-report-example-answer-sep text-white/45 mx-1">
+                                            :
+                                          </span>
+                                          <span
+                                            className="parent-report-example-answer-value text-white/88"
+                                            dir="ltr"
+                                          >
+                                            {String(ev.correctAnswer)}
+                                          </span>
+                                        </div>
+                                      ) : null}
+                                      {hasMeaningfulExampleAnswer(ev.userAnswer) ? (
+                                        <div>
+                                          <span className="parent-report-example-answer-label font-semibold text-amber-300">
+                                            תשובת הילד
+                                          </span>
+                                          <span className="parent-report-example-answer-sep text-white/45 mx-1">
+                                            :
+                                          </span>
+                                          <span
+                                            className="parent-report-example-answer-value text-white/88"
+                                            dir="ltr"
+                                          >
+                                            {String(ev.userAnswer)}
+                                          </span>
+                                        </div>
+                                      ) : null}
                                     </div>
-                                    <div>
-                                      <span className="parent-report-example-answer-label font-semibold text-amber-300">
-                                        תשובת הילד
-                                      </span>
-                                      <span className="parent-report-example-answer-sep text-white/45 mx-1">
-                                        :
-                                      </span>
-                                      <span
-                                        className="parent-report-example-answer-value text-white/88"
-                                        dir="ltr"
-                                      >
-                                        {String(ev.userAnswer ?? "—")}
-                                      </span>
-                                    </div>
-                                  </div>
+                                  ) : null}
                                 </div>
                               ) : (
                                 <div
@@ -3044,6 +3114,18 @@ export default function ParentReport() {
             className="parent-report-graph-section space-y-5 md:space-y-7 mb-3 md:mb-6"
             aria-label="גרפים"
           >
+            {suppressChartsForThinEvidenceWindow ? (
+              <div className="parent-report-chart-card bg-amber-950/25 border border-amber-400/35 rounded-xl p-4 md:p-6 avoid-break text-center space-y-2">
+                <h2 className="parent-report-print-chart-title text-base md:text-lg font-bold text-amber-100/95">
+                  נפח ראיות קטן בטווח שנבחר
+                </h2>
+                <p className="text-xs md:text-sm text-white/80 leading-relaxed m-0">
+                  מספר השאלות בטווח נמוך מדי כדי להציג כאן גרפים או טבלאות בעלי משמעות סטטיסטית ברורה.
+                  מומלץ להסתמך על הסיכום וההסברים למעלה, ולהמשיך בתרגול כדי לצבור תמונה יציבה יותר.
+                </p>
+              </div>
+            ) : (
+              <>
             {report.dailyActivity.length > 0 && (
               <div className="parent-report-chart-card bg-black/30 border border-white/10 rounded-xl p-3 md:p-5 avoid-break shadow-sm shadow-black/20">
                 <div className="text-center mb-1 md:mb-2">
@@ -3359,8 +3441,12 @@ export default function ParentReport() {
                                 formatter={(_value, _name, props) => {
                                   const p = props?.payload;
                                   if (!p) return ["", ""];
+                                  const q = Number(p.questions) || 0;
+                                  if (q <= 0) {
+                                    return ["לא תורגל במקצוע זה בטווח שנבחר", ""];
+                                  }
                                   return [
-                                    `${p.minutes} דק׳ תרגול · ${p.questions} שאלות · דיוק ${p.accuracy}%`,
+                                    `${p.minutes} דק׳ תרגול · ${q} שאלות · דיוק ${p.accuracy}%`,
                                     "",
                                   ];
                                 }}
@@ -3496,8 +3582,12 @@ export default function ParentReport() {
                               formatter={(_value, _name, props) => {
                                 const p = props?.payload;
                                 if (!p) return ["", ""];
+                                const q = Number(p.questions) || 0;
+                                if (q <= 0) {
+                                  return ["לא תורגל בנושא זה בטווח שנבחר", ""];
+                                }
                                 return [
-                                  `דיוק ${p.accuracy}% · ${p.questions} שאלות · ${p.timeMinutes} דק׳`,
+                                  `דיוק ${p.accuracy}% · ${q} שאלות · ${p.timeMinutes} דק׳`,
                                   "",
                                 ];
                               }}
@@ -3519,6 +3609,8 @@ export default function ParentReport() {
                   </div>
                 );
               })}
+              </>
+            )}
           </section>
 
           {/* אתגרים */}

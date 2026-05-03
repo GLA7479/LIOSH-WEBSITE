@@ -1,7 +1,7 @@
 # Learning Simulator — Release readiness summary
 
-- **runId:** release-summary-mooyur4w
-- **generatedAt:** 2026-05-02T23:21:56.192Z
+- **runId:** release-summary-mop28jru
+- **generatedAt:** 2026-05-03T00:56:38.682Z
 
 ## Overall
 
@@ -60,7 +60,7 @@
 | status | pass |
 | checkedRoute | /learning/parent-report?qa_pdf=file |
 | downloadSucceeded | true |
-| fileSizeBytes | 3974307 |
+| fileSizeBytes | 3923898 |
 | pdfHeaderOk | true |
 | deferredReason | — |
 

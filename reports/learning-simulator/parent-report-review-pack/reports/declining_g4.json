@@ -21,7 +21,7 @@
       "period": "custom",
       "startDate": "2026-03-02",
       "endDate": "2026-04-02",
-      "generatedAt": "2026-05-04T00:16:53.868Z",
+      "generatedAt": "2026-05-04T00:34:53.138Z",
       "summary": {
         "totalTimeMinutes": 1313,
         "totalTimeHours": "21.88",
@@ -195,7 +195,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -1150,7 +1150,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -2084,7 +2084,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -3013,7 +3013,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -3937,7 +3937,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -4874,7 +4874,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -5798,7 +5798,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -6729,7 +6729,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -7654,7 +7654,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -8578,7 +8578,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -9503,7 +9503,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -10434,7 +10434,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -11382,7 +11382,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -12310,7 +12310,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -13238,7 +13238,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -14186,7 +14186,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -15114,7 +15114,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -16042,7 +16042,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -16970,7 +16970,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -17900,7 +17900,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -18855,7 +18855,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -19789,7 +19789,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -20718,7 +20718,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -21642,7 +21642,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -22579,7 +22579,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -23503,7 +23503,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -24434,7 +24434,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -25359,7 +25359,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -26283,7 +26283,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -27208,7 +27208,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -28137,7 +28137,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -29085,7 +29085,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -30013,7 +30013,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -30937,7 +30937,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -31885,7 +31885,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -32813,7 +32813,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -33741,7 +33741,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -34669,7 +34669,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "medium",
                 "suppressAggressiveStep": false,
@@ -36148,7 +36148,7 @@
                   "בטווח הנבחר: 130 שאלות, דיוק כ-71%.",
                   "אירועי טעות רלוונטיים: 25 (מתוך 25 אירועים).",
                   "בטווח הנוכחי כ-74% דיוק על 114 שאלות.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36198,7 +36198,7 @@
                   "בטווח הנבחר: 57 שאלות, דיוק כ-61%.",
                   "אירועי טעות רלוונטיים: 15 (מתוך 15 אירועים).",
                   "בטווח הנוכחי כ-65% דיוק על 43 שאלות.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36248,7 +36248,7 @@
                   "בטווח הנבחר: 45 שאלות, דיוק כ-64%.",
                   "אירועי טעות רלוונטיים: 10 (מתוך 10 אירועים).",
                   "בטווח הנוכחי כ-64% דיוק על 45 שאלות · בחלון האחרון בטווח כ-50% דיוק.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36298,7 +36298,7 @@
                   "בטווח הנבחר: 20 שאלות, דיוק כ-55%.",
                   "אירועי טעות רלוונטיים: 6 (מתוך 6 אירועים).",
                   "בטווח הנוכחי כ-55% דיוק על 20 שאלות · אין מספיק מפגשים תקינים להשוואת מגמה אמינה (נדרשים לפחות 3). ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36347,7 +36347,7 @@
                   "בטווח הנבחר: 16 שאלות, דיוק כ-56%.",
                   "אירועי טעות רלוונטיים: 5 (מתוך 5 אירועים).",
                   "בטווח הנוכחי כ-56% דיוק על 16 שאלות · אין מספיק מפגשים תקינים להשוואת מגמה אמינה (נדרשים לפחות 3). ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: בינונית.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36466,7 +36466,7 @@
                   "בטווח הנבחר: 84 שאלות, דיוק כ-76%.",
                   "אירועי טעות רלוונטיים: 11 (מתוך 11 אירועים).",
                   "בטווח הנוכחי כ-76% דיוק על 84 שאלות.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36516,7 +36516,7 @@
                   "בטווח הנבחר: 38 שאלות, דיוק כ-63%.",
                   "אירועי טעות רלוונטיים: 7 (מתוך 7 אירועים).",
                   "בטווח הנוכחי כ-63% דיוק על 38 שאלות · אין מספיק מפגשים תקינים להשוואת מגמה אמינה (נדרשים לפחות 3).",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36565,7 +36565,7 @@
                   "בטווח הנבחר: 12 שאלות, דיוק כ-58%.",
                   "אירועי טעות רלוונטיים: 3 (מתוך 3 אירועים).",
                   "בטווח הנוכחי כ-58% דיוק על 12 שאלות · אין מספיק מפגשים תקינים להשוואת מגמה אמינה (נדרשים לפחות 3). בשלב הזה ההשוואה בין תקופות רגישה לרעש — כדאי לאמת שוב אחרי עוד תרגול.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: בינונית.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36704,7 +36704,7 @@
                   "בטווח הנבחר: 44 שאלות, דיוק כ-73%.",
                   "אירועי טעות רלוונטיים: 7 (מתוך 7 אירועים).",
                   "בטווח הנוכחי כ-73% דיוק על 44 שאלות.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36753,7 +36753,7 @@
                   "בטווח הנבחר: 40 שאלות, דיוק כ-68%.",
                   "אירועי טעות רלוונטיים: 7 (מתוך 7 אירועים).",
                   "בטווח הנוכחי כ-68% דיוק על 40 שאלות · אין מספיק מפגשים תקינים להשוואת מגמה אמינה (נדרשים לפחות 3).",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36802,7 +36802,7 @@
                   "בטווח הנבחר: 29 שאלות, דיוק כ-66%.",
                   "אירועי טעות רלוונטיים: 5 (מתוך 5 אירועים).",
                   "בטווח הנוכחי כ-66% דיוק על 29 שאלות · בחלון האחרון בטווח כ-50% דיוק · אין מספיק מפגשים תקינים להשוואת מגמה אמינה (נדרשים לפחות 3). ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36852,7 +36852,7 @@
                   "בטווח הנבחר: 16 שאלות, דיוק כ-56%.",
                   "אירועי טעות רלוונטיים: 4 (מתוך 4 אירועים).",
                   "בטווח הנוכחי כ-56% דיוק על 16 שאלות · אין מספיק מפגשים תקינים להשוואת מגמה אמינה (נדרשים לפחות 3). ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: בינונית.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36902,7 +36902,7 @@
                   "בטווח הנבחר: 14 שאלות, דיוק כ-79%.",
                   "אירועי טעות רלוונטיים: 2 (מתוך 2 אירועים).",
                   "בטווח הנוכחי כ-79% דיוק על 14 שאלות · אין מספיק מפגשים תקינים להשוואת מגמה אמינה (נדרשים לפחות 3). בשלב הזה ההשוואה בין תקופות רגישה לרעש — כדאי לאמת שוב אחרי עוד תרגול.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: בינונית.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -36955,7 +36955,7 @@
       },
       "legacyPatternDiagnostics": {
         "version": 2,
-        "generatedAt": "2026-05-04T00:16:53.868Z",
+        "generatedAt": "2026-05-04T00:34:53.138Z",
         "constants": {
           "minMistakesPerPatternFamily": 5,
           "minMistakesForStrongRecommendation": 10,
@@ -38161,7 +38161,7 @@
       "diagnosticEngineV2": {
         "blueprintRef": "docs/stage1-scientific-blueprint-source-of-truth.md v1.0",
         "engineVersion": "2.0.0",
-        "generatedAt": "2026-05-04T00:16:53.868Z",
+        "generatedAt": "2026-05-04T00:34:53.138Z",
         "evidenceFoundation": {
           "schema": "MistakeEventV1+report_row",
           "mappingChain": "question_event → topicRowKey → bucketKey → taxonomyId (bridge)",
@@ -45047,7 +45047,7 @@
       },
       "hybridRuntime": {
         "hybridRuntimeVersion": "1.0",
-        "generatedAt": "2026-05-04T00:16:53.868Z",
+        "generatedAt": "2026-05-04T00:34:53.138Z",
         "exposureMode": "shadow",
         "governance": {
           "consentState": "unset",
@@ -49759,11 +49759,11 @@
     },
     "detailedReport": {
       "version": 2,
-      "generatedAt": "2026-05-03T00:16:53.979Z",
+      "generatedAt": "2026-05-03T00:34:53.283Z",
       "diagnosticEngineV2": {
         "blueprintRef": "docs/stage1-scientific-blueprint-source-of-truth.md v1.0",
         "engineVersion": "2.0.0",
-        "generatedAt": "2026-05-04T00:16:53.868Z",
+        "generatedAt": "2026-05-04T00:34:53.138Z",
         "evidenceFoundation": {
           "schema": "MistakeEventV1+report_row",
           "mappingChain": "question_event → topicRowKey → bucketKey → taxonomyId (bridge)",
@@ -56649,7 +56649,7 @@
       },
       "hybridRuntime": {
         "hybridRuntimeVersion": "1.0",
-        "generatedAt": "2026-05-04T00:16:53.868Z",
+        "generatedAt": "2026-05-04T00:34:53.138Z",
         "exposureMode": "shadow",
         "governance": {
           "consentState": "unset",
@@ -66887,7 +66887,7 @@
       },
       "parentProductContractV1": {
         "version": "v1",
-        "generatedAt": "2026-05-03T00:16:53.979Z",
+        "generatedAt": "2026-05-03T00:34:53.283Z",
         "primarySubjectId": "math",
         "top": {
           "mainStatusHe": "בנושא כפל: בחירת כפל לא מתאים לחילוק",

@@ -19,7 +19,7 @@
       "period": "custom",
       "startDate": "2026-04-18",
       "endDate": "2026-05-02",
-      "generatedAt": "2026-05-04T00:16:53.720Z",
+      "generatedAt": "2026-05-04T00:34:52.921Z",
       "summary": {
         "totalTimeMinutes": 2378,
         "totalTimeHours": "39.63",
@@ -188,7 +188,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -1127,7 +1127,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -2214,7 +2214,7 @@
                   "בטווח הנבחר: 547 שאלות, דיוק כ-89%.",
                   "אירועי טעות רלוונטיים: 40 (מתוך 40 אירועים).",
                   "בטווח הנוכחי כ-89% דיוק על 547 שאלות · בחלון האחרון בטווח כ-88% דיוק.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: שיפור לעומת חלון קודם."
                 ],
@@ -2288,7 +2288,7 @@
       },
       "legacyPatternDiagnostics": {
         "version": 2,
-        "generatedAt": "2026-05-04T00:16:53.720Z",
+        "generatedAt": "2026-05-04T00:34:52.921Z",
         "constants": {
           "minMistakesPerPatternFamily": 5,
           "minMistakesForStrongRecommendation": 10,
@@ -3147,7 +3147,7 @@
       "diagnosticEngineV2": {
         "blueprintRef": "docs/stage1-scientific-blueprint-source-of-truth.md v1.0",
         "engineVersion": "2.0.0",
-        "generatedAt": "2026-05-04T00:16:53.720Z",
+        "generatedAt": "2026-05-04T00:34:52.921Z",
         "evidenceFoundation": {
           "schema": "MistakeEventV1+report_row",
           "mappingChain": "question_event → topicRowKey → bucketKey → taxonomyId (bridge)",
@@ -3592,7 +3592,7 @@
       },
       "hybridRuntime": {
         "hybridRuntimeVersion": "1.0",
-        "generatedAt": "2026-05-04T00:16:53.720Z",
+        "generatedAt": "2026-05-04T00:34:52.921Z",
         "exposureMode": "shadow",
         "governance": {
           "consentState": "unset",
@@ -3875,11 +3875,11 @@
     },
     "detailedReport": {
       "version": 2,
-      "generatedAt": "2026-05-03T00:16:53.728Z",
+      "generatedAt": "2026-05-03T00:34:52.936Z",
       "diagnosticEngineV2": {
         "blueprintRef": "docs/stage1-scientific-blueprint-source-of-truth.md v1.0",
         "engineVersion": "2.0.0",
-        "generatedAt": "2026-05-04T00:16:53.720Z",
+        "generatedAt": "2026-05-04T00:34:52.921Z",
         "evidenceFoundation": {
           "schema": "MistakeEventV1+report_row",
           "mappingChain": "question_event → topicRowKey → bucketKey → taxonomyId (bridge)",
@@ -4324,7 +4324,7 @@
       },
       "hybridRuntime": {
         "hybridRuntimeVersion": "1.0",
-        "generatedAt": "2026-05-04T00:16:53.720Z",
+        "generatedAt": "2026-05-04T00:34:52.921Z",
         "exposureMode": "shadow",
         "governance": {
           "consentState": "unset",
@@ -4880,7 +4880,7 @@
       },
       "parentProductContractV1": {
         "version": "v1",
-        "generatedAt": "2026-05-03T00:16:53.728Z",
+        "generatedAt": "2026-05-03T00:34:52.936Z",
         "primarySubjectId": "english",
         "top": {
           "mainStatusHe": "יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.",

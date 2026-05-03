@@ -19,7 +19,7 @@
       "period": "custom",
       "startDate": "2026-04-18",
       "endDate": "2026-05-02",
-      "generatedAt": "2026-05-04T00:16:53.703Z",
+      "generatedAt": "2026-05-04T00:34:52.898Z",
       "summary": {
         "totalTimeMinutes": 432,
         "totalTimeHours": "7.20",
@@ -202,7 +202,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -1166,7 +1166,7 @@
             {
               "source": "diagnostics",
               "phase": "data_sufficiency",
-              "detailHe": "מסקנת sufficiency משפיעה על suppressAggressiveStep במנוע המלצות.",
+              "detailHe": "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
               "data": {
                 "dataSufficiencyLevel": "strong",
                 "suppressAggressiveStep": false,
@@ -2271,7 +2271,7 @@
                   "בטווח הנבחר: 590 שאלות, דיוק כ-33%.",
                   "אירועי טעות רלוונטיים: 255 (מתוך 255 אירועים).",
                   "בטווח הנוכחי כ-33% דיוק על 531 שאלות · בחלון האחרון בטווח כ-33% דיוק.",
-                  "מסקנת משפיעה על suppressAggressiveStep במנוע המלצות.",
+                  "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.",
                   "איכות הראיות מהאגרגציה: טובה.",
                   "מגמת דיוק: דומה לחלון קודם."
                 ],
@@ -2365,7 +2365,7 @@
       },
       "legacyPatternDiagnostics": {
         "version": 2,
-        "generatedAt": "2026-05-04T00:16:53.703Z",
+        "generatedAt": "2026-05-04T00:34:52.898Z",
         "constants": {
           "minMistakesPerPatternFamily": 5,
           "minMistakesForStrongRecommendation": 10,
@@ -3213,7 +3213,7 @@
       "diagnosticEngineV2": {
         "blueprintRef": "docs/stage1-scientific-blueprint-source-of-truth.md v1.0",
         "engineVersion": "2.0.0",
-        "generatedAt": "2026-05-04T00:16:53.703Z",
+        "generatedAt": "2026-05-04T00:34:52.898Z",
         "evidenceFoundation": {
           "schema": "MistakeEventV1+report_row",
           "mappingChain": "question_event → topicRowKey → bucketKey → taxonomyId (bridge)",
@@ -3642,7 +3642,7 @@
       },
       "hybridRuntime": {
         "hybridRuntimeVersion": "1.0",
-        "generatedAt": "2026-05-04T00:16:53.703Z",
+        "generatedAt": "2026-05-04T00:34:52.898Z",
         "exposureMode": "shadow",
         "governance": {
           "consentState": "unset",
@@ -3927,11 +3927,11 @@
     },
     "detailedReport": {
       "version": 2,
-      "generatedAt": "2026-05-03T00:16:53.715Z",
+      "generatedAt": "2026-05-03T00:34:52.912Z",
       "diagnosticEngineV2": {
         "blueprintRef": "docs/stage1-scientific-blueprint-source-of-truth.md v1.0",
         "engineVersion": "2.0.0",
-        "generatedAt": "2026-05-04T00:16:53.703Z",
+        "generatedAt": "2026-05-04T00:34:52.898Z",
         "evidenceFoundation": {
           "schema": "MistakeEventV1+report_row",
           "mappingChain": "question_event → topicRowKey → bucketKey → taxonomyId (bridge)",
@@ -4360,7 +4360,7 @@
       },
       "hybridRuntime": {
         "hybridRuntimeVersion": "1.0",
-        "generatedAt": "2026-05-04T00:16:53.703Z",
+        "generatedAt": "2026-05-04T00:34:52.898Z",
         "exposureMode": "shadow",
         "governance": {
           "consentState": "unset",
@@ -5315,7 +5315,7 @@
       },
       "parentProductContractV1": {
         "version": "v1",
-        "generatedAt": "2026-05-03T00:16:53.715Z",
+        "generatedAt": "2026-05-03T00:34:52.912Z",
         "primarySubjectId": "math",
         "top": {
           "mainStatusHe": "בנושא כפל: בחירת כפל לא מתאים לחילוק",
