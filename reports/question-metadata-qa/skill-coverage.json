@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T13:49:44.645Z",
+  "generatedAt": "2026-05-03T14:06:31.536Z",
   "skills": [
     {
       "subject": "english",
@@ -4809,17 +4809,141 @@
     },
     {
       "subject": "hebrew-archive",
-      "skillId": "__missing_skill__",
-      "totalQuestions": 602,
-      "subskillsCovered": 0,
-      "subskillIds": [],
+      "skillId": "hebrew_archive_comprehension",
+      "totalQuestions": 126,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
       "difficultyDistribution": {
-        "unknown": 602
+        "basic": 95,
+        "advanced": 14,
+        "standard": 17
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 126,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
-      "riskLevel": "high"
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "hebrew-archive",
+      "skillId": "hebrew_archive_grammar",
+      "totalQuestions": 118,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
+      "difficultyDistribution": {
+        "basic": 87,
+        "advanced": 14,
+        "standard": 17
+      },
+      "expectedErrorCoverageCount": 118,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "hebrew-archive",
+      "skillId": "hebrew_archive_reading",
+      "totalQuestions": 451,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
+      "difficultyDistribution": {
+        "basic": 419,
+        "advanced": 14,
+        "standard": 18
+      },
+      "expectedErrorCoverageCount": 451,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "hebrew-archive",
+      "skillId": "hebrew_archive_speaking",
+      "totalQuestions": 139,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
+      "difficultyDistribution": {
+        "basic": 116,
+        "advanced": 11,
+        "standard": 12
+      },
+      "expectedErrorCoverageCount": 139,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "hebrew-archive",
+      "skillId": "hebrew_archive_vocabulary",
+      "totalQuestions": 160,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
+      "difficultyDistribution": {
+        "basic": 134,
+        "advanced": 13,
+        "standard": 13
+      },
+      "expectedErrorCoverageCount": 160,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "hebrew-archive",
+      "skillId": "hebrew_archive_writing",
+      "totalQuestions": 97,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
+      "difficultyDistribution": {
+        "basic": 64,
+        "advanced": 15,
+        "standard": 18
+      },
+      "expectedErrorCoverageCount": 97,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
     },
     {
       "subject": "moledet-geography",

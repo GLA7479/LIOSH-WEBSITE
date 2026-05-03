@@ -1,9 +1,9 @@
 # Question metadata QA
 
-- **Generated:** 2026-05-03T13:49:44.645Z
+- **Generated:** 2026-05-03T14:06:31.536Z
 - **Gate:** scanOutcome=`ok`, advisoryStatus=`WARN`
-- **Questions scanned:** 5267
-- **High / medium risk:** 4547 / 0
+- **Questions scanned:** 5756
+- **High / medium risk:** 3945 / 0
 - **Duplicate declared IDs (cross-file):** 0
 - **Skill buckets below 5 questions:** 299
 
@@ -15,21 +15,21 @@
 | hebrew | 54 | strong | 100 | 0 | 0 |
 | english | 670 | weak | 34.5 | 92.5 | 439 |
 | moledet-geography | 3506 | missing | 0 | 0 | 3506 |
-| hebrew-archive | 602 | missing | 0 | 0 | 602 |
+| hebrew-archive | 1091 | strong | 100 | 0 | 0 |
 | geometry | 52 | strong | 100 | 0 | 0 |
 
 ## Top issue codes (global)
 
 | Code | Count |
 | --- | ---: |
-| missing_prerequisite_skill_ids | 5261 |
-| implicit_id_only | 4884 |
-| missing_skillId | 4547 |
-| missing_subskillId | 4547 |
-| missing_explanation | 4264 |
-| missing_difficulty | 4108 |
-| missing_cognitiveLevel | 4108 |
-| missing_expected_error_types | 4108 |
+| missing_prerequisite_skill_ids | 5750 |
+| implicit_id_only | 5373 |
+| missing_explanation | 4753 |
+| missing_skillId | 3945 |
+| missing_subskillId | 3945 |
+| missing_difficulty | 3506 |
+| missing_cognitiveLevel | 3506 |
+| missing_expected_error_types | 3506 |
 
 ## Outputs
 
@@ -39,6 +39,4 @@
 
 ## Load errors
 
-- **data/hebrew-questions/g3.js:** Cannot require() ES Module C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\data\hebrew-questions\g3.js in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
-- **data/hebrew-questions/g4.js:** Cannot require() ES Module C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\data\hebrew-questions\g4.js in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
-- **data/hebrew-questions/g5.js:** Cannot require() ES Module C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\data\hebrew-questions\g5.js in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded.
+_None._

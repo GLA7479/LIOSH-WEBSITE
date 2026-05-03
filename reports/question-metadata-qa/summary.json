@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T13:49:44.645Z",
+  "generatedAt": "2026-05-03T14:06:31.536Z",
   "gate": {
     "scanOutcome": "ok",
-    "partialLoadErrors": true,
+    "partialLoadErrors": false,
     "advisoryStatus": "WARN",
     "exitPolicy": "Advisory: exit 0 unless scanOutcome is error (no records parsed successfully). Incomplete metadata does not fail.",
-    "recordsParsed": 5267,
-    "loadErrorsCount": 3,
+    "recordsParsed": 5756,
+    "loadErrorsCount": 0,
     "proceduralSourcesDocumented": 4
   },
   "discovery": {
@@ -61,8 +61,8 @@
     ]
   },
   "totals": {
-    "questionsScanned": 5267,
-    "highRiskCount": 4547,
+    "questionsScanned": 5756,
+    "highRiskCount": 3945,
     "mediumRiskCount": 0,
     "duplicateDeclaredIds": 0,
     "skillBucketsLowVolume": 299,
@@ -71,35 +71,35 @@
   "topMissingMetadataFields": [
     [
       "missing_prerequisite_skill_ids",
-      5261
+      5750
     ],
     [
       "implicit_id_only",
-      4884
-    ],
-    [
-      "missing_skillId",
-      4547
-    ],
-    [
-      "missing_subskillId",
-      4547
+      5373
     ],
     [
       "missing_explanation",
-      4264
+      4753
+    ],
+    [
+      "missing_skillId",
+      3945
+    ],
+    [
+      "missing_subskillId",
+      3945
     ],
     [
       "missing_difficulty",
-      4108
+      3506
     ],
     [
       "missing_cognitiveLevel",
-      4108
+      3506
     ],
     [
       "missing_expected_error_types",
-      4108
+      3506
     ]
   ],
   "subjectSummaries": {
@@ -294,67 +294,48 @@
     },
     "hebrew-archive": {
       "subject": "hebrew-archive",
-      "totalQuestions": 602,
-      "filesScanned": 3,
+      "totalQuestions": 1091,
+      "filesScanned": 6,
       "filePaths": [
         "data/hebrew-questions/g1.js",
         "data/hebrew-questions/g2.js",
+        "data/hebrew-questions/g3.js",
+        "data/hebrew-questions/g4.js",
+        "data/hebrew-questions/g5.js",
         "data/hebrew-questions/g6.js"
       ],
-      "pctWithSkillId": 0,
-      "pctWithSubskillId": 0,
-      "pctWithDifficulty": 0,
-      "pctWithCognitiveLevel": 0,
-      "pctWithExpectedErrorTypes": 0,
+      "pctWithSkillId": 100,
+      "pctWithSubskillId": 100,
+      "pctWithDifficulty": 100,
+      "pctWithCognitiveLevel": 100,
+      "pctWithExpectedErrorTypes": 100,
       "pctWithPrerequisiteSkillIds": 0,
       "pctWithCorrectAnswer": 100,
       "pctWithExplanation": 0,
       "duplicateIdsInSubject": 0,
-      "highRiskQuestionCount": 602,
+      "highRiskQuestionCount": 0,
       "mediumRiskQuestionCount": 0,
       "weakestMetadataFields": [
         "implicit_id_only",
-        "missing_skillId",
-        "missing_subskillId",
-        "missing_difficulty",
-        "missing_cognitiveLevel"
+        "missing_prerequisite_skill_ids",
+        "missing_explanation"
       ],
       "topIssueCodes": [
         [
           "implicit_id_only",
-          602
-        ],
-        [
-          "missing_skillId",
-          602
-        ],
-        [
-          "missing_subskillId",
-          602
-        ],
-        [
-          "missing_difficulty",
-          602
-        ],
-        [
-          "missing_cognitiveLevel",
-          602
-        ],
-        [
-          "missing_expected_error_types",
-          602
+          1091
         ],
         [
           "missing_prerequisite_skill_ids",
-          602
+          1091
         ],
         [
           "missing_explanation",
-          602
+          1091
         ]
       ],
-      "readinessScore": "missing",
-      "avgCompleteness": 0.2
+      "readinessScore": "strong",
+      "avgCompleteness": 0.76
     },
     "geometry": {
       "subject": "geometry",
@@ -398,20 +379,7 @@
     }
   },
   "duplicateIds": [],
-  "loadErrors": [
-    {
-      "path": "data/hebrew-questions/g3.js",
-      "error": "Cannot require() ES Module C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\hebrew-questions\\g3.js in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded."
-    },
-    {
-      "path": "data/hebrew-questions/g4.js",
-      "error": "Cannot require() ES Module C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\hebrew-questions\\g4.js in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded."
-    },
-    {
-      "path": "data/hebrew-questions/g5.js",
-      "error": "Cannot require() ES Module C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\data\\hebrew-questions\\g5.js in a cycle. A cycle involving require(esm) is not allowed to maintain invariants mandated by the ECMAScript specification. Try making at least part of the dependency in the graph lazily loaded."
-    }
-  ],
+  "loadErrors": [],
   "issueCodeReference": {
     "implicit_id_only": "implicit_id_only",
     "duplicate_id": "duplicate_id",

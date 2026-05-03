@@ -8,8 +8,18 @@ import {
   ENGLISH_SUBSKILL_ALLOWLIST_BY_SKILL,
 } from "./question-metadata-taxonomy-english.js";
 import { isTaxonomyValidMathSkillId, isTaxonomyValidMathSubskillId } from "./question-metadata-taxonomy-math.js";
+import {
+  HEBREW_ARCHIVE_GRADE_SUBSKILL_IDS,
+  HEBREW_ARCHIVE_SKILL_IDS,
+  HEBREW_ARCHIVE_SUBSKILL_ALLOWLIST_BY_SKILL,
+} from "./question-metadata-taxonomy-hebrew-archive.js";
 
 export { ENGLISH_SKILL_IDS, ENGLISH_SUBSKILL_ALLOWLIST_BY_SKILL };
+export {
+  HEBREW_ARCHIVE_GRADE_SUBSKILL_IDS,
+  HEBREW_ARCHIVE_SKILL_IDS,
+  HEBREW_ARCHIVE_SUBSKILL_ALLOWLIST_BY_SKILL,
+} from "./question-metadata-taxonomy-hebrew-archive.js";
 
 export const TAXONOMY_VERSION = 1;
 
@@ -466,6 +476,18 @@ export function validateTaxonomyForRecord(record) {
     }
   }
 
+  if (subject === "hebrew-archive") {
+    if (skillId && !HEBREW_ARCHIVE_SKILL_IDS.has(skillId)) {
+      issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_skillId);
+    }
+    if (skillId && subskillId) {
+      const allow = HEBREW_ARCHIVE_SUBSKILL_ALLOWLIST_BY_SKILL[skillId];
+      if (allow && !allow.has(subskillId)) {
+        issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_subskillId);
+      }
+    }
+  }
+
   const errs = record.expectedErrorTypes || [];
   for (const e of errs) {
     const t = String(e).trim();
@@ -524,6 +546,17 @@ export function validateTaxonomyForRecord(record) {
       const id = String(p).trim();
       if (!id) continue;
       if (!isTaxonomyValidMathSkillId(id)) {
+        issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_prerequisite_skillId);
+        break;
+      }
+    }
+  }
+
+  if (subject === "hebrew-archive" && Array.isArray(record.prerequisiteSkillIds)) {
+    for (const p of record.prerequisiteSkillIds) {
+      const id = String(p).trim();
+      if (!id) continue;
+      if (!HEBREW_ARCHIVE_SKILL_IDS.has(id)) {
         issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_prerequisite_skillId);
         break;
       }

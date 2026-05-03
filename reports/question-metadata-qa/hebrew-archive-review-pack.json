@@ -1,0 +1,335 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T14:04:10.045Z",
+  "source": {
+    "enrichmentPath": "reports/question-metadata-qa/hebrew-archive-enrichment-suggestions.json",
+    "enrichmentGeneratedAt": "2026-05-03T14:04:06.898Z"
+  },
+  "summary": {
+    "archiveRowTotal": 1091,
+    "rowsByGradeFile": {
+      "data/hebrew-questions/g1.js": 300,
+      "data/hebrew-questions/g2.js": 313,
+      "data/hebrew-questions/g3.js": 88,
+      "data/hebrew-questions/g4.js": 174,
+      "data/hebrew-questions/g5.js": 118,
+      "data/hebrew-questions/g6.js": 98
+    },
+    "prerequisiteSuggestionCount": 0,
+    "confidenceBreakdown": {
+      "high": 1091,
+      "medium": 0,
+      "low": 0
+    },
+    "reviewPriorityBreakdown": {
+      "high": 0,
+      "medium": 0,
+      "low": 1091
+    },
+    "lowConfidenceCount": 0,
+    "highReviewPriorityCount": 0,
+    "loadErrorsCount": 0
+  },
+  "loadErrors": [],
+  "groupedBySkillId": {
+    "hebrew_archive_comprehension": {
+      "count": 126,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[0]::#50",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[1]::#51",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[2]::#52",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[3]::#53",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[4]::#54",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[5]::#55"
+      ]
+    },
+    "hebrew_archive_grammar": {
+      "count": 118,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[0]::#114",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[1]::#115",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[2]::#116",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[3]::#117",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[4]::#118",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[5]::#119"
+      ]
+    },
+    "hebrew_archive_reading": {
+      "count": 451,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[0]::#0",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[1]::#1",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[2]::#2",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[3]::#3",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[4]::#4",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[5]::#5"
+      ]
+    },
+    "hebrew_archive_speaking": {
+      "count": 139,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[0]::#200",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[1]::#201",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[2]::#202",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[3]::#203",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[4]::#204",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[5]::#205"
+      ]
+    },
+    "hebrew_archive_vocabulary": {
+      "count": 160,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[0]::#155",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[1]::#156",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[2]::#157",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[3]::#158",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[4]::#159",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[5]::#160"
+      ]
+    },
+    "hebrew_archive_writing": {
+      "count": 97,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[0]::#99",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[1]::#100",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[2]::#101",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[3]::#102",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[4]::#103",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[5]::#104"
+      ]
+    }
+  },
+  "groupedBySubskillId": {
+    "g1": {
+      "count": 300,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[0]::#0",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[1]::#1",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[2]::#2",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[3]::#3",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[4]::#4",
+        "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[5]::#5"
+      ]
+    },
+    "g2": {
+      "count": 313,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[0]::#0",
+        "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[1]::#1",
+        "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[2]::#2",
+        "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[3]::#3",
+        "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[4]::#4",
+        "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[5]::#5"
+      ]
+    },
+    "g3": {
+      "count": 88,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[0]::#0",
+        "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[1]::#1",
+        "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[2]::#2",
+        "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[3]::#3",
+        "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[4]::#4",
+        "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[5]::#5"
+      ]
+    },
+    "g4": {
+      "count": 174,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[0]::#0",
+        "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[1]::#1",
+        "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[2]::#2",
+        "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[3]::#3",
+        "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[4]::#4",
+        "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[5]::#5"
+      ]
+    },
+    "g5": {
+      "count": 118,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[0]::#0",
+        "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[1]::#1",
+        "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[2]::#2",
+        "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[3]::#3",
+        "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[4]::#4",
+        "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[5]::#5"
+      ]
+    },
+    "g6": {
+      "count": 98,
+      "exampleQuestionIds": [
+        "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[0]::#0",
+        "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[1]::#1",
+        "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[2]::#2",
+        "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[3]::#3",
+        "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[4]::#4",
+        "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[5]::#5"
+      ]
+    }
+  },
+  "suggestedDifficultySummary": [
+    {
+      "pattern": "basic",
+      "count": 915
+    },
+    {
+      "pattern": "standard",
+      "count": 95
+    },
+    {
+      "pattern": "advanced",
+      "count": 81
+    }
+  ],
+  "suggestedCognitiveLevelSummary": [
+    {
+      "pattern": "understanding",
+      "count": 515
+    },
+    {
+      "pattern": "recall",
+      "count": 340
+    },
+    {
+      "pattern": "application",
+      "count": 236
+    }
+  ],
+  "suggestedExpectedErrorTypesSummary": [
+    {
+      "pattern": "vocabulary_confusion, careless_error",
+      "count": 479
+    },
+    {
+      "pattern": "vocabulary_confusion, careless_error, reading_comprehension_error, detail_recall_error",
+      "count": 271
+    },
+    {
+      "pattern": "reading_comprehension_error, inference_error, detail_recall_error, comprehension_gap",
+      "count": 126
+    },
+    {
+      "pattern": "grammar_error, careless_error",
+      "count": 118
+    },
+    {
+      "pattern": "grammar_error, careless_error, incomplete_answer",
+      "count": 97
+    }
+  ],
+  "prerequisiteSuggestionSummary": [
+    {
+      "pattern": "(empty)",
+      "count": 1091
+    }
+  ],
+  "examplesBySkillId": {
+    "hebrew_archive_comprehension": [
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[0]::#50",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[1]::#51",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[2]::#52",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[3]::#53",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[4]::#54",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.comprehension[5]::#55"
+    ],
+    "hebrew_archive_grammar": [
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[0]::#114",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[1]::#115",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[2]::#116",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[3]::#117",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[4]::#118",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.grammar[5]::#119"
+    ],
+    "hebrew_archive_reading": [
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[0]::#0",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[1]::#1",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[2]::#2",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[3]::#3",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[4]::#4",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[5]::#5"
+    ],
+    "hebrew_archive_speaking": [
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[0]::#200",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[1]::#201",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[2]::#202",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[3]::#203",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[4]::#204",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.speaking[5]::#205"
+    ],
+    "hebrew_archive_vocabulary": [
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[0]::#155",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[1]::#156",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[2]::#157",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[3]::#158",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[4]::#159",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.vocabulary[5]::#160"
+    ],
+    "hebrew_archive_writing": [
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[0]::#99",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[1]::#100",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[2]::#101",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[3]::#102",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[4]::#103",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.writing[5]::#104"
+    ]
+  },
+  "examplesBySubskillId": {
+    "g1": [
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[0]::#0",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[1]::#1",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[2]::#2",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[3]::#3",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[4]::#4",
+      "data/hebrew-questions/g1.js::G1_EASY_QUESTIONS.reading[5]::#5"
+    ],
+    "g2": [
+      "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[0]::#0",
+      "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[1]::#1",
+      "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[2]::#2",
+      "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[3]::#3",
+      "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[4]::#4",
+      "data/hebrew-questions/g2.js::G2_EASY_QUESTIONS.reading[5]::#5"
+    ],
+    "g3": [
+      "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[0]::#0",
+      "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[1]::#1",
+      "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[2]::#2",
+      "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[3]::#3",
+      "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[4]::#4",
+      "data/hebrew-questions/g3.js::G3_EASY_QUESTIONS.reading[5]::#5"
+    ],
+    "g4": [
+      "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[0]::#0",
+      "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[1]::#1",
+      "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[2]::#2",
+      "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[3]::#3",
+      "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[4]::#4",
+      "data/hebrew-questions/g4.js::G4_EASY_QUESTIONS.reading[5]::#5"
+    ],
+    "g5": [
+      "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[0]::#0",
+      "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[1]::#1",
+      "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[2]::#2",
+      "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[3]::#3",
+      "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[4]::#4",
+      "data/hebrew-questions/g5.js::G5_EASY_QUESTIONS.reading[5]::#5"
+    ],
+    "g6": [
+      "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[0]::#0",
+      "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[1]::#1",
+      "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[2]::#2",
+      "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[3]::#3",
+      "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[4]::#4",
+      "data/hebrew-questions/g6.js::G6_EASY_QUESTIONS.reading[5]::#5"
+    ]
+  },
+  "lowConfidenceSuggestions": [],
+  "highReviewPrioritySuggestions": [],
+  "needsHumanReviewNote": "All suggestions keep needsHumanReview=true until bank edits are approved.",
+  "checklist": {
+    "approveAsIs": "Use for rows with confidence **high** and reviewPriority **low** after spot-checking suggested skill/category alignment.",
+    "editMetadata": "Adjust suggested difficulty / cognitive / error families in the bank — **do not** change Hebrew stems, options, or correct indices without curriculum approval.",
+    "rejectSuggestion": "Discard when domain mapping conflicts with intended literacy strand or report routing.",
+    "needsCurriculumExpert": "Required for **low** confidence rows, load errors, or prerequisite policy changes."
+  }
+}
