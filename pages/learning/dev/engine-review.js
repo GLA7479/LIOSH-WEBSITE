@@ -141,10 +141,17 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
       if (data.deployment) setDeployment(data.deployment);
 
       if (!res.ok) {
+        const code = data.code || "error";
+        const baseMsg = data.message || data.error || `HTTP ${res.status}`;
+        const text =
+          code === "generation_not_supported_in_this_runtime"
+            ? `Server generation is not supported in this runtime. Run the CLI command below.\n\n${baseMsg}`
+            : baseMsg;
         setGenResult({
           level: "error",
-          code: data.code || "error",
-          text: data.error || `HTTP ${res.status}`,
+          code,
+          text,
+          cliFallback: data.cliFallback || null,
         });
         return;
       }
@@ -157,6 +164,8 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
         generatedAt: data.generatedAt,
         requiresHumanExpertReview: data.requiresHumanExpertReview,
         persistenceWarning: data.persistenceWarning,
+        cliFallback: data.cliFallback || null,
+        generationMode: data.generationMode || null,
       });
       await fetchStatus();
     } catch (e) {
@@ -367,6 +376,11 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
                   ? `${packMeta.scenarioCount ?? "?"} scenarios — ${formatAdminDate(packMeta.generatedAt)}`
                   : "not generated yet"}
               </li>
+              {packMeta?.generationMode ? (
+                <li>
+                  <strong style={labelStrong}>Pack generation mode:</strong> {String(packMeta.generationMode)} (full engine JSON: use CLI)
+                </li>
+              ) : null}
             </ul>
           </section>
 
@@ -417,6 +431,19 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
                   <p style={{ margin: "6px 0 0" }}>
                     <strong>requiresHumanExpertReview:</strong> {String(genResult.requiresHumanExpertReview)}
                   </p>
+                ) : null}
+                {genResult.generationMode ? (
+                  <p style={{ margin: "6px 0 0" }}>
+                    <strong>generationMode:</strong> {genResult.generationMode}
+                  </p>
+                ) : null}
+                {genResult.cliFallback ? (
+                  <div style={{ marginTop: 12, padding: 12, borderRadius: 8, background: "rgba(0,0,0,0.25)" }}>
+                    <strong style={{ color: "#e2e8f0" }}>CLI fallback</strong>
+                    <p style={{ margin: "8px 0 0", whiteSpace: "pre-wrap", fontFamily: "ui-monospace, monospace", fontSize: "0.95em" }}>
+                      {genResult.cliFallback}
+                    </p>
+                  </div>
                 ) : null}
               </div>
             ) : (

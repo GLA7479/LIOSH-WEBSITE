@@ -1,5 +1,6 @@
 /**
  * Internal-only: regenerate Expert Review Pack on the server (writes under reports/).
+ * Uses artifact-only generation (no diagnostic/parent-report import chain) — see generate-expert-review-pack-artifacts.mjs.
  * Requires ENGINE_REVIEW_ADMIN_TOKEN header match and NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN=true.
  */
 import { join } from "node:path";
@@ -44,6 +45,7 @@ export default async function handler(req, res) {
     return res.status(503).json({
       code: "missing_token",
       error: "ENGINE_REVIEW_ADMIN_TOKEN is not configured on the server",
+      message: "ENGINE_REVIEW_ADMIN_TOKEN is not configured on the server",
     });
   }
 
@@ -51,6 +53,7 @@ export default async function handler(req, res) {
     return res.status(401).json({
       code: "missing_token",
       error: "Missing x-engine-review-token header",
+      message: "Missing x-engine-review-token header",
     });
   }
 
@@ -58,26 +61,31 @@ export default async function handler(req, res) {
     return res.status(401).json({
       code: "invalid_token",
       error: "x-engine-review-token does not match server configuration",
+      message: "x-engine-review-token does not match server configuration",
     });
   }
 
   const deployment = deploymentInfo();
 
   try {
-    const packUrl = pathToFileURL(join(process.cwd(), "scripts/learning-simulator/run-engine-expert-review-pack.mjs")).href;
+    const artifactScript = join(process.cwd(), "scripts/learning-simulator/generate-expert-review-pack-artifacts.mjs");
+    const packUrl = pathToFileURL(artifactScript).href;
     const mod = await import(/* webpackIgnore: true */ packUrl);
-    if (typeof mod.generateExpertReviewPack !== "function") {
+    if (typeof mod.generateExpertReviewPackFromArtifacts !== "function") {
       return res.status(500).json({
+        ok: false,
         code: "generation_failed",
-        error: "generateExpertReviewPack export missing",
+        error: "generateExpertReviewPackFromArtifacts export missing",
+        message: "generateExpertReviewPackFromArtifacts export missing",
       });
     }
-    const out = await mod.generateExpertReviewPack(process.cwd());
+    const out = await mod.generateExpertReviewPackFromArtifacts(process.cwd());
     const persistenceWarning = deployment.filesystemEphemeral;
 
     return res.status(200).json({
       ok: true,
       code: "ok",
+      generationMode: out.manifest?.generationMode || "artifact_snapshot_v1",
       generatedAt: out.manifest?.generatedAt,
       scenarioCount: out.manifest?.scenarioCount,
       requiresHumanExpertReview: out.manifest?.requiresHumanExpertReview !== false,
@@ -87,12 +95,27 @@ export default async function handler(req, res) {
       persistenceMessage: persistenceWarning
         ? "Generation ran on this server instance. On serverless hosts (e.g. Vercel) the filesystem is typically ephemeral — artifacts may not persist between invocations. Use local CLI or a durable runner for a lasting pack."
         : "Artifacts were written under reports/ on this server filesystem.",
+      cliFallback:
+        "For the full expert review pack (complete professionalEngineV1 + aggregates), run: npm run qa:learning-simulator:expert-review-pack",
     });
   } catch (e) {
+    const msg = String(e?.message || e);
+    const isAssert = msg.includes("Expert review pack (artifact mode) QA failed:");
+    if (isAssert) {
+      return res.status(422).json({
+        ok: false,
+        code: "validation_artifact_not_ready",
+        error: msg,
+        message: msg.replace(/^Error:\s*/, ""),
+        cliFallback: "Run npm run qa:learning-simulator:professional-engine (PASS), then retry or run npm run qa:learning-simulator:expert-review-pack locally.",
+      });
+    }
     return res.status(500).json({
       ok: false,
       code: "generation_failed",
-      error: String(e?.message || e),
+      error: msg,
+      message: msg,
+      cliFallback: "If this persists, run npm run qa:learning-simulator:expert-review-pack in local Node / CI.",
     });
   }
 }

@@ -1,6 +1,7 @@
 {
   "kind": "expert_review_pack_v1",
-  "generatedAt": "2026-05-03T08:30:13.510Z",
+  "generationMode": "artifact_snapshot_v1",
+  "generatedAt": "2026-05-03T08:40:33.905Z",
   "status": "PASS",
   "scenarioCount": 22,
   "scenarioIds": [
@@ -30,7 +31,8 @@
   "requiresHumanExpertReview": true,
   "sourceArtifacts": {
     "professionalEngineValidation": "reports/learning-simulator/engine-professionalization/professional-engine-validation.json",
-    "engineFinalSummary": "reports/learning-simulator/engine-professionalization/engine-final-summary.json"
+    "engineFinalSummary": "reports/learning-simulator/engine-professionalization/engine-final-summary.json",
+    "orchestratorRunSummary": "reports/learning-simulator/orchestrator/run-summary.json"
   },
   "scenarios": [
     {
