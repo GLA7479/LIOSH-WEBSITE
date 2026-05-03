@@ -41,9 +41,12 @@ function countCompletedAssistantTurns(lines) {
 }
 
 /**
- * @param {{ payload: object; selectedContextRef?: object | null }} props
+ * Optional server-side runner (e.g. `/api/parent/copilot-turn`) — keeps LLM keys off the client.
+ * When omitted, uses bundled `runParentCopilotTurnAsync` / `runParentCopilotTurn` (detailed report default).
+ *
+ * @param {{ payload: object; selectedContextRef?: object | null; asyncTurnRunner?: ((input: object) => Promise<unknown>) | null }} props
  */
-export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
+export function ParentCopilotPanel({ payload, selectedContextRef = null, asyncTurnRunner = null }) {
   const formId = useId();
   const [sessionId] = useState(() => makeSessionId());
   const [utterance, setUtterance] = useState("");
@@ -90,23 +93,20 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
       await sleep(PROCESSING_UI_MS);
 
       try {
-        const res = await (typeof parentCopilot.runParentCopilotTurnAsync === "function"
-          ? parentCopilot.runParentCopilotTurnAsync({
-              audience: "parent",
-              payload,
-              utterance: q,
-              sessionId,
-              selectedContextRef,
-              clickedFollowupFamily: meta.clickedFollowupFamily || null,
-            })
-          : parentCopilot.runParentCopilotTurn({
-              audience: "parent",
-              payload,
-              utterance: q,
-              sessionId,
-              selectedContextRef,
-              clickedFollowupFamily: meta.clickedFollowupFamily || null,
-            }));
+        const turnInput = {
+          audience: "parent",
+          payload,
+          utterance: q,
+          sessionId,
+          selectedContextRef,
+          clickedFollowupFamily: meta.clickedFollowupFamily || null,
+        };
+        const res =
+          typeof asyncTurnRunner === "function"
+            ? await asyncTurnRunner(turnInput)
+            : await (typeof parentCopilot.runParentCopilotTurnAsync === "function"
+                ? parentCopilot.runParentCopilotTurnAsync(turnInput)
+                : Promise.resolve(parentCopilot.runParentCopilotTurn(turnInput)));
 
         let answerCore = "";
         let fullText = "";
@@ -169,7 +169,7 @@ export function ParentCopilotPanel({ payload, selectedContextRef = null }) {
         setUtterance("");
       }
     },
-    [busy, payload, selectedContextRef, sessionId],
+    [busy, payload, selectedContextRef, sessionId, asyncTurnRunner],
   );
 
   const lastResponse = useMemo(() => {
