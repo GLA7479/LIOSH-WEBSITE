@@ -11,6 +11,17 @@
  *   PDF_GATE_BROWSER — if "0", skip Playwright → deferred
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { PDFParse } from "pdf-parse";
+
+async function extractPdfText(buf) {
+  const parser = new PDFParse({ data: buf });
+  try {
+    const textResult = await parser.getText();
+    return String(textResult?.text || "");
+  } finally {
+    await parser.destroy?.();
+  }
+}
 import { spawn } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -218,7 +229,7 @@ async function main() {
     runId,
     generatedAt,
     browserMode: false,
-    checkedRoute: "/learning/parent-report?qa_pdf=file",
+    checkedRoute: "/learning/parent-report?qa_pdf=file&period=month",
     pdfLibraryDetected: audit.pdfLibraryDetected,
     exportMechanism: "client html2pdf canvas when qa_pdf=file",
     downloadAttempted: false,
@@ -326,12 +337,40 @@ async function main() {
     await mockStudentMe(page);
     await applyLocalStorage(page, storage, BASE_URL);
 
-    const url = `${BASE_URL}/learning/parent-report?qa_pdf=file`;
+    /** month window keeps aggregate fixture sessions in-range across calendar edges (Phase C.1). */
+    const url = `${BASE_URL}/learning/parent-report?qa_pdf=file&period=month`;
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90_000 });
     await new Promise((r) => setTimeout(r, 2000));
 
+    /** Phase C.1 — Parent AI insight must be in DOM before canvas export (avoid empty PDF slice). */
+    await page.waitForSelector(".parent-report-parent-ai-insight", { timeout: 90_000 });
+
     const bodyLen = (await page.locator("body").innerText()).length;
     if (bodyLen < 150) failures.push("Report body text too short — report may not have hydrated.");
+
+    /**
+     * Text proof via Playwright print PDF — html2pdf canvas downloads are often image-only, so pdf-parse
+     * cannot recover Hebrew from the file bytes. Same DOM state as export; `.no-pdf` respected in print.
+     */
+    await page.emulateMedia({ media: "print" });
+    try {
+      const proofBuf = await page.pdf({
+        format: "A4",
+        printBackground: true,
+        margin: { top: "10mm", right: "8mm", bottom: "10mm", left: "8mm" },
+        preferCSSPageSize: true,
+      });
+      const proofTxt = (await extractPdfText(Buffer.from(proofBuf))).replace(/\s+/g, " ");
+      if (!/תובנה\s+להורה/u.test(proofTxt)) {
+        failures.push("Phase C.1: Playwright print PDF missing Parent AI heading (תובנה להורה).");
+      }
+      if (proofTxt.includes("שאלה על הדוח")) {
+        failures.push("Phase C.1: Parent Copilot placeholder leaked into Playwright print PDF.");
+      }
+    } catch (e) {
+      failures.push(`Phase C.1: print-PDF text proof failed: ${String(e?.message || e)}`);
+    }
+    await page.emulateMedia({ media: "screen" });
 
     const exportBtn = page.getByRole("button", { name: /ייצא ל-PDF/ });
     const count = await exportBtn.count();
@@ -354,6 +393,16 @@ async function main() {
 
       if (fileSizeBytes < MIN_PDF_BYTES) failures.push(`PDF smaller than minimum (${fileSizeBytes} < ${MIN_PDF_BYTES} bytes).`);
       if (!pdfHeaderOk) failures.push("File does not start with %PDF header.");
+
+      /** Optional: canvas PDFs are often image-heavy — Copilot leak check only when text extracts. */
+      try {
+        const txt = await extractPdfText(buf);
+        if (txt.includes("שאלה על הדוח")) {
+          failures.push("Phase C.1: Parent Copilot placeholder text leaked into html2pdf export.");
+        }
+      } catch (e) {
+        failures.push(`Phase C.1: pdf-parse on download failed: ${String(e?.message || e)}`);
+      }
     }
   } catch (e) {
     failures.push(String(e?.message || e));

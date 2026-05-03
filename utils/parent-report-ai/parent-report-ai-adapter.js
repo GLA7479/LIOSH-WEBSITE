@@ -13,6 +13,7 @@ import { mapPlannerNextActionToHebrew } from "../../lib/learning-client/adaptive
 import {
   buildParentReportAIExplanation,
   buildStrictParentReportAIInput,
+  getDeterministicParentReportExplanation,
 } from "./parent-report-ai-explainer.js";
 import { buildParentAiContext } from "../parent-ai-context/build-parent-ai-context.js";
 
@@ -403,5 +404,42 @@ export async function enrichParentReportWithParentAi(report, options = {}) {
     return { parentAiExplanation: { ok: true, text: out.text, source: out.source } };
   } catch {
     return { parentAiExplanation: null };
+  }
+}
+
+/**
+ * Deterministic Parent AI insight from a detailed-report payload **synchronously** (Phase C.1).
+ * Matches the deterministic narrative used when the LLM path is skipped — safe for first paint before
+ * `enrichDetailedParentReportWithParentAi` resolves (PDF / print snapshots).
+ *
+ * @param {Record<string, unknown>|null|undefined} detailedPayload
+ * @returns {{ ok: true; text: string; source: "deterministic_fallback" } | null}
+ */
+export function getDeterministicDetailedParentAiExplanation(detailedPayload) {
+  try {
+    const snapshot = parentReportV2SnapshotFromDetailedPayload(detailedPayload);
+    if (!snapshot) return null;
+    const strict = buildStrictParentReportAIInputFromParentReportV2(snapshot);
+    if (!strict) return null;
+    const text = getDeterministicParentReportExplanation(strict);
+    return { ok: true, text, source: "deterministic_fallback" };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Same deterministic baseline as detailed, for the short parent report object (`generateParentReportV2`).
+ * Ensures first paint / PDF / Playwright sees תובנה להורה before async enrich resolves.
+ */
+export function getDeterministicParentAiExplanationFromParentReportV2(report) {
+  try {
+    if (!report || typeof report !== "object") return null;
+    const strict = buildStrictParentReportAIInputFromParentReportV2(report);
+    if (!strict) return null;
+    const text = getDeterministicParentReportExplanation(strict);
+    return { ok: true, text, source: "deterministic_fallback" };
+  } catch {
+    return null;
   }
 }

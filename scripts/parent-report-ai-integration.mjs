@@ -20,6 +20,8 @@ const {
   enrichParentReportWithParentAi,
   parentReportV2SnapshotFromDetailedPayload,
   enrichDetailedParentReportWithParentAi,
+  getDeterministicDetailedParentAiExplanation,
+  getDeterministicParentAiExplanationFromParentReportV2,
 } = adapterMod;
 
 function assert(cond, msg) {
@@ -72,6 +74,11 @@ const mockV2Report = {
   moledetGeographyTopics: {},
   hybridRuntime: null,
 };
+
+run("sync deterministic short report insight (PDF-first paint)", () => {
+  const s = getDeterministicParentAiExplanationFromParentReportV2(mockV2Report);
+  assert(s && s.ok && typeof s.text === "string" && s.text.length > 20, "sync short");
+});
 
 run("strict adapter input uses only allowlisted keys", () => {
   const strict = buildStrictParentReportAIInputFromParentReportV2(mockV2Report);
@@ -169,6 +176,11 @@ try {
   assert(sparseDetailed, "sparse detailed fixture");
   const snap = parentReportV2SnapshotFromDetailedPayload(sparseDetailed);
   assert(snap && Number(snap.summary?.totalQuestions) === 2, "snapshot maps overallSnapshot totals");
+  const detSync = getDeterministicDetailedParentAiExplanation(sparseDetailed);
+  assert(
+    detSync && detSync.ok && typeof detSync.text === "string" && detSync.text.length > 20,
+    "sync deterministic detailed insight (PDF-first paint)"
+  );
   const strictFromDetailed = buildStrictParentReportAIInputFromParentReportV2(snap);
   assert(strictFromDetailed, "strict input from detailed-derived snapshot");
   const { parentAiExplanation } = await enrichDetailedParentReportWithParentAi(sparseDetailed, {

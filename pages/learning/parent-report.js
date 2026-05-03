@@ -5,7 +5,10 @@ import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
 import { generateDetailedParentReport } from "../../utils/detailed-parent-report";
-import { enrichParentReportWithParentAi } from "../../utils/parent-report-ai/parent-report-ai-adapter";
+import {
+  enrichParentReportWithParentAi,
+  getDeterministicParentAiExplanationFromParentReportV2,
+} from "../../utils/parent-report-ai/parent-report-ai-adapter";
 import { ParentReportInsight } from "../../components/ParentReportInsight.jsx";
 import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
 import {
@@ -815,6 +818,14 @@ export default function ParentReport() {
     if (tq === 0 && tm === 0) return undefined;
     let cancelled = false;
     const snapshotAt = report.generatedAt;
+    const syncInsight = getDeterministicParentAiExplanationFromParentReportV2(report);
+    if (syncInsight) {
+      setReport((prev) => {
+        if (!prev || prev.generatedAt !== snapshotAt) return prev;
+        if ("parentAiExplanation" in prev) return prev;
+        return { ...prev, parentAiExplanation: syncInsight };
+      });
+    }
     void (async () => {
       try {
         const { parentAiExplanation } = await enrichParentReportWithParentAi(report, {});

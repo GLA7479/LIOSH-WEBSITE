@@ -115,6 +115,7 @@
     "audit:parent-report-deep-learning-simulations": "tsx scripts/parent-report-deep-learning-simulation-audit.mjs",
     "audit:parent-report-persona-corpus": "tsx scripts/parent-report-persona-corpus-audit.mjs",
     "qa:parent-report-browser": "node scripts/parent-report-browser-qa.mjs",
+    "qa:parent-pdf-export": "tsx scripts/qa-parent-pdf-export.mjs",
     "test:parent-report-hebrew-language": "tsx scripts/parent-report-hebrew-language-selftest.mjs",
     "test:parent-report-narrative-safety": "node scripts/parent-report-narrative-safety-selftest.mjs",
     "test:parent-report-narrative-safety-extractor": "node scripts/parent-report-narrative-safety-extractor-selftest.mjs",

@@ -25,7 +25,10 @@ import { normalizeExecutiveSummary } from "../../utils/parent-report-payload-nor
 import { PARENT_BULLETS_EMPTY_WITH_VOLUME_HE } from "../../utils/parent-data-presence.js";
 import ParentCopilotShell from "../../components/parent-copilot/parent-copilot-shell.jsx";
 import { ParentReportInsight } from "../../components/ParentReportInsight.jsx";
-import { enrichDetailedParentReportWithParentAi } from "../../utils/parent-report-ai/parent-report-ai-adapter";
+import {
+  enrichDetailedParentReportWithParentAi,
+  getDeterministicDetailedParentAiExplanation,
+} from "../../utils/parent-report-ai/parent-report-ai-adapter";
 
 /**
  * מיפוי ויזואלי בלבד לפי recommendedNextStep מה־payload — לא משנה מנוע או תוכן.
@@ -253,18 +256,26 @@ export default function ParentReportDetailedPage() {
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
-    if (!payload || typeof payload !== "object") return undefined;
+    if (!payload || typeof payload !== "object") {
+      setParentAiExplanation(null);
+      return undefined;
+    }
     const tq = Number(payload.overallSnapshot?.totalQuestions) || 0;
     const tm = Number(payload.overallSnapshot?.totalTime) || 0;
-    if (tq === 0 && tm === 0) return undefined;
+    if (tq === 0 && tm === 0) {
+      setParentAiExplanation(null);
+      return undefined;
+    }
+    /** PDF / print-safe baseline before async enrich resolves (Phase C.1). */
+    setParentAiExplanation(getDeterministicDetailedParentAiExplanation(payload));
     let cancelled = false;
     void (async () => {
       try {
         const { parentAiExplanation: next } = await enrichDetailedParentReportWithParentAi(payload, {});
         if (cancelled) return;
-        setParentAiExplanation(next ?? null);
+        if (next?.ok && next.text) setParentAiExplanation(next);
       } catch {
-        if (!cancelled) setParentAiExplanation(null);
+        if (!cancelled) setParentAiExplanation(getDeterministicDetailedParentAiExplanation(payload));
       }
     })();
     return () => {
