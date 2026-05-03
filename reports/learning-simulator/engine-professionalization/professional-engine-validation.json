@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "generatedAt": "2026-05-03T07:19:12.769Z",
+  "scenarios": [
+    {
+      "scenario": "thin_data_math",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "needs_more_data"
+    },
+    {
+      "scenario": "weak_math_fractions",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "needs_more_data"
+    }
+  ]
+}

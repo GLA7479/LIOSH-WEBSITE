@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-03T06:47:38.540Z",
+  "generatedAt": "2026-05-03T07:19:18.081Z",
   "engineTruthAudit": {
     "status": "PASS",
     "source": "reports/learning-simulator/engine-truth/engine-truth-summary.json"
@@ -23,7 +23,7 @@
     "note": "Run `npm run qa:learning-simulator:diagnostic-framework` — included in full orchestrator after engine truth."
   },
   "releaseOrchestrator": {
-    "lastFullRunPass": null,
+    "lastFullRunPass": true,
     "source": "reports/learning-simulator/orchestrator/run-summary.json"
   },
   "buildStatus": {

@@ -96,6 +96,52 @@ const ENGINE_LAYER_FRAMEWORK_STEPS = [
   },
 ];
 
+/** After framework completion; engine-only professional layers + metadata QA. */
+const ENGINE_PROFESSIONALIZATION_STEPS = [
+  {
+    id: "questionSkillMetadata",
+    script: "qa:learning-simulator:question-skill-metadata",
+    label: "Question skill metadata QA",
+  },
+  {
+    id: "misconceptions",
+    script: "qa:learning-simulator:misconceptions",
+    label: "Misconception engine QA",
+  },
+  { id: "masteryEngine", script: "qa:learning-simulator:mastery", label: "Mastery engine QA" },
+  {
+    id: "dependenciesEngine",
+    script: "qa:learning-simulator:dependencies",
+    label: "Dependency engine QA",
+  },
+  {
+    id: "calibrationEngine",
+    script: "qa:learning-simulator:calibration",
+    label: "Calibration engine QA",
+  },
+  {
+    id: "reliabilityEngine",
+    script: "qa:learning-simulator:reliability",
+    label: "Reliability engine QA",
+  },
+  { id: "probeEngine", script: "qa:learning-simulator:probes", label: "Probe engine QA" },
+  {
+    id: "crossSubjectEngine",
+    script: "qa:learning-simulator:cross-subject",
+    label: "Cross-subject engine QA",
+  },
+  {
+    id: "professionalEngineOutput",
+    script: "qa:learning-simulator:professional-engine-output",
+    label: "Professional engine output QA",
+  },
+  {
+    id: "professionalEngineValidation",
+    script: "qa:learning-simulator:professional-engine",
+    label: "Professional engine synthetic validation",
+  },
+];
+
 /** Full gate only: matrix smoke → catalog → classification → scenario map (after Phase 4 artifacts exist). */
 const FULL_MATRIX_QA = [
   { id: "matrixSmoke", script: "qa:learning-simulator:matrix-smoke", label: "Matrix smoke (sampled cells → aggregate)" },
@@ -270,7 +316,12 @@ async function main() {
     const etIdx = QUICK_STEPS.findIndex((s) => s.id === "engineTruth");
     const quickWithFramework =
       etIdx >= 0
-        ? [...QUICK_STEPS.slice(0, etIdx + 1), ...ENGINE_LAYER_FRAMEWORK_STEPS, ...QUICK_STEPS.slice(etIdx + 1)]
+        ? [
+            ...QUICK_STEPS.slice(0, etIdx + 1),
+            ...ENGINE_LAYER_FRAMEWORK_STEPS,
+            ...ENGINE_PROFESSIONALIZATION_STEPS,
+            ...QUICK_STEPS.slice(etIdx + 1),
+          ]
         : [...QUICK_STEPS];
     steps = [...quickWithFramework, ...FULL_MATRIX_QA, ...FULL_SUFFIX];
   }

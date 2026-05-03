@@ -1,0 +1,98 @@
+{
+  "status": "PASS",
+  "calibration": {
+    "version": "1.0.0",
+    "subjects": [
+      {
+        "subjectId": "math",
+        "gradeExpectation": 57.5,
+        "difficultyAdjustedAccuracy": 80.8,
+        "gradeRelativeBand": "aboveExpected",
+        "belowExpected": false,
+        "atExpected": false,
+        "aboveExpected": true,
+        "difficultyCoverage": 1,
+        "challengeReadiness": "low",
+        "flags": {
+          "gradeMismatch": false,
+          "missingDifficultyMetadata": false
+        }
+      },
+      {
+        "subjectId": "hebrew",
+        "gradeExpectation": null,
+        "difficultyAdjustedAccuracy": null,
+        "gradeRelativeBand": "atExpected",
+        "belowExpected": false,
+        "atExpected": true,
+        "aboveExpected": false,
+        "difficultyCoverage": 0,
+        "challengeReadiness": "low",
+        "flags": {
+          "gradeMismatch": false,
+          "missingDifficultyMetadata": false
+        }
+      },
+      {
+        "subjectId": "english",
+        "gradeExpectation": null,
+        "difficultyAdjustedAccuracy": null,
+        "gradeRelativeBand": "atExpected",
+        "belowExpected": false,
+        "atExpected": true,
+        "aboveExpected": false,
+        "difficultyCoverage": 0,
+        "challengeReadiness": "low",
+        "flags": {
+          "gradeMismatch": false,
+          "missingDifficultyMetadata": false
+        }
+      },
+      {
+        "subjectId": "science",
+        "gradeExpectation": null,
+        "difficultyAdjustedAccuracy": null,
+        "gradeRelativeBand": "atExpected",
+        "belowExpected": false,
+        "atExpected": true,
+        "aboveExpected": false,
+        "difficultyCoverage": 0,
+        "challengeReadiness": "low",
+        "flags": {
+          "gradeMismatch": false,
+          "missingDifficultyMetadata": false
+        }
+      },
+      {
+        "subjectId": "geometry",
+        "gradeExpectation": null,
+        "difficultyAdjustedAccuracy": null,
+        "gradeRelativeBand": "atExpected",
+        "belowExpected": false,
+        "atExpected": true,
+        "aboveExpected": false,
+        "difficultyCoverage": 0,
+        "challengeReadiness": "low",
+        "flags": {
+          "gradeMismatch": false,
+          "missingDifficultyMetadata": false
+        }
+      },
+      {
+        "subjectId": "moledet-geography",
+        "gradeExpectation": null,
+        "difficultyAdjustedAccuracy": null,
+        "gradeRelativeBand": "atExpected",
+        "belowExpected": false,
+        "atExpected": true,
+        "aboveExpected": false,
+        "difficultyCoverage": 0,
+        "challengeReadiness": "low",
+        "flags": {
+          "gradeMismatch": false,
+          "missingDifficultyMetadata": false
+        }
+      }
+    ]
+  }
+}

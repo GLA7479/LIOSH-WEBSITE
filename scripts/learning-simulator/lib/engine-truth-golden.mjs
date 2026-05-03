@@ -220,3 +220,9 @@ export const ENGINE_GOLDEN_BY_KIND_DEFAULT = {
     minQuestionsHebrew: 24,
   },
 };
+
+/**
+ * Scenario ids exercised by `run-professional-engine-validation.mjs` (professional engine layers).
+ * Keep in sync when adding synthetic cases there.
+ */
+export const PROFESSIONAL_ENGINE_VALIDATION_SCENARIO_IDS_V1 = ["thin_data_math", "weak_math_fractions"];

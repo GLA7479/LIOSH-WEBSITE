@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "reliability": {
+    "version": "1.0.0",
+    "reliabilityScore": 25,
+    "dataTrustLevel": "very_low",
+    "effortSignal": "neutral",
+    "guessingLikelihood": 1,
+    "inconsistencyLevel": "medium",
+    "pacePattern": "fast_errors_dominate",
+    "confidenceAdjustment": -0.15,
+    "reasoning": [
+      "Thin volume lowers trust in diagnostic conclusions.",
+      "Review pacing signals separately from knowledge gaps."
+    ]
+  }
+}

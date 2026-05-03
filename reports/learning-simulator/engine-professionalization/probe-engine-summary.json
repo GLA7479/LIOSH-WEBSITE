@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "thin": {
+    "version": "1.0.0",
+    "probeTypesEnum": [
+      "collect_more_data",
+      "targeted_skill",
+      "prerequisite_check",
+      "difficulty_sweep",
+      "misconception_confirmation",
+      "cross_subject_check",
+      "challenge_advance"
+    ],
+    "recommendationTypeEnum": [
+      "continue_current_level",
+      "advance_cautiously",
+      "targeted_practice",
+      "review_foundation",
+      "collect_more_data",
+      "slow_down_and_check",
+      "teacher_review_recommended",
+      "professional_review_consideration"
+    ],
+    "probes": [
+      {
+        "probeReason": "Thin practice window—need more observations before stable interpretation.",
+        "targetSubjectId": "math",
+        "targetSkillId": null,
+        "targetSubskillId": null,
+        "probeType": "collect_more_data",
+        "recommendedQuestionTypes": [
+          "mcq",
+          "short_set"
+        ],
+        "numberOfQuestions": 8,
+        "successCriteria": "Stable accuracy over at least two sessions",
+        "failureCriteria": "Continued random/incorrect pattern without convergence",
+        "nextDecisionAfterProbe": "Re-evaluate mastery and misconceptions"
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "generatedAt": "2026-05-03T07:19:08.304Z",
+  "sample": {
+    "version": "1.0.0",
+    "masteryBandsEnum": [
+      "unknown",
+      "emerging",
+      "developing",
+      "near_mastery",
+      "mastered",
+      "retention_risk"
+    ],
+    "items": [
+      {
+        "subjectId": "math",
+        "skillId": "fractions",
+        "subskillId": "_rollup",
+        "masteryScore": 52.8,
+        "masteryBand": "emerging",
+        "confidence": "very_low",
+        "evidenceLevel": "thin",
+        "questionCount": 3,
+        "recentAccuracy": 66,
+        "weightedAccuracy": 66,
+        "trend": "unknown",
+        "consistency": "low",
+        "lastPracticedAt": "2026-05-03T07:19:08.303Z",
+        "retentionRisk": false,
+        "recommendedState": "practice_targeted"
+      }
+    ]
+  }
+}
