@@ -107,6 +107,8 @@
     "test:parent-report-narrative-safety-extractor": "node scripts/parent-report-narrative-safety-extractor-selftest.mjs",
     "test:parent-report-narrative-safety-artifacts": "node scripts/parent-report-narrative-safety-artifacts.mjs",
     "qa:question-metadata": "tsx scripts/question-metadata-qa.mjs",
+    "qa:question-metadata:suggestions": "tsx scripts/question-metadata-enrichment-suggestions.mjs",
+    "qa:question-metadata:science-review-pack": "tsx scripts/science-metadata-review-pack.mjs",
     "test:minimal-safe-scope": "tsx scripts/minimal-safe-scope-scenarios.mjs",
     "test:parent-copilot-phaseA": "tsx scripts/parent-copilot-phaseA-suite.mjs",
     "test:parent-copilot-phaseB": "node scripts/parent-copilot-phaseB-suite.mjs",

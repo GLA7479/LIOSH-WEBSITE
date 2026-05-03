@@ -11,6 +11,7 @@ import {
   ISSUE_CODES,
   MIN_QUESTIONS_PER_SKILL_FOR_DIAGNOSIS,
 } from "./question-metadata-contract.js";
+import { validateTaxonomyForRecord } from "./question-metadata-taxonomy.js";
 import * as bankDiscovery from "./question-bank-discovery.js";
 const GEOMETRY_CONCEPTUAL_BANK = bankDiscovery.GEOMETRY_CONCEPTUAL_BANK;
 
@@ -229,6 +230,18 @@ export function buildScanRecord(q, sourceFile, objectPath, subjectHint, seqIndex
 
   if (!hasCorrectAnswer(q)) issues.push(ISSUE_CODES.missing_correct_answer);
   if (!hasExplanation(q, params)) issues.push(ISSUE_CODES.missing_explanation);
+
+  issues.push(
+    ...validateTaxonomyForRecord({
+      subject,
+      skillId,
+      subskillId,
+      difficulty: difficulty || null,
+      cognitiveLevel: cognitiveLevel || null,
+      expectedErrorTypes: expectedErr,
+      prerequisiteSkillIds: prereq,
+    })
+  );
 
   let score = 0;
   if (declaredId) score += COMPLETENESS_WEIGHTS.id;

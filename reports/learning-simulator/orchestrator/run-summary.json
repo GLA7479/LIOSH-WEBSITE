@@ -1,8 +1,8 @@
 {
   "mode": "quick",
-  "startedAt": "2026-05-03T12:11:50.260Z",
-  "finishedAt": "2026-05-03T12:11:59.185Z",
-  "totalDurationMs": 8924,
+  "startedAt": "2026-05-03T12:35:17.335Z",
+  "finishedAt": "2026-05-03T12:35:24.780Z",
+  "totalDurationMs": 7444,
   "pass": true,
   "failedStep": null,
   "steps": [
@@ -11,7 +11,7 @@
       "label": "Coverage matrix",
       "script": "qa:learning-simulator:matrix",
       "exitCode": 0,
-      "durationMs": 691,
+      "durationMs": 669,
       "pass": true
     },
     {
@@ -19,7 +19,7 @@
       "label": "Schema validation (profiles + scenarios)",
       "script": "qa:learning-simulator:schema",
       "exitCode": 0,
-      "durationMs": 720,
+      "durationMs": 662,
       "pass": true
     },
     {
@@ -27,7 +27,7 @@
       "label": "Aggregate simulator (quick scenarios)",
       "script": "qa:learning-simulator:aggregate",
       "exitCode": 0,
-      "durationMs": 737,
+      "durationMs": 675,
       "pass": true
     },
     {
@@ -35,7 +35,7 @@
       "label": "Parent report assertions (Phase 3)",
       "script": "qa:learning-simulator:reports",
       "exitCode": 0,
-      "durationMs": 1694,
+      "durationMs": 1336,
       "pass": true
     },
     {
@@ -43,7 +43,7 @@
       "label": "Engine truth audit (aggregation ↔ diagnosis V2 ↔ report model)",
       "script": "qa:learning-simulator:engine",
       "exitCode": 0,
-      "durationMs": 2805,
+      "durationMs": 2539,
       "pass": true
     },
     {
@@ -51,7 +51,7 @@
       "label": "Behavior checks (Phase 5)",
       "script": "qa:learning-simulator:behavior",
       "exitCode": 0,
-      "durationMs": 888,
+      "durationMs": 656,
       "pass": true
     },
     {
@@ -59,7 +59,7 @@
       "label": "Question integrity (Phase 4)",
       "script": "qa:learning-simulator:questions",
       "exitCode": 0,
-      "durationMs": 1386,
+      "durationMs": 907,
       "pass": true
     }
   ],

@@ -23,6 +23,8 @@ Static JS banks discovered under `utils/question-metadata-qa/question-bank-disco
 | `reports/question-metadata-qa/summary.md` | Human-readable summary |
 | `reports/question-metadata-qa/questions-with-issues.json` | Questions with at least one issue (truncated) |
 | `reports/question-metadata-qa/skill-coverage.json` | Per-`skillId` bucket stats |
+| `reports/question-metadata-qa/enrichment-suggestions.{json,md}` | Science enrichment proposals (after `qa:question-metadata:suggestions`) |
+| `reports/question-metadata-qa/science-review-pack.{json,md}` | Science-only review aggregation (after `qa:question-metadata:science-review-pack`) |
 
 ## Why it matters
 
@@ -34,8 +36,50 @@ The professional diagnostic engine and `buildQuestionSkillMetadataV1` need stabl
 - **Exit 1** only if **no** questions could be scanned (fatal scan).
 - Incomplete metadata does **not** fail CI by design (`WARN` is normal until pools are enriched).
 
+## Taxonomy validation (phase 2)
+
+Canonical difficulty/cognitive labels and science skill/subskill allowlists live in **`utils/question-metadata-qa/question-metadata-taxonomy.js`**. The scanner adds optional issue codes such as `taxonomy_unknown_skillId`, `taxonomy_unknown_subskillId`, `taxonomy_unknown_expected_error_type`, and `taxonomy_unknown_prerequisite_skillId` (science prerequisite ids must reference registered science skills).
+
+See **`docs/question-metadata-taxonomy.md`** for value lists and design notes.
+
+## Enrichment suggestions (proposal-only)
+
+**Command:** `npm run qa:question-metadata:suggestions`
+
+- Writes **`reports/question-metadata-qa/enrichment-suggestions.json`** and **`.md`**.
+- **Does not modify** any question source files.
+- **Science-first:** emits one suggestion object per science row (`data/science-questions.js`) focusing on `subskillId`, `cognitiveLevel`, `expectedErrorTypes`, `prerequisiteSkillIds` (plus canonical difficulty mapping where relevant).
+- Every row sets **`needsHumanReview: true`** — bulk-apply is discouraged until curriculum authors validate Hebrew pedagogy and engine routing.
+
+**Why science first:** It already has strong `skillId`, difficulty, answers, and explanations; gaps are concentrated in diagnostic extensions (subskill, cognitive tier, error families, prerequisite graph).
+
+### Confidence model (science suggestions)
+
+Each suggestion includes **`confidence`** (`high` | `medium` | `low`), **`confidenceReasons[]`**, **`reviewPriority`** (`high` | `medium` | `low`), and **`sequentialPrereqHeuristic`** (boolean).
+
+| Tier | Meaning |
+|------|---------|
+| **high** | Row has explicit structured params (`diagnosticSkillId`, `conceptTag`, `patternFamily`, or `expectedErrorTags`) and known skill id — suggestions ground in existing metadata. |
+| **medium** | Deterministic `topic` → `skillId`, difficulty + answer + explanation present; prerequisite chain is **not** the sequential-topic guess (empty or deferred). Template fills for subskill/cognitive/errors still need a human skim. |
+| **low** | Sequential-topic prerequisite heuristic applies, or row lacks core quality signals (difficulty / answer / explanation), or topic/skill mapping is outside the standard science allowlist. |
+
+**Review priority** is the review-queue signal: **high** = inspect before any merge (includes all low-confidence and sequential-prerequisite rows); **low** = faster path for **high** confidence suggestions after spot-check.
+
+**Low confidence is not auto-applied:** automation never writes banks; low-confidence rows need curriculum validation before metadata changes.
+
+### Science review pack
+
+**Command:** `npm run qa:question-metadata:science-review-pack`
+
+Reads **`enrichment-suggestions.json`** (or regenerates suggestions in memory if that file is missing after running suggestions). Loads **`questions-with-issues.json`** to append **unknown expected-error tokens** (rows flagged `taxonomy_unknown_expected_error_type`) — lists token text with example `questionId` / file paths **without guessing replacements**.
+
+The JSON/Markdown pack includes grouping by **`skillId`**, **`topic`**, suggested **`subskillId`**, prerequisite and expected-error histograms, low-confidence / high-review-priority lists, and a short **human checklist** (approve / edit / reject / curriculum expert).
+
+**Approval before source edits:** Do not modify `data/science-questions.js` until reviewers accept suggestions for each cluster (especially sequential prerequisites and low-confidence rows).
+
 ## Related
 
+- `docs/question-metadata-taxonomy.md` — controlled vocabulary
 - `docs/UNIFIED_QUESTION_SCHEMA.md` — legacy shapes per subject
 - `utils/learning-diagnostics/question-skill-metadata-v1.js` — runtime metadata merge
 - `npm run qa:learning-simulator:question-skill-metadata` — matrix-cell sampling (different scope)

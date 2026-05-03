@@ -3,17 +3,18 @@
  * Does not validate product Hebrew content.
  */
 
+import {
+  ALL_VALID_COGNITIVE_LEVELS,
+  ALL_VALID_DIFFICULTY,
+  TAXONOMY_ISSUE_CODES,
+} from "./question-metadata-taxonomy.js";
+
 /** @typedef {"low"|"medium"|"high"} RiskLevel */
 
-export const COGNITIVE_LEVELS_VALID = new Set([
-  "recall",
-  "understanding",
-  "application",
-  "reasoning",
-  "multi_step",
-]);
+/** Canonical + legacy difficulty labels (see `question-metadata-taxonomy.js`). */
+export const COGNITIVE_LEVELS_VALID = ALL_VALID_COGNITIVE_LEVELS;
 
-export const DIFFICULTY_VALID = new Set(["easy", "medium", "hard", "low", "high"]);
+export const DIFFICULTY_VALID = ALL_VALID_DIFFICULTY;
 
 /** Minimum questions per skillId to consider skill coverage adequate for diagnosis heuristics */
 export const MIN_QUESTIONS_PER_SKILL_FOR_DIAGNOSIS = 5;
@@ -37,6 +38,7 @@ export const ISSUE_CODES = {
   misconception_diagnosis_unsupported: "misconception_diagnosis_unsupported",
   prerequisite_diagnosis_unsupported: "prerequisite_diagnosis_unsupported",
   skill_low_volume: "skill_low_volume",
+  ...TAXONOMY_ISSUE_CODES,
 };
 
 /** Weighted field keys for metadataCompletenessScore (sum weights = 1) */

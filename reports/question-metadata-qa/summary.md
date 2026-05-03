@@ -1,6 +1,6 @@
 # Question metadata QA
 
-- **Generated:** 2026-05-03T12:12:12.362Z
+- **Generated:** 2026-05-03T12:34:56.320Z
 - **Gate:** scanOutcome=`ok`, advisoryStatus=`WARN`
 - **Questions scanned:** 5267
 - **High / medium risk:** 4547 / 717
@@ -30,6 +30,7 @@
 | missing_difficulty | 4884 |
 | missing_skillId | 4547 |
 | missing_explanation | 4264 |
+| taxonomy_unknown_expected_error_type | 9 |
 
 ## Outputs
 

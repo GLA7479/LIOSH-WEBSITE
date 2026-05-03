@@ -2,21 +2,21 @@
 
 - **Mode:** quick
 - **Overall:** **PASS**
-- **Started:** 2026-05-03T12:11:50.260Z
-- **Finished:** 2026-05-03T12:11:59.185Z
-- **Total duration:** 8924 ms
+- **Started:** 2026-05-03T12:35:17.335Z
+- **Finished:** 2026-05-03T12:35:24.780Z
+- **Total duration:** 7444 ms
 
 ## Steps
 
 | # | Stage | Script | Duration (ms) | Result |
 | --- | --- | --- | ---: | --- |
-| 1 | Coverage matrix | `qa:learning-simulator:matrix` | 691 | PASS |
-| 2 | Schema validation (profiles + scenarios) | `qa:learning-simulator:schema` | 720 | PASS |
-| 3 | Aggregate simulator (quick scenarios) | `qa:learning-simulator:aggregate` | 737 | PASS |
-| 4 | Parent report assertions (Phase 3) | `qa:learning-simulator:reports` | 1694 | PASS |
-| 5 | Engine truth audit (aggregation ↔ diagnosis V2 ↔ report model) | `qa:learning-simulator:engine` | 2805 | PASS |
-| 6 | Behavior checks (Phase 5) | `qa:learning-simulator:behavior` | 888 | PASS |
-| 7 | Question integrity (Phase 4) | `qa:learning-simulator:questions` | 1386 | PASS |
+| 1 | Coverage matrix | `qa:learning-simulator:matrix` | 669 | PASS |
+| 2 | Schema validation (profiles + scenarios) | `qa:learning-simulator:schema` | 662 | PASS |
+| 3 | Aggregate simulator (quick scenarios) | `qa:learning-simulator:aggregate` | 675 | PASS |
+| 4 | Parent report assertions (Phase 3) | `qa:learning-simulator:reports` | 1336 | PASS |
+| 5 | Engine truth audit (aggregation ↔ diagnosis V2 ↔ report model) | `qa:learning-simulator:engine` | 2539 | PASS |
+| 6 | Behavior checks (Phase 5) | `qa:learning-simulator:behavior` | 656 | PASS |
+| 7 | Question integrity (Phase 4) | `qa:learning-simulator:questions` | 907 | PASS |
 
 ## Key artifact paths (repo-relative)
 

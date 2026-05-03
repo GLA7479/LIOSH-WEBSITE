@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T12:12:12.362Z",
+  "generatedAt": "2026-05-03T12:34:56.320Z",
   "gate": {
     "scanOutcome": "ok",
     "partialLoadErrors": true,
@@ -100,6 +100,10 @@
     [
       "missing_explanation",
       4264
+    ],
+    [
+      "taxonomy_unknown_expected_error_type",
+      9
     ]
   ],
   "subjectSummaries": {
@@ -197,6 +201,10 @@
         [
           "missing_expected_error_types",
           49
+        ],
+        [
+          "taxonomy_unknown_expected_error_type",
+          3
         ]
       ],
       "readinessScore": "medium",
@@ -261,6 +269,10 @@
         [
           "missing_explanation",
           50
+        ],
+        [
+          "taxonomy_unknown_expected_error_type",
+          4
         ]
       ],
       "readinessScore": "weak",
@@ -446,6 +458,10 @@
         [
           "missing_expected_error_types",
           44
+        ],
+        [
+          "taxonomy_unknown_expected_error_type",
+          2
         ]
       ],
       "readinessScore": "medium",
@@ -485,6 +501,10 @@
     "invalid_cognitive_level": "invalid_cognitive_level",
     "misconception_diagnosis_unsupported": "misconception_diagnosis_unsupported",
     "prerequisite_diagnosis_unsupported": "prerequisite_diagnosis_unsupported",
-    "skill_low_volume": "skill_low_volume"
+    "skill_low_volume": "skill_low_volume",
+    "taxonomy_unknown_skillId": "taxonomy_unknown_skillId",
+    "taxonomy_unknown_subskillId": "taxonomy_unknown_subskillId",
+    "taxonomy_unknown_expected_error_type": "taxonomy_unknown_expected_error_type",
+    "taxonomy_unknown_prerequisite_skillId": "taxonomy_unknown_prerequisite_skillId"
   }
 }

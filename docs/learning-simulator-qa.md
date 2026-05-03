@@ -98,7 +98,8 @@ Part of the **full** orchestrator (after `test:parent-report-phase1`, before int
 
 **Not** part of the learning-simulator orchestrator by default — run when enriching diagnostic metadata or auditing pools.
 
-- **Command:** `npm run qa:question-metadata`
+- **Command:** `npm run qa:question-metadata` (taxonomic validation is advisory; see `docs/question-metadata-taxonomy.md`).
+- **Optional proposals:** `npm run qa:question-metadata:suggestions` — science-only enrichment JSON/MD (does not edit banks).
 - **What it scans:** Static question JS under `data/*`, `utils/hebrew-rich-question-bank.js`, English pools, geography grades, science bank, geometry conceptual templates (see `docs/question-metadata-qa.md`). Procedural generators are listed but not expanded.
 - **What it reports:** Subject-level coverage %, skill-level buckets, duplicate declared IDs, risk tier per row, top missing fields — outputs under `reports/question-metadata-qa/`.
 - **Why it matters:** Professional diagnosis (`question-skill-metadata-v1`, misconception / prerequisite paths) needs consistent **skillId**, **error tags**, and **prerequisite** hooks on bank rows.
@@ -146,7 +147,7 @@ Full detail: **`docs/question-metadata-qa.md`**.
 | Deep | `reports/learning-simulator/deep/run-summary.json`, `failures.json`, `per-student/*` |
 | Orchestrator | `reports/learning-simulator/orchestrator/run-summary.json`, `.md` |
 | Parent narrative safety (artifacts) | `reports/parent-report-narrative-safety-artifacts/summary.json`, `summary.md` |
-| Question metadata QA | `reports/question-metadata-qa/summary.json`, `summary.md`, `skill-coverage.json` |
+| Question metadata QA | `reports/question-metadata-qa/summary.json`, `summary.md`, `skill-coverage.json`, optional `enrichment-suggestions.{json,md}` |
 
 ## When to run quick vs full vs release
 
