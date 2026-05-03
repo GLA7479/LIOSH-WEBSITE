@@ -62,10 +62,10 @@
   },
   "professionalEngineV1": {
     "version": "1.0.0",
-    "generatedAt": "2026-05-03T08:56:44.734Z",
+    "generatedAt": "2026-05-03T09:08:13.500Z",
     "studentWindow": {
-      "startMs": 1767430604704,
-      "endMs": 1777885004704
+      "startMs": 1767431293461,
+      "endMs": 1777885693461
     },
     "subjects": [
       "moledet-geography"

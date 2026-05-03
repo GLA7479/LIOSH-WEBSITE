@@ -72,6 +72,28 @@ const sectionTitle = {
 const muted = { color: "#94a3b8", fontSize: "clamp(0.95rem, 2vw, 1rem)" };
 const labelStrong = { color: "#f1f5f9", fontWeight: 600 };
 
+const packDownloadBtn = {
+  padding: "10px 16px",
+  fontSize: "0.95rem",
+  fontWeight: 600,
+  borderRadius: 8,
+  border: "1px solid #64748b",
+  background: "#1e293b",
+  color: "#f1f5f9",
+  cursor: "pointer",
+};
+
+const packDownloadBtnSmall = {
+  padding: "6px 12px",
+  fontSize: "0.88rem",
+  fontWeight: 600,
+  borderRadius: 6,
+  border: "1px solid #64748b",
+  background: "#1e293b",
+  color: "#f1f5f9",
+  cursor: "pointer",
+};
+
 export default function EngineExpertReviewAdminPage({ packMeta: initialPack, engineFinal: initialFinal, profVal: initialProf, hasPack: initialHasPack, ssrDeployment }) {
   const [token, setToken] = useState("");
   const [busy, setBusy] = useState(false);
@@ -82,6 +104,8 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
   const [profVal, setProfVal] = useState(initialProf);
   const [hasPack, setHasPack] = useState(initialHasPack);
   const [deployment, setDeployment] = useState(null);
+  /** Last inline snapshot from POST /generate-expert-review-pack (not persisted under reports/) */
+  const [inlinePack, setInlinePack] = useState(null);
 
   useEffect(() => {
     try {
@@ -126,6 +150,20 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
     fetchStatus();
   }, [fetchStatus]);
 
+  const downloadTextFile = (filename, content, mime = "text/plain;charset=utf-8") => {
+    if (typeof window === "undefined") return;
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   const handleGenerate = async () => {
     setBusy(true);
     setGenResult(null);
@@ -169,16 +207,30 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
       }
 
       setGenResult({
-        level: data.persistenceWarning ? "warning" : "success",
+        level: "success",
         code: data.code || "ok",
-        text: data.persistenceMessage || "Generation completed on this server instance.",
+        text: data.persistenceMessage || "Snapshot built from artifacts; returned inline only (not saved under reports/).",
         scenarioCount: data.scenarioCount,
         generatedAt: data.generatedAt,
         requiresHumanExpertReview: data.requiresHumanExpertReview,
-        persistenceWarning: data.persistenceWarning,
         cliFallback: data.cliFallback || null,
         generationMode: data.generationMode || null,
+        delivery: data.delivery || null,
       });
+      if (data.manifestJson && data.scenarios?.length) {
+        setInlinePack({
+          generatedAt: data.generatedAt,
+          manifest: data.manifest,
+          summary: data.summary,
+          indexMarkdown: data.indexMarkdown,
+          summaryMarkdown: data.summaryMarkdown,
+          manifestJson: data.manifestJson,
+          summaryJson: data.summaryJson,
+          scenarios: data.scenarios,
+        });
+      } else {
+        setInlinePack(null);
+      }
       await fetchStatus();
     } catch (e) {
       setGenResult({ level: "error", code: "generation_failed", text: String(e?.message || e) });
@@ -338,6 +390,9 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
               {busy ? "Generating…" : "Generate Expert Review Pack"}
             </button>
           </div>
+          <p style={{ ...muted, margin: "14px 0 0", fontSize: "clamp(0.88rem, 2vw, 0.95rem)" }}>
+            Generate builds a snapshot from existing validation JSON in memory and returns it to the browser — nothing is written under <code style={{ color: "#cbd5e1" }}>reports/</code>.
+          </p>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
@@ -421,7 +476,9 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
                 <div>
                   <strong style={{ color: "#fff" }}>Result:</strong> {genResult.code}{" "}
                   {genResult.level === "success"
-                    ? "— generated successfully"
+                    ? genResult.delivery === "inline_json"
+                      ? "— snapshot ready (inline, no disk)"
+                      : "— generated successfully"
                     : genResult.level === "warning"
                       ? genResult.code === "generation_not_supported_in_serverless"
                         ? "— remote generation not supported (use CLI/CI)"
@@ -464,6 +521,78 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
               <p style={{ ...muted, margin: 0 }}>No generation run in this session yet.</p>
             )}
           </section>
+
+          {inlinePack ? (
+            <section style={card} aria-labelledby="sec-inline-snapshot">
+              <h2 id="sec-inline-snapshot" style={sectionTitle}>
+                Snapshot (this session)
+              </h2>
+              <p style={{ ...muted, marginTop: 0 }}>
+                Generated <strong style={{ color: "#e2e8f0" }}>{formatAdminDate(inlinePack.generatedAt)}</strong> — download JSON/Markdown bundles. Same content as an on-disk pack layout, without saving files on the server.
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 18 }}>
+                <button
+                  type="button"
+                  onClick={() => downloadTextFile("manifest.json", inlinePack.manifestJson, "application/json;charset=utf-8")}
+                  style={packDownloadBtn}
+                >
+                  manifest.json
+                </button>
+                <button
+                  type="button"
+                  onClick={() => downloadTextFile("summary.json", inlinePack.summaryJson, "application/json;charset=utf-8")}
+                  style={packDownloadBtn}
+                >
+                  summary.json
+                </button>
+                <button type="button" onClick={() => downloadTextFile("summary.md", inlinePack.summaryMarkdown, "text/markdown;charset=utf-8")} style={packDownloadBtn}>
+                  summary.md
+                </button>
+                <button type="button" onClick={() => downloadTextFile("index.md", inlinePack.indexMarkdown, "text/markdown;charset=utf-8")} style={packDownloadBtn}>
+                  index.md
+                </button>
+              </div>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "clamp(0.9rem, 2vw, 1rem)" }}>
+                  <thead>
+                    <tr style={{ borderBottom: "2px solid #334155", textAlign: "left" }}>
+                      <th style={{ padding: "10px 8px", color: "#f8fafc" }}>Scenario</th>
+                      <th style={{ padding: "10px 8px", color: "#f8fafc" }}>Status</th>
+                      <th style={{ padding: "10px 8px", color: "#f8fafc" }}>Download</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inlinePack.scenarios.map((s) => (
+                      <tr key={s.scenarioId} style={{ borderBottom: "1px solid #1e293b" }}>
+                        <td style={{ padding: "10px 8px", fontFamily: "ui-monospace, monospace", color: "#e2e8f0" }}>{s.scenarioId}</td>
+                        <td style={{ padding: "10px 8px", color: s.pass ? "#86efac" : "#fca5a5" }}>{s.pass ? "PASS" : "FAIL"}</td>
+                        <td style={{ padding: "10px 8px" }}>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              downloadTextFile(`scenarios/${s.scenarioId}.json`, s.json, "application/json;charset=utf-8")
+                            }
+                            style={packDownloadBtnSmall}
+                          >
+                            JSON
+                          </button>{" "}
+                          <button
+                            type="button"
+                            onClick={() =>
+                              downloadTextFile(`scenarios/${s.scenarioId}.md`, s.markdown, "text/markdown;charset=utf-8")
+                            }
+                            style={packDownloadBtnSmall}
+                          >
+                            MD
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          ) : null}
 
           <section style={card} aria-labelledby="sec-cli">
             <h2 id="sec-cli" style={sectionTitle}>

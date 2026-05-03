@@ -1,20 +1,8 @@
 /**
- * Internal-only: regenerate Expert Review Pack on the server (writes under reports/).
- * Uses artifact-only generation (no diagnostic/parent-report import chain) — see generate-expert-review-pack-artifacts.mjs.
- * Requires ENGINE_REVIEW_ADMIN_TOKEN header match and NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN=true.
+ * Internal-only: build Expert Review Pack snapshot from existing artifacts; returns JSON/Markdown (no writes under reports/).
+ * Requires ENGINE_REVIEW_ADMIN_TOKEN and NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN=true.
  */
-import { join } from "node:path";
-import { pathToFileURL } from "node:url";
-
-/** True on Vercel / Lambda — scripts/ under repo root are not deployed to /var/task; skip dynamic imports. */
-function isServerlessRuntime() {
-  return (
-    process.env.VERCEL === "1" ||
-    Boolean(process.env.VERCEL_ENV) ||
-    Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
-    Boolean(process.env.LAMBDA_TASK_ROOT)
-  );
-}
+import { buildExpertReviewPackSnapshot } from "../../../utils/expert-review-pack-artifact-snapshot.js";
 
 function deploymentInfo() {
   const vercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
@@ -77,48 +65,34 @@ export default async function handler(req, res) {
 
   const deployment = deploymentInfo();
 
-  if (isServerlessRuntime()) {
-    return res.status(200).json({
-      ok: false,
-      code: "generation_not_supported_in_serverless",
-      message:
-        "Remote generation is not supported on this deployment. Use CLI/CI to create a durable Expert Review Pack. Run npm run qa:learning-simulator:expert-review-pack locally or in CI.",
-      cliFallback: "npm run qa:learning-simulator:expert-review-pack",
-      deployment,
-    });
-  }
-
   try {
-    const artifactScript = join(process.cwd(), "scripts/learning-simulator/generate-expert-review-pack-artifacts.mjs");
-    const packUrl = pathToFileURL(artifactScript).href;
-    const mod = await import(/* webpackIgnore: true */ packUrl);
-    if (typeof mod.generateExpertReviewPackFromArtifacts !== "function") {
-      return res.status(500).json({
-        ok: false,
-        code: "generation_failed",
-        message:
-          "Generation module is unavailable on this server. Run npm run qa:learning-simulator:expert-review-pack locally or in CI.",
-        cliFallback: "npm run qa:learning-simulator:expert-review-pack",
-      });
-    }
-    const out = await mod.generateExpertReviewPackFromArtifacts(process.cwd());
-    const persistenceWarning = deployment.filesystemEphemeral;
+    const built = await buildExpertReviewPackSnapshot(process.cwd());
 
     return res.status(200).json({
       ok: true,
       code: "ok",
-      generationMode: out.manifest?.generationMode || "artifact_snapshot_v1",
-      generatedAt: out.manifest?.generatedAt,
-      scenarioCount: out.manifest?.scenarioCount,
-      requiresHumanExpertReview: out.manifest?.requiresHumanExpertReview !== false,
-      outDir: out.outDir,
+      delivery: "inline_json",
+      generationMode: built.manifest?.generationMode || "artifact_snapshot_v1",
+      generatedAt: built.manifest?.generatedAt,
+      scenarioCount: built.manifest?.scenarioCount,
+      requiresHumanExpertReview: built.manifest?.requiresHumanExpertReview !== false,
       deployment,
-      persistenceWarning,
-      persistenceMessage: persistenceWarning
-        ? "Generation ran on this server instance. On serverless hosts (e.g. Vercel) the filesystem is typically ephemeral — artifacts may not persist between invocations. Use local CLI or a durable runner for a lasting pack."
-        : "Artifacts were written under reports/ on this server filesystem.",
+      manifest: built.manifest,
+      summary: built.summary,
+      indexMarkdown: built.indexMarkdown,
+      summaryMarkdown: built.summaryMarkdown,
+      manifestJson: built.manifestJson,
+      summaryJson: built.summaryJson,
+      scenarios: built.scenarios.map((s) => ({
+        scenarioId: s.scenarioId,
+        pass: s.pass,
+        json: s.json,
+        markdown: s.markdown,
+      })),
+      persistenceMessage:
+        "Snapshot built in memory only — nothing written under reports/. Use the admin page downloads or run CLI locally to persist files.",
       cliFallback:
-        "For the full expert review pack (complete professionalEngineV1 + aggregates), run: npm run qa:learning-simulator:expert-review-pack",
+        "Persist a full tree under reports/ locally: npm run qa:learning-simulator:expert-review-pack (after validation PASS).",
     });
   } catch (e) {
     const msg = String(e?.message || e);
@@ -127,16 +101,15 @@ export default async function handler(req, res) {
       return res.status(422).json({
         ok: false,
         code: "validation_artifact_not_ready",
-        error: msg,
         message: msg.replace(/^Error:\s*/, ""),
-        cliFallback: "Run npm run qa:learning-simulator:professional-engine (PASS), then retry or run npm run qa:learning-simulator:expert-review-pack locally.",
+        cliFallback: "Run npm run qa:learning-simulator:professional-engine (PASS), then retry.",
       });
     }
     return res.status(500).json({
       ok: false,
       code: "generation_failed",
       message:
-        "Generation failed on the server. Run npm run qa:learning-simulator:expert-review-pack locally or in CI for a reliable pack.",
+        "Could not build snapshot from artifacts on this server. Ensure professional-engine-validation.json exists and passes.",
       cliFallback: "npm run qa:learning-simulator:expert-review-pack",
     });
   }
