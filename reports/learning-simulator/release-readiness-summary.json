@@ -1,6 +1,6 @@
 {
-  "runId": "release-summary-mopto02i",
-  "generatedAt": "2026-05-03T13:44:29.274Z",
+  "runId": "release-summary-mopu2sip",
+  "generatedAt": "2026-05-03T13:55:59.329Z",
   "overallStatus": "pass",
   "gateStatus": {
     "orchestrator": "pass",
@@ -72,7 +72,7 @@
     "status": "pass",
     "pace_accuracy_separation_ok": true,
     "cohortMedianSpqGap": 198.04,
-    "sourceRunId": "profile-stress-mopthjkk"
+    "sourceRunId": "profile-stress-moptw2q5"
   },
   "renderGateSummary": {
     "status": "pass",
@@ -90,7 +90,7 @@
     "browserMode": true,
     "downloadSucceeded": true,
     "downloadPath": "C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/pdf-export/דוח-Sim_strong_all_subjects_g3_7d-2026-05-03.pdf",
-    "fileSizeBytes": 3920438,
+    "fileSizeBytes": 3914024,
     "pdfHeaderOk": true,
     "consoleErrorsTotal": 0,
     "fatalErrorsTotal": 0,
@@ -101,11 +101,11 @@
     "pdfLibraryDetected": "^0.10.1",
     "exportIsClientSide": true,
     "hasDedicatedPdfRoute": false,
-    "generatedAt": "2026-05-03T13:39:58.759Z"
+    "generatedAt": "2026-05-03T13:51:18.941Z"
   },
   "scenarioCoverageSummary": {
     "scenarios": 278,
-    "generatedAt": "2026-05-03T13:39:30.335Z"
+    "generatedAt": "2026-05-03T13:50:48.400Z"
   },
   "parentNarrativeSafetySummary": {
     "status": "warnings_only",

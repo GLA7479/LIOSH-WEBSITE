@@ -1,6 +1,6 @@
 # Scenario coverage (fixtures → matrix cells)
 
-- Generated at: 2026-05-03T13:39:30.335Z
+- Generated at: 2026-05-03T13:50:48.400Z
 - Scenarios: 278
 
 | scenarioId | mode | suite | grade | matrixCellsTouched | assertionTypes |

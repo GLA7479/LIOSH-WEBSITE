@@ -7,6 +7,7 @@ import {
   ENGLISH_SKILL_IDS,
   ENGLISH_SUBSKILL_ALLOWLIST_BY_SKILL,
 } from "./question-metadata-taxonomy-english.js";
+import { isTaxonomyValidMathSkillId, isTaxonomyValidMathSubskillId } from "./question-metadata-taxonomy-math.js";
 
 export { ENGLISH_SKILL_IDS, ENGLISH_SUBSKILL_ALLOWLIST_BY_SKILL };
 
@@ -129,6 +130,17 @@ export const EXTENDED_EXPECTED_ERROR_TYPES = new Set([
   "grammar_pattern_error",
   "translation_error",
   "sentence_order_error",
+  /** Math procedural / probes */
+  "operation_confusion",
+  "place_value_error",
+  "fraction_misconception",
+  "denominator_confusion",
+  "numerator_denominator_confusion",
+  "decimal_place_error",
+  "word_problem_comprehension_error",
+  "wrong_lcm",
+  "adds_denominators_directly",
+  "multiplication_fact_gap",
 ]);
 
 /**
@@ -445,6 +457,15 @@ export function validateTaxonomyForRecord(record) {
     }
   }
 
+  if (subject === "math") {
+    if (skillId && !isTaxonomyValidMathSkillId(skillId)) {
+      issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_skillId);
+    }
+    if (subskillId && !isTaxonomyValidMathSubskillId(subskillId)) {
+      issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_subskillId);
+    }
+  }
+
   const errs = record.expectedErrorTypes || [];
   for (const e of errs) {
     const t = String(e).trim();
@@ -492,6 +513,17 @@ export function validateTaxonomyForRecord(record) {
       const id = String(p).trim();
       if (!id) continue;
       if (!ENGLISH_SKILL_IDS.has(id)) {
+        issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_prerequisite_skillId);
+        break;
+      }
+    }
+  }
+
+  if (subject === "math" && Array.isArray(record.prerequisiteSkillIds)) {
+    for (const p of record.prerequisiteSkillIds) {
+      const id = String(p).trim();
+      if (!id) continue;
+      if (!isTaxonomyValidMathSkillId(id)) {
         issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_prerequisite_skillId);
         break;
       }

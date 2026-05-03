@@ -1,6 +1,6 @@
 # Professional Diagnostic Framework — audit
 
-- Generated at: 2026-05-03T13:39:11.186Z
+- Generated at: 2026-05-03T13:50:29.306Z
 - Framework version: 1.1.0
 
 ## Scope

@@ -1,6 +1,7 @@
 import { GRADES, BLANK } from './math-constants';
 import { mergeDiagnosticContractIntoParams } from './diagnostic-question-contract.js';
 import { probeMatchesSession } from './active-diagnostic-runtime/session-match.js';
+import { attachProfessionalMathMetadata } from './math-question-metadata.js';
 
 function mathLevelKeyFromConfig(levelConfig) {
   const n = String(levelConfig?.name || "").trim();
@@ -1063,6 +1064,9 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       ? String(globalThis.__LIOSH_MATH_FORCE)
       : "";
 
+  const finalizeMathQuestionOutput = (out) =>
+    attachProfessionalMathMetadata(out, { selectedOp, gradeKey, mathLevelKey });
+
   const densSmallProbe = [2, 4, 5, 10];
   const densBigProbe = [2, 3, 4, 5, 6, 8, 10, 12];
   const probeDiag = tryMathDiagnosticProbeExercise({
@@ -1096,7 +1100,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         randInt,
         round
       );
-    return {
+    return finalizeMathQuestionOutput({
       question: qText && String(qText).trim() ? qText : exText,
       questionLabel: paramsP.questionLabel,
       exerciseText: exText,
@@ -1107,7 +1111,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       a: probeDiag.a ?? null,
       b: probeDiag.b ?? null,
       isStory: false,
-    };
+    });
   }
 
   // ===== חיבור =====
@@ -2279,7 +2283,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     // כפתורי השוואה תמיד באותו סדר: <, =, > (שווה באמצע)
     const answers = ["<", "=", ">"];
 
-    return {
+    return finalizeMathQuestionOutput({
       question,
       questionLabel,
       exerciseText,
@@ -2290,7 +2294,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       a,
       b,
       isStory: false,
-    };
+    });
 
   // ===== Number Sense – שכנים, עשרות/יחידות, זוגי/אי-זוגי, השלמה, ישר המספרים, מנייה =====
   } else if (selectedOp === "number_sense") {
@@ -2415,7 +2419,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         [answers[i], answers[j]] = [answers[j], answers[i]];
       }
 
-      return {
+      return finalizeMathQuestionOutput({
         question,
         correctAnswer,
         answers,
@@ -2424,7 +2428,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         a: n,
         b: null,
         isStory: false,
-      };
+      });
     }
     }
 
@@ -2474,7 +2478,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         gradeKey,
       });
 
-      return {
+      return finalizeMathQuestionOutput({
         question,
         correctAnswer,
         answers,
@@ -2483,7 +2487,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         a: n,
         b: null,
         isStory: false,
-      };
+      });
     } else if (t === "multiple") {
       const base = randInt(3, Math.min(12, Math.floor(maxNumber / 10)));
       const correct = base * randInt(2, Math.min(10, Math.floor(maxNumber / base)));
@@ -2518,7 +2522,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         gradeKey,
       });
 
-      return {
+      return finalizeMathQuestionOutput({
         question,
         correctAnswer,
         answers,
@@ -2527,7 +2531,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         a: base,
         b: null,
         isStory: false,
-      };
+      });
     } else {
       // gcd – מ.א.ח
       const base = randInt(2, 10);
@@ -3019,7 +3023,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       gradeKey,
     });
     
-    return {
+    return finalizeMathQuestionOutput({
       question,
       correctAnswer,
       answers,
@@ -3028,7 +3032,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       a: num,
       b: divisor,
       isStory: false,
-    };
+    });
 
   // ===== מספרים ראשוניים ופריקים =====
   } else if (selectedOp === "prime_composite") {
@@ -3076,7 +3080,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       gradeKey,
     });
     
-    return {
+    return finalizeMathQuestionOutput({
       question,
       correctAnswer,
       answers,
@@ -3085,7 +3089,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       a: num,
       b: null,
       isStory: false,
-    };
+    });
 
   // ===== חזקות =====
   } else if (selectedOp === "powers") {
@@ -3336,7 +3340,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       question && question.trim().length > 0 ? question : `תרגיל ${selectedOp}`;
     const finalExerciseText = params.exerciseText || finalQuestionText;
 
-    return {
+    return finalizeMathQuestionOutput({
       question: finalQuestionText,
       questionLabel: params.questionLabel,
       exerciseText: finalExerciseText,
@@ -3347,7 +3351,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       a: operandA,
       b: operandB,
       isStory,
-    };
+    });
   }
 
   let allAnswers = buildMathMcqAnswerList(
@@ -3396,7 +3400,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     question && question.trim().length > 0 ? question : `תרגיל ${selectedOp}`;
   const finalExerciseText = params.exerciseText || finalQuestionText;
 
-  return {
+  return finalizeMathQuestionOutput({
     question: finalQuestionText,
     questionLabel: params.questionLabel,
     exerciseText: finalExerciseText,
@@ -3407,6 +3411,6 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     a: operandA,
     b: operandB,
     isStory,
-  };
+  });
 }
 

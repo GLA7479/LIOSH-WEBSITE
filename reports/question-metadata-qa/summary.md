@@ -1,6 +1,6 @@
 # Question metadata QA
 
-- **Generated:** 2026-05-03T13:38:26.253Z
+- **Generated:** 2026-05-03T13:49:44.645Z
 - **Gate:** scanOutcome=`ok`, advisoryStatus=`WARN`
 - **Questions scanned:** 5267
 - **High / medium risk:** 4547 / 0

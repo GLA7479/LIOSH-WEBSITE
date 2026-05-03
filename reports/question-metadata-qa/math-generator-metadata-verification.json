@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T13:49:37.668Z",
+  "ok": true,
+  "attachPreservesStudentFields": true,
+  "syntheticSkillId": "math_add_two",
+  "trials": 48,
+  "samplesStructurallyValid": 48,
+  "errors": [],
+  "warnings": []
+}
