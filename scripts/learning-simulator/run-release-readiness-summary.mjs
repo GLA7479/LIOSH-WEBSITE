@@ -16,6 +16,7 @@ const OUT_MD = join(LS, "release-readiness-summary.md");
 
 const PATHS = {
   questionMetadataSummary: join(ROOT, "reports", "question-metadata-qa", "summary.json"),
+  adaptivePlannerArtifactSummary: join(ROOT, "reports", "adaptive-learning-planner", "artifact-summary.json"),
   parentNarrativeSafetyArtifacts: join(ROOT, "reports", "parent-report-narrative-safety-artifacts", "summary.json"),
   coverageCatalog: join(LS, "coverage-catalog.json"),
   unsupportedCells: join(LS, "unsupported-cells.json"),
@@ -38,6 +39,7 @@ const REQUIRED_CORE = ["coverageCatalog", "scenarioCoverage", "orchestratorSumma
 /** Expected after full QA — missing => fail (inconsistent state) */
 const STRONGLY_EXPECTED = [
   "questionMetadataSummary",
+  "adaptivePlannerArtifactSummary",
   "unsupportedCells",
   "contentGapAudit",
   "contentGapBacklog",
@@ -73,12 +75,15 @@ function summarizeOrchestratorSteps(orch) {
   const buildStep = byId.build;
   /** Tri-state: true/false when a build step exists (full gate); null when absent (e.g. quick-only orchestrator artifact). */
   const buildPass = buildStep == null ? null : buildStep.pass === true;
+  const apStep = byId.adaptivePlannerArtifacts;
+  const adaptivePlannerArtifactsPass = apStep == null ? null : apStep.pass === true;
   return {
     overallPass: orch?.pass === true,
     buildPass,
     renderReleaseGatePass: byId.renderReleaseGate?.pass === true,
     pdfExportGatePass: byId.pdfExportGate?.pass === true,
     deepPass: byId.deep?.pass === true,
+    adaptivePlannerArtifactsPass,
     stepIds: steps.map((s) => s.id),
   };
 }
@@ -220,6 +225,44 @@ async function main() {
     );
   }
 
+  const apArt = loaded.adaptivePlannerArtifactSummary;
+  const adaptivePlannerSummary = apArt
+    ? {
+        plannerRuns: apArt.plannerInputsBuilt ?? apArt.candidatePayloads,
+        safetyViolationCount: Number(apArt.safetyViolationCount ?? 0),
+        inputsWithAvailableMetadata: apArt.inputsWithAvailableMetadata,
+        availableQuestionMetadataMissing: apArt.afterAvailableQuestionMetadataMissingCount,
+        metadataSubjectFallbackCount: apArt.metadataSubjectFallbackCount,
+        metadataIndexSource: apArt.metadataIndexSource,
+        englishSkillTaggingIncompleteCount: apArt.englishSkillTaggingIncompleteCount,
+        needsHumanReviewCount: apArt.needsHumanReviewCount,
+        byPlannerStatus: apArt.byPlannerStatus || {},
+        byNextAction: apArt.byNextAction || {},
+        summaryMdPath: "reports/adaptive-learning-planner/artifact-summary.md",
+        summaryJsonPath: "reports/adaptive-learning-planner/artifact-summary.json",
+      }
+    : null;
+
+  if (apArt && Number(apArt.safetyViolationCount ?? 0) > 0) {
+    failures.push(
+      `Adaptive planner artifacts: safetyViolationCount=${apArt.safetyViolationCount} — see reports/adaptive-learning-planner/artifact-summary.md`
+    );
+  }
+  if (orchSum.adaptivePlannerArtifactsPass === false) {
+    failures.push("Orchestrator adaptivePlannerArtifacts step did not pass (see orchestrator/run-summary.json)");
+  }
+
+  if (apArt) {
+    const miss = Number(apArt.afterAvailableQuestionMetadataMissingCount ?? 0);
+    const fb = Number(apArt.metadataSubjectFallbackCount ?? 0);
+    const en = Number(apArt.englishSkillTaggingIncompleteCount ?? 0);
+    const hr = Number(apArt.needsHumanReviewCount ?? 0);
+    if (miss > 0) warnings.push(`Adaptive planner: availableQuestionMetadata_missing (after index)=${miss}`);
+    if (fb > 0) warnings.push(`Adaptive planner: metadataSubjectFallbackCount=${fb}`);
+    if (en > 0) warnings.push(`Adaptive planner: englishSkillTaggingIncompleteCount=${en}`);
+    if (hr > 0) warnings.push(`Adaptive planner: needs_human_review outputs=${hr}`);
+  }
+
   const gateStatus = {
     questionMetadata: qm
       ? qm.gate?.gateDecision === "fail_blocking_metadata" || (qm.gate?.blockingIssueCount ?? 0) > 0 || qm.gate?.scanOutcome !== "ok"
@@ -244,6 +287,16 @@ async function main() {
         : pdfGate.status === "deferred"
           ? "deferred"
           : "fail"
+      : "missing",
+    adaptivePlanner: apArt
+      ? Number(apArt.safetyViolationCount ?? 0) > 0
+        ? "fail"
+        : Number(apArt.afterAvailableQuestionMetadataMissingCount ?? 0) > 0 ||
+            Number(apArt.metadataSubjectFallbackCount ?? 0) > 0 ||
+            Number(apArt.englishSkillTaggingIncompleteCount ?? 0) > 0 ||
+            Number(apArt.needsHumanReviewCount ?? 0) > 0
+          ? "warn"
+          : "pass"
       : "missing",
   };
 
@@ -461,6 +514,7 @@ async function main() {
     pdfExportAuditSummary,
     scenarioCoverageSummary,
     parentNarrativeSafetySummary,
+    adaptivePlannerSummary,
     questionMetadataGateSummary,
     deferredItems,
     knownRemainingWork,
@@ -526,11 +580,38 @@ async function main() {
         ].join("\n")
       : "_Missing `reports/question-metadata-qa/summary.json` — run `npm run qa:question-metadata` (full orchestrator includes this step)._",
     "",
+    "### Adaptive planner (artifacts — non-live)",
+    "",
+    adaptivePlannerSummary
+      ? [
+          `| Field | Value |`,
+          `| --- | --- |`,
+          `| planner runs | ${adaptivePlannerSummary.plannerRuns ?? "—"} |`,
+          `| safetyViolationCount | ${adaptivePlannerSummary.safetyViolationCount} |`,
+          `| inputsWithAvailableMetadata | ${adaptivePlannerSummary.inputsWithAvailableMetadata ?? "—"} |`,
+          `| availableQuestionMetadata_missing (after index) | ${adaptivePlannerSummary.availableQuestionMetadataMissing ?? "—"} |`,
+          `| metadataSubjectFallbackCount | ${adaptivePlannerSummary.metadataSubjectFallbackCount ?? "—"} |`,
+          `| englishSkillTaggingIncompleteCount | ${adaptivePlannerSummary.englishSkillTaggingIncompleteCount ?? "—"} |`,
+          `| needs_human_review outputs | ${adaptivePlannerSummary.needsHumanReviewCount ?? "—"} |`,
+          `| metadata index source | ${mdEscape(adaptivePlannerSummary.metadataIndexSource || "—")} |`,
+          `| human report | \`${mdEscape(adaptivePlannerSummary.summaryMdPath)}\` |`,
+          "",
+          "**plannerStatus:** " +
+            mdEscape(JSON.stringify(adaptivePlannerSummary.byPlannerStatus || {})),
+          "",
+          "**nextAction:** " + mdEscape(JSON.stringify(adaptivePlannerSummary.byNextAction || {})),
+          "",
+          "*Release fails if `safetyViolationCount > 0` or the orchestrator adaptive-planner step failed. Other rows are advisory until diagnostic units carry bank-aligned skill ids.*",
+          "",
+        ].join("\n")
+      : "_Missing `reports/adaptive-learning-planner/artifact-summary.json` — run full QA (includes `test:adaptive-planner:artifacts`)._",
+    "",
     "### Simulator gates",
     "",
     `| Gate | Status |`,
     `| --- | --- |`,
     `| question metadata | ${mdEscape(gateStatus.questionMetadata)} |`,
+    `| adaptive planner artifacts | ${mdEscape(gateStatus.adaptivePlanner)} |`,
     `| matrix smoke | ${mdEscape(matrixSmokeSummary?.status || "—")} |`,
     `| critical deep | ${mdEscape(criticalDeepSummary?.status || "—")} |`,
     `| profile stress | ${mdEscape(profileStressSummary?.status || "—")} |`,

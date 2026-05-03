@@ -81,6 +81,29 @@ Implemented in `utils/adaptive-learning-planner/adaptive-planner.js` (JSDoc on `
 - Gate planner output behind the same **metadata QA** and **narrative safety** pipelines before any user-visible text.
 - Optionally feed `availableQuestionMetadata` from scanned bank rows or runtime `buildQuestionSkillMetadataV1` output.
 
+## Internal Preview Pack (non-live)
+
+**Purpose:** Summarize planner recommendations from real learning-simulator report artifacts (`artifact-summary.json` produced by `npm run test:adaptive-planner:artifacts`) in a **human-readable** Markdown + JSON pack. Used for engineering review only.
+
+**Status:** **Not student-facing.** Does not change runtime, UI, question selection, parent Hebrew copy, or diagnostic decisions. No LLM calls.
+
+**Outputs:**
+
+- `reports/adaptive-learning-planner/preview-pack.json` — structured aggregates, action table, per-subject readiness, slim example rows (ids and planner fields only).
+- `reports/adaptive-learning-planner/preview-pack.md` — executive summary, tables, examples, risk samples, and explicit “what can be previewed vs what must not go live yet”.
+
+**How to read it:**
+
+1. Run `npm run test:adaptive-planner:artifacts` (refreshes `artifact-summary.json`).
+2. Run `npm run test:adaptive-planner:preview-pack` (regenerates the preview pack; **fails** if `safetyViolationCount > 0`, artifact summary is missing, required sections are absent, or leak patterns appear).
+3. Open `preview-pack.md` for the narrative; use `preview-pack.json` for filtering in tools.
+
+**Why it is not yet suitable as product output:** The planner still emits **internal English** placeholders for summaries in core code; the preview pack **does not** ship those strings to parents. English rows may still be `needs_human_review`; metadata gaps and subject fallbacks appear explicitly in the risk sections.
+
+**Before live routing:** Drive down `metadataSubjectFallbackCount` and `afterAvailableQuestionMetadataMissingCount`, keep `safetyViolationCount` at **0** in artifact runs, and resolve English skill tagging for any subject intended for automated routing.
+
+**Implementation:** `utils/adaptive-learning-planner/adaptive-planner-preview-pack.js` (`buildAdaptivePlannerPreviewPack`), CLI `scripts/adaptive-planner-preview-pack.mjs`.
+
 ## Related docs
 
 - `docs/question-metadata-qa.md` — metadata gate and English exemption context.

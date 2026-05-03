@@ -44,7 +44,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 150,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_mul",
+          "subskillId": "mul"
         },
         {
           "subjectId": "math",
@@ -59,7 +64,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 45,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_add_three",
+          "subskillId": "add_three"
         },
         {
           "subjectId": "math",
@@ -74,7 +84,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 57,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_divisibility",
+          "subskillId": "divisibility"
         },
         {
           "subjectId": "math",
@@ -89,7 +104,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 37,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_est_add",
+          "subskillId": "est_add"
         },
         {
           "subjectId": "math",
@@ -104,7 +124,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 32,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_round",
+          "subskillId": "round"
         },
         {
           "subjectId": "math",
@@ -119,7 +144,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 37,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_fm_factor",
+          "subskillId": "fm_factor"
         },
         {
           "subjectId": "math",
@@ -134,7 +164,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 16,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_power_calc",
+          "subskillId": "power_calc"
         },
         {
           "subjectId": "math",
@@ -149,7 +184,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 12,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_ns_counting_forward",
+          "subskillId": "ns_counting_forward"
         },
         {
           "subjectId": "math",
@@ -164,7 +204,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 20,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_div",
+          "subskillId": "div"
         },
         {
           "subjectId": "math",
@@ -179,7 +224,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 16,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_dec_add",
+          "subskillId": "dec_add"
         },
         {
           "subjectId": "math",
@@ -194,7 +244,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 11,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_div_with_remainder",
+          "subskillId": "div_with_remainder"
         },
         {
           "subjectId": "math",
@@ -209,7 +264,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 22,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_add_two",
+          "subskillId": "add_two"
         },
         {
           "subjectId": "geometry",
@@ -224,7 +284,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 98,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "taxonomy_bridge",
+          "skillAlignmentWarnings": [],
+          "skillId": "geo_rect_area_plan",
+          "subskillId": "area_rectangle"
         },
         {
           "subjectId": "geometry",
@@ -239,7 +304,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 38,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "taxonomy_bridge",
+          "skillAlignmentWarnings": [],
+          "skillId": "mirror",
+          "subskillId": "meaning"
         },
         {
           "subjectId": "geometry",
@@ -254,7 +324,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 12,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "taxonomy_bridge",
+          "skillAlignmentWarnings": [],
+          "skillId": "square_special",
+          "subskillId": "square_rectangle"
         },
         {
           "subjectId": "hebrew",
@@ -284,7 +359,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 29,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "hebrew_archive_vocabulary",
+          "subskillId": "g4"
         },
         {
           "subjectId": "hebrew",
@@ -299,7 +379,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 14,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "hebrew_archive_speaking",
+          "subskillId": "g4"
         },
         {
           "subjectId": "hebrew",
@@ -314,7 +399,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 40,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "hebrew_archive_grammar",
+          "subskillId": "g4"
         },
         {
           "subjectId": "hebrew",
@@ -329,7 +419,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 16,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "hebrew_archive_comprehension",
+          "subskillId": "g4"
         }
       ]
     },

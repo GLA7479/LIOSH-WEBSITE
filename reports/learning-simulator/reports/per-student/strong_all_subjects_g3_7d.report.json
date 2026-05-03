@@ -44,7 +44,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 39,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_cmp",
+          "subskillId": "cmp"
         },
         {
           "subjectId": "math",
@@ -59,7 +64,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 38,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_mul",
+          "subskillId": "mul"
         },
         {
           "subjectId": "math",
@@ -74,7 +84,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 12,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_wp_coins",
+          "subskillId": "wp_coins"
         },
         {
           "subjectId": "math",
@@ -89,7 +104,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 16,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_dec_add",
+          "subskillId": "dec_add"
         },
         {
           "subjectId": "math",
@@ -104,7 +124,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 16,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_add_two",
+          "subskillId": "add_two"
         },
         {
           "subjectId": "geometry",
@@ -119,7 +144,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 56,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "taxonomy_bridge",
+          "skillAlignmentWarnings": [],
+          "skillId": "geo_angle_right_identify",
+          "subskillId": "classification"
         },
         {
           "subjectId": "geometry",
@@ -164,7 +194,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 55,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "taxonomy_bridge",
+          "skillAlignmentWarnings": [],
+          "skillId": "geo_rect_area_plan",
+          "subskillId": "area_rectangle"
         },
         {
           "subjectId": "english",
@@ -239,7 +274,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 31,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "experiments",
+          "subskillId": "sci_experiments_general"
         },
         {
           "subjectId": "hebrew",
@@ -254,7 +294,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 12,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "hebrew_archive_speaking",
+          "subskillId": "g3"
         },
         {
           "subjectId": "hebrew",
@@ -284,7 +329,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 39,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "hebrew_archive_reading",
+          "subskillId": "g3"
         },
         {
           "subjectId": "hebrew",
@@ -299,7 +349,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 14,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "hebrew_archive_vocabulary",
+          "subskillId": "g3"
         },
         {
           "subjectId": "moledet-geography",
@@ -314,7 +369,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 15,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "moledet_geo_values",
+          "subskillId": "g3"
         },
         {
           "subjectId": "moledet-geography",
@@ -329,7 +389,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 32,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "moledet_geo_community",
+          "subskillId": "g3"
         },
         {
           "subjectId": "moledet-geography",
@@ -344,7 +409,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 10,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "moledet_geo_geography",
+          "subskillId": "g3"
         },
         {
           "subjectId": "moledet-geography",
@@ -359,7 +429,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 25,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "moledet_geo_homeland",
+          "subskillId": "g3"
         },
         {
           "subjectId": "moledet-geography",
@@ -374,7 +449,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 29,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "moledet_geo_citizenship",
+          "subskillId": "g3"
         },
         {
           "subjectId": "moledet-geography",

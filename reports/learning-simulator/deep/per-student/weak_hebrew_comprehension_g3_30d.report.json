@@ -44,7 +44,12 @@
           "trendDirection": null,
           "trendEvidenceStatus": null,
           "questionsFromTrace": 1072,
-          "conflictingConfidence": false
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "hebrew_archive_comprehension",
+          "subskillId": "g3"
         }
       ]
     },

@@ -1,7 +1,7 @@
 # Learning Simulator — Release readiness summary
 
-- **runId:** release-summary-moq0xwlm
-- **generatedAt:** 2026-05-03T17:08:08.650Z
+- **runId:** release-summary-moq64u74
+- **generatedAt:** 2026-05-03T19:33:30.208Z
 
 ## Overall
 
@@ -44,11 +44,33 @@
 | human report | `reports/question-metadata-qa/summary.md` |
 
 
+### Adaptive planner (artifacts — non-live)
+
+| Field | Value |
+| --- | --- |
+| planner runs | 126 |
+| safetyViolationCount | 0 |
+| inputsWithAvailableMetadata | 120 |
+| availableQuestionMetadata_missing (after index) | 6 |
+| metadataSubjectFallbackCount | 2 |
+| englishSkillTaggingIncompleteCount | 6 |
+| needs_human_review outputs | 6 |
+| metadata index source | snapshot_file |
+| human report | `reports/adaptive-learning-planner/artifact-summary.md` |
+
+**plannerStatus:** {"caution":117,"needs_human_review":6,"ready":3}
+
+**nextAction:** {"pause_collect_more_data":99,"probe_skill":24,"practice_current":1,"advance_skill":2}
+
+*Release fails if `safetyViolationCount > 0` or the orchestrator adaptive-planner step failed. Other rows are advisory until diagnostic units carry bank-aligned skill ids.*
+
+
 ### Simulator gates
 
 | Gate | Status |
 | --- | --- |
 | question metadata | warn |
+| adaptive planner artifacts | warn |
 | matrix smoke | pass |
 | critical deep | pass |
 | profile stress | pass |
@@ -89,7 +111,7 @@ Top warning codes: ambiguous_evidence:124
 | status | pass |
 | checkedRoute | /learning/parent-report?qa_pdf=file |
 | downloadSucceeded | true |
-| fileSizeBytes | 3923377 |
+| fileSizeBytes | 3920773 |
 | pdfHeaderOk | true |
 | deferredReason | — |
 
@@ -105,5 +127,9 @@ Top warning codes: ambiguous_evidence:124
 - (none)
 
 - **warning:** Question metadata: pass_with_advisory — advisoryIssueCount=15876, highRiskCount=439
+- **warning:** Adaptive planner: availableQuestionMetadata_missing (after index)=6
+- **warning:** Adaptive planner: metadataSubjectFallbackCount=2
+- **warning:** Adaptive planner: englishSkillTaggingIncompleteCount=6
+- **warning:** Adaptive planner: needs_human_review outputs=6
 
 Full JSON: `C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/release-readiness-summary.json`

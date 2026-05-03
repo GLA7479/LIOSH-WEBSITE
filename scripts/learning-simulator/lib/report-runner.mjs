@@ -5,6 +5,10 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pathToFileURL } from "node:url";
 
+import diagnosticUnitSkillAlignment from "../../../utils/adaptive-learning-planner/diagnostic-unit-skill-alignment.js";
+
+const { buildFacetSkillAlignmentFields } = diagnosticUnitSkillAlignment;
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..", "..", "..");
 
@@ -93,28 +97,35 @@ export function loadSnapshotIntoLocalStorage(snapshot, store) {
 /**
  * @param {object} baseReport — generateParentReportV2 output
  * @param {object|null} detailedReport — generateDetailedParentReport output
+ * @param {{ scenarioId?: string }} [meta]
  */
-export function extractNormalizedReportFacets(baseReport, detailedReport) {
+export function extractNormalizedReportFacets(baseReport, detailedReport, meta = {}) {
   const base = baseReport || {};
   const detailed = detailedReport || {};
   const units = Array.isArray(base.diagnosticEngineV2?.units) ? base.diagnosticEngineV2.units : [];
   const exec = detailed.executiveSummary || {};
+  const scenarioId = String(meta?.scenarioId || "").trim();
 
-  const unitSummaries = units.map((u) => ({
-    subjectId: u.subjectId,
-    displayName: u.displayName,
-    priorityLevel: u?.priority?.level ?? null,
-    diagnosisAllowed: !!u?.diagnosis?.allowed,
-    patternHe: u?.taxonomy?.patternHe ?? null,
-    diagnosisLineHe: u?.diagnosis?.lineHe ? String(u.diagnosis.lineHe).slice(0, 240) : null,
-    canonicalAction: u?.canonicalState?.actionState ?? null,
-    positiveAuthorityLevel: u?.canonicalState?.evidence?.positiveAuthorityLevel ?? null,
-    evidenceQuestions: u?.canonicalState?.evidence?.questions ?? null,
-    trendDirection: u?.trend?.accuracyDirection ?? null,
-    trendEvidenceStatus: u?.trend?.trendEvidenceStatus ?? null,
-    questionsFromTrace: u?.evidenceTrace?.find((e) => e?.type === "volume")?.value?.questions ?? null,
-    conflictingConfidence: String(u?.confidence?.level || "").toLowerCase() === "contradictory",
-  }));
+  const unitSummaries = units.map((u) => {
+    const alignCtx = { scenarioId };
+    const alignFields = buildFacetSkillAlignmentFields(u, alignCtx);
+    return {
+      subjectId: u.subjectId,
+      displayName: u.displayName,
+      priorityLevel: u?.priority?.level ?? null,
+      diagnosisAllowed: !!u?.diagnosis?.allowed,
+      patternHe: u?.taxonomy?.patternHe ?? null,
+      diagnosisLineHe: u?.diagnosis?.lineHe ? String(u.diagnosis.lineHe).slice(0, 240) : null,
+      canonicalAction: u?.canonicalState?.actionState ?? null,
+      positiveAuthorityLevel: u?.canonicalState?.evidence?.positiveAuthorityLevel ?? null,
+      evidenceQuestions: u?.canonicalState?.evidence?.questions ?? null,
+      trendDirection: u?.trend?.accuracyDirection ?? null,
+      trendEvidenceStatus: u?.trend?.trendEvidenceStatus ?? null,
+      questionsFromTrace: u?.evidenceTrace?.find((e) => e?.type === "volume")?.value?.questions ?? null,
+      conflictingConfidence: String(u?.confidence?.level || "").toLowerCase() === "contradictory",
+      ...alignFields,
+    };
+  });
 
   const rowTrends = [];
   for (const mapName of ["mathOperations", "geometryTopics", "englishTopics", "scienceTopics", "hebrewTopics", "moledetGeographyTopics"]) {
@@ -334,7 +345,9 @@ export async function buildReportsFromAggregateStorage(opts) {
     };
   }
 
-  const facets = extractNormalizedReportFacets(baseReport, detailedReport);
+  const facets = extractNormalizedReportFacets(baseReport, detailedReport, {
+    scenarioId: String(opts.scenario?.scenarioId || opts.scenario?.id || "").trim(),
+  });
   const corpus = buildAssertionCorpus(facets, baseReport, detailedReport);
 
   return {

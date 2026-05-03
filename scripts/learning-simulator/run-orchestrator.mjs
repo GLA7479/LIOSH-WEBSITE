@@ -65,6 +65,9 @@ const ARTIFACTS = {
   parentNarrativeSafetyArtifactsMd: "reports/parent-report-narrative-safety-artifacts/summary.md",
   questionMetadataSummary: "reports/question-metadata-qa/summary.json",
   questionMetadataSummaryMd: "reports/question-metadata-qa/summary.md",
+  adaptivePlannerArtifactSummary: "reports/adaptive-learning-planner/artifact-summary.json",
+  adaptivePlannerArtifactSummaryMd: "reports/adaptive-learning-planner/artifact-summary.md",
+  adaptivePlannerMetadataSnapshot: "reports/adaptive-learning-planner/metadata-index-snapshot.json",
 };
 
 /** Stages in order for quick gate */
@@ -150,6 +153,11 @@ const ENGINE_PROFESSIONALIZATION_STEPS = [
     script: "qa:learning-simulator:professional-engine",
     label: "Professional engine synthetic validation",
   },
+  {
+    id: "adaptivePlannerArtifacts",
+    script: "test:adaptive-planner:artifacts",
+    label: "Adaptive planner artifacts (metadata-backed non-live safety gate)",
+  },
 ];
 
 /** Full gate only: matrix smoke → catalog → classification → scenario map (after Phase 4 artifacts exist). */
@@ -216,6 +224,35 @@ async function loadParentNarrativeSafetySummaryJson(root) {
   } catch {
     return null;
   }
+}
+
+/** @param {string} root */
+async function loadAdaptivePlannerArtifactSummaryJson(root) {
+  const p = join(root, "reports", "adaptive-learning-planner", "artifact-summary.json");
+  try {
+    return JSON.parse(await readFile(p, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+/** @param {Record<string, unknown>|null} raw */
+function summarizeAdaptivePlannerForOrchestrator(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  const safety = Number(raw.safetyViolationCount ?? 0);
+  return {
+    plannerRuns: raw.plannerInputsBuilt ?? raw.candidatePayloads,
+    safetyViolationCount: safety,
+    inputsWithAvailableMetadata: raw.inputsWithAvailableMetadata,
+    availableQuestionMetadataMissing: raw.afterAvailableQuestionMetadataMissingCount,
+    metadataSubjectFallbackCount: raw.metadataSubjectFallbackCount,
+    byPlannerStatus: raw.byPlannerStatus || {},
+    byNextAction: raw.byNextAction || {},
+    metadataIndexSource: raw.metadataIndexSource,
+    summaryJsonPath: "reports/adaptive-learning-planner/artifact-summary.json",
+    summaryMdPath: "reports/adaptive-learning-planner/artifact-summary.md",
+    gatePass: safety === 0,
+  };
 }
 
 /** @param {Record<string, unknown>|null} raw */
@@ -292,6 +329,8 @@ function nextActionHint(failedStep) {
       "Inspect pdf-export-gate.json and reports/learning-simulator/pdf-export/; verify html2pdf download with ?qa_pdf=file or fix Playwright/console errors.",
     releaseReadinessSummary:
       "Inspect release-readiness-summary.json — missing artifacts, uncovered cells, or gate regressions; re-run full QA after fixes.",
+    adaptivePlannerArtifacts:
+      "Inspect reports/adaptive-learning-planner/artifact-summary.json — safetyViolationCount must be 0; re-run `npm run test:adaptive-planner:artifacts` or full QA.",
     questionMetadataBank:
       "Inspect reports/question-metadata-qa/summary.json — gate.blockingIssueCount or scan errors. Fix invalid difficulty/cognitive/errors, missing correct answer, duplicate declared IDs, or load failures. See utils/question-metadata-qa/question-metadata-gate-policy.js.",
     parentReportNarrativeSafetyArtifacts:
@@ -326,6 +365,28 @@ function buildMarkdown(payload) {
   lines.push("", "## Key artifact paths (repo-relative)", "");
   for (const [k, v] of Object.entries(payload.artifactLinks || {})) {
     lines.push(`- **${k}:** \`${mdEscape(v)}\``);
+  }
+
+  const ap = payload.adaptivePlanner;
+  if (ap && typeof ap === "object") {
+    lines.push(
+      "",
+      "## Adaptive planner (artifacts — non-live)",
+      "",
+      `Human-readable report: **\`${mdEscape(ap.summaryMdPath)}\`**.`,
+      "",
+      "| Field | Value |",
+      "| --- | --- |",
+      `| planner runs | ${mdEscape(ap.plannerRuns)} |`,
+      `| safetyViolationCount | ${mdEscape(ap.safetyViolationCount)} |`,
+      `| inputsWithAvailableMetadata | ${mdEscape(ap.inputsWithAvailableMetadata)} |`,
+      `| availableQuestionMetadata_missing (after index) | ${mdEscape(ap.availableQuestionMetadataMissing)} |`,
+      `| metadataSubjectFallbackCount | ${mdEscape(ap.metadataSubjectFallbackCount)} |`,
+      `| metadata index source | ${mdEscape(ap.metadataIndexSource || "—")} |`,
+      "",
+      "*Fails this orchestrator step only when `safetyViolationCount > 0`, script non-zero exit, or missing `artifact-summary.json` after the step. Soft metrics (fallback counts, English tagging, `needs_human_review`) are warnings in logs / release summary only.*",
+      ""
+    );
   }
 
   const ns = payload.parentNarrativeSafety;
@@ -425,6 +486,8 @@ async function main() {
   let failedStep = null;
   /** @type {null | Record<string, unknown>} */
   let parentNarrativeSafety = null;
+  /** @type {null | Record<string, unknown>} */
+  let adaptivePlanner = null;
 
   for (const step of steps) {
     console.log(`▶ ${step.label}`);
@@ -450,6 +513,39 @@ async function main() {
       }
     }
 
+    if (step.id === "adaptivePlannerArtifacts") {
+      const raw = await loadAdaptivePlannerArtifactSummaryJson(ROOT);
+      adaptivePlanner = summarizeAdaptivePlannerForOrchestrator(raw);
+      if (!raw) {
+        console.error(
+          "  Orchestrator: missing reports/adaptive-learning-planner/artifact-summary.json after adaptive planner artifacts step."
+        );
+        effectivePass = false;
+      } else if (Number(raw.safetyViolationCount ?? 0) > 0) {
+        console.error(
+          `  Orchestrator: adaptive planner safetyViolationCount=${raw.safetyViolationCount} — see reports/adaptive-learning-planner/artifact-summary.md`
+        );
+        effectivePass = false;
+      } else {
+        const miss = Number(raw.afterAvailableQuestionMetadataMissingCount ?? 0);
+        const fb = Number(raw.metadataSubjectFallbackCount ?? 0);
+        const en = Number(raw.englishSkillTaggingIncompleteCount ?? 0);
+        const hr = Number(raw.needsHumanReviewCount ?? 0);
+        if (miss > 0) {
+          console.warn(`  Orchestrator (adaptive planner): availableQuestionMetadata_missing count=${miss} (warning only)`);
+        }
+        if (fb > 0) {
+          console.warn(`  Orchestrator (adaptive planner): metadataSubjectFallbackCount=${fb} (warning only)`);
+        }
+        if (en > 0) {
+          console.warn(`  Orchestrator (adaptive planner): englishSkillTaggingIncompleteCount=${en} (warning only)`);
+        }
+        if (hr > 0) {
+          console.warn(`  Orchestrator (adaptive planner): needs_human_review outputs=${hr} (warning only)`);
+        }
+      }
+    }
+
     const row = {
       id: step.id,
       label: step.label,
@@ -460,6 +556,7 @@ async function main() {
       ...(step.id === "parentReportNarrativeSafetyArtifacts" && parentNarrativeSafety
         ? { narrativeSafety: parentNarrativeSafety }
         : {}),
+      ...(step.id === "adaptivePlannerArtifacts" && adaptivePlanner ? { adaptivePlanner } : {}),
     };
     stepResults.push(row);
     console.log(`  → exit ${exitCode}, ${durationMs} ms ${effectivePass ? "✓" : "✗"}`);
@@ -507,7 +604,7 @@ async function main() {
     artifactLinks,
     nextAction: failedStep ? nextActionHint(failedStep) : null,
     options: { continueOnFail },
-    ...(mode === "full" ? { parentNarrativeSafety } : {}),
+    ...(mode === "full" ? { parentNarrativeSafety, adaptivePlanner } : {}),
   };
 
   await writeFile(OUT_JSON, JSON.stringify(payload, null, 2), "utf8");
