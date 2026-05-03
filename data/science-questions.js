@@ -1,5 +1,6 @@
 // grades[] must list only grades where topic appears in SCIENCE_GRADES[g].topics (data/science-curriculum.js).
 // Maintainer realignment: node scripts/fix-science-grades-metadata.mjs
+// Metadata enrichment (safe pass): subskill via params.subtype when no patternFamily/conceptTag; params.cognitiveLevel; params.expectedErrorTypes; params.difficulty (canonical); prerequisiteSkillIds only for explicit high-confidence respiration link (no sequential-topic guesses).
 import { SCIENCE_QUESTIONS_PHASE3 } from "./science-questions-phase3.js";
 
 export const SCIENCE_QUESTIONS = [
@@ -27,7 +28,16 @@ export const SCIENCE_QUESTIONS = [
       "conceptTag": "body_heart_place",
       "diagnosticSkillId": "sci_body_fact_recall",
       "probePower": "medium",
-      "expectedErrorTags": ["fact_recall_gap", "concept_confusion"]
+      "expectedErrorTags": [
+        "fact_recall_gap",
+        "concept_confusion"
+      ],
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "fact_recall_gap",
+        "concept_confusion"
+      ],
+      "difficulty": "basic"
     },
     "theoryLines": [
       "הלב הוא איבר שרירי שפועל ללא הפסקה.",
@@ -58,7 +68,16 @@ export const SCIENCE_QUESTIONS = [
       "conceptTag": "sense_vision",
       "diagnosticSkillId": "sci_body_fact_recall",
       "probePower": "medium",
-      "expectedErrorTags": ["fact_recall_gap", "classification_error"]
+      "expectedErrorTags": [
+        "fact_recall_gap",
+        "classification_error"
+      ],
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "fact_recall_gap",
+        "classification_error"
+      ],
+      "difficulty": "basic"
     },
     "theoryLines": [
       "חמשת החושים: ראייה, שמיעה, ריח, טעם ומישוש.",
@@ -89,7 +108,19 @@ export const SCIENCE_QUESTIONS = [
       "conceptTag": "resp_o2_co2_exchange",
       "diagnosticSkillId": "sci_respiration_concept",
       "probePower": "high",
-      "expectedErrorTags": ["concept_confusion", "cause_effect_gap"]
+      "expectedErrorTags": [
+        "concept_confusion",
+        "cause_effect_gap"
+      ],
+      "cognitiveLevel": "application",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "cause_effect_gap"
+      ],
+      "difficulty": "standard",
+      "prerequisiteSkillIds": [
+        "sci_body_fact_recall"
+      ]
     },
     "theoryLines": [
       "איברי מערכת הנשימה כוללים אף, קנה הנשימה וריאות.",
@@ -118,7 +149,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "ללא שלד הגוף היה רפוי ולא יציב.",
       "ללא שרירים לא היינו יכולים להזיז את העצמות והגוף."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_5",
@@ -142,7 +183,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הדם זורם בעורקים, ורידים ונימים.",
       "הלב משמש משאבה שמניעה את הדם בכל הגוף."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "body_6",
@@ -165,7 +216,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מערכת העצבים כוללת מוח, חוט שדרה ועצבים רבים.",
       "עצבים מעבירים אותות חשמליים במהירות רבה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_1",
@@ -189,7 +250,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "ליונקים יש פרווה או שיער, ריאות לנשימה וחלבונים להנקה.",
       "עופות מכוסים נוצות ומטילים ביצים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_2",
@@ -213,7 +284,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בעלי חיים מותאמים לסביבת החיים שלהם.",
       "צורת הגוף משפיעה על יכולת התנועה במים, באוויר או ביבשה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_3",
@@ -237,7 +318,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זוחלים כוללים נחשים, לטאות, צבים ותנינים.",
       "הם בעלי דם קר, כלומר טמפרטורת גופם מושפעת מהסביבה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_4",
@@ -261,7 +352,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הצמחים הם בדרך כלל היצרנים, כי הם מייצרים מזון בפוטוסינתזה.",
       "טורפים ואוכלי עשב הם חלק משרשראות ומארגי מזון."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_5",
@@ -284,7 +385,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יש התאמות מבניות (צורת גוף) והתאמות התנהגותיות.",
       "התאמות נוצרות לאורך דורות בתהליך של אבולוציה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_gapfix_hard_g12",
@@ -308,7 +419,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בעלי חיים יכולים להיראות דומים כשחיים במים, אך השיוך הביולוגי נקבע מתכונות כמו דרך הנשימה וההולדה.",
       "דגים הם בעלי חיים עם זימים לנשימה במים; דולפינים הם יונקים עם ריאות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_gapfix_easy_g456",
@@ -333,7 +454,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "צרכים בסיסיים כוללים מזון לאנרגיה, מים לתפקוד הגוף, וסביבה שמתאימה לסוג החיה.",
       "היעדר אחד מהגורמים יכול לפגוע בבריאות וברווחה של בעל החיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_1",
@@ -357,7 +488,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "העלים קולטים אור, השורשים קולטים מים ומינרלים.",
       "ללא אור או מים הצמח נחלש ועלול למות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_2",
@@ -380,7 +521,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הצמח בנוי משורשים, גבעול, עלים ופרחים (ברוב המקרים).",
       "השורשים מעגנים את הצמח בקרקע."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_3",
@@ -403,7 +554,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "התהליך מתרחש בכלורופלסטים שנמצאים בעלים.",
       "פוטוסינתזה היא בסיס שרשרת המזון ברוב המערכות האקולוגיות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_4",
@@ -426,7 +587,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "נשימה תאית היא תהליך הפקת אנרגיה מסוכר.",
       "פוטוסינתזה מייצרת סוכר; נשימה צורכת אותו כדי להפיק אנרגיה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_5",
@@ -449,7 +620,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "פתיחת וסגירת פיוניות מושפעת מאור וממצב המים בצמח.",
       "דרך פיוניות אובדים גם מים באידוי (דיות)."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "materials_1",
@@ -473,7 +654,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "למים יש שלושה מצבי צבירה: מוצק (קרח), נוזל (מים), גז (אדי מים).",
       "שינוי טמפרטורה יכול לגרום לשינוי מצב הצבירה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_2",
@@ -499,7 +690,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מתכות רבות גם מבריקות וניתנות לריקוע (יצירת יריעות) ולמתיחה.",
       "לא כל חומר מתכתי חזק, אבל רבים מהם חזקים ועמידים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_3",
@@ -521,7 +722,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חומרים טבעיים מקורם בעולם החי, הצומח או הדומם.",
       "חומרים סינתטיים מיוצרים בתהליכים תעשייתיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_4",
@@ -545,7 +756,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "תערובת הומוגנית נראית אחידה, ואין בה גבולות ברורים בין החומרים.",
       "תמיסה היא סוג של תערובת שבה חומר אחד מומס באחר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "materials_5",
@@ -568,7 +789,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "התכת קרח למים היא שינוי פיזיקלי – עדיין מדובר במים.",
       "שרפת נייר היא שינוי כימי – נוצר חומר חדש (אפר וגזים)."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "earth_1",
@@ -592,7 +823,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "סיבוב כדור הארץ סביב צירו נמשך כ־24 שעות.",
       "בכל רגע חצי מכדור הארץ מואר וחצי אחר חשוך."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_2",
@@ -618,7 +859,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "לכדור הארץ יש שני סוגי תנועה: סיבוב סביב צירו והקפה סביב השמש.",
       "ההקפה סביב השמש קשורה לעונות השנה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_3",
@@ -640,7 +891,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כוכבים מפיקים אור ואנרגיה בעצמם.",
       "ירח הוא לוויין טבעי הסובב סביב כוכב לכת."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_4",
@@ -663,7 +924,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "רוב הידע על פנים כדור הארץ מגיע מרעידות אדמה וממחקר גיאולוגי.",
       "הליבה הפנימית צפופה וחמה מאוד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "env_1",
@@ -687,7 +958,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שמירה על הסביבה כוללת צמצום פסולת, מיחזור וחיסכון במשאבים.",
       "מיחזור מאפשר שימוש מחדש בחומרים קיימים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "env_2",
@@ -713,7 +994,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "דוגמאות: יער, בריכה, שונית אלמוגים.",
       "שינויים בסביבה משפיעים על כל המרכיבים במערכת."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_3",
@@ -735,7 +1026,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מקורות לזיהום: תחבורה, תעשייה, שריפת דלקים.",
       "צמצום זיהום אוויר חשוב לבריאות האדם והטבע."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_4",
@@ -759,7 +1060,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אפקט החממה הטבעי חיוני לשמירה על טמפרטורה מתאימה לחיים.",
       "פעילות אנושית הוסיפה כמות גדולה של גזי חממה לאטמוספרה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "exp_1",
@@ -783,7 +1094,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חום הוא מעבר אנרגיה מגוף חם לגוף קר.",
       "קל לראות ניסויים פשוטים של חימום וקירור בעזרת השמש."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "exp_2",
@@ -809,7 +1130,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מדע מבוסס על שאלות, תצפיות וניסויים.",
       "רישום מסודר עוזר להשוות בין תוצאות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_3",
@@ -831,7 +1162,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "משתנה בלתי תלוי – מה שאנחנו משנים.",
       "משתנה תלוי – מה שאנחנו מודדים כתוצאה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_4",
@@ -855,7 +1196,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מחזור המים הוא תהליך מתמשך בין הים, היבשה והאטמוספרה.",
       "הוא מושפע מהשמש, מהרוח ומהטופוגרפיה של פני השטח."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "body_7",
@@ -879,7 +1230,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "לאוזן יש חלק חיצוני (תנוך), חלק אמצעי (עצמות קטנות) וחלק פנימי (שבלול).",
       "גלי קול גורמים לרטט של עור התוף."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_8",
@@ -903,7 +1264,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הפה הוא תחילת מערכת העיכול.",
       "הלשון עוזרת לטעום מזון ולדבר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_9",
@@ -927,7 +1298,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הידיים עוזרות לנו לעבוד, לשחק ולטפל בעצמנו.",
       "יש לנו חוש מישוש באצבעות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_10",
@@ -951,7 +1332,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הרגליים חזקות כדי לשאת את משקל הגוף.",
       "יש לנו שתי רגליים שמאפשרות לנו ללכת ולעמוד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_11",
@@ -973,7 +1364,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כל חוש עובד עם איבר אחר בגוף.",
       "החושים עוזרים לנו להיות בטוחים וללמוד על העולם."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_12",
@@ -997,7 +1398,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מערכת העיכול מתחילה בפה ומסתיימת בפי הטבעת.",
       "הרוק עוזר לפרק את המזון ולהקל על הבליעה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_13",
@@ -1021,7 +1432,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יש לנו שתי ריאות – אחת ימין ואחת שמאל.",
       "הריאות מוגנות על ידי כלוב הצלעות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_14",
@@ -1045,7 +1466,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "למבוגר יש כ-206 עצמות.",
       "העצמות מחוברות זו לזו במפרקים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_15",
@@ -1069,7 +1500,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מערכת העיכול כוללת: פה, ושט, קיבה, מעיים דקים וגסים.",
       "הקיבה מפרקת את המזון בעזרת חומצות ואנזימים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_16",
@@ -1093,7 +1534,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יש לנו שלושה סוגי שרירים: שלד, חלק ושריר הלב.",
       "שרירים עובדים בזוגות – אחד מכווץ והשני מתרחב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_6",
@@ -1117,7 +1568,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "עופות מטילים ביצים ודוגרים עליהן.",
       "יונקים ממליטים צאצאים חיים ומניקים אותם."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_7",
@@ -1141,7 +1602,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "דגים מותאמים לחיים במים.",
       "הם נושמים דרך זימים שמסוגלים לקחת חמצן מהמים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_8",
@@ -1165,7 +1636,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בעלי חיים שונים אוכלים סוגי מזון שונים.",
       "חלקם טורפים (אוכלים בשר), חלקם אוכלי עשב (אוכלים צמחים)."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_9",
@@ -1189,7 +1670,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כנפיים עוזרות לציפורים לעוף.",
       "לחלק מהציפורים יש כנפיים גדולות וחזקות יותר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_10",
@@ -1211,7 +1702,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בעלי חיים מותאמים למזון שלהם.",
       "שיניים וצורת הפה משתנים לפי סוג המזון."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_6",
@@ -1235,7 +1736,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הצמח בנוי מחלקים: שורשים למטה, גבעול באמצע, ועלים ופרחים למעלה.",
       "העלים ירוקים כי יש בהם כלורופיל."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_7",
@@ -1259,7 +1770,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השורשים גדלים בקרקע.",
       "הם עוזרים לצמח לעמוד יציב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_8",
@@ -1283,7 +1804,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מים עוזרים לצמח להישאר חי וחזק.",
       "השורשים קולטים מים מהקרקע."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_9",
@@ -1305,7 +1836,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אור שמש עוזר לצמח לייצר מזון.",
       "צמח בלי אור יהיה חלש וצהוב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_10",
@@ -1329,7 +1870,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כלורופיל עוזר לצמח לייצר מזון מאור.",
       "בסתיו העלים משנים צבע כי הכלורופיל מתפרק."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_6",
@@ -1353,7 +1904,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מים יכולים להיות בשלושה מצבי צבירה: מוצק (קרח), נוזל (מים), גז (אדי מים).",
       "כאשר מחממים או מקררים מים, הם יכולים לשנות מצב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_7",
@@ -1377,7 +1938,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חומרים שונים יש להם תכונות שונות: קשיות, רכות, קלילות.",
       "אבן היא חומר טבעי מהאדמה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_8",
@@ -1401,7 +1972,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חומרים רכים נוחים למגע.",
       "כותנה מגיעה מצמח הכותנה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_9",
@@ -1423,7 +2004,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שינוי טמפרטורה יכול לשנות את מצב הצבירה של חומרים.",
       "קרח הוא קשה ואפשר להחזיק אותו ביד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_5",
@@ -1446,7 +2037,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השמש היא כוכב שמאיר ומחמם את כדור הארץ.",
       "ביום השמש מאירה, בלילה יש ירח וכוכבים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_6",
@@ -1469,7 +2070,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בלילה השמיים חשוכים ורואים ירח וכוכבים.",
       "הירח מחזיר את אור השמש."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_7",
@@ -1492,7 +2103,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מזג האוויר יכול להשתנות מיום ליום.",
       "יש עונות שונות: קיץ, חורף, סתיו ואביב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_8",
@@ -1513,7 +2134,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השמש תמיד מאירה, גם כשיש עננים.",
       "עננים יכולים להסתיר את השמש."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "env_5",
@@ -1537,7 +2168,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שמירה על הסביבה כוללת זריקת פסולת למקום הנכון.",
       "פחי אשפה עוזרים לשמור על מקומות נקיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "env_6",
@@ -1561,7 +2202,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כל אחד יכול לעזור לשמור על הסביבה.",
       "סביבה נקייה יותר נעימה ומבריאה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "env_7",
@@ -1583,7 +2234,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "פחי אשפה מיועדים לאסוף פסולת.",
       "זה עוזר לשמור על מקומות נקיים ויפים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "exp_5",
@@ -1606,7 +2267,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "ניסויים צריכים להיות בטוחים.",
       "תמיד צריך מבוגר שיעזור בניסויים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "exp_6",
@@ -1629,7 +2300,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "ניקיון אחרי ניסוי חשוב.",
       "זה עוזר לשמור על מקום עבודה מסודר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_17",
@@ -1653,7 +2334,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "המוח נמצא בגולגולת ומוגן על ידי עצמות.",
       "יש לו חלקים שונים לתפקודים שונים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_18",
@@ -1677,7 +2368,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יש לנו שתי כליות.",
       "הן עוזרות לשמור על איזון נוזלים בגוף."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_19",
@@ -1699,7 +2400,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "העור משמש כמגן מפני חיידקים ונזקים.",
       "הוא עוזר לשמור על טמפרטורת גוף קבועה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_20",
@@ -1723,7 +2434,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "תאי דם לבנים הם חלק ממערכת החיסון.",
       "כאשר אנחנו חולים, מערכת החיסון עובדת חזק יותר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_11",
@@ -1747,7 +2468,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יונקים ועופות הם בעלי דם חם.",
       "זוחלים ודגים הם בעלי דם קר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_12",
@@ -1771,7 +2502,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בית גידול כולל את כל מה שבעל החיים צריך כדי לחיות.",
       "בעלי חיים שונים חיים בבתי גידול שונים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_13",
@@ -1795,7 +2536,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "לכל בעל חיים יש מחזור חיים ייחודי.",
       "חלק בעלי חיים עוברים מטמורפוזה (שינוי צורה)."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "plants_11",
@@ -1818,7 +2569,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כלורופיל נותן לעלים את הצבע הירוק.",
       "הוא נמצא בכלורופלסטים בעלים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_12",
@@ -1841,7 +2602,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הפרחים צבעוניים כדי למשוך חרקים.",
       "חרקים עוזרים להעברת אבקה בין פרחים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_13",
@@ -1864,7 +2635,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "נביטה מתחילה כאשר הזרע מקבל תנאים מתאימים.",
       "השורש יוצא ראשון מהזרע."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "materials_10",
@@ -1888,7 +2669,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אדי מים הם מים במצב גז.",
       "זה קורה בחימום – כמו כאשר מים רותחים בסיר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_11",
@@ -1912,7 +2703,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מתכות כמו נחושת וברזל הן מוליכות טובות.",
       "חומרים מבודדים, כמו עץ או פלסטיק, לא מעבירים חשמל."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_12",
@@ -1936,7 +2737,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "עץ, פלסטיק וזכוכית הם מבודדים.",
       "מבודדים חשובים לבטיחות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "earth_9",
@@ -1960,7 +2771,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כאשר חצי כדור הארץ נוטה לשמש, יש קיץ שם.",
       "כאשר הוא רחוק יותר, יש חורף."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_10",
@@ -1984,7 +2805,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השמש מחממת מים וגורמת לאידוי.",
       "מים תמיד נעים במחזור."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_11",
@@ -2008,7 +2839,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "ישראל יש אקלים ים תיכוני – בדרך כלל חם בקיץ וגשום בחורף.",
       "מזג האוויר יכול להשתנות מדי יום."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "env_8",
@@ -2032,7 +2873,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מיחזור עוזר לשמור על הסביבה.",
       "זה מפחית פסולת וחוסך משאבים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_9",
@@ -2056,7 +2907,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זיהום יכול להיות מארובות, מכוניות או פסולת.",
       "זה פוגע בטבע ובבריאות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_10",
@@ -2080,7 +2941,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "פארקים ושמורות טבע עוזרים לשמר סביבה.",
       "כל אחד יכול לעזור בשימור סביבה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "exp_7",
@@ -2104,7 +2975,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בניסוי טוב משנים רק דבר אחד.",
       "זה עוזר להבין מה בדיוק גורם לתוצאה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_8",
@@ -2128,7 +3009,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "המשתנה התלוי תלוי במה ששינינו.",
       "אנחנו מודדים אותו כדי לראות את התוצאה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_9",
@@ -2152,7 +3043,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השערה צריכה להיות מבוססת על ידע קיים.",
       "אחר כך אנחנו בודקים אותה בניסוי."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "body_21",
@@ -2176,7 +3077,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מערכת העיכול היא ארוכה ומסובכת.",
       "כל חלק יש לו תפקיד חשוב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "body_22",
@@ -2200,7 +3111,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בלוטות יוצרות הורמונים.",
       "הורמונים עובדים לאט אבל להשפעה ארוכת טווח."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_14",
@@ -2224,7 +3145,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מארג מזון יותר מורכב משרשרת מזון אחת.",
       "זה עוזר להבין איך הטבע עובד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_15",
@@ -2248,7 +3179,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הסתגלות יכולה להיות מבנית (צורת גוף) או התנהגותית.",
       "זה קורה לאורך דורות רבים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "plants_14",
@@ -2271,7 +3212,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "פוטוסינתזה יוצרת סוכר, נשימה תאית משתמשת בו לאנרגיה.",
       "זה קורה בכל התאים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "plants_15",
@@ -2294,7 +3245,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה התהליך הבסיסי ביותר בטבע.",
       "בלעדיו לא היה חיים על כדור הארץ."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "materials_13",
@@ -2318,7 +3279,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שרפה היא דוגמה לשינוי כימי.",
       "בשינוי כימי לא ניתן להחזיר את החומר למצב המקורי."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "materials_14",
@@ -2342,7 +3313,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בתרכובת אטומים מחוברים כימית.",
       "בתערובת החומרים נשארים נפרדים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "earth_12",
@@ -2366,7 +3347,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "ליקוי חמה הוא אירוע נדיר.",
       "זה קורה רק כאשר הירח, השמש וכדור הארץ מיושרים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "earth_13",
@@ -2390,7 +3381,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה קורה רק כאשר יש ירח מלא.",
       "הירח יכול להיראות אדום כי אור השמש עובר דרך האטמוספרה של כדור הארץ."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "body_23",
@@ -2414,7 +3415,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "האף הוא חלק ממערכת הנשימה.",
       "יש בו שערות קטנות שמסננות את האוויר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_24",
@@ -2438,7 +3449,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השיניים עוזרות לחתוך וללעוס מזון.",
       "הלשון עוזרת לטעום ולבלוע."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_25",
@@ -2460,7 +3481,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שתי עיניים עוזרות לראות תלת מימד.",
       "העיניים עובדות יחד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_26",
@@ -2484,7 +3515,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הגוף בנוי מאיברים שפועלים יחד.",
       "כל איבר יש לו תפקיד מיוחד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_27",
@@ -2508,7 +3549,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השלד בנוי מעצמות רבות.",
       "בלי שלד הגוף היה רך ולא יציב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_29",
@@ -2532,7 +3583,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הקיבה יכולה להתרחב כשאנחנו אוכלים.",
       "היא מפרקת את המזון לחתיכות קטנות יותר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_30",
@@ -2556,7 +3617,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "המעיים ארוכים מאוד – כמה מטרים!",
       "הם בעלי שטח פנים גדול לספיגה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_31",
@@ -2580,7 +3651,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הכבד עושה הרבה תפקידים חשובים.",
       "הוא נמצא בצד ימין של הבטן העליונה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_32",
@@ -2604,7 +3685,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בלוטות לימפה נמצאות במקומות שונים בגוף.",
       "הן עוזרות לעצור זיהומים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "body_33",
@@ -2628,7 +3719,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הבלוטה נמצאת בצוואר.",
       "היא חשובה מאוד לגדילה ולפיתוח."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "body_34",
@@ -2652,7 +3753,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הלבלב נמצא ליד הקיבה.",
       "אינסולין חשוב מאוד לרמת הסוכר בדם."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_16",
@@ -2676,7 +3787,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "דגים חיים במים.",
       "הם מותאמים לחיים במים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_17",
@@ -2700,7 +3821,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יונקים יש להם פרווה או שיער.",
       "פרווה עוזרת לשמור על חום."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_18",
@@ -2724,7 +3855,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "עופות יש להם נוצות.",
       "נוצות עוזרות לעוף ולשמור על חום."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_19",
@@ -2746,7 +3887,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יונקים ממליטים צאצאים חיים.",
       "הם מניקים את הצאצאים בחלב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_20",
@@ -2770,7 +3921,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בעלי חיים מתאימים את עצמם לעונות השנה.",
       "כל בעל חיים יש לו דרך משלו לשרוד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_21",
@@ -2794,7 +3955,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה חלק משרשרת המזון.",
       "טורפים צדים, טרף נצוד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_22",
@@ -2818,7 +3989,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אוכלי עשב הם חלק חשוב בשרשרת המזון.",
       "הם אוכלים צמחים שמשמשים כיצרנים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_23",
@@ -2842,7 +4023,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אוכלי כל גמישים יותר במזון שלהם.",
       "הם יכולים לאכול מגוון מזונות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_24",
@@ -2866,7 +4057,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה קורה בכל התאים.",
       "זה מאפשר לבעל החיים לחיות ולפעול."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_25",
@@ -2890,7 +4091,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה עוזר לשרוד.",
       "דוגמאות: ארנב בחורף, צפרדע על עלים ירוקים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_26",
@@ -2914,7 +4125,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הכחדה קורית מסיבות שונות.",
       "חשוב להגן על מינים כדי למנוע הכחדה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "plants_16",
@@ -2938,7 +4159,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "צמחים שונים גדלים במקומות שונים.",
       "אדמה מספקת מים וחומרי מזון."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_17",
@@ -2962,7 +4193,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כלורופיל עוזר לצמח לייצר מזון.",
       "זה נותן לצמח את הצבע הירוק."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_18",
@@ -2984,7 +4225,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מים עוזרים לצמח להישאר חזק.",
       "השורשים קולטים מים מהאדמה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_19",
@@ -3008,7 +4259,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה חלק ממחזור החיים של העצים.",
       "באביב העלים החדשים צומחים שוב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_20",
@@ -3032,7 +4293,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זרעים מגיעים מפרחים.",
       "הם מכילים את כל המידע לגדול לצמח."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_21",
@@ -3055,7 +4326,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "פירות הם מתוקים כדי למשוך בעלי חיים.",
       "בעלי חיים אוכלים פירות ומפיצים את הזרעים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_22",
@@ -3078,7 +4359,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שורשים גדלים למטה, לתוך האדמה.",
       "הם עוזרים לצמח לעמוד יציב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_23",
@@ -3101,7 +4392,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כלורופלסטים נמצאים בעיקר בעלים.",
       "הם נראים ירוקים כי יש בהם כלורופיל."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "plants_24",
@@ -3125,7 +4426,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חרקים, רוח או מים מעבירים אבקה.",
       "זה חלק מתהליך הרביה של צמחים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "plants_25",
@@ -3148,7 +4459,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה חלק ממחזור המים.",
       "זה עוזר לצמח לקלוט מים מהשורשים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "plants_26",
@@ -3172,7 +4493,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה דשן טבעי.",
       "זה עוזר לשמור על אדמה בריאה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "materials_15",
@@ -3196,7 +4527,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "טמפרטורה משנה את מצב הצבירה.",
       "בטמפרטורה רגילה מים הם נוזל."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_16",
@@ -3220,7 +4561,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה נקרא התכה.",
       "זה קורה כאשר הטמפרטורה עולה מעל 0 מעלות צלזיוס."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_17",
@@ -3242,7 +4593,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "טמפרטורה משנה את מצב הצבירה.",
       "זה קורה עם הרבה חומרים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_18",
@@ -3266,7 +4627,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מתכות רבות קשות וחזקות.",
       "הן מוליכות חום וחשמל."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_19",
@@ -3290,7 +4661,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שקיפות מאפשרת לראות דרכו.",
       "זה שימושי לחלונות ולמשקפיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_20",
@@ -3314,7 +4695,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חומרים אורגניים מתפרקים בקלות יותר.",
       "חלקם ידידותיים לסביבה יותר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_21",
@@ -3338,7 +4729,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אלה חומרים טבעיים או מעשה ידי אדם.",
       "הם בדרך כלל לא מתפרקים בקלות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_22",
@@ -3362,7 +4763,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מגנטים מושכים חומרים מגנטיים.",
       "זה קשור לתכונות פנימיות של החומר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "materials_23",
@@ -3386,7 +4797,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אלסטיות היא תכונה חשובה.",
       "זה עוזר למוצרים רבים לעבוד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "materials_24",
@@ -3410,7 +4831,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שימוש בחומרים רב-פעמיים עוזר לשמור על הסביבה.",
       "זה מפחית פסולת."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "earth_14",
@@ -3433,7 +4864,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "היקום גדול מאוד ובלתי נתפס.",
       "כדור הארץ הוא רק חלק קטן ממנו."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_15",
@@ -3456,7 +4897,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הירח הוא הלוויין הטבעי של כדור הארץ.",
       "הוא מחזיר את אור השמש."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_16",
@@ -3477,7 +4928,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השמש היא כוכב בינוני.",
       "יש הרבה כוכבים אחרים ביקום."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_17",
@@ -3500,7 +4961,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "עונות נוצרות בגלל נטיית כדור הארץ.",
       "הן חוזרות כל שנה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_18",
@@ -3523,7 +4994,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יש שמונה כוכבי לכת במערכת השמש.",
       "כל אחד יש לו תכונות שונות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_19",
@@ -3547,7 +5028,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כוכבים נמצאים רחוק מאוד.",
       "הם נראים כנקודות אור בשמיים בלילה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_20",
@@ -3571,7 +5062,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אסטרואידים הם שרידים מהמערכת השמש הקדומה.",
       "חלקם קטנים מאוד, חלקם גדולים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_21",
@@ -3595,7 +5096,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שביטים נראים כצורה עם זנב.",
       "הם מגיעים ממקומות רחוקים במערכת השמש."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "earth_22",
@@ -3619,7 +5130,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יש הרבה גלקסיות ביקום.",
       "הגלקסיה שלנו נקראת שביל החלב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "earth_23",
@@ -3643,7 +5164,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חורים שחורים מאוד מסתוריים.",
       "מדענים עדיין לומדים עליהם."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "env_11",
@@ -3667,7 +5198,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כל אחד יכול לעזור לשמור על הסביבה.",
       "פחי אשפה מיועדים לאיסוף פסולת."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "env_12",
@@ -3691,7 +5232,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הטבע חשוב לנו ולכל היצורים.",
       "כל אחד יכול לעזור לשמור עליו."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "env_14",
@@ -3715,7 +5266,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה נוצר מפעילות אנושית.",
       "זה יכול לגרום למחלות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_15",
@@ -3739,7 +5300,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה פוגע בטבע ובבני אדם.",
       "חשוב לשמור על מים נקיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_16",
@@ -3763,7 +5334,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה פוגע באדמה ובמה שגדל בה.",
       "חשוב לשמור על אדמה נקייה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_17",
@@ -3787,7 +5368,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה חשוב מאוד לחיים על כדור הארץ.",
       "אבל יותר מדי גזי חממה יכול לגרום להתחממות יתר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "env_18",
@@ -3811,7 +5402,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה משפיע על כל העולם.",
       "חשוב לפעול כדי להפחית את זה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "env_19",
@@ -3835,7 +5436,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה עוזר לשמור על מינים של בעלי חיים וצמחים.",
       "זה חשוב לדורות הבאים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "env_20",
@@ -3859,7 +5470,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה חשוב מאוד לעתיד.",
       "זה כולל מיחזור, חיסכון באנרגיה ועוד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "exp_10",
@@ -3882,7 +5503,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בטיחות חשובה מאוד בניסויים.",
       "מבוגר צריך לעזור ולפקח."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "exp_12",
@@ -3906,7 +5537,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "תצפיות מדויקות עוזרות להבין מה קורה.",
       "זה חשוב לכתוב מה רואים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "exp_13",
@@ -3930,7 +5571,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מדידות עוזרות להיות מדויקים.",
       "יש כלים שונים למדידות שונות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_14",
@@ -3954,7 +5605,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה תהליך מסודר.",
       "כל שלב חשוב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_15",
@@ -3978,7 +5639,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה חלק חשוב בניסוי טוב.",
       "זה עוזר להבין מה גרם לתוצאה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_16",
@@ -4002,7 +5673,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "נתונים עוזרים להבין מה קרה.",
       "חשוב לאסוף נתונים בקפידה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "exp_17",
@@ -4026,7 +5707,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "גרפים עוזרים להבין נתונים.",
       "יש סוגים שונים של גרפים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "exp_18",
@@ -4050,7 +5741,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מסקנות חשובות מאוד.",
       "הן מסבירות מה למדנו."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "exp_19",
@@ -4074,7 +5775,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "תיאוריות יכולות להשתנות עם ידע חדש.",
       "זה חלק מהתהליך המדעי."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "exp_20",
@@ -4098,7 +5809,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חוקים מתארים מה קורה.",
       "הם מבוססים על תצפיות חוזרות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "body_35",
@@ -4122,7 +5843,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "היא נמצאת מעל הכליות.",
       "אדרנלין עוזר בגיוס אנרגיה במהירות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_27",
@@ -4146,7 +5877,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה דרך לסווג בעלי חיים.",
       "זה עוזר להבין את הקשרים בין יצורים חיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "animals_28",
@@ -4170,7 +5911,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה קרה לאורך אלפי שנים.",
       "בעלי חיים מבויתים שונים מהפראיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "plants_27",
@@ -4194,7 +5945,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יש דשנים טבעיים וסינתטיים.",
       "זה עוזר לצמחים לגדול יותר חזק."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "plants_28",
@@ -4218,7 +5979,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה דרך מצוינת למחזר פסולת אורגנית.",
       "זה עוזר לאדמה להיות בריאה יותר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "materials_25",
@@ -4242,7 +6013,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה ידידותי יותר לסביבה.",
       "דוגמאות: קומפוסט, פלסטיק ביו-מתכלה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "materials_26",
@@ -4266,7 +6047,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חומרים סינתטיים יכולים להיות חזקים ועמידים.",
       "חלקם לא מתפרקים בקלות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "earth_24",
@@ -4290,7 +6081,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יש כמה כוכבי לכת ננסיים במערכת השמש.",
       "זה סיווג חדש יחסית."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "earth_25",
@@ -4314,7 +6115,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה קורה בענני גז ואבק ענקיים.",
       "כוח המשיכה גורם לגז להתכווץ וליצור כוכב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "env_21",
@@ -4338,7 +6149,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה עוזר לשמור על הסביבה.",
       "זה חלק מקיימות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "env_22",
@@ -4362,7 +6183,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה בעיה גדולה בעולם המודרני.",
       "מיחזור חשוב מאוד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "exp_21",
@@ -4386,7 +6217,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה דרך מדעית חשובה.",
       "זה עוזר להימנע מהטיה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "exp_22",
@@ -4410,7 +6251,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מדגם צריך להיות מייצג.",
       "זה עוזר לחסוך זמן ומשאבים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "body_37",
@@ -4434,7 +6285,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "העור מכסה את כל הגוף.",
       "הוא מחסום חשוב מפני חיידקים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_29",
@@ -4458,7 +6319,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כל בעל חיים יש לו צרכים בסיסיים.",
       "הם משתדלים לשרוד ולחיות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_30",
@@ -4482,7 +6353,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חיות מחמד מבויתות.",
       "חיות פראיות עצמאיות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_29",
@@ -4506,7 +6387,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אור חשוב מאוד לצמחים.",
       "בלי אור הצמח לא יכול לייצר מזון."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_30",
@@ -4530,7 +6421,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בלי צמחים לא יהיה חיים על כדור הארץ.",
       "הם בסיס של שרשרת המזון."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_27",
@@ -4554,7 +6455,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "לכל חומר יש תכונות שונות.",
       "קשיות היא אחת התכונות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_28",
@@ -4578,7 +6489,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה תכונה חשובה של חומרים.",
       "יש גם חומרים שקופים למחצה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_26",
@@ -4601,7 +6522,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הם חלק מהגלקסיה שלנו.",
       "יש מיליוני כוכבים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_27",
@@ -4624,7 +6555,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה נראה יפה מאוד.",
       "זה קורה כל הזמן, אבל רואים רק בלילה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_23",
@@ -4648,7 +6589,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה חשוב לכולנו.",
       "זה חשוב לדורות הבאים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_24",
@@ -4672,7 +6623,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כל פעולה קטנה עוזרת.",
       "ביחד נוכל לעשות שינוי גדול."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_23",
@@ -4695,7 +6656,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה דרך מדעית ללמוד.",
       "ניסויים עוזרים לנו להיות מדענים קטנים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_24",
@@ -4719,7 +6690,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "תצפיות חשובות מאוד.",
       "זה עוזר להבין מה קורה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_25__v2",
@@ -4743,7 +6724,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "העין היא האיבר שאחראי על הראייה.",
       "יש לנו שתי עיניים כדי לראות טוב יותר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_26__v2",
@@ -4767,7 +6758,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כל חיה משמיעה קול אחר.",
       "זה עוזר לזהות אותה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_15__v2",
@@ -4791,7 +6792,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בלי מים הצמח מתייבש.",
       "בלי אור שמש הצמח לא יכול לעשות פוטוסינתזה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_12__v2",
@@ -4815,7 +6826,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חומרים שונים יש להם תכונות שונות.",
       "זה קובע איך משתמשים בכל חומר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_space_20",
@@ -4839,7 +6860,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "העונות משתנות בגלל נטיית כדור הארץ.",
       "כל עונה יש לה מזג אוויר אחר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "environment_25",
@@ -4863,7 +6894,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "עצים חשובים מאוד לסביבה.",
       "כל עץ עוזר לעולם."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_31__v2",
@@ -4887,7 +6928,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "האצבעות עוזרות לנו לאחוז חפצים.",
       "האגודל עוזר לאחוז טוב יותר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_32__v2",
@@ -4911,7 +6962,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שיער יכול להיות בצבעים שונים.",
       "שיער גדל כל הזמן."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_33__v2",
@@ -4935,7 +6996,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יש לנו שיניים חותכות, ניבים ושיניים טוחנות.",
       "ילדים יש להם שיניים חלביות שמתחלפות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_34__v2",
@@ -4959,7 +7030,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "המוח הוא האיבר הכי חשוב בגוף.",
       "הוא שולט על כל הפעולות שלנו."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_35__v2",
@@ -4981,7 +7062,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הידיים עוזרות לנו לאחוז ולעבוד.",
       "הרגליים עוזרות לנו ללכת ולרוץ."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_37__v2",
@@ -5005,7 +7096,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "נשימה היא תהליך חשוב מאוד.",
       "בלי נשימה אנחנו לא יכולים לחיות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_38__v2",
@@ -5029,7 +7130,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הלב פועם כל הזמן.",
       "זה קול הדופק שאנחנו שומעים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_39",
@@ -5053,7 +7164,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הלשון יכולה לזוז לכיוונים שונים.",
       "יש עליה בליטות קטנות שטועמות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_40",
@@ -5075,7 +7196,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "גדילה היא תהליך טבעי.",
       "אכילה בריאה עוזרת לגדול טוב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_11__v2",
@@ -5099,7 +7230,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כל בעל חיים משמיע קולות שונים.",
       "זה עוזר להם לתקשר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_12__v2",
@@ -5123,7 +7264,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חתולים הם חיות מחמד פופולריות.",
       "הם יכולים להיות מאוד ידידותיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_13__v2",
@@ -5147,7 +7298,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כנפיים עוזרות לציפורים לעוף.",
       "יש הרבה סוגים שונים של ציפורים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_14__v2",
@@ -5171,7 +7332,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "דגים נושמים דרך זימים.",
       "יש הרבה סוגים שונים של דגים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_15__v2",
@@ -5195,7 +7366,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יונקים יש להם פרווה או שיער.",
       "פרווה עוזרת לשמור על חום הגוף."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_17__v2",
@@ -5219,7 +7400,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "רוב היונקים יש להם ארבע רגליים.",
       "זה עוזר להם לזוז מהר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_19__v2",
@@ -5243,7 +7434,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "סוסים הם בעלי חיים חזקים ומהירים.",
       "הם משמשים לנסיעה ולעבודה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "animals_20__v2",
@@ -5267,7 +7468,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זנב עוזר לבעלי חיים לשמור על שיווי משקל.",
       "יש לו שימושים שונים אצל בעלי חיים שונים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_14__v2",
@@ -5291,7 +7502,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "העלים קולטים אור שמש.",
       "הפרחים יפים ומושכים חרקים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_15__v3",
@@ -5315,7 +7536,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השורשים מעגנים את הצמח.",
       "הם קולטים מים ומינרלים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_16__v2",
@@ -5337,7 +7568,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אור שמש עוזר לצמח לייצר מזון.",
       "בלי אור הצמח לא יכול לגדול טוב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_19__v2",
@@ -5361,7 +7602,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "פרחים יפים וצבעוניים.",
       "הם מושכים חרקים שעזרים להאבקה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "plants_20__v2",
@@ -5385,7 +7636,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "נביטה היא תחילת החיים של צמח חדש.",
       "הזרע צריך מים ואור כדי לנבוט."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_16__v2",
@@ -5409,7 +7670,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שקיפות מאפשרת לראות דרכו.",
       "זה שימושי לחלונות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_17__v2",
@@ -5433,7 +7704,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מתכות יכולות להיות מבריקות.",
       "זה עושה אותן יפות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_18__v2",
@@ -5457,7 +7738,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה נקרא הקפאה.",
       "זה קורה כשהטמפרטורה יורדת מתחת לאפס."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "materials_19__v2",
@@ -5481,7 +7772,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "עץ הוא חומר טבעי.",
       "אפשר להשתמש בו לבנייה ולרהיטים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_16__v2",
@@ -5504,7 +7805,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יום מתחיל כשהשמש זורחת.",
       "זה הזמן שבו אנחנו ערים ופעילים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_17__v2",
@@ -5527,7 +7838,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "לילה מתחיל כשהשמש שוקעת.",
       "זה הזמן שבו אנחנו ישנים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_18__v2",
@@ -5550,7 +7871,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "עננים נוצרים כשאדי מים מתעבים.",
       "כשהם כבדים, יורד גשם או שלג."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "env_14__v2",
@@ -5574,7 +7905,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מים נקיים חשובים לנו ולכל היצורים.",
       "חשוב לא לבזבז מים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "env_15__v2",
@@ -5598,7 +7939,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מיחזור עוזר לשמור על הסביבה.",
       "זה מפחית פסולת וחוסך משאבים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "env_16__v2",
@@ -5622,7 +7973,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אוויר נקי חשוב לבריאות.",
       "עצים עוזרים לנקות את האוויר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "env_17__v2",
@@ -5646,7 +8007,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כל אחד יכול לעזור לשמור על הסביבה.",
       "פעולות קטנות יכולות לעשות הבדל גדול."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "exp_11__v2",
@@ -5669,7 +8040,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זהירות חשובה מאוד בניסויים.",
       "רישום עוזר לזכור מה קרה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "exp_12__v2",
@@ -5692,7 +8073,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בטיחות היא הדבר הכי חשוב.",
       "מבוגר יכול לעזור ולוודא שהכל בטוח."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "exp_14__v2",
@@ -5715,7 +8106,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "ניסויים עוזרים לנו ללמוד.",
       "זה דרך מצוינת להבין את העולם."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "body_41",
@@ -5739,7 +8140,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מערכת העצבים כוללת מוח, חוט שדרה ועצבים רבים.",
       "עצבים מעבירים אותות חשמליים במהירות רבה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "body_43",
@@ -5763,7 +8174,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הטחול נמצא ליד הקיבה.",
       "הוא חלק ממערכת החיסון."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_21__v2",
@@ -5787,7 +8208,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יונקים יש להם פרווה או שיער.",
       "עופות מכוסים נוצות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_22__v2",
@@ -5811,7 +8242,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בעלי חיים שונים חיים בבתי גידול שונים.",
       "בית גידול מספק את כל מה שבעל החיים צריך."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_23__v2",
@@ -5835,7 +8276,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "טורפים יש להם שיניים חדות.",
       "הם מותאמים לציד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_24__v2",
@@ -5859,7 +8310,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אוכלי עשב יש להם שיניים שמותאמות ללעיסת צמחים.",
       "הם לא אוכלים בשר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_25__v2",
@@ -5883,7 +8344,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אוכלי כל יכולים לאכול מגוון מזונות.",
       "זה עוזר להם לשרוד במקומות שונים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_26__v3",
@@ -5907,7 +8378,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הסוואה עוזרת לבעלי חיים להימנע מטורפים או לצוד טרף.",
       "דוגמאות: זברה, נמר, תמנון."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_27__v2",
@@ -5931,7 +8412,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "ציפורים נודדות למרחקים ארוכים.",
       "זה קורה בעונות מסוימות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_28__v2",
@@ -5955,7 +8446,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "דוב, דורבן וחיות אחרות עושים תרדמת חורף.",
       "זה עוזר להם לשרוד את החורף."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_29__v2",
@@ -5979,7 +8480,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כל בעל חיים יש לו מחזור חיים שונה.",
       "זה כולל לידה, גדילה, רבייה ומוות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "animals_30__v2",
@@ -6003,7 +8514,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "התאמות יכולות להיות מבניות או התנהגותיות.",
       "הן עוזרות לבעלי חיים לשרוד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_animals_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_21__v2",
@@ -6026,7 +8547,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "התהליך מתרחש בכלורופלסטים שנמצאים בעלים.",
       "זה הבסיס של שרשרת המזון."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_22__v2",
@@ -6049,7 +8580,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כלורופיל נותן לעלים את הצבע הירוק.",
       "הוא נמצא בכלורופלסטים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_23__v2",
@@ -6072,7 +8613,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שורשים גדלים למטה, לתוך האדמה.",
       "הם עוזרים לצמח לעמוד יציב."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_24__v2",
@@ -6095,7 +8646,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "גבעול מחבר בין השורשים לעלים.",
       "הוא עוזר לצמח לעמוד ישר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_25__v2",
@@ -6118,7 +8679,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "עלים הם המפעל של הצמח.",
       "הם מייצרים מזון עבור הצמח."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_27__v2",
@@ -6141,7 +8712,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זרעים מגיעים מפרחים.",
       "הם מכילים את כל המידע לגדול לצמח."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_28__v2",
@@ -6164,7 +8745,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "פירות הם מתוקים כדי למשוך בעלי חיים.",
       "בעלי חיים אוכלים פירות ומפיצים את הזרעים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_29__v2",
@@ -6187,7 +8778,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "נביטה היא תחילת החיים של צמח חדש.",
       "הזרע צריך מים, אור וחום כדי לנבוט."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "plants_30__v2",
@@ -6210,7 +8811,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חרקים, רוח ובעלי חיים עוזרים בהאבקה.",
       "זה חשוב מאוד ליצירת זרעים חדשים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_21__v2",
@@ -6234,7 +8845,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מים יכולים להיות בשלושה מצבי צבירה.",
       "טמפרטורה משנה את מצב הצבירה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_22__v2",
@@ -6258,7 +8879,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה קורה כשהטמפרטורה עולה.",
       "כל חומר יש לו נקודת התכה שונה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_23__v2",
@@ -6282,7 +8913,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה קורה כשהטמפרטורה יורדת.",
       "כל חומר יש לו נקודת הקפאה שונה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_24__v2",
@@ -6306,7 +8947,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה קורה כשהטמפרטורה עולה.",
       "אפשר לראות את זה כשמים רותחים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_25__v2",
@@ -6330,7 +8981,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה קורה כשהטמפרטורה יורדת.",
       "אפשר לראות את זה על חלונות כשאדי מים מתעבים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_26__v2",
@@ -6354,7 +9015,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מתכות מוליכות חום וחשמל טוב.",
       "זה עושה אותן שימושיות מאוד."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_27__v2",
@@ -6378,7 +9049,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מבודדים עוזרים לשמור על חום או קור.",
       "זה חשוב לבטיחות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_28__v2",
@@ -6402,7 +9083,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מגנטים מושכים חומרים מגנטיים.",
       "לא כל המתכות מגנטיות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_29",
@@ -6426,7 +9117,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שקיפות מאפשרת לראות דרכו.",
       "זה שימושי לחלונות ולמשקפיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "materials_30",
@@ -6450,7 +9151,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "חומרים אורגניים מתפרקים בקלות יותר.",
       "חלקם ידידותיים לסביבה יותר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_19__v2",
@@ -6474,7 +9185,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יש שמונה כוכבי לכת במערכת השמש.",
       "כל אחד יש לו תכונות שונות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_20__v2",
@@ -6498,7 +9219,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כוכבים נמצאים רחוק מאוד.",
       "הם נראים כנקודות אור בשמיים בלילה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_21__v2",
@@ -6522,7 +9253,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הירח הוא הלוויין הטבעי של כדור הארץ.",
       "הוא מחזיר את אור השמש."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_22__v2",
@@ -6546,7 +9287,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "אסטרואידים הם שרידים מהמערכת השמש הקדומה.",
       "חלקם קטנים מאוד, חלקם גדולים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_24__v2",
@@ -6570,7 +9321,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה תהליך מתמשך.",
       "מים מתאדים, מתעבים לעננים ויורדים כגשם או שלג."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_25__v2",
@@ -6594,7 +9355,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "עננים נוצרים כשאדי מים מתעבים.",
       "יש סוגים שונים של עננים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_26__v2",
@@ -6618,7 +9389,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "גשם חשוב מאוד לחיים על כדור הארץ.",
       "הוא מספק מים לצמחים ולבעלי חיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_27__v2",
@@ -6642,7 +9423,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שלג נופל כשהטמפרטורה מתחת לאפס.",
       "הוא חשוב מאוד לאקלים ולמים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_28",
@@ -6666,7 +9457,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "רוח יכולה להיות חזקה או חלשה.",
       "היא משפיעה על מזג האוויר."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_19__v2",
@@ -6690,7 +9491,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה נוצר מפעילות אנושית.",
       "זה יכול לגרום למחלות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_20__v2",
@@ -6714,7 +9525,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה פוגע בטבע ובבני אדם.",
       "חשוב לשמור על מים נקיים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_21__v2",
@@ -6738,7 +9559,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה פוגע באדמה ובמה שגדל בה.",
       "חשוב לשמור על אדמה נקייה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_22__v2",
@@ -6762,7 +9593,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "דוגמאות: יער, בריכה, שונית אלמוגים.",
       "שינויים בסביבה משפיעים על כל המרכיבים במערכת."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_23__v2",
@@ -6786,7 +9627,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הצמחים הם בדרך כלל היצרנים.",
       "טורפים ואוכלי עשב הם חלק משרשראות מזון."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_25",
@@ -6810,7 +9661,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה חשוב מאוד לעתיד.",
       "כל אחד יכול לעזור בקיימות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_26",
@@ -6834,7 +9695,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה עוזר לשמור על הסביבה.",
       "זה חלק מקיימות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "env_27",
@@ -6858,7 +9729,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "פסולת יכולה להיות מסוכנת לסביבה.",
       "מיחזור עוזר להפחית פסולת."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_18__v2",
@@ -6882,7 +9763,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בניסוי טוב משנים רק משתנה אחד.",
       "זה עוזר להבין מה גרם לתוצאה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_19__v2",
@@ -6906,7 +9797,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה מה שאנחנו רוצים לגלות.",
       "זה התוצאה של הניסוי."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_20__v2",
@@ -6930,7 +9831,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זה עוזר להבין מה גרם לתוצאה.",
       "זה חלק חשוב מניסוי מדעי."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_22__v2",
@@ -6954,7 +9865,17 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מסקנות עוזרות להבין מה למדנו.",
       "זה חלק חשוב מניסוי מדעי."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "exp_26",
@@ -6978,12 +9899,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "בטיחות היא הדבר הכי חשוב.",
       "תמיד צריך מבוגר שיעזור."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "understanding",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "standard"
+    }
   },
   {
     "id": "earth_space_phase717_g2_1",
     "topic": "earth_space",
-    "grades": ["g2"],
+    "grades": [
+      "g2"
+    ],
     "minLevel": "easy",
     "maxLevel": "easy",
     "type": "mcq",
@@ -6999,12 +9932,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השמש היא מקור אור עיקרי ביום.",
       "בלילה רואים בעיקר אור מהירח ומכוכבים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_space_phase717_g2_2",
     "topic": "earth_space",
-    "grades": ["g2"],
+    "grades": [
+      "g2"
+    ],
     "minLevel": "easy",
     "maxLevel": "easy",
     "type": "mcq",
@@ -7020,12 +9965,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "סיבוב כדור הארץ יוצר חילוף יום ולילה.",
       "מסלול סביב השמש קשור לעונות השנה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "earth_space_phase717_g2_3",
     "topic": "earth_space",
-    "grades": ["g2"],
+    "grades": [
+      "g2"
+    ],
     "minLevel": "easy",
     "maxLevel": "easy",
     "type": "mcq",
@@ -7041,12 +9998,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "במערכת השמש, כדור הארץ הוא כוכב לכת.",
       "השמש היא כוכב במרכז המערכת."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "science_remaining_g1_hard_body",
     "topic": "body",
-    "grades": ["g1"],
+    "grades": [
+      "g1"
+    ],
     "minLevel": "hard",
     "maxLevel": "hard",
     "type": "mcq",
@@ -7062,12 +10031,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הלב והמערכת הנשימתית עובדים יחד לספק חמצן לגוף.",
       "לכל איבר יש תפקיד ייעודי במערכות הגוף."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "science_remaining_g1_hard_earth_space",
     "topic": "earth_space",
-    "grades": ["g1"],
+    "grades": [
+      "g1"
+    ],
     "minLevel": "hard",
     "maxLevel": "hard",
     "type": "mcq",
@@ -7083,12 +10064,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "סיבוב כדור הארץ יוצר את מחזור היום והלילה.",
       "השמש נותנת אור; כדור הארץ מסתובב ולכן רואים שינוי."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "science_remaining_g1_hard_environment",
     "topic": "environment",
-    "grades": ["g1"],
+    "grades": [
+      "g1"
+    ],
     "minLevel": "hard",
     "maxLevel": "hard",
     "type": "mcq",
@@ -7104,12 +10097,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "כל אחד יכול לפעול בצורה אחראית כדי לשמור על מקומות טבעיים.",
       "פסולת עלולה לזהם מים ואדמה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "science_remaining_g1_hard_materials",
     "topic": "materials",
-    "grades": ["g1"],
+    "grades": [
+      "g1"
+    ],
     "minLevel": "hard",
     "maxLevel": "hard",
     "type": "mcq",
@@ -7125,12 +10130,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "תכונות חומר נבדקות בתצפית ובמגע.",
       "יש חומרים קשיחים, רכים, גמישים ושבירים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "science_remaining_g1_hard_plants",
     "topic": "plants",
-    "grades": ["g1"],
+    "grades": [
+      "g1"
+    ],
     "minLevel": "hard",
     "maxLevel": "hard",
     "type": "mcq",
@@ -7146,12 +10163,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מבדילים בין חי לדומם לפי צמיחה, תנועה והגדרה ותגובה לסביבה.",
       "צמחים זקוקים למים, אור ואוויר לצמיחה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_plants_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "science_remaining_g2_hard_body",
     "topic": "body",
-    "grades": ["g2"],
+    "grades": [
+      "g2"
+    ],
     "minLevel": "hard",
     "maxLevel": "hard",
     "type": "mcq",
@@ -7167,12 +10196,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "הלב הוא שריר שצריך אימון מתון כמו שאר השרירים.",
       "בריאות כללית קשורה לפעילות גופנית סדירה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "science_remaining_g2_earth_space_easy_hard",
     "topic": "earth_space",
-    "grades": ["g2"],
+    "grades": [
+      "g2"
+    ],
     "minLevel": "easy",
     "maxLevel": "hard",
     "type": "mcq",
@@ -7188,12 +10229,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "השמש מספקת אור וחום לכדור הארץ.",
       "כדור הארץ והירח נעים במסלולים שונים ביחס לשמש."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "science_remaining_g2_hard_environment",
     "topic": "environment",
-    "grades": ["g2"],
+    "grades": [
+      "g2"
+    ],
     "minLevel": "hard",
     "maxLevel": "hard",
     "type": "mcq",
@@ -7209,12 +10262,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "זיהום פלסטיק משפיע על ים, חופים ובעלי חיים.",
       "צמצום פלסטיק ומיחזור עוזרים להגן על הסביבה."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "science_remaining_g2_hard_experiments",
     "topic": "experiments",
-    "grades": ["g2"],
+    "grades": [
+      "g2"
+    ],
     "minLevel": "hard",
     "maxLevel": "hard",
     "type": "mcq",
@@ -7230,12 +10295,24 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "ניסוי טוב כולל תכנון קצר ורישום מה ראינו.",
       "מסקנות מבוססות על ראיות מהניסוי."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "science_remaining_g2_hard_materials",
     "topic": "materials",
-    "grades": ["g2"],
+    "grades": [
+      "g2"
+    ],
     "minLevel": "hard",
     "maxLevel": "hard",
     "type": "mcq",
@@ -7251,12 +10328,25 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "שינוי פיזיקלי משמר את סוג החומר בעיקרו ומשנה צורה או מצב צבירה לפעמים.",
       "שינוי כימי יוצר חומרים חדשים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "analysis",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "advanced"
+    }
   },
   {
     "id": "science_remaining_g56_easy_body",
     "topic": "body",
-    "grades": ["g5", "g6"],
+    "grades": [
+      "g5",
+      "g6"
+    ],
     "minLevel": "easy",
     "maxLevel": "easy",
     "type": "mcq",
@@ -7272,12 +10362,25 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מערכת הדם מחוברת לנשימה ולעיכול.",
       "לב מזרים דם דרך כלי דם לכל הגוף."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_body_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "science_remaining_g56_easy_earth_space",
     "topic": "earth_space",
-    "grades": ["g5", "g6"],
+    "grades": [
+      "g5",
+      "g6"
+    ],
     "minLevel": "easy",
     "maxLevel": "easy",
     "type": "mcq",
@@ -7293,12 +10396,25 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "סיבוב כדור הארץ הוא תנועה יומית.",
       "מסלול סביב השמש קשור לעונות, לא ליום־לילה היומי."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_earth_space_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "science_remaining_g56_easy_environment",
     "topic": "environment",
-    "grades": ["g5", "g6"],
+    "grades": [
+      "g5",
+      "g6"
+    ],
     "minLevel": "easy",
     "maxLevel": "easy",
     "type": "mcq",
@@ -7314,12 +10430,25 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מים הם משאב בסיסי לחיים.",
       "חיסכון במים מפחית עומס על סביבות מים ומקורות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_environment_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "concept_confusion",
+        "vocabulary_confusion",
+        "misconception"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "science_remaining_g56_easy_experiments",
     "topic": "experiments",
-    "grades": ["g5", "g6"],
+    "grades": [
+      "g5",
+      "g6"
+    ],
     "minLevel": "easy",
     "maxLevel": "easy",
     "type": "mcq",
@@ -7335,12 +10464,25 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "יומן ניסוי כולל צעדים, מדידות ותצפיות.",
       "מדע מתבסס על רישום וניתוח נתונים."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_experiments_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "strategy_error",
+        "reading_comprehension_error",
+        "concept_confusion"
+      ],
+      "difficulty": "basic"
+    }
   },
   {
     "id": "science_remaining_g56_easy_materials",
     "topic": "materials",
-    "grades": ["g5", "g6"],
+    "grades": [
+      "g5",
+      "g6"
+    ],
     "minLevel": "easy",
     "maxLevel": "easy",
     "type": "mcq",
@@ -7356,6 +10498,16 @@ export const SCIENCE_QUESTIONS = [
     "theoryLines": [
       "מבחינים בין חומר שמקורו בטבע לבין חומר מעבדה או מפעל.",
       "תכונות החומר משפיעות על שימוש ובטיחות."
-    ]
+    ],
+    "params": {
+      "subtype": "sci_materials_general",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "misconception",
+        "concept_confusion",
+        "careless_error"
+      ],
+      "difficulty": "basic"
+    }
   }
 ].concat(SCIENCE_QUESTIONS_PHASE3);

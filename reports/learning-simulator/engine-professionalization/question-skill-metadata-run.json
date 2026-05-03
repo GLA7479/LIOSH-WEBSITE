@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-03T11:49:09.621Z",
+  "generatedAt": "2026-05-03T12:47:46.884Z",
   "version": "1.0.0",
   "subjectStrategies": {
     "math": {
@@ -43,7 +43,7 @@
     "fail": 0
   },
   "missingFieldHistogram": {
-    "expectedErrorTypes": 1454,
+    "expectedErrorTypes": 1226,
     "prerequisiteSkillIds": 1494,
     "grade": 0,
     "level": 0

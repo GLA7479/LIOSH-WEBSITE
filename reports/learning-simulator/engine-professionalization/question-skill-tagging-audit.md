@@ -1,7 +1,7 @@
 # Question skill tagging audit
 
 - **Status:** PASS
-- **Generated:** 2026-05-03T11:49:09.621Z
+- **Generated:** 2026-05-03T12:47:46.884Z
 
 ## Subject metadata strategies
 
@@ -25,7 +25,7 @@
 
 ```json
 {
-  "expectedErrorTypes": 1454,
+  "expectedErrorTypes": 1226,
   "prerequisiteSkillIds": 1494,
   "grade": 0,
   "level": 0

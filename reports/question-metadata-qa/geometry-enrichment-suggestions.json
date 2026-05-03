@@ -1,0 +1,1588 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T13:05:16.379Z",
+  "scope": {
+    "subjects": [
+      "geometry"
+    ],
+    "geometryConceptualRowsAnalyzed": 52,
+    "sourcesDiscovered": [
+      "utils/geometry-conceptual-bank.js (GEOMETRY_CONCEPTUAL_ITEMS)",
+      "utils/geometry-question-generator.js (procedural — documented only)"
+    ],
+    "note": "Static scan: utils/geometry-conceptual-bank.js → GEOMETRY_CONCEPTUAL_ITEMS. Procedural source (not enumerated as static rows): utils/geometry-question-generator.js (see question-bank-discovery)."
+  },
+  "summary": {
+    "totalSuggestions": 52,
+    "prerequisiteSuggestionCount": 3,
+    "confidenceBreakdown": {
+      "high": 8,
+      "medium": 44,
+      "low": 0
+    },
+    "reviewPriorityBreakdown": {
+      "high": 0,
+      "medium": 44,
+      "low": 8
+    },
+    "suggestedFieldChangeHistogram": {
+      "difficulty": 52,
+      "cognitiveLevel": 52,
+      "expectedErrorTypes": 50,
+      "prerequisiteSkillIds": 3
+    },
+    "topSuggestedFields": [
+      "difficulty",
+      "cognitiveLevel",
+      "expectedErrorTypes",
+      "prerequisiteSkillIds"
+    ]
+  },
+  "suggestions": [
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[0]::#0",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[0]",
+      "current": {
+        "skillId": "geo_pv_area_vs_perimeter",
+        "subskillId": "choose_measure",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "measurement_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "high",
+      "confidenceReasons": [
+        "Row carries diagnosticSkillId and taxonomy-known scanner skillId.",
+        "expectedErrorTags present on template.",
+        "distractorFamily supports misconception routing."
+      ],
+      "reviewPriority": "low",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[1]::#1",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[1]",
+      "current": {
+        "skillId": "geo_pv_area_vs_perimeter",
+        "subskillId": "choose_measure_floor",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "measurement_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "high",
+      "confidenceReasons": [
+        "Row carries diagnosticSkillId and taxonomy-known scanner skillId.",
+        "expectedErrorTags present on template.",
+        "distractorFamily supports misconception routing."
+      ],
+      "reviewPriority": "low",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[2]::#2",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[2]",
+      "current": {
+        "skillId": "geo_pv_area_vs_perimeter",
+        "subskillId": "fence",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "measurement_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "high",
+      "confidenceReasons": [
+        "Row carries diagnosticSkillId and taxonomy-known scanner skillId.",
+        "expectedErrorTags present on template.",
+        "distractorFamily supports misconception routing."
+      ],
+      "reviewPriority": "low",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[3]::#3",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[3]",
+      "current": {
+        "skillId": "geo_pv_area_vs_perimeter",
+        "subskillId": "fence_perimeter_project",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "measurement_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "high",
+      "confidenceReasons": [
+        "Row carries diagnosticSkillId and taxonomy-known scanner skillId.",
+        "expectedErrorTags present on template.",
+        "distractorFamily supports misconception routing."
+      ],
+      "reviewPriority": "low",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[4]::#4",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[4]",
+      "current": {
+        "skillId": "geo_rect_area_plan",
+        "subskillId": "area_rectangle",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [
+          "geometry_calculation_slip",
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "application",
+        "expectedErrorTypes": [
+          "geometry_calculation_slip",
+          "concept_confusion",
+          "formula_selection_error"
+        ],
+        "prerequisiteSkillIds": [
+          "geo_pv_area_vs_perimeter"
+        ]
+      },
+      "confidence": "high",
+      "confidenceReasons": [
+        "Row carries diagnosticSkillId and taxonomy-known scanner skillId.",
+        "expectedErrorTags present on template.",
+        "distractorFamily supports misconception routing."
+      ],
+      "reviewPriority": "low",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[5]::#5",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[5]",
+      "current": {
+        "skillId": "geo_rect_area_plan",
+        "subskillId": "area_rectangle_site",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [
+          "geometry_calculation_slip",
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "application",
+        "expectedErrorTypes": [
+          "geometry_calculation_slip",
+          "concept_confusion",
+          "formula_selection_error"
+        ],
+        "prerequisiteSkillIds": [
+          "geo_pv_area_vs_perimeter"
+        ]
+      },
+      "confidence": "high",
+      "confidenceReasons": [
+        "Row carries diagnosticSkillId and taxonomy-known scanner skillId.",
+        "expectedErrorTags present on template.",
+        "distractorFamily supports misconception routing."
+      ],
+      "reviewPriority": "low",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[6]::#6",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[6]",
+      "current": {
+        "skillId": "compare_area",
+        "subskillId": "same_perimeter",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "advanced",
+        "cognitiveLevel": "analysis",
+        "expectedErrorTypes": [
+          "visual_reasoning_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[7]::#7",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[7]",
+      "current": {
+        "skillId": "tri_sum_180",
+        "subskillId": "inference",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[8]::#8",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[8]",
+      "current": {
+        "skillId": "tri_sum_180_late",
+        "subskillId": "inference_reasoning",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": [
+          "tri_sum_180"
+        ]
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Late-band triangle angle-sum row extends the same principle — confirm sequencing before enforcing.",
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[9]::#9",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[9]",
+      "current": {
+        "skillId": "geo_angle_right_identify",
+        "subskillId": "classification",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "high",
+      "confidenceReasons": [
+        "Row carries diagnosticSkillId and taxonomy-known scanner skillId.",
+        "expectedErrorTags present on template.",
+        "distractorFamily supports misconception routing."
+      ],
+      "reviewPriority": "low",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[10]::#10",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[10]",
+      "current": {
+        "skillId": "geo_angle_right_identify",
+        "subskillId": "classification_late",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "high",
+      "confidenceReasons": [
+        "Row carries diagnosticSkillId and taxonomy-known scanner skillId.",
+        "expectedErrorTags present on template.",
+        "distractorFamily supports misconception routing."
+      ],
+      "reviewPriority": "low",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[11]::#11",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[11]",
+      "current": {
+        "skillId": "corresponding",
+        "subskillId": "concept_only",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "advanced",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[12]::#12",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[12]",
+      "current": {
+        "skillId": "equilateral",
+        "subskillId": "equal_sides",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[13]::#13",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[13]",
+      "current": {
+        "skillId": "equilateral_late",
+        "subskillId": "equal_sides_review",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[14]::#14",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[14]",
+      "current": {
+        "skillId": "para_parallel",
+        "subskillId": "parallelogram",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[15]::#15",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[15]",
+      "current": {
+        "skillId": "para_parallel_late",
+        "subskillId": "parallelogram_late",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[16]::#16",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[16]",
+      "current": {
+        "skillId": "square_special",
+        "subskillId": "square_rectangle",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[17]::#17",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[17]",
+      "current": {
+        "skillId": "square_special_late",
+        "subskillId": "square_rectangle_late",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[18]::#18",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[18]",
+      "current": {
+        "skillId": "mirror",
+        "subskillId": "meaning",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[19]::#19",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[19]",
+      "current": {
+        "skillId": "mirror_late",
+        "subskillId": "meaning_axis",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[20]::#20",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[20]",
+      "current": {
+        "skillId": "congruent_def",
+        "subskillId": "same_size_shape",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[21]::#21",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[21]",
+      "current": {
+        "skillId": "perp_meeting",
+        "subskillId": "definition",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[22]::#22",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[22]",
+      "current": {
+        "skillId": "perp_meeting_late",
+        "subskillId": "definition_late",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[23]::#23",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[23]",
+      "current": {
+        "skillId": "parallel_never_meet",
+        "subskillId": "parallel_def",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[24]::#24",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[24]",
+      "current": {
+        "skillId": "parallel_never_meet_late",
+        "subskillId": "parallel_def_late",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[25]::#25",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[25]",
+      "current": {
+        "skillId": "volume_3d",
+        "subskillId": "definition",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[26]::#26",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[26]",
+      "current": {
+        "skillId": "volume_3d_late",
+        "subskillId": "definition_capacity",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[27]::#27",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[27]",
+      "current": {
+        "skillId": "vol_box",
+        "subskillId": "order_ops",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "application",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[28]::#28",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[28]",
+      "current": {
+        "skillId": "d_2r",
+        "subskillId": "relation",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[29]::#29",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[29]",
+      "current": {
+        "skillId": "wheel_rotation",
+        "subskillId": "interpret",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "measurement_error",
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[30]::#30",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[30]",
+      "current": {
+        "skillId": "hyp_opposite_right",
+        "subskillId": "hypotenuse_side",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[31]::#31",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[31]",
+      "current": {
+        "skillId": "when_pyth",
+        "subskillId": "first_step",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "application",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[32]::#32",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[32]",
+      "current": {
+        "skillId": "cube_faces",
+        "subskillId": "cube",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[33]::#33",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[33]",
+      "current": {
+        "skillId": "cube_faces_late",
+        "subskillId": "cube_faces_late",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[34]::#34",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[34]",
+      "current": {
+        "skillId": "apex",
+        "subskillId": "compare",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[35]::#35",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[35]",
+      "current": {
+        "skillId": "apex_late",
+        "subskillId": "compare_late",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[36]::#36",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[36]",
+      "current": {
+        "skillId": "360_at_vertex",
+        "subskillId": "angles_around_point",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[37]::#37",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[37]",
+      "current": {
+        "skillId": "perpendicular_to_base",
+        "subskillId": "triangle",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[38]::#38",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[38]",
+      "current": {
+        "skillId": "diag_equal_rect",
+        "subskillId": "property",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[39]::#39",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[39]",
+      "current": {
+        "skillId": "diag_equal_rect_late",
+        "subskillId": "property_late",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "standard",
+        "cognitiveLevel": "understanding",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[40]::#40",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[40]",
+      "current": {
+        "skillId": "quarter_90",
+        "subskillId": "degrees",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[41]::#41",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[41]",
+      "current": {
+        "skillId": "square_4_equal",
+        "subskillId": "square_count",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[42]::#42",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[42]",
+      "current": {
+        "skillId": "square_4_equal_mid",
+        "subskillId": "square_count_mid",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[43]::#43",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[43]",
+      "current": {
+        "skillId": "rect_all_90",
+        "subskillId": "rectangle_angles",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[44]::#44",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[44]",
+      "current": {
+        "skillId": "rect_all_90_mid",
+        "subskillId": "rectangle_angles_mid",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[45]::#45",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[45]",
+      "current": {
+        "skillId": "not_always_both",
+        "subskillId": "rhombus_rectangle",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "advanced",
+        "cognitiveLevel": "analysis",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[46]::#46",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[46]",
+      "current": {
+        "skillId": "not_always_both_late",
+        "subskillId": "rhombus_rectangle_late",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "advanced",
+        "cognitiveLevel": "analysis",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[47]::#47",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[47]",
+      "current": {
+        "skillId": "one_obtuse_max",
+        "subskillId": "obtuse_count",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "advanced",
+        "cognitiveLevel": "analysis",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[48]::#48",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[48]",
+      "current": {
+        "skillId": "slide",
+        "subskillId": "translation",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[49]::#49",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[49]",
+      "current": {
+        "skillId": "mirror_flip",
+        "subskillId": "reflection",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[50]::#50",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[50]",
+      "current": {
+        "skillId": "unit_squares",
+        "subskillId": "square_units",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "basic",
+        "cognitiveLevel": "recall",
+        "expectedErrorTypes": [
+          "measurement_error",
+          "concept_confusion"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    },
+    {
+      "questionId": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[51]::#51",
+      "sourceFile": "utils/geometry-conceptual-bank.js",
+      "subject": "geometry",
+      "objectPath": "utils/geometry-conceptual-bank.js::GEOMETRY_CONCEPTUAL_ITEMS[51]",
+      "current": {
+        "skillId": "perim_to_side",
+        "subskillId": "square_from_perimeter",
+        "difficulty": null,
+        "cognitiveLevel": null,
+        "expectedErrorTypes": [],
+        "prerequisiteSkillIds": []
+      },
+      "suggested": {
+        "difficulty": "advanced",
+        "cognitiveLevel": "analysis",
+        "expectedErrorTypes": [
+          "concept_confusion",
+          "careless_error"
+        ],
+        "prerequisiteSkillIds": []
+      },
+      "confidence": "medium",
+      "confidenceReasons": [
+        "Pattern/subtype/concept metadata present with known skill id."
+      ],
+      "reviewPriority": "medium",
+      "needsHumanReview": true
+    }
+  ]
+}

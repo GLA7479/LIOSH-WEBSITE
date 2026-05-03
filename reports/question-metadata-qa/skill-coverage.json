@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T12:34:56.320Z",
+  "generatedAt": "2026-05-03T13:05:15.628Z",
   "skills": [
     {
       "subject": "english",
@@ -4842,14 +4842,16 @@
       "subject": "science",
       "skillId": "animals",
       "totalQuestions": 51,
-      "subskillsCovered": 0,
-      "subskillIds": [],
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_animals_general"
+      ],
       "difficultyDistribution": {
-        "easy": 21,
-        "medium": 19,
-        "hard": 11
+        "basic": 21,
+        "standard": 19,
+        "advanced": 11
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 51,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "medium"
@@ -4858,14 +4860,16 @@
       "subject": "science",
       "skillId": "body",
       "totalQuestions": 47,
-      "subskillsCovered": 0,
-      "subskillIds": [],
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_body_general"
+      ],
       "difficultyDistribution": {
-        "medium": 12,
-        "hard": 11,
-        "easy": 24
+        "standard": 12,
+        "advanced": 11,
+        "basic": 24
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 47,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "medium"
@@ -4874,14 +4878,16 @@
       "subject": "science",
       "skillId": "earth_space",
       "totalQuestions": 66,
-      "subskillsCovered": 0,
-      "subskillIds": [],
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_earth_space_general"
+      ],
       "difficultyDistribution": {
-        "easy": 17,
-        "medium": 27,
-        "hard": 22
+        "basic": 17,
+        "standard": 27,
+        "advanced": 22
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 66,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "medium"
@@ -4890,14 +4896,16 @@
       "subject": "science",
       "skillId": "environment",
       "totalQuestions": 65,
-      "subskillsCovered": 0,
-      "subskillIds": [],
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_environment_general"
+      ],
       "difficultyDistribution": {
-        "easy": 11,
-        "medium": 26,
-        "hard": 28
+        "basic": 11,
+        "standard": 26,
+        "advanced": 28
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 65,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "medium"
@@ -4906,14 +4914,16 @@
       "subject": "science",
       "skillId": "experiments",
       "totalQuestions": 59,
-      "subskillsCovered": 0,
-      "subskillIds": [],
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_experiments_general"
+      ],
       "difficultyDistribution": {
-        "easy": 9,
-        "medium": 21,
-        "hard": 29
+        "basic": 9,
+        "standard": 21,
+        "advanced": 29
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 59,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "medium"
@@ -4922,14 +4932,16 @@
       "subject": "science",
       "skillId": "materials",
       "totalQuestions": 46,
-      "subskillsCovered": 0,
-      "subskillIds": [],
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_materials_general"
+      ],
       "difficultyDistribution": {
-        "easy": 14,
-        "medium": 20,
-        "hard": 12
+        "basic": 14,
+        "standard": 20,
+        "advanced": 12
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 46,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "medium"
@@ -4938,14 +4950,16 @@
       "subject": "science",
       "skillId": "plants",
       "totalQuestions": 46,
-      "subskillsCovered": 0,
-      "subskillIds": [],
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_plants_general"
+      ],
       "difficultyDistribution": {
-        "easy": 16,
-        "medium": 19,
-        "hard": 11
+        "basic": 16,
+        "standard": 19,
+        "advanced": 11
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 46,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "medium"
@@ -4960,7 +4974,7 @@
         "science_body_sense_organs"
       ],
       "difficultyDistribution": {
-        "easy": 2
+        "basic": 2
       },
       "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
@@ -4976,10 +4990,10 @@
         "science_respiratory_gas_exchange"
       ],
       "difficultyDistribution": {
-        "medium": 1
+        "standard": 1
       },
       "expectedErrorCoverageCount": 1,
-      "prerequisiteCoverageCount": 0,
+      "prerequisiteCoverageCount": 1,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
     }

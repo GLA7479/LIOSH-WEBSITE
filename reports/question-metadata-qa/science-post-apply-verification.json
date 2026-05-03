@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T12:47:02.238Z",
+  "ok": true,
+  "expectedTotal": 383,
+  "actualTotal": 383,
+  "errors": [],
+  "warnings": [],
+  "metadataCoverage": {
+    "cognitiveLevel": 383,
+    "expectedErrorTypes": 383,
+    "canonicalDifficulty": 383,
+    "scannerSubskillResolved": 383,
+    "pctCognitive": 100,
+    "pctExpectedErrors": 100,
+    "pctDifficulty": 100,
+    "pctSubskill": 100
+  },
+  "gitComparison": {
+    "baselineNote": "Exact pre-apply snapshot not stored separately; comparison uses `git show HEAD` when available.",
+    "gitBaselineAvailable": true,
+    "studentFacingContentDiffs": [],
+    "contentDiffCount": 0
+  }
+}

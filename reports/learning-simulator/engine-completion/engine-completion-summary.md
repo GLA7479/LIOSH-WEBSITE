@@ -1,6 +1,6 @@
 # Engine completion summary
 
-- Generated at: 2026-05-03T11:49:08.455Z
+- Generated at: 2026-05-03T12:47:45.990Z
 - **Engine layer closed (criteria met):** yes
 
 ## Gates
@@ -8,7 +8,7 @@
 - Engine Truth audit: **PASS**
 - Real scenario framework validation: **PASS**
 - Professional Framework subjects: **math, hebrew, english, science, geometry, moledet-geography**
-- Full orchestrator last run (if present): **PASS**
+- Full orchestrator last run (if present): **FAIL**
 
 ## Remaining gaps
 

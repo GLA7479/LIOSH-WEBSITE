@@ -1,9 +1,9 @@
 # Question metadata QA
 
-- **Generated:** 2026-05-03T12:34:56.320Z
+- **Generated:** 2026-05-03T13:05:15.628Z
 - **Gate:** scanOutcome=`ok`, advisoryStatus=`WARN`
 - **Questions scanned:** 5267
-- **High / medium risk:** 4547 / 717
+- **High / medium risk:** 4547 / 337
 - **Duplicate declared IDs (cross-file):** 0
 - **Skill buckets below 5 questions:** 299
 
@@ -11,7 +11,7 @@
 
 | Subject | Questions | Readiness | % skillId | % expl | High risk |
 | --- | ---: | --- | ---: | ---: | ---: |
-| science | 383 | medium | 100 | 100 | 0 |
+| science | 383 | strong | 100 | 100 | 0 |
 | hebrew | 54 | medium | 100 | 0 | 0 |
 | english | 670 | weak | 34.5 | 92.5 | 439 |
 | moledet-geography | 3506 | missing | 0 | 0 | 3506 |
@@ -22,15 +22,15 @@
 
 | Code | Count |
 | --- | ---: |
-| missing_prerequisite_skill_ids | 5267 |
-| missing_cognitiveLevel | 5266 |
-| missing_expected_error_types | 5247 |
-| missing_subskillId | 4927 |
+| missing_prerequisite_skill_ids | 5266 |
 | implicit_id_only | 4884 |
 | missing_difficulty | 4884 |
+| missing_cognitiveLevel | 4884 |
+| missing_expected_error_types | 4867 |
 | missing_skillId | 4547 |
+| missing_subskillId | 4547 |
 | missing_explanation | 4264 |
-| taxonomy_unknown_expected_error_type | 9 |
+| taxonomy_unknown_expected_error_type | 7 |
 
 ## Outputs
 

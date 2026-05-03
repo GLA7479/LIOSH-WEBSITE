@@ -1,6 +1,6 @@
 # Question metadata — enrichment suggestions (proposal only)
 
-_Generated: 2026-05-03T12:34:57.122Z_
+_Generated: 2026-05-03T13:02:40.957Z_
 
 ## Scope
 
@@ -30,11 +30,11 @@ _Sequential prerequisite heuristic rows: 333_
 
 | Field | Questions where suggestion differs |
 | --- | ---: |
-| cognitiveLevel | 383 |
-| difficulty | 383 |
-| subskillId | 380 |
-| expectedErrorTypes | 380 |
-| prerequisiteSkillIds | 334 |
+| prerequisiteSkillIds | 333 |
+| subskillId | 0 |
+| cognitiveLevel | 0 |
+| expectedErrorTypes | 0 |
+| difficulty | 0 |
 
 ## Sample (first 15 ids)
 

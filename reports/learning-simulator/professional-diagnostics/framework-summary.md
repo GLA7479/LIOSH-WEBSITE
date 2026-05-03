@@ -1,6 +1,6 @@
 # Professional Diagnostic Framework — summary
 
-- Generated at: 2026-05-03T11:49:06.449Z
+- Generated at: 2026-05-03T12:47:43.898Z
 - Mock structured findings: 2
 - Rollup present: true
 - Global do-not-conclude rules: 5

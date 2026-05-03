@@ -1,0 +1,16 @@
+{
+  "generatedAt": "2026-05-03T12:43:35.803Z",
+  "scienceQuestionsTotal": 383,
+  "mainArrayLength": 311,
+  "phase3Length": 72,
+  "rowsTouched": 383,
+  "prereqSkippedSequential": 333,
+  "prereqAppliedExplicit": 1,
+  "fieldCounts": {
+    "paramsSubtype": 380,
+    "paramsCognitiveLevel": 383,
+    "paramsExpectedErrorTypes": 383,
+    "paramsDifficultyCanonical": 383,
+    "paramsPrerequisiteSkillIds": 1
+  }
+}

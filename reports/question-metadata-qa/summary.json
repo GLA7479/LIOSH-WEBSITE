@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T12:34:56.320Z",
+  "generatedAt": "2026-05-03T13:05:15.628Z",
   "gate": {
     "scanOutcome": "ok",
     "partialLoadErrors": true,
@@ -63,7 +63,7 @@
   "totals": {
     "questionsScanned": 5267,
     "highRiskCount": 4547,
-    "mediumRiskCount": 717,
+    "mediumRiskCount": 337,
     "duplicateDeclaredIds": 0,
     "skillBucketsLowVolume": 299,
     "minQuestionsPerSkillThreshold": 5
@@ -71,19 +71,7 @@
   "topMissingMetadataFields": [
     [
       "missing_prerequisite_skill_ids",
-      5267
-    ],
-    [
-      "missing_cognitiveLevel",
       5266
-    ],
-    [
-      "missing_expected_error_types",
-      5247
-    ],
-    [
-      "missing_subskillId",
-      4927
     ],
     [
       "implicit_id_only",
@@ -94,7 +82,19 @@
       4884
     ],
     [
+      "missing_cognitiveLevel",
+      4884
+    ],
+    [
+      "missing_expected_error_types",
+      4867
+    ],
+    [
       "missing_skillId",
+      4547
+    ],
+    [
+      "missing_subskillId",
       4547
     ],
     [
@@ -103,7 +103,7 @@
     ],
     [
       "taxonomy_unknown_expected_error_type",
-      9
+      7
     ]
   ],
   "subjectSummaries": {
@@ -115,42 +115,27 @@
         "data/science-questions.js"
       ],
       "pctWithSkillId": 100,
-      "pctWithSubskillId": 0.8,
+      "pctWithSubskillId": 100,
       "pctWithDifficulty": 100,
-      "pctWithCognitiveLevel": 0.3,
-      "pctWithExpectedErrorTypes": 0.8,
-      "pctWithPrerequisiteSkillIds": 0,
+      "pctWithCognitiveLevel": 100,
+      "pctWithExpectedErrorTypes": 100,
+      "pctWithPrerequisiteSkillIds": 0.3,
       "pctWithCorrectAnswer": 100,
       "pctWithExplanation": 100,
       "duplicateIdsInSubject": 0,
       "highRiskQuestionCount": 0,
-      "mediumRiskQuestionCount": 380,
+      "mediumRiskQuestionCount": 0,
       "weakestMetadataFields": [
-        "missing_prerequisite_skill_ids",
-        "missing_cognitiveLevel",
-        "missing_subskillId",
-        "missing_expected_error_types"
+        "missing_prerequisite_skill_ids"
       ],
       "topIssueCodes": [
         [
           "missing_prerequisite_skill_ids",
-          383
-        ],
-        [
-          "missing_cognitiveLevel",
           382
-        ],
-        [
-          "missing_subskillId",
-          380
-        ],
-        [
-          "missing_expected_error_types",
-          380
         ]
       ],
-      "readinessScore": "medium",
-      "avgCompleteness": 0.602
+      "readinessScore": "strong",
+      "avgCompleteness": 0.92
     },
     "hebrew": {
       "subject": "hebrew",
@@ -458,10 +443,6 @@
         [
           "missing_expected_error_types",
           44
-        ],
-        [
-          "taxonomy_unknown_expected_error_type",
-          2
         ]
       ],
       "readinessScore": "medium",
