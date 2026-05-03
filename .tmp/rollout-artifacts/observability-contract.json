@@ -1,0 +1,18 @@
+{
+  "artifact": "observability-contract",
+  "generatedAt": "2026-05-03T23:49:14.940Z",
+  "sampleSize": 80,
+  "telemetryCompletenessRate": 100,
+  "ingestSuccessRate": 100,
+  "dashboardLagMinutes": 1,
+  "traceQueryP95Minutes": 0.5,
+  "deterministicEvents": 80,
+  "summary": {
+    "total": 80,
+    "fallbackRate": 0,
+    "clarificationRate": 0,
+    "deterministicRate": 1,
+    "llmRate": 0
+  },
+  "pass": true
+}
