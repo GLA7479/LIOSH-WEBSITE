@@ -140,6 +140,18 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
       const data = await res.json().catch(() => ({}));
       if (data.deployment) setDeployment(data.deployment);
 
+      if (res.ok && data.ok === false && data.code === "generation_not_supported_in_serverless") {
+        setGenResult({
+          level: "warning",
+          code: data.code,
+          text:
+            data.message ||
+            "Remote generation is not supported on this deployment. Use CLI/CI to create a durable Expert Review Pack.",
+          cliFallback: data.cliFallback || "npm run qa:learning-simulator:expert-review-pack",
+        });
+        return;
+      }
+
       if (!res.ok) {
         const code = data.code || "error";
         const baseMsg = data.message || data.error || `HTTP ${res.status}`;
@@ -411,7 +423,9 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
                   {genResult.level === "success"
                     ? "— generated successfully"
                     : genResult.level === "warning"
-                      ? "— generated; persistence may be ephemeral on this host"
+                      ? genResult.code === "generation_not_supported_in_serverless"
+                        ? "— remote generation not supported (use CLI/CI)"
+                        : "— generated; persistence may be ephemeral on this host"
                       : genResult.level === "error"
                         ? "— failed"
                         : ""}

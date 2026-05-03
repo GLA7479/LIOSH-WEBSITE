@@ -6,6 +6,16 @@
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
+/** True on Vercel / Lambda — scripts/ under repo root are not deployed to /var/task; skip dynamic imports. */
+function isServerlessRuntime() {
+  return (
+    process.env.VERCEL === "1" ||
+    Boolean(process.env.VERCEL_ENV) ||
+    Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
+    Boolean(process.env.LAMBDA_TASK_ROOT)
+  );
+}
+
 function deploymentInfo() {
   const vercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
   const awsLambda = Boolean(process.env.AWS_EXECUTION_ENV || process.env.LAMBDA_TASK_ROOT);
@@ -67,6 +77,17 @@ export default async function handler(req, res) {
 
   const deployment = deploymentInfo();
 
+  if (isServerlessRuntime()) {
+    return res.status(200).json({
+      ok: false,
+      code: "generation_not_supported_in_serverless",
+      message:
+        "Remote generation is not supported on this deployment. Use CLI/CI to create a durable Expert Review Pack. Run npm run qa:learning-simulator:expert-review-pack locally or in CI.",
+      cliFallback: "npm run qa:learning-simulator:expert-review-pack",
+      deployment,
+    });
+  }
+
   try {
     const artifactScript = join(process.cwd(), "scripts/learning-simulator/generate-expert-review-pack-artifacts.mjs");
     const packUrl = pathToFileURL(artifactScript).href;
@@ -75,8 +96,9 @@ export default async function handler(req, res) {
       return res.status(500).json({
         ok: false,
         code: "generation_failed",
-        error: "generateExpertReviewPackFromArtifacts export missing",
-        message: "generateExpertReviewPackFromArtifacts export missing",
+        message:
+          "Generation module is unavailable on this server. Run npm run qa:learning-simulator:expert-review-pack locally or in CI.",
+        cliFallback: "npm run qa:learning-simulator:expert-review-pack",
       });
     }
     const out = await mod.generateExpertReviewPackFromArtifacts(process.cwd());
@@ -113,9 +135,9 @@ export default async function handler(req, res) {
     return res.status(500).json({
       ok: false,
       code: "generation_failed",
-      error: msg,
-      message: msg,
-      cliFallback: "If this persists, run npm run qa:learning-simulator:expert-review-pack in local Node / CI.",
+      message:
+        "Generation failed on the server. Run npm run qa:learning-simulator:expert-review-pack locally or in CI for a reliable pack.",
+      cliFallback: "npm run qa:learning-simulator:expert-review-pack",
     });
   }
 }

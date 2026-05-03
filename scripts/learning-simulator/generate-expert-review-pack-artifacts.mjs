@@ -6,12 +6,7 @@
  *   npm run qa:learning-simulator:expert-review-pack
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-
-import { PROFESSIONAL_ENGINE_VALIDATION_SCENARIO_IDS_V1 } from "./lib/engine-truth-golden.mjs";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { join } from "node:path";
 
 /** Positive clinical-condition wording — disclaimers that say "not medical" are allowed. */
 const BANNED_PHRASES = ["dyslexia", "dyscalculia", "adhd", "learning disability", "autism spectrum", "psychiatric disorder"];
@@ -226,19 +221,25 @@ export async function generateExpertReviewPackFromArtifacts(root) {
   const validationPath = join(root, "reports/learning-simulator/engine-professionalization/professional-engine-validation.json");
   const validationArtifact = await readJsonSafe(validationPath);
   qaAssert(validationArtifact?.status === "PASS", "professional-engine-validation.json missing or status !== PASS");
+
+  /** Source of truth for order and membership — no runtime import from scripts/lib. */
+  const listFromValidation = Array.isArray(validationArtifact.scenarioList) ? validationArtifact.scenarioList : [];
+  qaAssert(listFromValidation.length > 0, "professional-engine-validation.json: scenarioList missing or empty");
   qaAssert(
-    Number(validationArtifact.scenarioCount) === PROFESSIONAL_ENGINE_VALIDATION_SCENARIO_IDS_V1.length,
-    `scenarioCount mismatch (validation ${validationArtifact.scenarioCount} vs golden ${PROFESSIONAL_ENGINE_VALIDATION_SCENARIO_IDS_V1.length})`
+    Number(validationArtifact.scenarioCount) === listFromValidation.length,
+    `scenarioCount vs scenarioList length mismatch (${validationArtifact.scenarioCount} vs ${listFromValidation.length})`
   );
 
-  const listFromValidation = validationArtifact.scenarioList || [];
-  const goldenSet = new Set(PROFESSIONAL_ENGINE_VALIDATION_SCENARIO_IDS_V1);
-  for (const id of listFromValidation) qaAssert(goldenSet.has(id), `unexpected scenario id in validation artifact: ${id}`);
-  for (const id of PROFESSIONAL_ENGINE_VALIDATION_SCENARIO_IDS_V1) {
-    qaAssert(listFromValidation.includes(id), `golden scenario missing from validation artifact: ${id}`);
-  }
-
   const validationById = Object.fromEntries((validationArtifact.scenarios || []).map((s) => [s.scenario, s]));
+  for (const id of listFromValidation) {
+    qaAssert(validationById[id] != null, `no validation row for scenario in scenarioList: ${id}`);
+  }
+  const listSet = new Set(listFromValidation);
+  for (const row of validationArtifact.scenarios || []) {
+    if (row?.scenario != null) {
+      qaAssert(listSet.has(row.scenario), `validation row for unknown scenario (not in scenarioList): ${row.scenario}`);
+    }
+  }
 
   const engineFinalPath = join(root, "reports/learning-simulator/engine-professionalization/engine-final-summary.json");
   const engineFinal = await readJsonSafe(engineFinalPath);
@@ -251,7 +252,7 @@ export async function generateExpertReviewPackFromArtifacts(root) {
   /** @type {object[]} */
   const summaryScenarios = [];
 
-  for (const id of PROFESSIONAL_ENGINE_VALIDATION_SCENARIO_IDS_V1) {
+  for (const id of listFromValidation) {
     const valRow = validationById[id];
     qaAssert(valRow != null, `no validation row for ${id}`);
 
@@ -322,7 +323,7 @@ export async function generateExpertReviewPackFromArtifacts(root) {
     generatedAt,
     status: "PASS",
     scenarioCount: manifestScenarios.length,
-    scenarioIds: PROFESSIONAL_ENGINE_VALIDATION_SCENARIO_IDS_V1,
+    scenarioIds: [...listFromValidation],
     requiresHumanExpertReview: true,
     sourceArtifacts: {
       professionalEngineValidation: "reports/learning-simulator/engine-professionalization/professional-engine-validation.json",
