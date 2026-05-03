@@ -24,6 +24,7 @@
     "qa:learning-simulator:render": "tsx scripts/learning-simulator/run-render-release-gate.mjs",
     "qa:learning-simulator:release-summary": "tsx scripts/learning-simulator/run-release-readiness-summary.mjs",
     "qa:learning-simulator:pdf-export": "tsx scripts/learning-simulator/run-pdf-export-gate.mjs",
+    "qa:learning-simulator:review-pack": "tsx scripts/learning-simulator/run-parent-report-review-pack.mjs",
     "qa:learning-simulator:quick": "tsx scripts/learning-simulator/run-orchestrator.mjs quick",
     "qa:learning-simulator:full": "tsx scripts/learning-simulator/run-orchestrator.mjs full",
     "qa:learning-simulator:release": "tsx scripts/learning-simulator/run-orchestrator.mjs full",
