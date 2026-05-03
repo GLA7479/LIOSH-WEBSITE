@@ -1,6 +1,6 @@
 # PDF export gate
 
-- runId: pdf-gate-mopbp3zm
+- runId: pdf-gate-mopdunn7
 - status: pass
 - browserMode: true
 - checkedRoute: /learning/parent-report?qa_pdf=file
@@ -11,7 +11,7 @@
 | --- | --- |
 | downloadAttempted | true |
 | downloadSucceeded | true |
-| fileSizeBytes | 3952493 |
+| fileSizeBytes | 3918838 |
 | pdfHeaderOk | true |
 | consoleErrorsTotal | 0 |
 | fatalErrorsTotal | 0 |

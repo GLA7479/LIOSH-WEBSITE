@@ -46,6 +46,7 @@ import { computeGlobalScore } from "./system-intelligence/global-score.js";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
 import { deriveRawMetricStrengthLinesHe } from "./parent-data-presence.js";
 import { runDiagnosticEngineV2 } from "./diagnostic-engine-v2/index.js";
+import { enrichDiagnosticEngineV2WithProfessionalFrameworkV1 } from "./learning-diagnostics/diagnostic-framework-v1.js";
 import { attachFastDiagnosisToDiagnosticEngineV2 } from "./fast-diagnostic-engine/index.js";
 import { safeBuildHybridRuntimeForReport } from "./ai-hybrid-diagnostic/safe-build-hybrid-runtime.js";
 import { getActiveDiagnosisSessionSummaryForReport } from "./active-diagnosis-session-summary.js";
@@ -1942,6 +1943,14 @@ export function generateParentReportV2(
     rawMistakesBySubject,
     startMs,
     endMs,
+  });
+
+  enrichDiagnosticEngineV2WithProfessionalFrameworkV1(diagnosticEngineV2, maps, {
+    mathQuestions: mathTotalQuestions,
+    hebrewQuestions: hebrewTotalQuestions,
+    mathAccuracy,
+    hebrewAccuracy,
+    totalQuestions,
   });
 
   if (Array.isArray(diagnosticEngineV2?.units)) {

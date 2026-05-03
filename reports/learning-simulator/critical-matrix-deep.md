@@ -1,7 +1,7 @@
 # Critical Matrix Deep Assertions
 
-- Run id: critical-deep-mopboeoe
-- Generated at: 2026-05-03T05:20:55.118Z
+- Run id: critical-deep-mopdtyz1
+- Generated at: 2026-05-03T06:21:13.933Z
 - Selected critical cells: 56 (target band **40–80**, not full 618-cell deep suite)
 - Per-grade balancing target (6–12 when total≤72): **met**
 - Scenarios executed: 108 (3 profile variants × each grade×subject group with selected cells)

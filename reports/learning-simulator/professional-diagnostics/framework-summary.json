@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-05-03T06:20:29.612Z",
+  "frameworkVersion": "1.0.0",
+  "qa": {
+    "mockUnitsProcessed": 2,
+    "rollupPresent": true,
+    "globalDoNotConcludeCount": 5
+  },
+  "integration": {
+    "readsFrom": [
+      "diagnosticEngineV2.units[].subjectId",
+      "diagnosticEngineV2.units[].topicRowKey",
+      "diagnosticEngineV2.units[].bucketKey",
+      "diagnosticEngineV2.units[].canonicalState.actionState",
+      "diagnosticEngineV2.units[].diagnosis.forbiddenInferencesHe",
+      "diagnosticEngineV2.units[].evidenceTrace",
+      "maps[subjectId][topicRowKey] row diagnostics (accuracy, questions, trend, behaviorProfile, dataSufficiencyLevel, modeKey)"
+    ],
+    "writesTo": [
+      "diagnosticEngineV2.units[].professionalFrameworkV1 (math, hebrew only)",
+      "diagnosticEngineV2.professionalFrameworkV1 rollup"
+    ],
+    "integrationFile": "utils/parent-report-v2.js",
+    "integrationPoint": "Immediately after runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, endMs })"
+  },
+  "mathSkillCount": 4,
+  "hebrewSkillCount": 2
+}
