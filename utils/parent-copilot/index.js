@@ -30,6 +30,11 @@ import { appendTurnTelemetryTrace } from "./telemetry-store.js";
 import { tryBuildParentShortFollowupDraft } from "./short-followup-composer.js";
 import { tryBuildComparisonPracticalFollowupDraft } from "./comparison-practical-continuity.js";
 import { compactParentAnswerBlocks } from "./answer-compaction.js";
+import {
+  tryBuildPhaseEClarificationBypassDraft,
+  augmentPhaseEThinEvidenceDraft,
+  tryBuildPhaseEResolvedShortcutDraft,
+} from "../parent-ai-topic-classifier/external-question-route.js";
 
 const CLINICAL_GUARDRAIL_FAIL_CODES = new Set([
   "clinical_diagnosis_language",
@@ -427,6 +432,20 @@ function runDeterministicCore(input) {
   };
 
   if (scopeRes.resolutionStatus === "clarification_required") {
+    const phaseEBypass = tryBuildPhaseEClarificationBypassDraft({
+      utteranceStr,
+      payload: input?.payload,
+      scopeRes,
+      stageA,
+    });
+    if (phaseEBypass) {
+      return packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, utteranceStr, {
+        truthPacket: phaseEBypass.truthPacket,
+        plannerIntent: phaseEBypass.plannerIntent,
+        scopeMeta: phaseEBypass.scopeMeta,
+        answerBlocks: phaseEBypass.answerBlocks,
+      });
+    }
     const r = buildClarificationParentCopilotResponse({
       clarificationQuestionHe: scopeRes.clarificationQuestionHe || "צריך עוד הקשר.",
       intent,
@@ -459,6 +478,23 @@ function runDeterministicCore(input) {
     });
     validateParentCopilotResponseV1(r);
     return { response: r, audience, sessionId, conv, truthPacket: null, intent, scopeMeta, utteranceStr };
+  }
+
+  if (aggregateQuestionClass === "none") {
+    const phaseShortcut = tryBuildPhaseEResolvedShortcutDraft({
+      utteranceStr,
+      truthPacket,
+      scope,
+      stageA,
+    });
+    if (phaseShortcut) {
+      return packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, utteranceStr, {
+        truthPacket: phaseShortcut.truthPacket,
+        plannerIntent: phaseShortcut.plannerIntent,
+        scopeMeta: phaseShortcut.scopeMeta,
+        answerBlocks: phaseShortcut.answerBlocks,
+      });
+    }
   }
 
   const priorIntents = Array.isArray(conv.priorIntents) ? conv.priorIntents : [];
@@ -529,6 +565,8 @@ function runDeterministicCore(input) {
     });
   }
 
+  draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+  draft = augmentPhaseEThinEvidenceDraft(draft, truthPacket);
   draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
   let vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
   let fallbackUsed = false;

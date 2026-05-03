@@ -69,6 +69,7 @@
     "test:parent-report-ai:scenario-simulator": "tsx scripts/parent-report-ai-scenario-simulator.mjs",
     "test:parent-report-ai:integration": "tsx scripts/parent-report-ai-integration.mjs",
     "test:parent-ai-context:consistency": "tsx scripts/parent-ai-context-consistency.mjs",
+    "test:parent-ai-phase-e:external": "tsx scripts/parent-ai-phase-e-external-simulator.mjs",
     "build:adaptive-planner:metadata-index": "tsx scripts/build-adaptive-planner-metadata-index.mjs",
     "audit:branches": "tsx scripts/extract-generator-branches.mjs",
     "build:curriculum-spine": "tsx scripts/build-curriculum-spine-v1.mjs",

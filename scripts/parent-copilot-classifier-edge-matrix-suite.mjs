@@ -6,7 +6,8 @@ import { pct, writeArtifact } from "./rollout-artifacts-lib.mjs";
 const intentCases = [
   { utterance: "מה לעשות היום בנושא הזה?", expected: "what_to_do_today" },
   { utterance: "מה כדאי לעשות בשבוע הקרוב?", expected: "what_to_do_this_week" },
-  { utterance: "מה לא כדאי לעשות עכשיו?", expected: "what_is_still_difficult" },
+  /** Matches Stage A `what_not_to_do_now` regex `/מה\s*לא\s*כדאי\s*לעשות\s*עכשיו/` — not difficulty wording. */
+  { utterance: "מה לא כדאי לעשות עכשיו?", expected: "what_not_to_do_now" },
   { utterance: "להתקדם או להמתין כרגע?", expected: "what_is_most_important" },
   { utterance: "איך להסביר לילד את זה?", expected: "how_to_tell_child" },
   { utterance: "מה לשאול את המורה?", expected: "question_for_teacher" },
