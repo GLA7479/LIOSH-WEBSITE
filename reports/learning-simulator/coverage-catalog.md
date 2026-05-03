@@ -1,7 +1,7 @@
 # Coverage catalog (full matrix)
 
-- Generated at: 2026-05-03T14:47:01.567Z
-- Matrix snapshot: 2026-05-03T14:46:43.298Z
+- Generated at: 2026-05-03T17:02:53.461Z
+- Matrix snapshot: 2026-05-03T17:02:33.919Z
 - Matrix rows: 819
 - Quick scenarios: 10 · Deep scenarios: 12
 - Unique cells touched (quick refs): 32

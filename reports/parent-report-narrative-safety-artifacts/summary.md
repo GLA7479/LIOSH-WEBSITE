@@ -1,6 +1,6 @@
 # Parent narrative safety — real artifact validation
 
-- Generated: 2026-05-03T14:51:59.188Z
+- Generated: 2026-05-03T17:08:06.280Z
 - Status: **warnings_only**
 
 > **Warnings** (for example `ambiguous_evidence` where the text is still vague on thin rows) are listed for review. They do not fail this script. **Info / caution** rows are *not* safety problems — they mark correctly cautious thin-data Hebrew copy.

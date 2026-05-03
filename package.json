@@ -57,6 +57,7 @@
     "test:dev-student-simulator-custom-builder-ui": "tsx scripts/dev-student-simulator-custom-builder-multi-topic-qa.mjs",
     "test:intelligence-layer-v1": "tsx scripts/intelligence-layer-v1-selftest.mjs",
     "test:intelligence-layer-v1-usage": "tsx scripts/intelligence-layer-v1-usage-selftest.mjs",
+    "test:adaptive-planner": "tsx scripts/adaptive-planner-selftest.mjs",
     "audit:branches": "tsx scripts/extract-generator-branches.mjs",
     "build:curriculum-spine": "tsx scripts/build-curriculum-spine-v1.mjs",
     "audit:skill-coverage": "tsx scripts/audit-skill-coverage.mjs",

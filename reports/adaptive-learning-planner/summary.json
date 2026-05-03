@@ -1,0 +1,576 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T17:01:58.199Z",
+  "totals": {
+    "cases": 13,
+    "passed": 13,
+    "failed": 0
+  },
+  "cases": [
+    {
+      "name": "strong_mastery_advance",
+      "pass": true,
+      "input": {
+        "studentId": "s1",
+        "subject": "math",
+        "currentSkillId": "arithmetic_operations",
+        "currentSubskillId": "addition",
+        "engineDecision": "advance",
+        "mastery": 0.9,
+        "confidence": 0.85,
+        "dataQuality": "strong",
+        "riskFlags": [],
+        "doNotConclude": [],
+        "detectedErrorTypes": [],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {
+            "skillId": "arithmetic_operations"
+          }
+        ],
+        "currentDifficultyHint": "standard"
+      },
+      "output": {
+        "plannerStatus": "ready",
+        "nextAction": "advance_skill",
+        "subject": "math",
+        "targetSkillId": "arithmetic_operations",
+        "targetSubskillId": "addition",
+        "targetDifficulty": "advanced",
+        "questionCount": 4,
+        "reasonCodes": [
+          "ADVANCE_STRONG_SIGNAL"
+        ],
+        "studentSafeSummary": "Ready for slightly more challenging practice on the same skill line.",
+        "parentSafeSummary": "Signals support cautious difficulty increase with monitoring.",
+        "internalNotes": [],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "name": "remediate_current_skill",
+      "pass": true,
+      "input": {
+        "subject": "science",
+        "currentSkillId": "sci_body_fact_recall",
+        "currentSubskillId": "science_body_heart_location",
+        "engineDecision": "remediate",
+        "mastery": 0.35,
+        "confidence": 0.5,
+        "dataQuality": "moderate",
+        "riskFlags": [],
+        "doNotConclude": [],
+        "detectedErrorTypes": [
+          "fact_recall_gap"
+        ],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ],
+        "currentDifficultyHint": "standard"
+      },
+      "output": {
+        "plannerStatus": "ready",
+        "nextAction": "practice_current",
+        "subject": "science",
+        "targetSkillId": "sci_body_fact_recall",
+        "targetSubskillId": "science_body_heart_location",
+        "targetDifficulty": "basic",
+        "questionCount": 5,
+        "reasonCodes": [
+          "REMEDIATE",
+          "ERROR_TYPES_TARGETED_PRACTICE"
+        ],
+        "studentSafeSummary": "Extra practice on the current skill at a supportive difficulty.",
+        "parentSafeSummary": "Targeted practice on the same skill; difficulty held or lowered slightly.",
+        "internalNotes": [],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "name": "thin_data_pause",
+      "pass": true,
+      "input": {
+        "subject": "geometry",
+        "currentSkillId": "geo_angle_basics",
+        "currentSubskillId": "general",
+        "engineDecision": "maintain",
+        "mastery": 0.5,
+        "confidence": 0.5,
+        "dataQuality": "thin",
+        "riskFlags": [],
+        "doNotConclude": [],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ],
+        "currentDifficultyHint": "basic"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "subject": "geometry",
+        "targetSkillId": "geo_angle_basics",
+        "targetSubskillId": "general",
+        "targetDifficulty": "intro",
+        "questionCount": 3,
+        "reasonCodes": [
+          "THIN_DATA"
+        ],
+        "studentSafeSummary": "A few more practice items before changing level.",
+        "parentSafeSummary": "Thin evidence — collect a small batch of practice before advancing.",
+        "internalNotes": [],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "name": "do_not_conclude_caution",
+      "pass": true,
+      "input": {
+        "subject": "hebrew",
+        "currentSkillId": "reading_comprehension",
+        "currentSubskillId": "explicit_information",
+        "engineDecision": "advance",
+        "mastery": 0.95,
+        "confidence": 0.9,
+        "dataQuality": "strong",
+        "riskFlags": [],
+        "doNotConclude": [
+          "Do not draw strong conclusions until more practice data is collected."
+        ],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ],
+        "currentDifficultyHint": "standard"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "subject": "hebrew",
+        "targetSkillId": "reading_comprehension",
+        "targetSubskillId": "explicit_information",
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "reasonCodes": [
+          "DO_NOT_CONCLUDE"
+        ],
+        "studentSafeSummary": "A few more practice items before changing level.",
+        "parentSafeSummary": "Thin evidence — collect a small batch of practice before advancing.",
+        "internalNotes": [],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "name": "prerequisite_review",
+      "pass": true,
+      "input": {
+        "subject": "math",
+        "currentSkillId": "fractions",
+        "currentSubskillId": "compare_fractions",
+        "engineDecision": "maintain",
+        "mastery": 0.45,
+        "confidence": 0.72,
+        "dataQuality": "moderate",
+        "riskFlags": [],
+        "doNotConclude": [],
+        "prerequisiteSkillIds": [
+          "number_sense"
+        ],
+        "prerequisiteSubskillIdHint": "place_value",
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ],
+        "currentDifficultyHint": "standard"
+      },
+      "output": {
+        "plannerStatus": "ready",
+        "nextAction": "review_prerequisite",
+        "subject": "math",
+        "targetSkillId": "number_sense",
+        "targetSubskillId": "place_value",
+        "targetDifficulty": "basic",
+        "questionCount": 4,
+        "reasonCodes": [
+          "PREREQUISITE_REVIEW"
+        ],
+        "studentSafeSummary": "Brief review of a foundation skill that supports the current topic.",
+        "parentSafeSummary": "Strengthen a prerequisite skill before pushing the main skill harder.",
+        "internalNotes": [],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "name": "guessing_probe",
+      "pass": true,
+      "input": {
+        "subject": "math",
+        "currentSkillId": "word_problems",
+        "currentSubskillId": "identify_operation_from_text",
+        "engineDecision": "maintain",
+        "mastery": 0.5,
+        "confidence": 0.6,
+        "dataQuality": "moderate",
+        "riskFlags": [
+          "guessing"
+        ],
+        "doNotConclude": [],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ],
+        "currentDifficultyHint": "standard"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "subject": "math",
+        "targetSkillId": "word_problems",
+        "targetSubskillId": "identify_operation_from_text",
+        "targetDifficulty": "standard",
+        "questionCount": 3,
+        "reasonCodes": [
+          "PROBE_GUESSING"
+        ],
+        "studentSafeSummary": "Short probe to verify understanding versus guessing.",
+        "parentSafeSummary": "Inconsistent or guess-heavy signals — use a small diagnostic set.",
+        "internalNotes": [],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "name": "inconsistency_probe",
+      "pass": true,
+      "input": {
+        "subject": "science",
+        "currentSkillId": "plants",
+        "currentSubskillId": "sci_plants_general",
+        "engineDecision": "maintain",
+        "mastery": 0.4,
+        "confidence": 0.5,
+        "dataQuality": "moderate",
+        "riskFlags": [
+          "inconsistency"
+        ],
+        "doNotConclude": [],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ],
+        "currentDifficultyHint": "basic"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "subject": "science",
+        "targetSkillId": "plants",
+        "targetSubskillId": "sci_plants_general",
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "reasonCodes": [
+          "PROBE_GUESSING"
+        ],
+        "studentSafeSummary": "Short probe to verify understanding versus guessing.",
+        "parentSafeSummary": "Inconsistent or guess-heavy signals — use a small diagnostic set.",
+        "internalNotes": [],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "name": "engine_insufficient_data",
+      "pass": true,
+      "input": {
+        "subject": "english",
+        "currentSkillId": "grammar",
+        "currentSubskillId": "tense_agreement",
+        "engineDecision": "insufficient_data",
+        "mastery": 0,
+        "confidence": 0.2,
+        "dataQuality": "moderate",
+        "riskFlags": [],
+        "doNotConclude": [],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ],
+        "currentDifficultyHint": "basic"
+      },
+      "output": {
+        "plannerStatus": "insufficient_data",
+        "nextAction": "pause_collect_more_data",
+        "subject": "english",
+        "targetSkillId": "grammar",
+        "targetSubskillId": "tense_agreement",
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "reasonCodes": [
+          "ENGINE_INSUFFICIENT_DATA"
+        ],
+        "studentSafeSummary": "The learning system needs a bit more practice data before suggesting the next step.",
+        "parentSafeSummary": "Collect a few more practice items; conclusions are deferred.",
+        "internalNotes": [],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "name": "missing_subject",
+      "pass": true,
+      "input": {
+        "subject": "",
+        "engineDecision": "maintain",
+        "mastery": 0.5,
+        "confidence": 0.5,
+        "dataQuality": "strong",
+        "riskFlags": [],
+        "doNotConclude": [],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ]
+      },
+      "output": {
+        "plannerStatus": "insufficient_data",
+        "nextAction": "pause_collect_more_data",
+        "subject": "",
+        "targetSkillId": "",
+        "targetSubskillId": "",
+        "targetDifficulty": "standard",
+        "questionCount": 3,
+        "reasonCodes": [
+          "MISSING_METADATA"
+        ],
+        "studentSafeSummary": "Not enough context to plan (missing subject).",
+        "parentSafeSummary": "More learning activity is needed before suggesting a next focus.",
+        "internalNotes": [
+          "Missing subject on planner input."
+        ],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "name": "missing_metadata_advance_blocked",
+      "pass": true,
+      "input": {
+        "subject": "science",
+        "currentSkillId": "plants",
+        "currentSubskillId": "sci_plants_general",
+        "engineDecision": "advance",
+        "mastery": 0.95,
+        "confidence": 0.95,
+        "dataQuality": "strong",
+        "riskFlags": [],
+        "doNotConclude": [],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [],
+        "currentDifficultyHint": "standard"
+      },
+      "output": {
+        "plannerStatus": "needs_human_review",
+        "nextAction": "pause_collect_more_data",
+        "subject": "science",
+        "targetSkillId": "plants",
+        "targetSubskillId": "sci_plants_general",
+        "targetDifficulty": "standard",
+        "questionCount": 3,
+        "reasonCodes": [
+          "MISSING_METADATA"
+        ],
+        "studentSafeSummary": "Waiting on verified question metadata before suggesting an advanced path.",
+        "parentSafeSummary": "Skill metadata for the next step is not confirmed; hold automatic advancement.",
+        "internalNotes": [],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": true
+      }
+    },
+    {
+      "name": "english_missing_skill",
+      "pass": true,
+      "input": {
+        "subject": "english",
+        "currentSkillId": "",
+        "currentSubskillId": "",
+        "engineDecision": "maintain",
+        "mastery": 0.5,
+        "confidence": 0.6,
+        "dataQuality": "moderate",
+        "riskFlags": [],
+        "doNotConclude": [],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ],
+        "currentDifficultyHint": "basic"
+      },
+      "output": {
+        "plannerStatus": "needs_human_review",
+        "nextAction": "pause_collect_more_data",
+        "subject": "english",
+        "targetSkillId": "",
+        "targetSubskillId": "",
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "reasonCodes": [
+          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
+        ],
+        "studentSafeSummary": "English practice can continue, but skill routing should be confirmed by a teacher.",
+        "parentSafeSummary": "English tagging is incomplete in the content bank; planner will not auto-route fine-grained skills.",
+        "internalNotes": [
+          "English exempt / missing skillId — no confident adaptive routing."
+        ],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": true
+      }
+    },
+    {
+      "name": "english_skill_incomplete_flag",
+      "pass": true,
+      "input": {
+        "subject": "english",
+        "currentSkillId": "grammar",
+        "currentSubskillId": "tense_agreement",
+        "skillTaggingIncomplete": true,
+        "engineDecision": "advance",
+        "mastery": 0.9,
+        "confidence": 0.9,
+        "dataQuality": "strong",
+        "riskFlags": [],
+        "doNotConclude": [],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ],
+        "currentDifficultyHint": "standard"
+      },
+      "output": {
+        "plannerStatus": "needs_human_review",
+        "nextAction": "pause_collect_more_data",
+        "subject": "english",
+        "targetSkillId": "grammar",
+        "targetSubskillId": "tense_agreement",
+        "targetDifficulty": "standard",
+        "questionCount": 3,
+        "reasonCodes": [
+          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
+        ],
+        "studentSafeSummary": "English practice can continue, but skill routing should be confirmed by a teacher.",
+        "parentSafeSummary": "English tagging is incomplete in the content bank; planner will not auto-route fine-grained skills.",
+        "internalNotes": [
+          "English exempt / missing skillId — no confident adaptive routing."
+        ],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": true
+      }
+    },
+    {
+      "name": "maintain_strong",
+      "pass": true,
+      "input": {
+        "subject": "moledet-geography",
+        "currentSkillId": "moledet_geo_maps",
+        "currentSubskillId": "g3",
+        "engineDecision": "maintain",
+        "mastery": 0.72,
+        "confidence": 0.78,
+        "dataQuality": "strong",
+        "riskFlags": [],
+        "doNotConclude": [],
+        "prerequisiteSkillIds": [],
+        "recentAttempts": [],
+        "availableQuestionMetadata": [
+          {}
+        ],
+        "currentDifficultyHint": "standard"
+      },
+      "output": {
+        "plannerStatus": "ready",
+        "nextAction": "maintain_skill",
+        "subject": "moledet-geography",
+        "targetSkillId": "moledet_geo_maps",
+        "targetSubskillId": "g3",
+        "targetDifficulty": "standard",
+        "questionCount": 4,
+        "reasonCodes": [
+          "MAINTAIN_STRONG_SIGNAL"
+        ],
+        "studentSafeSummary": "Continue solid practice at the current level.",
+        "parentSafeSummary": "Maintain current difficulty while consolidating mastery.",
+        "internalNotes": [],
+        "mustNotSay": [
+          "Do not infer medical or learning-disability diagnoses.",
+          "Do not use permanent-ability labels.",
+          "Do not override the diagnostic engine decision; planner only recommends pacing and sequencing."
+        ],
+        "requiresHumanReview": false
+      }
+    }
+  ]
+}

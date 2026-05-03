@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-03T14:46:51.172Z",
+  "generatedAt": "2026-05-03T17:02:42.142Z",
   "engineTruthAudit": {
     "status": "PASS",
     "source": "reports/learning-simulator/engine-truth/engine-truth-summary.json"

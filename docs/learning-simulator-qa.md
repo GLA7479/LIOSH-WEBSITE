@@ -169,7 +169,10 @@ npm run qa:learning-simulator:reports
 npm run qa:learning-simulator:behavior
 npm run qa:learning-simulator:questions
 npm run qa:learning-simulator:deep
+npm run test:adaptive-planner
 ```
+
+`npm run test:adaptive-planner` exercises the **Adaptive Learning Planner** foundation (deterministic; see `docs/adaptive-learning-planner.md`).
 
 ## Known limits (current)
 
