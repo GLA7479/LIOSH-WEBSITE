@@ -1,27 +1,27 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T19:27:36.334Z",
+  "generatedAt": "2026-05-03T20:34:07.299Z",
   "sourceArtifactSummaryPath": "reports/adaptive-learning-planner/artifact-summary.json",
   "executiveSummary": {
     "totalPlannerRuns": 126,
     "safetyViolationCount": 0,
-    "metadataExactMatchCount": 118,
-    "metadataSkillSubskillMatchCount": 118,
-    "metadataSubjectFallbackCount": 2,
-    "metadataSubjectFallbackBaselineCount": 120,
-    "afterAvailableQuestionMetadataMissingCount": 6,
-    "needsHumanReviewCount": 6,
-    "skillAlignmentCoverage": 0.937,
+    "metadataExactMatchCount": 126,
+    "metadataSkillSubskillMatchCount": 126,
+    "metadataSubjectFallbackCount": 0,
+    "metadataSubjectFallbackBaselineCount": 117,
+    "afterAvailableQuestionMetadataMissingCount": 0,
+    "needsHumanReviewCount": 0,
+    "skillAlignmentCoverage": 1,
     "skillAlignmentBySource": {
-      "topic_mapping": 107,
+      "topic_mapping": 115,
       "taxonomy_bridge": 7,
       "unit_field": 4
     },
-    "plannerReadyCount": 3,
-    "plannerCautionCount": 117,
-    "plannerNeedsHumanReviewCount": 6,
-    "englishSkillTaggingIncompleteCount": 6,
-    "generatedAtArtifactSummary": "2026-05-03T19:27:35.470Z"
+    "plannerReadyCount": 4,
+    "plannerCautionCount": 122,
+    "plannerNeedsHumanReviewCount": 0,
+    "englishSkillTaggingIncompleteCount": 0,
+    "generatedAtArtifactSummary": "2026-05-03T20:34:06.587Z"
   },
   "actionTable": [
     {
@@ -49,12 +49,12 @@
       "metadataResolutionSource": "metadataIndex"
     },
     {
-      "count": 6,
+      "count": 5,
       "nextAction": "pause_collect_more_data",
-      "plannerStatus": "needs_human_review",
+      "plannerStatus": "caution",
       "subject": "english",
-      "skillAlignmentSource": "none",
-      "metadataResolutionSource": "none"
+      "skillAlignmentSource": "topic_mapping",
+      "metadataResolutionSource": "metadataIndex"
     },
     {
       "count": 2,
@@ -85,7 +85,7 @@
       "nextAction": "pause_collect_more_data",
       "plannerStatus": "caution",
       "subject": "geometry",
-      "skillAlignmentSource": "none",
+      "skillAlignmentSource": "topic_mapping",
       "metadataResolutionSource": "metadataIndex"
     },
     {
@@ -102,6 +102,14 @@
       "plannerStatus": "caution",
       "subject": "geometry",
       "skillAlignmentSource": "unit_field",
+      "metadataResolutionSource": "metadataIndex"
+    },
+    {
+      "count": 1,
+      "nextAction": "practice_current",
+      "plannerStatus": "ready",
+      "subject": "english",
+      "skillAlignmentSource": "topic_mapping",
       "metadataResolutionSource": "metadataIndex"
     },
     {
@@ -210,6 +218,35 @@
         "reasonCodes": [
           "REMEDIATE",
           "ERROR_TYPES_TARGETED_PRACTICE"
+        ],
+        "warnings": []
+      },
+      {
+        "label": "fixture:real_like_english_missing_skill_subskill",
+        "relativePath": "fixture:real_like_english_missing_skill_subskill",
+        "focusUnitIndex": 0,
+        "scenarioId": "fixture_english_untagged",
+        "subject": "english",
+        "unitDisplayName": "Grammar",
+        "currentSkillId": "en_grammar_be_present",
+        "currentSubskillId": "be_basic",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolutionSource": "metadataIndex",
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "metaLen": 4,
+        "skillTaggingIncomplete": false,
+        "nextAction": "practice_current",
+        "plannerStatus": "ready",
+        "targetDifficulty": "basic",
+        "questionCount": 5,
+        "targetSkillId": "en_grammar_be_present",
+        "targetSubskillId": "be_basic",
+        "requiresHumanReview": false,
+        "reasonCodes": [
+          "REMEDIATE"
         ],
         "warnings": []
       }
@@ -340,70 +377,7 @@
         "warnings": []
       }
     ],
-    "needs_human_review": [
-      {
-        "label": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_30d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit9",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 9,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Vocabulary",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      }
-    ],
+    "needs_human_review": [],
     "exact_skill_subskill_metadata_match": [
       {
         "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d.report.json#unit0",
@@ -466,200 +440,9 @@
         "warnings": []
       }
     ],
-    "subject_fallback": [
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit6",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 6,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "geometry",
-        "unitDisplayName": "היקף",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "metadataIndex",
-        "metadataSubjectFallback": true,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 14,
-        "skillTaggingIncomplete": false,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "caution",
-        "targetDifficulty": "basic",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": false,
-        "reasonCodes": [
-          "THIN_DATA",
-          "DO_NOT_CONCLUDE"
-        ],
-        "warnings": [
-          "metadata_subject_fallback"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit7",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 7,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "geometry",
-        "unitDisplayName": "מקבילות ומאונכות",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "metadataIndex",
-        "metadataSubjectFallback": true,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 14,
-        "skillTaggingIncomplete": false,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "caution",
-        "targetDifficulty": "basic",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": false,
-        "reasonCodes": [
-          "THIN_DATA",
-          "DO_NOT_CONCLUDE"
-        ],
-        "warnings": [
-          "metadata_subject_fallback"
-        ]
-      }
-    ],
-    "english_skill_tagging_incomplete": [
-      {
-        "label": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_30d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit9",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 9,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Vocabulary",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      }
-    ],
-    "missing_question_metadata": [
-      {
-        "label": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_30d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit9",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 9,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Vocabulary",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      }
-    ]
+    "subject_fallback": [],
+    "english_skill_tagging_incomplete": [],
+    "missing_question_metadata": []
   },
   "readinessBySubject": [
     {
@@ -682,15 +465,15 @@
     {
       "subjectId": "geometry",
       "total": 10,
-      "exactMatch": 8,
-      "fallback": 2,
+      "exactMatch": 10,
+      "fallback": 0,
       "missingMeta": 0,
       "needsReview": 0,
       "ready": 0,
       "caution": 10,
       "insufficient": 0,
       "rates": {
-        "fallback": 0.2,
+        "fallback": 0,
         "missingMeta": 0,
         "needsHumanReview": 0
       },
@@ -699,19 +482,19 @@
     {
       "subjectId": "english",
       "total": 6,
-      "exactMatch": 0,
+      "exactMatch": 6,
       "fallback": 0,
-      "missingMeta": 6,
-      "needsReview": 6,
-      "ready": 0,
-      "caution": 0,
+      "missingMeta": 0,
+      "needsReview": 0,
+      "ready": 1,
+      "caution": 5,
       "insufficient": 0,
       "rates": {
         "fallback": 0,
-        "missingMeta": 1,
-        "needsHumanReview": 1
+        "missingMeta": 0,
+        "needsHumanReview": 0
       },
-      "recommendedReadiness": "blocked_for_live_routing"
+      "recommendedReadiness": "ready_for_internal_preview"
     },
     {
       "subjectId": "hebrew",
@@ -766,888 +549,11 @@
     }
   ],
   "riskList": {
-    "subjectFallbackRows": [
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit6",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 6,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "geometry",
-        "unitDisplayName": "היקף",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "metadataIndex",
-        "metadataSubjectFallback": true,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 14,
-        "skillTaggingIncomplete": false,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "caution",
-        "targetDifficulty": "basic",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": false,
-        "reasonCodes": [
-          "THIN_DATA",
-          "DO_NOT_CONCLUDE"
-        ],
-        "warnings": [
-          "metadata_subject_fallback"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit7",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 7,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "geometry",
-        "unitDisplayName": "מקבילות ומאונכות",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "metadataIndex",
-        "metadataSubjectFallback": true,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 14,
-        "skillTaggingIncomplete": false,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "caution",
-        "targetDifficulty": "basic",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": false,
-        "reasonCodes": [
-          "THIN_DATA",
-          "DO_NOT_CONCLUDE"
-        ],
-        "warnings": [
-          "metadata_subject_fallback"
-        ]
-      }
-    ],
-    "englishUntaggedRows": [
-      {
-        "label": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_30d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit9",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 9,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Vocabulary",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit10",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 10,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Writing",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit11",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 11,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Sentence Building",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\weak_english_grammar_g4_7d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\weak_english_grammar_g4_7d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_7d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "fixture:real_like_english_missing_skill_subskill",
-        "relativePath": "fixture:real_like_english_missing_skill_subskill",
-        "focusUnitIndex": 0,
-        "scenarioId": "fixture_english_untagged",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      }
-    ],
-    "missingMetadataRows": [
-      {
-        "label": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_30d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit9",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 9,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Vocabulary",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit10",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 10,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Writing",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit11",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 11,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Sentence Building",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\weak_english_grammar_g4_7d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\weak_english_grammar_g4_7d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_7d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "fixture:real_like_english_missing_skill_subskill",
-        "relativePath": "fixture:real_like_english_missing_skill_subskill",
-        "focusUnitIndex": 0,
-        "scenarioId": "fixture_english_untagged",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      }
-    ],
-    "needsHumanReviewRows": [
-      {
-        "label": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_30d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit9",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 9,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Vocabulary",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit10",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 10,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Writing",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit11",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 11,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Sentence Building",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\weak_english_grammar_g4_7d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\weak_english_grammar_g4_7d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_7d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "fixture:real_like_english_missing_skill_subskill",
-        "relativePath": "fixture:real_like_english_missing_skill_subskill",
-        "focusUnitIndex": 0,
-        "scenarioId": "fixture_english_untagged",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      }
-    ],
-    "rowsWithAdapterWarnings": [
-      {
-        "label": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_30d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit6",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 6,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "geometry",
-        "unitDisplayName": "היקף",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "metadataIndex",
-        "metadataSubjectFallback": true,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 14,
-        "skillTaggingIncomplete": false,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "caution",
-        "targetDifficulty": "basic",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": false,
-        "reasonCodes": [
-          "THIN_DATA",
-          "DO_NOT_CONCLUDE"
-        ],
-        "warnings": [
-          "metadata_subject_fallback"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit7",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 7,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "geometry",
-        "unitDisplayName": "מקבילות ומאונכות",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "metadataIndex",
-        "metadataSubjectFallback": true,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 14,
-        "skillTaggingIncomplete": false,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "caution",
-        "targetDifficulty": "basic",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": false,
-        "reasonCodes": [
-          "THIN_DATA",
-          "DO_NOT_CONCLUDE"
-        ],
-        "warnings": [
-          "metadata_subject_fallback"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit9",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 9,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Vocabulary",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit10",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 10,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Writing",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json#unit11",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-        "focusUnitIndex": 11,
-        "scenarioId": "strong_all_subjects_g3_7d",
-        "subject": "english",
-        "unitDisplayName": "Sentence Building",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "reports\\learning-simulator\\reports\\per-student\\weak_english_grammar_g4_7d.report.json#unit0",
-        "relativePath": "reports\\learning-simulator\\reports\\per-student\\weak_english_grammar_g4_7d.report.json",
-        "focusUnitIndex": 0,
-        "scenarioId": "weak_english_grammar_g4_7d",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      },
-      {
-        "label": "fixture:real_like_english_missing_skill_subskill",
-        "relativePath": "fixture:real_like_english_missing_skill_subskill",
-        "focusUnitIndex": 0,
-        "scenarioId": "fixture_english_untagged",
-        "subject": "english",
-        "unitDisplayName": "Grammar",
-        "currentSkillId": "",
-        "currentSubskillId": "",
-        "skillAlignmentConfidence": "",
-        "skillAlignmentSource": "",
-        "skillAlignmentWarnings": [],
-        "metadataResolutionSource": "",
-        "metadataSubjectFallback": false,
-        "metadataSkillOnlyFallback": false,
-        "metaLen": 0,
-        "skillTaggingIncomplete": true,
-        "nextAction": "pause_collect_more_data",
-        "plannerStatus": "needs_human_review",
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true,
-        "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
-        ],
-        "warnings": [
-          "availableQuestionMetadata_missing"
-        ]
-      }
-    ]
+    "subjectFallbackRows": [],
+    "englishUntaggedRows": [],
+    "missingMetadataRows": [],
+    "needsHumanReviewRows": [],
+    "rowsWithAdapterWarnings": []
   },
   "recommendation": {
     "internalPreviewNow": [

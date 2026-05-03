@@ -168,7 +168,7 @@ export function buildAdaptivePlannerPreviewPack(artifactSummary, options = {}) {
     const reviewRate = st.needsReview / t;
     /** @type {"ready_for_internal_preview"|"needs_more_alignment"|"blocked_for_live_routing"} */
     let recommendedReadiness = "ready_for_internal_preview";
-    if (subjectId === "english" || reviewRate > 0.2) {
+    if (reviewRate > 0.2) {
       recommendedReadiness = "blocked_for_live_routing";
     } else if (fallbackRate > 0.35 || missingRate > 0.25) {
       recommendedReadiness = "needs_more_alignment";

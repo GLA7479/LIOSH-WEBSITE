@@ -1,7 +1,7 @@
 # Engine truth audit
 
 - **Result:** **PASS**
-- Generated: 2026-05-03T19:28:18.725Z
+- Generated: 2026-05-03T20:34:49.650Z
 - Scenarios exercised: 25
 - Pace fast_wrong vs slow_correct: PASS
 

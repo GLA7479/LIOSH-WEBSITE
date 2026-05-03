@@ -158,6 +158,21 @@ const ENGINE_PROFESSIONALIZATION_STEPS = [
     script: "test:adaptive-planner:artifacts",
     label: "Adaptive planner artifacts (metadata-backed non-live safety gate)",
   },
+  {
+    id: "adaptivePlannerRuntimeBridge",
+    script: "test:adaptive-planner:runtime",
+    label: "Adaptive planner runtime bridge (practice snapshot → recommendation)",
+  },
+  {
+    id: "adaptivePlannerRecommendationUi",
+    script: "test:adaptive-planner:recommendation-ui",
+    label: "Adaptive planner recommendation UI mapping (Phase 3 gates)",
+  },
+  {
+    id: "adaptivePlannerRecommendedPractice",
+    script: "test:adaptive-planner:recommended-practice",
+    label: "Adaptive planner recommended practice (Phase 4 adapter + button rules)",
+  },
 ];
 
 /** Full gate only: matrix smoke → catalog → classification → scenario map (after Phase 4 artifacts exist). */

@@ -14,7 +14,12 @@ const metaMod = await import(
   new URL("../utils/adaptive-learning-planner/adaptive-planner-metadata-context.js", import.meta.url).href
 );
 
-const { resolveDiagnosticUnitSkillAlignment, inferGradeSubskillFromScenarioId } = mod;
+const {
+  resolveDiagnosticUnitSkillAlignment,
+  inferGradeSubskillFromScenarioId,
+  resolveEnglishTopicBucketKeyFromUnit,
+  resolveGeometryTopicBucketKeyFromUnit,
+} = mod;
 const { buildPlannerQuestionMetadataIndex } = metaMod;
 
 function assert(name, cond, detail = "") {
@@ -76,7 +81,90 @@ r = resolveDiagnosticUnitSkillAlignment(
   { subjectId: "english", displayName: "Grammar" },
   { metadataIndex }
 );
-assert("english_no_align", r.confidence === "missing" && r.source === "none");
+assert("english_no_topic_keys", r.confidence === "missing" && r.source === "none");
+
+r = resolveDiagnosticUnitSkillAlignment(
+  { subjectId: "english", displayName: "Grammar" },
+  { metadataIndex, topicBucketKeys: ["grammar"], scenarioId: "weak_english_grammar_g4_30d" }
+);
+assert(
+  "english_grammar_topic_bucket",
+  r.confidence === "inferred_safe" &&
+    r.source === "topic_mapping" &&
+    r.skillId === "en_grammar_be_present" &&
+    r.subskillId === "be_basic"
+);
+
+r = resolveDiagnosticUnitSkillAlignment(
+  { subjectId: "english", displayName: "Vocabulary" },
+  { metadataIndex, topicBucketKeys: ["vocabulary", "grammar"], scenarioId: "strong_all_subjects_g3_7d" }
+);
+assert(
+  "english_vocab_topic_bucket",
+  r.confidence === "inferred_safe" &&
+    r.skillId === "translation_mcq_g3_matrix" &&
+    r.subskillId === "simulator_translation_mcq"
+);
+
+r = resolveDiagnosticUnitSkillAlignment(
+  { subjectId: "english", displayName: "MysteryTopic" },
+  { metadataIndex, topicBucketKeys: ["grammar"], scenarioId: "weak_english_grammar_g4_30d" }
+);
+assert("english_vague_display", r.confidence === "missing");
+
+assert(
+  "english_bucket_crosscheck",
+  resolveEnglishTopicBucketKeyFromUnit({ displayName: "Grammar" }, ["writing"]) === ""
+);
+
+r = resolveDiagnosticUnitSkillAlignment(
+  { subjectId: "geometry", displayName: "היקף" },
+  { metadataIndex, topicBucketKeys: ["perimeter", "angles"], scenarioId: "strong_all_subjects_g3_7d" }
+);
+assert(
+  "geometry_perimeter_topic_bucket",
+  r.confidence === "inferred_safe" &&
+    r.source === "topic_mapping" &&
+    r.skillId === "geo_pv_area_vs_perimeter" &&
+    r.subskillId === "fence_perimeter_project"
+);
+
+r = resolveDiagnosticUnitSkillAlignment(
+  { subjectId: "geometry", displayName: "מקבילות ומאונכות" },
+  { metadataIndex, topicBucketKeys: ["parallel_perpendicular", "perimeter"], scenarioId: "strong_all_subjects_g3_7d" }
+);
+assert(
+  "geometry_parallel_topic_bucket",
+  r.confidence === "inferred_safe" &&
+    r.skillId === "parallel_never_meet" &&
+    r.subskillId === "parallel_def"
+);
+
+assert(
+  "geometry_hebrew_display_bucket_mismatch",
+  resolveGeometryTopicBucketKeyFromUnit({ displayName: "היקף" }, ["area"]) === ""
+);
+
+r = resolveDiagnosticUnitSkillAlignment(
+  { subjectId: "geometry", displayName: "שטח", diagnosis: { taxonomyId: "G-03" } },
+  { metadataIndex, topicBucketKeys: ["perimeter"] }
+);
+assert("geometry_taxonomy_takes_precedence", r.skillId === "geo_rect_area_plan" && r.subskillId === "area_rectangle");
+
+r = resolveDiagnosticUnitSkillAlignment(
+  { subjectId: "geometry", skillId: "not_real_geo_skill", subskillId: "nope" },
+  { metadataIndex, topicBucketKeys: ["perimeter"] }
+);
+assert(
+  "geometry_invalid_explicit_rejected",
+  r.confidence === "missing" && r.warnings.some((w) => w.startsWith("alignment_invalid_taxonomy"))
+);
+
+r = resolveDiagnosticUnitSkillAlignment(
+  { subjectId: "geometry", displayName: "זוויות" },
+  { metadataIndex, topicBucketKeys: ["angles", "perimeter"], scenarioId: "strong_all_subjects_g3_7d" }
+);
+assert("geometry_unmapped_hebrew_stays_missing", r.confidence === "missing" && r.source === "none");
 
 r = resolveDiagnosticUnitSkillAlignment(
   { subjectId: "math", skillId: "math_mul", subskillId: "mul" },

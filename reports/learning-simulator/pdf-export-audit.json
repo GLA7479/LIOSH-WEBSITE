@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-03T19:29:09.626Z",
+  "generatedAt": "2026-05-03T20:35:44.236Z",
   "pdfLibraryDetected": "^0.10.1",
   "pdfExportMechanism": "exportReportToPDF(report, options) in utils/math-report-generator.js. Default options.method is \"print\" → window.print() (no file download). With method \"canvas\", dynamic import of html2pdf.js/dist/html2pdf.js then html2pdf().set(opt).from(el).save() (jsPDF inside html2pdf options).",
   "exportIsClientSide": true,

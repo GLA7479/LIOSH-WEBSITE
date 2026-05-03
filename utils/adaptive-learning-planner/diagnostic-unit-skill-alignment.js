@@ -83,6 +83,121 @@ export function inferGradeSubskillFromScenarioId(scenarioId) {
 }
 
 /**
+ * Grade digit 1–6 from scenario id (for English bank row selection). Defaults to 3 when unknown.
+ * @param {string} scenarioId
+ * @returns {number}
+ */
+export function inferEnglishGradeDigitFromScenarioId(scenarioId) {
+  const g = inferGradeSubskillFromScenarioId(scenarioId);
+  const m = /^g([1-6])$/i.exec(String(g || "").trim());
+  if (m) return Number(m[1]);
+  const alt = String(scenarioId || "").match(/_g([1-6])_/i);
+  if (alt) return Number(alt[1]);
+  return 3;
+}
+
+/** Diagnostic facet `displayName` (English master labels) → `englishTopics` bucket key. */
+const ENGLISH_DISPLAY_NAME_TO_TOPIC_BUCKET = {
+  grammar: "grammar",
+  vocabulary: "vocabulary",
+  writing: "writing",
+  "sentence building": "sentences",
+};
+
+/**
+ * Resolve a stable `englishTopics` bucket key from the unit + optional facet topic keys.
+ * Requires the bucket to appear in `topicBucketKeys` when that list is non-empty (cross-check).
+ * @param {object} unit
+ * @param {unknown[]} [topicBucketKeys]
+ * @returns {string} bucket key or ""
+ */
+export function resolveEnglishTopicBucketKeyFromUnit(unit, topicBucketKeys) {
+  const display = String(unit?.displayName || "")
+    .trim()
+    .toLowerCase();
+  const bucket = ENGLISH_DISPLAY_NAME_TO_TOPIC_BUCKET[display] || "";
+  if (!bucket) return "";
+  const keys = Array.isArray(topicBucketKeys)
+    ? topicBucketKeys.map((x) => String(x || "").trim().toLowerCase()).filter(Boolean)
+    : [];
+  if (!keys.length) return "";
+  if (!keys.includes(bucket)) return "";
+  return bucket;
+}
+
+/**
+ * Facet `displayName` (Hebrew geometry master labels) → `geometryTopics` bucket key.
+ * Only labels that appear in real report artifacts; cross-check with `topicBucketKeys`.
+ */
+const GEOMETRY_HEBREW_DISPLAY_TO_TOPIC_BUCKET = {
+  היקף: "perimeter",
+  "מקבילות ומאונכות": "parallel_perpendicular",
+};
+
+/**
+ * @param {object} unit
+ * @param {unknown[]} [topicBucketKeys]
+ * @returns {string} bucket key or ""
+ */
+export function resolveGeometryTopicBucketKeyFromUnit(unit, topicBucketKeys) {
+  const display = String(unit?.displayName || "").trim();
+  const bucket = GEOMETRY_HEBREW_DISPLAY_TO_TOPIC_BUCKET[display] || "";
+  if (!bucket) return "";
+  const keys = Array.isArray(topicBucketKeys)
+    ? topicBucketKeys.map((x) => String(x || "").trim().toLowerCase()).filter(Boolean)
+    : [];
+  if (!keys.length) return "";
+  if (!keys.includes(bucket)) return "";
+  return bucket;
+}
+
+/**
+ * Deterministic geometry (skillId, subskillId) for a known `geometryTopics` bucket key.
+ * @param {string} topicBucket
+ * @returns {{ skillId: string, subskillId: string } | null}
+ */
+export function geometryTopicBucketToBankPair(topicBucket) {
+  const tb = String(topicBucket || "").trim().toLowerCase();
+  if (tb === "perimeter") {
+    return { skillId: "geo_pv_area_vs_perimeter", subskillId: "fence_perimeter_project" };
+  }
+  if (tb === "parallel_perpendicular") {
+    return { skillId: "parallel_never_meet", subskillId: "parallel_def" };
+  }
+  return null;
+}
+
+/**
+ * Deterministic English (skillId, subskillId) for a known topic bucket + grade; must exist in taxonomy + optional index.
+ * @param {string} topicBucket
+ * @param {number} gradeDigit
+ * @returns {{ skillId: string, subskillId: string } | null}
+ */
+export function englishTopicBucketToBankPair(topicBucket, gradeDigit) {
+  const g = Math.min(6, Math.max(1, Number(gradeDigit) || 3));
+  const tb = String(topicBucket || "").trim().toLowerCase();
+  if (tb === "grammar") {
+    return { skillId: "en_grammar_be_present", subskillId: "be_basic" };
+  }
+  if (tb === "vocabulary") {
+    const matrixGrade = g === 1 ? 2 : g;
+    return { skillId: `translation_mcq_g${matrixGrade}_matrix`, subskillId: "simulator_translation_mcq" };
+  }
+  if (tb === "writing") {
+    const dg = Math.max(3, g);
+    return { skillId: `descriptive_place_g${dg}`, subskillId: "descriptive" };
+  }
+  if (tb === "sentences") {
+    if (g <= 2) return { skillId: "base_be_have_g1", subskillId: "base" };
+    if (g === 3) return { skillId: "routine_present_g3_study", subskillId: "routine" };
+    if (g === 4) return { skillId: "routine_present_g4_study", subskillId: "routine" };
+    if (g === 5) return { skillId: "routine_present_g5_music", subskillId: "routine" };
+    return { skillId: "routine_present_g6_lunch", subskillId: "routine" };
+  }
+  return null;
+}
+
+/**
  * @param {string} subject
  * @param {string} skillId
  * @param {string} subskillId
@@ -145,6 +260,7 @@ function indexHasExactPair(index, subject, skillId, subskillId) {
  * @param {string} [context.scenarioId]
  * @param {boolean} [context.allowEnglishSkillRouting]
  * @param {{ entries?: unknown[] }} [context.metadataIndex]
+ * @param {unknown[]} [context.topicBucketKeys] — `facets.topicLayer.topicBucketKeys` for English bucket cross-check
  */
 export function resolveDiagnosticUnitSkillAlignment(unit, context = {}) {
   const warnings = /** @type {string[]} */ ([]);
@@ -249,6 +365,32 @@ export function resolveDiagnosticUnitSkillAlignment(unit, context = {}) {
       };
     }
     for (const code of issues) warnings.push(`alignment_invalid_taxonomy_bridge:${code}`);
+  }
+
+  if (subject === "geometry") {
+    const geoBucket = resolveGeometryTopicBucketKeyFromUnit(unit, context.topicBucketKeys);
+    if (geoBucket) {
+      const pair = geometryTopicBucketToBankPair(geoBucket);
+      if (pair) {
+        const issues = validateBankTaxonomyPair("geometry", pair.skillId, pair.subskillId);
+        if (!issues.length) {
+          if (!indexHasExactPair(context.metadataIndex, "geometry", pair.skillId, pair.subskillId)) {
+            warnings.push("alignment_geometry_topic_bucket_pair_not_in_metadata_index");
+          } else {
+            return {
+              subject,
+              skillId: pair.skillId,
+              subskillId: pair.subskillId,
+              confidence: "inferred_safe",
+              source: "topic_mapping",
+              warnings,
+            };
+          }
+        } else {
+          for (const code of issues) warnings.push(`alignment_geometry_topic_bucket_invalid:${code}`);
+        }
+      }
+    }
   }
 
   if (subject === "math") {
@@ -387,6 +529,30 @@ export function resolveDiagnosticUnitSkillAlignment(unit, context = {}) {
   }
 
   if (subject === "english") {
+    const bucket = resolveEnglishTopicBucketKeyFromUnit(unit, context.topicBucketKeys);
+    if (bucket) {
+      const gradeDigit = inferEnglishGradeDigitFromScenarioId(scenarioId);
+      const pair = englishTopicBucketToBankPair(bucket, gradeDigit);
+      if (pair) {
+        const issues = validateBankTaxonomyPair(subject, pair.skillId, pair.subskillId);
+        if (!issues.length) {
+          if (!indexHasExactPair(context.metadataIndex, subject, pair.skillId, pair.subskillId)) {
+            warnings.push("alignment_english_topic_bucket_pair_not_in_metadata_index");
+          } else {
+            return {
+              subject,
+              skillId: pair.skillId,
+              subskillId: pair.subskillId,
+              confidence: "inferred_safe",
+              source: "topic_mapping",
+              warnings,
+            };
+          }
+        } else {
+          for (const code of issues) warnings.push(`alignment_english_topic_bucket_invalid:${code}`);
+        }
+      }
+    }
     warnings.push("alignment_english_no_safe_topic_mapping");
     return { ...empty(), warnings: [...warnings] };
   }
@@ -417,6 +583,11 @@ export function buildFacetSkillAlignmentFields(engineUnit, context) {
 
 export default {
   inferGradeSubskillFromScenarioId,
+  inferEnglishGradeDigitFromScenarioId,
+  resolveEnglishTopicBucketKeyFromUnit,
+  englishTopicBucketToBankPair,
+  resolveGeometryTopicBucketKeyFromUnit,
+  geometryTopicBucketToBankPair,
   validateBankTaxonomyPair,
   resolveDiagnosticUnitSkillAlignment,
   buildFacetSkillAlignmentFields,

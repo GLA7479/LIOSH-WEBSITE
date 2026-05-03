@@ -106,8 +106,28 @@ export function extractNormalizedReportFacets(baseReport, detailedReport, meta =
   const exec = detailed.executiveSummary || {};
   const scenarioId = String(meta?.scenarioId || "").trim();
 
+  const topicBucketKeys = [];
+  for (const mapName of [
+    "mathOperations",
+    "geometryTopics",
+    "englishTopics",
+    "scienceTopics",
+    "hebrewTopics",
+    "moledetGeographyTopics",
+  ]) {
+    const m = base[mapName];
+    if (!m || typeof m !== "object") continue;
+    for (const rowKey of Object.keys(m)) {
+      const topicPart = String(rowKey).split("\u0001")[0];
+      if (topicPart) topicBucketKeys.push(topicPart);
+    }
+  }
+
   const unitSummaries = units.map((u) => {
-    const alignCtx = { scenarioId };
+    const alignCtx = {
+      scenarioId,
+      topicBucketKeys: topicBucketKeys.length ? topicBucketKeys : undefined,
+    };
     const alignFields = buildFacetSkillAlignmentFields(u, alignCtx);
     return {
       subjectId: u.subjectId,
@@ -154,23 +174,6 @@ export function extractNormalizedReportFacets(baseReport, detailedReport, meta =
   }
 
   const contract = detailed.parentProductContractV1 || null;
-
-  const topicBucketKeys = [];
-  for (const mapName of [
-    "mathOperations",
-    "geometryTopics",
-    "englishTopics",
-    "scienceTopics",
-    "hebrewTopics",
-    "moledetGeographyTopics",
-  ]) {
-    const m = base[mapName];
-    if (!m || typeof m !== "object") continue;
-    for (const rowKey of Object.keys(m)) {
-      const topicPart = String(rowKey).split("\u0001")[0];
-      if (topicPart) topicBucketKeys.push(topicPart);
-    }
-  }
 
   return {
     version: "report-facets-v1",

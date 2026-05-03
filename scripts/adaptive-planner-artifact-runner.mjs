@@ -137,6 +137,11 @@ const FIXTURE_PAYLOADS = [
       contract: { primarySubjectId: "english", topThinDowngraded: false },
       crossSubject: {},
       executive: {},
+      topicLayer: {
+        topWeaknessLabels: [],
+        topicRecLabels: [],
+        topicBucketKeys: ["grammar"],
+      },
     },
   },
   {

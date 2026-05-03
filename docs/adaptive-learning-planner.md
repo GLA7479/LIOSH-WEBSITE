@@ -62,13 +62,27 @@ Implemented in `utils/adaptive-learning-planner/adaptive-planner.js` (JSDoc on `
 - **Never overrides** `engineDecision`; planner only chooses pacing shape (e.g. still “practice” when engine says `remediate`).
 - **Never advances** on **thin** evidence or when `doNotConclude` is non-empty.
 - **Prerequisite review** only when confidence is sufficient and ids are non-empty.
-- **English** rows without skill metadata (or `skillTaggingIncomplete`) → **`needs_human_review`**, no fine-grained routing.
+- **English** rows without skill metadata (or `skillTaggingIncomplete`, after deterministic alignment attempts) → **`needs_human_review`**, no fine-grained routing.
 - **`mustNotSay`** populated with baseline guardrails for any future LLM or copy integration (**this phase adds no LLM**).
 
 ## What is implemented now
 
 - `utils/adaptive-learning-planner/` — contract, rules, core `planAdaptiveLearning`, fixtures, summary helpers.
 - `npm run test:adaptive-planner` — deterministic selftest; writes `reports/adaptive-learning-planner/summary.{json,md}`.
+
+## English diagnostic unit alignment (artifact-only)
+
+For **internal planner artifacts**, English units can resolve to bank `(skillId, subskillId)` when all of the following hold (see `utils/adaptive-learning-planner/diagnostic-unit-skill-alignment.js`):
+
+- The facet `displayName` is one of the known English master labels (`Grammar`, `Vocabulary`, `Writing`, `Sentence Building`).
+- The mapped topic bucket appears in `facets.topicLayer.topicBucketKeys` (cross-check against the same keys used in parent-report `englishTopics` rows).
+- The chosen pair exists in the **question metadata index** (no invented ids).
+
+This path is **not** general free-text inference; unknown display names or bucket mismatches stay untagged. Product **student flow and engine decisions** are unchanged; the adapter only enriches planner inputs when building from saved report JSON.
+
+### Geometry facet topic alignment (artifact-only)
+
+When a geometry facet unit has no `skillId`/`subskillId` and no `G-xx` taxonomy bridge on the unit, alignment may still resolve from **Hebrew `displayName`** → `geometryTopics` bucket key, cross-checked against `facets.topicLayer.topicBucketKeys`, then to a **single** bank pair that exists in the metadata index (see `resolveGeometryTopicBucketKeyFromUnit` / `geometryTopicBucketToBankPair`). Unknown Hebrew titles or missing bucket keys leave the row unchanged (metadata subject fallback may still appear).
 
 ## What is **not** live yet
 

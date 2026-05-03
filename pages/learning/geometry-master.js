@@ -35,6 +35,7 @@ import {
 import { trackGeometryTopicTime } from "../../utils/math-time-tracking";
 import { applyLearningShellLayoutVars } from "../../utils/learning-shell-layout";
 import TrackingDebugPanel from "../../components/TrackingDebugPanel";
+import LearningPlannerRecommendationBlock from "../../components/LearningPlannerRecommendationBlock";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import { learningMixedHebrewMathStyle } from "../../utils/learning-mixed-hebrew-math";
 import { getGeometryDiagramSpec } from "../../utils/geometry-diagram-spec";
@@ -118,6 +119,13 @@ import {
   saveLearningAnswer,
   startLearningSession,
 } from "../../lib/learning-client/learningActivityClient";
+import { scheduleAdaptivePlannerRecommendation } from "../../lib/learning-client/scheduleAdaptivePlannerRecommendation";
+import { buildPlannerRecommendationViewModel } from "../../lib/learning-client/adaptive-planner-recommendation-view-model";
+import {
+  buildRecommendedPracticeFromViewModel,
+  mapPlannerTargetDifficultyToTriLevel,
+  mergePlannerSessionClientMeta,
+} from "../../lib/learning-client/adaptive-planner-recommended-practice";
 import {
   fetchStudentDefaults,
   gradeKeyToNumber,
@@ -161,6 +169,8 @@ export default function GeometryMaster() {
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
   const learningSessionIdRef = useRef(null);
+  const plannerResponseSeqRef = useRef(0);
+  const plannerNextSessionClientMetaRef = useRef(null);
   const learningSessionStartPromiseRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
   const geometryPendingDiagnosticProbeRef = useRef(null);
@@ -181,6 +191,7 @@ export default function GeometryMaster() {
   const [level, setLevel] = useState("easy");
   const [topic, setTopic] = useState("area");
   const [gameActive, setGameActive] = useState(false);
+  const [adaptivePlannerRecommendationView, setAdaptivePlannerRecommendationView] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
@@ -532,7 +543,7 @@ useEffect(() => {
 
   useEffect(() => {
     return () => {
-      recordSessionProgress();
+      recordSessionProgress({ includePlannerRecommendation: false });
     };
   }, []);
 
@@ -897,7 +908,8 @@ useEffect(() => {
     setErrorExplanation("");
   };
 
-  const recordSessionProgress = () => {
+  const recordSessionProgress = (opts = {}) => {
+    const { includePlannerRecommendation = true } = opts;
     const sessionIdForFinish = learningSessionIdRef.current;
     const totalQuestionsForFinish = totalQuestions;
     const correctForFinish = correct;
@@ -949,6 +961,31 @@ useEffect(() => {
       }).catch((error) => {
         console.warn("[geometry-master] finish session save failed", error);
       });
+      if (includePlannerRecommendation) {
+        const cid = (plannerResponseSeqRef.current += 1);
+        scheduleAdaptivePlannerRecommendation(
+          {
+            learningSessionId: sessionIdForFinish,
+            subject: "geometry",
+            grade,
+            topic,
+            mode,
+            totalQuestions: totalQuestionsForFinish,
+            correctAnswers: correctForFinish,
+            wrongAnswers: wrongForFinish,
+            score: scoreForFinish,
+            accuracy: accuracyForFinish,
+            durationSeconds,
+            clientRequestId: cid,
+          },
+          {
+            onResult: (data) => {
+              if (data?.clientRequestId != null && Number(data.clientRequestId) !== cid) return;
+              setAdaptivePlannerRecommendationView(buildPlannerRecommendationViewModel(data));
+            },
+          }
+        );
+      }
     }
     learningSessionIdRef.current = null;
     learningSessionStartPromiseRef.current = null;
@@ -959,16 +996,21 @@ useEffect(() => {
   };
 
   function buildGeometrySessionStartPayload() {
+    const baseMeta = {
+      source: "geometry-master",
+      version: "phase-2d-b3",
+    };
+    const plannerExtra = plannerNextSessionClientMetaRef.current;
     return {
       subject: "geometry",
       topic: String(currentQuestion?.topic || topic || "geometry"),
       mode: String(mode || "learning"),
       gradeLevel: String(grade || ""),
       level: String(level || ""),
-      clientMeta: {
-        source: "geometry-master",
-        version: "phase-2d-b3",
-      },
+      clientMeta:
+        plannerExtra && typeof plannerExtra === "object"
+          ? mergePlannerSessionClientMeta(baseMeta, plannerExtra)
+          : baseMeta,
     };
   }
 
@@ -988,6 +1030,7 @@ useEffect(() => {
       })
       .finally(() => {
         learningSessionStartPromiseRef.current = null;
+        plannerNextSessionClientMetaRef.current = null;
       });
     learningSessionStartPromiseRef.current = startPromise;
     return startPromise;
@@ -1642,7 +1685,16 @@ useEffect(() => {
       setFocusedPracticeMode(opts.focusedPracticeMode);
       focusedPracticeModeRef.current = opts.focusedPracticeMode;
     }
-    recordSessionProgress();
+    if (opts.fromAdaptivePlannerRecommendedPractice && opts.plannerSessionMeta && typeof opts.plannerSessionMeta === "object") {
+      plannerNextSessionClientMetaRef.current = opts.plannerSessionMeta;
+      if (opts.appliedLevelKey === "easy" || opts.appliedLevelKey === "medium" || opts.appliedLevelKey === "hard") {
+        setLevel(opts.appliedLevelKey);
+      }
+    } else {
+      plannerNextSessionClientMetaRef.current = null;
+    }
+    recordSessionProgress({ includePlannerRecommendation: false });
+    setAdaptivePlannerRecommendationView(null);
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
@@ -1698,6 +1750,28 @@ useEffect(() => {
       setTimeLeft(null);
     }
     generateNewQuestion();
+  }
+
+  function handleAdaptivePlannerRecommendedPractice() {
+    try {
+      const vm = adaptivePlannerRecommendationView;
+      const out = buildRecommendedPracticeFromViewModel(vm);
+      if (!out.ok) return;
+      setAdaptivePlannerRecommendationView(null);
+      const appliedLevelKey = mapPlannerTargetDifficultyToTriLevel(out.startOptions.targetDifficulty);
+      startGame({
+        fromAdaptivePlannerRecommendedPractice: true,
+        appliedLevelKey: appliedLevelKey || undefined,
+        plannerSessionMeta: {
+          plannerRecommended: true,
+          plannerNextAction: out.startOptions.nextAction,
+          plannerTargetDifficulty: out.startOptions.targetDifficulty,
+          plannerQuestionCount: out.startOptions.questionCount,
+        },
+      });
+    } catch {
+      /* ignore */
+    }
   }
 
   function stopGame() {
@@ -2268,6 +2342,11 @@ useEffect(() => {
                   </button>
                 </div>
               </div>
+
+              <LearningPlannerRecommendationBlock
+                model={adaptivePlannerRecommendationView}
+                onRecommendedPractice={handleAdaptivePlannerRecommendedPractice}
+              />
 
               <div className="bg-white/5 border border-white/10 rounded-md px-1 pt-1 pb-1 mb-3 w-full max-w-lg opacity-90">
                 <div className="flex items-center justify-between text-[9px] text-white/55 mb-0.5 leading-tight">

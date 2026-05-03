@@ -1,6 +1,6 @@
 # Adaptive planner artifact summary
 
-Generated: **2026-05-03T19:28:29.650Z**
+Generated: **2026-05-03T20:35:00.639Z**
 
 ## Scan
 
@@ -11,45 +11,42 @@ Generated: **2026-05-03T19:28:29.650Z**
 
 ## Planner output — nextAction
 
-- `pause_collect_more_data`: **99**
+- `pause_collect_more_data`: **98**
 - `probe_skill`: **24**
-- `practice_current`: **1**
+- `practice_current`: **2**
 - `advance_skill`: **2**
 
 ## Planner output — plannerStatus
 
-- `caution`: **117**
-- `needs_human_review`: **6**
-- `ready`: **3**
+- `caution`: **122**
+- `ready`: **4**
 
 ## Adapter
 
-- Warnings total: **8** (by code below)
-  - `availableQuestionMetadata_missing`: 6
-  - `metadata_subject_fallback`: 2
+- Warnings total: **0** (by code below)
 
 ## Counts
 
 - Missing-field rows (adapter): **0**
 - Missing-field keys (aggregated): {}
-- needs_human_review outputs: **6**
+- needs_human_review outputs: **0**
 - insufficient_data outputs: **0**
-- English skillTaggingIncomplete inputs: **6**
+- English skillTaggingIncomplete inputs: **0**
 
 ## Metadata index
 
 - `availableQuestionMetadata_missing` (baseline, no index): **126**
-- `availableQuestionMetadata_missing` (after index): **6**
-- Inputs with metadata (len > 0): **120**
-- Average candidates per input (when len > 0): **1.667**
-- Subject fallback resolutions: **2**
-- Subject fallback (baseline, no unit skill fields): **120**
+- `availableQuestionMetadata_missing` (after index): **0**
+- Inputs with metadata (len > 0): **126**
+- Average candidates per input (when len > 0): **1.5**
+- Subject fallback resolutions: **0**
+- Subject fallback (baseline, no unit skill fields): **117**
 - Skill-only fallback resolutions: **0**
-- Metadata exact match (no subject/skill-only fallback): **118**
-- Skill+subskill query matches (same): **118**
-- Units with facet skill alignment fields: **118**
-- `skillAlignmentCoverage` (runs with non-missing confidence / runs): **0.937**
-- `skillAlignmentBySource`: `{"topic_mapping":107,"taxonomy_bridge":7,"unit_field":4}`
+- Metadata exact match (no subject/skill-only fallback): **126**
+- Skill+subskill query matches (same): **126**
+- Units with facet skill alignment fields: **126**
+- `skillAlignmentCoverage` (runs with non-missing confidence / runs): **1**
+- `skillAlignmentBySource`: `{"topic_mapping":115,"taxonomy_bridge":7,"unit_field":4}`
 - `skillAlignmentWarnings` (total): **0**
 - Metadata index source: **snapshot_file**
 - Snapshot path: `reports/adaptive-learning-planner/metadata-index-snapshot.json`

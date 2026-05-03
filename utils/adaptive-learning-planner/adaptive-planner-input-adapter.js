@@ -6,6 +6,7 @@
 /** @typedef {import("./adaptive-planner.js").PlannerInput} PlannerInput */
 
 import { ENGINE_DECISIONS } from "./adaptive-planner-contract.js";
+import { resolveDiagnosticUnitSkillAlignment } from "./diagnostic-unit-skill-alignment.js";
 import { getAvailableQuestionMetadataForPlanner } from "./adaptive-planner-metadata-context.js";
 
 const ENGINE_SET = new Set(ENGINE_DECISIONS);
@@ -260,8 +261,34 @@ export function buildPlannerInputFromDiagnosticPayload(root, options = {}) {
     ? unit.prerequisiteSkillIds.map((x) => String(x || "").trim()).filter(Boolean)
     : [];
 
-  const skillFromUnit = String(unit.skillId || unit.taxonomySkillId || "").trim();
-  const subFromUnit = String(unit.subskillId || unit.taxonomySubskillId || "").trim();
+  let skillFromUnit = String(unit.skillId || unit.taxonomySkillId || "").trim();
+  let subFromUnit = String(unit.subskillId || unit.taxonomySubskillId || "").trim();
+
+  if (
+    (subject.toLowerCase() === "english" || subject.toLowerCase() === "geometry") &&
+    (!skillFromUnit || !subFromUnit) &&
+    options.metadataIndex &&
+    typeof options.metadataIndex === "object"
+  ) {
+    const topicBucketKeys = facets?.topicLayer?.topicBucketKeys;
+    const aligned = resolveDiagnosticUnitSkillAlignment(
+      { ...unit, subjectId: subject },
+      { scenarioId, metadataIndex: options.metadataIndex, topicBucketKeys }
+    );
+    if (
+      (aligned.confidence === "exact" || aligned.confidence === "inferred_safe") &&
+      aligned.skillId &&
+      aligned.subskillId
+    ) {
+      skillFromUnit = aligned.skillId;
+      subFromUnit = aligned.subskillId;
+      sourceInfo.skillAlignmentConfidence = aligned.confidence;
+      sourceInfo.skillAlignmentSource = aligned.source;
+      if (Array.isArray(aligned.warnings) && aligned.warnings.length) {
+        sourceInfo.skillAlignmentWarnings = aligned.warnings;
+      }
+    }
+  }
 
   const alignConf = String(unit.skillAlignmentConfidence || "").toLowerCase();
   const alignTrusted = alignConf === "exact" || alignConf === "inferred_safe";

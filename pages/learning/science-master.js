@@ -10,6 +10,7 @@ import {
 import { trackScienceTopicTime } from "../../utils/science-time-tracking";
 import { applyLearningShellLayoutVars } from "../../utils/learning-shell-layout";
 import TrackingDebugPanel from "../../components/TrackingDebugPanel";
+import LearningPlannerRecommendationBlock from "../../components/LearningPlannerRecommendationBlock";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   loadDailyStreak,
@@ -70,6 +71,13 @@ import {
   saveLearningAnswer,
   startLearningSession,
 } from "../../lib/learning-client/learningActivityClient";
+import { scheduleAdaptivePlannerRecommendation } from "../../lib/learning-client/scheduleAdaptivePlannerRecommendation";
+import { buildPlannerRecommendationViewModel } from "../../lib/learning-client/adaptive-planner-recommendation-view-model";
+import {
+  buildRecommendedPracticeFromViewModel,
+  mapPlannerTargetDifficultyToTriLevel,
+  mergePlannerSessionClientMeta,
+} from "../../lib/learning-client/adaptive-planner-recommended-practice";
 import { fetchStudentDefaults } from "../../lib/learning-student-defaults";
 
 // ================== CONFIG ==================
@@ -627,6 +635,7 @@ export default function ScienceMaster() {
   const [level, setLevel] = useState("easy");
   const [topic, setTopic] = useState("body");
   const [gameActive, setGameActive] = useState(false);
+  const [adaptivePlannerRecommendationView, setAdaptivePlannerRecommendationView] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
@@ -669,6 +678,8 @@ export default function ScienceMaster() {
   const sessionSecondsRef = useRef(0);
   const solvedCountRef = useRef(0);
   const learningSessionIdRef = useRef(null);
+  const plannerResponseSeqRef = useRef(0);
+  const plannerNextSessionClientMetaRef = useRef(null);
   const learningSessionStartPromiseRef = useRef(null);
   const pendingScienceTrackMetaRef = useRef(null);
   /** Session-local only — prefer next bank row matching diagnostic probe (Phase 3D-A). Never persisted. */
@@ -973,7 +984,7 @@ useEffect(() => {
 
   useEffect(() => {
     return () => {
-      recordSessionProgress();
+      recordSessionProgress({ includePlannerRecommendation: false });
     };
   }, []);
 
@@ -1360,7 +1371,8 @@ useEffect(() => {
     setQuestionStartTime(null);
   }
 
-function recordSessionProgress() {
+function recordSessionProgress(opts = {}) {
+  const { includePlannerRecommendation = true } = opts;
   const sessionIdForFinish = learningSessionIdRef.current;
   const totalQuestionsForFinish = totalQuestions;
   const correctForFinish = correct;
@@ -1412,6 +1424,31 @@ function recordSessionProgress() {
     }).catch((error) => {
       console.warn("[science-master] finish session save failed", error);
     });
+    if (includePlannerRecommendation) {
+      const cid = (plannerResponseSeqRef.current += 1);
+      scheduleAdaptivePlannerRecommendation(
+        {
+          learningSessionId: sessionIdForFinish,
+          subject: "science",
+          grade,
+          topic: scienceTrackingTopicKeyRef.current ?? currentQuestion?.topic ?? "",
+          mode,
+          totalQuestions: totalQuestionsForFinish,
+          correctAnswers: correctForFinish,
+          wrongAnswers: wrongForFinish,
+          score: scoreForFinish,
+          accuracy: accuracyForFinish,
+          durationSeconds,
+          clientRequestId: cid,
+        },
+        {
+          onResult: (data) => {
+            if (data?.clientRequestId != null && Number(data.clientRequestId) !== cid) return;
+            setAdaptivePlannerRecommendationView(buildPlannerRecommendationViewModel(data));
+          },
+        }
+      );
+    }
   }
   learningSessionIdRef.current = null;
   learningSessionStartPromiseRef.current = null;
@@ -1421,16 +1458,21 @@ function recordSessionProgress() {
 }
 
 function buildScienceSessionStartPayload() {
+  const baseMeta = {
+    source: "science-master",
+    version: "phase-2d-b6",
+  };
+  const plannerExtra = plannerNextSessionClientMetaRef.current;
   return {
     subject: "science",
     topic: String(scienceTrackingTopicKeyRef.current || currentQuestion?.topic || topic || "science"),
     mode: String(mode || "learning"),
     gradeLevel: String(grade || ""),
     level: String(level || ""),
-    clientMeta: {
-      source: "science-master",
-      version: "phase-2d-b6",
-    },
+    clientMeta:
+      plannerExtra && typeof plannerExtra === "object"
+        ? mergePlannerSessionClientMeta(baseMeta, plannerExtra)
+        : baseMeta,
   };
 }
 
@@ -1450,6 +1492,7 @@ async function ensureLearningSessionId() {
     })
     .finally(() => {
       learningSessionStartPromiseRef.current = null;
+      plannerNextSessionClientMetaRef.current = null;
     });
   learningSessionStartPromiseRef.current = startPromise;
   return startPromise;
@@ -1835,12 +1878,24 @@ function saveScienceAnswerInParallel({
     }
   }
 
-  function startGame() {
-    recordSessionProgress();
+  function startGame(opts = {}) {
+    if (opts.fromAdaptivePlannerRecommendedPractice && opts.plannerSessionMeta && typeof opts.plannerSessionMeta === "object") {
+      plannerNextSessionClientMetaRef.current = opts.plannerSessionMeta;
+      if (opts.appliedLevelKey === "easy" || opts.appliedLevelKey === "medium" || opts.appliedLevelKey === "hard") {
+        setLevel(opts.appliedLevelKey);
+      }
+    } else {
+      plannerNextSessionClientMetaRef.current = null;
+    }
+    recordSessionProgress({ includePlannerRecommendation: false });
+    setAdaptivePlannerRecommendationView(null);
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
-    adaptiveLevelRef.current = level;
+    adaptiveLevelRef.current =
+      opts.appliedLevelKey === "easy" || opts.appliedLevelKey === "medium" || opts.appliedLevelKey === "hard"
+        ? opts.appliedLevelKey
+        : level;
     correctAdaptiveStreakRef.current = 0;
     wrongAdaptiveStreakRef.current = 0;
     setGameActive(true);
@@ -1872,6 +1927,28 @@ function saveScienceAnswerInParallel({
 
     // מאתחל מאגר שאלות חדש לסשן הזה
     generateNewQuestion(true);
+  }
+
+  function handleAdaptivePlannerRecommendedPractice() {
+    try {
+      const vm = adaptivePlannerRecommendationView;
+      const out = buildRecommendedPracticeFromViewModel(vm);
+      if (!out.ok) return;
+      setAdaptivePlannerRecommendationView(null);
+      const appliedLevelKey = mapPlannerTargetDifficultyToTriLevel(out.startOptions.targetDifficulty);
+      startGame({
+        fromAdaptivePlannerRecommendedPractice: true,
+        appliedLevelKey: appliedLevelKey || undefined,
+        plannerSessionMeta: {
+          plannerRecommended: true,
+          plannerNextAction: out.startOptions.nextAction,
+          plannerTargetDifficulty: out.startOptions.targetDifficulty,
+          plannerQuestionCount: out.startOptions.questionCount,
+        },
+      });
+    } catch {
+      /* ignore */
+    }
   }
 
   function stopGame() {
@@ -2734,6 +2811,11 @@ function saveScienceAnswerInParallel({
                   </button>
                 </div>
               </div>
+
+              <LearningPlannerRecommendationBlock
+                model={adaptivePlannerRecommendationView}
+                onRecommendedPractice={handleAdaptivePlannerRecommendedPractice}
+              />
 
               <div className="bg-white/5 border border-white/10 rounded-md px-1 pt-1 pb-1 mb-3 w-full max-w-lg opacity-90 shrink-0">
                 <div className="flex items-center justify-between text-[9px] text-white/55 mb-0.5 leading-tight">

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-03T19:28:29.650Z",
+  "generatedAt": "2026-05-03T20:35:00.639Z",
   "metadataIndexSource": "snapshot_file",
   "metadataSnapshotPath": "reports/adaptive-learning-planner/metadata-index-snapshot.json",
   "artifactsScanned": 22,
@@ -30,39 +30,35 @@
   "candidatePayloads": 126,
   "plannerInputsBuilt": 126,
   "byNextAction": {
-    "pause_collect_more_data": 99,
+    "pause_collect_more_data": 98,
     "probe_skill": 24,
-    "practice_current": 1,
+    "practice_current": 2,
     "advance_skill": 2
   },
   "byPlannerStatus": {
-    "caution": 117,
-    "needs_human_review": 6,
-    "ready": 3
+    "caution": 122,
+    "ready": 4
   },
-  "adapterWarningsTotal": 8,
-  "adapterWarningsByCode": {
-    "availableQuestionMetadata_missing": 6,
-    "metadata_subject_fallback": 2
-  },
+  "adapterWarningsTotal": 0,
+  "adapterWarningsByCode": {},
   "missingFieldCounts": {},
   "missingFieldRows": 0,
-  "needsHumanReviewCount": 6,
+  "needsHumanReviewCount": 0,
   "insufficientDataCount": 0,
-  "englishSkillTaggingIncompleteCount": 6,
+  "englishSkillTaggingIncompleteCount": 0,
   "baselineAvailableQuestionMetadataMissingCount": 126,
-  "afterAvailableQuestionMetadataMissingCount": 6,
-  "inputsWithAvailableMetadata": 120,
-  "averageCandidatesWhenPresent": 1.667,
-  "metadataSubjectFallbackCount": 2,
-  "metadataSubjectFallbackBaselineCount": 120,
+  "afterAvailableQuestionMetadataMissingCount": 0,
+  "inputsWithAvailableMetadata": 126,
+  "averageCandidatesWhenPresent": 1.5,
+  "metadataSubjectFallbackCount": 0,
+  "metadataSubjectFallbackBaselineCount": 117,
   "metadataSkillOnlyFallbackCount": 0,
-  "metadataExactMatchCount": 118,
-  "metadataSkillSubskillMatchCount": 118,
-  "alignmentEnrichedUnitCount": 118,
-  "skillAlignmentCoverage": 0.937,
+  "metadataExactMatchCount": 126,
+  "metadataSkillSubskillMatchCount": 126,
+  "alignmentEnrichedUnitCount": 126,
+  "skillAlignmentCoverage": 1,
   "skillAlignmentBySource": {
-    "topic_mapping": 107,
+    "topic_mapping": 115,
     "taxonomy_bridge": 7,
     "unit_field": 4
   },
@@ -3835,39 +3831,44 @@
         "diagnosticPrimarySource": "diagnosticEngineV2",
         "unitDisplayName": "Grammar",
         "canonicalAction": "diagnose_only",
-        "skillAlignmentConfidence": null,
-        "skillAlignmentSource": null,
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
         "skillAlignmentWarnings": [],
-        "metadataResolution": null
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 4,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
       },
-      "warnings": [
-        "availableQuestionMetadata_missing"
-      ],
+      "warnings": [],
       "missingFields": [],
       "inputSnapshot": {
         "subject": "english",
         "engineDecision": "remediate",
         "dataQuality": "thin",
-        "skillTaggingIncomplete": true,
+        "skillTaggingIncomplete": false,
         "doNotConcludeLen": 2,
-        "metaLen": 0,
-        "metadataCandidateCount": 0,
+        "metaLen": 4,
+        "metadataCandidateCount": 4,
         "metadataSubjectFallback": false,
         "metadataSkillOnlyFallback": false,
-        "currentSkillId": "",
-        "currentSubskillId": ""
+        "currentSkillId": "en_grammar_be_present",
+        "currentSubskillId": "be_basic"
       },
       "output": {
-        "plannerStatus": "needs_human_review",
+        "plannerStatus": "caution",
         "nextAction": "pause_collect_more_data",
         "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
         ],
-        "targetDifficulty": "standard",
+        "targetDifficulty": "basic",
         "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true
+        "targetSkillId": "en_grammar_be_present",
+        "targetSubskillId": "be_basic",
+        "requiresHumanReview": false
       }
     },
     {
@@ -5666,22 +5667,18 @@
         "diagnosticPrimarySource": "diagnosticEngineV2",
         "unitDisplayName": "היקף",
         "canonicalAction": "probe_only",
-        "skillAlignmentConfidence": null,
-        "skillAlignmentSource": null,
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
         "skillAlignmentWarnings": [],
         "metadataResolution": {
           "source": "metadataIndex",
-          "candidateCount": 14,
-          "subjectFallback": true,
+          "candidateCount": 1,
+          "subjectFallback": false,
           "skillOnlyFallback": false,
-          "warnings": [
-            "metadata_subject_fallback"
-          ]
+          "warnings": []
         }
       },
-      "warnings": [
-        "metadata_subject_fallback"
-      ],
+      "warnings": [],
       "missingFields": [],
       "inputSnapshot": {
         "subject": "geometry",
@@ -5689,12 +5686,12 @@
         "dataQuality": "thin",
         "skillTaggingIncomplete": false,
         "doNotConcludeLen": 1,
-        "metaLen": 14,
-        "metadataCandidateCount": 14,
-        "metadataSubjectFallback": true,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
         "metadataSkillOnlyFallback": false,
-        "currentSkillId": "",
-        "currentSubskillId": ""
+        "currentSkillId": "geo_pv_area_vs_perimeter",
+        "currentSubskillId": "fence_perimeter_project"
       },
       "output": {
         "plannerStatus": "caution",
@@ -5705,8 +5702,8 @@
         ],
         "targetDifficulty": "basic",
         "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
+        "targetSkillId": "geo_pv_area_vs_perimeter",
+        "targetSubskillId": "fence_perimeter_project",
         "requiresHumanReview": false
       }
     },
@@ -5721,22 +5718,18 @@
         "diagnosticPrimarySource": "diagnosticEngineV2",
         "unitDisplayName": "מקבילות ומאונכות",
         "canonicalAction": "probe_only",
-        "skillAlignmentConfidence": null,
-        "skillAlignmentSource": null,
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
         "skillAlignmentWarnings": [],
         "metadataResolution": {
           "source": "metadataIndex",
-          "candidateCount": 14,
-          "subjectFallback": true,
+          "candidateCount": 1,
+          "subjectFallback": false,
           "skillOnlyFallback": false,
-          "warnings": [
-            "metadata_subject_fallback"
-          ]
+          "warnings": []
         }
       },
-      "warnings": [
-        "metadata_subject_fallback"
-      ],
+      "warnings": [],
       "missingFields": [],
       "inputSnapshot": {
         "subject": "geometry",
@@ -5744,12 +5737,12 @@
         "dataQuality": "thin",
         "skillTaggingIncomplete": false,
         "doNotConcludeLen": 1,
-        "metaLen": 14,
-        "metadataCandidateCount": 14,
-        "metadataSubjectFallback": true,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
         "metadataSkillOnlyFallback": false,
-        "currentSkillId": "",
-        "currentSubskillId": ""
+        "currentSkillId": "parallel_never_meet",
+        "currentSubskillId": "parallel_def"
       },
       "output": {
         "plannerStatus": "caution",
@@ -5760,8 +5753,8 @@
         ],
         "targetDifficulty": "basic",
         "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
+        "targetSkillId": "parallel_never_meet",
+        "targetSubskillId": "parallel_def",
         "requiresHumanReview": false
       }
     },
@@ -5827,39 +5820,44 @@
         "diagnosticPrimarySource": "diagnosticEngineV2",
         "unitDisplayName": "Vocabulary",
         "canonicalAction": "probe_only",
-        "skillAlignmentConfidence": null,
-        "skillAlignmentSource": null,
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
         "skillAlignmentWarnings": [],
-        "metadataResolution": null
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
       },
-      "warnings": [
-        "availableQuestionMetadata_missing"
-      ],
+      "warnings": [],
       "missingFields": [],
       "inputSnapshot": {
         "subject": "english",
         "engineDecision": "review",
         "dataQuality": "thin",
-        "skillTaggingIncomplete": true,
+        "skillTaggingIncomplete": false,
         "doNotConcludeLen": 1,
-        "metaLen": 0,
-        "metadataCandidateCount": 0,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
         "metadataSubjectFallback": false,
         "metadataSkillOnlyFallback": false,
-        "currentSkillId": "",
-        "currentSubskillId": ""
+        "currentSkillId": "translation_mcq_g3_matrix",
+        "currentSubskillId": "simulator_translation_mcq"
       },
       "output": {
-        "plannerStatus": "needs_human_review",
+        "plannerStatus": "caution",
         "nextAction": "pause_collect_more_data",
         "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
         ],
-        "targetDifficulty": "standard",
+        "targetDifficulty": "basic",
         "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true
+        "targetSkillId": "translation_mcq_g3_matrix",
+        "targetSubskillId": "simulator_translation_mcq",
+        "requiresHumanReview": false
       }
     },
     {
@@ -5873,39 +5871,44 @@
         "diagnosticPrimarySource": "diagnosticEngineV2",
         "unitDisplayName": "Writing",
         "canonicalAction": "probe_only",
-        "skillAlignmentConfidence": null,
-        "skillAlignmentSource": null,
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
         "skillAlignmentWarnings": [],
-        "metadataResolution": null
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
       },
-      "warnings": [
-        "availableQuestionMetadata_missing"
-      ],
+      "warnings": [],
       "missingFields": [],
       "inputSnapshot": {
         "subject": "english",
         "engineDecision": "review",
         "dataQuality": "thin",
-        "skillTaggingIncomplete": true,
+        "skillTaggingIncomplete": false,
         "doNotConcludeLen": 1,
-        "metaLen": 0,
-        "metadataCandidateCount": 0,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
         "metadataSubjectFallback": false,
         "metadataSkillOnlyFallback": false,
-        "currentSkillId": "",
-        "currentSubskillId": ""
+        "currentSkillId": "descriptive_place_g3",
+        "currentSubskillId": "descriptive"
       },
       "output": {
-        "plannerStatus": "needs_human_review",
+        "plannerStatus": "caution",
         "nextAction": "pause_collect_more_data",
         "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
         ],
-        "targetDifficulty": "standard",
+        "targetDifficulty": "basic",
         "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true
+        "targetSkillId": "descriptive_place_g3",
+        "targetSubskillId": "descriptive",
+        "requiresHumanReview": false
       }
     },
     {
@@ -5919,39 +5922,44 @@
         "diagnosticPrimarySource": "diagnosticEngineV2",
         "unitDisplayName": "Sentence Building",
         "canonicalAction": "probe_only",
-        "skillAlignmentConfidence": null,
-        "skillAlignmentSource": null,
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
         "skillAlignmentWarnings": [],
-        "metadataResolution": null
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
       },
-      "warnings": [
-        "availableQuestionMetadata_missing"
-      ],
+      "warnings": [],
       "missingFields": [],
       "inputSnapshot": {
         "subject": "english",
         "engineDecision": "review",
         "dataQuality": "thin",
-        "skillTaggingIncomplete": true,
+        "skillTaggingIncomplete": false,
         "doNotConcludeLen": 1,
-        "metaLen": 0,
-        "metadataCandidateCount": 0,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
         "metadataSubjectFallback": false,
         "metadataSkillOnlyFallback": false,
-        "currentSkillId": "",
-        "currentSubskillId": ""
+        "currentSkillId": "routine_present_g3_study",
+        "currentSubskillId": "routine"
       },
       "output": {
-        "plannerStatus": "needs_human_review",
+        "plannerStatus": "caution",
         "nextAction": "pause_collect_more_data",
         "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
         ],
-        "targetDifficulty": "standard",
+        "targetDifficulty": "basic",
         "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true
+        "targetSkillId": "routine_present_g3_study",
+        "targetSubskillId": "routine",
+        "requiresHumanReview": false
       }
     },
     {
@@ -6016,39 +6024,44 @@
         "diagnosticPrimarySource": "diagnosticEngineV2",
         "unitDisplayName": "Grammar",
         "canonicalAction": "diagnose_only",
-        "skillAlignmentConfidence": null,
-        "skillAlignmentSource": null,
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
         "skillAlignmentWarnings": [],
-        "metadataResolution": null
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 4,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
       },
-      "warnings": [
-        "availableQuestionMetadata_missing"
-      ],
+      "warnings": [],
       "missingFields": [],
       "inputSnapshot": {
         "subject": "english",
         "engineDecision": "remediate",
         "dataQuality": "thin",
-        "skillTaggingIncomplete": true,
+        "skillTaggingIncomplete": false,
         "doNotConcludeLen": 2,
-        "metaLen": 0,
-        "metadataCandidateCount": 0,
+        "metaLen": 4,
+        "metadataCandidateCount": 4,
         "metadataSubjectFallback": false,
         "metadataSkillOnlyFallback": false,
-        "currentSkillId": "",
-        "currentSubskillId": ""
+        "currentSkillId": "en_grammar_be_present",
+        "currentSubskillId": "be_basic"
       },
       "output": {
-        "plannerStatus": "needs_human_review",
+        "plannerStatus": "caution",
         "nextAction": "pause_collect_more_data",
         "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
         ],
-        "targetDifficulty": "standard",
+        "targetDifficulty": "basic",
         "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true
+        "targetSkillId": "en_grammar_be_present",
+        "targetSubskillId": "be_basic",
+        "requiresHumanReview": false
       }
     },
     {
@@ -6414,39 +6427,43 @@
         "focusUnitIndex": 0,
         "unitDisplayName": "Grammar",
         "canonicalAction": "diagnose_only",
-        "skillAlignmentConfidence": null,
-        "skillAlignmentSource": null,
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
         "skillAlignmentWarnings": [],
-        "metadataResolution": null
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 4,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
       },
-      "warnings": [
-        "availableQuestionMetadata_missing"
-      ],
+      "warnings": [],
       "missingFields": [],
       "inputSnapshot": {
         "subject": "english",
         "engineDecision": "remediate",
         "dataQuality": "strong",
-        "skillTaggingIncomplete": true,
+        "skillTaggingIncomplete": false,
         "doNotConcludeLen": 0,
-        "metaLen": 0,
-        "metadataCandidateCount": 0,
+        "metaLen": 4,
+        "metadataCandidateCount": 4,
         "metadataSubjectFallback": false,
         "metadataSkillOnlyFallback": false,
-        "currentSkillId": "",
-        "currentSubskillId": ""
+        "currentSkillId": "en_grammar_be_present",
+        "currentSubskillId": "be_basic"
       },
       "output": {
-        "plannerStatus": "needs_human_review",
-        "nextAction": "pause_collect_more_data",
+        "plannerStatus": "ready",
+        "nextAction": "practice_current",
         "reasonCodes": [
-          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
+          "REMEDIATE"
         ],
-        "targetDifficulty": "standard",
-        "questionCount": 3,
-        "targetSkillId": "",
-        "targetSubskillId": "",
-        "requiresHumanReview": true
+        "targetDifficulty": "basic",
+        "questionCount": 5,
+        "targetSkillId": "en_grammar_be_present",
+        "targetSubskillId": "be_basic",
+        "requiresHumanReview": false
       }
     },
     {
