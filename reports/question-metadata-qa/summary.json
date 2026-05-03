@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T13:25:16.260Z",
+  "generatedAt": "2026-05-03T13:38:26.253Z",
   "gate": {
     "scanOutcome": "ok",
     "partialLoadErrors": true,
@@ -63,7 +63,7 @@
   "totals": {
     "questionsScanned": 5267,
     "highRiskCount": 4547,
-    "mediumRiskCount": 231,
+    "mediumRiskCount": 0,
     "duplicateDeclaredIds": 0,
     "skillBucketsLowVolume": 299,
     "minQuestionsPerSkillThreshold": 5
@@ -78,18 +78,6 @@
       4884
     ],
     [
-      "missing_difficulty",
-      4778
-    ],
-    [
-      "missing_cognitiveLevel",
-      4778
-    ],
-    [
-      "missing_expected_error_types",
-      4774
-    ],
-    [
       "missing_skillId",
       4547
     ],
@@ -102,8 +90,16 @@
       4264
     ],
     [
-      "taxonomy_unknown_expected_error_type",
-      4
+      "missing_difficulty",
+      4108
+    ],
+    [
+      "missing_cognitiveLevel",
+      4108
+    ],
+    [
+      "missing_expected_error_types",
+      4108
     ]
   ],
   "subjectSummaries": {
@@ -188,21 +184,21 @@
       ],
       "pctWithSkillId": 34.5,
       "pctWithSubskillId": 34.5,
-      "pctWithDifficulty": 0,
-      "pctWithCognitiveLevel": 0,
-      "pctWithExpectedErrorTypes": 0.6,
+      "pctWithDifficulty": 100,
+      "pctWithCognitiveLevel": 100,
+      "pctWithExpectedErrorTypes": 100,
       "pctWithPrerequisiteSkillIds": 0,
       "pctWithCorrectAnswer": 100,
       "pctWithExplanation": 92.5,
       "duplicateIdsInSubject": 0,
       "highRiskQuestionCount": 439,
-      "mediumRiskQuestionCount": 231,
+      "mediumRiskQuestionCount": 0,
       "weakestMetadataFields": [
         "implicit_id_only",
-        "missing_difficulty",
-        "missing_cognitiveLevel",
         "missing_prerequisite_skill_ids",
-        "missing_expected_error_types"
+        "missing_skillId",
+        "missing_subskillId",
+        "missing_explanation"
       ],
       "topIssueCodes": [
         [
@@ -210,20 +206,8 @@
           670
         ],
         [
-          "missing_difficulty",
-          670
-        ],
-        [
-          "missing_cognitiveLevel",
-          670
-        ],
-        [
           "missing_prerequisite_skill_ids",
           670
-        ],
-        [
-          "missing_expected_error_types",
-          666
         ],
         [
           "missing_skillId",
@@ -236,14 +220,10 @@
         [
           "missing_explanation",
           50
-        ],
-        [
-          "taxonomy_unknown_expected_error_type",
-          4
         ]
       ],
       "readinessScore": "weak",
-      "avgCompleteness": 0.357
+      "avgCompleteness": 0.677
     },
     "moledet-geography": {
       "subject": "moledet-geography",

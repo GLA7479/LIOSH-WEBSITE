@@ -1,7 +1,7 @@
 # Learning simulator — deep longitudinal v1
 
-- Generated at: 2026-05-03T13:30:37.481Z
-- Wall clock (ms): 1694
+- Generated at: 2026-05-03T13:44:03.891Z
+- Wall clock (ms): 1699
 - Scenarios: 12
 - Passed: 12 / 12
 - Total sessions / questions / mistakes: 1288 / 20650 / 5587

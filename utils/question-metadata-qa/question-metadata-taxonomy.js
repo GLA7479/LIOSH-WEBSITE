@@ -3,6 +3,13 @@
  * User-facing copy stays Hebrew in banks; this module is for validation and enrichment planning only.
  */
 
+import {
+  ENGLISH_SKILL_IDS,
+  ENGLISH_SUBSKILL_ALLOWLIST_BY_SKILL,
+} from "./question-metadata-taxonomy-english.js";
+
+export { ENGLISH_SKILL_IDS, ENGLISH_SUBSKILL_ALLOWLIST_BY_SKILL };
+
 export const TAXONOMY_VERSION = 1;
 
 /** Ordered topic domains used in `data/science-questions.js` (topic + derived skillId). */
@@ -118,6 +125,10 @@ export const EXTENDED_EXPECTED_ERROR_TYPES = new Set([
   /** Hebrew rich pool — comprehension / discourse tagging */
   "inference_error",
   "sequence_error",
+  /** English pools */
+  "grammar_pattern_error",
+  "translation_error",
+  "sentence_order_error",
 ]);
 
 /**
@@ -341,6 +352,38 @@ export function inferHebrewRichCognitiveLevel(raw, difficultyNormalized) {
 }
 
 /**
+ * Infer cognitive level for English static pool rows (grammar / translation / sentence).
+ * @param {Record<string, unknown>} raw
+ * @param {string} difficultyNormalized
+ * @param {string} sourceFileHint
+ */
+export function inferEnglishCognitiveLevel(raw, difficultyNormalized, sourceFileHint = "") {
+  const pp = String(raw.probePower || "").toLowerCase();
+  if (pp === "high") return "application";
+  if (pp === "medium") return "understanding";
+  if (pp === "low") return "recall";
+  const pf = String(raw.patternFamily || "");
+  const src = String(sourceFileHint || "");
+  if (src.includes("translation-pools") || pf.includes("translation")) return "application";
+  if (pf.includes("scramble") || pf.includes("order") || pf.includes("sequence")) return "analysis";
+  const d = String(difficultyNormalized || "").toLowerCase();
+  if (d === "easy" || d === "basic" || d === "intro") return "recall";
+  if (d === "hard" || d === "advanced" || d === "challenge") return "analysis";
+  return "understanding";
+}
+
+/**
+ * Grade-band heuristic when `difficulty` is absent on English rows.
+ * @param {Record<string, unknown>} raw
+ */
+export function inferEnglishDifficultyFromGrade(raw) {
+  const g = Math.max(Number(raw.maxGrade) || 0, Number(raw.minGrade) || 0);
+  if (g <= 2) return "basic";
+  if (g >= 5) return "advanced";
+  return "standard";
+}
+
+/**
  * @param {object} record — scan record from buildScanRecord
  * @returns {string[]} additional issue codes
  */
@@ -390,6 +433,18 @@ export function validateTaxonomyForRecord(record) {
     }
   }
 
+  if (subject === "english") {
+    if (skillId && !ENGLISH_SKILL_IDS.has(skillId)) {
+      issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_skillId);
+    }
+    if (skillId && subskillId) {
+      const allow = ENGLISH_SUBSKILL_ALLOWLIST_BY_SKILL[skillId];
+      if (allow && !allow.has(subskillId)) {
+        issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_subskillId);
+      }
+    }
+  }
+
   const errs = record.expectedErrorTypes || [];
   for (const e of errs) {
     const t = String(e).trim();
@@ -426,6 +481,17 @@ export function validateTaxonomyForRecord(record) {
       const id = String(p).trim();
       if (!id) continue;
       if (!HEBREW_RICH_SKILL_IDS.has(id)) {
+        issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_prerequisite_skillId);
+        break;
+      }
+    }
+  }
+
+  if (subject === "english" && Array.isArray(record.prerequisiteSkillIds)) {
+    for (const p of record.prerequisiteSkillIds) {
+      const id = String(p).trim();
+      if (!id) continue;
+      if (!ENGLISH_SKILL_IDS.has(id)) {
         issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_prerequisite_skillId);
         break;
       }

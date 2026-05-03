@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T13:25:16.260Z",
+  "generatedAt": "2026-05-03T13:38:26.253Z",
   "skills": [
     {
       "subject": "english",
@@ -9,9 +9,9 @@
       "subskillsCovered": 0,
       "subskillIds": [],
       "difficultyDistribution": {
-        "unknown": 439
+        "basic": 439
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 439,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "high"
@@ -22,12 +22,12 @@
       "totalQuestions": 2,
       "subskillsCovered": 1,
       "subskillIds": [
-        "advanced_conditional_zero_g5"
+        "advanced"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "advanced": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -38,12 +38,12 @@
       "totalQuestions": 2,
       "subskillsCovered": 1,
       "subskillIds": [
-        "advanced_first_conditional_g5"
+        "advanced"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "advanced": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -54,12 +54,12 @@
       "totalQuestions": 3,
       "subskillsCovered": 1,
       "subskillIds": [
-        "advanced_first_conditional_g6"
+        "advanced"
       ],
       "difficultyDistribution": {
-        "unknown": 3
+        "advanced": 3
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 3,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -70,12 +70,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "advanced_first_conditional_neg_g6"
+        "advanced"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -86,12 +86,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "advanced_future_will_g5"
+        "advanced"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -102,12 +102,12 @@
       "totalQuestions": 3,
       "subskillsCovered": 1,
       "subskillIds": [
-        "advanced_present_perfect_g5"
+        "advanced"
       ],
       "difficultyDistribution": {
-        "unknown": 3
+        "advanced": 3
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 3,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -118,12 +118,12 @@
       "totalQuestions": 3,
       "subskillsCovered": 1,
       "subskillIds": [
-        "advanced_present_perfect_g6"
+        "advanced"
       ],
       "difficultyDistribution": {
-        "unknown": 3
+        "advanced": 3
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 3,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -134,12 +134,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "advanced_present_perfect_q_g6"
+        "advanced"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -150,12 +150,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_compound_subject_g5"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -166,12 +166,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_compound_subject_g6"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -182,12 +182,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_have_g1"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -198,12 +198,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_have_g2"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -214,12 +214,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_he_g5"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -230,12 +230,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_he_g6"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -246,12 +246,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_i_age_g5"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -262,12 +262,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_i_age_g6"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -278,12 +278,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_i_from_g3"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -294,12 +294,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_i_from_g4"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -310,12 +310,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_i_state_g3"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -326,12 +326,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_i_state_g4"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -342,12 +342,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_it_adj_g3"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -358,12 +358,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_it_adj_g4"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -374,12 +374,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_it_g1"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -390,12 +390,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_it_g2"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -406,12 +406,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_it_place_g5"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -422,12 +422,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_it_place_g6"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -438,12 +438,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_plural_g1"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -454,12 +454,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_plural_g2"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -470,12 +470,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_she_g1"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -486,12 +486,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_she_g2"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -502,12 +502,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_they_adj_g3"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -518,12 +518,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_they_adj_g4"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -534,12 +534,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_they_g1"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -550,12 +550,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_they_g2"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -566,12 +566,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_they_g3"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -582,12 +582,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_we_g5"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -598,12 +598,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_we_g6"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -614,12 +614,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_you_g1"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -630,12 +630,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_you_g2"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -646,12 +646,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "base_be_you_g3"
+        "base"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -662,12 +662,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_10"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -678,12 +678,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_11"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -694,12 +694,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_12"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -710,12 +710,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_13"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -726,12 +726,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_14"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -742,12 +742,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_15"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -758,12 +758,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_5"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -774,12 +774,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_6"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -790,12 +790,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_7"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -806,12 +806,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_8"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -822,12 +822,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_9"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -838,12 +838,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_1"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -854,12 +854,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_10"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -870,12 +870,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_11"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -886,12 +886,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_12"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -902,12 +902,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_13"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -918,12 +918,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_14"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -934,12 +934,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_15"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -950,12 +950,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_16"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -966,12 +966,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_17"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -982,12 +982,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_18"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -998,12 +998,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_19"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1014,12 +1014,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_2"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1030,12 +1030,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_20"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1046,12 +1046,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_21"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1062,12 +1062,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_22"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1078,12 +1078,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_23"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1094,12 +1094,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_24"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1110,12 +1110,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_25"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1126,12 +1126,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_26"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1142,12 +1142,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_27"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1158,12 +1158,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_28"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1174,12 +1174,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_29"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1190,12 +1190,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_3"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1206,12 +1206,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_30"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1222,12 +1222,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_31"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1238,12 +1238,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_32"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1254,12 +1254,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_33"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1270,12 +1270,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_34"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1286,12 +1286,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_35"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1302,12 +1302,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_4"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1318,12 +1318,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_5"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1334,12 +1334,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_6"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1350,12 +1350,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_7"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1366,12 +1366,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_8"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1382,12 +1382,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g2_9"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1398,12 +1398,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_compare_g3"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1414,12 +1414,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_compare_g4"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1430,12 +1430,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_compare_g4b"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1446,12 +1446,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_compare_g5"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1462,12 +1462,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_compare_g5b"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1478,12 +1478,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_compare_g5c"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1494,12 +1494,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_compare_g5d"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1510,12 +1510,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_compare_g6"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1526,12 +1526,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_compare_g6b"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1542,12 +1542,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_compare_g6c"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1558,12 +1558,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_place_g3"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1574,12 +1574,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_place_g4"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1590,12 +1590,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_place_g4b"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1606,12 +1606,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_place_g5"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1622,12 +1622,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_place_g5b"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1638,12 +1638,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_place_g5c"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1654,12 +1654,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_place_g5d"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1670,12 +1670,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_place_g6"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1686,12 +1686,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_place_g6b"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1702,12 +1702,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_place_g6c"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1718,12 +1718,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_sense_g3"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1734,12 +1734,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_sense_g4"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1750,12 +1750,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_sense_g4b"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1766,12 +1766,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_sense_g5"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1782,12 +1782,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_sense_g5c"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1798,12 +1798,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_sense_g5d"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1814,12 +1814,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_sense_g6"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1830,12 +1830,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_sense_g6b"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1846,12 +1846,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_superlative_g5"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1862,12 +1862,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_superlative_g5b"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1878,12 +1878,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_superlative_g6"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1894,12 +1894,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "descriptive_superlative_g6b"
+        "descriptive"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1908,15 +1908,12 @@
       "subject": "english",
       "skillId": "en_grammar_be_present",
       "totalQuestions": 4,
-      "subskillsCovered": 4,
+      "subskillsCovered": 1,
       "subskillIds": [
-        "be_basic_g1_1",
-        "be_basic_g1_2",
-        "be_basic_g1_3",
-        "be_basic_g1_4"
+        "be_basic"
       ],
       "difficultyDistribution": {
-        "unknown": 4
+        "basic": 4
       },
       "expectedErrorCoverageCount": 4,
       "prerequisiteCoverageCount": 0,
@@ -1929,12 +1926,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_first_g4"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1945,12 +1942,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_neg_g3"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1961,12 +1958,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_plural_g3"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1977,12 +1974,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_plural_g4"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -1993,12 +1990,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_borrow"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2009,12 +2006,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_bus"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2025,12 +2022,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_cat"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2041,12 +2038,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_clean"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2057,12 +2054,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_do_not_i"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2073,12 +2070,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_do_not_she"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2089,12 +2086,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_do_not_we"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2105,12 +2102,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_father_work"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2121,12 +2118,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_football"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2137,12 +2134,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_love_games"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2153,12 +2150,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_lunch"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2169,12 +2166,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_neg_friends"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2185,12 +2182,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_neg_i"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2201,12 +2198,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_neg_she"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2217,12 +2214,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_q_he"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2233,12 +2230,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_q_icecream"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2249,12 +2246,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_q_piano"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2265,12 +2262,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_q_she_help"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2281,12 +2278,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_q_speak_en"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2297,12 +2294,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_q_they_lunch"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2313,12 +2310,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_q_you"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2329,12 +2326,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_study"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2345,12 +2342,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_sun"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2361,12 +2358,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_teach"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2377,12 +2374,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g3_understand"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2393,12 +2390,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_aux_i"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2409,12 +2406,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_birds"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2425,12 +2422,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_breakfast"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2441,12 +2438,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_children_love"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2457,12 +2454,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_homework"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2473,12 +2470,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_not_coffee"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2489,12 +2486,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_not_know"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2505,12 +2502,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_not_want"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2521,12 +2518,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_not_want_that"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2537,12 +2534,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_q_live"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2553,12 +2550,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_q_music"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2569,12 +2566,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_q_pet"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2585,12 +2582,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_ps_g4_teacher_en"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2601,12 +2598,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_question_g3"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2617,12 +2614,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_third_s_g3"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2633,12 +2630,12 @@
       "totalQuestions": 2,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_third_s_g4"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "standard": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2649,12 +2646,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_third_s_g4_cousin"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2665,12 +2662,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "grammar_present_third_s_g4_rabbit"
+        "present_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2681,12 +2678,12 @@
       "totalQuestions": 2,
       "subskillsCovered": 1,
       "subskillIds": [
-        "narrative_past_continuous_g4"
+        "narrative"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "standard": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2697,12 +2694,12 @@
       "totalQuestions": 2,
       "subskillsCovered": 1,
       "subskillIds": [
-        "narrative_past_continuous_g5"
+        "narrative"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "advanced": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2713,12 +2710,12 @@
       "totalQuestions": 7,
       "subskillsCovered": 1,
       "subskillIds": [
-        "narrative_past_simple_g4"
+        "narrative"
       ],
       "difficultyDistribution": {
-        "unknown": 7
+        "standard": 7
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 7,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "medium"
@@ -2729,12 +2726,12 @@
       "totalQuestions": 5,
       "subskillsCovered": 1,
       "subskillIds": [
-        "narrative_past_simple_g5"
+        "narrative"
       ],
       "difficultyDistribution": {
-        "unknown": 5
+        "advanced": 5
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 5,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "medium"
@@ -2745,12 +2742,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g2_breakfast_q"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2761,12 +2758,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g2_brush"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2777,12 +2774,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g2_bus"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2793,12 +2790,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g2_go"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2809,12 +2806,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g2_wake"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2825,12 +2822,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g3_brush"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2841,12 +2838,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g3_cook"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2857,12 +2854,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g3_go"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2873,12 +2870,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g3_homework"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2889,12 +2886,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g3_lunch"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2905,12 +2902,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g3_lunch_q"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2921,12 +2918,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g3_study"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2937,12 +2934,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g3_train"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2953,12 +2950,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g3_tv"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2969,12 +2966,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g3_wake"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -2985,12 +2982,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g4_break"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3001,12 +2998,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g4_clean"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3017,12 +3014,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g4_cook"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3033,12 +3030,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g4_homework"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3049,12 +3046,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g4_music"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3065,12 +3062,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g4_read"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3081,12 +3078,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g4_study"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3097,12 +3094,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g4_tv"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3113,12 +3110,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g5_breakfast"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3129,12 +3126,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g5_clean"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3145,12 +3142,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g5_music"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3161,12 +3158,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g5_read"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3177,12 +3174,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g5_ride"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3193,12 +3190,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g5_sports"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3209,12 +3206,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g6_lunch"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3225,12 +3222,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g6_ride"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3241,12 +3238,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "routine_present_g6_sports"
+        "routine"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3257,12 +3254,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "translation_mcq_g2_matrix"
+        "simulator_translation_mcq"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3273,12 +3270,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "translation_mcq_g3_matrix"
+        "simulator_translation_mcq"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3289,12 +3286,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "translation_mcq_g4_matrix"
+        "simulator_translation_mcq"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3305,12 +3302,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "translation_mcq_g5_matrix"
+        "simulator_translation_mcq"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -3321,12 +3318,12 @@
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "translation_mcq_g6_matrix"
+        "simulator_translation_mcq"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"

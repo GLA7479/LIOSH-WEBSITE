@@ -1,0 +1,2489 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T13:38:17.165Z",
+  "source": {
+    "enrichmentPath": "reports/question-metadata-qa/english-enrichment-suggestions.json",
+    "enrichmentGeneratedAt": "2026-05-03T13:38:00.765Z"
+  },
+  "summary": {
+    "englishRowCount": 670,
+    "rowsBySourceFile": {
+      "data/english-questions/grammar-pools.js": 537,
+      "data/english-questions/translation-pools.js": 5,
+      "data/english-questions/sentence-pools.js": 128
+    },
+    "prerequisiteSuggestionCount": 0,
+    "confidenceBreakdown": {
+      "high": 4,
+      "medium": 227,
+      "low": 439
+    },
+    "reviewPriorityBreakdown": {
+      "high": 439,
+      "medium": 227,
+      "low": 4
+    },
+    "lowConfidenceCount": 439,
+    "highReviewPriorityCount": 439
+  },
+  "groupedBySuggestedSkillId": {
+    "__missing_skill__": {
+      "count": 439,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[0]::#50",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[1]::#51",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[2]::#52",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[3]::#53",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[4]::#54",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[5]::#55"
+      ]
+    },
+    "advanced_conditional_zero_g5": {
+      "count": 2,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[0]::#654",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[7]::#661"
+      ]
+    },
+    "advanced_first_conditional_g5": {
+      "count": 2,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[3]::#657",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[5]::#659"
+      ]
+    },
+    "advanced_first_conditional_g6": {
+      "count": 3,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[9]::#663",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[11]::#665",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[13]::#667"
+      ]
+    },
+    "advanced_first_conditional_neg_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[15]::#669"
+      ]
+    },
+    "advanced_future_will_g5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[1]::#655"
+      ]
+    },
+    "advanced_present_perfect_g5": {
+      "count": 3,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[2]::#656",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[4]::#658",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[6]::#660"
+      ]
+    },
+    "advanced_present_perfect_g6": {
+      "count": 3,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[8]::#662",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[12]::#666",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[14]::#668"
+      ]
+    },
+    "advanced_present_perfect_q_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[10]::#664"
+      ]
+    },
+    "base_be_compound_subject_g5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[26]::#568"
+      ]
+    },
+    "base_be_compound_subject_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[31]::#573"
+      ]
+    },
+    "base_be_have_g1": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[0]::#542"
+      ]
+    },
+    "base_be_have_g2": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[4]::#546"
+      ]
+    },
+    "base_be_he_g5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[22]::#564"
+      ]
+    },
+    "base_be_he_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[27]::#569"
+      ]
+    },
+    "base_be_i_age_g5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[25]::#567"
+      ]
+    },
+    "base_be_i_age_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[30]::#572"
+      ]
+    },
+    "base_be_i_from_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[17]::#559"
+      ]
+    },
+    "base_be_i_from_g4": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[21]::#563"
+      ]
+    },
+    "base_be_i_state_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[14]::#556"
+      ]
+    },
+    "base_be_i_state_g4": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[18]::#560"
+      ]
+    },
+    "base_be_it_adj_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[15]::#557"
+      ]
+    },
+    "base_be_it_adj_g4": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[19]::#561"
+      ]
+    },
+    "base_be_it_g1": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[2]::#544"
+      ]
+    },
+    "base_be_it_g2": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[6]::#548"
+      ]
+    },
+    "base_be_it_place_g5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[24]::#566"
+      ]
+    },
+    "base_be_it_place_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[29]::#571"
+      ]
+    },
+    "base_be_plural_g1": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[1]::#543"
+      ]
+    },
+    "base_be_plural_g2": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[5]::#547"
+      ]
+    },
+    "base_be_she_g1": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[3]::#545"
+      ]
+    },
+    "base_be_she_g2": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[7]::#549"
+      ]
+    },
+    "base_be_they_adj_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[16]::#558"
+      ]
+    },
+    "base_be_they_adj_g4": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[20]::#562"
+      ]
+    },
+    "base_be_they_g1": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[9]::#551"
+      ]
+    },
+    "base_be_they_g2": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[11]::#553"
+      ]
+    },
+    "base_be_they_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[13]::#555"
+      ]
+    },
+    "base_be_we_g5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[23]::#565"
+      ]
+    },
+    "base_be_we_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[28]::#570"
+      ]
+    },
+    "base_be_you_g1": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[8]::#550"
+      ]
+    },
+    "base_be_you_g2": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[10]::#552"
+      ]
+    },
+    "base_be_you_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[12]::#554"
+      ]
+    },
+    "be_basic_g1_10": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[9]::#9"
+      ]
+    },
+    "be_basic_g1_11": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[10]::#10"
+      ]
+    },
+    "be_basic_g1_12": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[11]::#11"
+      ]
+    },
+    "be_basic_g1_13": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[12]::#12"
+      ]
+    },
+    "be_basic_g1_14": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[13]::#13"
+      ]
+    },
+    "be_basic_g1_15": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[14]::#14"
+      ]
+    },
+    "be_basic_g1_5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[4]::#4"
+      ]
+    },
+    "be_basic_g1_6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[5]::#5"
+      ]
+    },
+    "be_basic_g1_7": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[6]::#6"
+      ]
+    },
+    "be_basic_g1_8": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[7]::#7"
+      ]
+    },
+    "be_basic_g1_9": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[8]::#8"
+      ]
+    },
+    "be_basic_g2_1": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[15]::#15"
+      ]
+    },
+    "be_basic_g2_10": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[24]::#24"
+      ]
+    },
+    "be_basic_g2_11": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[25]::#25"
+      ]
+    },
+    "be_basic_g2_12": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[26]::#26"
+      ]
+    },
+    "be_basic_g2_13": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[27]::#27"
+      ]
+    },
+    "be_basic_g2_14": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[28]::#28"
+      ]
+    },
+    "be_basic_g2_15": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[29]::#29"
+      ]
+    },
+    "be_basic_g2_16": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[30]::#30"
+      ]
+    },
+    "be_basic_g2_17": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[31]::#31"
+      ]
+    },
+    "be_basic_g2_18": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[32]::#32"
+      ]
+    },
+    "be_basic_g2_19": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[33]::#33"
+      ]
+    },
+    "be_basic_g2_2": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[16]::#16"
+      ]
+    },
+    "be_basic_g2_20": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[34]::#34"
+      ]
+    },
+    "be_basic_g2_21": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[35]::#35"
+      ]
+    },
+    "be_basic_g2_22": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[36]::#36"
+      ]
+    },
+    "be_basic_g2_23": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[37]::#37"
+      ]
+    },
+    "be_basic_g2_24": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[38]::#38"
+      ]
+    },
+    "be_basic_g2_25": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[39]::#39"
+      ]
+    },
+    "be_basic_g2_26": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[40]::#40"
+      ]
+    },
+    "be_basic_g2_27": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[41]::#41"
+      ]
+    },
+    "be_basic_g2_28": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[42]::#42"
+      ]
+    },
+    "be_basic_g2_29": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[43]::#43"
+      ]
+    },
+    "be_basic_g2_3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[17]::#17"
+      ]
+    },
+    "be_basic_g2_30": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[44]::#44"
+      ]
+    },
+    "be_basic_g2_31": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[45]::#45"
+      ]
+    },
+    "be_basic_g2_32": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[46]::#46"
+      ]
+    },
+    "be_basic_g2_33": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[47]::#47"
+      ]
+    },
+    "be_basic_g2_34": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[48]::#48"
+      ]
+    },
+    "be_basic_g2_35": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[49]::#49"
+      ]
+    },
+    "be_basic_g2_4": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[18]::#18"
+      ]
+    },
+    "be_basic_g2_5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[19]::#19"
+      ]
+    },
+    "be_basic_g2_6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[20]::#20"
+      ]
+    },
+    "be_basic_g2_7": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[21]::#21"
+      ]
+    },
+    "be_basic_g2_8": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[22]::#22"
+      ]
+    },
+    "be_basic_g2_9": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[23]::#23"
+      ]
+    },
+    "descriptive_compare_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[1]::#607"
+      ]
+    },
+    "descriptive_compare_g4": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[4]::#610"
+      ]
+    },
+    "descriptive_compare_g4b": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[7]::#613"
+      ]
+    },
+    "descriptive_compare_g5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[10]::#616"
+      ]
+    },
+    "descriptive_compare_g5b": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[12]::#618"
+      ]
+    },
+    "descriptive_compare_g5c": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[16]::#622"
+      ]
+    },
+    "descriptive_compare_g5d": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[20]::#626"
+      ]
+    },
+    "descriptive_compare_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[22]::#628"
+      ]
+    },
+    "descriptive_compare_g6b": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[26]::#632"
+      ]
+    },
+    "descriptive_compare_g6c": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[30]::#636"
+      ]
+    },
+    "descriptive_place_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[0]::#606"
+      ]
+    },
+    "descriptive_place_g4": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[3]::#609"
+      ]
+    },
+    "descriptive_place_g4b": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[6]::#612"
+      ]
+    },
+    "descriptive_place_g5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[9]::#615"
+      ]
+    },
+    "descriptive_place_g5b": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[13]::#619"
+      ]
+    },
+    "descriptive_place_g5c": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[17]::#623"
+      ]
+    },
+    "descriptive_place_g5d": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[21]::#627"
+      ]
+    },
+    "descriptive_place_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[23]::#629"
+      ]
+    },
+    "descriptive_place_g6b": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[27]::#633"
+      ]
+    },
+    "descriptive_place_g6c": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[31]::#637"
+      ]
+    },
+    "descriptive_sense_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[2]::#608"
+      ]
+    },
+    "descriptive_sense_g4": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[5]::#611"
+      ]
+    },
+    "descriptive_sense_g4b": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[8]::#614"
+      ]
+    },
+    "descriptive_sense_g5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[11]::#617"
+      ]
+    },
+    "descriptive_sense_g5c": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[15]::#621"
+      ]
+    },
+    "descriptive_sense_g5d": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[19]::#625"
+      ]
+    },
+    "descriptive_sense_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[25]::#631"
+      ]
+    },
+    "descriptive_sense_g6b": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[29]::#635"
+      ]
+    },
+    "descriptive_superlative_g5": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[14]::#620"
+      ]
+    },
+    "descriptive_superlative_g5b": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[18]::#624"
+      ]
+    },
+    "descriptive_superlative_g6": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[24]::#630"
+      ]
+    },
+    "descriptive_superlative_g6b": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[28]::#634"
+      ]
+    },
+    "en_grammar_be_present": {
+      "count": 4,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[0]::#0",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[1]::#1",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[2]::#2",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[3]::#3"
+      ]
+    },
+    "grammar_present_first_g4": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[5]::#104"
+      ]
+    },
+    "grammar_present_neg_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[2]::#101"
+      ]
+    },
+    "grammar_present_plural_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[1]::#100"
+      ]
+    },
+    "grammar_present_plural_g4": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[6]::#105"
+      ]
+    },
+    "grammar_present_ps_g3_borrow": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[8]::#107"
+      ]
+    },
+    "grammar_present_ps_g3_bus": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[22]::#121"
+      ]
+    },
+    "grammar_present_ps_g3_cat": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[9]::#108"
+      ]
+    },
+    "grammar_present_ps_g3_clean": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[24]::#123"
+      ]
+    },
+    "grammar_present_ps_g3_do_not_i": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[26]::#125"
+      ]
+    },
+    "grammar_present_ps_g3_do_not_she": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[27]::#126"
+      ]
+    },
+    "grammar_present_ps_g3_do_not_we": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[28]::#127"
+      ]
+    },
+    "grammar_present_ps_g3_father_work": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[32]::#131"
+      ]
+    },
+    "grammar_present_ps_g3_football": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[25]::#124"
+      ]
+    },
+    "grammar_present_ps_g3_love_games": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[16]::#115"
+      ]
+    },
+    "grammar_present_ps_g3_lunch": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[23]::#122"
+      ]
+    },
+    "grammar_present_ps_g3_neg_friends": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[14]::#113"
+      ]
+    },
+    "grammar_present_ps_g3_neg_i": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[10]::#109"
+      ]
+    },
+    "grammar_present_ps_g3_neg_she": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[11]::#110"
+      ]
+    },
+    "grammar_present_ps_g3_q_he": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[13]::#112"
+      ]
+    },
+    "grammar_present_ps_g3_q_icecream": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[29]::#128"
+      ]
+    },
+    "grammar_present_ps_g3_q_piano": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[30]::#129"
+      ]
+    },
+    "grammar_present_ps_g3_q_she_help": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[20]::#119"
+      ]
+    },
+    "grammar_present_ps_g3_q_speak_en": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[31]::#130"
+      ]
+    },
+    "grammar_present_ps_g3_q_they_lunch": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[17]::#116"
+      ]
+    },
+    "grammar_present_ps_g3_q_you": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[12]::#111"
+      ]
+    },
+    "grammar_present_ps_g3_study": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[21]::#120"
+      ]
+    },
+    "grammar_present_ps_g3_sun": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[18]::#117"
+      ]
+    },
+    "grammar_present_ps_g3_teach": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[15]::#114"
+      ]
+    },
+    "grammar_present_ps_g3_understand": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[19]::#118"
+      ]
+    },
+    "grammar_present_ps_g4_aux_i": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[38]::#137"
+      ]
+    },
+    "grammar_present_ps_g4_birds": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[33]::#132"
+      ]
+    },
+    "grammar_present_ps_g4_breakfast": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[34]::#133"
+      ]
+    },
+    "grammar_present_ps_g4_children_love": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[37]::#136"
+      ]
+    },
+    "grammar_present_ps_g4_homework": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[35]::#134"
+      ]
+    },
+    "grammar_present_ps_g4_not_coffee": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[47]::#146"
+      ]
+    },
+    "grammar_present_ps_g4_not_know": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[39]::#138"
+      ]
+    },
+    "grammar_present_ps_g4_not_want": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[40]::#139"
+      ]
+    },
+    "grammar_present_ps_g4_not_want_that": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[46]::#145"
+      ]
+    },
+    "grammar_present_ps_g4_q_live": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[42]::#141"
+      ]
+    },
+    "grammar_present_ps_g4_q_music": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[43]::#142"
+      ]
+    },
+    "grammar_present_ps_g4_q_pet": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[41]::#140"
+      ]
+    },
+    "grammar_present_ps_g4_teacher_en": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[36]::#135"
+      ]
+    },
+    "grammar_present_question_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[3]::#102"
+      ]
+    },
+    "grammar_present_third_s_g3": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[0]::#99"
+      ]
+    },
+    "grammar_present_third_s_g4": {
+      "count": 2,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[4]::#103",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[7]::#106"
+      ]
+    },
+    "grammar_present_third_s_g4_cousin": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[44]::#143"
+      ]
+    },
+    "grammar_present_third_s_g4_rabbit": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[45]::#144"
+      ]
+    },
+    "narrative_past_continuous_g4": {
+      "count": 2,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[1]::#639",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[6]::#644"
+      ]
+    },
+    "narrative_past_continuous_g5": {
+      "count": 2,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[10]::#648",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[13]::#651"
+      ]
+    },
+    "narrative_past_simple_g4": {
+      "count": 7,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[0]::#638",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[2]::#640",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[3]::#641",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[4]::#642",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[5]::#643",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[7]::#645"
+      ]
+    },
+    "narrative_past_simple_g5": {
+      "count": 5,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[9]::#647",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[11]::#649",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[12]::#650",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[14]::#652",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[15]::#653"
+      ]
+    },
+    "routine_present_g2_breakfast_q": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[2]::#576"
+      ]
+    },
+    "routine_present_g2_brush": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[0]::#574"
+      ]
+    },
+    "routine_present_g2_bus": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[1]::#575"
+      ]
+    },
+    "routine_present_g2_go": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[4]::#578"
+      ]
+    },
+    "routine_present_g2_wake": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[3]::#577"
+      ]
+    },
+    "routine_present_g3_brush": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[5]::#579"
+      ]
+    },
+    "routine_present_g3_cook": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[14]::#588"
+      ]
+    },
+    "routine_present_g3_go": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[9]::#583"
+      ]
+    },
+    "routine_present_g3_homework": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[10]::#584"
+      ]
+    },
+    "routine_present_g3_lunch": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[11]::#585"
+      ]
+    },
+    "routine_present_g3_lunch_q": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[7]::#581"
+      ]
+    },
+    "routine_present_g3_study": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[13]::#587"
+      ]
+    },
+    "routine_present_g3_train": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[6]::#580"
+      ]
+    },
+    "routine_present_g3_tv": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[12]::#586"
+      ]
+    },
+    "routine_present_g3_wake": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[8]::#582"
+      ]
+    },
+    "routine_present_g4_break": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[16]::#590"
+      ]
+    },
+    "routine_present_g4_clean": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[22]::#596"
+      ]
+    },
+    "routine_present_g4_cook": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[19]::#593"
+      ]
+    },
+    "routine_present_g4_homework": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[15]::#589"
+      ]
+    },
+    "routine_present_g4_music": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[20]::#594"
+      ]
+    },
+    "routine_present_g4_read": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[21]::#595"
+      ]
+    },
+    "routine_present_g4_study": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[18]::#592"
+      ]
+    },
+    "routine_present_g4_tv": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[17]::#591"
+      ]
+    },
+    "routine_present_g5_breakfast": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[27]::#601"
+      ]
+    },
+    "routine_present_g5_clean": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[25]::#599"
+      ]
+    },
+    "routine_present_g5_music": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[23]::#597"
+      ]
+    },
+    "routine_present_g5_read": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[24]::#598"
+      ]
+    },
+    "routine_present_g5_ride": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[28]::#602"
+      ]
+    },
+    "routine_present_g5_sports": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[26]::#600"
+      ]
+    },
+    "routine_present_g6_lunch": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[30]::#604"
+      ]
+    },
+    "routine_present_g6_ride": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[31]::#605"
+      ]
+    },
+    "routine_present_g6_sports": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[29]::#603"
+      ]
+    },
+    "translation_mcq_g2_matrix": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/translation-pools.js::TRANSLATION_POOLS.simulator_translation_mcq[0]::#537"
+      ]
+    },
+    "translation_mcq_g3_matrix": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/translation-pools.js::TRANSLATION_POOLS.simulator_translation_mcq[1]::#538"
+      ]
+    },
+    "translation_mcq_g4_matrix": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/translation-pools.js::TRANSLATION_POOLS.simulator_translation_mcq[2]::#539"
+      ]
+    },
+    "translation_mcq_g5_matrix": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/translation-pools.js::TRANSLATION_POOLS.simulator_translation_mcq[3]::#540"
+      ]
+    },
+    "translation_mcq_g6_matrix": {
+      "count": 1,
+      "exampleQuestionIds": [
+        "data/english-questions/translation-pools.js::TRANSLATION_POOLS.simulator_translation_mcq[4]::#541"
+      ]
+    }
+  },
+  "groupedBySuggestedSubskillId": {
+    "advanced": {
+      "count": 16,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[0]::#654",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[1]::#655",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[2]::#656",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[3]::#657",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[4]::#658",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.advanced[5]::#659"
+      ]
+    },
+    "base": {
+      "count": 32,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[0]::#542",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[1]::#543",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[2]::#544",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[3]::#545",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[4]::#546",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.base[5]::#547"
+      ]
+    },
+    "be_basic": {
+      "count": 50,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[0]::#0",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[1]::#1",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[2]::#2",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[3]::#3",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[4]::#4",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.be_basic[5]::#5"
+      ]
+    },
+    "comparatives": {
+      "count": 48,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.comparatives[0]::#342",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.comparatives[1]::#343",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.comparatives[2]::#344",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.comparatives[3]::#345",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.comparatives[4]::#346",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.comparatives[5]::#347"
+      ]
+    },
+    "complex_tenses": {
+      "count": 49,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.complex_tenses[0]::#439",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.complex_tenses[1]::#440",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.complex_tenses[2]::#441",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.complex_tenses[3]::#442",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.complex_tenses[4]::#443",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.complex_tenses[5]::#444"
+      ]
+    },
+    "conditionals": {
+      "count": 49,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.conditionals[0]::#488",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.conditionals[1]::#489",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.conditionals[2]::#490",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.conditionals[3]::#491",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.conditionals[4]::#492",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.conditionals[5]::#493"
+      ]
+    },
+    "descriptive": {
+      "count": 32,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[0]::#606",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[1]::#607",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[2]::#608",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[3]::#609",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[4]::#610",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.descriptive[5]::#611"
+      ]
+    },
+    "future_forms": {
+      "count": 49,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.future_forms[0]::#390",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.future_forms[1]::#391",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.future_forms[2]::#392",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.future_forms[3]::#393",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.future_forms[4]::#394",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.future_forms[5]::#395"
+      ]
+    },
+    "modals": {
+      "count": 49,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.modals[0]::#293",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.modals[1]::#294",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.modals[2]::#295",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.modals[3]::#296",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.modals[4]::#297",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.modals[5]::#298"
+      ]
+    },
+    "narrative": {
+      "count": 16,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[0]::#638",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[1]::#639",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[2]::#640",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[3]::#641",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[4]::#642",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.narrative[5]::#643"
+      ]
+    },
+    "past_simple": {
+      "count": 49,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.past_simple[0]::#244",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.past_simple[1]::#245",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.past_simple[2]::#246",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.past_simple[3]::#247",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.past_simple[4]::#248",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.past_simple[5]::#249"
+      ]
+    },
+    "present_simple": {
+      "count": 48,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[0]::#99",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[1]::#100",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[2]::#101",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[3]::#102",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[4]::#103",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.present_simple[5]::#104"
+      ]
+    },
+    "progressive": {
+      "count": 49,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.progressive[0]::#147",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.progressive[1]::#148",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.progressive[2]::#149",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.progressive[3]::#150",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.progressive[4]::#151",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.progressive[5]::#152"
+      ]
+    },
+    "quantifiers": {
+      "count": 48,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.quantifiers[0]::#196",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.quantifiers[1]::#197",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.quantifiers[2]::#198",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.quantifiers[3]::#199",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.quantifiers[4]::#200",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.quantifiers[5]::#201"
+      ]
+    },
+    "question_frames": {
+      "count": 49,
+      "exampleQuestionIds": [
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[0]::#50",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[1]::#51",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[2]::#52",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[3]::#53",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[4]::#54",
+        "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[5]::#55"
+      ]
+    },
+    "routine": {
+      "count": 32,
+      "exampleQuestionIds": [
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[0]::#574",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[1]::#575",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[2]::#576",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[3]::#577",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[4]::#578",
+        "data/english-questions/sentence-pools.js::SENTENCE_POOLS.routine[5]::#579"
+      ]
+    },
+    "simulator_translation_mcq": {
+      "count": 5,
+      "exampleQuestionIds": [
+        "data/english-questions/translation-pools.js::TRANSLATION_POOLS.simulator_translation_mcq[0]::#537",
+        "data/english-questions/translation-pools.js::TRANSLATION_POOLS.simulator_translation_mcq[1]::#538",
+        "data/english-questions/translation-pools.js::TRANSLATION_POOLS.simulator_translation_mcq[2]::#539",
+        "data/english-questions/translation-pools.js::TRANSLATION_POOLS.simulator_translation_mcq[3]::#540",
+        "data/english-questions/translation-pools.js::TRANSLATION_POOLS.simulator_translation_mcq[4]::#541"
+      ]
+    }
+  },
+  "suggestedSkillIdSummary": [
+    {
+      "pattern": "(none)",
+      "count": 439
+    },
+    {
+      "pattern": "narrative_past_simple_g4",
+      "count": 7
+    },
+    {
+      "pattern": "narrative_past_simple_g5",
+      "count": 5
+    },
+    {
+      "pattern": "en_grammar_be_present",
+      "count": 4
+    },
+    {
+      "pattern": "advanced_present_perfect_g5",
+      "count": 3
+    },
+    {
+      "pattern": "advanced_present_perfect_g6",
+      "count": 3
+    },
+    {
+      "pattern": "advanced_first_conditional_g6",
+      "count": 3
+    },
+    {
+      "pattern": "grammar_present_third_s_g4",
+      "count": 2
+    },
+    {
+      "pattern": "narrative_past_continuous_g4",
+      "count": 2
+    },
+    {
+      "pattern": "narrative_past_continuous_g5",
+      "count": 2
+    },
+    {
+      "pattern": "advanced_conditional_zero_g5",
+      "count": 2
+    },
+    {
+      "pattern": "advanced_first_conditional_g5",
+      "count": 2
+    },
+    {
+      "pattern": "be_basic_g1_5",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g1_6",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g1_7",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g1_8",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g1_9",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g1_10",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g1_11",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g1_12",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g1_13",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g1_14",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g1_15",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_1",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_2",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_3",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_4",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_5",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_6",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_7",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_8",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_9",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_10",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_11",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_12",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_13",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_14",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_15",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_16",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_17",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_18",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_19",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_20",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_21",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_22",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_23",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_24",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_25",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_26",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_27",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_28",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_29",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_30",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_31",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_32",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_33",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_34",
+      "count": 1
+    },
+    {
+      "pattern": "be_basic_g2_35",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_third_s_g3",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_plural_g3",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_neg_g3",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_question_g3",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_first_g4",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_plural_g4",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_borrow",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_cat",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_neg_i",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_neg_she",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_q_you",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_q_he",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_neg_friends",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_teach",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_love_games",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_q_they_lunch",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_sun",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_understand",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_q_she_help",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_study",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_bus",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_lunch",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_clean",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_football",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_do_not_i",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_do_not_she",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_do_not_we",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_q_icecream",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_q_piano",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_q_speak_en",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g3_father_work",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_birds",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_breakfast",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_homework",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_teacher_en",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_children_love",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_aux_i",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_not_know",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_not_want",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_q_pet",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_q_live",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_q_music",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_third_s_g4_cousin",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_third_s_g4_rabbit",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_not_want_that",
+      "count": 1
+    },
+    {
+      "pattern": "grammar_present_ps_g4_not_coffee",
+      "count": 1
+    },
+    {
+      "pattern": "translation_mcq_g2_matrix",
+      "count": 1
+    },
+    {
+      "pattern": "translation_mcq_g3_matrix",
+      "count": 1
+    },
+    {
+      "pattern": "translation_mcq_g4_matrix",
+      "count": 1
+    },
+    {
+      "pattern": "translation_mcq_g5_matrix",
+      "count": 1
+    },
+    {
+      "pattern": "translation_mcq_g6_matrix",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_have_g1",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_plural_g1",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_it_g1",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_she_g1",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_have_g2",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_plural_g2",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_it_g2",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_she_g2",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_you_g1",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_they_g1",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_you_g2",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_they_g2",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_you_g3",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_they_g3",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_i_state_g3",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_it_adj_g3",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_they_adj_g3",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_i_from_g3",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_i_state_g4",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_it_adj_g4",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_they_adj_g4",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_i_from_g4",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_he_g5",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_we_g5",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_it_place_g5",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_i_age_g5",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_compound_subject_g5",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_he_g6",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_we_g6",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_it_place_g6",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_i_age_g6",
+      "count": 1
+    },
+    {
+      "pattern": "base_be_compound_subject_g6",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g2_brush",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g2_bus",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g2_breakfast_q",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g2_wake",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g2_go",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g3_brush",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g3_train",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g3_lunch_q",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g3_wake",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g3_go",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g3_homework",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g3_lunch",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g3_tv",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g3_study",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g3_cook",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g4_homework",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g4_break",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g4_tv",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g4_study",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g4_cook",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g4_music",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g4_read",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g4_clean",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g5_music",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g5_read",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g5_clean",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g5_sports",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g5_breakfast",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g5_ride",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g6_sports",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g6_lunch",
+      "count": 1
+    },
+    {
+      "pattern": "routine_present_g6_ride",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_place_g3",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_compare_g3",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_sense_g3",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_place_g4",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_compare_g4",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_sense_g4",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_place_g4b",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_compare_g4b",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_sense_g4b",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_place_g5",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_compare_g5",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_sense_g5",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_compare_g5b",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_place_g5b",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_superlative_g5",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_sense_g5c",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_compare_g5c",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_place_g5c",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_superlative_g5b",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_sense_g5d",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_compare_g5d",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_place_g5d",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_compare_g6",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_place_g6",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_superlative_g6",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_sense_g6",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_compare_g6b",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_place_g6b",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_superlative_g6b",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_sense_g6b",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_compare_g6c",
+      "count": 1
+    },
+    {
+      "pattern": "descriptive_place_g6c",
+      "count": 1
+    },
+    {
+      "pattern": "advanced_future_will_g5",
+      "count": 1
+    },
+    {
+      "pattern": "advanced_present_perfect_q_g6",
+      "count": 1
+    },
+    {
+      "pattern": "advanced_first_conditional_neg_g6",
+      "count": 1
+    }
+  ],
+  "suggestedSubskillIdSummary": [
+    {
+      "pattern": "be_basic",
+      "count": 50
+    },
+    {
+      "pattern": "question_frames",
+      "count": 49
+    },
+    {
+      "pattern": "progressive",
+      "count": 49
+    },
+    {
+      "pattern": "past_simple",
+      "count": 49
+    },
+    {
+      "pattern": "modals",
+      "count": 49
+    },
+    {
+      "pattern": "future_forms",
+      "count": 49
+    },
+    {
+      "pattern": "complex_tenses",
+      "count": 49
+    },
+    {
+      "pattern": "conditionals",
+      "count": 49
+    },
+    {
+      "pattern": "present_simple",
+      "count": 48
+    },
+    {
+      "pattern": "quantifiers",
+      "count": 48
+    },
+    {
+      "pattern": "comparatives",
+      "count": 48
+    },
+    {
+      "pattern": "base",
+      "count": 32
+    },
+    {
+      "pattern": "routine",
+      "count": 32
+    },
+    {
+      "pattern": "descriptive",
+      "count": 32
+    },
+    {
+      "pattern": "narrative",
+      "count": 16
+    },
+    {
+      "pattern": "advanced",
+      "count": 16
+    },
+    {
+      "pattern": "simulator_translation_mcq",
+      "count": 5
+    }
+  ],
+  "suggestedDifficultySummary": [
+    {
+      "pattern": "basic",
+      "count": 507
+    },
+    {
+      "pattern": "standard",
+      "count": 96
+    },
+    {
+      "pattern": "advanced",
+      "count": 67
+    }
+  ],
+  "suggestedCognitiveLevelSummary": [
+    {
+      "pattern": "recall",
+      "count": 502
+    },
+    {
+      "pattern": "understanding",
+      "count": 98
+    },
+    {
+      "pattern": "analysis",
+      "count": 65
+    },
+    {
+      "pattern": "application",
+      "count": 5
+    }
+  ],
+  "suggestedExpectedErrorTypesSummary": [
+    {
+      "pattern": "grammar_error, grammar_pattern_error, careless_error",
+      "count": 533
+    },
+    {
+      "pattern": "grammar_error, sentence_order_error, careless_error",
+      "count": 128
+    },
+    {
+      "pattern": "translation_error, vocabulary_confusion, reading_comprehension_error",
+      "count": 5
+    },
+    {
+      "pattern": "grammar_pattern_error, grammar_error, careless_error",
+      "count": 4
+    }
+  ],
+  "prerequisiteSuggestionSummary": [
+    {
+      "pattern": "(empty)",
+      "count": 670
+    }
+  ],
+  "examplesLowConfidence": [
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[0]::#50",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[1]::#51",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[2]::#52",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[3]::#53",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[4]::#54",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[5]::#55",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[6]::#56",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[7]::#57",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[8]::#58",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[9]::#59",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[10]::#60",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[11]::#61"
+  ],
+  "examplesHighReviewPriority": [
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[0]::#50",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[1]::#51",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[2]::#52",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[3]::#53",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[4]::#54",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[5]::#55",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[6]::#56",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[7]::#57",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[8]::#58",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[9]::#59",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[10]::#60",
+    "data/english-questions/grammar-pools.js::GRAMMAR_POOLS.question_frames[11]::#61"
+  ],
+  "checklist": {
+    "approveAsIs": "Use only for rows with confidence **high**, reviewPriority **low**, after spot-checking English stem/options alignment.",
+    "editMetadata": "Adjust suggested metadata in the bank — **do not** change English wording, options, or correct answers without curriculum approval.",
+    "rejectSuggestion": "Discard when taxonomy mapping conflicts with classroom sequencing or diagnostic routing.",
+    "needsCurriculumExpert": "Required for **low** confidence rows and any prerequisite graph changes affecting reports."
+  }
+}

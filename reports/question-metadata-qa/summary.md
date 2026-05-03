@@ -1,9 +1,9 @@
 # Question metadata QA
 
-- **Generated:** 2026-05-03T13:25:16.260Z
+- **Generated:** 2026-05-03T13:38:26.253Z
 - **Gate:** scanOutcome=`ok`, advisoryStatus=`WARN`
 - **Questions scanned:** 5267
-- **High / medium risk:** 4547 / 231
+- **High / medium risk:** 4547 / 0
 - **Duplicate declared IDs (cross-file):** 0
 - **Skill buckets below 5 questions:** 299
 
@@ -24,13 +24,12 @@
 | --- | ---: |
 | missing_prerequisite_skill_ids | 5261 |
 | implicit_id_only | 4884 |
-| missing_difficulty | 4778 |
-| missing_cognitiveLevel | 4778 |
-| missing_expected_error_types | 4774 |
 | missing_skillId | 4547 |
 | missing_subskillId | 4547 |
 | missing_explanation | 4264 |
-| taxonomy_unknown_expected_error_type | 4 |
+| missing_difficulty | 4108 |
+| missing_cognitiveLevel | 4108 |
+| missing_expected_error_types | 4108 |
 
 ## Outputs
 

@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T13:38:06.233Z",
+  "sourceSuggestions": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-metadata-qa\\english-enrichment-suggestions.json",
+  "targets": [
+    "data/english-questions/grammar-pools.js",
+    "data/english-questions/translation-pools.js",
+    "data/english-questions/sentence-pools.js"
+  ],
+  "rowsScanned": 670,
+  "rowsTouched": 670,
+  "fieldCounts": {
+    "skillId": 227,
+    "subtype": 231,
+    "difficulty": 670,
+    "cognitiveLevel": 670,
+    "expectedErrorTypes": 670,
+    "prerequisiteSkillIds": 0
+  },
+  "prerequisiteSkillIdsApplied": 0,
+  "prerequisiteSkillIdsSkipped": 0,
+  "prerequisiteSkipLog": [],
+  "scannerSnapshot": {
+    "before": {
+      "rowCount": 670,
+      "avgCompletenessScore": 0.357,
+      "issueTotals": {
+        "implicit_id_only": 670,
+        "missing_difficulty": 670,
+        "missing_cognitiveLevel": 670,
+        "missing_prerequisite_skill_ids": 670,
+        "missing_expected_error_types": 666,
+        "missing_explanation": 50,
+        "missing_skillId": 439,
+        "missing_subskillId": 439
+      },
+      "totalIssueOccurrences": 4274
+    },
+    "after": {
+      "rowCount": 670,
+      "avgCompletenessScore": 0.677,
+      "issueTotals": {
+        "implicit_id_only": 670,
+        "missing_prerequisite_skill_ids": 670,
+        "missing_explanation": 50,
+        "missing_skillId": 439,
+        "missing_subskillId": 439
+      },
+      "totalIssueOccurrences": 2268
+    }
+  }
+}
