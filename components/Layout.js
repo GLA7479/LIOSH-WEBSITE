@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import DevCoinTopupNav from "./layout/DevCoinTopupNav";
 
-const menuLinks = [
+const menuLinksBase = [
   { href: "/", label: "Home" },
   { href: "/parent/login", label: "כניסת הורים" },
   { href: "/student/login", label: "כניסת תלמיד" },
@@ -15,15 +15,24 @@ const menuLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
+const engineReviewNav =
+  process.env.NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN === "true"
+    ? [{ href: "/learning/dev/engine-review", label: "Engine review" }]
+    : [];
+
+const menuLinks = [...menuLinksBase, ...engineReviewNav];
+
 export default function Layout({ children }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Check if it's a game page by checking the route
+  // Game / immersive learning UIs: no site header. Dev admin under /learning/dev/* keeps the sticky nav (incl. mobile menu).
+  const isLearningDev = router.pathname.startsWith("/learning/dev");
   const isGamePage =
-    router.pathname.includes("/learning/") ||
-    router.pathname.includes("/offline/") ||
-    router.pathname.includes("/mleo-");
+    !isLearningDev &&
+    (router.pathname.includes("/learning/") ||
+      router.pathname.includes("/offline/") ||
+      router.pathname.includes("/mleo-"));
 
   if (isGamePage) {
     // For game pages, return only the children without header/footer
