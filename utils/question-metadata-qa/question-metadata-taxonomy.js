@@ -115,6 +115,9 @@ export const EXTENDED_EXPECTED_ERROR_TYPES = new Set([
   "unit_confusion",
   "visual_reasoning_error",
   "geometry_calculation_slip",
+  /** Hebrew rich pool — comprehension / discourse tagging */
+  "inference_error",
+  "sequence_error",
 ]);
 
 /**
@@ -177,6 +180,66 @@ export const GEOMETRY_SUBSKILL_ALLOWLIST_BY_SKILL = buildGeometrySubskillAllowli
 
 /** Skill ids observed on geometry conceptual scan (`effectiveSkillId`). */
 export const GEOMETRY_SKILL_IDS = new Set(Object.keys(GEOMETRY_SUBSKILL_ALLOWLIST_BY_SKILL));
+
+/**
+ * Per-skill subskill allowlist for `utils/hebrew-rich-question-bank.js` (`HEBREW_RICH_POOL` scan).
+ * Keys match scanner `effectiveSkillId` (diagnosticSkillId / patternFamily / topic precedence).
+ */
+function buildHebrewRichSubskillAllowlist() {
+  /** @type {Record<string, Set<string>>} */
+  const m = {};
+  m["analogy_reasoning"] = new Set(["parallel"]);
+  m["antonym"] = new Set(["opposite"]);
+  m["binary_fact_early_g1"] = new Set(["tf_science_simple"]);
+  m["binary_fact_early_g2"] = new Set(["where_from_sentence"]);
+  m["binary_fact_mid_grammar"] = new Set(["tf"]);
+  m["binary_grammar"] = new Set(["tf"]);
+  m["category_exclusion"] = new Set(["odd_out"]);
+  m["cause_effect"] = new Set(["because"]);
+  m["collocation"] = new Set(["verb_noun_fit"]);
+  m["compare_statements"] = new Set(["contrast"]);
+  m["completion"] = new Set(["context_clue"]);
+  m["context_fit"] = new Set(["register"]);
+  m["gender_number"] = new Set(["plural"]);
+  m["gender_number_early_g1"] = new Set(["agreement_girl_singular"]);
+  m["gender_number_early_g2"] = new Set(["agreement_boy_plural"]);
+  m["he_comp_explicit_detail"] = new Set(["detail"]);
+  m["he_comp_inference_intro"] = new Set(["implied"]);
+  m["he_comp_sequence_events"] = new Set(["order"]);
+  m["implicit_tone"] = new Set(["attitude"]);
+  m["logic_completion"] = new Set(["conclusion"]);
+  m["main_idea"] = new Set(["summary"]);
+  m["morphology"] = new Set(["binyan_fit"]);
+  m["part_of_speech"] = new Set(["verb_noun"]);
+  m["precision"] = new Set(["best_word"]);
+  m["prep_choice"] = new Set(["collocation"]);
+  m["reference"] = new Set(["pronoun"]);
+  m["rephrase"] = new Set(["clarity"]);
+  m["semantic_field"] = new Set(["education_lexicon"]);
+  m["sentence_correction"] = new Set(["choose_correct", "sv_agreement_plural"]);
+  m["sentence_read"] = new Set(["meaning"]);
+  m["social_reply_early_g1"] = new Set(["bump_sorry"]);
+  m["social_reply_early_g2"] = new Set(["thanks_response"]);
+  m["social_reply_mid_help"] = new Set(["request"]);
+  m["spell_word_early_ab_writing"] = new Set(["object_riddle", "role_meaning"]);
+  m["structural"] = new Set(["paragraph_role"]);
+  m["structured_completion"] = new Set(["polite_phrase"]);
+  m["supporting_detail"] = new Set(["evidence"]);
+  m["synonym"] = new Set(["near_meaning"]);
+  m["tense_shift"] = new Set(["past_present"]);
+  m["transform"] = new Set(["negation"]);
+  m["verb_agreement"] = new Set(["plural_subject"]);
+  m["word_context_early_g1"] = new Set(["cloze_morning"]);
+  m["word_context_early_g2"] = new Set(["cloze_school"]);
+  m["word_level_early_g1"] = new Set(["spelling_meaning_then_choice"]);
+  m["word_level_early_g2"] = new Set(["spelling_choice_niqqud"]);
+  return m;
+}
+
+export const HEBREW_RICH_SUBSKILL_ALLOWLIST_BY_SKILL = buildHebrewRichSubskillAllowlist();
+
+/** Skill ids observed on Hebrew rich pool scan (`effectiveSkillId`). */
+export const HEBREW_RICH_SKILL_IDS = new Set(Object.keys(HEBREW_RICH_SUBSKILL_ALLOWLIST_BY_SKILL));
 
 export const TAXONOMY_ISSUE_CODES = {
   taxonomy_unknown_skillId: "taxonomy_unknown_skillId",
@@ -247,6 +310,37 @@ export function inferGeometryCognitiveLevel(raw, difficultyNormalized) {
 }
 
 /**
+ * Infer cognitive level for Hebrew rich pool rows (probePower, patternFamily, topic).
+ * @param {Record<string, unknown>} raw
+ * @param {string} difficultyNormalized
+ */
+export function inferHebrewRichCognitiveLevel(raw, difficultyNormalized) {
+  const pp = String(raw.probePower || "").toLowerCase();
+  if (pp === "high") return "application";
+  if (pp === "medium") return "understanding";
+  if (pp === "low") return "recall";
+  const pf = String(raw.patternFamily || "");
+  const topic = String(raw.topic || "");
+  if (pf.includes("word_level") || pf.includes("spell_word") || (topic === "reading" && pf.includes("early"))) {
+    return "recall";
+  }
+  if (
+    pf.includes("inference") ||
+    pf.includes("implicit") ||
+    pf === "reference" ||
+    pf === "main_idea" ||
+    pf === "supporting_detail" ||
+    pf === "compare_statements"
+  ) {
+    return "analysis";
+  }
+  const d = String(difficultyNormalized || "").toLowerCase();
+  if (d === "easy" || d === "basic" || d === "intro") return "recall";
+  if (d === "hard" || d === "advanced" || d === "challenge") return "analysis";
+  return "understanding";
+}
+
+/**
  * @param {object} record — scan record from buildScanRecord
  * @returns {string[]} additional issue codes
  */
@@ -259,6 +353,18 @@ export function validateTaxonomyForRecord(record) {
 
   const skillId = record.skillId || "";
   const subskillId = record.subskillId || "";
+
+  if (subject === "hebrew") {
+    if (skillId && !HEBREW_RICH_SKILL_IDS.has(skillId)) {
+      issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_skillId);
+    }
+    if (skillId && subskillId) {
+      const allow = HEBREW_RICH_SUBSKILL_ALLOWLIST_BY_SKILL[skillId];
+      if (allow && !allow.has(subskillId)) {
+        issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_subskillId);
+      }
+    }
+  }
 
   if (subject === "science") {
     if (skillId && !SCIENCE_SKILL_IDS.has(skillId)) {
@@ -309,6 +415,17 @@ export function validateTaxonomyForRecord(record) {
       const id = String(p).trim();
       if (!id) continue;
       if (!GEOMETRY_SKILL_IDS.has(id)) {
+        issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_prerequisite_skillId);
+        break;
+      }
+    }
+  }
+
+  if (subject === "hebrew" && Array.isArray(record.prerequisiteSkillIds)) {
+    for (const p of record.prerequisiteSkillIds) {
+      const id = String(p).trim();
+      if (!id) continue;
+      if (!HEBREW_RICH_SKILL_IDS.has(id)) {
         issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_prerequisite_skillId);
         break;
       }

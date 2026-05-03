@@ -1,7 +1,7 @@
 # Pace profile oracle audit (simulator)
 
-- Generated at: 2026-05-03T13:10:26.281Z
-- Source run id: profile-stress-mopsg7op
+- Generated at: 2026-05-03T13:26:12.850Z
+- Source run id: profile-stress-mopt0i2a
 
 ## How profiles are simulated
 

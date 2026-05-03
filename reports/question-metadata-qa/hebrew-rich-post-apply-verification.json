@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T13:25:04.108Z",
+  "ok": true,
+  "expectedTotal": 54,
+  "actualTotal": 54,
+  "errors": [],
+  "warnings": [],
+  "metadataCoverage": {
+    "difficulty": 54,
+    "cognitiveLevel": 54,
+    "expectedErrorTypes": 54,
+    "prerequisiteRowsValid": 54,
+    "avgScannerCompletenessScore": 0.763,
+    "pctDifficulty": 100,
+    "pctCognitive": 100,
+    "pctExpectedErrors": 100,
+    "pctPrerequisiteRowsValid": 100
+  },
+  "gitComparison": {
+    "baselineNote": "Loads git HEAD `utils/hebrew-rich-question-bank.js` + `grade-gating.js` into temp for import.",
+    "gitBaselineAvailable": true,
+    "studentFacingContentDiffs": [],
+    "contentDiffCount": 0
+  }
+}

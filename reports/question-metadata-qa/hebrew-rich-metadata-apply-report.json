@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T13:24:59.809Z",
+  "sourceSuggestions": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\question-metadata-qa\\hebrew-rich-enrichment-suggestions.json",
+  "targetBank": "utils/hebrew-rich-question-bank.js",
+  "rowsScanned": 54,
+  "rowsTouched": 54,
+  "fieldCounts": {
+    "difficulty": 54,
+    "cognitiveLevel": 54,
+    "expectedErrorTypes": 54,
+    "prerequisiteSkillIds": 2
+  },
+  "prerequisiteSkillIdsApplied": 2,
+  "prerequisiteSkillIdsSkipped": 0,
+  "prerequisiteSkipLog": [],
+  "skippedSuggestions": [],
+  "scannerSnapshot": {
+    "beforeApply": {
+      "avgCompletenessScore": 0.451,
+      "issueTotals": {
+        "implicit_id_only": 54,
+        "missing_difficulty": 54,
+        "missing_cognitiveLevel": 54,
+        "missing_prerequisite_skill_ids": 54,
+        "missing_explanation": 54,
+        "missing_expected_error_types": 49
+      },
+      "totalIssueOccurrences": 319
+    },
+    "afterApply": {
+      "avgCompletenessScore": 0.763,
+      "issueTotals": {
+        "implicit_id_only": 54,
+        "missing_prerequisite_skill_ids": 52,
+        "missing_explanation": 54
+      },
+      "totalIssueOccurrences": 160
+    }
+  },
+  "intentionalStudentFacingChanges": {
+    "questionText": false,
+    "answers": false,
+    "options": false,
+    "note": "Apply script only adds metadata keys from enrichment suggestions."
+  }
+}

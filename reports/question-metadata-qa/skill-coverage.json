@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T13:09:31.847Z",
+  "generatedAt": "2026-05-03T13:25:16.260Z",
   "skills": [
     {
       "subject": "english",
@@ -4097,9 +4097,9 @@
         "parallel"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4113,9 +4113,9 @@
         "opposite"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4129,9 +4129,9 @@
         "tf_science_simple"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4145,9 +4145,9 @@
         "where_from_sentence"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4161,9 +4161,9 @@
         "tf"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "standard": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4177,9 +4177,9 @@
         "tf"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4193,9 +4193,9 @@
         "odd_out"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4209,9 +4209,9 @@
         "because"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "standard": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4225,9 +4225,9 @@
         "verb_noun_fit"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4241,9 +4241,9 @@
         "contrast"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4257,9 +4257,9 @@
         "context_clue"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "basic": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4273,9 +4273,9 @@
         "register"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4289,9 +4289,9 @@
         "plural"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "standard": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4305,9 +4305,9 @@
         "agreement_girl_singular"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4321,9 +4321,9 @@
         "agreement_boy_plural"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4337,7 +4337,7 @@
         "detail"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "basic": 2
       },
       "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
@@ -4353,10 +4353,10 @@
         "implied"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "standard": 2
       },
       "expectedErrorCoverageCount": 2,
-      "prerequisiteCoverageCount": 0,
+      "prerequisiteCoverageCount": 2,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
     },
@@ -4369,7 +4369,7 @@
         "order"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
       "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
@@ -4385,9 +4385,9 @@
         "attitude"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4401,9 +4401,9 @@
         "conclusion"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4417,9 +4417,9 @@
         "summary"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "advanced": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4433,9 +4433,9 @@
         "binyan_fit"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4449,9 +4449,9 @@
         "verb_noun"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4465,9 +4465,9 @@
         "best_word"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4481,9 +4481,9 @@
         "collocation"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "basic": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4497,9 +4497,9 @@
         "pronoun"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4513,9 +4513,9 @@
         "clarity"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4529,9 +4529,9 @@
         "education_lexicon"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4546,9 +4546,9 @@
         "sv_agreement_plural"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "advanced": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4562,9 +4562,9 @@
         "meaning"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4578,9 +4578,9 @@
         "bump_sorry"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4594,9 +4594,9 @@
         "thanks_response"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4610,9 +4610,9 @@
         "request"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4627,9 +4627,9 @@
         "role_meaning"
       ],
       "difficultyDistribution": {
-        "unknown": 2
+        "basic": 2
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 2,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4643,9 +4643,9 @@
         "paragraph_role"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4659,9 +4659,9 @@
         "polite_phrase"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4675,9 +4675,9 @@
         "evidence"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4691,9 +4691,9 @@
         "near_meaning"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4707,9 +4707,9 @@
         "past_present"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4723,9 +4723,9 @@
         "negation"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4739,9 +4739,9 @@
         "plural_subject"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4755,9 +4755,9 @@
         "cloze_morning"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4771,9 +4771,9 @@
         "cloze_school"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4787,9 +4787,9 @@
         "spelling_meaning_then_choice"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
@@ -4803,9 +4803,9 @@
         "spelling_choice_niqqud"
       ],
       "difficultyDistribution": {
-        "unknown": 1
+        "basic": 1
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": false,
       "riskLevel": "high"
