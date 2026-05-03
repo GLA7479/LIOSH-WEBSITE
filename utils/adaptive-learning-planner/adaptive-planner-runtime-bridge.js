@@ -288,9 +288,10 @@ export function buildRuntimePlannerRecommendationFromPracticeResult(payload, opt
       };
     }
 
-    const scenarioId = `runtime_${subject.replace(/-/g, "_")}_${gradeFrag}_${Date.now()}_${Math.random()
-      .toString(36)
-      .slice(2, 10)}`;
+    /** Dev/QA only (scenario simulator): stable id enables risk-flag inference from scenario label (e.g. guessing). */
+    const scenarioId =
+      String(practice.scenarioSimulatorId || "").trim() ||
+      `runtime_${subject.replace(/-/g, "_")}_${gradeFrag}_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
     const report = buildSyntheticDiagnosticReport(practice, subject, gradeFrag, scenarioId);
 
     const adapterOptions = {

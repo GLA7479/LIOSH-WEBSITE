@@ -1,0 +1,362 @@
+{
+  "generatedAt": "2026-05-03T21:21:52.933Z",
+  "liveAiRequested": false,
+  "liveAiUsed": false,
+  "liveAiKeyPresent": false,
+  "scenarioCount": 8,
+  "allPassed": true,
+  "scenarios": [
+    {
+      "scenarioId": "strong_student_ready_to_advance",
+      "subject": "math",
+      "grade": 4,
+      "inputSummary": {
+        "totalQuestions": 120,
+        "accuracy": 90,
+        "topic": "numbers",
+        "durationSeconds": 3600,
+        "scenarioSimulatorId": "qa_strong_student_ready_to_advance_math_g4"
+      },
+      "planner": {
+        "ok": true,
+        "nextAction": "advance_skill",
+        "targetDifficulty": "advanced",
+        "questionCount": 4,
+        "reason": null
+      },
+      "explanation": {
+        "ok": true,
+        "text": "המערכת הציעה לנסות שלב הבא כשמרגישים שהחומר יושב טוב.",
+        "source": "deterministic_fallback"
+      },
+      "checks": {
+        "plannerOk": true,
+        "explanationSafe": true,
+        "explanationGrounded": true,
+        "noInternalLeak": true,
+        "noReasonCodesLeak": true,
+        "noMustNotSayLeak": true,
+        "noDiagnosticsLeak": true,
+        "childFriendlyTone": true,
+        "noScaryLanguage": true,
+        "noOverclaiming": true,
+        "hebrewOnly": true,
+        "pass": true
+      },
+      "diagnostics": {
+        "skillAlignmentSource": null,
+        "metadataSubjectFallback": true,
+        "metadataExactMatch": false
+      },
+      "notes": "High accuracy, enough evidence; expect advance-style planner path when confidence thresholds align."
+    },
+    {
+      "scenarioId": "steady_student_continue_same_level",
+      "subject": "hebrew",
+      "grade": "g3",
+      "inputSummary": {
+        "totalQuestions": 40,
+        "accuracy": 78,
+        "topic": "reading",
+        "durationSeconds": 900,
+        "scenarioSimulatorId": "qa_steady_student_continue_same_level_hebrew_g3"
+      },
+      "planner": {
+        "ok": true,
+        "nextAction": "maintain_skill",
+        "targetDifficulty": "standard",
+        "questionCount": 4,
+        "reason": null
+      },
+      "explanation": {
+        "ok": true,
+        "text": "המערכת ראתה שכדאי לתרגל עוד קצת באותה רמה כדי לבסס את ההבנה.",
+        "source": "deterministic_fallback"
+      },
+      "checks": {
+        "plannerOk": true,
+        "explanationSafe": true,
+        "explanationGrounded": true,
+        "noInternalLeak": true,
+        "noReasonCodesLeak": true,
+        "noMustNotSayLeak": true,
+        "noDiagnosticsLeak": true,
+        "childFriendlyTone": true,
+        "noScaryLanguage": true,
+        "noOverclaiming": true,
+        "hebrewOnly": true,
+        "pass": true
+      },
+      "diagnostics": {
+        "skillAlignmentSource": null,
+        "metadataSubjectFallback": true,
+        "metadataExactMatch": false
+      },
+      "notes": "Maintain band accuracy with moderate evidence batch."
+    },
+    {
+      "scenarioId": "struggling_student_needs_foundation",
+      "subject": "science",
+      "grade": 3,
+      "inputSummary": {
+        "totalQuestions": 12,
+        "accuracy": 33,
+        "topic": "animals",
+        "durationSeconds": 600,
+        "scenarioSimulatorId": "qa_struggling_student_needs_foundation_science_g3"
+      },
+      "planner": {
+        "ok": true,
+        "nextAction": "practice_current",
+        "targetDifficulty": "basic",
+        "questionCount": 5,
+        "reason": null
+      },
+      "explanation": {
+        "ok": true,
+        "text": "נבחר תרגול שיעזור לחזק את הבסיס לפני מעבר רחוק יותר.",
+        "source": "deterministic_fallback"
+      },
+      "checks": {
+        "plannerOk": true,
+        "explanationSafe": true,
+        "explanationGrounded": true,
+        "noInternalLeak": true,
+        "noReasonCodesLeak": true,
+        "noMustNotSayLeak": true,
+        "noDiagnosticsLeak": true,
+        "childFriendlyTone": true,
+        "noScaryLanguage": true,
+        "noOverclaiming": true,
+        "hebrewOnly": true,
+        "pass": true
+      },
+      "diagnostics": {
+        "skillAlignmentSource": null,
+        "metadataSubjectFallback": true,
+        "metadataExactMatch": false
+      },
+      "notes": "Low accuracy with enough attempts → remediate-style engine inference."
+    },
+    {
+      "scenarioId": "short_session_not_enough_data",
+      "subject": "math",
+      "grade": 2,
+      "inputSummary": {
+        "totalQuestions": 1,
+        "accuracy": 100,
+        "topic": "addition",
+        "durationSeconds": 20,
+        "scenarioSimulatorId": "qa_short_session_not_enough_data_math_g2"
+      },
+      "planner": {
+        "ok": true,
+        "nextAction": "pause_collect_more_data",
+        "targetDifficulty": "standard",
+        "questionCount": 3,
+        "reason": null
+      },
+      "explanation": {
+        "ok": true,
+        "text": "המערכת מציעה להמשיך לתרגל בהתאם למה שמתאים לך עכשיו.",
+        "source": "deterministic_fallback"
+      },
+      "checks": {
+        "plannerOk": true,
+        "explanationSafe": true,
+        "explanationGrounded": true,
+        "noInternalLeak": true,
+        "noReasonCodesLeak": true,
+        "noMustNotSayLeak": true,
+        "noDiagnosticsLeak": true,
+        "childFriendlyTone": true,
+        "noScaryLanguage": true,
+        "noOverclaiming": true,
+        "hebrewOnly": true,
+        "pass": true
+      },
+      "diagnostics": {
+        "skillAlignmentSource": null,
+        "metadataSubjectFallback": true,
+        "metadataExactMatch": false
+      },
+      "notes": "Very few items → insufficient_data / cautious pacing."
+    },
+    {
+      "scenarioId": "inconsistent_student",
+      "subject": "math",
+      "grade": 4,
+      "inputSummary": {
+        "totalQuestions": 25,
+        "accuracy": 72,
+        "topic": "fractions",
+        "durationSeconds": 400,
+        "scenarioSimulatorId": "qa_inconsistent_student_pattern_math_g4"
+      },
+      "planner": {
+        "ok": true,
+        "nextAction": "probe_skill",
+        "targetDifficulty": "standard",
+        "questionCount": 3,
+        "reason": null
+      },
+      "explanation": {
+        "ok": true,
+        "text": "נבחר תרגול קצר שיעזור לחדד את מה שלמדנו לאחרונה.",
+        "source": "deterministic_fallback"
+      },
+      "checks": {
+        "plannerOk": true,
+        "explanationSafe": true,
+        "explanationGrounded": true,
+        "noInternalLeak": true,
+        "noReasonCodesLeak": true,
+        "noMustNotSayLeak": true,
+        "noDiagnosticsLeak": true,
+        "childFriendlyTone": true,
+        "noScaryLanguage": true,
+        "noOverclaiming": true,
+        "hebrewOnly": true,
+        "pass": true
+      },
+      "diagnostics": {
+        "skillAlignmentSource": null,
+        "metadataSubjectFallback": true,
+        "metadataExactMatch": false
+      },
+      "notes": "Scenario id includes inconsistent → probe/caution path."
+    },
+    {
+      "scenarioId": "fast_guessing_pattern",
+      "subject": "math",
+      "grade": 4,
+      "inputSummary": {
+        "totalQuestions": 25,
+        "accuracy": 92,
+        "topic": "multiplication",
+        "durationSeconds": 40,
+        "scenarioSimulatorId": "qa_fast_guessing_pattern_math_g4"
+      },
+      "planner": {
+        "ok": true,
+        "nextAction": "probe_skill",
+        "targetDifficulty": "standard",
+        "questionCount": 3,
+        "reason": null
+      },
+      "explanation": {
+        "ok": true,
+        "text": "נבחר תרגול קצר שיעזור לחדד את מה שלמדנו לאחרונה.",
+        "source": "deterministic_fallback"
+      },
+      "checks": {
+        "plannerOk": true,
+        "explanationSafe": true,
+        "explanationGrounded": true,
+        "noInternalLeak": true,
+        "noReasonCodesLeak": true,
+        "noMustNotSayLeak": true,
+        "noDiagnosticsLeak": true,
+        "childFriendlyTone": true,
+        "noScaryLanguage": true,
+        "noOverclaiming": true,
+        "hebrewOnly": true,
+        "pass": true
+      },
+      "diagnostics": {
+        "skillAlignmentSource": null,
+        "metadataSubjectFallback": true,
+        "metadataExactMatch": false
+      },
+      "notes": "Scenario id includes guessing → cautious probe despite high accuracy."
+    },
+    {
+      "scenarioId": "geometry_topic_mapped_student",
+      "subject": "geometry",
+      "grade": 4,
+      "inputSummary": {
+        "totalQuestions": 40,
+        "accuracy": 80,
+        "topic": "perimeter",
+        "durationSeconds": 700,
+        "scenarioSimulatorId": "qa_geometry_topic_mapped_student_g4"
+      },
+      "planner": {
+        "ok": true,
+        "nextAction": "maintain_skill",
+        "targetDifficulty": "standard",
+        "questionCount": 4,
+        "reason": null
+      },
+      "explanation": {
+        "ok": true,
+        "text": "המערכת ראתה שכדאי לתרגל עוד קצת באותה רמה כדי לבסס את ההבנה.",
+        "source": "deterministic_fallback"
+      },
+      "checks": {
+        "plannerOk": true,
+        "explanationSafe": true,
+        "explanationGrounded": true,
+        "noInternalLeak": true,
+        "noReasonCodesLeak": true,
+        "noMustNotSayLeak": true,
+        "noDiagnosticsLeak": true,
+        "childFriendlyTone": true,
+        "noScaryLanguage": true,
+        "noOverclaiming": true,
+        "hebrewOnly": true,
+        "pass": true
+      },
+      "diagnostics": {
+        "skillAlignmentSource": "topic_mapping",
+        "metadataSubjectFallback": false,
+        "metadataExactMatch": true
+      },
+      "notes": "Geometry topic key present → topic_mapping alignment expected (no metadata fallback)."
+    },
+    {
+      "scenarioId": "english_safe_metadata_student",
+      "subject": "english",
+      "grade": 5,
+      "inputSummary": {
+        "totalQuestions": 20,
+        "accuracy": 85,
+        "topic": "grammar",
+        "durationSeconds": 500,
+        "scenarioSimulatorId": "qa_english_safe_metadata_student_g5"
+      },
+      "planner": {
+        "ok": true,
+        "nextAction": "practice_current",
+        "targetDifficulty": "standard",
+        "questionCount": 4,
+        "reason": null
+      },
+      "explanation": {
+        "ok": true,
+        "text": "נבחר תרגול שיעזור לחזק את הבסיס לפני מעבר רחוק יותר.",
+        "source": "deterministic_fallback"
+      },
+      "checks": {
+        "plannerOk": true,
+        "explanationSafe": true,
+        "explanationGrounded": true,
+        "noInternalLeak": true,
+        "noReasonCodesLeak": true,
+        "noMustNotSayLeak": true,
+        "noDiagnosticsLeak": true,
+        "childFriendlyTone": true,
+        "noScaryLanguage": true,
+        "noOverclaiming": true,
+        "hebrewOnly": true,
+        "pass": true
+      },
+      "diagnostics": {
+        "skillAlignmentSource": "topic_mapping",
+        "metadataSubjectFallback": false,
+        "metadataExactMatch": true
+      },
+      "notes": "English grammar + index → safe routing regression guard."
+    }
+  ]
+}

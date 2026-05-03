@@ -65,6 +65,7 @@
     "test:adaptive-planner:recommendation-ui": "tsx scripts/adaptive-planner-recommendation-ui.mjs",
     "test:adaptive-planner:recommended-practice": "tsx scripts/adaptive-planner-recommended-practice.mjs",
     "test:adaptive-planner:ai-explainer": "tsx scripts/adaptive-planner-ai-explainer.mjs",
+    "test:adaptive-planner:scenario-simulator": "tsx scripts/adaptive-planner-scenario-simulator.mjs",
     "build:adaptive-planner:metadata-index": "tsx scripts/build-adaptive-planner-metadata-index.mjs",
     "audit:branches": "tsx scripts/extract-generator-branches.mjs",
     "build:curriculum-spine": "tsx scripts/build-curriculum-spine-v1.mjs",
