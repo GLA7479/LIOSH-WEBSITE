@@ -303,4 +303,104 @@ export function collectMatrixRefsForStress(pool, profileStressType, grade, subje
   };
 }
 
+function hashSeed(id) {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i += 1) {
+    h ^= id.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0) || 1;
+}
+
+/**
+ * Build one profile-stress scenario deterministically (for engine-truth audit / reuse).
+ * Requires `reports/learning-simulator/coverage-catalog.json` (run qa:learning-simulator:coverage).
+ *
+ * @param {string} root — repo root
+ * @param {string} profileStressType — member of CANONICAL_PROFILE_TYPES
+ * @param {number} [slot]
+ * @returns {Promise<{ ok: boolean, scenario?: object, profile?: object, error?: string }>}
+ */
+export async function buildStressScenarioForEngineTruth(root, profileStressType, slot = 0) {
+  const { readFile } = await import("node:fs/promises");
+  const { join } = await import("node:path");
+  const ti = CANONICAL_PROFILE_TYPES.indexOf(profileStressType);
+  if (ti < 0) return { ok: false, error: `unknown profileStressType: ${profileStressType}` };
+
+  let catalogRaw;
+  try {
+    catalogRaw = JSON.parse(await readFile(join(root, "reports", "learning-simulator", "coverage-catalog.json"), "utf8"));
+  } catch (e) {
+    return { ok: false, error: `coverage-catalog.json: ${e?.message || e}` };
+  }
+
+  const backlogKeys = await loadBacklogCellKeys(root);
+  const pool = buildEligiblePool(catalogRaw.rows || [], backlogKeys);
+  if (!pool.length) return { ok: false, error: "empty eligible pool (catalog + backlog)" };
+
+  const { grade, subject } = slotGradeSubject(slot, ti);
+  const { matrixCoverageRefs, rows, stressSubject, stressTopic } = collectMatrixRefsForStress(
+    pool,
+    profileStressType,
+    grade,
+    subject
+  );
+  if (!matrixCoverageRefs.length || !rows.length) {
+    return { ok: false, error: "no matrix refs for stress scenario" };
+  }
+
+  const gradeEffective = rows[0]?.grade || grade;
+  const idSubj = profileStressType === "mixed_strengths" ? "mixed" : subject;
+  const scenarioId = `engine_truth_${profileStressType}_${gradeEffective}_${idSubj}_s${slot}`;
+  const levels = [...new Set(rows.map((r) => r.level))].sort();
+  const topics = [...new Set(rows.map((r) => r.topic))].sort();
+
+  const refCount = matrixCoverageRefs.length;
+  const isThin = profileStressType === "thin_data";
+  const horizonDays = isThin ? 3 : 14;
+  const targetSessions = isThin ? Math.max(refCount * 2, 14) : Math.max(refCount * 3, 36);
+
+  const subjects =
+    profileStressType === "mixed_strengths"
+      ? [...new Set(rows.map((r) => r.subject))].sort()
+      : [rows[0].subject];
+
+  const scenario = {
+    scenarioId,
+    mode: "aggregate",
+    tier: "quick",
+    grade: gradeEffective,
+    subjects,
+    levels,
+    topicTargets: [],
+    profileRef: `synthetic_profile_stress_${profileStressType}`,
+    timeHorizonDays: horizonDays,
+    sessionPlan: {
+      targetSessions,
+      spanDaysApprox: horizonDays,
+      notes: "Engine truth harness — profile stress clone.",
+    },
+    matrixCoverageRefs,
+    expected: expectedAssertionsForStressType(profileStressType),
+    seed: hashSeed(scenarioId),
+    anchorDate: "2026-05-02T08:00:00.000Z",
+    artifactOptions: {},
+    profileStressType,
+    stressMatrixSubject: stressSubject === "mixed" ? null : stressSubject,
+    stressMatrixTopic: stressTopic,
+    engineTruthKind: profileStressType,
+  };
+
+  const BASE = await loadBaseProfiles(root);
+  const profile = buildProfileForStressType(profileStressType, BASE, {
+    grade,
+    subject: subjects[0],
+    topic: stressTopic || SUBJECT_DEFAULT_WEAK_TOPIC[subjects[0]] || "fractions",
+  });
+
+  if (!profile) return { ok: false, error: `buildProfileForStressType returned null for ${profileStressType}` };
+
+  return { ok: true, scenario, profile };
+}
+
 export { CANONICAL_PROFILE_TYPES };

@@ -56,6 +56,8 @@ const ARTIFACTS = {
   pdfExportAudit: "reports/learning-simulator/pdf-export-audit.json",
   releaseReadinessSummary: "reports/learning-simulator/release-readiness-summary.json",
   releaseReadinessSummaryMd: "reports/learning-simulator/release-readiness-summary.md",
+  engineTruthSummary: "reports/learning-simulator/engine-truth/engine-truth-summary.json",
+  engineTruthSummaryMd: "reports/learning-simulator/engine-truth/engine-truth-summary.md",
 };
 
 /** Stages in order for quick gate */
@@ -64,6 +66,11 @@ const QUICK_STEPS = [
   { id: "schema", script: "qa:learning-simulator:schema", label: "Schema validation (profiles + scenarios)" },
   { id: "aggregate", script: "qa:learning-simulator:aggregate", label: "Aggregate simulator (quick scenarios)" },
   { id: "reports", script: "qa:learning-simulator:reports", label: "Parent report assertions (Phase 3)" },
+  {
+    id: "engineTruth",
+    script: "qa:learning-simulator:engine",
+    label: "Engine truth audit (aggregation ↔ diagnosis V2 ↔ report model)",
+  },
   { id: "behavior", script: "qa:learning-simulator:behavior", label: "Behavior checks (Phase 5)" },
   { id: "questions", script: "qa:learning-simulator:questions", label: "Question integrity (Phase 4)" },
 ];
@@ -144,6 +151,8 @@ function nextActionHint(failedStep) {
     schema: "Fix profile/scenario fixtures or matrix refs per schema-validation.json errors.",
     aggregate: "Check scenario/session builders and aggregate per-student artifacts under reports/learning-simulator/aggregate/per-student/.",
     reports: "Inspect reports/learning-simulator/reports/run-summary.json and per-student *.report.json / *.assertions.json.",
+    engineTruth:
+      "Inspect reports/learning-simulator/engine-truth/engine-truth-summary.json; fix aggregation/diagnosis/report sync or golden expectations in scripts/learning-simulator/lib/engine-truth-*.mjs.",
     behavior: "Inspect reports/learning-simulator/behavior/failures.json and per-student *.behavior.json.",
     questions: "Inspect reports/learning-simulator/questions/failures.json; fix generators or mark cells unsupported intentionally.",
     deep: "Inspect reports/learning-simulator/deep/failures.json and deep per-student artifacts.",

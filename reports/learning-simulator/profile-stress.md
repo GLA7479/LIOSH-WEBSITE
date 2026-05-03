@@ -1,7 +1,7 @@
 # Profile stress (simulator)
 
-- Run id: profile-stress-mop20zpk
-- Generated at: 2026-05-03T00:50:46.088Z
+- Run id: profile-stress-mopbog56
+- Generated at: 2026-05-03T05:20:57.018Z
 - Eligible pool (covered, non-mixed, not backlog): **747**
 - Scenarios: **112** (14 profile types × 8 slots)
 - Distinct matrix cells touched: **139**

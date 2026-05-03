@@ -1901,7 +1901,14 @@ function recommendationFromV2Unit(u, mapRow) {
     topicEngineRowSignals: {
       confidenceLevel: u?.confidence?.level || null,
       priorityLevel: u?.priority?.level || null,
-      gating: u?.outputGating || null,
+      gating: (() => {
+        const raw = u?.outputGating && typeof u.outputGating === "object" ? { ...u.outputGating } : null;
+        if (!raw) return null;
+        for (const k of Object.keys(raw)) {
+          if (k.startsWith("_deprecated")) delete raw[k];
+        }
+        return raw;
+      })(),
     },
     _priorityScore: priorityScore,
     _priorityLevel: priorityLevel || null,

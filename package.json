@@ -9,6 +9,7 @@
     "qa:learning-simulator:matrix": "tsx scripts/learning-simulator/run-coverage-matrix.mjs",
     "qa:learning-simulator:schema": "tsx scripts/learning-simulator/run-schema-validation.mjs",
     "qa:learning-simulator:aggregate": "tsx scripts/learning-simulator/run-aggregate.mjs",
+    "qa:learning-simulator:engine": "tsx scripts/learning-simulator/run-engine-truth-audit.mjs",
     "qa:learning-simulator:reports": "tsx scripts/learning-simulator/run-report-assertions.mjs",
     "qa:learning-simulator:questions": "tsx scripts/learning-simulator/run-question-integrity.mjs",
     "qa:learning-simulator:behavior": "tsx scripts/learning-simulator/run-behavior-checks.mjs",

@@ -7,42 +7,42 @@
   "reportPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\reports\\per-student\\declining_student_g4_30d.report.json",
   "oracle": {
     "evidence": {
-      "sessionCount": 44,
-      "questionTotal": 669,
-      "correctTotal": 450,
-      "mistakeEventCount": 135,
+      "sessionCount": 48,
+      "questionTotal": 746,
+      "correctTotal": 499,
+      "mistakeEventCount": 155,
       "subjectsTouched": [
         "math",
         "geometry",
         "hebrew"
       ],
-      "overallAccuracyPct": 67.3,
-      "mistakeRateApprox": 0.202
+      "overallAccuracyPct": 66.9,
+      "mistakeRateApprox": 0.208
     },
     "subjectMetrics": {
       "math": {
-        "totalQ": 392,
-        "correctQ": 257,
-        "accuracyPct": 65.6
+        "totalQ": 455,
+        "correctQ": 294,
+        "accuracyPct": 64.6
       },
       "geometry": {
-        "totalQ": 134,
-        "correctQ": 95,
-        "accuracyPct": 70.9
+        "totalQ": 148,
+        "correctQ": 106,
+        "accuracyPct": 71.6
       },
       "hebrew": {
         "totalQ": 143,
-        "correctQ": 98,
-        "accuracyPct": 68.5
+        "correctQ": 99,
+        "accuracyPct": 69.2
       }
     },
     "topicMetrics": {
       "math:multiplication": {
-        "totalQ": 130,
-        "correctQ": 92,
+        "totalQ": 150,
+        "correctQ": 103,
         "subject": "math",
         "topic": "multiplication",
-        "accuracyPct": 70.8
+        "accuracyPct": 68.7
       },
       "math:mixed": {
         "totalQ": 45,
@@ -53,24 +53,24 @@
       },
       "math:divisibility": {
         "totalQ": 57,
-        "correctQ": 35,
+        "correctQ": 36,
         "subject": "math",
         "topic": "divisibility",
-        "accuracyPct": 61.4
+        "accuracyPct": 63.2
       },
       "math:estimation": {
         "totalQ": 37,
-        "correctQ": 25,
+        "correctQ": 26,
         "subject": "math",
         "topic": "estimation",
-        "accuracyPct": 67.6
+        "accuracyPct": 70.3
       },
       "math:rounding": {
-        "totalQ": 11,
-        "correctQ": 8,
+        "totalQ": 32,
+        "correctQ": 18,
         "subject": "math",
         "topic": "rounding",
-        "accuracyPct": 72.7
+        "accuracyPct": 56.3
       },
       "math:factors_multiples": {
         "totalQ": 37,
@@ -88,17 +88,17 @@
       },
       "math:number_sense": {
         "totalQ": 12,
-        "correctQ": 7,
+        "correctQ": 8,
         "subject": "math",
         "topic": "number_sense",
-        "accuracyPct": 58.3
+        "accuracyPct": 66.7
       },
       "math:division": {
         "totalQ": 20,
-        "correctQ": 11,
+        "correctQ": 12,
         "subject": "math",
         "topic": "division",
-        "accuracyPct": 55
+        "accuracyPct": 60
       },
       "math:decimals": {
         "totalQ": 16,
@@ -109,24 +109,31 @@
       },
       "math:division_with_remainder": {
         "totalQ": 11,
-        "correctQ": 5,
+        "correctQ": 6,
         "subject": "math",
         "topic": "division_with_remainder",
-        "accuracyPct": 45.5
+        "accuracyPct": 54.5
+      },
+      "math:addition": {
+        "totalQ": 22,
+        "correctQ": 11,
+        "subject": "math",
+        "topic": "addition",
+        "accuracyPct": 50
       },
       "geometry:area": {
-        "totalQ": 84,
-        "correctQ": 64,
+        "totalQ": 98,
+        "correctQ": 73,
         "subject": "geometry",
         "topic": "area",
-        "accuracyPct": 76.2
+        "accuracyPct": 74.5
       },
       "geometry:symmetry": {
         "totalQ": 38,
-        "correctQ": 24,
+        "correctQ": 26,
         "subject": "geometry",
         "topic": "symmetry",
-        "accuracyPct": 63.2
+        "accuracyPct": 68.4
       },
       "geometry:shapes_basic": {
         "totalQ": 12,
@@ -137,10 +144,10 @@
       },
       "hebrew:mixed": {
         "totalQ": 44,
-        "correctQ": 32,
+        "correctQ": 33,
         "subject": "hebrew",
         "topic": "mixed",
-        "accuracyPct": 72.7
+        "accuracyPct": 75
       },
       "hebrew:vocabulary": {
         "totalQ": 29,
@@ -173,27 +180,27 @@
     },
     "trendOracle": {
       "direction": "down",
-      "earlyMean": 0.80028812175097,
-      "lateMean": 0.5375446414610501,
-      "delta": -0.2627434802899199,
-      "sessionSamples": 44
+      "earlyMean": 0.8023534474748677,
+      "lateMean": 0.5368170488889336,
+      "delta": -0.26553639858593414,
+      "sessionSamples": 48
     },
     "volatility": {
-      "stdev": 0.11715434703385945,
-      "n": 44,
-      "meanAccuracy": 0.6684336078008679
+      "stdev": 0.11622729493241563,
+      "n": 48,
+      "meanAccuracy": 0.6693615006961564
     },
     "paceOracle": {
-      "meanSessionDurationSec": 1788,
-      "meanSecondsPerQuestion": 117.6,
-      "mistakeEventCount": 135,
-      "mistakeRateApprox": 0.202
+      "meanSessionDurationSec": 1761,
+      "meanSecondsPerQuestion": 113.31,
+      "mistakeEventCount": 155,
+      "mistakeRateApprox": 0.208
     },
     "reportSignals": {
-      "totalQuestions": 669,
+      "totalQuestions": 746,
       "overallAccuracy": 67,
       "contractTopThinDowngraded": true,
-      "contractTopEvidenceQuestionCount": 130,
+      "contractTopEvidenceQuestionCount": 150,
       "contractPrimarySubjectId": "math",
       "topicBucketKeys": [
         "multiplication",
@@ -207,6 +214,7 @@
         "division",
         "decimals",
         "division_with_remainder",
+        "addition",
         "area",
         "symmetry",
         "shapes_basic",
@@ -216,18 +224,18 @@
         "grammar",
         "comprehension"
       ],
-      "diagnosedCount": 13,
-      "unitCount": 19,
+      "diagnosedCount": 14,
+      "unitCount": 20,
       "contradictoryConfidenceCount": 0,
-      "executiveWindowQuestions": 669,
+      "executiveWindowQuestions": 746,
       "rowTrendsLength": 0
     },
     "behaviorHints": {
       "suspiciousZeroDiagnosesWithVolume": false,
       "thinContractVsHighMetaQuestions": true,
-      "diagnosisCoverageRatio": 0.684
+      "diagnosisCoverageRatio": 0.7
     },
-    "sessionRowCount": 44
+    "sessionRowCount": 48
   },
   "expectedBehaviorNotes": {
     "trendExpected": [
@@ -245,10 +253,10 @@
       },
       "actual": {
         "direction": "down",
-        "delta": -0.2627434802899199,
-        "earlyMean": 0.80028812175097,
-        "lateMean": 0.5375446414610501,
-        "n": 44
+        "delta": -0.26553639858593414,
+        "earlyMean": 0.8023534474748677,
+        "lateMean": 0.5368170488889336,
+        "n": 48
       },
       "likelyCause": "behavior_oracle_threshold",
       "evidence": {}

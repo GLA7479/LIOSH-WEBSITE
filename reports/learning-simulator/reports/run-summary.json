@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-03T00:50:36.164Z",
+  "generatedAt": "2026-05-03T05:20:47.005Z",
   "generator": "run-report-assertions-v1",
   "counts": {
     "scenarios": 10,
@@ -280,13 +280,13 @@
             "anyUp": 0,
             "sufficientDown": 0,
             "anyDown": 0,
-            "majorTrendsSample": "בטווח התקופה נבדקו 19 נושאים. נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־13 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה.",
+            "majorTrendsSample": "בטווח התקופה נבדקו 20 נושאים. נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־14 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה.",
             "storageOracle": {
               "direction": "down",
-              "earlyMean": 0.80028812175097,
-              "lateMean": 0.5375446414610501,
-              "n": 44,
-              "delta": -0.2627434802899199
+              "earlyMean": 0.8023534474748677,
+              "lateMean": 0.5368170488889336,
+              "n": 48,
+              "delta": -0.26553639858593414
             }
           },
           "method": "structured+storage-oracle"
@@ -312,10 +312,10 @@
       "failedAssertions": [],
       "metaSummary": {
         "scenarioId": "declining_student_g4_30d",
-        "sessionCount": 44,
-        "questionTotal": 669,
-        "correctTotal": 450,
-        "mistakeEventCount": 135,
+        "sessionCount": 48,
+        "questionTotal": 746,
+        "correctTotal": 499,
+        "mistakeEventCount": 155,
         "subjectsTouched": [
           "math",
           "geometry",
@@ -323,6 +323,7 @@
         ],
         "topicsBySubject": {
           "math": [
+            "addition",
             "decimals",
             "divisibility",
             "division",

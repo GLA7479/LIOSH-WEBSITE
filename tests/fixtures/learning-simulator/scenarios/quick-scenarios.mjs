@@ -94,7 +94,7 @@ export const QUICK_SCENARIOS = [
     topicTargets: [],
     profileRef: "p_declining_student",
     timeHorizonDays: 30,
-    sessionPlan: { targetSessions: 44, spanDaysApprox: 30 },
+    sessionPlan: { targetSessions: 48, spanDaysApprox: 30 },
     answerPolicy: {},
     expected: {
       trendExpected: ["down"],

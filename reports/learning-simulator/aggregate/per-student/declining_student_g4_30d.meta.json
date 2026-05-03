@@ -9,10 +9,10 @@
   "generator": "aggregate-runner-v1",
   "stats": {
     "scenarioId": "declining_student_g4_30d",
-    "sessionCount": 44,
-    "questionTotal": 669,
-    "correctTotal": 450,
-    "mistakeEventCount": 135,
+    "sessionCount": 48,
+    "questionTotal": 746,
+    "correctTotal": 499,
+    "mistakeEventCount": 155,
     "subjectsTouched": [
       "math",
       "geometry",
@@ -20,6 +20,7 @@
     ],
     "topicsBySubject": {
       "math": [
+        "addition",
         "decimals",
         "divisibility",
         "division",

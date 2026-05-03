@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-03T00:50:36.873Z",
+  "generatedAt": "2026-05-03T05:20:50.034Z",
   "generator": "learning-simulator-behavior-phase5-v1",
   "counts": {
     "scenarios": 10,
@@ -90,11 +90,11 @@
       "assertionsPassed": 2,
       "failedAssertions": [],
       "oracleSummary": {
-        "questionTotal": 669,
-        "overallAccuracyPct": 67.3,
+        "questionTotal": 746,
+        "overallAccuracyPct": 66.9,
         "trendDirection": "down",
-        "trendDelta": -0.2627434802899199,
-        "sessionSamples": 44
+        "trendDelta": -0.26553639858593414,
+        "sessionSamples": 48
       },
       "failureCauseSummary": {
         "failedCount": 0,

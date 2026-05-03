@@ -8,27 +8,27 @@
     "mode": "custom",
     "ok": true,
     "startDate": "2026-03-03",
-    "endDate": "2026-04-02",
+    "endDate": "2026-04-01",
     "minMs": 1772547406801,
-    "maxMs": 1775094469878
+    "maxMs": 1775066621272
   },
   "diagnosticPrimarySource": "diagnosticEngineV2",
   "summary": {
-    "totalQuestions": 669,
+    "totalQuestions": 746,
     "overallAccuracy": 67,
-    "totalTimeMinutes": 1313
+    "totalTimeMinutes": 1410
   },
   "facets": {
     "version": "report-facets-v1",
     "summary": {
-      "totalQuestions": 669,
+      "totalQuestions": 746,
       "overallAccuracy": 67,
-      "totalTimeMinutes": 1313
+      "totalTimeMinutes": 1410
     },
     "diagnostic": {
-      "unitCount": 19,
+      "unitCount": 20,
       "p4Count": 0,
-      "diagnosedCount": 13,
+      "diagnosedCount": 14,
       "contradictoryConfidenceCount": 0,
       "unitSummaries": [
         {
@@ -40,10 +40,10 @@
           "diagnosisLineHe": "מצביע על דפוס: בחירת כפל לא מתאים לחילוק (נקודת מיקוד: הופכיות) בכפל.",
           "canonicalAction": "intervene",
           "positiveAuthorityLevel": "none",
-          "evidenceQuestions": 130,
+          "evidenceQuestions": 150,
           "trendDirection": null,
           "trendEvidenceStatus": null,
-          "questionsFromTrace": 130,
+          "questionsFromTrace": 150,
           "conflictingConfidence": false
         },
         {
@@ -94,16 +94,16 @@
         {
           "subjectId": "math",
           "displayName": "עיגול",
-          "priorityLevel": "P2",
-          "diagnosisAllowed": false,
-          "patternHe": null,
-          "diagnosisLineHe": null,
-          "canonicalAction": "probe_only",
+          "priorityLevel": "P3",
+          "diagnosisAllowed": true,
+          "patternHe": "טעות כיוון עיגול",
+          "diagnosisLineHe": "מצביע על דפוס: טעות כיוון עיגול (נקודת מיקוד: עיגול/השוואה) בעיגול.",
+          "canonicalAction": "intervene",
           "positiveAuthorityLevel": "none",
-          "evidenceQuestions": 11,
+          "evidenceQuestions": 32,
           "trendDirection": null,
           "trendEvidenceStatus": null,
-          "questionsFromTrace": 11,
+          "questionsFromTrace": 32,
           "conflictingConfidence": false
         },
         {
@@ -197,6 +197,21 @@
           "conflictingConfidence": false
         },
         {
+          "subjectId": "math",
+          "displayName": "חיבור",
+          "priorityLevel": "P3",
+          "diagnosisAllowed": false,
+          "patternHe": null,
+          "diagnosisLineHe": null,
+          "canonicalAction": "probe_only",
+          "positiveAuthorityLevel": "none",
+          "evidenceQuestions": 22,
+          "trendDirection": null,
+          "trendEvidenceStatus": null,
+          "questionsFromTrace": 22,
+          "conflictingConfidence": false
+        },
+        {
           "subjectId": "geometry",
           "displayName": "שטח",
           "priorityLevel": "P3",
@@ -205,10 +220,10 @@
           "diagnosisLineHe": "מצביע על דפוס: צלעות כגובה (נקודת מיקוד: גובה) בשטח.",
           "canonicalAction": "intervene",
           "positiveAuthorityLevel": "none",
-          "evidenceQuestions": 84,
+          "evidenceQuestions": 98,
           "trendDirection": null,
           "trendEvidenceStatus": null,
-          "questionsFromTrace": 84,
+          "questionsFromTrace": 98,
           "conflictingConfidence": false
         },
         {
@@ -320,15 +335,17 @@
     },
     "analysisPreview": {
       "needsPracticeLines": [
+        "חשבון: כפל",
         "חשבון: ערבוב",
         "חשבון: סימני התחלקות",
-        "חשבון: אומדן",
+        "חשבון: עיגול",
         "חשבון: גורמים וכפולות",
         "חשבון: חזקות",
         "חשבון: חוש מספרים",
         "חשבון: חילוק",
         "חשבון: עשרוניים",
         "חשבון: חילוק עם שארית",
+        "חשבון: חיבור",
         "גאומטריה: סימטרייה",
         "גאומטריה: צורות בסיסיות",
         "עברית: עושר שפתי",
@@ -337,26 +354,28 @@
       ]
     },
     "executive": {
-      "windowTotalQuestions": 669,
+      "windowTotalQuestions": 746,
       "topFocusAreasHe": [
         "בחירת כפל לא מתאים לחילוק (חשבון)",
         "שגיאה בעמודת עשרות (חשבון)",
         "שגיאה בעמודת עשרות (חשבון)"
       ],
-      "topStrengthsAcrossHe": [],
+      "topStrengthsAcrossHe": [
+        "בגאומטריה התוצאות נראות די עקביות בתקופה הזו (72% דיוק, 148 שאלות) — יש עדיין נושאים שכדאי לחזק."
+      ],
       "dominantCrossSubjectRiskLabelHe": "בחירת כפל לא מתאים לחילוק",
       "dominantCrossSubjectSuccessPatternLabelHe": "",
       "cautionNoteHe": "",
-      "overallConfidenceHe": "מבט כולל: ב־13 מתוך 19 נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.",
+      "overallConfidenceHe": "מבט כולל: ב־14 מתוך 20 נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.",
       "reportReadinessHe": "יש מספיק תרגול בתקופה כדי לדבר על מגמות בבית.",
       "majorTrendsHe": [
-        "בטווח התקופה נבדקו 19 נושאים.",
-        "נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־13 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה."
+        "בטווח התקופה נבדקו 20 נושאים.",
+        "נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־14 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה."
       ]
     },
     "crossSubject": {
       "bulletsHe": [
-        "במבט על כל המקצועות יחד: 19 נושאים בטווח התקופה.",
+        "במבט על כל המקצועות יחד: 20 נושאים בטווח התקופה.",
         "0 נושאים שכדאי לעקוב אחריהם השבוע מקרוב."
       ],
       "dataQualityNoteHe": null
@@ -378,6 +397,7 @@
         "כפל",
         "סימני התחלקות",
         "ערבוב",
+        "עיגול",
         "חילוק",
         "עשרוניים",
         "חילוק עם שארית",
@@ -401,6 +421,7 @@
         "division",
         "decimals",
         "division_with_remainder",
+        "addition",
         "area",
         "symmetry",
         "shapes_basic",
@@ -413,7 +434,7 @@
     },
     "contract": {
       "primarySubjectId": "math",
-      "topEvidenceQuestionCount": 130,
+      "topEvidenceQuestionCount": 150,
       "topThinDowngraded": true,
       "topConfidenceHe": "כמה אפשר לסמוך על זה: עדיין לא גבוה — צריך עוד תרגול לפני שסוגרים תמונה ברורה.",
       "topMainStatusHe": "בנושא כפל: בחירת כפל לא מתאים לחילוק"
@@ -425,6 +446,6 @@
     }
   },
   "corpusStats": {
-    "charLength": 3598
+    "charLength": 3845
   }
 }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-03T00:50:34.689Z",
+  "generatedAt": "2026-05-03T05:20:45.731Z",
   "generator": "run-aggregate-v1",
   "matrixRowCount": 819,
   "counts": {
@@ -7,9 +7,9 @@
     "okScenarios": 10
   },
   "totals": {
-    "sessions": 225,
-    "questions": 3523,
-    "mistakes": 850,
+    "sessions": 229,
+    "questions": 3600,
+    "mistakes": 870,
     "storageArtifacts": 20
   },
   "perScenario": [
@@ -62,10 +62,10 @@
     {
       "scenarioId": "declining_student_g4_30d",
       "ok": true,
-      "sessionCount": 44,
-      "questionTotal": 669,
-      "correctTotal": 450,
-      "mistakeEventCount": 135,
+      "sessionCount": 48,
+      "questionTotal": 746,
+      "correctTotal": 499,
+      "mistakeEventCount": 155,
       "subjectsTouched": [
         "math",
         "geometry",
