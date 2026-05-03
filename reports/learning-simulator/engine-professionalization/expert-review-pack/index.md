@@ -2,9 +2,7 @@
 
 **Disclaimer:** This is an internal educational diagnostic support review artifact. It is **not** a clinical or medical diagnosis. It is **not** a parent-facing report.
 
-> **Pack built from artifacts only** (`artifact_snapshot_v1`). For the full engine replay pack, run `npm run qa:learning-simulator:expert-review-pack` locally.
-
-- **Generated:** 2026-05-03T08:40:33.905Z
+- **Generated:** 2026-05-03T08:56:44.775Z
 - **Pack status:** PASS
 - **Scenarios:** 22
 - **requiresHumanExpertReview:** true
@@ -44,4 +42,3 @@
 
 - Professional validation JSON: `reports/learning-simulator/engine-professionalization/professional-engine-validation.json`
 - Engine final summary: `reports/learning-simulator/engine-professionalization/engine-final-summary.json`
-- Orchestrator run summary: `reports/learning-simulator/orchestrator/run-summary.json`
