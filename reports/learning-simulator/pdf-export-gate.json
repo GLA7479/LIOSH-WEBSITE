@@ -1,6 +1,6 @@
 {
-  "runId": "pdf-gate-moq8cve7",
-  "generatedAt": "2026-05-03T20:35:44.239Z",
+  "runId": "pdf-gate-moq91390",
+  "generatedAt": "2026-05-03T20:54:34.164Z",
   "browserMode": true,
   "checkedRoute": "/learning/parent-report?qa_pdf=file",
   "pdfLibraryDetected": "^0.10.1",

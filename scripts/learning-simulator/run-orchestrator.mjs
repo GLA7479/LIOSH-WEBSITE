@@ -7,8 +7,10 @@
  *
  * Env:
  *   LS_CONTINUE_ON_FAIL=1 — run all steps even after a failure (still exits non-zero if any failed).
+ *   LS_SKIP_NEXT_CLEAN=1 — skip removing `.next` before the final `npm run build` (default: clean for cold build).
  */
 import { spawnSync } from "node:child_process";
+import { existsSync, rmSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -288,6 +290,17 @@ function summarizeNarrativeSafetyForOrchestrator(raw) {
   };
 }
 
+/** Remove `.next` so the orchestrator's production build is cold (avoids Windows stale chunk / prerender flakes). */
+function cleanNextDir(root) {
+  const nextDir = join(root, ".next");
+  if (!existsSync(nextDir)) return;
+  try {
+    rmSync(nextDir, { recursive: true, force: true });
+  } catch (e) {
+    console.warn(`  Orchestrator: could not remove .next (${e?.message || e}); continuing`);
+  }
+}
+
 function runStep(cwd, npmScript) {
   const start = Date.now();
   const r = spawnSync("npm", ["run", npmScript], {
@@ -299,6 +312,60 @@ function runStep(cwd, npmScript) {
   const durationMs = Date.now() - start;
   const exitCode = typeof r.status === "number" ? r.status : 1;
   return { exitCode, durationMs, pass: exitCode === 0 };
+}
+
+function buildArtifactLinks(mode) {
+  return mode === "full"
+    ? {
+        ...ARTIFACTS,
+        orchestratorSummary: "reports/learning-simulator/orchestrator/run-summary.json",
+      }
+    : {
+        coverageMatrix: ARTIFACTS.coverageMatrix,
+        schemaValidation: ARTIFACTS.schemaValidation,
+        aggregateSummary: ARTIFACTS.aggregateSummary,
+        reportAssertions: ARTIFACTS.reportAssertions,
+        behaviorSummary: ARTIFACTS.behaviorSummary,
+        questionIntegrity: ARTIFACTS.questionIntegrity,
+        orchestratorSummary: "reports/learning-simulator/orchestrator/run-summary.json",
+      };
+}
+
+/**
+ * Persist orchestrator JSON so downstream steps (e.g. release-readiness-summary) read this run, not a stale prior run-summary.
+ * @param {object} args
+ */
+function buildOrchestratorPayload(args) {
+  const {
+    mode,
+    startedAt,
+    finishedAt,
+    totalDurationMs,
+    stepResults,
+    failedStep,
+    continueOnFail,
+    parentNarrativeSafety,
+    adaptivePlanner,
+    snapshotAfterBuild,
+  } = args;
+  const anyFail = stepResults.some((s) => !s.pass);
+  const pass = !anyFail;
+  return {
+    mode,
+    startedAt,
+    finishedAt,
+    totalDurationMs,
+    pass,
+    failedStep: failedStep
+      ? { id: failedStep.id, label: failedStep.label, script: failedStep.script, exitCode: failedStep.exitCode }
+      : null,
+    steps: stepResults,
+    artifactLinks: buildArtifactLinks(mode),
+    nextAction: failedStep ? nextActionHint(failedStep) : null,
+    options: { continueOnFail },
+    ...(mode === "full" ? { parentNarrativeSafety, adaptivePlanner } : {}),
+    ...(snapshotAfterBuild ? { snapshotAfterBuild: true } : {}),
+  };
 }
 
 function mdEscape(s) {
@@ -507,6 +574,10 @@ async function main() {
   for (const step of steps) {
     console.log(`▶ ${step.label}`);
     console.log(`  npm run ${step.script}`);
+    if (step.id === "build" && process.env.LS_SKIP_NEXT_CLEAN !== "1") {
+      console.log("  Pre-build: removing .next for cold production build (cache reliability)");
+      cleanNextDir(ROOT);
+    }
     const { exitCode, durationMs, pass } = runStep(ROOT, step.script);
     let effectivePass = pass;
 
@@ -579,6 +650,24 @@ async function main() {
 
     if (!effectivePass && !failedStep) failedStep = row;
 
+    if (step.id === "build" && effectivePass && mode === "full") {
+      const snap = buildOrchestratorPayload({
+        mode,
+        startedAt,
+        finishedAt: new Date().toISOString(),
+        totalDurationMs: Date.now() - t0All,
+        stepResults,
+        failedStep,
+        continueOnFail,
+        parentNarrativeSafety,
+        adaptivePlanner,
+        snapshotAfterBuild: true,
+      });
+      await writeFile(OUT_JSON, JSON.stringify(snap, null, 2), "utf8");
+      console.log("  Orchestrator: refreshed run-summary.json after successful build (release-readiness gate)");
+      console.log("");
+    }
+
     if (!effectivePass && !continueOnFail) {
       console.error(`Orchestrator: stopping after failure (${step.id}).`);
       break;
@@ -587,40 +676,19 @@ async function main() {
 
   const finishedAt = new Date().toISOString();
   const totalDurationMs = Date.now() - t0All;
-  const anyFail = stepResults.some((s) => !s.pass);
-  const pass = !anyFail;
-
-  const artifactLinks =
-    mode === "full"
-      ? {
-          ...ARTIFACTS,
-          orchestratorSummary: "reports/learning-simulator/orchestrator/run-summary.json",
-        }
-      : {
-          coverageMatrix: ARTIFACTS.coverageMatrix,
-          schemaValidation: ARTIFACTS.schemaValidation,
-          aggregateSummary: ARTIFACTS.aggregateSummary,
-          reportAssertions: ARTIFACTS.reportAssertions,
-          behaviorSummary: ARTIFACTS.behaviorSummary,
-          questionIntegrity: ARTIFACTS.questionIntegrity,
-          orchestratorSummary: "reports/learning-simulator/orchestrator/run-summary.json",
-        };
-
-  const payload = {
+  const payload = buildOrchestratorPayload({
     mode,
     startedAt,
     finishedAt,
     totalDurationMs,
-    pass,
-    failedStep: failedStep
-      ? { id: failedStep.id, label: failedStep.label, script: failedStep.script, exitCode: failedStep.exitCode }
-      : null,
-    steps: stepResults,
-    artifactLinks,
-    nextAction: failedStep ? nextActionHint(failedStep) : null,
-    options: { continueOnFail },
-    ...(mode === "full" ? { parentNarrativeSafety, adaptivePlanner } : {}),
-  };
+    stepResults,
+    failedStep,
+    continueOnFail,
+    parentNarrativeSafety,
+    adaptivePlanner,
+    snapshotAfterBuild: false,
+  });
+  const pass = payload.pass;
 
   await writeFile(OUT_JSON, JSON.stringify(payload, null, 2), "utf8");
   await writeFile(OUT_MD, buildMarkdown(payload), "utf8");

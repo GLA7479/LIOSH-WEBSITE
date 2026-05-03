@@ -1,7 +1,7 @@
 # Learning Simulator — Release readiness summary
 
-- **runId:** release-summary-moq7zkqm
-- **generatedAt:** 2026-05-03T20:25:23.902Z
+- **runId:** release-summary-moq979lt
+- **generatedAt:** 2026-05-03T20:59:22.337Z
 
 ## Overall
 
@@ -9,7 +9,7 @@
 | --- | --- |
 | **overallStatus** | pass |
 | **releaseDecision** | ready_for_next_dev_phase |
-| **buildStatus** (from orchestrator) | skipped |
+| **buildStatus** (from orchestrator) | pass |
 | **orchestrator pass** | yes |
 
 ### Coverage (catalog)
@@ -111,7 +111,7 @@ Top warning codes: ambiguous_evidence:124
 | status | pass |
 | checkedRoute | /learning/parent-report?qa_pdf=file |
 | downloadSucceeded | true |
-| fileSizeBytes | 3919650 |
+| fileSizeBytes | 3923383 |
 | pdfHeaderOk | true |
 | deferredReason | — |
 
