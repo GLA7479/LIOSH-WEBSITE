@@ -14,11 +14,6 @@ function envStr(name, env = typeof process !== "undefined" ? process.env : {}) {
   return String(env?.[name] ?? "").trim();
 }
 
-export function isParentReportAIExplainerServerEnabled(env = typeof process !== "undefined" ? process.env : {}) {
-  const v = envStr("ENABLE_PARENT_REPORT_AI_EXPLAINER", env).toLowerCase();
-  return v === "1" || v === "true" || v === "yes";
-}
-
 const SUBJECT_LABEL_HE = {
   math: "חשבון",
   hebrew: "עברית",
@@ -214,7 +209,10 @@ export async function buildParentReportAIExplanation(rawInput, options = {}) {
   const fbValid = validateParentReportAIText(fallbackRaw, validateOpts);
   if (!fbValid.ok) return { ok: false, reason: "fallback_invalid", source: "none" };
 
-  if (!isParentReportAIExplainerServerEnabled(env) || options.preferDeterministicOnly) {
+  const apiKey = envStr("PARENT_REPORT_AI_EXPLAINER_API_KEY", env) || envStr("OPENAI_API_KEY", env);
+  const tryLiveAi = Boolean(apiKey) && options.preferDeterministicOnly !== true;
+
+  if (!tryLiveAi) {
     return { ok: true, text: fbValid.text, source: "deterministic_fallback" };
   }
 

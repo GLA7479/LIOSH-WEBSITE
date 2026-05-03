@@ -304,9 +304,6 @@ const SCENARIOS = [
 ];
 
 async function main() {
-  const prevExplainer = process.env.ENABLE_PARENT_REPORT_AI_EXPLAINER;
-  process.env.ENABLE_PARENT_REPORT_AI_EXPLAINER = "1";
-
   const index = await tryLoadMetadataIndexFromSnapshot(ROOT);
   if (!index) {
     console.error(
@@ -451,9 +448,6 @@ async function main() {
       notes: sc.notes || "",
     });
   }
-
-  if (prevExplainer !== undefined) process.env.ENABLE_PARENT_REPORT_AI_EXPLAINER = prevExplainer;
-  else delete process.env.ENABLE_PARENT_REPORT_AI_EXPLAINER;
 
   await mkdir(OUT_DIR, { recursive: true });
 

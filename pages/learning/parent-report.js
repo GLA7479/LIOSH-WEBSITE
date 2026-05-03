@@ -5,6 +5,7 @@ import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getScienceTopicName, getHebrewTopicName, getMoledetGeographyTopicName, exportReportToPDF } from "../../utils/math-report-generator";
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
 import { generateDetailedParentReport } from "../../utils/detailed-parent-report";
+import { enrichParentReportWithParentAi } from "../../utils/parent-report-ai/parent-report-ai-adapter";
 import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
 import {
   stripTechnicalParensForParentDiagnosticsHe as stripTechnicalParensHe,
@@ -803,6 +804,39 @@ export default function ParentReport() {
       }
     }
   }, [period, customDates, appliedStartDate, appliedEndDate, playerName, loading]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    if (!report || typeof report !== "object") return undefined;
+    if ("parentAiExplanation" in report) return undefined;
+    const tq = Number(report.summary?.totalQuestions) || 0;
+    const tm = Number(report.summary?.totalTimeMinutes) || 0;
+    if (tq === 0 && tm === 0) return undefined;
+    let cancelled = false;
+    const snapshotAt = report.generatedAt;
+    void (async () => {
+      try {
+        const { parentAiExplanation } = await enrichParentReportWithParentAi(report, {});
+        if (cancelled) return;
+        setReport((prev) => {
+          if (!prev || prev.generatedAt !== snapshotAt) return prev;
+          if ("parentAiExplanation" in prev) return prev;
+          return { ...prev, parentAiExplanation };
+        });
+      } catch {
+        if (!cancelled) {
+          setReport((prev) => {
+            if (!prev || prev.generatedAt !== snapshotAt) return prev;
+            if ("parentAiExplanation" in prev) return prev;
+            return { ...prev, parentAiExplanation: null };
+          });
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [report]);
 
   const masterBarChartGeometry = useMemo(() => {
     if (!report) return null;
@@ -1619,6 +1653,13 @@ export default function ParentReport() {
                   {report.summary.diagnosticOverviewHe.insufficientDataSubjectsHe.join(" · ")}
                 </p>
               ) : null}
+            </div>
+          ) : null}
+
+          {report.parentAiExplanation?.ok && report.parentAiExplanation?.text ? (
+            <div className="mb-3 md:mb-5 avoid-break rounded-lg border border-sky-400/25 bg-sky-950/20 p-3 md:p-4 text-sm text-white/90">
+              <p className="font-bold text-sky-100/95 m-0 text-sm md:text-base mb-2">תובנה להורה</p>
+              <p className="m-0 leading-relaxed text-xs md:text-sm text-white/88">{report.parentAiExplanation.text}</p>
             </div>
           ) : null}
 
