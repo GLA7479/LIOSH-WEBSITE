@@ -2,56 +2,57 @@
 
 - **Mode:** full
 - **Overall:** **PASS**
-- **Started:** 2026-05-03T20:52:37.589Z
-- **Finished:** 2026-05-03T20:59:22.397Z
-- **Total duration:** 404807 ms
+- **Started:** 2026-05-03T21:06:27.057Z
+- **Finished:** 2026-05-03T21:12:25.116Z
+- **Total duration:** 358058 ms
 
 ## Steps
 
 | # | Stage | Script | Duration (ms) | Result |
 | --- | --- | --- | ---: | --- |
-| 1 | Coverage matrix | `qa:learning-simulator:matrix` | 764 | PASS |
-| 2 | Schema validation (profiles + scenarios) | `qa:learning-simulator:schema` | 717 | PASS |
-| 3 | Aggregate simulator (quick scenarios) | `qa:learning-simulator:aggregate` | 698 | PASS |
-| 4 | Parent report assertions (Phase 3) | `qa:learning-simulator:reports` | 1499 | PASS |
-| 5 | Engine truth audit (aggregation ↔ diagnosis V2 ↔ report model) | `qa:learning-simulator:engine` | 3011 | PASS |
-| 6 | Professional diagnostic framework QA (mock contracts) | `qa:learning-simulator:diagnostic-framework` | 783 | PASS |
-| 7 | Professional framework real scenario validation | `qa:learning-simulator:framework-real-scenarios` | 2176 | PASS |
-| 8 | Engine completion summary artifact | `qa:learning-simulator:engine-completion-summary` | 902 | PASS |
-| 9 | Question bank metadata gate (static scan + taxonomy blocking policy) | `qa:question-metadata` | 1233 | PASS |
-| 10 | Question skill metadata QA | `qa:learning-simulator:question-skill-metadata` | 1212 | PASS |
-| 11 | Misconception engine QA | `qa:learning-simulator:misconceptions` | 844 | PASS |
-| 12 | Mastery engine QA | `qa:learning-simulator:mastery` | 872 | PASS |
-| 13 | Dependency engine QA | `qa:learning-simulator:dependencies` | 820 | PASS |
-| 14 | Calibration engine QA | `qa:learning-simulator:calibration` | 739 | PASS |
-| 15 | Reliability engine QA | `qa:learning-simulator:reliability` | 740 | PASS |
-| 16 | Probe engine QA | `qa:learning-simulator:probes` | 722 | PASS |
-| 17 | Cross-subject engine QA | `qa:learning-simulator:cross-subject` | 730 | PASS |
-| 18 | Professional engine output QA | `qa:learning-simulator:professional-engine-output` | 810 | PASS |
-| 19 | Professional engine synthetic validation | `qa:learning-simulator:professional-engine` | 811 | PASS |
-| 20 | Adaptive planner artifacts (metadata-backed non-live safety gate) | `test:adaptive-planner:artifacts` | 867 | PASS |
-| 21 | Adaptive planner runtime bridge (practice snapshot → recommendation) | `test:adaptive-planner:runtime` | 817 | PASS |
-| 22 | Adaptive planner recommendation UI mapping (Phase 3 gates) | `test:adaptive-planner:recommendation-ui` | 729 | PASS |
-| 23 | Adaptive planner recommended practice (Phase 4 adapter + button rules) | `test:adaptive-planner:recommended-practice` | 667 | PASS |
-| 24 | Behavior checks (Phase 5) | `qa:learning-simulator:behavior` | 760 | PASS |
-| 25 | Question integrity (Phase 4) | `qa:learning-simulator:questions` | 1137 | PASS |
-| 26 | Matrix smoke (sampled cells → aggregate) | `qa:learning-simulator:matrix-smoke` | 796 | PASS |
-| 27 | Coverage catalog (819 cells) | `qa:learning-simulator:coverage` | 711 | PASS |
-| 28 | Unsupported cells classification | `qa:learning-simulator:unsupported` | 740 | PASS |
-| 29 | Content gap audit (informational) | `qa:learning-simulator:content-gaps` | 711 | PASS |
-| 30 | Content gap backlog (documentation) | `qa:learning-simulator:content-backlog` | 701 | PASS |
-| 31 | Scenario coverage (fixtures + smoke) | `qa:learning-simulator:scenario-coverage` | 713 | PASS |
-| 32 | Critical matrix deep assertions | `qa:learning-simulator:critical-deep` | 2452 | PASS |
-| 33 | Profile stress (synthetic profiles) | `qa:learning-simulator:profile-stress` | 3383 | PASS |
-| 34 | Scenario coverage (+ critical deep + profile stress) | `qa:learning-simulator:scenario-coverage` | 939 | PASS |
-| 35 | Render release gate (browser/SSR smoke for learning + parent-report) | `qa:learning-simulator:render` | 79658 | PASS |
-| 36 | PDF export gate (parent-report file download) | `qa:learning-simulator:pdf-export` | 245655 | PASS |
-| 37 | Deep longitudinal simulator | `qa:learning-simulator:deep` | 3054 | PASS |
-| 38 | Next.js production build | `build` | 35900 | PASS |
-| 39 | Parent report phase1 selftest | `test:parent-report-phase1` | 1342 | PASS |
-| 40 | Parent narrative safety (artifact JSON) | `test:parent-report-narrative-safety-artifacts` | 1242 | PASS |
-| 41 | Intelligence layer v1 usage selftest | `test:intelligence-layer-v1-usage` | 998 | PASS |
-| 42 | Release readiness summary (master QA artifact) | `qa:learning-simulator:release-summary` | 701 | PASS |
+| 1 | Coverage matrix | `qa:learning-simulator:matrix` | 647 | PASS |
+| 2 | Schema validation (profiles + scenarios) | `qa:learning-simulator:schema` | 638 | PASS |
+| 3 | Aggregate simulator (quick scenarios) | `qa:learning-simulator:aggregate` | 673 | PASS |
+| 4 | Parent report assertions (Phase 3) | `qa:learning-simulator:reports` | 1373 | PASS |
+| 5 | Engine truth audit (aggregation ↔ diagnosis V2 ↔ report model) | `qa:learning-simulator:engine` | 2599 | PASS |
+| 6 | Professional diagnostic framework QA (mock contracts) | `qa:learning-simulator:diagnostic-framework` | 640 | PASS |
+| 7 | Professional framework real scenario validation | `qa:learning-simulator:framework-real-scenarios` | 1487 | PASS |
+| 8 | Engine completion summary artifact | `qa:learning-simulator:engine-completion-summary` | 816 | PASS |
+| 9 | Question bank metadata gate (static scan + taxonomy blocking policy) | `qa:question-metadata` | 1355 | PASS |
+| 10 | Question skill metadata QA | `qa:learning-simulator:question-skill-metadata` | 1003 | PASS |
+| 11 | Misconception engine QA | `qa:learning-simulator:misconceptions` | 727 | PASS |
+| 12 | Mastery engine QA | `qa:learning-simulator:mastery` | 629 | PASS |
+| 13 | Dependency engine QA | `qa:learning-simulator:dependencies` | 634 | PASS |
+| 14 | Calibration engine QA | `qa:learning-simulator:calibration` | 629 | PASS |
+| 15 | Reliability engine QA | `qa:learning-simulator:reliability` | 620 | PASS |
+| 16 | Probe engine QA | `qa:learning-simulator:probes` | 631 | PASS |
+| 17 | Cross-subject engine QA | `qa:learning-simulator:cross-subject` | 640 | PASS |
+| 18 | Professional engine output QA | `qa:learning-simulator:professional-engine-output` | 704 | PASS |
+| 19 | Professional engine synthetic validation | `qa:learning-simulator:professional-engine` | 694 | PASS |
+| 20 | Adaptive planner artifacts (metadata-backed non-live safety gate) | `test:adaptive-planner:artifacts` | 777 | PASS |
+| 21 | Adaptive planner runtime bridge (practice snapshot → recommendation) | `test:adaptive-planner:runtime` | 721 | PASS |
+| 22 | Adaptive planner recommendation UI mapping (Phase 3 gates) | `test:adaptive-planner:recommendation-ui` | 625 | PASS |
+| 23 | Adaptive planner recommended practice (Phase 4 adapter + button rules) | `test:adaptive-planner:recommended-practice` | 628 | PASS |
+| 24 | Adaptive planner AI explainer guards (Phase 5) | `test:adaptive-planner:ai-explainer` | 631 | PASS |
+| 25 | Behavior checks (Phase 5) | `qa:learning-simulator:behavior` | 654 | PASS |
+| 26 | Question integrity (Phase 4) | `qa:learning-simulator:questions` | 965 | PASS |
+| 27 | Matrix smoke (sampled cells → aggregate) | `qa:learning-simulator:matrix-smoke` | 676 | PASS |
+| 28 | Coverage catalog (819 cells) | `qa:learning-simulator:coverage` | 645 | PASS |
+| 29 | Unsupported cells classification | `qa:learning-simulator:unsupported` | 642 | PASS |
+| 30 | Content gap audit (informational) | `qa:learning-simulator:content-gaps` | 724 | PASS |
+| 31 | Content gap backlog (documentation) | `qa:learning-simulator:content-backlog` | 618 | PASS |
+| 32 | Scenario coverage (fixtures + smoke) | `qa:learning-simulator:scenario-coverage` | 630 | PASS |
+| 33 | Critical matrix deep assertions | `qa:learning-simulator:critical-deep` | 1997 | PASS |
+| 34 | Profile stress (synthetic profiles) | `qa:learning-simulator:profile-stress` | 2518 | PASS |
+| 35 | Scenario coverage (+ critical deep + profile stress) | `qa:learning-simulator:scenario-coverage` | 642 | PASS |
+| 36 | Render release gate (browser/SSR smoke for learning + parent-report) | `qa:learning-simulator:render` | 30497 | PASS |
+| 37 | PDF export gate (parent-report file download) | `qa:learning-simulator:pdf-export` | 252198 | PASS |
+| 38 | Deep longitudinal simulator | `qa:learning-simulator:deep` | 3078 | PASS |
+| 39 | Next.js production build | `build` | 36652 | PASS |
+| 40 | Parent report phase1 selftest | `test:parent-report-phase1` | 1190 | PASS |
+| 41 | Parent narrative safety (artifact JSON) | `test:parent-report-narrative-safety-artifacts` | 1250 | PASS |
+| 42 | Intelligence layer v1 usage selftest | `test:intelligence-layer-v1-usage` | 1015 | PASS |
+| 43 | Release readiness summary (master QA artifact) | `qa:learning-simulator:release-summary` | 885 | PASS |
 
 ## Key artifact paths (repo-relative)
 

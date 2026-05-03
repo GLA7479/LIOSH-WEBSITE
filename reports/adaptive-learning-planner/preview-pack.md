@@ -1,6 +1,6 @@
 # Adaptive Planner — Internal Preview Pack
 
-_Non-live artifact. Not student-facing. Generated: **2026-05-03T20:34:07.299Z**_
+_Non-live artifact. Not student-facing. Generated: **2026-05-03T21:05:35.648Z**_
 
 ## A. Executive summary
 

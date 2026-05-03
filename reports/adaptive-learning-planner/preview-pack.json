@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T20:34:07.299Z",
+  "generatedAt": "2026-05-03T21:05:35.648Z",
   "sourceArtifactSummaryPath": "reports/adaptive-learning-planner/artifact-summary.json",
   "executiveSummary": {
     "totalPlannerRuns": 126,
@@ -21,7 +21,7 @@
     "plannerCautionCount": 122,
     "plannerNeedsHumanReviewCount": 0,
     "englishSkillTaggingIncompleteCount": 0,
-    "generatedAtArtifactSummary": "2026-05-03T20:34:06.587Z"
+    "generatedAtArtifactSummary": "2026-05-03T21:05:34.915Z"
   },
   "actionTable": [
     {

@@ -11,6 +11,11 @@ import {
   buildRuntimePlannerRecommendationFromPracticeResult,
   isAdaptivePlannerRecommendationEnabled,
 } from "../../../utils/adaptive-learning-planner/adaptive-planner-runtime-bridge.js";
+import {
+  approvedHebrewRecommendationLineFromNextAction,
+  buildAdaptivePlannerAIExplanation,
+  isAdaptivePlannerAIExplainerServerEnabled,
+} from "../../../utils/adaptive-learning-planner/adaptive-planner-ai-explainer.js";
 
 /**
  * Load snapshot only (no scanner import — keeps API bundle free of dynamic bank requires).
@@ -131,10 +136,49 @@ export default async function handler(req, res) {
     const metadataIndex = await tryLoadMetadataIndexFromSnapshot(process.cwd());
     const out = buildRuntimePlannerRecommendationFromPracticeResult(practiceResult, { metadataIndex });
     const echoId = practiceResult.clientRequestId;
-    return res.status(200).json({
+
+    /** @type {Record<string, unknown>} */
+    let response = {
       ...out,
       ...(echoId != null ? { clientRequestId: echoId } : {}),
-    });
+    };
+
+    if (
+      out.ok === true &&
+      out.recommendation &&
+      typeof out.recommendation === "object" &&
+      isAdaptivePlannerAIExplainerServerEnabled(process.env)
+    ) {
+      const diag = out.diagnostics && typeof out.diagnostics === "object" ? out.diagnostics : {};
+      const d = /** @type {Record<string, unknown>} */ (diag);
+      if (Number(d.safetyViolationCount ?? 0) === 0 && d.metadataSubjectFallback !== true) {
+        const rec = /** @type {Record<string, unknown>} */ (out.recommendation);
+        const nextAction = rec.nextAction != null ? String(rec.nextAction).trim() : "";
+        const qc = Number(rec.questionCount);
+        const approved = approvedHebrewRecommendationLineFromNextAction(nextAction);
+        const expl = await buildAdaptivePlannerAIExplanation(
+          {
+            subject: practiceResult.subject,
+            grade: practiceResult.grade != null ? String(practiceResult.grade) : "",
+            nextAction,
+            targetDifficulty: rec.targetDifficulty != null ? String(rec.targetDifficulty) : "",
+            questionCount: Number.isFinite(qc) ? qc : 0,
+            approvedHebrewRecommendationLine: approved,
+          },
+          { env: process.env }
+        );
+        if (expl.ok && expl.text) {
+          response = { ...response, explanation: { ok: true, text: expl.text } };
+        } else if (process.env.NODE_ENV !== "production") {
+          response = {
+            ...response,
+            explanation: { ok: false, reason: "reason" in expl ? String(expl.reason) : "unknown" },
+          };
+        }
+      }
+    }
+
+    return res.status(200).json(response);
   } catch {
     return res.status(500).json({
       ok: false,

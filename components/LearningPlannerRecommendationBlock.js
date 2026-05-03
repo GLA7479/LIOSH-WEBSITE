@@ -6,16 +6,18 @@ import {
   PLANNER_RECOMMENDED_PRACTICE_BUTTON_HE,
   shouldRenderPlannerRecommendedPracticeButton,
 } from "../lib/learning-client/adaptive-planner-recommended-practice";
+import { PLANNER_AI_EXPLANATION_SECTION_LABEL_HE } from "../lib/learning-client/adaptive-planner-explanation-validate";
 
 /**
  * @param {{
- *   model: { sectionTitle: string, actionLine: string, difficultyLabel: string, difficultyValue: string | null, questionLabel: string, questionValue: number, forPractice?: unknown } | null,
+ *   model: { sectionTitle: string, actionLine: string, difficultyLabel: string, difficultyValue: string | null, questionLabel: string, questionValue: number, explanationText?: string, forPractice?: unknown } | null,
  *   onRecommendedPractice?: () => void,
  * }} props
  */
 export default function LearningPlannerRecommendationBlock({ model, onRecommendedPractice }) {
   if (!model) return null;
   const showRecommendedBtn = shouldRenderPlannerRecommendedPracticeButton(model, onRecommendedPractice);
+  const explanationText = model.explanationText;
 
   return (
     <div
@@ -25,6 +27,12 @@ export default function LearningPlannerRecommendationBlock({ model, onRecommende
     >
       <div className="text-[10px] text-white/60 mb-1">{model.sectionTitle}</div>
       <p className="text-xs font-bold text-white leading-snug mb-2">{model.actionLine}</p>
+      {explanationText ? (
+        <div className="mb-2" data-testid="learning-planner-ai-explanation">
+          <div className="text-[10px] text-white/55 mb-0.5">{PLANNER_AI_EXPLANATION_SECTION_LABEL_HE}</div>
+          <p className="text-[10px] text-white/80 leading-snug">{explanationText}</p>
+        </div>
+      ) : null}
       <div className="text-[10px] text-white/70 space-y-1">
         {model.difficultyValue ? (
           <div className="flex flex-wrap items-baseline gap-x-1 gap-y-0.5 justify-between">

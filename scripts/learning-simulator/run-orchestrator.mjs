@@ -175,6 +175,11 @@ const ENGINE_PROFESSIONALIZATION_STEPS = [
     script: "test:adaptive-planner:recommended-practice",
     label: "Adaptive planner recommended practice (Phase 4 adapter + button rules)",
   },
+  {
+    id: "adaptivePlannerAiExplainer",
+    script: "test:adaptive-planner:ai-explainer",
+    label: "Adaptive planner AI explainer guards (Phase 5)",
+  },
 ];
 
 /** Full gate only: matrix smoke → catalog → classification → scenario map (after Phase 4 artifacts exist). */

@@ -1,6 +1,6 @@
 # Question metadata QA
 
-- **Generated:** 2026-05-03T20:52:49.307Z
+- **Generated:** 2026-05-03T21:06:37.217Z
 - **Gate decision:** `pass_with_advisory` — scanOutcome=`ok`, advisoryStatus=`WARN`
 - **Blocking issues (policy):** 0 | **Advisory:** 15876 | **Exempt (catalog):** 878
 - **Questions scanned:** 5756
