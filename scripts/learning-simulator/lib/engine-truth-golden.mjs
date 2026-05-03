@@ -225,4 +225,27 @@ export const ENGINE_GOLDEN_BY_KIND_DEFAULT = {
  * Scenario ids exercised by `run-professional-engine-validation.mjs` (professional engine layers).
  * Keep in sync when adding synthetic cases there.
  */
-export const PROFESSIONAL_ENGINE_VALIDATION_SCENARIO_IDS_V1 = ["thin_data_math", "weak_math_fractions"];
+export const PROFESSIONAL_ENGINE_VALIDATION_SCENARIO_IDS_V1 = [
+  "strong_all_subjects",
+  "weak_all_subjects",
+  "weak_math_fractions",
+  "weak_hebrew_comprehension",
+  "weak_english_grammar",
+  "weak_science_experiments",
+  "weak_geometry_area",
+  "weak_moledet_geography_maps",
+  "thin_data",
+  "random_guessing",
+  "inconsistent",
+  "fast_wrong",
+  "slow_correct",
+  "improving",
+  "declining",
+  "mixed_strengths",
+  "cross_subject_instruction_overlap",
+  "prerequisite_gap",
+  "prerequisite_direct_skill_gap",
+  "misconception_repeat",
+  "mastery_decay_retention",
+  "difficulty_calibration_easy_only",
+];

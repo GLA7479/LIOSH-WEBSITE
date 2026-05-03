@@ -24,6 +24,9 @@ async function main() {
     mistakeEvent: { isCorrect: false, userAnswer: 2, correctAnswer: 3 },
   });
   if (!thin.doNotConclude?.length) throw new Error("misconception: doNotConclude required");
+  if (!["very_low", "low"].includes(thin.confidence)) {
+    throw new Error("unknown wrong answer should stay low-confidence (no strong misconception claim)");
+  }
 
   const tagged = inferMisconceptionFromWrongAnswer({
     subjectId: "math",
@@ -34,7 +37,29 @@ async function main() {
       correctAnswer: 2,
     },
   });
-  if (tagged.errorType !== "denominator_confusion") throw new Error("expected tag routing");
+  if (tagged.errorType !== "denominator_confusion") throw new Error("expected tag routing (math)");
+
+  const tagHe = inferMisconceptionFromWrongAnswer({
+    subjectId: "hebrew",
+    mistakeEvent: {
+      isCorrect: false,
+      expectedErrorTags: ["weak_inference"],
+      userAnswer: "x",
+      correctAnswer: "y",
+    },
+  });
+  if (tagHe.errorType !== "weak_inference") throw new Error("expected tag routing (hebrew)");
+
+  const tagEn = inferMisconceptionFromWrongAnswer({
+    subjectId: "english",
+    mistakeEvent: {
+      isCorrect: false,
+      expectedErrorTags: ["grammar_pattern_error"],
+      userAnswer: "a",
+      correctAnswer: "b",
+    },
+  });
+  if (tagEn.errorType !== "grammar_pattern_error") throw new Error("expected tag routing (english)");
 
   let crashed = false;
   try {
@@ -43,6 +68,34 @@ async function main() {
     crashed = true;
   }
   if (crashed) throw new Error("should not throw on thin event");
+
+  const repeated = aggregateMisconceptionsForSubject("math", [
+    { isCorrect: false, expectedErrorTags: ["denominator_confusion"] },
+    { isCorrect: false, expectedErrorTags: ["denominator_confusion"] },
+    { isCorrect: false, expectedErrorTags: ["denominator_confusion"] },
+  ]);
+  if (!repeated.items.some((it) => it.confidence === "medium" || it.confidence === "high")) {
+    throw new Error("repeated same tagged error should elevate confidence");
+  }
+
+  const mixedTypes = aggregateMisconceptionsForSubject("math", [
+    { isCorrect: false, expectedErrorTags: ["denominator_confusion"] },
+    { isCorrect: false, expectedErrorTags: ["denominator_confusion"] },
+    { isCorrect: false, expectedErrorTags: ["denominator_confusion"] },
+    { isCorrect: false, expectedErrorTags: ["denominator_confusion"] },
+    { isCorrect: false, expectedErrorTags: ["denominator_confusion"] },
+    { isCorrect: false, expectedErrorTags: ["denominator_confusion"] },
+    { isCorrect: false, expectedErrorTags: ["calculation_error"] },
+    { isCorrect: false, expectedErrorTags: ["conceptual_misunderstanding"] },
+    { isCorrect: false, expectedErrorTags: ["operation_selection_error"] },
+    { isCorrect: false, expectedErrorTags: ["place_value_error"] },
+    { isCorrect: false, expectedErrorTags: ["skipped_step"] },
+  ]);
+  if (Object.keys(mixedTypes.typeHistogram).length <= 4) throw new Error("expected diverse error mix");
+  const denomItems = mixedTypes.items.filter((it) => it.errorType === "denominator_confusion");
+  if (!denomItems.length || !denomItems.every((it) => it.confidence === "medium")) {
+    throw new Error("mixed-error histogram should cap denominator_confusion at medium (not high)");
+  }
 
   const agg = aggregateMisconceptionsForSubject("hebrew", [
     { isCorrect: false, expectedErrorTags: ["weak_inference"] },
@@ -62,7 +115,14 @@ async function main() {
     status: "PASS",
     version: "1.0.0",
     generatedAt: new Date().toISOString(),
-    checks: ["thin_evidence", "tag_routing", "no_crash", "repeat_confidence", "no_clinical_leak"],
+    checks: [
+      "thin_evidence",
+      "tag_routing_math_hebrew_english",
+      "no_crash",
+      "repeat_elevates_confidence",
+      "mixed_types_cap_high_confidence",
+      "no_clinical_leak",
+    ],
   };
   await writeFile(OUT, JSON.stringify(summary, null, 2), "utf8");
   await writeFile(

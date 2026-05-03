@@ -24,6 +24,10 @@ export function buildCalibrationV1(maps, summaryCounts = {}, studentGradeKey = n
 
     let difficultyCoverage = 0;
     let modesSeen = new Set();
+    let tierTags = 0;
+    let easyOnlyRows = 0;
+    let hardRows = 0;
+    let rowCount = 0;
     if (tm && typeof tm === "object") {
       for (const key of Object.keys(tm)) {
         const row = tm[key];
@@ -31,6 +35,11 @@ export function buildCalibrationV1(maps, summaryCounts = {}, studentGradeKey = n
         if (ms) modesSeen.add(ms);
         const dsl = row?.dataSufficiencyLevel;
         if (dsl === "high" || dsl === "medium") difficultyCoverage += 1;
+        const tier = String(row?.difficultyTier || row?.matrixDifficulty || "").toLowerCase();
+        if (tier) tierTags += 1;
+        if (Number(row?.questions) > 0) rowCount += 1;
+        if (tier === "easy" && Number(row?.accuracy) >= 90) easyOnlyRows += 1;
+        if (tier === "hard" || tier === "high") hardRows += 1;
       }
     }
 
@@ -58,7 +67,13 @@ export function buildCalibrationV1(maps, summaryCounts = {}, studentGradeKey = n
       if (rows > 0 && mismatchRows / rows > 0.35) gradeMismatchFlag = true;
     }
 
-    const missingDifficultyMeta = subjQ > 0 && difficultyCoverage === 0;
+    const missingDifficultyMeta = subjQ > 0 && tierTags === 0 && difficultyCoverage === 0;
+    const easyOnlyHighAccuracyProfile =
+      rowCount > 0 && easyOnlyRows === rowCount && !hardRows && Number.isFinite(subjAcc) && subjAcc >= 90;
+
+    let challengeRead = gradeRelativeBand === "aboveExpected" && subjQ >= 30 ? "high" : subjQ < 15 ? "low" : "medium";
+    if (hardRows >= 1 && Number.isFinite(subjAcc) && subjAcc >= 72) challengeRead = "high";
+    if (easyOnlyHighAccuracyProfile) challengeRead = "low";
 
     perSubject.push({
       subjectId,
@@ -69,11 +84,12 @@ export function buildCalibrationV1(maps, summaryCounts = {}, studentGradeKey = n
       atExpected: gradeRelativeBand === "atExpected",
       aboveExpected: gradeRelativeBand === "aboveExpected",
       difficultyCoverage: Math.min(1, difficultyCoverage / Math.max(1, Object.keys(tm || {}).length)),
-      challengeReadiness:
-        gradeRelativeBand === "aboveExpected" && subjQ >= 30 ? "high" : subjQ < 15 ? "low" : "medium",
+      challengeReadiness: challengeRead,
       flags: {
         gradeMismatch: gradeMismatchFlag,
         missingDifficultyMetadata: missingDifficultyMeta,
+        easyOnlyHighAccuracy: easyOnlyHighAccuracyProfile,
+        hardQuestionSignal: hardRows >= 1,
       },
     });
   }

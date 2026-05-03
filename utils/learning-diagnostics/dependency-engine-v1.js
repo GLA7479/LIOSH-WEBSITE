@@ -77,28 +77,44 @@ export function analyzePrerequisiteGap({ mastery, subjectId, skillId }) {
   }));
 
   let suspectedPrerequisiteGap = false;
+  let suspectedDirectSkillGap = false;
   const evidence = [];
   const weakSelf =
     self && (self.masteryBand === "emerging" || self.masteryBand === "developing" || Number(self.masteryScore) < 55);
-  if (weakSelf) {
-    for (const p of prereqStates) {
-      if (!p.row || p.row.masteryScore < 50) {
-        suspectedPrerequisiteGap = true;
-        evidence.push(`Prerequisite ${p.id} appears weak or unmeasured.`);
+  if (weakSelf && prereqStates.length > 0) {
+    const prereqScores = prereqStates.map((p) => (p.row ? Number(p.row.masteryScore) : NaN));
+    const allPrereqsStrong = prereqStates.every((p) => p.row && Number(p.row.masteryScore) >= 70);
+    const anyPrereqWeakOrMissing = prereqStates.some((p) => !p.row || Number(p.row.masteryScore) < 55);
+
+    if (allPrereqsStrong) {
+      suspectedDirectSkillGap = true;
+      evidence.push("Prerequisite skills look comparatively strong—focal skill gap is plausible.");
+    } else if (anyPrereqWeakOrMissing) {
+      suspectedPrerequisiteGap = true;
+      for (const p of prereqStates) {
+        if (!p.row || Number(p.row.masteryScore) < 50) {
+          evidence.push(`Prerequisite ${p.id} appears weak or unmeasured.`);
+        }
       }
     }
+  } else if (weakSelf && prereqStates.length === 0) {
+    suspectedDirectSkillGap = true;
+    evidence.push("No prerequisite edges defined—treat as focal skill signal until mapped.");
   }
 
   return {
+    skillId,
     blockedSkillId: skillId,
     suspectedPrerequisiteGap,
+    suspectedDirectSkillGap,
     confidence: evidence.length ? "low" : "very_low",
     evidence,
     reasoning: [
       "Dependencies are educational hypotheses—verify with targeted probes.",
       "A weak advanced skill with weak prerequisites may indicate foundation gaps.",
     ],
-    nextBestPrerequisiteToCheck: node.prerequisiteSkillIds[0] || null,
+    nextBestPrerequisiteToCheck:
+      suspectedPrerequisiteGap && !suspectedDirectSkillGap ? node.prerequisiteSkillIds[0] || null : null,
     doNotConclude: [
       "Do not label subject-wide failure from a single dependency edge.",
       "No clinical or medical conclusions.",

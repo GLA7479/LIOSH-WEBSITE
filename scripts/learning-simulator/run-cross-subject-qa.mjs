@@ -6,11 +6,11 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..", "..");
-const OUT = join(ROOT, "reports/learning-simulator/engine-professionalization/cross-subject-engine-summary.json");
-const OUT_MD = join(ROOT, "reports/learning-simulator/engine-professionalization/cross-subject-engine-summary.md");
+const OUT = join(ROOT, "reports", "learning-simulator", "engine-professionalization", "cross-subject-engine-summary.json");
+const OUT_MD = join(ROOT, "reports", "learning-simulator", "engine-professionalization", "cross-subject-engine-summary.md");
 
 async function main() {
-  await mkdir(join(ROOT, "reports/learning-simulator/engine-professionalization"), { recursive: true });
+  await mkdir(join(ROOT, "reports", "learning-simulator", "engine-professionalization"), { recursive: true });
   const { detectCrossSubjectPatternsV1 } = await import(
     pathToFileURL(join(ROOT, "utils/learning-diagnostics/cross-subject-engine-v1.js")).href
   );
@@ -35,10 +35,37 @@ async function main() {
   if (oneSubjectOnly.patterns.length > 0) throw new Error("should not infer cross-subject from one stream alone");
 
   const r = detectCrossSubjectPatternsV1(maps, summaryCounts);
+  if (!r.patterns.length) throw new Error("expected overlap pattern when both subjects have evidence");
+  const p0 = r.patterns[0];
+  if (!p0.doNotConclude?.length) throw new Error("doNotConclude required");
+  if (!p0.nextProbe?.probeType) throw new Error("nextProbe required");
+
+  const thinSummary = {
+    mathQuestions: 4,
+    hebrewQuestions: 4,
+    mathAccuracy: 62,
+    hebrewAccuracy: 58,
+    totalQuestions: 12,
+  };
+  const rThin = detectCrossSubjectPatternsV1(maps, thinSummary);
+  if (rThin.patterns.length > 0) throw new Error("thin per-subject volume should not emit cross-subject patterns");
+
   const txt = JSON.stringify(r).toLowerCase();
   if (txt.includes("dyslexia") || txt.includes("disability")) throw new Error("clinical");
 
-  await writeFile(OUT, JSON.stringify({ status: "PASS", patterns: r }, null, 2), "utf8");
+  const summary = {
+    status: "PASS",
+    generatedAt: new Date().toISOString(),
+    checks: [
+      "one_subject_no_pattern",
+      "two_subjects_can_emit_pattern",
+      "doNotConclude_and_nextProbe",
+      "thin_data_suppresses_patterns",
+      "no_clinical",
+    ],
+    samples: { full: r, thin: rThin },
+  };
+  await writeFile(OUT, JSON.stringify(summary, null, 2), "utf8");
   await writeFile(OUT_MD, `# Cross-subject engine QA\n\nPASS\n`, "utf8");
   console.log("PASS: cross-subject-engine QA");
 }

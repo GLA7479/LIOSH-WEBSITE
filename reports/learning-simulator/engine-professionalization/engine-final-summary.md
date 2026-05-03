@@ -1,23 +1,27 @@
 # Engine final gate
 
 - **engineFinalStatus:** PASS
-- **professionalReadiness:** engine_complete
-- **safeToMoveToParentReports:** true
+- **engineTechnicallyComplete:** true
+- **requiresHumanExpertReview:** true
+- **professionalReadiness:** internal_engine_and_release_gates_passed
+- **releaseStatus:** PASS
+- **buildStatus:** included_in_qa_learning_simulator_release
+- **safeToMoveToParentReports:** false
 
 ## Steps
 
-- Question skill metadata: PASS (902ms)
-- Professional diagnostic framework QA: PASS (629ms)
-- Misconception engine: PASS (635ms)
-- Mastery engine: PASS (625ms)
-- Dependency engine: PASS (626ms)
-- Calibration engine: PASS (640ms)
-- Reliability engine: PASS (608ms)
-- Probe engine: PASS (645ms)
-- Cross-subject engine: PASS (634ms)
-- Professional engine output: PASS (651ms)
-- Professional engine validation: PASS (663ms)
-- Engine truth audit: PASS (3245ms)
-- Framework real scenarios: PASS (1456ms)
-- Engine completion summary: PASS (609ms)
-- Next.js production build: PASS (22346ms)
+- Question skill metadata: PASS (866ms)
+- Professional diagnostic framework QA: PASS (602ms)
+- Misconception engine: PASS (590ms)
+- Mastery engine: PASS (597ms)
+- Dependency engine: PASS (590ms)
+- Calibration engine: PASS (590ms)
+- Reliability engine: PASS (567ms)
+- Probe engine: PASS (596ms)
+- Cross-subject engine: PASS (601ms)
+- Professional engine output: PASS (626ms)
+- Professional engine validation: PASS (654ms)
+- Engine truth audit: PASS (2877ms)
+- Framework real scenarios: PASS (1366ms)
+- Engine completion summary: PASS (597ms)
+- Full learning-simulator release (orchestrator full → includes production build): PASS (320779ms)

@@ -1,7 +1,7 @@
 # Learning Simulator — Release readiness summary
 
-- **runId:** release-summary-mopf1pe0
-- **generatedAt:** 2026-05-03T06:55:14.376Z
+- **runId:** release-summary-mopgydkf
+- **generatedAt:** 2026-05-03T07:48:38.319Z
 
 ## Overall
 
@@ -10,7 +10,7 @@
 | **overallStatus** | pass |
 | **releaseDecision** | ready_for_next_dev_phase |
 | **buildStatus** (from orchestrator) | pass |
-| **orchestrator pass** | no |
+| **orchestrator pass** | yes |
 
 ### Coverage (catalog)
 
@@ -60,7 +60,7 @@
 | status | pass |
 | checkedRoute | /learning/parent-report?qa_pdf=file |
 | downloadSucceeded | true |
-| fileSizeBytes | 3934250 |
+| fileSizeBytes | 3932799 |
 | pdfHeaderOk | true |
 | deferredReason | — |
 

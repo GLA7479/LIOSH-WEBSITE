@@ -23,6 +23,7 @@ const PROBE_TYPES = [
  * @param {string} [ctx.prerequisiteUncertainty]
  * @param {string} [ctx.targetSubjectId]
  * @param {string} [ctx.targetSkillId]
+ * @param {boolean} [ctx.strongMasterySignal]
  */
 export function buildProbeRecommendationsV1(ctx = {}) {
   const out = [];
@@ -69,6 +70,21 @@ export function buildProbeRecommendationsV1(ctx = {}) {
       successCriteria: "Prerequisite skill shows independent accuracy",
       failureCriteria: "Prerequisite remains unstable",
       nextDecisionAfterProbe: "Foundation review vs isolated advanced gap",
+    });
+  }
+
+  if (ctx.strongMasterySignal) {
+    out.push({
+      probeReason: "Strong observed mastery with adequate volume—optional challenge probe to confirm transfer.",
+      targetSubjectId: ctx.strongMasterySubjectId || ctx.targetSubjectId || null,
+      targetSkillId: ctx.strongMasterySkillId || ctx.targetSkillId || null,
+      targetSubskillId: null,
+      probeType: "challenge_advance",
+      recommendedQuestionTypes: ["mcq", "multi_step"],
+      numberOfQuestions: 3,
+      successCriteria: "Maintains accuracy on harder parallel items",
+      failureCriteria: "Breakdown on increased complexity",
+      nextDecisionAfterProbe: "Adjust level or add scaffolded practice",
     });
   }
 

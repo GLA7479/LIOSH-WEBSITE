@@ -52,7 +52,20 @@ export function enrichDiagnosticEngineV2WithProfessionalEngineV1(
     misconceptions[sid] = aggregateMisconceptionsForSubject(sid, wrongs);
   }
 
-  const mastery = computeMasteryRollupV1(maps, summaryCounts);
+  /** @type {Record<string, Record<string, number>>} */
+  const misconceptionErrorCountsBySubjectSkill = {};
+  for (const sid of SUBJECTS) {
+    const agg = misconceptions[sid];
+    for (const it of agg?.items || []) {
+      const sk = it.skillId || "general";
+      misconceptionErrorCountsBySubjectSkill[sid] = misconceptionErrorCountsBySubjectSkill[sid] || {};
+      misconceptionErrorCountsBySubjectSkill[sid][sk] = (misconceptionErrorCountsBySubjectSkill[sid][sk] || 0) + 1;
+    }
+  }
+
+  const mastery = computeMasteryRollupV1(maps, summaryCounts, {
+    misconceptionErrorCountsBySubjectSkill,
+  });
   const calibration = buildCalibrationV1(maps, summaryCounts, studentGradeKey);
   const reliability = assessReliabilityV1(maps, rawMistakesBySubject, startMs, endMs);
   const crossSubjectPatterns = detectCrossSubjectPatternsV1(maps, summaryCounts);
@@ -68,6 +81,13 @@ export function enrichDiagnosticEngineV2WithProfessionalEngineV1(
   const totalQ = Number(summaryCounts.totalQuestions) || 0;
   const thin = totalQ < 25;
   const firstWeak = mastery.items.find((x) => Number(x.masteryScore) < 60);
+  const strongMastery = mastery.items.find(
+    (x) => (x.masteryBand === "mastered" || x.masteryBand === "near_mastery") && Number(x.questionCount) >= 25
+  );
+  const topMisconception = Object.entries(misconceptions)
+    .map(([sid, a]) => ({ sid, items: a?.items || [] }))
+    .flatMap((x) => x.items.map((it) => ({ ...it, subjectId: x.sid })))
+    .sort((a, b) => String(b.confidence).localeCompare(String(a.confidence)))[0];
 
   const probes = buildProbeRecommendationsV1({
     thinData: thin ? "true" : "false",
@@ -75,15 +95,25 @@ export function enrichDiagnosticEngineV2WithProfessionalEngineV1(
     targetSubjectId: firstWeak?.subjectId,
     targetSkillId: firstWeak?.skillId,
     prerequisiteUncertainty: dependencyItems.some((d) => d.suspectedPrerequisiteGap) ? "yes" : null,
-    prerequisiteSkillId: dependencyItems[0]?.nextBestPrerequisiteToCheck,
+    prerequisiteSkillId: dependencyItems.find((d) => d.nextBestPrerequisiteToCheck)?.nextBestPrerequisiteToCheck,
+    suspectedMisconception:
+      topMisconception && ["medium", "high"].includes(String(topMisconception.confidence))
+        ? topMisconception.errorType
+        : null,
+    strongMasterySignal: !!strongMastery && !thin,
+    strongMasterySubjectId: strongMastery?.subjectId,
+    strongMasterySkillId: strongMastery?.skillId,
   });
 
   const pf = diagnosticEngineV2.professionalFrameworkV1;
   const structured = Array.isArray(pf?.structuredFindings) ? pf.structuredFindings : [];
 
   let engineConfidence = "medium";
-  if (thin || reliability.dataTrustLevel === "very_low") engineConfidence = "low";
-  if (reliability.dataTrustLevel === "moderate" && totalQ >= 60) engineConfidence = "high";
+  if (thin || reliability.dataTrustLevel === "very_low" || reliability.inconsistencyLevel === "high") {
+    engineConfidence = "low";
+  } else if (reliability.dataTrustLevel === "very_low") engineConfidence = "low";
+  else if (reliability.dataTrustLevel === "high" && totalQ >= 60 && !thin) engineConfidence = "high";
+  else if (reliability.dataTrustLevel === "moderate" && totalQ >= 60) engineConfidence = "medium";
 
   const globalDoNotConclude = [
     ...(pf?.globalDoNotConclude || []),
@@ -110,7 +140,8 @@ export function enrichDiagnosticEngineV2WithProfessionalEngineV1(
     engineReadiness: thin ? "needs_more_data" : "ready_for_internal_review",
     limitations: [
       "English generator metadata varies by pool row coverage.",
-      "Mastery aggregates by skill—subskill precision depends on future tagging density.",
+      "Subskill and misconception precision is limited until question pools/generators carry dense expectedErrorTypes and prerequisiteSkillIds.",
+      "Mastery aggregates by skill—full diagnostic precision depends on difficultyTier (or equivalent) on topic rows where available.",
     ],
   };
 
