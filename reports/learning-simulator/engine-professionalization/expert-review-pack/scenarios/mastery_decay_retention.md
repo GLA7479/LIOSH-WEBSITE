@@ -151,7 +151,7 @@
       "accuracy": 93,
       "displayName": "addition",
       "difficultyTier": "medium",
-      "lastSessionMs": 1770019859203,
+      "lastSessionMs": 1770021013430,
       "trend": null
     },
     {
@@ -163,7 +163,7 @@
       "accuracy": 93,
       "displayName": "subtraction",
       "difficultyTier": "hard",
-      "lastSessionMs": 1770019859203,
+      "lastSessionMs": 1770021013430,
       "trend": null
     }
   ],
@@ -325,7 +325,7 @@
     "weightedAccuracy": 93,
     "trend": "unknown",
     "consistency": "low",
-    "lastPracticedAt": "2026-02-02T08:10:59.203Z",
+    "lastPracticedAt": "2026-02-02T08:30:13.430Z",
     "retentionRisk": true,
     "easyOnlyProfile": false,
     "difficultyTiersObserved": [

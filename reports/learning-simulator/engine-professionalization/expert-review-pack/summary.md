@@ -2,7 +2,7 @@
 
 **Disclaimer:** This is an internal educational diagnostic support review artifact. It is **not** a clinical or medical diagnosis. It is **not** a parent-facing report.
 
-- **Generated:** 2026-05-03T08:10:59.275Z
+- **Generated:** 2026-05-03T08:30:13.510Z
 - **Status:** PASS
 - **Scenario count:** 22
 - **requiresHumanExpertReview:** true

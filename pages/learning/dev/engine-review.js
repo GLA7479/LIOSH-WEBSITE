@@ -52,6 +52,26 @@ export async function getServerSideProps() {
   };
 }
 
+const card = {
+  background: "#0f172a",
+  border: "1px solid #334155",
+  borderRadius: 12,
+  padding: "20px 22px",
+  color: "#e2e8f0",
+  boxSizing: "border-box",
+};
+
+const sectionTitle = {
+  margin: "0 0 14px",
+  fontSize: "clamp(1.05rem, 2.4vw, 1.2rem)",
+  fontWeight: 700,
+  color: "#f8fafc",
+  letterSpacing: "0.02em",
+};
+
+const muted = { color: "#94a3b8", fontSize: "clamp(0.95rem, 2vw, 1rem)" };
+const labelStrong = { color: "#f1f5f9", fontWeight: 600 };
+
 export default function EngineExpertReviewAdminPage({ packMeta: initialPack, engineFinal: initialFinal, profVal: initialProf, hasPack: initialHasPack, ssrDeployment }) {
   const [token, setToken] = useState("");
   const [busy, setBusy] = useState(false);
@@ -162,195 +182,381 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
   const ephemeral =
     deployment?.filesystemEphemeral != null ? deployment.filesystemEphemeral : Boolean(ssrDeployment?.vercel);
 
+  const listStyle = {
+    margin: 0,
+    paddingLeft: 22,
+    fontSize: "clamp(0.95rem, 2vw, 1.05rem)",
+    lineHeight: 1.65,
+    color: "#e2e8f0",
+  };
+
   return (
     <Layout>
       <Head>
         <title>Engine Expert Review Pack (internal)</title>
       </Head>
-      <main style={{ maxWidth: 720, margin: "0 auto", padding: 24, fontFamily: "system-ui, sans-serif" }}>
-        <p style={{ fontSize: 13, color: "#64748b" }}>
-          <Link href="/learning/dev-student-simulator">← Dev tools</Link>
+      <main
+        style={{
+          maxWidth: 1040,
+          width: "100%",
+          margin: "0 auto",
+          padding: "16px clamp(14px, 3vw, 28px) 48px",
+          fontFamily: "system-ui, -apple-system, Segoe UI, sans-serif",
+          fontSize: "clamp(0.95rem, 2.2vw, 1.05rem)",
+          lineHeight: 1.55,
+          color: "#e2e8f0",
+          boxSizing: "border-box",
+        }}
+      >
+        <p style={{ ...muted, marginBottom: 10 }}>
+          <Link href="/learning/dev-student-simulator" style={{ color: "#93c5fd" }}>
+            ← Dev tools
+          </Link>
         </p>
-        <h1 style={{ fontSize: 22 }}>Professional engine — Expert Review Pack</h1>
-        <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.5 }}>
+        <h1 style={{ fontSize: "clamp(1.35rem, 3.2vw, 1.85rem)", fontWeight: 800, margin: "0 0 12px", color: "#f8fafc" }}>
+          Professional engine — Expert Review Pack
+        </h1>
+        <p style={{ ...muted, marginBottom: 20, maxWidth: "62ch" }}>
           Internal educational diagnostic support only. Not parent-facing. Not a clinical assessment. This page is shown when{" "}
-          <code>NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN=true</code> (any environment, including production).
+          <code style={{ background: "#1e293b", padding: "2px 6px", borderRadius: 4, color: "#cbd5e1", fontSize: "0.9em" }}>
+            NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN=true
+          </code>{" "}
+          (any environment, including production).
         </p>
 
-        <section style={{ marginTop: 20, padding: 14, background: "#ecfeff", borderRadius: 8, border: "1px solid #67e8f9", fontSize: 13, lineHeight: 1.6 }}>
-          <strong>Remote / Vercel env</strong>
-          <ul style={{ margin: "8px 0 0", paddingLeft: 20 }}>
-            <li>
-              <code>NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN=true</code> — enables this page and APIs (build-time public).
-            </li>
-            <li>
-              <code>ENGINE_REVIEW_ADMIN_TOKEN=&lt;secret&gt;</code> — server only; never embedded in the client bundle. Enter the same value below for each session (stored in <strong>sessionStorage</strong> only).
-            </li>
-          </ul>
-        </section>
-
-        <section style={{ marginTop: 20, padding: 16, background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-          <h2 style={{ fontSize: 16, marginTop: 0 }}>Runtime / filesystem</h2>
-          <ul style={{ fontSize: 14, lineHeight: 1.7 }}>
-            <li>
-              <strong>Deployment (best-effort):</strong> {depLabel}
-            </li>
-            <li>
-              <strong>Filesystem ephemeral risk:</strong> {ephemeral ? "yes — serverless-style host; writes may not persist" : "lower — typical long-running or local Node"}
-            </li>
-            <li>
-              <strong>Last known artifact path:</strong>{" "}
-              <code style={{ fontSize: 12 }}>{repoRelativeIndex}</code>
-            </li>
-          </ul>
-        </section>
-
-        <section style={{ marginTop: 24, padding: 16, background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-            <h2 style={{ fontSize: 16, margin: 0 }}>Gate status</h2>
+        {/* Sticky admin actions: token + refresh + generate */}
+        <div
+          style={{
+            position: "sticky",
+            top: "clamp(56px, 10vw, 72px)",
+            zIndex: 40,
+            marginBottom: 28,
+            padding: "18px 20px",
+            borderRadius: 12,
+            border: "2px solid #3b82f6",
+            background: "rgba(15, 23, 42, 0.96)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            boxShadow: "0 12px 40px rgba(0, 0, 0, 0.45)",
+          }}
+        >
+          <p style={{ margin: "0 0 12px", fontSize: "clamp(0.8rem, 1.8vw, 0.9rem)", fontWeight: 700, color: "#93c5fd", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            Admin actions
+          </p>
+          <label htmlFor="engine-review-admin-token" style={{ display: "block", ...labelStrong, fontSize: "clamp(1rem, 2.2vw, 1.1rem)", marginBottom: 8 }}>
+            Admin token
+          </label>
+          <input
+            id="engine-review-admin-token"
+            type="password"
+            autoComplete="off"
+            placeholder="Enter token, e.g. 7479"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            disabled={busy}
+            style={{
+              display: "block",
+              width: "100%",
+              maxWidth: "100%",
+              marginBottom: 16,
+              padding: "14px 16px",
+              fontSize: "clamp(1rem, 2.5vw, 1.125rem)",
+              boxSizing: "border-box",
+              background: "#1e293b",
+              border: "2px solid #475569",
+              borderRadius: 8,
+              color: "#f1f5f9",
+            }}
+          />
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 12,
+              alignItems: "stretch",
+            }}
+          >
             <button
               type="button"
               onClick={fetchStatus}
               disabled={refreshBusy}
-              style={{ padding: "8px 14px", fontSize: 13, cursor: refreshBusy ? "wait" : "pointer" }}
-            >
-              {refreshBusy ? "Refreshing…" : "Refresh status"}
-            </button>
-          </div>
-          <ul style={{ fontSize: 14, lineHeight: 1.7 }}>
-            <li>
-              <strong>Engine final:</strong> {engineFinal?.engineFinalStatus ?? "not generated yet"}
-              {engineFinal?.generatedAt ? ` (${formatAdminDate(engineFinal.generatedAt)})` : ""}
-            </li>
-            <li>
-              <strong>Professional validation:</strong> {profVal?.status ?? "not generated yet"}{" "}
-              {profVal?.scenarioCount != null ? `(${profVal.scenarioCount} scenarios)` : ""}
-            </li>
-            <li>
-              <strong>requiresHumanExpertReview:</strong> {packMeta?.requiresHumanExpertReview !== false ? "true" : "false"} (automation ≠ educator sign-off)
-            </li>
-            <li>
-              <strong>Expert pack:</strong>{" "}
-              {hasPack && packMeta?.generatedAt
-                ? `${packMeta.scenarioCount ?? "?"} scenarios — ${formatAdminDate(packMeta.generatedAt)}`
-                : "not generated yet"}
-            </li>
-          </ul>
-          {engineFinal?.knownLimitations?.length ? (
-            <div style={{ marginTop: 12 }}>
-              <strong>Known limitations</strong>
-              <ul>
-                {engineFinal.knownLimitations.map((x) => (
-                  <li key={x}>{x}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-        </section>
-
-        <section style={{ marginTop: 24 }}>
-          <h2 style={{ fontSize: 16 }}>Copy commands (CLI source of truth)</h2>
-          <label style={{ fontSize: 13, color: "#64748b" }}>Expert review pack</label>
-          <div style={{ display: "flex", gap: 8, marginTop: 6, alignItems: "flex-start" }}>
-            <textarea readOnly rows={2} style={{ flex: 1, fontSize: 13, fontFamily: "monospace", padding: 8 }} value={COPY_EXPERT} />
-            <button type="button" onClick={() => copyToClipboard(COPY_EXPERT)} style={{ padding: "8px 12px", fontSize: 13 }}>
-              Copy
-            </button>
-          </div>
-          <label style={{ fontSize: 13, color: "#64748b", display: "block", marginTop: 14 }}>Full closure (when you need release + build)</label>
-          <div style={{ display: "flex", gap: 8, marginTop: 6, alignItems: "flex-start" }}>
-            <textarea readOnly rows={4} style={{ flex: 1, fontSize: 13, fontFamily: "monospace", padding: 8 }} value={COPY_CLOSURE} />
-            <button
-              type="button"
-              onClick={() =>
-                copyToClipboard(
-                  "npm run qa:learning-simulator:engine-final && npm run qa:learning-simulator:release && npm run build"
-                )
-              }
-              style={{ padding: "8px 12px", fontSize: 13 }}
-            >
-              Copy (one line)
-            </button>
-          </div>
-          <p style={{ fontSize: 13, color: "#64748b", marginTop: 10 }}>
-            Requires prior <code>npm run qa:learning-simulator:professional-engine</code> (PASS) before generating the pack.
-          </p>
-        </section>
-
-        <section style={{ marginTop: 24 }}>
-          <h2 style={{ fontSize: 16 }}>Generate on server</h2>
-          <p style={{ fontSize: 13, color: "#64748b" }}>
-            Enter the same secret as <code>ENGINE_REVIEW_ADMIN_TOKEN</code> on the server. Stored in <strong>sessionStorage</strong> for this browser tab only (not localStorage).
-          </p>
-          <label style={{ display: "block", marginTop: 12, fontSize: 14 }}>
-            Admin token
-            <input
-              type="password"
-              autoComplete="off"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              disabled={busy}
-              style={{ display: "block", width: "100%", marginTop: 6, padding: 10, fontSize: 14, boxSizing: "border-box" }}
-            />
-          </label>
-          <button
-            type="button"
-            onClick={handleGenerate}
-            disabled={busy}
-            style={{ marginTop: 12, padding: "10px 16px", fontSize: 14, cursor: busy ? "wait" : "pointer" }}
-          >
-            {busy ? "Generating…" : "Generate Expert Review Pack"}
-          </button>
-          {genResult ? (
-            <div
               style={{
-                marginTop: 14,
-                padding: 12,
-                borderRadius: 6,
-                fontSize: 14,
-                background: genResult.level === "error" ? "#fef2f2" : genResult.level === "warning" ? "#fffbeb" : "#f0fdf4",
-                border: `1px solid ${genResult.level === "error" ? "#fecaca" : genResult.level === "warning" ? "#fcd34d" : "#86efac"}`,
+                padding: "14px 22px",
+                fontSize: "clamp(1rem, 2.2vw, 1.1rem)",
+                fontWeight: 600,
+                cursor: refreshBusy ? "wait" : "pointer",
+                borderRadius: 10,
+                border: "2px solid #64748b",
+                background: "transparent",
+                color: "#f1f5f9",
+                flex: "1 1 160px",
+                minWidth: "min(100%, 200px)",
               }}
             >
-              <div>
-                <strong>Result:</strong> {genResult.code}{" "}
-                {genResult.level === "success"
-                  ? "— generated successfully"
-                  : genResult.level === "warning"
-                    ? "— generated; persistence may be ephemeral on this host"
-                    : genResult.level === "error"
-                      ? "— failed"
-                      : ""}
-              </div>
-              {genResult.text ? <p style={{ margin: "8px 0 0" }}>{genResult.text}</p> : null}
-              {genResult.scenarioCount != null ? (
-                <p style={{ margin: "8px 0 0" }}>
-                  <strong>scenarioCount:</strong> {genResult.scenarioCount}
-                </p>
-              ) : null}
-              {genResult.generatedAt ? (
-                <p style={{ margin: "4px 0 0" }}>
-                  <strong>generatedAt:</strong> {genResult.generatedAt}
-                </p>
-              ) : null}
-              {genResult.requiresHumanExpertReview != null ? (
-                <p style={{ margin: "4px 0 0" }}>
-                  <strong>requiresHumanExpertReview:</strong> {String(genResult.requiresHumanExpertReview)}
-                </p>
-              ) : null}
-            </div>
-          ) : null}
-        </section>
+              {refreshBusy ? "Refreshing…" : "Refresh Status"}
+            </button>
+            <button
+              type="button"
+              onClick={handleGenerate}
+              disabled={busy}
+              style={{
+                padding: "16px 26px",
+                fontSize: "clamp(1.05rem, 2.5vw, 1.2rem)",
+                fontWeight: 800,
+                cursor: busy ? "wait" : "pointer",
+                borderRadius: 10,
+                border: "none",
+                background: busy ? "#1d4ed8" : "#2563eb",
+                color: "#ffffff",
+                boxShadow: "0 4px 14px rgba(37, 99, 235, 0.45)",
+                flex: "2 1 280px",
+                minWidth: "min(100%, 260px)",
+                minHeight: 52,
+              }}
+            >
+              {busy ? "Generating…" : "Generate Expert Review Pack"}
+            </button>
+          </div>
+        </div>
 
-        <section style={{ marginTop: 28 }}>
-          <h2 style={{ fontSize: 16 }}>Open review pack files</h2>
-          <p style={{ fontSize: 14 }}>
-            Artifacts are written under the repo / deploy workspace (not public URLs). On remote serverless, they may not survive the next cold start — use CLI from a machine with a persistent checkout when you need a stable copy.
-          </p>
-          <code style={{ display: "block", padding: 12, background: "#0f172a", color: "#e2e8f0", borderRadius: 6, fontSize: 13 }}>
-            {repoRelativeIndex}
-          </code>
-        </section>
+        <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+          <section style={card} aria-labelledby="sec-engine">
+            <h2 id="sec-engine" style={sectionTitle}>
+              Engine status
+            </h2>
+            <p style={{ ...muted, marginTop: 0 }}>
+              <strong style={labelStrong}>Engine final:</strong>{" "}
+              <span style={{ color: "#f8fafc" }}>{engineFinal?.engineFinalStatus ?? "not generated yet"}</span>
+              {engineFinal?.generatedAt ? ` (${formatAdminDate(engineFinal.generatedAt)})` : ""}
+            </p>
+            {engineFinal?.knownLimitations?.length ? (
+              <div style={{ marginTop: 14 }}>
+                <strong style={{ ...labelStrong, fontSize: "1rem" }}>Known limitations</strong>
+                <ul style={{ ...listStyle, marginTop: 8 }}>
+                  {engineFinal.knownLimitations.map((x) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </section>
+
+          <section style={card} aria-labelledby="sec-validation">
+            <h2 id="sec-validation" style={sectionTitle}>
+              Validation status
+            </h2>
+            <p style={{ margin: 0, fontSize: "clamp(0.95rem, 2vw, 1.05rem)", color: "#e2e8f0" }}>
+              <strong style={labelStrong}>Professional validation:</strong>{" "}
+              <span style={{ color: "#f8fafc" }}>{profVal?.status ?? "not generated yet"}</span>{" "}
+              {profVal?.scenarioCount != null ? `(${profVal.scenarioCount} scenarios)` : ""}
+            </p>
+          </section>
+
+          <section style={card} aria-labelledby="sec-pack">
+            <h2 id="sec-pack" style={sectionTitle}>
+              Expert review pack status
+            </h2>
+            <ul style={listStyle}>
+              <li>
+                <strong style={labelStrong}>requiresHumanExpertReview:</strong>{" "}
+                {packMeta?.requiresHumanExpertReview !== false ? "true" : "false"} (automation ≠ educator sign-off)
+              </li>
+              <li>
+                <strong style={labelStrong}>Expert pack:</strong>{" "}
+                {hasPack && packMeta?.generatedAt
+                  ? `${packMeta.scenarioCount ?? "?"} scenarios — ${formatAdminDate(packMeta.generatedAt)}`
+                  : "not generated yet"}
+              </li>
+            </ul>
+          </section>
+
+          <section style={card} aria-labelledby="sec-admin-result">
+            <h2 id="sec-admin-result" style={sectionTitle}>
+              Last generation result
+            </h2>
+            <p style={{ ...muted, marginTop: 0, marginBottom: genResult ? 12 : 0 }}>
+              Uses <code style={{ color: "#cbd5e1" }}>x-engine-review-token</code> with the Admin token above. Token is kept in{" "}
+              <strong style={{ color: "#e2e8f0" }}>sessionStorage</strong> for this tab only.
+            </p>
+            {genResult ? (
+              <div
+                style={{
+                  padding: "16px 18px",
+                  borderRadius: 10,
+                  fontSize: "clamp(0.95rem, 2vw, 1.05rem)",
+                  background:
+                    genResult.level === "error" ? "#450a0a" : genResult.level === "warning" ? "#422006" : "#052e16",
+                  border: `2px solid ${
+                    genResult.level === "error" ? "#f87171" : genResult.level === "warning" ? "#fbbf24" : "#4ade80"
+                  }`,
+                  color: "#f8fafc",
+                }}
+              >
+                <div>
+                  <strong style={{ color: "#fff" }}>Result:</strong> {genResult.code}{" "}
+                  {genResult.level === "success"
+                    ? "— generated successfully"
+                    : genResult.level === "warning"
+                      ? "— generated; persistence may be ephemeral on this host"
+                      : genResult.level === "error"
+                        ? "— failed"
+                        : ""}
+                </div>
+                {genResult.text ? <p style={{ margin: "10px 0 0" }}>{genResult.text}</p> : null}
+                {genResult.scenarioCount != null ? (
+                  <p style={{ margin: "10px 0 0" }}>
+                    <strong>scenarioCount:</strong> {genResult.scenarioCount}
+                  </p>
+                ) : null}
+                {genResult.generatedAt ? (
+                  <p style={{ margin: "6px 0 0" }}>
+                    <strong>generatedAt:</strong> {genResult.generatedAt}
+                  </p>
+                ) : null}
+                {genResult.requiresHumanExpertReview != null ? (
+                  <p style={{ margin: "6px 0 0" }}>
+                    <strong>requiresHumanExpertReview:</strong> {String(genResult.requiresHumanExpertReview)}
+                  </p>
+                ) : null}
+              </div>
+            ) : (
+              <p style={{ ...muted, margin: 0 }}>No generation run in this session yet.</p>
+            )}
+          </section>
+
+          <section style={card} aria-labelledby="sec-cli">
+            <h2 id="sec-cli" style={sectionTitle}>
+              CLI commands
+            </h2>
+            <label style={{ display: "block", ...labelStrong, marginBottom: 6 }}>Expert review pack</label>
+            <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap", alignItems: "stretch" }}>
+              <textarea
+                readOnly
+                rows={2}
+                style={{
+                  flex: "1 1 220px",
+                  minWidth: 0,
+                  fontSize: "clamp(0.85rem, 1.8vw, 0.95rem)",
+                  fontFamily: "ui-monospace, monospace",
+                  padding: 12,
+                  borderRadius: 8,
+                  border: "1px solid #475569",
+                  background: "#020617",
+                  color: "#e2e8f0",
+                  resize: "vertical",
+                }}
+                value={COPY_EXPERT}
+              />
+              <button
+                type="button"
+                onClick={() => copyToClipboard(COPY_EXPERT)}
+                style={{
+                  padding: "12px 18px",
+                  fontSize: "1rem",
+                  fontWeight: 600,
+                  alignSelf: "flex-start",
+                  borderRadius: 8,
+                  border: "1px solid #64748b",
+                  background: "#1e293b",
+                  color: "#f1f5f9",
+                  cursor: "pointer",
+                }}
+              >
+                Copy
+              </button>
+            </div>
+            <label style={{ display: "block", ...labelStrong, marginBottom: 6 }}>Full closure (release + build)</label>
+            <div style={{ display: "flex", gap: 10, marginBottom: 12, flexWrap: "wrap", alignItems: "stretch" }}>
+              <textarea
+                readOnly
+                rows={4}
+                style={{
+                  flex: "1 1 220px",
+                  minWidth: 0,
+                  fontSize: "clamp(0.85rem, 1.8vw, 0.95rem)",
+                  fontFamily: "ui-monospace, monospace",
+                  padding: 12,
+                  borderRadius: 8,
+                  border: "1px solid #475569",
+                  background: "#020617",
+                  color: "#e2e8f0",
+                  resize: "vertical",
+                }}
+                value={COPY_CLOSURE}
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  copyToClipboard(
+                    "npm run qa:learning-simulator:engine-final && npm run qa:learning-simulator:release && npm run build"
+                  )
+                }
+                style={{
+                  padding: "12px 18px",
+                  fontSize: "1rem",
+                  fontWeight: 600,
+                  alignSelf: "flex-start",
+                  borderRadius: 8,
+                  border: "1px solid #64748b",
+                  background: "#1e293b",
+                  color: "#f1f5f9",
+                  cursor: "pointer",
+                }}
+              >
+                Copy (one line)
+              </button>
+            </div>
+            <p style={{ ...muted, margin: 0 }}>
+              Requires prior <code style={{ color: "#cbd5e1" }}>npm run qa:learning-simulator:professional-engine</code> (PASS) before generating the pack.
+            </p>
+          </section>
+
+          <section style={card} aria-labelledby="sec-env">
+            <h2 id="sec-env" style={sectionTitle}>
+              Environment setup
+            </h2>
+            <div
+              style={{
+                padding: "14px 16px",
+                borderRadius: 10,
+                border: "1px solid #0ea5e9",
+                background: "#082f49",
+                marginBottom: 18,
+                fontSize: "clamp(0.95rem, 2vw, 1.05rem)",
+                lineHeight: 1.65,
+                color: "#e0f2fe",
+              }}
+            >
+              <strong style={{ color: "#7dd3fc" }}>Remote / Vercel</strong>
+              <ul style={{ margin: "10px 0 0", paddingLeft: 22 }}>
+                <li>
+                  <code style={{ fontSize: "0.9em" }}>NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN=true</code> — enables this page and APIs (build-time public).
+                </li>
+                <li>
+                  <code style={{ fontSize: "0.9em" }}>ENGINE_REVIEW_ADMIN_TOKEN=&lt;secret&gt;</code> — server only; never embedded in the client bundle. Enter the same value in Admin token (stored in{" "}
+                  <strong>sessionStorage</strong> only).
+                </li>
+              </ul>
+            </div>
+            <h3 style={{ ...sectionTitle, fontSize: "1.05rem", marginBottom: 10 }}>Runtime / filesystem</h3>
+            <ul style={listStyle}>
+              <li>
+                <strong style={labelStrong}>Deployment (best-effort):</strong> {depLabel}
+              </li>
+              <li>
+                <strong style={labelStrong}>Filesystem ephemeral risk:</strong>{" "}
+                {ephemeral ? "yes — serverless-style host; writes may not persist" : "lower — typical long-running or local Node"}
+              </li>
+              <li>
+                <strong style={labelStrong}>Last known artifact path:</strong>{" "}
+                <code style={{ fontSize: "0.92em", color: "#bae6fd" }}>{repoRelativeIndex}</code>
+              </li>
+            </ul>
+            <p style={{ ...muted, marginTop: 16, marginBottom: 0 }}>
+              Artifacts are written under the repo / deploy workspace (not public URLs). On remote serverless, they may not survive the next cold start — use CLI from a machine with a persistent checkout when you need a stable copy.
+            </p>
+          </section>
+        </div>
       </main>
     </Layout>
   );

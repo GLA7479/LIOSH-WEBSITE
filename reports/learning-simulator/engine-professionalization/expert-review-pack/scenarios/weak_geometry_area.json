@@ -62,10 +62,10 @@
   },
   "professionalEngineV1": {
     "version": "1.0.0",
-    "generatedAt": "2026-05-03T08:10:59.232Z",
+    "generatedAt": "2026-05-03T08:30:13.461Z",
     "studentWindow": {
-      "startMs": 1767427859204,
-      "endMs": 1777882259204
+      "startMs": 1767429013431,
+      "endMs": 1777883413431
     },
     "subjects": [
       "geometry"
