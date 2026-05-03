@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-05-03T06:47:38.540Z",
+  "engineTruthAudit": {
+    "status": "PASS",
+    "source": "reports/learning-simulator/engine-truth/engine-truth-summary.json"
+  },
+  "professionalFramework": {
+    "version": "1.1.0",
+    "subjectsCovered": [
+      "math",
+      "hebrew",
+      "english",
+      "science",
+      "geometry",
+      "moledet-geography"
+    ]
+  },
+  "realScenarioFrameworkValidation": {
+    "status": "PASS",
+    "source": "reports/learning-simulator/engine-completion/real-scenario-framework-validation.json"
+  },
+  "diagnosticFrameworkQa": {
+    "note": "Run `npm run qa:learning-simulator:diagnostic-framework` — included in full orchestrator after engine truth."
+  },
+  "releaseOrchestrator": {
+    "lastFullRunPass": null,
+    "source": "reports/learning-simulator/orchestrator/run-summary.json"
+  },
+  "buildStatus": {
+    "note": "Verify with `npm run build` — executed inside full orchestrator."
+  },
+  "engineLayerClosed": true,
+  "remainingGaps": [
+    "Parent-facing Hebrew copy and PDF presentation are intentionally unchanged in engine-only phases.",
+    "sessionsApprox remains null until standardized session linkage on rows.",
+    "Taxonomy bridge IDs may still use internal bucket keys as topicId."
+  ]
+}

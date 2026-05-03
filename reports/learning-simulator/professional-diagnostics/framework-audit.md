@@ -1,12 +1,11 @@
 # Professional Diagnostic Framework — audit
 
-- Generated at: 2026-05-03T06:20:29.612Z
-- Framework version: 1.0.0
+- Generated at: 2026-05-03T06:47:36.417Z
+- Framework version: 1.1.0
 
 ## Scope
 
-- **In phase:** math, hebrew (internal structured findings only).
-- **Deferred:** english, science, geometry, moledet-geography (no new logic beyond preserving existing engine behavior).
+- **In phase:** math, hebrew, english, science, geometry, moledet-geography (internal structured findings only).
 
 ## Engine field mapping
 
@@ -20,6 +19,5 @@ Writes `professionalFrameworkV1` on math/hebrew units and a rollup object on `di
 
 ## Remaining gaps
 
-- English / Science / Geometry / Moledet: taxonomy hooks only if engine emits units; no expansion this phase.
 - sessionsApprox in basedOn is reserved (null) until session linkage is standardized.
 - Taxonomy bridge ids (topic-taxonomy-bridge) not yet merged into structuredFinding.topicId (uses internal bucketKey).

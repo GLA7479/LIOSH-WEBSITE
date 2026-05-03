@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-03T06:20:29.612Z",
-  "frameworkVersion": "1.0.0",
+  "generatedAt": "2026-05-03T06:47:36.417Z",
+  "frameworkVersion": "1.1.0",
   "qa": {
     "mockUnitsProcessed": 2,
     "rollupPresent": true,
@@ -17,12 +17,13 @@
       "maps[subjectId][topicRowKey] row diagnostics (accuracy, questions, trend, behaviorProfile, dataSufficiencyLevel, modeKey)"
     ],
     "writesTo": [
-      "diagnosticEngineV2.units[].professionalFrameworkV1 (math, hebrew only)",
+      "diagnosticEngineV2.units[].professionalFrameworkV1 (all supported subjects with subject-level volume > 0)",
       "diagnosticEngineV2.professionalFrameworkV1 rollup"
     ],
     "integrationFile": "utils/parent-report-v2.js",
     "integrationPoint": "Immediately after runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, endMs })"
   },
   "mathSkillCount": 4,
-  "hebrewSkillCount": 2
+  "hebrewSkillCount": 2,
+  "subjectsWithTaxonomy": 6
 }

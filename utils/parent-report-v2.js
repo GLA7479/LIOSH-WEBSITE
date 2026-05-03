@@ -1948,8 +1948,16 @@ export function generateParentReportV2(
   enrichDiagnosticEngineV2WithProfessionalFrameworkV1(diagnosticEngineV2, maps, {
     mathQuestions: mathTotalQuestions,
     hebrewQuestions: hebrewTotalQuestions,
+    englishQuestions: englishTotalQuestions,
+    scienceQuestions: scienceTotalQuestions,
+    geometryQuestions: geometryTotalQuestions,
+    moledetGeographyQuestions: moledetGeographyTotalQuestions,
     mathAccuracy,
     hebrewAccuracy,
+    englishAccuracy,
+    scienceAccuracy,
+    geometryAccuracy,
+    moledetGeographyAccuracy,
     totalQuestions,
   });
 

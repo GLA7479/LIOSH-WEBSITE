@@ -58,6 +58,8 @@ const ARTIFACTS = {
   releaseReadinessSummaryMd: "reports/learning-simulator/release-readiness-summary.md",
   engineTruthSummary: "reports/learning-simulator/engine-truth/engine-truth-summary.json",
   engineTruthSummaryMd: "reports/learning-simulator/engine-truth/engine-truth-summary.md",
+  engineCompletionSummary: "reports/learning-simulator/engine-completion/engine-completion-summary.json",
+  realScenarioFrameworkValidation: "reports/learning-simulator/engine-completion/real-scenario-framework-validation.json",
 };
 
 /** Stages in order for quick gate */
@@ -73,6 +75,25 @@ const QUICK_STEPS = [
   },
   { id: "behavior", script: "qa:learning-simulator:behavior", label: "Behavior checks (Phase 5)" },
   { id: "questions", script: "qa:learning-simulator:questions", label: "Question integrity (Phase 4)" },
+];
+
+/** Inserted after engine truth on full orchestrator only (deterministic; keeps quick fast). */
+const ENGINE_LAYER_FRAMEWORK_STEPS = [
+  {
+    id: "diagnosticFramework",
+    script: "qa:learning-simulator:diagnostic-framework",
+    label: "Professional diagnostic framework QA (mock contracts)",
+  },
+  {
+    id: "frameworkRealScenarios",
+    script: "qa:learning-simulator:framework-real-scenarios",
+    label: "Professional framework real scenario validation",
+  },
+  {
+    id: "engineCompletionSummary",
+    script: "qa:learning-simulator:engine-completion-summary",
+    label: "Engine completion summary artifact",
+  },
 ];
 
 /** Full gate only: matrix smoke → catalog → classification → scenario map (after Phase 4 artifacts exist). */
@@ -153,6 +174,12 @@ function nextActionHint(failedStep) {
     reports: "Inspect reports/learning-simulator/reports/run-summary.json and per-student *.report.json / *.assertions.json.",
     engineTruth:
       "Inspect reports/learning-simulator/engine-truth/engine-truth-summary.json; fix aggregation/diagnosis/report sync or golden expectations in scripts/learning-simulator/lib/engine-truth-*.mjs.",
+    diagnosticFramework:
+      "Inspect utils/learning-diagnostics/diagnostic-framework-v1.js and scripts/learning-simulator/run-diagnostic-framework-qa.mjs.",
+    frameworkRealScenarios:
+      "Inspect reports/learning-simulator/engine-completion/real-scenario-framework-validation.json; fix enrichment or scenario harness.",
+    engineCompletionSummary:
+      "Inspect reports/learning-simulator/engine-completion/engine-completion-summary.json.",
     behavior: "Inspect reports/learning-simulator/behavior/failures.json and per-student *.behavior.json.",
     questions: "Inspect reports/learning-simulator/questions/failures.json; fix generators or mark cells unsupported intentionally.",
     deep: "Inspect reports/learning-simulator/deep/failures.json and deep per-student artifacts.",
@@ -240,7 +267,12 @@ async function main() {
 
   let steps = [...QUICK_STEPS];
   if (mode === "full") {
-    steps = [...QUICK_STEPS, ...FULL_MATRIX_QA, ...FULL_SUFFIX];
+    const etIdx = QUICK_STEPS.findIndex((s) => s.id === "engineTruth");
+    const quickWithFramework =
+      etIdx >= 0
+        ? [...QUICK_STEPS.slice(0, etIdx + 1), ...ENGINE_LAYER_FRAMEWORK_STEPS, ...QUICK_STEPS.slice(etIdx + 1)]
+        : [...QUICK_STEPS];
+    steps = [...quickWithFramework, ...FULL_MATRIX_QA, ...FULL_SUFFIX];
   }
 
   await mkdir(OUT_DIR, { recursive: true });

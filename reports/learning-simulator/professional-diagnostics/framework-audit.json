@@ -1,17 +1,16 @@
 {
-  "generatedAt": "2026-05-03T06:20:29.612Z",
-  "frameworkVersion": "1.0.0",
+  "generatedAt": "2026-05-03T06:47:36.417Z",
+  "frameworkVersion": "1.1.0",
   "scope": {
     "subjectsInPhase": [
       "math",
-      "hebrew"
-    ],
-    "deferredSubjects": [
+      "hebrew",
       "english",
       "science",
       "geometry",
       "moledet-geography"
-    ]
+    ],
+    "deferredSubjects": []
   },
   "engineMapping": {
     "readsFrom": [
@@ -24,7 +23,7 @@
       "maps[subjectId][topicRowKey] row diagnostics (accuracy, questions, trend, behaviorProfile, dataSufficiencyLevel, modeKey)"
     ],
     "writesTo": [
-      "diagnosticEngineV2.units[].professionalFrameworkV1 (math, hebrew only)",
+      "diagnosticEngineV2.units[].professionalFrameworkV1 (all supported subjects with subject-level volume > 0)",
       "diagnosticEngineV2.professionalFrameworkV1 rollup"
     ],
     "integrationFile": "utils/parent-report-v2.js",
@@ -72,10 +71,9 @@
   "guardrails": {
     "noClinicalClaims": true,
     "noUiOrPdfChangesThisPhase": true,
-    "orchestratorWiring": "intentionally omitted until gate is proven stable"
+    "orchestratorWiring": "diagnostic-framework + framework-real-scenarios after engine truth (full orchestrator)"
   },
   "remainingGaps": [
-    "English / Science / Geometry / Moledet: taxonomy hooks only if engine emits units; no expansion this phase.",
     "sessionsApprox in basedOn is reserved (null) until session linkage is standardized.",
     "Taxonomy bridge ids (topic-taxonomy-bridge) not yet merged into structuredFinding.topicId (uses internal bucketKey)."
   ]
