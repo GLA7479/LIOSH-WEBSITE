@@ -112,6 +112,8 @@
     "qa:question-metadata:geometry-suggestions": "tsx scripts/geometry-metadata-enrichment-suggestions.mjs",
     "qa:question-metadata:geometry-review-pack": "tsx scripts/geometry-metadata-review-pack.mjs",
     "qa:science-metadata:verify": "tsx scripts/verify-science-metadata-apply.mjs",
+    "qa:geometry-metadata:apply-safe": "tsx scripts/apply-geometry-metadata-safe.mjs",
+    "qa:geometry-metadata:verify": "tsx scripts/verify-geometry-metadata-apply.mjs",
     "test:minimal-safe-scope": "tsx scripts/minimal-safe-scope-scenarios.mjs",
     "test:parent-copilot-phaseA": "tsx scripts/parent-copilot-phaseA-suite.mjs",
     "test:parent-copilot-phaseB": "node scripts/parent-copilot-phaseB-suite.mjs",

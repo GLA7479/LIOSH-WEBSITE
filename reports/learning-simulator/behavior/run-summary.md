@@ -1,6 +1,6 @@
 # Learning simulator — behavior checks (Phase 5)
 
-- Generated at: 2026-05-03T13:05:28.527Z
+- Generated at: 2026-05-03T13:10:19.010Z
 - Generator: learning-simulator-behavior-phase5-v1
 - Scenarios: 10
 - Scenarios passed: 10 / 10

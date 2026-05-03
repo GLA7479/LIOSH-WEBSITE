@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T13:05:16.988Z",
+  "generatedAt": "2026-05-03T13:09:33.064Z",
   "source": {
     "enrichmentPath": "reports/question-metadata-qa/geometry-enrichment-suggestions.json",
-    "enrichmentGeneratedAt": "2026-05-03T13:05:16.379Z"
+    "enrichmentGeneratedAt": "2026-05-03T13:09:32.469Z"
   },
   "summary": {
     "geometryRowCount": 52,

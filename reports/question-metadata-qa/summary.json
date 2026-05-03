@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T13:05:15.628Z",
+  "generatedAt": "2026-05-03T13:09:31.847Z",
   "gate": {
     "scanOutcome": "ok",
     "partialLoadErrors": true,
@@ -63,7 +63,7 @@
   "totals": {
     "questionsScanned": 5267,
     "highRiskCount": 4547,
-    "mediumRiskCount": 337,
+    "mediumRiskCount": 285,
     "duplicateDeclaredIds": 0,
     "skillBucketsLowVolume": 299,
     "minQuestionsPerSkillThreshold": 5
@@ -71,7 +71,7 @@
   "topMissingMetadataFields": [
     [
       "missing_prerequisite_skill_ids",
-      5266
+      5263
     ],
     [
       "implicit_id_only",
@@ -79,15 +79,15 @@
     ],
     [
       "missing_difficulty",
-      4884
+      4832
     ],
     [
       "missing_cognitiveLevel",
-      4884
+      4832
     ],
     [
       "missing_expected_error_types",
-      4867
+      4823
     ],
     [
       "missing_skillId",
@@ -403,21 +403,19 @@
       ],
       "pctWithSkillId": 100,
       "pctWithSubskillId": 100,
-      "pctWithDifficulty": 0,
-      "pctWithCognitiveLevel": 0,
-      "pctWithExpectedErrorTypes": 15.4,
-      "pctWithPrerequisiteSkillIds": 0,
+      "pctWithDifficulty": 100,
+      "pctWithCognitiveLevel": 100,
+      "pctWithExpectedErrorTypes": 100,
+      "pctWithPrerequisiteSkillIds": 5.8,
       "pctWithCorrectAnswer": 100,
       "pctWithExplanation": 0,
       "duplicateIdsInSubject": 0,
       "highRiskQuestionCount": 0,
-      "mediumRiskQuestionCount": 52,
+      "mediumRiskQuestionCount": 0,
       "weakestMetadataFields": [
         "implicit_id_only",
-        "missing_difficulty",
-        "missing_cognitiveLevel",
-        "missing_prerequisite_skill_ids",
-        "missing_explanation"
+        "missing_explanation",
+        "missing_prerequisite_skill_ids"
       ],
       "topIssueCodes": [
         [
@@ -425,28 +423,16 @@
           52
         ],
         [
-          "missing_difficulty",
-          52
-        ],
-        [
-          "missing_cognitiveLevel",
-          52
-        ],
-        [
-          "missing_prerequisite_skill_ids",
-          52
-        ],
-        [
           "missing_explanation",
           52
         ],
         [
-          "missing_expected_error_types",
-          44
+          "missing_prerequisite_skill_ids",
+          49
         ]
       ],
-      "readinessScore": "medium",
-      "avgCompleteness": 0.458
+      "readinessScore": "strong",
+      "avgCompleteness": 0.765
     }
   },
   "duplicateIds": [],

@@ -1,9 +1,9 @@
 # Question metadata QA
 
-- **Generated:** 2026-05-03T13:05:15.628Z
+- **Generated:** 2026-05-03T13:09:31.847Z
 - **Gate:** scanOutcome=`ok`, advisoryStatus=`WARN`
 - **Questions scanned:** 5267
-- **High / medium risk:** 4547 / 337
+- **High / medium risk:** 4547 / 285
 - **Duplicate declared IDs (cross-file):** 0
 - **Skill buckets below 5 questions:** 299
 
@@ -16,17 +16,17 @@
 | english | 670 | weak | 34.5 | 92.5 | 439 |
 | moledet-geography | 3506 | missing | 0 | 0 | 3506 |
 | hebrew-archive | 602 | missing | 0 | 0 | 602 |
-| geometry | 52 | medium | 100 | 0 | 0 |
+| geometry | 52 | strong | 100 | 0 | 0 |
 
 ## Top issue codes (global)
 
 | Code | Count |
 | --- | ---: |
-| missing_prerequisite_skill_ids | 5266 |
+| missing_prerequisite_skill_ids | 5263 |
 | implicit_id_only | 4884 |
-| missing_difficulty | 4884 |
-| missing_cognitiveLevel | 4884 |
-| missing_expected_error_types | 4867 |
+| missing_difficulty | 4832 |
+| missing_cognitiveLevel | 4832 |
+| missing_expected_error_types | 4823 |
 | missing_skillId | 4547 |
 | missing_subskillId | 4547 |
 | missing_explanation | 4264 |

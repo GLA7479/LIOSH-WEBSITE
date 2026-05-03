@@ -1,6 +1,6 @@
 # Geometry metadata — enrichment suggestions (proposal only)
 
-_Generated: 2026-05-03T13:05:16.379Z_
+_Generated: 2026-05-03T13:09:32.469Z_
 
 ## Scope
 
@@ -29,10 +29,10 @@ _Generated: 2026-05-03T13:05:16.379Z_
 
 | Field | Rows where suggestion differs |
 | --- | ---: |
-| difficulty | 52 |
-| cognitiveLevel | 52 |
-| expectedErrorTypes | 50 |
-| prerequisiteSkillIds | 3 |
+| difficulty | 0 |
+| cognitiveLevel | 0 |
+| expectedErrorTypes | 0 |
+| prerequisiteSkillIds | 0 |
 
 ## Sample (first 15 ids)
 
