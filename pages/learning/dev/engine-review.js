@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Layout from "../../../components/Layout";
 
 const TOKEN_SESSION_KEY = "engine_review_admin_token_v1";
@@ -15,6 +15,25 @@ function formatAdminDate(iso) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return String(iso);
   return d.toISOString().replace("T", " ").replace(/\.\d{3}Z$/, " UTC");
+}
+
+/** Keeps first occurrence per scenario id — guards duplicate API rows and stabilizes React keys. */
+function dedupeScenariosById(scenarios) {
+  if (!Array.isArray(scenarios)) return { unique: [], duplicateCount: 0 };
+  const seen = new Set();
+  const unique = [];
+  let duplicateCount = 0;
+  for (const s of scenarios) {
+    const id = s?.scenarioId ?? s?.id ?? "";
+    if (!id) continue;
+    if (seen.has(id)) {
+      duplicateCount += 1;
+      continue;
+    }
+    seen.add(id);
+    unique.push(s);
+  }
+  return { unique, duplicateCount };
 }
 
 export async function getServerSideProps() {
@@ -106,6 +125,13 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
   const [deployment, setDeployment] = useState(null);
   /** Last inline snapshot from POST /generate-expert-review-pack (not persisted under reports/) */
   const [inlinePack, setInlinePack] = useState(null);
+
+  const { unique: uniqueSnapshotScenarios, duplicateCount: snapshotDuplicateCount } = useMemo(
+    () => dedupeScenariosById(inlinePack?.scenarios),
+    [inlinePack?.scenarios]
+  );
+
+  const isDev = process.env.NODE_ENV === "development";
 
   useEffect(() => {
     try {
@@ -552,8 +578,48 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
                   index.md
                 </button>
               </div>
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "clamp(0.9rem, 2vw, 1rem)" }}>
+              <p style={{ margin: "0 0 12px", color: "#cbd5e1", fontSize: "clamp(0.9rem, 2vw, 1rem)" }}>
+                Showing <strong style={{ color: "#f8fafc" }}>{uniqueSnapshotScenarios.length}</strong> unique scenarios
+                {uniqueSnapshotScenarios.length !== 22 ? (
+                  <span style={{ color: "#fbbf24" }}> (expected 22 when validation pack is complete)</span>
+                ) : null}
+              </p>
+              {isDev && snapshotDuplicateCount > 0 ? (
+                <p
+                  style={{
+                    margin: "0 0 14px",
+                    padding: "10px 12px",
+                    borderRadius: 8,
+                    border: "1px solid #fbbf24",
+                    background: "#422006",
+                    color: "#fef3c7",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  <strong>Dev:</strong> stripped {snapshotDuplicateCount} duplicate scenario entr
+                  {snapshotDuplicateCount === 1 ? "y" : "ies"} from the API response before rendering.
+                </p>
+              ) : null}
+              <style
+                dangerouslySetInnerHTML={{
+                  __html: `
+                  .engine-review-snapshot-desktop { display: none; }
+                  .engine-review-snapshot-mobile { display: block; }
+                  @media (min-width: 768px) {
+                    .engine-review-snapshot-desktop { display: block; }
+                    .engine-review-snapshot-mobile { display: none; }
+                  }
+                `,
+                }}
+              />
+              {/* Desktop: full table (no horizontal scroll trap on narrow viewports). */}
+              <div className="engine-review-snapshot-desktop">
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "clamp(0.9rem, 2vw, 1rem)", tableLayout: "fixed" }}>
+                  <colgroup>
+                    <col style={{ width: "42%" }} />
+                    <col style={{ width: "13%" }} />
+                    <col style={{ width: "45%" }} />
+                  </colgroup>
                   <thead>
                     <tr style={{ borderBottom: "2px solid #334155", textAlign: "left" }}>
                       <th style={{ padding: "10px 8px", color: "#f8fafc" }}>Scenario</th>
@@ -562,10 +628,21 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
                     </tr>
                   </thead>
                   <tbody>
-                    {inlinePack.scenarios.map((s) => (
+                    {uniqueSnapshotScenarios.map((s) => (
                       <tr key={s.scenarioId} style={{ borderBottom: "1px solid #1e293b" }}>
-                        <td style={{ padding: "10px 8px", fontFamily: "ui-monospace, monospace", color: "#e2e8f0" }}>{s.scenarioId}</td>
-                        <td style={{ padding: "10px 8px", color: s.pass ? "#86efac" : "#fca5a5" }}>{s.pass ? "PASS" : "FAIL"}</td>
+                        <td
+                          style={{
+                            padding: "10px 8px",
+                            fontFamily: "ui-monospace, monospace",
+                            color: "#e2e8f0",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {s.scenarioId}
+                        </td>
+                        <td style={{ padding: "10px 8px", color: s.pass ? "#86efac" : "#fca5a5", whiteSpace: "nowrap" }}>
+                          {s.pass ? "PASS" : "FAIL"}
+                        </td>
                         <td style={{ padding: "10px 8px" }}>
                           <button
                             type="button"
@@ -590,6 +667,74 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
                     ))}
                   </tbody>
                 </table>
+              </div>
+              {/* Mobile: stacked cards — avoids overflow-x compositor glitches that looked like duplicate rows while scrolling. */}
+              <div className="engine-review-snapshot-mobile">
+                {uniqueSnapshotScenarios.map((s) => (
+                  <div
+                    key={s.scenarioId}
+                    style={{
+                      marginBottom: 12,
+                      padding: "14px 14px",
+                      borderRadius: 10,
+                      border: "1px solid #334155",
+                      background: "#1e293b",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "ui-monospace, monospace",
+                        fontSize: "clamp(0.82rem, 3.5vw, 0.95rem)",
+                        color: "#f1f5f9",
+                        lineHeight: 1.45,
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {s.scenarioId}
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 10,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
+                        gap: 10,
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: 700,
+                          fontSize: "1rem",
+                          color: s.pass ? "#86efac" : "#fca5a5",
+                          letterSpacing: "0.04em",
+                        }}
+                      >
+                        {s.pass ? "PASS" : "FAIL"}
+                      </span>
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            downloadTextFile(`scenarios/${s.scenarioId}.json`, s.json, "application/json;charset=utf-8")
+                          }
+                          style={packDownloadBtnSmall}
+                        >
+                          JSON
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            downloadTextFile(`scenarios/${s.scenarioId}.md`, s.markdown, "text/markdown;charset=utf-8")
+                          }
+                          style={packDownloadBtnSmall}
+                        >
+                          MD
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </section>
           ) : null}

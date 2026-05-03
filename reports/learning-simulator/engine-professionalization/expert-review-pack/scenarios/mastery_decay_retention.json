@@ -46,7 +46,7 @@
         "accuracy": 93,
         "displayName": "addition",
         "difficultyTier": "medium",
-        "lastSessionMs": 1770023293459,
+        "lastSessionMs": 1770023889951,
         "trend": null
       },
       {
@@ -58,7 +58,7 @@
         "accuracy": 93,
         "displayName": "subtraction",
         "difficultyTier": "hard",
-        "lastSessionMs": 1770023293459,
+        "lastSessionMs": 1770023889951,
         "trend": null
       }
     ],
@@ -74,10 +74,10 @@
   },
   "professionalEngineV1": {
     "version": "1.0.0",
-    "generatedAt": "2026-05-03T09:08:13.554Z",
+    "generatedAt": "2026-05-03T09:18:10.018Z",
     "studentWindow": {
-      "startMs": 1767431293461,
-      "endMs": 1777885693461
+      "startMs": 1767431889952,
+      "endMs": 1777886289952
     },
     "subjects": [
       "math"
@@ -221,7 +221,7 @@
           "weightedAccuracy": 93,
           "trend": "unknown",
           "consistency": "low",
-          "lastPracticedAt": "2026-02-02T09:08:13.459Z",
+          "lastPracticedAt": "2026-02-02T09:18:09.951Z",
           "retentionRisk": true,
           "easyOnlyProfile": false,
           "difficultyTiersObserved": [

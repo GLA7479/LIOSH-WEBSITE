@@ -62,10 +62,10 @@
   },
   "professionalEngineV1": {
     "version": "1.0.0",
-    "generatedAt": "2026-05-03T09:08:13.525Z",
+    "generatedAt": "2026-05-03T09:18:09.998Z",
     "studentWindow": {
-      "startMs": 1767431293461,
-      "endMs": 1777885693461
+      "startMs": 1767431889952,
+      "endMs": 1777886289952
     },
     "subjects": [
       "math"
