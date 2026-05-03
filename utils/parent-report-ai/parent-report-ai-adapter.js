@@ -1,6 +1,12 @@
 /**
  * Adapter: parent-report V2 snapshot → strict allowlisted input for `buildParentReportAIExplanation`.
  * No raw banks, diagnostics blobs, or full history — only derived summary strings and counts.
+ *
+ * Phase B alignment: `enrichParentReportWithParentAi` routes through the unified Parent AI context
+ * builder (`utils/parent-ai-context/build-parent-ai-context.js`) so the Parent AI summary insight and
+ * the Parent Copilot Q&A both ground in the same canonical (payload, scope) projection. The strict
+ * input projection itself (`buildStrictParentReportAIInputFromParentReportV2` and its internals
+ * below) is unchanged and remains the canonical source of the strict explainer-input shape.
  */
 
 import { mapPlannerNextActionToHebrew } from "../../lib/learning-client/adaptive-planner-recommendation-view-model.js";
@@ -8,6 +14,7 @@ import {
   buildParentReportAIExplanation,
   buildStrictParentReportAIInput,
 } from "./parent-report-ai-explainer.js";
+import { buildParentAiContext } from "../parent-ai-context/build-parent-ai-context.js";
 
 const SUBJECT_KEYS = ["math", "geometry", "english", "science", "hebrew", "moledet-geography"];
 
@@ -37,6 +44,144 @@ const MAP_FIELD = {
   hebrew: "hebrewTopics",
   "moledet-geography": "moledetGeographyTopics",
 };
+
+/** Maps detailed-report `overallSnapshot.subjectCoverage[].subject` → V2 `summary` question / accuracy keys. */
+const DETAILED_COVERAGE_TO_SUMMARY = {
+  math: { q: "mathQuestions", c: "mathCorrect", a: "mathAccuracy" },
+  geometry: { q: "geometryQuestions", c: "geometryCorrect", a: "geometryAccuracy" },
+  english: { q: "englishQuestions", c: "englishCorrect", a: "englishAccuracy" },
+  science: { q: "scienceQuestions", c: "scienceCorrect", a: "scienceAccuracy" },
+  hebrew: { q: "hebrewQuestions", c: "hebrewCorrect", a: "hebrewAccuracy" },
+  "moledet-geography": {
+    q: "moledetGeographyQuestions",
+    c: "moledetGeographyCorrect",
+    a: "moledetGeographyAccuracy",
+  },
+};
+
+/**
+ * Phase C: rebuild a minimal `generateParentReportV2`-shaped snapshot from a detailed-report payload so
+ * `buildStrictParentReportAIInputFromParentReportV2` + `buildTruthPacketV1` see the same grounding shape
+ * as the short report (summary aggregates + optional `subjectProfiles` / `hybridRuntime`).
+ *
+ * @param {Record<string, unknown>|null|undefined} detailedPayload
+ * @returns {Record<string, unknown>|null}
+ */
+export function parentReportV2SnapshotFromDetailedPayload(detailedPayload) {
+  if (!detailedPayload || typeof detailedPayload !== "object") return null;
+  const os =
+    detailedPayload.overallSnapshot && typeof detailedPayload.overallSnapshot === "object"
+      ? detailedPayload.overallSnapshot
+      : {};
+  const cov = Array.isArray(os.subjectCoverage) ? os.subjectCoverage : [];
+
+  /** @type {Record<string, unknown>} */
+  const summary = {
+    totalQuestions: Math.max(0, Math.round(Number(os.totalQuestions) || 0)),
+    totalTimeMinutes: Math.max(0, Math.round(Number(os.totalTime) || 0)),
+    overallAccuracy: Math.min(100, Math.max(0, Number(os.overallAccuracy) || 0)),
+    mathQuestions: 0,
+    mathCorrect: 0,
+    mathAccuracy: 0,
+    geometryQuestions: 0,
+    geometryCorrect: 0,
+    geometryAccuracy: 0,
+    englishQuestions: 0,
+    englishCorrect: 0,
+    englishAccuracy: 0,
+    scienceQuestions: 0,
+    scienceCorrect: 0,
+    scienceAccuracy: 0,
+    hebrewQuestions: 0,
+    hebrewCorrect: 0,
+    hebrewAccuracy: 0,
+    moledetGeographyQuestions: 0,
+    moledetGeographyCorrect: 0,
+    moledetGeographyAccuracy: 0,
+    diagnosticOverviewHe: {
+      strongestAreaLineHe: "",
+      mainFocusAreaLineHe: "",
+      requiresAttentionPreviewHe: [],
+    },
+  };
+
+  for (const row of cov) {
+    const sid = String(row?.subject || "").trim();
+    const keys = DETAILED_COVERAGE_TO_SUMMARY[sid];
+    if (!keys) continue;
+    const q = Math.max(0, Math.round(Number(row.questionCount) || 0));
+    const acc = Math.min(100, Math.max(0, Number(row.accuracy) || 0));
+    const corr = Math.round((q * acc) / 100);
+    summary[keys.q] = q;
+    summary[keys.c] = corr;
+    summary[keys.a] = acc;
+  }
+
+  const es =
+    detailedPayload.executiveSummary && typeof detailedPayload.executiveSummary === "object"
+      ? detailedPayload.executiveSummary
+      : {};
+  const topS = Array.isArray(es.topStrengthsAcrossHe) ? es.topStrengthsAcrossHe : [];
+  const topF = Array.isArray(es.topFocusAreasHe) ? es.topFocusAreasHe : [];
+  const ov = summary.diagnosticOverviewHe && typeof summary.diagnosticOverviewHe === "object" ? summary.diagnosticOverviewHe : {};
+  ov.strongestAreaLineHe = topS[0] ? String(topS[0]).trim() : "";
+  ov.mainFocusAreaLineHe = topF[0] ? String(topF[0]).trim() : "";
+  ov.requiresAttentionPreviewHe = topF
+    .slice(1, 4)
+    .map((x) => String(x || "").trim())
+    .filter(Boolean);
+  summary.diagnosticOverviewHe = ov;
+
+  const rawMetricStrengthsHe = topS
+    .slice(0, 2)
+    .map((x) => String(x || "").trim())
+    .filter(Boolean);
+
+  return {
+    generatedAt:
+      typeof detailedPayload.generatedAt === "string" && detailedPayload.generatedAt
+        ? detailedPayload.generatedAt
+        : new Date().toISOString(),
+    playerName:
+      detailedPayload.periodInfo && typeof detailedPayload.periodInfo === "object"
+        ? String(detailedPayload.periodInfo.playerName || "").trim()
+        : "",
+    period:
+      detailedPayload.periodInfo && typeof detailedPayload.periodInfo === "object"
+        ? detailedPayload.periodInfo.period
+        : undefined,
+    summary,
+    rawMetricStrengthsHe,
+    hybridRuntime: detailedPayload.hybridRuntime ?? null,
+    diagnosticEngineV2: detailedPayload.diagnosticEngineV2 ?? null,
+    subjectProfiles: Array.isArray(detailedPayload.subjectProfiles) ? detailedPayload.subjectProfiles : [],
+    executiveSummary: detailedPayload.executiveSummary ?? null,
+    mathOperations: {},
+    geometryTopics: {},
+    englishTopics: {},
+    scienceTopics: {},
+    hebrewTopics: {},
+    moledetGeographyTopics: {},
+  };
+}
+
+/**
+ * Same Parent AI summary pipeline as the short report, fed by a synthetic V2 snapshot derived from the
+ * detailed-report payload (Phase C — detailed + print parity).
+ *
+ * @param {Record<string, unknown>|null|undefined} detailedPayload
+ * @param {{ env?: Record<string, string | undefined>; preferDeterministicOnly?: boolean; scope?: unknown; canonicalIntent?: string }} [options]
+ * @returns {Promise<{ parentAiExplanation: { ok: true, text: string, source: "deterministic_fallback"|"ai" } | null }>}
+ */
+export async function enrichDetailedParentReportWithParentAi(detailedPayload, options = {}) {
+  try {
+    const snapshot = parentReportV2SnapshotFromDetailedPayload(detailedPayload);
+    if (!snapshot) return { parentAiExplanation: null };
+    return enrichParentReportWithParentAi(snapshot, options);
+  } catch {
+    return { parentAiExplanation: null };
+  }
+}
 
 /** Mirrors runtime practice → engine decision (high level only; does not replace the adaptive planner). */
 function inferEngineDecisionFromCounts(totalQuestions, accuracyPct) {
@@ -224,13 +369,31 @@ export function buildStrictParentReportAIInputFromParentReportV2(report) {
 
 /**
  * Produces validated parent-facing explanation for attachment to the V2 report object.
+ *
+ * Phase B: routes through `buildParentAiContext` so the strict explainer input is derived alongside
+ * the canonical `TruthPacketV1` for the same payload + scope. The truth packet is not consumed by the
+ * deterministic / LLM explainer in this phase (the explainer reads only `strictExplainerInput`),
+ * but its presence in the context object guarantees both Parent AI surfaces share one grounding source.
+ *
  * @param {Record<string, unknown>} report
- * @param {{ env?: Record<string, string | undefined>, preferDeterministicOnly?: boolean }} [options]
+ * @param {{
+ *   env?: Record<string, string | undefined>;
+ *   preferDeterministicOnly?: boolean;
+ *   scope?: unknown;
+ *   canonicalIntent?: string;
+ * }} [options]
  * @returns {Promise<{ parentAiExplanation: { ok: true, text: string, source: "deterministic_fallback"|"ai" } | null }>}
  */
 export async function enrichParentReportWithParentAi(report, options = {}) {
   try {
-    const strict = buildStrictParentReportAIInputFromParentReportV2(report);
+    const context = buildParentAiContext({
+      payload: report,
+      scope: options.scope,
+      canonicalIntent: options.canonicalIntent,
+      strictExplainerInputBuilder: (payload) =>
+        buildStrictParentReportAIInputFromParentReportV2(/** @type {Record<string, unknown>} */ (payload)),
+    });
+    const strict = context.strictExplainerInput;
     if (!strict) return { parentAiExplanation: null };
     const out = await buildParentReportAIExplanation(strict, {
       env: options.env || (typeof process !== "undefined" ? process.env : {}),

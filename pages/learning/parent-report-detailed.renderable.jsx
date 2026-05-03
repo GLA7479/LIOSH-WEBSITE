@@ -20,6 +20,8 @@ import {
 import { normalizeExecutiveSummary } from "../../utils/parent-report-payload-normalize";
 import { PARENT_BULLETS_EMPTY_WITH_VOLUME_HE } from "../../utils/parent-data-presence.js";
 import ParentCopilotShell from "../../components/parent-copilot/parent-copilot-shell.jsx";
+import { ParentReportInsight } from "../../components/ParentReportInsight.jsx";
+import { enrichDetailedParentReportWithParentAi } from "../../utils/parent-report-ai/parent-report-ai-adapter";
 
 /**
  * מיפוי ויזואלי בלבד לפי recommendedNextStep מה־payload — לא משנה מנוע או תוכן.
@@ -158,6 +160,8 @@ export default function ParentReportDetailedPage() {
   const [payload, setPayload] = useState(null);
   const [loading, setLoading] = useState(true);
   const [displayMode, setDisplayMode] = useState("full");
+  /** Same shape as short report `report.parentAiExplanation` — populated asynchronously. */
+  const [parentAiExplanation, setParentAiExplanation] = useState(/** @type {null | { ok: true; text: string; source?: string }} */ (null));
 
   const queryPeriod = typeof router.query.period === "string" ? router.query.period : "week";
   const queryStart = typeof router.query.start === "string" ? router.query.start : null;
@@ -200,6 +204,27 @@ export default function ParentReportDetailedPage() {
     setLoading(false);
     return undefined;
   }, [router.isReady, queryPeriod, queryStart, queryEnd]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    if (!payload || typeof payload !== "object") return undefined;
+    const tq = Number(payload.overallSnapshot?.totalQuestions) || 0;
+    const tm = Number(payload.overallSnapshot?.totalTime) || 0;
+    if (tq === 0 && tm === 0) return undefined;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { parentAiExplanation: next } = await enrichDetailedParentReportWithParentAi(payload, {});
+        if (cancelled) return;
+        setParentAiExplanation(next ?? null);
+      } catch {
+        if (!cancelled) setParentAiExplanation(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [payload]);
 
   useEffect(() => {
     if (!router.isReady) return undefined;
@@ -1054,6 +1079,19 @@ export default function ParentReportDetailedPage() {
               font-weight: 700 !important;
             }
 
+            /* Parent AI summary insight — ink-safe for print/PDF (outside #parent-report-detailed-print) */
+            .parent-report-parent-ai-insight {
+              break-inside: avoid;
+              page-break-inside: avoid;
+              border-color: #38bdf8 !important;
+              background: #f0f9ff !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            .parent-report-parent-ai-insight p {
+              color: #0f172a !important;
+            }
+
           }
         `}</style>
       </Head>
@@ -1078,12 +1116,15 @@ export default function ParentReportDetailedPage() {
               </Link>
             </div>
             <ModeToggle />
-            {payload ? (
-              <div className="no-pdf rounded-lg border border-cyan-500/20 bg-cyan-950/15 px-3 py-2">
+          </div>
+          {payload ? (
+            <>
+              <ParentReportInsight explanation={parentAiExplanation} />
+              <div className="no-pdf mb-4 rounded-lg border border-cyan-500/20 bg-cyan-950/15 px-3 py-2">
                 <ParentCopilotShell payload={payload} />
               </div>
-            ) : null}
-          </div>
+            </>
+          ) : null}
 
           {noPlayer ? (
             <p className="text-center text-white/80">

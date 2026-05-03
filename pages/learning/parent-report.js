@@ -6,6 +6,7 @@ import { getMathReportBucketDisplayName, getTopicName, getEnglishTopicName, getS
 import { generateParentReportV2 } from "../../utils/parent-report-v2";
 import { generateDetailedParentReport } from "../../utils/detailed-parent-report";
 import { enrichParentReportWithParentAi } from "../../utils/parent-report-ai/parent-report-ai-adapter";
+import { ParentReportInsight } from "../../components/ParentReportInsight.jsx";
 import { improvingDiagnosticsDisplayLabelHe } from "../../utils/learning-patterns-analysis";
 import {
   stripTechnicalParensForParentDiagnosticsHe as stripTechnicalParensHe,
@@ -1656,12 +1657,7 @@ export default function ParentReport() {
             </div>
           ) : null}
 
-          {report.parentAiExplanation?.ok && report.parentAiExplanation?.text ? (
-            <div className="mb-3 md:mb-5 avoid-break rounded-lg border border-sky-400/25 bg-sky-950/20 p-3 md:p-4 text-sm text-white/90">
-              <p className="font-bold text-sky-100/95 m-0 text-sm md:text-base mb-2">תובנה להורה</p>
-              <p className="m-0 leading-relaxed text-xs md:text-sm text-white/88">{report.parentAiExplanation.text}</p>
-            </div>
-          ) : null}
+          <ParentReportInsight explanation={report.parentAiExplanation} />
 
           {/* סיכום לפי מקצוע */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 mb-3 md:mb-6 avoid-break">

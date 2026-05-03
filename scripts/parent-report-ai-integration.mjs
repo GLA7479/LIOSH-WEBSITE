@@ -18,6 +18,8 @@ const { buildParentReportAIExplanation, buildStrictParentReportAIInput } = expla
 const {
   buildStrictParentReportAIInputFromParentReportV2,
   enrichParentReportWithParentAi,
+  parentReportV2SnapshotFromDetailedPayload,
+  enrichDetailedParentReportWithParentAi,
 } = adapterMod;
 
 function assert(cond, msg) {
@@ -156,6 +158,35 @@ run("narrative guard blocks overconfident thin framing", () => {
   });
   assert(v.ok === false, "expected narrative guard failure");
 });
+
+const detailedMod = await import(new URL("../utils/detailed-parent-report.js", import.meta.url).href);
+const fixturesMod = await import(new URL("../tests/fixtures/parent-report-pipeline.mjs", import.meta.url).href);
+
+try {
+  const sparseDetailed = detailedMod.buildDetailedParentReportFromBaseReport(fixturesMod.PARENT_REPORT_SCENARIOS.all_sparse(), {
+    period: "week",
+  });
+  assert(sparseDetailed, "sparse detailed fixture");
+  const snap = parentReportV2SnapshotFromDetailedPayload(sparseDetailed);
+  assert(snap && Number(snap.summary?.totalQuestions) === 2, "snapshot maps overallSnapshot totals");
+  const strictFromDetailed = buildStrictParentReportAIInputFromParentReportV2(snap);
+  assert(strictFromDetailed, "strict input from detailed-derived snapshot");
+  const { parentAiExplanation } = await enrichDetailedParentReportWithParentAi(sparseDetailed, {
+    preferDeterministicOnly: true,
+  });
+  assert(parentAiExplanation && parentAiExplanation.ok === true, "detailed enrichment ok");
+  assert(typeof parentAiExplanation.text === "string" && parentAiExplanation.text.length > 20, "detailed text length");
+  const vDetailed = validateParentReportAIText(parentAiExplanation.text, {
+    runNarrativeGuard: true,
+    narrativeEngineSnapshot: parentReportAiInputToNarrativeEngineSnapshot(/** @type {any} */ (strictFromDetailed)),
+    narrativeReportContext: { surface: "detailed" },
+  });
+  assert(vDetailed.ok === true, "detailed surface validator");
+  console.log("OK  Phase C detailed payload → Parent AI insight + validation");
+} catch (e) {
+  console.error("FAIL Phase C detailed enrichment:", e?.message || e);
+  process.exitCode = 1;
+}
 
 if (process.exitCode) {
   console.error("parent-report-ai-integration.mjs: one or more checks failed");

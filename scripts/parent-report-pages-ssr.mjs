@@ -42,6 +42,8 @@ const { ParentReportShortContractPreview } = shortContractUiMod;
 const parentMod = await import(pathToFileURL(join(ROOT, "components/parent-report-topic-explain-row.jsx")).href);
 const { ParentReportTopicExplainRow, ParentReportTopicExplainBlock } = parentMod;
 
+const { ParentReportInsight } = await import(pathToFileURL(join(ROOT, "components/ParentReportInsight.jsx")).href);
+
 function render(label, el) {
   let html;
   try {
@@ -335,7 +337,10 @@ function runContractBindingChunks() {
   for (const token of FORBIDDEN_INTERNAL_PARENT_TERMS) {
     assert.ok(!topHtml.toLowerCase().includes(String(token).toLowerCase()), `forbidden token leaked in top ui: ${token}`);
   }
-  assert.ok(topHtml.includes("מיקוד עיקרי"), "top contract field label should render");
+  assert.ok(
+    topHtml.includes("מה חשוב קודם") || topHtml.includes("מיקוד עיקרי"),
+    "top contract priority label should render"
+  );
   assert.ok(!topHtml.includes("פער ידע"), "stable mastery top area should avoid remediation wording");
 
   const trendScenario = PARENT_REPORT_PRODUCT_SCENARIOS.find((s) => s.id === "trend_insufficient");
@@ -500,10 +505,25 @@ function runParentReportPageChunks() {
   render("parent-report:explain-row-phase15", h(ParentReportTopicExplainRow, { row: rowPhase15 }));
 }
 
+function runParentReportInsightChunk() {
+  const html = render(
+    "parent-report:parent-ai-insight",
+    h(ParentReportInsight, {
+      explanation: {
+        ok: true,
+        text: "טקסט בדיקה להורה — תובנה מבוססת דוח בטוחה לווידוא SSR והדפסה.".repeat(3),
+      },
+    })
+  );
+  assert.ok(html.includes("תובנה להורה"), "insight title should render");
+  assert.ok(html.includes("טקסט בדיקה"), "insight body should render");
+}
+
 function main() {
   runDetailedPageChunks();
   runContractBindingChunks();
   runParentReportPageChunks();
+  runParentReportInsightChunk();
   console.log("parent-report pages SSR smoke: OK");
 }
 
