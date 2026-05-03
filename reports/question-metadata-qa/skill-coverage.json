@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T14:06:31.536Z",
+  "generatedAt": "2026-05-03T14:20:23.996Z",
   "skills": [
     {
       "subject": "english",
@@ -4947,17 +4947,141 @@
     },
     {
       "subject": "moledet-geography",
-      "skillId": "__missing_skill__",
-      "totalQuestions": 3506,
-      "subskillsCovered": 0,
-      "subskillIds": [],
+      "skillId": "moledet_geo_citizenship",
+      "totalQuestions": 575,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
       "difficultyDistribution": {
-        "unknown": 3506
+        "basic": 211,
+        "advanced": 182,
+        "standard": 182
       },
-      "expectedErrorCoverageCount": 0,
+      "expectedErrorCoverageCount": 575,
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
-      "riskLevel": "high"
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "moledet-geography",
+      "skillId": "moledet_geo_community",
+      "totalQuestions": 571,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
+      "difficultyDistribution": {
+        "basic": 213,
+        "advanced": 183,
+        "standard": 175
+      },
+      "expectedErrorCoverageCount": 571,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "moledet-geography",
+      "skillId": "moledet_geo_geography",
+      "totalQuestions": 584,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
+      "difficultyDistribution": {
+        "basic": 221,
+        "advanced": 177,
+        "standard": 186
+      },
+      "expectedErrorCoverageCount": 584,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "moledet-geography",
+      "skillId": "moledet_geo_homeland",
+      "totalQuestions": 620,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
+      "difficultyDistribution": {
+        "basic": 241,
+        "advanced": 179,
+        "standard": 200
+      },
+      "expectedErrorCoverageCount": 620,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "moledet-geography",
+      "skillId": "moledet_geo_maps",
+      "totalQuestions": 583,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
+      "difficultyDistribution": {
+        "basic": 218,
+        "advanced": 184,
+        "standard": 181
+      },
+      "expectedErrorCoverageCount": 583,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "moledet-geography",
+      "skillId": "moledet_geo_values",
+      "totalQuestions": 573,
+      "subskillsCovered": 6,
+      "subskillIds": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6"
+      ],
+      "difficultyDistribution": {
+        "basic": 214,
+        "advanced": 182,
+        "standard": 177
+      },
+      "expectedErrorCoverageCount": 573,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
     },
     {
       "subject": "science",

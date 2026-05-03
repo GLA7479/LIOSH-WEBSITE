@@ -1,6 +1,6 @@
 # Render release gate — infrastructure audit
 
-- Generated at: 2026-05-03T14:07:33.893Z
+- Generated at: 2026-05-03T14:22:27.980Z
 
 | Question | Answer |
 | --- | --- |

@@ -1,7 +1,7 @@
 # Learning Simulator — Release readiness summary
 
-- **runId:** release-summary-mopuo78i
-- **generatedAt:** 2026-05-03T14:12:38.178Z
+- **runId:** release-summary-mopv6h82
+- **generatedAt:** 2026-05-03T14:26:50.930Z
 
 ## Overall
 
@@ -75,7 +75,7 @@ Top warning codes: ambiguous_evidence:124
 | status | pass |
 | checkedRoute | /learning/parent-report?qa_pdf=file |
 | downloadSucceeded | true |
-| fileSizeBytes | 3923312 |
+| fileSizeBytes | 3923286 |
 | pdfHeaderOk | true |
 | deferredReason | — |
 

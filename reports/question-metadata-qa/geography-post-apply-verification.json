@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-03T14:20:18.594Z",
+  "passed": true,
+  "rowsPerFile": {
+    "data/geography-questions/g1.js": 617,
+    "data/geography-questions/g2.js": 634,
+    "data/geography-questions/g3.js": 617,
+    "data/geography-questions/g4.js": 554,
+    "data/geography-questions/g5.js": 541,
+    "data/geography-questions/g6.js": 543
+  },
+  "totalRows": 3506,
+  "metadataCoverage": {
+    "difficulty": 3506,
+    "cognitiveLevel": 3506,
+    "expectedErrorTypes": 3506,
+    "skillRowsValid": 3506,
+    "prereqRowsValid": 3506
+  },
+  "gitHeadComparison": {
+    "attempted": true,
+    "headKeys": 3506,
+    "currentKeys": 3506,
+    "compared": 3506,
+    "skippedNewPaths": 0
+  },
+  "errors": [],
+  "warnings": []
+}

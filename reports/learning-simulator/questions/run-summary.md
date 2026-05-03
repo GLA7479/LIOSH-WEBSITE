@@ -1,6 +1,6 @@
 # Question integrity (generator / bank)
 
-- Generated at: 2026-05-03T14:07:24.188Z
+- Generated at: 2026-05-03T14:30:32.048Z
 - Rows scanned (runtime-supported): 819
 - Cells scanned (adapter subjects): 819
 - Cells fully passed (all 3 samples): 747

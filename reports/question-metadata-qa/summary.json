@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T14:06:31.536Z",
+  "generatedAt": "2026-05-03T14:20:23.996Z",
   "gate": {
     "scanOutcome": "ok",
     "partialLoadErrors": false,
@@ -62,7 +62,7 @@
   },
   "totals": {
     "questionsScanned": 5756,
-    "highRiskCount": 3945,
+    "highRiskCount": 439,
     "mediumRiskCount": 0,
     "duplicateDeclaredIds": 0,
     "skillBucketsLowVolume": 299,
@@ -83,23 +83,11 @@
     ],
     [
       "missing_skillId",
-      3945
+      439
     ],
     [
       "missing_subskillId",
-      3945
-    ],
-    [
-      "missing_difficulty",
-      3506
-    ],
-    [
-      "missing_cognitiveLevel",
-      3506
-    ],
-    [
-      "missing_expected_error_types",
-      3506
+      439
     ]
   ],
   "subjectSummaries": {
@@ -237,47 +225,25 @@
         "data/geography-questions/g5.js",
         "data/geography-questions/g6.js"
       ],
-      "pctWithSkillId": 0,
-      "pctWithSubskillId": 0,
-      "pctWithDifficulty": 0,
-      "pctWithCognitiveLevel": 0,
-      "pctWithExpectedErrorTypes": 0,
+      "pctWithSkillId": 100,
+      "pctWithSubskillId": 100,
+      "pctWithDifficulty": 100,
+      "pctWithCognitiveLevel": 100,
+      "pctWithExpectedErrorTypes": 100,
       "pctWithPrerequisiteSkillIds": 0,
       "pctWithCorrectAnswer": 100,
       "pctWithExplanation": 0,
       "duplicateIdsInSubject": 0,
-      "highRiskQuestionCount": 3506,
+      "highRiskQuestionCount": 0,
       "mediumRiskQuestionCount": 0,
       "weakestMetadataFields": [
         "implicit_id_only",
-        "missing_skillId",
-        "missing_subskillId",
-        "missing_difficulty",
-        "missing_cognitiveLevel"
+        "missing_prerequisite_skill_ids",
+        "missing_explanation"
       ],
       "topIssueCodes": [
         [
           "implicit_id_only",
-          3506
-        ],
-        [
-          "missing_skillId",
-          3506
-        ],
-        [
-          "missing_subskillId",
-          3506
-        ],
-        [
-          "missing_difficulty",
-          3506
-        ],
-        [
-          "missing_cognitiveLevel",
-          3506
-        ],
-        [
-          "missing_expected_error_types",
           3506
         ],
         [
@@ -289,8 +255,8 @@
           3506
         ]
       ],
-      "readinessScore": "missing",
-      "avgCompleteness": 0.2
+      "readinessScore": "strong",
+      "avgCompleteness": 0.76
     },
     "hebrew-archive": {
       "subject": "hebrew-archive",

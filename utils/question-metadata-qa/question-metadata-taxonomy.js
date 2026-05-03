@@ -13,6 +13,11 @@ import {
   HEBREW_ARCHIVE_SKILL_IDS,
   HEBREW_ARCHIVE_SUBSKILL_ALLOWLIST_BY_SKILL,
 } from "./question-metadata-taxonomy-hebrew-archive.js";
+import {
+  MOLEDET_GEOGRAPHY_GRADE_SUBSKILL_IDS,
+  MOLEDET_GEOGRAPHY_SKILL_IDS,
+  MOLEDET_GEOGRAPHY_SUBSKILL_ALLOWLIST_BY_SKILL,
+} from "./question-metadata-taxonomy-geography.js";
 
 export { ENGLISH_SKILL_IDS, ENGLISH_SUBSKILL_ALLOWLIST_BY_SKILL };
 export {
@@ -20,6 +25,11 @@ export {
   HEBREW_ARCHIVE_SKILL_IDS,
   HEBREW_ARCHIVE_SUBSKILL_ALLOWLIST_BY_SKILL,
 } from "./question-metadata-taxonomy-hebrew-archive.js";
+export {
+  MOLEDET_GEOGRAPHY_GRADE_SUBSKILL_IDS,
+  MOLEDET_GEOGRAPHY_SKILL_IDS,
+  MOLEDET_GEOGRAPHY_SUBSKILL_ALLOWLIST_BY_SKILL,
+} from "./question-metadata-taxonomy-geography.js";
 
 export const TAXONOMY_VERSION = 1;
 
@@ -151,6 +161,11 @@ export const EXTENDED_EXPECTED_ERROR_TYPES = new Set([
   "wrong_lcm",
   "adds_denominators_directly",
   "multiplication_fact_gap",
+  /** Moledet / geography static pools */
+  "geography_concept_confusion",
+  "map_reading_error",
+  "place_identification_error",
+  "direction_confusion",
 ]);
 
 /**
@@ -488,6 +503,18 @@ export function validateTaxonomyForRecord(record) {
     }
   }
 
+  if (subject === "moledet-geography") {
+    if (skillId && !MOLEDET_GEOGRAPHY_SKILL_IDS.has(skillId)) {
+      issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_skillId);
+    }
+    if (skillId && subskillId) {
+      const allow = MOLEDET_GEOGRAPHY_SUBSKILL_ALLOWLIST_BY_SKILL[skillId];
+      if (allow && !allow.has(subskillId)) {
+        issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_subskillId);
+      }
+    }
+  }
+
   const errs = record.expectedErrorTypes || [];
   for (const e of errs) {
     const t = String(e).trim();
@@ -557,6 +584,17 @@ export function validateTaxonomyForRecord(record) {
       const id = String(p).trim();
       if (!id) continue;
       if (!HEBREW_ARCHIVE_SKILL_IDS.has(id)) {
+        issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_prerequisite_skillId);
+        break;
+      }
+    }
+  }
+
+  if (subject === "moledet-geography" && Array.isArray(record.prerequisiteSkillIds)) {
+    for (const p of record.prerequisiteSkillIds) {
+      const id = String(p).trim();
+      if (!id) continue;
+      if (!MOLEDET_GEOGRAPHY_SKILL_IDS.has(id)) {
         issues.push(TAXONOMY_ISSUE_CODES.taxonomy_unknown_prerequisite_skillId);
         break;
       }
