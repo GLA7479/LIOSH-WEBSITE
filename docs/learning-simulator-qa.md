@@ -58,7 +58,10 @@ In order:
 
 ## What **full** adds on top of quick
 
-After the quick chain (same order as `run-orchestrator.mjs`):
+After the quick chain (same order as `run-orchestrator.mjs`), including **engine framework** and **professionalization** inserts:
+
+- **`qa:question-metadata`** — Static bank metadata gate (blocking policy); writes `reports/question-metadata-qa/summary.json`.
+- Then continues with matrix smoke, coverage catalog, and the gates below.
 
 7. **`qa:learning-simulator:matrix-smoke`** — Aggregate smoke for matrix cells; writes `matrix-smoke.json` / `.md`.
 8. **`qa:learning-simulator:coverage`** — Full **819-cell** coverage catalog.
@@ -96,14 +99,13 @@ Part of the **full** orchestrator (after `test:parent-report-phase1`, before int
 
 ## Question Metadata QA (repo-wide banks)
 
-**Not** part of the learning-simulator orchestrator by default — run when enriching diagnostic metadata or auditing pools.
+**Full / release orchestrator** runs **`npm run qa:question-metadata`** as the first step of the engine professionalization block (after engine-completion framework steps, before matrix-sampled **question-skill-metadata**). **Quick** does **not** include this script.
 
-- **Command:** `npm run qa:question-metadata` (taxonomic validation is advisory; see `docs/question-metadata-taxonomy.md`).
+- **Command:** `npm run qa:question-metadata` — **blocking** for structural/taxonomy failures per **`utils/question-metadata-qa/question-metadata-gate-policy.js`**; English skill/subskill gaps remain **exempt/advisory** until curriculum tagging.
 - **Optional proposals:** `npm run qa:question-metadata:suggestions` — science-only enrichment JSON/MD (does not edit banks).
 - **What it scans:** Static question JS under `data/*`, `utils/hebrew-rich-question-bank.js`, English pools, geography grades, science bank, geometry conceptual templates (see `docs/question-metadata-qa.md`). Procedural generators are listed but not expanded.
-- **What it reports:** Subject-level coverage %, skill-level buckets, duplicate declared IDs, risk tier per row, top missing fields — outputs under `reports/question-metadata-qa/`.
-- **Why it matters:** Professional diagnosis (`question-skill-metadata-v1`, misconception / prerequisite paths) needs consistent **skillId**, **error tags**, and **prerequisite** hooks on bank rows.
-- **Why advisory:** Exit **0** unless the scanner cannot parse **any** bank (fatal). Incomplete metadata yields **WARN** — expected until pools are systematically tagged.
+- **What it reports:** `gate.gateDecision`, blocking vs advisory counts, subject rollups, skill buckets, duplicate declared IDs — outputs under `reports/question-metadata-qa/`.
+- **Release readiness:** `qa:learning-simulator:release-summary` reads `summary.json` and **fails** if `gateDecision` is **`fail_blocking_metadata`**, **`blockingIssueCount > 0`**, **`scanOutcome !== ok`**, or the file is missing after a full run.
 
 Full detail: **`docs/question-metadata-qa.md`**.
 

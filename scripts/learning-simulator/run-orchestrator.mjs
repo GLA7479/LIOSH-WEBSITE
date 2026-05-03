@@ -63,6 +63,8 @@ const ARTIFACTS = {
   realScenarioFrameworkValidation: "reports/learning-simulator/engine-completion/real-scenario-framework-validation.json",
   parentNarrativeSafetyArtifacts: "reports/parent-report-narrative-safety-artifacts/summary.json",
   parentNarrativeSafetyArtifactsMd: "reports/parent-report-narrative-safety-artifacts/summary.md",
+  questionMetadataSummary: "reports/question-metadata-qa/summary.json",
+  questionMetadataSummaryMd: "reports/question-metadata-qa/summary.md",
 };
 
 /** Stages in order for quick gate */
@@ -101,6 +103,11 @@ const ENGINE_LAYER_FRAMEWORK_STEPS = [
 
 /** After framework completion; engine-only professional layers + metadata QA. */
 const ENGINE_PROFESSIONALIZATION_STEPS = [
+  {
+    id: "questionMetadataBank",
+    script: "qa:question-metadata",
+    label: "Question bank metadata gate (static scan + taxonomy blocking policy)",
+  },
   {
     id: "questionSkillMetadata",
     script: "qa:learning-simulator:question-skill-metadata",
@@ -285,6 +292,8 @@ function nextActionHint(failedStep) {
       "Inspect pdf-export-gate.json and reports/learning-simulator/pdf-export/; verify html2pdf download with ?qa_pdf=file or fix Playwright/console errors.",
     releaseReadinessSummary:
       "Inspect release-readiness-summary.json — missing artifacts, uncovered cells, or gate regressions; re-run full QA after fixes.",
+    questionMetadataBank:
+      "Inspect reports/question-metadata-qa/summary.json — gate.blockingIssueCount or scan errors. Fix invalid difficulty/cognitive/errors, missing correct answer, duplicate declared IDs, or load failures. See utils/question-metadata-qa/question-metadata-gate-policy.js.",
     parentReportNarrativeSafetyArtifacts:
       "Ensure generated JSON exists under reports/parent-report-persona-corpus/json, reports/learning-simulator/parent-report-review-pack/reports, and/or reports/learning-simulator/reports/per-student (run review-pack / aggregate as needed). Inspect reports/parent-report-narrative-safety-artifacts/summary.md — blocks fail the gate; no_artifacts_found means nothing was validated.",
   };

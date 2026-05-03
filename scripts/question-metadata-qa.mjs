@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Question metadata coverage QA — advisory (does not fail on incomplete metadata).
+ * Question metadata coverage QA — blocking gate for structural/taxonomy failures;
+ * curriculum gaps remain advisory unless promoted in `question-metadata-gate-policy.js`.
  * npm run qa:question-metadata
  */
 import { mkdir, writeFile } from "node:fs/promises";
@@ -30,6 +31,7 @@ async function main() {
   const summaryApi = await import(new URL("../utils/question-metadata-qa/question-metadata-summary.js", import.meta.url).href);
   const scannerApi = await import(new URL("../utils/question-metadata-qa/question-metadata-scanner.js", import.meta.url).href);
   const contractApi = await import(new URL("../utils/question-metadata-qa/question-metadata-contract.js", import.meta.url).href);
+  const gatePolicy = await import(new URL("../utils/question-metadata-qa/question-metadata-gate-policy.js", import.meta.url).href);
 
   const buildDuplicateIdReport = summaryApi.buildDuplicateIdReport;
   const buildSkillSummaries = summaryApi.buildSkillSummaries;
@@ -86,16 +88,35 @@ async function main() {
     (s) => !s.enoughQuestionsForReliableDiagnosis && s.skillId !== "__missing_skill__"
   );
 
-  let advisoryLabel = "WARN";
-  if (allRecords.length === 0) advisoryLabel = "FAIL";
-  else if (highRisk === 0 && medRisk === 0 && duplicates.length === 0 && loadErrors.length === 0) advisoryLabel = "PASS";
+  const gateRollup = gatePolicy.computeMetadataGateRollup({
+    records: allRecords,
+    loadErrors,
+    duplicates,
+    riskTotals: { highRiskCount: highRisk, mediumRiskCount: medRisk },
+  });
+
+  const parseOk = gateRollup.parseOk;
+  const scanOutcome = parseOk ? "ok" : "error";
+
+  let advisoryStatus = "WARN";
+  if (scanOutcome !== "ok") advisoryStatus = "FAIL";
+  else if (gateRollup.gateDecision === "pass_with_advisory") advisoryStatus = "WARN";
+  else if (gateRollup.gateDecision === "pass") advisoryStatus = "PASS";
 
   const gate = {
-    scanOutcome: allRecords.length > 0 ? "ok" : "error",
+    scanOutcome,
     partialLoadErrors: loadErrors.length > 0 && allRecords.length > 0,
-    advisoryStatus: advisoryLabel,
+    advisoryStatus,
+    gateDecision: gateRollup.gateDecision,
+    blockingIssueCount: gateRollup.blockingIssueCount,
+    advisoryIssueCount: gateRollup.advisoryIssueCount,
+    exemptedIssueCount: gateRollup.exemptedIssueCount,
+    blockingIssuesByCode: gateRollup.blockingIssuesByCode,
+    advisoryIssuesByCode: gateRollup.advisoryIssuesByCode,
+    blockingFiles: gateRollup.blockingFiles,
+    knownExemptions: gateRollup.knownExemptions,
     exitPolicy:
-      "Advisory: exit 0 unless scanOutcome is error (no records parsed successfully). Incomplete metadata does not fail.",
+      "Exit 1 if scanOutcome is error (no records or load failures) or gateDecision is fail_blocking_metadata. Advisory gaps alone exit 0.",
     recordsParsed: allRecords.length,
     loadErrorsCount: loadErrors.length,
     proceduralSourcesDocumented: PROCEDURAL_QUESTION_SOURCES.length,
@@ -139,15 +160,48 @@ async function main() {
   await writeFile(SKILL_COV_JSON, JSON.stringify({ version: 1, generatedAt: payload.generatedAt, skills: skillSummaries }, null, 2), "utf8");
   await writeFile(QUESTIONS_ISSUES_JSON, JSON.stringify(questionsPayload, null, 2), "utf8");
 
+  const topBlocking = Object.entries(gate.blockingIssuesByCode || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12);
+  const topAdvisory = Object.entries(gate.advisoryIssuesByCode || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12);
+
   const md = [
     "# Question metadata QA",
     "",
     `- **Generated:** ${payload.generatedAt}`,
-    `- **Gate:** scanOutcome=\`${gate.scanOutcome}\`, advisoryStatus=\`${gate.advisoryStatus}\``,
+    `- **Gate decision:** \`${gate.gateDecision}\` — scanOutcome=\`${gate.scanOutcome}\`, advisoryStatus=\`${gate.advisoryStatus}\``,
+    `- **Blocking issues (policy):** ${gate.blockingIssueCount} | **Advisory:** ${gate.advisoryIssueCount} | **Exempt (catalog):** ${gate.exemptedIssueCount}`,
     `- **Questions scanned:** ${allRecords.length}`,
     `- **High / medium risk:** ${highRisk} / ${medRisk}`,
     `- **Duplicate declared IDs (cross-file):** ${duplicates.length}`,
     `- **Skill buckets below ${MIN_QUESTIONS_PER_SKILL_FOR_DIAGNOSIS} questions:** ${skillLowVolume.length}`,
+    "",
+    "## Blocking vs advisory (policy gate)",
+    "",
+    "| Policy field | Value |",
+    "| --- | --- |",
+    `| gateDecision | ${mdEscape(gate.gateDecision)} |`,
+    `| blockingIssueCount | ${gate.blockingIssueCount} |`,
+    `| advisoryIssueCount | ${gate.advisoryIssueCount} |`,
+    `| exemptedIssueCount | ${gate.exemptedIssueCount} |`,
+    "",
+    "### Top blocking codes",
+    "",
+    topBlocking.length
+      ? ["| Code | Count |", "| --- | ---: |", ...topBlocking.map(([c, n]) => `| ${mdEscape(c)} | ${n} |`)].join("\n")
+      : "_None._",
+    "",
+    "### Top advisory codes",
+    "",
+    topAdvisory.length
+      ? ["| Code | Count |", "| --- | ---: |", ...topAdvisory.map(([c, n]) => `| ${mdEscape(c)} | ${n} |`)].join("\n")
+      : "_None._",
+    "",
+    "### Known exemptions",
+    "",
+    "English **missing_skillId** / **missing_subskillId** on grammar pools are deferred per safe-pass policy — see `utils/question-metadata-qa/question-metadata-gate-policy.js`.",
     "",
     "## Subject readiness (rollup)",
     "",
@@ -179,15 +233,21 @@ async function main() {
 
   await writeFile(SUMMARY_MD, md, "utf8");
 
+  const blockingFail = gate.gateDecision === "fail_blocking_metadata" || scanOutcome !== "ok";
+
   console.log("");
   console.log("═══════════════════════════════════════════════════════════════");
-  console.log(`  Question metadata QA — scanOutcome: ${gate.scanOutcome}, advisory: ${gate.advisoryStatus}`);
-  console.log(`  Questions scanned: ${allRecords.length} | High risk: ${highRisk} | Medium risk: ${medRisk}`);
+  console.log(`  Question metadata QA — gateDecision: ${gate.gateDecision}`);
+  console.log(`  scanOutcome: ${gate.scanOutcome} | advisoryStatus: ${gate.advisoryStatus}`);
+  console.log(`  Blocking (policy): ${gate.blockingIssueCount} | Advisory: ${gate.advisoryIssueCount} | Exempt: ${gate.exemptedIssueCount}`);
+  console.log(`  High risk: ${highRisk} | Medium risk: ${medRisk}`);
+  console.log(`  Top blocking: ${topBlocking.map(([c, n]) => `${c}=${n}`).join(", ") || "—"}`);
+  console.log(`  Top advisory: ${topAdvisory.map(([c, n]) => `${c}=${n}`).join(", ") || "—"}`);
   console.log(`  Reports: ${SUMMARY_JSON}`);
   console.log("═══════════════════════════════════════════════════════════════");
   console.log("");
 
-  process.exit(allRecords.length === 0 ? 1 : 0);
+  process.exit(blockingFail ? 1 : 0);
 }
 
 main().catch((e) => {

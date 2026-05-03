@@ -15,6 +15,7 @@ const OUT_JSON = join(LS, "release-readiness-summary.json");
 const OUT_MD = join(LS, "release-readiness-summary.md");
 
 const PATHS = {
+  questionMetadataSummary: join(ROOT, "reports", "question-metadata-qa", "summary.json"),
   parentNarrativeSafetyArtifacts: join(ROOT, "reports", "parent-report-narrative-safety-artifacts", "summary.json"),
   coverageCatalog: join(LS, "coverage-catalog.json"),
   unsupportedCells: join(LS, "unsupported-cells.json"),
@@ -36,6 +37,7 @@ const REQUIRED_CORE = ["coverageCatalog", "scenarioCoverage", "orchestratorSumma
 
 /** Expected after full QA — missing => fail (inconsistent state) */
 const STRONGLY_EXPECTED = [
+  "questionMetadataSummary",
   "unsupportedCells",
   "contentGapAudit",
   "contentGapBacklog",
@@ -107,6 +109,22 @@ async function main() {
 
   for (const key of STRONGLY_EXPECTED) {
     if (!loaded[key]) failures.push(`Missing expected QA artifact: ${PATHS[key]}`);
+  }
+
+  const qm = loaded.questionMetadataSummary;
+  if (qm) {
+    const g = qm.gate || {};
+    const gd = g.gateDecision;
+    const bc = Number(g.blockingIssueCount ?? 0);
+    const so = g.scanOutcome;
+    if (gd === "fail_blocking_metadata" || bc > 0) {
+      failures.push(
+        `Question metadata blocking gate: gateDecision=${gd}, blockingIssueCount=${bc} — see reports/question-metadata-qa/summary.md`
+      );
+    }
+    if (so && so !== "ok") {
+      failures.push(`Question metadata scanOutcome=${so} (parser/load failure or empty corpus)`);
+    }
   }
 
   const catalog = loaded.coverageCatalog;
@@ -183,7 +201,33 @@ async function main() {
   const backlog = loaded.contentGapBacklog;
   const backlogTotal = backlog?.totalBacklogItems ?? 0;
 
+  const questionMetadataGateSummary = qm
+    ? {
+        gateDecision: qm.gate?.gateDecision,
+        scanOutcome: qm.gate?.scanOutcome,
+        blockingIssueCount: qm.gate?.blockingIssueCount ?? 0,
+        advisoryIssueCount: qm.gate?.advisoryIssueCount ?? 0,
+        exemptedIssueCount: qm.gate?.exemptedIssueCount ?? 0,
+        highRiskCount: qm.totals?.highRiskCount,
+        summaryMdPath: "reports/question-metadata-qa/summary.md",
+        knownExemptions: qm.gate?.knownExemptions?.catalog || [],
+      }
+    : null;
+
+  if (qm && qm.gate?.gateDecision === "pass_with_advisory") {
+    warnings.push(
+      `Question metadata: pass_with_advisory — advisoryIssueCount=${qm.gate?.advisoryIssueCount ?? 0}, highRiskCount=${qm.totals?.highRiskCount ?? "n/a"}`
+    );
+  }
+
   const gateStatus = {
+    questionMetadata: qm
+      ? qm.gate?.gateDecision === "fail_blocking_metadata" || (qm.gate?.blockingIssueCount ?? 0) > 0 || qm.gate?.scanOutcome !== "ok"
+        ? "fail"
+        : qm.gate?.gateDecision === "pass_with_advisory"
+          ? "warn"
+          : "pass"
+      : "missing",
     orchestrator: orch?.pass === true ? "pass" : orch ? "fail" : "unknown",
     matrixSmoke: matrixSmoke && msFailures === 0 ? "pass" : matrixSmoke ? "fail" : "missing",
     criticalDeep:
@@ -417,6 +461,7 @@ async function main() {
     pdfExportAuditSummary,
     scenarioCoverageSummary,
     parentNarrativeSafetySummary,
+    questionMetadataGateSummary,
     deferredItems,
     knownRemainingWork,
     releaseDecision,
@@ -464,10 +509,28 @@ async function main() {
         ].join("\n")
       : "(no backlog file)",
     "",
+    "### Question metadata gate (static banks)",
+    "",
+    questionMetadataGateSummary
+      ? [
+          `| Field | Value |`,
+          `| --- | --- |`,
+          `| gateDecision | ${mdEscape(questionMetadataGateSummary.gateDecision)} |`,
+          `| scanOutcome | ${mdEscape(questionMetadataGateSummary.scanOutcome)} |`,
+          `| blockingIssueCount | ${questionMetadataGateSummary.blockingIssueCount} |`,
+          `| advisoryIssueCount | ${questionMetadataGateSummary.advisoryIssueCount} |`,
+          `| exemptedIssueCount | ${questionMetadataGateSummary.exemptedIssueCount} |`,
+          `| highRiskCount | ${questionMetadataGateSummary.highRiskCount ?? "—"} |`,
+          `| human report | \`${mdEscape(questionMetadataGateSummary.summaryMdPath)}\` |`,
+          "",
+        ].join("\n")
+      : "_Missing `reports/question-metadata-qa/summary.json` — run `npm run qa:question-metadata` (full orchestrator includes this step)._",
+    "",
     "### Simulator gates",
     "",
     `| Gate | Status |`,
     `| --- | --- |`,
+    `| question metadata | ${mdEscape(gateStatus.questionMetadata)} |`,
     `| matrix smoke | ${mdEscape(matrixSmokeSummary?.status || "—")} |`,
     `| critical deep | ${mdEscape(criticalDeepSummary?.status || "—")} |`,
     `| profile stress | ${mdEscape(profileStressSummary?.status || "—")} |`,

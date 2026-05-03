@@ -1,7 +1,7 @@
 # Learning Simulator — Release readiness summary
 
-- **runId:** release-summary-mopv6h82
-- **generatedAt:** 2026-05-03T14:26:50.930Z
+- **runId:** release-summary-mopw2uv2
+- **generatedAt:** 2026-05-03T14:52:01.598Z
 
 ## Overall
 
@@ -31,10 +31,24 @@
 *פירוט לפי נושא / כיתה / נושא מטריצה / סיכון שחרור — ראה JSON (`countsBySubject`, …).*
 
 
+### Question metadata gate (static banks)
+
+| Field | Value |
+| --- | --- |
+| gateDecision | pass_with_advisory |
+| scanOutcome | ok |
+| blockingIssueCount | 0 |
+| advisoryIssueCount | 15876 |
+| exemptedIssueCount | 878 |
+| highRiskCount | 439 |
+| human report | `reports/question-metadata-qa/summary.md` |
+
+
 ### Simulator gates
 
 | Gate | Status |
 | --- | --- |
+| question metadata | warn |
 | matrix smoke | pass |
 | critical deep | pass |
 | profile stress | pass |
@@ -75,7 +89,7 @@ Top warning codes: ambiguous_evidence:124
 | status | pass |
 | checkedRoute | /learning/parent-report?qa_pdf=file |
 | downloadSucceeded | true |
-| fileSizeBytes | 3923286 |
+| fileSizeBytes | 3919159 |
 | pdfHeaderOk | true |
 | deferredReason | — |
 
@@ -90,6 +104,6 @@ Top warning codes: ambiguous_evidence:124
 
 - (none)
 
-
+- **warning:** Question metadata: pass_with_advisory — advisoryIssueCount=15876, highRiskCount=439
 
 Full JSON: `C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/release-readiness-summary.json`

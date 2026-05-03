@@ -1,8 +1,9 @@
 {
-  "runId": "release-summary-mopv6h82",
-  "generatedAt": "2026-05-03T14:26:50.930Z",
+  "runId": "release-summary-mopw2uv2",
+  "generatedAt": "2026-05-03T14:52:01.598Z",
   "overallStatus": "pass",
   "gateStatus": {
+    "questionMetadata": "warn",
     "orchestrator": "pass",
     "matrixSmoke": "pass",
     "criticalDeep": "pass",
@@ -72,7 +73,7 @@
     "status": "pass",
     "pace_accuracy_separation_ok": true,
     "cohortMedianSpqGap": 198.04,
-    "sourceRunId": "profile-stress-mopv0rl5"
+    "sourceRunId": "profile-stress-mopvwj6f"
   },
   "renderGateSummary": {
     "status": "pass",
@@ -90,7 +91,7 @@
     "browserMode": true,
     "downloadSucceeded": true,
     "downloadPath": "C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/pdf-export/דוח-Sim_strong_all_subjects_g3_7d-2026-05-03.pdf",
-    "fileSizeBytes": 3923286,
+    "fileSizeBytes": 3919159,
     "pdfHeaderOk": true,
     "consoleErrorsTotal": 0,
     "fatalErrorsTotal": 0,
@@ -101,11 +102,11 @@
     "pdfLibraryDetected": "^0.10.1",
     "exportIsClientSide": true,
     "hasDedicatedPdfRoute": false,
-    "generatedAt": "2026-05-03T14:22:00.186Z"
+    "generatedAt": "2026-05-03T14:47:36.990Z"
   },
   "scenarioCoverageSummary": {
     "scenarios": 278,
-    "generatedAt": "2026-05-03T14:22:27.303Z"
+    "generatedAt": "2026-05-03T14:47:08.913Z"
   },
   "parentNarrativeSafetySummary": {
     "status": "warnings_only",
@@ -123,6 +124,28 @@
       ]
     ],
     "summaryMdPath": "reports/parent-report-narrative-safety-artifacts/summary.md"
+  },
+  "questionMetadataGateSummary": {
+    "gateDecision": "pass_with_advisory",
+    "scanOutcome": "ok",
+    "blockingIssueCount": 0,
+    "advisoryIssueCount": 15876,
+    "exemptedIssueCount": 878,
+    "highRiskCount": 439,
+    "summaryMdPath": "reports/question-metadata-qa/summary.md",
+    "knownExemptions": [
+      {
+        "id": "english_safe_pass_skill_subskill",
+        "subjects": [
+          "english"
+        ],
+        "issueCodes": [
+          "missing_skillId",
+          "missing_subskillId"
+        ],
+        "rationale": "English pools underwent a deliberate safe metadata pass; ~439 grammar rows remain untagged until curriculum assigns taxonomy-valid skillId/subskillId."
+      }
+    ]
   },
   "deferredItems": {
     "pdfBinaryExportInPage": "Validated by pdf-export-gate (canvas download under ?qa_pdf=file).",
@@ -144,5 +167,7 @@
   ],
   "releaseDecision": "ready_for_next_dev_phase",
   "failures": [],
-  "warnings": []
+  "warnings": [
+    "Question metadata: pass_with_advisory — advisoryIssueCount=15876, highRiskCount=439"
+  ]
 }

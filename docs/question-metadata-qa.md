@@ -30,11 +30,30 @@ Static JS banks discovered under `utils/question-metadata-qa/question-bank-disco
 
 The professional diagnostic engine and `buildQuestionSkillMetadataV1` need stable **skill / subskill / error / prerequisite** signals. Gaps here limit misconception routing, prerequisite chains, and cohort analytics — **without** changing Hebrew stems shown to students.
 
-## Advisory gate (phase 1)
+## Blocking vs advisory gate (release policy)
 
-- **Exit 0** if at least one bank parsed successfully.
-- **Exit 1** only if **no** questions could be scanned (fatal scan).
-- Incomplete metadata does **not** fail CI by design (`WARN` is normal until pools are enriched).
+Policy lives in **`utils/question-metadata-qa/question-metadata-gate-policy.js`**.
+
+| Outcome | Meaning |
+| ------- | ------- |
+| **`gateDecision: pass_with_advisory`** | Structural/taxonomy checks passed; curriculum/documentation gaps remain (`WARN` is normal). |
+| **`gateDecision: fail_blocking_metadata`** | Blocking issue codes present (e.g. invalid difficulty, missing correct answer, taxonomy_unknown_*), duplicate declared IDs across files, or scanner/load failure. |
+| **`scanOutcome: error`** | No rows parsed **or** one or more bank modules threw during load (`loadErrors`). |
+
+**Exit codes**
+
+- **Exit 1** if `scanOutcome !== ok` **or** `gateDecision === fail_blocking_metadata`.
+- **Exit 0** if only advisory/exempt gaps remain (including English **missing_skillId** / **missing_subskillId** under the documented exemption).
+
+**Summary fields** (`reports/question-metadata-qa/summary.json` → `gate`): `gateDecision`, `blockingIssueCount`, `advisoryIssueCount`, `exemptedIssueCount`, `blockingIssuesByCode`, `advisoryIssuesByCode`, `blockingFiles`, `knownExemptions`.
+
+### Blocking (promoted checks)
+
+Includes: **missing_subject**, **missing_correct_answer**, **missing_difficulty**, **invalid_difficulty**, **missing_cognitiveLevel**, **invalid_cognitive_level**, **missing_expected_error_types**, **expected_error_types_empty**, **taxonomy_unknown_***, **duplicate_declared_id_cross_file** (cross-file duplicate IDs).
+
+### Advisory (remains non-blocking)
+
+Includes: **implicit_id_only**, **missing_prerequisite_skill_ids**, **prerequisite_skill_ids_empty**, **missing_explanation**, low-volume skill diagnostics, engine support flags — plus **missing_skillId** / **missing_subskillId** only for **English** pools under the documented safe-pass exemption until curriculum tags those rows.
 
 ## Taxonomy validation (phase 2)
 

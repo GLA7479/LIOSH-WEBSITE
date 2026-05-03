@@ -1,11 +1,11 @@
 {
-  "runId": "render-gate-mopv0ubz",
-  "generatedAt": "2026-05-03T14:22:27.983Z",
+  "runId": "render-gate-mopvwli1",
+  "generatedAt": "2026-05-03T14:47:09.529Z",
   "browserMode": true,
   "baseURL": "http://127.0.0.1:3001",
   "checksTotal": 7,
-  "checksPassed": 4,
-  "checksFailed": 3,
+  "checksPassed": 7,
+  "checksFailed": 0,
   "deferredCount": 0,
   "consoleErrorsTotal": 0,
   "fatalErrorsTotal": 0,
@@ -77,68 +77,40 @@
       "mode": "browser",
       "inputArtifact": "reports/learning-simulator/aggregate/per-student/strong_all_subjects_g3_7d.storage.json",
       "opened": true,
-      "rendered": false,
+      "rendered": true,
       "fatalPageErrorCount": 0,
       "consoleErrorCount": 0,
       "knownWarningCount": 0,
-      "screenshotOnFailure": true,
-      "status": "failed",
-      "errors": [
-        "expectRendered returned false"
-      ]
+      "screenshotOnFailure": false,
+      "status": "ok",
+      "errors": []
     },
     {
       "routeOrSurface": "/learning/parent-report-detailed",
       "mode": "browser",
       "inputArtifact": "reports/learning-simulator/aggregate/per-student/strong_all_subjects_g3_7d.storage.json",
-      "opened": false,
-      "rendered": false,
+      "opened": true,
+      "rendered": true,
       "fatalPageErrorCount": 0,
       "consoleErrorCount": 0,
       "knownWarningCount": 0,
-      "screenshotOnFailure": true,
-      "status": "failed",
-      "errors": [
-        "page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"http://127.0.0.1:3001/\", waiting until \"domcontentloaded\"\n"
-      ]
+      "screenshotOnFailure": false,
+      "status": "ok",
+      "errors": []
     },
     {
       "routeOrSurface": "/learning/parent-report-detailed.renderable",
       "mode": "browser",
       "inputArtifact": "reports/learning-simulator/aggregate/per-student/strong_all_subjects_g3_7d.storage.json",
-      "opened": false,
-      "rendered": false,
+      "opened": true,
+      "rendered": true,
       "fatalPageErrorCount": 0,
       "consoleErrorCount": 0,
       "knownWarningCount": 0,
-      "screenshotOnFailure": true,
-      "status": "failed",
-      "errors": [
-        "page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"http://127.0.0.1:3001/\", waiting until \"domcontentloaded\"\n"
-      ]
+      "screenshotOnFailure": false,
+      "status": "ok",
+      "errors": []
     }
   ],
-  "failures": [
-    {
-      "checkId": "parent_report_summary",
-      "route": "/learning/parent-report",
-      "errors": [
-        "expectRendered returned false"
-      ]
-    },
-    {
-      "checkId": "parent_report_detailed",
-      "route": "/learning/parent-report-detailed",
-      "errors": [
-        "page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"http://127.0.0.1:3001/\", waiting until \"domcontentloaded\"\n"
-      ]
-    },
-    {
-      "checkId": "parent_report_detailed_renderable",
-      "route": "/learning/parent-report-detailed.renderable",
-      "errors": [
-        "page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"http://127.0.0.1:3001/\", waiting until \"domcontentloaded\"\n"
-      ]
-    }
-  ]
+  "failures": []
 }

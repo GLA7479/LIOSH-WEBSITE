@@ -1,11 +1,37 @@
 # Question metadata QA
 
-- **Generated:** 2026-05-03T14:20:23.996Z
-- **Gate:** scanOutcome=`ok`, advisoryStatus=`WARN`
+- **Generated:** 2026-05-03T14:46:52.087Z
+- **Gate decision:** `pass_with_advisory` — scanOutcome=`ok`, advisoryStatus=`WARN`
+- **Blocking issues (policy):** 0 | **Advisory:** 15876 | **Exempt (catalog):** 878
 - **Questions scanned:** 5756
 - **High / medium risk:** 439 / 0
 - **Duplicate declared IDs (cross-file):** 0
 - **Skill buckets below 5 questions:** 299
+
+## Blocking vs advisory (policy gate)
+
+| Policy field | Value |
+| --- | --- |
+| gateDecision | pass_with_advisory |
+| blockingIssueCount | 0 |
+| advisoryIssueCount | 15876 |
+| exemptedIssueCount | 878 |
+
+### Top blocking codes
+
+_None._
+
+### Top advisory codes
+
+| Code | Count |
+| --- | ---: |
+| missing_prerequisite_skill_ids | 5750 |
+| implicit_id_only | 5373 |
+| missing_explanation | 4753 |
+
+### Known exemptions
+
+English **missing_skillId** / **missing_subskillId** on grammar pools are deferred per safe-pass policy — see `utils/question-metadata-qa/question-metadata-gate-policy.js`.
 
 ## Subject readiness (rollup)
 

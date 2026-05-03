@@ -1,11 +1,39 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T14:20:23.996Z",
+  "generatedAt": "2026-05-03T14:46:52.087Z",
   "gate": {
     "scanOutcome": "ok",
     "partialLoadErrors": false,
     "advisoryStatus": "WARN",
-    "exitPolicy": "Advisory: exit 0 unless scanOutcome is error (no records parsed successfully). Incomplete metadata does not fail.",
+    "gateDecision": "pass_with_advisory",
+    "blockingIssueCount": 0,
+    "advisoryIssueCount": 15876,
+    "exemptedIssueCount": 878,
+    "blockingIssuesByCode": {},
+    "advisoryIssuesByCode": {
+      "missing_prerequisite_skill_ids": 5750,
+      "implicit_id_only": 5373,
+      "missing_explanation": 4753
+    },
+    "blockingFiles": [],
+    "knownExemptions": {
+      "catalog": [
+        {
+          "id": "english_safe_pass_skill_subskill",
+          "subjects": [
+            "english"
+          ],
+          "issueCodes": [
+            "missing_skillId",
+            "missing_subskillId"
+          ],
+          "rationale": "English pools underwent a deliberate safe metadata pass; ~439 grammar rows remain untagged until curriculum assigns taxonomy-valid skillId/subskillId."
+        }
+      ],
+      "exemptedIssueOccurrences": 878,
+      "subjectSourceMatchers": {}
+    },
+    "exitPolicy": "Exit 1 if scanOutcome is error (no records or load failures) or gateDecision is fail_blocking_metadata. Advisory gaps alone exit 0.",
     "recordsParsed": 5756,
     "loadErrorsCount": 0,
     "proceduralSourcesDocumented": 4
