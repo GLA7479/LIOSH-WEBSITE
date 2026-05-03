@@ -31,6 +31,32 @@ async function extractPdfText(buf) {
 
 const outDir = path.resolve(process.cwd(), "qa-visual-output");
 
+async function assertDevServerReachable(baseUrl) {
+  const root = String(baseUrl || "").replace(/\/$/, "");
+  const url = `${root}/learning/parent-report-detailed`;
+  let lastErr = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), 15_000);
+    try {
+      const res = await fetch(url, { method: "GET", redirect: "follow", signal: ac.signal });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      return;
+    } catch (e) {
+      lastErr = e?.name === "AbortError" ? new Error("timeout") : e;
+      await new Promise((r) => setTimeout(r, 600));
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  const msg = lastErr ? String(lastErr.message || lastErr) : "unknown";
+  throw new Error(
+    `QA PDF gate cannot reach ${url} (${msg}). Start Next dev (e.g. npm run dev), then set QA_BASE_URL if not using default port.`
+  );
+}
+
 function seedStorageScript() {
   return () => {
     try {
@@ -91,7 +117,10 @@ async function assertPdfBufferExcludesCopilotPlaceholder(buf, label) {
  * @param {string} label
  */
 async function assertDetailedInsightAndCopilotPrintBehavior(page, label) {
-  await page.waitForSelector(".parent-report-parent-ai-insight", { timeout: 90_000 });
+  await page.waitForSelector(".parent-report-parent-ai-insight", {
+    timeout: 90_000,
+    state: "attached",
+  });
   const card = page.locator(".parent-report-parent-ai-insight").first();
   await assert.match(await card.innerText(), /תובנה/, `${label}: insight card text`);
 
@@ -112,17 +141,24 @@ async function assertDetailedInsightAndCopilotPrintBehavior(page, label) {
 
 /** Short report: wait for insight (async enrich may still apply; often fast). */
 async function assertShortInsightVisible(page, label) {
-  await page.waitForSelector(".parent-report-parent-ai-insight", { timeout: 90_000 });
+  await page.waitForSelector(".parent-report-parent-ai-insight", {
+    timeout: 90_000,
+    state: "attached",
+  });
   const txt = await page.locator(".parent-report-parent-ai-insight").first().innerText();
   assert.match(txt, /תובנה/, `${label}: short report insight`);
 }
 
 async function main() {
+  await assertDevServerReachable(base);
   fs.mkdirSync(outDir, { recursive: true });
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1366, height: 900 }, locale: "he-IL" });
   await context.addInitScript(seedStorageScript());
   const page = await context.newPage();
+  /** Warm origin + re-apply seed so localStorage is populated before the detailed route reads it. */
+  await page.goto(`${base}/`, { waitUntil: "domcontentloaded", timeout: 120_000 });
+  await page.evaluate(seedStorageScript());
 
   const pdfOpts = {
     format: "A4",

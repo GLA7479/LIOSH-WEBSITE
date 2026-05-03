@@ -658,39 +658,12 @@ export default function ParentReport() {
   const enableParentCopilotOnShort =
     typeof process !== "undefined" && process.env.NEXT_PUBLIC_ENABLE_PARENT_COPILOT_ON_SHORT === "true";
 
-  const shortReportCopilotTurnRunner = useMemo(() => {
-    if (!enableParentCopilotOnShort) return null;
-    return async (input) => {
-      const r = await fetch("/api/parent/copilot-turn", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          utterance: input.utterance,
-          sessionId: input.sessionId,
-          audience: input.audience,
-          payload: input.payload,
-          selectedContextRef: input.selectedContextRef ?? null,
-          clickedFollowupFamily: input.clickedFollowupFamily ?? null,
-        }),
-      });
-      let data = {};
-      try {
-        data = await r.json();
-      } catch {
-        data = {};
-      }
-      if (!r.ok || !data.ok) {
-        const err = typeof data.error === "string" ? data.error : `copilot-turn failed (${r.status})`;
-        throw new Error(err);
-      }
-      return data.result;
-    };
-  }, [enableParentCopilotOnShort]);
-
   const [report, setReport] = useState(null);
   const [shortContractTop, setShortContractTop] = useState(null);
   /** Same shape as detailed report — required by ParentCopilotShell / truth packet builders. */
   const [copilotDetailedPayload, setCopilotDetailedPayload] = useState(null);
+  /** Passed to `/api/parent/copilot-turn` when student is logged in (learning-site cookie). */
+  const [copilotStudentId, setCopilotStudentId] = useState(null);
   const [period, setPeriod] = useState('week');
   const [playerName, setPlayerName] = useState("");
   const [loading, setLoading] = useState(true);
@@ -763,6 +736,57 @@ export default function ParentReport() {
       window.removeEventListener("afterprint", onAfter);
     };
   }, []);
+
+  /** Resolve student UUID for secured Copilot turns (cookie session → API ownership check). */
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    if (!enableParentCopilotOnShort) {
+      setCopilotStudentId(null);
+      return undefined;
+    }
+    let cancelled = false;
+    fetch("/api/student/me", { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled || !data?.ok || !data?.student?.id) return;
+        setCopilotStudentId(String(data.student.id));
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [enableParentCopilotOnShort]);
+
+  const shortReportCopilotTurnRunner = useMemo(() => {
+    if (!enableParentCopilotOnShort) return null;
+    return async (input) => {
+      const r = await fetch("/api/parent/copilot-turn", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          utterance: input.utterance,
+          sessionId: input.sessionId,
+          audience: input.audience,
+          payload: input.payload,
+          ...(copilotStudentId ? { studentId: copilotStudentId } : {}),
+          selectedContextRef: input.selectedContextRef ?? null,
+          clickedFollowupFamily: input.clickedFollowupFamily ?? null,
+        }),
+      });
+      let data = {};
+      try {
+        data = await r.json();
+      } catch {
+        data = {};
+      }
+      if (!r.ok || !data.ok) {
+        const err = typeof data.error === "string" ? data.error : `copilot-turn failed (${r.status})`;
+        throw new Error(err);
+      }
+      return data.result;
+    };
+  }, [enableParentCopilotOnShort, copilotStudentId]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
