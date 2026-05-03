@@ -9,6 +9,14 @@ const COPY_CLOSURE = `npm run qa:learning-simulator:engine-final
 npm run qa:learning-simulator:release
 npm run build`;
 
+/** Same output on server and client (avoids hydration mismatch from locale-specific toLocaleString). */
+function formatAdminDate(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return String(iso);
+  return d.toISOString().replace("T", " ").replace(/\.\d{3}Z$/, " UTC");
+}
+
 export async function getServerSideProps() {
   if (process.env.NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN !== "true") {
     return { notFound: true };
@@ -212,7 +220,7 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
           <ul style={{ fontSize: 14, lineHeight: 1.7 }}>
             <li>
               <strong>Engine final:</strong> {engineFinal?.engineFinalStatus ?? "not generated yet"}
-              {engineFinal?.generatedAt ? ` (${new Date(engineFinal.generatedAt).toLocaleString()})` : ""}
+              {engineFinal?.generatedAt ? ` (${formatAdminDate(engineFinal.generatedAt)})` : ""}
             </li>
             <li>
               <strong>Professional validation:</strong> {profVal?.status ?? "not generated yet"}{" "}
@@ -224,7 +232,7 @@ export default function EngineExpertReviewAdminPage({ packMeta: initialPack, eng
             <li>
               <strong>Expert pack:</strong>{" "}
               {hasPack && packMeta?.generatedAt
-                ? `${packMeta.scenarioCount ?? "?"} scenarios — ${new Date(packMeta.generatedAt).toLocaleString()}`
+                ? `${packMeta.scenarioCount ?? "?"} scenarios — ${formatAdminDate(packMeta.generatedAt)}`
                 : "not generated yet"}
             </li>
           </ul>
