@@ -16,10 +16,11 @@ export async function getServerSideProps(ctx) {
   }
   const raw = mod.getDevStudentSimulatorCookieRaw(ctx.req.headers.cookie);
   const session = mod.verifySessionToken(raw);
-  return { props: { authorized: Boolean(session) } };
+  const showEngineReviewLink = process.env.NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN === "true";
+  return { props: { authorized: Boolean(session), showEngineReviewLink } };
 }
 
-export default function DevStudentSimulatorPage({ authorized }) {
+export default function DevStudentSimulatorPage({ authorized, showEngineReviewLink }) {
   const [password, setPassword] = useState("");
   const [loginBusy, setLoginBusy] = useState(false);
   const [loginError, setLoginError] = useState("");
@@ -115,6 +116,21 @@ export default function DevStudentSimulatorPage({ authorized }) {
       <Head>
         <title>סימולטור תלמידים לפיתוח</title>
       </Head>
+      {showEngineReviewLink ? (
+        <div
+          style={{
+            padding: "8px 16px",
+            background: "#0f172a",
+            borderBottom: "1px solid #334155",
+            textAlign: "left",
+            direction: "ltr",
+          }}
+        >
+          <Link href="/learning/dev/engine-review" style={{ color: "#93c5fd", fontSize: 13 }}>
+            Engine review pack (internal)
+          </Link>
+        </div>
+      ) : null}
       <main dir="rtl" lang="he" style={{ padding: "24px 12px 56px", background: "#020617", minHeight: "100vh" }}>
         <DevStudentSimulatorClient />
       </main>

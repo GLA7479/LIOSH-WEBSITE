@@ -1,0 +1,180 @@
+{
+  "generatedAt": "2026-05-03T08:10:59.275Z",
+  "status": "PASS",
+  "scenarioCount": 22,
+  "requiresHumanExpertReview": true,
+  "engineFinal": {
+    "engineFinalStatus": "PASS",
+    "engineTechnicallyComplete": true,
+    "professionalReadiness": "internal_engine_and_release_gates_passed",
+    "releaseStatus": "PASS",
+    "knownLimitations": [
+      "English difficulty tiers may not align perfectly with matrix level labels.",
+      "Cross-subject patterns are heuristic and require confirming probes.",
+      "Subskill and misconception precision is limited until question pools carry dense expectedErrorTypes and prerequisiteSkillIds."
+    ]
+  },
+  "limitations": [
+    "English difficulty tiers may not align perfectly with matrix level labels.",
+    "Cross-subject patterns are heuristic and require confirming probes.",
+    "Subskill and misconception precision is limited until question pools carry dense expectedErrorTypes and prerequisiteSkillIds.",
+    "Cross-subject and dependency outputs are heuristic teaching hypotheses.",
+    "Sparse expectedErrorTypes / prerequisiteSkillIds on generated questions limit fine-grained misconception and prerequisite mapping."
+  ],
+  "scenarios": [
+    {
+      "scenarioId": "strong_all_subjects",
+      "pass": true,
+      "engineConfidence": "high",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "High volume all subjects; no false emerging at volume; readiness not thin-data."
+    },
+    {
+      "scenarioId": "weak_all_subjects",
+      "pass": true,
+      "engineConfidence": "high",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Multiple weak skill bands across subjects."
+    },
+    {
+      "scenarioId": "weak_math_fractions",
+      "pass": true,
+      "engineConfidence": "medium",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Fractions skill shows weakness band."
+    },
+    {
+      "scenarioId": "weak_hebrew_comprehension",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "needs_more_data",
+      "expected": "Hebrew reading_comprehension mastery signal below threshold."
+    },
+    {
+      "scenarioId": "weak_english_grammar",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "needs_more_data",
+      "expected": "English grammar skill row present with weak accuracy."
+    },
+    {
+      "scenarioId": "weak_science_experiments",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "needs_more_data",
+      "expected": "Science experiments bucket mapped to experiments skill."
+    },
+    {
+      "scenarioId": "weak_geometry_area",
+      "pass": true,
+      "engineConfidence": "medium",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Geometry area weakness captured."
+    },
+    {
+      "scenarioId": "weak_moledet_geography_maps",
+      "pass": true,
+      "engineConfidence": "medium",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Moledet maps skill weakness."
+    },
+    {
+      "scenarioId": "thin_data",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "needs_more_data",
+      "expected": "Thin total volume → needs_more_data, low confidence, no mastered band."
+    },
+    {
+      "scenarioId": "random_guessing",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Fast wrong mistakes elevate guessing likelihood."
+    },
+    {
+      "scenarioId": "inconsistent",
+      "pass": true,
+      "engineConfidence": "medium",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Wide row accuracy spread triggers inconsistency signal."
+    },
+    {
+      "scenarioId": "fast_wrong",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Very fast wrong responses drive guessing / pace signal."
+    },
+    {
+      "scenarioId": "slow_correct",
+      "pass": true,
+      "engineConfidence": "medium",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Slow correct events must not be framed as weakness (reasoning includes safeguard)."
+    },
+    {
+      "scenarioId": "improving",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "needs_more_data",
+      "expected": "Up trend on row propagates to mastery trend improving."
+    },
+    {
+      "scenarioId": "declining",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "needs_more_data",
+      "expected": "Down trend propagates."
+    },
+    {
+      "scenarioId": "mixed_strengths",
+      "pass": true,
+      "engineConfidence": "medium",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Math strong vs Hebrew weak separation."
+    },
+    {
+      "scenarioId": "cross_subject_instruction_overlap",
+      "pass": true,
+      "engineConfidence": "medium",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Cross-subject pattern only when both subjects have volume + weakness."
+    },
+    {
+      "scenarioId": "prerequisite_gap",
+      "pass": true,
+      "engineConfidence": "medium",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Weak fractions with weak arithmetic prerequisite → prerequisite gap + probe target."
+    },
+    {
+      "scenarioId": "prerequisite_direct_skill_gap",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Strong prerequisites + weak fractions → direct focal skill hypothesis."
+    },
+    {
+      "scenarioId": "misconception_repeat",
+      "pass": true,
+      "engineConfidence": "low",
+      "engineReadiness": "needs_more_data",
+      "expected": "Repeated tagged misconceptions lift confidence and trigger misconception probe."
+    },
+    {
+      "scenarioId": "mastery_decay_retention",
+      "pass": true,
+      "engineConfidence": "medium",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Old lastSessionMs on strong skill → retention_risk band."
+    },
+    {
+      "scenarioId": "difficulty_calibration_easy_only",
+      "pass": true,
+      "engineConfidence": "medium",
+      "engineReadiness": "ready_for_internal_review",
+      "expected": "Easy-only high accuracy does not grant full mastery; calibration flags easy-only profile."
+    }
+  ]
+}

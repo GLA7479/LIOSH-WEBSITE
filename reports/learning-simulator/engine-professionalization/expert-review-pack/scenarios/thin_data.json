@@ -1,0 +1,457 @@
+{
+  "scenarioId": "thin_data",
+  "scenarioType": "thin_data",
+  "subjects": [
+    "math"
+  ],
+  "intendedSignal": "Thin total volume → needs_more_data, low confidence, no mastered band.",
+  "validation": {
+    "expectedSummary": "Thin total volume → needs_more_data, low confidence, no mastered band.",
+    "actualValidationSnapshot": {
+      "engineConfidence": "low",
+      "engineReadiness": "needs_more_data",
+      "reliabilityGuessing": 0,
+      "reliabilityInconsistency": "high",
+      "crossSubjectPatternCount": 0,
+      "dependencyItems": 1,
+      "masteryBandsSample": [
+        "math/arithmetic_operations:emerging"
+      ]
+    },
+    "pass": true
+  },
+  "rawAndAggregate": {
+    "summaryCounts": {
+      "mathQuestions": 3,
+      "hebrewQuestions": 0,
+      "englishQuestions": 0,
+      "scienceQuestions": 0,
+      "geometryQuestions": 0,
+      "moledetGeographyQuestions": 0,
+      "mathAccuracy": 100,
+      "hebrewAccuracy": null,
+      "englishAccuracy": null,
+      "scienceAccuracy": null,
+      "geometryAccuracy": null,
+      "moledetGeographyAccuracy": null,
+      "totalQuestions": 3
+    },
+    "topicRows": [
+      {
+        "subjectId": "math",
+        "rowKeyShort": "addition",
+        "questions": 3,
+        "correct": 3,
+        "wrong": 0,
+        "accuracy": 100,
+        "displayName": "addition",
+        "difficultyTier": null,
+        "lastSessionMs": null,
+        "trend": null
+      }
+    ],
+    "paceNote": "Raw mistake timestamps/responseMs (when present) feed reliability/guessing signals in the professional engine."
+  },
+  "rawMistakesCounts": {
+    "math": 0,
+    "hebrew": 0,
+    "english": 0,
+    "science": 0,
+    "geometry": 0,
+    "moledet-geography": 0
+  },
+  "professionalEngineV1": {
+    "version": "1.0.0",
+    "generatedAt": "2026-05-03T08:10:59.235Z",
+    "studentWindow": {
+      "startMs": 1767427859204,
+      "endMs": 1777882259204
+    },
+    "subjects": [
+      "math"
+    ],
+    "skillFindings": [
+      {
+        "findingType": "insufficient_evidence_signal",
+        "subjectId": "math",
+        "topicId": "addition",
+        "skillId": "arithmetic_operations",
+        "evidenceLevel": "thin",
+        "confidence": "very_low",
+        "basedOn": {
+          "questionCount": 3,
+          "accuracy": 100,
+          "sessionsApprox": null,
+          "trend": "unknown",
+          "comparedToSubjectAverage": 0
+        },
+        "reasoning": [
+          "Observed topic accuracy is approximately 100% over 3 questions in-window.",
+          "Subject-level question volume in-window is approximately 3.",
+          "Dominant behavior signal on the row: undetermined (informational, not a diagnosis).",
+          "Evidence is limited—interpretation should stay cautious."
+        ],
+        "doNotConclude": [
+          "Subject-wide weakness is not asserted from a single weak topic; other topics in this subject should show weakness across multiple skills.",
+          "Do not draw strong conclusions until more practice data is collected."
+        ],
+        "nextAction": {
+          "type": "collect_more_data"
+        },
+        "frameworkMeta": {
+          "frameworkVersion": "1.1.0",
+          "skillPackKey": "arithmetic_operations",
+          "subskillsAvailable": [
+            "addition",
+            "subtraction",
+            "multiplication",
+            "division",
+            "order_of_operations"
+          ],
+          "errorTypesConsidered": []
+        }
+      }
+    ],
+    "subskillFindings": [],
+    "misconceptions": {
+      "math": {
+        "items": [],
+        "typeHistogram": {},
+        "version": "1.0.0"
+      },
+      "hebrew": {
+        "items": [],
+        "typeHistogram": {},
+        "version": "1.0.0"
+      },
+      "english": {
+        "items": [],
+        "typeHistogram": {},
+        "version": "1.0.0"
+      },
+      "science": {
+        "items": [],
+        "typeHistogram": {},
+        "version": "1.0.0"
+      },
+      "geometry": {
+        "items": [],
+        "typeHistogram": {},
+        "version": "1.0.0"
+      },
+      "moledet-geography": {
+        "items": [],
+        "typeHistogram": {},
+        "version": "1.0.0"
+      }
+    },
+    "mastery": {
+      "version": "1.0.0",
+      "masteryBandsEnum": [
+        "unknown",
+        "emerging",
+        "developing",
+        "near_mastery",
+        "mastered",
+        "retention_risk"
+      ],
+      "items": [
+        {
+          "subjectId": "math",
+          "skillId": "arithmetic_operations",
+          "subskillId": "_rollup",
+          "masteryScore": 80,
+          "masteryBand": "emerging",
+          "confidence": "very_low",
+          "evidenceLevel": "thin",
+          "questionCount": 3,
+          "recentAccuracy": 100,
+          "weightedAccuracy": 100,
+          "trend": "unknown",
+          "consistency": "low",
+          "lastPracticedAt": null,
+          "retentionRisk": false,
+          "easyOnlyProfile": false,
+          "difficultyTiersObserved": [],
+          "recommendedState": "practice_targeted"
+        }
+      ]
+    },
+    "dependencies": {
+      "version": "1.0.0",
+      "items": [
+        {
+          "skillId": "arithmetic_operations",
+          "blockedSkillId": "arithmetic_operations",
+          "suspectedPrerequisiteGap": false,
+          "suspectedDirectSkillGap": true,
+          "confidence": "low",
+          "evidence": [
+            "No prerequisite edges defined—treat as focal skill signal until mapped."
+          ],
+          "reasoning": [
+            "Dependencies are educational hypotheses—verify with targeted probes.",
+            "A weak advanced skill with weak prerequisites may indicate foundation gaps."
+          ],
+          "nextBestPrerequisiteToCheck": null,
+          "doNotConclude": [
+            "Do not label subject-wide failure from a single dependency edge.",
+            "No clinical or medical conclusions."
+          ]
+        }
+      ]
+    },
+    "reliability": {
+      "version": "1.0.0",
+      "reliabilityScore": 13,
+      "dataTrustLevel": "very_low",
+      "effortSignal": "neutral",
+      "guessingLikelihood": 0,
+      "inconsistencyLevel": "high",
+      "accuracySpreadAcrossRows": 0,
+      "pacePattern": "mixed",
+      "confidenceAdjustment": -0.22,
+      "reasoning": [
+        "Thin volume lowers trust in diagnostic conclusions.",
+        "Review pacing signals separately from knowledge gaps.",
+        "Large accuracy spread across rows suggests unstable performance or mixed contexts."
+      ]
+    },
+    "calibration": {
+      "version": "1.0.0",
+      "subjects": [
+        {
+          "subjectId": "math",
+          "gradeExpectation": 55.75,
+          "difficultyAdjustedAccuracy": 85,
+          "gradeRelativeBand": "aboveExpected",
+          "belowExpected": false,
+          "atExpected": false,
+          "aboveExpected": true,
+          "difficultyCoverage": 0,
+          "challengeReadiness": "low",
+          "flags": {
+            "gradeMismatch": false,
+            "missingDifficultyMetadata": true,
+            "easyOnlyHighAccuracy": false,
+            "hardQuestionSignal": false
+          }
+        },
+        {
+          "subjectId": "hebrew",
+          "gradeExpectation": null,
+          "difficultyAdjustedAccuracy": null,
+          "gradeRelativeBand": "atExpected",
+          "belowExpected": false,
+          "atExpected": true,
+          "aboveExpected": false,
+          "difficultyCoverage": 0,
+          "challengeReadiness": "low",
+          "flags": {
+            "gradeMismatch": false,
+            "missingDifficultyMetadata": false,
+            "easyOnlyHighAccuracy": false,
+            "hardQuestionSignal": false
+          }
+        },
+        {
+          "subjectId": "english",
+          "gradeExpectation": null,
+          "difficultyAdjustedAccuracy": null,
+          "gradeRelativeBand": "atExpected",
+          "belowExpected": false,
+          "atExpected": true,
+          "aboveExpected": false,
+          "difficultyCoverage": 0,
+          "challengeReadiness": "low",
+          "flags": {
+            "gradeMismatch": false,
+            "missingDifficultyMetadata": false,
+            "easyOnlyHighAccuracy": false,
+            "hardQuestionSignal": false
+          }
+        },
+        {
+          "subjectId": "science",
+          "gradeExpectation": null,
+          "difficultyAdjustedAccuracy": null,
+          "gradeRelativeBand": "atExpected",
+          "belowExpected": false,
+          "atExpected": true,
+          "aboveExpected": false,
+          "difficultyCoverage": 0,
+          "challengeReadiness": "low",
+          "flags": {
+            "gradeMismatch": false,
+            "missingDifficultyMetadata": false,
+            "easyOnlyHighAccuracy": false,
+            "hardQuestionSignal": false
+          }
+        },
+        {
+          "subjectId": "geometry",
+          "gradeExpectation": null,
+          "difficultyAdjustedAccuracy": null,
+          "gradeRelativeBand": "atExpected",
+          "belowExpected": false,
+          "atExpected": true,
+          "aboveExpected": false,
+          "difficultyCoverage": 0,
+          "challengeReadiness": "low",
+          "flags": {
+            "gradeMismatch": false,
+            "missingDifficultyMetadata": false,
+            "easyOnlyHighAccuracy": false,
+            "hardQuestionSignal": false
+          }
+        },
+        {
+          "subjectId": "moledet-geography",
+          "gradeExpectation": null,
+          "difficultyAdjustedAccuracy": null,
+          "gradeRelativeBand": "atExpected",
+          "belowExpected": false,
+          "atExpected": true,
+          "aboveExpected": false,
+          "difficultyCoverage": 0,
+          "challengeReadiness": "low",
+          "flags": {
+            "gradeMismatch": false,
+            "missingDifficultyMetadata": false,
+            "easyOnlyHighAccuracy": false,
+            "hardQuestionSignal": false
+          }
+        }
+      ]
+    },
+    "probes": {
+      "version": "1.0.0",
+      "probeTypesEnum": [
+        "collect_more_data",
+        "targeted_skill",
+        "prerequisite_check",
+        "difficulty_sweep",
+        "misconception_confirmation",
+        "cross_subject_check",
+        "challenge_advance"
+      ],
+      "recommendationTypeEnum": [
+        "continue_current_level",
+        "advance_cautiously",
+        "targeted_practice",
+        "review_foundation",
+        "collect_more_data",
+        "slow_down_and_check",
+        "teacher_review_recommended",
+        "professional_review_consideration"
+      ],
+      "probes": [
+        {
+          "probeReason": "Thin practice window—need more observations before stable interpretation.",
+          "targetSubjectId": null,
+          "targetSkillId": null,
+          "targetSubskillId": null,
+          "probeType": "collect_more_data",
+          "recommendedQuestionTypes": [
+            "mcq",
+            "short_set"
+          ],
+          "numberOfQuestions": 8,
+          "successCriteria": "Stable accuracy over at least two sessions",
+          "failureCriteria": "Continued random/incorrect pattern without convergence",
+          "nextDecisionAfterProbe": "Re-evaluate mastery and misconceptions"
+        }
+      ]
+    },
+    "crossSubjectPatterns": {
+      "version": "1.0.0",
+      "patterns": [],
+      "note": "Patterns require evidence in multiple subjects; thin single-subject data cannot trigger."
+    },
+    "globalDoNotConclude": [
+      "Do not infer clinical or medical conditions from practice patterns.",
+      "Do not conclude subject-wide weakness from a single weak topic without breadth evidence.",
+      "Do not conclude mastery from high accuracy on very few questions.",
+      "Do not treat slow response time as weakness when accuracy remains strong.",
+      "Do not treat subjects with no activity as failed.",
+      "Educational diagnostic support only—not a medical or clinical assessment.",
+      "Cross-subject patterns require confirming probes in each involved subject."
+    ],
+    "engineConfidence": "low",
+    "engineReadiness": "needs_more_data",
+    "limitations": [
+      "English generator metadata varies by pool row coverage.",
+      "Subskill and misconception precision is limited until question pools/generators carry dense expectedErrorTypes and prerequisiteSkillIds.",
+      "Mastery aggregates by skill—full diagnostic precision depends on difficultyTier (or equivalent) on topic rows where available."
+    ]
+  },
+  "evidenceAndReasoning": [
+    {
+      "findingType": "insufficient_evidence_signal",
+      "subjectId": "math",
+      "skillId": "arithmetic_operations",
+      "subskillId": null,
+      "topicId": "addition",
+      "evidenceLevel": "thin",
+      "confidence": "very_low",
+      "basedOn": {
+        "questionCount": 3,
+        "accuracy": 100,
+        "sessionsApprox": null,
+        "trend": "unknown",
+        "comparedToSubjectAverage": 0
+      },
+      "reasoning": [
+        "Observed topic accuracy is approximately 100% over 3 questions in-window.",
+        "Subject-level question volume in-window is approximately 3.",
+        "Dominant behavior signal on the row: undetermined (informational, not a diagnosis).",
+        "Evidence is limited—interpretation should stay cautious."
+      ],
+      "doNotConclude": [
+        "Subject-wide weakness is not asserted from a single weak topic; other topics in this subject should show weakness across multiple skills.",
+        "Do not draw strong conclusions until more practice data is collected."
+      ],
+      "nextAction": {
+        "type": "collect_more_data"
+      }
+    },
+    {
+      "findingType": "dependency_hypothesis",
+      "subjectId": "math",
+      "skillId": "arithmetic_operations",
+      "subskillId": null,
+      "evidenceLevel": "see_mastery",
+      "confidence": "low",
+      "basedOn": [
+        "No prerequisite edges defined—treat as focal skill signal until mapped."
+      ],
+      "reasoning": [
+        "Dependencies are educational hypotheses—verify with targeted probes.",
+        "A weak advanced skill with weak prerequisites may indicate foundation gaps."
+      ],
+      "doNotConclude": [
+        "Do not label subject-wide failure from a single dependency edge.",
+        "No clinical or medical conclusions."
+      ],
+      "nextAction": null
+    }
+  ],
+  "limitations": {
+    "engineLayer": [
+      "English generator metadata varies by pool row coverage.",
+      "Subskill and misconception precision is limited until question pools/generators carry dense expectedErrorTypes and prerequisiteSkillIds.",
+      "Mastery aggregates by skill—full diagnostic precision depends on difficultyTier (or equivalent) on topic rows where available."
+    ],
+    "sparseMetadata": "Subskill and misconception precision is limited until question pools carry dense expectedErrorTypes and prerequisiteSkillIds.",
+    "crossSubjectHeuristic": "Cross-subject patterns are hypotheses and require confirming probes per subject."
+  },
+  "reviewer": {
+    "agreesWithEngine": null,
+    "concernLevel": null,
+    "notes": "",
+    "suggestedCorrection": "",
+    "needsEngineChange": null,
+    "needsQuestionMetadataChange": null,
+    "needsExpertRuleChange": null
+  }
+}

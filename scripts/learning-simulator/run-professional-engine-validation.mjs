@@ -3,6 +3,7 @@
  * Professional engine validation — synthetic scenarios with concrete assertions.
  * npm run qa:learning-simulator:professional-engine
  */
+import { realpathSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -546,6 +547,15 @@ function scenarios() {
   ];
 }
 
+/** @param {object} sc
+ * @param {Awaited<ReturnType<typeof loadEngines>>} engines
+ */
+export function runProfessionalScenarioPipeline(sc, engines, startMs, endMs) {
+  return runPipeline(sc, engines.runDiagnosticEngineV2, engines.fw, engines.pe, startMs, endMs);
+}
+
+export { scenarios as getProfessionalValidationScenarios, loadEngines as loadProfessionalValidationEngines };
+
 async function main() {
   await mkdir(join(ROOT, "reports/learning-simulator/engine-professionalization"), { recursive: true });
   const { runDiagnosticEngineV2, fw, pe } = await loadEngines();
@@ -606,7 +616,18 @@ async function main() {
   process.exit(allPass ? 0 : 1);
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+function isProfessionalEngineValidationEntrypoint() {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    return realpathSync(entry) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+if (isProfessionalEngineValidationEntrypoint()) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}

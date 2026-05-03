@@ -1,0 +1,214 @@
+{
+  "kind": "expert_review_pack_v1",
+  "generatedAt": "2026-05-03T08:10:59.275Z",
+  "status": "PASS",
+  "scenarioCount": 22,
+  "scenarioIds": [
+    "strong_all_subjects",
+    "weak_all_subjects",
+    "weak_math_fractions",
+    "weak_hebrew_comprehension",
+    "weak_english_grammar",
+    "weak_science_experiments",
+    "weak_geometry_area",
+    "weak_moledet_geography_maps",
+    "thin_data",
+    "random_guessing",
+    "inconsistent",
+    "fast_wrong",
+    "slow_correct",
+    "improving",
+    "declining",
+    "mixed_strengths",
+    "cross_subject_instruction_overlap",
+    "prerequisite_gap",
+    "prerequisite_direct_skill_gap",
+    "misconception_repeat",
+    "mastery_decay_retention",
+    "difficulty_calibration_easy_only"
+  ],
+  "requiresHumanExpertReview": true,
+  "sourceArtifacts": {
+    "professionalEngineValidation": "reports/learning-simulator/engine-professionalization/professional-engine-validation.json",
+    "engineFinalSummary": "reports/learning-simulator/engine-professionalization/engine-final-summary.json"
+  },
+  "scenarios": [
+    {
+      "scenarioId": "strong_all_subjects",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/strong_all_subjects.md",
+        "json": "scenarios/strong_all_subjects.json"
+      }
+    },
+    {
+      "scenarioId": "weak_all_subjects",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/weak_all_subjects.md",
+        "json": "scenarios/weak_all_subjects.json"
+      }
+    },
+    {
+      "scenarioId": "weak_math_fractions",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/weak_math_fractions.md",
+        "json": "scenarios/weak_math_fractions.json"
+      }
+    },
+    {
+      "scenarioId": "weak_hebrew_comprehension",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/weak_hebrew_comprehension.md",
+        "json": "scenarios/weak_hebrew_comprehension.json"
+      }
+    },
+    {
+      "scenarioId": "weak_english_grammar",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/weak_english_grammar.md",
+        "json": "scenarios/weak_english_grammar.json"
+      }
+    },
+    {
+      "scenarioId": "weak_science_experiments",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/weak_science_experiments.md",
+        "json": "scenarios/weak_science_experiments.json"
+      }
+    },
+    {
+      "scenarioId": "weak_geometry_area",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/weak_geometry_area.md",
+        "json": "scenarios/weak_geometry_area.json"
+      }
+    },
+    {
+      "scenarioId": "weak_moledet_geography_maps",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/weak_moledet_geography_maps.md",
+        "json": "scenarios/weak_moledet_geography_maps.json"
+      }
+    },
+    {
+      "scenarioId": "thin_data",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/thin_data.md",
+        "json": "scenarios/thin_data.json"
+      }
+    },
+    {
+      "scenarioId": "random_guessing",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/random_guessing.md",
+        "json": "scenarios/random_guessing.json"
+      }
+    },
+    {
+      "scenarioId": "inconsistent",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/inconsistent.md",
+        "json": "scenarios/inconsistent.json"
+      }
+    },
+    {
+      "scenarioId": "fast_wrong",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/fast_wrong.md",
+        "json": "scenarios/fast_wrong.json"
+      }
+    },
+    {
+      "scenarioId": "slow_correct",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/slow_correct.md",
+        "json": "scenarios/slow_correct.json"
+      }
+    },
+    {
+      "scenarioId": "improving",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/improving.md",
+        "json": "scenarios/improving.json"
+      }
+    },
+    {
+      "scenarioId": "declining",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/declining.md",
+        "json": "scenarios/declining.json"
+      }
+    },
+    {
+      "scenarioId": "mixed_strengths",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/mixed_strengths.md",
+        "json": "scenarios/mixed_strengths.json"
+      }
+    },
+    {
+      "scenarioId": "cross_subject_instruction_overlap",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/cross_subject_instruction_overlap.md",
+        "json": "scenarios/cross_subject_instruction_overlap.json"
+      }
+    },
+    {
+      "scenarioId": "prerequisite_gap",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/prerequisite_gap.md",
+        "json": "scenarios/prerequisite_gap.json"
+      }
+    },
+    {
+      "scenarioId": "prerequisite_direct_skill_gap",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/prerequisite_direct_skill_gap.md",
+        "json": "scenarios/prerequisite_direct_skill_gap.json"
+      }
+    },
+    {
+      "scenarioId": "misconception_repeat",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/misconception_repeat.md",
+        "json": "scenarios/misconception_repeat.json"
+      }
+    },
+    {
+      "scenarioId": "mastery_decay_retention",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/mastery_decay_retention.md",
+        "json": "scenarios/mastery_decay_retention.json"
+      }
+    },
+    {
+      "scenarioId": "difficulty_calibration_easy_only",
+      "pass": true,
+      "files": {
+        "markdown": "scenarios/difficulty_calibration_easy_only.md",
+        "json": "scenarios/difficulty_calibration_easy_only.json"
+      }
+    }
+  ],
+  "disclaimer": "Internal educational diagnostic support only — not clinical / not parent-facing."
+}
