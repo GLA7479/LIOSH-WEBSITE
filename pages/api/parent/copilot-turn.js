@@ -1,18 +1,19 @@
 /**
  * Server-side Parent Copilot turn — `runParentCopilotTurnAsync` only on the server (LLM keys stay server-side).
  *
- * Grounding / auth (Phase D.1):
- * - The Copilot engine still needs a **detailed-report payload** shape (`generateDetailedParentReport` output).
- *   There is no server-side builder that reproduces that object from DB alone without duplicating the full
- *   client pipeline — so the **snapshot is supplied by the client** on each turn.
- * - **Authorization** proves who is asking:
- *   (1) **Student session cookie** (`getAuthenticatedStudentSession`): `studentId` in JSON must match the
- *       logged-in student — grounds turns to that learner’s session on the learning site.
- *   (2) **Parent Bearer JWT** (same pattern as `pages/api/parent/students/[studentId]/report-data.js`):
- *       student must belong to the authenticated parent.
- *   (3) **Development only**: if `NODE_ENV !== 'production'` and `PARENT_COPILOT_ALLOW_UNAUTH_LOCAL_PAYLOAD`
- *       is not `"false"`, allow payload-only turns for localStorage/local QA (no ownership proof).
- *       This path is **disabled in production**.
+ * Payload trust (launch hardening):
+ * - **Production (strict):** Never executes Copilot against a client-supplied full report snapshot. The client may send
+ *   `payload` for backward compatibility, but it is **ignored** for engine input unless
+ *   `PARENT_COPILOT_ALLOW_CLIENT_PAYLOAD_IN_PRODUCTION=true` (emergency operator escape — insecure).
+ *   The API resolves input via {@link resolveCopilotTurnPayloadForApi} which prefers a server-rebuilt snapshot when
+ *   implemented (see `lib/parent-copilot/copilot-turn-payload.server.js`).
+ * - **Development:** After authorization, may use `body.payload` from the client (same as before), or unauthenticated
+ *   local QA when `PARENT_COPILOT_ALLOW_UNAUTH_LOCAL_PAYLOAD` is not `"false"` and `NODE_ENV !== 'production'`.
+ *
+ * Authorization (unchanged):
+ * - Student session cookie: `studentId` must match logged-in student.
+ * - Parent Bearer JWT: student must belong to the authenticated parent.
+ * - Dev-only unauthenticated payload when allowed by env (disabled in production).
  *
  * Never mutates stored reports, banks, taxonomies, diagnostics, or planner output.
  */
@@ -20,6 +21,7 @@
 import { runParentCopilotTurnAsync } from "../../../utils/parent-copilot/index.js";
 import { getLearningSupabaseServerUserClient } from "../../../lib/learning-supabase/server";
 import { getAuthenticatedStudentSession } from "../../../lib/learning-supabase/student-auth";
+import { resolveCopilotTurnPayloadForApi } from "../../../lib/parent-copilot/copilot-turn-payload.server.js";
 
 export const config = {
   api: {
@@ -36,6 +38,7 @@ function safeStudentId(raw) {
 }
 
 /**
+ * Sets X-LIOSH-Parent-Copilot-Auth only (grounding comes from payload resolution).
  * @returns {Promise<{ ok: boolean; mode?: string; error?: string; status?: number }>}
  */
 async function authorizeRequest(req, res, studentIdFromBody) {
@@ -51,7 +54,6 @@ async function authorizeRequest(req, res, studentIdFromBody) {
       return { ok: false, error: "studentId must match the authenticated student session", status: 403 };
     }
     res.setHeader("X-LIOSH-Parent-Copilot-Auth", "student_session");
-    res.setHeader("X-LIOSH-Parent-Copilot-Grounding", "client_payload_session_verified");
     return { ok: true, mode: "student_session" };
   }
 
@@ -79,7 +81,6 @@ async function authorizeRequest(req, res, studentIdFromBody) {
         return { ok: false, error: "Student not found for this parent", status: 404 };
       }
       res.setHeader("X-LIOSH-Parent-Copilot-Auth", "parent_bearer");
-      res.setHeader("X-LIOSH-Parent-Copilot-Grounding", "client_payload_parent_owned_student_verified");
       return { ok: true, mode: "parent_bearer" };
     } catch {
       return { ok: false, error: "Authorization failed", status: 401 };
@@ -88,7 +89,6 @@ async function authorizeRequest(req, res, studentIdFromBody) {
 
   if (allowUnauthDevPayload) {
     res.setHeader("X-LIOSH-Parent-Copilot-Auth", "dev_local_unverified");
-    res.setHeader("X-LIOSH-Parent-Copilot-Grounding", "client_payload_dev_only_unverified");
     return { ok: true, mode: "dev_local" };
   }
 
@@ -111,11 +111,7 @@ export default async function handler(req, res) {
     const utterance = String(body.utterance || "").trim();
     const sessionId = String(body.sessionId || "").trim() || "default";
     const audience = String(body.audience || "parent").trim() || "parent";
-    const payload = body.payload;
 
-    if (!payload || typeof payload !== "object") {
-      return res.status(400).json({ ok: false, error: "Missing payload" });
-    }
     if (!utterance) {
       return res.status(400).json({ ok: false, error: "Missing utterance" });
     }
@@ -125,12 +121,27 @@ export default async function handler(req, res) {
       return res.status(auth.status || 401).json({ ok: false, error: auth.error || "Unauthorized" });
     }
 
+    const payloadResolution = await resolveCopilotTurnPayloadForApi({
+      body,
+      auth,
+    });
+
+    if (!payloadResolution.ok) {
+      return res.status(payloadResolution.status || 400).json({
+        ok: false,
+        error: payloadResolution.error || "Payload resolution failed",
+        code: payloadResolution.code,
+      });
+    }
+
+    res.setHeader("X-LIOSH-Parent-Copilot-Grounding", payloadResolution.grounding);
+
     const selectedContextRef = body.selectedContextRef ?? null;
     const clickedFollowupFamily = body.clickedFollowupFamily ?? null;
 
     const result = await runParentCopilotTurnAsync({
       audience,
-      payload,
+      payload: payloadResolution.payload,
       utterance,
       sessionId,
       selectedContextRef,

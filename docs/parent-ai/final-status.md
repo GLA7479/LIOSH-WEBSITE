@@ -3,7 +3,17 @@
 **Audience:** engineering / product handoff.  
 **Language:** documentation in English; **parent-facing product copy remains Hebrew.**
 
-This document closes the Parent AI implementation track through **Phase G**. It records what shipped, what is frozen, what remains **before public launch**, and how to verify behavior.
+This document closes the Parent AI implementation track through **Phase G**. It records what shipped, what is frozen, optional follow-ups, and how to verify behavior.
+
+---
+
+## Workstream closure (final decision)
+
+- **Parent AI summary insight** (short + detailed deterministic narratives): **launch-ready** as implemented.
+- **Detailed report — Parent Copilot Q&A**: **available** as previously implemented (client-side runner on the detailed report page; deterministic-first + optional gated LLM per rollout env).
+- **Short report — Parent Copilot**: **implemented** behind `NEXT_PUBLIC_ENABLE_PARENT_COPILOT_ON_SHORT` but **must remain OFF in production** (`false`) until a **server-side report snapshot** is implemented for `/api/parent/copilot-turn` — **no server snapshot in this closure**.
+- **`/api/parent/copilot-turn`**: **production-safe** for launch in the sense that strict production mode **does not trust** a client-sent full report payload; requests that require a rebuilt snapshot respond with **HTTP 422** (`SERVER_SNAPSHOT_UNAVAILABLE`) unless the documented **emergency** env is used (not for public launch). See [`copilot-turn-production.md`](./copilot-turn-production.md).
+- **Future engineering item:** implement **`tryRebuildDetailedPayloadServerSide`** in `lib/parent-copilot/copilot-turn-payload.server.js` when product is ready to turn short-report Copilot on in production.
 
 ---
 
@@ -11,17 +21,17 @@ This document closes the Parent AI implementation track through **Phase G**. It 
 
 | Area | Status |
 |------|--------|
-| Short report — deterministic Parent AI insight | **Done** — PDF-first / sync path via adapter + explainer |
-| Detailed report — deterministic Parent AI insight | **Done** |
+| Short report — deterministic Parent AI insight | **Launch-ready** — PDF-first / sync path via adapter + explainer |
+| Detailed report — deterministic Parent AI insight | **Launch-ready** |
 | PDF / print — deterministic insight present before async enrich | **Done** — gated by [`scripts/qa-parent-pdf-export.mjs`](../../scripts/qa-parent-pdf-export.mjs) |
 | Detailed report — Parent Copilot Q&A | **Done** — `utils/parent-copilot`, deterministic-first + optional gated LLM |
-| Short report — Copilot Q&A | **Done (flagged off by default)** — `NEXT_PUBLIC_ENABLE_PARENT_COPILOT_ON_SHORT=true` |
+| Short report — Copilot Q&A | **Implemented; production default OFF** — keep `NEXT_PUBLIC_ENABLE_PARENT_COPILOT_ON_SHORT=false` until server snapshot exists |
 | External / thin-evidence / practice-idea handling (Parent Copilot) | **Done** — `utils/parent-ai-topic-classifier/` + Phase E routing |
 | Bad-prompt / leak safety (simulators) | **Done** — Phase F simulators |
 | Human-review feedback aggregation (no auto-learning) | **Done** — Phase G aggregator |
 | Student-facing AI | **Frozen / untouched** |
 | Banks, taxonomies, diagnostics, planner | **Not mutated by Parent AI paths** |
-| Production API trust model for Copilot payload | **Before launch** — see [Before launch](#before-launch-not-done-yet) |
+| `/api/parent/copilot-turn` payload trust (strict production) | **Done** — refuses untrusted client payloads (**422**) unless emergency env (documented only) |
 
 ---
 
@@ -40,7 +50,7 @@ This document closes the Parent AI implementation track through **Phase G**. It 
 ## What Parent AI can do now
 
 1. **Summary insight (Hebrew)** on short and detailed parent reports using the strict allowlist pipeline (`utils/parent-report-ai/*`, `lib/parent-report-ai/*`): deterministic baseline, optional LLM with validation and fallback.
-2. **Parent Copilot Q&A** on the detailed report (and on the short report when the flag is enabled): scope/intent resolution, truth packet grounding, guardrails, telemetry (`utteranceLength` and metadata — **not** raw utterance text in persisted traces).
+2. **Parent Copilot Q&A** on the detailed report; **short-report Copilot** exists behind a flag but **must stay disabled in production** until server-side snapshot work ships (see [closure](#workstream-closure-final-decision)).
 3. **Phase E behaviors**: general-education framing for pasted/external-style questions; explicit hedging when child-level evidence is thin; mandated practice-idea disclaimer line (see classifier).
 4. **Phase F simulators**: regression-style checks for normal Q&A, external/practice paths, bad prompts, leak patterns.
 5. **Phase G aggregator**: reads optional exported telemetry JSON or synthetic fixture; writes **human-review-only** JSON/MD summaries (counts, buckets, phase_e routes) with **no raw utterances**.
@@ -64,13 +74,11 @@ This document closes the Parent AI implementation track through **Phase G**. It 
 
 ---
 
-## Before launch (not done yet)
+## Before launch / follow-ups (non-blocking)
 
-### 1. Production hardening — `/api/parent/copilot-turn`
+### 1. Short-report Copilot + server snapshot
 
-**Risk:** A client could send a crafted report payload.  
-**Direction:** For production, **reload / rebuild the report payload server-side** using authenticated identity (`studentId`, parent Bearer, period selection) instead of trusting a full client-sent report blob. Dev-only unauthenticated payload remains documented in `.env.example` (`PARENT_COPILOT_ALLOW_UNAUTH_LOCAL_PAYLOAD`).  
-**Status:** Documented only in Phase H; **no mandatory code change in this doc.**
+**Decision:** Do **not** ship short-report Copilot in production until **`tryRebuildDetailedPayloadServerSide`** is implemented. Keep **`NEXT_PUBLIC_ENABLE_PARENT_COPILOT_ON_SHORT=false`** for launch. Emergency operator-only env for client payload is documented in `.env.example` — **not** for public sites.
 
 ### 2. Hebrew copy polish (non-blocking)
 
@@ -90,6 +98,7 @@ Parent-facing Hebrew may need an editorial pass (tone, redundancy). Example note
 | `npm run test:parent-ai:simulations` | Phase F combined assistant + external + bad-prompt simulators |
 | `npm run test:parent-ai:feedback-aggregate` | Phase G aggregator self-test + report generation |
 | `npm run test:parent-copilot-observability-contract` | Telemetry / observability shape |
+| `npm run test:parent-copilot-copilot-turn-api` | Copilot-turn payload trust (production vs dev) |
 | `npm run qa:parent-pdf-export` | Playwright PDF gate (**needs dev server** — see below) |
 | `npm run qa:parent-ai-final` | **Phase H** — runs the focused suite end-to-end (optional PDF skip) |
 
@@ -130,6 +139,7 @@ Documented in [`.env.example`](../../.env.example) and [`docs/PARENT_COPILOT_ROL
 | `NEXT_PUBLIC_PARENT_COPILOT_V1` | Enables Copilot feature wiring |
 | `NEXT_PUBLIC_ENABLE_PARENT_COPILOT_ON_SHORT` | Short-report Copilot panel (default **off**) |
 | `PARENT_COPILOT_ALLOW_UNAUTH_LOCAL_PAYLOAD` | Dev-only unauthenticated payload for copilot-turn |
+| `PARENT_COPILOT_ALLOW_CLIENT_PAYLOAD_IN_PRODUCTION` | Production escape hatch to trust client payload (default **off** — insecure) |
 | `PARENT_COPILOT_ROLLOUT_STAGE`, `PARENT_COPILOT_LLM_ENABLED`, `PARENT_COPILOT_FORCE_DETERMINISTIC` | Rollout + LLM kill-switch |
 | `PARENT_COPILOT_KPI_*` | KPI thresholds for grounded LLM gate |
 | `PARENT_COPILOT_LLM_*` | LLM endpoint / model / timeout / key |

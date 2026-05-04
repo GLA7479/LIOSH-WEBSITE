@@ -186,6 +186,7 @@
     "test:parent-hebrew-repetition-sequence": "node scripts/parent-hebrew-repetition-sequence-suite.mjs",
     "test:parent-hebrew-authority-insufficiency-balance": "node scripts/parent-hebrew-authority-insufficiency-balance-suite.mjs",
     "test:parent-copilot-observability-contract": "tsx scripts/parent-copilot-observability-contract-suite.mjs",
+    "test:parent-copilot-copilot-turn-api": "node scripts/parent-copilot-copilot-turn-api-selftest.mjs",
     "test:parent-rollout-stage:s2-classifier": "npm run test:parent-copilot-classifier-edge-matrix && npm run test:parent-copilot-scope-collision && npm run test:parent-copilot-semantic-nearmiss && npm run test:parent-copilot-short-noisy-phrasing && node scripts/parent-rollout-stage-s2-classifier-gate.mjs",
     "test:parent-rollout-stage:s2-hebrew-drift": "npm run test:parent-hebrew-drift && npm run test:parent-hebrew-normalization-semantic-parity && npm run test:parent-hebrew-repetition-sequence && npm run test:parent-hebrew-authority-insufficiency-balance && node scripts/parent-rollout-stage-s2-hebrew-drift-gate.mjs",
     "test:parent-rollout-stage:s3-observability": "npm run test:parent-copilot-observability-contract && node scripts/parent-rollout-stage-s3-observability-gate.mjs",

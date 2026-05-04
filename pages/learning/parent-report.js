@@ -769,6 +769,8 @@ export default function ParentReport() {
           sessionId: input.sessionId,
           audience: input.audience,
           payload: input.payload,
+          reportPeriod: period,
+          ...(customDates ? { rangeFrom: appliedStartDate, rangeTo: appliedEndDate } : {}),
           ...(copilotStudentId ? { studentId: copilotStudentId } : {}),
           selectedContextRef: input.selectedContextRef ?? null,
           clickedFollowupFamily: input.clickedFollowupFamily ?? null,
@@ -786,7 +788,7 @@ export default function ParentReport() {
       }
       return data.result;
     };
-  }, [enableParentCopilotOnShort, copilotStudentId]);
+  }, [enableParentCopilotOnShort, copilotStudentId, period, customDates, appliedStartDate, appliedEndDate]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
