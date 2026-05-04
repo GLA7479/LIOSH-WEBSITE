@@ -575,6 +575,23 @@ async function main() {
   if (failed > 0 || timeouts > 0) overall = "FAIL";
   else if (skipped > 0) overall = "PASS_WITH_WARNINGS";
 
+  const sampleSummaryPath = path.join(OUT, "sample-pdfs", "sample-pdfs-summary.json");
+  /** @type {any} */
+  let samplePdfSummary = null;
+  if (fs.existsSync(sampleSummaryPath)) {
+    try {
+      samplePdfSummary = JSON.parse(fs.readFileSync(sampleSummaryPath, "utf8"));
+    } catch {
+      samplePdfSummary = { ok: false, parseError: true, path: sampleSummaryPath };
+    }
+  }
+  const samplePdfsRel = path.join("sample-pdfs", "sample-pdfs-summary.json");
+  if (SMOKE && fs.existsSync(path.join(OUT, "sample-pdfs")) && (!samplePdfSummary || samplePdfSummary.ok !== true)) {
+    overall = "FAIL";
+  } else if (samplePdfSummary && samplePdfSummary.ok === false) {
+    overall = "FAIL";
+  }
+
   const failedRows = commands.filter((c) => c.status === "fail" || c.status === "timeout");
   const failureAnalysis = failedRows.map((c) => ({
     id: c.id,
@@ -614,6 +631,12 @@ async function main() {
 
   const topIssues = failureAnalysis.slice(0, 10);
 
+  const failedSampleProfiles =
+    samplePdfSummary?.profiles?.filter((p) => p.status === "error").map((p) => p.id) || [];
+  const expectedSamplePdfs = samplePdfSummary?.expectedPdfCount ?? 10;
+  const generatedSamplePdfs = samplePdfSummary?.generatedPdfCount ?? 0;
+  const samplePdfFiles = Array.isArray(samplePdfSummary?.generatedFiles) ? samplePdfSummary.generatedFiles : [];
+
   const finalJson = {
     timestamp: ts,
     outputDir: OUT,
@@ -635,6 +658,16 @@ async function main() {
     commands,
     failureAnalysis,
     topIssues,
+    samplePdfs: {
+      summaryPath: fs.existsSync(sampleSummaryPath) ? samplePdfsRel : null,
+      expectedCount: expectedSamplePdfs,
+      generatedCount: generatedSamplePdfs,
+      ok: samplePdfSummary?.ok === true,
+      failedProfiles: failedSampleProfiles,
+      generatedFilenames: samplePdfFiles,
+      fullPathsRelToRun: samplePdfFiles.map((f) => path.join("sample-pdfs", f)),
+      validationErrors: samplePdfSummary?.validationErrors || [],
+    },
     notes: {
       secrets: "Logs redacted for tokens/API keys; no .env contents written.",
       telemetry: "Synthetic Hebrew utterances only in manual matrix / synthetic E2E.",
@@ -693,6 +726,16 @@ async function main() {
     `3. For DEV_SERVER_FAILURE—ensure port free; orchestrator waits for HTTP 200.`,
     `4. For PDF_GATE_FAILURE—set QA_BASE_URL to healthy Next dev before gates.`,
     ``,
+    `## 8. Sample PDFs (overnight-parent-ai-sample-pdfs.mjs)`,
+    ``,
+    `- **Summary file:** \`${samplePdfsRel}\` (exists: ${fs.existsSync(sampleSummaryPath)})`,
+    `- **Expected PDF count:** ${expectedSamplePdfs}`,
+    `- **Generated PDF count:** ${generatedSamplePdfs}`,
+    `- **summary.ok:** ${samplePdfSummary?.ok === true}`,
+    `- **Failed profiles:** ${failedSampleProfiles.length ? failedSampleProfiles.join(", ") : "(none)"}`,
+    `- **Generated files:** ${samplePdfFiles.length ? samplePdfFiles.join(", ") : "(see summary)"}`,
+    `- **Validation errors:** ${(samplePdfSummary?.validationErrors || []).length ? JSON.stringify(samplePdfSummary.validationErrors, null, 2) : "(none)"}`,
+    ``,
     `## Artifact index`,
     `- Output root: \`${OUT}\``,
     `- Logs: \`${logs}\``,
@@ -709,6 +752,8 @@ async function main() {
     `- **Smoke mode:** ${SMOKE ? "yes" : "no"}`,
     `- **Product blockers:** ${productFail} failing commands classified PRODUCT_FAILURE (see FINAL_REPORT.json).`,
     `- **Infrastructure blockers:** ${infraFail} failing commands (dev server, PDF gate, ESM runner, env, path).`,
+    `- **Sample PDFs:** expected ${expectedSamplePdfs}, generated ${generatedSamplePdfs}, ok=${samplePdfSummary?.ok === true}${failedSampleProfiles.length ? `, failed profiles: ${failedSampleProfiles.join(", ")}` : ""}`,
+    `- **Sample PDF paths:** \`${path.join(OUT, "sample-pdfs")}\` — manifest \`${samplePdfsRel}\``,
     ``,
     `## Top 5 fixes`,
     ...failureAnalysis.slice(0, 5).map((f, i) => `${i + 1}. [${f.category}] ${f.id}: ${f.likelyCause}`),
@@ -731,7 +776,7 @@ async function main() {
   );
 
   console.log("overnight-parent-ai-audit complete:", OUT, overall, SMOKE ? "(smoke)" : "");
-  if (failed > 0 || timeouts > 0) process.exitCode = 1;
+  if (failed > 0 || timeouts > 0 || overall === "FAIL") process.exitCode = 1;
 }
 
 main().catch((e) => {

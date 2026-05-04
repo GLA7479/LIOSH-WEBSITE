@@ -1,0 +1,51 @@
+{
+  "baseUrl": "http://127.0.0.1:53251",
+  "expectedPdfCount": 10,
+  "generatedPdfCount": 10,
+  "profiles": [
+    {
+      "id": "strong-stable",
+      "detailedPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-20-50\\sample-pdfs\\strong-stable__parent-report-detailed-full.pdf",
+      "shortPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-20-50\\sample-pdfs\\strong-stable__parent-report-short.pdf",
+      "status": "ok"
+    },
+    {
+      "id": "weak-but-improving",
+      "detailedPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-20-50\\sample-pdfs\\weak-but-improving__parent-report-detailed-full.pdf",
+      "shortPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-20-50\\sample-pdfs\\weak-but-improving__parent-report-short.pdf",
+      "status": "ok"
+    },
+    {
+      "id": "very-little-data",
+      "detailedPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-20-50\\sample-pdfs\\very-little-data__parent-report-detailed-full.pdf",
+      "shortPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-20-50\\sample-pdfs\\very-little-data__parent-report-short.pdf",
+      "status": "ok"
+    },
+    {
+      "id": "six-subject-mixed",
+      "detailedPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-20-50\\sample-pdfs\\six-subject-mixed__parent-report-detailed-full.pdf",
+      "shortPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-20-50\\sample-pdfs\\six-subject-mixed__parent-report-short.pdf",
+      "status": "ok"
+    },
+    {
+      "id": "external-question-flow-report-surface",
+      "detailedPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-20-50\\sample-pdfs\\external-question-flow-report-surface__parent-report-detailed-full.pdf",
+      "shortPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-20-50\\sample-pdfs\\external-question-flow-report-surface__parent-report-short.pdf",
+      "status": "ok"
+    }
+  ],
+  "ok": true,
+  "validationErrors": [],
+  "generatedFiles": [
+    "strong-stable__parent-report-detailed-full.pdf",
+    "strong-stable__parent-report-short.pdf",
+    "weak-but-improving__parent-report-detailed-full.pdf",
+    "weak-but-improving__parent-report-short.pdf",
+    "very-little-data__parent-report-detailed-full.pdf",
+    "very-little-data__parent-report-short.pdf",
+    "six-subject-mixed__parent-report-detailed-full.pdf",
+    "six-subject-mixed__parent-report-short.pdf",
+    "external-question-flow-report-surface__parent-report-detailed-full.pdf",
+    "external-question-flow-report-surface__parent-report-short.pdf"
+  ]
+}
