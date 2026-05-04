@@ -7,12 +7,55 @@
  *   RENDER_GATE_BASE_URL — default http://127.0.0.1:3001
  *   RENDER_GATE_AUTO_SERVER — if "0", do not spawn dev server (expect server already up)
  *   RENDER_GATE_BROWSER — if "0", skip Playwright and run SSR fallback only (browserMode false)
+ *   RENDER_GATE_SERVER_WAIT_MS — max wait for first HTTP from auto-started dev (default 300000)
+ *   When RENDER_GATE_BASE_URL is unset, a free TCP port is chosen so EADDRINUSE on 3001 is avoided.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readdirSync } from "node:fs";
+import { createServer } from "node:net";
+
+/** Avoid spawn(\"npm\") without shell on Windows (EINVAL); prefer node + npx-cli.js like overnight-utils. */
+function npxCliPath() {
+  const nextToNode = join(dirname(process.execPath), "node_modules", "npm", "bin", "npx-cli.js");
+  if (existsSync(nextToNode)) return nextToNode;
+  if (process.platform === "win32") {
+    const pf = process.env.ProgramFiles || "C:\\Program Files";
+    const sys = join(pf, "nodejs", "node_modules", "npm", "bin", "npx-cli.js");
+    if (existsSync(sys)) return sys;
+  }
+  return null;
+}
+
+function nodeExeForNpm() {
+  if (process.platform === "win32") {
+    const pf = process.env.ProgramFiles || "C:\\Program Files";
+    const sysNode = join(pf, "nodejs", "node.exe");
+    if (existsSync(sysNode)) return sysNode;
+  }
+  return process.execPath;
+}
+
+/** First webpack compile on cold start can exceed 2 minutes on Windows. */
+const SERVER_BOOT_WAIT_MS = Number(process.env.RENDER_GATE_SERVER_WAIT_MS || 300_000);
+
+function findFreePort() {
+  return new Promise((resolve, reject) => {
+    const s = createServer();
+    s.listen(0, "127.0.0.1", () => {
+      try {
+        const addr = s.address();
+        const p = typeof addr === "object" && addr ? addr.port : 0;
+        s.close(() => resolve(p || 3000));
+      } catch (e) {
+        reject(e);
+      }
+    });
+    s.on("error", reject);
+  });
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..", "..");
@@ -164,14 +207,26 @@ async function waitForHttpOk(url, timeoutMs) {
   return false;
 }
 
-function startDevServer() {
-  const proc = spawn("npm", ["run", "dev"], {
+function startDevServer(listenPort) {
+  const p = listenPort ?? PORT;
+  const env = { ...process.env, PORT: String(p) };
+  const cli = npxCliPath();
+  if (cli) {
+    return spawn(nodeExeForNpm(), [cli, "next", "dev", "-p", String(p)], {
+      cwd: ROOT,
+      shell: false,
+      stdio: "pipe",
+      env,
+      windowsHide: true,
+    });
+  }
+  return spawn(process.platform === "win32" ? "npm.cmd" : "npm", ["run", "dev"], {
     cwd: ROOT,
-    shell: true,
+    shell: process.platform === "win32",
     stdio: "pipe",
-    env: { ...process.env, PORT: String(PORT) },
+    env,
+    windowsHide: true,
   });
-  return proc;
 }
 
 async function mockStudentMe(page) {
@@ -193,8 +248,9 @@ async function mockStudentMe(page) {
   });
 }
 
-async function applyLocalStorage(page, data) {
-  await page.goto(`${BASE_URL}/`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+async function applyLocalStorage(page, data, originBase) {
+  const ob = originBase || BASE_URL;
+  await page.goto(`${ob}/`, { waitUntil: "domcontentloaded", timeout: 60_000 });
   await page.evaluate((d) => {
     localStorage.clear();
     for (const [k, v] of Object.entries(d || {})) localStorage.setItem(k, String(v));
@@ -304,12 +360,27 @@ async function main() {
   playwright = await import("playwright");
   browserMode = true;
 
+  let activeBaseUrl = BASE_URL;
   let serverStarted = false;
-  const serverAlreadyUp = await waitForHttpOk(BASE_URL, 2000);
+  const serverAlreadyUp = await waitForHttpOk(activeBaseUrl, 2000);
   if (!serverAlreadyUp && AUTO_SERVER) {
-    serverProc = startDevServer();
+    let bootPort = PORT;
+    if (!process.env.RENDER_GATE_BASE_URL) {
+      bootPort = await findFreePort();
+      activeBaseUrl = `http://127.0.0.1:${bootPort}`;
+    }
+    serverProc = startDevServer(bootPort);
     serverStarted = true;
-    const up = await waitForHttpOk(BASE_URL, 120_000);
+    let bootLog = "";
+    serverProc.stdout?.on("data", (c) => {
+      bootLog += c.toString();
+      if (bootLog.length > 120_000) bootLog = bootLog.slice(-120_000);
+    });
+    serverProc.stderr?.on("data", (c) => {
+      bootLog += c.toString();
+      if (bootLog.length > 120_000) bootLog = bootLog.slice(-120_000);
+    });
+    const up = await waitForHttpOk(activeBaseUrl, SERVER_BOOT_WAIT_MS);
     if (!up) {
       const payload = {
         runId,
@@ -322,9 +393,16 @@ async function main() {
         fatalErrorsTotal: 1,
         deferredSurfaces,
         checks: [],
-        failures: [{ phase: "server_boot", error: `Server did not respond at ${BASE_URL}` }],
+        failures: [
+          {
+            phase: "server_boot",
+            error: `Server did not respond at ${activeBaseUrl} within ${SERVER_BOOT_WAIT_MS}ms`,
+            devBootTail: bootLog.slice(-8000),
+          },
+        ],
       };
       await writeFile(OUT_JSON, JSON.stringify(payload, null, 2), "utf8");
+      if (bootLog) console.error("[render-gate] dev boot log (tail):\n", bootLog.slice(-4000));
       if (serverProc) try {
         serverProc.kill();
       } catch {}
@@ -347,7 +425,7 @@ async function main() {
       failures: [
         {
           phase: "server_missing",
-          error: `No server at ${BASE_URL} and RENDER_GATE_AUTO_SERVER=0`,
+          error: `No server at ${activeBaseUrl} and RENDER_GATE_AUTO_SERVER=0`,
         },
       ],
     };
@@ -469,17 +547,17 @@ async function main() {
     try {
       if (sc.setup === "student_mock") {
         await mockStudentMe(page);
-        await page.goto(`${BASE_URL}${sc.path}`, { waitUntil: "domcontentloaded", timeout: 90_000 });
+        await page.goto(`${activeBaseUrl}${sc.path}`, { waitUntil: "domcontentloaded", timeout: 90_000 });
         await new Promise((r) => setTimeout(r, 1200));
         opened = true;
       } else if (sc.setup === "simulator_storage") {
         await mockStudentMe(page);
-        await applyLocalStorage(page, storageSnapshot);
-        await page.goto(`${BASE_URL}${sc.path}`, { waitUntil: "domcontentloaded", timeout: 90_000 });
+        await applyLocalStorage(page, storageSnapshot, activeBaseUrl);
+        await page.goto(`${activeBaseUrl}${sc.path}`, { waitUntil: "domcontentloaded", timeout: 90_000 });
         await new Promise((r) => setTimeout(r, 1200));
         opened = true;
       } else {
-        await page.goto(`${BASE_URL}${sc.path}`, { waitUntil: "domcontentloaded", timeout: 90_000 });
+        await page.goto(`${activeBaseUrl}${sc.path}`, { waitUntil: "domcontentloaded", timeout: 90_000 });
         await new Promise((r) => setTimeout(r, 1200));
         opened = true;
       }
@@ -552,7 +630,7 @@ async function main() {
     runId,
     generatedAt,
     browserMode,
-    baseURL: BASE_URL,
+    baseURL: activeBaseUrl,
     checksTotal: checks.length,
     checksPassed,
     checksFailed,
@@ -572,7 +650,7 @@ async function main() {
     `- Run id: ${runId}`,
     `- Generated at: ${generatedAt}`,
     `- **browserMode:** ${browserMode}`,
-    `- **baseURL:** ${BASE_URL}`,
+    `- **baseURL:** ${activeBaseUrl}`,
     "",
     "## Summary",
     "",

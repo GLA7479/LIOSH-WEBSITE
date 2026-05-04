@@ -1,12 +1,14 @@
 {
-  "runId": "render-gate-morb8gp0",
-  "generatedAt": "2026-05-04T14:44:03.588Z",
+  "runId": "render-gate-morj9bcu",
+  "generatedAt": "2026-05-04T18:28:40.254Z",
   "browserMode": true,
-  "checksTotal": 0,
-  "checksPassed": 0,
-  "checksFailed": 1,
+  "baseURL": "http://127.0.0.1:57150",
+  "checksTotal": 7,
+  "checksPassed": 7,
+  "checksFailed": 0,
+  "deferredCount": 0,
   "consoleErrorsTotal": 0,
-  "fatalErrorsTotal": 1,
+  "fatalErrorsTotal": 0,
   "deferredSurfaces": [
     {
       "id": "pdf_export_binary",
@@ -17,11 +19,98 @@
       "reason": "dev-db-report-preview requires parent bearer token / env; not opened in automated gate."
     }
   ],
-  "checks": [],
-  "failures": [
+  "checks": [
     {
-      "phase": "server_boot",
-      "error": "Server did not respond at http://127.0.0.1:3001"
+      "routeOrSurface": "/learning",
+      "mode": "browser",
+      "inputArtifact": "(route + api mock — StudentAccessGate)",
+      "opened": true,
+      "rendered": true,
+      "fatalPageErrorCount": 0,
+      "consoleErrorCount": 0,
+      "knownWarningCount": 0,
+      "screenshotOnFailure": false,
+      "status": "ok",
+      "errors": []
+    },
+    {
+      "routeOrSurface": "/learning/curriculum",
+      "mode": "browser",
+      "inputArtifact": "(route + api mock — StudentAccessGate)",
+      "opened": true,
+      "rendered": true,
+      "fatalPageErrorCount": 0,
+      "consoleErrorCount": 0,
+      "knownWarningCount": 0,
+      "screenshotOnFailure": false,
+      "status": "ok",
+      "errors": []
+    },
+    {
+      "routeOrSurface": "/learning/math-master",
+      "mode": "browser",
+      "inputArtifact": "(route + api mock)",
+      "opened": true,
+      "rendered": true,
+      "fatalPageErrorCount": 0,
+      "consoleErrorCount": 0,
+      "knownWarningCount": 0,
+      "screenshotOnFailure": false,
+      "status": "ok",
+      "errors": []
+    },
+    {
+      "routeOrSurface": "/learning/science-master",
+      "mode": "browser",
+      "inputArtifact": "(route + api mock)",
+      "opened": true,
+      "rendered": true,
+      "fatalPageErrorCount": 0,
+      "consoleErrorCount": 0,
+      "knownWarningCount": 0,
+      "screenshotOnFailure": false,
+      "status": "ok",
+      "errors": []
+    },
+    {
+      "routeOrSurface": "/learning/parent-report",
+      "mode": "browser",
+      "inputArtifact": "reports/learning-simulator/aggregate/per-student/strong_all_subjects_g3_7d.storage.json",
+      "opened": true,
+      "rendered": true,
+      "fatalPageErrorCount": 0,
+      "consoleErrorCount": 0,
+      "knownWarningCount": 0,
+      "screenshotOnFailure": false,
+      "status": "ok",
+      "errors": []
+    },
+    {
+      "routeOrSurface": "/learning/parent-report-detailed",
+      "mode": "browser",
+      "inputArtifact": "reports/learning-simulator/aggregate/per-student/strong_all_subjects_g3_7d.storage.json",
+      "opened": true,
+      "rendered": true,
+      "fatalPageErrorCount": 0,
+      "consoleErrorCount": 0,
+      "knownWarningCount": 0,
+      "screenshotOnFailure": false,
+      "status": "ok",
+      "errors": []
+    },
+    {
+      "routeOrSurface": "/learning/parent-report-detailed.renderable",
+      "mode": "browser",
+      "inputArtifact": "reports/learning-simulator/aggregate/per-student/strong_all_subjects_g3_7d.storage.json",
+      "opened": true,
+      "rendered": true,
+      "fatalPageErrorCount": 0,
+      "consoleErrorCount": 0,
+      "knownWarningCount": 0,
+      "screenshotOnFailure": false,
+      "status": "ok",
+      "errors": []
     }
-  ]
+  ],
+  "failures": []
 }

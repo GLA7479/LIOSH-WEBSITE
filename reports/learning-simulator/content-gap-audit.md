@@ -1,7 +1,7 @@
 # Content gap audit (`unsupported_needs_content`)
 
-- Run id: content-gap-morb88vb
-- Generated at: 2026-05-04T14:43:53.447Z
+- Run id: content-gap-morj94n5
+- Generated at: 2026-05-04T18:28:31.553Z
 - Total cells with **unsupported_needs_content**: **0**
 - Unknown classifications: **0**
 

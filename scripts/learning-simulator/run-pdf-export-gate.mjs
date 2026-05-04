@@ -7,8 +7,10 @@
  *
  * Env (same family as render gate):
  *   PDF_GATE_BASE_URL / RENDER_GATE_BASE_URL — default http://127.0.0.1:3001
- *   PDF_GATE_AUTO_SERVER / RENDER_GATE_AUTO_SERVER — if "0", do not spawn dev server
+ *   PDF_GATE_AUTO_SERVER — if "0", do not spawn dev server (RENDER_GATE_AUTO_SERVER does not apply; avoids full-orchestrator env coupling)
  *   PDF_GATE_BROWSER — if "0", skip Playwright → deferred
+ *   PDF_GATE_SERVER_WAIT_MS / RENDER_GATE_SERVER_WAIT_MS — max wait for auto-started dev (default 300000)
+ *   Auto-started dev always binds a free TCP port (ignores stale PORT / *_BASE_URL from env) so EADDRINUSE after render or overnight is avoided.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { PDFParse } from "pdf-parse";
@@ -26,6 +28,7 @@ import { spawn } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync } from "node:fs";
+import { createServer } from "node:net";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..", "..");
@@ -39,9 +42,49 @@ const OUT_MD = join(LS_DIR, "pdf-export-gate.md");
 const PORT = Number(process.env.PORT || process.env.PDF_GATE_PORT || process.env.RENDER_GATE_PORT || 3001);
 const BASE_URL =
   process.env.PDF_GATE_BASE_URL || process.env.RENDER_GATE_BASE_URL || `http://127.0.0.1:${PORT}`;
-const AUTO_SERVER =
-  process.env.PDF_GATE_AUTO_SERVER !== "0" && process.env.RENDER_GATE_AUTO_SERVER !== "0";
+const AUTO_SERVER = process.env.PDF_GATE_AUTO_SERVER !== "0";
 const FORCE_NO_BROWSER = process.env.PDF_GATE_BROWSER === "0";
+
+const SERVER_BOOT_WAIT_MS = Number(
+  process.env.PDF_GATE_SERVER_WAIT_MS || process.env.RENDER_GATE_SERVER_WAIT_MS || 300_000
+);
+
+/** Avoid spawn("npm") without shell on Windows (EINVAL); prefer node + npx-cli.js like render gate. */
+function npxCliPath() {
+  const nextToNode = join(dirname(process.execPath), "node_modules", "npm", "bin", "npx-cli.js");
+  if (existsSync(nextToNode)) return nextToNode;
+  if (process.platform === "win32") {
+    const pf = process.env.ProgramFiles || "C:\\Program Files";
+    const sys = join(pf, "nodejs", "node_modules", "npm", "bin", "npx-cli.js");
+    if (existsSync(sys)) return sys;
+  }
+  return null;
+}
+
+function nodeExeForNpm() {
+  if (process.platform === "win32") {
+    const pf = process.env.ProgramFiles || "C:\\Program Files";
+    const sysNode = join(pf, "nodejs", "node.exe");
+    if (existsSync(sysNode)) return sysNode;
+  }
+  return process.execPath;
+}
+
+function findFreePort() {
+  return new Promise((resolve, reject) => {
+    const s = createServer();
+    s.listen(0, "127.0.0.1", () => {
+      try {
+        const addr = s.address();
+        const p = typeof addr === "object" && addr ? addr.port : 0;
+        s.close(() => resolve(p || 3000));
+      } catch (e) {
+        reject(e);
+      }
+    });
+    s.on("error", reject);
+  });
+}
 
 /** Minimum PDF size for pass (documented). */
 const MIN_PDF_BYTES = 10 * 1024;
@@ -161,7 +204,11 @@ async function waitForHttpOk(url, timeoutMs) {
   const t0 = Date.now();
   while (Date.now() - t0 < timeoutMs) {
     try {
-      const r = await fetch(url, { redirect: "follow" });
+      const perTryMs = Math.min(4000, Math.max(500, Math.floor(timeoutMs / 4) || 1500));
+      const ac = new AbortController();
+      const kill = setTimeout(() => ac.abort(), perTryMs);
+      const r = await fetch(url, { redirect: "follow", signal: ac.signal });
+      clearTimeout(kill);
       if (r.ok || r.status === 404) return true;
     } catch {
       /* retry */
@@ -171,12 +218,25 @@ async function waitForHttpOk(url, timeoutMs) {
   return false;
 }
 
-function startDevServer() {
-  return spawn("npm", ["run", "dev"], {
+function startDevServer(listenPort) {
+  const p = listenPort ?? PORT;
+  const env = { ...process.env, PORT: String(p) };
+  const cli = npxCliPath();
+  if (cli) {
+    return spawn(nodeExeForNpm(), [cli, "next", "dev", "-p", String(p)], {
+      cwd: ROOT,
+      shell: false,
+      stdio: "pipe",
+      env,
+      windowsHide: true,
+    });
+  }
+  return spawn(process.platform === "win32" ? "npm.cmd" : "npm", ["run", "dev"], {
     cwd: ROOT,
-    shell: true,
+    shell: process.platform === "win32",
     stdio: "pipe",
-    env: { ...process.env, PORT: String(PORT) },
+    env,
+    windowsHide: true,
   });
 }
 
@@ -284,15 +344,29 @@ async function main() {
 
   let serverProc = null;
   let serverStarted = false;
-  const serverUp = await waitForHttpOk(BASE_URL, 2500);
-  if (!serverUp && AUTO_SERVER) {
-    serverProc = startDevServer();
+  /** @type {string} */
+  let activeBaseUrl = BASE_URL;
+  const serverAlreadyUp = await waitForHttpOk(activeBaseUrl, 2500);
+  if (!serverAlreadyUp && AUTO_SERVER) {
+    const bootPort = await findFreePort();
+    activeBaseUrl = `http://127.0.0.1:${bootPort}`;
+    serverProc = startDevServer(bootPort);
     serverStarted = true;
-    const up = await waitForHttpOk(BASE_URL, 120_000);
+    let bootLog = "";
+    serverProc.stdout?.on("data", (c) => {
+      bootLog += c.toString();
+      if (bootLog.length > 120_000) bootLog = bootLog.slice(-120_000);
+    });
+    serverProc.stderr?.on("data", (c) => {
+      bootLog += c.toString();
+      if (bootLog.length > 120_000) bootLog = bootLog.slice(-120_000);
+    });
+    const up = await waitForHttpOk(activeBaseUrl, SERVER_BOOT_WAIT_MS);
     if (!up) {
       basePayload.status = "fail";
-      basePayload.failures.push(`Dev server did not respond at ${BASE_URL}`);
+      basePayload.failures.push(`Dev server did not respond at ${activeBaseUrl} within ${SERVER_BOOT_WAIT_MS}ms`);
       await writeFile(OUT_JSON, JSON.stringify(basePayload, null, 2), "utf8");
+      if (bootLog) console.error("[pdf-export-gate] dev boot log (tail):\n", bootLog.slice(-4000));
       if (serverProc)
         try {
           serverProc.kill();
@@ -301,9 +375,9 @@ async function main() {
       process.exit(1);
       return;
     }
-  } else if (!serverUp && !AUTO_SERVER) {
+  } else if (!serverAlreadyUp && !AUTO_SERVER) {
     basePayload.status = "fail";
-    basePayload.failures.push(`No server at ${BASE_URL} and PDF_GATE_AUTO_SERVER=0`);
+    basePayload.failures.push(`No server at ${activeBaseUrl} and PDF_GATE_AUTO_SERVER=0`);
     await writeFile(OUT_JSON, JSON.stringify(basePayload, null, 2), "utf8");
     process.exit(1);
     return;
@@ -335,10 +409,10 @@ async function main() {
 
   try {
     await mockStudentMe(page);
-    await applyLocalStorage(page, storage, BASE_URL);
+    await applyLocalStorage(page, storage, activeBaseUrl);
 
     /** month window keeps aggregate fixture sessions in-range across calendar edges (Phase C.1). */
-    const url = `${BASE_URL}/learning/parent-report?qa_pdf=file&period=month`;
+    const url = `${activeBaseUrl}/learning/parent-report?qa_pdf=file&period=month`;
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90_000 });
     await new Promise((r) => setTimeout(r, 2000));
 
@@ -429,7 +503,7 @@ async function main() {
   const payload = {
     ...basePayload,
     browserMode: true,
-    baseURL: BASE_URL,
+    baseURL: activeBaseUrl,
     downloadAttempted,
     downloadSucceeded,
     downloadPath: downloadPath ? downloadPath.replace(/\\/g, "/") : null,

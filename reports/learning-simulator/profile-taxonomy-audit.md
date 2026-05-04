@@ -1,6 +1,6 @@
 # Profile taxonomy audit (simulator)
 
-- Generated: 2026-05-04T14:43:59.227Z
+- Generated: 2026-05-04T18:28:36.205Z
 
 ## Base profile IDs
 

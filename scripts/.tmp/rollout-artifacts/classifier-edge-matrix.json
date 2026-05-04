@@ -1,0 +1,9 @@
+{
+  "artifact": "classifier-edge-matrix",
+  "generatedAt": "2026-05-04T15:12:57.054Z",
+  "intentAccuracy": 100,
+  "semanticAccuracy": 100,
+  "intentSampleSize": 12,
+  "semanticSampleSize": 8,
+  "pass": true
+}

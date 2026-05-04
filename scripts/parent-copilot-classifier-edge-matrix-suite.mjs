@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
-import { resolveIntentWithConfidence } from "../utils/parent-copilot/intent-resolver.js";
-import { detectAggregateQuestionClass } from "../utils/parent-copilot/semantic-question-class.js";
+/** Default import: tsx’s named export linking is unreliable for some project ESM .js files. */
+import intentResolver from "../utils/parent-copilot/intent-resolver.js";
+import semanticQuestionClass from "../utils/parent-copilot/semantic-question-class.js";
 import { pct, writeArtifact } from "./rollout-artifacts-lib.mjs";
+
+const { resolveIntentWithConfidence } = intentResolver;
+const { detectAggregateQuestionClass } = semanticQuestionClass;
 
 const intentCases = [
   { utterance: "מה לעשות היום בנושא הזה?", expected: "what_to_do_today" },

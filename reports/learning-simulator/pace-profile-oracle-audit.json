@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-04T14:43:59.219Z",
-  "sourceRunId": "profile-stress-morb8dbn",
+  "generatedAt": "2026-05-04T18:28:36.199Z",
+  "sourceRunId": "profile-stress-morj9887",
   "thresholds": {
     "FAST_WRONG_MAX_SPQ": 118,
     "SLOW_CORRECT_MIN_SPQ": 96,

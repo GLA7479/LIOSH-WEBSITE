@@ -306,13 +306,20 @@ function cleanNextDir(root) {
   }
 }
 
-function runStep(cwd, npmScript) {
+/**
+ * @param {string} cwd
+ * @param {string} npmScript
+ * @param {Record<string, string|undefined>} [envExtra] merged over process.env (e.g. PDF gate after render kills dev)
+ */
+function runStep(cwd, npmScript, envExtra) {
   const start = Date.now();
+  const env = envExtra ? { ...process.env, ...envExtra } : process.env;
   const r = spawnSync("npm", ["run", npmScript], {
     cwd,
     encoding: "utf8",
     shell: true,
     stdio: "inherit",
+    env,
   });
   const durationMs = Date.now() - start;
   const exitCode = typeof r.status === "number" ? r.status : 1;
@@ -583,7 +590,14 @@ async function main() {
       console.log("  Pre-build: removing .next for cold production build (cache reliability)");
       cleanNextDir(ROOT);
     }
-    const { exitCode, durationMs, pass } = runStep(ROOT, step.script);
+    const pdfEnv =
+      step.id === "pdfExportGate"
+        ? {
+            /** Render step tears down dev; shelled env may also set PDF_GATE_AUTO_SERVER=0 — force auto-start for this step. */
+            PDF_GATE_AUTO_SERVER: "1",
+          }
+        : undefined;
+    const { exitCode, durationMs, pass } = runStep(ROOT, step.script, pdfEnv);
     let effectivePass = pass;
 
     if (step.id === "parentReportNarrativeSafetyArtifacts") {

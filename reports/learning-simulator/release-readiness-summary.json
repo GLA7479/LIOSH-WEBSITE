@@ -1,6 +1,6 @@
 {
-  "runId": "release-summary-moq9o1ih",
-  "generatedAt": "2026-05-03T21:12:25.001Z",
+  "runId": "release-summary-morjib1i",
+  "generatedAt": "2026-05-04T18:35:39.750Z",
   "overallStatus": "pass",
   "gateStatus": {
     "questionMetadata": "warn",
@@ -74,7 +74,7 @@
     "status": "pass",
     "pace_accuracy_separation_ok": true,
     "cohortMedianSpqGap": 198.04,
-    "sourceRunId": "profile-stress-moq9gzgy"
+    "sourceRunId": "profile-stress-morj9887"
   },
   "renderGateSummary": {
     "status": "pass",
@@ -88,11 +88,11 @@
   },
   "pdfExportGateSummary": {
     "status": "pass",
-    "checkedRoute": "/learning/parent-report?qa_pdf=file",
+    "checkedRoute": "/learning/parent-report?qa_pdf=file&period=month",
     "browserMode": true,
     "downloadSucceeded": true,
-    "downloadPath": "C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/pdf-export/דוח-Sim_strong_all_subjects_g3_7d-2026-05-03.pdf",
-    "fileSizeBytes": 3746095,
+    "downloadPath": "C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/pdf-export/דוח-Sim_strong_all_subjects_g3_7d-2026-05-04.pdf",
+    "fileSizeBytes": 4215340,
     "pdfHeaderOk": true,
     "consoleErrorsTotal": 0,
     "fatalErrorsTotal": 0,
@@ -103,11 +103,11 @@
     "pdfLibraryDetected": "^0.10.1",
     "exportIsClientSide": true,
     "hasDedicatedPdfRoute": false,
-    "generatedAt": "2026-05-03T21:07:29.483Z"
+    "generatedAt": "2026-05-04T18:34:17.342Z"
   },
   "scenarioCoverageSummary": {
     "scenarios": 278,
-    "generatedAt": "2026-05-03T21:06:58.263Z"
+    "generatedAt": "2026-05-04T18:28:39.193Z"
   },
   "parentNarrativeSafetySummary": {
     "status": "warnings_only",

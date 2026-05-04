@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import parentCopilot from "../utils/parent-copilot/index.js";
 import guardrail from "../utils/parent-copilot/guardrail-validator.js";
-import { getLlmGateDecision } from "../utils/parent-copilot/rollout-gates.js";
+/** Default import: tsx’s linker omits some named exports from this ESM file; behavior unchanged. */
+import rolloutGates from "../utils/parent-copilot/rollout-gates.js";
+
+const { getLlmGateDecision } = rolloutGates;
 
 function setEnv(name, value) {
   if (value == null) delete process.env[name];

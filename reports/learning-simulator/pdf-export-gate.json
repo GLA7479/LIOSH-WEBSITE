@@ -1,6 +1,6 @@
 {
-  "runId": "pdf-gate-morb6ns9",
-  "generatedAt": "2026-05-04T14:42:39.465Z",
+  "runId": "pdf-gate-morjgjgh",
+  "generatedAt": "2026-05-04T18:34:17.345Z",
   "browserMode": true,
   "checkedRoute": "/learning/parent-report?qa_pdf=file&period=month",
   "pdfLibraryDetected": "^0.10.1",
@@ -8,7 +8,7 @@
   "downloadAttempted": true,
   "downloadSucceeded": true,
   "downloadPath": "C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/pdf-export/דוח-Sim_strong_all_subjects_g3_7d-2026-05-04.pdf",
-  "fileSizeBytes": 4218503,
+  "fileSizeBytes": 4215340,
   "pdfHeaderOk": true,
   "consoleErrorsTotal": 0,
   "fatalErrorsTotal": 0,
@@ -16,6 +16,6 @@
   "failures": [],
   "warnings": [],
   "minPdfBytesThreshold": 10240,
-  "baseURL": "http://127.0.0.1:58897",
+  "baseURL": "http://127.0.0.1:52717",
   "status": "pass"
 }

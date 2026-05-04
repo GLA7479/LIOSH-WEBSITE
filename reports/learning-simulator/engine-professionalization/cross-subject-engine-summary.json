@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "generatedAt": "2026-05-04T14:43:40.605Z",
+  "generatedAt": "2026-05-04T18:28:20.586Z",
   "checks": [
     "one_subject_no_pattern",
     "two_subjects_can_emit_pattern",
