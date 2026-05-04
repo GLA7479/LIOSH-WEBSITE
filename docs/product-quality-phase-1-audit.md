@@ -7,6 +7,10 @@
 
 [`docs/product-quality-phase-3-hebrew-owner-review.md`](product-quality-phase-3-hebrew-owner-review.md) maps owner decisions for Hebrew overlap findings from §3 below (**legacy triple stems + 37 adjacent-band rows**). **No Hebrew question content was edited** in Phase 3. **Next step:** owner approval on that map **before** any Hebrew wording or bank merges.
 
+### Phase 4 — Parent report product review
+
+[`docs/product-quality-phase-4-parent-report-review.md`](product-quality-phase-4-parent-report-review.md) reviews parent report **surfaces** (short/detailed, disclaimer, weak-data messaging, contract blocks, print/PDF, Parent AI insight) as **product/experience** — **documentation only**; **no** report code, Parent AI logic, or Hebrew copy was changed. **Next step:** owner UAT + editorial sign-off ([`docs/PARENT_REPORT_EDITORIAL_SIGNOFF.md`](PARENT_REPORT_EDITORIAL_SIGNOFF.md)) before any approved copy/layout tweaks.
+
 ---
 
 ## Executive summary (pipeline)
