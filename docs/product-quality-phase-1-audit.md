@@ -11,6 +11,10 @@
 
 [`docs/product-quality-phase-4-parent-report-review.md`](product-quality-phase-4-parent-report-review.md) reviews parent report **surfaces** (short/detailed, disclaimer, weak-data messaging, contract blocks, print/PDF, Parent AI insight) as **product/experience** — **documentation only**; **no** report code, Parent AI logic, or Hebrew copy was changed. **Next step:** owner UAT + editorial sign-off ([`docs/PARENT_REPORT_EDITORIAL_SIGNOFF.md`](PARENT_REPORT_EDITORIAL_SIGNOFF.md)) before any approved copy/layout tweaks.
 
+### Phase 5 — Mobile + RTL + basic UX audit
+
+[`docs/product-quality-phase-5-mobile-rtl-ux-audit.md`](product-quality-phase-5-mobile-rtl-ux-audit.md) records **static** mobile/RTL/UX risks and maps them to [`docs/mobile-rtl-manual-qa-checklist.md`](mobile-rtl-manual-qa-checklist.md). **No code/CSS/copy changes.** **Next step:** owner runs the checklist on **real devices** and confirms or closes items **P5-01–P5-10**.
+
 ---
 
 ## Executive summary (pipeline)
