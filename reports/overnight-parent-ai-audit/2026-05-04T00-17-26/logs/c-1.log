@@ -1,0 +1,5 @@
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-observability-contract
+> tsx scripts/parent-copilot-observability-contract-suite.mjs
+
+parent-copilot-observability-contract-suite: OK

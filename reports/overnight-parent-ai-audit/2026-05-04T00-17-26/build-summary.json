@@ -1,0 +1,11 @@
+{
+  "id": "build",
+  "npmScript": "build",
+  "phase": "A",
+  "status": "pass",
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 20349,
+  "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-17-26\\logs\\build.log",
+  "note": "Webpack warnings from question-metadata scanner → planner bridge may be pre-existing."
+}
