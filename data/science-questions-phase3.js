@@ -28,6 +28,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "צמחים משפיעים על אידוי ועל קירור מקומי דרך צל ומים."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -62,6 +63,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "מים עודפים משנים מצבי חמצן בקרקע ואת קשרי הגומלין עם חיידקים."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -96,6 +98,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "שינוי יחסי גומלין יכול לשנות את שרשרת המזון."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -130,6 +133,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "שינוי בולט עלול ליצור אפקטים מדורגים (במדרגות)."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -164,6 +168,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "כל שלב חוסך משאבים בשלב אחר במחזור החיים."
     ],
     "params": {
+      "patternFamily": "sci_environment_sustainability",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -198,6 +203,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "פחמן דו־חמצני ומתאן גורמים לחיזוק אפקט חממה."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -233,6 +239,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "מינים שונים רגישים לרמות שונות של רעל."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -267,6 +274,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "אוכלוסייה יציבה תלויה בזרימת אנרגיה וחומר."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -301,6 +309,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "סתירה אקולוגית: יצירת שטחים לתשתית עשויה לפגוע בטבע."
     ],
     "params": {
+      "patternFamily": "sci_environment_sustainability",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -335,6 +344,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "יכולת נשיאה של מערכת מוגבלת בקרקע ובמזון."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -369,6 +379,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "ניהול קרקע מפחית סחיפה."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -403,6 +414,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "אקלים עונתי ומקומי משולבים."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -437,6 +449,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "סחיפה קשורה לכיסוי קרקע."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -471,6 +484,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "לחץ דיג הוא גורם דינמי."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -505,6 +519,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "אגמים והספקות משנים משטר זרימה מקומי."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -539,6 +554,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "כדור הארץ מקבל ומפלט קרינה במאזן דינמי."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -573,6 +589,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "אי־רציפות היא אחד הגורמים לאובדן מינים."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -607,6 +624,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "הבנת אי־ודאות היא חלק מלמידה מדעית."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -641,6 +659,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "גינון אחראי תומך בשירותים אקולוגיים עירוניים."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -675,6 +694,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "משקעים הם מאגרים פוטנציאליים של מזהמים."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -709,6 +729,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "ניהול קרקע ויער משפיעים על מאזן פחמן."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -743,6 +764,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "למידה חיצונית מחייבת אחריות התנהגותית."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -777,6 +799,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "גודל אוכלוסייה קטן מגביר פגיעות."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -809,6 +832,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "מדידות מאפשרות השוואה לפני/אחרי."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -843,6 +867,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "בטיחות: הימנעות מבשר/שומן בקומפוסט ביתי פשוט."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -877,6 +902,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "זיהום גובלי מחייב שיתוף פעולה."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -911,6 +937,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "שינוי מרובי־גורמים דורש תכנון מחדש של הניסוי."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -945,6 +972,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "מדע מתקדם דרך בדיקה חוצת־מעבדות."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -979,6 +1007,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "קבוצת בקרה מקלה לבודד השפעה של טיפול."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1013,6 +1042,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "הטיות דגימה נפוצות בהחלטות אינטואיטיביות."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1047,6 +1077,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "כיול מכשירים הוא חלק מעבודה מדעית אחראית."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1081,6 +1112,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "תכנון ניסוי הוא לא פחות חשוב מביצוע."
     ],
     "params": {
+      "patternFamily": "sci_experiments_observation_inference",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1115,6 +1147,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "שקיפות מתודולוגית חשובה לפרשנות."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1149,6 +1182,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "פרוטוקול מפחית אי־הבנות."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1183,6 +1217,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "ממוצע לא מסיר הטיה קבועה של מכשיר."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1217,6 +1252,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "תוצאה במדגם היא הערכה, לא בהכרח 'החוק האמיתי'."
     ],
     "params": {
+      "patternFamily": "sci_experiments_observation_inference",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1251,6 +1287,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "אתיקה במחקר ובכיתה חשובה כמו דיוק."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1285,6 +1322,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "חוסר איסוף ראיות מספק מחליש מסקנה."
     ],
     "params": {
+      "patternFamily": "sci_experiments_observation_inference",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1319,6 +1357,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "שליטה במשתנים מצמצמת פרשנויות מקושרות."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1353,6 +1392,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "יישום יתר של קלט עלול לפגוע במקום לעזור."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1387,6 +1427,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "נהלי בטיחות מגנים על קהילת הלומדים."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1421,6 +1462,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "בניית מודל הסבר כולל בדיקת אלטרנטיבות."
     ],
     "params": {
+      "patternFamily": "sci_experiments_observation_inference",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1455,6 +1497,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "שקיפות פרוטוקול תומכת באמון."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1489,6 +1532,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "יומן מעבדה תומך במעקב אחרי שינויים."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1523,6 +1567,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "נתון צריך להיות נתון מהימן, לא רק עמוק."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1557,6 +1602,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "פרשנות טובה נבדקת מול הרישום המקורי."
     ],
     "params": {
+      "patternFamily": "sci_experiments_observation_inference",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1591,6 +1637,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "זיהוי דפוס בשגיאה הוא רמז לכיול או מתודולוגיה."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1625,6 +1672,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "תיעוד מלא מגן גם על חוקרים — פחות אי־הבנות."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1659,6 +1707,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "גרפים טובים מציגים תלוי מול עצמאי."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1693,6 +1742,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "נתון מצטבר 'גלובלי' לא תמיד משקף כל קבוצת משנה."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1727,6 +1777,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "בקרה מפחיתה הטיות חבויות."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1761,6 +1812,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "לקרוא מקור מקורי עדיין דורש חשיבה ביקורתית."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1795,6 +1847,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "אקלים הוא ממוצע לטווח ארוך; מזג אוויר הוא לטווח קצר."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1829,6 +1882,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "רוח היא תנועת אוויר מלחץ גבוה לנמוך."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1863,6 +1917,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "תצפית תלויה גם בהירות שמים."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1897,6 +1952,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "הרכב אטמוספרה משפיע על מאזן קרינתי."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1931,6 +1987,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "מאובנים הם ראיות לחיים בעבר גאולוגי."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1965,6 +2022,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "מודלים מפשטים עוזרים וגם מגבילים—חשוב הקשר קנה מידה."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_weather",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1999,6 +2057,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "מניעת סחיפה שומרת על איכות מים וקרקע."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -2033,6 +2092,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "תופעות געשיות יכולות להיות מקומיות וגם גלובליות לפי העוצמה."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -2067,6 +2127,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "קרינה מהשמש מעצבת סביבה."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -2101,6 +2162,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "תופעות ימיות יכולות לשלב כמה גורמי עזר."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -2135,6 +2197,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "גלים סייסמיים נוצרים מתנועה והתפרצות לחץ."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -2169,6 +2232,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "אוקיינוס וקרח עוגנים אקלים."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -2203,6 +2267,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "מים הם סוכן מסה ומוגה."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -2237,6 +2302,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "געש ורעידות משתפים הקשרים טקטוניים."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -2271,6 +2337,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "התפתחות סופה היא תהליך רב־שלבי."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_weather",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -2305,6 +2372,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "סלעים 'מספרים' היסטוריה של תהליכים."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -2339,6 +2407,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "מפות אקלים מסכמות ממוצעים לאורך זמן."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -2373,6 +2442,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "ניהול משאב דורש הכרת אקוויפר משותף."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -2407,6 +2477,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "מודל גיאומטרי של צל ואור מסביר במעבדה פשוטה."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -2441,6 +2512,7 @@ export const SCIENCE_QUESTIONS_PHASE3 = [
       "סטטיסטיקה בולטת רק אחרי מספיק זמן."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_weather",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [

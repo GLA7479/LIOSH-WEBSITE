@@ -1,6 +1,6 @@
 # Product Quality Phase 1 — Question Banks + Learning Flow + Parent Report
 
-**Last updated:** 2026-05-05 (Phase 9 — Science **`patternFamily`** first batch in `science-questions.js`; audit re-run)  
+**Last updated:** 2026-05-05 (Phase 10 — Science **`patternFamily`** completion on `science-questions.js` + `science-questions-phase3.js`; audit re-run)  
 **Scope:** Learning product quality only (not security, not production hardening, not report/AI code changes).
 
 ### Phase 3 — Hebrew owner review
@@ -26,6 +26,10 @@
 ### Phase 9 — Science metadata-only first batch
 
 [`docs/product-quality-phase-9-science-metadata-patch.md`](product-quality-phase-9-science-metadata-patch.md): added `params.patternFamily` to **32** science rows in [`data/science-questions.js`](../data/science-questions.js) ( **35** / **383** rows now tagged; **348** still missing). No stems, answers, or `correctIndex` changed.
+
+### Phase 10 — Science metadata completion
+
+[`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md): **383** / **383** science rows have `params.patternFamily`; **0** missing `subtype`. Files: [`data/science-questions.js`](../data/science-questions.js), [`data/science-questions-phase3.js`](../data/science-questions-phase3.js). Helpers: [`scripts/apply-science-pattern-family-phase10.mjs`](../scripts/apply-science-pattern-family-phase10.mjs), [`scripts/fix-science-experiments-observation-inference.mjs`](../scripts/fix-science-experiments-observation-inference.mjs).
 
 ---
 
@@ -69,11 +73,11 @@ Science is now first-class in `items.json`. Aggregates from the latest run:
 |--------|-------|
 | Total science rows | 383 |
 | Topics | body 50, animals 51, plants 46, materials 46, earth_space 66, environment 65, experiments 59 |
-| Rows with `patternFamily` (`params.patternFamily`) | **35** (see Phase 9 doc); **348** still missing |
+| Rows with `patternFamily` (`params.patternFamily`) | **383** (**Phase 10** — none missing) |
 | Difficulty labels (`difficulty` column) | easy 113, medium 145, hard 124, easy\|hard 1 |
 | `correctIndex` missing | 0 (not audited via separate script — MCQ objects in source include index) |
 
-Phase 1 ingestion did not modify science **content**; **Phase 9** added only neutral `patternFamily` metadata (no wording or answer changes). See [`docs/product-quality-phase-9-science-metadata-patch.md`](product-quality-phase-9-science-metadata-patch.md).
+Phase 1 ingestion did not modify science **content**; **Phases 9–10** added only neutral `patternFamily` / `subtype` metadata (no wording or answer changes). See [`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md).
 
 ---
 

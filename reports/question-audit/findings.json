@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-04T22:20:32.052Z",
+  "generatedAt": "2026-05-04T22:29:00.296Z",
   "totalRows": 12158,
   "exactDuplicateCrossGrade": [],
   "exactDuplicateCrossGradeStaticBanksOnly": [],
@@ -14,12 +14,28 @@
       "rowCount": 95
     },
     {
-      "key": "science::sci_body_systems",
+      "key": "science::sci_earth_space_cycles",
       "gradeSpan": [
         1,
         6
       ],
-      "rowCount": 5
+      "rowCount": 62
+    },
+    {
+      "key": "science::sci_environment_ecosystems",
+      "gradeSpan": [
+        1,
+        6
+      ],
+      "rowCount": 53
+    },
+    {
+      "key": "science::sci_experiments_scientific_method",
+      "gradeSpan": [
+        2,
+        6
+      ],
+      "rowCount": 49
     },
     {
       "key": "science::sci_animals_classification",
@@ -27,7 +43,47 @@
         1,
         6
       ],
-      "rowCount": 4
+      "rowCount": 47
+    },
+    {
+      "key": "science::sci_body_systems",
+      "gradeSpan": [
+        1,
+        6
+      ],
+      "rowCount": 45
+    },
+    {
+      "key": "science::sci_materials_properties",
+      "gradeSpan": [
+        1,
+        6
+      ],
+      "rowCount": 44
+    },
+    {
+      "key": "science::sci_environment_sustainability",
+      "gradeSpan": [
+        1,
+        6
+      ],
+      "rowCount": 13
+    },
+    {
+      "key": "science::sci_experiments_observation_inference",
+      "gradeSpan": [
+        2,
+        6
+      ],
+      "rowCount": 9
+    },
+    {
+      "key": "science::sci_materials_changes",
+      "gradeSpan": [
+        2,
+        6
+      ],
+      "rowCount": 2
     }
   ],
   "topicsSpanManyGrades": [
@@ -119,43 +175,43 @@
       "key": "science::earth_space",
       "distinctGrades": 6,
       "totalRows": 66,
-      "dominantPatternFamily": "none",
-      "dominantShare": 0.9393939393939394
+      "dominantPatternFamily": "sci_earth_space_cycles",
+      "dominantShare": 0.9242424242424242
     },
     {
       "key": "science::environment",
       "distinctGrades": 6,
       "totalRows": 65,
-      "dominantPatternFamily": "none",
-      "dominantShare": 0.9384615384615385
+      "dominantPatternFamily": "sci_environment_ecosystems",
+      "dominantShare": 0.8
     },
     {
       "key": "science::experiments",
       "distinctGrades": 5,
       "totalRows": 59,
-      "dominantPatternFamily": "none",
-      "dominantShare": 0.9322033898305084
+      "dominantPatternFamily": "sci_experiments_scientific_method",
+      "dominantShare": 0.8305084745762712
     },
     {
       "key": "science::animals",
       "distinctGrades": 6,
       "totalRows": 51,
-      "dominantPatternFamily": "none",
-      "dominantShare": 0.9019607843137255
+      "dominantPatternFamily": "sci_animals_classification",
+      "dominantShare": 0.9215686274509803
     },
     {
       "key": "science::body",
       "distinctGrades": 6,
       "totalRows": 50,
-      "dominantPatternFamily": "none",
-      "dominantShare": 0.84
+      "dominantPatternFamily": "sci_body_systems",
+      "dominantShare": 0.9
     },
     {
       "key": "science::materials",
       "distinctGrades": 6,
       "totalRows": 46,
-      "dominantPatternFamily": "none",
-      "dominantShare": 0.8913043478260869
+      "dominantPatternFamily": "sci_materials_properties",
+      "dominantShare": 0.9565217391304348
     },
     {
       "key": "geometry::area",

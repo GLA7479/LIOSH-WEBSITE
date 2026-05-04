@@ -1,18 +1,27 @@
 # Product Quality Phase 8 — Subject Coverage & Content Improvement Plan
 
 **Last updated:** 2026-05-05  
-**Status:** Planning doc; **Phase 9 first science metadata batch applied** (see below).  
-**Strict boundary (Phase 8 original):** Phase 8 was documentation-only. **Phase 9** intentionally changed **only** neutral `params.patternFamily` in [`data/science-questions.js`](../data/science-questions.js); no stems, answers, or grade gates.
+**Status:** Planning doc; **Phase 10 completed** full Science `patternFamily` rollout + subtype gap closure — see [`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md).  
+**Strict boundary (Phase 8 original):** Phase 8 was documentation-only. **Phases 9–10** changed **only** neutral metadata in [`data/science-questions.js`](../data/science-questions.js) and [`data/science-questions-phase3.js`](../data/science-questions-phase3.js); no stems, answers, or grade gates.
 
-### Phase 9 — Science `patternFamily` first batch (counts)
+### Phase 9 — Science `patternFamily` first batch (historical counts)
 
-| Metric | Before Phase 9 | After Phase 9 (latest audit) |
-|--------|----------------|-------------------------------|
+| Metric | Before Phase 9 | After Phase 9 |
+|--------|----------------|---------------|
 | Science rows with `patternFamily` | **3** / 383 | **35** / 383 |
 | Science rows missing `patternFamily` | **380** | **348** |
-| Rows touched in file | — | **32** (plus **3** pre-existing tagged rows) |
 
 Details: [`docs/product-quality-phase-9-science-metadata-patch.md`](product-quality-phase-9-science-metadata-patch.md).
+
+### Phase 10 — Science `patternFamily` completion (latest audit)
+
+| Metric | After Phase 10 |
+|--------|----------------|
+| Science rows with `patternFamily` | **383** / **383** |
+| Science rows missing `patternFamily` | **0** |
+| Science rows missing `subtype` | **0** |
+
+Details: [`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md).
 
 ## Sources
 
@@ -35,10 +44,10 @@ The latest audit contains **12158** rows.
 | **Geometry** | 2548 | G1-G6 | **Ready enough** with metadata polish | Broad topic set; no missing difficulty or patternFamily; conceptual + generator coverage | **1313** rows missing `subtype` in audit output, mostly generated rows | Review key visual/formula topics for answer-key and diagram assumption risk | Broaden real-world contexts |
 | **Hebrew** | 927 | G1-G6 | **Needs owner review** | No missing difficulty / patternFamily / subtype; full grade span | Phase 3 unresolved duplicate/overlap owner decisions | Owner approval for legacy triple stems + high-risk overlap rows. **Owner exact wording required** for any wording change | Spiral-repetition keep list can wait after spot-check |
 | **English** | 852 | G1-G6 | **Needs focused fixes** | English translation difficulty metadata fixed; no missing difficulty | **621** rows missing `subtype`; **36** translation rows show `optionCount=0` in audit output | Confirm translation answer/option model and subtype metadata policy | Wider topical variety |
-| **Science** | 383 | G1-G6 via broad grade spans | **Needs focused fixes** | Direct bank ingested; topics cover body/animals/plants/materials/earth/environment/experiments; no missing difficulty; **Phase 9 batch:** **35** rows now have `patternFamily` | **348** rows still missing `patternFamily`; 3 missing `subtype`; factual/distractor review not yet documented | Continue metadata taxonomy rollout; then factual/distractor review pack | Add more experiment-context prompts after metadata review |
+| **Science** | 383 | G1-G6 via broad grade spans | **Metadata taxonomy complete** for audit | Full `patternFamily` + `subtype` coverage on static science bank (**Phase 10**); no missing difficulty | Factual/distractor review not yet documented | Content QA / factual spot-check by `patternFamily` | Add more experiment-context prompts after factual review |
 | **Homeland / Geography** | 3506 | G1-G6 | **Ready enough** | Largest static bank; full metadata; balanced difficulty; all option counts 4 | Broad topics span many grades and may hide repeated templates | Spot-check factual freshness and map/civic ambiguity | Contemporary examples and terminology polish |
 
-**Weakest subject right now:** **Science**, because metadata taxonomy is still catching up (`patternFamily` missing for **348**/383 rows after the Phase 9 first batch) and factual/distractor review is not yet documented.
+**Weakest subject right now (content QA):** **Science** — metadata taxonomy is **complete** in the audit (**Phase 10**), but factual accuracy and distractor quality still need a documented human review pass (not an audit artifact gap).
 
 **Strongest subject right now:** **Homeland / Geography**, because it has **3506** static rows, full grade coverage, full metadata, balanced topics/difficulty, and no missing option metadata in audit output.
 
@@ -151,7 +160,7 @@ The latest audit contains **12158** rows.
 | Count by difficulty | easy **113**, medium **145**, hard **124**, easy/hard **1** |
 | Count by topic | earth_space 66; environment 65; experiments 59; animals 51; body 50; plants 46; materials 46 |
 | Top subtopics | sci_earth_space_general 66; sci_environment_general 65; sci_experiments_general 59; sci_animals_general 51; sci_body_general 47; sci_plants_general 46; sci_materials_general 46 |
-| Missing metadata | difficulty **0**, patternFamily **348** (was **380** before Phase 9), subtype **3** |
+| Missing metadata | difficulty **0**, patternFamily **0**, subtype **0** (**Phase 10**) |
 | Answer mode / options | mcq **360**, true_false **23**; option counts 4 (**360**), 2 (**23**) |
 | Suspected duplicate clusters | No exact / near duplicates listed |
 | Answer-key risk | Factual correctness and simplification level require content review |
@@ -163,7 +172,7 @@ The latest audit contains **12158** rows.
 
 **Launch readiness:** **needs focused fixes**.
 
-**Blocker before launch:** metadata taxonomy (`patternFamily`) and factual/distractor review. This is the weakest subject because the bank exists, but professional content traceability is less mature than other subjects.
+**Blocker before launch:** factual/distractor review (metadata taxonomy is complete as of **Phase 10**).
 
 ---
 
@@ -201,9 +210,9 @@ The latest audit contains **12158** rows.
    - Owner approval required: **yes**.  
    - Hebrew exact wording required: **yes**, if any prompt changes.
 
-2. **Science metadata taxonomy + factual/distractor review plan**.  
-   - Action type: **add metadata**, **review answer key**, **review distractors**.  
-   - Owner approval required: **no** for metadata taxonomy; **yes** if content wording changes.
+2. **Science factual/distractor review** (metadata taxonomy **complete** as of **Phase 10**).  
+   - Action type: **review answer key**, **review distractors**.  
+   - Owner approval required: **no** for metadata; **yes** if content wording changes.
 
 ### High priority fixes
 
@@ -288,6 +297,6 @@ This applies to Hebrew subject banks and to any Hebrew text embedded in English/
 | Answers changed? | **No** |
 | Product logic / UI / APIs changed? | **No** |
 
-*Phase 9* (after this plan) added only `params.patternFamily` in `data/science-questions.js`, with the same “no content / no answers” rules; see [`docs/product-quality-phase-9-science-metadata-patch.md`](product-quality-phase-9-science-metadata-patch.md).
+*Phases 9–10* added neutral `params.patternFamily` (and closed `subtype` gaps) in `data/science-questions.js` and `data/science-questions-phase3.js`, with the same “no content / no answers” rules; see [`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md).
 
-**Recommended next action:** continue **Science metadata-only** batches ([`docs/product-quality-phase-9-science-metadata-patch.md`](product-quality-phase-9-science-metadata-patch.md)) until `patternFamily` coverage is complete, or prioritize Hebrew owner decisions if owner review is already available.
+**Recommended next action:** run **Science factual/distractor QA** grouped by `patternFamily` ([`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md)), or prioritize Hebrew owner decisions if owner review is already available.

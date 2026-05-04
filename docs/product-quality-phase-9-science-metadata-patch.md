@@ -53,4 +53,10 @@ Improve auditability of the science direct bank by adding neutral English `patte
 
 ## Recommended next step
 
-Continue **Science metadata-only** passes on the remaining **348** rows without `patternFamily`, using the same neutral taxonomy and batch review until coverage is complete; then proceed to factual/distractor review as planned in Phase 8.
+~~Continue metadata batches~~ — **Done in Phase 10.** See [`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md): all **383** science rows now have `params.patternFamily`; remaining gaps (`subtype` on `body_1`–`body_3`) were closed there. Next: factual/distractor QA by family.
+
+---
+
+### Follow-up: Phase 10
+
+[`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md) completes the taxonomy rollout for the remaining rows (including [`data/science-questions-phase3.js`](../data/science-questions-phase3.js)).
