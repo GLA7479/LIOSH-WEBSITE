@@ -1,0 +1,123 @@
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-phase6
+> tsx scripts/parent-copilot-phase6-hebrew-robustness-suite.mjs
+
+parent-copilot-phase6-hebrew-robustness-suite: PASS
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-observability-contract
+> tsx scripts/parent-copilot-observability-contract-suite.mjs
+
+parent-copilot-observability-contract-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-parent-render
+> tsx scripts/parent-copilot-parent-render-suite.mjs
+
+parent-copilot-parent-render-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-product-behavior
+> tsx scripts/parent-copilot-product-behavior-suite.mjs
+
+parent-copilot-product-behavior-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-classifier-edge-matrix
+> tsx scripts/parent-copilot-classifier-edge-matrix-suite.mjs
+
+file:///C:/Users/ERAN%20YOSEF/Desktop/final%20projects/FINAL-WEB/LIOSH-WEB-TRY/scripts/parent-copilot-classifier-edge-matrix-suite.mjs:3
+import { detectAggregateQuestionClass } from "../utils/parent-copilot/semantic-question-class.js";
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '../utils/parent-copilot/semantic-question-class.js' does not provide an export named 'detectAggregateQuestionClass'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.22.0
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-scope-collision
+> tsx scripts/parent-copilot-scope-collision-suite.mjs
+
+parent-copilot-scope-collision-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-semantic-nearmiss
+> tsx scripts/parent-copilot-semantic-nearmiss-suite.mjs
+
+parent-copilot-semantic-nearmiss-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-broad-report-routing
+> tsx scripts/parent-copilot-question-class-behavior-suite.mjs
+
+parent-copilot-question-class-behavior-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-recommendation-semantic
+> tsx scripts/parent-copilot-recommendation-semantic-suite.mjs
+
+parent-copilot-recommendation-semantic-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-question-class-behavior
+> tsx scripts/parent-copilot-question-class-behavior-suite.mjs
+
+parent-copilot-question-class-behavior-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-async-llm-gate
+> tsx scripts/parent-copilot-async-llm-gate-suite.mjs
+
+file:///C:/Users/ERAN%20YOSEF/Desktop/final%20projects/FINAL-WEB/LIOSH-WEB-TRY/scripts/parent-copilot-async-llm-gate-suite.mjs:4
+import { getLlmGateDecision } from "../utils/parent-copilot/rollout-gates.js";
+         ^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '../utils/parent-copilot/rollout-gates.js' does not provide an export named 'getLlmGateDecision'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.22.0
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-copilot-turn-api
+> tsx scripts/parent-copilot-copilot-turn-api-selftest.mjs && tsx scripts/parent-copilot-server-snapshot-selftest.mjs
+
+OK parent-copilot-copilot-turn-api-selftest
+OK parent-copilot-server-snapshot-selftest

@@ -1,0 +1,32 @@
+{
+  "scenarioId": "weak_english_grammar_g4_7d",
+  "profileRef": "p_weak_english_grammar",
+  "mode": "aggregate",
+  "tier": "quick",
+  "seed": 91005,
+  "anchorDate": "2026-05-05T08:00:00.000Z",
+  "timeHorizonDays": 7,
+  "generator": "aggregate-runner-v1",
+  "stats": {
+    "scenarioId": "weak_english_grammar_g4_7d",
+    "sessionCount": 16,
+    "questionTotal": 274,
+    "correctTotal": 111,
+    "mistakeEventCount": 90,
+    "subjectsTouched": [
+      "english"
+    ],
+    "topicsBySubject": {
+      "english": [
+        "grammar"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": []
+}

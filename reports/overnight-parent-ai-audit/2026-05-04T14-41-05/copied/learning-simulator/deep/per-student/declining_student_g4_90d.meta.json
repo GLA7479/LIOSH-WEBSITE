@@ -1,0 +1,73 @@
+{
+  "scenarioId": "declining_student_g4_90d",
+  "profileRef": "p_declining_student",
+  "mode": "deep",
+  "tier": "deep",
+  "seed": 93004,
+  "anchorDate": "2026-05-13T08:00:00.000Z",
+  "timeHorizonDays": 90,
+  "generator": "deep-runner-v1",
+  "stats": {
+    "scenarioId": "declining_student_g4_90d",
+    "sessionCount": 210,
+    "questionTotal": 3317,
+    "correctTotal": 2205,
+    "mistakeEventCount": 690,
+    "subjectsTouched": [
+      "math",
+      "hebrew",
+      "geometry"
+    ],
+    "topicsBySubject": {
+      "math": [
+        "addition",
+        "compare",
+        "decimals",
+        "divisibility",
+        "division",
+        "division_with_remainder",
+        "equations",
+        "estimation",
+        "factors_multiples",
+        "fractions",
+        "mixed",
+        "multiplication",
+        "number_sense",
+        "powers",
+        "prime_composite",
+        "rounding",
+        "sequences",
+        "subtraction",
+        "zero_one_properties"
+      ],
+      "hebrew": [
+        "comprehension",
+        "grammar",
+        "mixed",
+        "reading",
+        "speaking",
+        "vocabulary",
+        "writing"
+      ],
+      "geometry": [
+        "area",
+        "diagonal",
+        "perimeter",
+        "shapes_basic",
+        "symmetry",
+        "volume"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": [],
+  "deepHorizonValidation": {
+    "ok": true,
+    "errors": []
+  }
+}

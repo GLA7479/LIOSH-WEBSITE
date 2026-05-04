@@ -1,0 +1,112 @@
+{
+  "scenarioId": "weak_hebrew_comprehension_g3_30d",
+  "generator": "learning-simulator-deep-v1",
+  "storageInputPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\deep\\per-student\\weak_hebrew_comprehension_g3_30d.storage.json",
+  "metaInputPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\deep\\per-student\\weak_hebrew_comprehension_g3_30d.meta.json",
+  "playerName": "Sim:weak_hebrew_comprehension_g3_30d",
+  "period": {
+    "mode": "custom",
+    "ok": true,
+    "startDate": "2026-04-18",
+    "endDate": "2026-05-17",
+    "minMs": 1776515127383,
+    "maxMs": 1779057005128
+  },
+  "diagnosticPrimarySource": "diagnosticEngineV2",
+  "summary": {
+    "totalQuestions": 1072,
+    "overallAccuracy": 37,
+    "totalTimeMinutes": 2857
+  },
+  "facets": {
+    "version": "report-facets-v1",
+    "summary": {
+      "totalQuestions": 1072,
+      "overallAccuracy": 37,
+      "totalTimeMinutes": 2857
+    },
+    "diagnostic": {
+      "unitCount": 1,
+      "p4Count": 0,
+      "diagnosedCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "unitSummaries": [
+        {
+          "subjectId": "hebrew",
+          "displayName": "הבנת הנקרא",
+          "priorityLevel": "P2",
+          "diagnosisAllowed": true,
+          "patternHe": "טעות כשעובדה לא בסדר קריאה",
+          "diagnosisLineHe": "מצביע על דפוס: טעות כשעובדה לא בסדר קריאה (נקודת מיקוד: חיפוש) בהבנת הנקרא.",
+          "canonicalAction": "diagnose_only",
+          "positiveAuthorityLevel": "none",
+          "evidenceQuestions": 1072,
+          "trendDirection": null,
+          "trendEvidenceStatus": null,
+          "questionsFromTrace": 1072,
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "hebrew_archive_comprehension",
+          "subskillId": "g3"
+        }
+      ]
+    },
+    "analysisPreview": {
+      "needsPracticeLines": [
+        "עברית: הבנת הנקרא"
+      ]
+    },
+    "executive": {
+      "windowTotalQuestions": 1072,
+      "topFocusAreasHe": [
+        "טעות כשעובדה לא בסדר קריאה (עברית)"
+      ],
+      "topStrengthsAcrossHe": [],
+      "dominantCrossSubjectRiskLabelHe": "טעות כשעובדה לא בסדר קריאה",
+      "dominantCrossSubjectSuccessPatternLabelHe": "",
+      "cautionNoteHe": "",
+      "overallConfidenceHe": "מבט כולל: ב־1 מתוך 1 נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.",
+      "reportReadinessHe": "התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בעיון ולהמשיך לאסוף תרגול.",
+      "majorTrendsHe": [
+        "בטווח התקופה נבדקו 1 נושאים.",
+        "נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־1 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה."
+      ]
+    },
+    "crossSubject": {
+      "bulletsHe": [
+        "במבט על כל המקצועות יחד: 1 נושאים בטווח התקופה.",
+        "0 נושאים שכדאי לעקוב אחריהם השבוע מקרוב."
+      ],
+      "dataQualityNoteHe": "מספר הנושאים שנבדקו נמוך יחסית — ככל שיצטבר עוד תרגול התמונה תתבהר."
+    },
+    "rowTrends": [],
+    "topicLayer": {
+      "topWeaknessLabels": [
+        "טעות כשעובדה לא בסדר קריאה"
+      ],
+      "topicRecLabels": [
+        "הבנת הנקרא"
+      ],
+      "topicBucketKeys": [
+        "comprehension"
+      ]
+    },
+    "contract": {
+      "primarySubjectId": "hebrew",
+      "topEvidenceQuestionCount": 1072,
+      "topThinDowngraded": true,
+      "topConfidenceHe": "כמה אפשר לסמוך על זה: עדיין לא גבוה — צריך עוד תרגול לפני שסוגרים תמונה ברורה.",
+      "topMainStatusHe": "בנושא הבנת הנקרא: טעות כשעובדה לא בסדר קריאה"
+    },
+    "dataIntegrity": {
+      "version": 1,
+      "issueCount": 0,
+      "issues": []
+    }
+  },
+  "corpusStats": {
+    "charLength": 1261
+  }
+}

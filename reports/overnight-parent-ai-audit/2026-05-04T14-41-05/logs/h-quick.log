@@ -1,0 +1,118 @@
+
+> leo-k-kids-site@1.0.0 qa:learning-simulator:quick
+> tsx scripts/learning-simulator/run-orchestrator.mjs quick
+
+
+═══════════════════════════════════════════════════════════════
+  Learning simulator orchestrator — mode: QUICK
+  Steps: 7 (stop on first failure)
+═══════════════════════════════════════════════════════════════
+
+▶ Coverage matrix
+  npm run qa:learning-simulator:matrix
+
+> leo-k-kids-site@1.0.0 qa:learning-simulator:matrix
+> tsx scripts/learning-simulator/run-coverage-matrix.mjs
+
+{
+  "ok": true,
+  "rowCount": 819,
+  "outJson": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\coverage-matrix.json",
+  "outMd": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\coverage-matrix.md",
+  "errors": [],
+  "selfTestFailures": []
+}
+  → exit 0, 913 ms ✓
+
+▶ Schema validation (profiles + scenarios)
+  npm run qa:learning-simulator:schema
+
+> leo-k-kids-site@1.0.0 qa:learning-simulator:schema
+> tsx scripts/learning-simulator/run-schema-validation.mjs
+
+{
+  "ok": true,
+  "profiles": 13,
+  "scenarios": 22,
+  "errors": 0,
+  "warnings": 0,
+  "outJson": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\schema-validation.json",
+  "outMd": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\schema-validation.md"
+}
+  → exit 0, 944 ms ✓
+
+▶ Aggregate simulator (quick scenarios)
+  npm run qa:learning-simulator:aggregate
+
+> leo-k-kids-site@1.0.0 qa:learning-simulator:aggregate
+> tsx scripts/learning-simulator/run-aggregate.mjs
+
+Aggregate OK: 10 scenarios, 229 sessions, 3600 questions, 870 mistake rows.
+  → exit 0, 971 ms ✓
+
+▶ Parent report assertions (Phase 3)
+  npm run qa:learning-simulator:reports
+
+> leo-k-kids-site@1.0.0 qa:learning-simulator:reports
+> tsx scripts/learning-simulator/run-report-assertions.mjs
+
+{
+  "scenarios": 10,
+  "passed": 10,
+  "assertions": 19,
+  "outJson": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\reports\\run-summary.json"
+}
+  → exit 0, 2124 ms ✓
+
+▶ Engine truth audit (aggregation ↔ diagnosis V2 ↔ report model)
+  npm run qa:learning-simulator:engine
+
+> leo-k-kids-site@1.0.0 qa:learning-simulator:engine
+> tsx scripts/learning-simulator/run-engine-truth-audit.mjs
+
+
+═══════════════════════════════════════════════════════════════
+  Engine truth audit: PASS
+  Summary: C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\reports\learning-simulator\engine-truth\engine-truth-summary.json
+═══════════════════════════════════════════════════════════════
+
+  → exit 0, 3151 ms ✓
+
+▶ Behavior checks (Phase 5)
+  npm run qa:learning-simulator:behavior
+
+> leo-k-kids-site@1.0.0 qa:learning-simulator:behavior
+> tsx scripts/learning-simulator/run-behavior-checks.mjs
+
+{
+  "ok": true,
+  "scenarios": 10,
+  "scenariosPassed": 10,
+  "assertionsEvaluated": 32,
+  "assertionsPassed": 32,
+  "failures": 0
+}
+  → exit 0, 2996 ms ✓
+
+▶ Question integrity (Phase 4)
+  npm run qa:learning-simulator:questions
+
+> leo-k-kids-site@1.0.0 qa:learning-simulator:questions
+> tsx scripts/learning-simulator/run-question-integrity.mjs
+
+{
+  "cellsScanned": 819,
+  "cellsFullyPassed": 747,
+  "questionsGenerated": 2241,
+  "checksPassed": 2241,
+  "checksFailed": 0,
+  "warnings": 216,
+  "unsupportedCells": 72
+}
+  → exit 0, 1484 ms ✓
+
+───────────────────────────────────────────────────────────────
+  Finished: PASS  |  12589 ms total
+  Summary: C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\reports\learning-simulator\orchestrator\run-summary.json
+───────────────────────────────────────────────────────────────
+

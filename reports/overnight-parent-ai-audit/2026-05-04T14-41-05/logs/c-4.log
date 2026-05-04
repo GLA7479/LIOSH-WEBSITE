@@ -1,0 +1,14 @@
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-classifier-edge-matrix
+> tsx scripts/parent-copilot-classifier-edge-matrix-suite.mjs
+
+file:///C:/Users/ERAN%20YOSEF/Desktop/final%20projects/FINAL-WEB/LIOSH-WEB-TRY/scripts/parent-copilot-classifier-edge-matrix-suite.mjs:3
+import { detectAggregateQuestionClass } from "../utils/parent-copilot/semantic-question-class.js";
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '../utils/parent-copilot/semantic-question-class.js' does not provide an export named 'detectAggregateQuestionClass'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.22.0

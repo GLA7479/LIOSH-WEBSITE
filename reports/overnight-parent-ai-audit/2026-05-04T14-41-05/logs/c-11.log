@@ -1,0 +1,6 @@
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-copilot-turn-api
+> tsx scripts/parent-copilot-copilot-turn-api-selftest.mjs && tsx scripts/parent-copilot-server-snapshot-selftest.mjs
+
+OK parent-copilot-copilot-turn-api-selftest
+OK parent-copilot-server-snapshot-selftest

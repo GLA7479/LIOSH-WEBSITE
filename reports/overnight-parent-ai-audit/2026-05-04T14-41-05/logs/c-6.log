@@ -1,0 +1,5 @@
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-semantic-nearmiss
+> tsx scripts/parent-copilot-semantic-nearmiss-suite.mjs
+
+parent-copilot-semantic-nearmiss-suite: OK

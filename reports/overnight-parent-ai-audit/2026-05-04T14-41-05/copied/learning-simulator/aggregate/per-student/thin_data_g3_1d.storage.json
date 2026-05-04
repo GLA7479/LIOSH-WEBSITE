@@ -1,0 +1,196 @@
+{
+  "mleo_player_name": "Sim:thin_data_g3_1d",
+  "mleo_time_tracking": {
+    "operations": {
+      "addition": {
+        "total": 3913,
+        "sessions": [
+          {
+            "date": "2026-05-02",
+            "duration": 2088,
+            "grade": "g3",
+            "level": "easy",
+            "operation": "addition",
+            "mathReportBucket": "addition",
+            "timestamp": 1777755417753,
+            "mode": "learning",
+            "total": 7,
+            "correct": 5
+          },
+          {
+            "date": "2026-05-03",
+            "duration": 1825,
+            "grade": "g3",
+            "level": "easy",
+            "operation": "addition",
+            "mathReportBucket": "addition",
+            "timestamp": 1777769148900,
+            "mode": "learning",
+            "total": 6,
+            "correct": 4
+          }
+        ],
+        "byGrade": {
+          "g3": 3913
+        },
+        "byLevel": {
+          "easy": 3913
+        }
+      }
+    },
+    "daily": {
+      "2026-05-02": {
+        "total": 2088,
+        "operations": {
+          "addition": 2088
+        },
+        "byGrade": {
+          "g3": 2088
+        },
+        "byLevel": {
+          "easy": 2088
+        }
+      },
+      "2026-05-03": {
+        "total": 1825,
+        "operations": {
+          "addition": 1825
+        },
+        "byGrade": {
+          "g3": 1825
+        },
+        "byLevel": {
+          "easy": 1825
+        }
+      }
+    }
+  },
+  "mleo_math_master_progress": {
+    "progress": {
+      "addition": {
+        "total": 13,
+        "correct": 9
+      }
+    },
+    "stars": 3,
+    "playerLevel": 1,
+    "xp": 78,
+    "badges": []
+  },
+  "mleo_mistakes": [
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "grade": "g3",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1777755417753,
+      "isCorrect": false,
+      "exerciseText": "math:addition",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 2353
+    },
+    {
+      "subject": "math",
+      "topic": "addition",
+      "operation": "addition",
+      "bucketKey": "addition",
+      "grade": "g3",
+      "level": "easy",
+      "mode": "learning",
+      "timestamp": 1777769148900,
+      "isCorrect": false,
+      "exerciseText": "math:addition",
+      "correctAnswer": 1,
+      "userAnswer": 0,
+      "patternFamily": "pf:math:addition",
+      "hintUsed": true,
+      "responseMs": 2300
+    }
+  ],
+  "mleo_geometry_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_geometry_master_progress": {
+    "progress": {},
+    "stars": 1,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_geometry_mistakes": [],
+  "mleo_english_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_english_master_progress": {
+    "progress": {},
+    "stars": 1,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_english_mistakes": [],
+  "mleo_science_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_science_master_progress": {
+    "progress": {},
+    "stars": 1,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_science_mistakes": [],
+  "mleo_hebrew_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_hebrew_master_progress": {
+    "progress": {},
+    "stars": 1,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_hebrew_mistakes": [],
+  "mleo_moledet_geography_time_tracking": {
+    "topics": {},
+    "daily": {}
+  },
+  "mleo_moledet_geography_master_progress": {
+    "progress": {},
+    "stars": 1,
+    "playerLevel": 1,
+    "xp": 0,
+    "badges": []
+  },
+  "mleo_moledet_geography_mistakes": [],
+  "mleo_daily_challenge": {
+    "questions": 13,
+    "correct": 9,
+    "bestScore": 9
+  },
+  "mleo_weekly_challenge": {
+    "current": 69,
+    "target": 100,
+    "completed": false
+  },
+  "mleo_science_daily_challenge": {
+    "questions": 3,
+    "correct": 2,
+    "bestScore": 0
+  },
+  "mleo_science_weekly_challenge": {
+    "current": 40,
+    "target": 100,
+    "completed": false
+  }
+}

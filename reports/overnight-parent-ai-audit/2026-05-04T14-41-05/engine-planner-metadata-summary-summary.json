@@ -1,0 +1,70 @@
+{
+  "title": "Engine / planner / metadata (G)",
+  "rows": [
+    {
+      "id": "g1",
+      "npmScript": "qa:question-metadata",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 1574,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-41-05\\logs\\g1.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    },
+    {
+      "id": "g2",
+      "npmScript": "test:adaptive-planner:artifacts",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 953,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-41-05\\logs\\g2.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    },
+    {
+      "id": "g3",
+      "npmScript": "test:adaptive-planner:runtime",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 863,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-41-05\\logs\\g3.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    },
+    {
+      "id": "g4",
+      "npmScript": "test:adaptive-planner:recommended-practice",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 696,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-41-05\\logs\\g4.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    },
+    {
+      "id": "g5",
+      "npmScript": "test:adaptive-planner:scenario-simulator",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 874,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T14-41-05\\logs\\g5.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    }
+  ]
+}

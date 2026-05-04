@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-05-02T00:00:00.000Z",
+  "auditVersion": "1.0.0",
+  "scienceRuntimeExists": true,
+  "scienceQuestionsExist": true,
+  "scienceGeneratorExists": true,
+  "scienceQuestionBankExists": true,
+  "canReuseExistingRuntimeForQA": true,
+  "missingAdapterOnly": true,
+  "requiresNewContent": false,
+  "requiresProductChange": false,
+  "recommendedAction": "Coverage matrix marked bank-backed science rows as isGeneratorBacked=false when generatorBacked.bank was set (legacy branch). Phase 4 already resolves science via data/science-questions.js in question-generator-adapters.mjs. Fix: set isGeneratorBacked to \"bank\" in coverage-matrix build and treat \"bank\" as generator-backed in coverage catalog.",
+  "evidenceFiles": [
+    "data/science-curriculum.js",
+    "data/science-questions.js",
+    "pages/learning/science-master.js",
+    "scripts/learning-simulator/lib/subject-topics-discovery.mjs",
+    "scripts/learning-simulator/lib/question-generator-adapters.mjs",
+    "scripts/learning-simulator/lib/coverage-matrix.mjs",
+    "scripts/learning-simulator/lib/coverage-catalog-core.mjs"
+  ],
+  "notes": "No new MCQ content was added. Classification change only so matrix-smoke / catalog \"covered\" can include science cells that the adapter already serves."
+}
