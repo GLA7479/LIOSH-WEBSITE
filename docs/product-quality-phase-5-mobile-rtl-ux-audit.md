@@ -1,8 +1,8 @@
 # Product Quality Phase 5 — Mobile + RTL + Basic UX Audit
 
-**Last updated:** 2026-05-04  
-**Status:** **Audit and recommendations only** — no product code, CSS, layout, or Hebrew copy was changed.  
-**Method:** **Static review** of key pages/components + alignment with [`docs/mobile-rtl-manual-qa-checklist.md`](mobile-rtl-manual-qa-checklist.md) and context from [Phase 1](product-quality-phase-1-audit.md) / [Phase 4](product-quality-phase-4-parent-report-review.md). **No on-device run** was performed in this pass; treat open items as **UAT to confirm**.
+**Last updated:** 2026-05-04 (Phase 6: **P5-01 / P5-02 / P5-03** implemented — see [§7](#7-phase-6-implementation-status-2026-05-04))  
+**Status (original pass):** Static audit; **Phase 6** then applied **targeted code fixes** for P5-01–P5-03 only.  
+**Method:** **Static review** of key pages/components + alignment with [`docs/mobile-rtl-manual-qa-checklist.md`](mobile-rtl-manual-qa-checklist.md) and context from [Phase 1](product-quality-phase-1-audit.md) / [Phase 4](product-quality-phase-4-parent-report-review.md). **No on-device run** was performed in Phase 5; **P5-04–P5-10** remain **pending real device QA**.
 
 **Out of scope (per product rules):** security, coins, question banks, Hebrew rewrites, Parent AI / report logic changes, broad refactors, overnight QA.
 
@@ -29,8 +29,8 @@
 
 | Topic | Observation | Suggested follow-up |
 |-------|-------------|---------------------|
-| **Viewport** | [`pages/_app.js`](../pages/_app.js) sets `maximum-scale=1, user-scalable=no` — helps layout stability but **disables pinch-zoom** (readability / a11y tradeoff). | Owner UAT on smallest target device; consider relaxing after launch if users request zoom. |
-| **RTL root** | Learning masters (e.g. [`pages/learning/math-master.js`](../pages/learning/math-master.js)) set `dir="rtl"` on the main shell. **Layout-wrapped** pages (login, marketing) do **not** always set `dir="rtl"` on the content wrapper — Hebrew UI may inherit **LTR** document direction from browser default. | **Manual verify** parent/student login and dashboard in RTL on a real phone. |
+| **Viewport** | **Updated (Phase 6):** [`pages/_app.js`](../pages/_app.js) now uses `width=device-width, initial-scale=1` only — **pinch-zoom allowed**. | Owner UAT on smallest device after behavior change. |
+| **RTL root** | **Updated (Phase 6):** [`components/Layout.js`](../components/Layout.js) sets `dir="rtl"` for `/parent/*`, `/student/login`, `/student/home*`, and `/learning` (hub). Learning masters still set their own `dir="rtl"`. **Loading states** for short/detailed parent report: `dir="rtl"` on spinners. | **Still** run manual RTL pass for **P5-04+** and edge routes (e.g. `/learning/curriculum`). |
 | **Mobile shell** | [`styles/globals.css`](../styles/globals.css) defines `game-page-mobile`, `learning-master-fill`, `h-dvh` patterns to reduce iOS viewport/jank — mitigates scroll traps. | Confirm with checklist § Scrolling + § Landscape/portrait. |
 | **Numeric placeholders** | Phase 1 / checklist already flag **`undefined` / `null` / `NaN` / `00000`** as hard-fail — applies to all surfaces. | Execute checklist **Hard-Fail** row during owner QA. |
 
@@ -40,9 +40,9 @@
 
 | ID | Page / surface | Viewport (if known) | Issue summary | Severity | User impact | Suggested fix | Owner approval? | Timing |
 |----|----------------|---------------------|---------------|----------|-------------|---------------|-----------------|--------|
-| P5-01 | `/parent/login`, `/student/login`, Layout-backed Hebrew pages | 360–430 wide | **No explicit `dir="rtl"`** on main content wrapper (e.g. parent login uses [`Layout`](../components/Layout.js) + `max-w-md` column only). Mixed **Hebrew UI + default LTR** may affect punctuation, icon alignment, and focus order. | **Medium** | Awkward reading flow; possible **misaligned** controls | Add **`dir="rtl"`** at page root or Layout variant for Hebrew routes — **after** owner sign-off | Yes | before launch *(if UAT confirms)* |
-| P5-02 | App-wide (`_app` Head) | All | **`user-scalable=no`** — users cannot pinch-zoom small text. | **Medium** | Low vision / long paragraphs harder to read | Revisit viewport meta policy (accessibility) — **CSS/copy scope later** | Yes | polish later *(or owner review first)* |
-| P5-03 | `/parent/login` | All | Error path surfaces **English** strings (`Login failed: …`, `Sign up failed: …`, `Client not ready`) alongside Hebrew chrome. | **Medium** | Confusing / **non-localized** failure UX | Localize parent-visible errors to Hebrew — **copy** (requires approval) | Yes | before launch *(i18n consistency)* |
+| P5-01 | `/parent/login`, `/student/login`, Layout-backed Hebrew pages | 360–430 wide | ~~No explicit `dir="rtl"` on Layout~~ **→ Fixed (Phase 6)** via `dir="rtl"` on [`Layout.js`](../components/Layout.js) for Hebrew-primary routes; report loading shells updated. | **Medium** *(was)* | — | **Device QA** still recommended for alignment edge cases. | — | **Verify on device** |
+| P5-02 | App-wide (`_app` Head) | All | ~~`user-scalable=no`~~ **→ Fixed (Phase 6):** zoom no longer blocked in viewport meta. | **Medium** *(was)* | — | Confirm no layout regressions when users zoom. | — | **Verify on device** |
+| P5-03 | `/parent/login` | All | ~~English error prefixes~~ **→ Fixed (Phase 6):** Hebrew messages for client-not-ready, sign-up failure/success, login failure (**Supabase `error.message` may still be English**). | **Medium** *(was)* | — | Optional later: map common Supabase messages to Hebrew. | — | **Polish later** *(optional)* |
 | P5-04 | Learning masters (`math-master`, etc.) | Portrait + landscape | Heavy **fixed / stacked** UI (`h-dvh`, modals, `z-[200]` overlays). Risk of **keyboard covering inputs** or **CTA hidden** on small phones if not fully covered by `useIOSViewportFix`. | **Medium** | Missed submits, frustration | Device pass per [`mobile-rtl-manual-qa-checklist.md`](mobile-rtl-manual-qa-checklist.md) § Modals / Scrolling | No for audit | owner review first |
 | P5-05 | Short / detailed parent report | &lt; 390 wide | **Charts** (Recharts) + dense cards — labels may **overlap** or require horizontal scroll (see Phase 4 **P4-05**). | **Medium** | Hard to read trends on phone | Chart simplification / summary mode on narrow viewports — **layout** (later) | Yes | polish later |
 | P5-06 | Detailed report print / PDF | Print | **Two display modes** (full vs תקציר) — risk of **missing** sections or tiny type in PDF output if not regression-tested. | **Medium** | Wrong artifact handed to teacher/school | Visual QA on exported PDFs (`qa-visual-output`, persona PDFs) | Yes | before launch *(artifact QA)* |
@@ -61,17 +61,30 @@ Use [`docs/mobile-rtl-manual-qa-checklist.md`](mobile-rtl-manual-qa-checklist.md
 
 ---
 
-## 5. Phase boundary
+## 5. Phase boundary (as of Phase 5 write-up)
 
 | Item | Result |
 |------|--------|
-| Product code / CSS changed? | **No** |
-| Hebrew copy changed? | **No** |
+| Product code / CSS changed? | **No** *(Phase 5 only)* |
+| Hebrew copy changed? | **No** *(Phase 5 only)* |
 
-**Recommended next step:** Owner runs **one device matrix** (at minimum: **360×640 portrait**, **390×844 portrait**, **768×1024**) across flows in §1, logs failures with screenshot + route per checklist **Execution Notes**, then prioritizes **P5-01–P5-06** if confirmed.
+**Recommended next step:** Owner runs **one device matrix** (at minimum: **360×640 portrait**, **390×844 portrait**, **768×1024**) across flows in §1, logs failures with screenshot + route per checklist **Execution Notes**. After Phase 6, prioritize confirmation of **P5-01–P5-03** fixes + remaining **P5-04–P5-10**.
 
 ---
 
-## 6. Reference — Phase 4 overlap
+## 7. Phase 6 implementation status (2026-05-04)
+
+| ID | Status | Notes |
+|----|--------|------|
+| **P5-01** | **Addressed in code** | [`components/Layout.js`](../components/Layout.js): `dir="rtl"` when pathname is under `/parent`, `/student/login`, `/student/home`, or equals `/learning`. [`pages/learning/parent-report.js`](../pages/learning/parent-report.js) + [`parent-report-detailed.js`](../pages/learning/parent-report-detailed.js): loading wrappers `dir="rtl"`. |
+| **P5-02** | **Addressed in code** | [`pages/_app.js`](../pages/_app.js): viewport `width=device-width, initial-scale=1` (removed `maximum-scale` / `user-scalable=no`). |
+| **P5-03** | **Addressed in code** | [`pages/parent/login.js`](../pages/parent/login.js): Hebrew strings for client-not-ready, sign-up error/success, login error prefix. |
+| **P5-04 – P5-10** | **Pending manual device QA** | No code changes in Phase 6 — follow [`mobile-rtl-manual-qa-checklist.md`](mobile-rtl-manual-qa-checklist.md). |
+
+**Build:** `npm run build` passed after changes (see [`product-quality-phase-6-focused-ux-fixes.md`](product-quality-phase-6-focused-ux-fixes.md)).
+
+---
+
+## 8. Reference — Phase 4 overlap
 
 Mobile/PDF risks called out in [`docs/product-quality-phase-4-parent-report-review.md`](product-quality-phase-4-parent-report-review.md) (**P4-01** cognitive load, **P4-05** PDF/visual QA) **carry forward** here as parent-report mobile items (**P5-05**, **P5-06**).

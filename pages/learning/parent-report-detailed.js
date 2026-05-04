@@ -348,7 +348,10 @@ export default function ParentReportDetailedPage() {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center">
+        <div
+          className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center"
+          dir="rtl"
+        >
           <div className="text-white text-lg">טוען דוח מקיף…</div>
         </div>
       </Layout>

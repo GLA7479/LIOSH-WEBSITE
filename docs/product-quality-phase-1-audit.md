@@ -13,7 +13,11 @@
 
 ### Phase 5 — Mobile + RTL + basic UX audit
 
-[`docs/product-quality-phase-5-mobile-rtl-ux-audit.md`](product-quality-phase-5-mobile-rtl-ux-audit.md) records **static** mobile/RTL/UX risks and maps them to [`docs/mobile-rtl-manual-qa-checklist.md`](mobile-rtl-manual-qa-checklist.md). **No code/CSS/copy changes.** **Next step:** owner runs the checklist on **real devices** and confirms or closes items **P5-01–P5-10**.
+[`docs/product-quality-phase-5-mobile-rtl-ux-audit.md`](product-quality-phase-5-mobile-rtl-ux-audit.md) records mobile/RTL/UX risks and maps them to [`docs/mobile-rtl-manual-qa-checklist.md`](mobile-rtl-manual-qa-checklist.md).
+
+### Phase 6 — Focused mobile/RTL UX fixes
+
+[`docs/product-quality-phase-6-focused-ux-fixes.md`](product-quality-phase-6-focused-ux-fixes.md) implements **P5-01, P5-02, P5-03** (RTL on Layout + learning hub, browser zoom, Hebrew parent-login errors). **P5-04–P5-10** remain **device QA** only. **Next step:** owner confirms fixes on hardware + runs remaining checklist rows.
 
 ---
 

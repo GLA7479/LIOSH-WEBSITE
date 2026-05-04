@@ -40,7 +40,7 @@ export default function ParentLoginPage() {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!supabaseRef.current) {
-      setMessage("Client not ready yet. Please try again.");
+      setMessage("המערכת עדיין נטענת. נסו שוב בעוד רגע.");
       return;
     }
     setBusy(true);
@@ -54,9 +54,9 @@ export default function ParentLoginPage() {
           password,
         });
         if (error) {
-          setMessage(`Sign up failed: ${error.message}`);
+          setMessage(`ההרשמה נכשלה: ${error.message}`);
         } else {
-          setMessage("Sign up complete. You can now log in.");
+          setMessage("ההרשמה הושלמה. אפשר להתחבר עכשיו.");
           setMode("login");
         }
       } else {
@@ -65,7 +65,7 @@ export default function ParentLoginPage() {
           password,
         });
         if (error) {
-          setMessage(`Login failed: ${error.message}`);
+          setMessage(`הכניסה נכשלה: ${error.message}`);
         } else {
           router.push("/parent/dashboard");
         }

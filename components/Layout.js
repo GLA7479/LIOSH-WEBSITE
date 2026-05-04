@@ -41,8 +41,19 @@ export default function Layout({ children }) {
 
   const closeMenu = () => setMenuOpen(false);
 
+  const pathname = router.pathname || "";
+  /** RTL for Hebrew-primary flows (marketing pages stay default/LTR). */
+  const layoutRtlHebrew =
+    pathname.startsWith("/parent") ||
+    pathname === "/student/login" ||
+    pathname.startsWith("/student/home") ||
+    pathname === "/learning";
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#050816] via-[#0b1020] to-[#050816] text-white">
+    <div
+      className="min-h-screen bg-gradient-to-b from-[#050816] via-[#0b1020] to-[#050816] text-white"
+      dir={layoutRtlHebrew ? "rtl" : undefined}
+    >
       <header className="w-full border-b border-white/10 bg-black/40 backdrop-blur sticky top-0 z-30">
         <nav className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           <Link

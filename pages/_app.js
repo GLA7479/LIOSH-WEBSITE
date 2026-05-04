@@ -112,7 +112,7 @@ export default function MyApp({ Component, pageProps }) {
       {process.env.NODE_ENV !== "production" ? <DevServiceWorkerCleanup /> : null}
       <Head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="LEO K - Fun games and learning activities for kids. Play arcade games, solve puzzles, and practice math, geometry and English." />
         <meta name="theme-color" content="#fbbf24" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
